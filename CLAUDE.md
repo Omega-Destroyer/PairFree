@@ -15,6 +15,9 @@ and to ask before guessing.
   byte for byte. Any new codec, in any language, gets a test that runs these.
 - `data/devices.json` is the model table from the official app. Newer models are
   missing from it and get added as people confirm them.
+- `docs/DESIGN.md` is the app design: requirements, the two looks and their colour
+  values, every screen, and what is still open. Build the UI from it. The owner's
+  requirements at the top of that file are fixed.
 
 The spec came from static analysis of PeatsAudio 1.9.45 for Android. The decompiled
 source is not in this repo and will not be. If the spec is silent on something,
@@ -75,9 +78,12 @@ reports from other people.
    `data/reports/` and add the two models to `data/devices.json`.
 2. Try one harmless SET on each (ANC mode is audible) and record whether a reply comes back.
 3. Scan for the GAIA BLE service on both.
-4. Agree the app stack with the owner, then scaffold the Android app around a
-   protocol core that passes `data/test_vectors.json`.
+4. Scaffold the Android app in Kotlin with Jetpack Compose (agreed with the owner).
+   Put the protocol core in its own module with no Android dependencies and make it
+   pass `data/test_vectors.json`. The app must not request the internet permission.
 5. Screens in this order: connection and battery, ANC, switches, gestures, EQ.
+   Studio look first, since it is the default. Keep colours, fonts and drawings
+   behind a theme so Sketchbook is a second skin, not a second set of screens.
 6. Work out the Qualcomm EQ band layout on hardware.
 7. Firmware update last, and only on the rules above.
 

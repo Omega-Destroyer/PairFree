@@ -1,0 +1,597 @@
+{
+  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android). Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware.",
+  "devices": [
+    {
+      "firmware_code": "ATS3019DK12",
+      "names": [
+        "SOUNDPEATS CyberGear"
+      ],
+      "family": "ACTIONS",
+      "family_sources": {
+        "support_list": "ACTIONS",
+        "product_enum": "ACTIONS"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "JULI3025Lite2",
+      "names": [
+        "SOUNDPEATS RunFree Lite2"
+      ],
+      "family": "ACTIONS",
+      "family_sources": {
+        "support_list": "ACTIONS"
+      },
+      "old_eq_protocol": null,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "JULIRUNFREE",
+      "names": [
+        "SOUNDPEATS RunFree"
+      ],
+      "family": "ACTIONS",
+      "family_sources": {
+        "support_list": "ACTIONS",
+        "product_enum": "ACTIONS"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "BT893XPro",
+      "names": [
+        "SOUNDPEATS PearlClip Pro"
+      ],
+      "family": "FOTA",
+      "family_sources": {
+        "product_enum": "FOTA"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "S13",
+      "names": [
+        "SOUNDPEATS PearlClip Pro"
+      ],
+      "family": "FOTA",
+      "family_sources": {
+        "product_enum": "FOTA"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "ZKLXAIR5LITE",
+      "names": [
+        "SOUNDPEATS Air5 Lite"
+      ],
+      "family": "FOTA",
+      "family_sources": {
+        "product_enum": "FOTA"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "ZKLXBREEZY",
+      "names": [
+        "SOUNDPEATS Breezy"
+      ],
+      "family": "FOTA",
+      "family_sources": {
+        "product_enum": "FOTA"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "ZKLXCHASERS",
+      "names": [
+        "SOUNDPEATS Chasers"
+      ],
+      "family": "FOTA",
+      "family_sources": {
+        "product_enum": "FOTA"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "ZKLXSPACEPRO",
+      "names": [
+        "SOUNDPEATS Space Pro"
+      ],
+      "family": "FOTA",
+      "family_sources": {
+        "product_enum": "FOTA"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "ECHO7018",
+      "names": [
+        "SOUNDPEATS A8",
+        "SOUNDPEATS ECHO",
+        "SOUNDPEATS Echo"
+      ],
+      "family": "JIELI",
+      "family_sources": {
+        "support_list": "JIELI",
+        "product_enum": "JIELI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "JIELILIFE3",
+      "names": [
+        "SOUNDPEATS Life3"
+      ],
+      "family": "JIELI",
+      "family_sources": {
+        "support_list": "JIELI"
+      },
+      "old_eq_protocol": null,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "JL6973Clear",
+      "names": [
+        "SOUNDPEATS Clear"
+      ],
+      "family": "JIELI",
+      "family_sources": {
+        "support_list": "JIELI",
+        "product_enum": "JIELI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "JL6973D8C1",
+      "names": [
+        "TRUEFREE C1",
+        "TRUEFREE soft"
+      ],
+      "family": "JIELI",
+      "family_sources": {
+        "support_list": "JIELI"
+      },
+      "old_eq_protocol": null,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "R1292A7018F",
+      "names": [
+        "SOUNDPEATS Space"
+      ],
+      "family": "JIELI",
+      "family_sources": {
+        "support_list": "JIELI",
+        "product_enum": "JIELI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "TS03WINGS2",
+      "names": [
+        "SOUNDPEATS Wings2"
+      ],
+      "family": "JIELI",
+      "family_sources": {
+        "support_list": "JIELI",
+        "product_enum": "JIELI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "QCYTS04",
+      "names": [
+        "SOUNDPEATS Capsule3 Pro",
+        "SOUNDPEATS Capsule3 pro"
+      ],
+      "family": "QCY-WUQI",
+      "family_sources": {
+        "support_list": "QCY-WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": true
+    },
+    {
+      "firmware_code": "SPTS04",
+      "names": [
+        "SOUNDPEATS Capsule3 Pro",
+        "SOUNDPEATS Capsule3 pro"
+      ],
+      "family": "QCY-WUQI",
+      "family_sources": {
+        "support_list": "QCY-WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": true
+    },
+    {
+      "firmware_code": "AIR4-BS590R2E",
+      "names": [
+        "SOUNDPEATS Air4"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "AIR4PRO-BS588R2E",
+      "names": [
+        "SOUNDPEATS Air4 Pro"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "Air3Pro",
+      "names": [
+        "SOUNDPEATS Air3 Pro",
+        "SOUNDPEATS Air3Pro"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "BS343RB",
+      "names": [
+        "SOUNDPEATS TrueAir2"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "BS390RB",
+      "names": [
+        "SOUNDPEATS Air3",
+        "SOUNDPEATS Air3-Deluxe"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "BT5106-3040",
+      "names": [
+        "SOUNDPEATS Truengine 3 SE",
+        "SOUNDPEATS Truengine 3SE"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "BT5107",
+      "names": [
+        "SOUNDPEATS H1"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "HILISTENING",
+      "names": [
+        "Hi Listening"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "QCC3040",
+      "names": [
+        "LE-SOUNDPEATS Mini Pro",
+        "SOUNDPEATS Mini Pro"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "QCC3091AIR5",
+      "names": [
+        "SOUNDPEATS Air5"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "S27",
+      "names": [
+        "SOUNDPEATS Air6 Pro"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "S32",
+      "names": [
+        "SOUNDPEATS Air6 Pro"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "T28",
+      "names": [
+        "SOUNDPEATS Sonic"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "T28Pro",
+      "names": [
+        "SOUNDPEATS Sonic Pro"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "support_list": "QUALCOMM",
+        "product_enum": "QUALCOMM"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "T57",
+      "names": [
+        "SOUNDPEATS Life"
+      ],
+      "family": "SMARTLINK",
+      "family_sources": {
+        "support_list": "SMARTLINK",
+        "product_enum": "SMARTLINK"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "3007AGOFREE",
+      "names": [
+        "SOUNDPEATS GoFree"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "BS519W2D",
+      "names": [
+        "Air3 Deluxe HS",
+        "SOUNDPEATS Air3 Deluxe HS"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "FREELITE",
+      "names": [
+        "SOUNDPEATS RunFree Lite"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "NEW-WQ7034MXGoFree2",
+      "names": [
+        "SOUNDPEATS GoFree 2"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "OPERA03",
+      "names": [
+        "SOUNDPEATS Opera03"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "OPERA05",
+      "names": [
+        "SOUNDPEATS Opera05"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "RUNFREEHS",
+      "names": [
+        "SOUNDPEATS RunFree HS"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "WQ7034MXGoFree2",
+      "names": [
+        "SOUNDPEATS GoFree 2"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "WQT7033",
+      "names": [
+        "SOUNDPEATS Mini Pro HS"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": true,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "WUQIAIRLITE",
+      "names": [
+        "SOUNDPEATS Air4 Lite"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "WUQIMINIHS",
+      "names": [
+        "LE-SOUNDPEATS Mini HS",
+        "SOUNDPEATS Mini HS"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "WuQi7034MXF2",
+      "names": [
+        "TRUEFREE F2"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI"
+      },
+      "old_eq_protocol": null,
+      "family_conflict": false
+    },
+    {
+      "firmware_code": "WuQiEngine4",
+      "names": [
+        "SOUNDPEATS Engine 4"
+      ],
+      "family": "WUQI",
+      "family_sources": {
+        "support_list": "WUQI",
+        "product_enum": "WUQI"
+      },
+      "old_eq_protocol": false,
+      "family_conflict": false
+    }
+  ],
+  "codes_seen_only_in_branches": {
+    "S7": "special-cased in HomeViewModel, model unknown",
+    "S13": "PearlClip Pro (LDAC variant), Bluetrum",
+    "S19": "listed with the Bluetrum LDAC-conflict codes, model unknown",
+    "S21": "Cove Pro (dynamic bass handled through EQ)",
+    "S27": "Air6 Pro, Qualcomm",
+    "S29": "listed with the Bluetrum LDAC-conflict codes, model unknown",
+    "S32": "Air6 Pro (second variant), Qualcomm"
+  }
+}

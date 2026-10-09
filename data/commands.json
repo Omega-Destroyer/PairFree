@@ -1,0 +1,537 @@
+{
+  "_about": "Machine-readable command table for SoundPEATS earbuds. See docs/PROTOCOL.md. Hex strings are big-endian. Not yet confirmed on hardware unless a device report in data/reports says so.",
+  "frame": {
+    "sof": "FF",
+    "version": "04",
+    "flags": "00",
+    "length": "one byte, payload length",
+    "vendor_main": "000A",
+    "vendor_eq": "001D",
+    "reply_mask": "8000",
+    "layout": [
+      "sof",
+      "version",
+      "flags",
+      "length",
+      "vendor(2)",
+      "command(2)",
+      "payload"
+    ]
+  },
+  "transports": {
+    "spp": {
+      "uuid": "00001101-0000-1000-8000-00805F9B34FB"
+    },
+    "ble": {
+      "service": "00001100-D102-11E1-9B23-00025B00A5A5",
+      "write": "00001101-D102-11E1-9B23-00025B00A5A5",
+      "notify": "00001102-D102-11E1-9B23-00025B00A5A5",
+      "note": "On Qualcomm models drop the first four frame bytes in both directions."
+    }
+  },
+  "commands": [
+    {
+      "id": "firmware_version",
+      "get": "0309",
+      "kind": "text",
+      "note": "Reply: status byte, then ASCII CODE_x_VERSION. Field 0 is the firmware code."
+    },
+    {
+      "id": "battery_left",
+      "get": "0306",
+      "kind": "percent"
+    },
+    {
+      "id": "battery_right",
+      "get": "0307",
+      "kind": "percent"
+    },
+    {
+      "id": "battery_case",
+      "get": "0323",
+      "kind": "percent"
+    },
+    {
+      "id": "anc_mode",
+      "feature_codes": [
+        "FSN08",
+        "FSN09",
+        "FSN10",
+        "FSN11",
+        "FSN34"
+      ],
+      "get": "0310",
+      "set": "0311",
+      "kind": "enum",
+      "values": {
+        "0": "off",
+        "1": "anc",
+        "2": "transparency",
+        "3": "adaptive",
+        "4": "weak"
+      }
+    },
+    {
+      "id": "anc_level",
+      "feature_codes": [
+        "FS_ANC_LEVEL"
+      ],
+      "get": "0324",
+      "set": "0325",
+      "kind": "level_list",
+      "values": {
+        "1": "level_1",
+        "2": "level_2",
+        "3": "level_3",
+        "4": "level_4",
+        "5": "level_5",
+        "17": "normal",
+        "18": "indoor",
+        "19": "outdoor",
+        "20": "traffic",
+        "21": "adaptive",
+        "22": "anti_wind"
+      }
+    },
+    {
+      "id": "transparency_level",
+      "feature_codes": [
+        "FS_TRANSPARENT_LEVEL"
+      ],
+      "get": "034C",
+      "set": "034D",
+      "kind": "level_list",
+      "values": {
+        "1": "voice_enhance",
+        "2": "standard"
+      }
+    },
+    {
+      "id": "anc_env_adaptive",
+      "get": "0364",
+      "set": "0365",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "game_mode",
+      "feature_codes": [
+        "FSN04"
+      ],
+      "get": "030E",
+      "set": "030F",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "multipoint",
+      "feature_codes": [
+        "FSN01"
+      ],
+      "get": "0314",
+      "set": "0315",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "ldac",
+      "feature_codes": [
+        "FSN25"
+      ],
+      "get": "0338",
+      "set": "0339",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "le_audio",
+      "feature_codes": [
+        "FSN24"
+      ],
+      "get": "0335",
+      "set": "0334",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "in_ear_detection",
+      "feature_codes": [
+        "FSN03"
+      ],
+      "get": "030C",
+      "set": "030D",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "touch_disabled",
+      "feature_codes": [
+        "FSN02"
+      ],
+      "get": "0312",
+      "set": "0313",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "custom_keys",
+      "feature_codes": [
+        "FSN05"
+      ],
+      "get": "03AA",
+      "set": "03AB",
+      "kind": "key_map",
+      "note": "Set payload: gesture, action. Reply: status, then gesture/action pairs."
+    },
+    {
+      "id": "prompt_volume",
+      "feature_codes": [
+        "FSN15"
+      ],
+      "get": "0319",
+      "set": "0320",
+      "kind": "percent"
+    },
+    {
+      "id": "auto_shutdown",
+      "feature_codes": [
+        "FSN39"
+      ],
+      "get": "036E",
+      "set": "036F",
+      "kind": "minutes",
+      "note": "App offers 5, 10, 30, 60, 120, or 0 for never."
+    },
+    {
+      "id": "voice_language",
+      "feature_codes": [
+        "FSN999"
+      ],
+      "get": "0321",
+      "set": "0322",
+      "kind": "enum",
+      "values": {
+        "0": "en",
+        "1": "zh",
+        "2": "de",
+        "3": "ja",
+        "4": "fr",
+        "5": "es",
+        "6": "it"
+      }
+    },
+    {
+      "id": "dynamic_eq",
+      "feature_codes": [
+        "FSN14"
+      ],
+      "get": "0331",
+      "set": "0332",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "dynamic_bass",
+      "feature_codes": [
+        "FSN19"
+      ],
+      "get": "033C",
+      "set": "033D",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "movie_mode",
+      "feature_codes": [
+        "FSN12"
+      ],
+      "get": "0327",
+      "set": "0328",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "spatial_audio",
+      "feature_codes": [
+        "FSN13"
+      ],
+      "get": "0357",
+      "set": "0358",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "panoramic_sound",
+      "feature_codes": [
+        "FSN0000000"
+      ],
+      "get": "0329",
+      "set": "0330",
+      "kind": "enum",
+      "values": {
+        "0": "normal",
+        "1": "music",
+        "2": "movie"
+      }
+    },
+    {
+      "id": "dolby",
+      "feature_codes": [
+        "FSN35"
+      ],
+      "get": "0348",
+      "set": "0349",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "adaptive_volume",
+      "feature_codes": [
+        "FSN22"
+      ],
+      "get": "0346",
+      "set": "0347",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "personal_volume",
+      "feature_codes": [
+        "FSN23"
+      ],
+      "get": "0340",
+      "set": "0341",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "light_effect",
+      "feature_codes": [
+        "FSN07"
+      ],
+      "get": "030A",
+      "set": "030B",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "privacy_mode",
+      "feature_codes": [
+        "FSN36"
+      ],
+      "get": "036B",
+      "set": "036C",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "fall_detection",
+      "feature_codes": [
+        "FSN37"
+      ],
+      "get": "0355",
+      "set": "0356",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "water_drain",
+      "feature_codes": [
+        "FSN20"
+      ],
+      "get": "0350",
+      "set": "033E",
+      "kind": "switch",
+      "values": {
+        "0": "off",
+        "1": "on"
+      }
+    },
+    {
+      "id": "find_left",
+      "feature_codes": [
+        "FSN18"
+      ],
+      "get": "034A",
+      "set": "033A",
+      "kind": "switch",
+      "values": {
+        "0": "stop",
+        "1": "beep"
+      }
+    },
+    {
+      "id": "find_right",
+      "feature_codes": [
+        "FSN18-R"
+      ],
+      "get": "034B",
+      "set": "033B",
+      "kind": "switch",
+      "values": {
+        "0": "stop",
+        "1": "beep"
+      }
+    },
+    {
+      "id": "reset_state",
+      "get": "0367",
+      "set": "0368",
+      "kind": "raw",
+      "note": "Reply: last two bytes equal 1 means the earbuds were just factory reset."
+    },
+    {
+      "id": "spatial_audio_mode",
+      "set": "0359",
+      "kind": "raw",
+      "note": "One byte."
+    },
+    {
+      "id": "dolby_mode",
+      "set": "0354",
+      "kind": "raw",
+      "note": "One byte."
+    },
+    {
+      "id": "fit_test",
+      "set": "0363",
+      "kind": "raw",
+      "note": "Start or stop. Result arrives as 8363. Non-Qualcomm models. Reached from the fit-inspection screen (app feature FSN17)."
+    },
+    {
+      "id": "reset_custom_keys",
+      "set": "03AC",
+      "kind": "action"
+    },
+    {
+      "id": "reboot",
+      "set": "0316",
+      "kind": "action",
+      "note": "Dangerous: confirm with the user first."
+    },
+    {
+      "id": "factory_reset",
+      "set": "0305",
+      "kind": "action",
+      "note": "Dangerous: confirm with the user first."
+    }
+  ],
+  "custom_keys": {
+    "gestures": {
+      "1": "tap_left",
+      "2": "tap_right",
+      "3": "double_left",
+      "4": "double_right",
+      "5": "triple_left",
+      "6": "triple_right",
+      "7": "hold_left",
+      "8": "hold_right"
+    },
+    "actions": {
+      "0": "none",
+      "1": "volume_up",
+      "2": "volume_down",
+      "3": "play_pause",
+      "4": "game_mode",
+      "5": "previous",
+      "6": "next",
+      "7": "anc_cycle",
+      "8": "voice_assistant"
+    }
+  },
+  "eq": {
+    "vendor": "001D",
+    "command_qualcomm": "0E01",
+    "command_other": "0E02",
+    "band_payload_0E01": [
+      "(count<<4)|index",
+      "master_gain_db*60 (s16)",
+      "freq_hz*3 (u16)",
+      "gain_db*60 (s16)",
+      "q*4096 (u16)"
+    ],
+    "band_payload_0E02": [
+      "count",
+      "index",
+      "master_gain_db*60 (s16)",
+      "freq_hz*3 (u16)",
+      "gain_db*60 (s16)",
+      "q*4096 (u16)"
+    ],
+    "index_base": 1,
+    "custom_bands_hz": [
+      31,
+      62,
+      125,
+      250,
+      500,
+      1000,
+      2000,
+      4000,
+      8000,
+      16000
+    ],
+    "custom_bands_hz_bluetrum": [
+      62,
+      125,
+      250,
+      500,
+      1000,
+      2000,
+      4000,
+      8000
+    ],
+    "custom_band_q": 1.8
+  }
+}

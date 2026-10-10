@@ -347,6 +347,22 @@
       }
     },
     {
+      "id": "ear_volume_left",
+      "get": "0342",
+      "set": "0344",
+      "kind": "percent",
+      "deprecated": true,
+      "note": "Marked deprecated in the app (feature code FSN999)."
+    },
+    {
+      "id": "ear_volume_right",
+      "get": "0343",
+      "set": "0345",
+      "kind": "percent",
+      "deprecated": true,
+      "note": "Marked deprecated in the app (feature code FSN999)."
+    },
+    {
       "id": "light_effect",
       "feature_codes": [
         "FSN07"
@@ -432,6 +448,13 @@
       "note": "Reply: last two bytes equal 1 means the earbuds were just factory reset."
     },
     {
+      "id": "connect_classic",
+      "get": "0317",
+      "kind": "raw",
+      "probe": false,
+      "note": "Defined in the app's command enum with reply 8317 and never sent by it. The name suggests it asks the earbuds to connect classic Bluetooth, so it may not be a harmless read. Do not probe."
+    },
+    {
       "id": "spatial_audio_mode",
       "set": "0359",
       "kind": "raw",
@@ -442,6 +465,13 @@
       "set": "0354",
       "kind": "raw",
       "note": "One byte."
+    },
+    {
+      "id": "dolby_supported_hint",
+      "set": "0362",
+      "kind": "raw",
+      "probe": false,
+      "note": "One byte: 00 if the phone supports Dolby, 01 if not. The app sends it only to firmware code S7 (Clip1), after reading the device state."
     },
     {
       "id": "fit_test",
@@ -532,6 +562,19 @@
       4000,
       8000
     ],
-    "custom_band_q": 1.8
+    "custom_band_q": 1.8,
+    "command_rule": "0E01 if the family is QUALCOMM, or the model's old_eq_protocol flag is true, or the code is BS519W2D on firmware 0.4.5 or lower. Otherwise 0E02. data/devices.json has the result per model as eq_command.",
+    "merge_rule": "onto_classic_bands if the family is QUALCOMM or the firmware code is in merge_onto_classic_codes. Otherwise append_after_classic. See docs/PROTOCOL.md section 4.",
+    "merge_onto_classic_codes": [
+      "SPTS04",
+      "QCYTS04",
+      "TS03WINGS2",
+      "ZKLXSPACEPRO",
+      "ZKLXAIR5LITE",
+      "S13",
+      "S15",
+      "S22",
+      "S29"
+    ]
   }
 }

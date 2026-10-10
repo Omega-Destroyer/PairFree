@@ -18,7 +18,7 @@ yet been confirmed on real earbuds. Nothing here is ready for daily use.
 | Command table and test vectors          | Written, checked against the app's code |
 | Probe script (PC)                       | Written, tested against a simulated device |
 | Confirmed on hardware                   | Not yet. H3 and Air5 Pro+ are first.    |
-| App design                              | Written. Two looks, five screens.       |
+| App design                              | Written. One look (Studio), five screens. |
 | Android app                             | Not started                             |
 | iOS and Windows apps                    | Planned, after Android                  |
 | Firmware update                         | Planned for Qualcomm models, opt-in     |
@@ -28,19 +28,26 @@ yet been confirmed on real earbuds. Nothing here is ready for daily use.
 | Path                      | What it is                                                        |
 |---------------------------|-------------------------------------------------------------------|
 | `docs/PROTOCOL.md`        | The protocol: transport, frames, commands, EQ, chip families, firmware update |
-| `docs/DESIGN.md`          | The app design: requirements, looks, screens                      |
+| `docs/DESIGN.md`          | The app design: requirements, the Studio look, screens            |
 | `data/commands.json`      | The command table in machine-readable form. Apps load or mirror this. |
 | `data/test_vectors.json`  | Frames every implementation must reproduce byte for byte          |
-| `data/devices.json`       | Known models, their firmware codes and chip families              |
+| `data/devices.json`       | Known models, their firmware codes, chip families and per-model details |
+| `data/qcy_commands.json`  | The separate protocol for the Capsule3 Pro                        |
 | `data/reports/`           | Probe output from real earbuds, one file per model and firmware   |
+| `tools/fetch_server_data.py` | Owner-only research tool. Reads per-model data from SoundPEATS' server, slowly. |
 | `tools/probe.py`          | Read-only probe. Asks the earbuds what they support.              |
 | `tools/test_probe.py`     | Tests for the probe and the data files. No hardware needed.       |
+| `assets/devices/`         | Vector drawings of each model's earbud and case, per look         |
+| `tools/gen_device_art.py` | Generates those drawings. Edit the shapes there, not the SVG files. |
 
 ## Which earbuds
 
 One protocol covers almost every model the official app supports, whatever chip is
-inside. The Capsule3 Pro is the exception and is not covered yet. See
-`docs/PROTOCOL.md` section 5 and `data/devices.json`.
+inside. Models differ in which features they have and in a few details recorded per
+model in `data/devices.json`. See `docs/PROTOCOL.md` section 5.
+
+The Capsule3 Pro is the exception. It uses a different protocol over Bluetooth LE,
+documented in `docs/PROTOCOL.md` section 10. The probe does not support it yet.
 
 A model counts as supported once someone has run the probe on it and filed the output.
 

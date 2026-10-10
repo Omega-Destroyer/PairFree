@@ -13,9 +13,13 @@ and to ask before guessing.
   memory. Load the file or generate code from it.
 - `data/test_vectors.json` holds frames that every implementation must reproduce
   byte for byte. Any new codec, in any language, gets a test that runs these.
-- `data/devices.json` is the model table from the official app. Newer models are
-  missing from it and get added as people confirm them.
-- `docs/DESIGN.md` is the app design: requirements, the two looks and their colour
+- `data/devices.json` is the model table from the official app, with each model's
+  chip family, EQ command and EQ merge rule. Newer models are missing from it and
+  get added as people confirm them. Look a model up by the firmware code in the
+  `03 09` reply. The earbuds do not report their chip family.
+- `data/qcy_commands.json` is the separate protocol for the QCY-built Capsule3 Pro.
+  It is BLE only. `docs/PROTOCOL.md` section 10 explains it.
+- `docs/DESIGN.md` is the app design: requirements, the Studio look and its colour
   values, every screen, and what is still open. Build the UI from it. The owner's
   requirements at the top of that file are fixed.
 
@@ -27,7 +31,11 @@ say so and ask. Do not invent protocol details.
 
 Confirmed by reading the app's code: transport, frame layout, every command number
 in `commands.json`, EQ band encoding, the BLE service UUIDs, the update SDK each chip
-family uses.
+family uses. Also confirmed there: every model except the Capsule3 Pro uses the same
+frames and command numbers. Models differ in which features they have, in the EQ
+command and merge rule, and in a few quirks (`docs/PROTOCOL.md` sections 5.1 and 9).
+Which features a model has is not in the APK. It comes from SoundPEATS' server, so
+it has to be probed.
 
 Not confirmed on hardware: all of it. As of the first commit nobody has run the
 probe on real earbuds. Specific open questions:
@@ -56,6 +64,13 @@ reports from other people.
   without an explicit confirmation from the user in that moment. The probe is
   read-only by default and must stay that way.
 - Do not call SoundPEATS' server from code in this repo unless the owner says so.
+  The owner has allowed one exception: `tools/fetch_server_data.py`, a research
+  tool he runs by hand. It only sends GET requests, at most one per 30 seconds,
+  with no account or device identifiers. Keep it that way. The app itself never
+  talks to the server and never requests the internet permission.
+- Raw server replies go in `server_dump/`, which git ignores. They are vendor
+  data. Do not commit them. Derived facts (feature codes, chip families, EQ
+  numbers) go into `data/` only after the owner has agreed to what is included.
 - Before any firmware-update work: Qualcomm only, behind an opt-in flag, with a
   user-supplied image file. A bad flash can brick earbuds.
 
@@ -82,8 +97,8 @@ reports from other people.
    Put the protocol core in its own module with no Android dependencies and make it
    pass `data/test_vectors.json`. The app must not request the internet permission.
 5. Screens in this order: connection and battery, ANC, switches, gestures, EQ.
-   Studio look first, since it is the default. Keep colours, fonts and drawings
-   behind a theme so Sketchbook is a second skin, not a second set of screens.
+   Studio is the only look for now. Keep colours, fonts and drawings behind a theme
+   so another look can be added later as a skin, not a second set of screens.
 6. Work out the Qualcomm EQ band layout on hardware.
 7. Firmware update last, and only on the rules above.
 

@@ -1,4 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SoundPeter</string>
+
+    <string name="permission_title">Bluetooth access</string>
+    <string name="permission_body">SoundPeter talks to your earbuds over Bluetooth, and Android asks you to allow that. It is the only permission the app uses.</string>
+    <string name="permission_allow">Allow Bluetooth access</string>
+    <string name="permission_denied">Without Bluetooth access the app cannot reach your earbuds.</string>
+    <string name="permission_settings">Open app settings</string>
+
+    <string name="connect_title">Connect your earbuds</string>
+    <string name="connect_hint">Pick earbuds this phone is paired with. Close PeatsAudio first: only one app can hold the controls.</string>
+    <string name="connect">Connect</string>
+    <string name="connecting">Connecting…</string>
+    <string name="no_paired">No paired earbuds. Pair them in the Bluetooth settings first.</string>
+    <string name="bluetooth_off">Bluetooth is off.</string>
+    <string name="bluetooth_settings">Bluetooth settings</string>
+    <string name="privacy_line">No account. No internet. Nothing leaves this phone.</string>
+    <string name="failed_could_not_open">Could not reach the controls of %1$s. Close PeatsAudio if it is open, check the earbuds are connected for audio, then try again.</string>
+    <string name="failed_lost">The connection to %1$s dropped.</string>
+    <string name="failed_bluetooth_off">Bluetooth is off.</string>
+    <string name="failed_no_permission">Bluetooth access is turned off for SoundPeter.</string>
+
+    <string name="connected">Connected</string>
+    <string name="firmware">Firmware %1$s</string>
+    <string name="switch_earbuds">Switch</string>
+    <string name="reading">Reading the earbuds…</string>
+    <string name="battery">Battery</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="case_label">Case</string>
+    <string name="percent">%1$d%%</string>
+    <string name="unknown">—</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_sound">Sound</string>
+    <string name="tab_controls">Controls</string>
+    <string name="tab_device">Device</string>
+    <string name="not_built">This screen comes in a later step.</string>
 </resources>

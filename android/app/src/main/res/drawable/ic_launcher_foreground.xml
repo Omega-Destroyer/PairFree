@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder launcher icon: a dot with two sound arcs, Studio amber. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#E6A23C"
+        android:pathData="M40,54a6,6 0,1 0,12 0a6,6 0,1 0,-12 0z" />
+    <path
+        android:pathData="M52.5,42.74A13,13 0,0 1,52.5 65.26"
+        android:strokeWidth="3.5"
+        android:strokeColor="#E6A23C"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M57.5,34.08A23,23 0,0 1,57.5 73.92"
+        android:strokeWidth="3.5"
+        android:strokeColor="#E6A23C"
+        android:strokeLineCap="round" />
+</vector>

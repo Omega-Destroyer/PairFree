@@ -74,6 +74,10 @@ reports from other people.
   (`generateTables` in `android/protocol/build.gradle.kts`); never type them by hand.
 - Keep `android/protocol/src/main` free of `java.*` imports so it can become a Kotlin
   Multiplatform module for iOS.
+- On connect the app sends `Requests.ON_CONNECT`, the probe's read-only GET list (a test
+  keeps the two in step), then reads the battery every 30 s. `EarbudState` takes every
+  reply, asked for or not; a feature counts as supported once its GET has answered.
+  The app holds the channel only while it is on screen.
 - Gradle 9 refuses to build from a folder Java reports as not writable, which happens
   on some network shares even when writing works. If the repo lives on such a share,
   build from a copy on a local disk.
@@ -108,7 +112,8 @@ reports from other people.
    Done: `android/`, with the protocol core in `android/protocol`.
 5. Screens in this order: connection and battery, ANC, switches, gestures, EQ.
    Studio is the only look; the owner dropped Sketchbook. Keep colours, fonts and
-   drawings in one theme rather than in the screens.
+   drawings in one theme rather than in the screens. Connection and battery: built,
+   not yet tried on hardware.
 6. Work out the Qualcomm EQ band layout on hardware.
 7. Firmware update last, and only on the rules above.
 

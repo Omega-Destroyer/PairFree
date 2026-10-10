@@ -1,5 +1,5 @@
 {
-  "_about": "Language-neutral test vectors. Every implementation should reproduce these byte for byte.",
+  "_about": "Language-neutral test vectors. Every implementation should reproduce these byte for byte. The decode cases are replies recorded from a SoundPEATS H3 (firmware S5 0.4.9, data/reports/S5_0.4.9.txt) plus edge cases from docs/PROTOCOL.md. 'reply' is the reply's command number; 'value' is the decoded value: a string, a number, null for unknown (FF), a boolean for a switch, or [a, b] pairs for level and key lists, where a level pair is [code, active]. 'ignored': true means the reply must not change the state.",
   "build": [
     {
       "name": "get firmware version",
@@ -265,6 +265,184 @@
       "name": "eq band write",
       "frame": "ff040009001d0e01a10000005d00b41ccc",
       "ble_packet": "001d0e01a10000005d00b41ccc"
+    }
+  ],
+  "decode": [
+    {
+      "name": "H3: firmware version",
+      "reply": "8309",
+      "payload": "0053355f32303235303630355f56302e342e39",
+      "value": "S5_20250605_V0.4.9"
+    },
+    {
+      "name": "H3: battery left",
+      "reply": "8306",
+      "payload": "0064",
+      "value": 100
+    },
+    {
+      "name": "H3: battery case",
+      "reply": "8323",
+      "payload": "002f",
+      "value": 47
+    },
+    {
+      "name": "H3: battery right unknown, seen during a touch",
+      "reply": "8307",
+      "payload": "00ff",
+      "value": null
+    },
+    {
+      "name": "H3: ANC off",
+      "reply": "8310",
+      "payload": "0000",
+      "value": 0
+    },
+    {
+      "name": "H3: ANC on, sent unasked after a SET",
+      "reply": "8310",
+      "payload": "0001",
+      "value": 1
+    },
+    {
+      "name": "H3: ANC scenes",
+      "reply": "8324",
+      "payload": "001101120013001400",
+      "value": [
+        [
+          17,
+          true
+        ],
+        [
+          18,
+          false
+        ],
+        [
+          19,
+          false
+        ],
+        [
+          20,
+          false
+        ]
+      ]
+    },
+    {
+      "name": "H3: transparency levels",
+      "reply": "834C",
+      "payload": "0001000201",
+      "value": [
+        [
+          1,
+          false
+        ],
+        [
+          2,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "H3: game mode off",
+      "reply": "830E",
+      "payload": "0000",
+      "value": false
+    },
+    {
+      "name": "H3: multipoint off",
+      "reply": "8314",
+      "payload": "0000",
+      "value": false
+    },
+    {
+      "name": "H3: LDAC on",
+      "reply": "8338",
+      "payload": "0001",
+      "value": true
+    },
+    {
+      "name": "H3: touch not disabled",
+      "reply": "8312",
+      "payload": "0000",
+      "value": false
+    },
+    {
+      "name": "H3: custom keys",
+      "reply": "83AA",
+      "payload": "0001020201030304030505060607070806",
+      "value": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          8,
+          6
+        ]
+      ]
+    },
+    {
+      "name": "H3: prompt volume",
+      "reply": "8319",
+      "payload": "000b",
+      "value": 11
+    },
+    {
+      "name": "H3: voice prompts in English",
+      "reply": "8321",
+      "payload": "0000",
+      "value": 0
+    },
+    {
+      "name": "level list without a status byte",
+      "reply": "8324",
+      "payload": "12001301",
+      "value": [
+        [
+          18,
+          false
+        ],
+        [
+          19,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "battery reply with status 01 is ignored",
+      "reply": "8306",
+      "payload": "0164",
+      "ignored": true
+    },
+    {
+      "name": "switch reply with an error status is ignored",
+      "reply": "830E",
+      "payload": "0100",
+      "ignored": true
     }
   ]
 }

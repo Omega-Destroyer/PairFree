@@ -1,8 +1,9 @@
 # SoundPEATS control protocol (from PeatsAudio 1.9.45 for Android)
 
 Source: static analysis of `com.xingkeqi.peats` 1.9.45. The app is not obfuscated, so
-class and field names below are the app's own. Nothing here has been tested against
-real earbuds yet. Each section says what is read directly from code and what is inferred.
+class and field names below are the app's own. Each section says what is read directly
+from code and what is inferred. Section 10 lists what has been confirmed on real earbuds;
+everything else is still untested.
 
 ## 1. Transport
 
@@ -20,7 +21,8 @@ real earbuds yet. Each section says what is read directly from code and what is 
 
 Inferred for the H3: it is not named anywhere in the APK (its feature list comes from
 SoundPEATS' server at runtime), but it is a Qualcomm QCC3091 device and the app has
-exactly one code path for those.
+exactly one code path for those. Since confirmed: the H3 answers on this channel and
+its firmware code is `S5` (section 10).
 
 ## 2. Frame format
 
@@ -44,6 +46,14 @@ This is Qualcomm's GAIA serial framing carrying SoundPEATS' own command set.
   status is `01` or `02`.
 - SET: command `03 yy` with the new value as payload. The GET and SET numbers are
   different; use the table.
+- On the H3, a SET gets no reply of its own. About 2 s later the earbuds send the
+  matching GET reply with the new value, unasked (seen for ANC mode, section 10).
+  They do the same when the setting is changed by touch on the earbuds.
+  Treat every GET reply as a state update, whenever it arrives.
+- On the H3, the earbuds stop answering for 6 to 15 s after a touch control, then
+  answer everything asked in the meantime at once (section 10).
+- On the H3, a GET the firmware does not support gets no reply at all, not an error
+  status.
 - The app's reader treats each socket read as one frame. A new client should
   reassemble by the length byte instead.
 
@@ -111,9 +121,11 @@ The GET reply (`83 24`) is a list of `(level, active)` pairs, where active is `0
 the current one. If the payload length is odd and the first byte is `00`, drop that
 byte first. This means the earbuds report which levels they support.
 
-The H3's marketed modes (Indoor, Outdoor, Traffic, Adaptive) line up with `12` to `15`.
-How `11`, `15` and the environment-adaptive switch (`03 64`/`03 65`) relate on the H3
-needs a live test.
+The H3's marketed modes are Indoor, Outdoor, Traffic and Adaptive. On hardware it
+reports `11`, `12`, `13` and `14`, with `11` active, and no `15`. It does not answer the
+environment-adaptive GET (`03 64`). So the H3's Adaptive is most likely `11`, which the
+app shows with the adaptive label. Still to check: that PeatsAudio shows Adaptive while
+`11` is active, and what SET `03 25` does on the H3.
 
 ### 3.2 Custom keys
 
@@ -210,6 +222,7 @@ what the iPhone app uses, since iOS cannot open SPP to these earbuds.
   In the longer form it also carries left, right and case battery and a version string.
 
 Whether a given model's firmware exposes this service needs a scan to confirm.
+The H3 does, and GETs work over it as described above (section 10).
 
 ## 7. Firmware update
 
@@ -269,3 +282,68 @@ ones the earbuds answer.
 - `S7` on firmware 0.0.15: the app forces an update prompt.
 - Bluetrum, BES and Jieli models: turning LDAC on disables some other features
   (dynamic EQ among them). The exact set differs by family.
+
+## 10. Confirmed on hardware
+
+Raw output for each model is in `data/reports/`.
+
+### SoundPEATS H3: firmware code `S5`, version 0.4.9
+
+Tested 2026-10-10 from Windows over the SPP COM port. Report: `data/reports/S5_0.4.9.txt`.
+
+- Transport and framing are as in sections 1 and 2. Replies to GETs arrive within
+  about 0.3 s. Every reply had status `00`.
+- Firmware version reply: `S5_20250605_V0.4.9`, which is firmware code, build date, version.
+- GETs answered: firmware version, battery left, right and case, ANC mode, ANC level,
+  transparency level, game mode, multipoint, LDAC, LE Audio, disable touch, custom keys,
+  prompt volume, voice language.
+- GETs with no reply, even after 2.5 s: environment adaptive, in-ear detection, auto
+  shutdown, dynamic EQ, dynamic bass, movie mode, spatial audio, panoramic sound, Dolby,
+  adaptive volume, personalized volume, light effect, privacy mode, reset state.
+- A reply does not mean the feature exists. Game mode answers `0`, but PeatsAudio shows
+  it as not available on the H3.
+- Values matched the settings PeatsAudio showed: ANC off, multipoint off, touch
+  enabled, LDAC on.
+- ANC levels: see 3.1. Transparency levels: `01` and `02` listed, `02` active.
+- Custom keys: reply as in 3.2, with the leading status byte. Hold left reads action
+  `07` and does cycle the ANC modes. The other gestures were not checked against the app.
+- The case battery is reported while both earbuds are out of the case.
+- Battery `FF` (status `00`) came back from both earbuds once, for a moment, while the
+  left earbud was held. Treat `FF` as unknown, not as a percentage.
+- SET ANC mode (`03 11`) with `01`, `02`, `00`: each took effect, and the voice prompts
+  said "ANC on", "Passthrough", "ANC off". No `83 11` came back. About 2 s after each SET
+  the earbuds sent `83 10` with the new mode, unasked; after the first SET it came twice.
+- The ANC level stayed `11` through all three mode changes.
+- ANC changed by touch (hold left, three times): each change was announced with an
+  unasked `83 10` carrying the new mode, the same as after a SET. The first came twice.
+- After each touch the earbuds stopped answering for about 13, 15 and 6 s. On Windows
+  the writes blocked during the pause. Then every request sent in the meantime was
+  answered at once. The link recovered on its own each time; reopening the port was
+  not needed. The SETs above caused no pause.
+- BLE advertisement: name `SOUNDPEATS H3`, services Battery `180F` and Device
+  Information `180A`, manufacturer data under company ID `0x000E`:
+  `53 05 64 FF 2F 98 80 BB XX XX XX 00 30 2E 34 2E 39`. It carries the classic
+  address (`98 80 BB XX XX XX`) and the version string `0.4.9`, as section 6 says.
+  Probably `64` is left battery 100, `FF` right battery unknown and `2F` case battery
+  47 (the case read 47 over SPP), and `53 05` may stand for firmware code `S5`. Not
+  confirmed.
+- BLE GATT: the GAIA service `00001100-D102-11E1-9B23-00025B00A5A5` has `1101` (write),
+  `1102` (notify, read) and `1103` (write without response, notify, read). The other
+  services are Generic Access, Generic Attribute, Device Information, Battery twice,
+  `0000EB10-D102-11E1-9B23-00025B00A5A5` (characteristics `EB11` to `EB14`) and `FD92`
+  (characteristics `EB20` to `EB22`, same base UUID as GAIA).
+- Device Information reads manufacturer `Qualcomm`, model `QCC3091`. The serial
+  number, firmware and software revision strings are placeholders
+  (`ABCDEF0123456789`, `1.0.0."(unreleased)"`, `20.3`).
+- The two Battery Level characteristics both read 100. Which earbud each one belongs
+  to is not known.
+- GETs over GAIA BLE work as section 6 says. Writing `00 0A 03 09` to `1101` (write
+  with response) brought `00 0A 83 09 00` + `S5_20250605_V0.4.9` as a notification on
+  `1102` within 0.4 s. Battery left worked the same way. The 4-byte header is dropped
+  in both directions.
+
+Still open on the H3:
+
+- The scale of prompt volume. It reads 11.
+- The EQ band layout.
+- Over BLE: SETs, unasked state updates, and what `1103`, `EB10` and `FD92` are for.

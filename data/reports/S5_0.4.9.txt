@@ -1,0 +1,254 @@
+Model:           SoundPEATS H3
+Bluetooth name:  SOUNDPEATS H3
+Date:            2026-10-10 01:21 UTC
+OS:              Windows 11 Enterprise 10.0.26200, Python 3.10.6, pyserial 3.5
+Link:            python tools/probe.py --port COM4 (Windows "Standard Serial over Bluetooth link")
+Settings shown in PeatsAudio before the run (reported by the owner):
+                 ANC off, dual device off, disable touch off, game mode off (shown as
+                 not available), LDAC on, EQ custom. Phone Bluetooth off during the run.
+Note:            The last three bytes of the earbuds' Bluetooth address are replaced
+                 with XX throughout this file.
+
+firmware_version     0309  'S5_20250605_V0.4.9'                     raw=00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+battery_left         0306  100                                      raw=00 64
+battery_right        0307  100                                      raw=00 64
+battery_case         0323  47                                       raw=00 2f
+anc_mode             0310  0                                        raw=00 00
+anc_level            0324  0x11*, 0x12, 0x13, 0x14   (* = active)   raw=00 11 01 12 00 13 00 14 00
+transparency_level   034C  0x01, 0x02*   (* = active)               raw=00 01 00 02 01
+anc_env_adaptive     0364  no reply
+game_mode            030E  0                                        raw=00 00
+multipoint           0314  0                                        raw=00 00
+ldac                 0338  1                                        raw=00 01
+le_audio             0335  0                                        raw=00 00
+in_ear_detection     030C  no reply
+touch_disabled       0312  0                                        raw=00 00
+custom_keys          03AA  tap L -> vol-, tap R -> vol+, double L -> play/pause, double R -> play/pause, triple L -> prev, triple R -> next, hold L -> ANC, hold R -> next raw=00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 06
+prompt_volume        0319  11                                       raw=00 0b
+auto_shutdown        036E  no reply
+voice_language       0321  0                                        raw=00 00
+dynamic_eq           0331  no reply
+dynamic_bass         033C  no reply
+movie_mode           0327  no reply
+spatial_audio        0357  no reply
+panoramic_sound      0329  no reply
+dolby                0348  no reply
+adaptive_volume      0346  no reply
+personal_volume      0340  no reply
+light_effect         030A  no reply
+privacy_mode         036B  no reply
+reset_state          0367  no reply
+
+---- Same session. Times below are local, UTC-6. ----
+
+---- Silent GETs asked again with a 2.5 s wait, then a listener polling every 3 s ----
+The owner held the left earbud while the listener ran. Lines marked LATE arrived
+more than 0.8 s after the poll that asked for them. The listener printed only
+changes and unasked frames. It printed nothing after 19:25:28 until it was stopped
+at about 19:43, so it cannot tell an unchanged state from a link that went quiet.
+The owner reports that holding the left earbud cycles the ANC modes.
+
+19:23:46.147 re-asking silent GETs, 2.5 s each
+19:23:48.825 anc_env_adaptive     0364 -> no reply
+19:23:51.588 in_ear_detection     030C -> no reply
+19:23:54.348 auto_shutdown        036E -> no reply
+19:23:57.109 dynamic_eq           0331 -> no reply
+19:23:59.806 dynamic_bass         033C -> no reply
+19:24:02.570 movie_mode           0327 -> no reply
+19:24:05.338 spatial_audio        0357 -> no reply
+19:24:08.121 panoramic_sound      0329 -> no reply
+19:24:10.838 dolby                0348 -> no reply
+19:24:13.606 adaptive_volume      0346 -> no reply
+19:24:16.364 personal_volume      0340 -> no reply
+19:24:19.129 light_effect         030A -> no reply
+19:24:21.916 privacy_mode         036B -> no reply
+19:24:24.700 reset_state          0367 -> no reply
+19:24:24.762 watching for 15.0 min
+19:24:25.343 anc_mode             0                                        raw=00 00
+19:24:25.343 anc_level            0x11*, 0x12, 0x13, 0x14   (* = active)   raw=00 11 01 12 00 13 00 14 00
+19:24:25.343 transparency_level   0x01, 0x02*   (* = active)               raw=00 01 00 02 01
+19:24:25.343 battery_left         100                                      raw=00 64
+19:24:25.343 battery_right        100                                      raw=00 64
+19:24:25.343 battery_case         47                                       raw=00 2f
+19:25:24.365 LATE vendor=000A cmd=8310 payload=00 00
+19:25:24.365 LATE vendor=000A cmd=8324 payload=00 11 01 12 00 13 00 14 00
+19:25:24.365 LATE vendor=000A cmd=834C payload=00 01 00 02 01
+19:25:24.365 LATE vendor=000A cmd=8306 payload=00 64
+19:25:24.365 LATE vendor=000A cmd=8307 payload=00 64
+19:25:24.365 LATE vendor=000A cmd=8323 payload=00 2f
+19:25:28.181 LATE vendor=000A cmd=8307 payload=00 ff
+19:25:28.181 LATE vendor=000A cmd=8306 payload=00 ff
+
+---- ANC mode SET test, sent at the owner's request, 19:44 ----
+Sends SET 0311 with 01, 02, 00 (10 s apart) and reads the mode back after each.
+"frame" lines are everything that arrived in the 2.5 s after a SET.
+Voice prompts the owner heard, in order: "ANC on", "Passthrough", "ANC off".
+
+  0.22s link check
+  0.43s   GET anc_mode       0  raw=00 00
+  0.69s   GET battery_left   100  raw=00 64
+  0.96s   GET battery_right  100  raw=00 64
+  1.02s SET anc_mode 1  sent ff 04 00 01 00 0a 03 11 01
+  3.05s   frame vendor=000A cmd=8310 payload=00 01
+  3.05s   frame vendor=000A cmd=8310 payload=00 01
+  3.85s   GET anc_mode       1  raw=00 01
+  4.12s   GET anc_level      0x11*, 0x12, 0x13, 0x14   (* = active)  raw=00 11 01 12 00 13 00 14 00
+ 11.07s SET anc_mode 2  sent ff 04 00 01 00 0a 03 11 02
+ 13.12s   frame vendor=000A cmd=8310 payload=00 02
+ 13.93s   GET anc_mode       2  raw=00 02
+ 14.20s   GET anc_level      0x11*, 0x12, 0x13, 0x14   (* = active)  raw=00 11 01 12 00 13 00 14 00
+ 21.16s SET anc_mode 0  sent ff 04 00 01 00 0a 03 11 00
+ 22.98s   frame vendor=000A cmd=8310 payload=00 00
+ 24.35s   GET anc_mode       0  raw=00 00
+ 24.61s   GET anc_level      0x11*, 0x12, 0x13, 0x14   (* = active)  raw=00 11 01 12 00 13 00 14 00
+ 31.16s closed
+
+---- Touch test, second session, 19:52 ----
+Listener polls anc_mode, battery_left and battery_right every 2 s and prints one line
+per round, plus every frame it did not match to a request in that round (UNASKED).
+Replies that arrive late are matched to whichever round is waiting, so after a stall
+some UNASKED lines are late replies, not announcements. A round that runs longer than
+2 s means the write blocked. It would have reopened the port after 5 silent rounds;
+that never happened. Stopped by hand after round 41.
+The owner held the left earbud three times, about 15 s apart, and heard "ANC on",
+"Passthrough", "ANC off". Nothing else unusual.
+
+19:52:49.262 opened COM4
+19:52:51.288 round   1: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.40s
+19:52:53.298 round   2: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:52:55.335 round   3: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:52:57.351 round   4: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:52:59.370 round   5: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.40s
+19:53:01.378 round   6: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:03.401 round   7: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:05.418 round   8: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.40s
+19:53:07.439 round   9: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:09.452 round  10: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:11.463 round  11: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:13.471 round  12: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:15.494 round  13: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:17.504 round  14: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:19.516 round  15: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:21.522 round  16: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:23.534 round  17: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:25.542 round  18: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:27.579 round  19: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.40s
+19:53:29.591 round  20: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:31.608 round  21: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:33.619 round  22: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:35.644 round  23: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.40s
+19:53:37.676 round  24: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.40s
+19:53:39.688 round  25: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:41.717 round  26: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.41s
+19:53:43.746 round  27: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:45.757 round  28: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:47.769 round  29: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:48.769   UNASKED vendor=000A cmd=8310 payload=00 01
+19:53:48.769   UNASKED vendor=000A cmd=8310 payload=00 01
+19:53:49.783 round  30: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:53:51.792 round  31: 0/3 replies    slowest 0.00s
+19:54:03.022 round  32: 0/3 replies    slowest 0.00s
+19:54:03.415   UNASKED vendor=000A cmd=8310 payload=00 01
+19:54:03.415   UNASKED vendor=000A cmd=8306 payload=00 64
+19:54:03.415   UNASKED vendor=000A cmd=8307 payload=00 64
+19:54:03.415   UNASKED vendor=000A cmd=8310 payload=00 01
+19:54:03.415   UNASKED vendor=000A cmd=8306 payload=00 64
+19:54:03.415   UNASKED vendor=000A cmd=8307 payload=00 64
+19:54:05.038 round  33: 3/3 replies  anc_mode=1 battery_left=100 battery_right=100  slowest 0.39s
+19:54:07.052 round  34: 3/3 replies  anc_mode=1 battery_left=100 battery_right=100  slowest 0.39s
+19:54:21.614 round  35: 0/3 replies    slowest 0.00s
+19:54:22.220   UNASKED vendor=000A cmd=8310 payload=00 02
+19:54:22.220   UNASKED vendor=000A cmd=8310 payload=00 02
+19:54:23.641 round  36: 3/3 replies  anc_mode=2 battery_left=100 battery_right=100  slowest 0.61s
+19:54:29.603 round  37: 0/3 replies    slowest 0.00s
+19:54:29.992   UNASKED vendor=000A cmd=8310 payload=00 00
+19:54:29.992   UNASKED vendor=000A cmd=8306 payload=00 64
+19:54:29.992   UNASKED vendor=000A cmd=8307 payload=00 64
+19:54:29.992   UNASKED vendor=000A cmd=8310 payload=00 00
+19:54:29.992   UNASKED vendor=000A cmd=8306 payload=00 64
+19:54:29.992   UNASKED vendor=000A cmd=8307 payload=00 64
+19:54:31.620 round  38: 3/3 replies  anc_mode=2 battery_left=100 battery_right=100  slowest 0.39s
+19:54:33.649 round  39: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:54:35.661 round  40: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+19:54:37.683 round  41: 3/3 replies  anc_mode=0 battery_left=100 battery_right=100  slowest 0.39s
+
+---- Bluetooth LE services Windows recorded for the H3 when it was paired ----
+Read from the Windows device list (Get-PnpDevice, BTHLEDEVICE entries for 98:80:BB:XX:XX:XX).
+No Bluetooth traffic was sent for this.
+
+OK       00001801-0000-1000-8000-00805F9B34FB  Generic Attribute Profile
+OK       0000FD92-0000-1000-8000-00805F9B34FB  Bluetooth LE Generic Attribute Service
+OK       00001800-0000-1000-8000-00805F9B34FB  Generic Access Profile
+OK       0000180A-0000-1000-8000-00805F9B34FB  Device Information Service
+OK       00001100-D102-11E1-9B23-00025B00A5A5  Bluetooth LE Generic Attribute Service
+OK       0000180F-0000-1000-8000-00805F9B34FB  Bluetooth LE Generic Attribute Service
+OK       0000180F-0000-1000-8000-00805F9B34FB  Bluetooth LE Generic Attribute Service
+OK       0000EB10-D102-11E1-9B23-00025B00A5A5  Bluetooth LE Generic Attribute Service
+
+---- BLE check, 20:02 (bleak 3.0.2 on Windows) ----
+Scan 8 s, connect, list GATT, read the standard Battery and Device Information
+characteristics, then send GETs over the GAIA service: write to 1101, notify on 1102.
+Each GET is the probe's frame with the first 4 bytes dropped; the script would have
+retried with the full frame if nothing came back, and did not need to.
+The descriptions bleak gives the GAIA characteristics ("Serial Port", "LAN Access
+Using PPP", "Dialup Networking") are its names for the 16-bit numbers 1101-1103 and
+mean nothing here.
+
+  0.00s scanning 8 s
+  8.23s adv 98:80:BB:XX:XX:XX name='SOUNDPEATS H3' rssi=-72
+         services=['0000180f-0000-1000-8000-00805f9b34fb', '0000180a-0000-1000-8000-00805f9b34fb']
+         manufacturer 0x000E: 53 05 64 ff 2f 98 80 bb xx xx xx 00 30 2e 34 2e 39   |S.d./......0.4.9|
+ 20.87s connected
+service 00001801-0000-1000-8000-00805f9b34fb  Generic Attribute Profile
+    char 00002a05-0000-1000-8000-00805f9b34fb  handle=2  indicate  Service Changed
+    char 00002b29-0000-1000-8000-00805f9b34fb  handle=5  write,read  Client Supported Features
+    char 00002b2a-0000-1000-8000-00805f9b34fb  handle=7  read  Database Hash
+    char 00002b3a-0000-1000-8000-00805f9b34fb  handle=9  read  Server Supported Features
+service 00001800-0000-1000-8000-00805f9b34fb  Generic Access Profile
+    char 00002a00-0000-1000-8000-00805f9b34fb  handle=12  read  Device Name
+    char 00002a01-0000-1000-8000-00805f9b34fb  handle=14  read  Appearance
+service 0000180a-0000-1000-8000-00805f9b34fb  Device Information
+    char 00002a29-0000-1000-8000-00805f9b34fb  handle=17  read  Manufacturer Name String
+    char 00002a24-0000-1000-8000-00805f9b34fb  handle=19  read  Model Number String
+    char 00002a25-0000-1000-8000-00805f9b34fb  handle=21  read  Serial Number String
+    char 00002a27-0000-1000-8000-00805f9b34fb  handle=23  read  Hardware Revision String
+    char 00002a26-0000-1000-8000-00805f9b34fb  handle=25  read  Firmware Revision String
+    char 00002a28-0000-1000-8000-00805f9b34fb  handle=27  read  Software Revision String
+    char 00002a23-0000-1000-8000-00805f9b34fb  handle=29  read  System ID
+    char 00002a2a-0000-1000-8000-00805f9b34fb  handle=31  read  IEEE 11073-20601 Regulatory Cert. Data List
+    char 00002a50-0000-1000-8000-00805f9b34fb  handle=33  read  PnP ID
+service 00001100-d102-11e1-9b23-00025b00a5a5  Unknown
+    char 00001101-d102-11e1-9b23-00025b00a5a5  handle=36  write  Serial Port
+    char 00001102-d102-11e1-9b23-00025b00a5a5  handle=38  notify,read  LAN Access Using PPP
+    char 00001103-d102-11e1-9b23-00025b00a5a5  handle=41  write-without-response,notify,read  Dialup Networking
+service 0000eb10-d102-11e1-9b23-00025b00a5a5  Unknown
+    char 0000eb11-d102-11e1-9b23-00025b00a5a5  handle=45  read  Unknown
+    char 0000eb12-d102-11e1-9b23-00025b00a5a5  handle=47  read  Unknown
+    char 0000eb13-d102-11e1-9b23-00025b00a5a5  handle=49  write,indicate  Unknown
+    char 0000eb14-d102-11e1-9b23-00025b00a5a5  handle=52  write  Unknown
+service 0000fd92-0000-1000-8000-00805f9b34fb  Vendor specific
+    char 0000eb20-d102-11e1-9b23-00025b00a5a5  handle=55  notify,read  Unknown
+    char 0000eb21-d102-11e1-9b23-00025b00a5a5  handle=58  write  Unknown
+    char 0000eb22-d102-11e1-9b23-00025b00a5a5  handle=60  notify,read  Unknown
+service 0000180f-0000-1000-8000-00805f9b34fb  Battery Service
+    char 00002a19-0000-1000-8000-00805f9b34fb  handle=64  notify,read  Battery Level
+service 0000180f-0000-1000-8000-00805f9b34fb  Battery Service
+    char 00002a19-0000-1000-8000-00805f9b34fb  handle=69  notify,read  Battery Level
+ 20.87s standard reads
+    180a/2a29 Manufacturer Name String     51 75 61 6c 63 6f 6d 6d   |Qualcomm|
+    180a/2a24 Model Number String          51 43 43 33 30 39 31   |QCC3091|
+    180a/2a25 Serial Number String         41 42 43 44 45 46 30 31 32 33 34 35 36 37 38 39   |ABCDEF0123456789|
+    180a/2a27 Hardware Revision String     31 2e 30 2e 30   |1.0.0|
+    180a/2a26 Firmware Revision String     31 2e 30 2e 30 2e 22 28 75 6e 72 65 6c 65 61 73 65 64 29 22   |1.0.0."(unreleased)"|
+    180a/2a28 Software Revision String     32 30 2e 33   |20.3|
+    180a/2a23 System ID                       ||
+    180a/2a2a IEEE 11073-20601 Regulatory Cert. Data List    ||
+    180a/2a50 PnP ID                          ||
+    180f/2a19 Battery Level                64   |d|
+    180f/2a19 Battery Level                64   |d|
+ 22.10s subscribed to 00001102-d102-11e1-9b23-00025b00a5a5
+ 22.10s GET firmware_version (header dropped): write 00 0a 03 09
+ 22.45s   notify 00 0a 83 09 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39   |.....S5_20250605_V0.4.9|
+ 25.46s GET battery_left (header dropped): write 00 0a 03 06
+ 25.57s   notify 00 0a 83 06 00 64   |.....d|
+ 28.87s disconnected

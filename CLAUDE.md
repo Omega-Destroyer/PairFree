@@ -29,15 +29,22 @@ Confirmed by reading the app's code: transport, frame layout, every command numb
 in `commands.json`, EQ band encoding, the BLE service UUIDs, the update SDK each chip
 family uses.
 
-Not confirmed on hardware: all of it. As of the first commit nobody has run the
-probe on real earbuds. Specific open questions:
+Confirmed on the H3 (firmware code `S5`, chip QCC3091 by its own report): which GETs
+it answers, that an ANC mode SET works, and that GETs work over GAIA BLE. See
+`docs/PROTOCOL.md` section 10. Everything else is unconfirmed, including all of the
+Air5 Pro+. Specific open questions:
 
-- Which commands the H3 and Air5 Pro+ answer, and their firmware codes.
-- How ANC level `0x11`, `0x15` and the environment-adaptive switch relate on the H3.
+- Which commands the Air5 Pro+ answers, and its firmware code. Deferred by the owner:
+  assume it behaves like the H3 (same chip) and troubleshoot if it turns out not to.
+  This is an assumption, not a finding; do not write it into `docs/PROTOCOL.md`.
+- Whether `0x11` is the H3's Adaptive scene. The H3 lists levels `11` to `14`, not
+  `15`, and does not answer the environment-adaptive GET `03 64`.
 - The EQ band count and centre frequencies Qualcomm firmware expects. The official
   app downloads a "classic" curve per model and merges user points onto its bands.
-- Whether these earbuds expose the GAIA BLE service. iOS depends on it.
-- Whether SET commands get a reply frame. The official app does not look for one.
+- SETs and unasked state updates over the GAIA BLE service. iOS depends on it. GETs
+  over it work on the H3, with the 4-byte header dropped as the spec says.
+- Whether other SETs behave like ANC mode on the H3: no reply of their own, then the
+  new state as an unasked GET reply about 2 s later.
 
 When a probe result settles one of these, update `docs/PROTOCOL.md` and save the raw
 output under `data/reports/`.
@@ -70,14 +77,22 @@ reports from other people.
 - Reassemble incoming bytes by the frame's length byte. Do not assume one read is
   one frame.
 - The official app leaves 50 ms between writes. Match that until testing says otherwise.
-- Battery is read with the three battery GETs.
+- Battery is read with the three battery GETs. A value of `FF` means unknown.
+- Treat every GET reply as a state update, whenever it arrives. The earbuds send them
+  unasked after a SET and after a change made by touch. A GET the firmware does not
+  support gets no reply at all.
+- After a touch control the H3 goes silent for up to about 15 s, then answers
+  everything at once. Do not treat that as a disconnect. Writes can block during the
+  pause, so keep them off the main thread.
 
 ## Suggested order of work
 
 1. Run `tools/probe.py` on the H3 and the Air5 Pro+. Save both outputs in
-   `data/reports/` and add the two models to `data/devices.json`.
+   `data/reports/` and add the two models to `data/devices.json`. H3 done; Air5 Pro+
+   deferred.
 2. Try one harmless SET on each (ANC mode is audible) and record whether a reply comes back.
-3. Scan for the GAIA BLE service on both.
+   H3 done; Air5 Pro+ deferred.
+3. Scan for the GAIA BLE service on both. H3 done; Air5 Pro+ deferred.
 4. Scaffold the Android app in Kotlin with Jetpack Compose (agreed with the owner).
    Put the protocol core in its own module with no Android dependencies and make it
    pass `data/test_vectors.json`. The app must not request the internet permission.

@@ -211,7 +211,8 @@ def main():
         if a.set:
             cmd, payload = int(a.set[0], 16), bytes.fromhex(a.set[1])
             print("sent ", build(cmd, payload).hex(" "))
-            for v, c, p in exchange(link, cmd, payload, wait=1.5):
+            # No direct reply to a SET; the H3 sends the new state as a GET reply about 2 s later
+            for v, c, p in exchange(link, cmd, payload, wait=3.0):
                 print(f"reply vendor={v:04X} cmd={c:04X} payload={p.hex(' ')}")
             return
         for name, (get, _set, note) in COMMANDS.items():

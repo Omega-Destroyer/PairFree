@@ -1,5 +1,5 @@
 {
-  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android). Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware.",
+  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android). Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; `family_sources.marketed_chip` is the chip the model is sold with; `family_sources.ble_device_information` is the manufacturer and model the earbuds report in the standard BLE Device Information service.",
   "devices": [
     {
       "firmware_code": "ATS3019DK12",
@@ -374,6 +374,22 @@
       },
       "old_eq_protocol": false,
       "family_conflict": false
+    },
+    {
+      "firmware_code": "S5",
+      "names": [
+        "SOUNDPEATS H3"
+      ],
+      "family": "QUALCOMM",
+      "family_sources": {
+        "marketed_chip": "QCC3091",
+        "ble_device_information": "Qualcomm QCC3091"
+      },
+      "old_eq_protocol": null,
+      "family_conflict": false,
+      "reports": [
+        "data/reports/S5_0.4.9.txt"
+      ]
     },
     {
       "firmware_code": "T28",

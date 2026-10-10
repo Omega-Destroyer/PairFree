@@ -9,15 +9,15 @@ SoundPeter is an independent project. It is not affiliated with or endorsed by S
 
 ## Status
 
-Early. The control protocol is documented from the official Android app and has not
-yet been confirmed on real earbuds. Nothing here is ready for daily use.
+Early. The control protocol is documented from the official Android app and has been
+partly confirmed on an H3. Nothing here is ready for daily use.
 
 | Piece                                   | State                                   |
 |-----------------------------------------|-----------------------------------------|
 | Protocol spec                           | Written, from static analysis           |
 | Command table and test vectors          | Written, checked against the app's code |
-| Probe script (PC)                       | Written, tested against a simulated device |
-| Confirmed on hardware                   | Not yet. H3 and Air5 Pro+ are first.    |
+| Probe script (PC)                       | Written, run on an H3                   |
+| Confirmed on hardware                   | H3: reads, ANC mode change, reads over BLE. Air5 Pro+ later. |
 | App design                              | Written. Two looks, five screens.       |
 | Android app                             | Not started                             |
 | iOS and Windows apps                    | Planned, after Android                  |

@@ -35,6 +35,8 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 | `data/reports/`           | Probe output from real earbuds, one file per model and firmware   |
 | `tools/probe.py`          | Read-only probe. Asks the earbuds what they support.              |
 | `tools/test_probe.py`     | Tests for the probe and the data files. No hardware needed.       |
+| `assets/devices/`         | Vector drawings of each model's earbud and case, per look         |
+| `tools/gen_device_art.py` | Generates those drawings. Edit the shapes there, not the SVG files. |
 
 ## Which earbuds
 

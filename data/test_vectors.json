@@ -1,0 +1,270 @@
+{
+  "_about": "Language-neutral test vectors. Every implementation should reproduce these byte for byte.",
+  "build": [
+    {
+      "name": "get firmware version",
+      "vendor": "000A",
+      "command": "0309",
+      "payload": "",
+      "frame": "ff040000000a0309"
+    },
+    {
+      "name": "get battery left",
+      "vendor": "000A",
+      "command": "0306",
+      "payload": "",
+      "frame": "ff040000000a0306"
+    },
+    {
+      "name": "set anc_mode transparency",
+      "vendor": "000A",
+      "command": "0311",
+      "payload": "02",
+      "frame": "ff040001000a031102"
+    },
+    {
+      "name": "set anc_level traffic",
+      "vendor": "000A",
+      "command": "0325",
+      "payload": "14",
+      "frame": "ff040001000a032514"
+    },
+    {
+      "name": "set game_mode on",
+      "vendor": "000A",
+      "command": "030F",
+      "payload": "01",
+      "frame": "ff040001000a030f01"
+    },
+    {
+      "name": "set custom key: double tap left -> next",
+      "vendor": "000A",
+      "command": "03AB",
+      "payload": "0306",
+      "frame": "ff040002000a03ab0306"
+    },
+    {
+      "name": "set auto_shutdown 30 min",
+      "vendor": "000A",
+      "command": "036F",
+      "payload": "1e",
+      "frame": "ff040001000a036f1e"
+    },
+    {
+      "name": "eq band write",
+      "vendor": "001D",
+      "command": "0E01",
+      "payload": "a10000005d00b41ccc",
+      "frame": "ff040009001d0e01a10000005d00b41ccc"
+    }
+  ],
+  "parse": [
+    {
+      "name": "single reply",
+      "stream": "ff040002000a83060055",
+      "leftover": "",
+      "frames": [
+        {
+          "vendor": "000A",
+          "command": "8306",
+          "payload": "0055"
+        }
+      ]
+    },
+    {
+      "name": "two replies back to back",
+      "stream": "ff040002000a83060055ff040002000a83070050",
+      "leftover": "",
+      "frames": [
+        {
+          "vendor": "000A",
+          "command": "8306",
+          "payload": "0055"
+        },
+        {
+          "vendor": "000A",
+          "command": "8307",
+          "payload": "0050"
+        }
+      ]
+    },
+    {
+      "name": "version string",
+      "stream": "ff04000d000a8309005339395f78785f312e322e33",
+      "leftover": "",
+      "frames": [
+        {
+          "vendor": "000A",
+          "command": "8309",
+          "payload": "005339395f78785f312e322e33"
+        }
+      ]
+    },
+    {
+      "name": "leading garbage is skipped",
+      "stream": "0001ff040002000a83100002",
+      "leftover": "",
+      "frames": [
+        {
+          "vendor": "000A",
+          "command": "8310",
+          "payload": "0002"
+        }
+      ]
+    },
+    {
+      "name": "payload containing FF",
+      "stream": "ff040005000a83aa0001ff0203",
+      "leftover": "",
+      "frames": [
+        {
+          "vendor": "000A",
+          "command": "83AA",
+          "payload": "0001ff0203"
+        }
+      ]
+    },
+    {
+      "name": "truncated frame waits for more bytes",
+      "stream": "ff040002000a",
+      "leftover": "ff040002000a",
+      "frames": []
+    }
+  ],
+  "eq_band_0E01": [
+    {
+      "count": 10,
+      "index": 1,
+      "freq_hz": 31,
+      "gain_db": 3.0,
+      "q": 1.8,
+      "master_gain_db": 0.0,
+      "payload": "a10000005d00b41ccc"
+    },
+    {
+      "count": 10,
+      "index": 10,
+      "freq_hz": 16000,
+      "gain_db": -6.0,
+      "q": 1.8,
+      "master_gain_db": 0.0,
+      "payload": "aa0000bb80fe981ccc"
+    },
+    {
+      "count": 9,
+      "index": 1,
+      "freq_hz": 63,
+      "gain_db": 3.5,
+      "q": 0.7,
+      "master_gain_db": 0.0,
+      "payload": "91000000bd00d20b33"
+    },
+    {
+      "count": 9,
+      "index": 9,
+      "freq_hz": 16000,
+      "gain_db": -6.0,
+      "q": 1.41,
+      "master_gain_db": -2.5,
+      "payload": "99ff6abb80fe98168f"
+    },
+    {
+      "count": 8,
+      "index": 4,
+      "freq_hz": 500,
+      "gain_db": 0.0,
+      "q": 1.8,
+      "master_gain_db": 1.0,
+      "payload": "84003c05dc00001ccc"
+    }
+  ],
+  "eq_band_0E02": [
+    {
+      "count": 10,
+      "index": 1,
+      "freq_hz": 31,
+      "gain_db": 3.0,
+      "q": 1.8,
+      "master_gain_db": 0.0,
+      "payload": "0a010000005d00b41ccc"
+    },
+    {
+      "count": 10,
+      "index": 10,
+      "freq_hz": 16000,
+      "gain_db": -6.0,
+      "q": 1.8,
+      "master_gain_db": 0.0,
+      "payload": "0a0a0000bb80fe981ccc"
+    },
+    {
+      "count": 9,
+      "index": 1,
+      "freq_hz": 63,
+      "gain_db": 3.5,
+      "q": 0.7,
+      "master_gain_db": 0.0,
+      "payload": "0901000000bd00d20b33"
+    },
+    {
+      "count": 9,
+      "index": 9,
+      "freq_hz": 16000,
+      "gain_db": -6.0,
+      "q": 1.41,
+      "master_gain_db": -2.5,
+      "payload": "0909ff6abb80fe98168f"
+    },
+    {
+      "count": 8,
+      "index": 4,
+      "freq_hz": 500,
+      "gain_db": 0.0,
+      "q": 1.8,
+      "master_gain_db": 1.0,
+      "payload": "0804003c05dc00001ccc"
+    }
+  ],
+  "ble_qualcomm": [
+    {
+      "name": "get firmware version",
+      "frame": "ff040000000a0309",
+      "ble_packet": "000a0309"
+    },
+    {
+      "name": "get battery left",
+      "frame": "ff040000000a0306",
+      "ble_packet": "000a0306"
+    },
+    {
+      "name": "set anc_mode transparency",
+      "frame": "ff040001000a031102",
+      "ble_packet": "000a031102"
+    },
+    {
+      "name": "set anc_level traffic",
+      "frame": "ff040001000a032514",
+      "ble_packet": "000a032514"
+    },
+    {
+      "name": "set game_mode on",
+      "frame": "ff040001000a030f01",
+      "ble_packet": "000a030f01"
+    },
+    {
+      "name": "set custom key: double tap left -> next",
+      "frame": "ff040002000a03ab0306",
+      "ble_packet": "000a03ab0306"
+    },
+    {
+      "name": "set auto_shutdown 30 min",
+      "frame": "ff040001000a036f1e",
+      "ble_packet": "000a036f1e"
+    },
+    {
+      "name": "eq band write",
+      "frame": "ff040009001d0e01a10000005d00b41ccc",
+      "ble_packet": "001d0e01a10000005d00b41ccc"
+    }
+  ]
+}

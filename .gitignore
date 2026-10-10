@@ -1,0 +1,52 @@
+# Things that must never be committed
+*.apk
+*.xapk
+*.apks
+*.aab
+*.dex
+*.so
+*.ufw
+*.fot
+*.fw
+firmware/
+decompiled/
+jadx-out/
+*.jadx
+
+# Bluetooth captures can contain device addresses and other traffic
+*.btsnoop
+*.cfa
+btsnoop_hci.log*
+*.pcap
+*.pcapng
+
+# Secrets
+.env
+*.keystore
+*.jks
+local.properties
+google-services.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Android / Gradle / Kotlin
+.gradle/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+*.iml
+.kotlin/
+
+# IDEs and OS
+.idea/
+.vscode/
+.vs/
+*.swp
+.DS_Store
+Thumbs.db

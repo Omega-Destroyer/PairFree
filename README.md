@@ -18,7 +18,7 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 | Command table and test vectors          | Written, checked against the app's code |
 | Probe script (PC)                       | Written, run on an H3                   |
 | Confirmed on hardware                   | H3: reads, ANC mode change, reads over BLE. Air5 Pro+ later. |
-| App design                              | Written. Two looks, five screens.       |
+| App design                              | Written. One look (Studio), five screens. |
 | Android app                             | Scaffolded. Protocol module passes the test vectors. No screens yet. |
 | iOS and Windows apps                    | Planned, after Android                  |
 | Firmware update                         | Planned for Qualcomm models, opt-in     |

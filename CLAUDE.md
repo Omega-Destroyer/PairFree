@@ -15,7 +15,7 @@ and to ask before guessing.
   byte for byte. Any new codec, in any language, gets a test that runs these.
 - `data/devices.json` is the model table from the official app. Newer models are
   missing from it and get added as people confirm them.
-- `docs/DESIGN.md` is the app design: requirements, the two looks and their colour
+- `docs/DESIGN.md` is the app design: requirements, the Studio look and its colour
   values, every screen, and what is still open. Build the UI from it. The owner's
   requirements at the top of that file are fixed.
 
@@ -107,8 +107,8 @@ reports from other people.
    pass `data/test_vectors.json`. The app must not request the internet permission.
    Done: `android/`, with the protocol core in `android/protocol`.
 5. Screens in this order: connection and battery, ANC, switches, gestures, EQ.
-   Studio look first, since it is the default. Keep colours, fonts and drawings
-   behind a theme so Sketchbook is a second skin, not a second set of screens.
+   Studio is the only look; the owner dropped Sketchbook. Keep colours, fonts and
+   drawings in one theme rather than in the screens.
 6. Work out the Qualcomm EQ band layout on hardware.
 7. Firmware update last, and only on the rules above.
 

@@ -1,11 +1,17 @@
-"""Generate the device drawings under assets/devices/.
+"""Generate the device drawings under assets/devices/ (Studio look).
 
-One geometry per device part, styled once per look. Output uses only paths,
-circles and rects with plain presentation attributes (no CSS, no dash arrays,
-no transforms), so the files convert cleanly to Android vector drawables.
+H3: the earbud outlines are traced from a front-view product photo of the left
+earbud: the shell, the chrome rim, the faceplate and the gold nozzle band, plus an
+ellipse fitted to the ear tip. The case is drawn from the front: its outline was
+measured from a photo of the back, and the lid, nameplate, seam band and base from
+a photo of the front. The photos are not in the repo. Logos, text and the faceplate
+pattern are left out.
 
-Shapes are original simplified outlines. Proportions were estimated by eye from
-product photos used as reference only. No photo, logo or wordmark is reproduced.
+Air5 Pro+: proportions estimated by eye from product photos. Not yet traced.
+
+Output uses only paths, circles and rects with solid fills and plain presentation
+attributes (no CSS, opacity, dash arrays or transforms), so the files convert
+cleanly to Android vector drawables. Colours are the Studio palette in docs/DESIGN.md.
 
 Usage:
     python tools/gen_device_art.py                    write every model into assets/
@@ -24,16 +30,15 @@ _ap.add_argument("--sheet", default="")
 ARGS = _ap.parse_args()
 OUT = pathlib.Path(ARGS.out)
 
-LOOKS = {
-    "studio": dict(ink="#E8E6E1", sw=1.5, detail_sw=1.1, dim="#5A616B", dim_sw=1.0,
-                   accent="#E6A23C", accent_sw=1.6, panel="#181B1F",
-                   face_fill="#E6A23C", face_alpha=0.16, face_stroke="#E6A23C",
-                   shadow=None, lid="#1F2328", tip_fill="#181B1F", guides=True),
-    "sketchbook": dict(ink="#33423F", sw=2.6, detail_sw=1.8, dim="#7F908B", dim_sw=1.6,
-                       accent="#2B7670", accent_sw=2.4, panel="#FBFCFA",
-                       face_fill="#F2B8A0", face_alpha=1, face_stroke="#33423F",
-                       shadow="#C5D5CF", lid="#D6E9E5", tip_fill="#FBFCFA", guides=False),
-}
+# Studio palette (docs/DESIGN.md)
+BACKGROUND = "#101214"
+PANEL = "#181B1F"
+RAISED = "#1F2328"
+HAIRLINE = "#2B3037"
+INK = "#E8E6E1"          # Text
+LABEL = "#8A9099"        # Label text: guides and fine detail
+ACCENT = "#E6A23C"
+STROKE, DETAIL, FINE = 1.5, 1.1, 1.0
 
 
 # ------------------------------------------------------------ geometry ------
@@ -54,62 +59,40 @@ def tf(shape, fn):
     return [(cmd, [fn(x, y) for x, y in pts]) for cmd, pts in shape]
 
 
-def scale_about(cx, cy, s):
-    return lambda x, y: (cx + (x - cx) * s, cy + (y - cy) * s)
-
-
 def rotate_about(cx, cy, deg):
     a = math.radians(deg)
     ca, sa = math.cos(a), math.sin(a)
     return lambda x, y: (cx + (x - cx) * ca - (y - cy) * sa, cy + (x - cx) * sa + (y - cy) * ca)
 
 
+def ellipse_path(cx, cy, rx, ry):
+    kx, ky = 0.5523 * rx, 0.5523 * ry
+    return parse(f"M{cx - rx} {cy}C{cx - rx} {cy - ky} {cx - kx} {cy - ry} {cx} {cy - ry}"
+                 f"C{cx + kx} {cy - ry} {cx + rx} {cy - ky} {cx + rx} {cy}"
+                 f"C{cx + rx} {cy + ky} {cx + kx} {cy + ry} {cx} {cy + ry}"
+                 f"C{cx - kx} {cy + ry} {cx - rx} {cy + ky} {cx - rx} {cy}Z")
+
+
 def circle_path(cx, cy, r):
-    k = 0.5523 * r
-    return parse(f"M{cx - r} {cy}C{cx - r} {cy - k} {cx - k} {cy - r} {cx} {cy - r}"
-                 f"C{cx + k} {cy - r} {cx + r} {cy - k} {cx + r} {cy}"
-                 f"C{cx + r} {cy + k} {cx + k} {cy + r} {cx} {cy + r}"
-                 f"C{cx - k} {cy + r} {cx - r} {cy + k} {cx - r} {cy}Z")
+    return ellipse_path(cx, cy, r, r)
 
 
-def offset(shape, d):
-    """Offset a closed, tangent-continuous M/C/Z path outward by d (inward if d < 0).
+def points(text):
+    """'x,y x,y ...' -> [(x, y), ...]"""
+    return [tuple(float(v) for v in p.split(",")) for p in text.split()]
 
-    Tiller-Hanson: move each leg of every control polygon along its normal and
-    intersect neighbouring legs. The path must run clockwise on screen."""
-    def unit(a, b):
-        dx, dy = b[0] - a[0], b[1] - a[1]
-        n = math.hypot(dx, dy) or 1.0
-        return dx / n, dy / n
 
-    def meet(p, u, q, v):
-        den = u[0] * v[1] - u[1] * v[0]
-        if abs(den) < 1e-6:
-            return None
-        t = ((q[0] - p[0]) * v[1] - (q[1] - p[1]) * v[0]) / den
-        return p[0] + u[0] * t, p[1] + u[1] * t
-
-    out, cur = [], None
-    for cmd, pts in shape:
-        if cmd == "M":
-            cur = pts[0]
-            out.append(None)                      # filled in from the first curve
-        elif cmd == "C":
-            P = [cur] + list(pts)
-            legs = [unit(P[i], P[i + 1]) for i in range(3)]
-            nrm = [(u[1] * d, -u[0] * d) for u in legs]
-            q0 = (P[0][0] + nrm[0][0], P[0][1] + nrm[0][1])
-            q3 = (P[3][0] + nrm[2][0], P[3][1] + nrm[2][1])
-            a = [(P[i][0] + nrm[i][0], P[i][1] + nrm[i][1]) for i in range(3)]
-            q1 = meet(a[0], legs[0], a[1], legs[1]) or (P[1][0] + nrm[0][0], P[1][1] + nrm[0][1])
-            q2 = meet(a[1], legs[1], a[2], legs[2]) or (P[2][0] + nrm[2][0], P[2][1] + nrm[2][1])
-            if out[0] is None:
-                out[0] = ("M", [q0])
-            out.append(("C", [q1, q2, q3]))
-            cur = P[3]
-        else:
-            out.append((cmd, []))
-    return out
+def curve_through(p, closed=True):
+    """Smooth curve through the points (uniform Catmull-Rom), as cubic Beziers."""
+    n = len(p)
+    at = (lambda i: p[i % n]) if closed else (lambda i: p[min(max(i, 0), n - 1)])
+    out = [("M", [p[0]])]
+    for i in range(n if closed else n - 1):
+        p0, p1, p2, p3 = at(i - 1), at(i), at(i + 1), at(i + 2)
+        c1 = (p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6)
+        c2 = (p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6)
+        out.append(("C", [c1, c2, p2]))
+    return out + ([("Z", [])] if closed else [])
 
 
 def fit(shapes, w, h, margin):
@@ -134,10 +117,8 @@ def dashes(x1, y1, x2, y2, on=2.0, off=3.0):
     return "".join(d)
 
 
-def path(d, stroke=None, sw=None, fill="none", alpha=None):
+def path(d, stroke=None, sw=None, fill="none"):
     s = f'<path d="{d}" fill="{fill}"'
-    if alpha is not None and alpha != 1:
-        s += f' fill-opacity="{alpha}"'
     if stroke:
         s += f' stroke="{stroke}" stroke-width="{sw}" stroke-linecap="round" stroke-linejoin="round"'
     return s + "/>"
@@ -149,89 +130,123 @@ def svg(w, h, body, label):
 
 
 # ---------------------------------------------------------------- H3 --------
-# Faceplate seen face-on: a round lobe on a short neck, symmetric about its long
-# axis (y = 52). Proportions estimated from a reference photo: length to lobe height
-# about 1.37, neck about 0.37 of the lobe height, widest point about three quarters
-# of the way along. Drawn as the LEFT earbud:
-# neck on the left, ear tip behind the neck and above the axis.
-_H3_UPPER = [((14, 46.5), (18, 42), (24, 42)), ((30, 42), (34, 42.8), (39, 42.5)),
-             ((45, 42.14), (52, 25), (66, 25)), ((80, 25), (88, 36), (88, 52))]
-_m = lambda p: (p[0], 104 - p[1])
-_H3_LOWER = [(_m(c2), _m(c1), _m(prev_end)) for (c1, c2, _e), prev_end in
-             reversed(list(zip(_H3_UPPER, [(14, 52)] + [seg[2] for seg in _H3_UPPER[:-1]])))]
-H3_FACE = [("M", [(14, 52)])] + [("C", list(seg)) for seg in _H3_UPPER + _H3_LOWER] + [("Z", [])]
-H3_C = (52, 52)
+# Traced from a front-view product photo of the LEFT earbud, in photo pixels. Each
+# outline is the traced edge, smoothed and reduced to points that a Catmull-Rom curve
+# passes through; the curve stays within about 1 px of the traced edge on average.
+#   body   the clear shell, and the housing that runs up to the nozzle
+#   rim    outer edge of the chrome rim around the faceplate
+#   bevel  a line halfway across the chrome rim
+#   panel  the faceplate inside the rim
+#   ring   the gold band at the base of the ear tip
+H3_BUD = {
+    "body": """
+        125,59 103,67 85,83 73,103 71,127 70,151 69,175 69,199 68,222 59,242 46,256 52,279
+        63,300 76,320 92,338 109,354 128,369 148,382 170,393 191,402 214,410 238,413 261,414
+        285,416 306,425 330,425 354,425 378,425 398,413 420,403 439,389 455,372 470,352
+        481,331 489,309 499,289 499,265 499,241 499,217 498,193 486,173 476,152 465,130
+        451,111 432,96 411,87 387,83 363,81 340,83 316,88 293,95 275,107 255,113 234,101
+        213,90 192,79 171,68 149,59
+    """,
+    "rim": """
+        362,82 338,87 316,95 294,107 274,119 253,132 232,144 210,154 187,160 163,163 139,164
+        116,169 95,181 80,200 70,222 68,246 71,270 81,292 97,310 118,322 141,326 165,328
+        189,332 212,340 233,351 255,362 274,376 294,389 315,401 338,408 362,413 386,412
+        409,406 430,394 449,379 464,360 477,340 487,318 493,294 498,271 499,247 498,223
+        494,199 487,176 477,154 465,133 450,114 431,99 409,89 386,83
+    """,
+    "bevel": """
+        362,98 338,103 316,112 295,123 274,136 254,149 233,160 210,169 187,175 163,178
+        139,179 116,186 97,201 86,222 83,246 87,270 98,291 118,305 141,311 165,313 189,317
+        212,324 234,334 255,346 276,358 295,373 316,384 339,393 362,398 386,397 409,389
+        429,376 446,359 460,339 471,317 478,294 482,271 484,246 483,222 478,199 471,176
+        460,154 447,134 430,117 409,105 386,98
+    """,
+    "panel": """
+        362,110 339,115 317,125 296,137 275,150 255,162 234,173 211,182 188,187 164,190
+        140,191 117,199 102,217 95,240 98,264 109,284 130,297 153,300 177,302 201,308
+        224,316 245,326 266,338 286,351 306,365 327,376 350,384 374,386 397,381 418,369
+        435,353 450,333 460,311 467,288 471,265 471,241 470,217 463,194 455,171 443,150
+        428,131 409,118 386,110
+    """,
+    "ring": """
+        127,58 118,61 110,64 102,69 94,74 88,80 82,87 77,94 73,102 72,111 74,117 77,108
+        81,100 85,92 92,85 98,79 106,74 114,70 123,68 132,65 141,66 150,67 158,69 167,73
+        175,77 177,74 170,69 162,64 154,61 145,59 136,59
+    """,
+}
+H3_TIP = (138.5, 134.4, 129.9, 133.4, 103.1)   # ear tip: centre, semi-axes, rotation (deg)
+H3_FACE_CENTRE = (312.7, 246.8)               # faceplate centroid; its long axis is level
 
 
-def h3_shapes(tilt=0):
-    shapes = {
-        "face": H3_FACE,
-        "shell": offset(H3_FACE, 4.2),                       # clear body: an even rim all round
-        "rim": offset(H3_FACE, -3.4),                        # bevel line inside the faceplate
-        "tip": circle_path(22, 29, 19),                      # silicone tip, behind the neck
-        "bore": circle_path(15.5, 24.5, 5),                  # nozzle ring seen through the tip
-        "shine1": parse("M70 34.5C75.5 35.8 80 39.6 82 44.5"),
-        "port": circle_path(22, 52, 1.3),                    # small opening at the neck end
-    }
-    rot = rotate_about(*H3_C, tilt)
-    return {k: tf(v, rot) for k, v in shapes.items()}
+def h3_bud():
+    shapes = {k: curve_through(points(v)) for k, v in H3_BUD.items()}
+    cx, cy, rx, ry, ang = H3_TIP
+    shapes["tip"] = tf(ellipse_path(cx, cy, rx, ry), rotate_about(cx, cy, ang))
+    shapes["centre"] = [("M", [H3_FACE_CENTRE])]
+    g, _ = fit(shapes, 96, 96, 4.5)
+    mx, my = g["centre"][0][1][0]
+    return svg(96, 96, [
+        path(dashes(mx, 2, mx, 94) + dashes(2, my, 94, my), LABEL, FINE),
+        path(fmt(g["tip"]), INK, STROKE, fill=PANEL),
+        path(fmt(g["body"]), INK, STROKE, fill=PANEL),
+        path(fmt(g["ring"]), fill=ACCENT),
+        path(fmt(g["rim"]), INK, DETAIL, fill=RAISED),
+        path(fmt(g["bevel"]), LABEL, FINE),
+        path(fmt(g["panel"]), ACCENT, STROKE, fill=PANEL),
+    ], "SoundPEATS H3 left earbud")
 
 
-def h3_bud(k):
-    g, s = fit(h3_shapes(), 96, 96, 4.5)
-    b = []
-    if k["guides"]:
-        fp = [p for _, ps in g["face"] for p in ps]
-        ax = (min(p[1] for p in fp) + max(p[1] for p in fp)) / 2      # the symmetry axis
-        mx = (min(p[0] for p in fp) + max(p[0] for p in fp)) / 2
-        b.append(path(dashes(mx, 2, mx, 94) + dashes(2, ax, 94, ax), k["dim"], k["dim_sw"]))
-    if k["shadow"]:
-        sh = tf(g["shell"], lambda x, y: (x + 3, y + 3))
-        b.append(path(fmt(sh), fill=k["shadow"]))
-    b.append(path(fmt(g["tip"]), k["ink"], k["sw"], fill=k["tip_fill"]))
-    b.append(path(fmt(g["bore"]), k["accent"], k["accent_sw"]))
-    b.append(path(fmt(g["shell"]), k["ink"], k["sw"], fill=k["panel"]))
-    b.append(path(fmt(g["face"]), k["face_stroke"], k["sw"], fill=k["face_fill"], alpha=k["face_alpha"]))
-    b.append(path(fmt(g["rim"]), k["dim"], k["dim_sw"]))
-    b.append(path(fmt(g["shine1"]), k["ink"], k["detail_sw"]))
-    b.append(path(fmt(g["port"]), fill=k["ink"]))
-    return svg(96, 96, b, "SoundPEATS H3 left earbud")
+# Front view, lid closed. Fractions of the case width (x) and height (y).
+# Outline: |x/a|^P + |y/b|^Q = 1, measured from a photo of the back of the case
+# (levelled and mirrored; within 2% of the photo's width at every height). Its
+# width-to-height ratio matches the published 70 x 48 mm.
+# Layout: measured down the middle of a front photo taken from about 18 degrees above,
+# corrected for that angle with the case's 31 mm depth. The lid is smoke-tinted and
+# see-through; the nameplate sits behind it, just above the seam band. The rear plate
+# is part of the hinge and does not show from the front.
+H3_CASE = dict(aspect=1.463, P=4.05, Q=1.85,
+               band=(0.64, 0.71),                 # seam band: top, bottom
+               plate=(0.30, 0.41, 0.40, 0.21))    # nameplate: x, y, w, h
 
 
-def h3_case(k):
-    # Front view, lid closed: a capsule. Tinted lid on top, a thin band at the seam,
-    # a framed plate just under the seam, the status light under the plate.
-    X, Y, W, H, R = 10, 13, 100, 70, 31
-    seam = Y + R                      # 44: sides are vertical from here down to the lower corners
-    b = []
-    if k["guides"]:
-        b.append(path(dashes(60, 4, 60, 92), k["dim"], k["dim_sw"]))
-    if k["shadow"]:
-        b.append(f'<rect x="{X + 3}" y="{Y + 3}" width="{W}" height="{H}" rx="{R}" fill="{k["shadow"]}"/>')
-    b.append(f'<rect x="{X}" y="{Y}" width="{W}" height="{H}" rx="{R}" fill="{k["panel"]}"/>')
-    lid = (f"M{X} {seam}C{X} {Y + R * 0.45} {X + R * 0.45} {Y} {X + R} {Y}H{X + W - R}"
-           f"C{X + W - R * 0.45} {Y} {X + W} {Y + R * 0.45} {X + W} {seam}Z")
-    b.append(path(lid, fill=k["lid"]))
-    # the earbuds, seen through the lid
-    mini, _ = fit({"a": tf(H3_FACE, rotate_about(*H3_C, -14))}, 25, 18, 0)
-    left = tf(mini["a"], lambda x, y: (x + 31, y + 20))
-    right = tf(mini["a"], lambda x, y: (120 - (x + 31), y + 20))
-    b.append(path(fmt(left) + fmt(right), k["dim"], k["dim_sw"]))
-    # lid highlight
-    b.append(path(f"M{X + 9} {seam - 7}C{X + 10} {Y + 13} {X + 19} {Y + 7} {X + 30} {Y + 5.5}", k["dim"], k["dim_sw"]))
-    # band at the seam
-    band = k["accent"] if k["guides"] else "#F2B8A0"
-    b.append(f'<rect x="{X}" y="{seam}" width="{W}" height="3.4" fill="{band}"/>')
-    if not k["guides"]:
-        b.append(path(f"M{X} {seam}H{X + W}M{X} {seam + 3.4}H{X + W}", k["ink"], k["detail_sw"]))
-    b.append(f'<rect x="{X}" y="{Y}" width="{W}" height="{H}" rx="{R}" fill="none" stroke="{k["ink"]}" stroke-width="{k["sw"]}"/>')
-    # framed plate, left blank on purpose
-    plate_fill = "none" if k["guides"] else "#FBE6DA"
-    plate_stroke = k["accent"] if k["guides"] else k["ink"]
-    b.append(f'<rect x="43" y="{seam + 6.5}" width="34" height="11" rx="1.2" fill="{plate_fill}" '
-             f'stroke="{plate_stroke}" stroke-width="{k["detail_sw"] + 0.3}"/>')
-    b.append(f'<circle cx="60" cy="{seam + 26}" r="1.8" fill="{k["accent"]}"/>')
-    return svg(120, 96, b, "SoundPEATS H3 charging case")
+def h3_case():
+    c = H3_CASE
+    W = 100
+    H = W / c["aspect"]
+    X, Y = 10, (96 - H) / 2
+    cx, cy, a, b = X + W / 2, Y + H / 2, W / 2, H / 2
+
+    def at(t, s=1.0):
+        ct, st = math.cos(t), math.sin(t)
+        return (cx + s * a * math.copysign(abs(ct) ** (2 / c["P"]), ct),
+                cy - s * b * math.copysign(abs(st) ** (2 / c["Q"]), st))
+
+    def t_below(y):
+        """Parameter on the right-hand side of the outline where it crosses y (below the middle)."""
+        return -math.asin(((y - cy) / b) ** (c["Q"] / 2))
+
+    outline = curve_through([at(2 * math.pi * i / 72) for i in range(72)])
+    band_top, band_bottom = (Y + f * H for f in c["band"])
+    t0, t1 = t_below(band_top), t_below(band_bottom)
+    # lid: over the top from the left end of the band to the right end
+    lid_pts = [at(math.pi - t0 - (math.pi - 2 * t0) * i / 40) for i in range(41)]
+    lid = curve_through(lid_pts, closed=False) + [("Z", [])]
+    # band: follows the outline at both ends
+    right = [at(t0 + (t1 - t0) * i / 4) for i in range(5)]
+    left = [(2 * cx - x, y) for x, y in reversed(right)]
+    band = "M" + "L".join(f"{x:.1f} {y:.1f}" for x, y in right + left) + "Z"
+    shine = curve_through([at(math.pi * (0.62 + 0.2 * i / 8), 0.86) for i in range(9)], closed=False)
+    px, py, pw, ph = c["plate"]
+    return svg(120, 96, [
+        path(dashes(cx, 3, cx, 93), LABEL, FINE),
+        path(fmt(outline), fill=PANEL),
+        path(fmt(lid), fill=RAISED),
+        path(fmt(shine), LABEL, FINE),
+        f'<rect x="{X + px * W:.1f}" y="{Y + py * H:.1f}" width="{pw * W:.1f}" height="{ph * H:.1f}" rx="1.2" '
+        f'fill="none" stroke="{ACCENT}" stroke-width="1.4"/>',
+        path(band, fill=ACCENT),
+        path(fmt(outline), INK, STROKE),
+    ], "SoundPEATS H3 charging case")
 
 
 # -------------------------------------------------------- Air5 Pro+ ---------
@@ -240,14 +255,6 @@ def h3_case(k):
 # Drawn as the LEFT earbud seen from outside: head on top, ear tip pointing left,
 # stem straight down, inlay running from the head down the stem. Which side this
 # is has not been checked against the L/R marking on a real pair.
-def ellipse_path(cx, cy, rx, ry):
-    kx, ky = 0.5523 * rx, 0.5523 * ry
-    return parse(f"M{cx - rx} {cy}C{cx - rx} {cy - ky} {cx - kx} {cy - ry} {cx} {cy - ry}"
-                 f"C{cx + kx} {cy - ry} {cx + rx} {cy - ky} {cx + rx} {cy}"
-                 f"C{cx + rx} {cy + ky} {cx + kx} {cy + ry} {cx} {cy + ry}"
-                 f"C{cx - kx} {cy + ry} {cx - rx} {cy + ky} {cx - rx} {cy}Z")
-
-
 A5_BODY = ("M265 5C345 5 405 60 405 135C405 215 378 255 378 340L378 615"
            "C378 650 345 675 300 675C255 675 222 650 222 615L222 400"
            "C222 350 215 318 190 308C150 296 105 290 85 235C60 150 150 5 265 5Z")
@@ -271,25 +278,21 @@ def a5_shapes():
     return shapes
 
 
-def a5_bud(k):
+def a5_bud():
     g, s = fit(a5_shapes(), 96, 96, 4.5)
-    b = []
-    if k["guides"]:
-        mx, ay = g["axis"][0][1][0]
-        b.append(path(dashes(mx, 2, mx, 94) + dashes(2, ay, 94, ay), k["dim"], k["dim_sw"]))
-    if k["shadow"]:
-        sh = tf(g["body"], lambda x, y: (x + 3, y + 3))
-        b.append(path(fmt(sh), fill=k["shadow"]))
-    b.append(path(fmt(g["tip"]), k["ink"], k["sw"], fill=k["tip_fill"]))
-    b.append(path(fmt(g["collar"]), k["accent"], k["accent_sw"]))
-    b.append(path(fmt(g["body"]), k["ink"], k["sw"], fill=k["panel"]))
-    b.append(path(fmt(g["inlay"]), k["face_stroke"], k["sw"], fill=k["face_fill"], alpha=k["face_alpha"]))
-    b.append(path("".join(fmt(g[f"dot{i}"]) for i in range(4)), fill=k["accent"]))
-    b.append(path(fmt(g["shine"]), k["ink"], k["detail_sw"]))
-    return svg(96, 96, b, "SoundPEATS Air5 Pro+ left earbud")
+    mx, ay = g["axis"][0][1][0]
+    return svg(96, 96, [
+        path(dashes(mx, 2, mx, 94) + dashes(2, ay, 94, ay), LABEL, FINE),
+        path(fmt(g["tip"]), INK, STROKE, fill=PANEL),
+        path(fmt(g["collar"]), ACCENT, 1.6),
+        path(fmt(g["body"]), INK, STROKE, fill=PANEL),
+        path(fmt(g["inlay"]), ACCENT, STROKE, fill=RAISED),
+        path("".join(fmt(g[f"dot{i}"]) for i in range(4)), fill=ACCENT),
+        path(fmt(g["shine"]), INK, DETAIL),
+    ], "SoundPEATS Air5 Pro+ left earbud")
 
 
-def a5_case(k):
+def a5_case():
     # Front view, lid closed: an opaque pebble, widest just below the middle. The seam
     # is a straight horizontal line. (In photos taken from above it looks curved, and
     # the dip in the rim only shows with the lid open.) Status light under the seam.
@@ -303,16 +306,13 @@ def a5_case(k):
         mid = (lo + hi) / 2
         lo, hi = (mid, hi) if bez(mid, 1) < seam_y else (lo, mid)
     xr = bez(lo, 0)
-    b = []
-    if k["guides"]:
-        b.append(path(dashes(60, 3, 60, 93), k["dim"], k["dim_sw"]))
-    if k["shadow"]:
-        b.append(f'<path d="{outline}" fill="{k["shadow"]}" transform="translate(3 3)"/>')
-    b.append(path(outline, k["ink"], k["sw"], fill=k["panel"]))
-    b.append(path(f"M{120 - xr:.1f} {seam_y}L{xr:.1f} {seam_y}", k["ink"], k["detail_sw"]))
-    b.append(path("M19 40C21 27 31 19 46 16.5", k["dim"], k["dim_sw"]))       # lid highlight
-    b.append(f'<circle cx="60" cy="70" r="1.8" fill="{k["accent"]}"/>')
-    return svg(120, 96, b, "SoundPEATS Air5 Pro+ charging case")
+    return svg(120, 96, [
+        path(dashes(60, 3, 60, 93), LABEL, FINE),
+        path(outline, INK, STROKE, fill=PANEL),
+        path(f"M{120 - xr:.1f} {seam_y}L{xr:.1f} {seam_y}", INK, DETAIL),
+        path("M19 40C21 27 31 19 46 16.5", LABEL, FINE),       # lid highlight
+        f'<circle cx="60" cy="70" r="1.8" fill="{ACCENT}"/>',
+    ], "SoundPEATS Air5 Pro+ charging case")
 
 
 DEVICES = {
@@ -320,34 +320,33 @@ DEVICES = {
     "air5-pro-plus": ("SoundPEATS Air5 Pro+", a5_bud, a5_case),
 }
 only = ARGS.models.split(",") if ARGS.models else list(DEVICES)
-ACTIVE_LOOKS = ["studio"]   # Sketchbook is parked for now
 
 cells = []
 for model in only:
     name, bud, case = DEVICES[model]
-    for look, k in ((l, LOOKS[l]) for l in ACTIVE_LOOKS):
-        d = OUT / "devices" / model / look
-        d.mkdir(parents=True, exist_ok=True)
-        (d / "bud.svg").write_text(bud(k))
-        (d / "case.svg").write_text(case(k))
-        mirrored = bud(k).replace('viewBox="0 0 96 96"', 'viewBox="0 0 96 96" style="transform: scaleX(-1)"')
-        cells.append((name, look, k["panel"], k["ink"], bud(k), case(k), mirrored))
+    d = OUT / "devices" / model / "studio"
+    d.mkdir(parents=True, exist_ok=True)
+    bud_svg, case_svg = bud(), case()
+    (d / "bud.svg").write_text(bud_svg)
+    (d / "case.svg").write_text(case_svg)
+    cells.append((name, bud_svg, case_svg))
 
 if ARGS.sheet:
-    rows = []
-    for name, look, panel, ink, bud_svg, case_svg, right_svg in cells:
-        page = "#101214" if look == "studio" else "#EEF3EF"
-        border = "#2B3037" if look == "studio" else "#4F625E"
-        big = lambda s, w: s.replace('width="96" height="96"', f'width="{w}" height="{w}"').replace(
+    def big(s, w):
+        return s.replace('width="96" height="96"', f'width="{w}" height="{w}"').replace(
             'width="120" height="96"', f'width="{int(w * 1.25)}" height="{w}"')
+
+    rows = []
+    for name, bud_svg, case_svg in cells:
+        right = bud_svg.replace('viewBox="0 0 96 96"', 'viewBox="0 0 96 96" style="transform: scaleX(-1)"')
         rows.append(f'''
-    <section style="background:{page};color:{ink};padding:20px 24px;display:flex;align-items:center;gap:28px">
-      <div style="width:150px;font:600 15px/1.3 sans-serif">{name}<br><span style="font-weight:400;opacity:.75">{look}</span></div>
-      <div style="background:{panel};border:1px solid {border};border-radius:8px;padding:14px;display:flex;gap:18px;align-items:center">
+    <section style="background:{BACKGROUND};color:{INK};padding:20px 24px;display:flex;align-items:center;gap:28px">
+      <div style="width:150px;font:600 15px/1.3 sans-serif">{name}</div>
+      <div style="background:{PANEL};border:1px solid {HAIRLINE};border-radius:6px;padding:14px;display:flex;gap:18px;align-items:center">
         {big(bud_svg, 240)}{big(case_svg, 240)}
       </div>
-      <div style="background:{panel};border:1px solid {border};border-radius:8px;padding:12px 16px;display:flex;gap:22px;align-items:center">
-        {big(bud_svg, 72)}{big(case_svg, 72)}{big(right_svg, 72)}
+      <div style="background:{PANEL};border:1px solid {HAIRLINE};border-radius:6px;padding:12px 16px;display:flex;gap:22px;align-items:center">
+        {big(bud_svg, 72)}{big(case_svg, 72)}{big(right, 72)}
       </div>
     </section>''')
     pathlib.Path(ARGS.sheet).write_text(

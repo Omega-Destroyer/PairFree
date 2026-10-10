@@ -1,0 +1,8 @@
+# Unix scripts keep LF on every platform, or they break on Linux and macOS
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Windows scripts keep CRLF
+*.bat text eol=crlf
+
+*.jar binary

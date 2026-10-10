@@ -19,7 +19,7 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 | Probe script (PC)                       | Written, run on an H3                   |
 | Confirmed on hardware                   | H3: reads, ANC mode change, reads over BLE. Air5 Pro+ later. |
 | App design                              | Written. Two looks, five screens.       |
-| Android app                             | Not started                             |
+| Android app                             | Scaffolded. Protocol module passes the test vectors. No screens yet. |
 | iOS and Windows apps                    | Planned, after Android                  |
 | Firmware update                         | Planned for Qualcomm models, opt-in     |
 
@@ -37,6 +37,7 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 | `tools/test_probe.py`     | Tests for the probe and the data files. No hardware needed.       |
 | `assets/devices/`         | Vector drawings of each model's earbud and case, per look         |
 | `tools/gen_device_art.py` | Generates those drawings. Edit the shapes there, not the SVG files. |
+| `android/`                | The Android app. `protocol/` is the protocol core, `app/` the app. |
 
 ## Which earbuds
 
@@ -73,6 +74,14 @@ The probe only sends read commands. It does not change any setting.
 
 ```
 python -m unittest discover -s tools -v
+```
+
+The Android protocol module runs the same test vectors. It needs JDK 17 or newer and
+the Android SDK; Android Studio brings both.
+
+```
+cd android
+./gradlew :protocol:test
 ```
 
 ## Ground rules

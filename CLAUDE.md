@@ -68,6 +68,15 @@ reports from other people.
 
 ## Android notes
 
+- The Android project is `android/`; open that folder in Android Studio. `:protocol` is
+  plain Kotlin with no Android dependencies, `:app` is the Compose app. Command numbers
+  and wire constants are generated from `data/commands.json` at build time
+  (`generateTables` in `android/protocol/build.gradle.kts`); never type them by hand.
+- Keep `android/protocol/src/main` free of `java.*` imports so it can become a Kotlin
+  Multiplatform module for iOS.
+- Gradle 9 refuses to build from a folder Java reports as not writable, which happens
+  on some network shares even when writing works. If the repo lives on such a share,
+  build from a copy on a local disk.
 - Control runs over classic Bluetooth serial (RFCOMM) on the standard SPP UUID
   `00001101-0000-1000-8000-00805F9B34FB`. The earbuds must already be paired and
   connected for audio. There is no handshake.
@@ -96,6 +105,7 @@ reports from other people.
 4. Scaffold the Android app in Kotlin with Jetpack Compose (agreed with the owner).
    Put the protocol core in its own module with no Android dependencies and make it
    pass `data/test_vectors.json`. The app must not request the internet permission.
+   Done: `android/`, with the protocol core in `android/protocol`.
 5. Screens in this order: connection and battery, ANC, switches, gestures, EQ.
    Studio look first, since it is the default. Keep colours, fonts and drawings
    behind a theme so Sketchbook is a second skin, not a second set of screens.
@@ -106,8 +116,10 @@ reports from other people.
 
 ```
 python -m unittest discover -s tools -v
+cd android && ./gradlew :protocol:test        (gradlew.bat on Windows cmd/PowerShell)
 ```
 
-Keep this passing. `tools/probe.py` carries its own copy of the GET table so it can
-be handed to testers as a single file; a test fails if it drifts from
-`data/commands.json`.
+Keep both passing. The Gradle tests run every case in `data/test_vectors.json` and check
+the generated command table against `data/commands.json`. `tools/probe.py` carries its
+own copy of the GET table so it can be handed to testers as a single file; a test fails
+if it drifts from `data/commands.json`.

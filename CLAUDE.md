@@ -64,6 +64,13 @@ reports from other people.
   without an explicit confirmation from the user in that moment. The probe is
   read-only by default and must stay that way.
 - Do not call SoundPEATS' server from code in this repo unless the owner says so.
+  The owner has allowed one exception: `tools/fetch_server_data.py`, a research
+  tool he runs by hand. It only sends GET requests, at most one per 30 seconds,
+  with no account or device identifiers. Keep it that way. The app itself never
+  talks to the server and never requests the internet permission.
+- Raw server replies go in `server_dump/`, which git ignores. They are vendor
+  data. Do not commit them. Derived facts (feature codes, chip families, EQ
+  numbers) go into `data/` only after the owner has agreed to what is included.
 - Before any firmware-update work: Qualcomm only, behind an opt-in flag, with a
   user-supplied image file. A bad flash can brick earbuds.
 

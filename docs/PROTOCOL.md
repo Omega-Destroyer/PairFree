@@ -308,8 +308,8 @@ Upgrade feature's commands: connect 0, disconnect 1, control 2, set data endpoin
 
 Firmware images are not in the APK. The app asks SoundPEATS' server
 (`ota/version/check`, sending `otaCode` and `otaVersion`) and gets back a version,
-release notes, a size and one or more download URLs. Request and response bodies are
-AES-encrypted with a key compiled into the app.
+release notes, a size and one or more download URLs. The request body of this call
+is AES-encrypted with a key compiled into the app, and the reply may be too.
 
 ## 8. What the app gets from the server
 
@@ -325,6 +325,25 @@ earbuds, but it is where per-model knowledge lives.
 
 A replacement client can skip the function list by sending every GET and seeing which
 ones the earbuds answer.
+
+How these are served, as read from the app:
+
+- All four are GET requests with no body. The app adds headers `os`, `appVersion`,
+  `model`, `manufacturer`, `sdkVersion`, `appVersionCode`, `userId` (empty when not
+  signed in) and `lang`.
+- `ota/pairDataList` and `eq/preset/list` are parsed as plain JSON. The model list
+  entries are `bluetoothName`, `otaCode` and `schemeCode` (the chip family).
+- `ota/functionList` comes back as text. The app decrypts it first if it is
+  AES-encrypted and reads it as plain JSON otherwise, so either may arrive. Its data
+  has `schemeCode`, `languageList` and `funcList`. Each function has `code`
+  (`FSN..`), `commandList` (accepted values), `parentCode`, `status` and display fields.
+- An EQ preset has `eqCode`, `name`, `masterGain`, and three JSON arrays as strings:
+  `fjson` (frequencies), `gainJson` and `qjson`.
+- `product/list` gives `productName` per `otaCode`.
+
+`tools/fetch_server_data.py` fetches these for every model at one request per
+30 seconds and saves the replies unmodified. Nothing has been fetched yet: see the
+tool's header for what the owner needs to know before running it.
 
 The APK ships no per-model feature list and no EQ curves. Its assets hold only
 animations, hearing-test tones and SDK files.

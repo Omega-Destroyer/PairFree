@@ -34,6 +34,7 @@ yet been confirmed on real earbuds. Nothing here is ready for daily use.
 | `data/devices.json`       | Known models, their firmware codes, chip families and per-model details |
 | `data/qcy_commands.json`  | The separate protocol for the Capsule3 Pro                        |
 | `data/reports/`           | Probe output from real earbuds, one file per model and firmware   |
+| `tools/fetch_server_data.py` | Owner-only research tool. Reads per-model data from SoundPEATS' server, slowly. |
 | `tools/probe.py`          | Read-only probe. Asks the earbuds what they support.              |
 | `tools/test_probe.py`     | Tests for the probe and the data files. No hardware needed.       |
 

@@ -3,8 +3,8 @@ package io.github.omegadestroyer.soundpeter.protocol
 /** Builds the frames the app sends. */
 public object Requests {
     /**
-     * The GETs sent on connect: the same list as tools/probe.py, all read-only and tried
-     * on an H3. A test keeps the two in step.
+     * The GETs sent on connect: the same list as tools/probe.py, all read-only. A test
+     * keeps the two in step.
      */
     public val ON_CONNECT: List<Command> = listOf(
         Command.FIRMWARE_VERSION, Command.BATTERY_LEFT, Command.BATTERY_RIGHT, Command.BATTERY_CASE,
@@ -14,6 +14,7 @@ public object Requests {
         Command.VOICE_LANGUAGE, Command.DYNAMIC_EQ, Command.DYNAMIC_BASS, Command.MOVIE_MODE,
         Command.SPATIAL_AUDIO, Command.PANORAMIC_SOUND, Command.DOLBY, Command.ADAPTIVE_VOLUME,
         Command.PERSONAL_VOLUME, Command.LIGHT_EFFECT, Command.PRIVACY_MODE, Command.RESET_STATE,
+        Command.FIND_LEFT, Command.FIND_RIGHT,
     )
 
     public val BATTERY: List<Command> = listOf(Command.BATTERY_LEFT, Command.BATTERY_CASE, Command.BATTERY_RIGHT)
@@ -33,4 +34,21 @@ public object Requests {
             ByteArray(payload.size) { payload[it].toByte() },
         )
     }
+
+    /**
+     * The GET that shows whether a SET of [command] took effect: its own GET, or for
+     * resetting the custom keys, the custom keys. Null when there is nothing to read.
+     */
+    public fun readBack(command: Command): Command? = when {
+        command == Command.RESET_CUSTOM_KEYS -> Command.CUSTOM_KEYS
+        command.get != null -> command
+        else -> null
+    }
+
+    /**
+     * Factory reset. The earbuds lose every setting. Build this only from a confirmation
+     * the user has just accepted on screen, never from code on its own (CLAUDE.md).
+     */
+    public fun factoryResetConfirmedByUser(): ByteArray =
+        Frame.build(requireNotNull(Command.FACTORY_RESET.set))
 }

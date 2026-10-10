@@ -21,6 +21,18 @@ class RequestsTest {
     }
 
     @Test
+    fun factoryResetHasItsOwnNamedRequest() {
+        assertEquals("ff040000000a0305", Requests.factoryResetConfirmedByUser().hex())
+    }
+
+    @Test
+    fun readBack() {
+        assertEquals(Command.ANC_MODE, Requests.readBack(Command.ANC_MODE))
+        assertEquals(Command.CUSTOM_KEYS, Requests.readBack(Command.RESET_CUSTOM_KEYS))
+        assertEquals(null, Requests.readBack(Command.FACTORY_RESET))
+    }
+
+    @Test
     fun onConnectOnlyReads() {
         assertTrue(Requests.ON_CONNECT.all { it.get != null })
     }

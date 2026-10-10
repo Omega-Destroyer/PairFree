@@ -52,6 +52,33 @@ class EarbudStateTest {
     }
 
     @Test
+    fun expectShowsASetBeforeTheReply() {
+        val keys = connected.apply(Command.CUSTOM_KEYS to "0001020201030304030505060607070806")
+        assertEquals(1, connected.expect(Command.ANC_MODE, 1).number(Command.ANC_MODE))
+        assertEquals(false, connected.expect(Command.LDAC, 0).switch(Command.LDAC))
+        assertEquals(
+            listOf(Level(0x11, false), Level(0x12, true), Level(0x13, false), Level(0x14, false)),
+            connected.expect(Command.ANC_LEVEL, 0x12).levels(Command.ANC_LEVEL),
+        )
+        assertEquals(KeyBinding(7, 3), keys.expect(Command.CUSTOM_KEYS, 7, 3).keys.single { it.gesture == 7 })
+        assertEquals(keys.keys.filter { it.gesture != 7 }, keys.expect(Command.CUSTOM_KEYS, 7, 3).keys.filter { it.gesture != 7 })
+    }
+
+    @Test
+    fun expectLeavesUnansweredAndActionCommandsAlone() {
+        assertEquals(connected, connected.expect(Command.IN_EAR_DETECTION, 1))
+        assertEquals(connected, connected.expect(Command.RESET_CUSTOM_KEYS))
+        assertEquals(connected, connected.expect(Command.ANC_MODE))
+    }
+
+    @Test
+    fun theReplyReplacesTheExpectedValue() {
+        // the earbuds may refuse a SET; their reply wins
+        val refused = connected.expect(Command.ANC_MODE, 2).apply(Command.ANC_MODE to "0000")
+        assertEquals(0, refused.number(Command.ANC_MODE))
+    }
+
+    @Test
     fun otherFramesAreIgnored() {
         val eq = FrameParser().feed(Frame.build(Wire.EQ_COMMAND_QUALCOMM, "a10000005d00b41ccc".hexBytes(), Wire.VENDOR_EQ)).single()
         val request = FrameParser().feed(Requests.get(Command.ANC_MODE)).single()

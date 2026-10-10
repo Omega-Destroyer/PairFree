@@ -40,6 +40,9 @@ Same layout in both directions. No checksum. Big-endian.
 
 This is Qualcomm's GAIA serial framing carrying SoundPEATS' own command set.
 
+The H3 sends its frames with version `03`, while the phone (PeatsAudio and SoundPeter
+alike) sends `04` (section 10). A reader should not insist on `04`.
+
 - GET: command `03 xx`, empty payload.
 - Reply to a GET: command `83 xx` (same number with the top bit set). Payload is usually
   `[status, value]`. Status `00` is success. The app ignores battery replies whose
@@ -140,7 +143,8 @@ Actions: 0 none, 1 volume up, 2 volume down, 3 play/pause, 4 game mode,
 
 ## 4. EQ (vendor `00 1D`)
 
-Write-only. The app never reads the EQ back from the earbuds.
+Write-only. The app never reads the EQ back from the earbuds. On the H3 each band write
+is acknowledged with `0F 81 01`, which carries no state (section 10).
 
 One frame per band, command `0E 01` on Qualcomm devices (`0E 02` on others, where the
 first payload byte becomes two bytes: count, index).
@@ -157,15 +161,14 @@ Payload, 9 bytes:
 
 Example, band 1 of 9, 63 Hz, +3.5 dB, Q 0.7: `91 00 00 00 BD 00 D2 0B 33`
 
-Open points for the H3:
+Preset curves and the "classic" base curve are downloaded from SoundPEATS' server
+(`eq/preset/list?otaCode=...`), not stored in the APK. On Qualcomm devices the app
+snaps custom points onto the classic curve's bands and adds the gains
+(`EqUtilKt.mergeQualcommEQ`), so the band count and centre frequencies the firmware
+expects are not known from the APK alone. For the H3 they were read from a phone
+capture (section 10) and are in `data/devices.json` as the model's `eq` entry.
 
-- Preset curves and the "classic" base curve are downloaded from SoundPEATS' server
-  (`eq/preset/list?otaCode=...`), not stored in the APK. On Qualcomm devices the app
-  snaps custom points onto the classic curve's bands and adds the gains
-  (`EqUtilKt.mergeQualcommEQ`), so the band count and centre frequencies the firmware
-  expects are not known from the APK alone. Get them from one phone capture, or by
-  experiment.
-- The hearing-test EQ is computed in the app and sent through the same band writes.
+The hearing-test EQ is computed in the app and sent through the same band writes.
 
 The custom EQ screen offers fixed bands, all with Q 1.8:
 
@@ -300,8 +303,10 @@ Tested 2026-10-10 from Windows over the SPP COM port. Report: `data/reports/S5_0
 - GETs with no reply, even after 2.5 s: environment adaptive, in-ear detection, auto
   shutdown, dynamic EQ, dynamic bass, movie mode, spatial audio, panoramic sound, Dolby,
   adaptive volume, personalized volume, light effect, privacy mode, reset state.
-- A reply does not mean the feature exists. Game mode answers `0`, but PeatsAudio shows
-  it as not available on the H3.
+- Game mode answers `0`, and PeatsAudio showed it as not available during this run. The
+  owner reports that PeatsAudio offers game mode and dual device only while LDAC is off,
+  and LDAC was on. Recorded as `ldac_excludes` for `S5` in `data/devices.json`. Whether
+  the firmware refuses these with LDAC on, or only the app hides them, is not known.
 - Values matched the settings PeatsAudio showed: ANC off, multipoint off, touch
   enabled, LDAC on.
 - ANC levels: see 3.1. Transparency levels: `01` and `02` listed, `02` active.
@@ -342,8 +347,68 @@ Tested 2026-10-10 from Windows over the SPP COM port. Report: `data/reports/S5_0
   `1102` within 0.4 s. Battery left worked the same way. The 4-byte header is dropped
   in both directions.
 
+Phone session, 2026-10-10, from SoundPeter's frame log and the phone's Bluetooth HCI
+snoop log (raw frames at the end of the report). SoundPeter and then PeatsAudio did the
+same steps.
+
+- The earbuds send their frames with version byte `03`; both apps send `04`.
+- `find_left` and `find_right` (`03 4A`, `03 4B`) answer `00 00`.
+- SET transparency level (`03 4D`) is answered at once, within 0.2 s, by `83 4C` with
+  the new level marked active, unlike ANC mode. PeatsAudio sends the same values as the
+  table (`01` voice, `02` standard). By ear, in both apps, `01` takes effect but going
+  back to `02` does not change the sound, although the earbuds report `02` as active.
+  Looks like a firmware fault; nothing different to send was found.
+- SET LDAC (`03 39`) and SET multipoint (`03 15`) get no reply. About 3 to 4 s later the
+  earbuds close the serial channel; it can be opened again about 2 s after that. After
+  LDAC off, multipoint reads `1`; after multipoint off, LDAC reads `1`. So on the H3 they
+  are one either-or setting (`ldac_or_multipoint` in `data/devices.json`). PeatsAudio sends
+  only the one SET and sees the same.
+- Right after the channel reopened following LDAC off, an unasked `83 17 00 01` arrived.
+  `03 17` is not in the command table; its meaning is not known.
+- EQ, as PeatsAudio writes it to the H3: command `0E 01` on vendor `00 1D`, ten bands,
+  all ten in every write, about 50 ms apart, no reply. Master gain is -2.0 dB in every
+  frame. Bands, with the Q and base gain the app sends when every slider is at 0 (its
+  Reset):
+
+  | Band | Hz    | Q   | Base gain dB |
+  |------|-------|-----|--------------|
+  | 1    | 50    | 0.5 | +3.5         |
+  | 2    | 160   | 1.6 | -6.0         |
+  | 3    | 350   | 0.7 | -2.6         |
+  | 4    | 800   | 1.0 | +3.7         |
+  | 5    | 1600  | 1.0 | +5.5         |
+  | 6    | 2800  | 1.5 | +6.5         |
+  | 7    | 4600  | 1.8 | -2.5         |
+  | 8    | 8000  | 6.0 | -3.5         |
+  | 9    | 12000 | 1.5 | +1.2         |
+  | 10   | 17000 | 1.5 | -0.2         |
+
+  Each band's gain is the base gain plus the user's slider, as section 4 says. The
+  sliders go from -6 to +6 in whole dB; the screen labels 1600, 2800 and 4600 Hz as 2k,
+  3k and 5k. The owner's saved curve (+2, +1, 0, 0, 0, 0, 0, +1, +2, +2) and three edits
+  match this exactly; they are the `eq_layout` test vectors. Opening the Customize EQ
+  screen sends the current curve. The base curve is the model's stock tuning: Reset
+  sends it alone.
+- Every `0E 01` band write is answered within about 50 ms by vendor `00 1D` command
+  `0F 81` with payload `01`, for PeatsAudio and SoundPeter alike. The same value every
+  time; what it means beyond "received" is not known.
+- PeatsAudio sends its saved curve about 2.5 s after it connects, so it overwrites an
+  EQ another app set.
+- Presets, from a second capture: picking a preset sends a complete curve of 10 bands
+  at the same -2 dB master gain. SOUNDPEATS Classic is the base curve. Bass Boost, Bass
+  Reduce, Treble Boost, Pop and Rock keep the base curve's frequencies and Q but not its
+  gains (and not in whole-dB steps from it). Electronic, Classical, Folk, Book Whisper,
+  HIFI and ACG also move some bands (for example 20 Hz, 5 kHz, or 6.8, 9.8 and 14.5 kHz)
+  or change their Q. All eleven are in `data/devices.json` (`eq.presets`) and are the
+  `eq_preset` test vectors.
+- The unasked `83 17 00 01` also arrives about 6 s after a plain connect, with no LDAC
+  change before it.
+- Prompt volume read 18 in this session (11 in the first); it had been changed in between.
+
 Still open on the H3:
 
-- The scale of prompt volume. It reads 11.
-- The EQ band layout.
+- The scale of prompt volume. It read 11, then 18 after a change.
+- Why transparency `02` does not sound different after `01` (above).
+- What `83 17` means.
+- Whether a master gain other than -2 dB has an effect. The app's preamp only lowers it.
 - Over BLE: SETs, unasked state updates, and what `1103`, `EB10` and `FD92` are for.

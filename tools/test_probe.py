@@ -46,6 +46,28 @@ class Vectors(unittest.TestCase):
                                 case["q"], case["master_gain_db"])
             self.assertEqual(got.hex(), case["payload"])
 
+    def test_eq_layout_matches_the_official_app(self):
+        models = {d["firmware_code"]: d for d in load("devices.json")["devices"]}
+        for case in self.v["eq_layout"]:
+            eq = models[case["model"]]["eq"]
+            bands = eq["bands"]
+            got = []
+            for i, (band, user) in enumerate(zip(bands, case["user_gains_db"])):
+                # added in tenths of a dB, as the Kotlin EqLayout does, so the sums stay exact
+                gain = (round(band["base_gain_db"] * 10) + user * 10) / 10
+                got.append(probe.eq_band(len(bands), i + 1, band["hz"], gain, band["q"], eq["master_gain_db"]).hex())
+            self.assertEqual(got, case["payloads"], case["name"])
+
+    def test_eq_presets_match_the_official_app(self):
+        models = {d["firmware_code"]: d for d in load("devices.json")["devices"]}
+        for case in self.v["eq_preset"]:
+            eq = models[case["model"]]["eq"]
+            preset = next(p for p in eq["presets"] if p["name"] == case["preset"])
+            bands = preset["bands"]
+            got = [probe.eq_band(len(bands), i + 1, b["hz"], b["gain_db"], b["q"], eq["master_gain_db"]).hex()
+                   for i, b in enumerate(bands)]
+            self.assertEqual(got, case["payloads"], case["preset"])
+
     def test_ble_packet_is_frame_without_header(self):
         for case in self.v["ble_qualcomm"]:
             self.assertEqual(case["frame"][8:], case["ble_packet"], case["name"])
@@ -73,6 +95,13 @@ class CommandTable(unittest.TestCase):
         self.assertEqual(len({c["id"] for c in cmds}), len(cmds))
         gets = [c["get"] for c in cmds if "get" in c]
         self.assertEqual(len(set(gets)), len(gets))
+
+    def test_device_rules_name_known_switches(self):
+        table = {c["id"]: c for c in load("commands.json")["commands"]}
+        for device in load("devices.json")["devices"]:
+            for name in device.get("ldac_excludes", []):
+                self.assertIn(name, table, device["firmware_code"])
+                self.assertIn("set", table[name], device["firmware_code"])
 
 
 class Describe(unittest.TestCase):

@@ -30,21 +30,26 @@ in `commands.json`, EQ band encoding, the BLE service UUIDs, the update SDK each
 family uses.
 
 Confirmed on the H3 (firmware code `S5`, chip QCC3091 by its own report): which GETs
-it answers, that an ANC mode SET works, and that GETs work over GAIA BLE. See
-`docs/PROTOCOL.md` section 10. Everything else is unconfirmed, including all of the
-Air5 Pro+. Specific open questions:
+it answers, that ANC mode, scene, transparency level, LDAC and multipoint SETs reach it,
+how it answers each, that GETs work over GAIA BLE, and the EQ layout and base curve
+PeatsAudio writes to it. See `docs/PROTOCOL.md` section 10. Everything else is
+unconfirmed, including all of the Air5 Pro+. Specific open questions:
 
 - Which commands the Air5 Pro+ answers, and its firmware code. Deferred by the owner:
   assume it behaves like the H3 (same chip) and troubleshoot if it turns out not to.
   This is an assumption, not a finding; do not write it into `docs/PROTOCOL.md`.
 - Whether `0x11` is the H3's Adaptive scene. The H3 lists levels `11` to `14`, not
   `15`, and does not answer the environment-adaptive GET `03 64`.
-- The EQ band count and centre frequencies Qualcomm firmware expects. The official
-  app downloads a "classic" curve per model and merges user points onto its bands.
+- The EQ layout of every model except the H3. The official app downloads a "classic"
+  curve per model and adds the user's gains to it; a phone capture of its EQ writes
+  (Android HCI snoop log) shows the layout, as it did for the H3.
 - SETs and unasked state updates over the GAIA BLE service. iOS depends on it. GETs
   over it work on the H3, with the 4-byte header dropped as the spec says.
-- Whether other SETs behave like ANC mode on the H3: no reply of their own, then the
-  new state as an unasked GET reply about 2 s later.
+- How the remaining SETs answer on the H3. Known so far: ANC mode answers with an
+  unasked GET reply about 2 s later; transparency level at once; LDAC and multipoint not
+  at all, and the earbuds drop the channel about 3 to 4 s later.
+- Why transparency level `02` does not sound different after `01` on the H3, in
+  PeatsAudio too, and what the unasked `83 17` reply (about 6 s after connecting) means.
 
 When a probe result settles one of these, update `docs/PROTOCOL.md` and save the raw
 output under `data/reports/`.
@@ -72,12 +77,27 @@ reports from other people.
   plain Kotlin with no Android dependencies, `:app` is the Compose app. Command numbers
   and wire constants are generated from `data/commands.json` at build time
   (`generateTables` in `android/protocol/build.gradle.kts`); never type them by hand.
+  The model table (`Models`) is generated from `data/devices.json` the same way.
 - Keep `android/protocol/src/main` free of `java.*` imports so it can become a Kotlin
   Multiplatform module for iOS.
 - On connect the app sends `Requests.ON_CONNECT`, the probe's read-only GET list (a test
   keeps the two in step), then reads the battery every 30 s. `EarbudState` takes every
   reply, asked for or not; a feature counts as supported once its GET has answered.
   The app holds the channel only while it is on screen.
+- A SET from the app shows at once (`EarbudState.expect`), then the app reads the value
+  back 3 s later; the earbuds' reply replaces the guess. Factory reset goes only through
+  `Requests.factoryResetConfirmedByUser`, called from the confirmation dialog.
+- On the H3, PeatsAudio offers game mode and dual device only with LDAC off (`ldac_excludes`
+  in `data/devices.json`); the app shows them disabled while LDAC is on. LDAC and
+  multipoint are one either-or setting there (`ldac_or_multipoint`), and changing either
+  drops the channel. Once a channel has been open, the app reopens it on its own after a
+  drop, keeping the last state on screen.
+- The EQ is write-only (the H3 acknowledges each band with `0F 81 01`). The app sends the
+  model's base curve plus the user's gains, or one of the model's presets as it is
+  (`EqLayout` from the `eq` entry in `data/devices.json`), only when the user changes it,
+  never on connect, and remembers on the phone what it last sent.
+- Debug builds log every frame to Logcat under the tag `SoundPeter`
+  (`adb logcat -s SoundPeter`); release builds log nothing.
 - Gradle 9 refuses to build from a folder Java reports as not writable, which happens
   on some network shares even when writing works. If the repo lives on such a share,
   build from a copy on a local disk.
@@ -112,9 +132,11 @@ reports from other people.
    Done: `android/`, with the protocol core in `android/protocol`.
 5. Screens in this order: connection and battery, ANC, switches, gestures, EQ.
    Studio is the only look; the owner dropped Sketchbook. Keep colours, fonts and
-   drawings in one theme rather than in the screens. Connection and battery: built,
-   not yet tried on hardware.
-6. Work out the Qualcomm EQ band layout on hardware.
+   drawings in one theme rather than in the screens. All four tabs are built. Tried on
+   the H3: connection, battery, ANC, transparency, LDAC and two devices. Not yet tried:
+   the EQ, gestures, the Device tab's prompt settings.
+6. Work out the Qualcomm EQ band layout on hardware. H3 done from a phone capture
+   (`docs/PROTOCOL.md` section 10); Air5 Pro+ deferred.
 7. Firmware update last, and only on the rules above.
 
 ## Checks

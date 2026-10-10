@@ -1,5 +1,5 @@
 {
-  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android). Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; `family_sources.marketed_chip` is the chip the model is sold with; `family_sources.ble_device_information` is the manufacturer and model the earbuds report in the standard BLE Device Information service.",
+  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android). Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; `family_sources.marketed_chip` is the chip the model is sold with; `family_sources.ble_device_information` is the manufacturer and model the earbuds report in the standard BLE Device Information service. `ldac_excludes` lists features PeatsAudio offers only while LDAC is off, as the owner saw in PeatsAudio; ids are from data/commands.json. `ldac_or_multipoint` means LDAC and multipoint are one either-or setting on the earbuds: turning one off turns the other on. `eq` is the band layout the official app writes to the model: one band per entry with its centre frequency, Q and the base gain the app adds the user's gain to, plus the master gain sent with every band and the range of the app's sliders. `eq.presets` are complete curves sent as they are, with the same master gain. Both were seen on hardware; see the model's reports.",
   "devices": [
     {
       "firmware_code": "ATS3019DK12",
@@ -387,6 +387,195 @@
       },
       "old_eq_protocol": null,
       "family_conflict": false,
+      "ldac_excludes": [
+        "game_mode",
+        "multipoint"
+      ],
+      "ldac_or_multipoint": true,
+      "eq": {
+        "command": "0E01",
+        "master_gain_db": -2.0,
+        "user_range_db": 6,
+        "bands": [
+          { "hz": 50, "q": 0.5, "base_gain_db": 3.5 },
+          { "hz": 160, "q": 1.6, "base_gain_db": -6.0 },
+          { "hz": 350, "q": 0.7, "base_gain_db": -2.6 },
+          { "hz": 800, "q": 1.0, "base_gain_db": 3.7 },
+          { "hz": 1600, "q": 1.0, "base_gain_db": 5.5 },
+          { "hz": 2800, "q": 1.5, "base_gain_db": 6.5 },
+          { "hz": 4600, "q": 1.8, "base_gain_db": -2.5 },
+          { "hz": 8000, "q": 6.0, "base_gain_db": -3.5 },
+          { "hz": 12000, "q": 1.5, "base_gain_db": 1.2 },
+          { "hz": 17000, "q": 1.5, "base_gain_db": -0.2 }
+        ],
+        "presets": [
+          {
+            "name": "Bass Boost",
+            "bands": [
+              { "hz": 50, "q": 0.5, "gain_db": 4.8 },
+              { "hz": 160, "q": 1.6, "gain_db": -4.8 },
+              { "hz": 350, "q": 0.7, "gain_db": -0.8 },
+              { "hz": 800, "q": 1.0, "gain_db": 4.5 },
+              { "hz": 1600, "q": 1.0, "gain_db": 5.5 },
+              { "hz": 2800, "q": 1.5, "gain_db": 6.5 },
+              { "hz": 4600, "q": 1.8, "gain_db": -2.5 },
+              { "hz": 8000, "q": 6.0, "gain_db": -3.5 },
+              { "hz": 12000, "q": 1.5, "gain_db": 1.2 },
+              { "hz": 17000, "q": 1.5, "gain_db": -0.2 }
+            ]
+          },
+          {
+            "name": "Bass Reduce",
+            "bands": [
+              { "hz": 50, "q": 0.5, "gain_db": 2.0 },
+              { "hz": 160, "q": 1.6, "gain_db": -8.0 },
+              { "hz": 350, "q": 0.7, "gain_db": -3.2 },
+              { "hz": 800, "q": 1.0, "gain_db": 3.0 },
+              { "hz": 1600, "q": 1.0, "gain_db": 5.5 },
+              { "hz": 2800, "q": 1.5, "gain_db": 6.5 },
+              { "hz": 4600, "q": 1.8, "gain_db": -2.5 },
+              { "hz": 8000, "q": 6.0, "gain_db": -3.5 },
+              { "hz": 12000, "q": 1.5, "gain_db": 1.2 },
+              { "hz": 17000, "q": 1.5, "gain_db": -0.2 }
+            ]
+          },
+          {
+            "name": "Treble Boost",
+            "bands": [
+              { "hz": 50, "q": 0.5, "gain_db": 3.5 },
+              { "hz": 160, "q": 1.6, "gain_db": -6.0 },
+              { "hz": 350, "q": 0.7, "gain_db": -2.6 },
+              { "hz": 800, "q": 1.0, "gain_db": 3.7 },
+              { "hz": 1600, "q": 1.0, "gain_db": 5.5 },
+              { "hz": 2800, "q": 1.5, "gain_db": 6.5 },
+              { "hz": 4600, "q": 1.8, "gain_db": -0.5 },
+              { "hz": 8000, "q": 6.0, "gain_db": -1.5 },
+              { "hz": 12000, "q": 1.5, "gain_db": 3.0 },
+              { "hz": 17000, "q": 1.5, "gain_db": 2.0 }
+            ]
+          },
+          {
+            "name": "Electronic",
+            "bands": [
+              { "hz": 50, "q": 0.5, "gain_db": 5.0 },
+              { "hz": 160, "q": 1.6, "gain_db": -5.0 },
+              { "hz": 350, "q": 0.7, "gain_db": -0.5 },
+              { "hz": 800, "q": 1.0, "gain_db": 0.5 },
+              { "hz": 1600, "q": 1.0, "gain_db": 4.0 },
+              { "hz": 2800, "q": 2.8, "gain_db": -3.0 },
+              { "hz": 5000, "q": 2.0, "gain_db": 4.0 },
+              { "hz": 8000, "q": 6.0, "gain_db": -5.0 },
+              { "hz": 12000, "q": 1.0, "gain_db": 2.5 },
+              { "hz": 17000, "q": 1.0, "gain_db": -1.0 }
+            ]
+          },
+          {
+            "name": "Pop",
+            "bands": [
+              { "hz": 50, "q": 0.5, "gain_db": 2.0 },
+              { "hz": 160, "q": 1.6, "gain_db": -5.0 },
+              { "hz": 350, "q": 0.7, "gain_db": -1.0 },
+              { "hz": 800, "q": 1.0, "gain_db": 3.0 },
+              { "hz": 1600, "q": 1.0, "gain_db": 3.0 },
+              { "hz": 2800, "q": 1.5, "gain_db": 4.0 },
+              { "hz": 4600, "q": 1.8, "gain_db": -1.0 },
+              { "hz": 8000, "q": 6.0, "gain_db": -2.0 },
+              { "hz": 12000, "q": 1.5, "gain_db": 0.2 },
+              { "hz": 17000, "q": 1.5, "gain_db": -3.0 }
+            ]
+          },
+          {
+            "name": "Classical",
+            "bands": [
+              { "hz": 50, "q": 0.5, "gain_db": 3.5 },
+              { "hz": 160, "q": 1.6, "gain_db": -3.0 },
+              { "hz": 360, "q": 0.7, "gain_db": 0.2 },
+              { "hz": 800, "q": 1.0, "gain_db": 3.2 },
+              { "hz": 1600, "q": 1.0, "gain_db": 4.8 },
+              { "hz": 2800, "q": 1.5, "gain_db": 3.0 },
+              { "hz": 4600, "q": 1.5, "gain_db": -2.3 },
+              { "hz": 8000, "q": 6.0, "gain_db": -3.5 },
+              { "hz": 12000, "q": 1.5, "gain_db": 1.5 },
+              { "hz": 17000, "q": 1.5, "gain_db": -0.2 }
+            ]
+          },
+          {
+            "name": "Rock",
+            "bands": [
+              { "hz": 50, "q": 0.5, "gain_db": 4.8 },
+              { "hz": 160, "q": 1.6, "gain_db": -4.8 },
+              { "hz": 350, "q": 0.7, "gain_db": -0.8 },
+              { "hz": 800, "q": 1.0, "gain_db": 4.5 },
+              { "hz": 1600, "q": 1.0, "gain_db": 5.5 },
+              { "hz": 2800, "q": 1.5, "gain_db": 5.5 },
+              { "hz": 4600, "q": 1.8, "gain_db": -0.5 },
+              { "hz": 8000, "q": 6.0, "gain_db": -1.5 },
+              { "hz": 12000, "q": 1.5, "gain_db": 3.0 },
+              { "hz": 17000, "q": 1.5, "gain_db": 2.0 }
+            ]
+          },
+          {
+            "name": "Folk",
+            "bands": [
+              { "hz": 20, "q": 0.5, "gain_db": 3.0 },
+              { "hz": 160, "q": 1.6, "gain_db": -3.0 },
+              { "hz": 350, "q": 0.7, "gain_db": -1.0 },
+              { "hz": 800, "q": 1.0, "gain_db": -1.0 },
+              { "hz": 1600, "q": 1.0, "gain_db": 6.0 },
+              { "hz": 2800, "q": 1.0, "gain_db": 3.0 },
+              { "hz": 5000, "q": 1.0, "gain_db": 2.0 },
+              { "hz": 8000, "q": 6.0, "gain_db": -4.0 },
+              { "hz": 12000, "q": 1.0, "gain_db": 1.0 },
+              { "hz": 17000, "q": 1.0, "gain_db": 3.0 }
+            ]
+          },
+          {
+            "name": "Book Whisper",
+            "bands": [
+              { "hz": 20, "q": 0.5, "gain_db": -8.0 },
+              { "hz": 160, "q": 0.5, "gain_db": -8.0 },
+              { "hz": 350, "q": 0.7, "gain_db": 0.0 },
+              { "hz": 800, "q": 1.0, "gain_db": 2.0 },
+              { "hz": 1600, "q": 1.0, "gain_db": 4.0 },
+              { "hz": 2800, "q": 1.0, "gain_db": 5.0 },
+              { "hz": 5000, "q": 1.0, "gain_db": 5.0 },
+              { "hz": 8000, "q": 1.0, "gain_db": -10.0 },
+              { "hz": 12000, "q": 1.0, "gain_db": -8.0 },
+              { "hz": 17000, "q": 1.0, "gain_db": -8.0 }
+            ]
+          },
+          {
+            "name": "HIFI",
+            "bands": [
+              { "hz": 20, "q": 1.0, "gain_db": 4.0 },
+              { "hz": 160, "q": 1.2, "gain_db": -0.5 },
+              { "hz": 350, "q": 0.7, "gain_db": -2.5 },
+              { "hz": 800, "q": 1.0, "gain_db": 1.0 },
+              { "hz": 1600, "q": 1.0, "gain_db": 2.5 },
+              { "hz": 2800, "q": 1.0, "gain_db": 4.0 },
+              { "hz": 5000, "q": 1.1, "gain_db": 1.0 },
+              { "hz": 6800, "q": 1.7, "gain_db": 1.0 },
+              { "hz": 9800, "q": 2.0, "gain_db": 1.0 },
+              { "hz": 14500, "q": 2.0, "gain_db": 2.0 }
+            ]
+          },
+          {
+            "name": "ACG",
+            "bands": [
+              { "hz": 50, "q": 0.5, "gain_db": 5.0 },
+              { "hz": 160, "q": 1.6, "gain_db": -8.0 },
+              { "hz": 350, "q": 0.7, "gain_db": -5.0 },
+              { "hz": 800, "q": 1.0, "gain_db": 2.0 },
+              { "hz": 1600, "q": 1.0, "gain_db": 5.0 },
+              { "hz": 2800, "q": 2.0, "gain_db": 3.0 },
+              { "hz": 5000, "q": 2.0, "gain_db": 2.0 },
+              { "hz": 8000, "q": 4.0, "gain_db": -5.0 },
+              { "hz": 12000, "q": 1.0, "gain_db": 1.0 },
+              { "hz": 17000, "q": 1.0, "gain_db": -1.0 }
+            ]
+          }
+        ]
+      },
       "reports": [
         "data/reports/S5_0.4.9.txt"
       ]

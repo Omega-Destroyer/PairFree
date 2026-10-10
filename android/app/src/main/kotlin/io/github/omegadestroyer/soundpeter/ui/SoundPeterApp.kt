@@ -55,9 +55,11 @@ fun SoundPeterApp(vm: AppViewModel = viewModel()) {
             .safeDrawingPadding(),
     ) {
         val current = status
+        // One call site for both, so the open tab survives a reconnect.
+        val shown = (current as? LinkStatus.Connected)?.device ?: (current as? LinkStatus.Reconnecting)?.device
         when {
             !hasPermission -> PermissionScreen(vm::onPermissionResult)
-            current is LinkStatus.Connected -> ConnectedScreen(vm, current.device)
+            shown != null -> ConnectedScreen(vm, shown, live = current is LinkStatus.Connected)
             else -> NotConnectedScreen(vm, current)
         }
     }

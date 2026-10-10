@@ -8,6 +8,7 @@ import androidx.annotation.RequiresPermission
 import io.github.omegadestroyer.soundpeter.protocol.Frame
 import io.github.omegadestroyer.soundpeter.protocol.FrameParser
 import io.github.omegadestroyer.soundpeter.protocol.Wire
+import io.github.omegadestroyer.soundpeter.protocol.summary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +29,11 @@ import java.util.UUID
  * Reads have no timeout on purpose: after a touch control the H3 goes quiet for up to
  * about 15 s and then answers everything at once (docs/PROTOCOL.md section 10).
  */
-class SppLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constructor(device: BluetoothDevice) : Closeable {
+class SppLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constructor(
+    device: BluetoothDevice,
+    /** Gets one line per frame sent or received, when set. */
+    private val log: ((String) -> Unit)? = null,
+) : Closeable {
     private val socket: BluetoothSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(Wire.SPP_UUID))
     private val writeLock = Mutex()
     private var lastWrite = 0L
@@ -46,6 +51,7 @@ class SppLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constru
             socket.outputStream.flush()
         }
         lastWrite = SystemClock.elapsedRealtime()
+        log?.let { log -> FrameParser().feed(frame).forEach { log("send ${it.summary()}") } }
     }
 
     /** Every frame the earbuds send, reassembled by length. Ends with an IOException when the channel closes. */
@@ -56,7 +62,10 @@ class SppLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constru
         while (true) {
             val n = input.read(buffer)
             if (n < 0) throw IOException("channel closed")
-            for (frame in parser.feed(buffer.copyOf(n))) emit(frame)
+            for (frame in parser.feed(buffer.copyOf(n))) {
+                log?.invoke("recv ${frame.summary()}")
+                emit(frame)
+            }
         }
     }.flowOn(Dispatchers.IO)
 

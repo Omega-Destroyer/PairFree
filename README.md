@@ -17,9 +17,9 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 | Protocol spec                           | Written, from static analysis           |
 | Command table and test vectors          | Written, checked against the app's code |
 | Probe script (PC)                       | Written, run on an H3                   |
-| Confirmed on hardware                   | H3: reads, ANC mode change, reads over BLE. Air5 Pro+ later. |
+| Confirmed on hardware                   | H3: reads, ANC and other SETs, EQ layout, reads over BLE. Air5 Pro+ later. |
 | App design                              | Written. One look (Studio), five screens. |
-| Android app                             | Connection and battery screens. Other tabs not built yet. |
+| Android app                             | All four tabs: Home, Sound (EQ), Controls, Device. Being tried on an H3. |
 | iOS and Windows apps                    | Planned, after Android                  |
 | Firmware update                         | Planned for Qualcomm models, opt-in     |
 

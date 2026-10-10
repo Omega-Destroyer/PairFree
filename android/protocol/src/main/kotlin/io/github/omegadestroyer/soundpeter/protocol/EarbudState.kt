@@ -10,8 +10,7 @@ package io.github.omegadestroyer.soundpeter.protocol
 public data class EarbudState(val values: Map<Command, Value> = emptyMap()) {
     /** Applies one received frame. Frames that are not replies the app understands are ignored. */
     public fun update(frame: Frame): EarbudState {
-        if (frame.vendor != Wire.VENDOR_MAIN || !frame.isReply) return this
-        val command = BY_GET[frame.answers] ?: return this
+        val command = Replies.commandFor(frame) ?: return this
         val value = Replies.decode(command, frame.payload) ?: return this
         return copy(values = values + (command to value))
     }
@@ -31,7 +30,30 @@ public data class EarbudState(val values: Map<Command, Value> = emptyMap()) {
 
     public fun levels(command: Command): List<Level> = (values[command] as? Value.Levels)?.levels.orEmpty()
 
-    private companion object {
-        val BY_GET: Map<Int, Command> = Command.entries.mapNotNull { c -> c.get?.let { it to c } }.toMap()
+    public val keys: List<KeyBinding> get() = (values[Command.CUSTOM_KEYS] as? Value.Keys)?.keys.orEmpty()
+
+    /**
+     * The state as it should be once the earbuds have applied a SET of [command] with
+     * [payload], so the change can show at once. The reply that follows replaces it.
+     * Commands that have not answered yet, and SETs whose effect is not a value, leave
+     * the state as it is.
+     */
+    public fun expect(command: Command, vararg payload: Int): EarbudState {
+        if (command !in values) return this
+        val value: Value = when (command.kind) {
+            Kind.SWITCH -> Value.Switch(payload.singleOrNull() == 1)
+            Kind.ENUM, Kind.PERCENT, Kind.MINUTES -> Value.Number(payload.singleOrNull() ?: return this)
+            Kind.LEVEL_LIST -> {
+                val code = payload.singleOrNull() ?: return this
+                Value.Levels(levels(command).map { it.copy(active = it.code == code) })
+            }
+            Kind.KEY_MAP -> {
+                if (payload.size != 2) return this
+                val (gesture, action) = payload
+                Value.Keys(keys.map { if (it.gesture == gesture) it.copy(action = action) else it })
+            }
+            Kind.TEXT, Kind.RAW, Kind.ACTION -> return this
+        }
+        return copy(values = values + (command to value))
     }
 }

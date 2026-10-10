@@ -22,6 +22,7 @@
     <string name="failed_no_permission">Bluetooth access is turned off for SoundPeter.</string>
 
     <string name="connected">Connected</string>
+    <string name="reconnecting">Reconnecting…</string>
     <string name="firmware">Firmware %1$s</string>
     <string name="switch_earbuds">Switch</string>
     <string name="reading">Reading the earbuds…</string>
@@ -36,5 +37,110 @@
     <string name="tab_sound">Sound</string>
     <string name="tab_controls">Controls</string>
     <string name="tab_device">Device</string>
-    <string name="not_built">This screen comes in a later step.</string>
+
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset">Reset</string>
+    <string name="increase">Increase</string>
+    <string name="decrease">Decrease</string>
+    <string name="code_unknown">Code %1$s</string>
+
+    <string name="noise_control">Noise control</string>
+    <string name="anc_off">Off</string>
+    <string name="anc_cancelling">Cancelling</string>
+    <string name="anc_transparency">Transparency</string>
+    <string name="scene">Scene</string>
+    <string name="scene_adaptive">Adaptive</string>
+    <string name="scene_indoor">Indoor</string>
+    <string name="scene_outdoor">Outdoor</string>
+    <string name="scene_traffic">Traffic</string>
+    <string name="scene_wind">Wind</string>
+    <string name="scene_level">Level %1$d</string>
+    <string name="transparency_level">Level</string>
+    <string name="transparency_voice">Voice</string>
+    <string name="transparency_standard">Standard</string>
+
+    <string name="quick_switches">Quick switches</string>
+    <string name="game_mode">Game mode</string>
+    <string name="two_devices">Two devices</string>
+    <string name="in_ear_detection">In-ear detection</string>
+    <string name="ldac">LDAC</string>
+    <string name="needs_ldac_off">Turn LDAC off to use this</string>
+    <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
+
+    <string name="sound_profile">Sound</string>
+    <string name="eq_unavailable">The equalizer layout for these earbuds is not known yet.</string>
+    <string name="eq_stock">Stock</string>
+    <string name="eq_new">New</string>
+    <string name="eq_new_unsaved">New, not saved</string>
+    <string name="eq_on_earbuds">On the earbuds: %1$s</string>
+    <string name="eq_preset_fixed">Presets are fixed curves. Pick Stock, New or one of your own profiles to set bands one by one.</string>
+    <string name="eq_edited">%1$s, edited</string>
+    <string name="eq_graph_description">Equalizer curve. Pick a band below to change it.</string>
+    <string name="hz">%1$s Hz</string>
+    <string name="khz">%1$s kHz</string>
+    <string name="db">%1$s dB</string>
+    <string name="preamp">Preamp</string>
+    <string name="eq_save">Save profile</string>
+    <string name="eq_name_hint">Name</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="eq_import">Import file</string>
+    <string name="eq_export">Export file</string>
+    <string name="eq_exported">Saved the profile file.</string>
+    <string name="eq_export_failed">Could not write the file.</string>
+    <string name="eq_imported">Added the profile from the file.</string>
+    <string name="eq_import_wrong">That file is not a SoundPeter profile for these earbuds.</string>
+    <string name="eq_delete">Delete %1$s</string>
+    <string name="eq_delete_title">Delete %1$s?</string>
+    <string name="eq_delete_body">The profile is removed from this phone. The earbuds keep the sound they have now.</string>
+    <string name="eq_note">0 dB on every band is the earbuds\' own tuning. The earbuds cannot report their EQ, so this shows what this phone last sent.</string>
+
+    <string name="taps">Taps</string>
+    <string name="gesture_tap">Tap</string>
+    <string name="gesture_double">Double tap</string>
+    <string name="gesture_triple">Triple tap</string>
+    <string name="gesture_hold">Press and hold</string>
+    <string name="pick_action">%1$s, %2$s</string>
+    <string name="action_none">Nothing</string>
+    <string name="action_volume_up">Volume up</string>
+    <string name="action_volume_down">Volume down</string>
+    <string name="action_play_pause">Play or pause</string>
+    <string name="action_game_mode">Game mode</string>
+    <string name="action_previous">Previous track</string>
+    <string name="action_next">Next track</string>
+    <string name="action_anc_cycle">Noise control</string>
+    <string name="action_voice_assistant">Voice assistant</string>
+    <string name="touch_controls">Touch controls</string>
+    <string name="touch_controls_note">When off, the earbuds ignore taps and holds.</string>
+    <string name="reset_gestures">Reset gestures</string>
+    <string name="reset_gestures_title">Reset gestures?</string>
+    <string name="reset_gestures_body">Every tap and hold goes back to what the earbuds came with.</string>
+    <string name="no_controls">These earbuds did not report any touch controls.</string>
+
+    <string name="connection">Connection</string>
+    <string name="prompts_and_power">Prompts and power</string>
+    <string name="prompt_volume">Voice prompt volume</string>
+    <string name="prompt_language">Prompt language</string>
+    <string name="auto_shutdown">Turn off when idle</string>
+    <string name="shutdown_never">Never</string>
+    <string name="shutdown_minutes">After %1$d min</string>
+    <string name="language_en" translatable="false">English</string>
+    <string name="language_zh" translatable="false">中文</string>
+    <string name="language_de" translatable="false">Deutsch</string>
+    <string name="language_ja" translatable="false">日本語</string>
+    <string name="language_fr" translatable="false">Français</string>
+    <string name="language_es" translatable="false">Español</string>
+    <string name="language_it" translatable="false">Italiano</string>
+    <string name="find_earbuds">Find my earbuds</string>
+    <string name="find_warning">Take the earbuds out of your ears first. The beep is loud.</string>
+    <string name="beep">Beep %1$s</string>
+    <string name="stop_beep">Stop %1$s</string>
+    <string name="maintenance">Maintenance</string>
+    <string name="copy_report">Copy device report</string>
+    <string name="report_copied">Copied. Paste it into a device report issue on the project page to help support these earbuds.</string>
+    <string name="factory_reset">Factory reset</string>
+    <string name="factory_reset_title">Factory reset the earbuds?</string>
+    <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this phone; then pair them again in the Bluetooth settings.</string>
 </resources>

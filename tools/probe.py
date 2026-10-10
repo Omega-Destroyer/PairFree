@@ -57,6 +57,8 @@ COMMANDS = {
     "light_effect":       (0x030A, 0x030B, "0 off, 1 on"),
     "privacy_mode":       (0x036B, 0x036C, "0 off, 1 on"),
     "reset_state":        (0x0367, None,   "1 = was just factory reset"),
+    "find_left":          (0x034A, 0x033A, "0 stop, 1 beep"),
+    "find_right":         (0x034B, 0x033B, "0 stop, 1 beep"),
 }
 
 GESTURES = {1: "tap L", 2: "tap R", 3: "double L", 4: "double R",

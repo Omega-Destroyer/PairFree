@@ -252,3 +252,712 @@ service 0000180f-0000-1000-8000-00805f9b34fb  Battery Service
  25.46s GET battery_left (header dropped): write 00 0a 03 06
  25.57s   notify 00 0a 83 06 00 64   |.....d|
  28.87s disconnected
+
+---- Phone session, 2026-10-10 11:23 to 11:28 (local, UTC-6) ----
+Samsung SM-S721W, Android Bluetooth HCI snoop log ("Enabled"), pulled with adb bugreport.
+Only SoundPEATS frames are kept; everything else in the log was discarded. Frames from
+the earbuds carry version byte 03, frames from the phone 04 (column vN).
+11:23:56-11:25:11 SoundPeter (debug build) on the phone:
+  transparency on, then levels Voice, Standard, Voice, Standard;
+  LDAC off (the channel closed about 3.4 s later; SoundPeter reconnected at 11:24:50);
+  two devices off (closed about 3.8 s later; reconnected at 11:25:03).
+11:25:23-11:27:34 PeatsAudio on the phone:
+  transparency on, levels Voice, Standard, Voice, Standard; LDAC off (PeatsAudio
+  reconnected at 11:26:22); dual device off (reconnected at 11:26:45);
+  Customize EQ opened (sends the current curve), 50 Hz to +6 and Save, Reset,
+  then 17 kHz dragged to +6 and to -6 and Save.
+Owner, by ear: in both apps Voice takes effect but going back to Standard does not change
+the sound. In both apps LDAC off turns two devices on, and two devices off turns LDAC on.
+The EQ payloads are read in docs/PROTOCOL.md section 10 and are test vectors
+(eq_layout in data/test_vectors.json).
+
+11:23:56.036 phone->buds v4 000A 0309
+11:23:56.054 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+11:23:56.092 phone->buds v4 000A 0306
+11:23:56.114 buds->phone v3 000A 8306 00 64
+11:23:56.156 phone->buds v4 000A 0307
+11:23:56.179 buds->phone v3 000A 8307 00 64
+11:23:56.207 phone->buds v4 000A 0323
+11:23:56.240 buds->phone v3 000A 8323 00 2f
+11:23:56.277 phone->buds v4 000A 0310
+11:23:56.331 phone->buds v4 000A 0324
+11:23:56.338 buds->phone v3 000A 8310 00 00
+11:23:56.342 buds->phone v3 000A 8324 00 11 01 12 00 13 00 14 00
+11:23:56.382 phone->buds v4 000A 034C
+11:23:56.436 phone->buds v4 000A 0364
+11:23:56.446 buds->phone v3 000A 834C 00 01 00 02 01
+11:23:56.486 phone->buds v4 000A 030E
+11:23:56.514 buds->phone v3 000A 830E 00 00
+11:23:56.565 phone->buds v4 000A 0314
+11:23:56.595 buds->phone v3 000A 8314 00 00
+11:23:56.643 phone->buds v4 000A 0338
+11:23:56.669 buds->phone v3 000A 8338 00 01
+11:23:56.727 phone->buds v4 000A 0335
+11:23:56.754 buds->phone v3 000A 8335 00 00
+11:23:56.778 phone->buds v4 000A 030C
+11:23:56.831 phone->buds v4 000A 0312
+11:23:56.856 buds->phone v3 000A 8312 00 00
+11:23:56.885 phone->buds v4 000A 03AA
+11:23:56.910 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+11:23:56.943 phone->buds v4 000A 0319
+11:23:56.966 buds->phone v3 000A 8319 00 12
+11:23:56.993 phone->buds v4 000A 036E
+11:23:57.047 phone->buds v4 000A 0321
+11:23:57.068 buds->phone v3 000A 8321 00 00
+11:23:57.103 phone->buds v4 000A 0331
+11:23:57.157 phone->buds v4 000A 033C
+11:23:57.209 phone->buds v4 000A 0327
+11:23:57.261 phone->buds v4 000A 0357
+11:23:57.312 phone->buds v4 000A 0329
+11:23:57.363 phone->buds v4 000A 0348
+11:23:57.416 phone->buds v4 000A 0346
+11:23:57.469 phone->buds v4 000A 0340
+11:23:57.520 phone->buds v4 000A 030A
+11:23:57.572 phone->buds v4 000A 036B
+11:23:57.626 phone->buds v4 000A 0367
+11:23:57.679 phone->buds v4 000A 034A
+11:23:57.700 buds->phone v3 000A 834A 00 00
+11:23:57.733 phone->buds v4 000A 034B
+11:23:57.758 buds->phone v3 000A 834B 00 00
+11:24:17.863 phone->buds v4 000A 0311 02
+11:24:19.886 buds->phone v3 000A 8310 00 02
+11:24:20.902 phone->buds v4 000A 0310
+11:24:20.932 buds->phone v3 000A 8310 00 02
+11:24:24.004 phone->buds v4 000A 034D 01
+11:24:24.049 buds->phone v3 000A 834C 00 01 01 02 00
+11:24:27.033 phone->buds v4 000A 034C
+11:24:27.069 buds->phone v3 000A 834C 00 01 01 02 00
+11:24:27.743 phone->buds v4 000A 0306
+11:24:27.773 buds->phone v3 000A 8306 00 64
+11:24:27.798 phone->buds v4 000A 0323
+11:24:27.826 buds->phone v3 000A 8323 00 2f
+11:24:27.859 phone->buds v4 000A 0307
+11:24:27.885 buds->phone v3 000A 8307 00 64
+11:24:29.895 phone->buds v4 000A 034D 02
+11:24:30.079 buds->phone v3 000A 834C 00 01 00 02 01
+11:24:32.927 phone->buds v4 000A 034C
+11:24:32.956 buds->phone v3 000A 834C 00 01 00 02 01
+11:24:35.832 phone->buds v4 000A 034D 01
+11:24:36.061 buds->phone v3 000A 834C 00 01 01 02 00
+11:24:38.862 phone->buds v4 000A 034C
+11:24:38.890 buds->phone v3 000A 834C 00 01 01 02 00
+11:24:39.237 phone->buds v4 000A 034D 02
+11:24:39.329 buds->phone v3 000A 834C 00 01 00 02 01
+11:24:42.275 phone->buds v4 000A 034C
+11:24:42.300 buds->phone v3 000A 834C 00 01 00 02 01
+11:24:45.329 phone->buds v4 000A 0339 00
+11:24:48.370 phone->buds v4 000A 0338
+11:24:50.741 phone->buds v4 000A 0309
+11:24:50.796 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+11:24:50.838 phone->buds v4 000A 0306
+11:24:50.889 phone->buds v4 000A 0307
+11:24:50.940 phone->buds v4 000A 0323
+11:24:50.940 buds->phone v3 000A 8306 00 64
+11:24:50.941 buds->phone v3 000A 8307 00 64
+11:24:51.002 phone->buds v4 000A 0310
+11:24:51.002 buds->phone v3 000A 8317 00 01
+11:24:51.003 buds->phone v3 000A 8323 00 2f
+11:24:51.053 phone->buds v4 000A 0324
+11:24:51.060 buds->phone v3 000A 8310 00 00
+11:24:51.064 buds->phone v3 000A 8324 00 11 01 12 00 13 00 14 00
+11:24:51.109 phone->buds v4 000A 034C
+11:24:51.144 buds->phone v3 000A 834C 00 01 00 02 01
+11:24:51.154 phone->buds v4 000A 0364
+11:24:51.205 phone->buds v4 000A 030E
+11:24:51.253 buds->phone v3 000A 830E 00 00
+11:24:51.256 phone->buds v4 000A 0314
+11:24:51.310 phone->buds v4 000A 0338
+11:24:51.361 phone->buds v4 000A 0335
+11:24:51.393 buds->phone v3 000A 8314 00 01
+11:24:51.397 buds->phone v3 000A 8338 00 00
+11:24:51.404 buds->phone v3 000A 8335 00 00
+11:24:51.435 phone->buds v4 000A 030C
+11:24:51.493 phone->buds v4 000A 0312
+11:24:51.528 buds->phone v3 000A 8312 00 00
+11:24:51.545 phone->buds v4 000A 03AA
+11:24:51.597 phone->buds v4 000A 0319
+11:24:51.607 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+11:24:51.609 buds->phone v3 000A 8319 00 12
+11:24:51.649 phone->buds v4 000A 036E
+11:24:51.700 phone->buds v4 000A 0321
+11:24:51.736 buds->phone v3 000A 8321 00 00
+11:24:51.751 phone->buds v4 000A 0331
+11:24:51.803 phone->buds v4 000A 033C
+11:24:51.855 phone->buds v4 000A 0327
+11:24:51.905 phone->buds v4 000A 0357
+11:24:51.957 phone->buds v4 000A 0329
+11:24:52.009 phone->buds v4 000A 0348
+11:24:52.060 phone->buds v4 000A 0346
+11:24:52.113 phone->buds v4 000A 0340
+11:24:52.164 phone->buds v4 000A 030A
+11:24:52.214 phone->buds v4 000A 036B
+11:24:52.266 phone->buds v4 000A 0367
+11:24:52.349 phone->buds v4 000A 034A
+11:24:52.359 buds->phone v3 000A 834A 00 00
+11:24:52.369 phone->buds v4 000A 034B
+11:24:52.437 buds->phone v3 000A 834B 00 00
+11:24:53.870 phone->buds v4 000A 0315 00
+11:24:56.894 phone->buds v4 000A 0314
+11:25:03.256 phone->buds v4 000A 0309
+11:25:03.269 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+11:25:03.312 phone->buds v4 000A 0306
+11:25:03.340 buds->phone v3 000A 8306 00 64
+11:25:03.374 phone->buds v4 000A 0307
+11:25:03.427 phone->buds v4 000A 0323
+11:25:03.561 phone->buds v4 000A 0310
+11:25:03.561 phone->buds v4 000A 0324
+11:25:03.561 buds->phone v3 000A 8307 00 64
+11:25:03.562 buds->phone v3 000A 8323 00 2f
+11:25:03.617 buds->phone v3 000A 8310 00 00
+11:25:03.617 buds->phone v3 000A 8324 00 11 01 12 00 13 00 14 00
+11:25:03.619 phone->buds v4 000A 034C
+11:25:03.630 buds->phone v3 000A 834C 00 01 00 02 01
+11:25:03.673 phone->buds v4 000A 0364
+11:25:03.727 phone->buds v4 000A 030E
+11:25:03.753 buds->phone v3 000A 830E 00 00
+11:25:03.798 phone->buds v4 000A 0314
+11:25:03.829 buds->phone v3 000A 8314 00 00
+11:25:03.866 phone->buds v4 000A 0338
+11:25:03.890 buds->phone v3 000A 8338 00 01
+11:25:03.942 phone->buds v4 000A 0335
+11:25:03.974 buds->phone v3 000A 8335 00 00
+11:25:03.999 phone->buds v4 000A 030C
+11:25:04.053 phone->buds v4 000A 0312
+11:25:04.099 buds->phone v3 000A 8312 00 00
+11:25:04.106 phone->buds v4 000A 03AA
+11:25:04.121 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+11:25:04.159 phone->buds v4 000A 0319
+11:25:04.188 buds->phone v3 000A 8319 00 12
+11:25:04.217 phone->buds v4 000A 036E
+11:25:04.272 phone->buds v4 000A 0321
+11:25:04.305 buds->phone v3 000A 8321 00 00
+11:25:04.323 phone->buds v4 000A 0331
+11:25:04.378 phone->buds v4 000A 033C
+11:25:04.434 phone->buds v4 000A 0327
+11:25:04.489 phone->buds v4 000A 0357
+11:25:04.545 phone->buds v4 000A 0329
+11:25:04.601 phone->buds v4 000A 0348
+11:25:04.658 phone->buds v4 000A 0346
+11:25:04.714 phone->buds v4 000A 0340
+11:25:04.767 phone->buds v4 000A 030A
+11:25:04.823 phone->buds v4 000A 036B
+11:25:04.876 phone->buds v4 000A 0367
+11:25:04.936 phone->buds v4 000A 034A
+11:25:04.967 buds->phone v3 000A 834A 00 00
+11:25:04.989 phone->buds v4 000A 034B
+11:25:05.015 buds->phone v3 000A 834B 00 00
+11:25:23.219 phone->buds v4 000A 0309
+11:25:23.250 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+11:25:23.271 phone->buds v4 000A 0309
+11:25:23.273 phone->buds v4 000A 0306
+11:25:23.284 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+11:25:23.288 buds->phone v3 000A 8306 00 64
+11:25:23.524 phone->buds v4 000A 0307
+11:25:23.554 buds->phone v3 000A 8307 00 64
+11:25:23.776 phone->buds v4 000A 0323
+11:25:23.830 phone->buds v4 000A 0324
+11:25:23.830 phone->buds v4 000A 0367
+11:25:23.869 buds->phone v3 000A 8323 00 2f
+11:25:23.871 buds->phone v3 000A 8324 00 11 01 12 00 13 00 14 00
+11:25:23.883 phone->buds v4 000A 0364
+11:25:23.933 phone->buds v4 000A 034C
+11:25:23.962 buds->phone v3 000A 834C 00 01 00 02 01
+11:25:24.004 phone->buds v4 000A 0314
+11:25:24.015 buds->phone v3 000A 8314 00 00
+11:25:24.117 phone->buds v4 000A 0312
+11:25:24.143 buds->phone v3 000A 8312 00 00
+11:25:24.229 phone->buds v4 000A 030E
+11:25:24.260 buds->phone v3 000A 830E 00 00
+11:25:24.342 phone->buds v4 000A 03AA
+11:25:24.369 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+11:25:24.454 phone->buds v4 000A 0310
+11:25:24.464 buds->phone v3 000A 8310 00 00
+11:25:24.567 phone->buds v4 000A 0364
+11:25:24.679 phone->buds v4 000A 0338
+11:25:24.689 buds->phone v3 000A 8338 00 01
+11:25:26.211 phone->buds v4 000A 0311 02
+11:25:28.056 buds->phone v3 000A 8310 00 02
+11:25:28.059 buds->phone v3 000A 8310 00 02
+11:25:32.312 phone->buds v4 000A 034D 01
+11:25:32.451 buds->phone v3 000A 834C 00 01 01 02 00
+11:25:37.904 phone->buds v4 000A 034D 02
+11:25:37.969 buds->phone v3 000A 834C 00 01 00 02 01
+11:25:43.161 phone->buds v4 000A 034D 01
+11:25:43.255 buds->phone v3 000A 834C 00 01 01 02 00
+11:25:47.761 phone->buds v4 000A 034D 02
+11:25:47.773 buds->phone v3 000A 834C 00 01 00 02 01
+11:26:10.029 phone->buds v4 000A 0339 00
+11:26:22.104 phone->buds v4 000A 0309
+11:26:22.186 phone->buds v4 000A 0306
+11:26:22.212 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+11:26:22.259 buds->phone v3 000A 8306 00 64
+11:26:22.359 phone->buds v4 000A 0307
+11:26:22.389 buds->phone v3 000A 8307 00 64
+11:26:22.615 phone->buds v4 000A 0323
+11:26:22.626 phone->buds v4 000A 0367
+11:26:22.632 buds->phone v3 000A 8323 00 2f
+11:26:22.803 phone->buds v4 000A 0314
+11:26:22.808 phone->buds v4 000A 0367
+11:26:22.864 phone->buds v4 000A 0324
+11:26:22.893 buds->phone v3 000A 8314 00 01
+11:26:22.896 buds->phone v3 000A 8324 00 11 01 12 00 13 00 14 00
+11:26:22.912 phone->buds v4 000A 034C
+11:26:22.914 phone->buds v4 000A 0364
+11:26:23.000 phone->buds v4 000A 0312
+11:26:23.000 phone->buds v4 000A 0314
+11:26:23.006 buds->phone v3 000A 834C 00 01 00 02 01
+11:26:23.029 phone->buds v4 000A 030E
+11:26:23.055 buds->phone v3 000A 8312 00 00
+11:26:23.056 buds->phone v3 000A 8314 00 01
+11:26:23.095 phone->buds v4 000A 0312
+11:26:23.099 buds->phone v3 000A 830E 00 00
+11:26:23.133 buds->phone v3 000A 8312 00 00
+11:26:23.142 phone->buds v4 000A 03AA
+11:26:23.210 phone->buds v4 000A 030E
+11:26:23.212 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+11:26:23.255 buds->phone v3 000A 830E 00 00
+11:26:23.256 phone->buds v4 000A 0310
+11:26:23.322 buds->phone v3 000A 8310 00 00
+11:26:23.323 phone->buds v4 000A 03AA
+11:26:23.369 phone->buds v4 000A 0364
+11:26:23.657 phone->buds v4 000A 0310
+11:26:23.657 phone->buds v4 000A 0338
+11:26:23.657 phone->buds v4 000A 0364
+11:26:23.661 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+11:26:23.664 phone->buds v4 000A 0338
+11:26:23.734 buds->phone v3 000A 8310 00 00
+11:26:23.735 buds->phone v3 000A 8338 00 00
+11:26:23.761 buds->phone v3 000A 8338 00 00
+11:26:33.036 phone->buds v4 000A 0315 00
+11:26:45.159 phone->buds v4 000A 0309
+11:26:45.169 phone->buds v4 000A 0306
+11:26:45.169 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+11:26:45.199 buds->phone v3 000A 8306 00 64
+11:26:45.414 phone->buds v4 000A 0307
+11:26:45.429 buds->phone v3 000A 8307 00 64
+11:26:45.667 phone->buds v4 000A 0323
+11:26:45.685 phone->buds v4 000A 0367
+11:26:45.689 buds->phone v3 000A 8323 00 2f
+11:26:45.860 phone->buds v4 000A 0314
+11:26:45.948 buds->phone v3 000A 8314 00 00
+11:26:45.973 phone->buds v4 000A 0312
+11:26:45.999 buds->phone v3 000A 8312 00 00
+11:26:46.051 phone->buds v4 000A 0367
+11:26:46.051 phone->buds v4 000A 0324
+11:26:46.079 buds->phone v3 000A 8324 00 11 01 12 00 13 00 14 00
+11:26:46.087 phone->buds v4 000A 030E
+11:26:46.088 phone->buds v4 000A 0364
+11:26:46.098 buds->phone v3 000A 830E 00 00
+11:26:46.154 phone->buds v4 000A 034C
+11:26:46.182 buds->phone v3 000A 834C 00 01 00 02 01
+11:26:46.201 phone->buds v4 000A 03AA
+11:26:46.225 phone->buds v4 000A 0314
+11:26:46.225 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+11:26:46.234 buds->phone v3 000A 8314 00 00
+11:26:46.315 phone->buds v4 000A 0310
+11:26:46.338 phone->buds v4 000A 0312
+11:26:46.343 buds->phone v3 000A 8310 00 00
+11:26:46.349 buds->phone v3 000A 8312 00 00
+11:26:46.429 phone->buds v4 000A 0364
+11:26:46.453 phone->buds v4 000A 030E
+11:26:46.490 buds->phone v3 000A 830E 00 00
+11:26:46.542 phone->buds v4 000A 0338
+11:26:46.565 phone->buds v4 000A 03AA
+11:26:46.569 buds->phone v3 000A 8338 00 01
+11:26:46.578 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+11:26:46.678 phone->buds v4 000A 0310
+11:26:46.707 buds->phone v3 000A 8310 00 00
+11:26:46.798 phone->buds v4 000A 0364
+11:26:46.914 phone->buds v4 000A 0338
+11:26:46.926 buds->phone v3 000A 8338 00 01
+11:26:47.608 phone->buds v4 001D 0E01 a1 ff 88 00 96 01 4a 08 00
+11:26:47.659 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe d4 19 99
+11:26:47.713 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:26:47.766 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:26:47.818 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:26:47.871 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:26:47.925 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:26:47.977 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 6a 60 00
+11:26:48.029 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 c0 18 00
+11:26:48.081 phone->buds v4 001D 0E01 aa ff 88 c7 38 00 6c 18 00
+11:26:56.837 phone->buds v4 001D 0E01 a1 ff 88 00 96 02 3a 08 00
+11:26:56.887 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+11:26:56.956 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:26:56.991 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:26:57.043 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:26:57.095 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:26:57.148 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:26:57.200 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+11:26:57.253 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+11:26:57.306 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff f4 18 00
+11:27:06.321 phone->buds v4 001D 0E01 a1 ff 88 00 96 02 3a 08 00
+11:27:06.373 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+11:27:06.772 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:27:06.772 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:27:06.772 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:27:06.772 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:27:06.772 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:27:06.772 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+11:27:06.772 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+11:27:06.788 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff f4 18 00
+11:27:18.288 phone->buds v4 001D 0E01 a1 ff 88 00 96 02 3a 08 00
+11:27:18.339 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+11:27:18.771 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:27:18.771 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:27:18.771 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:27:18.771 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:27:18.771 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:27:18.771 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+11:27:18.771 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+11:27:18.771 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff f4 18 00
+11:27:23.420 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+11:27:23.471 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+11:27:23.523 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:27:23.575 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:27:23.627 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:27:23.680 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:27:23.732 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:27:23.784 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+11:27:23.837 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+11:27:23.888 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff f4 18 00
+11:27:26.035 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+11:27:26.087 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+11:27:26.210 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:27:26.210 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:27:26.253 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:27:26.312 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:27:26.370 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:27:26.428 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+11:27:26.487 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+11:27:26.545 phone->buds v4 001D 0E01 aa ff 88 c7 38 01 5c 18 00
+11:27:29.393 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+11:27:29.447 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+11:27:29.502 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:27:29.558 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:27:29.614 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:27:29.670 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:27:29.725 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:27:29.783 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+11:27:29.839 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+11:27:31.397 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+11:27:31.448 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+11:27:31.499 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:27:31.551 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:27:31.604 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:27:31.656 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:27:31.708 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:27:31.761 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+11:27:31.813 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+11:27:31.865 phone->buds v4 001D 0E01 aa ff 88 c7 38 fe 8c 18 00
+11:27:33.525 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+11:27:33.577 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+11:27:33.628 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+11:27:33.679 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+11:27:33.730 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+11:27:33.783 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+11:27:33.833 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+11:27:33.885 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+11:27:33.937 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+11:27:33.989 phone->buds v4 001D 0E01 aa ff 88 c7 38 fe 8c 18 00
+11:28:09.644 buds->phone v3 000A 8307 00 ff
+11:28:09.650 buds->phone v3 000A 8306 00 ff
+
+---- PeatsAudio presets, 2026-10-10 12:07 to 12:09 (local, UTC-6) ----
+Same phone and method as the session above; earbud frames only. PeatsAudio connected at
+12:07:48 and sent its saved curve unasked at 12:07:50. The owner then picked the presets
+in grid order about 7 s apart: SOUNDPEATS Classic (12:07:53, the base curve), Bass Boost,
+Bass Reduce, Treble Boost, Electronic, Pop, Classical, Rock, Folk, Book Whisper, HIFI and
+ACG (12:09:16). The decoded curves are the S5 "eq.presets" in data/devices.json and the
+eq_preset test vectors. Every 0E01 band write, from PeatsAudio and SoundPeter alike, is
+answered by 001D 0F81 01 (the first session's filter dropped those replies).
+
+12:07:48.429 phone->buds v4 000A 0309
+12:07:48.452 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+12:07:48.480 phone->buds v4 000A 0309
+12:07:48.482 phone->buds v4 000A 0306
+12:07:48.511 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+12:07:48.512 buds->phone v3 000A 8306 00 64
+12:07:48.735 phone->buds v4 000A 0307
+12:07:48.763 buds->phone v3 000A 8307 00 64
+12:07:48.990 phone->buds v4 000A 0323
+12:07:49.102 buds->phone v3 000A 8323 00 29
+12:07:49.288 phone->buds v4 000A 0367
+12:07:49.288 phone->buds v4 000A 0324
+12:07:49.317 buds->phone v3 000A 8324 00 11 01 12 00 13 00 14 00
+12:07:49.325 phone->buds v4 000A 0364
+12:07:49.391 phone->buds v4 000A 034C
+12:07:49.417 buds->phone v3 000A 834C 00 01 00 02 01
+12:07:49.460 phone->buds v4 000A 0314
+12:07:49.488 buds->phone v3 000A 8314 00 00
+12:07:49.572 phone->buds v4 000A 0312
+12:07:49.600 buds->phone v3 000A 8312 00 00
+12:07:49.688 phone->buds v4 000A 030E
+12:07:49.718 buds->phone v3 000A 830E 00 00
+12:07:49.802 phone->buds v4 000A 03AA
+12:07:49.829 buds->phone v3 000A 83AA 00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+12:07:49.915 phone->buds v4 000A 0310
+12:07:49.943 buds->phone v3 000A 8310 00 00
+12:07:50.029 phone->buds v4 000A 0364
+12:07:50.151 phone->buds v4 000A 0338
+12:07:50.178 buds->phone v3 000A 8338 00 01
+12:07:50.974 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+12:07:51.002 buds->phone v3 001D 0F81 01
+12:07:51.025 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+12:07:51.050 buds->phone v3 001D 0F81 01
+12:07:51.079 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+12:07:51.101 buds->phone v3 001D 0F81 01
+12:07:51.132 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+12:07:51.163 buds->phone v3 001D 0F81 01
+12:07:51.185 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+12:07:51.209 buds->phone v3 001D 0F81 01
+12:07:51.237 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+12:07:51.263 buds->phone v3 001D 0F81 01
+12:07:51.288 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+12:07:51.311 buds->phone v3 001D 0F81 01
+12:07:51.341 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+12:07:51.365 buds->phone v3 001D 0F81 01
+12:07:51.393 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+12:07:51.417 buds->phone v3 001D 0F81 01
+12:07:51.447 phone->buds v4 001D 0E01 aa ff 88 c7 38 fe 8c 18 00
+12:07:51.471 buds->phone v3 001D 0F81 01
+12:07:53.561 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+12:07:53.591 buds->phone v3 001D 0F81 01
+12:07:53.616 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+12:07:53.643 buds->phone v3 001D 0F81 01
+12:07:53.673 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+12:07:53.696 buds->phone v3 001D 0F81 01
+12:07:53.728 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+12:07:53.752 buds->phone v3 001D 0F81 01
+12:07:53.782 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+12:07:53.803 buds->phone v3 001D 0F81 01
+12:07:53.835 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+12:07:53.861 buds->phone v3 001D 0F81 01
+12:07:53.888 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+12:07:53.912 buds->phone v3 001D 0F81 01
+12:07:53.941 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+12:07:53.966 buds->phone v3 001D 0F81 01
+12:07:53.996 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+12:07:54.018 buds->phone v3 001D 0F81 01
+12:07:54.054 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff f4 18 00
+12:07:54.077 buds->phone v3 001D 0F81 01
+12:08:04.189 phone->buds v4 001D 0E01 a1 ff 88 00 96 01 20 08 00
+12:08:04.241 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe e0 19 99
+12:08:04.381 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff d0 0b 33
+12:08:04.381 phone->buds v4 001D 0E01 a4 ff 88 09 60 01 0e 10 00
+12:08:04.384 buds->phone v3 001D 0F81 01
+12:08:04.387 buds->phone v3 001D 0F81 01
+12:08:04.394 buds->phone v3 001D 0F81 01
+12:08:04.405 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+12:08:04.405 buds->phone v3 001D 0F81 01
+12:08:04.414 buds->phone v3 001D 0F81 01
+12:08:04.459 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+12:08:04.490 buds->phone v3 001D 0F81 01
+12:08:04.513 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+12:08:04.524 buds->phone v3 001D 0F81 01
+12:08:04.567 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+12:08:04.606 buds->phone v3 001D 0F81 01
+12:08:04.623 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+12:08:04.644 buds->phone v3 001D 0F81 01
+12:08:04.678 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff f4 18 00
+12:08:04.699 buds->phone v3 001D 0F81 01
+12:08:12.816 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 78 08 00
+12:08:12.872 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 20 19 99
+12:08:13.500 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 40 0b 33
+12:08:13.500 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 b4 10 00
+12:08:13.500 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+12:08:13.500 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+12:08:13.500 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 6a 1c cc
+12:08:13.500 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+12:08:13.500 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 48 18 00
+12:08:13.500 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff f4 18 00
+12:08:13.508 buds->phone v3 001D 0F81 01
+12:08:13.511 buds->phone v3 001D 0F81 01
+12:08:13.572 buds->phone v3 001D 0F81 01
+12:08:13.572 buds->phone v3 001D 0F81 01
+12:08:13.578 buds->phone v3 001D 0F81 01
+12:08:13.580 buds->phone v3 001D 0F81 01
+12:08:13.583 buds->phone v3 001D 0F81 01
+12:08:13.586 buds->phone v3 001D 0F81 01
+12:08:13.588 buds->phone v3 001D 0F81 01
+12:08:13.593 buds->phone v3 001D 0F81 01
+12:08:19.324 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+12:08:19.378 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 98 19 99
+12:08:19.741 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 64 0b 33
+12:08:19.741 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 de 10 00
+12:08:19.741 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+12:08:19.741 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 86 18 00
+12:08:19.741 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff e2 1c cc
+12:08:19.741 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff a6 60 00
+12:08:19.742 buds->phone v3 001D 0F81 01
+12:08:19.747 buds->phone v3 001D 0F81 01
+12:08:19.751 buds->phone v3 001D 0F81 01
+12:08:19.754 buds->phone v3 001D 0F81 01
+12:08:19.757 buds->phone v3 001D 0F81 01
+12:08:19.762 buds->phone v3 001D 0F81 01
+12:08:19.765 buds->phone v3 001D 0F81 01
+12:08:19.769 buds->phone v3 001D 0F81 01
+12:08:19.780 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 b4 18 00
+12:08:19.795 buds->phone v3 001D 0F81 01
+12:08:19.838 phone->buds v4 001D 0E01 aa ff 88 c7 38 00 78 18 00
+12:08:19.873 buds->phone v3 001D 0F81 01
+12:08:25.074 phone->buds v4 001D 0E01 a1 ff 88 00 96 01 2c 08 00
+12:08:25.130 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe d4 19 99
+12:08:25.257 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff e2 0b 33
+12:08:25.257 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 1e 10 00
+12:08:25.259 buds->phone v3 001D 0F81 01
+12:08:25.267 buds->phone v3 001D 0F81 01
+12:08:25.272 buds->phone v3 001D 0F81 01
+12:08:25.274 buds->phone v3 001D 0F81 01
+12:08:25.292 phone->buds v4 001D 0E01 a5 ff 88 12 c0 00 f0 10 00
+12:08:25.317 buds->phone v3 001D 0F81 01
+12:08:25.352 phone->buds v4 001D 0E01 a6 ff 88 20 d0 ff 4c 2c cc
+12:08:25.374 buds->phone v3 001D 0F81 01
+12:08:25.409 phone->buds v4 001D 0E01 a7 ff 88 3a 98 00 f0 20 00
+12:08:25.436 buds->phone v3 001D 0F81 01
+12:08:25.468 phone->buds v4 001D 0E01 a8 ff 88 5d c0 fe d4 60 00
+12:08:25.494 buds->phone v3 001D 0F81 01
+12:08:25.525 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 96 10 00
+12:08:25.550 buds->phone v3 001D 0F81 01
+12:08:25.583 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff c4 10 00
+12:08:25.609 buds->phone v3 001D 0F81 01
+12:08:31.977 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 78 08 00
+12:08:32.029 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe d4 19 99
+12:08:32.223 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff c4 0b 33
+12:08:32.223 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 b4 10 00
+12:08:32.223 phone->buds v4 001D 0E01 a5 ff 88 12 c0 00 b4 10 00
+12:08:32.224 buds->phone v3 001D 0F81 01
+12:08:32.224 buds->phone v3 001D 0F81 01
+12:08:32.230 buds->phone v3 001D 0F81 01
+12:08:32.233 buds->phone v3 001D 0F81 01
+12:08:32.236 buds->phone v3 001D 0F81 01
+12:08:32.236 phone->buds v4 001D 0E01 a6 ff 88 20 d0 00 f0 18 00
+12:08:32.245 buds->phone v3 001D 0F81 01
+12:08:32.289 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff c4 1c cc
+12:08:32.320 buds->phone v3 001D 0F81 01
+12:08:32.342 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 88 60 00
+12:08:32.375 buds->phone v3 001D 0F81 01
+12:08:32.398 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 0c 18 00
+12:08:32.424 buds->phone v3 001D 0F81 01
+12:08:32.455 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff 4c 18 00
+12:08:32.480 buds->phone v3 001D 0F81 01
+12:08:39.027 phone->buds v4 001D 0E01 a1 ff 88 00 96 00 d2 08 00
+12:08:39.081 phone->buds v4 001D 0E01 a2 ff 88 01 e0 ff 4c 19 99
+12:08:39.178 phone->buds v4 001D 0E01 a3 ff 88 04 38 00 0c 0b 33
+12:08:39.179 buds->phone v3 001D 0F81 01
+12:08:39.182 buds->phone v3 001D 0F81 01
+12:08:39.186 buds->phone v3 001D 0F81 01
+12:08:39.191 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 c0 10 00
+12:08:39.198 buds->phone v3 001D 0F81 01
+12:08:39.248 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 20 10 00
+12:08:39.277 buds->phone v3 001D 0F81 01
+12:08:39.303 phone->buds v4 001D 0E01 a6 ff 88 20 d0 00 b4 18 00
+12:08:39.360 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff 76 18 00
+12:08:39.407 buds->phone v3 001D 0F81 01
+12:08:39.412 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 2e 60 00
+12:08:39.434 buds->phone v3 001D 0F81 01
+12:08:39.440 buds->phone v3 001D 0F81 01
+12:08:39.465 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 5a 18 00
+12:08:39.499 buds->phone v3 001D 0F81 01
+12:08:39.517 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff f4 18 00
+12:08:39.572 buds->phone v3 001D 0F81 01
+12:08:46.034 phone->buds v4 001D 0E01 a1 ff 88 00 96 01 20 08 00
+12:08:46.089 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe e0 19 99
+12:08:46.140 buds->phone v3 001D 0F81 01
+12:08:46.142 buds->phone v3 001D 0F81 01
+12:08:46.153 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff d0 0b 33
+12:08:46.161 buds->phone v3 001D 0F81 01
+12:08:46.208 phone->buds v4 001D 0E01 a4 ff 88 09 60 01 0e 10 00
+12:08:46.236 buds->phone v3 001D 0F81 01
+12:08:46.264 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 4a 10 00
+12:08:46.288 buds->phone v3 001D 0F81 01
+12:08:46.322 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 4a 18 00
+12:08:46.347 buds->phone v3 001D 0F81 01
+12:08:46.380 phone->buds v4 001D 0E01 a7 ff 88 35 e8 ff e2 1c cc
+12:08:46.406 buds->phone v3 001D 0F81 01
+12:08:46.438 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff a6 60 00
+12:08:46.462 buds->phone v3 001D 0F81 01
+12:08:46.495 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 b4 18 00
+12:08:46.553 phone->buds v4 001D 0E01 aa ff 88 c7 38 00 78 18 00
+12:08:46.554 buds->phone v3 001D 0F81 01
+12:08:46.584 buds->phone v3 001D 0F81 01
+12:08:54.167 phone->buds v4 001D 0E01 a1 ff 88 00 3c 00 b4 08 00
+12:08:54.223 phone->buds v4 001D 0E01 a2 ff 88 01 e0 ff 4c 19 99
+12:08:54.544 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff c4 0b 33
+12:08:54.544 phone->buds v4 001D 0E01 a4 ff 88 09 60 ff c4 10 00
+12:08:54.544 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 68 10 00
+12:08:54.544 phone->buds v4 001D 0E01 a6 ff 88 20 d0 00 b4 10 00
+12:08:54.544 phone->buds v4 001D 0E01 a7 ff 88 3a 98 00 78 10 00
+12:08:54.545 buds->phone v3 001D 0F81 01
+12:08:54.545 buds->phone v3 001D 0F81 01
+12:08:54.554 buds->phone v3 001D 0F81 01
+12:08:54.561 buds->phone v3 001D 0F81 01
+12:08:54.563 buds->phone v3 001D 0F81 01
+12:08:54.565 phone->buds v4 001D 0E01 a8 ff 88 5d c0 ff 10 60 00
+12:08:54.566 buds->phone v3 001D 0F81 01
+12:08:54.568 buds->phone v3 001D 0F81 01
+12:08:54.573 buds->phone v3 001D 0F81 01
+12:08:54.621 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 3c 10 00
+12:08:54.647 buds->phone v3 001D 0F81 01
+12:08:54.679 phone->buds v4 001D 0E01 aa ff 88 c7 38 00 b4 10 00
+12:08:54.701 buds->phone v3 001D 0F81 01
+12:09:01.567 buds->phone v3 000A 00FF
+12:09:01.910 phone->buds v4 001D 0E01 a1 ff 88 00 3c fe 20 08 00
+12:09:01.966 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 20 08 00
+12:09:01.980 buds->phone v3 001D 0F81 01
+12:09:01.983 buds->phone v3 001D 0F81 01
+12:09:02.021 phone->buds v4 001D 0E01 a3 ff 88 04 1a 00 00 0b 33
+12:09:02.052 buds->phone v3 001D 0F81 01
+12:09:02.079 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 78 10 00
+12:09:02.102 buds->phone v3 001D 0F81 01
+12:09:02.136 phone->buds v4 001D 0E01 a5 ff 88 12 c0 00 f0 10 00
+12:09:02.190 buds->phone v3 001D 0F81 01
+12:09:02.195 phone->buds v4 001D 0E01 a6 ff 88 20 d0 01 2c 10 00
+12:09:02.218 buds->phone v3 001D 0F81 01
+12:09:02.252 phone->buds v4 001D 0E01 a7 ff 88 3a 98 01 2c 10 00
+12:09:02.278 buds->phone v3 001D 0F81 01
+12:09:02.311 phone->buds v4 001D 0E01 a8 ff 88 5d c0 fd a8 10 00
+12:09:02.336 buds->phone v3 001D 0F81 01
+12:09:02.369 phone->buds v4 001D 0E01 a9 ff 88 8c a0 fe 20 10 00
+12:09:02.392 buds->phone v3 001D 0F81 01
+12:09:02.427 phone->buds v4 001D 0E01 aa ff 88 c7 38 fe 20 10 00
+12:09:02.456 buds->phone v3 001D 0F81 01
+12:09:09.804 phone->buds v4 001D 0E01 a1 ff 88 00 3c 00 f0 10 00
+12:09:09.858 phone->buds v4 001D 0E01 a2 ff 88 01 e0 ff e2 13 33
+12:09:10.378 phone->buds v4 001D 0E01 a3 ff 88 04 1a ff 6a 0b 33
+12:09:10.378 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 3c 10 00
+12:09:10.378 phone->buds v4 001D 0E01 a5 ff 88 12 c0 00 96 10 00
+12:09:10.378 phone->buds v4 001D 0E01 a6 ff 88 20 d0 00 f0 10 00
+12:09:10.378 phone->buds v4 001D 0E01 a7 ff 88 3a 98 00 3c 11 99
+12:09:10.378 phone->buds v4 001D 0E01 a8 ff 88 4f b0 00 3c 1b 33
+12:09:10.378 phone->buds v4 001D 0E01 a9 ff 88 72 d8 00 3c 20 00
+12:09:10.378 phone->buds v4 001D 0E01 aa ff 88 a9 ec 00 78 20 00
+12:09:10.380 buds->phone v3 001D 0F81 01
+12:09:10.386 buds->phone v3 001D 0F81 01
+12:09:10.389 buds->phone v3 001D 0F81 01
+12:09:10.389 buds->phone v3 001D 0F81 01
+12:09:10.391 buds->phone v3 001D 0F81 01
+12:09:10.394 buds->phone v3 001D 0F81 01
+12:09:10.397 buds->phone v3 001D 0F81 01
+12:09:10.400 buds->phone v3 001D 0F81 01
+12:09:10.402 buds->phone v3 001D 0F81 01
+12:09:10.409 buds->phone v3 001D 0F81 01
+12:09:16.823 phone->buds v4 001D 0E01 a1 ff 88 00 96 01 2c 08 00
+12:09:16.874 buds->phone v3 001D 0F81 01
+12:09:16.875 phone->buds v4 001D 0E01 a2 ff 88 01 e0 fe 20 19 99
+12:09:16.899 buds->phone v3 001D 0F81 01
+12:09:16.929 phone->buds v4 001D 0E01 a3 ff 88 04 1a fe d4 0b 33
+12:09:16.958 buds->phone v3 001D 0F81 01
+12:09:16.980 phone->buds v4 001D 0E01 a4 ff 88 09 60 00 78 10 00
+12:09:16.993 buds->phone v3 001D 0F81 01
+12:09:17.033 phone->buds v4 001D 0E01 a5 ff 88 12 c0 01 2c 10 00
+12:09:17.048 buds->phone v3 001D 0F81 01
+12:09:17.085 phone->buds v4 001D 0E01 a6 ff 88 20 d0 00 b4 20 00
+12:09:17.111 buds->phone v3 001D 0F81 01
+12:09:17.137 phone->buds v4 001D 0E01 a7 ff 88 3a 98 00 78 20 00
+12:09:17.151 buds->phone v3 001D 0F81 01
+12:09:17.190 phone->buds v4 001D 0E01 a8 ff 88 5d c0 fe d4 40 00
+12:09:17.218 buds->phone v3 001D 0F81 01
+12:09:17.250 phone->buds v4 001D 0E01 a9 ff 88 8c a0 00 3c 10 00
+12:09:17.282 buds->phone v3 001D 0F81 01
+12:09:17.294 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff c4 10 00
+12:09:17.374 buds->phone v3 001D 0F81 01

@@ -39,6 +39,12 @@ public sealed interface Value {
 public object Replies {
     private const val UNKNOWN = 0xFF
 
+    private val BY_GET: Map<Int, Command> = Command.entries.mapNotNull { c -> c.get?.let { it to c } }.toMap()
+
+    /** The command whose GET [frame] answers, or null when it is not such a reply. */
+    public fun commandFor(frame: Frame): Command? =
+        if (frame.vendor == Wire.VENDOR_MAIN && frame.isReply) BY_GET[frame.answers] else null
+
     /**
      * Decodes [payload] as the reply to [command]'s GET. Returns null when the reply
      * carries an error status or is too short; the official app ignores those too.

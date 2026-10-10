@@ -112,7 +112,17 @@ Everything here fits without scrolling on a 390 by 844 screen.
 - Import file and Export file side by side under it.
 
 The band count and frequencies are data, not layout. The screen must work with
-whatever the connected model needs.
+whatever the connected model needs. The labels above are the official app's
+generic custom layout. The H3's is 50, 160, 350, 800, 1.6k, 2.8k, 4.6k, 8k, 12k and
+17k, from -6 to +6 dB in whole dB.
+
+The gains on screen are the user's, on top of the model's base curve, the way the
+official app does it, so 0 dB on every band is the earbuds' own tuning (the Stock
+profile). A model's presets come from `data/devices.json` (`eq.presets`). They are
+complete curves, sent as they are and drawn read-only as their difference from stock;
+editing band by band starts from Stock, New or a saved profile. The preamp only lowers
+the master gain. The earbuds cannot report their EQ, so the screen shows what this phone
+last sent.
 
 ### Controls
 
@@ -146,6 +156,9 @@ Proposed, not yet reviewed by the owner.
 - **Show only what the earbuds support.** On connect the app sends the read
   commands and builds the screens from what answers. Unsupported features are
   hidden, not greyed out.
+- **Say why a setting is blocked.** A supported setting that another setting turns
+  off is shown disabled with the reason, not hidden. On the H3, game mode and two
+  devices need LDAC off.
 - **Optimistic, then confirmed.** A change shows at once and is read back from the
   earbuds afterwards.
 - **No background work by default.** The app talks to the earbuds while it is on

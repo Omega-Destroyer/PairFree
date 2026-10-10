@@ -221,7 +221,15 @@
       "get": "036E",
       "set": "036F",
       "kind": "minutes",
-      "note": "App offers 5, 10, 30, 60, 120, or 0 for never."
+      "values": {
+        "0": "never",
+        "5": "5_min",
+        "10": "10_min",
+        "30": "30_min",
+        "60": "60_min",
+        "120": "120_min"
+      },
+      "note": "The values are the choices the official app offers, in minutes; 0 is never."
     },
     {
       "id": "voice_language",

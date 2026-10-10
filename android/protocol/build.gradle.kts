@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-// The protocol core: frames, reassembly, EQ encoding and the command table.
+// The protocol core: frames, reassembly, EQ encoding, and the command and model tables.
 // No Android dependencies, so iOS can reuse it. Keep src/main free of java.* imports
 // so this can become a Kotlin Multiplatform module without rewriting it.
 
@@ -23,11 +23,15 @@ kotlin {
 
 val dataDir: Directory = rootProject.layout.projectDirectory.dir("../data")
 
-/** Writes Kotlin constants and tables from data/commands.json, so no number is retyped. */
+/** Writes Kotlin constants and tables from data/commands.json and data/devices.json, so no number is retyped. */
 abstract class GenerateTables : DefaultTask() {
     @get:InputFile
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
 
     @get:Input
     abstract val packageName: Property<String>
@@ -113,6 +117,37 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine("    public const val Q: Double = ${eq["custom_band_q"]}")
         out.appendLine("}")
 
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        out.appendLine()
+        out.appendLine("/** Every model in data/devices.json. Use [Models] to look one up. */")
+        out.appendLine("internal val MODEL_TABLE: List<Model> = listOf(")
+        fun num(v: Any?) = (v as Number).toDouble().toString()
+        for (d in devices) {
+            val names = (d.getValue("names") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+            val excludes = (d["ldac_excludes"] as List<*>? ?: emptyList<Any>())
+                .joinToString(", ", "setOf(", ")") { "Command.${(it as String).uppercase()}" }
+            val either = d["ldac_or_multipoint"] == true
+            @Suppress("UNCHECKED_CAST")
+            val eqJson = d["eq"] as Map<String, Any?>?
+            val eq = if (eqJson == null) {
+                "null"
+            } else {
+                @Suppress("UNCHECKED_CAST")
+                fun bands(list: Any?, gainKey: String) = (list as List<Map<String, Any?>>).joinToString(", ", "listOf(", ")") {
+                    "EqBand(${(it.getValue("hz") as Number).toInt()}, ${num(it["q"])}, ${num(it[gainKey])})"
+                }
+                @Suppress("UNCHECKED_CAST")
+                val presets = (eqJson["presets"] as List<Map<String, Any?>>? ?: emptyList()).joinToString(", ", "listOf(", ")") {
+                    "EqPreset(${str(it["name"])}, ${bands(it["bands"], "gain_db")})"
+                }
+                "EqLayout(${hex(eqJson["command"])}, ${num(eqJson["master_gain_db"])}, " +
+                    "${(eqJson.getValue("user_range_db") as Number).toInt()}, ${bands(eqJson["bands"], "base_gain_db")}, $presets)"
+            }
+            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq),")
+        }
+        out.appendLine(")")
+
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()
         dir.resolve("Tables.kt").writeText(out.toString())
@@ -121,6 +156,7 @@ abstract class GenerateTables : DefaultTask() {
 
 val generateTables = tasks.register<GenerateTables>("generateTables") {
     commandsJson = dataDir.file("commands.json")
+    devicesJson = dataDir.file("devices.json")
     packageName = "io.github.omegadestroyer.soundpeter.protocol"
     outputDir = layout.buildDirectory.dir("generated/tables")
 }

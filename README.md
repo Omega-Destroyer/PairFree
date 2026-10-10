@@ -18,7 +18,7 @@ yet been confirmed on real earbuds. Nothing here is ready for daily use.
 | Command table and test vectors          | Written, checked against the app's code |
 | Probe script (PC)                       | Written, tested against a simulated device |
 | Confirmed on hardware                   | Not yet. H3 and Air5 Pro+ are first.    |
-| App design                              | Written. Two looks, five screens.       |
+| App design                              | Written. One look (Studio), five screens. |
 | Android app                             | Not started                             |
 | iOS and Windows apps                    | Planned, after Android                  |
 | Firmware update                         | Planned for Qualcomm models, opt-in     |
@@ -28,7 +28,7 @@ yet been confirmed on real earbuds. Nothing here is ready for daily use.
 | Path                      | What it is                                                        |
 |---------------------------|-------------------------------------------------------------------|
 | `docs/PROTOCOL.md`        | The protocol: transport, frames, commands, EQ, chip families, firmware update |
-| `docs/DESIGN.md`          | The app design: requirements, looks, screens                      |
+| `docs/DESIGN.md`          | The app design: requirements, the Studio look, screens            |
 | `data/commands.json`      | The command table in machine-readable form. Apps load or mirror this. |
 | `data/test_vectors.json`  | Frames every implementation must reproduce byte for byte          |
 | `data/devices.json`       | Known models, their firmware codes and chip families              |

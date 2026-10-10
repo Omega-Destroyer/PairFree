@@ -104,6 +104,25 @@ class CommandTable(unittest.TestCase):
                 self.assertIn("set", table[name], device["firmware_code"])
 
 
+class DeviceArt(unittest.TestCase):
+    """Every traced drawing belongs to a model in data/devices.json, and says where it came from."""
+
+    def test_art_files(self):
+        names = {n.lower() for d in load("devices.json")["devices"] for n in d["names"]}
+        files = sorted((HERE / "device_art").glob("*.json"))
+        self.assertTrue(files)
+        for f in files:
+            art = json.loads(f.read_text(encoding="utf-8"))
+            self.assertTrue(art["source"], f.name)
+            for n in art["names"]:
+                self.assertIn(n.lower(), names, f.name)
+            for part in ("bud", "case"):
+                value = art[part]
+                self.assertTrue(value is None or value == "generic" or isinstance(value, dict), f.name)
+            if isinstance(art["bud"], dict):
+                self.assertIn(art["bud"].get("kind", "bud"), ("bud", "hook", "clip", "headphones"), f.name)
+
+
 class Describe(unittest.TestCase):
     def test_version(self):
         self.assertEqual(probe.describe("firmware_version", b"\x00S99_xx_1.2.3"), "'S99_xx_1.2.3'")

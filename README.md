@@ -37,6 +37,7 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 | `tools/test_probe.py`     | Tests for the probe and the data files. No hardware needed.       |
 | `assets/devices/`         | Vector drawings of each model's earbud and case, per look         |
 | `tools/gen_device_art.py` | Generates those drawings. Edit the shapes there, not the SVG files. |
+| `tools/device_art/`       | Traced outlines for each model, read by `gen_device_art.py`       |
 | `android/`                | The Android app. `protocol/` is the protocol core, `app/` the app. |
 
 ## Which earbuds

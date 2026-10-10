@@ -132,11 +132,11 @@ private fun HomeScreen(
 
         // Battery for left, case and right: drawing, percentage, bar. Only what the earbuds report.
         val batteries = listOfNotNull(
-            Battery(R.string.left, state.batteryLeft, art?.bud, mirrored = false)
+            Battery(R.string.left, state.batteryLeft, art.bud, mirrored = false)
                 .takeIf { state.supports(Command.BATTERY_LEFT) },
-            Battery(R.string.case_label, state.batteryCase, art?.case, mirrored = false)
+            Battery(R.string.case_label, state.batteryCase, art.case, mirrored = false)
                 .takeIf { state.supports(Command.BATTERY_CASE) },
-            Battery(R.string.right, state.batteryRight, art?.bud, mirrored = true)
+            Battery(R.string.right, state.batteryRight, art.bud, mirrored = true)
                 .takeIf { state.supports(Command.BATTERY_RIGHT) },
         )
         if (batteries.isEmpty()) {

@@ -11,7 +11,18 @@ measured from a photo of the back, and the lid, nameplate, seam band and base fr
 a photo of the front. The photos are not in the repo. Logos, text and the faceplate
 pattern are left out.
 
-Air5 Pro+: proportions estimated by eye from product photos. Not yet traced.
+Air5 Pro+: the earbud is traced from SoundPEATS' face-on product photo of the
+pair (shell, gold inlay, nozzle band, an ellipse for the ear tip). The case is
+traced from their photo of the closed Air5 Pro case, which the Air5 Pro+ shares,
+taken from the front and a little above.
+
+Other models: traced the same way from SoundPEATS' product photos and kept as data
+in tools/device_art/<slug>.json, each with a note on the photo it came from. Where
+no photo shows a part on a background it can be told apart from, the model uses the
+generic earbud or case. Models with no file at all get both generic drawings.
+
+The script also writes the app's lookup table, DeviceArtTable.kt: drawings by
+Bluetooth name first, then by firmware code.
 
 Output uses only paths, circles and rects with solid fills and plain presentation
 attributes (no CSS, opacity, dash arrays or transforms), so the files convert
@@ -23,6 +34,7 @@ Usage:
     python tools/gen_device_art.py --sheet sheet.html also write a preview page
 """
 import argparse
+import json
 import math
 import pathlib
 import re
@@ -293,87 +305,315 @@ def h3_case():
 
 
 # -------------------------------------------------------- Air5 Pro+ ---------
-# Proportions estimated by eye from reference photos. The coordinates below are in an
-# arbitrary working space about 400 wide and 680 tall; fit() scales them to the icon.
-# Drawn as the LEFT earbud seen from outside: head on top, ear tip pointing left,
-# stem straight down, inlay running from the head down the stem. Which side this
-# is has not been checked against the L/R marking on a real pair.
-A5_BODY = ("M265 5C345 5 405 60 405 135C405 215 378 255 378 340L378 615"
-           "C378 650 345 675 300 675C255 675 222 650 222 615L222 400"
-           "C222 350 215 318 190 308C150 296 105 290 85 235C60 150 150 5 265 5Z")
-A5_INLAY = ("M308 88C352 88 385 122 385 165C385 225 345 270 343 345C342 420 352 500 352 570"
-            "C352 605 335 628 306 628C277 628 260 605 260 570C260 500 284 420 283 345"
-            "C282 270 232 225 232 165C232 122 264 88 308 88Z")
-A5_AXIS_X, A5_HEAD_Y = 302, 165
-
-
-def a5_shapes():
-    shapes = {
-        "body": parse(A5_BODY),
-        "inlay": parse(A5_INLAY),
-        "tip": ellipse_path(108, 220, 108, 125),              # silicone tip, side-on
-        "collar": parse("M78 168C50 195 48 262 96 300"),      # nozzle band between tip and head
-        "shine": parse("M150 128C166 88 196 62 236 52"),
-        "axis": parse(f"M{A5_AXIS_X} {A5_HEAD_Y}"),           # carried through fit() for the guides
-    }
-    for i, y in enumerate((440, 482, 524, 566)):              # nod to the perforated lower inlay
-        shapes[f"dot{i}"] = circle_path(306, y, 7)
-    return shapes
+# Traced from SoundPEATS' face-on product photo of the pair, in photo pixels: the
+# left-hand bud, whose ear tip points left, which is forward when worn, as for the H3.
+#   body   the shell: head, the lobe that sits in the ear, and the stem
+#   inlay  the gold faceplate, down the stem (its logo and dot pattern are left out)
+#   ring   the gold nozzle band at the base of the ear tip
+# The ear tip is an ellipse fitted to its visible edge; the body hides the rest of it.
+A5_BUD = {
+    "body": """
+        698,641 653,646 610,656 567,670 526,688 487,711 450,736 415,765 383,796 353,829 326,865 316,908
+        313,953 311,998 308,1042 305,1087 302,1132 300,1177 297,1222 294,1266 297,1310 325,1345 360,1374 401,1391
+        408,1414 452,1417 497,1420 542,1423 587,1425 627,1435 627,1480 627,1524 628,1569 628,1614 628,1659 629,1704
+        629,1749 629,1794 630,1839 630,1884 630,1929 630,1973 631,2018 631,2063 631,2108 632,2153 633,2198 639,2242
+        651,2286 671,2326 701,2359 739,2382 782,2395 826,2400 871,2395 913,2380 950,2355 980,2321 1000,2281 1013,2238
+        1018,2194 1020,2149 1020,2104 1019,2059 1019,2014 1019,1969 1019,1925 1018,1880 1018,1835 1018,1790 1017,1745 1017,1700
+        1017,1655 1017,1610 1016,1565 1016,1520 1016,1476 1016,1431 1016,1386 1018,1341 1021,1296 1028,1252 1040,1209 1060,1169
+        1075,1126 1085,1083 1090,1038 1090,993 1085,949 1075,905 1059,863 1038,823 1012,787 982,753 948,724 912,698
+        872,676 831,660 787,648 743,642
+    """,
+    "inlay": """
+        812,862 753,869 701,897 660,938 652,997 659,1056 677,1112 707,1163 727,1219 751,1274 770,1329 784,1387
+        789,1446 794,1506 796,1565 797,1624 790,1683 785,1743 778,1802 769,1860 760,1919 751,1978 745,2037 745,2096
+        751,2155 774,2210 814,2252 871,2255 921,2225 948,2172 954,2113 955,2054 952,1994 943,1935 937,1876 928,1818
+        922,1759 917,1700 911,1641 910,1581 909,1522 914,1462 920,1403 931,1345 948,1288 967,1232 995,1179 1011,1122
+        1030,1066 1034,1007 1020,950 981,905 929,878 871,864
+    """,
+    "ring": """
+        237,1068 221,1076 205,1086 193,1099 182,1114 173,1129 175,1147 179,1164 184,1182 189,1199 196,1216 202,1233
+        210,1250 217,1266 226,1282 234,1298 244,1313 253,1329 264,1344 275,1358 286,1372 298,1386 310,1399 326,1407
+        344,1411 362,1411 380,1408 397,1402 401,1392 384,1387 367,1379 352,1370 338,1358 325,1346 313,1332 301,1318
+        291,1303 281,1288 272,1273 263,1257 256,1240 249,1223 243,1206 239,1189 235,1171 237,1154 244,1139 241,1121
+        239,1103 239,1085
+    """,
+}
+A5_TIP = (419.7, 1180.7, 342.7, 361.5, 69.8)   # ear tip: centre, semi-axes, rotation (deg)
+A5_AXIS = (848.4, 1180.7)    # inlay centroid x, ear tip centre y: where the guides cross
 
 
 def a5_bud():
-    g, s = fit(a5_shapes(), 96, 96, 4.5)
-    mx, ay = g["axis"][0][1][0]
+    shapes = {k: curve_through(points(v)) for k, v in A5_BUD.items()}
+    cx, cy, rx, ry, ang = A5_TIP
+    shapes["tip"] = tf(ellipse_path(cx, cy, rx, ry), rotate_about(cx, cy, ang))
+    shapes["centre"] = [("M", [A5_AXIS])]
+    g, _ = fit(shapes, 96, 96, 4.5)
+    mx, my = g["centre"][0][1][0]
     return drawing(96, 96, [
-        path(dashes(mx, 2, mx, 94) + dashes(2, ay, 94, ay), LABEL, FINE),
+        path(dashes(mx, 2, mx, 94) + dashes(2, my, 94, my), LABEL, FINE),
         path(fmt(g["tip"]), INK, STROKE, fill=PANEL),
-        path(fmt(g["collar"]), ACCENT, 1.6),
+        path(fmt(g["ring"]), fill=ACCENT),
         path(fmt(g["body"]), INK, STROKE, fill=PANEL),
         path(fmt(g["inlay"]), ACCENT, STROKE, fill=RAISED),
-        path("".join(fmt(g[f"dot{i}"]) for i in range(4)), fill=ACCENT),
-        path(fmt(g["shine"]), INK, DETAIL),
     ], "SoundPEATS Air5 Pro+ left earbud")
 
 
+# The case, closed, from the front and a little above, traced from SoundPEATS' photo
+# of the Air5 Pro, which uses the same case (same shape, plate and status light). From
+# this height the seam dips in the middle, where the recessed plate sits under it; the
+# plate's text is left out.
+A5_CASE = {
+    "outline": """
+        660,764 620,766 580,770 541,778 503,790 467,807 433,829 402,854 374,882 349,913 328,947 312,984
+        300,1022 293,1061 289,1101 289,1141 294,1181 303,1220 316,1258 334,1293 356,1327 381,1357 410,1385 442,1409
+        477,1429 513,1445 552,1456 591,1462 631,1466 671,1467 711,1467 751,1467 791,1467 831,1467 871,1467 911,1466
+        951,1464 990,1458 1029,1448 1066,1433 1101,1414 1134,1390 1163,1364 1190,1334 1213,1301 1232,1266 1246,1228 1255,1190
+        1261,1150 1262,1110 1259,1070 1253,1031 1242,992 1227,955 1207,921 1183,889 1156,860 1125,834 1092,812 1056,794
+        1019,780 979,772 940,767 900,765 860,764 820,764 780,764 740,764 700,764
+    """,
+    "seam_left": "325,1206 345,1219 365,1232 385,1243 405,1251 425,1257 445,1261 465,1264 485,1267 505,1268 525,1269",
+    "seam_right": "1010,1271 1030,1269 1050,1268 1070,1266 1090,1264 1110,1260 1130,1255 1150,1249 1170,1240 1190,1230 1210,1216 1230,1200",
+}
+A5_PLATE = (574, 977, 1283)   # the plate's bright lower lip: left end, right end, height
+A5_LED = (775.2, 1344.3, 8.5)     # status light: centre, radius
+
+
+def join(*curves):
+    """One path from open curves, each continuing where the last ended."""
+    out = []
+    for i, c in enumerate(curves):
+        out += [("L" if i and cmd == "M" else cmd, pts) for cmd, pts in c]
+    return out + [("Z", [])]
+
+
 def a5_case():
-    # Front view, lid closed: an opaque pebble, widest just below the middle. The seam
-    # is a straight horizontal line. (In photos taken from above it looks curved, and
-    # the dip in the rim only shows with the lid open.) Status light under the seam.
-    outline = "M10 49C10 24 28 11 60 11C92 11 110 24 110 49C110 70 90 84 60 84C30 84 10 70 10 49Z"
-    seam_y = 58.0
-    # where the seam meets the outline: solve the lower-right curve for y = seam_y
-    P = [(110, 49), (110, 70), (90, 84), (60, 84)]
-    bez = lambda t, i: sum(c * P[j][i] * (1 - t) ** (3 - j) * t ** j for j, c in enumerate((1, 3, 3, 1)))
-    lo, hi = 0.0, 1.0
-    for _ in range(40):
-        mid = (lo + hi) / 2
-        lo, hi = (mid, hi) if bez(mid, 1) < seam_y else (lo, mid)
-    xr = bez(lo, 0)
+    outline = points(A5_CASE["outline"])
+    seam = points(A5_CASE["seam_left"]) + points(A5_CASE["seam_right"])
+    lx, rx, ly = A5_PLATE
+    sl, sr = points(A5_CASE["seam_left"])[-1], points(A5_CASE["seam_right"])[0]
+    # the lid: over the top of the outline, from the seam's right end back to its left end
+    i_l = min(range(len(outline)), key=lambda i: math.dist(outline[i], seam[0]))
+    i_r = min(range(len(outline)), key=lambda i: math.dist(outline[i], seam[-1]))
+    over = [outline[i % len(outline)] for i in range(i_r, i_l + len(outline) + 1)] if i_r > i_l else outline[i_r:i_l + 1]
+    cx = sum(p[0] for p in outline) / len(outline)
+    cy = sum(p[1] for p in outline) / len(outline)
+    upper_left = [p for p in outline if p[0] < cx and p[1] < cy - 100]
+    shapes = {
+        "outline": curve_through(outline),
+        "lid": join(curve_through(over, closed=False), curve_through(seam, closed=False)),
+        "seam": curve_through(seam, closed=False),
+        "lip": parse(f"M{sl[0] + 15} {sl[1]}L{lx} {ly}L{rx} {ly}L{sr[0] - 10} {sr[1]}"),
+        "shine": curve_through([(cx + (x - cx) * 0.86, cy + (y - cy) * 0.86) for x, y in upper_left[2:-2]], closed=False),
+        "led": circle_path(A5_LED[0], A5_LED[1], A5_LED[2] * 1.4),
+        "axis": [("M", [(cx, cy)])],
+    }
+    g, _ = fit(shapes, 120, 96, 4)
+    mx = g["axis"][0][1][0][0]
     return drawing(120, 96, [
-        path(dashes(60, 3, 60, 93), LABEL, FINE),
-        path(outline, INK, STROKE, fill=PANEL),
-        path(f"M{120 - xr:.1f} {seam_y}L{xr:.1f} {seam_y}", INK, DETAIL),
-        path("M19 40C21 27 31 19 46 16.5", LABEL, FINE),       # lid highlight
-        path(fmt(circle_path(60, 70, 1.8)), fill=ACCENT),                # status light
+        path(dashes(mx, 3, mx, 93), LABEL, FINE),
+        path(fmt(g["outline"]), fill=PANEL),
+        path(fmt(g["lid"]), fill=RAISED),
+        path(fmt(g["shine"]), LABEL, FINE),
+        path(fmt(g["seam"]), INK, DETAIL),
+        path(fmt(g["lip"]), ACCENT, 1.4),
+        path(fmt(g["led"]), fill=ACCENT),
+        path(fmt(g["outline"]), INK, STROKE),
     ], "SoundPEATS Air5 Pro+ charging case")
 
 
+# ------------------------------------------------------- traced models -----
+# Every other model is traced the same way and kept as data in tools/device_art/<slug>.json:
+#   name, names       the product name, and the Bluetooth names that use these drawings
+#   source            where the outlines were traced from
+#   bud               one earbud, or the whole product for headphones and neckbands, or
+#                     "generic" when no photo shows it well enough:
+#     kind            "bud" (the default), "headphones" or "neckband"
+#     body            outline, "x,y x,y ..." in photo pixels
+#     tip             ear tip ellipse: centre, semi-axes, rotation (deg), drawn under the body
+#     accent          gold or coloured parts, filled amber
+#     panel           a faceplate or touch panel, outlined amber
+#     holes           openings through the part (a clip's ring), outlined
+#     lines           open lines for edges inside the outline
+#     axis            where the guides cross
+#   case              the charging case from the front, lid closed; "generic" when no photo
+#                     shows it well enough, or null when there is none:
+#     outline, seam (open line where the lid meets the base), led (centre, radius), lines,
+#     accent (coloured bands, filled amber)
+ART_DATA = _ROOT / "tools" / "device_art"
+
+
+def traced_bud(data, label):
+    b = data["bud"]
+    shapes = {"body": curve_through(points(b["body"]))}
+    if "tip" in b:
+        cx, cy, rx, ry, ang = b["tip"]
+        shapes["tip"] = tf(ellipse_path(cx, cy, rx, ry), rotate_about(cx, cy, ang))
+    for i, a in enumerate(b.get("accent", [])):
+        shapes[f"accent{i}"] = curve_through(points(a))
+    for i, a in enumerate(b.get("panel", [])):
+        shapes[f"panel{i}"] = curve_through(points(a))
+    for i, a in enumerate(b.get("lines", [])):
+        shapes[f"line{i}"] = curve_through(points(a), closed=False)
+    for i, a in enumerate(b.get("holes", [])):
+        shapes[f"hole{i}"] = curve_through(points(a))
+    shapes["centre"] = [("M", [tuple(b["axis"])])]
+    g, _ = fit(shapes, 96, 96, 4.5)
+    mx, my = g["centre"][0][1][0]
+    els = [path(dashes(mx, 2, mx, 94) + dashes(2, my, 94, my), LABEL, FINE)]
+    if "tip" in g:
+        els.append(path(fmt(g["tip"]), INK, STROKE, fill=PANEL))
+    els.append(path(fmt(g["body"]), INK, STROKE, fill=PANEL))
+    els += [path(fmt(g[k]), fill=ACCENT) for k in g if k.startswith("accent")]
+    els += [path(fmt(g[k]), ACCENT, STROKE, fill=RAISED) for k in g if k.startswith("panel")]
+    els += [path(fmt(g[k]), INK, DETAIL) for k in g if k.startswith("line")]
+    els += [path(fmt(g[k]), INK, STROKE) for k in g if k.startswith("hole")]
+    return drawing(96, 96, els, label)
+
+
+def traced_case(data, label):
+    c = data["case"]
+    outline = points(c["outline"])
+    cx = sum(p[0] for p in outline) / len(outline)
+    cy = sum(p[1] for p in outline) / len(outline)
+    top = min(p[1] for p in outline)
+    shapes = {"outline": curve_through(outline), "axis": [("M", [(cx, cy)])]}
+    if "seam" in c:
+        seam = points(c["seam"])
+        i_l = min(range(len(outline)), key=lambda i: math.dist(outline[i], seam[0]))
+        i_r = min(range(len(outline)), key=lambda i: math.dist(outline[i], seam[-1]))
+        over = [outline[i % len(outline)] for i in range(i_r, i_l + len(outline) + 1)] if i_r > i_l else outline[i_r:i_l + 1]
+        shapes["lid"] = join(curve_through(over, closed=False), curve_through(seam, closed=False))
+        shapes["seam"] = curve_through(seam, closed=False)
+    # a highlight along the upper left, inside the outline
+    arc = sorted((math.atan2(y - cy, x - cx), x, y) for x, y in outline)
+    arc = [(x, y) for t, x, y in arc if math.radians(-160) < t < math.radians(-115)]
+    if len(arc) > 3:
+        shapes["shine"] = curve_through([(cx + (x - cx) * 0.86, cy + (y - cy) * 0.86) for x, y in arc], closed=False)
+    for i, a in enumerate(c.get("lines", [])):
+        shapes[f"line{i}"] = curve_through(points(a), closed=False)
+    for i, a in enumerate(c.get("accent", [])):
+        shapes[f"accent{i}"] = curve_through(points(a))
+    if "led" in c:
+        shapes["led"] = circle_path(c["led"][0], c["led"][1], c["led"][2])
+    g, _ = fit(shapes, 120, 96, 4)
+    mx = g["axis"][0][1][0][0]
+    els = [path(dashes(mx, 3, mx, 93), LABEL, FINE), path(fmt(g["outline"]), fill=PANEL)]
+    if "lid" in g:
+        els.append(path(fmt(g["lid"]), fill=RAISED))
+    if "shine" in g:
+        els.append(path(fmt(g["shine"]), LABEL, FINE))
+    if "seam" in g:
+        els.append(path(fmt(g["seam"]), INK, DETAIL))
+    els += [path(fmt(g[k]), INK, DETAIL) for k in g if k.startswith("line")]
+    els += [path(fmt(g[k]), fill=ACCENT) for k in g if k.startswith("accent")]
+    if "led" in g:
+        els.append(path(fmt(g["led"]), fill=ACCENT))
+    els.append(path(fmt(g["outline"]), INK, STROKE))
+    return drawing(120, 96, els, label)
+
+
+# ------------------------------------------------------------- generic -------
+# For models with no drawings of their own: a plain earbud and case, not any one model.
+def generic_bud():
+    shapes = {
+        "tip": tf(ellipse_path(30, 40, 16, 19), rotate_about(30, 40, -20)),
+        "body": ellipse_path(55, 48, 30, 28),
+        "panel": ellipse_path(58, 49, 19, 17),
+        "centre": [("M", [(58, 49)])],
+    }
+    g, _ = fit(shapes, 96, 96, 8)
+    mx, my = g["centre"][0][1][0]
+    return drawing(96, 96, [
+        path(dashes(mx, 2, mx, 94) + dashes(2, my, 94, my), LABEL, FINE),
+        path(fmt(g["tip"]), INK, STROKE, fill=PANEL),
+        path(fmt(g["body"]), INK, STROKE, fill=PANEL),
+        path(fmt(g["panel"]), ACCENT, STROKE, fill=RAISED),
+    ], "Earbud")
+
+
+def generic_case():
+    outline = "M14 50C14 26 32 14 60 14C88 14 106 26 106 50C106 72 88 84 60 84C32 84 14 72 14 50Z"
+    return drawing(120, 96, [
+        path(dashes(60, 3, 60, 93), LABEL, FINE),
+        path(outline, INK, STROKE, fill=PANEL),
+        path("M15 56L105 56", INK, DETAIL),
+        path(fmt(circle_path(60, 68, 1.8)), fill=ACCENT),
+    ], "Charging case")
+
+
+# ------------------------------------------------------------- output --------
+# slug: (name, bud, case or None, Bluetooth names that use these drawings)
 DEVICES = {
-    "h3": ("SoundPEATS H3", h3_bud, h3_case),
-    "air5-pro-plus": ("SoundPEATS Air5 Pro+", a5_bud, a5_case),
+    "h3": ("SoundPEATS H3", h3_bud, h3_case, ["SOUNDPEATS H3"]),
+    "air5-pro-plus": ("SoundPEATS Air5 Pro+", a5_bud, a5_case, ["SOUNDPEATS Air5 Pro+"]),
 }
+
+
+def _traced(d):
+    generic = d["bud"] == "generic"
+    kind = "bud" if generic else d["bud"].get("kind", "bud")
+    bud_label = f"{d['name']} left earbud" if kind == "bud" else d["name"]
+    return (
+        d["name"],
+        generic_bud if generic else (lambda: traced_bud(d, bud_label)),
+        (lambda: traced_case(d, f"{d['name']} charging case")) if isinstance(d.get("case"), dict) else d.get("case"),
+        d["names"],
+    )
+
+
+for f in sorted(ART_DATA.glob("*.json")) if ART_DATA.exists() else []:
+    DEVICES[f.stem] = _traced(json.loads(f.read_text(encoding="utf-8")))
+DEVICES["generic"] = ("Any other model", generic_bud, generic_case, [])
 only = ARGS.models.split(",") if ARGS.models else list(DEVICES)
 
 cells = []
 for model in only:
-    name, bud, case = DEVICES[model]
+    name, bud, case, _names = DEVICES[model]
     d = OUT / "devices" / model / "studio"
     d.mkdir(parents=True, exist_ok=True)
     RES.mkdir(parents=True, exist_ok=True)
-    for part, dr in (("bud", bud()), ("case", case())):
+    for part, fn in (("bud", bud), ("case", case)):
+        if not callable(fn) or fn in (generic_bud, generic_case) and model != "generic":
+            continue
+        dr = fn()
         (d / f"{part}.svg").write_text(svg(dr), newline="\n")
         (RES / f"device_{model.replace('-', '_')}_{part}.xml").write_text(vector(dr), newline="\n")
-    cells.append((name, svg(bud()), svg(case())))
+    cells.append((name, svg(bud()), svg(case()) if callable(case) else svg(generic_case()) if case == "generic" else ""))
+
+
+# The app's lookup. The Bluetooth name decides first, because some firmware codes are
+# shared by models that look different (Air3 and Air3 Deluxe); codes only fill in.
+def kotlin_art(slug):
+    r = slug.replace("-", "_")
+    bud = "R.drawable.device_generic_bud" if DEVICES[slug][1] is generic_bud else f"R.drawable.device_{r}_bud"
+    c = DEVICES[slug][2]
+    case = f"R.drawable.device_{r}_case" if callable(c) else "R.drawable.device_generic_case" if c == "generic" else "null"
+    return f"DeviceArt({bud}, {case})"
+
+
+by_name = {n.lower(): slug for slug, (_, _, _, names) in DEVICES.items() for n in names}
+by_code = {}
+for dev in json.loads((_ROOT / "data" / "devices.json").read_text(encoding="utf-8"))["devices"]:
+    slugs = {by_name[n.lower()] for n in dev["names"] if n.lower() in by_name}
+    by_code.setdefault(dev["firmware_code"], set()).update(slugs)
+by_code = {code: s.pop() for code, s in by_code.items() if len(s) == 1}
+KT = _ROOT / "android" / "app" / "src" / "main" / "kotlin" / "io" / "github" / "omegadestroyer" / "soundpeter" / "ui" / "DeviceArtTable.kt"
+KT.write_text(
+    "// Generated by tools/gen_device_art.py from its drawings and data/devices.json. Do not edit.\n"
+    "package io.github.omegadestroyer.soundpeter.ui\n\n"
+    "import io.github.omegadestroyer.soundpeter.R\n\n"
+    "/** Drawings by Bluetooth name, lower case. */\n"
+    "internal val ART_BY_NAME: Map<String, DeviceArt> = mapOf(\n"
+    + "".join(f'    "{n}" to {kotlin_art(s)},\n' for n, s in sorted(by_name.items()))
+    + ")\n\n"
+    "/** Drawings by firmware code, for codes only one look uses. */\n"
+    "internal val ART_BY_CODE: Map<String, DeviceArt> = mapOf(\n"
+    + "".join(f'    "{c}" to {kotlin_art(s)},\n' for c, s in sorted(by_code.items()))
+    + ")\n\n"
+    "/** For models without drawings of their own. */\n"
+    f"internal val GENERIC_ART: DeviceArt = {kotlin_art('generic')}\n",
+    newline="\n",
+)
 
 if ARGS.sheet:
     def big(s, w):
@@ -383,17 +623,17 @@ if ARGS.sheet:
     rows = []
     for name, bud_svg, case_svg in cells:
         right = bud_svg.replace('viewBox="0 0 96 96"', 'viewBox="0 0 96 96" style="transform: scaleX(-1)"')
-        rows.append(f'''
-    <section style="background:{BACKGROUND};color:{INK};padding:20px 24px;display:flex;align-items:center;gap:28px">
+        rows.append(f"""
+    <section style="background:{BACKGROUND};color:{INK};padding:12px 24px;display:flex;align-items:center;gap:28px">
       <div style="width:150px;font:600 15px/1.3 sans-serif">{name}</div>
-      <div style="background:{PANEL};border:1px solid {HAIRLINE};border-radius:6px;padding:14px;display:flex;gap:18px;align-items:center">
-        {big(bud_svg, 240)}{big(case_svg, 240)}
+      <div style="background:{PANEL};border:1px solid {HAIRLINE};border-radius:6px;padding:10px;display:flex;gap:18px;align-items:center">
+        {big(bud_svg, 160)}{big(case_svg, 160)}
       </div>
       <div style="background:{PANEL};border:1px solid {HAIRLINE};border-radius:6px;padding:12px 16px;display:flex;gap:22px;align-items:center">
-        {big(bud_svg, 72)}{big(case_svg, 72)}{big(right, 72)}
+        {big(bud_svg, 64)}{big(case_svg, 64)}{big(right, 64)}
       </div>
-    </section>''')
+    </section>""")
     pathlib.Path(ARGS.sheet).write_text(
         '<!doctype html><meta charset="utf-8"><body style="margin:0;width:1080px">' + "".join(rows) + "</body>")
-print("wrote", sum(1 for _ in (OUT / "devices").rglob("*.svg")), "svg files and",
-      sum(1 for _ in RES.glob("device_*.xml")), "vector drawables")
+print("wrote", sum(1 for _ in (OUT / "devices").rglob("*.svg")), "svg files,",
+      sum(1 for _ in RES.glob("device_*.xml")), "vector drawables and", KT.name)

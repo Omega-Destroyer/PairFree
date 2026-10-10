@@ -49,7 +49,7 @@ internal fun ControlsScreen(device: Paired, state: EarbudState, actions: Earbuds
             Text(stringResource(R.string.no_controls), color = Studio.colors.secondaryText)
         }
         if (hasKeys) {
-            deviceArt(state.firmware?.code, device.name)?.let { PairDrawing(it.bud, side) }
+            PairDrawing(deviceArt(state.firmware?.code, device.name).bud, side)
             Segmented(Side.entries, side, { sideName(it) }, { side = it })
             val gestures = GestureKind.entries.mapNotNull { kind ->
                 gesture(kind, side)?.takeIf { it in keys }?.let { kind to it }

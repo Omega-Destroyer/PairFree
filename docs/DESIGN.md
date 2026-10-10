@@ -183,10 +183,13 @@ Planned, not yet designed:
   `case.svg`.
 - Drawings use only paths, circles, ellipses and rectangles with solid fills and
   strokes in the Studio palette, so they convert cleanly to Android vector drawables.
-- Outlines are traced from a product photo where one shows the part straight on
-  (the H3 earbud). The rest are measured or estimated from photos at an angle.
-- Models without their own art fall back to a generic drawing by shape: in-ear,
-  stem, open-ear clip, neckband.
+- Outlines are traced from SoundPEATS' product photos: straight on where a photo
+  shows the part that way (the H3 and Air5 Pro+ earbuds), otherwise from the angle the
+  photo shows. Each model's data and the photo it came from are in
+  `tools/device_art/<model>.json`; the H3 and Air5 Pro+ are in the script itself.
+- Headphones are drawn whole; ear hooks and clips as one earbud.
+- Models without art of their own, or a part no photo shows clearly, use a generic
+  earbud or case. The app picks drawings by Bluetooth name, then firmware code.
 - Drawings show the product's general shape. They do not reproduce logos.
 
 ## Left out on purpose

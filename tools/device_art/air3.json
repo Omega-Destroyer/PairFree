@@ -1,0 +1,11 @@
+{
+ "name": "SoundPEATS Air3",
+ "names": [
+  "SOUNDPEATS Air3"
+ ],
+ "source": "Case traced from SoundPEATS' product photo of the closed case (its hull, with the earbuds above it cut away). No photo shows an earbud on a background it can be told apart from, so the earbud is generic.",
+ "bud": "generic",
+ "case": {
+  "outline": "171,324 156,336 143,349 129,363 121,380 119,399 119,418 122,437 129,454 141,469 156,481 172,491 189,501 205,509 223,518 240,525 259,530 277,533 296,533 315,531 334,527 352,523 371,517 389,511 407,505 425,498 442,491 459,482 474,471 486,456 493,438 496,420 496,401 492,382 480,367 466,355 452,342 436,332 418,324 399,323 380,323 361,323 342,323 323,323 304,323 285,323 266,323 247,323 228,323 209,323 190,323"
+ }
+}

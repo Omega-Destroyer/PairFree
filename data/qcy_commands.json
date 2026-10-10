@@ -1,0 +1,259 @@
+{
+  "_about": "Control protocol for the QCY-built SOUNDPEATS Capsule3 Pro (firmware codes QCYTS04 and SPTS04). Read from QCY's library inside PeatsAudio 1.9.45 and from how the app calls it. Not confirmed on hardware. See docs/PROTOCOL.md section 10. Hex strings are bytes in wire order.",
+  "transport": {
+    "type": "ble_gatt",
+    "service": "0000A001-0000-1000-8000-00805F9B34FB",
+    "characteristics": {
+      "command": {
+        "uuid": "00001001-0000-1000-8000-00805F9B34FB",
+        "use": "write item packets"
+      },
+      "settings": {
+        "uuid": "00001002-0000-1000-8000-00805F9B34FB",
+        "use": "read or notify: an item packet with the current settings"
+      },
+      "version": {
+        "uuid": "00000007-0000-1000-8000-00805F9B34FB",
+        "use": "read: ASCII CODE_DATE_VERSION"
+      },
+      "battery": {
+        "uuid": "00000008-0000-1000-8000-00805F9B34FB",
+        "use": "read: three bytes, left, right, case"
+      },
+      "eq": {
+        "uuid": "0000000B-0000-1000-8000-00805F9B34FB",
+        "use": "read or write the EQ"
+      },
+      "buttons": {
+        "uuid": "0000000D-0000-1000-8000-00805F9B34FB",
+        "use": "read or write gesture assignments"
+      }
+    },
+    "notify": "Enable notifications on every characteristic of the service that offers them.",
+    "advertisement": {
+      "manufacturer_id": "522C",
+      "min_length": 20,
+      "model_id": "bytes 0-1, big-endian",
+      "is_left": "byte 3 bit 0",
+      "battery": "bytes 5, 6, 7: left, right, case. Bit 7 is charging, low 7 bits are percent.",
+      "classic_address": "bytes 12, 11, 13, 16, 15, 14 in that order",
+      "other_bud_address": "bytes 19, 18, 20, 23, 22, 21 in that order",
+      "note": "The app scans, reads the classic address out of the advertisement and connects to the device whose address matches the paired earbuds."
+    }
+  },
+  "packet": {
+    "layout": [
+      "FF",
+      "length of everything after this byte",
+      "items"
+    ],
+    "item": [
+      "id",
+      "value length",
+      "value"
+    ],
+    "note": "Used on the command and settings characteristics. Several items can share one packet."
+  },
+  "items": [
+    {
+      "id": "0C",
+      "name": "noise_mode",
+      "set": true,
+      "report": true,
+      "values": {
+        "02": "off",
+        "63": "anc",
+        "A5": "transparency"
+      }
+    },
+    {
+      "id": "07",
+      "name": "noise_value",
+      "set": false,
+      "report": true,
+      "note": "One byte. The app ignores it."
+    },
+    {
+      "id": "09",
+      "name": "game_mode",
+      "set": true,
+      "report": true,
+      "values": {
+        "01": "on",
+        "02": "off"
+      },
+      "note": "QCY calls it low latency. In reports, 01 is on and anything else is off."
+    },
+    {
+      "id": "10",
+      "name": "touch_disabled",
+      "set": true,
+      "report": true,
+      "values": {
+        "01": "on",
+        "02": "off"
+      },
+      "note": "QCY calls it sleep mode. In reports, 01 is on and anything else is off."
+    },
+    {
+      "id": "23",
+      "name": "ldac",
+      "set": true,
+      "report": true,
+      "values": {
+        "01": "on",
+        "00": "off"
+      }
+    },
+    {
+      "id": "24",
+      "name": "multipoint",
+      "set": true,
+      "report": true,
+      "values": {
+        "01": "on",
+        "00": "off"
+      },
+      "note": "The app treats multipoint and LDAC as exclusive: turning multipoint on first sends ldac off, and turning it off first sends ldac on."
+    },
+    {
+      "id": "19",
+      "name": "prompt_language",
+      "set": true,
+      "report": true,
+      "kind": "ascii",
+      "values": {
+        "WQ00": "en",
+        "WQ01": "zh",
+        "WQ02": "ja",
+        "WQ03": "de"
+      }
+    },
+    {
+      "id": "18",
+      "name": "pair_name",
+      "set": true,
+      "report": true,
+      "kind": "utf8",
+      "note": "The Bluetooth name. The app never sets it."
+    },
+    {
+      "id": "13",
+      "name": "bt_info",
+      "set": false,
+      "report": true,
+      "note": "Connected-device address. The app only logs it."
+    },
+    {
+      "id": "FE",
+      "name": "request",
+      "set": true,
+      "report": false,
+      "note": "Value is one item id. Asks the earbuds to report that item. The app uses FE 01 24 to read multipoint."
+    },
+    {
+      "id": "26",
+      "name": "reset_buttons",
+      "set": true,
+      "report": false,
+      "empty": true
+    },
+    {
+      "id": "01",
+      "name": "reset_settings",
+      "set": true,
+      "report": false,
+      "empty": true,
+      "note": "Not used by the app."
+    },
+    {
+      "id": "02",
+      "name": "clear_pairing",
+      "set": true,
+      "report": false,
+      "empty": true,
+      "dangerous": true,
+      "note": "Not used by the app."
+    },
+    {
+      "id": "25",
+      "name": "restart",
+      "set": true,
+      "report": false,
+      "empty": true,
+      "dangerous": true,
+      "note": "Not used by the app."
+    },
+    {
+      "id": "03",
+      "name": "factory_reset",
+      "set": true,
+      "report": false,
+      "empty": true,
+      "dangerous": true
+    }
+  ],
+  "battery": "Three bytes: left, right, case. Bit 7 is charging, low 7 bits are percent.",
+  "buttons": {
+    "format": "Pairs of [gesture, function] with no FF header. A write can carry one pair or several. A read returns every pair.",
+    "gestures": {
+      "1": "tap left",
+      "2": "tap right",
+      "3": "double tap left",
+      "4": "double tap right",
+      "5": "triple tap left",
+      "6": "triple tap right",
+      "9": "hold left",
+      "10": "hold right"
+    },
+    "functions": {
+      "0": "none",
+      "1": "play/pause",
+      "2": "previous",
+      "3": "next",
+      "4": "voice assistant",
+      "5": "volume up",
+      "6": "volume down",
+      "7": "game mode",
+      "11": "ANC cycle"
+    }
+  },
+  "eq": {
+    "format": [
+      "00",
+      "master gain in dB x 100 (s16, little-endian)",
+      "then per band: frequency in Hz (u16 LE), gain in dB x 100 (s16 LE), Q x 100 (u16 LE)"
+    ],
+    "note": "One write carries every band. No FF header. The official app truncates the master gain to a whole number of dB before scaling. A read whose first byte is 00 has the same layout; any other first byte is a QCY preset record the app ignores.",
+    "merge_rule": "onto_classic_bands, as for Qualcomm models"
+  },
+  "not_available": [
+    "anc_level",
+    "transparency_level",
+    "anc_env_adaptive",
+    "dynamic_eq",
+    "dynamic_bass",
+    "movie_mode",
+    "panoramic_sound",
+    "spatial_audio",
+    "dolby",
+    "prompt_volume",
+    "in_ear_detection",
+    "light_effect",
+    "find_left",
+    "find_right",
+    "water_drain",
+    "fall_detection",
+    "privacy_mode",
+    "auto_shutdown",
+    "personal_volume",
+    "adaptive_volume",
+    "ear_volume_left",
+    "ear_volume_right",
+    "ldac",
+    "le_audio",
+    "fit_test",
+    "reset_state"
+  ],
+  "not_available_note": "Command ids from data/commands.json that the app's Capsule3 Pro code leaves empty. ldac is in the list because the app's LDAC switch does nothing here: LDAC only changes as a side effect of multipoint."
+}

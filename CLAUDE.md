@@ -13,8 +13,12 @@ and to ask before guessing.
   memory. Load the file or generate code from it.
 - `data/test_vectors.json` holds frames that every implementation must reproduce
   byte for byte. Any new codec, in any language, gets a test that runs these.
-- `data/devices.json` is the model table from the official app. Newer models are
-  missing from it and get added as people confirm them.
+- `data/devices.json` is the model table from the official app, with each model's
+  chip family, EQ command and EQ merge rule. Newer models are missing from it and
+  get added as people confirm them. Look a model up by the firmware code in the
+  `03 09` reply. The earbuds do not report their chip family.
+- `data/qcy_commands.json` is the separate protocol for the QCY-built Capsule3 Pro.
+  It is BLE only. `docs/PROTOCOL.md` section 10 explains it.
 - `docs/DESIGN.md` is the app design: requirements, the two looks and their colour
   values, every screen, and what is still open. Build the UI from it. The owner's
   requirements at the top of that file are fixed.
@@ -27,7 +31,11 @@ say so and ask. Do not invent protocol details.
 
 Confirmed by reading the app's code: transport, frame layout, every command number
 in `commands.json`, EQ band encoding, the BLE service UUIDs, the update SDK each chip
-family uses.
+family uses. Also confirmed there: every model except the Capsule3 Pro uses the same
+frames and command numbers. Models differ in which features they have, in the EQ
+command and merge rule, and in a few quirks (`docs/PROTOCOL.md` sections 5.1 and 9).
+Which features a model has is not in the APK. It comes from SoundPEATS' server, so
+it has to be probed.
 
 Not confirmed on hardware: all of it. As of the first commit nobody has run the
 probe on real earbuds. Specific open questions:

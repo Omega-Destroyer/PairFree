@@ -266,5 +266,182 @@
       "frame": "ff040009001d0e01a10000005d00b41ccc",
       "ble_packet": "001d0e01a10000005d00b41ccc"
     }
+  ],
+  "qcy_packets": [
+    {
+      "name": "noise mode anc",
+      "items": [
+        {
+          "id": "0C",
+          "value": "63"
+        }
+      ],
+      "packet": "ff030c0163"
+    },
+    {
+      "name": "noise mode off",
+      "items": [
+        {
+          "id": "0C",
+          "value": "02"
+        }
+      ],
+      "packet": "ff030c0102"
+    },
+    {
+      "name": "noise mode transparency",
+      "items": [
+        {
+          "id": "0C",
+          "value": "A5"
+        }
+      ],
+      "packet": "ff030c01a5"
+    },
+    {
+      "name": "game mode on",
+      "items": [
+        {
+          "id": "09",
+          "value": "01"
+        }
+      ],
+      "packet": "ff03090101"
+    },
+    {
+      "name": "game mode off",
+      "items": [
+        {
+          "id": "09",
+          "value": "02"
+        }
+      ],
+      "packet": "ff03090102"
+    },
+    {
+      "name": "touch disabled on",
+      "items": [
+        {
+          "id": "10",
+          "value": "01"
+        }
+      ],
+      "packet": "ff03100101"
+    },
+    {
+      "name": "multipoint on",
+      "items": [
+        {
+          "id": "24",
+          "value": "01"
+        }
+      ],
+      "packet": "ff03240101"
+    },
+    {
+      "name": "ldac off",
+      "items": [
+        {
+          "id": "23",
+          "value": "00"
+        }
+      ],
+      "packet": "ff03230100"
+    },
+    {
+      "name": "request multipoint",
+      "items": [
+        {
+          "id": "FE",
+          "value": "24"
+        }
+      ],
+      "packet": "ff03fe0124"
+    },
+    {
+      "name": "prompt language german",
+      "items": [
+        {
+          "id": "19",
+          "value": "57513033"
+        }
+      ],
+      "packet": "ff06190457513033"
+    },
+    {
+      "name": "reset buttons",
+      "items": [
+        {
+          "id": "26",
+          "value": ""
+        }
+      ],
+      "packet": "ff022600"
+    },
+    {
+      "name": "settings report with two items",
+      "items": [
+        {
+          "id": "0C",
+          "value": "63"
+        },
+        {
+          "id": "09",
+          "value": "02"
+        }
+      ],
+      "packet": "ff060c0163090102"
+    }
+  ],
+  "qcy_eq": [
+    {
+      "master_gain_db": 0.0,
+      "bands": [
+        {
+          "freq_hz": 31,
+          "gain_db": 3.0,
+          "q": 1.8
+        }
+      ],
+      "payload": "0000001f002c01b400"
+    },
+    {
+      "master_gain_db": -3.0,
+      "bands": [
+        {
+          "freq_hz": 1000,
+          "gain_db": -6.0,
+          "q": 0.7
+        },
+        {
+          "freq_hz": 16000,
+          "gain_db": 2.5,
+          "q": 1.8
+        }
+      ],
+      "payload": "00d4fee803a8fd4600803efa00b400"
+    }
+  ],
+  "qcy_buttons": [
+    {
+      "name": "double tap left = next",
+      "pairs": [
+        [
+          3,
+          3
+        ]
+      ],
+      "payload": "0303"
+    },
+    {
+      "name": "hold right = ANC cycle",
+      "pairs": [
+        [
+          10,
+          11
+        ]
+      ],
+      "payload": "0a0b"
+    }
   ]
 }

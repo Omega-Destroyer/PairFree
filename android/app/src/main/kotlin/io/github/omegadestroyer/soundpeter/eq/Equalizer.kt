@@ -35,15 +35,31 @@ data class EqProfile(val id: String, val name: String, val gains: List<Int>, val
 /** What this phone last sent to the earbuds. The earbuds cannot report their EQ (docs/PROTOCOL.md section 4). */
 data class EqSetting(val profileId: String?, val gains: List<Int>, val preampDb: Int = 0)
 
-data class EqState(val model: Model, val layout: EqLayout, val profiles: List<EqProfile>, val setting: EqSetting) {
-    /** The profile on the earbuds: a preset, or the profile the gains came from while they still match. */
-    val selected: EqProfile? get() = profiles.firstOrNull { it.id == setting.profileId && (it.preset != null || it.gains == setting.gains) }
+/**
+ * The EQ screen's state. [known] is false for earbuds this phone has never set: they cannot
+ * report their EQ, so until the user picks one, what is on them is not known.
+ */
+data class EqState(val model: Model, val layout: EqLayout, val profiles: List<EqProfile>, val setting: EqSetting, val known: Boolean = true) {
+    /**
+     * The profile on the earbuds: the one the setting came from while it still matches, or
+     * else any profile that puts the same bytes on the earbuds (New with every band at 0 is
+     * Stock). None while the EQ is not [known].
+     */
+    val selected: EqProfile?
+        get() {
+            if (!known) return null
+            profiles.firstOrNull { it.id == setting.profileId && (it.preset != null || it.gains == setting.gains) }?.let { return it }
+            val sent = layout.payloads(setting.gains)
+            return profiles.firstOrNull { p -> payloadsOf(p).let { it.size == sent.size && it.zip(sent).all { (x, y) -> x.contentEquals(y) } } }
+        }
 
     /** The profile the setting started from, edited or not. */
     val basis: EqProfile? get() = profiles.firstOrNull { it.id == setting.profileId }
 
     /** The preset on the earbuds, if one is. Presets cannot be edited band by band. */
-    val preset: EqPreset? get() = selected?.preset
+    val preset: EqPreset? get() = basis?.preset
+
+    private fun payloadsOf(p: EqProfile) = if (p.preset != null) layout.payloads(p.preset) else layout.payloads(p.gains)
 
     /**
      * What to draw: the difference from stock per band. For user gains these are the gains;
@@ -79,7 +95,8 @@ interface EqActions {
 /**
  * Profiles and the current EQ for the connected earbuds. Everything is kept on the phone;
  * a change goes to the earbuds [SEND_AFTER_MS] after the last edit, every band at once,
- * as the official app does.
+ * as the official app does. Each time the channel opens, the setting goes out again
+ * ([channelOpened]), since another app may have changed the EQ in between.
  */
 class Equalizer(
     private val prefs: SharedPreferences,
@@ -91,6 +108,7 @@ class Equalizer(
 
     private var address: String? = null
     private var pending: Job? = null
+    private var reopened: String? = null   // earbuds whose channel opened and whose EQ has not gone back yet
 
     /** Loads what this phone last sent to [address], and the profiles saved for [model]. Null [model] or no layout: no EQ. */
     fun open(address: String, model: Model?) {
@@ -104,12 +122,38 @@ class Equalizer(
         pending?.cancel()
         this.address = address
         val zeros = List(layout.bands.size) { 0 }
+        val saved = loadSetting(address, layout)
         _state.value = EqState(
             model,
             layout,
             builtIns(layout) + loadProfiles(model.code, layout),
-            loadSetting(address, layout) ?: EqSetting(EqProfile.STOCK, zeros),
+            saved ?: EqSetting(EqProfile.STOCK, zeros),
+            known = saved != null,
         )
+        restoreIfDue()
+    }
+
+    /**
+     * The channel to [address] has just opened. The earbuds cannot report their EQ and
+     * another app may have changed it, so what this phone last sent goes out again,
+     * [RESTORE_AFTER_MS] later, as the official app does. Nothing goes to earbuds this
+     * phone has never set.
+     */
+    fun channelOpened(address: String) {
+        reopened = address
+        restoreIfDue()
+    }
+
+    private fun restoreIfDue() {
+        val s = _state.value ?: return
+        if (reopened == null || reopened != address) return
+        reopened = null
+        if (!s.known) return
+        pending?.cancel()
+        pending = scope.launch {
+            delay(RESTORE_AFTER_MS)
+            _state.value?.let { send(framesOf(it, it.setting)) }
+        }
     }
 
     override fun select(profile: EqProfile) {
@@ -195,14 +239,18 @@ class Equalizer(
 
     private fun apply(setting: EqSetting) {
         val s = _state.value ?: return
-        _state.value = s.copy(setting = setting)
+        _state.value = s.copy(setting = setting, known = true)
         storeSetting()
         pending?.cancel()
-        val preset = s.profiles.firstOrNull { it.id == setting.profileId }?.preset
         pending = scope.launch {
             delay(SEND_AFTER_MS)
-            send(if (preset != null) s.layout.frames(preset, setting.preampDb) else s.layout.frames(setting.gains, setting.preampDb))
+            send(framesOf(s, setting))
         }
+    }
+
+    private fun framesOf(s: EqState, setting: EqSetting): List<ByteArray> {
+        val preset = s.profiles.firstOrNull { it.id == setting.profileId }?.preset
+        return if (preset != null) s.layout.frames(preset, setting.preampDb) else s.layout.frames(setting.gains, setting.preampDb)
     }
 
     // Storage: one JSON value per model for saved profiles, one per pair of earbuds for the setting.
@@ -234,9 +282,10 @@ class Equalizer(
         null
     }
 
+    /** Stores the setting, once this phone has sent one; until then there is nothing to put back. */
     private fun storeSetting() {
         val a = address ?: return
-        val setting = _state.value?.setting ?: return
+        val setting = _state.value?.takeIf { it.known }?.setting ?: return
         val o = JSONObject()
             .put("profile", setting.profileId ?: "")
             .put("gains", JSONArray(setting.gains))
@@ -247,6 +296,9 @@ class Equalizer(
     companion object {
         /** Wait this long after the last change before sending; a drag sends once it settles. */
         const val SEND_AFTER_MS = 300L
+
+        /** After the channel opens, the setting goes back this much later; the official app takes about 2.5 s. */
+        const val RESTORE_AFTER_MS = 2_500L
 
         /** The preamp only lowers the master gain, never raises it. */
         const val PREAMP_MIN_DB = -6

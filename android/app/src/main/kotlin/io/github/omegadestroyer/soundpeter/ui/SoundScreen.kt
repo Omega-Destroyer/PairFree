@@ -131,6 +131,7 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions) {
             item { Chip(stringResource(R.string.eq_new), selected = false) { actions.startNew() } }
         }
         Label(stringResource(R.string.eq_on_earbuds, currentProfileName(eq)))
+        if (!eq.known) Text(stringResource(R.string.eq_unknown_hint), style = Studio.type.small, color = Studio.colors.secondaryText)
 
         val editable = eq.preset == null
         Panel {
@@ -217,7 +218,8 @@ internal fun profileName(profile: EqProfile): String =
 /** What is on the earbuds, as a short name for Home. */
 @Composable
 internal fun currentProfileName(eq: EqState): String =
-    eq.selected?.let { profileName(it) }
+    if (!eq.known) stringResource(R.string.eq_unknown)
+    else eq.selected?.let { profileName(it) }
         ?: eq.basis?.let { stringResource(R.string.eq_edited, profileName(it)) }
         ?: stringResource(R.string.eq_new_unsaved)
 

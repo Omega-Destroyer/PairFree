@@ -25,6 +25,7 @@ import io.github.omegadestroyer.soundpeter.ui.EarbudsActions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -47,6 +48,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions {
 
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
     val equalizer = Equalizer(prefs, viewModelScope) { frames -> connection.sendEq(frames) }
+
+    init {
+        // The earbuds cannot report their EQ, so each newly opened channel gets this phone's back.
+        viewModelScope.launch {
+            connection.status.collect { if (it is LinkStatus.Connected) equalizer.channelOpened(it.device.address) }
+        }
+    }
 
     private val _hasPermission = MutableStateFlow(checkPermission())
     val hasPermission: StateFlow<Boolean> = _hasPermission.asStateFlow()

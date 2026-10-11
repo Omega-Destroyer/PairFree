@@ -153,7 +153,11 @@ profile). A model's presets come from `data/devices.json` (`eq.presets`). They a
 complete curves, sent as they are and drawn read-only as their difference from stock;
 editing band by band starts from Stock, New or a saved profile. The preamp only lowers
 the master gain. The earbuds cannot report their EQ, so the screen shows what this phone
-last sent.
+last sent, and the app sends that again each time the channel opens, as the official app
+does, in case another app changed it. Earbuds this phone has never set show "Not known
+yet" until the user picks a profile; nothing is sent to them on connect. A profile that
+puts the same bytes on the earbuds as the current setting shows as selected, so New with
+every band at 0 is Stock.
 
 ### Controls
 

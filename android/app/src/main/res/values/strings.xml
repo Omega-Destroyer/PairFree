@@ -75,6 +75,8 @@
     <string name="eq_new">New</string>
     <string name="eq_new_unsaved">New, not saved</string>
     <string name="eq_on_earbuds">On the earbuds: %1$s</string>
+    <string name="eq_unknown">Not known yet</string>
+    <string name="eq_unknown_hint">These earbuds cannot report their EQ, and this phone has not set one on them yet. Pick a profile or move a band to set it.</string>
     <string name="eq_preset_fixed">Presets are fixed curves. Pick Stock, New or one of your own profiles to set bands one by one.</string>
     <string name="eq_edited">%1$s, edited</string>
     <string name="eq_graph_description">Equalizer curve. Pick a band below to change it.</string>
@@ -95,7 +97,7 @@
     <string name="eq_delete">Delete %1$s</string>
     <string name="eq_delete_title">Delete %1$s?</string>
     <string name="eq_delete_body">The profile is removed from this phone. The earbuds keep the sound they have now.</string>
-    <string name="eq_note">0 dB on every band is the earbuds\' own tuning. The earbuds cannot report their EQ, so this shows what this phone last sent.</string>
+    <string name="eq_note">0 dB on every band is the earbuds\' own tuning. The earbuds cannot report their EQ, so each time SoundPeter connects it puts back the one this phone last set, as the official app does.</string>
 
     <string name="taps">Taps</string>
     <string name="gesture_tap">Tap</string>

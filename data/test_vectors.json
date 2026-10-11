@@ -1,5 +1,5 @@
 {
-  "_about": "Language-neutral test vectors. Every implementation should reproduce these byte for byte. The decode cases are replies recorded from a SoundPEATS H3 (firmware S5 0.4.9, data/reports/S5_0.4.9.txt) plus edge cases from docs/PROTOCOL.md. 'reply' is the reply's command number; 'value' is the decoded value: a string, a number, null for unknown (FF), a boolean for a switch, or [a, b] pairs for level and key lists, where a level pair is [code, active]. 'ignored': true means the reply must not change the state. 'eq_layout' cases are complete EQ writes PeatsAudio sent to an H3 (command 0E01, vendor 001D, one payload per band, in order), captured from the phone's Bluetooth log; building them from the model's 'eq' entry in data/devices.json and the user's gains must give the same bytes. 'eq_preset' cases are the writes for each preset in a model's 'eq.presets', captured the same way; building them from the preset's bands and the layout's master gain must give the same bytes.",
+  "_about": "Language-neutral test vectors. Every implementation should reproduce these byte for byte. The decode cases are replies recorded from a SoundPEATS H3 (firmware S5 0.4.9, data/reports/S5_0.4.9.txt) plus edge cases from docs/PROTOCOL.md. 'reply' is the reply's command number; 'value' is the decoded value: a string, a number, null for unknown (FF), a boolean for a switch, or [a, b] pairs for level and key lists, where a level pair is [code, active]. 'ignored': true means the reply must not change the state. 'eq_layout' cases are complete EQ writes PeatsAudio sent to an H3 (S5) and an Air5 Pro+ (S2) (command 0E01, vendor 001D, one payload per band, in order), captured from the phone's Bluetooth log; building them from the model's 'eq' entry in data/devices.json and the user's gains must give the same bytes. 'eq_preset' cases are the writes for each preset in a model's 'eq.presets', captured the same way; building them from the preset's bands and the layout's master gain must give the same bytes.",
   "build": [
     {
       "name": "get firmware version",
@@ -557,6 +557,146 @@
         "a9ff888ca000481800",
         "aaff88c738fe8c1800"
       ]
+    },
+    {
+      "name": "Reset: the base curve alone",
+      "model": "S2",
+      "user_gains_db": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "payloads": [
+        "a1fd30006000961000",
+        "a2fd3000c300b41800",
+        "a3fd30021cfe981333",
+        "a4fd3005dc001e1800",
+        "a5fd300960003c1800",
+        "a6fd30151801e01333",
+        "a7fd302a3000d23000",
+        "a8fd304074fed42000",
+        "a9fd305dc0ff4c3800",
+        "aafd308ca001e01800"
+      ]
+    },
+    {
+      "name": "lowest band all the way up",
+      "model": "S2",
+      "user_gains_db": [
+        6,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "payloads": [
+        "a1fd30006001fe1000",
+        "a2fd3000c300b41800",
+        "a3fd30021cfe981333",
+        "a4fd3005dc001e1800",
+        "a5fd300960003c1800",
+        "a6fd30151801e01333",
+        "a7fd302a3000d23000",
+        "a8fd304074fed42000",
+        "a9fd305dc0ff4c3800",
+        "aafd308ca001e01800"
+      ]
+    },
+    {
+      "name": "highest band all the way down",
+      "model": "S2",
+      "user_gains_db": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -6
+      ],
+      "payloads": [
+        "a1fd30006000961000",
+        "a2fd3000c300b41800",
+        "a3fd30021cfe981333",
+        "a4fd3005dc001e1800",
+        "a5fd300960003c1800",
+        "a6fd30151801e01333",
+        "a7fd302a3000d23000",
+        "a8fd304074fed42000",
+        "a9fd305dc0ff4c3800",
+        "aafd308ca000781800"
+      ]
+    },
+    {
+      "name": "1.8 kHz up one step",
+      "model": "S2",
+      "user_gains_db": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "payloads": [
+        "a1fd30006000961000",
+        "a2fd3000c300b41800",
+        "a3fd30021cfe981333",
+        "a4fd3005dc001e1800",
+        "a5fd300960003c1800",
+        "a6fd301518021c1333",
+        "a7fd302a3000d23000",
+        "a8fd304074fed42000",
+        "a9fd305dc0ff4c3800",
+        "aafd308ca001e01800"
+      ]
+    },
+    {
+      "name": "800 Hz up one step",
+      "model": "S2",
+      "user_gains_db": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "payloads": [
+        "a1fd30006000961000",
+        "a2fd3000c300b41800",
+        "a3fd30021cfe981333",
+        "a4fd3005dc001e1800",
+        "a5fd30096000781800",
+        "a6fd30151801e01333",
+        "a7fd302a3000d23000",
+        "a8fd304074fed42000",
+        "a9fd305dc0ff4c3800",
+        "aafd308ca001e01800"
+      ]
     }
   ],
   "eq_preset": [
@@ -734,6 +874,182 @@
         "a8ff885dc0fed44000",
         "a9ff888ca0003c1000",
         "aaff88c738ffc41000"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Bass Boost",
+      "payloads": [
+        "a1fd300060012c1000",
+        "a2fd3000c3012c1000",
+        "a3fd30021cff4c1333",
+        "a4fd3005dc00781800",
+        "a5fd300960003c1800",
+        "a6fd30151801e01333",
+        "a7fd302a3000d23000",
+        "a8fd304074fed42000",
+        "a9fd305dc0ff4c3800",
+        "aafd308ca001e01800"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Bass Reduce",
+      "payloads": [
+        "a1fd300060001e1000",
+        "a2fd3000c3001e1800",
+        "a3fd30021cfe201333",
+        "a4fd3005dcffc41800",
+        "a5fd300960001e1800",
+        "a6fd30151801e01333",
+        "a7fd302a3000d23000",
+        "a8fd304074fed42000",
+        "a9fd305dc0ff4c3800",
+        "aafd308ca001e01800"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Treble Boost",
+      "payloads": [
+        "a1fd30006000961000",
+        "a2fd3000c300b41800",
+        "a3fd30021cfe981333",
+        "a4fd3005dc001e1800",
+        "a5fd300960003c1800",
+        "a6fd30151801e01333",
+        "a7fd302a30012c3000",
+        "a8fd304074ffc42000",
+        "a9fd305dc0ffc43800",
+        "aafd308ca001e01800"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Pop",
+      "payloads": [
+        "a1fd300060001e1000",
+        "a2fd3000c3003c1333",
+        "a3fd30021cfeb61333",
+        "a4fd30096000780ccc",
+        "a5fd3012c000f01000",
+        "a6fd301fa401861333",
+        "a7fd304074ff102800",
+        "a8fd305dc0fda85000",
+        "a9fd308ca0012c2000",
+        "aafd30bb80fe983000"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Electronic",
+      "payloads": [
+        "a1fd30006000f01000",
+        "a2fd3000c3012c1000",
+        "a3fd30021cff881333",
+        "a4fd3005dc00b41800",
+        "a5fd30096000b41000",
+        "a6fd30151801681333",
+        "a7fd302a30012c2000",
+        "a8fd304074ff881000",
+        "a9fd305dc0003c2000",
+        "aafd308ca001e01333"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Classical",
+      "payloads": [
+        "a1fd30006000f01000",
+        "a2fd3000c3012c1800",
+        "a3fd30021cff4c1333",
+        "a4fd3005dc00781800",
+        "a5fd300960005a1800",
+        "a6fd301518012c1333",
+        "a7fd302a30003c3000",
+        "a8fd304074fe982000",
+        "a9fd305dc0fe983800",
+        "aafd308ca0012c1800"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Rock",
+      "payloads": [
+        "a1fd30006000f01000",
+        "a2fd3000c3012c1800",
+        "a3fd30021cff4c1333",
+        "a4fd3005dc00781800",
+        "a5fd300960005a1800",
+        "a6fd30151801e01333",
+        "a7fd302a30012c3000",
+        "a8fd304074ffc42000",
+        "a9fd305dc0ffc43800",
+        "aafd308ca001e01800"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Folk",
+      "payloads": [
+        "a1fd300060ffc41000",
+        "a2fd3000c300781800",
+        "a3fd30021cfe981333",
+        "a4fd3005dc001e1800",
+        "a5fd300960005a1800",
+        "a6fd30151801681333",
+        "a7fd302a30012c1000",
+        "a8fd304074fe982000",
+        "a9fd305dc0fed43800",
+        "aafd308ca001e01800"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "Book Whisper",
+      "payloads": [
+        "a1fd300060fe200800",
+        "a2fd3000c300b41800",
+        "a3fd30021cfe981333",
+        "a4fd3005dc012c1000",
+        "a5fd30096000f01800",
+        "a6fd30151801a41333",
+        "a7fd302a30012c1000",
+        "a8fd304074ffc42000",
+        "a9fd305dc0ff4c3800",
+        "aafd308ca0fd301000"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "HIFI",
+      "payloads": [
+        "a1fd30006000b40ccc",
+        "a2fd3000c300d21000",
+        "a3fd30021cff4c1333",
+        "a4fd30041a003c0ccc",
+        "a5fd300960003c0ccc",
+        "a6fd3012c0012c1000",
+        "a7fd3020d001861333",
+        "a8fd304074fed42800",
+        "a9fd305dc0ff105000",
+        "aafd308ca001a40ccc"
+      ]
+    },
+    {
+      "model": "S2",
+      "preset": "ACG",
+      "payloads": [
+        "a1fd300060012c1000",
+        "a2fd3000c3012c1000",
+        "a3fd30021cff101333",
+        "a4fd3005dcffe21800",
+        "a5fd300960003c1800",
+        "a6fd301518021c1000",
+        "a7fd302a3001682000",
+        "a8fd304074ff102000",
+        "a9fd305dc0ff883800",
+        "aafd308ca0021c1800"
       ]
     }
   ],

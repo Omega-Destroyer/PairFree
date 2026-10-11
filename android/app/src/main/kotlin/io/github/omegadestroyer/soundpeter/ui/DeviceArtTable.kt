@@ -48,6 +48,7 @@ internal val ART_BY_CODE: Map<String, DeviceArt> = mapOf(
     "QCYTS04" to DeviceArt(R.drawable.device_generic_bud, R.drawable.device_generic_case),
     "R1292A7018F" to DeviceArt(R.drawable.device_space_bud, null),
     "S13" to DeviceArt(R.drawable.device_pearlclip_pro_bud, R.drawable.device_pearlclip_pro_case),
+    "S2" to DeviceArt(R.drawable.device_air5_pro_plus_bud, R.drawable.device_air5_pro_plus_case),
     "S27" to DeviceArt(R.drawable.device_generic_bud, R.drawable.device_air6_pro_case),
     "S32" to DeviceArt(R.drawable.device_generic_bud, R.drawable.device_air6_pro_case),
     "S5" to DeviceArt(R.drawable.device_h3_bud, R.drawable.device_h3_case),

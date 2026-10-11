@@ -17,11 +17,33 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 | Protocol spec                           | Written, from static analysis           |
 | Command table and test vectors          | Written, checked against the app's code |
 | Probe script (PC)                       | Written, run on an H3                   |
-| Confirmed on hardware                   | H3: reads, ANC and other SETs, EQ layout, reads over BLE. Air5 Pro+ later. |
+| Confirmed on hardware                   | H3: reads, ANC and other SETs, EQ layout, LDAC, reads over BLE. Air5 Pro+: firmware, EQ layout and presets; LDAC bug found (below). |
 | App design                              | Written. One look (Studio), five screens. |
 | Android app                             | All four tabs: Home, Sound (EQ), Controls, Device. Being tried on an H3. |
 | iOS and Windows apps                    | Planned, after Android                  |
 | Firmware update                         | Planned for Qualcomm models, opt-in     |
+
+## Known issue: Air5 Pro+ LDAC does not work
+
+On a Samsung Galaxy S24 FE (Android 16, One UI 8), the **Air5 Pro+** advertises LDAC but
+the phone refuses to use it: audio stays on AAC, and forcing LDAC in Developer options is
+rejected. Turning LDAC on also removes aptX, so it *lowers* quality. The **H3**, with the
+same Qualcomm QCC3091 chip, runs LDAC at 96 kHz / 32-bit on the same phone, so this looks
+like an Air5 Pro+ firmware bug. It has been reported to SoundPEATS. Until it is fixed,
+leave LDAC off on the Air5 Pro+ and you get aptX.
+
+Details and the log evidence: `docs/PROTOCOL.md` section 12 and
+`data/reports/air5-pro-plus_ldac.txt`.
+
+**Have an Air5 Pro+ and a different phone?** Please help find out whether this is
+Samsung-only:
+
+1. Turn LDAC on (in PeatsAudio or SoundPeter), connect, and play music.
+2. Enable Developer options on the phone, open **Bluetooth Audio Codec**, and note which
+   codec is active and which are listed.
+3. Select **LDAC**. Does the codec change (a brief audio pause) or stay on AAC?
+4. Open an issue with your phone model, Android version, the Air5 Pro+ firmware version
+   (from PeatsAudio; the one tested here is S2 1.2) and what you saw.
 
 ## What is in the repo
 

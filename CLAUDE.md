@@ -40,17 +40,29 @@ it has to be probed.
 Confirmed on the H3 (firmware code `S5`, chip QCC3091 by its own report): which GETs
 it answers, that ANC mode, scene, transparency level, LDAC and multipoint SETs reach it,
 how it answers each, that GETs work over GAIA BLE, and the EQ layout and base curve
-PeatsAudio writes to it. See `docs/PROTOCOL.md` section 11. Everything else is
-unconfirmed, including all of the Air5 Pro+. Specific open questions:
+PeatsAudio writes to it. Also that vendor `00 1D` answers Qualcomm GAIA v3 reads, and
+that Qualcomm's own EQ reads there do not follow SoundPEATS' EQ writes, so the EQ cannot be
+read back. See `docs/PROTOCOL.md` section 11. Feature `06` there is firmware update: do not
+probe it.
 
-- Which commands the Air5 Pro+ answers, and its firmware code. Deferred by the owner:
-  assume it behaves like the H3 (same chip) and troubleshoot if it turns out not to.
+Confirmed on the Air5 Pro+ (firmware code `S2`, version 1.2), from a phone capture of
+PeatsAudio: its firmware code, its EQ layout, base curve and presets, and the replies to
+the reads PeatsAudio sends on connecting (the same as the H3's). Everything else is
+unconfirmed. Specific open questions:
+
+- Which commands the Air5 Pro+ answers beyond the ones PeatsAudio reads. Deferred by the
+  owner: assume it behaves like the H3 (same chip) and troubleshoot if it turns out not to.
   This is an assumption, not a finding; do not write it into `docs/PROTOCOL.md`.
+  One difference is confirmed: its LDAC does not work (`docs/PROTOCOL.md` section 12).
+- Whether the Air5 Pro+ LDAC bug is Samsung-specific. On a Galaxy S24 FE (One UI 8) the
+  phone disables the Air5's advertised LDAC and falls back to AAC, while the H3's LDAC
+  works on the same phone. Needs reports from other phones. A bug report went to SoundPEATS.
 - Whether `0x11` is the H3's Adaptive scene. The H3 lists levels `11` to `14`, not
   `15`, and does not answer the environment-adaptive GET `03 64`.
-- The EQ layout of every model except the H3. The official app downloads a "classic"
-  curve per model and adds the user's gains to it; a phone capture of its EQ writes
-  (Android HCI snoop log) shows the layout, as it did for the H3.
+- The EQ layout of every model except the H3 and Air5 Pro+. The official app downloads a
+  "classic" curve and presets per model and adds the user's gains to the curve; a phone
+  capture of its EQ writes (Android HCI snoop log) shows them, as it did for those two.
+  The two have different layouts and presets, so never copy one model's EQ to another.
 - SETs and unasked state updates over the GAIA BLE service. iOS depends on it. GETs
   over it work on the H3, with the 4-byte header dropped as the spec says.
 - How the remaining SETs answer on the H3. Known so far: ANC mode answers with an
@@ -110,10 +122,17 @@ reports from other people.
   multipoint are one either-or setting there (`ldac_or_multipoint`), and changing either
   drops the channel. Once a channel has been open, the app reopens it on its own after a
   drop, keeping the last state on screen.
+- The `ldac` switch only changes which codecs the earbuds advertise; the phone picks the
+  codec, and no app can (`docs/PROTOCOL.md` section 12). On the Air5 Pro+ turning LDAC on
+  removes aptX and the phone then refuses LDAC, so it lands on AAC: a known firmware bug,
+  not an app fault.
 - The EQ is write-only (the H3 acknowledges each band with `0F 81 01`). The app sends the
   model's base curve plus the user's gains, or one of the model's presets as it is
-  (`EqLayout` from the `eq` entry in `data/devices.json`), only when the user changes it,
-  never on connect, and remembers on the phone what it last sent.
+  (`EqLayout` from the `eq` entry in `data/devices.json`), and remembers on the phone what
+  it last sent. Since nothing can read the EQ back and PeatsAudio may have changed it, the
+  app sends that again 2.5 s after every channel opens, as PeatsAudio does (owner's choice,
+  2026-10-11). For earbuds this phone has never set, it sends nothing and shows the EQ as
+  not known. Any profile whose bytes match what is on the earbuds shows as selected.
 - Debug builds log every frame to Logcat under the tag `SoundPeter`
   (`adb logcat -s SoundPeter`); release builds log nothing.
 - Gradle 9 refuses to build from a folder Java reports as not writable, which happens
@@ -139,8 +158,8 @@ reports from other people.
 ## Suggested order of work
 
 1. Run `tools/probe.py` on the H3 and the Air5 Pro+. Save both outputs in
-   `data/reports/` and add the two models to `data/devices.json`. H3 done; Air5 Pro+
-   deferred.
+   `data/reports/` and add the two models to `data/devices.json`. H3 done. Air5 Pro+:
+   in `data/devices.json` as `S2` from a phone capture; the probe itself is deferred.
 2. Try one harmless SET on each (ANC mode is audible) and record whether a reply comes back.
    H3 done; Air5 Pro+ deferred.
 3. Scan for the GAIA BLE service on both. H3 done; Air5 Pro+ deferred.
@@ -154,8 +173,8 @@ reports from other people.
    tabs are built. Tried on the H3: connection and reconnecting, battery, ANC and its
    scenes, transparency, LDAC and two devices, the EQ and its presets. Not yet tried:
    gestures, the Device tab's prompt settings.
-6. Work out the Qualcomm EQ band layout on hardware. H3 done from a phone capture
-   (`docs/PROTOCOL.md` section 11); Air5 Pro+ deferred.
+6. Work out the Qualcomm EQ band layout on hardware. H3 and Air5 Pro+ done from phone
+   captures (`docs/PROTOCOL.md` section 11).
 7. Firmware update last, and only on the rules above.
 
 ## Checks

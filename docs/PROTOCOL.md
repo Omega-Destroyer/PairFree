@@ -160,7 +160,9 @@ Actions: 0 none, 1 volume up, 2 volume down, 3 play/pause, 4 game mode,
 ## 4. EQ (vendor `00 1D`)
 
 Write-only. The app never reads the EQ back from the earbuds. On the H3 each band write
-is acknowledged with `0F 81 01`, which carries no state (section 11).
+is acknowledged with `0F 81 01`, which carries no state (section 11). The H3's own
+Qualcomm EQ reads answer, but they do not follow these writes, so nothing found so far
+can report this EQ (section 11, "GAIA v3 on vendor `00 1D`").
 
 One frame per band. The command is `0E 01` or `0E 02`. With `0E 02` the first
 payload byte becomes two bytes: count, index.
@@ -630,3 +632,104 @@ Still open on the H3:
 - What `83 17` means.
 - Whether a master gain other than -2 dB has an effect. The app's preamp only lowers it.
 - Over BLE: SETs, unasked state updates, and what `1103`, `EB10` and `FD92` are for.
+
+### SoundPEATS H3: GAIA v3 on vendor `00 1D`
+
+Probed 2026-10-11 from a PC over the serial port, looking for a way to read the EQ.
+Every frame was approved by the owner before it went out. Report:
+`data/reports/S5_gaia_v3.txt`.
+
+- Every reply on vendor `00 1D` carries the request's command number plus `01 00`. The
+  EQ write `0E 01` is answered by `0F 81`, its number plus `01 80`. That fits Qualcomm's
+  GAIA v3, where a command number is a 7-bit feature, a 2-bit packet type (command,
+  notification, response, error) and a 7-bit command. If so, `0F 81 01` is an error
+  reply to feature 7, and the H3 applies the EQ anyway. GAIA v3's specification is not
+  public, so the names below are interpretation; the bytes are in the report.
+- `00 00` answered `03 01` (API version 3.1). `00 01` answered a list of nine
+  (feature, version) pairs: `00`/5, `01`/3, `05`/1, `06`/2, `07`/1, `08`/7, `09`/1,
+  `0C`/1, `0D`/1.
+- Feature `05` (Qualcomm's EQ): `0A 00` answered `00`; `0A 01` listed 8 sets (`00 01 02
+  03 06 08 09 3F`); `0A 02` answered `00`; `0A 04` answered 5 bands; `0A 05 00 04`
+  returned five bands of 7 bytes, every gain 0.
+- After PeatsAudio's Reset curve and then its Bass Boost were sent as `0E 01` writes,
+  `0A 00`, `0A 02` and `0A 05` answered exactly as before. SoundPEATS' EQ does not go
+  through Qualcomm's EQ feature, so it cannot be read there. SoundPeter puts its own EQ
+  back on every connect instead, as PeatsAudio does.
+- Not tried: anything else on features `01`, `07`, `08`, `09`, `0C` and `0D`. Feature
+  `06` is the firmware update feature on Qualcomm devices and must not be probed.
+
+### SoundPEATS Air5 Pro+: firmware code `S2`, version 1.2
+
+Captured 2026-10-11 from the phone's Bluetooth log while the owner used PeatsAudio (same
+method as the H3's EQ). Report: `data/reports/S2_1.2.txt`.
+
+- Firmware version reply: `S2_20250816_V1.2`. The probe has not been run on it yet.
+- On connecting, PeatsAudio read battery, firmware, multipoint, ANC level, touch disable,
+  environment adaptive, transparency level, game mode, custom keys, ANC mode, LDAC and
+  reset state. The replies match the H3's: scenes `11` to `14` with `11` active,
+  transparency `01` and `02` with `02` active, LDAC on, and no reply to `03 64` or `03 67`.
+- EQ, as PeatsAudio writes it: command `0E 01` on vendor `00 1D`, ten bands in every write,
+  each acknowledged with `0F 81 01`. Master gain is -12.0 dB in every frame (the H3's is
+  -2.0 dB). Base curve, sent by Reset:
+
+  | Band | Hz    | Q   | Base gain dB |
+  |------|-------|-----|--------------|
+  | 1    | 32    | 1.0 | +2.5         |
+  | 2    | 65    | 1.5 | +3.0         |
+  | 3    | 180   | 1.2 | -6.0         |
+  | 4    | 500   | 1.5 | +0.5         |
+  | 5    | 800   | 1.5 | +1.0         |
+  | 6    | 1800  | 1.2 | +8.0         |
+  | 7    | 3600  | 3.0 | +3.5         |
+  | 8    | 5500  | 2.0 | -5.0         |
+  | 9    | 8000  | 3.5 | -3.0         |
+  | 10   | 12000 | 1.5 | +8.0         |
+
+  The user's sliders add -6 to +6 dB in 1 dB steps to these, as on the H3 (checked at both
+  ends and by single steps on two bands).
+- Presets: the same twelve names as on the H3, in the same grid, but with this model's own
+  curves; every one differs from the H3's. SOUNDPEATS Classic is the base curve; Pop and HIFI
+  move some bands. All are in `data/devices.json` (`S2`, `eq.presets`) and are the `S2`
+  cases of `eq_layout` and `eq_preset` in `data/test_vectors.json`.
+- LDAC does not work on this model with a Samsung phone; see section 12.
+
+## 12. Codecs (A2DP) and the Air5 Pro+ LDAC bug
+
+Audio codec selection (SBC, AAC, the aptX family, LDAC, LC3) is A2DP, negotiated between
+the phone and the earbuds. It is not on the SPP control channel, and no app picks the
+active codec; the phone does. The only codec-related controls on the control channel are
+the `ldac` switch (`03 38`/`03 39`) and the LE Audio switch (`03 35`/`03 34`). Toggling
+`ldac` changes which codecs the earbuds advertise over A2DP.
+
+Tested 2026-10-11 on a Samsung Galaxy S24 FE (SM-S721W, Android 16, One UI 8, build
+`S721WVLSEDZH9`); both earbuds are Qualcomm QCC3091. The phone's negotiation was read from
+`dumpsys audio`/`dumpsys bluetooth_manager` and `logcat` (`bluetooth-a2dp`, `A2dpService`).
+Evidence: `data/reports/air5-pro-plus_ldac.txt`.
+
+### H3 (works)
+
+- With `ldac` on, the H3 advertises LDAC, aptX, AAC and SBC together.
+- The phone auto-negotiates LDAC at 96 kHz / 32-bit on connection, and LDAC can also be
+  force-selected in Android Developer options; it switches cleanly (a real A2DP
+  reconfigure, heard as a brief pause).
+
+### Air5 Pro+ (LDAC broken) — suspected firmware bug
+
+- With `ldac` on, the Air5 Pro+ advertises AAC, SBC and LDAC, and stops advertising aptX.
+- The phone does not use LDAC: it plays AAC, and a manual force to LDAC is rejected. The
+  log shows `A2dpService: enableOptionalCodecs ldac disabled` at connection and
+  `A2dpService: setCodecConfigPreference ldac disabled` on a manual switch; the codec
+  stays AAC, with no reconfigure (none of the brief pause a real switch causes).
+- Reproducible on a fresh connection with `ldac` pre-enabled, so it is not a stale-session
+  artifact. LDAC outranks AAC in the phone's codec priority, so the fall-back to AAC is
+  itself a sign the phone cannot configure the Air5's LDAC stream.
+- Same phone, OS and chip as the H3, tested minutes apart; the only variable is the earbud
+  model. So the Air5 Pro+ firmware appears to advertise its LDAC A2DP endpoint in a form
+  the Android / One UI stack rejects. A different-brand phone might accept it, so strictly
+  it is an Air5-firmware / Samsung-stack interop failure; from the user's side LDAC simply
+  does not work.
+- Net effect on this phone: enabling LDAC on the Air5 Pro+ *lowers* quality, because it
+  removes aptX and lands on AAC. Keep `ldac` off (aptX) until the firmware is fixed.
+- A bug report was sent to SoundPEATS. Whether it is specific to Samsung One UI or affects
+  all phones is not yet known and needs reports from other handsets. The Air5 Pro+ tested
+  runs firmware `S2_20250816_V1.2` (section 11).

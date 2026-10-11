@@ -1,0 +1,95 @@
+SoundPEATS H3: Qualcomm GAIA v3 reads on vendor 001D (EQ-read hunt)
+===================================================================
+
+Date:     2026-10-11
+Model:    SoundPEATS H3, firmware S5_20250605_V0.4.9 (from the 03 09 check below)
+Link:     Windows 11 "Standard Serial over Bluetooth link" (COM3), pyserial; phone Bluetooth off
+Scripts:  one-off scratch scripts using tools/probe.py's build() and parse_stream(); every
+          frame below was listed to the owner and approved before it was sent
+Purpose:  find out whether anything on the earbuds can report the EQ that SoundPEATS' 0E01
+          writes set. Answer: no (round 3).
+
+Frames are FF 04 00 LEN VENDOR(2) COMMAND(2) PAYLOAD as in docs/PROTOCOL.md section 2.
+"sent" lists the whole frame; "reply" lists vendor, command and payload.
+
+
+---- Round 1: core feature ----
+
+check  000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+
+sent   ff 04 00 00 00 1d 00 00
+reply  001D 0100 03 01
+
+sent   ff 04 00 00 00 1d 00 01
+reply  001D 0101 00 0d 01 0c 01 09 01 05 01 08 07 01 03 06 02 07 01 00 05
+
+
+---- Round 2: feature 05 ----
+
+check  000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+
+sent   ff 04 00 00 00 1d 0a 00
+reply  001D 0B00 00
+
+sent   ff 04 00 00 00 1d 0a 01
+reply  001D 0B01 08 00 01 02 03 06 08 09 3f
+
+sent   ff 04 00 00 00 1d 0a 02
+reply  001D 0B02 00
+
+sent   ff 04 00 00 00 1d 0a 04
+reply  001D 0B04 05
+
+
+---- Round 3: feature 05 reads around two SoundPEATS EQ writes ----
+
+The two writes are the S5 "Reset: the base curve alone" case of eq_layout and the S5
+"Bass Boost" case of eq_preset in data/test_vectors.json (10 x 0E01 each, 50 ms apart).
+The lines counting the 0F81 acknowledgements were lost to an output filter.
+
+check  000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+
+== before
+sent   ff 04 00 00 00 1d 0a 00
+reply  001D 0B00 00
+sent   ff 04 00 00 00 1d 0a 02
+reply  001D 0B02 00
+sent   ff 04 00 02 00 1d 0a 05 00 04
+reply  001D 0B05 00 04 00 78 0b 33 0d 00 00 01 f4 0b 33 0d 00 00 05 dc 0b 33 0d 00 00 13 88 0b 33 0d 00 00 2e e0 0b 33 0d 00 00
+
+== Reset (stock curve): 10 x 0E01
+
+== after Reset
+sent   ff 04 00 00 00 1d 0a 00
+reply  001D 0B00 00
+sent   ff 04 00 00 00 1d 0a 02
+reply  001D 0B02 00
+sent   ff 04 00 02 00 1d 0a 05 00 04
+reply  001D 0B05 00 04 00 78 0b 33 0d 00 00 01 f4 0b 33 0d 00 00 05 dc 0b 33 0d 00 00 13 88 0b 33 0d 00 00 2e e0 0b 33 0d 00 00
+
+== Bass Boost: 10 x 0E01
+
+== after Bass Boost
+sent   ff 04 00 00 00 1d 0a 00
+reply  001D 0B00 00
+sent   ff 04 00 00 00 1d 0a 02
+reply  001D 0B02 00
+sent   ff 04 00 02 00 1d 0a 05 00 04
+reply  001D 0B05 00 04 00 78 0b 33 0d 00 00 01 f4 0b 33 0d 00 00 05 dc 0b 33 0d 00 00 13 88 0b 33 0d 00 00 2e e0 0b 33 0d 00 00
+
+
+---- Reading ----
+
+Observed: every reply's command is the request's plus 0100. The EQ write 0E01 is answered
+by 0F81, the request plus 0180. Nothing on feature 05 changed after either EQ write.
+
+Interpretation (no public spec; Qualcomm publishes GAIA v3 only under NDA): vendor 001D is
+Qualcomm GAIA v3, whose command number is a 7-bit feature, a 2-bit packet type
+(0 command, 1 notification, 2 response, 3 error) and a 7-bit command. Then:
+- 00 00 is core "API version": 3.1. 00 01 is core "supported features": no more to come,
+  then (feature, version) pairs 0D/1, 0C/1, 09/1, 05/1, 08/7, 01/3, 06/2, 07/1, 00/5.
+- 0F81 01 is an error reply to feature 07 command 01, though the H3 still applies the EQ.
+- Feature 05 is Qualcomm's music processing (EQ): 8 sets (00 01 02 03 06 08 09 3F, 3F being
+  the user set), set 00 selected, a 5-band user set with every gain 0. Each band reads as
+  2 bytes frequency, 2 bytes Q x 4096 (0B33 = 0.7), 1 byte filter type (0D), 2 bytes gain.
+- SoundPEATS' 10-band EQ does not go through this feature, so it cannot be read here.

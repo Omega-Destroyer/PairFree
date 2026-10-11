@@ -1,0 +1,58 @@
+SoundPEATS Air5 Pro+ — LDAC not negotiated (A2DP codec), with H3 as the control
+================================================================================
+
+Date:   2026-10-11
+Phone:  Samsung Galaxy S24 FE (SM-S721W), Android 16, One UI 8, build S721WVLSEDZH9
+Chip:   both earbuds Qualcomm QCC3091; Air5 Pro+ firmware S2_20250816_V1.2 (data/reports/S2_1.2.txt)
+Source: adb dumpsys audio / dumpsys bluetooth_manager / logcat (bluetooth-a2dp, A2dpService)
+Note:   Bluetooth addresses masked. Codec selection toggled via the ldac control (0338/0339)
+        and Android Developer options > Bluetooth Audio Codec. This is A2DP, not the SPP
+        control channel; see docs/PROTOCOL.md section 12.
+
+Codec field in dumpsys audio DeviceInfo is a hex AUDIO_FORMAT:
+    04000000 = AAC    23000000 = LDAC    20000000 = aptX
+
+
+---- Air5 Pro+ (LDAC enabled in the app) ----
+
+Active A2DP codec (dumpsys audio):
+    [DeviceInfo: type:0x80 (bt_a2dp) name:SOUNDPEATS Air5 Pro+ addr:<masked> codec: 4000000 ...]
+    -> AAC
+
+Selectable codecs reported to the phone: AAC, SBC, LDAC   (aptX no longer offered)
+
+Fresh connection, LDAC pre-enabled (12:01:45):
+    ReportSourceCodecState: codec: LDAC priority: 5001 sample_rate: 96000 bits_per_sample: 32
+    W/A2dpService: enableOptionalCodecs ldac disabled
+    ReportSourceCodecState: codec: AAC  priority: 2001 sample_rate: 44100 bits_per_sample: 16
+    -> phone disables LDAC at connect and settles on AAC
+
+Manual force to LDAC in Developer options (12:10:31):
+    BtExtCodecCtr: writeConfigurationValues: Selected codec: LDAC
+    BtExtCodecCtr: setCodecConfigPreference: {codecName:LDAC, 96000, 32-bit}
+    W/A2dpService: setCodecConfigPreference ldac disabled
+    -> rejected; codec stays AAC; no A2DP reconfigure (no audible pause)
+
+
+---- SoundPEATS H3 (control, same phone, minutes apart) ----
+
+Selectable codecs reported to the phone: LDAC, aptX, AAC, SBC   (aptX kept alongside LDAC)
+
+At connection (LDAC enabled), auto-negotiated:
+    bta2dp_audio_config_callback: codec: LDAC, selectable codecs: LDAC, aptX, AAC, SBC
+    ReportSourceCodecState: codec: LDAC sample_rate: 96000 bits_per_sample: 32
+    dumpsys audio DeviceInfo ... codec: 23000000   -> LDAC
+
+Force AAC then force LDAC in Developer options (both real switches):
+    Selected codec: AAC  -> ReportSourceCodecState: codec: AAC  -> handleDeviceConfigChange success codec=AUDIO_FORMAT_AAC
+    Selected codec: LDAC -> ReportSourceCodecState: codec: LDAC -> handleDeviceConfigChange success codec=AUDIO_FORMAT_LDAC
+    -> LDAC engages cleanly; no "ldac disabled"
+
+
+---- Conclusion ----
+
+Same phone, OS and chip; only the earbud model differs. The H3 negotiates and runs LDAC
+(96 kHz/32-bit); the Air5 Pro+ advertises LDAC but the phone disables it and falls back to
+AAC, and forcing LDAC is rejected. Suspected Air5 Pro+ firmware / Samsung-stack interop bug.
+Enabling LDAC on the Air5 Pro+ here lowers quality (removes aptX, lands on AAC). Needs
+reports from other phones to tell whether it is Samsung-specific. Bug report sent to SoundPEATS.

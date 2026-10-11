@@ -1,0 +1,435 @@
+SoundPEATS Air5 Pro+: firmware code S2, version 1.2
+====================================================
+
+Date:      2026-10-11
+Firmware:  S2_20250816_V1.2   (firmware code, build date, version)
+Phone:     Samsung Galaxy S24 FE (SM-S721W), Android 16, One UI 8
+Method:    Android Bluetooth HCI snoop log ("Enabled") while the owner used PeatsAudio,
+           pulled with adb bugreport. Only SoundPEATS frames are kept; the rest of the log
+           was discarded. Frames from the earbuds carry version byte 03, from the phone 04.
+           No Bluetooth addresses appear below.
+
+---- Reads PeatsAudio sent on connecting (12:35:59), and the replies ----
+PeatsAudio asks only these; this is not a full probe.
+
+battery_left         00 64
+firmware_version     00 53 32 5f 32 30 32 35 30 38 31 36 5f 56 31 2e 32
+battery_right        00 64
+battery_case         00 48
+reset_state          no reply
+multipoint           00 00
+anc_level            00 11 01 12 00 13 00 14 00
+touch_disabled       00 00
+anc_env_adaptive     no reply
+transparency_level   00 01 00 02 01
+game_mode            00 00
+custom_keys          00 01 02 02 01 03 03 04 03 05 07 06 07 07 05 08 06
+anc_mode             00 00
+ldac                 00 01
+
+Same answers as the H3 (S5) apart from the owner's own gestures: ANC scenes 11 to 14 with 11
+active, transparency levels 01 and 02 with 02 active, LDAC on, no reply to reset_state or anc_env_adaptive.
+
+---- EQ: Customize EQ screen, then every preset in grid order ----
+The owner reset the curve, moved single bands to the ends of their range and by one step,
+then tapped each preset. Every 0E01 band write was answered with 001D 0F81 01 (330 acks,
+left out below). Decoded: ten bands at 32, 65, 180, 500, 800, 1800, 3600, 5500, 8000 and
+12000 Hz, master gain -12 dB, user range -6 to +6 dB in 1 dB steps. The curves are in
+data/devices.json (S2, "eq") and are the S2 cases of eq_layout and eq_preset in
+data/test_vectors.json.
+
+# batch 0: opening Customize EQ sends the current (owner's) curve
+12:36:02.451 phone->buds v4 001D 0E01 a1 fd 30 00 60 01 4a 10 00
+12:36:02.504 phone->buds v4 001D 0E01 a2 fd 30 00 c3 01 2c 18 00
+12:36:02.557 phone->buds v4 001D 0E01 a3 fd 30 02 1c ff 10 13 33
+12:36:02.609 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 5a 18 00
+12:36:02.660 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:36:02.712 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:36:02.764 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:36:02.817 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:36:02.868 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:36:02.922 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 1: Reset: base curve
+12:36:18.540 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:36:18.591 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:36:19.069 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:36:19.069 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:36:19.069 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:36:19.069 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:36:19.069 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:36:19.069 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:36:19.069 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:36:19.069 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 2: lowest band all the way up
+12:36:29.015 phone->buds v4 001D 0E01 a1 fd 30 00 60 01 fe 10 00
+12:36:29.063 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:36:29.600 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:36:29.600 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:36:29.600 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:36:29.600 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:36:29.600 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:36:29.600 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:36:29.600 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:36:29.600 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 3: Save
+12:36:36.161 phone->buds v4 001D 0E01 a1 fd 30 00 60 01 fe 10 00
+12:36:36.212 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:36:36.321 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:36:36.321 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:36:36.365 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:36:36.418 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:36:36.471 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:36:36.522 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:36:36.574 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:36:36.628 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 4: owner's saved curve again
+12:36:48.625 phone->buds v4 001D 0E01 a1 fd 30 00 60 01 4a 10 00
+12:36:48.679 phone->buds v4 001D 0E01 a2 fd 30 00 c3 01 2c 18 00
+12:36:49.068 phone->buds v4 001D 0E01 a3 fd 30 02 1c ff 10 13 33
+12:36:49.068 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 5a 18 00
+12:36:49.068 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:36:49.068 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:36:49.068 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:36:49.068 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:36:49.068 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:36:49.125 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 5: Reset
+12:36:54.106 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:36:54.156 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:36:54.315 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:36:54.315 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:36:54.315 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:36:54.365 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:36:54.416 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:36:54.469 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:36:54.520 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:36:54.572 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 6: highest band all the way down
+12:36:59.523 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:36:59.573 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:36:59.624 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:36:59.676 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:36:59.729 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:36:59.781 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:36:59.833 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:36:59.884 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:36:59.936 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:36:59.988 phone->buds v4 001D 0E01 aa fd 30 8c a0 00 78 18 00
+
+# batch 7: Save
+12:37:01.811 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:01.862 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:01.913 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:01.965 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:02.017 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:02.068 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:02.120 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:02.172 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:02.224 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:02.276 phone->buds v4 001D 0E01 aa fd 30 8c a0 00 78 18 00
+
+# batch 8: Reset
+12:37:14.581 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:14.632 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:15.201 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:15.201 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:15.201 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:15.201 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:15.201 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:15.201 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:15.201 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:15.201 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 9: highest band down again
+12:37:17.147 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:17.201 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:17.252 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:17.304 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:17.355 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:17.409 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:17.459 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:17.511 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:17.562 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:17.614 phone->buds v4 001D 0E01 aa fd 30 8c a0 00 78 18 00
+
+# batch 10: Save
+12:37:19.692 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:19.743 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:19.795 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:19.846 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:19.898 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:19.950 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:20.002 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:20.053 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:20.105 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:20.158 phone->buds v4 001D 0E01 aa fd 30 8c a0 00 78 18 00
+
+# batch 11: Reset
+12:37:24.781 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:24.831 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:24.882 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:24.934 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:24.985 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:25.038 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:25.089 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:25.142 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:25.194 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:25.246 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 12: 1.8 kHz up two steps
+12:37:30.623 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:30.673 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:30.796 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:30.796 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:30.827 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:30.879 phone->buds v4 001D 0E01 a6 fd 30 15 18 02 58 13 33
+12:37:30.930 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:30.982 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:31.036 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:31.093 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 13: Reset
+12:37:33.804 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:33.857 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:33.909 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:33.961 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:34.013 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:34.066 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:34.118 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:34.169 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:34.222 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:34.274 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 14: 1.8 kHz up one step
+12:37:36.091 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:36.140 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:36.192 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:36.244 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:36.296 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:36.349 phone->buds v4 001D 0E01 a6 fd 30 15 18 02 1c 13 33
+12:37:36.401 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:36.453 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:36.505 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:36.556 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 15: Save
+12:37:37.970 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:38.021 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:38.072 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:38.124 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:38.176 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:38.228 phone->buds v4 001D 0E01 a6 fd 30 15 18 02 1c 13 33
+12:37:38.280 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:38.332 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:38.385 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:38.437 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 16: Reset
+12:37:47.906 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:47.957 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:48.076 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:48.076 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:48.111 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:48.163 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:48.216 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:48.268 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:48.393 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:48.393 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 17: 800 Hz up one step
+12:37:51.538 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:51.589 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:51.641 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:51.693 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:51.746 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 78 18 00
+12:37:51.798 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:51.850 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:51.902 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:51.956 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:52.008 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 18: Save
+12:37:53.069 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:53.121 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:53.173 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:53.227 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:53.278 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 78 18 00
+12:37:53.330 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:53.382 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:53.433 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:53.486 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:53.539 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 19: Reset
+12:37:58.407 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:58.457 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:58.882 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:58.882 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:58.882 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:37:58.882 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:37:58.882 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:37:58.882 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:37:58.882 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:37:58.882 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 20: Save
+12:37:59.755 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:37:59.808 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:37:59.861 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:37:59.913 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:37:59.964 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:38:00.017 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:38:00.069 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:38:00.122 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:38:00.175 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:38:00.228 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 21: preset SOUNDPEATS Classic (= base curve)
+12:38:31.209 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:38:31.259 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:38:31.312 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:38:31.367 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:38:31.422 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:38:31.481 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:38:31.538 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:38:31.595 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:38:31.652 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:38:31.708 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 22: preset Bass Boost
+12:38:37.884 phone->buds v4 001D 0E01 a1 fd 30 00 60 01 2c 10 00
+12:38:37.939 phone->buds v4 001D 0E01 a2 fd 30 00 c3 01 2c 10 00
+12:38:37.995 phone->buds v4 001D 0E01 a3 fd 30 02 1c ff 4c 13 33
+12:38:38.048 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 78 18 00
+12:38:38.103 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:38:38.159 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:38:38.215 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:38:38.272 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:38:38.328 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:38:38.384 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 23: preset Bass Reduce
+12:38:46.451 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 1e 10 00
+12:38:46.505 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 1e 18 00
+12:38:47.119 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 20 13 33
+12:38:47.119 phone->buds v4 001D 0E01 a4 fd 30 05 dc ff c4 18 00
+12:38:47.119 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 1e 18 00
+12:38:47.119 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:38:47.119 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+12:38:47.119 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+12:38:47.119 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:38:47.119 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 24: preset Treble Boost
+12:38:52.693 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+12:38:52.748 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:38:52.882 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:38:52.882 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:38:52.925 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:38:52.981 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:38:53.040 phone->buds v4 001D 0E01 a7 fd 30 2a 30 01 2c 30 00
+12:38:53.093 phone->buds v4 001D 0E01 a8 fd 30 40 74 ff c4 20 00
+12:38:53.149 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff c4 38 00
+12:38:53.204 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 25: preset Pop
+12:39:00.150 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 1e 10 00
+12:39:00.204 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 3c 13 33
+12:39:00.318 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe b6 13 33
+12:39:00.318 phone->buds v4 001D 0E01 a4 fd 30 09 60 00 78 0c cc
+12:39:00.372 phone->buds v4 001D 0E01 a5 fd 30 12 c0 00 f0 10 00
+12:39:00.434 phone->buds v4 001D 0E01 a6 fd 30 1f a4 01 86 13 33
+12:39:00.492 phone->buds v4 001D 0E01 a7 fd 30 40 74 ff 10 28 00
+12:39:00.545 phone->buds v4 001D 0E01 a8 fd 30 5d c0 fd a8 50 00
+12:39:00.597 phone->buds v4 001D 0E01 a9 fd 30 8c a0 01 2c 20 00
+12:39:00.649 phone->buds v4 001D 0E01 aa fd 30 bb 80 fe 98 30 00
+
+# batch 26: preset Electronic
+12:39:06.994 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 f0 10 00
+12:39:07.048 phone->buds v4 001D 0E01 a2 fd 30 00 c3 01 2c 10 00
+12:39:07.105 phone->buds v4 001D 0E01 a3 fd 30 02 1c ff 88 13 33
+12:39:07.161 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 b4 18 00
+12:39:07.215 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 b4 10 00
+12:39:07.269 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 68 13 33
+12:39:07.325 phone->buds v4 001D 0E01 a7 fd 30 2a 30 01 2c 20 00
+12:39:07.382 phone->buds v4 001D 0E01 a8 fd 30 40 74 ff 88 10 00
+12:39:07.440 phone->buds v4 001D 0E01 a9 fd 30 5d c0 00 3c 20 00
+12:39:07.496 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 13 33
+
+# batch 27: preset Classical
+12:39:14.412 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 f0 10 00
+12:39:14.467 phone->buds v4 001D 0E01 a2 fd 30 00 c3 01 2c 18 00
+12:39:14.523 phone->buds v4 001D 0E01 a3 fd 30 02 1c ff 4c 13 33
+12:39:14.577 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 78 18 00
+12:39:14.635 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 5a 18 00
+12:39:14.695 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 2c 13 33
+12:39:14.753 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 3c 30 00
+12:39:14.812 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe 98 20 00
+12:39:14.868 phone->buds v4 001D 0E01 a9 fd 30 5d c0 fe 98 38 00
+12:39:14.925 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 2c 18 00
+
+# batch 28: preset Rock
+12:39:21.368 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 f0 10 00
+12:39:21.421 phone->buds v4 001D 0E01 a2 fd 30 00 c3 01 2c 18 00
+12:39:21.475 phone->buds v4 001D 0E01 a3 fd 30 02 1c ff 4c 13 33
+12:39:21.530 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 78 18 00
+12:39:21.585 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 5a 18 00
+12:39:21.642 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+12:39:21.702 phone->buds v4 001D 0E01 a7 fd 30 2a 30 01 2c 30 00
+12:39:21.759 phone->buds v4 001D 0E01 a8 fd 30 40 74 ff c4 20 00
+12:39:21.815 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff c4 38 00
+12:39:21.872 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 29: preset Folk
+12:39:28.197 phone->buds v4 001D 0E01 a1 fd 30 00 60 ff c4 10 00
+12:39:28.252 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 78 18 00
+12:39:28.395 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:39:28.395 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+12:39:28.418 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 5a 18 00
+12:39:28.475 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 68 13 33
+12:39:28.532 phone->buds v4 001D 0E01 a7 fd 30 2a 30 01 2c 10 00
+12:39:28.589 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe 98 20 00
+12:39:28.644 phone->buds v4 001D 0E01 a9 fd 30 5d c0 fe d4 38 00
+12:39:28.700 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+
+# batch 30: preset Book Whisper
+12:39:35.027 phone->buds v4 001D 0E01 a1 fd 30 00 60 fe 20 08 00
+12:39:35.081 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+12:39:35.136 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+12:39:35.192 phone->buds v4 001D 0E01 a4 fd 30 05 dc 01 2c 10 00
+12:39:35.245 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 f0 18 00
+12:39:35.300 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 a4 13 33
+12:39:35.358 phone->buds v4 001D 0E01 a7 fd 30 2a 30 01 2c 10 00
+12:39:35.415 phone->buds v4 001D 0E01 a8 fd 30 40 74 ff c4 20 00
+12:39:35.472 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+12:39:35.528 phone->buds v4 001D 0E01 aa fd 30 8c a0 fd 30 10 00
+
+# batch 31: preset HIFI
+12:39:41.601 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 b4 0c cc
+12:39:41.653 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 d2 10 00
+12:39:41.836 phone->buds v4 001D 0E01 a3 fd 30 02 1c ff 4c 13 33
+12:39:41.836 phone->buds v4 001D 0E01 a4 fd 30 04 1a 00 3c 0c cc
+12:39:41.836 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 0c cc
+12:39:41.862 phone->buds v4 001D 0E01 a6 fd 30 12 c0 01 2c 10 00
+12:39:41.914 phone->buds v4 001D 0E01 a7 fd 30 20 d0 01 86 13 33
+12:39:41.966 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 28 00
+12:39:42.019 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 10 50 00
+12:39:42.138 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 a4 0c cc
+
+# batch 32: preset ACG
+12:39:50.196 phone->buds v4 001D 0E01 a1 fd 30 00 60 01 2c 10 00
+12:39:50.250 phone->buds v4 001D 0E01 a2 fd 30 00 c3 01 2c 10 00
+12:39:50.305 phone->buds v4 001D 0E01 a3 fd 30 02 1c ff 10 13 33
+12:39:50.360 phone->buds v4 001D 0E01 a4 fd 30 05 dc ff e2 18 00
+12:39:50.420 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+12:39:50.477 phone->buds v4 001D 0E01 a6 fd 30 15 18 02 1c 10 00
+12:39:50.536 phone->buds v4 001D 0E01 a7 fd 30 2a 30 01 68 20 00
+12:39:50.592 phone->buds v4 001D 0E01 a8 fd 30 40 74 ff 10 20 00
+12:39:50.648 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 88 38 00
+12:39:50.705 phone->buds v4 001D 0E01 aa fd 30 8c a0 02 1c 18 00

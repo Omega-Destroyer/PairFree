@@ -133,6 +133,12 @@ reports from other people.
   app sends that again 2.5 s after every channel opens, as PeatsAudio does (owner's choice,
   2026-10-11). For earbuds this phone has never set, it sends nothing and shows the EQ as
   not known. Any profile whose bytes match what is on the earbuds shows as selected.
+- New models get their EQ from users: the app's EQ capture screen (`docs/DESIGN.md`, EQ
+  capture) reads a bug report shared to it, on the phone, and produces a report for a
+  GitHub issue. Turn one into data with `python tools/import_eq_capture.py report.txt`,
+  check the output (the firmware code, the names, that SOUNDPEATS Classic is there), then
+  add its `eq` entry to the model in `data/devices.json` and its cases to
+  `data/test_vectors.json`. Never copy one model's EQ to another.
 - Debug builds log every frame to Logcat under the tag `SoundPeter`
   (`adb logcat -s SoundPeter`); release builds log nothing.
 - Gradle 9 refuses to build from a folder Java reports as not writable, which happens

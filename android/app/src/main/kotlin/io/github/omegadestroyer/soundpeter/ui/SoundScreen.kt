@@ -24,9 +24,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,11 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
@@ -54,8 +48,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -78,11 +70,12 @@ import kotlin.math.roundToInt
  * every band is the earbuds' own tuning.
  */
 @Composable
-internal fun SoundScreen(eq: EqState?, actions: EqActions) {
+internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: () -> Unit = {}) {
     if (eq == null) {
         TabContent {
             Text(stringResource(R.string.tab_sound), style = Studio.type.title)
             Text(stringResource(R.string.eq_unavailable), color = Studio.colors.secondaryText)
+            StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
         }
         return
     }
@@ -362,43 +355,15 @@ private fun BandButton(label: String, gain: Int, selected: Boolean, onClick: () 
 /** Names the current gains. Saving under an existing name replaces that profile. */
 @Composable
 private fun SaveDialog(initial: String, onSave: (String) -> Unit, onDismiss: () -> Unit) {
-    var name by remember { mutableStateOf(initial) }
-    val focus = remember { FocusRequester() }
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.smallCorner)
-    fun done() {
-        if (name.isBlank()) return
-        onDismiss()
-        onSave(name)
-    }
-    StudioDialog(stringResource(R.string.eq_save), onDismiss) {
-        val hint = stringResource(R.string.eq_name_hint)
-        BasicTextField(
-            value = name,
-            onValueChange = { name = it.take(24) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focus)
-                .border(StudioShape.hairline, c.accent, shape)
-                .padding(12.dp),
-            textStyle = Studio.type.body.copy(color = c.text),
-            cursorBrush = SolidColor(c.accent),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { done() }),
-            decorationBox = { field ->
-                Box {
-                    if (name.isEmpty()) Text(hint, color = c.label)
-                    field()
-                }
-            },
-        )
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StudioButton(stringResource(R.string.cancel), onDismiss, Modifier.weight(1f))
-            StudioButton(stringResource(R.string.save), { done() }, Modifier.weight(1f), primary = true, enabled = name.isNotBlank())
-        }
-    }
-    LaunchedEffect(Unit) { focus.requestFocus() }
+    TextEntryDialog(
+        title = stringResource(R.string.eq_save),
+        initial = initial,
+        hint = stringResource(R.string.eq_name_hint),
+        confirm = stringResource(R.string.save),
+        maxLength = 24,
+        onDone = onSave,
+        onDismiss = onDismiss,
+    )
 }
 
 /**

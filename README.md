@@ -58,6 +58,7 @@ Samsung-only:
 | `data/reports/`           | Probe output from real earbuds, one file per model and firmware   |
 | `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
 | `tools/probe.py`          | Read-only probe. Asks the earbuds what they support.              |
+| `tools/import_eq_capture.py` | Turns an EQ capture report from the app into a model's EQ data. |
 | `tools/test_probe.py`     | Tests for the probe and the data files. No hardware needed.       |
 | `assets/devices/`         | Vector drawings of each model's earbud and case, per look         |
 | `tools/gen_device_art.py` | Generates those drawings. Edit the shapes there, not the SVG files. |
@@ -75,9 +76,30 @@ documented in `docs/PROTOCOL.md` section 10. The probe does not support it yet.
 
 A model counts as supported once someone has run the probe on it and filed the output.
 
+## Help add your model's equalizer
+
+SoundPeter offers an equalizer only for models whose curves it knows: so far the H3 and
+the Air5 Pro+. The earbuds cannot report their curves, but the official PeatsAudio app
+sends them, and you can record that on your phone in about five minutes. One recording
+per model is enough, and no computer is needed.
+
+In SoundPeter, open the Device tab and tap **Record the EQ from PeatsAudio** (or the
+button on the Sound tab). It walks you through it:
+
+1. Turn on Developer options and set **Bluetooth HCI snoop log** to **Enabled**.
+2. In PeatsAudio, tap SOUNDPEATS Classic and then every preset once.
+3. Take a bug report from Developer options and share it to SoundPeter.
+4. Name each curve SoundPeter found, and tap **Send on GitHub**.
+
+SoundPeter reads the bug report only on your phone and keeps nothing but the EQ sent to
+your earbuds. The report you send has no names or addresses. Afterwards, turn the snoop
+log off and delete the bug report.
+
 ## Help by probing your earbuds
 
-You need a PC with Bluetooth and Python 3.9 or newer.
+The app's Device tab has **Copy device report**, which gives the same information as the
+probe without a computer. To use the probe instead, you need a PC with Bluetooth and
+Python 3.9 or newer.
 
 1. Pair the earbuds with the PC.
 2. Close PeatsAudio on your phone. Only one client can hold the connection.

@@ -15,6 +15,9 @@ interface EarbudsActions {
 
     /** Back to the list of paired earbuds. */
     fun switchEarbuds()
+
+    /** Opens the EQ capture: recording PeatsAudio's curves for a model (docs/DESIGN.md). */
+    fun openCapture()
 }
 
 /** Does nothing. For previews. */
@@ -23,4 +26,5 @@ object NoActions : EarbudsActions {
     override fun factoryResetConfirmedByUser() = Unit
     override fun deviceReport(): String = ""
     override fun switchEarbuds() = Unit
+    override fun openCapture() = Unit
 }

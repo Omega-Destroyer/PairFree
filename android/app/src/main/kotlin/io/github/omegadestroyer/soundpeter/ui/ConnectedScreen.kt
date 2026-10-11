@@ -84,7 +84,7 @@ internal fun ConnectedScreen(
         Box(Modifier.weight(1f)) {
             when (tab) {
                 Tab.HOME -> HomeScreen(device, state, model, actions, live, eq) { tab = Tab.SOUND }
-                Tab.SOUND -> SoundScreen(eq, eqActions)
+                Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture)
                 Tab.CONTROLS -> ControlsScreen(device, state, actions)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions)
             }

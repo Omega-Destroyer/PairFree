@@ -70,7 +70,7 @@
     <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
 
     <string name="sound_profile">Sound</string>
-    <string name="eq_unavailable">The equalizer layout for these earbuds is not known yet.</string>
+    <string name="eq_unavailable">SoundPeter does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
     <string name="eq_stock">Stock</string>
     <string name="eq_new">New</string>
     <string name="eq_new_unsaved">New, not saved</string>
@@ -140,6 +140,44 @@
     <string name="beep">Beep %1$s</string>
     <string name="stop_beep">Stop %1$s</string>
     <string name="maintenance">Maintenance</string>
+    <!-- EQ capture (docs/DESIGN.md) -->
+    <string name="capture_open">Record the EQ from PeatsAudio</string>
+    <string name="capture_title">Record the EQ</string>
+    <string name="capture_close">Close</string>
+    <string name="capture_intro">SoundPeter can only offer an equalizer when it knows the model\'s curves. The earbuds cannot report them, but PeatsAudio sends them, and Android can log what it sends. One recording per model is enough.</string>
+    <string name="capture_step_developer">Turn on Developer options: in Settings, open About phone and tap Build number seven times. On Samsung it is under About phone, Software information.</string>
+    <string name="capture_step_log">In Settings, Developer options, set Bluetooth HCI snoop log to Enabled (not Filtered). Then turn Bluetooth off and on.</string>
+    <string name="capture_step_peats">Open PeatsAudio with these earbuds connected. On its EQ screen, tap SOUNDPEATS Classic, then every other preset once, in the order they appear, a few seconds apart. Do not come back to SoundPeter yet.</string>
+    <string name="capture_step_report">Back in Developer options, tap Take bug report, then Full report. It takes a few minutes.</string>
+    <string name="capture_step_share">When the notification says the bug report is ready, tap it and share it to SoundPeter. If you miss the notification, tap Choose a bug report below, open the menu and pick Bug reports to find it.</string>
+    <string name="capture_step_name">SoundPeter shows each curve it found. Name them in the order you tapped them, then send the report.</string>
+    <string name="capture_step_cleanup">Afterwards, set Bluetooth HCI snoop log back to Disabled and delete the bug report. It holds a lot of personal data.</string>
+    <string name="capture_choose">Choose a bug report</string>
+    <string name="capture_reading">Reading the bug report. This can take a minute.</string>
+    <string name="capture_privacy_title">What SoundPeter reads</string>
+    <string name="capture_privacy">SoundPeter reads the bug report only on this phone. From the Bluetooth log inside it, it reads only the messages exchanged with SoundPEATS earbuds and skips everything else. It does not keep the file. Nothing is sent to any server until you send the report yourself, which opens GitHub in your browser. SoundPeter has no internet access at all: its app info in Android lists no network permission.</string>
+    <string name="capture_source">See SoundPeter\'s source code</string>
+    <string name="capture_no_log">This bug report has no Bluetooth log. Set Bluetooth HCI snoop log to Enabled, turn Bluetooth off and on, use PeatsAudio again, then take a new bug report.</string>
+    <string name="capture_none">The Bluetooth log in this bug report has no EQ curves sent to SoundPEATS earbuds. Check that the snoop log was set to Enabled, not Filtered, before you used PeatsAudio.</string>
+    <string name="capture_not_report">That file is not a bug report.</string>
+    <string name="capture_unreadable">Could not read that file.</string>
+    <plurals name="capture_found">
+        <item quantity="one">Found %d EQ curve. Tap it to name it.</item>
+        <item quantity="other">Found %d EQ curves. Tap each one to name it, in the order you tapped them in PeatsAudio. Leave out any you do not recognise.</item>
+    </plurals>
+    <string name="capture_earbuds">Earbuds in the log</string>
+    <string name="capture_no_firmware">Not in the log. Turning Bluetooth off and on before opening PeatsAudio records it. The report is still useful without it.</string>
+    <string name="capture_new_model">A model SoundPeter does not know yet (%1$s)</string>
+    <string name="capture_unnamed">Tap to name</string>
+    <string name="capture_same_as">same curve as %1$d</string>
+    <string name="capture_name_title">Curve %1$d</string>
+    <string name="capture_other_name">Another name</string>
+    <string name="capture_leave_out">Leave out</string>
+    <string name="capture_send">Send on GitHub</string>
+    <string name="capture_share">Share the report another way</string>
+    <string name="capture_name_first">Name at least one curve to send the report.</string>
+    <string name="capture_send_hint">Nothing has left this phone yet. Send on GitHub copies the report and opens a new issue with it filled in, in your browser. It is sent only when you submit the issue there. If the issue is empty, paste the report into it.</string>
+    <string name="capture_copied">Copied. If the new issue on GitHub is empty, paste the report into it, then submit it.</string>
     <string name="copy_report">Copy device report</string>
     <string name="report_copied">Copied. Paste it into a device report issue on the project page to help support these earbuds.</string>
     <string name="factory_reset">Factory reset</string>

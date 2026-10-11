@@ -38,6 +38,7 @@ import io.github.omegadestroyer.soundpeter.AppViewModel
 import io.github.omegadestroyer.soundpeter.R
 import io.github.omegadestroyer.soundpeter.bluetooth.LinkStatus
 import io.github.omegadestroyer.soundpeter.bluetooth.Paired
+import io.github.omegadestroyer.soundpeter.capture.Capture
 import io.github.omegadestroyer.soundpeter.ui.theme.Studio
 
 @Composable
@@ -48,6 +49,7 @@ fun SoundPeterApp(vm: AppViewModel = viewModel()) {
     }
     val hasPermission by vm.hasPermission.collectAsStateWithLifecycle()
     val status by vm.connection.status.collectAsStateWithLifecycle()
+    val capture by vm.capture.collectAsStateWithLifecycle()
     Box(
         Modifier
             .fillMaxSize()
@@ -58,6 +60,7 @@ fun SoundPeterApp(vm: AppViewModel = viewModel()) {
         // One call site for both, so the open tab survives a reconnect.
         val shown = (current as? LinkStatus.Connected)?.device ?: (current as? LinkStatus.Reconnecting)?.device
         when {
+            capture != Capture.Closed -> CaptureScreen(capture, vm)
             !hasPermission -> PermissionScreen(vm::onPermissionResult)
             shown != null -> ConnectedScreen(vm, shown, live = current is LinkStatus.Connected)
             else -> NotConnectedScreen(vm, current)

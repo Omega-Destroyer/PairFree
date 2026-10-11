@@ -26,10 +26,15 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
@@ -37,10 +42,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -53,6 +61,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -553,4 +563,53 @@ private fun RadioMark(on: Boolean) {
             )
         }
     }
+}
+
+/** A dialog with one line of text, for a name. [onDone] gets the text when it is not blank. */
+@Composable
+fun TextEntryDialog(
+    title: String,
+    initial: String,
+    hint: String,
+    confirm: String,
+    maxLength: Int,
+    onDone: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var text by remember { mutableStateOf(initial) }
+    val focus = remember { FocusRequester() }
+    val c = Studio.colors
+    val shape = RoundedCornerShape(StudioShape.smallCorner)
+    fun done() {
+        if (text.isBlank()) return
+        onDismiss()
+        onDone(text)
+    }
+    StudioDialog(title, onDismiss) {
+        BasicTextField(
+            value = text,
+            onValueChange = { text = it.take(maxLength) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focus)
+                .border(StudioShape.hairline, c.accent, shape)
+                .padding(12.dp),
+            textStyle = Studio.type.body.copy(color = c.text),
+            cursorBrush = SolidColor(c.accent),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { done() }),
+            decorationBox = { field ->
+                Box {
+                    if (text.isEmpty()) Text(hint, color = c.label)
+                    field()
+                }
+            },
+        )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            StudioButton(stringResource(R.string.cancel), onDismiss, Modifier.weight(1f))
+            StudioButton(confirm, { done() }, Modifier.weight(1f), primary = true, enabled = text.isNotBlank())
+        }
+    }
+    LaunchedEffect(Unit) { focus.requestFocus() }
 }

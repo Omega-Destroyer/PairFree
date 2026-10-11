@@ -3,8 +3,10 @@ package io.github.omegadestroyer.soundpeter.protocol
 /** Builds the frames the app sends. */
 public object Requests {
     /**
-     * The GETs sent on connect: the same list as tools/probe.py, all read-only. A test
-     * keeps the two in step.
+     * The GETs sent on connect: every read the app knows and that is safe to send unasked,
+     * so one connect captures all a model supports for the device report. The same list as
+     * tools/probe.py, in the same order; a test keeps the two in step. Commands marked
+     * do-not-probe (for example `connect_classic`) are left out.
      */
     public val ON_CONNECT: List<Command> = listOf(
         Command.FIRMWARE_VERSION, Command.BATTERY_LEFT, Command.BATTERY_RIGHT, Command.BATTERY_CASE,
@@ -13,7 +15,8 @@ public object Requests {
         Command.TOUCH_DISABLED, Command.CUSTOM_KEYS, Command.PROMPT_VOLUME, Command.AUTO_SHUTDOWN,
         Command.VOICE_LANGUAGE, Command.DYNAMIC_EQ, Command.DYNAMIC_BASS, Command.MOVIE_MODE,
         Command.SPATIAL_AUDIO, Command.PANORAMIC_SOUND, Command.DOLBY, Command.ADAPTIVE_VOLUME,
-        Command.PERSONAL_VOLUME, Command.LIGHT_EFFECT, Command.PRIVACY_MODE, Command.RESET_STATE,
+        Command.PERSONAL_VOLUME, Command.EAR_VOLUME_LEFT, Command.EAR_VOLUME_RIGHT, Command.LIGHT_EFFECT,
+        Command.PRIVACY_MODE, Command.FALL_DETECTION, Command.WATER_DRAIN, Command.RESET_STATE,
         Command.FIND_LEFT, Command.FIND_RIGHT,
     )
 

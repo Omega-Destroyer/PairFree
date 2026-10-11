@@ -94,13 +94,15 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine("    public val set: Int?,")
         out.appendLine("    public val kind: Kind,")
         out.appendLine("    public val labels: Map<Int, String>,")
+        out.appendLine("    /** False when data/commands.json marks the command do-not-probe: never read it unasked. */")
+        out.appendLine("    public val probe: Boolean,")
         out.appendLine(") {")
         for (c in commands) {
             val id = c.getValue("id") as String
             val get = c["get"]?.let(::hex) ?: "null"
             val set = c["set"]?.let(::hex) ?: "null"
             val kind = (c.getValue("kind") as String).uppercase()
-            out.appendLine("    ${id.uppercase()}(${str(id)}, $get, $set, Kind.$kind, ${intMap(c["values"])}),")
+            out.appendLine("    ${id.uppercase()}(${str(id)}, $get, $set, Kind.$kind, ${intMap(c["values"])}, ${c["probe"] != false}),")
         }
         out.appendLine("}")
         out.appendLine()

@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.soundpeter.protocol
 
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -21,6 +22,7 @@ class CommandTableTest {
             assertEquals(json.str("kind").uppercase(), command.kind.name, command.id)
             val labels = json["values"]?.jsonObject?.entries?.associate { it.key.toInt() to it.value.jsonPrimitive.content }
             assertEquals(labels ?: emptyMap<Int, String>(), command.labels, command.id)
+            assertEquals(json["probe"]?.jsonPrimitive?.booleanOrNull ?: true, command.probe, command.id)
         }
     }
 

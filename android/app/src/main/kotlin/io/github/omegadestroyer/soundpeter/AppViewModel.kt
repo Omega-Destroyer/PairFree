@@ -97,19 +97,40 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions {
 
     override fun factoryResetConfirmedByUser() = connection.factoryResetConfirmedByUser()
 
-    /** The same lines as tools/probe.py, under a header like the reports in data/reports. */
+    /**
+     * A complete, pasteable capture of what the earbuds answered, so a model can be added
+     * from a user's phone with no developer mode and no Bluetooth snooping. On connect the
+     * app sends every read it knows (Requests.ON_CONNECT); this formats the replies the same
+     * way tools/probe.py does, under a header that identifies the model and says where to paste.
+     */
     override fun deviceReport(): String {
         val app = getApplication<Application>()
         val version = app.packageManager.getPackageInfo(app.packageName, 0).versionName
         val device = (connection.status.value as? LinkStatus.Connected)?.device
+        val firmware = connection.state.value.firmware
         val date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'").format(LocalDateTime.now(ZoneOffset.UTC))
         return buildString {
+            appendLine("SoundPeter device report")
+            appendLine("Paste this whole report into a new issue at")
+            appendLine("https://github.com/Omega-Destroyer/SoundPeter/issues to help add support")
+            appendLine("for this model. It holds no account, address or other personal data.")
+            appendLine()
             appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
-            appendLine("Date:            $date")
+            appendLine("Firmware:        ${firmware?.text ?: "unknown"}")
+            appendLine("Firmware code:   ${firmware?.code ?: "unknown"}")
+            appendLine("App:             SoundPeter $version (SPP)")
             appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-            appendLine("Link:            SoundPeter $version, SPP")
+            appendLine("Captured:        $date")
+            appendLine()
+            appendLine("The app asked the earbuds every read it knows. Each line is the feature,")
+            appendLine("its command, the decoded reply and the raw bytes. \"no reply\" means the")
+            appendLine("firmware does not support that read.")
             appendLine()
             DeviceReport.lines(connection.lastReplies).forEach(::appendLine)
+            appendLine()
+            appendLine("This is enough to add this model's controls. A matching equalizer also")
+            appendLine("needs the chip (for example Qualcomm QCC3091, from the product page) and a")
+            appendLine("one-time EQ capture; a maintainer can follow up on that if you want it.")
         }
     }
 

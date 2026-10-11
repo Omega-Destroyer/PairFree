@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.soundpeter.protocol
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -35,6 +36,20 @@ class RequestsTest {
     @Test
     fun onConnectOnlyReads() {
         assertTrue(Requests.ON_CONNECT.all { it.get != null })
+    }
+
+    @Test
+    fun onConnectLeavesOutDoNotProbeCommands() {
+        assertTrue(Requests.ON_CONNECT.all { it.probe })
+        assertFalse(Command.CONNECT_CLASSIC.probe)                 // defined, but never read unasked
+        assertFalse(Command.CONNECT_CLASSIC in Requests.ON_CONNECT)
+    }
+
+    @Test
+    fun onConnectCapturesEverySafeRead() {
+        // every command with a GET that is safe to probe is captured for the device report
+        val safe = Command.entries.filter { it.get != null && it.probe }.toSet()
+        assertEquals(safe, Requests.ON_CONNECT.toSet())
     }
 
     @Test

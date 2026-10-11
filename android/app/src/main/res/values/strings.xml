@@ -9,10 +9,10 @@
     <string name="permission_settings">Open app settings</string>
 
     <string name="connect_title">Connect your earbuds</string>
-    <string name="connect_hint">Pick earbuds this phone is paired with. Close PeatsAudio first: only one app can hold the controls.</string>
+    <string name="connect_hint">Pick your SoundPEATS earbuds. Close PeatsAudio first: only one app can hold the controls.</string>
     <string name="connect">Connect</string>
     <string name="connecting">Connecting…</string>
-    <string name="no_paired">No paired earbuds. Pair them in the Bluetooth settings first.</string>
+    <string name="no_paired">No SoundPEATS earbuds paired. Pair them in the Bluetooth settings first.</string>
     <string name="bluetooth_off">Bluetooth is off.</string>
     <string name="bluetooth_settings">Bluetooth settings</string>
     <string name="privacy_line">No account. No internet. Nothing leaves this phone.</string>

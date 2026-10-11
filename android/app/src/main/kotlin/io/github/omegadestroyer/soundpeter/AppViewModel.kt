@@ -20,6 +20,7 @@ import io.github.omegadestroyer.soundpeter.bluetooth.Paired
 import io.github.omegadestroyer.soundpeter.eq.Equalizer
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.DeviceReport
+import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.ui.EarbudsActions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -117,10 +118,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions {
         if (!checkPermission()) return
         val on = adapter?.isEnabled == true
         _bluetoothOn.value = on
+        // Only SoundPEATS models the app can control, not every bonded audio device. The
+        // AUDIO_VIDEO class also drops SoundPEATS watches, which share the brand name.
         _paired.value = if (!on) emptyList() else adapter.bondedDevices
             .filter { it.bluetoothClass?.majorDeviceClass == BluetoothClass.Device.Major.AUDIO_VIDEO }
+            .filter { Models.isSupported(it.name ?: "") }
             .map { Paired(it.address, it.name ?: it.address) }
-            .sortedWith(compareByDescending<Paired> { it.name.startsWith("SOUNDPEATS", ignoreCase = true) }.thenBy { it.name })
+            .sortedBy { it.name }
     }
 
     override fun onCleared() = connection.disconnect()

@@ -29,6 +29,30 @@ public object Models {
     public fun find(code: String?, name: String?): Model? =
         MODEL_TABLE.firstOrNull { it.code == code }
             ?: name?.let { n -> MODEL_TABLE.firstOrNull { m -> m.names.any { it.equals(n, ignoreCase = true) } } }
+
+    /**
+     * True when the app can control a device shown with this Bluetooth [name]: a SoundPEATS
+     * device on the common protocol (docs/PROTOCOL.md sections 1 to 4).
+     *
+     * A model in the table qualifies unless it is the QCY-built Capsule3 Pro, whose protocol
+     * the app does not speak. A name not in the table qualifies when it starts with a known
+     * SoundPEATS brand: the table is deliberately incomplete, newer models use the common
+     * protocol too, and the connection then probes what the earbuds actually support. A
+     * non-SoundPEATS device (another maker's headphones) matches nothing and is left out.
+     */
+    public fun isSupported(name: String): Boolean {
+        val trimmed = name.trim()
+        if (trimmed.isEmpty()) return false
+        val model = MODEL_TABLE.firstOrNull { m -> m.names.any { it.equals(trimmed, ignoreCase = true) } }
+        if (model != null) return model.family != QCY_FAMILY
+        return BRANDS.any { trimmed.startsWith(it, ignoreCase = true) }
+    }
+
+    /** The Capsule3 Pro's family: QCY's own protocol over BLE, which this app does not implement. */
+    private const val QCY_FAMILY = "QCY-WUQI"
+
+    /** SoundPEATS' own and sub-brand names, for models not yet in the table. */
+    private val BRANDS = listOf("SOUNDPEATS", "TRUEFREE", "LE-SOUNDPEATS")
 }
 
 /**

@@ -51,6 +51,34 @@ class ModelsTest {
     }
 
     @Test
+    fun onlySupportedSoundpeatsNamesAreRecognised() {
+        // models in the table, by their Bluetooth names
+        assertTrue(Models.isSupported("SOUNDPEATS H3"))
+        assertTrue(Models.isSupported("soundpeats air5 pro+"))   // case does not matter
+        assertTrue(Models.isSupported("  SOUNDPEATS Air3  "))    // surrounding spaces ignored
+        assertTrue(Models.isSupported("TRUEFREE C1"))            // a sub-brand in the table
+        assertTrue(Models.isSupported("Hi Listening"))           // a table name without the brand prefix
+        // not in the table but a known brand: a newer model, still the common protocol
+        assertTrue(Models.isSupported("SOUNDPEATS Air7 Pro"))
+        // the Capsule3 Pro uses QCY's protocol, which the app does not speak
+        assertFalse(Models.isSupported("SOUNDPEATS Capsule3 Pro"))
+        // other makers and empty names
+        assertFalse(Models.isSupported("Sony WH-1000XM5"))
+        assertFalse(Models.isSupported("Galaxy Buds3 Pro"))
+        assertFalse(Models.isSupported(""))
+    }
+
+    @Test
+    fun everyTableNameIsRecognisedExceptTheQcyOne() {
+        for (model in Models.ALL) {
+            val qcy = model.family == "QCY-WUQI"
+            for (name in model.names) {
+                assertEquals(!qcy, Models.isSupported(name), "$name (${model.code})")
+            }
+        }
+    }
+
+    @Test
     fun h3BlocksGameModeAndTwoDevicesWhileLdacIsOn() {
         val h3 = Models.find("S5", null)
         fun state(ldac: String) = EarbudState()

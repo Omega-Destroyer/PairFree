@@ -29,9 +29,12 @@ class FakeServer:
     def __init__(self, clock, feature_version="0.0.1", status=None):
         self.clock, self.feature_version, self.status = clock, feature_version, status or {}
         self.calls = []
+        self.reply = None      # when set, every request gets HTTP 200 with this body
 
     def __call__(self, url, headers):
         self.calls.append((self.clock.now, url, dict(headers)))
+        if self.reply is not None:
+            return 200, self.reply
         path = url[len(fsd.BASE_URL):]
         for part, code in self.status.items():
             if part in path:
@@ -114,6 +117,21 @@ class FetchPlan(unittest.TestCase):
         with self.assertRaises(fsd.Stop):
             fsd.run(self.fetcher())
         self.assertEqual(len(self.server.calls), 3)
+
+    def test_refusal_inside_a_200_reply_stops_at_once(self):
+        # what the real server sent on 2026-10-10
+        refused = json.dumps({"code": 401, "data": None, "message": "authentication failed", "success": False}).encode()
+        self.server.reply = refused
+        with self.assertRaises(fsd.Stop):
+            fsd.run(self.fetcher())
+        self.assertEqual(len(self.server.calls), 1)
+        self.assertFalse((self.out / "pairDataList.json").exists())     # not kept as an answer
+        index = json.loads((self.out / "index.json").read_text())
+        self.assertIn("401", index[0]["refused"])
+
+    def test_normal_replies_are_not_refusals(self):
+        for body in (PAIRS, EQ, FEATURES, b"Zm9vYmFy", b""):
+            self.assertIsNone(fsd.refusal(body))
 
     def test_not_found_is_skipped_but_a_run_of_them_stops(self):
         self.server.status = {"otaCode=S99": 404}

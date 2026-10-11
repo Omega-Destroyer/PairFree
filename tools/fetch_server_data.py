@@ -12,8 +12,12 @@ read-only requests the official app makes when earbuds connect:
 
 It sends no account, no device identifiers and no user data. It only sends GET
 requests, waits at least 30 seconds between them, and stops at the first sign the
-server is unhappy: any HTTP error other than "not found", five "not found" replies
-in a row, or a network error.
+server is unhappy: any HTTP error other than "not found", a reply that says the
+request was refused (the server sends "authentication failed" as HTTP 200 with
+code 401 inside), five "not found" replies in a row, or a network error.
+
+As of 2026-10-10 the server refuses every request without the official app's
+authentication, so this tool gets nothing. It does not and will not authenticate.
 
 The server's robots rules disallow automated fetching. Running this is the owner's
 decision.
@@ -81,6 +85,18 @@ def parse_json(body):
         return None
 
 
+def refusal(body):
+    """The server's reason if a 200 reply is really a refusal, for example
+    {"code": 401, "success": false, "message": "...authentication failed..."}. None otherwise."""
+    doc = parse_json(body)
+    if not isinstance(doc, dict):
+        return None
+    code = doc.get("code")
+    if doc.get("success") is False or (isinstance(code, int) and code != 200):
+        return f"code {code}: {doc.get('message', '')}".strip()
+    return None
+
+
 def items_of(doc):
     """The list inside a {code, data, ...} envelope, or [] if it is not there."""
     data = doc.get("data") if isinstance(doc, dict) else None
@@ -132,9 +148,16 @@ class Fetcher:
             self.last = self.clock()
             self.sent += 1
         self.out.mkdir(parents=True, exist_ok=True)
-        self.index.append({"file": rel, "url": url, "status": status, "bytes": len(body), "fetched_epoch": self.last,
-                           "fetched_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(self.last))})
+        refused = refusal(body) if status == 200 else None
+        entry = {"file": rel, "url": url, "status": status, "bytes": len(body), "fetched_epoch": self.last,
+                 "fetched_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(self.last))}
+        if refused:
+            entry["refused"] = refused
+        self.index.append(entry)
         self.index_path.write_text(json.dumps(self.index, indent=2))
+        if refused:
+            # Not saved as an answer, so nothing later reads it as data.
+            raise Stop(f"The server refused {path}: {refused}. Stopping; it will refuse the rest too.")
         if status == 404:
             self.misses += 1
             if self.misses >= self.MAX_MISSES:

@@ -360,9 +360,13 @@ How these are served, as read from the app:
   `fjson` (frequencies), `gainJson` and `qjson`.
 - `product/list` gives `productName` per `otaCode`.
 
-`tools/fetch_server_data.py` fetches these for every model at one request per
-30 seconds and saves the replies unmodified. Nothing has been fetched yet: see the
-tool's header for what the owner needs to know before running it.
+`tools/fetch_server_data.py` asks for these at one request per 30 seconds. When the
+owner ran it on 2026-10-10 the server answered both `ota/pairDataList` and
+`product/list` with HTTP 200 carrying `{"code": 401, "success": false}` and a message
+saying authentication failed: the server only answers the official app's
+authenticated requests. Nothing was fetched, and the tool now stops at the first such
+refusal. Per-model facts come from the earbuds instead: the probe for features, a
+phone's Bluetooth log for EQ curves (section 11).
 
 The APK ships no per-model feature list and no EQ curves. Its assets hold only
 animations, hearing-test tones and SDK files.

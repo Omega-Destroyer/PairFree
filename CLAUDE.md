@@ -79,7 +79,10 @@ reports from other people.
   The owner has allowed one exception: `tools/fetch_server_data.py`, a research
   tool he runs by hand. It only sends GET requests, at most one per 30 seconds,
   with no account or device identifiers. Keep it that way. The app itself never
-  talks to the server and never requests the internet permission.
+  talks to the server and never requests the internet permission. Since 2026-10-10
+  the server refuses every request without the official app's authentication, and
+  the tool stops at the first refusal. Do not make it authenticate: no app keys,
+  certificates or signing, in or outside the repo.
 - Raw server replies go in `server_dump/`, which git ignores. They are vendor
   data. Do not commit them. Derived facts (feature codes, chip families, EQ
   numbers) go into `data/` only after the owner has agreed to what is included.

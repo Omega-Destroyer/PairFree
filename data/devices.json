@@ -1,5 +1,5 @@
 {
-  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android). Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; `family_sources.marketed_chip` is the chip the model is sold with; `family_sources.ble_device_information` is the manufacturer and model the earbuds report in the standard BLE Device Information service. `ldac_excludes` lists features PeatsAudio offers only while LDAC is off, as the owner saw in PeatsAudio; ids are from data/commands.json. `ldac_or_multipoint` means LDAC and multipoint are one either-or setting on the earbuds: turning one off turns the other on. `eq` is the band layout the official app writes to the model: one band per entry with its centre frequency, Q and the base gain the app adds the user's gain to, plus the master gain sent with every band and the range of the app's sliders. `eq.presets` are complete curves sent as they are, with the same master gain. Both were seen on hardware; see the model's reports.",
+  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android), plus what the app's code says about each model. Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; the reports are in data/reports/.",
   "devices": [
     {
       "firmware_code": "ATS3019DK12",
@@ -12,7 +12,11 @@
         "product_enum": "ACTIONS"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "JULI3025Lite2",
@@ -24,7 +28,11 @@
         "support_list": "ACTIONS"
       },
       "old_eq_protocol": null,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "JULIRUNFREE",
@@ -37,7 +45,11 @@
         "product_enum": "ACTIONS"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "BT893XPro",
@@ -49,7 +61,11 @@
         "product_enum": "FOTA"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 8
     },
     {
       "firmware_code": "S13",
@@ -61,7 +77,11 @@
         "product_enum": "FOTA"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 8
     },
     {
       "firmware_code": "ZKLXAIR5LITE",
@@ -73,7 +93,11 @@
         "product_enum": "FOTA"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 8
     },
     {
       "firmware_code": "ZKLXBREEZY",
@@ -85,7 +109,11 @@
         "product_enum": "FOTA"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 8
     },
     {
       "firmware_code": "ZKLXCHASERS",
@@ -97,7 +125,11 @@
         "product_enum": "FOTA"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 8
     },
     {
       "firmware_code": "ZKLXSPACEPRO",
@@ -109,7 +141,11 @@
         "product_enum": "FOTA"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 8
     },
     {
       "firmware_code": "ECHO7018",
@@ -124,7 +160,11 @@
         "product_enum": "JIELI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "JIELILIFE3",
@@ -136,7 +176,11 @@
         "support_list": "JIELI"
       },
       "old_eq_protocol": null,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "JL6973Clear",
@@ -149,7 +193,11 @@
         "product_enum": "JIELI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "JL6973D8C1",
@@ -162,7 +210,11 @@
         "support_list": "JIELI"
       },
       "old_eq_protocol": null,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "R1292A7018F",
@@ -175,7 +227,11 @@
         "product_enum": "JIELI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "TS03WINGS2",
@@ -188,7 +244,11 @@
         "product_enum": "JIELI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "QCYTS04",
@@ -202,7 +262,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": true,
-      "family_conflict": true
+      "family_conflict": true,
+      "transport": "qcy_ble",
+      "eq_command": null,
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "SPTS04",
@@ -216,7 +280,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": true,
-      "family_conflict": true
+      "family_conflict": true,
+      "transport": "qcy_ble",
+      "eq_command": null,
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "AIR4-BS590R2E",
@@ -229,7 +297,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "AIR4PRO-BS588R2E",
@@ -242,7 +314,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "Air3Pro",
@@ -256,7 +332,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "BS343RB",
@@ -269,7 +349,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "BS390RB",
@@ -283,7 +367,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "BT5106-3040",
@@ -297,7 +385,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "BT5107",
@@ -310,7 +402,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "HILISTENING",
@@ -323,7 +419,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "QCC3040",
@@ -337,7 +437,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "QCC3091AIR5",
@@ -349,7 +453,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "S27",
@@ -361,7 +469,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "S32",
@@ -373,7 +485,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "S5",
@@ -387,6 +503,10 @@
       },
       "old_eq_protocol": null,
       "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10,
       "ldac_excludes": [
         "game_mode",
         "multipoint"
@@ -397,181 +517,661 @@
         "master_gain_db": -2.0,
         "user_range_db": 6,
         "bands": [
-          { "hz": 50, "q": 0.5, "base_gain_db": 3.5 },
-          { "hz": 160, "q": 1.6, "base_gain_db": -6.0 },
-          { "hz": 350, "q": 0.7, "base_gain_db": -2.6 },
-          { "hz": 800, "q": 1.0, "base_gain_db": 3.7 },
-          { "hz": 1600, "q": 1.0, "base_gain_db": 5.5 },
-          { "hz": 2800, "q": 1.5, "base_gain_db": 6.5 },
-          { "hz": 4600, "q": 1.8, "base_gain_db": -2.5 },
-          { "hz": 8000, "q": 6.0, "base_gain_db": -3.5 },
-          { "hz": 12000, "q": 1.5, "base_gain_db": 1.2 },
-          { "hz": 17000, "q": 1.5, "base_gain_db": -0.2 }
+          {
+            "hz": 50,
+            "q": 0.5,
+            "base_gain_db": 3.5
+          },
+          {
+            "hz": 160,
+            "q": 1.6,
+            "base_gain_db": -6.0
+          },
+          {
+            "hz": 350,
+            "q": 0.7,
+            "base_gain_db": -2.6
+          },
+          {
+            "hz": 800,
+            "q": 1.0,
+            "base_gain_db": 3.7
+          },
+          {
+            "hz": 1600,
+            "q": 1.0,
+            "base_gain_db": 5.5
+          },
+          {
+            "hz": 2800,
+            "q": 1.5,
+            "base_gain_db": 6.5
+          },
+          {
+            "hz": 4600,
+            "q": 1.8,
+            "base_gain_db": -2.5
+          },
+          {
+            "hz": 8000,
+            "q": 6.0,
+            "base_gain_db": -3.5
+          },
+          {
+            "hz": 12000,
+            "q": 1.5,
+            "base_gain_db": 1.2
+          },
+          {
+            "hz": 17000,
+            "q": 1.5,
+            "base_gain_db": -0.2
+          }
         ],
         "presets": [
           {
             "name": "Bass Boost",
             "bands": [
-              { "hz": 50, "q": 0.5, "gain_db": 4.8 },
-              { "hz": 160, "q": 1.6, "gain_db": -4.8 },
-              { "hz": 350, "q": 0.7, "gain_db": -0.8 },
-              { "hz": 800, "q": 1.0, "gain_db": 4.5 },
-              { "hz": 1600, "q": 1.0, "gain_db": 5.5 },
-              { "hz": 2800, "q": 1.5, "gain_db": 6.5 },
-              { "hz": 4600, "q": 1.8, "gain_db": -2.5 },
-              { "hz": 8000, "q": 6.0, "gain_db": -3.5 },
-              { "hz": 12000, "q": 1.5, "gain_db": 1.2 },
-              { "hz": 17000, "q": 1.5, "gain_db": -0.2 }
+              {
+                "hz": 50,
+                "q": 0.5,
+                "gain_db": 4.8
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -4.8
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -0.8
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 4.5
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 5.5
+              },
+              {
+                "hz": 2800,
+                "q": 1.5,
+                "gain_db": 6.5
+              },
+              {
+                "hz": 4600,
+                "q": 1.8,
+                "gain_db": -2.5
+              },
+              {
+                "hz": 8000,
+                "q": 6.0,
+                "gain_db": -3.5
+              },
+              {
+                "hz": 12000,
+                "q": 1.5,
+                "gain_db": 1.2
+              },
+              {
+                "hz": 17000,
+                "q": 1.5,
+                "gain_db": -0.2
+              }
             ]
           },
           {
             "name": "Bass Reduce",
             "bands": [
-              { "hz": 50, "q": 0.5, "gain_db": 2.0 },
-              { "hz": 160, "q": 1.6, "gain_db": -8.0 },
-              { "hz": 350, "q": 0.7, "gain_db": -3.2 },
-              { "hz": 800, "q": 1.0, "gain_db": 3.0 },
-              { "hz": 1600, "q": 1.0, "gain_db": 5.5 },
-              { "hz": 2800, "q": 1.5, "gain_db": 6.5 },
-              { "hz": 4600, "q": 1.8, "gain_db": -2.5 },
-              { "hz": 8000, "q": 6.0, "gain_db": -3.5 },
-              { "hz": 12000, "q": 1.5, "gain_db": 1.2 },
-              { "hz": 17000, "q": 1.5, "gain_db": -0.2 }
+              {
+                "hz": 50,
+                "q": 0.5,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -8.0
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -3.2
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 5.5
+              },
+              {
+                "hz": 2800,
+                "q": 1.5,
+                "gain_db": 6.5
+              },
+              {
+                "hz": 4600,
+                "q": 1.8,
+                "gain_db": -2.5
+              },
+              {
+                "hz": 8000,
+                "q": 6.0,
+                "gain_db": -3.5
+              },
+              {
+                "hz": 12000,
+                "q": 1.5,
+                "gain_db": 1.2
+              },
+              {
+                "hz": 17000,
+                "q": 1.5,
+                "gain_db": -0.2
+              }
             ]
           },
           {
             "name": "Treble Boost",
             "bands": [
-              { "hz": 50, "q": 0.5, "gain_db": 3.5 },
-              { "hz": 160, "q": 1.6, "gain_db": -6.0 },
-              { "hz": 350, "q": 0.7, "gain_db": -2.6 },
-              { "hz": 800, "q": 1.0, "gain_db": 3.7 },
-              { "hz": 1600, "q": 1.0, "gain_db": 5.5 },
-              { "hz": 2800, "q": 1.5, "gain_db": 6.5 },
-              { "hz": 4600, "q": 1.8, "gain_db": -0.5 },
-              { "hz": 8000, "q": 6.0, "gain_db": -1.5 },
-              { "hz": 12000, "q": 1.5, "gain_db": 3.0 },
-              { "hz": 17000, "q": 1.5, "gain_db": 2.0 }
+              {
+                "hz": 50,
+                "q": 0.5,
+                "gain_db": 3.5
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -6.0
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -2.6
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 3.7
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 5.5
+              },
+              {
+                "hz": 2800,
+                "q": 1.5,
+                "gain_db": 6.5
+              },
+              {
+                "hz": 4600,
+                "q": 1.8,
+                "gain_db": -0.5
+              },
+              {
+                "hz": 8000,
+                "q": 6.0,
+                "gain_db": -1.5
+              },
+              {
+                "hz": 12000,
+                "q": 1.5,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 17000,
+                "q": 1.5,
+                "gain_db": 2.0
+              }
             ]
           },
           {
             "name": "Electronic",
             "bands": [
-              { "hz": 50, "q": 0.5, "gain_db": 5.0 },
-              { "hz": 160, "q": 1.6, "gain_db": -5.0 },
-              { "hz": 350, "q": 0.7, "gain_db": -0.5 },
-              { "hz": 800, "q": 1.0, "gain_db": 0.5 },
-              { "hz": 1600, "q": 1.0, "gain_db": 4.0 },
-              { "hz": 2800, "q": 2.8, "gain_db": -3.0 },
-              { "hz": 5000, "q": 2.0, "gain_db": 4.0 },
-              { "hz": 8000, "q": 6.0, "gain_db": -5.0 },
-              { "hz": 12000, "q": 1.0, "gain_db": 2.5 },
-              { "hz": 17000, "q": 1.0, "gain_db": -1.0 }
+              {
+                "hz": 50,
+                "q": 0.5,
+                "gain_db": 5.0
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -5.0
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -0.5
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 0.5
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 4.0
+              },
+              {
+                "hz": 2800,
+                "q": 2.8,
+                "gain_db": -3.0
+              },
+              {
+                "hz": 5000,
+                "q": 2.0,
+                "gain_db": 4.0
+              },
+              {
+                "hz": 8000,
+                "q": 6.0,
+                "gain_db": -5.0
+              },
+              {
+                "hz": 12000,
+                "q": 1.0,
+                "gain_db": 2.5
+              },
+              {
+                "hz": 17000,
+                "q": 1.0,
+                "gain_db": -1.0
+              }
             ]
           },
           {
             "name": "Pop",
             "bands": [
-              { "hz": 50, "q": 0.5, "gain_db": 2.0 },
-              { "hz": 160, "q": 1.6, "gain_db": -5.0 },
-              { "hz": 350, "q": 0.7, "gain_db": -1.0 },
-              { "hz": 800, "q": 1.0, "gain_db": 3.0 },
-              { "hz": 1600, "q": 1.0, "gain_db": 3.0 },
-              { "hz": 2800, "q": 1.5, "gain_db": 4.0 },
-              { "hz": 4600, "q": 1.8, "gain_db": -1.0 },
-              { "hz": 8000, "q": 6.0, "gain_db": -2.0 },
-              { "hz": 12000, "q": 1.5, "gain_db": 0.2 },
-              { "hz": 17000, "q": 1.5, "gain_db": -3.0 }
+              {
+                "hz": 50,
+                "q": 0.5,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -5.0
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -1.0
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 2800,
+                "q": 1.5,
+                "gain_db": 4.0
+              },
+              {
+                "hz": 4600,
+                "q": 1.8,
+                "gain_db": -1.0
+              },
+              {
+                "hz": 8000,
+                "q": 6.0,
+                "gain_db": -2.0
+              },
+              {
+                "hz": 12000,
+                "q": 1.5,
+                "gain_db": 0.2
+              },
+              {
+                "hz": 17000,
+                "q": 1.5,
+                "gain_db": -3.0
+              }
             ]
           },
           {
             "name": "Classical",
             "bands": [
-              { "hz": 50, "q": 0.5, "gain_db": 3.5 },
-              { "hz": 160, "q": 1.6, "gain_db": -3.0 },
-              { "hz": 360, "q": 0.7, "gain_db": 0.2 },
-              { "hz": 800, "q": 1.0, "gain_db": 3.2 },
-              { "hz": 1600, "q": 1.0, "gain_db": 4.8 },
-              { "hz": 2800, "q": 1.5, "gain_db": 3.0 },
-              { "hz": 4600, "q": 1.5, "gain_db": -2.3 },
-              { "hz": 8000, "q": 6.0, "gain_db": -3.5 },
-              { "hz": 12000, "q": 1.5, "gain_db": 1.5 },
-              { "hz": 17000, "q": 1.5, "gain_db": -0.2 }
+              {
+                "hz": 50,
+                "q": 0.5,
+                "gain_db": 3.5
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -3.0
+              },
+              {
+                "hz": 360,
+                "q": 0.7,
+                "gain_db": 0.2
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 3.2
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 4.8
+              },
+              {
+                "hz": 2800,
+                "q": 1.5,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 4600,
+                "q": 1.5,
+                "gain_db": -2.3
+              },
+              {
+                "hz": 8000,
+                "q": 6.0,
+                "gain_db": -3.5
+              },
+              {
+                "hz": 12000,
+                "q": 1.5,
+                "gain_db": 1.5
+              },
+              {
+                "hz": 17000,
+                "q": 1.5,
+                "gain_db": -0.2
+              }
             ]
           },
           {
             "name": "Rock",
             "bands": [
-              { "hz": 50, "q": 0.5, "gain_db": 4.8 },
-              { "hz": 160, "q": 1.6, "gain_db": -4.8 },
-              { "hz": 350, "q": 0.7, "gain_db": -0.8 },
-              { "hz": 800, "q": 1.0, "gain_db": 4.5 },
-              { "hz": 1600, "q": 1.0, "gain_db": 5.5 },
-              { "hz": 2800, "q": 1.5, "gain_db": 5.5 },
-              { "hz": 4600, "q": 1.8, "gain_db": -0.5 },
-              { "hz": 8000, "q": 6.0, "gain_db": -1.5 },
-              { "hz": 12000, "q": 1.5, "gain_db": 3.0 },
-              { "hz": 17000, "q": 1.5, "gain_db": 2.0 }
+              {
+                "hz": 50,
+                "q": 0.5,
+                "gain_db": 4.8
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -4.8
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -0.8
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 4.5
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 5.5
+              },
+              {
+                "hz": 2800,
+                "q": 1.5,
+                "gain_db": 5.5
+              },
+              {
+                "hz": 4600,
+                "q": 1.8,
+                "gain_db": -0.5
+              },
+              {
+                "hz": 8000,
+                "q": 6.0,
+                "gain_db": -1.5
+              },
+              {
+                "hz": 12000,
+                "q": 1.5,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 17000,
+                "q": 1.5,
+                "gain_db": 2.0
+              }
             ]
           },
           {
             "name": "Folk",
             "bands": [
-              { "hz": 20, "q": 0.5, "gain_db": 3.0 },
-              { "hz": 160, "q": 1.6, "gain_db": -3.0 },
-              { "hz": 350, "q": 0.7, "gain_db": -1.0 },
-              { "hz": 800, "q": 1.0, "gain_db": -1.0 },
-              { "hz": 1600, "q": 1.0, "gain_db": 6.0 },
-              { "hz": 2800, "q": 1.0, "gain_db": 3.0 },
-              { "hz": 5000, "q": 1.0, "gain_db": 2.0 },
-              { "hz": 8000, "q": 6.0, "gain_db": -4.0 },
-              { "hz": 12000, "q": 1.0, "gain_db": 1.0 },
-              { "hz": 17000, "q": 1.0, "gain_db": 3.0 }
+              {
+                "hz": 20,
+                "q": 0.5,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -3.0
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -1.0
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": -1.0
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 6.0
+              },
+              {
+                "hz": 2800,
+                "q": 1.0,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 5000,
+                "q": 1.0,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 8000,
+                "q": 6.0,
+                "gain_db": -4.0
+              },
+              {
+                "hz": 12000,
+                "q": 1.0,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 17000,
+                "q": 1.0,
+                "gain_db": 3.0
+              }
             ]
           },
           {
             "name": "Book Whisper",
             "bands": [
-              { "hz": 20, "q": 0.5, "gain_db": -8.0 },
-              { "hz": 160, "q": 0.5, "gain_db": -8.0 },
-              { "hz": 350, "q": 0.7, "gain_db": 0.0 },
-              { "hz": 800, "q": 1.0, "gain_db": 2.0 },
-              { "hz": 1600, "q": 1.0, "gain_db": 4.0 },
-              { "hz": 2800, "q": 1.0, "gain_db": 5.0 },
-              { "hz": 5000, "q": 1.0, "gain_db": 5.0 },
-              { "hz": 8000, "q": 1.0, "gain_db": -10.0 },
-              { "hz": 12000, "q": 1.0, "gain_db": -8.0 },
-              { "hz": 17000, "q": 1.0, "gain_db": -8.0 }
+              {
+                "hz": 20,
+                "q": 0.5,
+                "gain_db": -8.0
+              },
+              {
+                "hz": 160,
+                "q": 0.5,
+                "gain_db": -8.0
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 4.0
+              },
+              {
+                "hz": 2800,
+                "q": 1.0,
+                "gain_db": 5.0
+              },
+              {
+                "hz": 5000,
+                "q": 1.0,
+                "gain_db": 5.0
+              },
+              {
+                "hz": 8000,
+                "q": 1.0,
+                "gain_db": -10.0
+              },
+              {
+                "hz": 12000,
+                "q": 1.0,
+                "gain_db": -8.0
+              },
+              {
+                "hz": 17000,
+                "q": 1.0,
+                "gain_db": -8.0
+              }
             ]
           },
           {
             "name": "HIFI",
             "bands": [
-              { "hz": 20, "q": 1.0, "gain_db": 4.0 },
-              { "hz": 160, "q": 1.2, "gain_db": -0.5 },
-              { "hz": 350, "q": 0.7, "gain_db": -2.5 },
-              { "hz": 800, "q": 1.0, "gain_db": 1.0 },
-              { "hz": 1600, "q": 1.0, "gain_db": 2.5 },
-              { "hz": 2800, "q": 1.0, "gain_db": 4.0 },
-              { "hz": 5000, "q": 1.1, "gain_db": 1.0 },
-              { "hz": 6800, "q": 1.7, "gain_db": 1.0 },
-              { "hz": 9800, "q": 2.0, "gain_db": 1.0 },
-              { "hz": 14500, "q": 2.0, "gain_db": 2.0 }
+              {
+                "hz": 20,
+                "q": 1.0,
+                "gain_db": 4.0
+              },
+              {
+                "hz": 160,
+                "q": 1.2,
+                "gain_db": -0.5
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -2.5
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 2.5
+              },
+              {
+                "hz": 2800,
+                "q": 1.0,
+                "gain_db": 4.0
+              },
+              {
+                "hz": 5000,
+                "q": 1.1,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 6800,
+                "q": 1.7,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 9800,
+                "q": 2.0,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 14500,
+                "q": 2.0,
+                "gain_db": 2.0
+              }
             ]
           },
           {
             "name": "ACG",
             "bands": [
-              { "hz": 50, "q": 0.5, "gain_db": 5.0 },
-              { "hz": 160, "q": 1.6, "gain_db": -8.0 },
-              { "hz": 350, "q": 0.7, "gain_db": -5.0 },
-              { "hz": 800, "q": 1.0, "gain_db": 2.0 },
-              { "hz": 1600, "q": 1.0, "gain_db": 5.0 },
-              { "hz": 2800, "q": 2.0, "gain_db": 3.0 },
-              { "hz": 5000, "q": 2.0, "gain_db": 2.0 },
-              { "hz": 8000, "q": 4.0, "gain_db": -5.0 },
-              { "hz": 12000, "q": 1.0, "gain_db": 1.0 },
-              { "hz": 17000, "q": 1.0, "gain_db": -1.0 }
+              {
+                "hz": 50,
+                "q": 0.5,
+                "gain_db": 5.0
+              },
+              {
+                "hz": 160,
+                "q": 1.6,
+                "gain_db": -8.0
+              },
+              {
+                "hz": 350,
+                "q": 0.7,
+                "gain_db": -5.0
+              },
+              {
+                "hz": 800,
+                "q": 1.0,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 1600,
+                "q": 1.0,
+                "gain_db": 5.0
+              },
+              {
+                "hz": 2800,
+                "q": 2.0,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 5000,
+                "q": 2.0,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 8000,
+                "q": 4.0,
+                "gain_db": -5.0
+              },
+              {
+                "hz": 12000,
+                "q": 1.0,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 17000,
+                "q": 1.0,
+                "gain_db": -1.0
+              }
             ]
           }
         ]
@@ -591,7 +1191,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "T28Pro",
@@ -604,7 +1208,11 @@
         "product_enum": "QUALCOMM"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "T57",
@@ -617,7 +1225,11 @@
         "product_enum": "SMARTLINK"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "3007AGOFREE",
@@ -630,7 +1242,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "BS519W2D",
@@ -644,7 +1260,12 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_command_note": "0E01 when the firmware version is 0.4.5 or lower",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "FREELITE",
@@ -657,7 +1278,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "NEW-WQ7034MXGoFree2",
@@ -670,7 +1295,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "OPERA03",
@@ -683,7 +1312,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "OPERA05",
@@ -696,7 +1329,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "RUNFREEHS",
@@ -709,7 +1346,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "WQ7034MXGoFree2",
@@ -722,7 +1363,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "WQT7033",
@@ -735,7 +1380,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": true,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E01",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "WUQIAIRLITE",
@@ -748,7 +1397,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "WUQIMINIHS",
@@ -762,7 +1415,11 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "WuQi7034MXF2",
@@ -774,7 +1431,11 @@
         "support_list": "WUQI"
       },
       "old_eq_protocol": null,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     },
     {
       "firmware_code": "WuQiEngine4",
@@ -787,16 +1448,155 @@
         "product_enum": "WUQI"
       },
       "old_eq_protocol": false,
-      "family_conflict": false
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10
     }
   ],
   "codes_seen_only_in_branches": {
-    "S7": "special-cased in HomeViewModel, model unknown",
-    "S13": "PearlClip Pro (LDAC variant), Bluetrum",
-    "S19": "listed with the Bluetrum LDAC-conflict codes, model unknown",
-    "S21": "Cove Pro (dynamic bass handled through EQ)",
-    "S27": "Air6 Pro, Qualcomm",
-    "S29": "listed with the Bluetrum LDAC-conflict codes, model unknown",
-    "S32": "Air6 Pro (second variant), Qualcomm"
+    "_about": "Firmware codes the app's code names but its model table does not. name_source says where the name comes from.",
+    "S7": {
+      "name": "Clip1",
+      "name_source": "log string in the app",
+      "family": "BES",
+      "family_source": "public review naming a BES2710 chip, see reported_chips. Not stated in the app.",
+      "notes": [
+        "The app sends 03 62 after connecting to tell the earbuds whether the phone supports Dolby.",
+        "On firmware 0.0.15 the app forces an update prompt."
+      ]
+    },
+    "S9": {
+      "name": null,
+      "family": null,
+      "notes": [
+        "When a feature that conflicts with EQ is turned off, the app does not restore the previous EQ on this model."
+      ]
+    },
+    "S15": {
+      "name": null,
+      "family": null,
+      "family_source": "Probably not Qualcomm: the app lists it next to a separate Qualcomm check. Inference only.",
+      "notes": [
+        "EQ merge rule onto_classic_bands.",
+        "ANC level 0x11 is labelled adaptive."
+      ]
+    },
+    "S19": {
+      "name": "PopClip2",
+      "name_source": "constant name in the app",
+      "family": "FOTA",
+      "family_source": "listed with the Bluetrum codes in the LDAC conflict rule",
+      "notes": [
+        "Turning LDAC on disables game mode, spatial audio, Dolby, movie mode and dynamic bass. Dynamic EQ stays available."
+      ]
+    },
+    "S21": {
+      "name": "Cove Pro",
+      "name_source": "class name in the app",
+      "family": null,
+      "notes": [
+        "Dynamic bass is done by sending an EQ curve, not the 03 3D switch.",
+        "ANC level 0x11 is labelled adaptive."
+      ]
+    },
+    "S22": {
+      "name": null,
+      "family": null,
+      "family_source": "Probably not Qualcomm: the app lists it next to a separate Qualcomm check. Inference only.",
+      "notes": [
+        "The only code for which the app shows the ANC environment-adaptive switch (03 64 / 03 65).",
+        "On firmware 0.4.6 the app sends outdoor (0x13) when the user picks indoor (0x12).",
+        "EQ merge rule onto_classic_bands.",
+        "ANC level 0x11 is labelled adaptive."
+      ]
+    },
+    "S29": {
+      "name": "GoFree2S",
+      "name_source": "constant name in the app",
+      "family": "FOTA",
+      "family_source": "listed with the Bluetrum codes in the LDAC conflict rule",
+      "notes": [
+        "EQ merge rule onto_classic_bands.",
+        "Turning LDAC on disables game mode, spatial audio, Dolby, movie mode, dynamic EQ and dynamic bass."
+      ]
+    },
+    "AIR3DELUXEHSW53D": {
+      "name": null,
+      "family": null,
+      "notes": [
+        "The touch-disable switch is inverted, as on BS519W2D (Air3 Deluxe HS)."
+      ]
+    }
+  },
+  "_fields": {
+    "family": "The app's chip family code. It decides the EQ command, the EQ merge rule, BLE framing and the firmware-update path.",
+    "old_eq_protocol": "The flag compiled into the app for this code. null means the code is not in that enum. Use eq_command, which applies the app's full rule.",
+    "transport": "spp: the common frame protocol in docs/PROTOCOL.md sections 1 to 4. qcy_ble: QCY's protocol, section 10.",
+    "eq_command": "EQ band command under vendor 001D. The app uses 0E01 for every Qualcomm model whatever the flag says, and for any code whose flag is true. Everything else gets 0E02.",
+    "eq_merge": "onto_classic_bands: user points are snapped onto the model's classic curve and gains added. append_after_classic: the classic bands are sent, then the user's bands.",
+    "custom_eq_bands": "Bands on the app's custom EQ screen: 10 (31 Hz to 16 kHz) or 8 on Bluetrum (62 Hz to 8 kHz).",
+    "family_sources.marketed_chip": "The chip the model is sold with.",
+    "family_sources.ble_device_information": "The manufacturer and model the earbuds report in the standard BLE Device Information service.",
+    "reports": "Probe and capture reports from real earbuds, under data/reports/.",
+    "ldac_excludes": "Features the official app offers only while LDAC is off, as the owner saw in PeatsAudio. Ids are from data/commands.json.",
+    "ldac_or_multipoint": "LDAC and multipoint are one either-or setting on the earbuds: turning one off turns the other on. Seen on hardware.",
+    "eq": "The EQ the official app writes to this model, read from a phone capture: one band per entry with its centre frequency, Q and the base gain the user's gain is added to; the master gain sent with every band; the range of the app's sliders. eq.presets are complete curves sent as they are, with the same master gain."
+  },
+  "reported_chips": {
+    "_about": "Chips named in public reviews. Not from the app and not confirmed on hardware. Use only to guess a family before a probe report exists.",
+    "H3": {
+      "chip": "Qualcomm QCC3091",
+      "expected_family": "QUALCOMM",
+      "source": "manufacturer listing, as recorded in CLAUDE.md",
+      "confirmed": "The H3 (S5) reports Qualcomm QCC3091 in its BLE Device Information service; see the S5 entry and data/reports/S5_0.4.9.txt."
+    },
+    "Air5 Pro+": {
+      "chip": "Qualcomm QCC3091",
+      "expected_family": "QUALCOMM",
+      "sources": [
+        "https://24wireless.info/review-soundpeats-air6-pro",
+        "https://www.geektopia.es/es/technology/2025/11/27/analisis/soundpeats-air5-pro-plus-review.html"
+      ]
+    },
+    "Air5 Pro": {
+      "chip": "Qualcomm QCC3091",
+      "expected_family": "QUALCOMM",
+      "sources": [
+        "https://24wireless.info/review-soundpeats-air6-pro"
+      ]
+    },
+    "Air6 Pro": {
+      "chip": "Qualcomm QCC3091",
+      "expected_family": "QUALCOMM",
+      "sources": [
+        "https://24wireless.info/review-soundpeats-air6-pro"
+      ],
+      "note": "Matches the app, which files S27 and S32 under Qualcomm."
+    },
+    "Air4 Pro": {
+      "chip": "Qualcomm QCC3071",
+      "expected_family": "QUALCOMM",
+      "sources": [
+        "https://24wireless.info/review-soundpeats-air6-pro"
+      ],
+      "note": "Matches the app."
+    },
+    "Capsule3 Pro+": {
+      "chip": "WUQI WQ7034AX",
+      "expected_family": "WUQI",
+      "sources": [
+        "https://audioreview.frieve.com/products/en/soundpeats-capsule3-pro-plus/"
+      ],
+      "note": "Firmware code unknown. Whether it uses the common protocol or QCY's, like the Capsule3 Pro, is unknown."
+    },
+    "Clip1": {
+      "chip": "Bestechnic BES2710",
+      "expected_family": "BES",
+      "sources": [
+        "https://audioreview.frieve.com/products/en/soundpeats-clip1/"
+      ]
+    }
   }
 }

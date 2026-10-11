@@ -79,7 +79,7 @@ class EarbudsConnection(
         s.launch {
             // Once the channel has been open, a drop is followed by a few retries: the H3
             // restarts its Bluetooth link after an LDAC or two-devices change
-            // (docs/PROTOCOL.md section 10). The last state stays on screen meanwhile.
+            // (docs/PROTOCOL.md section 11). The last state stays on screen meanwhile.
             var everOpen = false
             var retries = 0
             while (true) {
@@ -216,7 +216,7 @@ class EarbudsConnection(
     companion object {
         const val BATTERY_POLL_MS = 30_000L
 
-        /** The H3 sends the new state about 2 s after a SET (docs/PROTOCOL.md section 10). */
+        /** The H3 sends the new state about 2 s after a SET (docs/PROTOCOL.md section 11). */
         const val READ_BACK_MS = 3_000L
 
         /** Waits before each try to reopen a channel that closed. The H3 took about 2 s to take one again. */

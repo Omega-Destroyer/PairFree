@@ -268,7 +268,7 @@ the earbuds carry version byte 03, frames from the phone 04 (column vN).
   then 17 kHz dragged to +6 and to -6 and Save.
 Owner, by ear: in both apps Voice takes effect but going back to Standard does not change
 the sound. In both apps LDAC off turns two devices on, and two devices off turns LDAC on.
-The EQ payloads are read in docs/PROTOCOL.md section 10 and are test vectors
+The EQ payloads are read in docs/PROTOCOL.md section 11 and are test vectors
 (eq_layout in data/test_vectors.json).
 
 11:23:56.036 phone->buds v4 000A 0309

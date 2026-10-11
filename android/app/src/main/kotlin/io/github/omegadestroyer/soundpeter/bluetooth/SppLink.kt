@@ -27,7 +27,7 @@ import java.util.UUID
  *
  * The socket is created up front so [close] can abort a [connect] that is still waiting.
  * Reads have no timeout on purpose: after a touch control the H3 goes quiet for up to
- * about 15 s and then answers everything at once (docs/PROTOCOL.md section 10).
+ * about 15 s and then answers everything at once (docs/PROTOCOL.md section 11).
  */
 class SppLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constructor(
     device: BluetoothDevice,

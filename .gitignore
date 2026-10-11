@@ -20,6 +20,10 @@ btsnoop_hci.log*
 *.pcap
 *.pcapng
 
+# Raw replies from SoundPEATS' server (tools/fetch_server_data.py). Vendor data: review before committing any of it.
+server_dump/
+server_dump.zip
+
 # Secrets
 .env
 *.keystore

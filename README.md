@@ -7,6 +7,17 @@ codec and multipoint switches.
 
 SoundPeter is an independent project. It is not affiliated with or endorsed by SoundPEATS.
 
+<p>
+  <img src="docs/screenshots/home.png" width="250" alt="Home: battery for each earbud and the case, noise control and scenes, the sound profile, and quick switches">
+  <img src="docs/screenshots/sound.png" width="250" alt="Sound: the 10-band equalizer with a saved profile">
+  <img src="docs/screenshots/sound-preset.png" width="250" alt="Sound: one of the official presets">
+  <img src="docs/screenshots/controls.png" width="250" alt="Controls: what each tap and hold does, per earbud">
+  <img src="docs/screenshots/device.png" width="250" alt="Device: connection, the ear tip fit test, voice prompts">
+  <img src="docs/screenshots/fit-test.png" width="250" alt="Fit test: a good fit on both earbuds">
+</p>
+
+Screenshots with a SOUNDPEATS H3, using replies recorded from real earbuds.
+
 ## Status
 
 Early. The control protocol is documented from the official Android app and has been
@@ -37,22 +48,21 @@ of features. These two have been tested on real earbuds. Their reports in
 | Noise control: off, ANC, transparency | ✅                     | ✅                         |
 | ANC scenes (4)                    | ✅                         | ✅                         |
 | Transparency: voice or standard   | ✅ ¹                       | ✅                         |
-| Game mode                         | ☑️ only with LDAC off      | ✅                         |
+| Game mode                         | ✅ only with LDAC off      | ✅ only with LDAC off      |
 | Two devices at once               | ✅ either this or LDAC ²   | ✅                         |
 | LDAC                              | ✅ 96 kHz / 32-bit ²       | ⚠️ the phone refuses it (below) |
 | LE Audio                          | —                          | ✅ ³                       |
-| Turn touch controls off           | ☑️                         | ✅                         |
-| Gestures (tap, double, triple, hold) | ☑️                      | ✅                         |
-| Voice prompts: volume, language   | ☑️                         | ✅                         |
-| Find my earbuds (beep)            | ☑️                         | ✅                         |
+| Turn touch controls off           | ✅                         | ✅                         |
+| Gestures (tap, double, triple, hold) | ✅                      | ✅                         |
+| Voice prompts: volume, language   | ✅                         | ✅                         |
+| Find my earbuds (beep)            | ✅                         | ✅                         |
 | Equalizer, 10 bands               | ✅                         | ✅                         |
 | EQ presets                        | ✅ all 12                  | ✅ all 12                  |
 | Ear tip fit test                  | ✅                         | ✅                         |
 | Water drain                       | —                          | ✅ ⁴                       |
 | Reports                           | [S5_0.4.9](data/reports/S5_0.4.9.txt), [S5_gaia_v3](data/reports/S5_gaia_v3.txt), [fit test](data/reports/S5_S2_fit_drain_leaudio.txt) | [S2_1.2](data/reports/S2_1.2.txt), [LDAC](data/reports/air5-pro-plus_ldac.txt), [drain, LE Audio](data/reports/S5_S2_fit_drain_leaudio.txt) |
 
-✅ tried with SoundPeter on these earbuds. ☑️ the earbuds support it and SoundPeter
-offers it, but nobody has tried it with SoundPeter yet. — not on this model.
+✅ tried with SoundPeter on these earbuds. — not on this model.
 
 1. Switching from voice to standard does not change the sound on the H3, in PeatsAudio
    too.

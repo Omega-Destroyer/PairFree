@@ -82,7 +82,7 @@ internal fun ConnectedScreen(
     var fitTest by rememberSaveable { mutableStateOf(false) }
     val model = Models.find(state.firmware?.code, device.name)
     if (fitTest) {
-        FitTestScreen(device, state, actions) { fitTest = false }
+        FitTestScreen(device, state, actions, onClose = { fitTest = false })
         return
     }
     Column(Modifier.fillMaxSize()) {

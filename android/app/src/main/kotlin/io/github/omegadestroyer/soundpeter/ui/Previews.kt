@@ -2,6 +2,7 @@ package io.github.omegadestroyer.soundpeter.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -13,6 +14,7 @@ import io.github.omegadestroyer.soundpeter.eq.Equalizer
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.EarbudState
 import io.github.omegadestroyer.soundpeter.protocol.Frame
+import io.github.omegadestroyer.soundpeter.protocol.Gaia
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.Wire
 import io.github.omegadestroyer.soundpeter.ui.theme.Studio
@@ -40,10 +42,16 @@ private val H3_STATE: EarbudState = listOf(
     Command.CUSTOM_KEYS to "0001020201030304030505060607070806",
     Command.PROMPT_VOLUME to "000b",
     Command.VOICE_LANGUAGE to "0000",
+    Command.FIND_LEFT to "0000",
+    Command.FIND_RIGHT to "0000",
 ).fold(EarbudState()) { s, (command, hex) ->
-    val payload = hex.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
-    s.update(Frame(Wire.VENDOR_MAIN, command.get!! or Wire.REPLY_MASK, payload))
-}
+    s.update(Frame(Wire.VENDOR_MAIN, command.get!! or Wire.REPLY_MASK, bytes(hex)))
+}.update(Frame(Gaia.VENDOR, Gaia.GET_FEATURES + Gaia.RESPONSE, bytes("000d010c010901050108070103060207010005")))
+
+/** The H3's result with both earbuds in (data/reports/S5_S2_fit_drain_leaudio.txt). */
+private val H3_FITTED: EarbudState = H3_STATE.update(Frame(Gaia.VENDOR, Gaia.FIT_RESULT, bytes("0101")))
+
+private fun bytes(hex: String): ByteArray = hex.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 
 /** The owner's Customize1 curve from PeatsAudio, saved as a profile. */
 private val H3_EQ: EqState = run {
@@ -56,7 +64,8 @@ private val H3_EQ: EqState = run {
 @Composable
 private fun Connected(tab: Tab, eq: EqState = H3_EQ) {
     StudioTheme {
-        Box(Modifier.background(Studio.colors.background)) {
+        // Padded for the system bars as in SoundPeterApp, so a preview run on a device matches the app.
+        Box(Modifier.background(Studio.colors.background).safeDrawingPadding()) {
             ConnectedScreen(H3, H3_STATE, NoActions, eq, NoEqActions, tab)
         }
     }
@@ -82,3 +91,13 @@ private fun ControlsPreview() = Connected(Tab.CONTROLS)
 @Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFF101214, showBackground = true)
 @Composable
 private fun DevicePreview() = Connected(Tab.DEVICE)
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFF101214, showBackground = true)
+@Composable
+private fun FitTestPreview() {
+    StudioTheme {
+        Box(Modifier.background(Studio.colors.background).safeDrawingPadding()) {
+            FitTestScreen(H3, H3_FITTED, NoActions, onClose = {}, initialRun = 1)
+        }
+    }
+}

@@ -46,10 +46,17 @@ import kotlinx.coroutines.delay
  * and report about 9 s after it starts.
  */
 @Composable
-internal fun FitTestScreen(device: Paired, state: EarbudState, actions: EarbudsActions, onClose: () -> Unit) {
+internal fun FitTestScreen(
+    device: Paired,
+    state: EarbudState,
+    actions: EarbudsActions,
+    onClose: () -> Unit,
+    /** Previews start after a run, to show a result. */
+    initialRun: Int = 0,
+) {
     BackHandler(onBack = onClose)
     // A run counts from Start; its result is the first one to arrive after it.
-    var run by rememberSaveable { mutableIntStateOf(0) }
+    var run by rememberSaveable { mutableIntStateOf(initialRun) }
     var timedOut by rememberSaveable { mutableStateOf(false) }
     // Noise control goes off before the test on most models (EarbudsConnection.startFitTest).
     val model = Models.find(state.firmware?.code, device.name)

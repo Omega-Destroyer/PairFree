@@ -1172,6 +1172,9 @@
           }
         ]
       },
+      "ldac_excludes": [
+        "game_mode"
+      ],
       "confirmed": [
         "le_audio"
       ],

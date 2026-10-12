@@ -121,7 +121,8 @@ reports from other people.
   back 3 s later; the earbuds' reply replaces the guess. Factory reset goes only through
   `Requests.factoryResetConfirmedByUser`, called from the confirmation dialog.
 - On the H3, PeatsAudio offers game mode and dual device only with LDAC off (`ldac_excludes`
-  in `data/devices.json`); the app shows them disabled while LDAC is on. LDAC and
+  in `data/devices.json`); the app shows them disabled while LDAC is on. On the Air5 Pro+
+  the same holds for game mode (owner, 2026-10-12). LDAC and
   multipoint are one either-or setting there (`ldac_or_multipoint`), and changing either
   drops the channel. Once a channel has been open, the app reopens it on its own after a
   drop, keeping the last state on screen.
@@ -186,10 +187,8 @@ reports from other people.
 5. Screens in this order: connection and battery, ANC, switches, gestures, EQ.
    Studio is the only look for now. Keep colours, fonts and drawings behind a theme
    so another look can be added later as a skin, not a second set of screens. All four
-   tabs are built. Tried on the H3: connection and reconnecting, battery, ANC and its
-   scenes, transparency, LDAC and two devices, the EQ and its presets, the fit test. Not
-   yet tried on the H3: gestures, the Device tab's prompt settings. Everything tried on the
-   Air5 Pro+. Released as v0.1.0 on 2026-10-12.
+   tabs are built. Every feature SoundPeter offers has been tried on both the H3 and the
+   Air5 Pro+ (owner, 2026-10-12). Released as v0.1.0 on 2026-10-12.
 6. Work out the Qualcomm EQ band layout on hardware. H3 and Air5 Pro+ done from phone
    captures (`docs/PROTOCOL.md` section 11).
 7. Firmware update last, and only on the rules above.

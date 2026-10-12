@@ -24,7 +24,10 @@ import io.github.omegadestroyer.soundpeter.capture.Capture
 import io.github.omegadestroyer.soundpeter.capture.CaptureResult
 import io.github.omegadestroyer.soundpeter.eq.Equalizer
 import io.github.omegadestroyer.soundpeter.protocol.Command
+import io.github.omegadestroyer.soundpeter.protocol.CurveMatch
 import io.github.omegadestroyer.soundpeter.protocol.DeviceReport
+import io.github.omegadestroyer.soundpeter.protocol.EqCapture
+import io.github.omegadestroyer.soundpeter.protocol.LoggedReads
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.RecordingReport
 import io.github.omegadestroyer.soundpeter.ui.CaptureActions
@@ -206,11 +209,39 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     val capture: StateFlow<Capture> = _capture.asStateFlow()
 
     override fun openCapture() {
-        if (_capture.value == Capture.Closed) _capture.value = Capture.Guide
+        if (_capture.value != Capture.Closed) return
+        _capture.value = Capture.Guide
+        // A recording starts here: what is older in the Bluetooth log is left out. Opening the
+        // screen again during the same run keeps the first time.
+        val opened = prefs.getLong(KEY_RECORD_OPENED, 0)
+        if (snoopClockMs() - opened > RECORD_RUN_MS) prefs.edit { putLong(KEY_RECORD_OPENED, snoopClockMs()) }
     }
 
     override fun closeCapture() {
+        // A finished recording ends the run; the next one starts afresh.
+        if (_capture.value is Capture.Done) prefs.edit { remove(KEY_RECORD_OPENED) }
         _capture.value = Capture.Closed
+    }
+
+    /** Shows everything in the log, or only the recording again. */
+    override fun showWholeLog(whole: Boolean) {
+        val done = _capture.value as? Capture.Done ?: return
+        _capture.value = analyse(done.result, whole)
+    }
+
+    /**
+     * Works out the recording from what the file held: where it starts (RecordingReport.start),
+     * its EQ curves with the names of those SoundPeter knows, and the settings read.
+     */
+    private fun analyse(result: CaptureResult, wholeLog: Boolean): Capture.Done {
+        val frames = (result as? CaptureResult.Found)?.frames.orEmpty()
+        val opened = prefs.getLong(KEY_RECORD_OPENED, 0).takeIf { it > 0 && snoopClockMs() - it < RECORD_RUN_MS }
+        val since = if (wholeLog) null else RecordingReport.start(frames, opened?.times(1000))
+        val writes = EqCapture.writes(frames, since)
+        val matches = writes.map(CurveMatch::of)
+        // Known presets are named already; the user's own slider curves teach nothing and stay out.
+        val names = matches.map { (it as? CurveMatch.Preset)?.name }
+        return Capture.Done(result, since, wholeLog, writes, matches, LoggedReads.of(frames, since), names)
     }
 
     /** Reads a bug report picked on the capture screen, off the main thread. */
@@ -238,8 +269,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 }
                 fallback
             }
-            val done = Capture.Done(result, emptyList())
-            _capture.value = done.copy(names = List(done.writes.size) { null })
+            _capture.value = analyse(result, wholeLog = false)
         }
     }
 
@@ -336,6 +366,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         const val PASTE_HERE = "Paste the report that SoundPeter copied here."
 
         const val KEY_OWN_SESSIONS = "own_sessions"
+        const val KEY_RECORD_OPENED = "record_opened"
+
+        /** A recording run lasts at most this long from opening the screen to sharing the bug report. */
+        const val RECORD_RUN_MS = 3L * 60 * 60 * 1000
 
         /** Frames this close to SoundPeter's own session count as its own. */
         const val OWN_MARGIN_MS = 1_500L

@@ -6,6 +6,9 @@ package io.github.omegadestroyer.soundpeter.protocol
  * official app picking each preset is how a model's base curve and presets are learnt.
  */
 public object EqCapture {
+    /** What PeatsAudio calls a model's base curve, the stock tuning. */
+    public const val CLASSIC: String = "SOUNDPEATS Classic"
+
     /** One decoded band of a write. */
     public data class Band(val hz: Double, val gainDb: Double, val q: Double)
 
@@ -34,8 +37,12 @@ public object EqCapture {
         }
     }
 
-    /** The complete EQ writes in [frames], oldest first. Writes cut short in the log are left out. */
-    public fun writes(frames: List<SnoopScanner.Found>): List<Write> {
+    /**
+     * The complete EQ writes in [frames], oldest first, from [since] on when it is given (snoop
+     * log microseconds). Writes cut short in the log are left out. Earlier frames still name
+     * the firmware a write came with.
+     */
+    public fun writes(frames: List<SnoopScanner.Found>, since: Long? = null): List<Write> {
         val firmware = HashMap<Int, FirmwareVersion>()
         val open = HashMap<Int, Building>()
         val out = mutableListOf<Write>()
@@ -64,7 +71,7 @@ public object EqCapture {
             if (open.getValue(f.connection).payloads.size == band.first) close(f.connection)
         }
         open.keys.toList().forEach(::close)
-        return out.sortedBy { it.timeMicros }
+        return out.filter { since == null || it.timeMicros >= since }.sortedBy { it.timeMicros }
     }
 
     private class Building(val start: Long, val command: Int, val count: Int, val firmware: FirmwareVersion?) {

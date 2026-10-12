@@ -225,8 +225,15 @@ shared to the app.
 - It lists each pair of earbuds in the log with how many settings PeatsAudio read, and says
   whether SoundPeter's own device report goes in (it does when SoundPeter is connected to
   earbuds with the same firmware code).
-- It lists every complete EQ write it found, with its time and a small curve, and marks
-  repeats. A recording with no EQ curves can still be sent for its settings. The user names each one from the preset names SoundPeter knows, types another,
+- A phone keeps one Bluetooth log for hours, through Bluetooth being turned off and on,
+  so the recording starts when the user opened this screen (remembered for up to three
+  hours), or else just before PeatsAudio's last connect. Show all widens it to the whole
+  log; Recording only narrows it again.
+- It lists every complete EQ write in the recording, with its time and a small curve, and
+  marks repeats. A curve that is byte for byte the base curve or a preset of a known model
+  is named already ("known H3 preset"); the user's own slider curve is recognised and left
+  out. Only a curve SoundPeter does not know shows "Needs a name". A recording with no EQ
+  curves can still be sent for its settings. The user names each one from the preset names SoundPeter knows, types another,
   or leaves it out. The firmware reply in the log identifies the model.
 - Send on GitHub copies the report and opens a new issue with it filled in (in a code
   block), through the browser: the app still has no internet permission. The link carries

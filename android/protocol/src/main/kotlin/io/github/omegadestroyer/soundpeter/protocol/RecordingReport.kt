@@ -44,6 +44,24 @@ public object RecordingReport {
         return out
     }
 
+    /**
+     * Where a recording starts in a log, in snoop log microseconds: [openedAtMicros] (when the
+     * user opened Record from PeatsAudio) if anything follows it, else just before the
+     * official app last connected (its last firmware read), else null for the whole log.
+     * A phone keeps one Bluetooth log for hours, through Bluetooth being turned off and on.
+     */
+    public fun start(frames: List<SnoopScanner.Found>, openedAtMicros: Long?): Long? {
+        if (openedAtMicros != null && frames.any { it.timeMicros >= openedAtMicros }) return openedAtMicros
+        val firmwareRead = Command.FIRMWARE_VERSION.get
+        val lastConnect = frames
+            .filter { !it.fromEarbuds && it.frame.vendor == Wire.VENDOR_MAIN && it.frame.command == firmwareRead && it.frame.payload.isEmpty() }
+            .maxOfOrNull { it.timeMicros } ?: return null
+        // PeatsAudio reads the firmware two or three times in a row as it connects.
+        return lastConnect - CONNECT_BURST_US
+    }
+
+    private const val CONNECT_BURST_US = 3_000_000L
+
     /** The model's name from its firmware code, and the firmware version. */
     public fun earbudsName(firmware: FirmwareVersion?): String {
         firmware ?: return "earbuds with no firmware reply in the log"

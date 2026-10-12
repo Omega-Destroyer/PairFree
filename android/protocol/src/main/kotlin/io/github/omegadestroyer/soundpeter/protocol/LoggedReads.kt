@@ -21,8 +21,12 @@ public object LoggedReads {
                 listOfNotNull(gaiaFeatures?.let { DeviceReport.gaiaLine(it, compact) })
     }
 
-    /** Each pair of earbuds that answered in [frames], in the order they first appear. */
-    public fun of(frames: List<SnoopScanner.Found>): List<Earbuds> {
+    /**
+     * Each pair of earbuds that answered in [frames], in the order they first appear, counting
+     * only reads and replies from [since] on when it is given (snoop log microseconds). Earlier
+     * frames still say which earbuds a frame belongs to.
+     */
+    public fun of(frames: List<SnoopScanner.Found>, since: Long? = null): List<Earbuds> {
         val sorted = frames.sortedBy { it.timeMicros }
         // Which firmware a frame belongs to: the last firmware reply on its connection, or for
         // frames before the first one (the firmware read itself), that first reply.
@@ -37,6 +41,7 @@ public object LoggedReads {
         val answers = LinkedHashMap<String?, LinkedHashMap<Command, ByteArray>>()
         val gaia = HashMap<String?, Set<Int>>()
         for (f in sorted) {
+            if (since != null && f.timeMicros < since) continue
             val key = firmwareFor(f)
             val frame = f.frame
             if (!f.fromEarbuds) {
@@ -50,8 +55,12 @@ public object LoggedReads {
         }
 
         val keys = (answers.keys + gaia.keys).distinct()
+        // The firmware line too, when the firmware read itself came before [since].
+        val firmwarePayload = firmwareReplies.values.flatten().associate { firmwareOf(it.frame) to it.frame.payload }
         return keys.map { key ->
-            val got = answers[key].orEmpty()
+            val got = LinkedHashMap<Command, ByteArray>()
+            firmwarePayload[key]?.let { got[Command.FIRMWARE_VERSION] = it }
+            got.putAll(answers[key].orEmpty())
             val commands = (asked[key].orEmpty() + got.keys).distinct()
                 .sortedBy { c -> Requests.ON_CONNECT.indexOf(c).let { if (it < 0) Int.MAX_VALUE else it } }
             Earbuds(key?.let(::FirmwareVersion), commands.associateWith { got[it] }, gaia[key])

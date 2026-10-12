@@ -187,9 +187,23 @@
     <string name="capture_not_report">That file is not a bug report.</string>
     <string name="capture_unreadable">Could not read that file.</string>
     <plurals name="capture_found">
-        <item quantity="one">Found %d EQ curve. Tap it to name it.</item>
-        <item quantity="other">Found %d EQ curves. Tap each one to name it, in the order you tapped them in PeatsAudio. Leave out any you do not recognise.</item>
+        <item quantity="one">Found %d EQ curve.</item>
+        <item quantity="other">Found %d EQ curves.</item>
     </plurals>
+    <plurals name="capture_need_names">
+        <item quantity="one">%d is new: tap it and pick the preset you tapped in PeatsAudio.</item>
+        <item quantity="other">%d are new: tap each and pick the preset you tapped in PeatsAudio, in order.</item>
+    </plurals>
+    <string name="capture_all_known">All of them are presets SoundPeter already knows, named for you.</string>
+    <string name="capture_needs_name">Needs a name</string>
+    <string name="capture_known_preset">known %1$s preset</string>
+    <string name="capture_custom_curve">Your own slider curve</string>
+    <string name="capture_custom_detail">left out: not needed</string>
+    <string name="capture_left_out">Left out</string>
+    <string name="capture_since">From %1$s, when you opened this recording.</string>
+    <string name="capture_whole_log">Everything in the Bluetooth log.</string>
+    <string name="capture_show_all">Show all</string>
+    <string name="capture_show_recording">Recording only</string>
     <string name="capture_earbuds">Earbuds in the log</string>
     <string name="capture_no_firmware">Not in the log. Turning Bluetooth off and on before opening PeatsAudio records it. The report is still useful without it.</string>
     <string name="capture_new_model">A model SoundPeter does not know yet (%1$s)</string>
@@ -200,7 +214,6 @@
         <item quantity="one">%d setting read by PeatsAudio</item>
         <item quantity="other">%d settings read by PeatsAudio</item>
     </plurals>
-    <string name="capture_unnamed">Tap to name</string>
     <string name="capture_same_as">same curve as %1$d</string>
     <string name="capture_name_title">Curve %1$d</string>
     <string name="capture_other_name">Another name</string>

@@ -39,6 +39,7 @@ import androidx.core.net.toUri
 import io.github.omegadestroyer.soundpeter.R
 import io.github.omegadestroyer.soundpeter.capture.Capture
 import io.github.omegadestroyer.soundpeter.capture.CaptureResult
+import io.github.omegadestroyer.soundpeter.protocol.CurveMatch
 import io.github.omegadestroyer.soundpeter.protocol.EqCapture
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.ui.theme.Studio
@@ -54,6 +55,7 @@ interface CaptureActions {
     fun nameCapturedWrite(index: Int, name: String?)
     fun captureReport(): String
     fun captureIssueUri(): android.net.Uri
+    fun showWholeLog(whole: Boolean)
 }
 
 /**
@@ -148,7 +150,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
         CaptureResult.NoBluetoothLog -> R.string.capture_no_log
         CaptureResult.NotABugReport -> R.string.capture_not_report
         CaptureResult.Unreadable -> R.string.capture_unreadable
-        is CaptureResult.Found -> if (result.writes.isEmpty() && result.reads.isEmpty()) R.string.capture_none else null
+        is CaptureResult.Found -> if (result.frames.isEmpty()) R.string.capture_none else null
     }
     if (problem != null) {
         Panel { Text(stringResource(problem), color = c.destructive) }
@@ -180,15 +182,36 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
             color = c.secondaryText,
         )
     }
+    // The log holds hours of earlier traffic; the recording starts where the user opened this screen.
+    val since = done.since
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(
+            if (since != null) stringResource(R.string.capture_since, clock(since)) else stringResource(R.string.capture_whole_log),
+            Modifier.weight(1f),
+            style = Studio.type.small,
+            color = c.secondaryText,
+        )
+        if (since != null || done.wholeLog) {
+            StudioButton(
+                stringResource(if (done.wholeLog) R.string.capture_show_recording else R.string.capture_show_all),
+                { actions.showWholeLog(!done.wholeLog) },
+            )
+        }
+    }
     if (writes.isEmpty()) {
         Text(stringResource(R.string.capture_no_curves), color = c.secondaryText)
     } else {
-        Text(pluralStringResource(R.plurals.capture_found, writes.size, writes.size), color = c.secondaryText)
+        val unnamed = done.unnamedNew
+        Text(
+            pluralStringResource(R.plurals.capture_found, writes.size, writes.size) + " " +
+                if (unnamed == 0) stringResource(R.string.capture_all_known) else pluralStringResource(R.plurals.capture_need_names, unnamed, unnamed),
+            color = c.secondaryText,
+        )
         Panel {
             writes.forEachIndexed { i, write ->
                 if (i > 0) Divider()
                 val same = writes.subList(0, i).indexOfFirst { it.sameAs(write) }
-                WriteRow(i + 1, write, done.names[i], same.takeIf { it >= 0 }?.plus(1), showFirmware = firmware.size > 1) { naming = i }
+                WriteRow(i + 1, write, done.names[i], done.matches.getOrNull(i), same.takeIf { it >= 0 }?.plus(1), showFirmware = firmware.size > 1) { naming = i }
             }
         }
     }
@@ -265,12 +288,9 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
 }
 
 @Composable
-private fun WriteRow(number: Int, write: EqCapture.Write, name: String?, sameAs: Int?, showFirmware: Boolean, onClick: () -> Unit) {
+private fun WriteRow(number: Int, write: EqCapture.Write, name: String?, match: CurveMatch?, sameAs: Int?, showFirmware: Boolean, onClick: () -> Unit) {
     val c = Studio.colors
-    val time = remember(write.timeMicros) {
-        // Snoop log times are already the phone's local time (SnoopScanner.Found).
-        DateTimeFormatter.ofPattern("HH:mm:ss").format(Instant.ofEpochMilli(write.timeMicros / 1000).atOffset(ZoneOffset.UTC))
-    }
+    val time = remember(write.timeMicros) { clock(write.timeMicros) }
     Row(
         Modifier
             .fillMaxWidth()
@@ -281,9 +301,20 @@ private fun WriteRow(number: Int, write: EqCapture.Write, name: String?, sameAs:
     ) {
         Text("$number", Modifier.width(24.dp), style = Studio.type.heading, color = c.accent)
         Column(Modifier.weight(1f)) {
-            Text(name ?: stringResource(R.string.capture_unnamed), color = if (name != null) c.text else c.label)
+            when {
+                name != null -> Text(name)
+                match is CurveMatch.Custom -> Text(stringResource(R.string.capture_custom_curve), color = c.label)
+                match != null -> Text(stringResource(R.string.capture_left_out), color = c.label)
+                // A curve SoundPeter does not know: the one that needs the user.
+                else -> Text(stringResource(R.string.capture_needs_name), color = c.accent, style = Studio.type.heading)
+            }
             val details = listOfNotNull(
                 time,
+                when (match) {
+                    is CurveMatch.Preset -> stringResource(R.string.capture_known_preset, (match.model.names.firstOrNull() ?: match.model.code).removePrefix("SOUNDPEATS "))
+                    is CurveMatch.Custom -> stringResource(R.string.capture_custom_detail)
+                    null -> null
+                },
                 sameAs?.let { stringResource(R.string.capture_same_as, it) },
                 write.firmware?.code?.takeIf { showFirmware },
             )
@@ -293,6 +324,10 @@ private fun WriteRow(number: Int, write: EqCapture.Write, name: String?, sameAs:
         Chevron()
     }
 }
+
+/** A snoop log time as the phone's clock showed it (SnoopScanner.Found). */
+private fun clock(timeMicros: Long): String =
+    DateTimeFormatter.ofPattern("HH:mm:ss").format(Instant.ofEpochMilli(timeMicros / 1000).atOffset(ZoneOffset.UTC))
 
 /** The write's gains against log frequency: enough to tell one curve from another. */
 @Composable
@@ -320,9 +355,8 @@ private sealed interface NameOption {
 
 /** The preset names of every model SoundPeter knows, SOUNDPEATS Classic first, then Other and Leave out. */
 private fun nameOptions(): List<NameOption> {
-    val known = listOf(CLASSIC) + Models.ALL.flatMap { m -> m.eq?.presets.orEmpty().map { it.name } }
+    val known = listOf(EqCapture.CLASSIC) + Models.ALL.flatMap { m -> m.eq?.presets.orEmpty().map { it.name } }
     return known.distinct().map { NameOption.Named(it) } + NameOption.Other + NameOption.LeaveOut
 }
 
-private const val CLASSIC = "SOUNDPEATS Classic"
 private const val SOURCE = "https://github.com/Omega-Destroyer/SoundPeter"

@@ -49,7 +49,7 @@ of features. These two have been tested on real earbuds. Their reports in
 | ANC scenes (4)                    | ✅                         | ✅                         |
 | Transparency: voice or standard   | ✅ ¹                       | ✅                         |
 | Game mode                         | ✅ only with LDAC off      | ✅ only with LDAC off      |
-| Two devices at once               | ✅ either this or LDAC ²   | ✅                         |
+| Two devices at once               | ✅ either this or LDAC ²   | ✅ either this or LDAC ²   |
 | LDAC                              | ✅ 96 kHz / 32-bit ²       | ⚠️ the phone refuses it (below) |
 | LE Audio                          | —                          | ✅ ³                       |
 | Turn touch controls off           | ✅                         | ✅                         |
@@ -66,7 +66,7 @@ of features. These two have been tested on real earbuds. Their reports in
 
 1. Switching from voice to standard does not change the sound on the H3, in PeatsAudio
    too.
-2. On the H3, LDAC and two devices are one setting: turning one off turns the other on.
+2. LDAC and two devices are one setting on both: turning one off turns the other on.
    The earbuds drop the connection for a few seconds after a change, and SoundPeter
    reconnects by itself.
 3. Switching LE Audio restarts the earbuds. SoundPeter reconnects by itself.

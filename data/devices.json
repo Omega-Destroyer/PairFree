@@ -1173,8 +1173,10 @@
         ]
       },
       "ldac_excludes": [
-        "game_mode"
+        "game_mode",
+        "multipoint"
       ],
+      "ldac_or_multipoint": true,
       "confirmed": [
         "le_audio"
       ],

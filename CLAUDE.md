@@ -121,8 +121,8 @@ reports from other people.
   back 3 s later; the earbuds' reply replaces the guess. Factory reset goes only through
   `Requests.factoryResetConfirmedByUser`, called from the confirmation dialog.
 - On the H3, PeatsAudio offers game mode and dual device only with LDAC off (`ldac_excludes`
-  in `data/devices.json`); the app shows them disabled while LDAC is on. On the Air5 Pro+
-  the same holds for game mode (owner, 2026-10-12). LDAC and
+  in `data/devices.json`); the app shows them disabled while LDAC is on. The Air5 Pro+ is
+  the same, LDAC and multipoint included (owner, 2026-10-12). LDAC and
   multipoint are one either-or setting there (`ldac_or_multipoint`), and changing either
   drops the channel. Once a channel has been open, the app reopens it on its own after a
   drop, keeping the last state on screen.

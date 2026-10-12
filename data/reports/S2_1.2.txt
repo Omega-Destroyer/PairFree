@@ -475,3 +475,4 @@ water_drain          0350  raw=00 00
 reset_state          0367  no reply
 find_left            034A  raw=00 00
 find_right           034B  raw=00 00
+gaia_features        0001  00 01 06 07 08 09 0d

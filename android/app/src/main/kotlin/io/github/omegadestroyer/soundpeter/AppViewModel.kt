@@ -151,6 +151,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             appendLine("firmware does not support that read.")
             appendLine()
             DeviceReport.lines(connection.lastReplies).forEach(::appendLine)
+            connection.state.value.gaiaFeatures?.let { appendLine(DeviceReport.gaiaLine(it)) }
             appendLine()
             appendLine("This is enough to add this model's controls. For its equalizer, use")
             appendLine("\"Record the EQ from PeatsAudio\" on SoundPeter's Device tab as well.")

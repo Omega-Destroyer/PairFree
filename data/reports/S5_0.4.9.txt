@@ -961,3 +961,54 @@ answered by 001D 0F81 01 (the first session's filter dropped those replies).
 12:09:17.282 buds->phone v3 001D 0F81 01
 12:09:17.294 phone->buds v4 001D 0E01 aa ff 88 c7 38 ff c4 10 00
 12:09:17.374 buds->phone v3 001D 0F81 01
+
+
+---- GAIA v3 features, as SoundPeter's device report lists them, 2026-10-12 ----
+
+The reply to 00 1D 00 01 on connect (data/reports/S5_gaia_v3.txt): feature ids, sorted.
+Feature 09 is the fit test.
+
+gaia_features        0001  00 01 05 06 07 08 09 0c 0d
+
+
+---- Every read SoundPeter sends on connect (the probe's list), 2026-10-12 10:22 ----
+
+From SoundPeter's debug log on the phone, connected to the H3 over SPP. The same commands
+and order as tools/probe.py today, which has more reads than the run at the top of this
+file. Replies are status byte then value. LDAC was off and two devices on at the time.
+
+firmware_version     0309  raw=00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+battery_left         0306  raw=00 64
+battery_right        0307  raw=00 64
+battery_case         0323  raw=00 41
+anc_mode             0310  raw=00 01
+anc_level            0324  raw=00 11 01 12 00 13 00 14 00
+transparency_level   034C  raw=00 01 00 02 01
+anc_env_adaptive     0364  no reply
+game_mode            030E  raw=00 00
+multipoint           0314  raw=00 01
+ldac                 0338  raw=00 00
+le_audio             0335  raw=00 00
+in_ear_detection     030C  no reply
+touch_disabled       0312  raw=00 00
+custom_keys          03AA  raw=00 01 02 02 01 03 03 04 03 05 05 06 06 07 07 08 07
+prompt_volume        0319  raw=00 12
+auto_shutdown        036E  no reply
+voice_language       0321  raw=00 00
+dynamic_eq           0331  no reply
+dynamic_bass         033C  no reply
+movie_mode           0327  no reply
+spatial_audio        0357  no reply
+panoramic_sound      0329  no reply
+dolby                0348  no reply
+adaptive_volume      0346  no reply
+personal_volume      0340  no reply
+ear_volume_left      0342  no reply
+ear_volume_right     0343  no reply
+light_effect         030A  no reply
+privacy_mode         036B  no reply
+fall_detection       0355  no reply
+water_drain          0350  no reply
+reset_state          0367  no reply
+find_left            034A  raw=00 00
+find_right           034B  raw=00 00

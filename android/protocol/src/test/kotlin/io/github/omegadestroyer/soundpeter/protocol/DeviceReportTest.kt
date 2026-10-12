@@ -23,6 +23,14 @@ class DeviceReportTest {
     }
 
     @Test
+    fun gaiaLineIsTheOneInTheReport() {
+        // The line tools/gen_models_table.py reads, as recorded for the H3.
+        val features = EarbudState().update(Frame(Gaia.VENDOR, 0x0101, "000d010c010901050108070103060207010005".hexBytes())).gaiaFeatures!!
+        val recorded = File(dataDir, "reports/S5_0.4.9.txt").readLines().single { it.startsWith("gaia_features") }
+        assertEquals(recorded, DeviceReport.gaiaLine(features))
+    }
+
+    @Test
     fun errorsAndEdgeCasesReadLikeTheProbe() {
         // tools/test_probe.py, class Describe
         assertEquals("'S99_xx_1.2.3'", DeviceReport.describe(Command.FIRMWARE_VERSION, "\u0000S99_xx_1.2.3".encodeToByteArray()))

@@ -172,7 +172,8 @@
     <string name="capture_step_developer">Turn on Developer options: in Settings, open About phone and tap Build number seven times. On Samsung it is under About phone, Software information.</string>
     <string name="capture_step_log">In Settings, Developer options, set Bluetooth HCI snoop log to Enabled (not Filtered). Then turn Bluetooth off and on.</string>
     <string name="capture_step_peats">Open PeatsAudio with these earbuds connected. Open each of its screens once without changing anything, so it reads every setting, and run its fit test if it has one. Then on its EQ screen tap SOUNDPEATS Classic and every other preset once, a few seconds apart. Do not come back to SoundPeter yet.</string>
-    <string name="capture_step_report">Back in Developer options, tap Take bug report, then Full report. It takes a few minutes.</string>
+    <string name="capture_step_report">Back in Developer options, tap Take bug report, then Full report.</string>
+    <string name="capture_step_report_wait">It takes several minutes, and Android shows nothing while it works. Wait for the notification that says it is ready.</string>
     <string name="capture_step_share">When the notification says the bug report is ready, tap it and share it to SoundPeter. If you miss the notification, tap Choose a bug report below, open the menu and pick Bug reports to find it.</string>
     <string name="capture_step_name">SoundPeter shows what it found. Name the EQ curves in the order you tapped them, then send the report. If SoundPeter is connected to the same earbuds, its own device report goes in too.</string>
     <string name="capture_step_cleanup">Afterwards, set Bluetooth HCI snoop log back to Disabled and delete the bug report. It holds a lot of personal data.</string>

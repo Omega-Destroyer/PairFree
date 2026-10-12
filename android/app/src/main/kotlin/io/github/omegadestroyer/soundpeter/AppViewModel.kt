@@ -25,21 +25,24 @@ import io.github.omegadestroyer.soundpeter.capture.CaptureResult
 import io.github.omegadestroyer.soundpeter.eq.Equalizer
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.DeviceReport
-import io.github.omegadestroyer.soundpeter.protocol.EqCapture
-import io.github.omegadestroyer.soundpeter.protocol.FirmwareVersion
 import io.github.omegadestroyer.soundpeter.protocol.Models
+import io.github.omegadestroyer.soundpeter.protocol.RecordingReport
 import io.github.omegadestroyer.soundpeter.ui.CaptureActions
 import io.github.omegadestroyer.soundpeter.ui.EarbudsActions
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONException
+import java.net.URLEncoder
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 
 /**
  * Holds the connection while the app is on screen. The app talks to the earbuds only
@@ -62,9 +65,47 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     init {
         // The earbuds cannot report their EQ, so each newly opened channel gets this phone's back.
+        // It also notes when its channel is open, so a recording can leave out what it sent itself.
         viewModelScope.launch {
-            connection.status.collect { if (it is LinkStatus.Connected) equalizer.channelOpened(it.device.address) }
+            connection.status.collect {
+                if (it is LinkStatus.Connected) {
+                    equalizer.channelOpened(it.device.address)
+                    if (openSince == null) openSince = snoopClockMs()
+                } else {
+                    openSince?.let { start -> storeOwnSession(start, snoopClockMs()) }
+                    openSince = null
+                }
+            }
         }
+    }
+
+    /** When the current channel opened, on [snoopClockMs]; null while none is open. */
+    private var openSince: Long? = null
+
+    /** Now, as a snoop log counts it: local wall-clock time read as UTC (SnoopScanner.Found). */
+    private fun snoopClockMs(): Long {
+        val now = System.currentTimeMillis()
+        return now + TimeZone.getDefault().getOffset(now)
+    }
+
+    /** SoundPeter's own channel sessions of the last days, the open one included, widened by [OWN_MARGIN_MS]. */
+    private fun ownSessions(): List<LongRange> {
+        val open = openSince?.let { listOf(it..snoopClockMs()) }.orEmpty()
+        return (storedSessions() + open).map { (it.first - OWN_MARGIN_MS)..(it.last + OWN_MARGIN_MS) }
+    }
+
+    private fun storedSessions(): List<LongRange> = try {
+        val a = JSONArray(prefs.getString(KEY_OWN_SESSIONS, "[]"))
+        List(a.length()) { a.getJSONArray(it).let { s -> s.getLong(0)..s.getLong(1) } }
+    } catch (_: JSONException) {
+        emptyList()
+    }
+
+    private fun storeOwnSession(start: Long, end: Long) {
+        val keep = storedSessions().filter { it.last > end - OWN_SESSIONS_KEPT_MS } + listOf(start..end)
+        val a = JSONArray()
+        for (s in keep.takeLast(MAX_OWN_SESSIONS)) a.put(JSONArray().put(s.first).put(s.last))
+        prefs.edit { putString(KEY_OWN_SESSIONS, a.toString()) }
     }
 
     private val _hasPermission = MutableStateFlow(checkPermission())
@@ -182,11 +223,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     fun importBugReport(files: List<Uri>) {
         _capture.value = Capture.Reading
         val resolver = getApplication<Application>().contentResolver
+        // What SoundPeter sent itself (its connect reads, its EQ put back) is not PeatsAudio's.
+        val own = ownSessions()
+        val mine = { timeMicros: Long -> own.any { timeMicros / 1000 in it } }
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
                 var fallback: CaptureResult = CaptureResult.NotABugReport
                 for (file in files) {
-                    when (val read = BugReport.read(resolver, file)) {
+                    when (val read = BugReport.read(resolver, file, skip = mine)) {
                         is CaptureResult.Found, CaptureResult.NoBluetoothLog -> return@withContext read
                         CaptureResult.Unreadable -> fallback = read
                         CaptureResult.NotABugReport -> Unit
@@ -207,7 +251,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     }
 
     /** The capture report to paste into an issue: the model, then every named write's exact bytes. */
-    override fun captureReport(): String {
+    override fun captureReport(): String = report(compact = false)
+
+    /** The report; [compact] leaves out what the raw bytes already say, to fit in a link. */
+    private fun report(compact: Boolean): String {
         val done = _capture.value as? Capture.Done ?: return ""
         val named = done.named
         val app = getApplication<Application>()
@@ -224,57 +271,39 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             appendLine("Phone:     Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}), ${Build.MANUFACTURER} ${Build.MODEL}")
             // Snoop log times are the phone's local time (SnoopScanner.Found).
             if (first != null) appendLine("Recorded:  ${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(Instant.ofEpochMilli(first / 1000).atOffset(ZoneOffset.UTC))}, phone's local time")
-            // Each line: setting, its read command, what the earbuds answered and the raw bytes,
-            // or "no reply" (tools/gen_models_table.py reads these).
-            for (earbuds in done.reads) {
-                appendLine()
-                appendLine("---- What PeatsAudio read from ${earbudsName(earbuds.firmware)} (from the Bluetooth log) ----")
-                earbuds.lines().forEach(::appendLine)
-            }
-            capturedDeviceReport(done)?.let { lines ->
-                appendLine()
-                appendLine("---- What SoundPeter reads on connect from ${earbudsName(connection.state.value.firmware)} ----")
-                lines.forEach(::appendLine)
-            }
-            if (named.isNotEmpty()) {
-                appendLine()
-                appendLine("---- Equalizer: the curves PeatsAudio sent ----")
-                EqCapture.reportLines(named).forEach(::appendLine)
-            }
+            RecordingReport.sections(done.reads, ownReads(done), named, compact).forEach(::appendLine)
         }
     }
 
-    /** A new-issue page with the report filled in, or with a request to paste it when it is too long for a link. */
-    override fun captureIssueUri(report: String): Uri {
+    /**
+     * A new-issue page with the report filled in, compacted so it fits in the link, or with a
+     * request to paste it when even that is too long.
+     */
+    override fun captureIssueUri(): Uri {
         val done = _capture.value as? Capture.Done
         val title = "Recording: ${done?.let(::captureModel) ?: "unknown model"}"
-        fun link(body: String) = "$ISSUES/new".toUri().buildUpon()
-            .appendQueryParameter("title", title)
-            .appendQueryParameter("body", body)
-            .build()
-        // In a code block, so GitHub shows the report as it is and the import tool reads it back.
-        return link("```\n$report```\n").takeIf { it.toString().length <= MAX_LINK } ?: link(PASTE_HERE)
+        // Form encoding turns a space into one character, not three as in a path.
+        fun form(s: String) = URLEncoder.encode(s, "UTF-8")
+        fun link(body: String) = "$ISSUES/new?title=${form(title)}&body=${form(body)}".toUri()
+        // In a code block, so GitHub shows the report as it is and the tools read it back.
+        val filled = link("```\n${report(compact = true)}```\n")
+        return filled.takeIf { it.toString().length <= MAX_LINK } ?: link(PASTE_HERE)
     }
 
     private fun captureModel(done: Capture.Done): String =
-        done.firmware?.let { earbudsName(it) } ?: "unknown (the firmware reply is not in the log)"
-
-    private fun earbudsName(firmware: FirmwareVersion?): String {
-        firmware ?: return "earbuds with no firmware reply in the log"
-        val name = Models.find(firmware.code, null)?.names?.firstOrNull() ?: "a model not in SoundPeter's table yet"
-        return "$name, firmware ${firmware.text}"
-    }
+        done.firmware?.let(RecordingReport::earbudsName) ?: "unknown (the firmware reply is not in the log)"
 
     /**
-     * SoundPeter's own device report, when it is connected to earbuds of a model in the
-     * recording: every read it knows, which PeatsAudio may not send.
+     * SoundPeter's own reads, when it is connected to earbuds of a model in the recording:
+     * every read it knows, which PeatsAudio may not send.
      */
-    private fun capturedDeviceReport(done: Capture.Done): List<String>? {
+    private fun ownReads(done: Capture.Done): RecordingReport.OwnReads? {
         if (connection.status.value !is LinkStatus.Connected) return null
-        val code = connection.state.value.firmware?.code ?: return null
+        val state = connection.state.value
+        val code = state.firmware?.code ?: return null
         val inRecording = (done.reads.map { it.firmware } + done.firmware).any { it?.code == code }
         if (!inRecording) return null
-        return DeviceReport.lines(connection.lastReplies) + listOfNotNull(connection.state.value.gaiaFeatures?.let(DeviceReport::gaiaLine))
+        return RecordingReport.OwnReads(state.firmware, connection.lastReplies, state.gaiaFeatures)
     }
 
     @SuppressLint("MissingPermission") // callers check the permission first
@@ -304,6 +333,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
         /** GitHub refuses links much longer than this; a longer report is pasted instead. */
         const val MAX_LINK = 8000
-        const val PASTE_HERE = "Paste the EQ capture report that SoundPeter copied here."
+        const val PASTE_HERE = "Paste the report that SoundPeter copied here."
+
+        const val KEY_OWN_SESSIONS = "own_sessions"
+
+        /** Frames this close to SoundPeter's own session count as its own. */
+        const val OWN_MARGIN_MS = 1_500L
+        const val OWN_SESSIONS_KEPT_MS = 7L * 24 * 60 * 60 * 1000
+        const val MAX_OWN_SESSIONS = 200
     }
 }

@@ -33,15 +33,16 @@ sealed interface CaptureResult {
  * only SoundPEATS control frames are kept ([SnoopScanner]); the rest is never stored.
  */
 object BugReport {
-    fun read(resolver: ContentResolver, uri: Uri): CaptureResult = try {
-        resolver.openInputStream(uri)?.use { read(it) } ?: CaptureResult.Unreadable
+    /** Reads [uri]. Frames for which [skip] is true (by snoop log time) are left out. */
+    fun read(resolver: ContentResolver, uri: Uri, skip: (Long) -> Boolean = { false }): CaptureResult = try {
+        resolver.openInputStream(uri)?.use { read(it, skip) } ?: CaptureResult.Unreadable
     } catch (_: IOException) {
         CaptureResult.Unreadable
     } catch (_: SecurityException) {
         CaptureResult.Unreadable
     }
 
-    fun read(input: InputStream): CaptureResult {
+    fun read(input: InputStream, skip: (Long) -> Boolean = { false }): CaptureResult {
         val stream = BufferedInputStream(input, BUFFER)
         stream.mark(HEAD)
         val head = ByteArray(HEAD)
@@ -59,7 +60,8 @@ object BugReport {
             else -> return CaptureResult.NotABugReport
         }
         if (logs == 0) return CaptureResult.NoBluetoothLog
-        return CaptureResult.Found(EqCapture.writes(frames), LoggedReads.of(frames))
+        val kept = frames.filterNot { skip(it.timeMicros) }
+        return CaptureResult.Found(EqCapture.writes(kept), LoggedReads.of(kept))
     }
 
     /** Reads every snoop log in [zip], and in a zip inside it. Returns how many were logs. */

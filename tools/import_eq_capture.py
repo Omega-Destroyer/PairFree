@@ -26,7 +26,9 @@ CLASSIC = "soundpeats classic"
 USER_RANGE_DB = 6
 
 SECTION = re.compile(r"^\s*(\d+)\.\s+(.+?)\s*$")
-PAYLOAD = re.compile(r"^\s*([0-9a-fA-F]{18}|[0-9a-fA-F]{20})\s*$")
+# One band's payload per line, or in a compact report all of a curve's on one line.
+_HEX = r"(?:[0-9a-fA-F]{18}|[0-9a-fA-F]{20})"
+PAYLOAD = re.compile(rf"^\s*({_HEX}(?:\s+{_HEX})*)\s*$")
 FIRMWARE = re.compile(r"^\s*Firmware:\s+(\S.*?)\s*$")
 
 
@@ -40,7 +42,7 @@ def parse(text):
         elif m := SECTION.match(line):
             writes.append((m.group(2), []))
         elif (m := PAYLOAD.match(line)) and writes:
-            writes[-1][1].append(bytes.fromhex(m.group(1)))
+            writes[-1][1].extend(bytes.fromhex(token) for token in m.group(1).split())
     return firmware, [(name, payloads) for name, payloads in writes if payloads]
 
 

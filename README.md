@@ -228,7 +228,9 @@ Sound tab). It walks you through it:
 1. Turn on Developer options and set **Bluetooth HCI snoop log** to **Enabled**.
 2. In PeatsAudio, open each screen once without changing anything, run its fit test if it
    has one, then tap SOUNDPEATS Classic and every other EQ preset once.
-3. Take a bug report from Developer options and share it to SoundPeter.
+3. Take a bug report from Developer options (**Take bug report**, then **Full report**).
+   **It takes several minutes, and Android shows nothing while it works: wait for the
+   notification that says it is ready.** Then tap it and share it to SoundPeter.
 4. Name each EQ curve SoundPeter found, and tap **Send on GitHub**.
 
 SoundPeter reads the bug report only on your phone and keeps nothing but the messages

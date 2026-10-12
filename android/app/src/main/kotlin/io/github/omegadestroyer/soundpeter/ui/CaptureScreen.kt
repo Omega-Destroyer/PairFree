@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import io.github.omegadestroyer.soundpeter.R
@@ -52,7 +53,7 @@ interface CaptureActions {
     fun importBugReport(uri: android.net.Uri)
     fun nameCapturedWrite(index: Int, name: String?)
     fun captureReport(): String
-    fun captureIssueUri(report: String): android.net.Uri
+    fun captureIssueUri(): android.net.Uri
 }
 
 /**
@@ -126,7 +127,13 @@ private fun Guide(onChoose: () -> Unit) {
         steps.forEachIndexed { i, step ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("${i + 1}", Modifier.width(20.dp), style = Studio.type.heading, color = c.accent)
-                Text(stringResource(step), Modifier.weight(1f))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(stringResource(step))
+                    // Android shows nothing while it builds the bug report, so people think it failed.
+                    if (step == R.string.capture_step_report) {
+                        Text(stringResource(R.string.capture_step_report_wait), style = Studio.type.body.copy(fontWeight = FontWeight.Bold))
+                    }
+                }
             }
         }
     }
@@ -196,7 +203,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
                 ?.setPrimaryClip(ClipData.newPlainText(clipLabel, report))
             copied = true
             try {
-                context.startActivity(Intent(Intent.ACTION_VIEW, actions.captureIssueUri(report)))
+                context.startActivity(Intent(Intent.ACTION_VIEW, actions.captureIssueUri()))
             } catch (_: ActivityNotFoundException) {
                 // No browser: the report is on the clipboard to paste wherever the user likes.
             }

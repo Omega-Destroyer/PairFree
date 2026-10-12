@@ -219,6 +219,9 @@ shared to the app.
   named like the Bluetooth snoop log, and keeps only SoundPEATS control frames
   (`SnoopScanner`, `EqCapture`, `LoggedReads` in `:protocol`). The file itself is never
   stored.
+- SoundPeter notes when its own channel is open and leaves those messages out: its
+  connect reads and its EQ put back are not PeatsAudio's. Sessions from before an update
+  that added this are not known, so a log that old can still hold some.
 - It lists each pair of earbuds in the log with how many settings PeatsAudio read, and says
   whether SoundPeter's own device report goes in (it does when SoundPeter is connected to
   earbuds with the same firmware code).
@@ -226,8 +229,10 @@ shared to the app.
   repeats. A recording with no EQ curves can still be sent for its settings. The user names each one from the preset names SoundPeter knows, types another,
   or leaves it out. The firmware reply in the log identifies the model.
 - Send on GitHub copies the report and opens a new issue with it filled in (in a code
-  block), through the browser: the app still has no internet permission. A report too
-  long for a link is pasted instead. Share sends the same text anywhere else.
+  block), through the browser: the app still has no internet permission. The link carries
+  a compact form (no padding or decoded values, which the raw bytes carry, and a curve's
+  payloads on one line) so a full recording fits GitHub's limit of about 8000 characters;
+  only a longer one asks the user to paste. Share sends the full text anywhere else.
 - The report holds the model, app and Android version, phone maker and model; what
   PeatsAudio read from each pair of earbuds, in device report lines; SoundPeter's own
   device report; and every named write's decoded bands and exact bytes. No names or

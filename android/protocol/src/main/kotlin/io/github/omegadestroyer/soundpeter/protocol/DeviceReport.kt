@@ -16,21 +16,27 @@ public object DeviceReport {
         5 to "prev", 6 to "next", 7 to "ANC", 8 to "assistant",
     )
 
-    /** One line per command in [asked], in order: the decoded reply and its raw bytes, or `no reply`. */
     /**
      * The GAIA v3 features a Qualcomm model listed, in the same layout, for example
      * `gaia_features        0001  00 01 05 06 07 08 09 0c 0d`. tools/gen_models_table.py reads
      * it to see which models have the fit test (feature `09`).
      */
-    public fun gaiaLine(features: Set<Int>): String =
-        "${"gaia_features".padEnd(20)} ${Gaia.GET_FEATURES.hex4()}  " +
+    public fun gaiaLine(features: Set<Int>, compact: Boolean = false): String =
+        "${if (compact) "gaia_features" else "gaia_features".padEnd(20)} ${Gaia.GET_FEATURES.hex4()}  " +
             features.sorted().joinToString(" ") { it.toString(16).padStart(2, '0') }
 
-    public fun lines(replies: Map<Command, ByteArray>, asked: List<Command> = Requests.ON_CONNECT): List<String> =
-        asked.map { command -> line(command, replies[command]) }
+    /** One line per command in [asked], in order: the decoded reply and its raw bytes, or `no reply`. */
+    public fun lines(replies: Map<Command, ByteArray>, asked: List<Command> = Requests.ON_CONNECT, compact: Boolean = false): List<String> =
+        asked.map { command -> line(command, replies[command], compact) }
 
-    public fun line(command: Command, payload: ByteArray?): String {
+    /**
+     * One command's line. [compact] drops the padding and the decoded value, which the raw
+     * bytes carry anyway, so a report fits in a link: `anc_mode 0310  raw=00 01`. Both read
+     * the same to tools/gen_models_table.py.
+     */
+    public fun line(command: Command, payload: ByteArray?, compact: Boolean = false): String {
         val get = requireNotNull(command.get) { "${command.id} has no GET" }
+        if (compact) return "${command.id} ${get.hex4()}  " + (payload?.let { "raw=${it.spaced()}" } ?: "no reply")
         val result = if (payload == null) "no reply" else "${describe(command, payload).padEnd(40)} raw=${payload.spaced()}"
         return "${command.id.padEnd(20)} ${get.hex4()}  $result"
     }

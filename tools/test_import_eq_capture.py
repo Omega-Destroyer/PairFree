@@ -66,6 +66,24 @@ class ImportEqCaptureTest(unittest.TestCase):
         self.assertEqual(imp.build(mixed)["eq"], imp.build(text)["eq"])
         self.assertEqual(imp.build(mixed)["firmware"], "S5_20250605_V0.4.9")
 
+    def test_compact_report_with_a_curve_per_line(self):
+        # The app's compact form, as in a pre-filled GitHub issue: no decoded rows, and each
+        # curve's payloads on one line.
+        text = report("S5", self.vectors, "S5_20250605_V0.4.9")
+        compact, payloads = [], []
+        for line in text.splitlines():
+            stripped = line.strip()
+            if imp.PAYLOAD.match(line):
+                payloads.append(stripped)
+                continue
+            if payloads:
+                compact.append(" ".join(payloads))
+                payloads = []
+            if not stripped.startswith(("Hz", "dB", "Q ")):
+                compact.append(line)
+        compact.append(" ".join(payloads))
+        self.assertEqual(imp.build("\n".join(compact))["eq"], imp.build(text)["eq"])
+
     def test_without_classic_says_the_base_is_missing(self):
         text = report("S5", self.vectors, "S5_20250605_V0.4.9").replace("SOUNDPEATS Classic", "Mystery")
         out = imp.build(text)

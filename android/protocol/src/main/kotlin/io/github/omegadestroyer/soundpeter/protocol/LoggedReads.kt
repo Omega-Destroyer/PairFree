@@ -15,10 +15,10 @@ public object LoggedReads {
         /** The GAIA v3 features, if the log has the reply to [Requests.gaiaFeatures]. */
         public val gaiaFeatures: Set<Int>?,
     ) {
-        /** The report lines, as a device report prints them. */
-        public fun lines(): List<String> =
-            replies.map { (command, payload) -> DeviceReport.line(command, payload) } +
-                listOfNotNull(gaiaFeatures?.let(DeviceReport::gaiaLine))
+        /** The report lines, as a device report prints them; [compact] as in [DeviceReport.line]. */
+        public fun lines(compact: Boolean = false): List<String> =
+            replies.map { (command, payload) -> DeviceReport.line(command, payload, compact) } +
+                listOfNotNull(gaiaFeatures?.let { DeviceReport.gaiaLine(it, compact) })
     }
 
     /** Each pair of earbuds that answered in [frames], in the order they first appear. */

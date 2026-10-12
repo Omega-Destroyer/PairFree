@@ -96,10 +96,12 @@ public object EqCapture {
     private const val GAP_US = 1_000_000L
 
     /**
-     * The body of a capture report: what the maintainer needs to add the model, as text a
-     * person can paste. Each named write lists its exact payloads, one band per line.
+     * The equalizer part of a report: what the maintainer needs to add the model's EQ, as
+     * text a person can paste. Each named write lists its exact payloads, one band per line,
+     * under its decoded bands; [compact] leaves out the decoded rows and puts a write's
+     * payloads on one line, so a report fits in a link. tools/import_eq_capture.py reads both.
      */
-    public fun reportLines(named: List<Pair<String, Write>>): List<String> {
+    public fun reportLines(named: List<Pair<String, Write>>, compact: Boolean = false): List<String> {
         val out = mutableListOf<String>()
         val firmware = named.mapNotNull { it.second.firmware?.text }.distinct()
         out += "Firmware:  ${firmware.joinToString(", ").ifEmpty { "not in the log" }}"
@@ -109,6 +111,10 @@ public object EqCapture {
         named.forEachIndexed { i, (name, w) ->
             out += ""
             out += "${i + 1}. $name"
+            if (compact) {
+                out += w.payloads.joinToString(" ") { it.hex() }
+                return@forEachIndexed
+            }
             out += "   Hz   " + w.bands.joinToString(" ") { trim(it.hz) }
             out += "   dB   " + w.bands.joinToString(" ") { db(it.gainDb) }
             out += "   Q    " + w.bands.joinToString(" ") { trim(it.q) }

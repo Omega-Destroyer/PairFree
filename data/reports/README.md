@@ -1,9 +1,14 @@
 # Device reports
 
-Raw `tools/probe.py` output from real earbuds. One file per model and firmware
-version, named `<firmware code>_<version>.txt`, for example `S99_1.2.3.txt`.
+Raw output from real earbuds: `tools/probe.py`, SoundPeter's device report or EQ capture
+report, or earbud frames taken from a phone's Bluetooth log. The README's
+[Tested earbuds](../../README.md#tested-earbuds) table is built from these.
 
-The firmware code is the first field of the `firmware_version` line in the output.
+A probe or device report is one file per model and firmware version, named
+`<firmware code>_<version>.txt`, for example `S99_1.2.3.txt`. The firmware code is the
+first field of the `firmware_version` line. Captures of particular features get a name
+that says what they hold, for example `S5_S2_fit_drain_leaudio.txt`.
 
 Paste the output unedited. Add a short header with the model name, the Bluetooth
-name, the date and the operating system the probe ran on.
+name, the date and the operating system or phone it came from. Replace the last three
+bytes of any Bluetooth address with `XX`.

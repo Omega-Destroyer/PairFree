@@ -17,8 +17,23 @@ android {
         versionName = "0.1.0"
     }
 
+    // The release key lives outside the repo. Its file and passwords come from
+    // ~/.gradle/gradle.properties (soundpeter.*); without them a release build is unsigned.
+    val releaseStore = providers.gradleProperty("soundpeter.storeFile").orNull
+    signingConfigs {
+        if (releaseStore != null) {
+            create("release") {
+                storeFile = file(releaseStore)
+                storePassword = providers.gradleProperty("soundpeter.storePassword").get()
+                keyAlias = providers.gradleProperty("soundpeter.keyAlias").get()
+                keyPassword = providers.gradleProperty("soundpeter.keyPassword").get()
+            }
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")

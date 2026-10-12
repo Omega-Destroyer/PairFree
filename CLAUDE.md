@@ -49,13 +49,14 @@ firmware update: do not probe it.
 Confirmed on the Air5 Pro+ (firmware code `S2`, version 1.2), from phone captures of
 PeatsAudio: its firmware code, its EQ layout, base curve and presets, the replies to the
 reads PeatsAudio sends on connecting (the same as the H3's), drainage (about 30 s, then it
-reports itself off) and LE Audio (the earbuds restart and reconnect). Everything else is
-unconfirmed. Specific open questions:
+reports itself off) and LE Audio (the earbuds restart and reconnect). Also every read
+SoundPeter sends on connect (the probe's list; `data/reports/S2_1.2.txt`), and on
+2026-10-12 the owner tried every feature SoundPeter offers on it, and all worked. The
+README's Tested earbuds table is the summary. Specific open questions:
 
-- Which commands the Air5 Pro+ answers beyond the ones PeatsAudio reads. Deferred by the
-  owner: assume it behaves like the H3 (same chip) and troubleshoot if it turns out not to.
-  This is an assumption, not a finding; do not write it into `docs/PROTOCOL.md`.
-  One difference is confirmed: its LDAC does not work (`docs/PROTOCOL.md` section 12).
+- Whether the Air5 Pro+ fit test gives a good result in a well-fitted ear: the only pair
+  available has someone else's ear tips. Its LDAC does not work (`docs/PROTOCOL.md`
+  section 12).
 - Whether the Air5 Pro+ LDAC bug is Samsung-specific. On a Galaxy S24 FE (One UI 8) the
   phone disables the Air5's advertised LDAC and falls back to AAC, while the H3's LDAC
   works on the same phone. Needs reports from other phones. A bug report went to SoundPEATS.
@@ -173,10 +174,10 @@ reports from other people.
 ## Suggested order of work
 
 1. Run `tools/probe.py` on the H3 and the Air5 Pro+. Save both outputs in
-   `data/reports/` and add the two models to `data/devices.json`. H3 done. Air5 Pro+:
-   in `data/devices.json` as `S2` from a phone capture; the probe itself is deferred.
+   `data/reports/` and add the two models to `data/devices.json`. Done for both; the
+   Air5 Pro+'s reads came from SoundPeter's connect, which sends the probe's list.
 2. Try one harmless SET on each (ANC mode is audible) and record whether a reply comes back.
-   H3 done; Air5 Pro+ deferred.
+   Done for both.
 3. Scan for the GAIA BLE service on both. H3 done; Air5 Pro+ deferred.
 4. Scaffold the Android app in Kotlin with Jetpack Compose (agreed with the owner).
    Put the protocol core in its own module with no Android dependencies and make it
@@ -186,8 +187,9 @@ reports from other people.
    Studio is the only look for now. Keep colours, fonts and drawings behind a theme
    so another look can be added later as a skin, not a second set of screens. All four
    tabs are built. Tried on the H3: connection and reconnecting, battery, ANC and its
-   scenes, transparency, LDAC and two devices, the EQ and its presets. Not yet tried:
-   gestures, the Device tab's prompt settings.
+   scenes, transparency, LDAC and two devices, the EQ and its presets, the fit test. Not
+   yet tried on the H3: gestures, the Device tab's prompt settings. Everything tried on the
+   Air5 Pro+. Released as v0.1.0 on 2026-10-12.
 6. Work out the Qualcomm EQ band layout on hardware. H3 and Air5 Pro+ done from phone
    captures (`docs/PROTOCOL.md` section 11).
 7. Firmware update last, and only on the rules above.

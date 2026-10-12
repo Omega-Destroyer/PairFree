@@ -48,6 +48,19 @@ public object Requests {
         else -> null
     }
 
+    /** Asks a Qualcomm model which GAIA v3 features it has ([EarbudState.gaiaFeatures]). Read-only. */
+    public fun gaiaFeatures(): ByteArray = Frame.build(Gaia.GET_FEATURES, vendor = Gaia.VENDOR)
+
+    /**
+     * Starts the ear tip fit test on a Qualcomm model, as the official app does: subscribe to
+     * the fit feature's notifications, then start. The result arrives about 9 s later
+     * ([EarbudState.fit]); the test stops by itself.
+     */
+    public fun fitTest(): List<ByteArray> = listOf(
+        Frame.build(Gaia.REGISTER_NOTIFICATION, byteArrayOf(Gaia.FIT_FEATURE.toByte()), Gaia.VENDOR),
+        Frame.build(Gaia.FIT_START, byteArrayOf(Gaia.FIT_START_PAYLOAD.toByte()), Gaia.VENDOR),
+    )
+
     /**
      * Factory reset. The earbuds lose every setting. Build this only from a confirmation
      * the user has just accepted on screen, never from code on its own (CLAUDE.md).

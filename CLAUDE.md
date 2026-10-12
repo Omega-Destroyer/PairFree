@@ -42,12 +42,14 @@ it answers, that ANC mode, scene, transparency level, LDAC and multipoint SETs r
 how it answers each, that GETs work over GAIA BLE, and the EQ layout and base curve
 PeatsAudio writes to it. Also that vendor `00 1D` answers Qualcomm GAIA v3 reads, and
 that Qualcomm's own EQ reads there do not follow SoundPEATS' EQ writes, so the EQ cannot be
-read back. See `docs/PROTOCOL.md` section 11. Feature `06` there is firmware update: do not
-probe it.
+read back. Also the fit test, captured from PeatsAudio: GAIA feature `09`, `12 00 01` to
+start, result `12 80` with one byte per earbud, left first (`01` good, `02` poor). See `docs/PROTOCOL.md` section 11. Feature `06` there is
+firmware update: do not probe it.
 
-Confirmed on the Air5 Pro+ (firmware code `S2`, version 1.2), from a phone capture of
-PeatsAudio: its firmware code, its EQ layout, base curve and presets, and the replies to
-the reads PeatsAudio sends on connecting (the same as the H3's). Everything else is
+Confirmed on the Air5 Pro+ (firmware code `S2`, version 1.2), from phone captures of
+PeatsAudio: its firmware code, its EQ layout, base curve and presets, the replies to the
+reads PeatsAudio sends on connecting (the same as the H3's), drainage (about 30 s, then it
+reports itself off) and LE Audio (the earbuds restart and reconnect). Everything else is
 unconfirmed. Specific open questions:
 
 - Which commands the Air5 Pro+ answers beyond the ones PeatsAudio reads. Deferred by the
@@ -133,6 +135,13 @@ reports from other people.
   app sends that again 2.5 s after every channel opens, as PeatsAudio does (owner's choice,
   2026-10-11). For earbuds this phone has never set, it sends nothing and shows the EQ as
   not known. Any profile whose bytes match what is on the earbuds shows as selected.
+- A feature counts as supported once its GET answers, except commands marked `per_model`
+  in `data/commands.json` (LE Audio): those also need the model's `confirmed` list in
+  `data/devices.json` (`EarbudState.offers`). The H3 answers the LE Audio read, yet
+  PeatsAudio does not offer LE Audio on it.
+- On QUALCOMM models the app also reads the GAIA feature list (`Requests.gaiaFeatures`,
+  vendor `00 1D`) after the connect reads, and offers the fit test when feature `09` is
+  there. Never send GAIA frames to other families.
 - New models get their EQ from users: the app's EQ capture screen (`docs/DESIGN.md`, EQ
   capture) reads a bug report shared to it, on the phone, and produces a report for a
   GitHub issue. Turn one into data with `python tools/import_eq_capture.py report.txt`,

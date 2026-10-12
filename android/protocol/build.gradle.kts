@@ -60,6 +60,7 @@ abstract class GenerateTables : DefaultTask() {
         val spp = obj(transports, "spp")
         val ble = obj(transports, "ble")
         val keys = obj(root, "custom_keys")
+        val gaia = obj(root, "gaia")
         @Suppress("UNCHECKED_CAST")
         val commands = root.getValue("commands") as List<Map<String, Any?>>
         val kinds = commands.map { it.getValue("kind") as String }.distinct()
@@ -96,13 +97,15 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine("    public val labels: Map<Int, String>,")
         out.appendLine("    /** False when data/commands.json marks the command do-not-probe: never read it unasked. */")
         out.appendLine("    public val probe: Boolean,")
+        out.appendLine("    /** True when a model must list the command under confirmed in data/devices.json for the app to offer it. */")
+        out.appendLine("    public val perModel: Boolean,")
         out.appendLine(") {")
         for (c in commands) {
             val id = c.getValue("id") as String
             val get = c["get"]?.let(::hex) ?: "null"
             val set = c["set"]?.let(::hex) ?: "null"
             val kind = (c.getValue("kind") as String).uppercase()
-            out.appendLine("    ${id.uppercase()}(${str(id)}, $get, $set, Kind.$kind, ${intMap(c["values"])}, ${c["probe"] != false}),")
+            out.appendLine("    ${id.uppercase()}(${str(id)}, $get, $set, Kind.$kind, ${intMap(c["values"])}, ${c["probe"] != false}, ${c["per_model"] == true}),")
         }
         out.appendLine("}")
         out.appendLine()
@@ -110,6 +113,21 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine("public object CustomKeys {")
         out.appendLine("    public val GESTURES: Map<Int, String> = ${intMap(keys["gestures"])}")
         out.appendLine("    public val ACTIONS: Map<Int, String> = ${intMap(keys["actions"])}")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Qualcomm GAIA v3 on [VENDOR], for QUALCOMM models only (docs/PROTOCOL.md section 11). */")
+        out.appendLine("public object Gaia {")
+        out.appendLine("    public const val VENDOR: Int = ${hex(gaia["vendor"])}")
+        out.appendLine("    /** Added to a command's number in the earbuds' response to it. */")
+        out.appendLine("    public const val RESPONSE: Int = ${hex(gaia["response"])}")
+        out.appendLine("    public const val GET_FEATURES: Int = ${hex(gaia["get_features"])}")
+        out.appendLine("    public const val REGISTER_NOTIFICATION: Int = ${hex(gaia["register_notification"])}")
+        out.appendLine("    public const val FIT_FEATURE: Int = ${hex(gaia["fit_feature"])}")
+        out.appendLine("    public const val FIT_START: Int = ${hex(gaia["fit_start"])}")
+        out.appendLine("    public const val FIT_START_PAYLOAD: Int = ${hex(gaia["fit_start_payload"])}")
+        out.appendLine("    public const val FIT_RESULT: Int = ${hex(gaia["fit_result"])}")
+        out.appendLine("    /** What each per-earbud byte of a fit result means. */")
+        out.appendLine("    public val FIT_RESULTS: Map<Int, String> = ${intMap(gaia["fit_results"])}")
         out.appendLine("}")
         out.appendLine()
         out.appendLine("/** Band layouts the official app's custom EQ screen offers. */")
@@ -130,6 +148,9 @@ abstract class GenerateTables : DefaultTask() {
             val excludes = (d["ldac_excludes"] as List<*>? ?: emptyList<Any>())
                 .joinToString(", ", "setOf(", ")") { "Command.${(it as String).uppercase()}" }
             val either = d["ldac_or_multipoint"] == true
+            val keepsAnc = d["fit_keeps_anc"] == true
+            val confirmed = (d["confirmed"] as List<*>? ?: emptyList<Any>())
+                .joinToString(", ", "setOf(", ")") { "Command.${(it as String).uppercase()}" }
             @Suppress("UNCHECKED_CAST")
             val eqJson = d["eq"] as Map<String, Any?>?
             val eq = if (eqJson == null) {
@@ -146,7 +167,7 @@ abstract class GenerateTables : DefaultTask() {
                 "EqLayout(${hex(eqJson["command"])}, ${num(eqJson["master_gain_db"])}, " +
                     "${(eqJson.getValue("user_range_db") as Number).toInt()}, ${bands(eqJson["bands"], "base_gain_db")}, $presets)"
             }
-            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq),")
+            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc),")
         }
         out.appendLine(")")
 

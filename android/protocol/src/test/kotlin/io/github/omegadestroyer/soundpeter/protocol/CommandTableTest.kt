@@ -23,6 +23,7 @@ class CommandTableTest {
             val labels = json["values"]?.jsonObject?.entries?.associate { it.key.toInt() to it.value.jsonPrimitive.content }
             assertEquals(labels ?: emptyMap<Int, String>(), command.labels, command.id)
             assertEquals(json["probe"]?.jsonPrimitive?.booleanOrNull ?: true, command.probe, command.id)
+            assertEquals(json["per_model"]?.jsonPrimitive?.booleanOrNull ?: false, command.perModel, command.id)
         }
     }
 

@@ -115,6 +115,12 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     override fun factoryResetConfirmedByUser() = connection.factoryResetConfirmedByUser()
 
+    override fun startFitTest() {
+        val name = (connection.status.value as? LinkStatus.Connected)?.device?.name
+        val model = Models.find(connection.state.value.firmware?.code, name)
+        connection.startFitTest(keepAnc = model?.fitKeepsAnc == true)
+    }
+
     /**
      * A complete, pasteable capture of what the earbuds answered, so a model can be added
      * from a user's phone with no developer mode and no Bluetooth snooping. On connect the

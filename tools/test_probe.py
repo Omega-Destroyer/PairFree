@@ -102,6 +102,9 @@ class CommandTable(unittest.TestCase):
             for name in device.get("ldac_excludes", []):
                 self.assertIn(name, table, device["firmware_code"])
                 self.assertIn("set", table[name], device["firmware_code"])
+            for name in device.get("confirmed", []):
+                self.assertIn(name, table, device["firmware_code"])
+                self.assertTrue(table[name].get("per_model"), f"{device['firmware_code']}: {name} is not per_model")
 
 
 class DeviceArt(unittest.TestCase):

@@ -18,6 +18,9 @@ interface EarbudsActions {
 
     /** Opens the EQ capture: recording PeatsAudio's curves for a model (docs/DESIGN.md). */
     fun openCapture()
+
+    /** Starts the ear tip fit test; the result arrives in the earbud state. */
+    fun startFitTest()
 }
 
 /** Does nothing. For previews. */
@@ -27,4 +30,5 @@ object NoActions : EarbudsActions {
     override fun deviceReport(): String = ""
     override fun switchEarbuds() = Unit
     override fun openCapture() = Unit
+    override fun startFitTest() = Unit
 }

@@ -79,14 +79,19 @@ internal fun ConnectedScreen(
     live: Boolean = true,
 ) {
     var tab by rememberSaveable { mutableStateOf(startTab) }
+    var fitTest by rememberSaveable { mutableStateOf(false) }
     val model = Models.find(state.firmware?.code, device.name)
+    if (fitTest) {
+        FitTestScreen(device, state, actions) { fitTest = false }
+        return
+    }
     Column(Modifier.fillMaxSize()) {
         Box(Modifier.weight(1f)) {
             when (tab) {
                 Tab.HOME -> HomeScreen(device, state, model, actions, live, eq) { tab = Tab.SOUND }
                 Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture)
                 Tab.CONTROLS -> ControlsScreen(device, state, actions)
-                Tab.DEVICE -> DeviceScreen(device, state, model, actions)
+                Tab.DEVICE -> DeviceScreen(device, state, model, actions) { fitTest = true }
             }
         }
         TabBar(tab) { tab = it }

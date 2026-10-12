@@ -166,7 +166,9 @@
       "values": {
         "0": "off",
         "1": "on"
-      }
+      },
+      "per_model": true,
+      "note": "Changing it restarts the earbuds, which reconnect by themselves (Air5 Pro+). The H3 answers the read but PeatsAudio does not offer it, so it is offered only on models whose devices.json entry lists it under confirmed."
     },
     {
       "id": "in_ear_detection",
@@ -485,7 +487,7 @@
       "id": "fit_test",
       "set": "0363",
       "kind": "raw",
-      "note": "Start or stop. Result arrives as 8363. Non-Qualcomm models. Reached from the fit-inspection screen (app feature FSN17)."
+      "note": "Start or stop. Result arrives as 8363. Non-Qualcomm models; the payloads are not known. Qualcomm models use GAIA v3 instead: see gaia below. Reached from the fit-inspection screen (app feature FSN17)."
     },
     {
       "id": "reset_custom_keys",
@@ -505,6 +507,21 @@
       "note": "Dangerous: confirm with the user first."
     }
   ],
+  "gaia": {
+    "_about": "Qualcomm GAIA v3 on vendor 001D, as PeatsAudio uses it on the H3 (docs/PROTOCOL.md section 11). A command number is feature (7 bits), packet type (2 bits: 0 command, 1 notification, 2 response, 3 error) and command (7 bits). Send only to models in the QUALCOMM family.",
+    "vendor": "001D",
+    "response": "0100",
+    "get_features": "0001",
+    "register_notification": "0007",
+    "fit_feature": "09",
+    "fit_start": "1200",
+    "fit_start_payload": "01",
+    "fit_result": "1280",
+    "fit_results": {
+      "1": "good",
+      "2": "not_fit"
+    }
+  },
   "custom_keys": {
     "gestures": {
       "1": "tap_left",

@@ -106,7 +106,7 @@ model it has to be probed.
 | Find earbud left / right | `03 4A` / `03 4B` | `03 3A` / `03 3B` | 0 stop, 1 beep                           |
 | Light effect             | `03 0A` | `03 0B` | 0 off, 1 on                                                |
 | Privacy mode             | `03 6B` | `03 6C` | 0 off, 1 on                                                |
-| Fit test                 |         | `03 63` | start/stop; result arrives as `83 63`                      |
+| Fit test                 |         | `03 63` | non-Qualcomm; start/stop, result as `83 63`, payloads not known. Qualcomm: section 11 |
 | Reset state              | `03 67` | `03 68` | reply last two bytes == 1 means "was just factory reset"   |
 | Connect classic          | `03 17` |         | Defined in the app with reply `83 17`, never sent by it. May trigger an action. Do not probe. |
 | Reboot                   |         | `03 16` | no payload                                                 |
@@ -382,7 +382,8 @@ animations, hearing-test tones and SDK files.
   plain on/off switch.
 - Fit test: Qualcomm models go through Qualcomm's own GAIA earbud-fit feature, with
   the app switching ANC itself during the test on every model except `S27` and `S32`
-  (Air6 Pro). Other families use `03 63`.
+  (Air6 Pro). Other families use `03 63`. The GAIA frames, as captured on the H3, are in
+  section 11, with what it does to ANC.
 - `ZKLXAIR5LITE` (Air5 Lite) and `ZKLXCHASERS` (Chasers): movie mode is only
   available while multipoint is on.
 - `S7` (Clip1) on firmware 0.0.15: the app forces an update prompt.
@@ -655,8 +656,44 @@ Every frame was approved by the owner before it went out. Report:
   `0A 00`, `0A 02` and `0A 05` answered exactly as before. SoundPEATS' EQ does not go
   through Qualcomm's EQ feature, so it cannot be read there. SoundPeter puts its own EQ
   back on every connect instead, as PeatsAudio does.
-- Not tried: anything else on features `01`, `07`, `08`, `09`, `0C` and `0D`. Feature
+- Not tried: anything else on features `01`, `07`, `08`, `0C` and `0D`. Feature
   `06` is the firmware update feature on Qualcomm devices and must not be probed.
+
+### SoundPEATS H3: fit test (GAIA v3 feature `09`)
+
+Captured 2026-10-11 from the phone's Bluetooth log while the owner ran PeatsAudio's fit
+test twice on the H3, ANC off. Report: `data/reports/S5_S2_fit_drain_leaudio.txt`; the
+frames are the `gaia` cases in `data/test_vectors.json`.
+
+- On opening the fit test, PeatsAudio sets up GAIA: it asks for the feature list (`00 01`),
+  sets two transport parameters (`00 0D`), registers for notifications from features `00`,
+  `09`, `05`, `08`, `01`, `06` and `07` (`00 07` with the feature id; each answered `01 07`),
+  and reads three transport values (`00 0C`). The earbuds then send their current state
+  on several features unasked. Before setting protocol version 4 (`00 0D 07 00 00 00 04`)
+  PeatsAudio sends these frames with version byte `03`; afterwards `04`.
+- Start: `12 00 01` (feature `09`, command 0, payload `01`), answered at once by `13 00`.
+  There is no stop: the test ends by itself.
+- Result: about 9 s later, the notification `12 80` with two bytes, sent twice about 0.2 s
+  apart with the same payload. Both earbuds in the ears gave `01 01`, which PeatsAudio
+  showed as a good fit; both on a desk gave `02 02`, shown as "Not fit". So `01` is a good
+  fit and `02` is not, one byte per earbud. The first byte is the left earbud: on
+  2026-10-12, with only the left earbud in the ear, SoundPeter's run got `01 02`.
+- SoundPeter reads `00 01` on connect for models in the QUALCOMM family, offers the fit
+  test when feature `09` is listed, registers for `09` and sends the start. It sends
+  version `04` throughout and skips the transport parameters; the H3 answers GAIA reads
+  that way.
+- The Air5 Pro+ lists feature `09` too. Its feature list is `0D`, `09`, `08`, `01`, `06`,
+  `07` and `00`: no `05` (Qualcomm's EQ) and no `0C`. The same start gets the same
+  `13 00` and `12 80` result about 9 s later.
+- With ANC on (captured 2026-10-12), PeatsAudio sends `03 11 00` (ANC off) and starts the
+  GAIA setup 1.7 s later, then runs the test as above. It does not turn ANC back on: 13 s
+  after the result, its reads still found ANC off. The pause matters: SoundPeter once
+  started the test 0.3 s after the H3 confirmed ANC off (2 s after the SET), and the H3
+  answered `12 80 02 02` (poor fit on both) 1.6 s later instead of after about 9 s.
+  SoundPeter now waits for the confirmation (about 1.7 s) and then 1.5 s more, and puts
+  the noise mode back once the result is in. Per section 9 the
+  app leaves ANC alone on `S27` and `S32` (Air6 Pro): `fit_keeps_anc` in
+  `data/devices.json`.
 
 ### SoundPEATS Air5 Pro+: firmware code `S2`, version 1.2
 
@@ -692,6 +729,17 @@ method as the H3's EQ). Report: `data/reports/S2_1.2.txt`.
   move some bands. All are in `data/devices.json` (`S2`, `eq.presets`) and are the `S2`
   cases of `eq_layout` and `eq_preset` in `data/test_vectors.json`.
 - LDAC does not work on this model with a Samsung phone; see section 12.
+- Drainage and LE Audio (captured 2026-10-11, same report as the H3's fit test).
+  PeatsAudio offers both on the Air5 Pro+ and neither on the H3, with LDAC on or off.
+  The H3 does not answer the drainage read `03 50`; it answers the LE Audio read `03 35`
+  with `00`, but PeatsAudio still does not offer it there.
+  - Drainage: the Air5 Pro+ answers `03 50` with `00`. `03 3E 01` starts it with no
+    reply; the earbuds play a series of sounds, and about 30 s later report `83 50 00 00`
+    unasked, and PeatsAudio's toggle turns itself off.
+  - LE Audio: `03 34 01` turns it on. The earbuds restart and reconnect by themselves;
+    PeatsAudio's control channel dropped and reopened about 12 s later over the same
+    classic serial channel, and `03 35` then read `01`. LDAC still read on. `03 34 00`
+    turns it off the same way.
 
 ## 12. Codecs (A2DP) and the Air5 Pro+ LDAC bug
 

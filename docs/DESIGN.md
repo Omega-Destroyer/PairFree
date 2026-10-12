@@ -178,6 +178,15 @@ unknown until someone finds them on hardware.
 - Connection: two devices at once, LDAC.
 - Prompts and power: voice prompt volume, prompt language, turn off when idle.
 - Find my earbuds: beep left, beep right.
+- Connection: LE Audio too, on models PeatsAudio offers it on (`confirmed` in
+  `data/devices.json`). The earbuds restart to switch; the app reconnects by itself.
+- Ear tips: a fit test page, on models whose GAIA features include the fit test. It says
+  how to wear the earbuds, runs the test (about 9 s, with a progress bar), then shows a
+  result per earbud with a drawing ("Good fit" or "Poor fit"), and what to do about a
+  poor seal. No result after 20 s says so. Noise control goes off for the test, as in the
+  official app, and back on after it, which the official app does not do.
+- Water drain, where the earbuds answer its read: one button, with the advice to take
+  the earbuds out first. It shows "Draining" until the earbuds report it finished.
 - Maintenance: copy device report, record the EQ from PeatsAudio, factory reset.
 
 Copy device report puts the same information as `tools/probe.py` on the clipboard,

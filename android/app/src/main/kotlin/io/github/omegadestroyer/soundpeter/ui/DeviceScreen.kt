@@ -24,6 +24,7 @@ import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.EarbudState
 import io.github.omegadestroyer.soundpeter.protocol.Model
 import io.github.omegadestroyer.soundpeter.protocol.blockedByLdac
+import io.github.omegadestroyer.soundpeter.protocol.offers
 import io.github.omegadestroyer.soundpeter.ui.theme.Studio
 import kotlinx.coroutines.delay
 
@@ -34,7 +35,7 @@ private enum class Picker { LANGUAGE, SHUTDOWN }
 
 /** The earbuds themselves (docs/DESIGN.md, Device). Sections show only for what the earbuds answered. */
 @Composable
-internal fun DeviceScreen(device: Paired, state: EarbudState, model: Model?, actions: EarbudsActions) {
+internal fun DeviceScreen(device: Paired, state: EarbudState, model: Model?, actions: EarbudsActions, onFitTest: () -> Unit = {}) {
     var picker by remember { mutableStateOf<Picker?>(null) }
     var confirmReset by remember { mutableStateOf(false) }
     var copied by remember { mutableStateOf(false) }
@@ -53,7 +54,8 @@ internal fun DeviceScreen(device: Paired, state: EarbudState, model: Model?, act
         val connection = listOf(
             Command.MULTIPOINT to R.string.two_devices,
             Command.LDAC to R.string.ldac,
-        ).filter { state.supports(it.first) }
+            Command.LE_AUDIO to R.string.le_audio,
+        ).filter { state.offers(it.first, model) }
         if (connection.isNotEmpty()) {
             Panel {
                 Label(stringResource(R.string.connection))
@@ -64,13 +66,43 @@ internal fun DeviceScreen(device: Paired, state: EarbudState, model: Model?, act
                         stringResource(title),
                         on = state.switch(command) == true,
                         onChange = { actions.set(command, if (it) 1 else 0) },
-                        note = if (blocked) stringResource(R.string.needs_ldac_off) else null,
+                        note = when {
+                            blocked -> stringResource(R.string.needs_ldac_off)
+                            command == Command.LE_AUDIO -> stringResource(R.string.le_audio_note)
+                            else -> null
+                        },
                         enabled = !blocked,
                     )
                 }
                 if (model?.ldacOrMultipoint == true) {
                     Text(stringResource(R.string.ldac_or_multipoint), style = Studio.type.small, color = c.secondaryText)
                 }
+            }
+        }
+
+        if (state.hasFitTest) {
+            Panel {
+                Label(stringResource(R.string.ear_tips))
+                Text(stringResource(R.string.fit_test_about), style = Studio.type.small, color = c.secondaryText)
+                StudioButton(stringResource(R.string.fit_test_open), onFitTest, Modifier.fillMaxWidth())
+            }
+        }
+
+        if (state.supports(Command.WATER_DRAIN)) {
+            Panel {
+                Label(stringResource(R.string.water_drain))
+                val draining = state.switch(Command.WATER_DRAIN) == true
+                Text(
+                    stringResource(if (draining) R.string.water_draining else R.string.water_drain_about),
+                    style = Studio.type.small,
+                    color = c.secondaryText,
+                )
+                StudioButton(
+                    stringResource(R.string.water_drain_start),
+                    { actions.set(Command.WATER_DRAIN, 1) },
+                    Modifier.fillMaxWidth(),
+                    enabled = !draining,
+                )
             }
         }
 

@@ -1229,5 +1229,63 @@
       ],
       "payload": "0a0b"
     }
-  ]
+  ],
+  "gaia": {
+    "_about": "GAIA v3 on vendor 001D, from the H3 (S5) while PeatsAudio ran the fit test (data/reports/S5_S2_fit_drain_leaudio.txt). PeatsAudio sent its register request with frame version 03, before it set the protocol version to 4; this app sends 04 like every other frame, which the H3 also answers.",
+    "requests": [
+      {
+        "name": "which GAIA features",
+        "frame": "ff040000001d0001"
+      },
+      {
+        "name": "fit test: subscribe to the fit feature",
+        "frame": "ff040001001d000709"
+      },
+      {
+        "name": "fit test: start",
+        "frame": "ff040001001d120001"
+      }
+    ],
+    "features": [
+      {
+        "name": "H3",
+        "reply": "0101",
+        "payload": "000d010c010901050108070103060207010005",
+        "features": [
+          "00",
+          "01",
+          "05",
+          "06",
+          "07",
+          "08",
+          "09",
+          "0c",
+          "0d"
+        ]
+      }
+    ],
+    "fit_results": [
+      {
+        "name": "H3, both earbuds in the ears: PeatsAudio showed a good fit",
+        "notification": "1280",
+        "payload": "0101",
+        "left": "good",
+        "right": "good"
+      },
+      {
+        "name": "H3, both earbuds on a desk: PeatsAudio showed Not fit",
+        "notification": "1280",
+        "payload": "0202",
+        "left": "not_fit",
+        "right": "not_fit"
+      },
+      {
+        "name": "H3, only the left earbud in the ear, run from SoundPeter",
+        "notification": "1280",
+        "payload": "0102",
+        "left": "good",
+        "right": "not_fit"
+      }
+    ]
+  }
 }

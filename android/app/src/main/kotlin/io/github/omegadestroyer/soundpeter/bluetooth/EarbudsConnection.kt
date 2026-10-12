@@ -6,6 +6,7 @@ import android.os.SystemClock
 import androidx.annotation.RequiresPermission
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.EarbudState
+import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.Replies
 import io.github.omegadestroyer.soundpeter.protocol.Requests
 import kotlinx.coroutines.CoroutineScope
@@ -16,8 +17,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A pair of earbuds the phone is paired with. */
@@ -101,7 +104,7 @@ class EarbudsConnection(
                 _status.value = LinkStatus.Connected(device)
                 log?.invoke("open")
                 val openedAt = SystemClock.elapsedRealtime()
-                serve(opened)
+                serve(opened, device)
                 log?.invoke("closed")
                 opened.close()
                 // A channel that keeps closing straight away does not earn fresh retries.
@@ -118,10 +121,13 @@ class EarbudsConnection(
     }
 
     /** Asks for everything, reads the battery now and then, and applies every reply until the channel closes. */
-    private suspend fun serve(opened: SppLink) = coroutineScope {
+    private suspend fun serve(opened: SppLink, device: Paired) = coroutineScope {
         val requests = launch {
             try {
                 for (command in Requests.ON_CONNECT) opened.send(Requests.get(command))
+                // Qualcomm models also have GAIA v3 features, such as the fit test. By now the
+                // firmware reply has named the model; the read goes to Qualcomm models only.
+                if (Models.find(_state.value.firmware?.code, device.name)?.isQualcomm == true) opened.send(Requests.gaiaFeatures())
                 while (true) {
                     delay(BATTERY_POLL_MS)
                     for (command in Requests.BATTERY) opened.send(Requests.get(command))
@@ -164,6 +170,39 @@ class EarbudsConnection(
         eqWrite = s.launch {
             try {
                 for (frame in frames) l.send(frame)
+            } catch (_: IOException) {
+                // the channel closed; the reader notices and reports it
+            }
+        }
+    }
+
+    /**
+     * Starts the ear tip fit test; the result replaces [EarbudState.fit] about 9 s later.
+     * Unless [keepAnc], noise control goes off first, as the official app does (docs/PROTOCOL.md
+     * section 11), and back to what it was once the result is in. The official app leaves it off.
+     */
+    fun startFitTest(keepAnc: Boolean) {
+        if (_status.value !is LinkStatus.Connected) return
+        val s = session ?: return
+        val l = link ?: return
+        val mode = _state.value.number(Command.ANC_MODE)
+        val switchOff = !keepAnc && mode != null && mode != ANC_OFF
+        _state.update { it.copy(fit = null) }
+        s.launch {
+            try {
+                if (switchOff) {
+                    // Started too soon after ANC goes off, the test gives up within 2 s and
+                    // reports a poor fit. Wait for the earbuds to confirm, then a little more.
+                    l.send(Requests.set(Command.ANC_MODE, ANC_OFF))
+                    withTimeoutOrNull(ANC_CONFIRM_MS) { _state.first { it.number(Command.ANC_MODE) == ANC_OFF } }
+                    delay(ANC_SETTLE_MS)
+                }
+                for (frame in Requests.fitTest()) l.send(frame)
+                if (switchOff && mode != null) {
+                    withTimeoutOrNull(FIT_WAIT_MS) { _state.first { it.fit != null } }
+                    l.send(Requests.set(Command.ANC_MODE, mode))
+                    _state.update { it.expect(Command.ANC_MODE, mode) }
+                }
             } catch (_: IOException) {
                 // the channel closed; the reader notices and reports it
             }
@@ -224,5 +263,20 @@ class EarbudsConnection(
 
         /** A channel open this long counts as working, so the retries start over when it closes. */
         const val STABLE_MS = 10_000L
+
+        /** The H3 confirms ANC off about 1.7 s after the SET; wait at most this long. */
+        const val ANC_CONFIRM_MS = 5_000L
+
+        /** Then this long before the fit test: started 0.3 s after, it failed; the official app waits about 1 s. */
+        const val ANC_SETTLE_MS = 1_500L
+
+        /** How long turning ANC off usually takes before the test starts, for the progress bar. */
+        const val ANC_OFF_TYPICAL_MS = 3_200L
+
+        /** Longest wait for a fit result before noise control goes back on regardless. */
+        const val FIT_WAIT_MS = 20_000L
+
+        /** ANC mode "off" (data/commands.json). */
+        private val ANC_OFF = Command.ANC_MODE.labels.entries.first { it.value == "off" }.key
     }
 }

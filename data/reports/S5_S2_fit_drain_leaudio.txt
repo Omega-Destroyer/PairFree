@@ -1,0 +1,224 @@
+SoundPEATS H3 (S5) fit test, and Air5 Pro+ (S2) drainage and LE Audio, as PeatsAudio does them
+==============================================================================================
+
+Date:    2026-10-11, 17:18 to 17:25 (phone's local time, UTC-6)
+Phone:   Samsung Galaxy S24 FE (SM-S721W), Android 16, One UI 8
+Method:  Bluetooth HCI snoop log (Enabled), pulled with adb bugreport. Only SoundPEATS control
+         frames on vendor 000A and 001D are kept (SnoopScanner / snoop_frames.py); the bug
+         report itself was deleted. Battery reads and the routine GETs PeatsAudio repeats on
+         every connect are left out unless they carry a result.
+Owner:   ran the fit test twice on the H3, tried LDAC off on the H3 (drainage and LE Audio are
+         not offered for it either way), then on the Air5 Pro+ turned LE Audio on, drainage on,
+         and LE Audio off.
+Seen:    Fit test, first run with both earbuds in the ears: PeatsAudio showed a good fit.
+         Second run with both earbuds on a desk: "Not fit". Drainage: a series of sounds,
+         and after about 30 s the toggle turned itself off. LE Audio: switching it on or
+         off restarted the earbuds, which reconnected by themselves.
+
+Frames: time, direction, frame version byte, vendor, command, payload.
+
+
+---- H3: GAIA v3 setup PeatsAudio sends before the fit test ----
+
+17:18:58.641 buds->phone v3 000A 8300 00 03 03 01
+17:18:58.648 phone->buds v3 001D 0001
+17:18:58.659 buds->phone v3 001D 0101 00 0d 01 0c 01 09 01 05 01 08 07 01 03 06 02 07 01 00 05
+17:18:58.663 phone->buds v3 001D 000D 07 00 00 00 04
+17:18:58.665 phone->buds v3 001D 0007 00
+17:18:58.665 phone->buds v3 001D 0007 09
+17:18:58.665 phone->buds v3 001D 0007 05
+17:18:58.665 phone->buds v3 001D 0007 08
+17:18:58.694 phone->buds v3 001D 0007 01
+17:18:58.694 phone->buds v3 001D 0007 06
+17:18:58.694 phone->buds v3 001D 0007 07
+17:18:58.695 buds->phone v4 001D 010D 07 00 00 00 04
+17:18:58.696 buds->phone v4 001D 0107
+17:18:58.697 buds->phone v4 001D 0080 00
+17:18:58.700 buds->phone v4 001D 0107
+17:18:58.701 phone->buds v4 001D 000D 01 00 01 00 09
+17:18:58.708 buds->phone v4 001D 0107
+17:18:58.712 buds->phone v4 001D 0A80 00
+17:18:58.714 buds->phone v4 001D 0A81 00
+17:18:58.723 buds->phone v4 001D 0107
+17:18:58.726 buds->phone v4 001D 1085 00
+17:18:58.728 buds->phone v4 001D 1080 01 00
+17:18:58.730 buds->phone v4 001D 1083 01 01
+17:18:58.734 buds->phone v4 001D 1083 02 05
+17:18:58.736 buds->phone v4 001D 1083 03 ff
+17:18:58.737 buds->phone v4 001D 1084 01 ff
+17:18:58.741 buds->phone v4 001D 1084 02 ff
+17:18:58.743 buds->phone v4 001D 1084 03 ff
+17:18:58.746 buds->phone v4 001D 1084 04 ff
+17:18:58.749 buds->phone v4 001D 1084 05 ff
+17:18:58.751 buds->phone v4 001D 1080 01 00
+17:18:58.757 buds->phone v4 001D 1081 01 03 01 00 01
+17:18:58.759 buds->phone v4 001D 1086 00
+17:18:58.761 buds->phone v4 001D 108E 01
+17:18:58.764 buds->phone v4 001D 1094 00 00
+17:18:58.765 buds->phone v4 001D 108F 01 03 00 00
+17:18:58.768 buds->phone v4 001D 1080 01 00
+17:18:58.770 buds->phone v4 001D 1083 01 01
+17:18:58.774 buds->phone v4 001D 1083 02 05
+17:18:58.777 buds->phone v4 001D 1083 03 ff
+17:18:58.778 buds->phone v4 001D 1084 01 ff
+17:18:58.781 buds->phone v4 001D 1084 02 ff
+17:18:58.784 buds->phone v4 001D 1084 03 ff
+17:18:58.787 buds->phone v4 001D 1084 04 ff
+17:18:58.790 buds->phone v4 001D 1084 05 ff
+17:18:58.793 buds->phone v4 001D 0107
+17:18:58.795 buds->phone v4 001D 0282 01
+17:18:58.802 buds->phone v4 001D 0107
+17:18:58.804 buds->phone v4 001D 0107
+17:18:58.807 buds->phone v4 001D 0E80 00
+17:18:58.813 buds->phone v4 001D 010D 01 00 00 07 44
+17:18:58.818 phone->buds v4 001D 000C 04
+17:18:58.822 phone->buds v4 001D 000C 02
+17:18:58.822 phone->buds v4 001D 000C 03
+17:18:58.827 buds->phone v4 001D 010C 04 00 00 03 52
+17:18:58.834 buds->phone v4 001D 010C 02 00 00 07 44
+17:18:58.836 buds->phone v4 001D 010C 03 00 00 06 40
+
+(the 8300 reply answers a request with frame version 01, which the extraction does not keep)
+
+
+---- H3: fit test, first run ----
+
+17:18:59.838 phone->buds v4 001D 1200 01
+17:18:59.870 buds->phone v4 001D 1300
+17:19:08.625 buds->phone v4 001D 1280 01 01
+17:19:08.866 buds->phone v4 001D 1280 01 01
+
+
+---- H3: fit test, second run (same setup sent again first, 17:19:32) ----
+
+17:19:33.992 phone->buds v4 001D 1200 01
+17:19:34.020 buds->phone v4 001D 1300
+17:19:42.699 buds->phone v4 001D 1280 02 02
+17:19:42.709 buds->phone v4 001D 1280 02 02
+
+
+---- H3: LDAC off; the channel drops and reopens with multipoint on ----
+
+17:20:37.490 phone->buds v4 000A 0339 00
+17:20:49.171 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
+17:20:49.824 buds->phone v3 000A 8314 00 01
+17:20:49.933 buds->phone v3 000A 8314 00 01
+17:20:50.719 buds->phone v3 000A 8338 00 00
+17:20:50.790 buds->phone v3 000A 8338 00 00
+
+
+---- Air5 Pro+: LE Audio on, drainage on, LE Audio off ----
+
+17:22:37.528 buds->phone v3 000A 8309 00 53 32 5f 32 30 32 35 30 38 31 36 5f 56 31 2e 32
+17:22:37.554 buds->phone v3 000A 8309 00 53 32 5f 32 30 32 35 30 38 31 36 5f 56 31 2e 32
+17:22:37.607 buds->phone v3 000A 8309 00 53 32 5f 32 30 32 35 30 38 31 36 5f 56 31 2e 32
+17:22:43.499 phone->buds v4 000A 0350
+17:22:43.528 buds->phone v3 000A 8350 00 00
+17:22:43.566 phone->buds v4 000A 0335
+17:22:43.587 buds->phone v3 000A 8335 00 00
+17:22:58.836 phone->buds v4 000A 0334 01
+17:23:10.702 buds->phone v3 000A 8309 00 53 32 5f 32 30 32 35 30 38 31 36 5f 56 31 2e 32
+17:23:13.306 phone->buds v4 000A 0350
+17:23:13.336 buds->phone v3 000A 8350 00 00
+17:23:13.371 phone->buds v4 000A 0335
+17:23:13.381 buds->phone v3 000A 8335 00 01
+17:23:20.953 phone->buds v4 000A 033E 01
+17:23:51.340 buds->phone v3 000A 8350 00 00
+17:24:34.375 phone->buds v4 000A 0350
+17:24:34.401 buds->phone v3 000A 8350 00 00
+17:24:34.437 phone->buds v4 000A 0335
+17:24:34.451 buds->phone v3 000A 8335 00 01
+17:24:43.475 phone->buds v4 000A 0334 00
+
+
+---- 2026-10-12: H3, PeatsAudio's fit test with ANC on ----
+
+The owner turned ANC on in PeatsAudio, then opened the fit test. PeatsAudio turned ANC
+off 1.7 s before setting up GAIA and starting the test, and did not turn it back on: its
+next reads, 13 s after the result, still found ANC off. The right earbud was not seated
+(left good, right poor), as in the run before it.
+
+09:57:54.772 phone->buds v4 000A 0311 01
+09:57:56.601 buds->phone v3 000A 8310 00 01
+09:58:12.259 phone->buds v4 000A 0311 00
+09:58:13.963 phone->buds v3 001D 0001
+09:58:13.975 buds->phone v3 001D 0101 00 0d 01 0c 01 09 01 05 01 08 07 01 03 06 02 07 01 00 05
+09:58:13.982 phone->buds v3 001D 0007 09
+09:58:14.123 buds->phone v3 000A 8310 00 00
+09:58:15.150 phone->buds v4 001D 1200 01
+09:58:15.171 buds->phone v4 001D 1300
+09:58:23.771 buds->phone v4 001D 1280 01 02
+09:58:23.999 buds->phone v4 001D 1280 01 02
+09:58:37.558 buds->phone v3 000A 8310 00 00
+
+
+---- 2026-10-12: SoundPeter's fit test, H3 with only the left earbud in the ear ----
+
+09:57:04.636 phone->buds v4 001D 0007 09
+09:57:04.708 phone->buds v4 001D 1200 01
+09:57:05.293 buds->phone v3 001D 0107
+09:57:05.294 buds->phone v3 001D 1300
+09:57:14.160 buds->phone v3 001D 1280 01 02
+09:57:14.642 buds->phone v3 001D 1280 01 02
+
+
+---- 2026-10-12: SoundPeter on the Air5 Pro+: GAIA features, then three fit tests ----
+
+09:59:42.363 phone->buds v4 001D 0001
+09:59:42.409 buds->phone v3 001D 0101 00 0d 01 09 01 08 07 01 03 06 02 07 01 00 05
+09:59:42.941 phone->buds v4 001D 0E01 a1 fd 30 00 60 00 96 10 00
+09:59:42.995 phone->buds v4 001D 0E01 a2 fd 30 00 c3 00 b4 18 00
+09:59:43.033 buds->phone v3 001D 0F81 01
+09:59:43.039 buds->phone v3 001D 0F81 01
+09:59:43.046 phone->buds v4 001D 0E01 a3 fd 30 02 1c fe 98 13 33
+09:59:43.101 phone->buds v4 001D 0E01 a4 fd 30 05 dc 00 1e 18 00
+09:59:43.103 buds->phone v3 001D 0F81 01
+09:59:43.142 buds->phone v3 001D 0F81 01
+09:59:43.154 phone->buds v4 001D 0E01 a5 fd 30 09 60 00 3c 18 00
+09:59:43.203 buds->phone v3 001D 0F81 01
+09:59:43.208 phone->buds v4 001D 0E01 a6 fd 30 15 18 01 e0 13 33
+09:59:43.263 buds->phone v3 001D 0F81 01
+09:59:43.263 phone->buds v4 001D 0E01 a7 fd 30 2a 30 00 d2 30 00
+09:59:43.298 buds->phone v3 001D 0F81 01
+09:59:43.318 phone->buds v4 001D 0E01 a8 fd 30 40 74 fe d4 20 00
+09:59:43.359 buds->phone v3 001D 0F81 01
+09:59:43.373 phone->buds v4 001D 0E01 a9 fd 30 5d c0 ff 4c 38 00
+09:59:43.423 buds->phone v3 001D 0F81 01
+09:59:43.425 phone->buds v4 001D 0E01 aa fd 30 8c a0 01 e0 18 00
+09:59:43.489 buds->phone v3 001D 0F81 01
+09:59:48.182 phone->buds v4 001D 0007 09
+09:59:48.254 phone->buds v4 001D 1200 01
+09:59:48.785 buds->phone v3 001D 0107
+09:59:48.787 buds->phone v3 001D 1300
+09:59:57.509 buds->phone v3 001D 1280 02 02
+09:59:57.521 buds->phone v3 001D 1280 02 02
+10:00:02.284 phone->buds v4 001D 0007 09
+10:00:02.321 buds->phone v3 001D 0107
+10:00:02.356 phone->buds v4 001D 1200 01
+10:00:02.380 buds->phone v3 001D 1300
+10:00:11.075 buds->phone v3 001D 1280 02 02
+10:00:11.078 buds->phone v3 001D 1280 02 02
+10:00:23.733 phone->buds v4 001D 0007 09
+10:00:23.806 phone->buds v4 001D 1200 01
+10:00:24.266 buds->phone v3 001D 0107
+10:00:24.267 buds->phone v3 001D 1300
+10:00:33.031 buds->phone v3 001D 1280 02 02
+10:00:33.037 buds->phone v3 001D 1280 02 02
+
+
+---- 2026-10-12: SoundPeter, H3 with ANC on: the test started too soon ----
+
+SoundPeter turned ANC off, started the test 2 s later (0.3 s after the H3 confirmed ANC
+off), and the H3 reported a poor fit on both after 1.6 s instead of about 9 s. Both
+earbuds were in the ears. From SoundPeter's debug log:
+
+10-12 10:17:39.192 send 000A 0311 anc_mode set 00
+10-12 10:17:40.936 recv 000A 8310 anc_mode reply 00 00
+10-12 10:17:41.197 send 001D 0007 eq 09
+10-12 10:17:41.229 recv 001D 0107 eq
+10-12 10:17:41.250 send 001D 1200 eq 01
+10-12 10:17:41.278 recv 001D 1300 eq
+10-12 10:17:42.872 recv 001D 1280 eq 02 02
+10-12 10:17:42.876 recv 001D 1280 eq 02 02
+10-12 10:17:42.877 send 000A 0311 anc_mode set 01
+10-12 10:17:44.743 recv 000A 8310 anc_mode reply 00 01

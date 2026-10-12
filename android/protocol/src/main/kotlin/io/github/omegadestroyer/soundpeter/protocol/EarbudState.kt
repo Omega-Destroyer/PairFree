@@ -7,15 +7,29 @@ package io.github.omegadestroyer.soundpeter.protocol
  * SET, and after a change made by touch, the H3 sends the new state as a GET reply.
  * A command the firmware does not support never answers, so it never appears here.
  */
-public data class EarbudState(val values: Map<Command, Value> = emptyMap()) {
+public data class EarbudState(
+    val values: Map<Command, Value> = emptyMap(),
+    /** The GAIA v3 features a Qualcomm model reported, or null before it has. */
+    val gaiaFeatures: Set<Int>? = null,
+    /** The last fit test result, or null before one has arrived. */
+    val fit: FitResult? = null,
+) {
     /** Applies one received frame. Frames that are not replies the app understands are ignored. */
     public fun update(frame: Frame): EarbudState {
+        if (frame.vendor == Gaia.VENDOR) {
+            FitResult.of(frame)?.let { return copy(fit = it) }
+            gaiaFeaturesOf(frame)?.let { return copy(gaiaFeatures = it) }
+            return this
+        }
         val command = Replies.commandFor(frame) ?: return this
         val value = Replies.decode(command, frame.payload) ?: return this
         return copy(values = values + (command to value))
     }
 
     public fun supports(command: Command): Boolean = command in values
+
+    /** True when the earbuds have the GAIA fit-test feature (Qualcomm models). */
+    public val hasFitTest: Boolean get() = gaiaFeatures?.contains(Gaia.FIT_FEATURE) == true
 
     public val firmware: FirmwareVersion?
         get() = (values[Command.FIRMWARE_VERSION] as? Value.Text)?.let { FirmwareVersion(it.text) }

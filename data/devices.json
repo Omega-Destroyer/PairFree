@@ -473,7 +473,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "fit_keeps_anc": true
     },
     {
       "firmware_code": "S32",
@@ -489,7 +490,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "fit_keeps_anc": true
     },
     {
       "firmware_code": "S2",
@@ -1170,9 +1172,13 @@
           }
         ]
       },
+      "confirmed": [
+        "le_audio"
+      ],
       "reports": [
         "data/reports/S2_1.2.txt",
-        "data/reports/air5-pro-plus_ldac.txt"
+        "data/reports/air5-pro-plus_ldac.txt",
+        "data/reports/S5_S2_fit_drain_leaudio.txt"
       ]
     },
     {
@@ -1861,7 +1867,9 @@
         ]
       },
       "reports": [
-        "data/reports/S5_0.4.9.txt"
+        "data/reports/S5_0.4.9.txt",
+        "data/reports/S5_gaia_v3.txt",
+        "data/reports/S5_S2_fit_drain_leaudio.txt"
       ]
     },
     {
@@ -2226,6 +2234,8 @@
     "reports": "Probe and capture reports from real earbuds, under data/reports/.",
     "ldac_excludes": "Features the official app offers only while LDAC is off, as the owner saw in PeatsAudio. Ids are from data/commands.json.",
     "ldac_or_multipoint": "LDAC and multipoint are one either-or setting on the earbuds: turning one off turns the other on. Seen on hardware.",
+    "fit_keeps_anc": "The official app leaves the noise mode as it is during the fit test. On every other model it turns ANC off first (docs/PROTOCOL.md sections 9 and 11).",
+    "confirmed": "Commands marked per_model in data/commands.json that the official app offers on this model, as the owner saw in PeatsAudio. Without this, the app does not offer them even if the earbuds answer the read.",
     "eq": "The EQ the official app writes to this model, read from a phone capture: one band per entry with its centre frequency, Q and the base gain the user's gain is added to; the master gain sent with every band; the range of the app's sliders. eq.presets are complete curves sent as they are, with the same master gain."
   },
   "reported_chips": {

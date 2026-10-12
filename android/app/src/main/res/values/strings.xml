@@ -140,6 +140,30 @@
     <string name="beep">Beep %1$s</string>
     <string name="stop_beep">Stop %1$s</string>
     <string name="maintenance">Maintenance</string>
+    <!-- Fit test, water drain, LE Audio -->
+    <string name="ear_tips">Ear tips</string>
+    <string name="fit_test">Fit test</string>
+    <string name="fit_test_about">Check that each ear tip seals well. A good seal gives fuller bass and better noise cancelling.</string>
+    <string name="fit_test_open">Run the fit test</string>
+    <string name="fit_test_intro">Put both earbuds in your ears and stay still somewhere quiet. The earbuds play a short sound and check how well each ear tip seals. It takes about 10 seconds.</string>
+    <string name="fit_anc_note">Noise control turns off for the test and back on afterwards.</string>
+    <string name="fit_start">Start</string>
+    <string name="fit_again">Test again</string>
+    <string name="fit_testing">Testing. Stay still and quiet.</string>
+    <string name="fit_measuring">Testing</string>
+    <string name="fit_not_tested">Not tested</string>
+    <string name="fit_good">Good fit</string>
+    <string name="fit_not_fit">Poor fit</string>
+    <string name="fit_unknown">No result</string>
+    <string name="fit_advice_good">Both ear tips seal well.</string>
+    <string name="fit_advice_poor">For an earbud with a poor fit, push it in a little further and twist it slightly so the tip seals, then test again. If it still does not fit, try a larger ear tip.</string>
+    <string name="fit_no_result">No result came back. Check that both earbuds are connected and in your ears, then try again.</string>
+    <string name="water_drain">Water drain</string>
+    <string name="water_drain_about">Plays a series of sounds for about 30 seconds to push water out of the speakers, for example after rain or a workout. Take the earbuds out of your ears first.</string>
+    <string name="water_drain_start">Drain water</string>
+    <string name="water_draining">Draining. The earbuds stop by themselves after about 30 seconds.</string>
+    <string name="le_audio">LE Audio</string>
+    <string name="le_audio_note">Uses Bluetooth LE Audio where the phone supports it. The earbuds restart to switch and reconnect by themselves.</string>
     <!-- EQ capture (docs/DESIGN.md) -->
     <string name="capture_open">Record the EQ from PeatsAudio</string>
     <string name="capture_title">Record the EQ</string>

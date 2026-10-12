@@ -9,6 +9,9 @@ package io.github.omegadestroyer.soundpeter.protocol
  * @property ldacExcludes features the official app offers only while LDAC is off.
  * @property ldacOrMultipoint LDAC and multipoint are one either-or setting: turning one off turns the other on.
  * @property eq the EQ layout the official app writes to this model, when it is known.
+ * @property confirmed commands marked per_model that the official app offers on this model.
+ * @property fitKeepsAnc the official app leaves the noise mode alone during the fit test;
+ *   on other models it turns ANC off first.
  */
 public data class Model(
     val code: String,
@@ -17,7 +20,24 @@ public data class Model(
     val ldacExcludes: Set<Command> = emptySet(),
     val ldacOrMultipoint: Boolean = false,
     val eq: EqLayout? = null,
-)
+    val confirmed: Set<Command> = emptySet(),
+    val fitKeepsAnc: Boolean = false,
+) {
+    /** Qualcomm chips also answer GAIA v3 on vendor `00 1D` ([Gaia]). */
+    val isQualcomm: Boolean get() = family == QUALCOMM_FAMILY
+
+    private companion object {
+        const val QUALCOMM_FAMILY = "QUALCOMM"
+    }
+}
+
+/**
+ * True when the app should offer [command]: the earbuds answered its read, and for a
+ * command marked per_model, the model also lists it under confirmed. The H3 answers the
+ * LE Audio read, yet the official app does not offer LE Audio on it.
+ */
+public fun EarbudState.offers(command: Command, model: Model?): Boolean =
+    supports(command) && (!command.perModel || model?.confirmed?.contains(command) == true)
 
 public object Models {
     public val ALL: List<Model> get() = MODEL_TABLE

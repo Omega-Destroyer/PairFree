@@ -23,6 +23,10 @@ class ModelsTest {
             val excludes = json["ldac_excludes"]?.jsonArray?.map { Command.valueOf(it.jsonPrimitive.content.uppercase()) }
             assertEquals(excludes.orEmpty().toSet(), model.ldacExcludes, model.code)
             assertEquals(json["ldac_or_multipoint"]?.jsonPrimitive?.boolean ?: false, model.ldacOrMultipoint, model.code)
+            val confirmed = json["confirmed"]?.jsonArray?.map { Command.valueOf(it.jsonPrimitive.content.uppercase()) }
+            assertEquals(confirmed.orEmpty().toSet(), model.confirmed, model.code)
+            assertTrue(model.confirmed.all { it.perModel }, "${model.code} confirms a command that is not per_model")
+            assertEquals(json["fit_keeps_anc"]?.jsonPrimitive?.boolean ?: false, model.fitKeepsAnc, model.code)
             val eq = json["eq"]?.jsonObject
             if (eq == null) {
                 assertNull(model.eq, model.code)

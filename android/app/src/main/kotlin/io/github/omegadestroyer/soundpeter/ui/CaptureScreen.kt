@@ -56,11 +56,13 @@ interface CaptureActions {
 }
 
 /**
- * Records a model's EQ from PeatsAudio (docs/DESIGN.md, EQ capture): the steps, then the
- * curves found in the bug report, each named by the user, then a report to send.
+ * Records a model from PeatsAudio (docs/DESIGN.md, Record from PeatsAudio): the steps, then
+ * what the bug report held (the settings PeatsAudio read and the EQ curves it sent, each
+ * curve named by the user), then a report to send. [connectedCode] is the firmware code of
+ * the earbuds SoundPeter is connected to, whose own device report then goes in too.
  */
 @Composable
-internal fun CaptureScreen(capture: Capture, actions: CaptureActions) {
+internal fun CaptureScreen(capture: Capture, actions: CaptureActions, connectedCode: String? = null) {
     BackHandler { actions.closeCapture() }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) actions.importBugReport(uri)
@@ -81,7 +83,7 @@ internal fun CaptureScreen(capture: Capture, actions: CaptureActions) {
             Capture.Closed -> Unit
             Capture.Guide -> Guide { picker.launch(arrayOf("*/*")) }
             Capture.Reading -> Panel { Text(stringResource(R.string.capture_reading)) }
-            is Capture.Done -> Done(capture, actions) { picker.launch(arrayOf("*/*")) }
+            is Capture.Done -> Done(capture, actions, connectedCode) { picker.launch(arrayOf("*/*")) }
         }
     }
 }
@@ -132,14 +134,14 @@ private fun Guide(onChoose: () -> Unit) {
 }
 
 @Composable
-private fun Done(done: Capture.Done, actions: CaptureActions, onChoose: () -> Unit) {
+private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: String?, onChoose: () -> Unit) {
     val c = Studio.colors
     val context = LocalContext.current
     val problem = when (val result = done.result) {
         CaptureResult.NoBluetoothLog -> R.string.capture_no_log
         CaptureResult.NotABugReport -> R.string.capture_not_report
         CaptureResult.Unreadable -> R.string.capture_unreadable
-        is CaptureResult.Found -> if (result.writes.isEmpty()) R.string.capture_none else null
+        is CaptureResult.Found -> if (result.writes.isEmpty() && result.reads.isEmpty()) R.string.capture_none else null
     }
     if (problem != null) {
         Panel { Text(stringResource(problem), color = c.destructive) }
@@ -151,8 +153,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, onChoose: () -> Un
     var typing by rememberSaveable { mutableStateOf<Int?>(null) }
     var copied by remember { mutableStateOf(false) }
     val writes = done.writes
-    val firmware = writes.mapNotNull { it.firmware?.text }.distinct()
-    Text(pluralStringResource(R.plurals.capture_found, writes.size, writes.size), color = c.secondaryText)
+    val firmware = (done.reads.mapNotNull { it.firmware?.text } + writes.mapNotNull { it.firmware?.text }).distinct()
     Panel {
         Label(stringResource(R.string.capture_earbuds))
         if (firmware.isEmpty()) {
@@ -161,18 +162,31 @@ private fun Done(done: Capture.Done, actions: CaptureActions, onChoose: () -> Un
             for (f in firmware) {
                 val model = Models.find(f.substringBefore('_'), null)?.names?.firstOrNull()
                 Text(if (model != null) "$model ($f)" else stringResource(R.string.capture_new_model, f))
+                val settings = done.reads.firstOrNull { it.firmware?.text == f }?.replies?.size ?: 0
+                Text(pluralStringResource(R.plurals.capture_settings_read, settings, settings), style = Studio.type.small, color = c.secondaryText)
+            }
+        }
+        val included = connectedCode != null && firmware.any { it.substringBefore('_') == connectedCode }
+        Text(
+            stringResource(if (included) R.string.capture_own_report else R.string.capture_own_report_missing),
+            style = Studio.type.small,
+            color = c.secondaryText,
+        )
+    }
+    if (writes.isEmpty()) {
+        Text(stringResource(R.string.capture_no_curves), color = c.secondaryText)
+    } else {
+        Text(pluralStringResource(R.plurals.capture_found, writes.size, writes.size), color = c.secondaryText)
+        Panel {
+            writes.forEachIndexed { i, write ->
+                if (i > 0) Divider()
+                val same = writes.subList(0, i).indexOfFirst { it.sameAs(write) }
+                WriteRow(i + 1, write, done.names[i], same.takeIf { it >= 0 }?.plus(1), showFirmware = firmware.size > 1) { naming = i }
             }
         }
     }
-    Panel {
-        writes.forEachIndexed { i, write ->
-            if (i > 0) Divider()
-            val same = writes.subList(0, i).indexOfFirst { it.sameAs(write) }
-            WriteRow(i + 1, write, done.names[i], same.takeIf { it >= 0 }?.plus(1), showFirmware = firmware.size > 1) { naming = i }
-        }
-    }
 
-    val ready = done.named.isNotEmpty()
+    val ready = done.ready
     val clipLabel = stringResource(R.string.capture_title)
     StudioButton(
         stringResource(R.string.capture_send),

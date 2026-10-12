@@ -30,7 +30,7 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 | Probe script (PC)                       | Written, run on an H3                   |
 | Confirmed on hardware                   | H3 and Air5 Pro+: see [Tested earbuds](#tested-earbuds) |
 | App design                              | Written. One look (Studio), five screens. |
-| Android app                             | All four tabs (Home, Sound, Controls, Device), the fit test and the EQ recorder. Being tried on an H3 and an Air5 Pro+. |
+| Android app                             | All four tabs (Home, Sound, Controls, Device), the fit test and Record from PeatsAudio. Being tried on an H3 and an Air5 Pro+. |
 | iOS and Windows apps                    | Planned, after Android                  |
 | Firmware update                         | Planned for Qualcomm models, opt-in     |
 
@@ -102,53 +102,53 @@ models have different curves, so one model's EQ is never used for another.
 
 <table>
 <tr><th>Model</th><th>Firmware code</th><th>Chip</th><th>Battery</th><th>Noise control</th><th>Transparency levels</th><th>Game mode</th><th>Two devices</th><th>LDAC</th><th>LE Audio</th><th>Gestures</th><th>Touch off</th><th>In-ear detection</th><th>Voice prompts</th><th>Auto power-off</th><th>Find earbuds</th><th>Water drain</th><th>Fit test</th><th>Equalizer</th></tr>
-<tr><td>A8, ECHO</td><td>ECHO7018</td><td>Jieli</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air3 Deluxe HS</td><td>BS519W2D</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air3 Pro, Air3Pro</td><td>Air3Pro</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air3, Air3-Deluxe</td><td>BS390RB</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air4</td><td>AIR4-BS590R2E</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air4 Lite</td><td>WUQIAIRLITE</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air4 Pro</td><td>AIR4PRO-BS588R2E</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air5</td><td>QCC3091AIR5</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air5 Lite</td><td>ZKLXAIR5LITE</td><td>Bluetrum</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
+<tr><td>A8, ECHO</td><td>ECHO7018</td><td>Jieli</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air3 Deluxe HS</td><td>BS519W2D</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air3 Pro, Air3Pro</td><td>Air3Pro</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air3, Air3-Deluxe</td><td>BS390RB</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air4</td><td>AIR4-BS590R2E</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air4 Lite</td><td>WUQIAIRLITE</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air4 Pro</td><td>AIR4PRO-BS588R2E</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air5</td><td>QCC3091AIR5</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air5 Lite</td><td>ZKLXAIR5LITE</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Air5 Pro+</td><td><a href="data/reports/S2_1.2.txt">S2</a></td><td>Qualcomm</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>Air6 Pro</td><td>S27</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Air6 Pro</td><td>S32</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Breezy</td><td>ZKLXBREEZY</td><td>Bluetrum</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
+<tr><td>Air6 Pro</td><td>S27</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Air6 Pro</td><td>S32</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Breezy</td><td>ZKLXBREEZY</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Capsule3 Pro</td><td>QCYTS04</td><td>QCY</td><td colspan="16">Not supported: a different protocol (docs/PROTOCOL.md section 10)</td></tr>
 <tr><td>Capsule3 Pro</td><td>SPTS04</td><td>QCY</td><td colspan="16">Not supported: a different protocol (docs/PROTOCOL.md section 10)</td></tr>
-<tr><td>Chasers</td><td>ZKLXCHASERS</td><td>Bluetrum</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Clear</td><td>JL6973Clear</td><td>Jieli</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>CyberGear</td><td>ATS3019DK12</td><td>Actions</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Engine 4</td><td>WuQiEngine4</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>GoFree</td><td>3007AGOFREE</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>GoFree 2</td><td>NEW-WQ7034MXGoFree2</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>GoFree 2</td><td>WQ7034MXGoFree2</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>H1</td><td>BT5107</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
+<tr><td>Chasers</td><td>ZKLXCHASERS</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Clear</td><td>JL6973Clear</td><td>Jieli</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>CyberGear</td><td>ATS3019DK12</td><td>Actions</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Engine 4</td><td>WuQiEngine4</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>GoFree</td><td>3007AGOFREE</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>GoFree 2</td><td>NEW-WQ7034MXGoFree2</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>GoFree 2</td><td>WQ7034MXGoFree2</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>H1</td><td>BT5107</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>H3</td><td><a href="data/reports/S5_0.4.9.txt">S5</a></td><td>Qualcomm</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>Hi Listening</td><td>HILISTENING</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Life</td><td>T57</td><td>Smartlink</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Life3</td><td>JIELILIFE3</td><td>Jieli</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Mini HS</td><td>WUQIMINIHS</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Mini Pro</td><td>QCC3040</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Mini Pro HS</td><td>WQT7033</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Opera03</td><td>OPERA03</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Opera05</td><td>OPERA05</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>PearlClip Pro</td><td>BT893XPro</td><td>Bluetrum</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>PearlClip Pro</td><td>S13</td><td>Bluetrum</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>RunFree</td><td>JULIRUNFREE</td><td>Actions</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>RunFree HS</td><td>RUNFREEHS</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>RunFree Lite</td><td>FREELITE</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>RunFree Lite2</td><td>JULI3025Lite2</td><td>Actions</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Sonic</td><td>T28</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Sonic Pro</td><td>T28Pro</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Space</td><td>R1292A7018F</td><td>Jieli</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Space Pro</td><td>ZKLXSPACEPRO</td><td>Bluetrum</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>TrueAir2</td><td>BS343RB</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>TRUEFREE C1, TRUEFREE soft</td><td>JL6973D8C1</td><td>Jieli</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>TRUEFREE F2</td><td>WuQi7034MXF2</td><td>WUQI</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Truengine 3 SE, Truengine 3SE</td><td>BT5106-3040</td><td>Qualcomm</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
-<tr><td>Wings2</td><td>TS03WINGS2</td><td>Jieli</td><td colspan="15"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td><td><a href="#help-add-your-models-equalizer">Needs a recording</a></td></tr>
+<tr><td>Hi Listening</td><td>HILISTENING</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Life</td><td>T57</td><td>Smartlink</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Life3</td><td>JIELILIFE3</td><td>Jieli</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Mini HS</td><td>WUQIMINIHS</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Mini Pro</td><td>QCC3040</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Mini Pro HS</td><td>WQT7033</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Opera03</td><td>OPERA03</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Opera05</td><td>OPERA05</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>PearlClip Pro</td><td>BT893XPro</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>PearlClip Pro</td><td>S13</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>RunFree</td><td>JULIRUNFREE</td><td>Actions</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>RunFree HS</td><td>RUNFREEHS</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>RunFree Lite</td><td>FREELITE</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>RunFree Lite2</td><td>JULI3025Lite2</td><td>Actions</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Sonic</td><td>T28</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Sonic Pro</td><td>T28Pro</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Space</td><td>R1292A7018F</td><td>Jieli</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Space Pro</td><td>ZKLXSPACEPRO</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>TrueAir2</td><td>BS343RB</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>TRUEFREE C1, TRUEFREE soft</td><td>JL6973D8C1</td><td>Jieli</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>TRUEFREE F2</td><td>WuQi7034MXF2</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Truengine 3 SE, Truengine 3SE</td><td>BT5106-3040</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
+<tr><td>Wings2</td><td>TS03WINGS2</td><td>Jieli</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 </table>
 <!-- models-table:end -->
 
@@ -161,12 +161,8 @@ should connect to the other models in `data/devices.json` (all but the Capsule3 
 and to newer ones, and show whatever they answer. None of them has been tested yet. The equalizer appears only once
 someone has recorded the model's curves.
 
-If you have one, two things from SoundPeter add it to the table:
-
-- **Copy device report** on the Device tab: what the earbuds answer, with no computer
-  needed. Paste it into a new issue.
-- **Record the EQ from PeatsAudio**, for the equalizer (see
-  [Help add your model's equalizer](#help-add-your-models-equalizer)).
+If you have one, see [Help add your model](#help-add-your-model): one recording from
+your phone adds its controls and its equalizer to the table.
 
 The Capsule3 Pro is the exception. It uses a different protocol over Bluetooth LE,
 documented in `docs/PROTOCOL.md` section 10, and SoundPeter does not support it yet.
@@ -203,10 +199,10 @@ Samsung-only:
 | `data/test_vectors.json`  | Frames every implementation must reproduce byte for byte          |
 | `data/devices.json`       | Known models, their firmware codes, chip families and per-model details |
 | `data/qcy_commands.json`  | The separate protocol for the Capsule3 Pro                        |
-| `data/reports/`           | Probe output from real earbuds, one file per model and firmware   |
+| `data/reports/`           | Device reports and recordings from real earbuds, one file per model and firmware |
 | `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
 | `tools/probe.py`          | Read-only probe. Asks the earbuds what they support.              |
-| `tools/import_eq_capture.py` | Turns an EQ capture report from the app into a model's EQ data. |
+| `tools/import_eq_capture.py` | Turns the equalizer part of a recording from the app into a model's EQ data. |
 | `tools/gen_models_table.py` | Writes the All models table in this README from `data/devices.json` and the reports. |
 | `tools/test_probe.py`     | Tests for the probe and the data files. No hardware needed.       |
 | `assets/devices/`         | Vector drawings of each model's earbud and case, per look         |
@@ -214,30 +210,41 @@ Samsung-only:
 | `tools/device_art/`       | Traced outlines for each model, read by `gen_device_art.py`       |
 | `android/`                | The Android app. `protocol/` is the protocol core, `app/` the app. |
 
-## Help add your model's equalizer
+## Help add your model
 
-SoundPeter offers an equalizer only for models whose curves it knows: so far the H3 and
-the Air5 Pro+. The earbuds cannot report their curves, but the official PeatsAudio app
-sends them, and you can record that on your phone in about five minutes. One recording
-per model is enough, and no computer is needed.
+One report from someone who owns a model adds it to the [All models](#all-models) table
+for everyone. There are three ways to make one. The first gives the most.
 
-In SoundPeter, open the Device tab and tap **Record the EQ from PeatsAudio** (or the
-button on the Sound tab). It walks you through it:
+### Record from PeatsAudio
+
+This gathers everything in one go: every setting the official PeatsAudio app reads from
+your earbuds (which shows what SoundPEATS supports on your model), the equalizer curves
+and presets it sends, and SoundPeter's own device report. It takes about ten minutes on
+your phone, with no computer.
+
+In SoundPeter, open the Device tab and tap **Record from PeatsAudio** (or the button on the
+Sound tab). It walks you through it:
 
 1. Turn on Developer options and set **Bluetooth HCI snoop log** to **Enabled**.
-2. In PeatsAudio, tap SOUNDPEATS Classic and then every preset once.
+2. In PeatsAudio, open each screen once without changing anything, run its fit test if it
+   has one, then tap SOUNDPEATS Classic and every other EQ preset once.
 3. Take a bug report from Developer options and share it to SoundPeter.
-4. Name each curve SoundPeter found, and tap **Send on GitHub**.
+4. Name each EQ curve SoundPeter found, and tap **Send on GitHub**.
 
-SoundPeter reads the bug report only on your phone and keeps nothing but the EQ sent to
-your earbuds. The report you send has no names or addresses. Afterwards, turn the snoop
-log off and delete the bug report.
+SoundPeter reads the bug report only on your phone and keeps nothing but the messages
+exchanged with your SoundPEATS earbuds. The report you send has no names or addresses.
+Afterwards, turn the snoop log off and delete the bug report.
 
-## Help by probing your earbuds
+### Copy device report
 
-The app's Device tab has **Copy device report**, which gives the same information as the
-probe without a computer. To use the probe instead, you need a PC with Bluetooth and
-Python 3.9 or newer.
+Quicker, and no PeatsAudio needed, but no equalizer. Connect the earbuds in SoundPeter,
+tap **Copy device report** on the Device tab, and paste it into a new issue. It lists every
+setting SoundPeter can read and what the earbuds answered.
+
+### Probe from a PC
+
+The same information as Copy device report, from a PC with Bluetooth and Python 3.9 or
+newer.
 
 1. Pair the earbuds with the PC.
 2. Close PeatsAudio on your phone. Only one client can hold the connection.

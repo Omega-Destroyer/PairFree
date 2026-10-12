@@ -193,11 +193,13 @@ Copy device report puts the same information as `tools/probe.py` on the clipboar
 so anyone can contribute a new model from their phone. Factory reset asks for
 confirmation every time.
 
-### EQ capture
+### Record from PeatsAudio
 
 The earbuds cannot report their EQ, and SoundPEATS' server is closed, so a model's base
-curve and presets can only be learnt from what PeatsAudio sends. This screen lets anyone
-record that from the phone alone, once per model, with no computer. It opens from the
+curve and presets can only be learnt from what PeatsAudio sends. Which features the
+official app offers on a model is also on that server; PeatsAudio's reads show it. This
+screen lets anyone record both from the phone alone, once per model, with no computer, and
+adds SoundPeter's own device report when it is connected to the same model. It opens from the
 Device tab, from the Sound tab when a model has no EQ yet ("If you want to change EQ
 settings, you can contribute to the project" and a button), and when a bug report is
 shared to the app.
@@ -210,20 +212,28 @@ shared to the app.
   picker, where Android lists bug reports under Bug reports in the menu.
 
 - The steps: turn on Developer options, set Bluetooth HCI snoop log to Enabled and
-  restart Bluetooth, tap SOUNDPEATS Classic and then every preset in PeatsAudio, take a
-  bug report, share it to SoundPeter, then turn the log off and delete the bug report.
+  restart Bluetooth, open each PeatsAudio screen once without changing anything and run
+  its fit test, tap SOUNDPEATS Classic and then every preset, take a bug report, share it
+  to SoundPeter, then turn the log off and delete the bug report.
 - SoundPeter reads the bug report on the phone (`capture/BugReport.kt`), only the files
   named like the Bluetooth snoop log, and keeps only SoundPEATS control frames
-  (`SnoopScanner`, `EqCapture` in `:protocol`). The file itself is never stored.
+  (`SnoopScanner`, `EqCapture`, `LoggedReads` in `:protocol`). The file itself is never
+  stored.
+- It lists each pair of earbuds in the log with how many settings PeatsAudio read, and says
+  whether SoundPeter's own device report goes in (it does when SoundPeter is connected to
+  earbuds with the same firmware code).
 - It lists every complete EQ write it found, with its time and a small curve, and marks
-  repeats. The user names each one from the preset names SoundPeter knows, types another,
+  repeats. A recording with no EQ curves can still be sent for its settings. The user names each one from the preset names SoundPeter knows, types another,
   or leaves it out. The firmware reply in the log identifies the model.
 - Send on GitHub copies the report and opens a new issue with it filled in (in a code
   block), through the browser: the app still has no internet permission. A report too
   long for a link is pasted instead. Share sends the same text anywhere else.
-- The report holds the model, app and Android version, phone maker and model, and every
-  named write's decoded bands and exact bytes. No names or addresses.
-- A maintainer turns it into the model's `eq` entry and test vectors with
+- The report holds the model, app and Android version, phone maker and model; what
+  PeatsAudio read from each pair of earbuds, in device report lines; SoundPeter's own
+  device report; and every named write's decoded bands and exact bytes. No names or
+  addresses.
+- A maintainer saves it under `data/reports/`, where `tools/gen_models_table.py` reads
+  its settings, and turns its equalizer into the model's `eq` entry and test vectors with
   `tools/import_eq_capture.py`, which checks every value against the bytes.
 
 ## Behaviour
@@ -284,5 +294,5 @@ Planned, not yet designed:
   marking on a real pair.
 - Widget, tile and notification designs.
 - The EQ of every model other than the H3 and Air5 Pro+, until someone records it
-  (EQ capture above).
+  (Record from PeatsAudio above).
 - Whether a hearing-test profile is worth building. It can be done offline.

@@ -84,6 +84,42 @@ class EqCaptureTest {
         for (p in reset) assertTrue("   $p" in lines, p)
     }
 
+    @Test
+    fun readsAndRepliesComeOutPerPairOfEarbuds() {
+        val air5 = "S2_20250816_V1.2"
+        val log = SnoopLog()
+        // The H3 on connection 3: the firmware read first, as PeatsAudio does.
+        log.acl(t0, false, 3, spp(0x0309, ""))
+        log.acl(t0 + 10_000, true, 3, spp(0x8309, "00" + firmware.encodeToByteArray().hex(), version = 3))
+        log.acl(t0 + 20_000, false, 3, spp(0x0310, ""))
+        log.acl(t0 + 30_000, true, 3, spp(0x8310, "0001", version = 3))
+        log.acl(t0 + 40_000, false, 3, spp(0x0350, ""))                         // no reply: the H3 has no water drain
+        log.acl(t0 + 50_000, false, 3, spp(0x0311, "00"))                       // a SET is not a read
+        log.acl(t0 + 60_000, true, 3, spp(0x8314, "0001", version = 3))        // unasked
+        log.acl(t0 + 70_000, true, 3, spp(0x0101, "000d010c010901050108070103060207010005", Wire.VENDOR_EQ, version = 3))
+        // Later, the Air5 Pro+ on connection 5.
+        log.acl(t0 + 5_000_000, false, 5, spp(0x0309, ""))
+        log.acl(t0 + 5_010_000, true, 5, spp(0x8309, "00" + air5.encodeToByteArray().hex(), version = 3))
+        log.acl(t0 + 5_020_000, false, 5, spp(0x0350, ""))
+        log.acl(t0 + 5_030_000, true, 5, spp(0x8350, "0000", version = 3))
+
+        val pairs = LoggedReads.of(SnoopScanner().apply { feed(log.bytes()) }.frames())
+        assertEquals(listOf(firmware, air5), pairs.map { it.firmware?.text })
+
+        val h3 = pairs[0]
+        assertEquals(listOf(Command.FIRMWARE_VERSION, Command.ANC_MODE, Command.MULTIPOINT, Command.WATER_DRAIN), h3.replies.keys.toList())
+        assertNull(h3.replies.getValue(Command.WATER_DRAIN))
+        assertTrue(Gaia.FIT_FEATURE in h3.gaiaFeatures!!)
+        val lines = h3.lines()
+        assertEquals(DeviceReport.line(Command.ANC_MODE, "0001".hexBytes()), lines[1])
+        assertTrue(lines.any { it.startsWith("water_drain") && it.endsWith("no reply") })
+        assertEquals("gaia_features        0001  00 01 05 06 07 08 09 0c 0d", lines.last())
+
+        val second = pairs[1]
+        assertEquals(listOf(Command.FIRMWARE_VERSION, Command.WATER_DRAIN), second.replies.keys.toList())
+        assertNull(second.gaiaFeatures)
+    }
+
     /** Builds a btsnoop file (H4 datalink) the way Android writes one. */
     private class SnoopLog {
         private val out = ByteArrayOutputStream().apply {

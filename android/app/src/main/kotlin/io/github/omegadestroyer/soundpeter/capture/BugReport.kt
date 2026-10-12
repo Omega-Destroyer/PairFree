@@ -3,6 +3,7 @@ package io.github.omegadestroyer.soundpeter.capture
 import android.content.ContentResolver
 import android.net.Uri
 import io.github.omegadestroyer.soundpeter.protocol.EqCapture
+import io.github.omegadestroyer.soundpeter.protocol.LoggedReads
 import io.github.omegadestroyer.soundpeter.protocol.SnoopScanner
 import java.io.BufferedInputStream
 import java.io.IOException
@@ -10,10 +11,13 @@ import java.io.InputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.ZipInputStream
 
-/** What a shared file held, for the EQ capture. */
+/** What a shared file held, for Record from PeatsAudio. */
 sealed interface CaptureResult {
-    /** The EQ curves sent to SoundPEATS earbuds, oldest first. Empty when the log has none. */
-    data class Found(val writes: List<EqCapture.Write>) : CaptureResult
+    /**
+     * The EQ curves sent to SoundPEATS earbuds, oldest first, and the settings read from each
+     * pair of earbuds in the log. Either can be empty.
+     */
+    data class Found(val writes: List<EqCapture.Write>, val reads: List<LoggedReads.Earbuds>) : CaptureResult
 
     /** A bug report with no Bluetooth log in it: the snoop log was off. */
     data object NoBluetoothLog : CaptureResult
@@ -55,7 +59,7 @@ object BugReport {
             else -> return CaptureResult.NotABugReport
         }
         if (logs == 0) return CaptureResult.NoBluetoothLog
-        return CaptureResult.Found(EqCapture.writes(frames))
+        return CaptureResult.Found(EqCapture.writes(frames), LoggedReads.of(frames))
     }
 
     /** Reads every snoop log in [zip], and in a zip inside it. Returns how many were logs. */

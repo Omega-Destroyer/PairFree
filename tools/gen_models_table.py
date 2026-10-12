@@ -95,7 +95,7 @@ def rows(devices, commands):
             cells.append(f'<td colspan="{span}">Not supported: a different protocol (docs/PROTOCOL.md section 10)</td>')
         else:
             if not answered:
-                cells.append(f'<td colspan="{span - 1}"><a href="#help-by-probing-your-earbuds">Needs a device report</a></td>')
+                cells.append(f'<td colspan="{span - 1}"><a href="#help-add-your-model">Needs a device report</a></td>')
             else:
                 confirmed = set(m.get("confirmed", []))
                 for _, ids in FEATURES:
@@ -104,11 +104,11 @@ def rows(devices, commands):
                 if m["family"] != "QUALCOMM":
                     fit = NO
                 elif gaia is None:
-                    fit = '<a href="#help-by-probing-your-earbuds">Needs a new report</a>'
+                    fit = '<a href="#help-add-your-model">Needs a new report</a>'
                 else:
                     fit = YES if GAIA_FIT_FEATURE in gaia else NO
                 cells.append(f"<td>{fit}</td>")
-            eq = YES if m.get("eq") else '<a href="#help-add-your-models-equalizer">Needs a recording</a>'
+            eq = YES if m.get("eq") else '<a href="#record-from-peatsaudio">Needs a recording</a>'
             cells.append(f"<td>{eq}</td>")
         out.append("<tr>" + "".join(cells) + "</tr>")
     return out

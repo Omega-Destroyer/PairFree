@@ -1,7 +1,7 @@
 # Device reports
 
-Raw output from real earbuds: `tools/probe.py`, SoundPeter's device report or EQ capture
-report, or earbud frames taken from a phone's Bluetooth log. The README's
+Raw output from real earbuds: `tools/probe.py`, SoundPeter's device report or its Record
+from PeatsAudio report, or earbud frames taken from a phone's Bluetooth log. The README's
 [Tested earbuds](../../README.md#tested-earbuds) table is built from these.
 
 A probe or device report is one file per model and firmware version, named

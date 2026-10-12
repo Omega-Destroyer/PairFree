@@ -2,9 +2,9 @@
 
 usage: python tools/import_eq_capture.py report.txt > eq.json
 
-The report is the text the app's "Record the EQ from PeatsAudio" screen produces (paste it
-from the GitHub issue into a file). Each named curve lists the exact payload of every band
-write. This decodes them, checks every value re-encodes to the same bytes, and prints:
+The report is the text the app's "Record from PeatsAudio" screen produces (paste it from the
+GitHub issue into a file). Its settings sections are for tools/gen_models_table.py; this reads
+only the equalizer section, where each named curve lists the exact payload of every band write. This decodes them, checks every value re-encodes to the same bytes, and prints:
 
   - "firmware": the firmware version in the report, if any
   - "eq": the model's eq entry for data/devices.json. The base curve is the write named

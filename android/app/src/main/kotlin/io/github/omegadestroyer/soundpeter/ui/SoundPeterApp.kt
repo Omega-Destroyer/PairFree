@@ -50,6 +50,7 @@ fun SoundPeterApp(vm: AppViewModel = viewModel()) {
     val hasPermission by vm.hasPermission.collectAsStateWithLifecycle()
     val status by vm.connection.status.collectAsStateWithLifecycle()
     val capture by vm.capture.collectAsStateWithLifecycle()
+    val earbuds by vm.connection.state.collectAsStateWithLifecycle()
     Box(
         Modifier
             .fillMaxSize()
@@ -60,7 +61,7 @@ fun SoundPeterApp(vm: AppViewModel = viewModel()) {
         // One call site for both, so the open tab survives a reconnect.
         val shown = (current as? LinkStatus.Connected)?.device ?: (current as? LinkStatus.Reconnecting)?.device
         when {
-            capture != Capture.Closed -> CaptureScreen(capture, vm)
+            capture != Capture.Closed -> CaptureScreen(capture, vm, earbuds.firmware?.code.takeIf { status is LinkStatus.Connected })
             !hasPermission -> PermissionScreen(vm::onPermissionResult)
             shown != null -> ConnectedScreen(vm, shown, live = current is LinkStatus.Connected)
             else -> NotConnectedScreen(vm, current)

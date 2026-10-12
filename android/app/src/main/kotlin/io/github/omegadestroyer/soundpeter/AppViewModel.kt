@@ -26,6 +26,7 @@ import io.github.omegadestroyer.soundpeter.eq.Equalizer
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.DeviceReport
 import io.github.omegadestroyer.soundpeter.protocol.EqCapture
+import io.github.omegadestroyer.soundpeter.protocol.FirmwareVersion
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.ui.CaptureActions
 import io.github.omegadestroyer.soundpeter.ui.EarbudsActions
@@ -153,8 +154,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             DeviceReport.lines(connection.lastReplies).forEach(::appendLine)
             connection.state.value.gaiaFeatures?.let { appendLine(DeviceReport.gaiaLine(it)) }
             appendLine()
-            appendLine("This is enough to add this model's controls. For its equalizer, use")
-            appendLine("\"Record the EQ from PeatsAudio\" on SoundPeter's Device tab as well.")
+            appendLine("This is enough to add this model's controls. For its equalizer too, use")
+            appendLine("\"Record from PeatsAudio\" on SoundPeter's Device tab instead.")
         }
     }
 
@@ -211,26 +212,42 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val named = done.named
         val app = getApplication<Application>()
         val version = app.packageManager.getPackageInfo(app.packageName, 0).versionName
-        val first = named.firstOrNull()?.second?.timeMicros
+        val first = (named.map { it.second.timeMicros }).minOrNull()
         return buildString {
-            appendLine("SoundPeter EQ capture")
+            appendLine("SoundPeter recording from PeatsAudio")
             appendLine("Paste this whole report into a new issue at")
-            appendLine("$ISSUES so this model's equalizer and")
-            appendLine("presets can be added. It holds no names, addresses or other personal data.")
+            appendLine("$ISSUES so this model's controls and")
+            appendLine("equalizer can be added. It holds no names, addresses or other personal data.")
             appendLine()
             appendLine("Model:     ${captureModel(done)}")
             appendLine("App:       SoundPeter $version")
             appendLine("Phone:     Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}), ${Build.MANUFACTURER} ${Build.MODEL}")
             // Snoop log times are the phone's local time (SnoopScanner.Found).
             if (first != null) appendLine("Recorded:  ${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(Instant.ofEpochMilli(first / 1000).atOffset(ZoneOffset.UTC))}, phone's local time")
-            EqCapture.reportLines(named).forEach(::appendLine)
+            // Each line: setting, its read command, what the earbuds answered and the raw bytes,
+            // or "no reply" (tools/gen_models_table.py reads these).
+            for (earbuds in done.reads) {
+                appendLine()
+                appendLine("---- What PeatsAudio read from ${earbudsName(earbuds.firmware)} (from the Bluetooth log) ----")
+                earbuds.lines().forEach(::appendLine)
+            }
+            capturedDeviceReport(done)?.let { lines ->
+                appendLine()
+                appendLine("---- What SoundPeter reads on connect from ${earbudsName(connection.state.value.firmware)} ----")
+                lines.forEach(::appendLine)
+            }
+            if (named.isNotEmpty()) {
+                appendLine()
+                appendLine("---- Equalizer: the curves PeatsAudio sent ----")
+                EqCapture.reportLines(named).forEach(::appendLine)
+            }
         }
     }
 
     /** A new-issue page with the report filled in, or with a request to paste it when it is too long for a link. */
     override fun captureIssueUri(report: String): Uri {
         val done = _capture.value as? Capture.Done
-        val title = "EQ capture: ${done?.let(::captureModel) ?: "unknown model"}"
+        val title = "Recording: ${done?.let(::captureModel) ?: "unknown model"}"
         fun link(body: String) = "$ISSUES/new".toUri().buildUpon()
             .appendQueryParameter("title", title)
             .appendQueryParameter("body", body)
@@ -239,11 +256,25 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         return link("```\n$report```\n").takeIf { it.toString().length <= MAX_LINK } ?: link(PASTE_HERE)
     }
 
-    private fun captureModel(done: Capture.Done): String {
-        val firmware = (done.named.map { it.second } + done.writes).firstNotNullOfOrNull { it.firmware }
-            ?: return "unknown (the firmware reply is not in the log)"
-        val name = Models.find(firmware.code, null)?.names?.firstOrNull() ?: "not in SoundPeter's table yet"
+    private fun captureModel(done: Capture.Done): String =
+        done.firmware?.let { earbudsName(it) } ?: "unknown (the firmware reply is not in the log)"
+
+    private fun earbudsName(firmware: FirmwareVersion?): String {
+        firmware ?: return "earbuds with no firmware reply in the log"
+        val name = Models.find(firmware.code, null)?.names?.firstOrNull() ?: "a model not in SoundPeter's table yet"
         return "$name, firmware ${firmware.text}"
+    }
+
+    /**
+     * SoundPeter's own device report, when it is connected to earbuds of a model in the
+     * recording: every read it knows, which PeatsAudio may not send.
+     */
+    private fun capturedDeviceReport(done: Capture.Done): List<String>? {
+        if (connection.status.value !is LinkStatus.Connected) return null
+        val code = connection.state.value.firmware?.code ?: return null
+        val inRecording = (done.reads.map { it.firmware } + done.firmware).any { it?.code == code }
+        if (!inRecording) return null
+        return DeviceReport.lines(connection.lastReplies) + listOfNotNull(connection.state.value.gaiaFeatures?.let(DeviceReport::gaiaLine))
     }
 
     @SuppressLint("MissingPermission") // callers check the permission first

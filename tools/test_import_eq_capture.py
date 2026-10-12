@@ -48,6 +48,24 @@ class ImportEqCaptureTest(unittest.TestCase):
         flat = "```\n" + "\n".join(line.strip() for line in text.splitlines()) + "\n```\n"
         self.assertEqual(imp.build(flat)["eq"], imp.build(text)["eq"])
 
+    def test_report_with_the_settings_sections(self):
+        # A recording also lists the settings PeatsAudio and SoundPeter read, before the curves.
+        settings = "\n".join([
+            "---- What PeatsAudio read from SOUNDPEATS H3, firmware S5_20250605_V0.4.9 (from the Bluetooth log) ----",
+            "firmware_version     0309  'S5_20250605_V0.4.9'                     raw=00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39",
+            "anc_mode             0310  1                                        raw=00 01",
+            "water_drain          0350  no reply",
+            "gaia_features        0001  00 01 05 06 07 08 09 0c 0d",
+            "",
+            "---- Equalizer: the curves PeatsAudio sent ----",
+            "",
+        ])
+        text = report("S5", self.vectors, "S5_20250605_V0.4.9")
+        head, body = text.split("Firmware:", 1)
+        mixed = head + settings + "Firmware:" + body
+        self.assertEqual(imp.build(mixed)["eq"], imp.build(text)["eq"])
+        self.assertEqual(imp.build(mixed)["firmware"], "S5_20250605_V0.4.9")
+
     def test_without_classic_says_the_base_is_missing(self):
         text = report("S5", self.vectors, "S5_20250605_V0.4.9").replace("SOUNDPEATS Classic", "Mystery")
         out = imp.build(text)

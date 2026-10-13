@@ -6,3 +6,7 @@ gradlew text eol=lf
 *.bat text eol=crlf
 
 *.jar binary
+
+# App assets go into the APK byte for byte. Keep them exactly as committed, so a build
+# on Windows matches F-Droid's build on Linux (reproducible builds).
+android/app/src/main/assets/** -text

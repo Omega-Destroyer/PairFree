@@ -162,6 +162,12 @@ reports from other people.
 - Gradle 9 refuses to build from a folder Java reports as not writable, which happens
   on some network shares even when writing works. If the repo lives on such a share,
   build from a copy on a local disk.
+- Releases are reproducible. F-Droid builds each `vX.Y.Z` tag itself and publishes the APK
+  from the GitHub release only if the two are identical apart from the signature. Bump
+  `versionCode` and `versionName`, tag, build `:app:assembleRelease` from a fresh clone of
+  the tag (never from a copy with local edits), and upload it to the release as
+  `SoundPeter-X.Y.Z.apk`. Files under `android/app/src/main/assets/` go into the APK byte
+  for byte; `.gitattributes` keeps them as committed, so a Windows checkout matches F-Droid's.
 - Control runs over classic Bluetooth serial (RFCOMM) on the standard SPP UUID
   `00001101-0000-1000-8000-00805F9B34FB`. The earbuds must already be paired and
   connected for audio. There is no handshake.

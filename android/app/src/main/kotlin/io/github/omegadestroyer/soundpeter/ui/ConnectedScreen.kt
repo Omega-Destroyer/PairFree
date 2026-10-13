@@ -185,7 +185,7 @@ private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) {
     }
 }
 
-/** The three noise modes, in the order docs/DESIGN.md gives. Their numbers come from data/commands.json. */
+/** The three noise modes, in the order docs/DESIGN.md gives. Their numbers come from data/soundpeats/commands.json. */
 private enum class NoiseMode(val key: String, @StringRes val title: Int) {
     OFF("off", R.string.anc_off),
     CANCELLING("anc", R.string.anc_cancelling),

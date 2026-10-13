@@ -21,9 +21,9 @@ kotlin {
     }
 }
 
-val dataDir: Directory = rootProject.layout.projectDirectory.dir("../data")
+val dataDir: Directory = rootProject.layout.projectDirectory.dir("../data/soundpeats")
 
-/** Writes Kotlin constants and tables from data/commands.json and data/devices.json, so no number is retyped. */
+/** Writes Kotlin constants and tables from data/soundpeats/commands.json and data/soundpeats/devices.json, so no number is retyped. */
 abstract class GenerateTables : DefaultTask() {
     @get:InputFile
     @get:PathSensitive(PathSensitivity.NONE)
@@ -66,7 +66,7 @@ abstract class GenerateTables : DefaultTask() {
         val kinds = commands.map { it.getValue("kind") as String }.distinct()
 
         val out = StringBuilder()
-        out.appendLine("// Generated from data/commands.json by the generateTables task. Do not edit.")
+        out.appendLine("// Generated from data/soundpeats/commands.json by the generateTables task. Do not edit.")
         out.appendLine("package ${packageName.get()}")
         out.appendLine()
         out.appendLine("/** Fixed values of the frame format and the transports. */")
@@ -88,16 +88,16 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine("/** How a command's value is encoded. */")
         out.appendLine("public enum class Kind { ${kinds.joinToString(", ") { it.uppercase() }} }")
         out.appendLine()
-        out.appendLine("/** Every command in data/commands.json. [get] or [set] is null when there is none. */")
+        out.appendLine("/** Every command in data/soundpeats/commands.json. [get] or [set] is null when there is none. */")
         out.appendLine("public enum class Command(")
         out.appendLine("    public val id: String,")
         out.appendLine("    public val get: Int?,")
         out.appendLine("    public val set: Int?,")
         out.appendLine("    public val kind: Kind,")
         out.appendLine("    public val labels: Map<Int, String>,")
-        out.appendLine("    /** False when data/commands.json marks the command do-not-probe: never read it unasked. */")
+        out.appendLine("    /** False when data/soundpeats/commands.json marks the command do-not-probe: never read it unasked. */")
         out.appendLine("    public val probe: Boolean,")
-        out.appendLine("    /** True when a model must list the command under confirmed in data/devices.json for the app to offer it. */")
+        out.appendLine("    /** True when a model must list the command under confirmed in data/soundpeats/devices.json for the app to offer it. */")
         out.appendLine("    public val perModel: Boolean,")
         out.appendLine(") {")
         for (c in commands) {
@@ -115,7 +115,7 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine("    public val ACTIONS: Map<Int, String> = ${intMap(keys["actions"])}")
         out.appendLine("}")
         out.appendLine()
-        out.appendLine("/** Qualcomm GAIA v3 on [VENDOR], for QUALCOMM models only (docs/PROTOCOL.md section 11). */")
+        out.appendLine("/** Qualcomm GAIA v3 on [VENDOR], for QUALCOMM models only (docs/soundpeats/PROTOCOL.md section 11). */")
         out.appendLine("public object Gaia {")
         out.appendLine("    public const val VENDOR: Int = ${hex(gaia["vendor"])}")
         out.appendLine("    /** Added to a command's number in the earbuds' response to it. */")
@@ -140,7 +140,7 @@ abstract class GenerateTables : DefaultTask() {
         @Suppress("UNCHECKED_CAST")
         val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
         out.appendLine()
-        out.appendLine("/** Every model in data/devices.json. Use [Models] to look one up. */")
+        out.appendLine("/** Every model in data/soundpeats/devices.json. Use [Models] to look one up. */")
         out.appendLine("internal val MODEL_TABLE: List<Model> = listOf(")
         fun num(v: Any?) = (v as Number).toDouble().toString()
         for (d in devices) {

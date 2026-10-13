@@ -9,7 +9,7 @@ public data class EqBand(val hz: Int, val q: Double, val gainDb: Double)
 public data class EqPreset(val name: String, val bands: List<EqBand>)
 
 /**
- * The EQ a model expects, as the official app writes it (docs/PROTOCOL.md section 4):
+ * The EQ a model expects, as the official app writes it (docs/soundpeats/PROTOCOL.md section 4):
  * every band in every write and the same master gain on each. A user curve is the base
  * curve [bands] plus the user's gain per band; with no user gains it is the base curve
  * alone, which is the model's stock tuning. [presets] are complete curves of their own.

@@ -6,13 +6,13 @@ import io.github.omegadestroyer.soundpeter.R
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.CustomKeys
 
-// Words for the values in data/commands.json. The numbers come from the generated
+// Words for the values in data/soundpeats/commands.json. The numbers come from the generated
 // tables; only their names are matched here.
 
 /** The value of [name] in [command]'s table, for example `anc` in ANC mode. */
 fun numberOf(command: Command, name: String): Int = command.labels.entries.first { it.value == name }.key
 
-/** A noise-cancelling scene. The official app shows `normal` (0x11) with its adaptive label (docs/PROTOCOL.md 3.1). */
+/** A noise-cancelling scene. The official app shows `normal` (0x11) with its adaptive label (docs/soundpeats/PROTOCOL.md 3.1). */
 @Composable
 fun sceneName(code: Int): String = when (val name = Command.ANC_LEVEL.labels[code]) {
     "normal", "adaptive" -> stringResource(R.string.scene_adaptive)

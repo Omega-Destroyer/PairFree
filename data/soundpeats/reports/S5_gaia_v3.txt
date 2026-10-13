@@ -9,7 +9,7 @@ Scripts:  one-off scratch scripts using tools/probe.py's build() and parse_strea
 Purpose:  find out whether anything on the earbuds can report the EQ that SoundPEATS' 0E01
           writes set. Answer: no (round 3).
 
-Frames are FF 04 00 LEN VENDOR(2) COMMAND(2) PAYLOAD as in docs/PROTOCOL.md section 2.
+Frames are FF 04 00 LEN VENDOR(2) COMMAND(2) PAYLOAD as in docs/soundpeats/PROTOCOL.md section 2.
 "sent" lists the whole frame; "reply" lists vendor, command and payload.
 
 
@@ -44,7 +44,7 @@ reply  001D 0B04 05
 ---- Round 3: feature 05 reads around two SoundPEATS EQ writes ----
 
 The two writes are the S5 "Reset: the base curve alone" case of eq_layout and the S5
-"Bass Boost" case of eq_preset in data/test_vectors.json (10 x 0E01 each, 50 ms apart).
+"Bass Boost" case of eq_preset in data/soundpeats/test_vectors.json (10 x 0E01 each, 50 ms apart).
 The lines counting the 0F81 acknowledgements were lost to an output filter.
 
 check  000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39

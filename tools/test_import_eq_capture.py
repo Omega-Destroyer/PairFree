@@ -5,7 +5,7 @@ from pathlib import Path
 
 import import_eq_capture as imp
 
-DATA = Path(__file__).resolve().parent.parent / "data"
+DATA = Path(__file__).resolve().parent.parent / "data" / "soundpeats"
 
 
 def report(code, vectors, firmware):

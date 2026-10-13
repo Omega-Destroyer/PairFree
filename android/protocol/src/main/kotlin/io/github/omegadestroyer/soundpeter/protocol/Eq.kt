@@ -3,11 +3,11 @@ package io.github.omegadestroyer.soundpeter.protocol
 import kotlin.math.abs
 
 /**
- * EQ band payloads (docs/PROTOCOL.md section 4). Send one frame per band with vendor
+ * EQ band payloads (docs/soundpeats/PROTOCOL.md section 4). Send one frame per band with vendor
  * [Wire.VENDOR_EQ] and command [Wire.EQ_COMMAND_QUALCOMM] or [Wire.EQ_COMMAND_OTHER].
  *
  * Each value is scaled and truncated toward zero, as tools/probe.py does;
- * data/test_vectors.json pins the result.
+ * data/soundpeats/test_vectors.json pins the result.
  */
 public object Eq {
     /** Payload for command `0E 01`: one byte with the band count in the high nibble and the index (from 1) in the low. */

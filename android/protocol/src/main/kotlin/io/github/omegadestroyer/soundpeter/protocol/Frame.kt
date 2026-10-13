@@ -2,7 +2,7 @@ package io.github.omegadestroyer.soundpeter.protocol
 
 /**
  * One frame: `FF 04 00 LEN VENDOR(2) COMMAND(2) PAYLOAD`. Big-endian, no checksum.
- * See docs/PROTOCOL.md section 2.
+ * See docs/soundpeats/PROTOCOL.md section 2.
  */
 public class Frame(
     public val vendor: Int,
@@ -42,7 +42,7 @@ public class Frame(
             return out
         }
 
-        /** Qualcomm over BLE: the frame without SOF, version, flags and length (docs/PROTOCOL.md section 6). */
+        /** Qualcomm over BLE: the frame without SOF, version, flags and length (docs/soundpeats/PROTOCOL.md section 6). */
         public fun toBlePacket(frame: ByteArray): ByteArray {
             require(frame.size >= HEADER_SIZE) { "frame too short: ${frame.size} bytes" }
             return frame.copyOfRange(4, frame.size)

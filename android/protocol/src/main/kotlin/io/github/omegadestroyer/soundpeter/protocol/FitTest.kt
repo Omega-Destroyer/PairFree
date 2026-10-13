@@ -1,7 +1,7 @@
 package io.github.omegadestroyer.soundpeter.protocol
 
 /**
- * The result of an ear tip fit test (docs/PROTOCOL.md section 11): one byte per earbud in a
+ * The result of an ear tip fit test (docs/soundpeats/PROTOCOL.md section 11): one byte per earbud in a
  * notification on the GAIA fit feature. The H3 sends `01 01` with both earbuds in the ears
  * (PeatsAudio: a good fit), `02 02` with both on a desk ("Not fit"), and `01 02` with only
  * the left one in.

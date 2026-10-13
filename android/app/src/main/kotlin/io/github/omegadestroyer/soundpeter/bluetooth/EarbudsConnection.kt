@@ -82,7 +82,7 @@ class EarbudsConnection(
         s.launch {
             // Once the channel has been open, a drop is followed by a few retries: the H3
             // restarts its Bluetooth link after an LDAC or two-devices change
-            // (docs/PROTOCOL.md section 11). The last state stays on screen meanwhile.
+            // (docs/soundpeats/PROTOCOL.md section 11). The last state stays on screen meanwhile.
             var everOpen = false
             var retries = 0
             while (true) {
@@ -178,7 +178,7 @@ class EarbudsConnection(
 
     /**
      * Starts the ear tip fit test; the result replaces [EarbudState.fit] about 9 s later.
-     * Unless [keepAnc], noise control goes off first, as the official app does (docs/PROTOCOL.md
+     * Unless [keepAnc], noise control goes off first, as the official app does (docs/soundpeats/PROTOCOL.md
      * section 11), and back to what it was once the result is in. The official app leaves it off.
      */
     fun startFitTest(keepAnc: Boolean) {
@@ -255,7 +255,7 @@ class EarbudsConnection(
     companion object {
         const val BATTERY_POLL_MS = 30_000L
 
-        /** The H3 sends the new state about 2 s after a SET (docs/PROTOCOL.md section 11). */
+        /** The H3 sends the new state about 2 s after a SET (docs/soundpeats/PROTOCOL.md section 11). */
         const val READ_BACK_MS = 3_000L
 
         /** Waits before each try to reopen a channel that closed. The H3 took about 2 s to take one again. */
@@ -276,7 +276,7 @@ class EarbudsConnection(
         /** Longest wait for a fit result before noise control goes back on regardless. */
         const val FIT_WAIT_MS = 20_000L
 
-        /** ANC mode "off" (data/commands.json). */
+        /** ANC mode "off" (data/soundpeats/commands.json). */
         private val ANC_OFF = Command.ANC_MODE.labels.entries.first { it.value == "off" }.key
     }
 }

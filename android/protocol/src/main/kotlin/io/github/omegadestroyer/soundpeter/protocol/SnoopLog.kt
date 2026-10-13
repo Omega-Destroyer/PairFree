@@ -2,7 +2,7 @@ package io.github.omegadestroyer.soundpeter.protocol
 
 /**
  * Reads an Android Bluetooth HCI snoop log (the btsnoop format, found inside a bug report)
- * and keeps only SoundPEATS control frames (docs/PROTOCOL.md section 2) on vendor `00 0A`
+ * and keeps only SoundPEATS control frames (docs/soundpeats/PROTOCOL.md section 2) on vendor `00 0A`
  * or `00 1D`. Everything else in the log is skipped and never kept.
  *
  * Feed the file in chunks of any size with [feed]; a large log never has to fit in memory.

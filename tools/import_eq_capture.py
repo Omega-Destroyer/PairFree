@@ -7,9 +7,9 @@ GitHub issue into a file). Its settings sections are for tools/gen_models_table.
 only the equalizer section, where each named curve lists the exact payload of every band write. This decodes them, checks every value re-encodes to the same bytes, and prints:
 
   - "firmware": the firmware version in the report, if any
-  - "eq": the model's eq entry for data/devices.json. The base curve is the write named
+  - "eq": the model's eq entry for data/soundpeats/devices.json. The base curve is the write named
     SOUNDPEATS Classic, which on every model checked so far is also what Reset sends.
-  - "eq_layout" and "eq_preset": cases for data/test_vectors.json
+  - "eq_layout" and "eq_preset": cases for data/soundpeats/test_vectors.json
 
 It writes nothing. Review the output, then add it to the model's entry by hand. The user
 slider range is not in a capture; it is set to 6 dB, as on every model checked so far.

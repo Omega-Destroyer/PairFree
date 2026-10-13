@@ -3,7 +3,7 @@ package io.github.omegadestroyer.soundpeter.protocol
 /**
  * The lines tools/probe.py prints, built from the replies the app has received, so a
  * report copied from a phone reads the same as one from the probe. A test checks them
- * against data/reports/S5_0.4.9.txt.
+ * against data/soundpeats/reports/S5_0.4.9.txt.
  */
 public object DeviceReport {
     // The probe's short names, so the lines match its output.

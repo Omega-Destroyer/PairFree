@@ -1,5 +1,5 @@
 {
-  "_about": "Language-neutral test vectors. Every implementation should reproduce these byte for byte. The decode cases are replies recorded from a SoundPEATS H3 (firmware S5 0.4.9, data/reports/S5_0.4.9.txt) plus edge cases from docs/PROTOCOL.md. 'reply' is the reply's command number; 'value' is the decoded value: a string, a number, null for unknown (FF), a boolean for a switch, or [a, b] pairs for level and key lists, where a level pair is [code, active]. 'ignored': true means the reply must not change the state. 'eq_layout' cases are complete EQ writes PeatsAudio sent to an H3 (S5) and an Air5 Pro+ (S2) (command 0E01, vendor 001D, one payload per band, in order), captured from the phone's Bluetooth log; building them from the model's 'eq' entry in data/devices.json and the user's gains must give the same bytes. 'eq_preset' cases are the writes for each preset in a model's 'eq.presets', captured the same way; building them from the preset's bands and the layout's master gain must give the same bytes.",
+  "_about": "Language-neutral test vectors. Every implementation should reproduce these byte for byte. The decode cases are replies recorded from a SoundPEATS H3 (firmware S5 0.4.9, data/soundpeats/reports/S5_0.4.9.txt) plus edge cases from docs/soundpeats/PROTOCOL.md. 'reply' is the reply's command number; 'value' is the decoded value: a string, a number, null for unknown (FF), a boolean for a switch, or [a, b] pairs for level and key lists, where a level pair is [code, active]. 'ignored': true means the reply must not change the state. 'eq_layout' cases are complete EQ writes PeatsAudio sent to an H3 (S5) and an Air5 Pro+ (S2) (command 0E01, vendor 001D, one payload per band, in order), captured from the phone's Bluetooth log; building them from the model's 'eq' entry in data/soundpeats/devices.json and the user's gains must give the same bytes. 'eq_preset' cases are the writes for each preset in a model's 'eq.presets', captured the same way; building them from the preset's bands and the layout's master gain must give the same bytes.",
   "build": [
     {
       "name": "get firmware version",
@@ -1231,7 +1231,7 @@
     }
   ],
   "gaia": {
-    "_about": "GAIA v3 on vendor 001D, from the H3 (S5) while PeatsAudio ran the fit test (data/reports/S5_S2_fit_drain_leaudio.txt). PeatsAudio sent its register request with frame version 03, before it set the protocol version to 4; this app sends 04 like every other frame, which the H3 also answers.",
+    "_about": "GAIA v3 on vendor 001D, from the H3 (S5) while PeatsAudio ran the fit test (data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt). PeatsAudio sent its register request with frame version 03, before it set the protocol version to 4; this app sends 04 like every other frame, which the H3 also answers.",
     "requests": [
       {
         "name": "which GAIA features",

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-/** Replays parts of the H3 session in data/reports/S5_0.4.9.txt. */
+/** Replays parts of the H3 session in data/soundpeats/reports/S5_0.4.9.txt. */
 class EarbudStateTest {
     private fun EarbudState.apply(vararg replies: Pair<Command, String>): EarbudState =
         replies.fold(this) { s, (command, payload) -> s.update(Frame.reply(command.get!! or Wire.REPLY_MASK, payload)) }

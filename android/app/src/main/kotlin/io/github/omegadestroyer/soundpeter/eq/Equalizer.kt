@@ -32,7 +32,7 @@ data class EqProfile(val id: String, val name: String, val gains: List<Int>, val
     }
 }
 
-/** What this phone last sent to the earbuds. The earbuds cannot report their EQ (docs/PROTOCOL.md section 4). */
+/** What this phone last sent to the earbuds. The earbuds cannot report their EQ (docs/soundpeats/PROTOCOL.md section 4). */
 data class EqSetting(val profileId: String?, val gains: List<Int>, val preampDb: Int = 0)
 
 /**

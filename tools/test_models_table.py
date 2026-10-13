@@ -1,4 +1,4 @@
-"""The README's table of every model must match data/devices.json and the device reports."""
+"""The README's table of every model must match data/soundpeats/devices.json and the device reports."""
 import unittest
 
 import gen_models_table as gen

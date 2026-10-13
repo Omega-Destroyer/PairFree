@@ -201,7 +201,7 @@ internal fun DeviceScreen(device: Paired, state: EarbudState, model: Model?, act
 }
 
 /**
- * Prompt volume, 0 to 100 as docs/PROTOCOL.md gives it, with a slider and minus and plus.
+ * Prompt volume, 0 to 100 as docs/soundpeats/PROTOCOL.md gives it, with a slider and minus and plus.
  * The value goes out once the user stops changing it.
  */
 @Composable

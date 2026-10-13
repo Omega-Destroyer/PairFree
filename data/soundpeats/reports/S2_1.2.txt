@@ -35,8 +35,8 @@ The owner reset the curve, moved single bands to the ends of their range and by 
 then tapped each preset. Every 0E01 band write was answered with 001D 0F81 01 (330 acks,
 left out below). Decoded: ten bands at 32, 65, 180, 500, 800, 1800, 3600, 5500, 8000 and
 12000 Hz, master gain -12 dB, user range -6 to +6 dB in 1 dB steps. The curves are in
-data/devices.json (S2, "eq") and are the S2 cases of eq_layout and eq_preset in
-data/test_vectors.json.
+data/soundpeats/devices.json (S2, "eq") and are the S2 cases of eq_layout and eq_preset in
+data/soundpeats/test_vectors.json.
 
 # batch 0: opening Customize EQ sends the current (owner's) curve
 12:36:02.451 phone->buds v4 001D 0E01 a1 fd 30 00 60 01 4a 10 00

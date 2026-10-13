@@ -1,11 +1,11 @@
 package io.github.omegadestroyer.soundpeter.protocol
 
 /**
- * One model from data/devices.json.
+ * One model from data/soundpeats/devices.json.
  *
  * @property code the firmware code, the first field of the firmware-version reply.
  * @property names the Bluetooth names the model uses.
- * @property family the chip family (docs/PROTOCOL.md section 5).
+ * @property family the chip family (docs/soundpeats/PROTOCOL.md section 5).
  * @property ldacExcludes features the official app offers only while LDAC is off.
  * @property ldacOrMultipoint LDAC and multipoint are one either-or setting: turning one off turns the other on.
  * @property eq the EQ layout the official app writes to this model, when it is known.
@@ -52,7 +52,7 @@ public object Models {
 
     /**
      * True when the app can control a device shown with this Bluetooth [name]: a SoundPEATS
-     * device on the common protocol (docs/PROTOCOL.md sections 1 to 4).
+     * device on the common protocol (docs/soundpeats/PROTOCOL.md sections 1 to 4).
      *
      * A model in the table qualifies unless it is the QCY-built Capsule3 Pro, whose protocol
      * the app does not speak. A name not in the table qualifies when it starts with a known

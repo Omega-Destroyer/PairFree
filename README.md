@@ -38,7 +38,7 @@ partly confirmed on an H3. Nothing here is ready for daily use.
 
 What SoundPeter can do depends on the model, because each one supports a different set
 of features. These two have been tested on real earbuds. Their reports in
-`data/reports/` hold the raw replies.
+`data/soundpeats/reports/` hold the raw replies.
 
 |                                   | SOUNDPEATS H3              | SOUNDPEATS Air5 Pro+       |
 |-----------------------------------|----------------------------|----------------------------|
@@ -60,7 +60,7 @@ of features. These two have been tested on real earbuds. Their reports in
 | EQ presets                        | ✅ all 12                  | ✅ all 12                  |
 | Ear tip fit test                  | ✅                         | ✅                         |
 | Water drain                       | —                          | ✅ ⁴                       |
-| Reports                           | [S5_0.4.9](data/reports/S5_0.4.9.txt), [S5_gaia_v3](data/reports/S5_gaia_v3.txt), [fit test](data/reports/S5_S2_fit_drain_leaudio.txt) | [S2_1.2](data/reports/S2_1.2.txt), [LDAC](data/reports/air5-pro-plus_ldac.txt), [drain, LE Audio](data/reports/S5_S2_fit_drain_leaudio.txt) |
+| Reports                           | [S5_0.4.9](data/soundpeats/reports/S5_0.4.9.txt), [S5_gaia_v3](data/soundpeats/reports/S5_gaia_v3.txt), [fit test](data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt) | [S2_1.2](data/soundpeats/reports/S2_1.2.txt), [LDAC](data/soundpeats/reports/air5-pro-plus_ldac.txt), [drain, LE Audio](data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt) |
 
 ✅ tried with SoundPeter on these earbuds. — not on this model.
 
@@ -87,7 +87,7 @@ every band is the earbuds' stock sound (SOUNDPEATS Classic in PeatsAudio).
 | Bands, Hz | 50, 160, 350, 800, 1.6k, 2.8k, 4.6k, 8k, 12k, 17k | 32, 65, 180, 500, 800, 1.8k, 3.6k, 5.5k, 8k, 12k |
 | Presets  | SOUNDPEATS Classic, Bass Boost, Bass Reduce, Treble Boost, Electronic, Pop, Classical, Rock, Folk, Book Whisper, HIFI, ACG | The same twelve names, with this model's own curves |
 
-Every band's frequency, Q and gain, and every preset, are in `data/devices.json`. The two
+Every band's frequency, Q and gain, and every preset, are in `data/soundpeats/devices.json`. The two
 models have different curves, so one model's EQ is never used for another.
 
 ### All models
@@ -111,12 +111,12 @@ models have different curves, so one model's EQ is never used for another.
 <tr><td>Air4 Pro</td><td>AIR4PRO-BS588R2E</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Air5</td><td>QCC3091AIR5</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Air5 Lite</td><td>ZKLXAIR5LITE</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
-<tr><td>Air5 Pro+</td><td><a href="data/reports/S2_1.2.txt">S2</a></td><td>Qualcomm</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+<tr><td>Air5 Pro+</td><td><a href="data/soundpeats/reports/S2_1.2.txt">S2</a></td><td>Qualcomm</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
 <tr><td>Air6 Pro</td><td>S27</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Air6 Pro</td><td>S32</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Breezy</td><td>ZKLXBREEZY</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
-<tr><td>Capsule3 Pro</td><td>QCYTS04</td><td>QCY</td><td colspan="16">Not supported: a different protocol (docs/PROTOCOL.md section 10)</td></tr>
-<tr><td>Capsule3 Pro</td><td>SPTS04</td><td>QCY</td><td colspan="16">Not supported: a different protocol (docs/PROTOCOL.md section 10)</td></tr>
+<tr><td>Capsule3 Pro</td><td>QCYTS04</td><td>QCY</td><td colspan="16">Not supported: a different protocol (docs/soundpeats/PROTOCOL.md section 10)</td></tr>
+<tr><td>Capsule3 Pro</td><td>SPTS04</td><td>QCY</td><td colspan="16">Not supported: a different protocol (docs/soundpeats/PROTOCOL.md section 10)</td></tr>
 <tr><td>Chasers</td><td>ZKLXCHASERS</td><td>Bluetrum</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Clear</td><td>JL6973Clear</td><td>Jieli</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>CyberGear</td><td>ATS3019DK12</td><td>Actions</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
@@ -125,7 +125,7 @@ models have different curves, so one model's EQ is never used for another.
 <tr><td>GoFree 2</td><td>NEW-WQ7034MXGoFree2</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>GoFree 2</td><td>WQ7034MXGoFree2</td><td>WUQI</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>H1</td><td>BT5107</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
-<tr><td>H3</td><td><a href="data/reports/S5_0.4.9.txt">S5</a></td><td>Qualcomm</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>H3</td><td><a href="data/soundpeats/reports/S5_0.4.9.txt">S5</a></td><td>Qualcomm</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>Hi Listening</td><td>HILISTENING</td><td>Qualcomm</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Life</td><td>T57</td><td>Smartlink</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
 <tr><td>Life3</td><td>JIELILIFE3</td><td>Jieli</td><td colspan="15"><a href="#help-add-your-model">Needs a device report</a></td><td><a href="#record-from-peatsaudio">Needs a recording</a></td></tr>
@@ -157,7 +157,7 @@ models have different curves, so one model's EQ is never used for another.
 ### Other models
 
 Almost every model the official app supports uses the same protocol, so SoundPeter
-should connect to the other models in `data/devices.json` (all but the Capsule3 Pro)
+should connect to the other models in `data/soundpeats/devices.json` (all but the Capsule3 Pro)
 and to newer ones, and show whatever they answer. None of them has been tested yet. The equalizer appears only once
 someone has recorded the model's curves.
 
@@ -165,7 +165,7 @@ If you have one, see [Help add your model](#help-add-your-model): one recording 
 your phone adds its controls and its equalizer to the table.
 
 The Capsule3 Pro is the exception. It uses a different protocol over Bluetooth LE,
-documented in `docs/PROTOCOL.md` section 10, and SoundPeter does not support it yet.
+documented in `docs/soundpeats/PROTOCOL.md` section 10, and SoundPeter does not support it yet.
 
 ## Known issue: Air5 Pro+ LDAC does not work
 
@@ -176,8 +176,8 @@ same Qualcomm QCC3091 chip, runs LDAC at 96 kHz / 32-bit on the same phone, so t
 like an Air5 Pro+ firmware bug. It has been reported to SoundPEATS. Until it is fixed,
 leave LDAC off on the Air5 Pro+ and you get aptX.
 
-Details and the log evidence: `docs/PROTOCOL.md` section 12 and
-`data/reports/air5-pro-plus_ldac.txt`.
+Details and the log evidence: `docs/soundpeats/PROTOCOL.md` section 12 and
+`data/soundpeats/reports/air5-pro-plus_ldac.txt`.
 
 **Have an Air5 Pro+ and a different phone?** Please help find out whether this is
 Samsung-only:
@@ -193,21 +193,21 @@ Samsung-only:
 
 | Path                      | What it is                                                        |
 |---------------------------|-------------------------------------------------------------------|
-| `docs/PROTOCOL.md`        | The protocol: transport, frames, commands, EQ, chip families, firmware update |
+| `docs/soundpeats/PROTOCOL.md`        | The protocol: transport, frames, commands, EQ, chip families, firmware update |
 | `docs/DESIGN.md`          | The app design: requirements, the Studio look, screens            |
-| `data/commands.json`      | The command table in machine-readable form. Apps load or mirror this. |
-| `data/test_vectors.json`  | Frames every implementation must reproduce byte for byte          |
-| `data/devices.json`       | Known models, their firmware codes, chip families and per-model details |
-| `data/qcy_commands.json`  | The separate protocol for the Capsule3 Pro                        |
-| `data/reports/`           | Device reports and recordings from real earbuds, one file per model and firmware |
+| `data/soundpeats/commands.json`      | The command table in machine-readable form. Apps load or mirror this. |
+| `data/soundpeats/test_vectors.json`  | Frames every implementation must reproduce byte for byte          |
+| `data/soundpeats/devices.json`       | Known models, their firmware codes, chip families and per-model details |
+| `data/soundpeats/qcy_commands.json`  | The separate protocol for the Capsule3 Pro                        |
+| `data/soundpeats/reports/`           | Device reports and recordings from real earbuds, one file per model and firmware |
 | `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
 | `tools/probe.py`          | Read-only probe. Asks the earbuds what they support.              |
 | `tools/import_eq_capture.py` | Turns the equalizer part of a recording from the app into a model's EQ data. |
-| `tools/gen_models_table.py` | Writes the All models table in this README from `data/devices.json` and the reports. |
+| `tools/gen_models_table.py` | Writes the All models table in this README from `data/soundpeats/devices.json` and the reports. |
 | `tools/test_probe.py`     | Tests for the probe and the data files. No hardware needed.       |
-| `assets/devices/`         | Vector drawings of each model's earbud and case, per look         |
+| `assets/devices/soundpeats/`         | Vector drawings of each model's earbud and case, per look         |
 | `tools/gen_device_art.py` | Generates those drawings. Edit the shapes there, not the SVG files. |
-| `tools/device_art/`       | Traced outlines for each model, read by `gen_device_art.py`       |
+| `tools/device_art/soundpeats/`       | Traced outlines for each model, read by `gen_device_art.py`       |
 | `android/`                | The Android app. `protocol/` is the protocol core, `app/` the app. |
 
 ## Help add your model

@@ -3,10 +3,10 @@
 usage: python tools/gen_models_table.py          rewrite the table in README.md
        python tools/gen_models_table.py --check  exit 1 if README.md is out of date
 
-One row per model in data/devices.json. A model's features come from its device reports
+One row per model in data/soundpeats/devices.json. A model's features come from its device reports
 (the "reports" list): lines in the probe's format, `name  GET  ...  raw=..` or `no reply`,
 which tools/probe.py and the app's Copy device report both print. A feature counts when its
-read answered, except commands marked per_model in data/commands.json, which also need the
+read answered, except commands marked per_model in data/soundpeats/commands.json, which also need the
 model's "confirmed" list, as in the app. The fit test needs the GAIA feature list line the
 app's report adds on Qualcomm models. The equalizer needs the model's "eq" entry.
 """
@@ -49,7 +49,7 @@ GAIA_LINE = re.compile(r"^gaia_features +0001  +((?:[0-9a-fA-F]{2} ?)*)\s*$")
 
 
 def load(name):
-    return json.loads((ROOT / "data" / name).read_text(encoding="utf-8"))
+    return json.loads((ROOT / "data" / "soundpeats" / name).read_text(encoding="utf-8"))
 
 
 def read_reports(paths, commands):
@@ -92,7 +92,7 @@ def rows(devices, commands):
                  f"<td>{FAMILIES.get(m['family'], escape(m['family']))}</td>"]
         span = len(FEATURES) + 2
         if m["family"] in UNSUPPORTED_FAMILIES:
-            cells.append(f'<td colspan="{span}">Not supported: a different protocol (docs/PROTOCOL.md section 10)</td>')
+            cells.append(f'<td colspan="{span}">Not supported: a different protocol (docs/soundpeats/PROTOCOL.md section 10)</td>')
         else:
             if not answered:
                 cells.append(f'<td colspan="{span - 1}"><a href="#help-add-your-model">Needs a device report</a></td>')

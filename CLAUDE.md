@@ -24,8 +24,11 @@ and to ask before guessing.
   requirements at the top of that file are fixed.
 
 The spec came from static analysis of PeatsAudio 1.9.45 for Android. The decompiled
-source is not in this repo and will not be. If the spec is silent on something,
-say so and ask. Do not invent protocol details.
+source is not in this repo and will not be. SOUNDPEATS 2.5.3 (`com.thirtydays.headset`),
+PeatsAudio's successor from the same company, was read later: 72 of its 87 commands match
+`commands.json`, and what it added is marked "2.5.3" in the protocol doc and in the
+data. It also downloads per-model features and EQ curves from a server. If the spec is
+silent on something, say so and ask. Do not invent protocol details.
 
 ## What is confirmed and what is not
 

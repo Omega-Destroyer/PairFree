@@ -47,6 +47,6 @@ class DeviceReportTest {
         val lines = DeviceReport.lines(mapOf(Command.BATTERY_LEFT to "0064".hexBytes()))
         assertEquals(Requests.ON_CONNECT.size, lines.size)
         assertEquals("battery_left         0306  100                                      raw=00 64", lines[1])
-        assertEquals("find_right           034B  no reply", lines.last())
+        assertEquals("phone_codec          0377  no reply", lines.last())
     }
 }

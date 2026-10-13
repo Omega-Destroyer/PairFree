@@ -5,6 +5,10 @@ class and field names below are the app's own. Each section says what is read di
 from code and what is inferred. Section 11 lists what has been confirmed on real earbuds;
 everything else is still untested.
 
+A second source, read later: SOUNDPEATS 2.5.3-global (`com.thirtydays.headset`), PeatsAudio's
+successor from the same company; its code is `com.xingkeqi.peats.v2`. Of the 87 commands it
+names, 72 match section 3 exactly, in number and meaning. Facts taken from it say "2.5.3".
+
 ## 1. Transport
 
 - Classic Bluetooth serial (RFCOMM) on the standard SPP UUID
@@ -67,7 +71,8 @@ Example, transparency on: `FF 04 00 01 00 0A 03 11 02`
 
 ## 3. Commands (vendor `00 0A`)
 
-All read from `FunctionEnum`, `FunctionStatusEnum` and `DefaultSppDeviceModel`.
+All read from `FunctionEnum`, `FunctionStatusEnum` and `DefaultSppDeviceModel`, except
+the rows marked 2.5.3, which come from SOUNDPEATS 2.5.3's `FeatureConstant`.
 The table is the same for every model on the common protocol. A model supports a
 subset of it. Which subset comes from SoundPEATS' server (section 8), so for any
 model it has to be probed.
@@ -109,8 +114,30 @@ model it has to be probed.
 | Fit test                 |         | `03 63` | non-Qualcomm; start/stop, result as `83 63`, payloads not known. Qualcomm: section 11 |
 | Reset state              | `03 67` | `03 68` | reply last two bytes == 1 means "was just factory reset"   |
 | Connect classic          | `03 17` |         | Defined in the app with reply `83 17`, never sent by it. May trigger an action. Do not probe. |
+| Earbud colour (2.5.3)    | `03 26` |         | one byte: the colour of this pair                          |
+| LE Audio broadcast (2.5.3) | `03 37` | `03 36` | named, never sent; values not known                      |
+| Hearing protection (2.5.3) | `03 4E` | `03 4F` | volume limit, 50 to 100                                  |
+| Volume balance (2.5.3)   | `03 75` | `03 76` | 0 to 100                                                   |
+| Phone codec (2.5.3)      | `03 77` |         | codec in use: 0 other, 4 LDAC, 9 Opus; see section 12      |
+| Known phones (2.5.3)     | `03 52` |         | see below. Private: do not probe.                          |
+| Connect a phone (2.5.3)  |         | `03 53` | its address (6 bytes), then 1 connect or 0 disconnect      |
+| Send device address (2.5.3) |      | `03 51` | named, never sent                                          |
+| Auracast (2.5.3)         |         | `03 78` | see below                                                  |
 | Reboot                   |         | `03 16` | no payload                                                 |
 | Factory reset            |         | `03 05` | no payload. Do not send casually.                          |
+
+From SOUNDPEATS 2.5.3:
+
+- Known phones (`03 52`): the phones the earbuds have connected to. The reply is an entry
+  number, 1 if that phone is connected now, its Bluetooth address (6 bytes) and its name,
+  ending in a 0 byte. On `S13` a 41-byte reply has one extra leading byte. It holds other
+  people's device names and addresses, so SoundPeter never reads it unasked.
+- Auracast (`03 78`): the earbuds answer with `83 78`. The payload starts with a
+  sub-command (1 scan, 2 join a source, 4 listening control, 5 listening state) and carries
+  fields tagged by type (1 name, 2 broadcast id, 3 features, 4 address, 5 listening state,
+  6 broadcast code). The exact layout was not traced.
+- `03 33` is named `FIND_EARPHONES_DEPRECATED` and used nowhere; whether it is a read or a
+  write is not known. Finding the earbuds uses `03 3A`/`03 3B`.
 
 ### 3.1 ANC levels
 
@@ -235,12 +262,16 @@ to the list compiled into the APK. A client that works offline needs its own tab
 | `ACTIONS`   | Actions           | SPP frames                     | EQ `0E 02`, except `ATS3019DK12` (`0E 01`)     |
 | `SMARTLINK` | Smartlink         | SPP frames                     | EQ `0E 01` on `T57`                            |
 | `AIROHA`    | Airoha            | listed, no models in the APK   |                                                |
+| `SANNUO`    | not known         | listed in 2.5.3 only           | no models known                                |
 | `QCY-WUQI`  | QCY-built (WUQI)  | QCY's own SDK over BLE         | separate protocol, see section 10; Capsule3 Pro only |
 
 `data/devices.json` holds the model table compiled into the app: 45 firmware codes with
 their Bluetooth names and family, plus the transport, EQ command and EQ merge rule
 that follow from the app's code. Newer models are missing from it because the app
 downloads their entries. Their codes look like `S7`, `S21`, `S27`.
+
+SOUNDPEATS 2.5.3 lists the families `FOTA`, `ACTIONS`, `JIELI`, `QUALCOMM`, `WUQI`, `QCY-WUQI`,
+`BES`, `SANNUO` and `UNKNOWN`; it has no `SMARTLINK` or `AIROHA`.
 
 Identify a model by the first field of the firmware-version reply (`03 09`).
 
@@ -276,6 +307,28 @@ Firmware codes the app's code mentions without listing the model:
 | `S22` | unknown            |                        | unknown, probably not Qualcomm             |
 | `S27`, `S32` | Air6 Pro    | model table            | Qualcomm                                   |
 | `S29` | GoFree2S           | constant name          | Bluetrum                                   |
+| `S8`  | Q40 HD (version 1) | constant name, 2.5.3   | unknown                                    |
+| `S14` | Air6 HS            | constant name, 2.5.3   | unknown                                    |
+| `S23` | Q40 HD (version 2) | constant name, 2.5.3   | unknown                                    |
+| `S25` | "CC3 Pro"          | constant name, 2.5.3   | unknown                                    |
+| `S26` | Capsule5 Pro       | constant name, 2.5.3   | unknown                                    |
+| `S31` | "CC3 Pro AI"       | constant name, 2.5.3   | unknown                                    |
+| `S33` | PopClip2 AI        | constant name, 2.5.3   | unknown                                    |
+| `S34` | Jewel Clip         | constant name, 2.5.3   | unknown                                    |
+| `S36` | Air6 Lite          | constant name, 2.5.3   | unknown                                    |
+
+2.5.3 names `S27` Air6 Pro and `S32` Air6 Pro AI. Its demo data (section 8.1) adds model
+list entries for codes that are not in the APK's table:
+
+| Code               | Bluetooth name             | Family     |
+|--------------------|----------------------------|------------|
+| `AIR3DELUXEHSW53D` | SOUNDPEATS Air3 Deluxe HS  | `WUQI`     |
+| `WUQIRFLite2`      | SOUNDPEATS RunFree Lite2   | `WUQI`     |
+| `Q35HD`            | SOUNDPEATS Q35 HD+         | `WUQI`     |
+| `7034MXGoFree2S`   | SOUNDPEATS GoFree 2        | `ACTIONS`  |
+| `SPTS04PRO`        | SOUNDPEATS Capsule3 Pro+   | `QCY-WUQI` |
+
+Every code it shares with the APK's table has the same family there.
 
 "Probably not Qualcomm" is an inference: the app names `S15` and `S22` in a list that
 sits next to a separate check for the Qualcomm family, which would be redundant if
@@ -373,6 +426,16 @@ phone's Bluetooth log for EQ curves (section 11).
 The APK ships no per-model feature list and no EQ curves. Its assets hold only
 animations, hearing-test tones and SDK files.
 
+### 8.1 SOUNDPEATS 2.5.3
+
+PeatsAudio's successor gets the same per-model data from a new server,
+`https://global.isoundpeats.com/api/app/v1/`. Its release build reads everything from there.
+The JSON files in its assets (`products.json`, `support_device.json`, `features.json`,
+`preset_eq.json` and others) feed a demo build only, and they are out of date: the H3 sample
+gives firmware 0.1.8 and EQ `0E 02` at 40 Hz to 12 kHz, while the H3 uses `0E 01` at 50 Hz to
+17 kHz (section 11). So neither app holds per-model features or EQ curves offline. The demo
+model list is the one used in section 5.2.
+
 ## 9. Model-specific behaviour found in code
 
 - Right-battery smoothing: if right reads 5 or more above left and is under 99, the
@@ -382,16 +445,22 @@ animations, hearing-test tones and SDK files.
   plain on/off switch.
 - Fit test: Qualcomm models go through Qualcomm's own GAIA earbud-fit feature, with
   the app switching ANC itself during the test on every model except `S27` and `S32`
-  (Air6 Pro). Other families use `03 63`. The GAIA frames, as captured on the H3, are in
+  (Air6 Pro; 2.5.3 keeps the same exception). Other families use `03 63`. The GAIA frames, as captured on the H3, are in
   section 11, with what it does to ANC.
 - `ZKLXAIR5LITE` (Air5 Lite) and `ZKLXCHASERS` (Chasers): movie mode is only
   available while multipoint is on.
 - `S7` (Clip1) on firmware 0.0.15: the app forces an update prompt.
 - `S7` (Clip1): 60 ms after reading the device state the app sends `03 62` with one
   byte saying whether the phone supports Dolby (0 yes, 1 no).
-- `BS519W2D` (Air3 Deluxe HS) and `AIR3DELUXEHSW53D` (by its name, another Air3
-  Deluxe HS build): the app treats the touch-disable switch as inverted. Whether the
-  inversion applies to the reply, the write or both was not traced.
+- `BS519W2D` (Air3 Deluxe HS) and `AIR3DELUXEHSW53D` (another Air3 Deluxe HS build):
+  the app treats the touch-disable switch as inverted. Whether the inversion applies to
+  the reply, the write or both was not traced.
+- 2.5.3 shows the touch-disable switch inverted on any firmware code that contains, ignoring
+  case, `BT5107`, `BS519W2D`, `Air3Pro`, `BS390RB`, `WQT7033`, `QCC3040`, `BS343RB`,
+  `BT5106-3040`, `T28Pro`, `T28`, `T57`, `ATS3019DK12`, `OPERA03`, `OPERA05`, `HILISTENING`,
+  `FREELITE` or `JULIRUNFREE`. `AIR3DELUXEHSW53D` is no longer in the list. It inverts the
+  state it shows; how it writes the switch was not traced. `touch_disable_inverted` in
+  `data/devices.json` marks these models; SoundPeter does not act on it yet.
 - `S9`: when a feature that conflicts with EQ is turned off, the app does not put
   the previous EQ back. On every other model it does.
 - `S22`: see section 3.1.
@@ -748,6 +817,10 @@ the phone and the earbuds. It is not on the SPP control channel, and no app pick
 active codec; the phone does. The only codec-related controls on the control channel are
 the `ldac` switch (`03 38`/`03 39`) and the LE Audio switch (`03 35`/`03 34`). Toggling
 `ldac` changes which codecs the earbuds advertise over A2DP.
+
+SOUNDPEATS 2.5.3 also reads `03 77`, in which the earbuds report the codec they are playing:
+4 LDAC, 9 Opus, 0 other (the app accepts 0 to 9 and names only these). Not yet tried on the
+H3 or the Air5 Pro+. On the Air5 Pro+ it would show whether the earbuds ever see LDAC.
 
 Tested 2026-10-11 on a Samsung Galaxy S24 FE (SM-S721W, Android 16, One UI 8, build
 `S721WVLSEDZH9`); both earbuds are Qualcomm QCC3091. The phone's negotiation was read from

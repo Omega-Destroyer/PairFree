@@ -63,6 +63,10 @@ COMMANDS = {
     "reset_state":        (0x0367, None,   "1 = was just factory reset"),
     "find_left":          (0x034A, 0x033A, "0 stop, 1 beep"),
     "find_right":         (0x034B, 0x033B, "0 stop, 1 beep"),
+    "earbud_color":       (0x0326, None,   "colour of this pair (SOUNDPEATS 2.5.3)"),
+    "hearing_protection": (0x034E, 0x034F, "volume limit, 50 to 100 (SOUNDPEATS 2.5.3)"),
+    "volume_balance":     (0x0375, 0x0376, "0 to 100 (SOUNDPEATS 2.5.3)"),
+    "phone_codec":        (0x0377, None,   "0 other, 4 LDAC, 9 Opus (SOUNDPEATS 2.5.3)"),
 }
 
 GESTURES = {1: "tap L", 2: "tap R", 3: "double L", 4: "double R",

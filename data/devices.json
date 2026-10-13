@@ -1,5 +1,5 @@
 {
-  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android), plus what the app's code says about each model. Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; the reports are in data/reports/.",
+  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android), plus what the app's code says about each model. Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; the reports are in data/reports/. Names and rules marked SOUNDPEATS 2.5.3 come from that app, PeatsAudio's successor from the same company, which downloads its model data too.",
   "devices": [
     {
       "firmware_code": "ATS3019DK12",
@@ -16,7 +16,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "JULI3025Lite2",
@@ -49,7 +50,8 @@
       "transport": "spp",
       "eq_command": "0E02",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "BT893XPro",
@@ -336,7 +338,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "BS343RB",
@@ -353,7 +356,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "BS390RB",
@@ -371,7 +375,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "BT5106-3040",
@@ -389,7 +394,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "BT5107",
@@ -406,7 +412,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "HILISTENING",
@@ -423,7 +430,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "QCC3040",
@@ -441,7 +449,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "QCC3091AIR5",
@@ -1892,7 +1901,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "T28Pro",
@@ -1909,7 +1919,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "T57",
@@ -1926,7 +1937,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "3007AGOFREE",
@@ -1962,7 +1974,8 @@
       "eq_command": "0E02",
       "eq_command_note": "0E01 when the firmware version is 0.4.5 or lower",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "FREELITE",
@@ -1979,7 +1992,8 @@
       "transport": "spp",
       "eq_command": "0E02",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "NEW-WQ7034MXGoFree2",
@@ -2013,7 +2027,8 @@
       "transport": "spp",
       "eq_command": "0E02",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "OPERA05",
@@ -2030,7 +2045,8 @@
       "transport": "spp",
       "eq_command": "0E02",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "RUNFREEHS",
@@ -2081,7 +2097,8 @@
       "transport": "spp",
       "eq_command": "0E01",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "touch_disable_inverted": true
     },
     {
       "firmware_code": "WUQIAIRLITE",
@@ -2153,7 +2170,7 @@
     }
   ],
   "codes_seen_only_in_branches": {
-    "_about": "Firmware codes the app's code names but its model table does not. name_source says where the name comes from.",
+    "_about": "Firmware codes the official apps name without a model-table entry. name_source says where the name comes from: PeatsAudio 1.9.45 unless it names SOUNDPEATS 2.5.3.",
     "S7": {
       "name": "Clip1",
       "name_source": "log string in the app",
@@ -2186,7 +2203,8 @@
       "family": "FOTA",
       "family_source": "listed with the Bluetrum codes in the LDAC conflict rule",
       "notes": [
-        "Turning LDAC on disables game mode, spatial audio, Dolby, movie mode and dynamic bass. Dynamic EQ stays available."
+        "Turning LDAC on disables game mode, spatial audio, Dolby, movie mode and dynamic bass. Dynamic EQ stays available.",
+        "SOUNDPEATS 2.5.3 names it PopClip2 too, and S33 PopClip2 AI."
       ]
     },
     "S21": {
@@ -2220,11 +2238,96 @@
       ]
     },
     "AIR3DELUXEHSW53D": {
-      "name": null,
-      "family": null,
+      "name": "SOUNDPEATS Air3 Deluxe HS",
+      "family": "WUQI",
       "notes": [
-        "The touch-disable switch is inverted, as on BS519W2D (Air3 Deluxe HS)."
-      ]
+        "The touch-disable switch is inverted, as on BS519W2D (Air3 Deluxe HS).",
+        "SOUNDPEATS 2.5.3 no longer inverts its touch-disable switch."
+      ],
+      "name_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "family_source": "model list in SOUNDPEATS 2.5.3's demo data"
+    },
+    "S8": {
+      "name": "Q40 HD (version 1)",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "S14": {
+      "name": "Air6 HS",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "S23": {
+      "name": "Q40 HD (version 2)",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "S25": {
+      "name": "CC3 Pro",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "S26": {
+      "name": "Capsule5 Pro",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "S31": {
+      "name": "CC3 Pro AI",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "S33": {
+      "name": "PopClip2 AI",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "S34": {
+      "name": "Jewel Clip",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "S36": {
+      "name": "Air6 Lite",
+      "name_source": "constant name in SOUNDPEATS 2.5.3",
+      "family": null,
+      "notes": []
+    },
+    "WUQIRFLite2": {
+      "name": "SOUNDPEATS RunFree Lite2",
+      "name_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "family": "WUQI",
+      "family_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "notes": []
+    },
+    "Q35HD": {
+      "name": "SOUNDPEATS Q35 HD+",
+      "name_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "family": "WUQI",
+      "family_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "notes": []
+    },
+    "7034MXGoFree2S": {
+      "name": "SOUNDPEATS GoFree 2",
+      "name_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "family": "ACTIONS",
+      "family_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "notes": []
+    },
+    "SPTS04PRO": {
+      "name": "SOUNDPEATS Capsule3 Pro+",
+      "name_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "family": "QCY-WUQI",
+      "family_source": "model list in SOUNDPEATS 2.5.3's demo data",
+      "notes": []
     }
   },
   "_fields": {
@@ -2241,7 +2344,8 @@
     "ldac_or_multipoint": "LDAC and multipoint are one either-or setting on the earbuds: turning one off turns the other on. Seen on hardware.",
     "fit_keeps_anc": "The official app leaves the noise mode as it is during the fit test. On every other model it turns ANC off first (docs/PROTOCOL.md sections 9 and 11).",
     "confirmed": "Commands marked per_model in data/commands.json that the official app offers on this model, as the owner saw in PeatsAudio. Without this, the app does not offer them even if the earbuds answer the read.",
-    "eq": "The EQ the official app writes to this model, read from a phone capture: one band per entry with its centre frequency, Q and the base gain the user's gain is added to; the master gain sent with every band; the range of the app's sliders. eq.presets are complete curves sent as they are, with the same master gain."
+    "eq": "The EQ the official app writes to this model, read from a phone capture: one band per entry with its centre frequency, Q and the base gain the user's gain is added to; the master gain sent with every band; the range of the app's sliders. eq.presets are complete curves sent as they are, with the same master gain.",
+    "touch_disable_inverted": "SOUNDPEATS 2.5.3 shows the touch-disable switch the other way round on this model: its firmware code contains one of the 17 codes in that app's list (docs/PROTOCOL.md section 9). Whether the earbuds' reply, the write or both are inverted was not traced, so SoundPeter does not act on it yet."
   },
   "reported_chips": {
     "_about": "Chips named in public reviews. Not from the app and not confirmed on hardware. Use only to guess a family before a probe report exists.",

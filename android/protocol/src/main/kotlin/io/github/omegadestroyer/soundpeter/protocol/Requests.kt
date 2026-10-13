@@ -18,6 +18,7 @@ public object Requests {
         Command.PERSONAL_VOLUME, Command.EAR_VOLUME_LEFT, Command.EAR_VOLUME_RIGHT, Command.LIGHT_EFFECT,
         Command.PRIVACY_MODE, Command.FALL_DETECTION, Command.WATER_DRAIN, Command.RESET_STATE,
         Command.FIND_LEFT, Command.FIND_RIGHT,
+        Command.EARBUD_COLOR, Command.HEARING_PROTECTION, Command.VOLUME_BALANCE, Command.PHONE_CODEC,
     )
 
     public val BATTERY: List<Command> = listOf(Command.BATTERY_LEFT, Command.BATTERY_CASE, Command.BATTERY_RIGHT)

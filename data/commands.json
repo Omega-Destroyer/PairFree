@@ -1,5 +1,5 @@
 {
-  "_about": "Machine-readable command table for SoundPEATS earbuds. See docs/PROTOCOL.md. Hex strings are big-endian. Not yet confirmed on hardware unless a device report in data/reports says so.",
+  "_about": "Machine-readable command table for SoundPEATS earbuds. See docs/PROTOCOL.md. Hex strings are big-endian. Commands whose note names SOUNDPEATS 2.5.3 come from that app (PeatsAudio's successor, same company); the rest from PeatsAudio 1.9.45. Not yet confirmed on hardware unless a device report in data/reports says so.",
   "frame": {
     "sof": "FF",
     "version": "04",
@@ -493,6 +493,70 @@
       "id": "reset_custom_keys",
       "set": "03AC",
       "kind": "action"
+    },
+    {
+      "id": "earbud_color",
+      "get": "0326",
+      "kind": "raw",
+      "note": "From SOUNDPEATS 2.5.3. Reply: the leading byte, then one byte for the colour of this pair; the app shows the matching product picture."
+    },
+    {
+      "id": "le_audio_broadcast",
+      "get": "0337",
+      "set": "0336",
+      "kind": "raw",
+      "probe": false,
+      "note": "From SOUNDPEATS 2.5.3, which names these two but never sends them, so their values are not known."
+    },
+    {
+      "id": "hearing_protection",
+      "get": "034E",
+      "set": "034F",
+      "kind": "percent",
+      "note": "From SOUNDPEATS 2.5.3: a volume limit. The app sends one byte and accepts replies from 50 to 100."
+    },
+    {
+      "id": "volume_balance",
+      "get": "0375",
+      "set": "0376",
+      "kind": "percent",
+      "note": "From SOUNDPEATS 2.5.3: left/right volume balance, one byte from 0 to 100."
+    },
+    {
+      "id": "phone_codec",
+      "get": "0377",
+      "kind": "enum",
+      "values": {
+        "0": "other",
+        "4": "ldac",
+        "9": "opus"
+      },
+      "note": "From SOUNDPEATS 2.5.3: the codec the earbuds are playing. The app accepts 0 to 9 and names only these three. See docs/PROTOCOL.md section 12."
+    },
+    {
+      "id": "device_history",
+      "get": "0352",
+      "kind": "raw",
+      "probe": false,
+      "note": "From SOUNDPEATS 2.5.3: the phones these earbuds have connected to. Reply: an entry number, 1 if that phone is connected now, its Bluetooth address (6 bytes), then its name ending in a 0 byte. On S13 a 41-byte reply has one extra leading byte. It holds other people's device names and addresses: never read it unasked and never put it in a report."
+    },
+    {
+      "id": "device_connection",
+      "set": "0353",
+      "kind": "raw",
+      "note": "From SOUNDPEATS 2.5.3: connect or disconnect one of the phones in device_history. Payload: its Bluetooth address (6 bytes), then 1 to connect or 0 to disconnect."
+    },
+    {
+      "id": "send_device_address",
+      "set": "0351",
+      "kind": "raw",
+      "note": "From SOUNDPEATS 2.5.3, which names it but never sends it."
+    },
+    {
+      "id": "auracast",
+      "set": "0378",
+      "kind": "raw",
+      "note": "From SOUNDPEATS 2.5.3: Auracast broadcast control; the earbuds answer with 8378. The payload starts with a sub-command (1 scan, 2 join a source, 4 listening control, 5 listening state) and carries fields tagged by type (1 name, 2 broadcast id, 3 features, 4 address, 5 listening state, 6 broadcast code). The exact layout was not traced."
     },
     {
       "id": "reboot",

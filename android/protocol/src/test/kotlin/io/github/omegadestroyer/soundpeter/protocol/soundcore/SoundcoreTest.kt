@@ -243,8 +243,9 @@ class SoundcoreModelsTest {
             val excludes = d["ldac_excludes"]?.jsonArray?.map { Command.valueOf(it.jsonPrimitive.content.uppercase()) }.orEmpty().toSet()
             assertEquals(excludes, model.ldacExcludes)
             assertTrue(!model.isQualcomm, "never send GAIA frames to Soundcore earbuds")
-            assertTrue(model.code in SoundcoreSession.SUPPORTED_MODELS, "a model in the table needs a known state layout")
         }
+        val codes = SoundcoreModels.ALL.map { it.code }.toSet()
+        assertTrue(codes.containsAll(SoundcoreSession.SUPPORTED_MODELS), "a model SoundPeter can read is in the table")
         assertEquals(setOf(Command.MULTIPOINT), SoundcoreModels.model("A3936")!!.ldacExcludes)
     }
 

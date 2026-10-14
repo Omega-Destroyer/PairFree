@@ -1,15 +1,864 @@
 {
-  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. ldac_excludes lists features that LDAC turns off on the earbuds, as seen on hardware; ids are SoundPeter's (data/soundpeats/commands.json). reports lists recordings in data/soundcore/reports.",
+  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by SoundPeter: ldac_excludes lists features LDAC turns off on the earbuds (SoundPeter's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports.",
+  "source": {
+    "project": "OpenSCQ30",
+    "url": "https://github.com/Oppzippy/OpenSCQ30",
+    "author": "Kyle Scheuing",
+    "license": "GPL-3.0-or-later",
+    "commit": "bc77a293278092e0e3bd39ea2612371054ecb1be",
+    "date": "2026-09-26",
+    "note": "Model numbers, names and each model's features come from OpenSCQ30's source at this commit (tools/import_openscq30.py). Everything else in this file was found by SoundPeter."
+  },
   "devices": [
     {
+      "model": "A3004",
+      "names": [
+        "Soundcore Q20I"
+      ],
+      "openscq30": {
+        "module": "a3004",
+        "features": [
+          "sound_modes",
+          "equalizer_with_drc",
+          "single_battery",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3005",
+      "names": [
+        "Soundcore Q11i"
+      ],
+      "openscq30": {
+        "module": "a3005",
+        "features": [
+          "equalizer_with_drc",
+          "dual_connections",
+          "auto_power_off",
+          "single_battery_custom",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3027",
+      "names": [
+        "Soundcore Life Q35"
+      ],
+      "openscq30": {
+        "module": "a3027",
+        "features": [
+          "sound_modes",
+          "equalizer",
+          "single_battery",
+          "wearing_detection",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3028",
+      "names": [
+        "Soundcore Q30",
+        "Soundcore Life Q30"
+      ],
+      "openscq30": {
+        "module": "a3028",
+        "features": [
+          "sound_modes",
+          "equalizer",
+          "auto_power_off",
+          "single_battery",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3029",
+      "names": [
+        "Soundcore Life Tune"
+      ],
+      "openscq30": {
+        "module": "a3028",
+        "features": [
+          "sound_modes",
+          "equalizer",
+          "auto_power_off",
+          "single_battery",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3030",
+      "names": [
+        "Soundcore Life Tune Pro"
+      ],
+      "openscq30": {
+        "module": "a3027",
+        "features": [
+          "sound_modes",
+          "equalizer",
+          "single_battery",
+          "wearing_detection",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3031",
+      "names": [
+        "Soundcore Vortex"
+      ],
+      "openscq30": {
+        "module": "a3031",
+        "features": [
+          "sound_modes",
+          "equalizer_tws",
+          "auto_power_off",
+          "touch_tone",
+          "tws_status",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3033",
+      "names": [
+        "Soundcore Life 2 Neo"
+      ],
+      "openscq30": {
+        "module": "a3033",
+        "features": [
+          "equalizer",
+          "wearing_detection",
+          "single_battery",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3035",
+      "names": [
+        "Soundcore Space One"
+      ],
+      "openscq30": {
+        "module": "a3035",
+        "features": [
+          "a3035_sound_modes",
+          "a3035_equalizer",
+          "a3035_button_configuration",
+          "ambient_sound_mode_cycle",
+          "limit_high_volume",
+          "dual_connections",
+          "ldac",
+          "auto_power_off",
+          "auto_play_pause",
+          "a3035_battery_alert",
+          "a3035_ambient_sound_mode_voice_prompt",
+          "single_battery_level",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3040",
+      "names": [
+        "Soundcore Space Q45"
+      ],
+      "openscq30": {
+        "module": "a3040",
+        "features": [
+          "a3040_sound_modes",
+          "a3040_equalizer",
+          "a3040_button_configuration",
+          "ambient_sound_mode_cycle",
+          "dual_connections",
+          "ldac",
+          "a3040_voice_prompt",
+          "a3040_low_battery_prompt",
+          "auto_power_off",
+          "limit_high_volume",
+          "single_battery_level",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3062",
+      "names": [
+        "Soundcore Space One Pro"
+      ],
+      "openscq30": {
+        "module": "a3062",
+        "features": [
+          "a3062_sound_modes",
+          "a3062_equalizer",
+          "a3062_button_configuration",
+          "ambient_sound_mode_cycle",
+          "limit_high_volume",
+          "dual_connections",
+          "ldac",
+          "auto_power_off",
+          "a3062_dolby_audio",
+          "low_battery_prompt",
+          "a3062_side_tone",
+          "a3062_ambient_sound_mode_voice_prompt",
+          "single_battery_custom",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3116",
+      "names": [
+        "Soundcore Motion+"
+      ],
+      "openscq30": {
+        "module": "a3116",
+        "features": [
+          "a3116_equalizer",
+          "a3116_volume",
+          "voice_prompt",
+          "a3116_auto_power_off",
+          "a3116_power_off",
+          "single_battery",
+          "serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3330",
+      "names": [
+        "Soundcore C30i"
+      ],
+      "openscq30": {
+        "module": "a3330",
+        "features": [
+          "equalizer_with_drc",
+          "disable_all_buttons",
+          "button_configuration",
+          "reset_button_configuration",
+          "dual_connections",
+          "touch_tone",
+          "low_battery_prompt",
+          "tws_status",
+          "dual_battery_level_custom",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3388",
+      "names": [
+        "Soundcore AeroClip"
+      ],
+      "openscq30": {
+        "module": "a3388",
+        "features": [
+          "a3388_equalizer",
+          "disable_all_buttons",
+          "button_configuration",
+          "reset_button_configuration",
+          "dual_connections",
+          "touch_tone",
+          "low_battery_prompt",
+          "tws_status",
+          "dual_battery_level_custom",
+          "case_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3876",
+      "names": [
+        "Soundcore V20i"
+      ],
+      "openscq30": {
+        "module": "a3876",
+        "features": [
+          "a3876_equalizer",
+          "button_configuration",
+          "reset_button_configuration",
+          "a3876_colorful_lights",
+          "dual_connections",
+          "a3876_volume_balance",
+          "auto_power_off",
+          "voice_prompt",
+          "gaming_mode",
+          "tws_status",
+          "dual_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3909",
+      "names": [
+        "Soundcore Liberty 2 Pro"
+      ],
+      "openscq30": {
+        "module": "a3909",
+        "features": [
+          "a3909_equalizer",
+          "button_configuration",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3926",
+      "names": [
+        "Soundcore Life Dot 2S"
+      ],
+      "openscq30": {
+        "module": "a3926",
+        "features": [
+          "sound_modes",
+          "equalizer_with_basic_hear_id_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "tws_status",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3930",
+      "names": [
+        "Soundcore Liberty 2 Pro+"
+      ],
+      "openscq30": {
+        "module": "a3930",
+        "features": [
+          "sound_modes",
+          "equalizer_with_custom_hear_id_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "tws_status",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3931",
+      "names": [
+        "Soundcore Life Dot 2 NC"
+      ],
+      "openscq30": {
+        "module": "a3931",
+        "features": [
+          "sound_modes",
+          "equalizer_with_drc_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "auto_power_off",
+          "touch_tone",
+          "tws_status",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3933",
+      "names": [
+        "Soundcore Life Note 3"
+      ],
+      "openscq30": {
+        "module": "a3933",
+        "features": [
+          "sound_modes",
+          "equalizer_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "touch_tone",
+          "gaming_mode",
+          "wearing_detection",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3935",
+      "names": [
+        "Soundcore Life A2 NC"
+      ],
+      "openscq30": {
+        "module": "a3931",
+        "features": [
+          "sound_modes",
+          "equalizer_with_drc_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "auto_power_off",
+          "touch_tone",
+          "tws_status",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
       "model": "A3936",
-      "names": ["Soundcore Space A40"],
-      "ldac_excludes": ["multipoint"],
-      "reports": ["data/soundcore/reports/A3936_06.43.txt"],
+      "names": [
+        "Soundcore Space A40"
+      ],
+      "openscq30": {
+        "module": "a3936",
+        "features": [
+          "a3936_sound_modes",
+          "equalizer_with_custom_hear_id_tws_force_supports_hear_id",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "dual_connections",
+          "auto_power_off",
+          "ldac",
+          "touch_tone",
+          "gaming_mode",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      },
+      "reports": [
+        "data/soundcore/reports/A3936_06.43.txt"
+      ],
+      "ldac_excludes": [
+        "multipoint"
+      ],
       "notes": [
         "LDAC on turns two devices off, and LDAC off turns it back on. With LDAC off, two devices can be turned off and on by itself.",
         "Every LDAC or two-devices change makes the earbuds restart their connection; the control channel closes and can be opened again a few seconds later."
+      ],
+      "extra_features": [
+        "surround_sound"
       ]
+    },
+    {
+      "model": "A3939",
+      "names": [
+        "Soundcore Life P3"
+      ],
+      "openscq30": {
+        "module": "a3933",
+        "features": [
+          "sound_modes",
+          "equalizer_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "touch_tone",
+          "gaming_mode",
+          "wearing_detection",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3944",
+      "names": [
+        "Soundcore Life P2 Mini"
+      ],
+      "openscq30": {
+        "module": "a3944",
+        "features": [
+          "equalizer_with_drc",
+          "button_configuration",
+          "touch_tone",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3945",
+      "names": [
+        "Soundcore Life Note 3S"
+      ],
+      "openscq30": {
+        "module": "a3945",
+        "features": [
+          "equalizer_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "touch_tone",
+          "gaming_mode",
+          "wearing_detection",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3947",
+      "names": [
+        "Soundcore Liberty 4 NC"
+      ],
+      "openscq30": {
+        "module": "a3947",
+        "features": [
+          "a3947_sound_modes",
+          "a3947_equalizer",
+          "button_configuration",
+          "reset_button_configuration",
+          "limit_high_volume",
+          "touch_tone",
+          "a3947_gaming_mode",
+          "sound_leak_compensation",
+          "surround_sound",
+          "auto_play_pause",
+          "wearing_tone",
+          "touch_lock",
+          "low_battery_prompt",
+          "auto_power_off",
+          "serial_number_and_dual_firmware_version",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level"
+        ]
+      }
+    },
+    {
+      "model": "A3948",
+      "names": [
+        "Soundcore A20i"
+      ],
+      "openscq30": {
+        "module": "a3948",
+        "features": [
+          "equalizer_with_drc_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "touch_tone",
+          "serial_number_and_dual_firmware_version",
+          "tws_status",
+          "dual_battery"
+        ]
+      }
+    },
+    {
+      "model": "A3949",
+      "names": [
+        "Soundcore P20i",
+        "Soundcore P25i",
+        "Soundcore R50i"
+      ],
+      "openscq30": {
+        "module": "a3949",
+        "features": [
+          "equalizer_with_drc_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "gaming_mode",
+          "touch_tone",
+          "serial_number_and_dual_firmware_version",
+          "tws_status",
+          "dual_battery"
+        ]
+      }
+    },
+    {
+      "model": "A3951",
+      "names": [
+        "Soundcore Liberty Air 2 Pro"
+      ],
+      "openscq30": {
+        "module": "a3951",
+        "features": [
+          "sound_modes",
+          "equalizer_with_custom_hear_id_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "ldac",
+          "touch_tone",
+          "wearing_detection",
+          "tws_status",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3952",
+      "names": [
+        "Soundcore Liberty 3 Pro"
+      ],
+      "openscq30": {
+        "module": "a3952",
+        "features": [
+          "a3952_sound_modes",
+          "equalizer_with_custom_hear_id_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "ldac",
+          "touch_tone",
+          "wearing_detection",
+          "wearing_tone",
+          "auto_power_off",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3954",
+      "names": [
+        "Soundcore Liberty 4 Pro"
+      ],
+      "openscq30": {
+        "module": "a3954",
+        "features": [
+          "a3954_sound_modes",
+          "a3954_equalizer",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "limit_high_volume",
+          "dual_connections",
+          "a3954_case_features",
+          "a3954_case_language",
+          "ldac",
+          "auto_power_off",
+          "low_battery_prompt",
+          "a3954_spatial_audio",
+          "a3954_easy_chat",
+          "sound_leak_compensation",
+          "wearing_detection",
+          "a3954_air_pressure",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level_custom",
+          "serial_number_and_dual_firmware_version",
+          "a3954_case_serial_number_and_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3955",
+      "names": [
+        "Soundcore P40i"
+      ],
+      "openscq30": {
+        "module": "a3955",
+        "features": [
+          "a3955_sound_modes",
+          "a3955_equalizer",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "limit_high_volume",
+          "dual_connections",
+          "a3955_immersive_experience",
+          "auto_power_off",
+          "touch_tone",
+          "low_battery_prompt",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3957",
+      "names": [
+        "Soundcore Liberty 5"
+      ],
+      "openscq30": {
+        "module": "a3957",
+        "features": [
+          "a3957_sound_modes",
+          "a3957_equalizer",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "limit_high_volume",
+          "dual_connections",
+          "ldac",
+          "auto_power_off",
+          "touch_tone",
+          "low_battery_prompt",
+          "wearing_tone",
+          "wearing_detection",
+          "sound_leak_compensation",
+          "a3957_gaming_mode",
+          "tws_status",
+          "dual_battery_custom",
+          "case_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3959",
+      "names": [
+        "Soundcore P30i",
+        "Soundcore R50i NC"
+      ],
+      "openscq30": {
+        "module": "a3959",
+        "features": [
+          "a3959_sound_modes",
+          "equalizer_with_drc_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "dual_connections",
+          "surround_sound",
+          "auto_power_off",
+          "touch_tone",
+          "tws_status",
+          "low_battery_prompt",
+          "gaming_mode",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "A3968",
+      "names": [
+        "Soundcore Sport X20"
+      ],
+      "openscq30": {
+        "module": "a3968",
+        "features": [
+          "a3968_sound_modes",
+          "equalizer_with_custom_hear_id_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle_tws",
+          "dual_connections",
+          "auto_power_off",
+          "surround_sound",
+          "touch_tone",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "D1101",
+      "names": [
+        "Soundcore C50i"
+      ],
+      "openscq30": {
+        "module": "d1101",
+        "features": [
+          "equalizer",
+          "disable_all_buttons",
+          "button_configuration",
+          "dual_connections",
+          "low_battery_prompt",
+          "ldac",
+          "auto_power_off",
+          "tws_status",
+          "dual_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "D1202",
+      "names": [
+        "Soundcore P31i"
+      ],
+      "openscq30": {
+        "module": "d1202",
+        "features": [
+          "d1202_sound_modes",
+          "d1202_equalizer",
+          "button_configuration",
+          "reset_button_configuration",
+          "limit_high_volume",
+          "dual_connections",
+          "d1202_spatial_audio",
+          "ldac",
+          "auto_power_off",
+          "touch_tone",
+          "low_battery_prompt",
+          "tws_status",
+          "dual_battery_custom",
+          "case_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "D1202C",
+      "names": [
+        "Soundcore R60i NC"
+      ],
+      "openscq30": {
+        "module": "d1202",
+        "features": [
+          "d1202_sound_modes",
+          "d1202_equalizer",
+          "button_configuration",
+          "reset_button_configuration",
+          "limit_high_volume",
+          "dual_connections",
+          "d1202_spatial_audio",
+          "ldac",
+          "auto_power_off",
+          "touch_tone",
+          "low_battery_prompt",
+          "tws_status",
+          "dual_battery_custom",
+          "case_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
+    },
+    {
+      "model": "D1301",
+      "names": [
+        "Soundcore Sleep A30"
+      ],
+      "openscq30": {
+        "module": "d1301",
+        "features": [
+          "d1301_tap_controls_disabled",
+          "button_configuration",
+          "reset_button_configuration",
+          "d1301_alarms",
+          "d1301_auto_stop_timer",
+          "d1301_auto_switch_once_asleep",
+          "d1301_listening_mode",
+          "d1301_noise_canceling",
+          "d1301_incoming_calls_during_bluetooth_mode",
+          "low_battery_prompt",
+          "d1301_auto_power_off_prompt",
+          "d1301_listening_mode_prompt",
+          "d1301_noise_canceling_prompt",
+          "tws_status",
+          "dual_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
     }
   ]
 }

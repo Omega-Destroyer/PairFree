@@ -26,6 +26,12 @@ from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` 
   its model table; `generateSoundcoreTables` turns them into `SoundcoreCommand`, `SoundcoreWire`
   and `SoundcoreModels` in the `protocol.soundcore` package. The app shows Soundcore earbuds on
   the same screens through `SoundcoreSession`, which maps their state to `EarbudState`.
+- Every Soundcore model comes from OpenSCQ30 (github.com/Oppzippy/OpenSCQ30, Kyle Scheuing,
+  GPL-3.0-or-later). `python tools/import_openscq30.py PATH` refreshes the model list and features
+  in `data/soundcore/devices.json` from a local checkout and records the commit; what SoundPeter
+  found itself (reports, ldac_excludes, extra_features, notes) is kept. Then run
+  `python tools/gen_soundcore_table.py` for the README's Soundcore table; a test fails while it is out
+  of date. Credit OpenSCQ30 wherever its code or facts are used, as the code and README do.
   `data/soundcore/test_vectors.json` holds the A40's recorded frames, its state and its EQ
   writes; the Kotlin tests rebuild every one byte for byte. Never send `SoundcoreCommand.NEVER_SEND`.
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from

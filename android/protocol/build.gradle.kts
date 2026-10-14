@@ -198,6 +198,10 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val eqPresetsJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val buttonActionsJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -280,7 +284,55 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
             @Suppress("UNCHECKED_CAST")
             val minFirmware = (d["min_firmware"] as Map<String, Any?>? ?: emptyMap())
                 .entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${str(k)} to ${str(v)}" }
-            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware),")
+            @Suppress("UNCHECKED_CAST")
+            val features = (((d["openscq30"] as Map<String, Any?>?)?.get("features") as List<*>? ?: emptyList<Any>()) +
+                (d["extra_features"] as List<*>? ?: emptyList<Any>())).distinct().joinToString(", ", "setOf(", ")") { str(it) }
+            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features),")
+        }
+        out.appendLine(")")
+
+        @Suppress("UNCHECKED_CAST")
+        val actionSets = (JsonSlurper().parse(buttonActionsJson.get().asFile) as Map<String, Any?>).getValue("sets") as Map<String, List<List<Any?>>>
+        fun enumName(v: Any?) = (v as String).uppercase()
+        fun side(button: String) = if (button.startsWith("left_")) "TouchSide.LEFT" else "TouchSide.RIGHT"
+        fun press(name: String) = "TouchPress.${enumName(name)}"
+        out.appendLine()
+        out.appendLine("/** Every model's touch controls (data/soundcore/devices.json buttons, data/soundcore/button_actions.json), read from OpenSCQ30. */")
+        out.appendLine("internal val SOUNDCORE_BUTTONS: List<SoundcoreButtonSpec> = listOf(")
+        for (d in devices) {
+            @Suppress("UNCHECKED_CAST")
+            val buttons = d["buttons"] as Map<String, Any?>? ?: continue
+            @Suppress("UNCHECKED_CAST")
+            val groups = (buttons.getValue("groups") as List<Map<String, Any?>>).joinToString(",\n        ", "listOf(\n        ", ",\n    )") { g ->
+                val order = (g.getValue("order") as List<*>).joinToString(", ", "listOf(", ")") {
+                    val b = it as String
+                    "${side(b)} to ${press(b.substringAfter('_'))}"
+                }
+                @Suppress("UNCHECKED_CAST")
+                val presses = (g.getValue("presses") as Map<String, Map<String, Any?>>).entries.joinToString(", ", "mapOf(", ")") { (name, p) ->
+                    val actions = actionSets.getValue(p.getValue("actions") as String).joinToString(", ", "listOf(", ")") { a ->
+                        "SoundcoreAction(${(a[0] as Number).toInt()}, ${str(a[1])})"
+                    }
+                    val off = when (p.getValue("off")) {
+                        "never" -> "TurnOff.NEVER"
+                        "each_side" -> "TurnOff.EACH_SIDE"
+                        "both_sides" -> "TurnOff.BOTH_SIDES"
+                        else -> error("unknown off rule ${p["off"]}")
+                    }
+                    "${press(name)} to SoundcorePressSpec(${press(name)}, ${(p.getValue("id") as Number).toInt()}, " +
+                        "ButtonByte.${enumName(p["enabled"])}, ButtonByte.${enumName(p["action"])}, $off, $actions)"
+                }
+                val command = (g["command"] as String?)?.let { "0x$it" } ?: "SoundcoreCommand.BUTTON_ACTION"
+                "SoundcoreButtonGroup(${(g.getValue("fields") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }}, $order, $presses, " +
+                    "setAll = ${g["set_all"] == true}, ignoreEnabled = ${g["ignore_enabled"] == true}, actionCommand = $command, " +
+                    "duringCall = ${g["during"] == "call"})"
+            }
+            @Suppress("UNCHECKED_CAST")
+            val fixed = (buttons["fixed"] as Map<String, Any?>? ?: emptyMap()).entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${press(k)} to ${str(v)}" }
+            out.appendLine(
+                "    SoundcoreButtonSpec(${str(d["model"])}, $groups, reset = ${buttons["reset"] == true}, fixed = $fixed, " +
+                    "checked = ${(buttons["checked"] as String?)?.let { str(it) } ?: "null"}),",
+            )
         }
         out.appendLine(")")
 
@@ -337,6 +389,7 @@ val generateSoundcoreTables = tasks.register<GenerateSoundcoreTables>("generateS
     commandsJson = rootProject.layout.projectDirectory.file("../data/soundcore/commands.json")
     devicesJson = rootProject.layout.projectDirectory.file("../data/soundcore/devices.json")
     eqPresetsJson = rootProject.layout.projectDirectory.file("../data/soundcore/eq_presets.json")
+    buttonActionsJson = rootProject.layout.projectDirectory.file("../data/soundcore/button_actions.json")
     packageName = "io.github.omegadestroyer.soundpeter.protocol.soundcore"
     outputDir = layout.buildDirectory.dir("generated/soundcore")
 }

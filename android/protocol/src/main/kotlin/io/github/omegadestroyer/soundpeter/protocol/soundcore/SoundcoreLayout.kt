@@ -25,6 +25,8 @@ public class SoundcoreLayout(
     public val gamingModeCommand: Int = SoundcoreCommand.GAMING_MODE,
     /** Fields the earbuds send but only use from a firmware version on, such as `01.60`; both earbuds must have it. */
     public val minFirmware: Map<String, String> = emptyMap(),
+    /** What OpenSCQ30 offers on the model (its module names, such as `touch_tone`), and what PairFree confirmed on it. */
+    public val features: Set<String> = emptySet(),
 ) {
     /** The bytes every reply has; optional fields come after them. */
     public val minSize: Int = fields.filterNot { it.optional }.sumOf { it.size }
@@ -58,6 +60,16 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
 
     /** A field's bytes as the layout places them, or null when the model or this reply does not send it. */
     public fun field(name: String): ByteArray? = bytes(name)
+
+    /** This reply with field [name] replaced by [value], for showing a change before the earbuds report it. */
+    public fun with(name: String, value: ByteArray): SoundcoreState {
+        val (at, size) = layout.locate(name) ?: return this
+        if (value.size != size || at + size > body.size) return this
+        return SoundcoreState(layout, body.copyOf().also { value.copyInto(it, at) })
+    }
+
+    /** A field's first byte, or null when the model or this reply does not send it. */
+    public fun byte(name: String): Int? = u8(name)
 
     private fun bytes(name: String): ByteArray? =
         layout.locate(name)?.let { (at, size) -> if (at + size <= body.size) body.copyOfRange(at, at + size) else null }

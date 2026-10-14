@@ -10,7 +10,8 @@ import io.github.omegadestroyer.soundpeter.protocol.Value
  * [EarbudState] values and a setting from the screens becomes a Soundcore packet. Only the
  * settings both brands share are mapped: battery, noise control, game mode, LDAC and two
  * devices at once. The model's [SoundcoreLayout] says where each is, and only what the model
- * has is shown.
+ * has is shown. Touch controls have no SoundPEATS counterpart; the Controls tab reads them
+ * from [touch].
  */
 public class SoundcoreSession(public val model: String) {
     public val layout: SoundcoreLayout? = SoundcoreLayout.of(model)
@@ -77,9 +78,23 @@ public class SoundcoreSession(public val model: String) {
             }
             SoundcoreCommand.GAMING_MODE_UPDATE -> put(Command.GAME_MODE, Value.Switch(body.u8(0) != 0))
             SoundcoreCommand.LDAC_STATE -> put(Command.LDAC, Value.Switch(body.u8(0) != 0))
+            // Whether both earbuds are in decides which touch actions apply (SoundcoreButtons).
+            SoundcoreCommand.TWS_STATUS -> lastState?.let { s -> lastState = s.with("tws_status", body) }
         }
         return state != before
     }
+
+    /** The Controls tab's settings from the last state, or null before the first state. */
+    public val touch: SoundcoreTouch? get() = lastState?.let(SoundcoreTouch::of)
+
+    /** Shows a change from [SoundcoreTouch] at once; the next state the earbuds send confirms it. */
+    public fun expect(change: SoundcoreButtons.Change) {
+        if (change.state.layout === layout) lastState = change.state
+    }
+
+    /** [packets] as frames for these earbuds, with or without the checksum as the model needs. */
+    public fun frames(packets: List<SoundcorePacket>): List<ByteArray> =
+        packets.filter { it.command !in SoundcoreCommand.NEVER_SEND }.map { SoundcorePacket.build(it.command, it.body, checksum) }
 
     /**
      * The packet for a setting from the screens, or null when these earbuds cannot take it: a

@@ -6,8 +6,10 @@ OpenSCQ30 (https://github.com/Oppzippy/OpenSCQ30, Kyle Scheuing, GPL-3.0-or-late
 about 40 Soundcore models. This reads its source and writes, for every model, the facts
 PairFree uses: the model number, its English name, the OpenSCQ30 module that implements it,
 and the features that module offers. Nothing of OpenSCQ30's code is copied into this repo.
-What PairFree learned itself (reports, ldac_excludes, extra_features, notes, state) is kept.
+What PairFree learned itself (reports, ldac_excludes, extra_features, notes, state, eq, buttons and
+the rest of OURS) is kept.
 """
+import copy
 import json
 import re
 import subprocess
@@ -17,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DEVICES = ROOT / "data" / "soundcore" / "devices.json"
 OURS = ("reports", "ldac_excludes", "extra_features", "notes", "state", "checksum", "service_uuid", "battery", "commands",
-        "min_firmware", "kind", "eq")
+        "min_firmware", "kind", "eq", "buttons")
 
 
 def names(scq: Path) -> dict:
@@ -52,8 +54,27 @@ def features(scq: Path, module: str) -> list:
 
 
 def dump(data):
-    """devices.json as written: indented, with each [field, bytes] pair of a state layout on one line."""
+    """devices.json as written: indented, with each [field, bytes] pair of a state layout on one line, and in
+    touch controls each list of fields or buttons and each press on one line."""
+    one_line = {}
+
+    def mark(value):
+        key = f"@@{len(one_line)}@@"
+        one_line[key] = json.dumps(value, ensure_ascii=False)
+        return key
+
+    data = copy.deepcopy(data)
+    for device in data.get("devices", []):
+        buttons = device.get("buttons")
+        if not buttons:
+            continue
+        for group in buttons["groups"]:
+            group["fields"], group["order"] = mark(group["fields"]), mark(group["order"])
+            group["presses"] = {press: mark(spec) for press, spec in group["presses"].items()}
+        if "fixed" in buttons:
+            buttons["fixed"] = mark(buttons["fixed"])
     text = json.dumps(data, indent=2, ensure_ascii=False)
+    text = re.sub(r'"(@@\d+@@)"', lambda m: one_line[m.group(1)], text)
     return re.sub(r'\[\s+("(?:[^"\\]|\\.)*"),\s+(\d+)\s+\]', r"[\1, \2]", text) + "\n"
 
 

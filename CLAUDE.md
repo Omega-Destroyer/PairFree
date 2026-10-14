@@ -37,19 +37,22 @@ from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` 
   last state showed it. The equalizer (`SoundcoreEqualizer`, `eq` in `devices.json`, presets in
   `eq_presets.json`) goes through the same Sound tab via `SoundcoreEqTarget`, and only for models
   whose `eq.checked` is set: a recording of the Soundcore app or an OpenSCQ30 test pins the write.
-  Where the A40's recordings and OpenSCQ30 differ, the recordings win (`docs/soundcore/PROTOCOL.md`
-  section 8).
+  Touch controls (`SoundcoreButtons`, `SoundcoreTouch`, `buttons` in `devices.json`, action sets in
+  `button_actions.json`) show on the Controls tab for every model that has them, tested or not
+  (owner, 2026-10-14); `buttons.checked` only says how far the writes are confirmed. Where the A40's
+  recordings and OpenSCQ30 differ, the recordings win (`docs/soundcore/PROTOCOL.md` sections 8 and 9).
 - Every Soundcore model comes from OpenSCQ30 (github.com/Oppzippy/OpenSCQ30, Kyle Scheuing,
   GPL-3.0-or-later). `python tools/import_openscq30.py PATH` refreshes the model list and features
   in `data/soundcore/devices.json` from a local checkout and records the commit; everything else
-  in an entry (state, battery, checksum, service_uuid, commands, min_firmware, reports,
-  ldac_excludes, extra_features, notes) is kept. The state layouts were read from OpenSCQ30's
-  parsers by hand; after a refresh to a newer commit, compare its parsers with them. Then run
+  in an entry (state, battery, checksum, service_uuid, commands, min_firmware, kind, eq, buttons,
+  reports, ldac_excludes, extra_features, notes) is kept. The state layouts, EQs and touch controls
+  were read from OpenSCQ30's code; after a refresh to a newer commit, compare its parsers, EQ and
+  button settings with them. Then run
   `python tools/gen_soundcore_table.py` for the README's Soundcore table; a test fails while it is out
   of date. Credit OpenSCQ30 wherever its code or facts are used, as the code and README do.
-  `data/soundcore/test_vectors.json` holds the A40's recorded frames, its state and its EQ
-  writes, and the state replies from OpenSCQ30's tests (serials zeroed); the Kotlin tests rebuild
-  or read every one. Never send `SoundcoreCommand.NEVER_SEND`.
+  `data/soundcore/test_vectors.json` holds the A40's recorded frames, its state, its EQ and touch
+  writes, and the state replies, EQ and touch tests from OpenSCQ30's tests (serials zeroed); the
+  Kotlin tests rebuild or read every one. Never send `SoundcoreCommand.NEVER_SEND`.
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

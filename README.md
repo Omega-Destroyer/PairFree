@@ -197,48 +197,48 @@ confirmed them, and showed that its case reports its battery in percent.
 
 <b>Tested</b> (1): tried on the earbuds with PairFree. <b>Checked</b> (21): PairFree reads every reply from the model that OpenSCQ30's tests hold, most of them from its users' bug reports. <b>Not tested</b>: read from OpenSCQ30's code alone. A device report from one of these helps (Help add your model, below).
 
-✅ the model has it. — it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise control, two devices, LDAC and game mode on every model that has them, and the equalizer where its column says Tested (recorded from the Soundcore app) or Checked (OpenSCQ30's tests hold the exact packet); the other columns are not in PairFree yet.
+✅ the model has it. — it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise control, two devices, LDAC, game mode, touch controls and touch tone on every model that has them, and the equalizer where its column says Tested (recorded from the Soundcore app) or Checked (OpenSCQ30's tests hold the exact packet). Touch controls say the same of their writes. The other columns are not in PairFree yet.
 
 <table>
 <tr><th>Model</th><th>Number</th><th>Status</th><th>Battery</th><th>Noise control</th><th>Equalizer</th><th>HearID</th><th>Touch controls</th><th>Two devices</th><th>LDAC</th><th>Game mode</th><th>3D / spatial</th><th>Wear detection</th><th>Touch tone</th><th>Auto power-off</th></tr>
-<tr><td>A20i</td><td>A3948</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
-<tr><td>AeroClip</td><td>A3388</td><td>Checked</td><td>Each earbud, case</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
-<tr><td>C30i</td><td>A3330</td><td>Checked</td><td>Each earbud, case</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
-<tr><td>C50i</td><td>D1101</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
-<tr><td>Liberty 2 Pro</td><td>A3909</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Liberty 2 Pro+</td><td>A3930</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Liberty 3 Pro</td><td>A3952</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>Liberty 4 NC</td><td>A3947</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>Liberty 4 Pro</td><td>A3954</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td></tr>
-<tr><td>Liberty 5</td><td>A3957</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>Liberty Air 2 Pro</td><td>A3951</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td>A20i</td><td>A3948</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Checked</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
+<tr><td>AeroClip</td><td>A3388</td><td>Checked</td><td>Each earbud, case</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
+<tr><td>C30i</td><td>A3330</td><td>Checked</td><td>Each earbud, case</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Checked</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
+<tr><td>C50i</td><td>D1101</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
+<tr><td>Liberty 2 Pro</td><td>A3909</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Liberty 2 Pro+</td><td>A3930</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Liberty 3 Pro</td><td>A3952</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
+<tr><td>Liberty 4 NC</td><td>A3947</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>Liberty 4 Pro</td><td>A3954</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td></tr>
+<tr><td>Liberty 5</td><td>A3957</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
+<tr><td>Liberty Air 2 Pro</td><td>A3951</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
 <tr><td>Life 2 Neo</td><td>A3033</td><td>Not tested</td><td>One</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td></tr>
-<tr><td>Life A2 NC</td><td>A3935</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>Life Dot 2 NC</td><td>A3931</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>Life Dot 2S</td><td>A3926</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Life Note 3</td><td>A3933</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
-<tr><td>Life Note 3S</td><td>A3945</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
-<tr><td>Life P2 Mini</td><td>A3944</td><td>Not tested</td><td>Each earbud</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
-<tr><td>Life P3</td><td>A3939</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td>Life A2 NC</td><td>A3935</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>Life Dot 2 NC</td><td>A3931</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>Life Dot 2S</td><td>A3926</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Checked</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Life Note 3</td><td>A3933</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td>Life Note 3S</td><td>A3945</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td>Life P2 Mini</td><td>A3944</td><td>Not tested</td><td>Each earbud</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
+<tr><td>Life P3</td><td>A3939</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
 <tr><td>Life Q35</td><td>A3027</td><td>Not tested</td><td>One</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td></tr>
 <tr><td>Life Tune</td><td>A3029</td><td>Not tested</td><td>One</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
 <tr><td>Life Tune Pro</td><td>A3030</td><td>Not tested</td><td>One</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td></tr>
 <tr><td>Motion+</td><td>A3116</td><td>Checked</td><td>One</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
-<tr><td>P20i, P25i, R50i</td><td>A3949</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
-<tr><td>P30i, R50i NC</td><td>A3959</td><td>Checked</td><td>Each earbud</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>P31i</td><td>D1202</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>P40i</td><td>A3955</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>P20i, P25i, R50i</td><td>A3949</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
+<tr><td>P30i, R50i NC</td><td>A3959</td><td>Checked</td><td>Each earbud</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Checked</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>P31i</td><td>D1202</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>P40i</td><td>A3955</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>Q11i</td><td>A3005</td><td>Checked</td><td>One</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
 <tr><td>Q20I</td><td>A3004</td><td>Not tested</td><td>One</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Q30, Life Q30</td><td>A3028</td><td>Not tested</td><td>One</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
-<tr><td>R60i NC</td><td>D1202C</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>Sleep A30</td><td>D1301</td><td>Checked</td><td>Each earbud</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Space A40</td><td><a href="data/soundcore/reports/A3936_06.43.txt">A3936</a></td><td>Tested</td><td>Each earbud, case</td><td>✅</td><td>✅ Tested</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>Space One</td><td>A3035</td><td>Checked</td><td>One</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
-<tr><td>Space One Pro</td><td>A3062</td><td>Checked</td><td>One</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td></tr>
-<tr><td>Space Q45</td><td>A3040</td><td>Checked</td><td>One</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
-<tr><td>Sport X20</td><td>A3968</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
-<tr><td>V20i</td><td>A3876</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
+<tr><td>R60i NC</td><td>D1202C</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>Sleep A30</td><td>D1301</td><td>Checked</td><td>Each earbud</td><td>✅</td><td>—</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Space A40</td><td><a href="data/soundcore/reports/A3936_06.43.txt">A3936</a></td><td>Tested</td><td>Each earbud, case</td><td>✅</td><td>✅ Tested</td><td>✅</td><td>✅ Tested</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>Space One</td><td>A3035</td><td>Checked</td><td>One</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
+<tr><td>Space One Pro</td><td>A3062</td><td>Checked</td><td>One</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td></tr>
+<tr><td>Space Q45</td><td>A3040</td><td>Checked</td><td>One</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
+<tr><td>Sport X20</td><td>A3968</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
+<tr><td>V20i</td><td>A3876</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
 <tr><td>Vortex</td><td>A3031</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
 </table>
 <!-- soundcore-table:end -->

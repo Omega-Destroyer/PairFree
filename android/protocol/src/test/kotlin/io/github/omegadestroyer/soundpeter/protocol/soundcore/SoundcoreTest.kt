@@ -7,6 +7,7 @@ import io.github.omegadestroyer.soundpeter.protocol.repoFile
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -266,6 +267,8 @@ class SoundcoreLayoutTest {
             assertEquals(gaming ?: SoundcoreCommand.GAMING_MODE, layout.gamingModeCommand, layout.model)
             val minFirmware = d["min_firmware"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content }.orEmpty()
             assertEquals(minFirmware, layout.minFirmware, layout.model)
+            val features = d.getValue("openscq30").jsonObject.getValue("features").jsonArray + d["extra_features"]?.jsonArray.orEmpty()
+            assertEquals(features.map { it.jsonPrimitive.content }.toSet(), layout.features, layout.model)
         }
         assertEquals(0x1085, SoundcoreLayout.of("A3947")!!.gamingModeCommand, "OpenSCQ30 a3947/modules/flag.rs")
         assertEquals(false, SoundcoreLayout.of("A3116")!!.checksum, "OpenSCQ30 a3116.rs: ChecksumKind::None")
@@ -648,5 +651,187 @@ class SoundcoreModelsTest {
         assertEquals("A3116", SoundcoreModels.fromServiceUuid("0cf12d31-fac3-4553-bd80-d6832e7b3116"))
         assertNull(SoundcoreModels.fromServiceUuid("00001101-0000-1000-8000-00805f9b34fb"))
         assertTrue(SoundcoreModels.isVendorService("0cf12d31-fac3-4553-bd80-d6832e7b3936"))
+    }
+}
+
+/** Touch controls: OpenSCQ30's tests and the A40's recorded writes, rebuilt byte for byte. */
+class SoundcoreButtonsTest {
+    private val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
+    private val actionSets = load("button_actions.json").getValue("sets").jsonObject
+    private val a40Body = vectors.getValue("a3936_state").jsonObject.str("body").hexBytes()
+    private val a40 = SoundcoreState.parse(SoundcoreLayout.of("A3936")!!, a40Body)!!
+
+    private fun packets(list: List<SoundcorePacket>) = list.map { "%04x".format(it.command) to it.body.hex() }
+
+    private fun button(name: String) =
+        TouchSide.valueOf(name.substringBefore('_').uppercase()) to TouchPress.valueOf(name.substringAfter('_').uppercase())
+
+    private fun JsonObject.bool(key: String) = getValue(key).jsonPrimitive.boolean
+
+    /** One step of a test case: a button set to an action (null: off), or a switch. */
+    private fun apply(touch: SoundcoreTouch, step: JsonObject): SoundcoreButtons.Change? = when {
+        "button" in step -> {
+            val (side, press) = button(step.str("button"))
+            val call = step["during_call"]?.jsonPrimitive?.boolean == true
+            val (group, buttons) = touch.groups.first { it.first.duringCall == call }
+            val id = step["action"]?.jsonPrimitive?.contentOrNull?.let { a ->
+                buttons.first { it.side == side && it.press == press }.choices.first { it.name == a }.id
+            }
+            touch.setButton(group, side, press, id)
+        }
+        "touch_tone" in step -> touch.setTouchTone(step.bool("touch_tone"))
+        "touch_lock" in step -> touch.setTouchLock(step.bool("touch_lock"))
+        "touch_enabled" in step -> touch.setTouchEnabled(step.bool("touch_enabled"))
+        else -> error("unknown step $step")
+    }
+
+    private fun read(touch: SoundcoreTouch, name: String): TouchButton {
+        val (side, press) = button(name)
+        return touch.groups.first { !it.first.duringCall }.second.first { it.side == side && it.press == press }
+    }
+
+    @Test
+    fun specsMatchTheData() {
+        val withButtons = devices.filter { "buttons" in it }
+        assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
+        assertEquals(30, withButtons.size)
+        for (d in devices) {
+            // OpenSCQ30 offers touch actions on exactly these models (the A3031's state holds them, but it does not).
+            val features = d.getValue("openscq30").jsonObject.getValue("features").jsonArray.map { it.jsonPrimitive.content }
+            assertEquals(features.any { it.endsWith("button_configuration") && !it.startsWith("reset") }, "buttons" in d, d.str("model"))
+        }
+        for (d in withButtons) {
+            val spec = SoundcoreButtonSpec.of(d.str("model"))!!
+            val layout = SoundcoreLayout.of(spec.model)!!
+            val b = d.getValue("buttons").jsonObject
+            assertEquals(b["reset"]?.jsonPrimitive?.boolean ?: false, spec.reset, spec.model)
+            assertEquals(b["checked"]?.jsonPrimitive?.content, spec.checked, spec.model)
+            val groups = b.getValue("groups").jsonArray.map { it.jsonObject }
+            assertEquals(groups.size, spec.groups.size, spec.model)
+            for ((g, json) in spec.groups.zip(groups)) {
+                // A group fills its state fields exactly: a byte per enabled flag and a byte per action.
+                val size = g.fields.sumOf { layout.locate(it)!!.second }
+                val bytes = g.order.sumOf { (_, press) -> if (g.presses.getValue(press).enabled == ButtonByte.NONE) 1 else 2 }
+                assertEquals(size, bytes, spec.model)
+                assertEquals(json.getValue("order").jsonArray.size, g.order.size, spec.model)
+                for ((name, p) in json.getValue("presses").jsonObject) {
+                    val press = g.presses.getValue(TouchPress.valueOf(name.uppercase()))
+                    val set = actionSets.getValue(p.jsonObject.str("actions")).jsonArray.map {
+                        SoundcoreAction(it.jsonArray[0].jsonPrimitive.int, it.jsonArray[1].jsonPrimitive.content)
+                    }
+                    assertEquals(set, press.actions, spec.model)
+                    assertEquals(p.jsonObject.getValue("id").jsonPrimitive.int, press.id, spec.model)
+                    assertTrue(press.actions.none { it.id == 0xF }, "F means off: ${spec.model}")
+                }
+            }
+        }
+        assertEquals(0x0487, SoundcoreButtonSpec.of("A3330")!!.groups.single { it.duringCall }.actionCommand, "OpenSCQ30 a3330.rs")
+    }
+
+    @Test
+    fun rebuildsOpenScq30sTests() {
+        val cases = vectors.getValue("openscq30_buttons").jsonArray.map { it.jsonObject }
+        assertEquals(9, cases.size)
+        for (c in cases) {
+            val where = c.str("openscq30_test")
+            var state = SoundcoreState.parse(SoundcoreLayout.of(c.str("model"))!!, c.str("state").hexBytes())!!
+            for ((name, want) in c["reads"]?.jsonObject.orEmpty()) {
+                val touch = SoundcoreTouch.of(state)
+                when (name) {
+                    "touch_tone" -> assertEquals(want.jsonPrimitive.boolean, touch.touchTone, where)
+                    "touch_enabled" -> assertEquals(want.jsonPrimitive.boolean, touch.touchEnabled, where)
+                    else -> {
+                        val b = read(touch, name)
+                        assertEquals(want.jsonPrimitive.contentOrNull, b.action?.name, "$where $name")
+                        if (want.jsonPrimitive.contentOrNull == null) assertNull(b.actionId, "$where $name is off")
+                    }
+                }
+            }
+            val sent = mutableListOf<SoundcorePacket>()
+            for (step in c["steps"]?.jsonArray.orEmpty().map { it.jsonObject }) {
+                val change = apply(SoundcoreTouch.of(state), step)
+                assertNotNull(change, "$where $step")
+                sent += change!!.packets
+                state = change.state
+            }
+            val expected = c["packets"]?.jsonArray.orEmpty().map { it.jsonObject.str("command") to it.jsonObject.str("body") }
+            assertEquals(expected.sortedBy { it.toString() }, packets(sent).sortedBy { it.toString() }, "in any order: $where")
+        }
+    }
+
+    @Test
+    fun rebuildsTheA40sRecordedWrites() {
+        val touch = SoundcoreTouch.of(a40)
+        assertEquals("volume_down", read(touch, "left_single").action?.name)
+        assertEquals("volume_up", read(touch, "right_single").action?.name, "on with both earbuds in (01), off with one")
+        assertEquals("next_song", read(touch, "left_double").action?.name)
+        assertEquals("play_pause", read(touch, "right_double").action?.name)
+        assertEquals("ambient_sound_mode", read(touch, "left_long").action?.name)
+        assertEquals("ambient_sound_mode", read(touch, "right_long").action?.name)
+        assertEquals(false, touch.touchTone)
+        assertEquals(setOf(AmbientMode.NOISE_CANCELLING, AmbientMode.NORMAL), touch.noiseCycle)
+        assertNull(touch.touchLock)
+        assertNull(touch.touchEnabled)
+        assertTrue(touch.canReset)
+
+        var state = a40
+        for (step in vectors.getValue("a3936_buttons").jsonObject.getValue("steps").jsonArray.map { it.jsonObject }) {
+            val change = apply(SoundcoreTouch.of(state), step)!!
+            val frames = change.packets.map { SoundcorePacket.build(it.command, it.body).hex() }
+            assertEquals(step.getValue("frames").jsonArray.map { it.jsonPrimitive.content }, frames, step.toString())
+            state = change.state
+        }
+        assertEquals(a40.field("buttons")!!.hex(), state.field("buttons")!!.hex(), "every change was undone, as in the recording")
+    }
+
+    @Test
+    fun withOneEarbudInTheHighBitsApply() {
+        val touch = SoundcoreTouch.of(a40.with("tws_status", byteArrayOf(1, 0)))
+        assertEquals("play_pause", read(touch, "left_double").action?.name, "63: 3 with both in, 6 with one")
+        assertNull(read(touch, "right_single").actionId, "enabled 01: off with one earbud in")
+        val change = touch.setButton(touch.groups.single().first, TouchSide.LEFT, TouchPress.SINGLE, 3)!!
+        assertEquals(listOf("0481" to "000231"), packets(change.packets), "only the high four bits change")
+    }
+
+    @Test
+    fun theSessionFollowsTheTwsStatus() {
+        val session = SoundcoreSession("A3936")
+        session.receive(SoundcorePacket(SoundcoreCommand.STATE, a40Body))
+        assertEquals("next_song", read(session.touch!!, "left_double").action?.name)
+        session.receive(SoundcorePacket(SoundcoreCommand.TWS_STATUS, byteArrayOf(1, 0)))
+        assertEquals("play_pause", read(session.touch!!, "left_double").action?.name, "one earbud in after 01 02")
+    }
+
+    @Test
+    fun turningOneSideOffTurnsTheOtherOffWhereOpenScq30Does() {
+        // The A3926 uses OpenSCQ30's common settings: single presses go off together, and a change to
+        // several buttons goes as one 04 84 with every button's bytes.
+        val case = vectors.getValue("openscq30_buttons").jsonArray.map { it.jsonObject }.single { it.str("model") == "A3926" }
+        val touch = SoundcoreTouch.of(SoundcoreState.parse(SoundcoreLayout.of("A3926")!!, case.str("state").hexBytes())!!)
+        val group = touch.groups.single().first
+        val change = touch.setButton(group, TouchSide.LEFT, TouchPress.SINGLE, null)!!
+        assertEquals(listOf("0484" to "010001000100010000000000"), packets(change.packets))
+        assertNull(read(SoundcoreTouch.of(change.state), "right_single").actionId)
+        assertNull(touch.setButton(group, TouchSide.LEFT, TouchPress.DOUBLE, null), "double press cannot be turned off")
+    }
+
+    @Test
+    fun noiseCycleAndReset() {
+        val touch = SoundcoreTouch.of(a40)
+        val all = touch.setNoiseCycle(AmbientMode.entries.toSet())!!
+        assertEquals(listOf("0682" to "07"), packets(all.packets))
+        assertEquals(AmbientMode.entries.toSet(), SoundcoreTouch.of(all.state).noiseCycle)
+        assertNull(touch.setNoiseCycle(emptySet()), "the cycle needs a mode")
+        assertEquals("0482" to "", packets(listOf(touch.reset()!!)).single())
+    }
+
+    @Test
+    fun everyReplyInOpenScq30sTestsReadsItsTouchControls() {
+        for (c in vectors.getValue("openscq30_states").jsonArray.map { it.jsonObject }) {
+            val spec = SoundcoreButtonSpec.of(c.str("model")) ?: continue
+            val touch = SoundcoreTouch.of(SoundcoreState.parse(SoundcoreLayout.of(spec.model)!!, c.str("body").hexBytes())!!)
+            assertEquals(spec.groups.size, touch.groups.size, c.str("openscq30_test"))
+            for ((group, buttons) in touch.groups) assertEquals(group.order.size, buttons.size)
+        }
     }
 }

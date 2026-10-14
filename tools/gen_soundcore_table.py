@@ -64,15 +64,18 @@ def battery(f):
     return "One" if has(f, contains="battery") else NO
 
 
-EQ_STATUS = {"hardware": "Tested", "openscq30_tests": "Checked"}
+WRITE_STATUS = {"hardware": "Tested", "openscq30_tests": "Checked"}
 
 
 def cell(model, title, has):
-    """A feature cell. The equalizer also says how far its write is confirmed (devices.json eq.checked)."""
+    """A feature cell. The equalizer and touch controls also say how far their writes are confirmed
+    (devices.json eq.checked and buttons.checked)."""
     if not has:
         return NO
     if title == "Equalizer":
-        return f"{YES} " + EQ_STATUS.get(model.get("eq", {}).get("checked"), "Not tested")
+        return f"{YES} " + WRITE_STATUS.get(model.get("eq", {}).get("checked"), "Not tested")
+    if title == "Touch controls" and "buttons" in model:
+        return f"{YES} " + WRITE_STATUS.get(model["buttons"].get("checked"), "Not tested")
     return YES
 
 
@@ -116,9 +119,10 @@ def table():
         "(Help add your model, below).",
         "",
         f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise "
-        "control, two devices, LDAC and game mode on every model that has them, and the equalizer where its "
-        "column says Tested (recorded from the Soundcore app) or Checked (OpenSCQ30's tests hold the exact "
-        "packet); the other columns are not in PairFree yet.",
+        "control, two devices, LDAC, game mode, touch controls and touch tone on every model that has them, "
+        "and the equalizer where its column says Tested (recorded from the Soundcore app) or Checked "
+        "(OpenSCQ30's tests hold the exact packet). Touch controls say the same of their writes. The other "
+        "columns are not in PairFree yet.",
         "",
         "<table>",
         f"<tr>{header}</tr>",

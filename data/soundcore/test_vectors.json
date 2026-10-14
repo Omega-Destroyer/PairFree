@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body.",
+  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body. openscq30_buttons: OpenSCQ30's touch-control tests: a state reply with its serial numbers zeroed, what it reads as (reads: a button's action, null when off), and changes (steps, each from the state the one before left) with every packet they must send, in any order. a3936_buttons: the A40's recorded touch-control changes and the frames the Soundcore app sent for them.",
   "frames": [
     {
       "direction": "to_earbuds",
@@ -1383,5 +1383,255 @@
       "command": "0387",
       "body": "fefe00003c7d3c94715f906f78780000007878787878787878783c00000000028282828282828282823c3c7d3c94715f906f787800"
     }
-  ]
+  ],
+  "openscq30_buttons": [
+    {
+      "model": "A3330",
+      "openscq30_test": "a3330.rs::set_button_action_during_call",
+      "state": "0101050530342e323730342e323730303030303030303030303030303030302e312e33020761603333f6f631000101000000fefe838788837c78787878780401010000ffffff",
+      "steps": [
+        {
+          "button": "left_long",
+          "during_call": true,
+          "action": null
+        },
+        {
+          "button": "right_double",
+          "action": "next_song"
+        }
+      ],
+      "packets": [
+        {
+          "command": "0487",
+          "body": "00010f"
+        },
+        {
+          "command": "0481",
+          "body": "010063"
+        }
+      ]
+    },
+    {
+      "model": "A3926",
+      "openscq30_test": "a3926.rs::test_set_left_single_press",
+      "state": "0001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010001000100010001000100",
+      "state_note": "OpenSCQ30's default A3926 state: TWS status 00 01 and every button enabled with action 0; zeros elsewhere.",
+      "steps": [
+        {
+          "button": "left_single",
+          "action": "play_pause"
+        }
+      ],
+      "packets": [
+        {
+          "command": "0481",
+          "body": "000206"
+        }
+      ]
+    },
+    {
+      "model": "A3936",
+      "openscq30_test": "a3936.rs::it_parses_settings_correctly",
+      "state": "01010503010130342e313930342e31393030303030303030303030303030303000007878787878787878780078787878787878787800ff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0000000e001100001163116611441149070230000100000008310001010000ffffffffffffffffffffffff",
+      "reads": {
+        "left_single": null,
+        "right_single": null,
+        "left_double": "next_song",
+        "right_double": "play_pause",
+        "left_long": "ambient_sound_mode",
+        "right_long": "gaming_mode",
+        "touch_tone": false
+      }
+    },
+    {
+      "model": "A3947",
+      "openscq30_test": "a3947.rs::set_touch_lock",
+      "state": "01010204000030352e383830352e38383030303030303030303030303030303030302e3030fefe78787878787878787878ffffffffffffffffffff000170758c94968e86833c3c70758c94968e86833c3c686422400070758c94968e86833c3c70758c94968e86833c3c00001211661165113211331144114400210020350050010001010300000000ff0102310100000100000100015001000001010101ff",
+      "steps": [
+        {
+          "touch_lock": false
+        }
+      ],
+      "packets": [
+        {
+          "command": "0486",
+          "body": "00"
+        }
+      ]
+    },
+    {
+      "model": "A3948",
+      "openscq30_test": "a3948.rs::button_configuration_enabled_flags_are_ignored",
+      "state": "00010505000032342e353632342e3536303030303030303030303030303030300200a0968278787878787800000000000000000000000e01f600f0016f016f0131003fffffff610001ffffffffffffffffffffffffffffff",
+      "reads": {
+        "right_single": "volume_up",
+        "right_double": null,
+        "right_long": null
+      }
+    },
+    {
+      "model": "A3948",
+      "openscq30_test": "a3948.rs::disabled_buttons_are_moved_to_enabled_state_correctly",
+      "state": "00010505000032342e353632342e3536303030303030303030303030303030300200a0968278787878787800000000000000000000000e01f600f0016f016f0131003fffffff610001ffffffffffffffffffffffffffffff",
+      "steps": [
+        {
+          "button": "right_single",
+          "action": "volume_up"
+        },
+        {
+          "button": "right_double",
+          "action": "volume_up"
+        },
+        {
+          "button": "right_long",
+          "action": "volume_up"
+        }
+      ],
+      "packets": [
+        {
+          "command": "0483",
+          "body": "010201"
+        },
+        {
+          "command": "0481",
+          "body": "010060"
+        },
+        {
+          "command": "0481",
+          "body": "010130"
+        },
+        {
+          "command": "0483",
+          "body": "010101"
+        }
+      ]
+    },
+    {
+      "model": "A3959",
+      "openscq30_test": "a3959.rs::test_set_multiple_button_actions",
+      "state": "01010506ffff30312e363430312e363430303030303030303030303030303030fefe6578a1abab9890b37878000000000000000000000af1f06666f2f34444330055000001ff013101010001000100000000000000000000000000",
+      "steps": [
+        {
+          "button": "left_single",
+          "action": "volume_up"
+        },
+        {
+          "button": "right_single",
+          "action": "volume_down"
+        }
+      ],
+      "packets": [
+        {
+          "command": "0481",
+          "body": "0002f0"
+        },
+        {
+          "command": "0481",
+          "body": "0102f1"
+        }
+      ]
+    },
+    {
+      "model": "A3959",
+      "openscq30_test": "a3959.rs::test_disable_button",
+      "state": "01010506ffff30312e363430312e363430303030303030303030303030303030fefe6578a1abab9890b37878000000000000000000000af1f06666f2f34444330055000001ff013101010001000100000000000000000000000000",
+      "steps": [
+        {
+          "button": "left_single",
+          "action": null
+        }
+      ],
+      "packets": [
+        {
+          "command": "0481",
+          "body": "0002ff"
+        }
+      ]
+    },
+    {
+      "model": "D1101",
+      "openscq30_test": "d1101.rs::buttons_enabled_is_inverted",
+      "state": "0001090030312e323830312e323830303030303030303030303030303030fefea07878787878787878780966f632f3fffff1f0310101000100000000000000000000000000",
+      "reads": {
+        "touch_enabled": true
+      },
+      "steps": [
+        {
+          "touch_enabled": false
+        },
+        {
+          "touch_enabled": true
+        }
+      ],
+      "packets": [
+        {
+          "command": "1094",
+          "body": "01"
+        },
+        {
+          "command": "1094",
+          "body": "00"
+        }
+      ]
+    }
+  ],
+  "a3936_buttons": {
+    "about": "The owner's touch-control changes in the Soundcore app, in order, each from the state the one before left: the recorded state (a3936_state), then each change and the frame the app sent for it.",
+    "steps": [
+      {
+        "button": "left_single",
+        "action": "next_song",
+        "frames": [
+          "08ee00000004810d000002139d"
+        ]
+      },
+      {
+        "button": "left_single",
+        "action": "volume_down",
+        "frames": [
+          "08ee00000004810d000002119b"
+        ]
+      },
+      {
+        "button": "right_single",
+        "action": null,
+        "frames": [
+          "08ee00000004830d000102008d"
+        ]
+      },
+      {
+        "button": "right_single",
+        "action": "volume_up",
+        "frames": [
+          "08ee00000004830d000102018e"
+        ]
+      },
+      {
+        "button": "right_double",
+        "action": null,
+        "frames": [
+          "08ee00000004830d000100109b"
+        ]
+      },
+      {
+        "button": "right_double",
+        "action": "play_pause",
+        "frames": [
+          "08ee00000004830d000100119c"
+        ]
+      },
+      {
+        "touch_tone": true,
+        "frames": [
+          "08ee00000001830b000186"
+        ]
+      },
+      {
+        "touch_tone": false,
+        "frames": [
+          "08ee00000001830b000085"
+        ]
+      }
+    ]
+  }
 }

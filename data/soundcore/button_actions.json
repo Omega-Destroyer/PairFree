@@ -1,0 +1,96 @@
+{
+  "_about": "Touch-control action sets for Soundcore models, by the name each press's actions uses in devices.json buttons. Each action is [number, name]; the number is what the earbuds store, in the low four bits of a tws action byte. F means off on models whose buttons have no enabled byte.",
+  "source": {
+    "project": "OpenSCQ30",
+    "url": "https://github.com/Oppzippy/OpenSCQ30",
+    "author": "Kyle Scheuing",
+    "license": "GPL-3.0-or-later",
+    "commit": "bc77a293278092e0e3bd39ea2612371054ecb1be",
+    "note": "Read from OpenSCQ30's button configuration module and each model's own action lists."
+  },
+  "sets": {
+    "minimal": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [6, "play_pause"]
+    ],
+    "common": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [4, "ambient_sound_mode"],
+      [5, "voice_assistant"],
+      [6, "play_pause"]
+    ],
+    "without_sound_modes": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [5, "voice_assistant"],
+      [6, "play_pause"]
+    ],
+    "with_game_mode": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [4, "ambient_sound_mode"],
+      [5, "voice_assistant"],
+      [6, "play_pause"],
+      [9, "gaming_mode"]
+    ],
+    "a3330_during_call": [
+      [0, "decline_call"],
+      [1, "answer_call"]
+    ],
+    "a3876": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [5, "voice_assistant"],
+      [6, "play_pause"],
+      [14, "lights"]
+    ],
+    "a3909": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [5, "voice_assistant"]
+    ],
+    "a3954_slide_up": [
+      [0, "volume_up"]
+    ],
+    "a3954_slide_down": [
+      [1, "volume_down"]
+    ],
+    "d1101_multi_press": [
+      [2, "previous_song"],
+      [3, "next_song"],
+      [5, "voice_assistant"],
+      [6, "play_pause"]
+    ],
+    "d1101_long_press": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [5, "voice_assistant"]
+    ],
+    "d1301": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [6, "play_pause"],
+      [8, "noise_canceling"],
+      [13, "change_mode"]
+    ],
+    "bass_up": [
+      [7, "bass_up"]
+    ]
+  }
+}

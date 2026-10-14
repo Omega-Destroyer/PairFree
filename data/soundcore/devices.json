@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore models PairFree knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by PairFree: ldac_excludes lists features LDAC turns off on the earbuds (PairFree's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports. state is the model's reply to the state request (01 01) as [field, bytes] in order, read from OpenSCQ30's parser and checked against its test replies where it has any; skip marks bytes PairFree does not use, optional: fields only some firmware sends. battery gives each level's scale: percent = (value - offset) * 100 / max. checksum false means the packets carry none. service_uuid fixes the RFCOMM service when OpenSCQ30 does. commands overrides a command number for one model, as OpenSCQ30 does (game mode on the A3947 and A3957). min_firmware names fields the earbuds send but only use from a firmware version on; both earbuds must have that version or newer. kind is what the product is when it is not earbuds (headphones or speaker); those report one battery, and the app labels and draws it as the product. eq is the model's equalizer, read from OpenSCQ30: write names the packet format (docs/soundcore/PROTOCOL.md section 8), channels and bands its curves, range and digits the value scale, presets the set in eq_presets.json, hear_id the HearID block the write passes on from the state. eq.checked says what confirms the model's EQ write: hardware (a recording from the earbuds) or openscq30_tests (a test of OpenSCQ30's in openscq30_eq); PairFree offers the EQ only then.",
+  "_about": "Soundcore models PairFree knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by PairFree: ldac_excludes lists features LDAC turns off on the earbuds (PairFree's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports. state is the model's reply to the state request (01 01) as [field, bytes] in order, read from OpenSCQ30's parser and checked against its test replies where it has any; skip marks bytes PairFree does not use, optional: fields only some firmware sends. battery gives each level's scale: percent = (value - offset) * 100 / max. checksum false means the packets carry none. service_uuid fixes the RFCOMM service when OpenSCQ30 does. commands overrides a command number for one model, as OpenSCQ30 does (game mode on the A3947 and A3957). min_firmware names fields the earbuds send but only use from a firmware version on; both earbuds must have that version or newer. kind is what the product is when it is not earbuds (headphones or speaker); those report one battery, and the app labels and draws it as the product. eq is the model's equalizer, read from OpenSCQ30: write names the packet format (docs/soundcore/PROTOCOL.md section 8), channels and bands its curves, range and digits the value scale, presets the set in eq_presets.json, hear_id the HearID block the write passes on from the state. eq.checked says what confirms the model's EQ write: hardware (a recording from the earbuds) or openscq30_tests (a test of OpenSCQ30's in openscq30_eq); PairFree offers the EQ only then. buttons is the model's touch controls, read from OpenSCQ30: each group lists the state fields that hold it, the order of its buttons there and, per press, the button number the writes use, whether each button has an enabled byte (none, single, or tws: low four bits with both earbuds in, high four bits with one), the same for its action byte, when it can be turned off (never, each_side, both_sides: turning one side off turns the other off too) and its action set in button_actions.json. set_all means a change to several buttons goes as one 04 84; ignore_enabled means an action of F turns a button off and its enabled byte is not used; command overrides 04 81; during: call is a group used during calls. reset means 04 82 restores the defaults; fixed names presses the model has that cannot be changed. buttons.checked says what confirms the writes: hardware or openscq30_tests (data/soundcore/test_vectors.json openscq30_buttons).",
   "source": {
     "project": "OpenSCQ30",
     "url": "https://github.com/Oppzippy/OpenSCQ30",
@@ -439,6 +439,19 @@
             "genre1"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["button_action"],
+            "order": ["left_double"],
+            "ignore_enabled": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "single", "off": "each_side", "actions": "bass_up"}
+            }
+          }
+        ],
+        "fixed": {"single": "ambient_sound_mode"}
       }
     },
     {
@@ -516,6 +529,19 @@
             "genre2"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["button_action"],
+            "order": ["left_double"],
+            "ignore_enabled": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "single", "off": "each_side", "actions": "bass_up"}
+            }
+          }
+        ],
+        "fixed": {"single": "ambient_sound_mode"}
       }
     },
     {
@@ -593,6 +619,19 @@
             "genre2"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["button_action"],
+            "order": ["left_double"],
+            "ignore_enabled": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "single", "off": "each_side", "actions": "bass_up"}
+            }
+          }
+        ],
+        "fixed": {"single": "ambient_sound_mode"}
       }
     },
     {
@@ -704,6 +743,33 @@
         ],
         "digits": 1,
         "presets": "a3330"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          },
+          {
+            "fields": ["call_buttons"],
+            "during": "call",
+            "order": ["left_double", "right_double", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "command": "0487",
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3330_during_call"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3330_during_call"}
+            }
+          }
+        ],
+        "reset": true,
+        "checked": "openscq30_tests"
       }
     },
     {
@@ -768,6 +834,20 @@
         "digits": 1,
         "state_channels": 1,
         "presets": "type_2"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "right_double", "left_triple", "right_triple"],
+            "ignore_enabled": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -827,6 +907,22 @@
         ],
         "digits": 1,
         "presets": "a3876"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3876"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3876"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3876"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -869,6 +965,18 @@
         "digits": 0,
         "state": "preset_only",
         "presets": "a3909"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long"],
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "single", "off": "never", "actions": "a3909"},
+              "long": {"id": 1, "enabled": "none", "action": "single", "off": "never", "actions": "a3909"}
+            }
+          }
+        ]
       }
     },
     {
@@ -923,6 +1031,22 @@
             "time"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true,
+        "checked": "openscq30_tests"
       }
     },
     {
@@ -984,6 +1108,20 @@
             "custom"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "without_sound_modes"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "never", "actions": "without_sound_modes"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1031,6 +1169,20 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "never", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1076,7 +1228,15 @@
         ["buttons", 12],
         ["sound_mode_cycle", 1],
         ["sound_modes", 4],
-        ["skip", 2]
+        ["skip", 2],
+        ["optional:touch_tone", 1],
+        ["optional:wearing_detection", 1],
+        ["optional:gaming_mode", 1],
+        ["optional:case_battery", 1],
+        ["optional:skip", 1],
+        ["optional:color", 1],
+        ["optional:wind_noise_detection", 1],
+        ["optional:skip", 3]
       ],
       "eq": {
         "write": "plain",
@@ -1088,6 +1248,21 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1135,6 +1310,20 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "never", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1232,7 +1421,23 @@
       "notes": [
         "LDAC on turns two devices off, and LDAC off turns it back on. With LDAC off, two devices can be turned off and on by itself.",
         "Every LDAC or two-devices change makes the earbuds restart their connection; the control channel closes and can be opened again a few seconds later."
-      ]
+      ],
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_long", "right_long"],
+            "presses": {
+              "single": {"id": 2, "enabled": "tws", "action": "tws", "off": "each_side", "actions": "minimal"},
+              "double": {"id": 0, "enabled": "tws", "action": "tws", "off": "each_side", "actions": "with_game_mode"},
+              "long": {"id": 1, "enabled": "tws", "action": "tws", "off": "each_side", "actions": "with_game_mode"}
+            }
+          }
+        ],
+        "reset": true,
+        "checked": "hardware",
+        "note": "Recorded from the Soundcore app (data/soundcore/reports/A3936_06.43.txt): turning one side's single or double press off or on writes that side only, and the left single press stayed on after the right one was turned off. OpenSCQ30 turns both sides off together."
+      }
     },
     {
       "model": "A3939",
@@ -1277,7 +1482,15 @@
         ["buttons", 12],
         ["sound_mode_cycle", 1],
         ["sound_modes", 4],
-        ["skip", 2]
+        ["skip", 2],
+        ["optional:touch_tone", 1],
+        ["optional:wearing_detection", 1],
+        ["optional:gaming_mode", 1],
+        ["optional:case_battery", 1],
+        ["optional:skip", 1],
+        ["optional:color", 1],
+        ["optional:wind_noise_detection", 1],
+        ["optional:skip", 3]
       ],
       "eq": {
         "write": "plain",
@@ -1289,6 +1502,21 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1334,6 +1562,20 @@
         ],
         "digits": 1,
         "presets": "a3944"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          }
+        ]
       }
     },
     {
@@ -1389,6 +1631,21 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "without_sound_modes"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "without_sound_modes"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1486,6 +1743,22 @@
       },
       "commands": {
         "gaming_mode": "1085"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_long", "right_long", "left_triple", "right_triple"],
+            "ignore_enabled": true,
+            "presses": {
+              "single": {"id": 2, "enabled": "tws", "action": "tws", "off": "each_side", "actions": "common"},
+              "double": {"id": 0, "enabled": "tws", "action": "tws", "off": "each_side", "actions": "common"},
+              "triple": {"id": 5, "enabled": "tws", "action": "tws", "off": "each_side", "actions": "common"},
+              "long": {"id": 1, "enabled": "tws", "action": "tws", "off": "each_side", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1533,6 +1806,22 @@
         ],
         "digits": 1,
         "presets": "type_2"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "single": {"id": 2, "enabled": "single", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          }
+        ],
+        "reset": true,
+        "checked": "openscq30_tests"
       }
     },
     {
@@ -1584,6 +1873,21 @@
         ],
         "digits": 1,
         "presets": "a3949"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "single": {"id": 2, "enabled": "single", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1650,6 +1954,21 @@
             "custom"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1733,6 +2052,20 @@
             "genre2"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_long", "right_long"],
+            "presses": {
+              "single": {"id": 2, "enabled": "tws", "action": "tws", "off": "both_sides", "actions": "common"},
+              "double": {"id": 0, "enabled": "tws", "action": "tws", "off": "both_sides", "actions": "common"},
+              "long": {"id": 1, "enabled": "tws", "action": "tws", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1809,7 +2142,7 @@
         ["easy_chat_wait_time", 1],
         ["wearing_detection", 1],
         ["skip", 1],
-        ["buttons", 4]
+        ["slide_buttons", 4]
       ],
       "eq": {
         "write": "interleaved",
@@ -1835,6 +2168,23 @@
             "genre2"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons", "slide_buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long", "left_slide_up", "right_slide_up", "left_slide_down", "right_slide_down"],
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "slide_up": {"id": 6, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3954_slide_up"},
+              "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3954_slide_down"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -1920,6 +2270,21 @@
             "genre2"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -2017,6 +2382,21 @@
       },
       "commands": {
         "gaming_mode": "1085"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -2083,6 +2463,23 @@
         ],
         "digits": 1,
         "presets": "type_2"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true,
+        "checked": "openscq30_tests"
       }
     },
     {
@@ -2161,6 +2558,20 @@
             "genre2"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"}
+            }
+          }
+        ]
       }
     },
     {
@@ -2215,6 +2626,20 @@
         "digits": 1,
         "state_channels": 1,
         "presets": "d1101"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1101_multi_press"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1101_multi_press"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1101_long_press"}
+            }
+          }
+        ]
       }
     },
     {
@@ -2299,6 +2724,21 @@
             "genre2"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -2382,6 +2822,21 @@
             "genre2"
           ]
         }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
       }
     },
     {
@@ -2442,7 +2897,20 @@
         ["tap_controls_disabled", 1],
         ["noise_canceling_prompt", 1],
         ["auto_switch_once_asleep", 1]
-      ]
+      ],
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "right_double", "left_triple", "right_triple"],
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1301"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1301"}
+            }
+          }
+        ],
+        "reset": true
+      }
     }
   ]
 }

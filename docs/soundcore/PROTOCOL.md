@@ -1,7 +1,9 @@
 # Soundcore (Anker) protocol
 
-**Status: nothing here is confirmed yet**, either on hardware or in the official Soundcore
-app. Everything below comes from reading the source of
+**Status:** confirmed on the owner's Space A40 on 2026-10-13
+(`data/soundcore/reports/A3936_06.43.txt`): the transport and service, the frame format and
+checksum, and the commands for the state, noise control, touch actions and touch tone. The rest
+is unconfirmed. Everything below comes from reading the source of
 [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) (commit `bc77a29`, 2026-09-26), an
 open-source Soundcore app that supports about 40 models, under GPL-3.0-or-later like
 SoundPeter. [Gadgetbridge](https://gadgetbridge.org/gadgets/headphones/anker/) supports eight
@@ -21,8 +23,9 @@ Two models get a fixed service instead:
   number;
 - the A3930 (Liberty 2 Pro+) uses SPP.
 
-If other models' vendor UUIDs also end in their model number, the earbuds would be naming
-their model in their service list (section 4).
+The Space A40 (A3936) offers `0cf12d31-fac3-4553-bd80-d6832e7b3936` (RFCOMM channel 5), so
+both known vendor UUIDs end in `b` and the model number: the earbuds name their model in their
+service list (section 4).
 
 ## 2. Frames
 
@@ -75,6 +78,13 @@ has not confirmed it.
 | `10 86` | Set sound leak compensation |
 | `20 81`, `20 82` | Limit high volume |
 
+Seen on the A40 but not in OpenSCQ30: the Soundcore app reads `05 01` right after the state (the
+reply looks like little-endian counters), then sends `05 81` with no body. Their meaning is not
+known, so SoundPeter does not send `05 81`.
+
+On the A40 every setting is acknowledged with the same command and no body, and after `06 81`
+the earbuds also send the new sound modes as `06 01`. They send the battery (`01 03`) unasked.
+
 **How this differs from SoundPEATS:** SoundPEATS earbuds have one read per feature, and a
 feature counts as present once its read answers. Soundcore earbuds answer `01 01` with one block
 holding the whole state. That block's layout depends on the model, so the app must know the
@@ -85,7 +95,11 @@ earbuds it can be read back.
 
 OpenSCQ30 does not detect the model: the user picks it when adding the earbuds. SoundPeter finds
 SoundPEATS models by itself (from the firmware code), and should do the same for Soundcore.
-Candidates for how:
+
+On the A40 two things name the model: the vendor service UUID ends in `3936`, and the serial
+number in the state reply starts with `3936`. The rest of the serial number is the earbuds'
+Bluetooth address, so reports mask it. Its Bluetooth name is "Soundcore Space A40". Candidates
+in general:
 - the vendor service UUID (section 1);
 - the serial number (`01 05`);
 - the Bluetooth name;
@@ -136,11 +150,13 @@ then reads the connected devices with `0B 01`.
 in half-hour steps, LDAC, touch tone, gaming mode, both earbuds' and the case's battery, and the
 serial number and firmware versions.
 
-**Still to check on the owner's pair:**
-- Which RFCOMM service it offers (section 1), and whether the frames carry a checksum.
-- Whether the serial number, the Bluetooth name or the service UUID can identify it (section 4).
-- The byte sizes of each field above; OpenSCQ30's shared structures hold them, and a
-  recording from the Soundcore app would confirm them.
+**Confirmed on the owner's pair:** the vendor service and checksum (sections 1 and 2), how it
+names its model (section 4), the start of the state reply (TWS status, battery, both firmware
+versions, the serial number), the sound modes block (6 bytes, byte 0: 0 noise cancelling,
+1 transparency, 2 normal), and the touch-action and touch-tone commands.
+
+**Still to check:** the byte sizes of the remaining fields (OpenSCQ30's shared structures hold
+them), and an EQ change, which this first recording did not include.
 
 ## 7. Open questions
 

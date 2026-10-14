@@ -1,0 +1,93 @@
+Soundcore Space A40 (A3936): firmware 06.43
+===========================================
+
+Date:      2026-10-13
+Firmware:  06.43 on both earbuds (from the state reply)
+Phone:     Samsung Galaxy S24 FE (SM-S721W), Android 16, One UI 8
+App:       Soundcore 6.4.0
+Method:    Android Bluetooth HCI snoop log while the owner used the Soundcore app, pulled with
+           adb bugreport. Only Soundcore frames are kept; the rest of the log was discarded.
+           The serial number is 3936 followed by the earbuds' Bluetooth address; the address
+           is masked (XX). No other addresses appear below.
+
+---- Connection ----
+Bluetooth name:  Soundcore Space A40
+Service:         RFCOMM on 0cf12d31-fac3-4553-bd80-d6832e7b3936, which ends in the model number
+Frames:          31, all with a valid checksum (sum of the bytes before it, modulo 256)
+Every frame has the headers OpenSCQ30 uses: 08 EE 00 00 00 to the earbuds, 09 FF 00 00 01 from
+them, then the command, the total length (2 bytes, little-endian), the body and the checksum.
+
+---- What the owner did ----
+Opened the Soundcore app (21:52:40), turned noise cancelling on and back to normal, changed the left
+single-press action, turned the right single press off and on, toggled another right-side
+touch setting twice, and turned the touch tone on and off. The EQ was not changed.
+
+---- Frames, in order ----
+Time on the phone's clock; -> to the earbuds, <- from them. Body: the bytes between the length
+and the checksum.
+
+21:52:40  ->  01 01  len  10  request state
+21:52:40  <-  01 01  len 153  state (layout: docs/soundcore/PROTOCOL.md section 6)
+                    01 01 05 05 00 00 30 36 2e 34 33 30 36 2e 34 33 33 39 33 36 XX XX XX XX
+                    XX XX XX XX XX XX XX XX 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff
+                    ff ff ff 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff
+                    ff ff ff ff 00 00 00 0e 11 11 01 00 11 63 11 66 11 44 11 44 05 02 30 01
+                    00 01 00 00 0f 31 01 00 01 00 00 00 ff ff ff ff ff ff ff ff ff ff ff
+21:52:40  ->  05 01  len  10  not in OpenSCQ30; the app sends it right after the state
+21:52:40  <-  05 01  len 126  not in OpenSCQ30; looks like little-endian counters
+                    3a 00 00 00 02 00 00 00 02 00 00 00 09 00 00 00 00 00 00 00 00 00 00 00
+                    45 01 b2 08 18 00 54 01 0e 00 00 00 80 07 27 01 00 00 00 00 06 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 10 00 35 01 00 00 00 00 00 00 00 00
+                    01 00 17 00 39 00 00 00 00 00 01 00 00 00 00 00 00 00 06 00 00 00 00 00
+                    00 00 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+21:52:40  ->  05 81  len  10  not in OpenSCQ30; no body. Meaning unknown: do not send
+21:52:40  <-  05 81  len  10  acknowledged, no body
+21:53:03  <-  01 03  len  13  battery, sent unasked (OpenSCQ30: battery level)
+                    05 05 0f
+21:54:01  ->  06 81  len  16  set sound modes; byte 0: 0 noise cancelling, 1 transparency, 2 normal
+                    00 30 01 00 01 00
+21:54:01  <-  06 81  len  10  acknowledged, no body
+21:54:02  <-  06 01  len  16  sound modes update, after the set
+                    00 30 01 00 01 00
+21:54:04  ->  06 81  len  16  set sound modes; byte 0: 0 noise cancelling, 1 transparency, 2 normal
+                    02 30 01 00 01 00
+21:54:04  <-  06 81  len  10  acknowledged, no body
+21:54:04  <-  06 01  len  16  sound modes update, after the set
+                    02 30 01 00 01 00
+21:54:16  ->  04 81  len  13  set a touch action: side (0 left, 1 right), button (2 single, 0 double, 1 long), action
+                    00 02 13
+21:54:16  <-  04 81  len  10  acknowledged, no body
+21:54:20  ->  04 81  len  13  set a touch action: side (0 left, 1 right), button (2 single, 0 double, 1 long), action
+                    00 02 11
+21:54:20  <-  04 81  len  10  acknowledged, no body
+21:54:24  ->  04 83  len  13  enable a touch action: side, button, enabled (OpenSCQ30 reads the low bits)
+                    01 02 00
+21:54:24  <-  04 83  len  10  acknowledged, no body
+21:54:26  ->  04 83  len  13  enable a touch action: side, button, enabled (OpenSCQ30 reads the low bits)
+                    01 02 01
+21:54:26  <-  04 83  len  10  acknowledged, no body
+21:54:30  ->  04 83  len  13  enable a touch action: side, button, enabled (OpenSCQ30 reads the low bits)
+                    01 00 10
+21:54:30  <-  04 83  len  10  acknowledged, no body
+21:54:31  ->  04 83  len  13  enable a touch action: side, button, enabled (OpenSCQ30 reads the low bits)
+                    01 00 11
+21:54:31  <-  04 83  len  10  acknowledged, no body
+21:54:41  ->  01 83  len  11  touch tone: 1 on, 0 off
+                    01
+21:54:41  <-  01 03  len  13  battery, sent unasked (OpenSCQ30: battery level)
+                    05 05 0f
+21:54:41  <-  01 83  len  10  acknowledged, no body
+21:54:43  ->  01 83  len  11  touch tone: 1 on, 0 off
+                    00
+21:54:43  <-  01 83  len  10  acknowledged, no body
+21:55:03  <-  01 03  len  13  battery, sent unasked (OpenSCQ30: battery level)
+                    05 05 0f
+
+---- Notes ----
+- Every SET is acknowledged with the same command and no body. After 06 81 the earbuds also send
+  the new sound modes as 06 01.
+- The state reply starts with TWS status 01 01 (both earbuds connected), battery 05 05 and
+  charging 00 00, firmware "06.43" twice, then the serial number, as OpenSCQ30's A3936 layout says.
+- 05 01 and 05 81 are not in OpenSCQ30. Until their meaning is known, SoundPeter does not send
+  05 81.

@@ -1,8 +1,9 @@
 # Device reports
 
 Raw output from real earbuds: `tools/probe.py`, PairFree's device report or its Record
-from PeatsAudio report, or earbud frames taken from a phone's Bluetooth log. The README's
-[Tested earbuds](../../README.md#tested-earbuds) table is built from these.
+from PeatsAudio report, or earbud frames taken from a phone's Bluetooth log. The
+[Tested earbuds](../../../docs/devices/soundpeats.md#tested-earbuds) and All models tables on the
+SOUNDPEATS device page are built from these.
 
 A probe or device report is one file per model and firmware version, named
 `<firmware code>_<version>.txt`, for example `S99_1.2.3.txt`. The firmware code is the

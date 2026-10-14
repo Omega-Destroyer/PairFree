@@ -70,12 +70,16 @@ import kotlin.math.roundToInt
  * every band is the earbuds' own tuning.
  */
 @Composable
-internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: () -> Unit = {}) {
+internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit)? = {}) {
     if (eq == null) {
         TabContent {
             Text(stringResource(R.string.tab_sound), style = Studio.type.title)
-            Text(stringResource(R.string.eq_unavailable), color = Studio.colors.secondaryText)
-            StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
+            if (onRecord != null) {
+                Text(stringResource(R.string.eq_unavailable), color = Studio.colors.secondaryText)
+                StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
+            } else {
+                Text(stringResource(R.string.eq_soundcore_unchecked), color = Studio.colors.secondaryText)
+            }
         }
         return
     }
@@ -124,7 +128,10 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: () -> Unit 
             item { Chip(stringResource(R.string.eq_new), selected = false) { actions.startNew() } }
         }
         Label(stringResource(R.string.eq_on_earbuds, currentProfileName(eq)))
-        if (!eq.known) Text(stringResource(R.string.eq_unknown_hint), style = Studio.type.small, color = Studio.colors.secondaryText)
+        if (!eq.known) {
+            val hint = if (eq.target.reportsEq) R.string.eq_reading else R.string.eq_unknown_hint
+            Text(stringResource(hint), style = Studio.type.small, color = Studio.colors.secondaryText)
+        }
 
         val editable = eq.preset == null
         Panel {
@@ -156,10 +163,11 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: () -> Unit 
                 }
             }
         } else {
-            Text(stringResource(R.string.eq_preset_fixed), style = Studio.type.small, color = Studio.colors.secondaryText)
+            val fixed = if (eq.target.hasStock) R.string.eq_preset_fixed else R.string.eq_preset_fixed_no_stock
+            Text(stringResource(fixed), style = Studio.type.small, color = Studio.colors.secondaryText)
         }
 
-        Panel {
+        if (eq.target.hasPreamp) Panel {
             val preamp = eq.setting.preampDb
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(stringResource(R.string.preamp), Modifier.weight(1f))
@@ -185,7 +193,7 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: () -> Unit 
             StudioButton(stringResource(R.string.eq_delete, profile.name), { deleting = profile }, Modifier.fillMaxWidth(), destructive = true)
         }
         message?.let { Text(stringResource(it), style = Studio.type.small, color = Studio.colors.secondaryText) }
-        Text(stringResource(R.string.eq_note), style = Studio.type.small, color = Studio.colors.label)
+        Text(stringResource(if (eq.target.reportsEq) R.string.eq_note_reported else R.string.eq_note), style = Studio.type.small, color = Studio.colors.label)
     }
 
     if (saving) {

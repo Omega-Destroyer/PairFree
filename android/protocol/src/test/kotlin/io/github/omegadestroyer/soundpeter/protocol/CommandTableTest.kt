@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-/** The generated table must say exactly what data/commands.json says. */
+/** The generated table must say exactly what data/soundpeats/commands.json says. */
 class CommandTableTest {
     private val commands = loadData("commands.json").getValue("commands").jsonArray.map { it.jsonObject }
 

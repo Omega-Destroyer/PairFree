@@ -246,7 +246,7 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     try:
-        local = [d["firmware_code"] for d in json.loads((REPO / "data" / "devices.json").read_text())["devices"]]
+        local = [d["firmware_code"] for d in json.loads((REPO / "data" / "soundpeats" / "devices.json").read_text())["devices"]]
     except (OSError, ValueError, KeyError):
         local = []
     versions = dict(v.split("=", 1) for v in args.version)

@@ -40,13 +40,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.omegadestroyer.soundpeter.AppViewModel
 import io.github.omegadestroyer.soundpeter.R
+import io.github.omegadestroyer.soundpeter.bluetooth.Brand
 import io.github.omegadestroyer.soundpeter.bluetooth.Paired
 import io.github.omegadestroyer.soundpeter.eq.EqActions
 import io.github.omegadestroyer.soundpeter.eq.EqState
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.EarbudState
+import io.github.omegadestroyer.soundpeter.protocol.Form
 import io.github.omegadestroyer.soundpeter.protocol.Model
 import io.github.omegadestroyer.soundpeter.protocol.Models
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.soundpeter.protocol.blockedByLdac
 import io.github.omegadestroyer.soundpeter.ui.theme.Studio
 import io.github.omegadestroyer.soundpeter.ui.theme.StudioShape
@@ -62,12 +66,14 @@ internal enum class Tab(@StringRes val title: Int) {
 @Composable
 fun ConnectedScreen(vm: AppViewModel, device: Paired, live: Boolean) {
     val state by vm.connection.state.collectAsStateWithLifecycle()
-    val model = Models.find(state.firmware?.code, device.name)
-    LaunchedEffect(device.address, model) { vm.equalizer.open(device.address, model) }
+    val model = modelOf(device, state)
+    LaunchedEffect(device.address, model) { vm.openEqualizer(device, model) }
     val eq by vm.equalizer.state.collectAsStateWithLifecycle()
-    ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live)
+    val soundcore by vm.connection.soundcoreState.collectAsStateWithLifecycle()
+    ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live, touch = soundcore?.let(SoundcoreTouch::of))
 }
 
+/** [touch] is the Soundcore earbuds' touch controls, from the last state they sent; null for SoundPEATS earbuds. */
 @Composable
 internal fun ConnectedScreen(
     device: Paired,
@@ -77,10 +83,11 @@ internal fun ConnectedScreen(
     eqActions: EqActions,
     startTab: Tab = Tab.HOME,
     live: Boolean = true,
+    touch: SoundcoreTouch? = null,
 ) {
     var tab by rememberSaveable { mutableStateOf(startTab) }
     var fitTest by rememberSaveable { mutableStateOf(false) }
-    val model = Models.find(state.firmware?.code, device.name)
+    val model = modelOf(device, state)
     if (fitTest) {
         FitTestScreen(device, state, actions, onClose = { fitTest = false })
         return
@@ -89,13 +96,23 @@ internal fun ConnectedScreen(
         Box(Modifier.weight(1f)) {
             when (tab) {
                 Tab.HOME -> HomeScreen(device, state, model, actions, live, eq) { tab = Tab.SOUND }
-                Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture)
-                Tab.CONTROLS -> ControlsScreen(device, state, actions)
+                // Recording from the official app exists for SoundPEATS only so far.
+                Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture.takeIf { device.brand == Brand.SOUNDPEATS })
+                Tab.CONTROLS -> ControlsScreen(device, state, actions, touch)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions) { fitTest = true }
             }
         }
         TabBar(tab) { tab = it }
     }
+}
+
+/**
+ * The model's table entry: SoundPEATS by firmware code, or by name until the code is known;
+ * Soundcore by the model number its service or name gave (data/soundcore/devices.json).
+ */
+internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.brand) {
+    Brand.SOUNDCORE -> SoundcoreModels.model(device.model ?: state.firmware?.code)
+    Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 
 /** A tab's content: scrolls if it must, 16 px gutters, 16 px between blocks. */
@@ -122,7 +139,8 @@ private fun HomeScreen(
     eq: EqState?,
     onOpenSound: () -> Unit,
 ) {
-    val art = deviceArt(state.firmware?.code, device.name)
+    val form = model?.form ?: Form.EARBUDS
+    val art = deviceArt(state.firmware?.code, device.name, form)
     TabContent {
         // Model name and connection state, and a button to switch earbuds.
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -136,14 +154,21 @@ private fun HomeScreen(
         }
 
         // Battery for left, case and right: drawing, percentage, bar. Only what the earbuds report.
-        val batteries = listOfNotNull(
-            Battery(R.string.left, state.batteryLeft, art.bud, mirrored = false)
-                .takeIf { state.supports(Command.BATTERY_LEFT) },
-            Battery(R.string.case_label, state.batteryCase, art.case, mirrored = false)
-                .takeIf { state.supports(Command.BATTERY_CASE) },
-            Battery(R.string.right, state.batteryRight, art.bud, mirrored = true)
-                .takeIf { state.supports(Command.BATTERY_RIGHT) },
-        )
+        // Headphones and speakers report one battery, shown as the whole product.
+        val batteries = when (form) {
+            Form.EARBUDS -> listOfNotNull(
+                Battery(R.string.left, state.batteryLeft, art.bud, mirrored = false)
+                    .takeIf { state.supports(Command.BATTERY_LEFT) },
+                Battery(R.string.case_label, state.batteryCase, art.case, mirrored = false)
+                    .takeIf { state.supports(Command.BATTERY_CASE) },
+                Battery(R.string.right, state.batteryRight, art.bud, mirrored = true)
+                    .takeIf { state.supports(Command.BATTERY_RIGHT) },
+            )
+            Form.HEADPHONES, Form.SPEAKER -> listOfNotNull(
+                Battery(if (form == Form.SPEAKER) R.string.speaker else R.string.headphones, state.batteryLeft, art.bud, mirrored = false)
+                    .takeIf { state.supports(Command.BATTERY_LEFT) },
+            )
+        }
         if (batteries.isEmpty()) {
             Label(stringResource(R.string.reading))
         } else {
@@ -185,7 +210,7 @@ private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) {
     }
 }
 
-/** The three noise modes, in the order docs/DESIGN.md gives. Their numbers come from data/commands.json. */
+/** The three noise modes, in the order docs/DESIGN.md gives. Their numbers come from data/soundpeats/commands.json. */
 private enum class NoiseMode(val key: String, @StringRes val title: Int) {
     OFF("off", R.string.anc_off),
     CANCELLING("anc", R.string.anc_cancelling),

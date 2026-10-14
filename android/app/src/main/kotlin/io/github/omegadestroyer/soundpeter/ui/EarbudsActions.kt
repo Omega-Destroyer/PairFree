@@ -1,6 +1,8 @@
 package io.github.omegadestroyer.soundpeter.ui
 
 import io.github.omegadestroyer.soundpeter.protocol.Command
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreButtons
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreTouch
 
 /** What the connected screens can ask for. The app passes its view model; previews pass [NoActions]. */
 interface EarbudsActions {
@@ -21,6 +23,12 @@ interface EarbudsActions {
 
     /** Starts the ear tip fit test; the result arrives in the earbud state. */
     fun startFitTest()
+
+    /** Changes Soundcore touch controls, made from the last state the earbuds sent. */
+    fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?)
+
+    /** Puts Soundcore touch actions back to the model's defaults. Call only from a confirmation. */
+    fun resetTouch()
 }
 
 /** Does nothing. For previews. */
@@ -31,4 +39,6 @@ object NoActions : EarbudsActions {
     override fun switchEarbuds() = Unit
     override fun openCapture() = Unit
     override fun startFitTest() = Unit
+    override fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) = Unit
+    override fun resetTouch() = Unit
 }

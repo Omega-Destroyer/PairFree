@@ -2,7 +2,7 @@ package io.github.omegadestroyer.soundpeter.protocol
 
 /**
  * The EQ curves an app sent to the earbuds, found in a Bluetooth log ([SnoopScanner]).
- * The earbuds cannot report their EQ (docs/PROTOCOL.md section 4), so a capture of the
+ * The earbuds cannot report their EQ (docs/soundpeats/PROTOCOL.md section 4), so a capture of the
  * official app picking each preset is how a model's base curve and presets are learnt.
  */
 public object EqCapture {

@@ -268,8 +268,8 @@ the earbuds carry version byte 03, frames from the phone 04 (column vN).
   then 17 kHz dragged to +6 and to -6 and Save.
 Owner, by ear: in both apps Voice takes effect but going back to Standard does not change
 the sound. In both apps LDAC off turns two devices on, and two devices off turns LDAC on.
-The EQ payloads are read in docs/PROTOCOL.md section 11 and are test vectors
-(eq_layout in data/test_vectors.json).
+The EQ payloads are read in docs/soundpeats/PROTOCOL.md section 11 and are test vectors
+(eq_layout in data/soundpeats/test_vectors.json).
 
 11:23:56.036 phone->buds v4 000A 0309
 11:23:56.054 buds->phone v3 000A 8309 00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39
@@ -667,7 +667,7 @@ Same phone and method as the session above; earbud frames only. PeatsAudio conne
 12:07:48 and sent its saved curve unasked at 12:07:50. The owner then picked the presets
 in grid order about 7 s apart: SOUNDPEATS Classic (12:07:53, the base curve), Bass Boost,
 Bass Reduce, Treble Boost, Electronic, Pop, Classical, Rock, Folk, Book Whisper, HIFI and
-ACG (12:09:16). The decoded curves are the S5 "eq.presets" in data/devices.json and the
+ACG (12:09:16). The decoded curves are the S5 "eq.presets" in data/soundpeats/devices.json and the
 eq_preset test vectors. Every 0E01 band write, from PeatsAudio and SoundPeter alike, is
 answered by 001D 0F81 01 (the first session's filter dropped those replies).
 
@@ -965,7 +965,7 @@ answered by 001D 0F81 01 (the first session's filter dropped those replies).
 
 ---- GAIA v3 features, as SoundPeter's device report lists them, 2026-10-12 ----
 
-The reply to 00 1D 00 01 on connect (data/reports/S5_gaia_v3.txt): feature ids, sorted.
+The reply to 00 1D 00 01 on connect (data/soundpeats/reports/S5_gaia_v3.txt): feature ids, sorted.
 Feature 09 is the fit test.
 
 gaia_features        0001  00 01 05 06 07 08 09 0c 0d

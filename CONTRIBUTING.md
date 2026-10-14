@@ -13,8 +13,8 @@ A report is most useful when it includes:
 - The full probe output, unedited
 - Your computer's operating system
 
-Reports land in `data/reports/` as `<firmware code>_<version>.txt` and the model is
-added to `data/devices.json`.
+Reports land in `data/soundpeats/reports/` as `<firmware code>_<version>.txt` and the model is
+added to `data/soundpeats/devices.json`.
 
 ## Trying a setting
 
@@ -24,16 +24,16 @@ The probe can send one SET command so you can check that a setting takes effect:
 python tools/probe.py --mac AA:BB:CC:DD:EE:FF --set 0311 02
 ```
 
-Command numbers and values are in `data/commands.json`. Stick to things you can hear
+Command numbers and values are in `data/soundpeats/commands.json`. Stick to things you can hear
 or see and undo, like ANC mode or game mode. Do not send `0305` (factory reset) or
 `0316` (reboot) unless you mean it.
 
 ## Code
 
-- Read `docs/PROTOCOL.md` first.
-- Take command numbers from `data/commands.json`. Do not retype them.
+- Read `docs/soundpeats/PROTOCOL.md` first.
+- Take command numbers from `data/soundpeats/commands.json`. Do not retype them.
 - Any code that builds or parses frames needs a test that runs
-  `data/test_vectors.json`.
+  `data/soundpeats/test_vectors.json`.
 - Run `python -m unittest discover -s tools -v` before you push.
 
 ## What does not belong here

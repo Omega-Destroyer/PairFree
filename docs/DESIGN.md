@@ -18,8 +18,16 @@ These came from the owner and are not up for trade.
 - **Light on resources.** Low memory and CPU use matters more than download size.
   Under 10 MB is a target to aim for, not a limit.
 - **Clean code and assets.** Our own code plus libraries under GPL-compatible
-  licences (Apache 2.0, MIT, BSD). Nothing from the official app: no code, no
+  licences (Apache 2.0, MIT, BSD). Nothing from any brand's official app: no code, no
   images, no fonts, no sounds.
+- **One app for every brand.** (Owner, 2026-10-13.) The aim is a universal control app
+  for any earbuds or headphones whose protocol can be worked out, so people with
+  several pairs need one app. SoundPEATS comes first, then Soundcore (Anker). The screens
+  stay the same for every brand; each model shows only the features it has. Each
+  brand's protocol, model table, reports and drawings live in folders named after the
+  brand (`docs/<brand>/`, `data/<brand>/`, `assets/devices/<brand>/`). Models nobody on
+  the project owns come from owners' recordings, as for SoundPEATS. A feature only one brand
+  has (3D sound on Soundcore, the fit test on SoundPEATS) shows on the earbuds that have it.
 - **Clean vector art.** Device drawings are vectors. Their outlines may be traced
   from product photos so the proportions are right, but no photograph, logo, text or
   surface pattern goes into a drawing. The photos themselves never go into the
@@ -30,9 +38,9 @@ These came from the owner and are not up for trade.
 - Kotlin with Jetpack Compose.
 - The protocol code sits in its own module with no Android dependencies, so iOS can
   reuse it through Kotlin Multiplatform or reimplement it against
-  `data/test_vectors.json`.
-- Permissions: `BLUETOOTH_CONNECT`. Add `POST_NOTIFICATIONS` only when the
-  notification controls ship. Nothing else.
+  `data/soundpeats/test_vectors.json`.
+- Permissions: `BLUETOOTH_CONNECT`. Add `POST_NOTIFICATIONS`, and what the companion
+  device setup and the background connection need, when the notification ships. Nothing else.
 
 ## Looks
 
@@ -108,7 +116,9 @@ when nothing is connected.
 ### Not connected
 
 - A drawing of an open case.
-- The earbuds already paired with the phone, each with a Connect button.
+- Every paired device PairFree supports, of any brand (SoundPEATS, Soundcore, ...), each
+  with a Connect button. The user picks a device, never a brand: PairFree works out the
+  brand and model by itself (owner, 2026-10-13).
 - A button that opens the system Bluetooth settings.
 - One line: "No account. No internet. Nothing leaves this phone."
 
@@ -117,14 +127,17 @@ when nothing is connected.
 Everything here fits without scrolling on a 390 by 844 screen.
 
 1. Model name and connection state. A button to switch earbuds.
-2. Battery for left, case and right, each with a drawing, a percentage and a bar.
+2. Battery for left, case and right, each with a drawing, a percentage and a bar. Headphones
+   and speakers report one battery: it shows once, named and drawn as the product, with a
+   generic headphones or speaker drawing until the model has its own (owner, 2026-10-14).
 3. **Active Noise Cancelling.** One control with three choices in this order:
    Off, Cancelling, Transparency.
    - Under Cancelling: the scene choices the earbuds report (Adaptive, Indoor,
      Outdoor, Traffic on the H3).
    - Under Transparency: the transparency levels the earbuds report.
 4. Current sound profile with a small curve. Opens the equalizer.
-5. Quick switches: game mode, two devices, in-ear detection, LDAC.
+5. Quick switches: game mode, two devices, in-ear detection, LDAC, 3D sound. Each shows only
+   on earbuds that have it.
 
 ### Sound (equalizer)
 
@@ -149,7 +162,7 @@ generic custom layout. The H3's is 50, 160, 350, 800, 1.6k, 2.8k, 4.6k, 8k, 12k 
 
 The gains on screen are the user's, on top of the model's base curve, the way the
 official app does it, so 0 dB on every band is the earbuds' own tuning (the Stock
-profile). A model's presets come from `data/devices.json` (`eq.presets`). They are
+profile). A model's presets come from `data/soundpeats/devices.json` (`eq.presets`). They are
 complete curves, sent as they are and drawn read-only as their difference from stock;
 editing band by band starts from Stock, New or a saved profile. The preamp only lowers
 the master gain. The earbuds cannot report their EQ, so the screen shows what this phone
@@ -158,6 +171,15 @@ does, in case another app changed it. Earbuds this phone has never set show "Not
 yet" until the user picks a profile; nothing is sent to them on connect. A profile that
 puts the same bytes on the earbuds as the current setting shows as selected, so New with
 every band at 0 is Stock.
+
+Soundcore earbuds report their EQ, so the same screen works differently for them (owner,
+2026-10-14). The profiles are the model's presets, the user's saved profiles and New; there is
+no Stock and no preamp. The screen shows what the earbuds report, whichever app set it, and
+nothing is sent on connect. After a change the app reads the state back, so the earbuds confirm
+it. The custom curve is the model's visible bands (8 on most) in whole dB within the model's
+range (±6 dB on most). The screen offers the EQ only on models whose EQ write a recording or
+OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8); the others say a device report
+helps.
 
 ### Controls
 
@@ -172,6 +194,15 @@ every band at 0 is Stock.
 The official app's gesture table has no slide gestures. Their command codes are
 unknown until someone finds them on hardware.
 
+Soundcore earbuds (docs/soundcore/PROTOCOL.md section 9) use the same tab. The side switch shows
+only when the model has buttons on both sides. Rows list what the model has, slides included (the
+Liberty 4 Pro); a press that can be turned off has Off in its picker. A third group, During calls,
+shows on the C30i, and presses the model fixes (single press on the three one-button headphones)
+show without a picker. Soundcore earbuds keep separate actions for when one earbud is used alone:
+a line under the groups says which set is on screen, following whether both earbuds are in. Then
+touch controls on or off, touch lock and touch tone, which noise modes the noise-control action
+cycles through (at least one stays on), and Reset gestures, each only where the model has it.
+
 ### Device
 
 - Header: model and firmware version, read from the earbuds.
@@ -179,7 +210,7 @@ unknown until someone finds them on hardware.
 - Prompts and power: voice prompt volume, prompt language, turn off when idle.
 - Find my earbuds: beep left, beep right.
 - Connection: LE Audio too, on models PeatsAudio offers it on (`confirmed` in
-  `data/devices.json`). The earbuds restart to switch; the app reconnects by itself.
+  `data/soundpeats/devices.json`). The earbuds restart to switch; the app reconnects by itself.
 - Ear tips: a fit test page, on models whose GAIA features include the fit test. It says
   how to wear the earbuds, runs the test (about 9 s, with a progress bar), then shows a
   result per earbud with a drawing ("Good fit" or "Poor fit"), and what to do about a
@@ -187,6 +218,8 @@ unknown until someone finds them on hardware.
   official app, and back on after it, which the official app does not do.
 - Water drain, where the earbuds answer its read: one button, with the advice to take
   the earbuds out first. It shows "Draining" until the earbuds report it finished.
+- Notification: a switch for the notification controls (on by default). The note under it
+  says that while it is on, the official apps (PeatsAudio, Soundcore) cannot connect.
 - Maintenance: copy device report, record the EQ from PeatsAudio, factory reset.
 
 Copy device report puts the same information as `tools/probe.py` on the clipboard,
@@ -244,7 +277,7 @@ shared to the app.
   PeatsAudio read from each pair of earbuds, in device report lines; PairFree's own
   device report; and every named write's decoded bands and exact bytes. No names or
   addresses.
-- A maintainer saves it under `data/reports/`, where `tools/gen_models_table.py` reads
+- A maintainer saves it under `data/soundpeats/reports/`, where `tools/gen_models_table.py` reads
   its settings, and turns its equalizer into the model's `eq` entry and test vectors with
   `tools/import_eq_capture.py`, which checks every value against the bytes.
 
@@ -260,21 +293,38 @@ Proposed, not yet reviewed by the owner.
   devices need LDAC off.
 - **Optimistic, then confirmed.** A change shows at once and is read back from the
   earbuds afterwards.
-- **No background work by default.** The app talks to the earbuds while it is on
-  screen. A background connection exists only if the user turns on the
-  notification controls.
+- **One connection, shared.** The app holds one control connection to the earbuds; the
+  screens and the notification both use it. While the notification is on (the default,
+  owner 2026-10-13) the connection stays open whenever the earbuds are connected, so the
+  battery and the noise mode are live: the earbuds report changes themselves, and the
+  battery is also read every few minutes. Other apps, the official ones included, cannot
+  connect meanwhile; turning the notification off in the Device tab frees the earbuds,
+  and then the app holds the connection only while it is on screen.
 
 ## Outside the app
+
+### Notification (owner, 2026-10-13; to build after Soundcore support)
+
+- Shown while supported earbuds are connected, on by default, off with a switch in the
+  Device tab.
+- Battery for left, case and right, like Google's Fast Pair notification without the
+  pictures.
+- Buttons: one that steps through the noise modes, then game mode and 3D sound, each only
+  on earbuds that have it.
+- Android needs PairFree set up as the earbuds' companion app (a one-time system prompt
+  per pair) to start when they connect, and the notification permission on Android 13 and
+  later.
+- On earbuds that support Google Fast Pair (the Space A40) Google's own battery
+  notification shows as well; PairFree cannot hide it.
 
 Planned, not yet designed:
 
 - A quick settings tile that cycles the noise mode.
-- Notification controls with battery and noise mode.
 - A home screen widget.
 
 ## Device drawings
 
-- Source files are SVG under `assets/devices/<model>/<look>/`; only `studio` exists
+- Source files are SVG under `assets/devices/soundpeats/<model>/<look>/`; only `studio` exists
   for now. They are generated by `tools/gen_device_art.py`, which also writes the same
   drawings as Android vector drawables
   (`android/app/src/main/res/drawable/device_<model>_<part>.xml`) and the app's lookup
@@ -286,7 +336,7 @@ Planned, not yet designed:
 - Outlines are traced from SoundPEATS' product photos: straight on where a photo
   shows the part that way (the H3 and Air5 Pro+ earbuds), otherwise from the angle the
   photo shows. Each model's data and the photo it came from are in
-  `tools/device_art/<model>.json`; the H3 and Air5 Pro+ are in the script itself.
+  `tools/device_art/soundpeats/<model>.json`; the H3 and Air5 Pro+ are in the script itself.
 - Headphones are drawn whole; ear hooks and clips as one earbud.
 - Models without art of their own, or a part no photo shows clearly, use a generic
   earbud or case. The app picks drawings by Bluetooth name, then firmware code.
@@ -304,7 +354,7 @@ Planned, not yet designed:
 - A light version of Studio.
 - Which side the Air5 Pro+ drawing shows. It has not been checked against the L/R
   marking on a real pair.
-- Widget, tile and notification designs.
+- Widget and tile designs.
 - The EQ of every model other than the H3 and Air5 Pro+, until someone records it
   (Record from PeatsAudio above).
 - Whether a hearing-test profile is worth building. It can be done offline.

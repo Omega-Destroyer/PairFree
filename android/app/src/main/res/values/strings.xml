@@ -9,14 +9,14 @@
     <string name="permission_settings">Open app settings</string>
 
     <string name="connect_title">Connect your earbuds</string>
-    <string name="connect_hint">Pick your SoundPEATS earbuds. Close PeatsAudio first: only one app can hold the controls.</string>
+    <string name="connect_hint">Pick your earbuds. Close the official app (PeatsAudio, Soundcore) first: only one app can hold the controls.</string>
     <string name="connect">Connect</string>
     <string name="connecting">Connecting…</string>
-    <string name="no_paired">No SoundPEATS earbuds paired. Pair them in the Bluetooth settings first.</string>
+    <string name="no_paired">No supported earbuds paired. Pair them in the Bluetooth settings first.</string>
     <string name="bluetooth_off">Bluetooth is off.</string>
     <string name="bluetooth_settings">Bluetooth settings</string>
     <string name="privacy_line">No account. No internet. Nothing leaves this phone.</string>
-    <string name="failed_could_not_open">Could not reach the controls of %1$s. Close PeatsAudio if it is open, check the earbuds are connected for audio, then try again.</string>
+    <string name="failed_could_not_open">Could not reach the controls of %1$s. Close the official app (PeatsAudio, Soundcore) if it is open, check the earbuds are connected for audio, then try again.</string>
     <string name="failed_lost">The connection to %1$s dropped.</string>
     <string name="failed_bluetooth_off">Bluetooth is off.</string>
     <string name="failed_no_permission">Bluetooth access is turned off for PairFree.</string>
@@ -30,6 +30,8 @@
     <string name="left">Left</string>
     <string name="right">Right</string>
     <string name="case_label">Case</string>
+    <string name="headphones">Headphones</string>
+    <string name="speaker">Speaker</string>
     <string name="percent">%1$d%%</string>
     <string name="unknown">—</string>
 
@@ -70,13 +72,16 @@
     <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
 
     <string name="sound_profile">Sound</string>
+    <string name="eq_soundcore_unchecked">PairFree does not change the equalizer on this model yet: nothing has confirmed the EQ it would send. A device report from the Device tab, pasted into an issue on GitHub, helps add it.</string>
     <string name="eq_unavailable">PairFree does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
     <string name="eq_stock">Stock</string>
     <string name="eq_new">New</string>
     <string name="eq_new_unsaved">New, not saved</string>
     <string name="eq_on_earbuds">On the earbuds: %1$s</string>
     <string name="eq_unknown">Not known yet</string>
+    <string name="eq_reading">Reading the EQ from the earbuds…</string>
     <string name="eq_unknown_hint">These earbuds cannot report their EQ, and this phone has not set one on them yet. Pick a profile or move a band to set it.</string>
+    <string name="eq_preset_fixed_no_stock">Presets are fixed curves. Pick New or one of your own profiles to set bands one by one.</string>
     <string name="eq_preset_fixed">Presets are fixed curves. Pick Stock, New or one of your own profiles to set bands one by one.</string>
     <string name="eq_edited">%1$s, edited</string>
     <string name="eq_graph_description">Equalizer curve. Pick a band below to change it.</string>
@@ -97,6 +102,7 @@
     <string name="eq_delete">Delete %1$s</string>
     <string name="eq_delete_title">Delete %1$s?</string>
     <string name="eq_delete_body">The profile is removed from this phone. The earbuds keep the sound they have now.</string>
+    <string name="eq_note_reported">The earbuds report their EQ, so this shows what they hold, whichever app set it.</string>
     <string name="eq_note">0 dB on every band is the earbuds\' own tuning. The earbuds cannot report their EQ, so each time PairFree connects it puts back the one this phone last set, as the official app does.</string>
 
     <string name="taps">Taps</string>
@@ -114,8 +120,25 @@
     <string name="action_next">Next track</string>
     <string name="action_anc_cycle">Noise control</string>
     <string name="action_voice_assistant">Voice assistant</string>
+    <string name="action_off">Off</string>
+    <string name="action_answer_call">Answer call</string>
+    <string name="action_decline_call">Decline call</string>
+    <string name="action_bass_up">Bass up</string>
+    <string name="action_lights">Lights</string>
+    <string name="action_noise_cancelling">Noise cancelling</string>
+    <string name="action_change_mode">Change mode</string>
+    <string name="slides">Slides</string>
+    <string name="gesture_slide_up">Slide up</string>
+    <string name="gesture_slide_down">Slide down</string>
+    <string name="during_calls">During calls</string>
+    <string name="touch_both_in">These are for when both earbuds are in. Each earbud keeps its own for when it is used alone; they show here while only one is in.</string>
+    <string name="touch_one_in">Only one earbud is in, so these are its actions for when it is used alone. The ones for both earbuds show here once both are in.</string>
     <string name="touch_controls">Touch controls</string>
     <string name="touch_controls_note">When off, the earbuds ignore taps and holds.</string>
+    <string name="touch_lock">Touch lock</string>
+    <string name="touch_tone">Touch tone</string>
+    <string name="touch_tone_note">A sound in the earbuds when they take a tap.</string>
+    <string name="noise_cycle">Noise control action cycles through</string>
     <string name="reset_gestures">Reset gestures</string>
     <string name="reset_gestures_title">Reset gestures?</string>
     <string name="reset_gestures_body">Every tap and hold goes back to what the earbuds came with.</string>

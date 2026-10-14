@@ -8,7 +8,7 @@ import pathlib
 import struct
 import unittest
 
-DATA = pathlib.Path(__file__).resolve().parent.parent / "data"
+DATA = pathlib.Path(__file__).resolve().parent.parent / "data" / "soundpeats"
 
 
 def load(name):
@@ -16,7 +16,7 @@ def load(name):
 
 
 class ModelTable(unittest.TestCase):
-    """data/devices.json must agree with the rules written down in data/commands.json."""
+    """data/soundpeats/devices.json must agree with the rules written down in data/soundpeats/commands.json."""
 
     def setUp(self):
         self.devices = load("devices.json")["devices"]
@@ -92,7 +92,7 @@ def qcy_eq(master_gain_db, bands):
 
 
 class QcyVectors(unittest.TestCase):
-    """The Capsule3 Pro vectors must follow the packet rules in data/qcy_commands.json."""
+    """The Capsule3 Pro vectors must follow the packet rules in data/soundpeats/qcy_commands.json."""
 
     def setUp(self):
         self.v = load("test_vectors.json")

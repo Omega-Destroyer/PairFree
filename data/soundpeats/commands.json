@@ -1,5 +1,5 @@
 {
-  "_about": "Machine-readable command table for SoundPEATS earbuds. See docs/PROTOCOL.md. Hex strings are big-endian. Commands whose note names SOUNDPEATS 2.5.3 come from that app (PeatsAudio's successor, same company); the rest from PeatsAudio 1.9.45. Not yet confirmed on hardware unless a device report in data/reports says so.",
+  "_about": "Machine-readable command table for SoundPEATS earbuds. See docs/soundpeats/PROTOCOL.md. Hex strings are big-endian. Commands whose note names SOUNDPEATS 2.5.3 come from that app (PeatsAudio's successor, same company); the rest from PeatsAudio 1.9.45. Not yet confirmed on hardware unless a device report in data/soundpeats/reports says so.",
   "frame": {
     "sof": "FF",
     "version": "04",
@@ -531,7 +531,7 @@
         "4": "ldac",
         "9": "opus"
       },
-      "note": "From SOUNDPEATS 2.5.3: the codec the earbuds are playing. The app accepts 0 to 9 and names only these three. See docs/PROTOCOL.md section 12."
+      "note": "From SOUNDPEATS 2.5.3: the codec the earbuds are playing. The app accepts 0 to 9 and names only these three. See docs/soundpeats/PROTOCOL.md section 12."
     },
     {
       "id": "device_history",
@@ -572,7 +572,7 @@
     }
   ],
   "gaia": {
-    "_about": "Qualcomm GAIA v3 on vendor 001D, as PeatsAudio uses it on the H3 (docs/PROTOCOL.md section 11). A command number is feature (7 bits), packet type (2 bits: 0 command, 1 notification, 2 response, 3 error) and command (7 bits). Send only to models in the QUALCOMM family.",
+    "_about": "Qualcomm GAIA v3 on vendor 001D, as PeatsAudio uses it on the H3 (docs/soundpeats/PROTOCOL.md section 11). A command number is feature (7 bits), packet type (2 bits: 0 command, 1 notification, 2 response, 3 error) and command (7 bits). Send only to models in the QUALCOMM family.",
     "vendor": "001D",
     "response": "0100",
     "get_features": "0001",
@@ -652,8 +652,8 @@
       8000
     ],
     "custom_band_q": 1.8,
-    "command_rule": "0E01 if the family is QUALCOMM, or the model's old_eq_protocol flag is true, or the code is BS519W2D on firmware 0.4.5 or lower. Otherwise 0E02. data/devices.json has the result per model as eq_command.",
-    "merge_rule": "onto_classic_bands if the family is QUALCOMM or the firmware code is in merge_onto_classic_codes. Otherwise append_after_classic. See docs/PROTOCOL.md section 4.",
+    "command_rule": "0E01 if the family is QUALCOMM, or the model's old_eq_protocol flag is true, or the code is BS519W2D on firmware 0.4.5 or lower. Otherwise 0E02. data/soundpeats/devices.json has the result per model as eq_command.",
+    "merge_rule": "onto_classic_bands if the family is QUALCOMM or the firmware code is in merge_onto_classic_codes. Otherwise append_after_classic. See docs/soundpeats/PROTOCOL.md section 4.",
     "merge_onto_classic_codes": [
       "SPTS04",
       "QCYTS04",

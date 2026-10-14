@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-/** The decode cases in data/test_vectors.json: replies recorded from an H3, and edge cases. */
+/** The decode cases in data/soundpeats/test_vectors.json: replies recorded from an H3, and edge cases. */
 class DecodeVectorsTest {
     private val cases = loadData("test_vectors.json").getValue("decode").jsonArray.map { it.jsonObject }
 

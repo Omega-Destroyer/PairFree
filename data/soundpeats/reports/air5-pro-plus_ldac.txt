@@ -3,11 +3,11 @@ SoundPEATS Air5 Pro+ — LDAC not negotiated (A2DP codec), with H3 as the contro
 
 Date:   2026-10-11
 Phone:  Samsung Galaxy S24 FE (SM-S721W), Android 16, One UI 8, build S721WVLSEDZH9
-Chip:   both earbuds Qualcomm QCC3091; Air5 Pro+ firmware S2_20250816_V1.2 (data/reports/S2_1.2.txt)
+Chip:   both earbuds Qualcomm QCC3091; Air5 Pro+ firmware S2_20250816_V1.2 (data/soundpeats/reports/S2_1.2.txt)
 Source: adb dumpsys audio / dumpsys bluetooth_manager / logcat (bluetooth-a2dp, A2dpService)
 Note:   Bluetooth addresses masked. Codec selection toggled via the ldac control (0338/0339)
         and Android Developer options > Bluetooth Audio Codec. This is A2DP, not the SPP
-        control channel; see docs/PROTOCOL.md section 12.
+        control channel; see docs/soundpeats/PROTOCOL.md section 12.
 
 Codec field in dumpsys audio DeviceInfo is a hex AUDIO_FORMAT:
     04000000 = AAC    23000000 = LDAC    20000000 = aptX

@@ -8,7 +8,7 @@ public data class KeyBinding(val gesture: Int, val action: Int)
 
 /** Firmware version text such as `S5_20250605_V0.4.9`: firmware code, build date, version. */
 public data class FirmwareVersion(val text: String) {
-    /** The first field. It identifies the model; see data/devices.json. */
+    /** The first field. It identifies the model; see data/soundpeats/devices.json. */
     public val code: String get() = text.substringBefore('_')
 
     /** The last field, without a leading `V`. */
@@ -35,7 +35,7 @@ public sealed interface Value {
     }
 }
 
-/** Decodes reply payloads (docs/PROTOCOL.md sections 2 and 3). */
+/** Decodes reply payloads (docs/soundpeats/PROTOCOL.md sections 2 and 3). */
 public object Replies {
     private const val UNKNOWN = 0xFF
 

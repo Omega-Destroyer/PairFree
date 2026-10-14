@@ -1,0 +1,323 @@
+Soundcore Space A40 (A3936): firmware 06.43
+===========================================
+
+Date:      2026-10-13
+Firmware:  06.43 on both earbuds (from the state reply)
+Phone:     Samsung Galaxy S24 FE (SM-S721W), Android 16, One UI 8
+App:       Soundcore 6.4.0
+Method:    Android Bluetooth HCI snoop log while the owner used the Soundcore app, pulled with
+           adb bugreport. Only Soundcore frames are kept; the rest of the log was discarded.
+           The serial number is 3936 followed by the earbuds' Bluetooth address; the address
+           is masked (XX). No other addresses appear below.
+
+---- Connection ----
+Bluetooth name:  Soundcore Space A40
+Service:         RFCOMM on 0cf12d31-fac3-4553-bd80-d6832e7b3936, which ends in the model number
+Frames:          31, all with a valid checksum (sum of the bytes before it, modulo 256)
+Every frame has the headers OpenSCQ30 uses: 08 EE 00 00 00 to the earbuds, 09 FF 00 00 01 from
+them, then the command, the total length (2 bytes, little-endian), the body and the checksum.
+
+---- What the owner did ----
+Opened the Soundcore app (21:52:40), turned noise cancelling on and back to normal, changed the left
+single-press action, turned the right single press off and on, toggled another right-side
+touch setting twice, and turned the touch tone on and off. The EQ was not changed.
+
+---- Frames, in order ----
+Time on the phone's clock; -> to the earbuds, <- from them. Body: the bytes between the length
+and the checksum.
+
+21:52:40  ->  01 01  len  10  request state
+21:52:40  <-  01 01  len 153  state (layout: docs/soundcore/PROTOCOL.md section 6)
+                    01 01 05 05 00 00 30 36 2e 34 33 30 36 2e 34 33 33 39 33 36 XX XX XX XX
+                    XX XX XX XX XX XX XX XX 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff
+                    ff ff ff 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff
+                    ff ff ff ff 00 00 00 0e 11 11 01 00 11 63 11 66 11 44 11 44 05 02 30 01
+                    00 01 00 00 0f 31 01 00 01 00 00 00 ff ff ff ff ff ff ff ff ff ff ff
+21:52:40  ->  05 01  len  10  not in OpenSCQ30; the app sends it right after the state
+21:52:40  <-  05 01  len 126  not in OpenSCQ30; looks like little-endian counters
+                    3a 00 00 00 02 00 00 00 02 00 00 00 09 00 00 00 00 00 00 00 00 00 00 00
+                    45 01 b2 08 18 00 54 01 0e 00 00 00 80 07 27 01 00 00 00 00 06 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 10 00 35 01 00 00 00 00 00 00 00 00
+                    01 00 17 00 39 00 00 00 00 00 01 00 00 00 00 00 00 00 06 00 00 00 00 00
+                    00 00 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+21:52:40  ->  05 81  len  10  not in OpenSCQ30; no body. Meaning unknown: do not send
+21:52:40  <-  05 81  len  10  acknowledged, no body
+21:53:03  <-  01 03  len  13  battery, sent unasked (OpenSCQ30: battery level)
+                    05 05 0f
+21:54:01  ->  06 81  len  16  set sound modes; byte 0: 0 noise cancelling, 1 transparency, 2 normal
+                    00 30 01 00 01 00
+21:54:01  <-  06 81  len  10  acknowledged, no body
+21:54:02  <-  06 01  len  16  sound modes update, after the set
+                    00 30 01 00 01 00
+21:54:04  ->  06 81  len  16  set sound modes; byte 0: 0 noise cancelling, 1 transparency, 2 normal
+                    02 30 01 00 01 00
+21:54:04  <-  06 81  len  10  acknowledged, no body
+21:54:04  <-  06 01  len  16  sound modes update, after the set
+                    02 30 01 00 01 00
+21:54:16  ->  04 81  len  13  set a touch action: side (0 left, 1 right), button (2 single, 0 double, 1 long), action
+                    00 02 13
+21:54:16  <-  04 81  len  10  acknowledged, no body
+21:54:20  ->  04 81  len  13  set a touch action: side (0 left, 1 right), button (2 single, 0 double, 1 long), action
+                    00 02 11
+21:54:20  <-  04 81  len  10  acknowledged, no body
+21:54:24  ->  04 83  len  13  enable a touch action: side, button, enabled (OpenSCQ30 reads the low bits)
+                    01 02 00
+21:54:24  <-  04 83  len  10  acknowledged, no body
+21:54:26  ->  04 83  len  13  enable a touch action: side, button, enabled (OpenSCQ30 reads the low bits)
+                    01 02 01
+21:54:26  <-  04 83  len  10  acknowledged, no body
+21:54:30  ->  04 83  len  13  enable a touch action: side, button, enabled (OpenSCQ30 reads the low bits)
+                    01 00 10
+21:54:30  <-  04 83  len  10  acknowledged, no body
+21:54:31  ->  04 83  len  13  enable a touch action: side, button, enabled (OpenSCQ30 reads the low bits)
+                    01 00 11
+21:54:31  <-  04 83  len  10  acknowledged, no body
+21:54:41  ->  01 83  len  11  touch tone: 1 on, 0 off
+                    01
+21:54:41  <-  01 03  len  13  battery, sent unasked (OpenSCQ30: battery level)
+                    05 05 0f
+21:54:41  <-  01 83  len  10  acknowledged, no body
+21:54:43  ->  01 83  len  11  touch tone: 1 on, 0 off
+                    00
+21:54:43  <-  01 83  len  10  acknowledged, no body
+21:55:03  <-  01 03  len  13  battery, sent unasked (OpenSCQ30: battery level)
+                    05 05 0f
+
+---- Notes ----
+- Every SET is acknowledged with the same command and no body. After 06 81 the earbuds also send
+  the new sound modes as 06 01.
+- The state reply starts with TWS status 01 01 (both earbuds connected), battery 05 05 and
+  charging 00 00, firmware "06.43" twice, then the serial number, as OpenSCQ30's A3936 layout says.
+- 05 01 and 05 81 are not in OpenSCQ30. Until their meaning is known, SoundPeter does not send
+  05 81.
+
+
+==== Second session: EQ and 3D sound (22:06) ====
+The owner reopened the Soundcore app, changed the EQ (the lowest band to +6 dB and back,
+band 8 to -6 dB and back, then a preset), turned 3D sound on and off, and put the earbuds
+in the case.
+
+22:06:26  ->  01 01  len  10  request state
+22:06:26  <-  01 01  len 153  state
+                    01 01 05 05 00 00 30 36 2e 34 33 30 36 2e 34 33 33 39 33 36 XX XX XX XX
+                    XX XX XX XX XX XX XX XX 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff
+                    ff ff ff 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff
+                    ff ff ff ff 00 00 00 0e 11 11 01 00 11 63 11 66 11 44 11 44 05 02 30 01
+                    00 01 00 00 0f 31 01 00 01 00 00 00 ff ff ff ff ff ff ff ff ff ff ff
+22:06:27  ->  05 01  len  10  read usage statistics
+22:06:27  <-  05 01  len 126  usage statistics: all zero now, after last session's 05 81
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+22:06:27  ->  05 81  len  10  clear usage statistics
+22:06:27  <-  05 81  len  10  acknowledged, no body
+22:06:48  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:06:49  <-  03 87  len  10  acknowledged, no body
+22:06:49  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:06:49  <-  03 87  len  10  acknowledged, no body
+22:06:55  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands b4 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 b4 78 78 78 78 78 78 78 78 78 b4 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    80 74 79 78 78 78 78 78 78 00 80 74 79 78 78 78 78 78 78 00
+22:06:56  <-  03 87  len  10  acknowledged, no body
+22:07:01  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:07:01  <-  03 87  len  10  acknowledged, no body
+22:07:02  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 3c 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 3c 78 78 78 78 78 78 78 78 78 3c 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 77 7c 6f 78 00 78 78 78 78 78 77 7c 6f 78 00
+22:07:02  <-  03 87  len  10  acknowledged, no body
+22:07:08  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:07:08  <-  03 87  len  10  acknowledged, no body
+22:07:19  ->  03 87  len 102  EQ write, preset 0; left bands 78 78 78 78 78 78 78 78 78 00
+                    00 00 00 00 78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:07:19  <-  03 87  len  10  acknowledged, no body
+22:07:23  ->  02 86  len  11  3D sound (OpenSCQ30: surround sound): 1 on, 0 off
+                    01
+22:07:23  <-  02 86  len  10  acknowledged, no body
+22:07:26  ->  02 86  len  11  3D sound (OpenSCQ30: surround sound): 1 on, 0 off
+                    00
+22:07:26  <-  02 86  len  10  acknowledged, no body
+22:09:00  <-  01 04  len  12  charging, sent unasked: left, right (1 charging)
+                    01 00
+22:09:02  <-  01 04  len  12  charging, sent unasked: left, right (1 charging)
+                    01 01
+
+---- Notes on the second session ----
+- The state reply is the same as in the first session, apart from the masked serial.
+- 03 87 body, 92 bytes, as OpenSCQ30 builds it: preset number (2 bytes, little-endian; FE FE
+  for a custom curve), favourite music genre (2), 10 bands for each earbud (20; one byte per
+  band, 0x78 = 0 dB, 0.1 dB per step: B4 = +6 dB, 3C = -6 dB), gender, age range and an unknown
+  byte (3), HearID curve (20), HearID time (4), HearID type (1), custom HearID curve (20), then
+  the 10 bands again after OpenSCQ30's apply_drc() (20): the +6 dB on the lowest band comes out
+  as 80 74 79 there.
+- A preset write (22:07:19, preset 0) sends 9 bands of 78 and a 00 for each earbud.
+- 05 01 read all zero this time: 05 81 clears the statistics 05 01 reads.
+- 3D sound is not in OpenSCQ30's A40 module. Which state byte holds it is not known yet: the
+  state was read only while it was off.
+
+
+==== Third session: SoundPeter (debug build), 23:01 to 23:04 ====
+The owner used SoundPeter with the Soundcore app closed: noise modes from the app and by touch,
+LDAC off and on, game mode on and off, two devices off and on, then took the device report.
+SoundPeter's own debug log, decoded. The earbuds' connected-device entries (0B 01) carry other
+devices' names and addresses and are left out; so is the serial number.
+
+23:01:12  could not open (the earbuds were still restarting)
+23:01:13  channel open
+23:01:13  ->  01 01  
+23:01:13  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 15
+23:01:19  <-  01 03  05 05 0f
+23:01:21  ->  06 81  00 30 01 00 01 00
+23:01:22  <-  06 81  (acknowledged, no body)
+23:01:22  <-  06 01  00 30 01 00 01 00
+23:01:24  ->  01 01  
+23:01:24  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 00 30 01 00 01 00, charging 00 00, case 15
+23:01:28  ->  06 81  01 30 01 00 01 00
+23:01:28  <-  06 81  (acknowledged, no body)
+23:01:29  <-  06 01  01 30 01 00 01 00
+23:01:31  ->  01 01  
+23:01:32  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 01 30 01 00 01 00, charging 00 00, case 15
+23:01:40  <-  01 03  05 05 0f
+23:01:43  ->  06 81  02 30 01 00 01 00
+23:01:43  <-  06 81  (acknowledged, no body)
+23:01:43  ->  01 01  
+23:01:43  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 01 30 01 00 01 00, charging 00 00, case 15
+23:01:43  <-  06 01  02 30 01 00 01 00
+23:01:46  ->  01 01  
+23:01:46  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 15
+23:01:49  <-  01 03  05 05 0f
+23:01:49  ->  01 ff  00
+23:01:49  <-  01 ff  (acknowledged, no body)
+23:01:51  <-  01 02  00 01
+23:01:52  channel closed
+23:01:56  channel open
+23:01:56  ->  01 01  
+23:01:57  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:01:57  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:02:02  ->  01 ff  01
+23:02:02  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:02:02  <-  01 ff  (acknowledged, no body)
+23:02:04  channel closed
+23:02:06  could not open (the earbuds were still restarting)
+23:02:10  channel open
+23:02:10  ->  01 01  
+23:02:10  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:02:10  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:02:13  <-  01 03  05 05 ff
+23:02:40  ->  01 01  
+23:02:40  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:02:43  <-  01 03  05 05 ff
+23:02:43  <-  01 03  05 05 ff
+23:02:57  channel open
+23:02:57  ->  01 01  
+23:02:57  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:03:13  <-  01 03  05 05 ff
+23:03:16  <-  06 01  00 30 01 00 01 00
+23:03:23  <-  01 03  05 05 ff
+23:03:24  <-  06 01  02 30 01 00 01 00
+23:03:27  ->  01 01  
+23:03:27  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:03:30  <-  06 01  00 30 01 00 01 00
+23:03:42  ->  01 ff  00
+23:03:42  <-  01 ff  (acknowledged, no body)
+23:03:43  <-  01 03  05 05 ff
+23:03:43  channel closed
+23:03:49  could not open (the earbuds were still restarting)
+23:03:51  channel open
+23:03:51  ->  01 01  
+23:03:51  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 00 30 01 00 01 00, charging 00 00, case 255
+23:03:52  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:03:53  ->  01 87  01
+23:03:53  <-  01 87  (acknowledged, no body)
+23:03:55  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:03:56  ->  01 01  
+23:03:56  <-  01 01  state: LDAC 0, two devices 1, game mode 1, sound modes 00 30 01 00 01 00, charging 00 00, case 255
+23:03:57  ->  01 87  00
+23:03:57  <-  01 87  (acknowledged, no body)
+23:04:00  ->  01 01  
+23:04:00  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 00 30 01 00 01 00, charging 00 00, case 255
+23:04:00  ->  0b 84  00
+23:04:00  <-  0b 84  00 90 00 78 53 01
+23:04:01  ->  0b 84  00
+23:04:03  ->  01 01  
+23:04:03  channel closed
+23:04:07  could not open (the earbuds were still restarting)
+23:04:09  channel open
+23:04:09  ->  01 01  
+23:04:09  <-  01 01  state: LDAC 0, two devices 0, game mode 0, sound modes 00 30 01 00 01 00, charging 00 00, case 255
+23:04:10  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:11  <-  01 03  05 05 ff
+23:04:13  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:17  ->  0b 84  01
+23:04:17  <-  0b 84  01 91 00 80 4f 01
+23:04:19  channel closed
+23:04:22  channel open
+23:04:22  ->  01 01  
+23:04:22  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 00 30 01 00 01 00, charging 01 01, case 255
+23:04:23  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:23  <-  01 04  01 00
+23:04:23  <-  01 04  00 00
+23:04:23  <-  01 02  01 01
+23:04:26  ->  06 81  01 30 01 00 01 00
+23:04:27  <-  06 81  (acknowledged, no body)
+23:04:27  <-  06 01  01 30 01 00 01 00
+23:04:28  <-  01 03  05 05 ff
+23:04:29  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:29  ->  01 01  
+23:04:29  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 01 30 01 00 01 00, charging 00 00, case 255
+23:04:31  ->  06 81  02 30 01 00 01 00
+23:04:31  <-  06 81  (acknowledged, no body)
+23:04:31  <-  06 01  02 30 01 00 01 00
+23:04:32  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:33  ->  01 ff  01
+23:04:33  <-  01 ff  (acknowledged, no body)
+23:04:34  ->  01 01  
+23:04:34  channel closed
+23:04:38  channel open
+23:04:38  ->  01 01  
+23:04:38  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 01 01, case 255
+23:04:38  <-  01 04  01 00
+23:04:38  <-  01 04  00 00
+23:04:38  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:38  <-  01 02  01 01
+23:04:41  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+
+---- Notes on the third session ----
+- Game mode (01 87), LDAC (01 FF) and two devices (0B 84) work as OpenSCQ30 sends them: one byte,
+  1 on, 0 off. The earbuds acknowledge 01 87 and 01 FF with no body, and 0B 84 with 6 bytes
+  whose first is the new setting. No 01 11 or 01 7F update arrived; the next state shows the change.
+- Every LDAC or two-devices change makes the earbuds restart their connection: the channel
+  closes within about 2 s and opens again a few seconds later.
+- LDAC on turns two devices off; LDAC off turns it back on. With LDAC off, two devices can be
+  turned off and on by itself (23:04:00 and 23:04:17).
+- With two devices on, the earbuds send their connected-device list (0B 01, 42 bytes per entry)
+  unasked, again after changes.
+- Noise mode changes by touch arrive as 06 01, as after a set from the app.
+- 01 02 (TWS status) and 01 04 (charging) arrive unasked when the earbuds go in or out of the case.
+- The case battery reads 255 (unknown) after the case is closed.

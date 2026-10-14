@@ -1,5 +1,5 @@
 {
-  "_about": "Control protocol for the QCY-built SOUNDPEATS Capsule3 Pro (firmware codes QCYTS04 and SPTS04). Read from QCY's library inside PeatsAudio 1.9.45 and from how the app calls it. Not confirmed on hardware. See docs/PROTOCOL.md section 10. Hex strings are bytes in wire order.",
+  "_about": "Control protocol for the QCY-built SOUNDPEATS Capsule3 Pro (firmware codes QCYTS04 and SPTS04). Read from QCY's library inside PeatsAudio 1.9.45 and from how the app calls it. Not confirmed on hardware. See docs/soundpeats/PROTOCOL.md section 10. Hex strings are bytes in wire order.",
   "transport": {
     "type": "ble_gatt",
     "service": "0000A001-0000-1000-8000-00805F9B34FB",
@@ -255,5 +255,5 @@
     "fit_test",
     "reset_state"
   ],
-  "not_available_note": "Command ids from data/commands.json that the app's Capsule3 Pro code leaves empty. ldac is in the list because the app's LDAC switch does nothing here: LDAC only changes as a side effect of multipoint."
+  "not_available_note": "Command ids from data/soundpeats/commands.json that the app's Capsule3 Pro code leaves empty. ldac is in the list because the app's LDAC switch does nothing here: LDAC only changes as a side effect of multipoint."
 }

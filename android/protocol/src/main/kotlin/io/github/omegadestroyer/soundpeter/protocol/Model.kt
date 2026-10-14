@@ -1,17 +1,18 @@
 package io.github.omegadestroyer.soundpeter.protocol
 
 /**
- * One model from data/devices.json.
+ * One model from data/soundpeats/devices.json.
  *
  * @property code the firmware code, the first field of the firmware-version reply.
  * @property names the Bluetooth names the model uses.
- * @property family the chip family (docs/PROTOCOL.md section 5).
+ * @property family the chip family (docs/soundpeats/PROTOCOL.md section 5).
  * @property ldacExcludes features the official app offers only while LDAC is off.
  * @property ldacOrMultipoint LDAC and multipoint are one either-or setting: turning one off turns the other on.
  * @property eq the EQ layout the official app writes to this model, when it is known.
  * @property confirmed commands marked per_model that the official app offers on this model.
  * @property fitKeepsAnc the official app leaves the noise mode alone during the fit test;
  *   on other models it turns ANC off first.
+ * @property form what the product is, for its battery label and drawing.
  */
 public data class Model(
     val code: String,
@@ -22,6 +23,7 @@ public data class Model(
     val eq: EqLayout? = null,
     val confirmed: Set<Command> = emptySet(),
     val fitKeepsAnc: Boolean = false,
+    val form: Form = Form.EARBUDS,
 ) {
     /** Qualcomm chips also answer GAIA v3 on vendor `00 1D` ([Gaia]). */
     val isQualcomm: Boolean get() = family == QUALCOMM_FAMILY
@@ -30,6 +32,12 @@ public data class Model(
         const val QUALCOMM_FAMILY = "QUALCOMM"
     }
 }
+
+/**
+ * What a product is. Earbuds report each earbud's battery and often the case's; headphones
+ * and speakers report one battery.
+ */
+public enum class Form { EARBUDS, HEADPHONES, SPEAKER }
 
 /**
  * True when the app should offer [command]: the earbuds answered its read, and for a
@@ -52,7 +60,7 @@ public object Models {
 
     /**
      * True when the app can control a device shown with this Bluetooth [name]: a SoundPEATS
-     * device on the common protocol (docs/PROTOCOL.md sections 1 to 4).
+     * device on the common protocol (docs/soundpeats/PROTOCOL.md sections 1 to 4).
      *
      * A model in the table qualifies unless it is the QCY-built Capsule3 Pro, whose protocol
      * the app does not speak. A name not in the table qualifies when it starts with a known

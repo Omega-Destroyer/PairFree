@@ -6,7 +6,7 @@ import kotlinx.serialization.json.jsonObject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-/** Every case in data/test_vectors.json, byte for byte. */
+/** Every case in data/soundpeats/test_vectors.json, byte for byte. */
 class TestVectorsTest {
     private val vectors = loadData("test_vectors.json")
 

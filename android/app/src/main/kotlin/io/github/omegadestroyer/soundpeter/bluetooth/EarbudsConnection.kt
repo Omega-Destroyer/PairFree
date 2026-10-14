@@ -9,6 +9,13 @@ import io.github.omegadestroyer.soundpeter.protocol.EarbudState
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.Replies
 import io.github.omegadestroyer.soundpeter.protocol.Requests
+import io.github.omegadestroyer.soundpeter.protocol.Wire
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreButtons
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreParser
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreSession
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreState
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreTouch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -23,8 +30,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
-/** A pair of earbuds the phone is paired with. */
-data class Paired(val address: String, val name: String)
+/** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
+enum class Brand { SOUNDPEATS, SOUNDCORE }
+
+/**
+ * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
+ * null for the standard serial port, which SoundPEATS earbuds use. [model] is the Soundcore
+ * model number, from the earbuds' service or name ([SoundcoreModels.identify]).
+ */
+data class Paired(
+    val address: String,
+    val name: String,
+    val brand: Brand = Brand.SOUNDPEATS,
+    val service: String? = null,
+    val model: String? = null,
+)
 
 sealed interface LinkStatus {
     data object Idle : LinkStatus
@@ -43,6 +63,9 @@ sealed interface LinkStatus {
  * in [Requests.ON_CONNECT], then reads the battery every [BATTERY_POLL_MS]. Every reply,
  * asked for or not, updates [state]. [log], when set, gets a line for every frame and
  * for the channel opening and closing.
+ *
+ * Soundcore earbuds speak another protocol; a [SoundcoreSession] turns it into the same
+ * [state] and turns [set] into Soundcore packets, so the screens work for both brands.
  */
 class EarbudsConnection(
     private val scope: CoroutineScope,
@@ -60,15 +83,26 @@ class EarbudsConnection(
     private var link: SppLink? = null
     private var attempt: Any? = null      // the current connection attempt; null after disconnect()
     private var replies: Map<Command, ByteArray> = emptyMap()
+    private var soundcore: SoundcoreSession? = null   // set while connected to Soundcore earbuds
 
-    /** The last raw reply to each GET, for the device report. */
+    /** The last raw reply to each GET, for the device report. Empty for Soundcore earbuds. */
     val lastReplies: Map<Command, ByteArray> get() = replies
+
+    /** The Soundcore session, while connected to Soundcore earbuds; for the device report. */
+    val soundcoreSession: SoundcoreSession? get() = soundcore
+
+    private val _soundcoreState = MutableStateFlow<SoundcoreState?>(null)
+
+    /** Each full state Soundcore earbuds send, as they send it; the Sound tab reads their EQ from it. */
+    val soundcoreState: StateFlow<SoundcoreState?> = _soundcoreState.asStateFlow()
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connect(device: Paired) {
         disconnect()
         _state.value = EarbudState()
         replies = emptyMap()
+        soundcore = null
+        _soundcoreState.value = null
         val remote = adapter?.takeIf { it.isEnabled }?.getRemoteDevice(device.address)
         if (remote == null) {
             _status.value = LinkStatus.Failed(device, LinkStatus.Reason.BLUETOOTH_OFF)
@@ -82,12 +116,12 @@ class EarbudsConnection(
         s.launch {
             // Once the channel has been open, a drop is followed by a few retries: the H3
             // restarts its Bluetooth link after an LDAC or two-devices change
-            // (docs/PROTOCOL.md section 11). The last state stays on screen meanwhile.
+            // (docs/soundpeats/PROTOCOL.md section 11). The last state stays on screen meanwhile.
             var everOpen = false
             var retries = 0
             while (true) {
                 val opened = try {
-                    SppLink(remote, log).also { link = it }.apply { connect() }
+                    SppLink(remote, log, device.service ?: Wire.SPP_UUID).also { link = it }.apply { connect() }
                 } catch (e: IOException) {
                     log?.invoke("could not open: ${e.message}")
                     if (everOpen && retries < RECONNECT_DELAYS_MS.size) {
@@ -104,7 +138,7 @@ class EarbudsConnection(
                 _status.value = LinkStatus.Connected(device)
                 log?.invoke("open")
                 val openedAt = SystemClock.elapsedRealtime()
-                serve(opened, device)
+                if (device.brand == Brand.SOUNDCORE) serveSoundcore(opened, device) else serve(opened, device)
                 log?.invoke("closed")
                 opened.close()
                 // A channel that keeps closing straight away does not earn fresh retries.
@@ -147,29 +181,70 @@ class EarbudsConnection(
     }
 
     /**
+     * Soundcore earbuds: asks for the state on connecting and every [BATTERY_POLL_MS] after,
+     * and applies every packet until the channel closes. The earbuds also send changes unasked.
+     */
+    private suspend fun serveSoundcore(opened: SppLink, device: Paired) = coroutineScope {
+        val session = SoundcoreSession(device.model.orEmpty())
+        soundcore = session
+        val requests = launch {
+            try {
+                while (true) {
+                    opened.send(session.requestState())
+                    delay(BATTERY_POLL_MS)
+                }
+            } catch (_: IOException) {
+                // the channel closed; the reader below notices too
+            }
+        }
+        try {
+            val parser = SoundcoreParser(checksum = session.layout?.checksum ?: true)
+            opened.reads().collect { bytes ->
+                for (packet in parser.feed(bytes)) {
+                    log?.invoke("recv $packet")
+                    if (session.receive(packet)) _state.value = session.state
+                    if (session.lastState !== _soundcoreState.value) _soundcoreState.value = session.lastState
+                }
+            }
+        } catch (_: IOException) {
+        }
+        requests.cancel()
+    }
+
+    /**
      * Sends a SET. The change shows at once, and [READ_BACK_MS] later the value is read
      * back, so the earbuds' answer replaces the guess (docs/DESIGN.md). Factory reset and
-     * reboot are refused; see [factoryResetConfirmedByUser].
+     * reboot are refused; see [factoryResetConfirmedByUser]. On Soundcore earbuds the
+     * setting goes out as a Soundcore packet, and the whole state is read back.
      */
     fun set(command: Command, vararg payload: Int) {
+        soundcore?.let { session ->
+            val frame = session.set(command, payload.singleOrNull() ?: return) ?: return
+            if (send(frame, then = session.requestState())) _state.value = session.state
+            return
+        }
         val frame = Requests.set(command, *payload)
-        if (send(frame, Requests.readBack(command))) _state.update { it.expect(command, *payload) }
+        if (send(frame, Requests.readBack(command)?.let(Requests::get))) _state.update { it.expect(command, *payload) }
     }
 
     private var eqWrite: Job? = null
 
     /**
-     * Sends one EQ write: a frame per band, as [io.github.omegadestroyer.soundpeter.protocol.EqLayout.frames]
-     * builds them. A newer write replaces one still going out. The earbuds do not reply.
+     * Sends one EQ write: for SoundPEATS a frame per band, as [io.github.omegadestroyer.soundpeter.protocol.EqLayout.frames]
+     * builds them, and the earbuds do not reply; for Soundcore the model's EQ packets, then a state
+     * request, so the earbuds report the EQ they took. A newer write replaces one still going out.
      */
     fun sendEq(frames: List<ByteArray>) {
         if (_status.value !is LinkStatus.Connected) return
         val s = session ?: return
         val l = link ?: return
+        val readBack = soundcore?.requestState()
         eqWrite?.cancel()
         eqWrite = s.launch {
             try {
                 for (frame in frames) l.send(frame)
+                // Soundcore earbuds report their EQ: read it back, so the screen shows what they took.
+                readBack?.let { l.send(it) }
             } catch (_: IOException) {
                 // the channel closed; the reader notices and reports it
             }
@@ -178,11 +253,11 @@ class EarbudsConnection(
 
     /**
      * Starts the ear tip fit test; the result replaces [EarbudState.fit] about 9 s later.
-     * Unless [keepAnc], noise control goes off first, as the official app does (docs/PROTOCOL.md
+     * Unless [keepAnc], noise control goes off first, as the official app does (docs/soundpeats/PROTOCOL.md
      * section 11), and back to what it was once the result is in. The official app leaves it off.
      */
     fun startFitTest(keepAnc: Boolean) {
-        if (_status.value !is LinkStatus.Connected) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -211,20 +286,44 @@ class EarbudsConnection(
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        send(Requests.factoryResetConfirmedByUser(), readBack = null)
+        if (soundcore != null) return
+        send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
-    /** Queues [frame] on the open channel. False when there is none. */
-    private fun send(frame: ByteArray, readBack: Command?): Boolean {
+    /**
+     * Changes Soundcore touch controls ([SoundcoreTouch], from the last state the earbuds sent):
+     * the change shows at once, goes out as the model's packets, and [READ_BACK_MS] later the
+     * whole state is read back, so the earbuds' answer replaces the guess.
+     */
+    fun changeSoundcoreTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) {
+        val session = soundcore ?: return
+        val change = session.touch?.let(make) ?: return
+        if (!send(session.frames(change.packets), then = session.requestState())) return
+        session.expect(change)
+        _soundcoreState.value = session.lastState
+    }
+
+    /** Puts Soundcore touch actions back to the model's defaults, then reads the state back. */
+    fun resetSoundcoreTouch() {
+        val session = soundcore ?: return
+        val packet = session.touch?.reset() ?: return
+        send(session.frames(listOf(packet)), then = session.requestState())
+    }
+
+    /** Queues [frame] on the open channel, then [then] [READ_BACK_MS] later. False when there is no channel. */
+    private fun send(frame: ByteArray, then: ByteArray?): Boolean = send(listOf(frame), then)
+
+    /** Queues [frames] on the open channel, then [then] [READ_BACK_MS] later. False when there is no channel. */
+    private fun send(frames: List<ByteArray>, then: ByteArray?): Boolean {
         if (_status.value !is LinkStatus.Connected) return false
         val s = session ?: return false
         val l = link ?: return false
         s.launch {
             try {
-                l.send(frame)
-                if (readBack != null) {
+                for (frame in frames) l.send(frame)
+                if (then != null) {
                     delay(READ_BACK_MS)
-                    l.send(Requests.get(readBack))
+                    l.send(then)
                 }
             } catch (_: IOException) {
                 // the channel closed; the reader notices and reports it
@@ -238,6 +337,7 @@ class EarbudsConnection(
         attempt = null
         link?.close()             // unblocks a pending connect or read
         link = null
+        soundcore = null
         session?.cancel()
         session = null
         _status.value = LinkStatus.Idle
@@ -255,7 +355,7 @@ class EarbudsConnection(
     companion object {
         const val BATTERY_POLL_MS = 30_000L
 
-        /** The H3 sends the new state about 2 s after a SET (docs/PROTOCOL.md section 11). */
+        /** The H3 sends the new state about 2 s after a SET (docs/soundpeats/PROTOCOL.md section 11). */
         const val READ_BACK_MS = 3_000L
 
         /** Waits before each try to reopen a channel that closed. The H3 took about 2 s to take one again. */
@@ -276,7 +376,7 @@ class EarbudsConnection(
         /** Longest wait for a fit result before noise control goes back on regardless. */
         const val FIT_WAIT_MS = 20_000L
 
-        /** ANC mode "off" (data/commands.json). */
+        /** ANC mode "off" (data/soundpeats/commands.json). */
         private val ANC_OFF = Command.ANC_MODE.labels.entries.first { it.value == "off" }.key
     }
 }

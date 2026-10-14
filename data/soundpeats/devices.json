@@ -1,5 +1,5 @@
 {
-  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android), plus what the app's code says about each model. Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; the reports are in data/reports/. Names and rules marked SOUNDPEATS 2.5.3 come from that app, PeatsAudio's successor from the same company, which downloads its model data too.",
+  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android), plus what the app's code says about each model. Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; the reports are in data/soundpeats/reports/. Names and rules marked SOUNDPEATS 2.5.3 come from that app, PeatsAudio's successor from the same company, which downloads its model data too.",
   "devices": [
     {
       "firmware_code": "ATS3019DK12",
@@ -1190,9 +1190,9 @@
         "le_audio"
       ],
       "reports": [
-        "data/reports/S2_1.2.txt",
-        "data/reports/air5-pro-plus_ldac.txt",
-        "data/reports/S5_S2_fit_drain_leaudio.txt"
+        "data/soundpeats/reports/S2_1.2.txt",
+        "data/soundpeats/reports/air5-pro-plus_ldac.txt",
+        "data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt"
       ]
     },
     {
@@ -1881,9 +1881,9 @@
         ]
       },
       "reports": [
-        "data/reports/S5_0.4.9.txt",
-        "data/reports/S5_gaia_v3.txt",
-        "data/reports/S5_S2_fit_drain_leaudio.txt"
+        "data/soundpeats/reports/S5_0.4.9.txt",
+        "data/soundpeats/reports/S5_gaia_v3.txt",
+        "data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt"
       ]
     },
     {
@@ -2333,19 +2333,19 @@
   "_fields": {
     "family": "The app's chip family code. It decides the EQ command, the EQ merge rule, BLE framing and the firmware-update path.",
     "old_eq_protocol": "The flag compiled into the app for this code. null means the code is not in that enum. Use eq_command, which applies the app's full rule.",
-    "transport": "spp: the common frame protocol in docs/PROTOCOL.md sections 1 to 4. qcy_ble: QCY's protocol, section 10.",
+    "transport": "spp: the common frame protocol in docs/soundpeats/PROTOCOL.md sections 1 to 4. qcy_ble: QCY's protocol, section 10.",
     "eq_command": "EQ band command under vendor 001D. The app uses 0E01 for every Qualcomm model whatever the flag says, and for any code whose flag is true. Everything else gets 0E02.",
     "eq_merge": "onto_classic_bands: user points are snapped onto the model's classic curve and gains added. append_after_classic: the classic bands are sent, then the user's bands.",
     "custom_eq_bands": "Bands on the app's custom EQ screen: 10 (31 Hz to 16 kHz) or 8 on Bluetrum (62 Hz to 8 kHz).",
     "family_sources.marketed_chip": "The chip the model is sold with.",
     "family_sources.ble_device_information": "The manufacturer and model the earbuds report in the standard BLE Device Information service.",
-    "reports": "Probe and capture reports from real earbuds, under data/reports/.",
-    "ldac_excludes": "Features the official app offers only while LDAC is off, as the owner saw in PeatsAudio. Ids are from data/commands.json.",
+    "reports": "Probe and capture reports from real earbuds, under data/soundpeats/reports/.",
+    "ldac_excludes": "Features the official app offers only while LDAC is off, as the owner saw in PeatsAudio. Ids are from data/soundpeats/commands.json.",
     "ldac_or_multipoint": "LDAC and multipoint are one either-or setting on the earbuds: turning one off turns the other on. Seen on hardware.",
-    "fit_keeps_anc": "The official app leaves the noise mode as it is during the fit test. On every other model it turns ANC off first (docs/PROTOCOL.md sections 9 and 11).",
-    "confirmed": "Commands marked per_model in data/commands.json that the official app offers on this model, as the owner saw in PeatsAudio. Without this, the app does not offer them even if the earbuds answer the read.",
+    "fit_keeps_anc": "The official app leaves the noise mode as it is during the fit test. On every other model it turns ANC off first (docs/soundpeats/PROTOCOL.md sections 9 and 11).",
+    "confirmed": "Commands marked per_model in data/soundpeats/commands.json that the official app offers on this model, as the owner saw in PeatsAudio. Without this, the app does not offer them even if the earbuds answer the read.",
     "eq": "The EQ the official app writes to this model, read from a phone capture: one band per entry with its centre frequency, Q and the base gain the user's gain is added to; the master gain sent with every band; the range of the app's sliders. eq.presets are complete curves sent as they are, with the same master gain.",
-    "touch_disable_inverted": "SOUNDPEATS 2.5.3 shows the touch-disable switch the other way round on this model: its firmware code contains one of the 17 codes in that app's list (docs/PROTOCOL.md section 9). Whether the earbuds' reply, the write or both are inverted was not traced, so PairFree does not act on it yet."
+    "touch_disable_inverted": "SOUNDPEATS 2.5.3 shows the touch-disable switch the other way round on this model: its firmware code contains one of the 17 codes in that app's list (docs/soundpeats/PROTOCOL.md section 9). Whether the earbuds' reply, the write or both are inverted was not traced, so PairFree does not act on it yet."
   },
   "reported_chips": {
     "_about": "Chips named in public reviews. Not from the app and not confirmed on hardware. Use only to guess a family before a probe report exists.",
@@ -2353,7 +2353,7 @@
       "chip": "Qualcomm QCC3091",
       "expected_family": "QUALCOMM",
       "source": "manufacturer listing, as recorded in CLAUDE.md",
-      "confirmed": "The H3 (S5) reports Qualcomm QCC3091 in its BLE Device Information service; see the S5 entry and data/reports/S5_0.4.9.txt."
+      "confirmed": "The H3 (S5) reports Qualcomm QCC3091 in its BLE Device Information service; see the S5 entry and data/soundpeats/reports/S5_0.4.9.txt."
     },
     "Air5 Pro+": {
       "chip": "Qualcomm QCC3091",

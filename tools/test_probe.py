@@ -14,7 +14,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import probe  # noqa: E402
 
-DATA = HERE.parent / "data"
+DATA = HERE.parent / "data" / "soundpeats"
 
 
 def load(name):
@@ -22,7 +22,7 @@ def load(name):
 
 
 class Vectors(unittest.TestCase):
-    """The probe's codec must reproduce data/test_vectors.json byte for byte."""
+    """The probe's codec must reproduce data/soundpeats/test_vectors.json byte for byte."""
 
     def setUp(self):
         self.v = load("test_vectors.json")
@@ -75,7 +75,7 @@ class Vectors(unittest.TestCase):
 
 class CommandTable(unittest.TestCase):
     """The probe keeps its own copy of the table so it stays a single file.
-    It must not drift from data/commands.json."""
+    It must not drift from data/soundpeats/commands.json."""
 
     def test_probe_matches_commands_json(self):
         table = {c["id"]: c for c in load("commands.json")["commands"]}
@@ -108,11 +108,11 @@ class CommandTable(unittest.TestCase):
 
 
 class DeviceArt(unittest.TestCase):
-    """Every traced drawing belongs to a model in data/devices.json, and says where it came from."""
+    """Every traced drawing belongs to a model in data/soundpeats/devices.json, and says where it came from."""
 
     def test_art_files(self):
         names = {n.lower() for d in load("devices.json")["devices"] for n in d["names"]}
-        files = sorted((HERE / "device_art").glob("*.json"))
+        files = sorted((HERE / "device_art" / "soundpeats").glob("*.json"))
         self.assertTrue(files)
         for f in files:
             art = json.loads(f.read_text(encoding="utf-8"))

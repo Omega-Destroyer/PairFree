@@ -55,7 +55,7 @@ class RequestsTest {
     @Test
     fun onConnectMatchesTheProbe() {
         // tools/probe.py: `    "name":   (0x0309, ...` inside COMMANDS = { ... }
-        val probe = File(dataDir.parentFile, "tools/probe.py").readText()
+        val probe = repoFile("tools/probe.py").readText()
         val table = probe.substringAfter("COMMANDS = {").substringBefore("\n}")
         val names = Regex("""^\s+"(\w+)":\s+\(0x""", RegexOption.MULTILINE).findAll(table).map { it.groupValues[1] }.toList()
         assertEquals(names, Requests.ON_CONNECT.map { it.id })

@@ -21,7 +21,7 @@ import io.github.omegadestroyer.soundpeter.ui.theme.Studio
 import io.github.omegadestroyer.soundpeter.ui.theme.StudioTheme
 
 // The connected screens as they look with an H3 attached, tab bar included. Every reply
-// below was recorded from an H3 (data/reports/S5_0.4.9.txt); ANC mode is 1 as after the
+// below was recorded from an H3 (data/soundpeats/reports/S5_0.4.9.txt); ANC mode is 1 as after the
 // SET test, so the scenes show.
 
 private val H3 = Paired("00:00:00:00:00:00", "SOUNDPEATS H3")
@@ -48,7 +48,7 @@ private val H3_STATE: EarbudState = listOf(
     s.update(Frame(Wire.VENDOR_MAIN, command.get!! or Wire.REPLY_MASK, bytes(hex)))
 }.update(Frame(Gaia.VENDOR, Gaia.GET_FEATURES + Gaia.RESPONSE, bytes("000d010c010901050108070103060207010005")))
 
-/** The H3's result with both earbuds in (data/reports/S5_S2_fit_drain_leaudio.txt). */
+/** The H3's result with both earbuds in (data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt). */
 private val H3_FITTED: EarbudState = H3_STATE.update(Frame(Gaia.VENDOR, Gaia.FIT_RESULT, bytes("0101")))
 
 private fun bytes(hex: String): ByteArray = hex.chunked(2).map { it.toInt(16).toByte() }.toByteArray()

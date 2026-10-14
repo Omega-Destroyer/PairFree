@@ -203,7 +203,7 @@ The app picks `0E 01` when any of these holds, and `0E 02` otherwise
   is `WQT7033`, `T57` and `ATS3019DK12`;
 - the code is `BS519W2D` and the firmware version is 0.4.5 or lower.
 
-`data/devices.json` carries the result per model as `eq_command`.
+`data/soundpeats/devices.json` carries the result per model as `eq_command`.
 
 Payload, 9 bytes:
 
@@ -222,7 +222,7 @@ Preset curves and the "classic" base curve are downloaded from SoundPEATS' serve
 snaps custom points onto the classic curve's bands and adds the gains
 (`EqUtilKt.mergeQualcommEQ`), so the band count and centre frequencies the firmware
 expects are not known from the APK alone. For the H3 they were read from a phone
-capture (section 11) and are in `data/devices.json` as the model's `eq` entry.
+capture (section 11) and are in `data/soundpeats/devices.json` as the model's `eq` entry.
 
 The hearing-test EQ is computed in the app and sent through the same band writes.
 
@@ -250,7 +250,7 @@ or the command numbers.
 The earbuds do not report their family. The app looks it up by Bluetooth name in a
 model list it downloads from SoundPEATS' server (`ota/pairDataList`), and falls back
 to the list compiled into the APK. A client that works offline needs its own table:
-`data/devices.json`, keyed by the firmware code from the `03 09` reply.
+`data/soundpeats/devices.json`, keyed by the firmware code from the `03 09` reply.
 
 | Family code | Vendor            | Control path                   | Differences in control                         |
 |-------------|-------------------|--------------------------------|------------------------------------------------|
@@ -265,7 +265,7 @@ to the list compiled into the APK. A client that works offline needs its own tab
 | `SANNUO`    | not known         | listed in 2.5.3 only           | no models known                                |
 | `QCY-WUQI`  | QCY-built (WUQI)  | QCY's own SDK over BLE         | separate protocol, see section 10; Capsule3 Pro only |
 
-`data/devices.json` holds the model table compiled into the app: 45 firmware codes with
+`data/soundpeats/devices.json` holds the model table compiled into the app: 45 firmware codes with
 their Bluetooth names and family, plus the transport, EQ command and EQ merge rule
 that follow from the app's code. Newer models are missing from it because the app
 downloads their entries. Their codes look like `S7`, `S21`, `S27`.
@@ -283,9 +283,9 @@ Everything on the common protocol differs in these ways only:
 |------------------------------|-------------------------------|-------------------------------------------|
 | Which features exist         | Server function list          | Probe the earbuds. See section 8.         |
 | Which values a feature takes | Server function list, and for ANC levels the earbuds' own reply | Probe          |
-| EQ command (`0E 01`/`0E 02`) | Family and firmware code      | `eq_command` in `data/devices.json`       |
-| EQ merge rule                | Family and firmware code      | `eq_merge` in `data/devices.json`         |
-| Custom EQ band count         | Family (8 on Bluetrum, else 10) | `custom_eq_bands` in `data/devices.json` |
+| EQ command (`0E 01`/`0E 02`) | Family and firmware code      | `eq_command` in `data/soundpeats/devices.json`       |
+| EQ merge rule                | Family and firmware code      | `eq_merge` in `data/soundpeats/devices.json`         |
+| Custom EQ band count         | Family (8 on Bluetrum, else 10) | `custom_eq_bands` in `data/soundpeats/devices.json` |
 | Classic EQ curve and presets | Server, per firmware code     | Not in the APK                            |
 | Custom-key reply layout      | Family (Qualcomm has a status byte) | Section 3.2                         |
 | BLE packet framing           | Family (Qualcomm drops the header) | Section 6                            |
@@ -335,7 +335,7 @@ sits next to a separate check for the Qualcomm family, which would be redundant 
 they were Qualcomm.
 
 The H3 and the Air5 Pro+ appear nowhere in the APK. Public reviews name the Qualcomm
-QCC3091 for the Air5 Pro, Air5 Pro+ and Air6 Pro. `data/devices.json` lists these
+QCC3091 for the Air5 Pro, Air5 Pro+ and Air6 Pro. `data/soundpeats/devices.json` lists these
 reports under `reported_chips` with their sources.
 
 ## 6. BLE transport
@@ -460,7 +460,7 @@ model list is the one used in section 5.2.
   `BT5106-3040`, `T28Pro`, `T28`, `T57`, `ATS3019DK12`, `OPERA03`, `OPERA05`, `HILISTENING`,
   `FREELITE` or `JULIRUNFREE`. `AIR3DELUXEHSW53D` is no longer in the list. It inverts the
   state it shows; how it writes the switch was not traced. `touch_disable_inverted` in
-  `data/devices.json` marks these models; PairFree does not act on it yet.
+  `data/soundpeats/devices.json` marks these models; PairFree does not act on it yet.
 - `S9`: when a feature that conflicts with EQ is turned off, the app does not put
   the previous EQ back. On every other model it does.
 - `S22`: see section 3.1.
@@ -479,7 +479,7 @@ model list is the one used in section 5.2.
 The Capsule3 Pro (firmware codes `QCYTS04` and `SPTS04`) is built by QCY. The app
 drives it through QCY's library over BLE, not through the frames in sections 1 to 4.
 Read from that library and from `QcyBleDeviceModel`. Not confirmed on hardware.
-`data/qcy_commands.json` holds the same information in machine-readable form.
+`data/soundpeats/qcy_commands.json` holds the same information in machine-readable form.
 
 ### 10.1 Transport
 
@@ -576,11 +576,11 @@ unknown.
 
 ## 11. Confirmed on hardware
 
-Raw output for each model is in `data/reports/`.
+Raw output for each model is in `data/soundpeats/reports/`.
 
 ### SoundPEATS H3: firmware code `S5`, version 0.4.9
 
-Tested 2026-10-10 from Windows over the SPP COM port. Report: `data/reports/S5_0.4.9.txt`.
+Tested 2026-10-10 from Windows over the SPP COM port. Report: `data/soundpeats/reports/S5_0.4.9.txt`.
 
 - Transport and framing are as in sections 1 and 2. Replies to GETs arrive within
   about 0.3 s. Every reply had status `00`.
@@ -593,7 +593,7 @@ Tested 2026-10-10 from Windows over the SPP COM port. Report: `data/reports/S5_0
   adaptive volume, personalized volume, light effect, privacy mode, reset state.
 - Game mode answers `0`, and PeatsAudio showed it as not available during this run. The
   owner reports that PeatsAudio offers game mode and dual device only while LDAC is off,
-  and LDAC was on. Recorded as `ldac_excludes` for `S5` in `data/devices.json`. Whether
+  and LDAC was on. Recorded as `ldac_excludes` for `S5` in `data/soundpeats/devices.json`. Whether
   the firmware refuses these with LDAC on, or only the app hides them, is not known.
 - Values matched the settings PeatsAudio showed: ANC off, multipoint off, touch
   enabled, LDAC on.
@@ -649,7 +649,7 @@ same steps.
 - SET LDAC (`03 39`) and SET multipoint (`03 15`) get no reply. About 3 to 4 s later the
   earbuds close the serial channel; it can be opened again about 2 s after that. After
   LDAC off, multipoint reads `1`; after multipoint off, LDAC reads `1`. So on the H3 they
-  are one either-or setting (`ldac_or_multipoint` in `data/devices.json`). PeatsAudio sends
+  are one either-or setting (`ldac_or_multipoint` in `data/soundpeats/devices.json`). PeatsAudio sends
   only the one SET and sees the same.
 - Right after the channel reopened following LDAC off, an unasked `83 17 00 01` arrived.
   `83 17` is the reply to "connect classic" (`03 17`, section 3), which the app defines
@@ -689,7 +689,7 @@ same steps.
   Reduce, Treble Boost, Pop and Rock keep the base curve's frequencies and Q but not its
   gains (and not in whole-dB steps from it). Electronic, Classical, Folk, Book Whisper,
   HIFI and ACG also move some bands (for example 20 Hz, 5 kHz, or 6.8, 9.8 and 14.5 kHz)
-  or change their Q. All eleven are in `data/devices.json` (`eq.presets`) and are the
+  or change their Q. All eleven are in `data/soundpeats/devices.json` (`eq.presets`) and are the
   `eq_preset` test vectors.
 - The unasked `83 17 00 01` also arrives about 6 s after a plain connect, with no LDAC
   change before it.
@@ -707,7 +707,7 @@ Still open on the H3:
 
 Probed 2026-10-11 from a PC over the serial port, looking for a way to read the EQ.
 Every frame was approved by the owner before it went out. Report:
-`data/reports/S5_gaia_v3.txt`.
+`data/soundpeats/reports/S5_gaia_v3.txt`.
 
 - Every reply on vendor `00 1D` carries the request's command number plus `01 00`. The
   EQ write `0E 01` is answered by `0F 81`, its number plus `01 80`. That fits Qualcomm's
@@ -731,8 +731,8 @@ Every frame was approved by the owner before it went out. Report:
 ### SoundPEATS H3: fit test (GAIA v3 feature `09`)
 
 Captured 2026-10-11 from the phone's Bluetooth log while the owner ran PeatsAudio's fit
-test twice on the H3, ANC off. Report: `data/reports/S5_S2_fit_drain_leaudio.txt`; the
-frames are the `gaia` cases in `data/test_vectors.json`.
+test twice on the H3, ANC off. Report: `data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt`; the
+frames are the `gaia` cases in `data/soundpeats/test_vectors.json`.
 
 - On opening the fit test, PeatsAudio sets up GAIA: it asks for the feature list (`00 01`),
   sets two transport parameters (`00 0D`), registers for notifications from features `00`,
@@ -762,12 +762,12 @@ frames are the `gaia` cases in `data/test_vectors.json`.
   PairFree now waits for the confirmation (about 1.7 s) and then 1.5 s more, and puts
   the noise mode back once the result is in. Per section 9 the
   app leaves ANC alone on `S27` and `S32` (Air6 Pro): `fit_keeps_anc` in
-  `data/devices.json`.
+  `data/soundpeats/devices.json`.
 
 ### SoundPEATS Air5 Pro+: firmware code `S2`, version 1.2
 
 Captured 2026-10-11 from the phone's Bluetooth log while the owner used PeatsAudio (same
-method as the H3's EQ). Report: `data/reports/S2_1.2.txt`.
+method as the H3's EQ). Report: `data/soundpeats/reports/S2_1.2.txt`.
 
 - Firmware version reply: `S2_20250816_V1.2`. The probe has not been run on it yet.
 - On connecting, PeatsAudio read battery, firmware, multipoint, ANC level, touch disable,
@@ -795,8 +795,8 @@ method as the H3's EQ). Report: `data/reports/S2_1.2.txt`.
   ends and by single steps on two bands).
 - Presets: the same twelve names as on the H3, in the same grid, but with this model's own
   curves; every one differs from the H3's. SOUNDPEATS Classic is the base curve; Pop and HIFI
-  move some bands. All are in `data/devices.json` (`S2`, `eq.presets`) and are the `S2`
-  cases of `eq_layout` and `eq_preset` in `data/test_vectors.json`.
+  move some bands. All are in `data/soundpeats/devices.json` (`S2`, `eq.presets`) and are the `S2`
+  cases of `eq_layout` and `eq_preset` in `data/soundpeats/test_vectors.json`.
 - LDAC does not work on this model with a Samsung phone; see section 12.
 - Drainage and LE Audio (captured 2026-10-11, same report as the H3's fit test).
   PeatsAudio offers both on the Air5 Pro+ and neither on the H3, with LDAC on or off.
@@ -825,7 +825,7 @@ H3 or the Air5 Pro+. On the Air5 Pro+ it would show whether the earbuds ever see
 Tested 2026-10-11 on a Samsung Galaxy S24 FE (SM-S721W, Android 16, One UI 8, build
 `S721WVLSEDZH9`); both earbuds are Qualcomm QCC3091. The phone's negotiation was read from
 `dumpsys audio`/`dumpsys bluetooth_manager` and `logcat` (`bluetooth-a2dp`, `A2dpService`).
-Evidence: `data/reports/air5-pro-plus_ldac.txt`.
+Evidence: `data/soundpeats/reports/air5-pro-plus_ldac.txt`.
 
 ### H3 (works)
 

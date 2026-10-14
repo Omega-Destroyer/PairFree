@@ -184,8 +184,68 @@ val generateTables = tasks.register<GenerateTables>("generateTables") {
     outputDir = layout.buildDirectory.dir("generated/tables")
 }
 
+/** Writes the Soundcore frame constants and command numbers from data/soundcore/commands.json. */
+abstract class GenerateSoundcoreTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val json = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val frame = json.getValue("frame") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val commands = json.getValue("commands") as List<Map<String, Any?>>
+        fun bytes(hex: String) = hex.chunked(2).joinToString(", ") { "0x$it.toByte()" }
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/soundcore/commands.json by the generateSoundcoreTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        out.appendLine("/** Soundcore frame constants (docs/soundcore/PROTOCOL.md section 2). */")
+        out.appendLine("public object SoundcoreWire {")
+        out.appendLine("    /** Direction header, command and length: the bytes before the body. */")
+        out.appendLine("    public const val HEADER_SIZE: Int = ${frame.getValue("header_size")}")
+        out.appendLine("    /** The earbuds' vendor RFCOMM service UUIDs start with this; the last five hex digits vary. */")
+        out.appendLine("    public const val VENDOR_SERVICE_PREFIX: String = \"${frame.getValue("vendor_service_uuid_prefix")}\"")
+        out.appendLine("    internal val TO_EARBUDS_HEADER: ByteArray = byteArrayOf(${bytes(frame.getValue("to_earbuds_header") as String)})")
+        out.appendLine("    internal val FROM_EARBUDS_HEADER: ByteArray = byteArrayOf(${bytes(frame.getValue("from_earbuds_header") as String)})")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Soundcore command numbers: the two command bytes as one number, so `01 01` is 0x0101. */")
+        out.appendLine("public object SoundcoreCommand {")
+        for (c in commands) {
+            c["note"]?.let { out.appendLine("    /** $it */") }
+            out.appendLine("    public const val ${(c.getValue("id") as String).uppercase()}: Int = 0x${c.getValue("command")}")
+        }
+        val never = commands.filter { it["never_send"] == true }.joinToString(", ") { "0x${it.getValue("command")}" }
+        out.appendLine("    /** Commands SoundPeter never sends. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf($never)")
+        out.appendLine("}")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("SoundcoreTables.kt").writeText(out.toString())
+    }
+}
+
+val generateSoundcoreTables = tasks.register<GenerateSoundcoreTables>("generateSoundcoreTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/soundcore/commands.json")
+    packageName = "io.github.omegadestroyer.soundpeter.protocol.soundcore"
+    outputDir = layout.buildDirectory.dir("generated/soundcore")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
+    kotlin.srcDir(generateSoundcoreTables)
 }
 
 dependencies {
@@ -198,6 +258,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     inputs.dir(dataDir).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/soundcore")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("soundpeter.data", dataDir.asFile.absolutePath)
 }

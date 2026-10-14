@@ -20,6 +20,12 @@ from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` 
 - `docs/soundcore/PROTOCOL.md` is what is known of the Soundcore protocol so far. All of it
   comes from OpenSCQ30's source and none of it is confirmed. Treat it as a lead: check it
   against the official app's code or the owner's Soundcore earbuds before building on it.
+  What the owner's Space A40 confirmed is marked there, with its recordings in
+  `data/soundcore/reports/`.
+- `data/soundcore/commands.json` is the Soundcore command table; `generateSoundcoreTables`
+  turns it into `SoundcoreCommand` and `SoundcoreWire` in the `protocol.soundcore` package.
+  `data/soundcore/test_vectors.json` holds the A40's recorded frames, its state and its EQ
+  writes; the Kotlin tests rebuild every one byte for byte. Never send `SoundcoreCommand.NEVER_SEND`.
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

@@ -1,0 +1,639 @@
+{
+  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve.",
+  "frames": [
+    {
+      "direction": "to_earbuds",
+      "command": "0101",
+      "body": "",
+      "frame": "08ee00000001010a0002"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0101",
+      "body": "01010505000030362e343330362e34333339333630303030303030303030303000000000000000000000000000000000000000000000ff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0000000e11110100116311661144114405023001000100000f31010001000000ffffffffffffffffffffff",
+      "frame": "09ff0000010101990001010505000030362e343330362e34333339333630303030303030303030303000000000000000000000000000000000000000000000ff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0000000e11110100116311661144114405023001000100000f31010001000000ffffffffffffffffffffffcc",
+      "note": "Recorded, with the Bluetooth address in the serial number replaced by zeros and the checksum recomputed."
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0501",
+      "body": "",
+      "frame": "08ee00000005010a0006"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0501",
+      "body": "3a00000002000000020000000900000000000000000000004501b208180054010e0000008007270100000000060000000000000000000000000000001000350100000000000000000100170039000000000001000000000000000600000000000000070000000000000000000000000000000000",
+      "frame": "09ff00000105017e003a00000002000000020000000900000000000000000000004501b208180054010e0000008007270100000000060000000000000000000000000000001000350100000000000000000100170039000000000001000000000000000600000000000000070000000000000000000000000000000000a9"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0581",
+      "body": "",
+      "frame": "08ee00000005810a0086"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0581",
+      "body": "",
+      "frame": "09ff00000105810a0099"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0103",
+      "body": "05050f",
+      "frame": "09ff00000101030d0005050f33"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0681",
+      "body": "003001000100",
+      "frame": "08ee00000006811000003001000100bf"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0681",
+      "body": "",
+      "frame": "09ff00000106810a009a"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0601",
+      "body": "003001000100",
+      "frame": "09ff0000010601100000300100010052"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0681",
+      "body": "023001000100",
+      "frame": "08ee00000006811000023001000100c1"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0681",
+      "body": "",
+      "frame": "09ff00000106810a009a"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0601",
+      "body": "023001000100",
+      "frame": "09ff0000010601100002300100010054"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0481",
+      "body": "000213",
+      "frame": "08ee00000004810d000002139d"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0481",
+      "body": "",
+      "frame": "09ff00000104810a0098"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0481",
+      "body": "000211",
+      "frame": "08ee00000004810d000002119b"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0481",
+      "body": "",
+      "frame": "09ff00000104810a0098"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0483",
+      "body": "010200",
+      "frame": "08ee00000004830d000102008d"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0483",
+      "body": "",
+      "frame": "09ff00000104830a009a"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0483",
+      "body": "010201",
+      "frame": "08ee00000004830d000102018e"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0483",
+      "body": "",
+      "frame": "09ff00000104830a009a"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0483",
+      "body": "010010",
+      "frame": "08ee00000004830d000100109b"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0483",
+      "body": "",
+      "frame": "09ff00000104830a009a"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0483",
+      "body": "010011",
+      "frame": "08ee00000004830d000100119c"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0483",
+      "body": "",
+      "frame": "09ff00000104830a009a"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0183",
+      "body": "01",
+      "frame": "08ee00000001830b000186"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0103",
+      "body": "05050f",
+      "frame": "09ff00000101030d0005050f33"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0183",
+      "body": "",
+      "frame": "09ff00000101830a0097"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0183",
+      "body": "00",
+      "frame": "08ee00000001830b000085"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0183",
+      "body": "",
+      "frame": "09ff00000101830a0097"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0103",
+      "body": "05050f",
+      "frame": "09ff00000101030d0005050f33"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0101",
+      "body": "",
+      "frame": "08ee00000001010a0002"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0101",
+      "body": "01010505000030362e343330362e34333339333630303030303030303030303000000000000000000000000000000000000000000000ff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0000000e11110100116311661144114405023001000100000f31010001000000ffffffffffffffffffffff",
+      "frame": "09ff0000010101990001010505000030362e343330362e34333339333630303030303030303030303000000000000000000000000000000000000000000000ff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0000000e11110100116311661144114405023001000100000f31010001000000ffffffffffffffffffffffcc",
+      "note": "Recorded, with the Bluetooth address in the serial number replaced by zeros and the checksum recomputed."
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0501",
+      "body": "",
+      "frame": "08ee00000005010a0006"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0501",
+      "body": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "frame": "09ff00000105017e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008d"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0581",
+      "body": "",
+      "frame": "08ee00000005810a0086"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0581",
+      "body": "",
+      "frame": "09ff00000105810a0099"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0387",
+      "body": "fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800",
+      "frame": "08ee00000003876600fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0078787878787878787800787878787878787878008c"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0387",
+      "body": "",
+      "frame": "09ff00000103870a009d"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0387",
+      "body": "fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800",
+      "frame": "08ee00000003876600fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0078787878787878787800787878787878787878008c"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0387",
+      "body": "",
+      "frame": "09ff00000103870a009d"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0387",
+      "body": "fefe0000b4787878787878787878b4787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff008074797878787878780080747978787878787800",
+      "frame": "08ee00000003876600fefe0000b4787878787878787878b4787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0080747978787878787800807479787878787878000e"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0387",
+      "body": "",
+      "frame": "09ff00000103870a009d"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0387",
+      "body": "fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800",
+      "frame": "08ee00000003876600fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0078787878787878787800787878787878787878008c"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0387",
+      "body": "",
+      "frame": "09ff00000103870a009d"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0387",
+      "body": "fefe0000787878787878783c7878787878787878783c7878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878777c6f78007878787878777c6f7800",
+      "frame": "08ee00000003876600fefe0000787878787878783c7878787878787878783c7878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878777c6f78007878787878777c6f780008"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0387",
+      "body": "",
+      "frame": "09ff00000103870a009d"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0387",
+      "body": "fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800",
+      "frame": "08ee00000003876600fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0078787878787878787800787878787878787878008c"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0387",
+      "body": "",
+      "frame": "09ff00000103870a009d"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0387",
+      "body": "000000007878787878787878780078787878787878787800ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800",
+      "frame": "08ee00000003876600000000007878787878787878780078787878787878787800ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800a0"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0387",
+      "body": "",
+      "frame": "09ff00000103870a009d"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0286",
+      "body": "01",
+      "frame": "08ee00000002860b00018a"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0286",
+      "body": "",
+      "frame": "09ff00000102860a009b"
+    },
+    {
+      "direction": "to_earbuds",
+      "command": "0286",
+      "body": "00",
+      "frame": "08ee00000002860b000089"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0286",
+      "body": "",
+      "frame": "09ff00000102860a009b"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0104",
+      "body": "0100",
+      "frame": "09ff00000101040c0001001b"
+    },
+    {
+      "direction": "from_earbuds",
+      "command": "0104",
+      "body": "0101",
+      "frame": "09ff00000101040c0001011c"
+    }
+  ],
+  "a3936_state": {
+    "body": "01010505000030362e343330362e34333339333630303030303030303030303000000000000000000000000000000000000000000000ff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0000000e11110100116311661144114405023001000100000f31010001000000ffffffffffffffffffffff",
+    "expect": {
+      "host_device": 1,
+      "both_connected": true,
+      "battery_left": 5,
+      "battery_right": 5,
+      "charging_left": false,
+      "charging_right": false,
+      "firmware_left": "06.43",
+      "firmware_right": "06.43",
+      "serial_prefix": "3936",
+      "eq_preset": 0,
+      "eq_left": "00000000000000000000",
+      "eq_right": "00000000000000000000",
+      "age_range": 255,
+      "sound_mode_cycle": 5,
+      "sound_modes": "023001000100",
+      "ambient_mode": 2,
+      "touch_tone": false,
+      "case_battery": 15,
+      "color": 49,
+      "ldac": true,
+      "multipoint": false,
+      "auto_power_off_enabled": true,
+      "auto_power_off_index": 0,
+      "gaming_mode": false,
+      "trailing": "00ffffffffffffffffffffff"
+    }
+  },
+  "eq_smoothing": [
+    {
+      "bands_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "smoothed": "78787878787878787800"
+    },
+    {
+      "bands_tenths": [
+        60,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "smoothed": "80747978787878787800"
+    },
+    {
+      "bands_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -60,
+        0,
+        0
+      ],
+      "smoothed": "7878787878777c6f7800"
+    },
+    {
+      "bands_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -120
+      ],
+      "smoothed": "78787878787878787800"
+    }
+  ],
+  "eq_writes": [
+    {
+      "preset": 65278,
+      "left_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "right_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "body": "fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800"
+    },
+    {
+      "preset": 65278,
+      "left_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "right_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "body": "fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800"
+    },
+    {
+      "preset": 65278,
+      "left_tenths": [
+        60,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "right_tenths": [
+        60,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "body": "fefe0000b4787878787878787878b4787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff008074797878787878780080747978787878787800"
+    },
+    {
+      "preset": 65278,
+      "left_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "right_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "body": "fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800"
+    },
+    {
+      "preset": 65278,
+      "left_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -60,
+        0,
+        0
+      ],
+      "right_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -60,
+        0,
+        0
+      ],
+      "body": "fefe0000787878787878783c7878787878787878783c7878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878777c6f78007878787878777c6f7800"
+    },
+    {
+      "preset": 65278,
+      "left_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "right_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "body": "fefe00007878787878787878787878787878787878787878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800"
+    },
+    {
+      "preset": 0,
+      "left_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -120
+      ],
+      "right_tenths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -120
+      ],
+      "body": "000000007878787878787878780078787878787878787800ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff007878787878787878780078787878787878787800"
+    }
+  ]
+}

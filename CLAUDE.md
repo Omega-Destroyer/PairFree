@@ -18,7 +18,9 @@ work as possible and to ask before guessing.
 
 Each brand has its own folders, named after the brand as people know it rather than the
 company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<brand>/` and
-`tools/device_art/<brand>/`. App-wide documents stay at the top level. Never copy numbers
+`tools/device_art/<brand>/`. App-wide documents stay at the top level. Each brand also has a page
+for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
+summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
 from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` branch.
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
@@ -48,8 +50,9 @@ from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` 
   reports, ldac_excludes, extra_features, notes) is kept. The state layouts, EQs and touch controls
   were read from OpenSCQ30's code; after a refresh to a newer commit, compare its parsers, EQ and
   button settings with them. Then run
-  `python tools/gen_soundcore_table.py` for the README's Soundcore table; a test fails while it is out
-  of date. Credit OpenSCQ30 wherever its code or facts are used, as the code and README do.
+  `python tools/gen_soundcore_table.py` for the Soundcore table in `docs/devices/soundcore.md`; a test
+  fails while it is out of date. Credit OpenSCQ30 wherever its code or facts are used, as the code,
+  the README and that page do.
   `data/soundcore/test_vectors.json` holds the A40's recorded frames, its state, its EQ and touch
   writes, and the state replies, EQ and touch tests from OpenSCQ30's tests (serials zeroed); the
   Kotlin tests rebuild or read every one. Never send `SoundcoreCommand.NEVER_SEND`.
@@ -99,7 +102,7 @@ reads PeatsAudio sends on connecting (the same as the H3's), drainage (about 30 
 reports itself off) and LE Audio (the earbuds restart and reconnect). Also every read
 PairFree sends on connect (the probe's list; `data/soundpeats/reports/S2_1.2.txt`), and on
 2026-10-12 the owner tried every feature PairFree offers on it, and all worked. The
-README's Tested earbuds table is the summary. Specific open questions:
+Tested earbuds table in `docs/devices/soundpeats.md` is the summary. Specific open questions:
 
 - Whether the Air5 Pro+ fit test gives a good result in a well-fitted ear: the only pair
   available has someone else's ear tips. Its LDAC does not work (`docs/soundpeats/PROTOCOL.md`
@@ -200,7 +203,7 @@ reports from other people.
   PeatsAudio sent. Copy device report and `tools/probe.py` give the settings alone.
 - For the controls: save the report as `data/soundpeats/reports/<code>_<version>.txt`, list it under
   the model's `reports` in `data/soundpeats/devices.json`, then run `python tools/gen_models_table.py`
-  to update the README's All models table; a test fails while it is out of date. On
+  to update the All models table in `docs/devices/soundpeats.md`; a test fails while it is out of date. On
   Qualcomm models the app's reports include a `gaia_features` line, which fills the Fit
   test column.
 - For the EQ: `python tools/import_eq_capture.py report.txt`,

@@ -1,4 +1,4 @@
-"""The README's Soundcore table must match data/soundcore/devices.json."""
+"""The Soundcore page's table must match data/soundcore/devices.json."""
 import unittest
 
 import gen_soundcore_table as gen
@@ -14,10 +14,15 @@ class SoundcoreTable(unittest.TestCase):
         row = next(r for r in gen.rows([self.devices[model]], gen.checked_models()))
         return [c.split(">", 1)[1] for c in row.removeprefix("<tr>").removesuffix("</tr>").split("</td>")[:-1]]
 
-    def test_readme_is_up_to_date(self):
-        text = gen.README.read_text(encoding="utf-8")
+    def test_page_is_up_to_date(self):
+        text = gen.PAGE.read_text(encoding="utf-8")
         start, end = text.index(gen.START), text.index(gen.END) + len(gen.END)
         self.assertEqual(text[start:end], gen.table(), "run python tools/gen_soundcore_table.py")
+
+    def test_summary(self):
+        s = gen.summary()
+        self.assertEqual(len(self.devices), s["models"])
+        self.assertEqual(["Space A40"], s["tested"], "the models with a recording")
 
     def test_source_is_credited(self):
         src = self.data["source"]

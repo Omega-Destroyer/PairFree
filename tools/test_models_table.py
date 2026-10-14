@@ -1,4 +1,4 @@
-"""The README's table of every model must match data/soundpeats/devices.json and the device reports."""
+"""The SOUNDPEATS page's table of every model must match data/soundpeats/devices.json and the device reports."""
 import unittest
 
 import gen_models_table as gen
@@ -16,10 +16,15 @@ class ModelsTable(unittest.TestCase):
     def cells(self, code):
         return [c.split(">", 1)[1] for c in self.row(code).removeprefix("<tr>").removesuffix("</tr>").split("</td>")[:-1]]
 
-    def test_readme_is_up_to_date(self):
-        text = gen.README.read_text(encoding="utf-8")
+    def test_page_is_up_to_date(self):
+        text = gen.PAGE.read_text(encoding="utf-8")
         start, end = text.index(gen.START), text.index(gen.END) + len(gen.END)
         self.assertEqual(text[start:end], gen.table(), "run python tools/gen_models_table.py")
+
+    def test_summary(self):
+        s = gen.summary()
+        self.assertEqual(45, s["models"], "every model in the official app's table but the Capsule3 Pro")
+        self.assertEqual(["Air5 Pro+", "H3"], s["tested"])
 
     def test_h3_report_reads(self):
         answered, silent, gaia = gen.read_reports(self.devices["S5"]["reports"], self.commands)

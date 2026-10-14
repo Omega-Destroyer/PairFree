@@ -150,7 +150,7 @@ How far each layout is checked:
 - **Not tested:** the other 17 models, read from OpenSCQ30's parsers alone. A device report from
   one of them (the state reply as hex) checks its layout.
 
-The README's Soundcore table shows which is which.
+The Soundcore device page ([docs/devices/soundcore.md](../devices/soundcore.md)) shows which is which.
 
 ### Adding models nobody on the project owns
 

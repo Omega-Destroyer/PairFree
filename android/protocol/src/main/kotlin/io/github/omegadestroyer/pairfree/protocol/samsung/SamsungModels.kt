@@ -67,4 +67,12 @@ public object SamsungModels {
 
     /** The service the earbuds offer for their settings, as GalaxyBudsClient opens it. */
     public fun serviceFor(model: SamsungModel): String = model.serviceUuid
+
+    /**
+     * [name] for a device report, with the four hex digits Samsung puts in the earbuds' name, such as
+     * `Galaxy Buds2 Pro (A1B2)`, masked: they look like part of the Bluetooth address.
+     */
+    public fun maskedName(name: String): String = name.replace(ADDRESS_DIGITS, "(xxxx)")
+
+    private val ADDRESS_DIGITS = Regex("""\([0-9A-Fa-f]{4}\)""")
 }

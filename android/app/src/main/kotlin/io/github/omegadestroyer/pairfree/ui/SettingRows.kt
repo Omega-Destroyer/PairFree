@@ -222,10 +222,12 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
             else -> stringResource(R.string.setting_balance_middle)
         }
     }
-    "ambient_custom_tone" -> when (value) {
-        0 -> stringResource(R.string.setting_tone_soft)
-        max / 2 -> stringResource(R.string.setting_tone_neutral)
-        max -> stringResource(R.string.setting_tone_clear)
+    "ambient_custom_tone" -> when (value - max / 2) {
+        -2 -> stringResource(R.string.setting_tone_softer)
+        -1 -> stringResource(R.string.setting_tone_soft)
+        0 -> stringResource(R.string.setting_tone_neutral)
+        1 -> stringResource(R.string.setting_tone_clear)
+        2 -> stringResource(R.string.setting_tone_clearer)
         else -> value.toString()
     }
     else -> value.toString()

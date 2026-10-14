@@ -121,7 +121,8 @@ public class SamsungSession(
     private fun refresh() {
         val s = status ?: return
         val values = buildMap {
-            put(Command.FIRMWARE_VERSION, Value.Text("${model.model}_${firmware ?: "unknown"}"))
+            // Only models before the Buds3 answer the version request; the others show none.
+            firmware?.let { put(Command.FIRMWARE_VERSION, Value.Text("${model.model}_$it")) }
             put(Command.BATTERY_LEFT, Value.Number(battery(s, "battery_l", "placement_l")))
             put(Command.BATTERY_RIGHT, Value.Number(battery(s, "battery_r", "placement_r")))
             if (model.supports("case_battery", s.revision)) put(Command.BATTERY_CASE, Value.Number(s.int("battery_case")?.takeIf { it in 0..100 }))

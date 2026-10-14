@@ -44,10 +44,10 @@ class SamsungProtocolTest {
             assertEquals(SamsungPacket(SamsungMessage.NOISE_CONTROLS, byteArrayOf(1)), SamsungPacket.parse(frame, legacy))
         }
         // Standard: FD, length 4 (id, payload, CRC) little-endian, id 120, payload, CRC low first, DD.
-        val frame = SamsungPacket.build(SamsungMessage.NOISE_CONTROLS, byteArrayOf(1))
-        assertEquals(listOf(0xFD, 4, 0, 120, 1), frame.take(5).map { it.toInt() and 0xFF })
-        assertEquals(0xDD, frame.last().toInt() and 0xFF)
-        assertEquals(8, frame.size)
+        // Both examples are in docs/samsung/PROTOCOL.md section 2.
+        fun hex(b: ByteArray) = b.joinToString(" ") { "%02X".format(it.toInt() and 0xFF) }
+        assertEquals("FD 04 00 78 01 D1 91 DD", hex(SamsungPacket.build(SamsungMessage.NOISE_CONTROLS, byteArrayOf(1))))
+        assertEquals("FD 03 00 63 C5 5C DD", hex(SamsungPacket.build(SamsungMessage.VERSION_INFO)))
     }
 
     @Test
@@ -92,6 +92,12 @@ class SamsungProtocolTest {
         assertEquals("SM-R180", SamsungModels.fromName("Galaxy Buds Live (A1B2)")?.model)
         assertEquals("SM-R420", SamsungModels.fromName("Galaxy Buds3 FE (A1B2)")?.model)
         assertNull(SamsungModels.fromName("Soundcore Space A40"))
+    }
+
+    @Test
+    fun reportsMaskTheDigitsInTheName() {
+        assertEquals("Galaxy Buds2 Pro (xxxx)", SamsungModels.maskedName("Galaxy Buds2 Pro (A1b2)"))
+        assertEquals("Galaxy Buds3 (Kitchen)", SamsungModels.maskedName("Galaxy Buds3 (Kitchen)"))
     }
 
     @Test
@@ -182,7 +188,7 @@ class SamsungSessionTest {
         assertEquals(100, s.state.batteryLeft)
         assertEquals(100, s.state.batteryRight)
         assertEquals(88, s.state.batteryCase)
-        assertEquals("SM-R510", s.state.firmware?.code)
+        assertEquals(null, s.state.firmware, "no firmware before the version reply")
         assertTrue(s.state.hasFitTest)
         assertTrue(connected("SM-R400N").takeOutbox().any { it.id == SamsungMessage.VERSION_INFO }, "the Buds FE still answer it")
     }

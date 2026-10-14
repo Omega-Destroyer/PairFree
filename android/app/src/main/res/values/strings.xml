@@ -183,9 +183,11 @@
     <string name="setting_ambient_custom_left">Left earbud level</string>
     <string name="setting_ambient_custom_right">Right earbud level</string>
     <string name="setting_ambient_custom_tone">Tone</string>
+    <string name="setting_tone_softer">Softer</string>
     <string name="setting_tone_soft">Soft</string>
     <string name="setting_tone_neutral">Neutral</string>
     <string name="setting_tone_clear">Clear</string>
+    <string name="setting_tone_clearer">Clearer</string>
     <string name="setting_touch_single">Single tap</string>
     <string name="setting_touch_double">Double tap</string>
     <string name="setting_touch_triple">Triple tap</string>

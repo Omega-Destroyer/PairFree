@@ -265,7 +265,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Bluetooth name:  ${SamsungModels.maskedName(device?.name.orEmpty())}")
                 appendLine("Brand:           Samsung")
                 appendLine("Model:           ${session.model.model} (${session.model.name})")
                 appendLine("Firmware:        ${firmware?.version ?: "unknown"}")

@@ -28,7 +28,11 @@ from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` 
   app lists every model there among the paired earbuds (`SoundcoreModels.identify`: vendor service,
   else Bluetooth name) and shows it on the same screens through `SoundcoreSession`, which reads the
   state with the model's layout and maps it to `EarbudState`. It sends a setting only when the
-  last state showed it.
+  last state showed it. The equalizer (`SoundcoreEqualizer`, `eq` in `devices.json`, presets in
+  `eq_presets.json`) goes through the same Sound tab via `SoundcoreEqTarget`, and only for models
+  whose `eq.checked` is set: a recording of the Soundcore app or an OpenSCQ30 test pins the write.
+  Where the A40's recordings and OpenSCQ30 differ, the recordings win (`docs/soundcore/PROTOCOL.md`
+  section 8).
 - Every Soundcore model comes from OpenSCQ30 (github.com/Oppzippy/OpenSCQ30, Kyle Scheuing,
   GPL-3.0-or-later). `python tools/import_openscq30.py PATH` refreshes the model list and features
   in `data/soundcore/devices.json` from a local checkout and records the commit; everything else

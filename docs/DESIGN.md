@@ -172,6 +172,15 @@ yet" until the user picks a profile; nothing is sent to them on connect. A profi
 puts the same bytes on the earbuds as the current setting shows as selected, so New with
 every band at 0 is Stock.
 
+Soundcore earbuds report their EQ, so the same screen works differently for them (owner,
+2026-10-14). The profiles are the model's presets, the user's saved profiles and New; there is
+no Stock and no preamp. The screen shows what the earbuds report, whichever app set it, and
+nothing is sent on connect. After a change the app reads the state back, so the earbuds confirm
+it. The custom curve is the model's visible bands (8 on most) in whole dB within the model's
+range (±6 dB on most). The screen offers the EQ only on models whose EQ write a recording or
+OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8); the others say a device report
+helps.
+
 ### Controls
 
 - Left and Right switch, with a drawing of the pair and the chosen side highlighted.

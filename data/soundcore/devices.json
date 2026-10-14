@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by SoundPeter: ldac_excludes lists features LDAC turns off on the earbuds (SoundPeter's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports. state is the model's reply to the state request (01 01) as [field, bytes] in order, read from OpenSCQ30's parser and checked against its test replies where it has any; skip marks bytes SoundPeter does not use, optional: fields only some firmware sends. battery gives each level's scale: percent = (value - offset) * 100 / max. checksum false means the packets carry none. service_uuid fixes the RFCOMM service when OpenSCQ30 does. commands overrides a command number for one model, as OpenSCQ30 does (game mode on the A3947 and A3957). min_firmware names fields the earbuds send but only use from a firmware version on; both earbuds must have that version or newer. kind is what the product is when it is not earbuds (headphones or speaker); those report one battery, and the app labels and draws it as the product. eq is the model's equalizer, read from OpenSCQ30: write names the packet format (docs/soundcore/PROTOCOL.md section 8), channels and bands its curves, range and digits the value scale, presets the set in eq_presets.json, hear_id the HearID block the write passes on from the state.",
+  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by SoundPeter: ldac_excludes lists features LDAC turns off on the earbuds (SoundPeter's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports. state is the model's reply to the state request (01 01) as [field, bytes] in order, read from OpenSCQ30's parser and checked against its test replies where it has any; skip marks bytes SoundPeter does not use, optional: fields only some firmware sends. battery gives each level's scale: percent = (value - offset) * 100 / max. checksum false means the packets carry none. service_uuid fixes the RFCOMM service when OpenSCQ30 does. commands overrides a command number for one model, as OpenSCQ30 does (game mode on the A3947 and A3957). min_firmware names fields the earbuds send but only use from a firmware version on; both earbuds must have that version or newer. kind is what the product is when it is not earbuds (headphones or speaker); those report one battery, and the app labels and draws it as the product. eq is the model's equalizer, read from OpenSCQ30: write names the packet format (docs/soundcore/PROTOCOL.md section 8), channels and bands its curves, range and digits the value scale, presets the set in eq_presets.json, hear_id the HearID block the write passes on from the state. eq.checked says what confirms the model's EQ write: hardware (a recording from the earbuds) or openscq30_tests (a test of OpenSCQ30's in openscq30_eq); SoundPeter offers the EQ only then.",
   "source": {
     "project": "OpenSCQ30",
     "url": "https://github.com/Oppzippy/OpenSCQ30",
@@ -417,6 +417,7 @@
       ],
       "eq": {
         "write": "a3035",
+        "checked": "openscq30_tests",
         "channels": 1,
         "bands": 10,
         "range": [
@@ -492,6 +493,7 @@
       ],
       "eq": {
         "write": "a3040",
+        "checked": "openscq30_tests",
         "channels": 1,
         "bands": 10,
         "range": [
@@ -756,6 +758,7 @@
       ],
       "eq": {
         "write": "a3388",
+        "checked": "openscq30_tests",
         "channels": 2,
         "bands": 10,
         "range": [
@@ -815,6 +818,7 @@
       ],
       "eq": {
         "write": "a3876",
+        "checked": "openscq30_tests",
         "channels": 2,
         "bands": 10,
         "range": [
@@ -1190,6 +1194,7 @@
       ],
       "eq": {
         "write": "hear_id_forced",
+        "checked": "hardware",
         "channels": 2,
         "bands": 10,
         "range": [
@@ -1320,6 +1325,7 @@
       ],
       "eq": {
         "write": "drc",
+        "checked": "openscq30_tests",
         "channels": 1,
         "bands": 10,
         "range": [
@@ -1454,6 +1460,7 @@
       ],
       "eq": {
         "write": "a3947",
+        "checked": "openscq30_tests",
         "channels": 2,
         "bands": 10,
         "range": [
@@ -1568,6 +1575,7 @@
       ],
       "eq": {
         "write": "drc",
+        "checked": "openscq30_tests",
         "channels": 1,
         "bands": 10,
         "range": [
@@ -1805,6 +1813,7 @@
       ],
       "eq": {
         "write": "interleaved",
+        "checked": "openscq30_tests",
         "channels": 2,
         "bands": 10,
         "range": [
@@ -1889,6 +1898,7 @@
       ],
       "eq": {
         "write": "a3955",
+        "checked": "openscq30_tests",
         "channels": 2,
         "bands": 10,
         "range": [
@@ -2064,6 +2074,7 @@
       },
       "eq": {
         "write": "drc",
+        "checked": "openscq30_tests",
         "channels": 1,
         "bands": 10,
         "range": [
@@ -2266,6 +2277,7 @@
       ],
       "eq": {
         "write": "interleaved",
+        "checked": "openscq30_tests",
         "channels": 2,
         "bands": 10,
         "range": [

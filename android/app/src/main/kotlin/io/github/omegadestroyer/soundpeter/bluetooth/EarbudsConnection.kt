@@ -13,6 +13,7 @@ import io.github.omegadestroyer.soundpeter.protocol.Wire
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreParser
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreSession
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -88,12 +89,18 @@ class EarbudsConnection(
     /** The Soundcore session, while connected to Soundcore earbuds; for the device report. */
     val soundcoreSession: SoundcoreSession? get() = soundcore
 
+    private val _soundcoreState = MutableStateFlow<SoundcoreState?>(null)
+
+    /** Each full state Soundcore earbuds send, as they send it; the Sound tab reads their EQ from it. */
+    val soundcoreState: StateFlow<SoundcoreState?> = _soundcoreState.asStateFlow()
+
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connect(device: Paired) {
         disconnect()
         _state.value = EarbudState()
         replies = emptyMap()
         soundcore = null
+        _soundcoreState.value = null
         val remote = adapter?.takeIf { it.isEnabled }?.getRemoteDevice(device.address)
         if (remote == null) {
             _status.value = LinkStatus.Failed(device, LinkStatus.Reason.BLUETOOTH_OFF)
@@ -194,6 +201,7 @@ class EarbudsConnection(
                 for (packet in parser.feed(bytes)) {
                     log?.invoke("recv $packet")
                     if (session.receive(packet)) _state.value = session.state
+                    if (session.lastState !== _soundcoreState.value) _soundcoreState.value = session.lastState
                 }
             }
         } catch (_: IOException) {
@@ -220,17 +228,21 @@ class EarbudsConnection(
     private var eqWrite: Job? = null
 
     /**
-     * Sends one EQ write: a frame per band, as [io.github.omegadestroyer.soundpeter.protocol.EqLayout.frames]
-     * builds them. A newer write replaces one still going out. The earbuds do not reply.
+     * Sends one EQ write: for SoundPEATS a frame per band, as [io.github.omegadestroyer.soundpeter.protocol.EqLayout.frames]
+     * builds them, and the earbuds do not reply; for Soundcore the model's EQ packets, then a state
+     * request, so the earbuds report the EQ they took. A newer write replaces one still going out.
      */
     fun sendEq(frames: List<ByteArray>) {
-        if (_status.value !is LinkStatus.Connected || soundcore != null) return
+        if (_status.value !is LinkStatus.Connected) return
         val s = session ?: return
         val l = link ?: return
+        val readBack = soundcore?.requestState()
         eqWrite?.cancel()
         eqWrite = s.launch {
             try {
                 for (frame in frames) l.send(frame)
+                // Soundcore earbuds report their EQ: read it back, so the screen shows what they took.
+                readBack?.let { l.send(it) }
             } catch (_: IOException) {
                 // the channel closed; the reader notices and reports it
             }

@@ -321,7 +321,8 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                     "${(range[0] as Number).toInt()}, ${(range[1] as Number).toInt()}, ${(eq.getValue("digits") as Number).toInt()}, " +
                     "presets = ${str(eq["presets"])}, presetBytes = ${(eq["preset_bytes"] as Number?)?.toInt() ?: 2}, " +
                     "stateChannels = ${(eq["state_channels"] as Number?)?.toInt() ?: channels}, presetOnly = ${eq["state"] == "preset_only"}, " +
-                    "hearId = $hearId, gender = ${(eq["gender"] as Number?)?.toInt() ?: "null"}),",
+                    "hearId = $hearId, gender = ${(eq["gender"] as Number?)?.toInt() ?: "null"}, " +
+                    "checked = ${(eq["checked"] as String?)?.let { str(it) } ?: "null"}),",
             )
         }
         out.appendLine(")")

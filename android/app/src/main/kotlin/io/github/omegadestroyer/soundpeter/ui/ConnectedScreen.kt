@@ -66,7 +66,7 @@ internal enum class Tab(@StringRes val title: Int) {
 fun ConnectedScreen(vm: AppViewModel, device: Paired, live: Boolean) {
     val state by vm.connection.state.collectAsStateWithLifecycle()
     val model = modelOf(device, state)
-    LaunchedEffect(device.address, model) { vm.equalizer.open(device.address, model) }
+    LaunchedEffect(device.address, model) { vm.openEqualizer(device, model) }
     val eq by vm.equalizer.state.collectAsStateWithLifecycle()
     ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live)
 }

@@ -51,6 +51,8 @@ public class SoundcoreEqSpec(
     public val hearId: SoundcoreHearIdLayout? = null,
     /** The gender byte to send when the state has none. */
     public val gender: Int? = null,
+    /** What confirms the write: `hardware` (a recording) or `openscq30_tests`; null when only OpenSCQ30's code backs it. */
+    public val checked: String? = null,
 ) {
     public val presetSet: SoundcorePresetSet get() = SOUNDCORE_PRESET_SETS.getValue(presets)
 

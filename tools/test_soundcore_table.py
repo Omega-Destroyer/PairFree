@@ -31,9 +31,10 @@ class SoundcoreTable(unittest.TestCase):
         a40 = dict(zip(headers, self.cells("A3936")))
         self.assertEqual("Tested", a40["Status"])
         self.assertEqual("Each earbud, case", a40["Battery"])
-        for column in ("Noise control", "Equalizer", "HearID", "Touch controls", "Two devices", "LDAC", "Game mode",
+        for column in ("Noise control", "HearID", "Touch controls", "Two devices", "LDAC", "Game mode",
                        "Touch tone", "Auto power-off"):
             self.assertEqual(gen.YES, a40[column], column)
+        self.assertEqual(f"{gen.YES} Tested", a40["Equalizer"], "the A40's EQ writes are recorded")
         self.assertEqual(gen.YES, a40["3D / spatial"], "3D sound, confirmed on the A40 beyond OpenSCQ30")
         self.assertEqual(gen.NO, a40["Wear detection"])
 
@@ -42,6 +43,10 @@ class SoundcoreTable(unittest.TestCase):
         status = lambda code: dict(zip(headers, self.cells(code)))["Status"]
         self.assertEqual("Checked", status("A3947"), "Liberty 4 NC: replies in OpenSCQ30's tests")
         self.assertEqual("Not tested", status("A3028"), "Life Q30: no reply in OpenSCQ30's tests")
+        eq = lambda code: dict(zip(headers, self.cells(code)))["Equalizer"]
+        self.assertEqual(f"{gen.YES} Checked", eq("A3947"), "Liberty 4 NC: OpenSCQ30 tests its EQ write")
+        self.assertEqual(f"{gen.YES} Not tested", eq("A3028"), "Life Q30: OpenSCQ30's code alone")
+        self.assertEqual(gen.NO, eq("D1301"), "Sleep A30: no EQ")
         self.assertTrue(gen.checked_models() <= set(self.devices))
 
     def test_every_model_has_a_name_and_features(self):

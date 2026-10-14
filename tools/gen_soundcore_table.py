@@ -64,6 +64,18 @@ def battery(f):
     return "One" if has(f, contains="battery") else NO
 
 
+EQ_STATUS = {"hardware": "Tested", "openscq30_tests": "Checked"}
+
+
+def cell(model, title, has):
+    """A feature cell. The equalizer also says how far its write is confirmed (devices.json eq.checked)."""
+    if not has:
+        return NO
+    if title == "Equalizer":
+        return f"{YES} " + EQ_STATUS.get(model.get("eq", {}).get("checked"), "Not tested")
+    return YES
+
+
 def rows(devices, checked=frozenset()):
     out = []
     for m in sorted(devices, key=lambda m: (m["names"][0].lower(), m["model"])):
@@ -78,7 +90,7 @@ def rows(devices, checked=frozenset()):
             status = "Checked"
         else:
             status = "Not tested"
-        cells = [name, code, status, battery(f)] + [YES if test(f) else NO for _, test in COLUMNS]
+        cells = [name, code, status, battery(f)] + [cell(m, title, test(f)) for title, test in COLUMNS]
         out.append("<tr>" + "".join(f"<td>{c}</td>" for c in cells) + "</tr>")
     return out
 
@@ -104,8 +116,9 @@ def table():
         "(Help add your model, below).",
         "",
         f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows. SoundPeter shows battery, noise "
-        "control, two devices, LDAC and game mode on every model that has them; the other columns are not in "
-        "SoundPeter yet.",
+        "control, two devices, LDAC and game mode on every model that has them, and the equalizer where its "
+        "column says Tested (recorded from the Soundcore app) or Checked (OpenSCQ30's tests hold the exact "
+        "packet); the other columns are not in SoundPeter yet.",
         "",
         "<table>",
         f"<tr>{header}</tr>",

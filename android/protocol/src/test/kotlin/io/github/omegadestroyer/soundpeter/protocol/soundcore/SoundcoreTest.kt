@@ -534,6 +534,40 @@ class SoundcoreEqualizerTest {
     }
 
     @Test
+    fun checkedMeansARecordingOrAnOpenScq30Test() {
+        val tested = vectors.getValue("openscq30_eq").jsonArray.map { it.jsonObject.str("model") }.toSet()
+        for (spec in SoundcoreEqSpec.ALL) {
+            val expected = when {
+                spec.model == "A3936" -> "hardware"
+                spec.model in tested -> "openscq30_tests"
+                else -> null
+            }
+            assertEquals(expected, spec.checked, spec.model)
+        }
+        assertEquals(12, SoundcoreEqSpec.ALL.count { it.checked != null })
+    }
+
+    @Test
+    fun theScreenWorksInWholeDb() {
+        val a40 = SoundcoreEqSpec.of("A3936")!!
+        val layout = SoundcoreEqScreen.layout(a40)
+        assertEquals(listOf(100, 200, 400, 800, 1600, 3200, 6400, 12800), layout.bands.map { it.hz })
+        assertEquals(6, layout.userRangeDb)
+        assertEquals(a40.presetSet.presets.size, layout.presets.size)
+        assertEquals(4.0, layout.presets.first { it.name == "Acoustic" }.bands[0].gainDb)
+        // +6 dB on the first band, as recorded from the Soundcore app
+        val custom = SoundcoreEqScreen.custom(a40, listOf(6, 0, 0, 0, 0, 0, 0, 0))!!
+        assertEquals(listOf(60, 0, 0, 0, 0, 0, 0, 0, 0, 0), custom.channels[0]!!.toList())
+        assertEquals(listOf(6, 0, 0, 0, 0, 0, 0, 0), SoundcoreEqScreen.gainsDb(a40, custom))
+        assertNull(SoundcoreEqScreen.preset(a40, custom))
+        assertEquals("Soundcore Signature", SoundcoreEqScreen.preset(a40, SoundcoreEqualizer.forPreset(a40, a40.presetSet.presets[0]))!!.name)
+        // whole-dB models keep their own range
+        assertEquals(6, SoundcoreEqScreen.layout(SoundcoreEqSpec.of("A3116")!!).userRangeDb)
+        assertEquals(12, SoundcoreEqScreen.layout(SoundcoreEqSpec.of("A3909")!!).userRangeDb)
+        assertNull(SoundcoreEqScreen.custom(SoundcoreEqSpec.of("A3949")!!, List(8) { 0 }), "no custom curve on the P20i")
+    }
+
+    @Test
     fun readsTheEqBackFromTheState() {
         val spec = SoundcoreEqSpec.of("A3936")!!
         val body = vectors.getValue("a3936_state").jsonObject.str("body").hexBytes()

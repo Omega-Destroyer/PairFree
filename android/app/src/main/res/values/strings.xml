@@ -72,14 +72,16 @@
     <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
 
     <string name="sound_profile">Sound</string>
-    <string name="eq_soundcore_later">SoundPeter does not change the equalizer on Soundcore earbuds yet. It is the next step.</string>
+    <string name="eq_soundcore_unchecked">SoundPeter does not change the equalizer on this model yet: nothing has confirmed the EQ it would send. A device report from the Device tab, pasted into an issue on GitHub, helps add it.</string>
     <string name="eq_unavailable">SoundPeter does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
     <string name="eq_stock">Stock</string>
     <string name="eq_new">New</string>
     <string name="eq_new_unsaved">New, not saved</string>
     <string name="eq_on_earbuds">On the earbuds: %1$s</string>
     <string name="eq_unknown">Not known yet</string>
+    <string name="eq_reading">Reading the EQ from the earbuds…</string>
     <string name="eq_unknown_hint">These earbuds cannot report their EQ, and this phone has not set one on them yet. Pick a profile or move a band to set it.</string>
+    <string name="eq_preset_fixed_no_stock">Presets are fixed curves. Pick New or one of your own profiles to set bands one by one.</string>
     <string name="eq_preset_fixed">Presets are fixed curves. Pick Stock, New or one of your own profiles to set bands one by one.</string>
     <string name="eq_edited">%1$s, edited</string>
     <string name="eq_graph_description">Equalizer curve. Pick a band below to change it.</string>
@@ -100,6 +102,7 @@
     <string name="eq_delete">Delete %1$s</string>
     <string name="eq_delete_title">Delete %1$s?</string>
     <string name="eq_delete_body">The profile is removed from this phone. The earbuds keep the sound they have now.</string>
+    <string name="eq_note_reported">The earbuds report their EQ, so this shows what they hold, whichever app set it.</string>
     <string name="eq_note">0 dB on every band is the earbuds\' own tuning. The earbuds cannot report their EQ, so each time SoundPeter connects it puts back the one this phone last set, as the official app does.</string>
 
     <string name="taps">Taps</string>

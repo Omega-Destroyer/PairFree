@@ -36,10 +36,43 @@ data class EqProfile(val id: String, val name: String, val gains: List<Int>, val
 data class EqSetting(val profileId: String?, val gains: List<Int>, val preampDb: Int = 0)
 
 /**
- * The EQ screen's state. [known] is false for earbuds this phone has never set: they cannot
- * report their EQ, so until the user picks one, what is on them is not known.
+ * How the Sound tab reaches one brand's earbuds. SoundPEATS earbuds cannot report their EQ,
+ * so the phone remembers it and puts it back on each connect; Soundcore earbuds report theirs.
  */
-data class EqState(val model: Model, val layout: EqLayout, val profiles: List<EqProfile>, val setting: EqSetting, val known: Boolean = true) {
+interface EqTarget {
+    /** True when the earbuds report their EQ: the screen shows what they hold and nothing is put back on connect. */
+    val reportsEq: Boolean
+    val hasPreamp: Boolean
+
+    /** True when a Stock profile (every gain 0 on the base curve) belongs in the list. */
+    val hasStock: Boolean
+
+    /** The frames that put [setting] on the earbuds; [preset] when the setting is one of the model's presets. */
+    fun frames(layout: EqLayout, setting: EqSetting, preset: EqPreset?): List<ByteArray>
+}
+
+/** SoundPEATS: every band in every write, on top of the model's base curve (docs/soundpeats/PROTOCOL.md section 4). */
+object SoundpeatsEqTarget : EqTarget {
+    override val reportsEq: Boolean = false
+    override val hasPreamp: Boolean = true
+    override val hasStock: Boolean = true
+
+    override fun frames(layout: EqLayout, setting: EqSetting, preset: EqPreset?): List<ByteArray> =
+        if (preset != null) layout.frames(preset, setting.preampDb) else layout.frames(setting.gains, setting.preampDb)
+}
+
+/**
+ * The EQ screen's state. [known] is false until the EQ on the earbuds is known: for earbuds
+ * that cannot report it, until this phone has set it; for those that can, until they have.
+ */
+data class EqState(
+    val model: Model,
+    val layout: EqLayout,
+    val profiles: List<EqProfile>,
+    val setting: EqSetting,
+    val known: Boolean = true,
+    val target: EqTarget = SoundpeatsEqTarget,
+) {
     /**
      * The profile on the earbuds: the one the setting came from while it still matches, or
      * else any profile that puts the same bytes on the earbuds (New with every band at 0 is
@@ -50,7 +83,9 @@ data class EqState(val model: Model, val layout: EqLayout, val profiles: List<Eq
             if (!known) return null
             profiles.firstOrNull { it.id == setting.profileId && (it.preset != null || it.gains == setting.gains) }?.let { return it }
             val sent = layout.payloads(setting.gains)
-            return profiles.firstOrNull { p -> payloadsOf(p).let { it.size == sent.size && it.zip(sent).all { (x, y) -> x.contentEquals(y) } } }
+            // Earbuds that report their EQ name the preset they hold, so a custom curve is never a preset.
+            return profiles.filter { it.preset == null || !target.reportsEq }
+                .firstOrNull { p -> payloadsOf(p).let { it.size == sent.size && it.zip(sent).all { (x, y) -> x.contentEquals(y) } } }
         }
 
     /** The profile the setting started from, edited or not. */
@@ -109,10 +144,13 @@ class Equalizer(
     private var address: String? = null
     private var pending: Job? = null
     private var reopened: String? = null   // earbuds whose channel opened and whose EQ has not gone back yet
+    private var sentAt = 0L                 // when this phone last sent an EQ, for [reported]
 
-    /** Loads what this phone last sent to [address], and the profiles saved for [model]. Null [model] or no layout: no EQ. */
-    fun open(address: String, model: Model?) {
-        val layout = model?.eq
+    /**
+     * Loads what this phone last sent to [address], and the profiles saved for [model]. Null [model]
+     * or no [layout]: no EQ. [target] says how the EQ reaches the earbuds; SoundPEATS by default.
+     */
+    fun open(address: String, model: Model?, layout: EqLayout? = model?.eq, target: EqTarget = SoundpeatsEqTarget) {
         if (model == null || layout == null) {
             this.address = null
             _state.value = null
@@ -126,11 +164,28 @@ class Equalizer(
         _state.value = EqState(
             model,
             layout,
-            builtIns(layout) + loadProfiles(model.code, layout),
-            saved ?: EqSetting(EqProfile.STOCK, zeros),
-            known = saved != null,
+            builtIns(layout, target) + loadProfiles(model.code, layout),
+            saved ?: EqSetting(if (target.hasStock) EqProfile.STOCK else null, zeros),
+            known = saved != null && !target.reportsEq,
+            target = target,
         )
         restoreIfDue()
+    }
+
+    /**
+     * The EQ earbuds that report theirs hold now: one of the model's presets ([profileId]) or a
+     * custom curve ([gains] in whole dB). Ignored while a change from this phone is on its way,
+     * so an older report does not undo it.
+     */
+    fun reported(profileId: String?, gains: List<Int>) {
+        val s = _state.value ?: return
+        if (!s.target.reportsEq || gains.size != s.layout.bands.size) return
+        if (pending?.isActive == true || System.currentTimeMillis() - sentAt < SETTLE_MS) return
+        // A custom curve that matches the profile it came from keeps that profile's name.
+        val id = profileId ?: s.setting.profileId?.takeIf { id -> s.profiles.any { it.id == id && it.preset == null && it.gains == gains } }
+        val setting = s.setting.copy(profileId = id, gains = gains)
+        if (setting == s.setting && s.known) return
+        _state.value = s.copy(setting = setting, known = true)
     }
 
     /**
@@ -148,11 +203,12 @@ class Equalizer(
         val s = _state.value ?: return
         if (reopened == null || reopened != address) return
         reopened = null
-        if (!s.known) return
+        if (!s.known || s.target.reportsEq) return
         pending?.cancel()
         pending = scope.launch {
             delay(RESTORE_AFTER_MS)
             _state.value?.let { send(framesOf(it, it.setting)) }
+            sentAt = System.currentTimeMillis()
         }
     }
 
@@ -245,13 +301,12 @@ class Equalizer(
         pending = scope.launch {
             delay(SEND_AFTER_MS)
             send(framesOf(s, setting))
+            sentAt = System.currentTimeMillis()
         }
     }
 
-    private fun framesOf(s: EqState, setting: EqSetting): List<ByteArray> {
-        val preset = s.profiles.firstOrNull { it.id == setting.profileId }?.preset
-        return if (preset != null) s.layout.frames(preset, setting.preampDb) else s.layout.frames(setting.gains, setting.preampDb)
-    }
+    private fun framesOf(s: EqState, setting: EqSetting): List<ByteArray> =
+        s.target.frames(s.layout, setting, s.profiles.firstOrNull { it.id == setting.profileId }?.preset)
 
     // Storage: one JSON value per model for saved profiles, one per pair of earbuds for the setting.
 
@@ -300,6 +355,9 @@ class Equalizer(
         /** After the channel opens, the setting goes back this much later; the official app takes about 2.5 s. */
         const val RESTORE_AFTER_MS = 2_500L
 
+        /** After a send, reports from the earbuds are ignored this long; the state they send back then confirms it. */
+        const val SETTLE_MS = 2_000L
+
         /** The preamp only lowers the master gain, never raises it. */
         const val PREAMP_MIN_DB = -6
 
@@ -308,11 +366,11 @@ class Equalizer(
         private const val KEY_PROFILES = "eq_profiles_"
         private const val KEY_SETTING = "eq_setting_"
 
-        /** Stock, the base curve alone (the earbuds' own tuning), then the model's presets. */
-        fun builtIns(layout: EqLayout): List<EqProfile> {
+        /** Stock, the base curve alone (the earbuds' own tuning) where [target] has one, then the model's presets. */
+        fun builtIns(layout: EqLayout, target: EqTarget = SoundpeatsEqTarget): List<EqProfile> {
             val zeros = List(layout.bands.size) { 0 }
-            return listOf(EqProfile(EqProfile.STOCK, "Stock", zeros)) +
-                layout.presets.map { EqProfile(EqProfile.PRESET + it.name, it.name, zeros, it) }
+            val stock = if (target.hasStock) listOf(EqProfile(EqProfile.STOCK, "Stock", zeros)) else emptyList()
+            return stock + layout.presets.map { EqProfile(EqProfile.PRESET + it.name, it.name, zeros, it) }
         }
     }
 }

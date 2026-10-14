@@ -24,14 +24,20 @@ import io.github.omegadestroyer.soundpeter.capture.BugReport
 import io.github.omegadestroyer.soundpeter.capture.Capture
 import io.github.omegadestroyer.soundpeter.capture.CaptureResult
 import io.github.omegadestroyer.soundpeter.eq.Equalizer
+import io.github.omegadestroyer.soundpeter.eq.SoundcoreEqTarget
+import io.github.omegadestroyer.soundpeter.eq.SoundpeatsEqTarget
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.CurveMatch
 import io.github.omegadestroyer.soundpeter.protocol.DeviceReport
 import io.github.omegadestroyer.soundpeter.protocol.EqCapture
 import io.github.omegadestroyer.soundpeter.protocol.LoggedReads
+import io.github.omegadestroyer.soundpeter.protocol.Model
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.RecordingReport
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreEqSpec
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreLayout
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.soundpeter.ui.CaptureActions
 import io.github.omegadestroyer.soundpeter.ui.EarbudsActions
 import kotlinx.coroutines.Dispatchers
@@ -68,8 +74,35 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
     val equalizer = Equalizer(prefs, viewModelScope) { frames -> connection.sendEq(frames) }
 
+    /** The Soundcore EQ while the Sound tab shows Soundcore earbuds whose EQ write is confirmed. */
+    private var soundcoreEq: SoundcoreEqTarget? = null
+
+    /**
+     * Opens the Sound tab's EQ for [device]: SoundPEATS models from their table, Soundcore models
+     * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
+     */
+    fun openEqualizer(device: Paired, model: Model?) {
+        if (device.brand != Brand.SOUNDCORE) {
+            soundcoreEq = null
+            equalizer.open(device.address, model)
+            return
+        }
+        val spec = SoundcoreEqSpec.of(device.model)?.takeIf { it.checked != null }
+        val target = spec?.let { SoundcoreEqTarget(it, { connection.soundcoreState.value }, SoundcoreLayout.of(it.model)?.checksum ?: true) }
+        soundcoreEq = target
+        equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
+        connection.soundcoreState.value?.let(::reportEq)
+    }
+
+    private fun reportEq(state: SoundcoreState) {
+        val (profile, gains) = soundcoreEq?.reported(state) ?: return
+        equalizer.reported(profile, gains)
+    }
+
     init {
-        // The earbuds cannot report their EQ, so each newly opened channel gets this phone's back.
+        // Soundcore earbuds report their EQ with every state; the Sound tab follows it.
+        viewModelScope.launch { connection.soundcoreState.collect { s -> s?.let(::reportEq) } }
+        // SoundPEATS earbuds cannot report their EQ, so each newly opened channel gets this phone's back.
         // It also notes when its channel is open, so a recording can leave out what it sent itself.
         viewModelScope.launch {
             connection.status.collect {

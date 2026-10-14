@@ -1,17 +1,34 @@
-PairFree is an open alternative to PeatsAudio, the official app for SoundPEATS earbuds. It talks to the earbuds directly over Bluetooth: no account, no cloud, and no internet permission at all.
+PairFree aims to be one app for the settings of nearly any earbuds and headphones. It replaces heavy, brand-specific apps with a light, fast one that talks to your earbuds directly over Bluetooth.
 
-What it does, on the models that support each feature:
+Why PairFree:
+
+• No account: nothing to sign up for or log in to
+• No internet: the app has no internet permission, so it cannot go online
+• Nothing leaves your phone unless you share it yourself, such as a device report or an equalizer profile. No ads, no analytics, no crash reports, no cloud backup of your settings
+• One app for several brands, with the same screens for each
+• One permission: Bluetooth, for earbuds you have already paired. No location, no scanning, no contacts
+• Small and quick: about 3 MB, with no login and no server to wait for
+• Open source (GPL-3.0), with every protocol documented and tested in its repository
+• Your equalizer as files: save your own curves, and export and share them
+
+Supported brands:
+
+• SOUNDPEATS: tried on the H3 and Air5 Pro+. Other models use the same protocol and should work
+• Soundcore (Anker): 39 models, tried on the Space A40. Built on the open-source OpenSCQ30
+• Samsung Galaxy Buds: 13 models, from the 2019 Buds to the Buds4 Pro, not yet tried on real earbuds. Built on the open-source GalaxyBudsClient
+
+What it controls, on the models that have each:
 
 • Battery for each earbud and the case
-• Noise control: off, noise cancelling, transparency, ANC scenes and transparency levels
+• Noise control: off, noise cancelling, transparency or ambient sound, with their scenes and levels
+• The equalizer: the brand's presets, your own curves and saved profiles
+• Touch controls: what each tap and hold does on each earbud, and turning touch off
 • Game mode, two devices at once, LDAC and LE Audio
-• Gestures: what each tap, double tap, triple tap and hold does, per earbud, and turning touch controls off
-• Voice prompt volume and language, and find my earbuds
-• A 10-band equalizer with the official presets, your own saved profiles, and profile files you can share
-• Ear tip fit test and water drain
+• The ear tip fit test, find my earbuds, voice prompts and water drain
+• Settings only one brand has, such as each Galaxy Bud's ambient sound level, or voice detect
 
-Tested on the SOUNDPEATS H3 and Air5 Pro+. Other SoundPEATS models use the same protocol and should work; PairFree shows whatever your earbuds support. If your model has not been tested, Record from PeatsAudio (Device tab) gathers its settings and equalizer from the official app into one report you can send, so it can be added for everyone. It reads that bug report only on your phone and keeps nothing but the messages exchanged with your earbuds.
+PairFree shows only what your earbuds support. If your model has not been tried, the Device tab copies a device report you can send, so it can be added for everyone. On SOUNDPEATS earbuds, Record from PeatsAudio also gathers the equalizer from the official app; it reads that bug report only on your phone and keeps nothing but the messages exchanged with your earbuds.
 
-Close PeatsAudio before using PairFree: only one app can control the earbuds at a time.
+Close the brand's own app before using PairFree: only one app can control the earbuds at a time.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SoundPEATS.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker or Samsung.

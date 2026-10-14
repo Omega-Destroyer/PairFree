@@ -3,10 +3,20 @@
 ## What this is
 
 The app was called SoundPeter until 0.1.3 (renamed 2026-10-14). Some internal names keep the old
-one on purpose: the Kotlin package `io.github.omegadestroyer.soundpeter` (to be renamed once the
-`anker` branch is merged), the signing properties `soundpeter.*` in the owner's
+one on purpose: the app's settings file (`getSharedPreferences("soundpeter")`: renamed, installed
+copies would lose their settings), the signing properties `soundpeter.*` in the owner's
 `~/.gradle/gradle.properties`, the key file, and the raw recordings in `data/<brand>/reports/`. The
-app ID is `io.github.omegadestroyer.pairfree`; EQ profile files from SoundPeter still import.
+app ID and the Kotlin package are `io.github.omegadestroyer.pairfree`; EQ profile files from
+SoundPeter still import.
+
+## Branches
+
+`main` is what gets released: F-Droid builds the `vX.Y.Z` tags on it. New work goes on a short
+branch from `main`, one per brand (`brand/<name>`, for example `brand/jlab`) or per larger feature,
+and is merged back with a merge commit as soon as it works for one model, then deleted. A feature
+that is not ready for every model can stay hidden on the others through the brand's data (as
+`eq.checked` does for the Soundcore EQ), so it does not have to wait on a branch. Do not keep a
+long-lived branch per brand, and do not mix brands on one branch. Push only when the owner asks.
 
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for

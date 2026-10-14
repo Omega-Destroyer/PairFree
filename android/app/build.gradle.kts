@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.omegadestroyer.soundpeter"
+    namespace = "io.github.omegadestroyer.pairfree"
     compileSdk = 37
 
     defaultConfig {

@@ -180,7 +180,7 @@ abstract class GenerateTables : DefaultTask() {
 val generateTables = tasks.register<GenerateTables>("generateTables") {
     commandsJson = dataDir.file("commands.json")
     devicesJson = dataDir.file("devices.json")
-    packageName = "io.github.omegadestroyer.soundpeter.protocol"
+    packageName = "io.github.omegadestroyer.pairfree.protocol"
     outputDir = layout.buildDirectory.dir("generated/tables")
 }
 
@@ -247,14 +247,14 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
         val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
         fun str(v: Any?) = "\"" + (v as String) + "\""
         out.appendLine()
-        out.appendLine("/** Every model in data/soundcore/devices.json, as a [io.github.omegadestroyer.soundpeter.protocol.Model] for the screens. */")
-        out.appendLine("internal val SOUNDCORE_MODEL_TABLE: List<io.github.omegadestroyer.soundpeter.protocol.Model> = listOf(")
+        out.appendLine("/** Every model in data/soundcore/devices.json, as a [io.github.omegadestroyer.pairfree.protocol.Model] for the screens. */")
+        out.appendLine("internal val SOUNDCORE_MODEL_TABLE: List<io.github.omegadestroyer.pairfree.protocol.Model> = listOf(")
         for (d in devices) {
             val names = (d.getValue("names") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
             val excludes = (d["ldac_excludes"] as List<*>? ?: emptyList<Any>())
-                .joinToString(", ", "setOf(", ")") { "io.github.omegadestroyer.soundpeter.protocol.Command.${(it as String).uppercase()}" }
-            val form = "io.github.omegadestroyer.soundpeter.protocol.Form." + ((d["kind"] as String?) ?: "earbuds").uppercase()
-            out.appendLine("    io.github.omegadestroyer.soundpeter.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes, form = $form),")
+                .joinToString(", ", "setOf(", ")") { "io.github.omegadestroyer.pairfree.protocol.Command.${(it as String).uppercase()}" }
+            val form = "io.github.omegadestroyer.pairfree.protocol.Form." + ((d["kind"] as String?) ?: "earbuds").uppercase()
+            out.appendLine("    io.github.omegadestroyer.pairfree.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes, form = $form),")
         }
         out.appendLine(")")
 
@@ -390,7 +390,7 @@ val generateSoundcoreTables = tasks.register<GenerateSoundcoreTables>("generateS
     devicesJson = rootProject.layout.projectDirectory.file("../data/soundcore/devices.json")
     eqPresetsJson = rootProject.layout.projectDirectory.file("../data/soundcore/eq_presets.json")
     buttonActionsJson = rootProject.layout.projectDirectory.file("../data/soundcore/button_actions.json")
-    packageName = "io.github.omegadestroyer.soundpeter.protocol.soundcore"
+    packageName = "io.github.omegadestroyer.pairfree.protocol.soundcore"
     outputDir = layout.buildDirectory.dir("generated/soundcore")
 }
 

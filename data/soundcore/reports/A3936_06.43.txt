@@ -91,3 +91,92 @@ and the checksum.
   charging 00 00, firmware "06.43" twice, then the serial number, as OpenSCQ30's A3936 layout says.
 - 05 01 and 05 81 are not in OpenSCQ30. Until their meaning is known, SoundPeter does not send
   05 81.
+
+
+==== Second session: EQ and 3D sound (22:06) ====
+The owner reopened the Soundcore app, changed the EQ (the lowest band to +6 dB and back,
+band 8 to -6 dB and back, then a preset), turned 3D sound on and off, and put the earbuds
+in the case.
+
+22:06:26  ->  01 01  len  10  request state
+22:06:26  <-  01 01  len 153  state
+                    01 01 05 05 00 00 30 36 2e 34 33 30 36 2e 34 33 33 39 33 36 XX XX XX XX
+                    XX XX XX XX XX XX XX XX 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff
+                    ff ff ff 00 00 00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff
+                    ff ff ff ff 00 00 00 0e 11 11 01 00 11 63 11 66 11 44 11 44 05 02 30 01
+                    00 01 00 00 0f 31 01 00 01 00 00 00 ff ff ff ff ff ff ff ff ff ff ff
+22:06:27  ->  05 01  len  10  read usage statistics
+22:06:27  <-  05 01  len 126  usage statistics: all zero now, after last session's 05 81
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+22:06:27  ->  05 81  len  10  clear usage statistics
+22:06:27  <-  05 81  len  10  acknowledged, no body
+22:06:48  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:06:49  <-  03 87  len  10  acknowledged, no body
+22:06:49  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:06:49  <-  03 87  len  10  acknowledged, no body
+22:06:55  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands b4 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 b4 78 78 78 78 78 78 78 78 78 b4 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    80 74 79 78 78 78 78 78 78 00 80 74 79 78 78 78 78 78 78 00
+22:06:56  <-  03 87  len  10  acknowledged, no body
+22:07:01  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:07:01  <-  03 87  len  10  acknowledged, no body
+22:07:02  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 3c 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 3c 78 78 78 78 78 78 78 78 78 3c 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 77 7c 6f 78 00 78 78 78 78 78 77 7c 6f 78 00
+22:07:02  <-  03 87  len  10  acknowledged, no body
+22:07:08  ->  03 87  len 102  EQ write, custom curve (FE FE); left bands 78 78 78 78 78 78 78 78 78 78
+                    fe fe 00 00 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:07:08  <-  03 87  len  10  acknowledged, no body
+22:07:19  ->  03 87  len 102  EQ write, preset 0; left bands 78 78 78 78 78 78 78 78 78 00
+                    00 00 00 00 78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+                    ff ff 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00 00
+                    00 00 00 00 ff ff ff ff ff ff ff ff ff 00 ff ff ff ff ff ff ff ff ff 00
+                    78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+22:07:19  <-  03 87  len  10  acknowledged, no body
+22:07:23  ->  02 86  len  11  3D sound (OpenSCQ30: surround sound): 1 on, 0 off
+                    01
+22:07:23  <-  02 86  len  10  acknowledged, no body
+22:07:26  ->  02 86  len  11  3D sound (OpenSCQ30: surround sound): 1 on, 0 off
+                    00
+22:07:26  <-  02 86  len  10  acknowledged, no body
+22:09:00  <-  01 04  len  12  charging, sent unasked: left, right (1 charging)
+                    01 00
+22:09:02  <-  01 04  len  12  charging, sent unasked: left, right (1 charging)
+                    01 01
+
+---- Notes on the second session ----
+- The state reply is the same as in the first session, apart from the masked serial.
+- 03 87 body, 92 bytes, as OpenSCQ30 builds it: preset number (2 bytes, little-endian; FE FE
+  for a custom curve), favourite music genre (2), 10 bands for each earbud (20; one byte per
+  band, 0x78 = 0 dB, 0.1 dB per step: B4 = +6 dB, 3C = -6 dB), gender, age range and an unknown
+  byte (3), HearID curve (20), HearID time (4), HearID type (1), custom HearID curve (20), then
+  the 10 bands again after OpenSCQ30's apply_drc() (20): the +6 dB on the lowest band comes out
+  as 80 74 79 there.
+- A preset write (22:07:19, preset 0) sends 9 bands of 78 and a 00 for each earbud.
+- 05 01 read all zero this time: 05 81 clears the statistics 05 01 reads.
+- 3D sound is not in OpenSCQ30's A40 module. Which state byte holds it is not known yet: the
+  state was read only while it was off.

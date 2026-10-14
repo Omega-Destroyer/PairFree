@@ -78,12 +78,13 @@ has not confirmed it.
 | `10 86` | Set sound leak compensation |
 | `20 81`, `20 82` | Limit high volume |
 
-Seen on the A40 but not in OpenSCQ30: the Soundcore app reads `05 01` right after the state (the
-reply looks like little-endian counters), then sends `05 81` with no body. Their meaning is not
-known, so SoundPeter does not send `05 81`.
+Seen on the A40 but not in OpenSCQ30: the Soundcore app reads usage statistics with `05 01`
+right after the state (little-endian counters), then clears them with `05 81`, which has no
+body; the next `05 01` reads all zero. SoundPeter has no use for either and sends neither.
 
 On the A40 every setting is acknowledged with the same command and no body, and after `06 81`
-the earbuds also send the new sound modes as `06 01`. They send the battery (`01 03`) unasked.
+the earbuds also send the new sound modes as `06 01`. They send the battery (`01 03`) and the
+charging state (`01 04`: left, right, 1 charging) unasked.
 
 **How this differs from SoundPEATS:** SoundPEATS earbuds have one read per feature, and a
 feature counts as present once its read answers. Soundcore earbuds answer `01 01` with one block
@@ -155,8 +156,29 @@ names its model (section 4), the start of the state reply (TWS status, battery, 
 versions, the serial number), the sound modes block (6 bytes, byte 0: 0 noise cancelling,
 1 transparency, 2 normal), and the touch-action and touch-tone commands.
 
-**Still to check:** the byte sizes of the remaining fields (OpenSCQ30's shared structures hold
-them), and an EQ change, which this first recording did not include.
+**EQ.** The Soundcore app writes the whole curve with `03 87` (92 bytes):
+
+| Bytes | What |
+|---|---|
+| 2 | Preset number, little-endian; `FE FE` for a custom curve |
+| 2 | Favourite music genre (HearID) |
+| 20 | 10 bands for each earbud, left first: one byte each, `0x78` = 0 dB, 0.1 dB per step |
+| 3 | Gender, age range, one unknown byte |
+| 20 | HearID curve |
+| 4 | HearID time |
+| 1 | HearID type |
+| 20 | Custom HearID curve |
+| 20 | The 10 bands again for each earbud, after OpenSCQ30's `apply_drc()` (`volume_adjustments.rs`) |
+
+The app's sliders went from `3C` (-6 dB) to `B4` (+6 dB). A preset write sends 9 bands and a
+`00` for each earbud. The state reply carries the EQ too, so SoundPeter can show the curve
+the earbuds hold.
+
+**3D sound:** `02 86`, 1 on and 0 off. OpenSCQ30 knows the command (surround sound) but does not
+offer it on the A40. Which state byte holds it is not known yet.
+
+**Still to check:** the byte sizes of the remaining state fields (OpenSCQ30's shared structures
+hold them), and a state read with 3D sound on and with a custom EQ.
 
 ## 7. Open questions
 

@@ -26,7 +26,8 @@ These came from the owner and are not up for trade.
   stay the same for every brand; each model shows only the features it has. Each
   brand's protocol, model table, reports and drawings live in folders named after the
   brand (`docs/<brand>/`, `data/<brand>/`, `assets/devices/<brand>/`). Models nobody on
-  the project owns come from owners' recordings, as for SoundPEATS.
+  the project owns come from owners' recordings, as for SoundPEATS. A feature only one brand
+  has (3D sound on Soundcore, the fit test on SoundPEATS) shows on the earbuds that have it.
 - **Clean vector art.** Device drawings are vectors. Their outlines may be traced
   from product photos so the proportions are right, but no photograph, logo, text or
   surface pattern goes into a drawing. The photos themselves never go into the
@@ -115,7 +116,9 @@ when nothing is connected.
 ### Not connected
 
 - A drawing of an open case.
-- The earbuds already paired with the phone, each with a Connect button.
+- Every paired device SoundPeter supports, of any brand (SoundPEATS, Soundcore, ...), each
+  with a Connect button. The user picks a device, never a brand: SoundPeter works out the
+  brand and model by itself (owner, 2026-10-13).
 - A button that opens the system Bluetooth settings.
 - One line: "No account. No internet. Nothing leaves this phone."
 
@@ -131,7 +134,8 @@ Everything here fits without scrolling on a 390 by 844 screen.
      Outdoor, Traffic on the H3).
    - Under Transparency: the transparency levels the earbuds report.
 4. Current sound profile with a small curve. Opens the equalizer.
-5. Quick switches: game mode, two devices, in-ear detection, LDAC.
+5. Quick switches: game mode, two devices, in-ear detection, LDAC, 3D sound. Each shows only
+   on earbuds that have it.
 
 ### Sound (equalizer)
 

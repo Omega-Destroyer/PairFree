@@ -6,7 +6,8 @@ usage: python tools/gen_soundcore_table.py          rewrite the table in README.
 One row per model in data/soundcore/devices.json. What a model has comes from OpenSCQ30, whose
 source lists the features it implements for each model (tools/import_openscq30.py), plus what
 SoundPeter confirmed on the earbuds (extra_features). A model counts as tested once it has a
-recording under data/soundcore/reports.
+recording under data/soundcore/reports, and as checked when its state layout reads the replies
+in OpenSCQ30's tests (openscq30_states in data/soundcore/test_vectors.json).
 """
 import json
 import sys
@@ -47,6 +48,12 @@ def load():
     return json.loads((ROOT / "data" / "soundcore" / "devices.json").read_text(encoding="utf-8"))
 
 
+def checked_models():
+    """Models with at least one state reply from OpenSCQ30's tests, which the Gradle tests read with the model's layout."""
+    vectors = json.loads((ROOT / "data" / "soundcore" / "test_vectors.json").read_text(encoding="utf-8"))
+    return {c["model"] for c in vectors.get("openscq30_states", [])}
+
+
 def features(model):
     return model["openscq30"]["features"] + model.get("extra_features", [])
 
@@ -57,7 +64,7 @@ def battery(f):
     return "One" if has(f, contains="battery") else NO
 
 
-def rows(devices):
+def rows(devices, checked=frozenset()):
     out = []
     for m in sorted(devices, key=lambda m: (m["names"][0].lower(), m["model"])):
         f = features(m)
@@ -67,6 +74,8 @@ def rows(devices):
         if reports:
             code = f'<a href="{escape(reports[0])}">{code}</a>'
             status = "Tested"
+        elif m["model"] in checked:
+            status = "Checked"
         else:
             status = "Not tested"
         cells = [name, code, status, battery(f)] + [YES if test(f) else NO for _, test in COLUMNS]
@@ -79,19 +88,28 @@ def table():
     devices = data["devices"]
     src = data["source"]
     tested = sum(1 for m in devices if m.get("reports"))
+    checked = checked_models()
     header = "".join(f"<th>{escape(h)}</th>" for h in ["Model", "Number", "Status", "Battery"] + [c for c, _ in COLUMNS])
     return "\n".join([
         START,
-        f"{len(devices)} models, {tested} tested on hardware with SoundPeter. What each model has comes from "
+        f"{len(devices)} models. What each model has, and where each setting sits in its replies, comes from "
         f'<a href="{escape(src["url"])}">OpenSCQ30</a> (commit <code>{escape(src["commit"][:7])}</code>, '
         f"{escape(src['date'])}), the open-source Soundcore app by {escape(src['author'])}, plus what SoundPeter "
         "confirmed on the earbuds.",
         "",
-        f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows.",
+        f"<b>Tested</b> ({tested}): tried on the earbuds with SoundPeter. "
+        f"<b>Checked</b> ({len(checked - {m['model'] for m in devices if m.get('reports')})}): SoundPeter reads "
+        "every reply from the model that OpenSCQ30's tests hold, most of them from its users' bug reports. "
+        "<b>Not tested</b>: read from OpenSCQ30's code alone. A device report from one of these helps "
+        "(Help add your model, below).",
+        "",
+        f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows. SoundPeter shows battery, noise "
+        "control, two devices, LDAC and game mode on every model that has them; the other columns are not in "
+        "SoundPeter yet.",
         "",
         "<table>",
         f"<tr>{header}</tr>",
-        *rows(devices),
+        *rows(devices, checked),
         "</table>",
         END,
     ])

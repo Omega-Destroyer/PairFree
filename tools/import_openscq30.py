@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DEVICES = ROOT / "data" / "soundcore" / "devices.json"
-OURS = ("reports", "ldac_excludes", "extra_features", "notes", "state", "checksum", "service_uuid")
+OURS = ("reports", "ldac_excludes", "extra_features", "notes", "state", "checksum", "service_uuid", "battery", "commands", "min_firmware")
 
 
 def names(scq: Path) -> dict:
@@ -50,6 +50,12 @@ def features(scq: Path, module: str) -> list:
     return [c for c in dict.fromkeys(calls) if c not in ("module_collection", "add_state_update")]
 
 
+def dump(data):
+    """devices.json as written: indented, with each [field, bytes] pair of a state layout on one line."""
+    text = json.dumps(data, indent=2, ensure_ascii=False)
+    return re.sub(r'\[\s+("(?:[^"\\]|\\.)*"),\s+(\d+)\s+\]', r"[\1, \2]", text) + "\n"
+
+
 def main():
     if len(sys.argv) != 2:
         sys.exit(__doc__)
@@ -79,10 +85,13 @@ def main():
         "commit": commit[0],
         "date": commit[1],
         "note": "Model numbers, names and each model's features come from OpenSCQ30's source at this commit "
-                "(tools/import_openscq30.py). Everything else in this file was found by SoundPeter.",
+                "(tools/import_openscq30.py). Each model's state layout, battery scales, checksum, service and "
+                "command overrides were read from OpenSCQ30's parsers at the same commit and checked against its "
+                "tests. What SoundPeter found on hardware is in reports and notes, and in battery notes where it "
+                "differs from OpenSCQ30.",
     }
     data["devices"] = devices
-    DEVICES.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+    DEVICES.write_text(dump(data), encoding="utf-8", newline="\n")
     print(f"{len(devices)} models from OpenSCQ30 {commit[0][:7]} ({commit[1]})")
 
 

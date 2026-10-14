@@ -23,6 +23,8 @@
     {"id": "auto_power_off", "command": "0186", "source": "openscq30"},
     {"id": "gaming_mode", "command": "0187", "source": "openscq30", "confirmed": ["A3936"],
      "note": "Body: 1 on, 0 off."},
+    {"id": "gaming_mode_alt", "command": "1085", "source": "openscq30",
+     "note": "Game mode on the A3947 and A3957 instead of 0187 (devices.json commands). Body: 1 on, 0 off."},
     {"id": "gaming_mode_update", "command": "0111", "source": "openscq30",
      "note": "The earbuds report game mode after a change: 1 on, 0 off."},
     {"id": "ldac_state", "command": "017F", "source": "openscq30",

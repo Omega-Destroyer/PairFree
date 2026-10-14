@@ -18,22 +18,28 @@ from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
 - `docs/soundcore/PROTOCOL.md` is what is known of the Soundcore protocol so far. All of it
-  comes from OpenSCQ30's source and none of it is confirmed. Treat it as a lead: check it
-  against the official app's code or the owner's Soundcore earbuds before building on it.
-  What the owner's Space A40 confirmed is marked there, with its recordings in
-  `data/soundcore/reports/`.
+  comes from OpenSCQ30's source. What the owner's Space A40 confirmed is marked there, with its
+  recordings in `data/soundcore/reports/`; 21 more models' layouts are checked against the
+  replies in OpenSCQ30's tests. Treat the rest as a lead, and check it against a user's device
+  report before building more on it.
 - `data/soundcore/commands.json` is the Soundcore command table and `data/soundcore/devices.json`
-  its model table; `generateSoundcoreTables` turns them into `SoundcoreCommand`, `SoundcoreWire`
-  and `SoundcoreModels` in the `protocol.soundcore` package. The app shows Soundcore earbuds on
-  the same screens through `SoundcoreSession`, which maps their state to `EarbudState`.
+  its model table; `generateSoundcoreTables` turns them into `SoundcoreCommand`, `SoundcoreWire`,
+  `SoundcoreModels` and each model's `SoundcoreLayout` in the `protocol.soundcore` package. The
+  app lists every model there among the paired earbuds (`SoundcoreModels.identify`: vendor service,
+  else Bluetooth name) and shows it on the same screens through `SoundcoreSession`, which reads the
+  state with the model's layout and maps it to `EarbudState`. It sends a setting only when the
+  last state showed it.
 - Every Soundcore model comes from OpenSCQ30 (github.com/Oppzippy/OpenSCQ30, Kyle Scheuing,
   GPL-3.0-or-later). `python tools/import_openscq30.py PATH` refreshes the model list and features
-  in `data/soundcore/devices.json` from a local checkout and records the commit; what SoundPeter
-  found itself (reports, ldac_excludes, extra_features, notes) is kept. Then run
+  in `data/soundcore/devices.json` from a local checkout and records the commit; everything else
+  in an entry (state, battery, checksum, service_uuid, commands, min_firmware, reports,
+  ldac_excludes, extra_features, notes) is kept. The state layouts were read from OpenSCQ30's
+  parsers by hand; after a refresh to a newer commit, compare its parsers with them. Then run
   `python tools/gen_soundcore_table.py` for the README's Soundcore table; a test fails while it is out
   of date. Credit OpenSCQ30 wherever its code or facts are used, as the code and README do.
   `data/soundcore/test_vectors.json` holds the A40's recorded frames, its state and its EQ
-  writes; the Kotlin tests rebuild every one byte for byte. Never send `SoundcoreCommand.NEVER_SEND`.
+  writes, and the state replies from OpenSCQ30's tests (serials zeroed); the Kotlin tests rebuild
+  or read every one. Never send `SoundcoreCommand.NEVER_SEND`.
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

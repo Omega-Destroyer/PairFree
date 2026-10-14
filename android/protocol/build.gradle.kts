@@ -249,6 +249,36 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
         }
         out.appendLine(")")
 
+        out.appendLine()
+        out.appendLine("/** Every model's state layout and quirks (data/soundcore/devices.json), read from OpenSCQ30's parsers. */")
+        out.appendLine("internal val SOUNDCORE_LAYOUTS: List<SoundcoreLayout> = listOf(")
+        for (d in devices) {
+            @Suppress("UNCHECKED_CAST")
+            val state = d["state"] as List<List<Any?>>? ?: continue
+            val fields = state.joinToString(", ", "listOf(", ")") { f ->
+                val name = f[0] as String
+                val optional = if (name.startsWith("optional:")) ", true" else ""
+                "SoundcoreField(${str(name.removePrefix("optional:"))}, ${(f[1] as Number).toInt()}$optional)"
+            }
+            @Suppress("UNCHECKED_CAST")
+            val battery = d["battery"] as Map<String, Any?>? ?: emptyMap()
+            fun scale(key: String): String {
+                @Suppress("UNCHECKED_CAST")
+                val s = battery[key] as Map<String, Any?>? ?: return "null"
+                return "BatteryScale(${(s.getValue("max") as Number).toInt()}, ${(s.getValue("offset") as Number).toInt()})"
+            }
+            val checksum = d["checksum"] != false
+            val uuid = (d["service_uuid"] as String?)?.let { str(it) } ?: "null"
+            @Suppress("UNCHECKED_CAST")
+            val gaming = ((d["commands"] as Map<String, Any?>?)?.get("gaming_mode") as String?)?.let { "0x$it" }
+                ?: "SoundcoreCommand.GAMING_MODE"
+            @Suppress("UNCHECKED_CAST")
+            val minFirmware = (d["min_firmware"] as Map<String, Any?>? ?: emptyMap())
+                .entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${str(k)} to ${str(v)}" }
+            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware),")
+        }
+        out.appendLine(")")
+
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()
         dir.resolve("SoundcoreTables.kt").writeText(out.toString())

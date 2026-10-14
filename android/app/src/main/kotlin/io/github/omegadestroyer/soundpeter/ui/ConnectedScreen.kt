@@ -103,10 +103,10 @@ internal fun ConnectedScreen(
 
 /**
  * The model's table entry: SoundPEATS by firmware code, or by name until the code is known;
- * Soundcore by the model number its service named (data/soundcore/devices.json).
+ * Soundcore by the model number its service or name gave (data/soundcore/devices.json).
  */
 internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.brand) {
-    Brand.SOUNDCORE -> SoundcoreModels.model(state.firmware?.code)
+    Brand.SOUNDCORE -> SoundcoreModels.model(device.model ?: state.firmware?.code)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

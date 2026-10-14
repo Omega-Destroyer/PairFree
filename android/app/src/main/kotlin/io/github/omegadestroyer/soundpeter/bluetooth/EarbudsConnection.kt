@@ -32,10 +32,16 @@ enum class Brand { SOUNDPEATS, SOUNDCORE }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
- * null for the standard serial port, which SoundPEATS earbuds use. Soundcore earbuds name
- * their model in theirs ([SoundcoreModels.fromServiceUuid]).
+ * null for the standard serial port, which SoundPEATS earbuds use. [model] is the Soundcore
+ * model number, from the earbuds' service or name ([SoundcoreModels.identify]).
  */
-data class Paired(val address: String, val name: String, val brand: Brand = Brand.SOUNDPEATS, val service: String? = null)
+data class Paired(
+    val address: String,
+    val name: String,
+    val brand: Brand = Brand.SOUNDPEATS,
+    val service: String? = null,
+    val model: String? = null,
+)
 
 sealed interface LinkStatus {
     data object Idle : LinkStatus
@@ -170,7 +176,7 @@ class EarbudsConnection(
      * and applies every packet until the channel closes. The earbuds also send changes unasked.
      */
     private suspend fun serveSoundcore(opened: SppLink, device: Paired) = coroutineScope {
-        val session = SoundcoreSession(SoundcoreModels.fromServiceUuid(device.service.orEmpty()).orEmpty())
+        val session = SoundcoreSession(device.model.orEmpty())
         soundcore = session
         val requests = launch {
             try {
@@ -183,7 +189,7 @@ class EarbudsConnection(
             }
         }
         try {
-            val parser = SoundcoreParser()
+            val parser = SoundcoreParser(checksum = session.layout?.checksum ?: true)
             opened.reads().collect { bytes ->
                 for (packet in parser.feed(bytes)) {
                     log?.invoke("recv $packet")

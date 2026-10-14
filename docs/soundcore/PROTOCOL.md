@@ -9,8 +9,8 @@ open-source Soundcore app that supports about 40 models, under GPL-3.0-or-later 
 SoundPeter. [Gadgetbridge](https://gadgetbridge.org/gadgets/headphones/anker/) supports eight
 Soundcore models as well. The official Soundcore app (6.4.0) cannot be read: its code is
 encrypted by a commercial protector (ijiami), and the unencrypted Flutter part holds no protocol.
-So the next steps are trying this on the owner's Space A40 (section 6) and recording what the
-Soundcore app sends to it.
+Each model's state layout (section 5) was read from OpenSCQ30's parsers on 2026-10-13 and checked
+against the replies in its tests.
 
 ## 1. Transport
 
@@ -95,26 +95,65 @@ earbuds it can be read back.
 ## 4. Identifying the model
 
 OpenSCQ30 does not detect the model: the user picks it when adding the earbuds. SoundPeter finds
-SoundPEATS models by itself (from the firmware code), and should do the same for Soundcore.
+SoundPEATS models by itself (from the firmware code), and does the same for Soundcore.
 
 On the A40 two things name the model: the vendor service UUID ends in `3936`, and the serial
 number in the state reply starts with `3936`. The rest of the serial number is the earbuds'
-Bluetooth address, so reports mask it. Its Bluetooth name is "Soundcore Space A40". Candidates
-in general:
-- the vendor service UUID (section 1);
-- the serial number (`01 05`);
-- the Bluetooth name;
-- a BLE advertisement.
+Bluetooth address, so reports mask it. Its Bluetooth name is "Soundcore Space A40".
 
-The official app's code is encrypted, so the answer has to come from the earbuds and from a
-recording of the Soundcore app.
+SoundPeter (`SoundcoreModels.identify`) takes the model from the vendor service UUID when it
+names a model in `data/soundcore/devices.json` (`b` and the model number, as on the A3116 and
+A3936), and otherwise from the Bluetooth name, matched without case against the names
+OpenSCQ30 gives each model. Only the A40's name is confirmed to be the one the earbuds use. A
+pair renamed by its owner, on a model whose service does not name it, is not found.
 
-## 5. Adding models nobody on the project owns
+The service to open is chosen as OpenSCQ30 chooses it (`soundcore/common/device.rs`): the vendor
+service when the earbuds have one, else the standard serial port, except on the two models where
+OpenSCQ30 fixes it (the A3116 always uses its vendor service, the A3930 the serial port).
+
+## 5. Every model
+
+`data/soundcore/devices.json` holds each model's reply to the state request (`01 01`) as
+`[field, bytes]` in order, read from the model's parser in OpenSCQ30. `skip` marks bytes
+SoundPeter does not use; `optional:` marks fields only some firmware sends. Each model also has
+the scale of its battery levels: percent = (value - offset) * 100 / max, so most report fifths
+(max 5), some tenths or percent, and a level outside 0 to max (`FF`) means that earbud is away.
+`SoundcoreLayout` and `SoundcoreState` read any model's reply from that table.
+
+Every noise control block starts with the noise mode (0 noise cancelling, 1 transparency,
+2 normal; the Liberty 4 Pro adds 3 for airplane mode), and every model sets it with `06 81` and
+the whole block, as the A40 does. LDAC (`01 FF`), two devices (`0B 84`) and game mode (`01 87`)
+are one-byte switches on every model that has them, except game mode on the Liberty 4 NC (A3947)
+and Liberty 5 (A3957), which use `10 85`.
+
+Quirks from OpenSCQ30:
+- The Motion+ (A3116) sends no checksum, and its length field leaves the checksum out.
+- The P30i (A3959) sends the game mode byte on all firmware but has game mode only from
+  firmware 01.60 on, on both earbuds (`min_firmware`).
+- In a dual firmware field an earbud that is away sends bytes that are not a version, so the
+  version is taken from the other earbud.
+- The battery update (`01 03`) holds one level per earbud, then two bytes OpenSCQ30 does not
+  name. On the A40 the third is the case in percent (section 6); on other models SoundPeter
+  ignores them.
+
+How far each layout is checked:
+- **Tested:** the A40 (section 6).
+- **Checked:** 21 models whose replies OpenSCQ30's tests hold, 37 replies in all, many from its
+  users' bug reports. They are in `data/soundcore/test_vectors.json` (`openscq30_states`) with
+  the serial numbers replaced by zeros, and SoundPeter's tests read every one: the firmware is a
+  version, the batteries are 0 to 100 or away, the noise mode is known.
+- **Not tested:** the other 17 models, read from OpenSCQ30's parsers alone. A device report from
+  one of them (the state reply as hex) checks its layout.
+
+The README's Soundcore table shows which is which.
+
+### Adding models nobody on the project owns
 
 OpenSCQ30 asks owners of an unsupported model to copy the raw state reply from its
-development mode. SoundPeter can do better with the same recording it uses for SoundPEATS: a
-bug report's Bluetooth log, made while the official Soundcore app is in use, holds the state
-reply, every setting the app sends and its EQ curves.
+development mode. SoundPeter's Copy device report gives the same reply, with the serial number
+masked, and says how long it was against the length the layout expects. A bug report's
+Bluetooth log, made while the official Soundcore app is in use, gives more: the state reply,
+every setting the app sends and its EQ curves.
 
 ## 6. Space A40 (A3936)
 
@@ -190,8 +229,13 @@ hold them), and a state read with 3D sound on and with a custom EQ.
 
 ## 7. Open questions
 
-1. How the app identifies the model (section 4).
-2. The full model list, and whether each model's features are in the app or come from a server.
+1. Whether each model's Bluetooth name is the one OpenSCQ30 gives it (section 4).
+2. Models newer than OpenSCQ30's list, and whether each model's features are in the app or come
+   from a server.
 3. The EQ format of each model, and its presets.
-4. The state layout of each model.
+4. The state layout of the 17 models with no reply to check it against (section 5).
 5. Anything the app sends on connecting, before it asks for the state.
+6. What the two bytes after the earbud levels in the battery update (`01 03`) are on models
+   other than the A40, where the first is the case (section 5).
+7. Whether other models' case levels are in percent too. OpenSCQ30 reads the A40's as 0 to 10,
+   yet the A40 reports percent (section 6), so its other case scales may be wrong as well.

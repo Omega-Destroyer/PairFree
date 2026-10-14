@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by SoundPeter: ldac_excludes lists features LDAC turns off on the earbuds (SoundPeter's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports.",
+  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by SoundPeter: ldac_excludes lists features LDAC turns off on the earbuds (SoundPeter's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports. state is the model's reply to the state request (01 01) as [field, bytes] in order, read from OpenSCQ30's parser and checked against its test replies where it has any; skip marks bytes SoundPeter does not use, optional: fields only some firmware sends. battery gives each level's scale: percent = (value - offset) * 100 / max. checksum false means the packets carry none. service_uuid fixes the RFCOMM service when OpenSCQ30 does. commands overrides a command number for one model, as OpenSCQ30 does (game mode on the A3947 and A3957). min_firmware names fields the earbuds send but only use from a firmware version on; both earbuds must have that version or newer.",
   "source": {
     "project": "OpenSCQ30",
     "url": "https://github.com/Oppzippy/OpenSCQ30",
@@ -7,7 +7,7 @@
     "license": "GPL-3.0-or-later",
     "commit": "bc77a293278092e0e3bd39ea2612371054ecb1be",
     "date": "2026-09-26",
-    "note": "Model numbers, names and each model's features come from OpenSCQ30's source at this commit (tools/import_openscq30.py). Everything else in this file was found by SoundPeter."
+    "note": "Model numbers, names and each model's features come from OpenSCQ30's source at this commit (tools/import_openscq30.py). Each model's state layout, battery scales, checksum, service and command overrides were read from OpenSCQ30's parsers at the same commit and checked against its tests. What SoundPeter found on hardware is in reports and notes, and in battery notes where it differs from OpenSCQ30."
   },
   "devices": [
     {
@@ -23,7 +23,20 @@
           "single_battery",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["single_battery", 2],
+        ["firmware", 5],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["sound_modes", 4]
+      ]
     },
     {
       "model": "A3005",
@@ -39,7 +52,23 @@
           "single_battery_custom",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["single_battery", 2],
+        ["firmware", 5],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 6],
+        ["dual_connections_enabled", 1],
+        ["skip", 4],
+        ["auto_power_off", 2]
+      ]
     },
     {
       "model": "A3027",
@@ -55,7 +84,25 @@
           "wearing_detection",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["single_battery", 2],
+        ["equalizer", 10],
+        ["gender", 1],
+        ["age_range", 1],
+        ["basic_hear_id", 21],
+        ["sound_modes", 4],
+        ["firmware", 5],
+        ["serial", 16],
+        ["wearing_detection", 1],
+        ["optional:skip", 1]
+      ]
     },
     {
       "model": "A3028",
@@ -72,7 +119,24 @@
           "single_battery",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["single_battery", 2],
+        ["equalizer", 10],
+        ["gender", 1],
+        ["age_range", 1],
+        ["basic_hear_id", 21],
+        ["sound_modes", 4],
+        ["firmware", 5],
+        ["serial", 16],
+        ["optional:skip", 7]
+      ]
     },
     {
       "model": "A3029",
@@ -88,7 +152,24 @@
           "single_battery",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["single_battery", 2],
+        ["equalizer", 10],
+        ["gender", 1],
+        ["age_range", 1],
+        ["basic_hear_id", 21],
+        ["sound_modes", 4],
+        ["firmware", 5],
+        ["serial", 16],
+        ["optional:skip", 7]
+      ]
     },
     {
       "model": "A3030",
@@ -104,7 +185,25 @@
           "wearing_detection",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["single_battery", 2],
+        ["equalizer", 10],
+        ["gender", 1],
+        ["age_range", 1],
+        ["basic_hear_id", 21],
+        ["sound_modes", 4],
+        ["firmware", 5],
+        ["serial", 16],
+        ["wearing_detection", 1],
+        ["optional:skip", 1]
+      ]
     },
     {
       "model": "A3031",
@@ -122,7 +221,23 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["equalizer", 18],
+        ["buttons", 12],
+        ["sound_modes", 4],
+        ["side_tone", 1],
+        ["touch_tone", 1],
+        ["auto_power_off", 2]
+      ]
     },
     {
       "model": "A3033",
@@ -137,7 +252,20 @@
           "single_battery",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["single_battery", 2],
+        ["equalizer", 10],
+        ["firmware", 5],
+        ["serial", 16],
+        ["wearing_detection", 1]
+      ]
     },
     {
       "model": "A3035",
@@ -161,7 +289,36 @@
           "single_battery_level",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["battery_level", 1],
+        ["skip", 1],
+        ["firmware", 5],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 2],
+        ["hear_id", 27],
+        ["skip", 3],
+        ["button_action", 1],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 6],
+        ["skip", 1],
+        ["auto_play_pause", 1],
+        ["skip", 4],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["skip", 2],
+        ["auto_power_off", 2],
+        ["limit_high_volume", 3],
+        ["sound_mode_voice_prompt", 1],
+        ["battery_alert", 1]
+      ]
     },
     {
       "model": "A3040",
@@ -184,7 +341,34 @@
           "single_battery_level",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["battery_level", 1],
+        ["skip", 1],
+        ["firmware", 5],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 12],
+        ["button_action", 1],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 6],
+        ["skip", 6],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["skip", 2],
+        ["auto_power_off", 2],
+        ["limit_high_volume", 3],
+        ["voice_prompt", 1],
+        ["low_battery_prompt", 1],
+        ["skip", 5],
+        ["hear_id", 58]
+      ]
     },
     {
       "model": "A3062",
@@ -209,7 +393,34 @@
           "single_battery_custom",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["single_battery", 2],
+        ["firmware", 5],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 2],
+        ["custom_hear_id", 28],
+        ["skip", 2],
+        ["button_action", 1],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 6],
+        ["skip", 1],
+        ["low_battery_prompt", 1],
+        ["dolby_audio", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["limit_high_volume", 3],
+        ["side_tone", 1],
+        ["sound_mode_voice_prompt", 1]
+      ]
     },
     {
       "model": "A3116",
@@ -227,7 +438,24 @@
           "single_battery",
           "serial_number_and_firmware_version"
         ]
-      }
+      },
+      "service_uuid": "0cf12d31-fac3-4553-bd80-d6832e7b3116",
+      "checksum": false,
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["single_battery_charging_first", 2],
+        ["volume", 1],
+        ["skip", 1],
+        ["auto_power_off_duration", 1],
+        ["firmware", 5],
+        ["serial", 16],
+        ["equalizer", 10]
+      ]
     },
     {
       "model": "A3330",
@@ -249,7 +477,37 @@
           "case_battery_level",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery_level", 2],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["case_battery", 1],
+        ["skip", 1],
+        ["buttons", 6],
+        ["skip", 1],
+        ["surround_sound", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["dual_connections_enabled", 1],
+        ["disable_all_buttons", 1],
+        ["skip", 1],
+        ["equalizer", 12],
+        ["skip", 1],
+        ["call_buttons", 4]
+      ]
     },
     {
       "model": "A3388",
@@ -271,7 +529,36 @@
           "case_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        },
+        "case": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery_level", 2],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["case_battery", 1],
+        ["skip", 1],
+        ["buttons", 4],
+        ["skip", 3],
+        ["surround_sound", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["dual_connections_enabled", 1],
+        ["disable_all_buttons", 1],
+        ["skip", 1],
+        ["equalizer", 12],
+        ["optional:skip", 0]
+      ]
     },
     {
       "model": "A3876",
@@ -294,7 +581,31 @@
           "dual_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery_level", 2],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 6],
+        ["equalizer", 22],
+        ["skip", 1],
+        ["buttons", 8],
+        ["colorful_lights", 7],
+        ["skip", 1],
+        ["voice_prompt", 1],
+        ["auto_power_off", 2],
+        ["skip", 1],
+        ["gaming_mode", 1],
+        ["volume_balance", 1],
+        ["dual_connections_enabled", 1]
+      ]
     },
     {
       "model": "A3909",
@@ -309,7 +620,22 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["eq_preset_id", 2],
+        ["gender", 1],
+        ["age_range", 1],
+        ["hear_id", 21],
+        ["buttons", 4]
+      ]
     },
     {
       "model": "A3926",
@@ -327,7 +653,22 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["equalizer", 18],
+        ["gender", 1],
+        ["age_range", 1],
+        ["basic_hear_id", 21],
+        ["buttons", 12]
+      ]
     },
     {
       "model": "A3930",
@@ -345,7 +686,26 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "service_uuid": "00001101-0000-1000-8000-00805f9b34fb",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["equalizer", 18],
+        ["gender", 1],
+        ["age_range", 1],
+        ["custom_hear_id", 39],
+        ["buttons", 12],
+        ["sound_modes", 4],
+        ["side_tone", 1],
+        ["optional:skip", 2]
+      ]
     },
     {
       "model": "A3931",
@@ -365,7 +725,23 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["equalizer", 18],
+        ["buttons", 12],
+        ["sound_modes", 4],
+        ["side_tone", 1],
+        ["touch_tone", 1],
+        ["auto_power_off", 2]
+      ]
     },
     {
       "model": "A3933",
@@ -388,7 +764,30 @@
           "case_battery_level",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["buttons", 12],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 4],
+        ["skip", 2]
+      ]
     },
     {
       "model": "A3935",
@@ -408,7 +807,23 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["equalizer", 18],
+        ["buttons", 12],
+        ["sound_modes", 4],
+        ["side_tone", 1],
+        ["touch_tone", 1],
+        ["auto_power_off", 2]
+      ]
     },
     {
       "model": "A3936",
@@ -434,18 +849,49 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 100,
+          "offset": 0
+        },
+        "note": "OpenSCQ30 reads the case as 0 to 10; on the owner's A40 it is a percentage (15 while Google Fast Pair showed 15%)."
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["skip", 1],
+        ["buttons", 12],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 6],
+        ["touch_tone", 1],
+        ["case_battery", 1],
+        ["color", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["gaming_mode", 1]
+      ],
       "reports": [
         "data/soundcore/reports/A3936_06.43.txt"
       ],
       "ldac_excludes": [
         "multipoint"
       ],
+      "extra_features": [
+        "surround_sound"
+      ],
       "notes": [
         "LDAC on turns two devices off, and LDAC off turns it back on. With LDAC off, two devices can be turned off and on by itself.",
         "Every LDAC or two-devices change makes the earbuds restart their connection; the control channel closes and can be opened again a few seconds later."
-      ],
-      "extra_features": [
-        "surround_sound"
       ]
     },
     {
@@ -469,7 +915,30 @@
           "case_battery_level",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["buttons", 12],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 4],
+        ["skip", 2]
+      ]
     },
     {
       "model": "A3944",
@@ -485,7 +954,24 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 11],
+        ["buttons", 12],
+        ["skip", 5],
+        ["touch_tone", 1]
+      ]
     },
     {
       "model": "A3945",
@@ -506,7 +992,30 @@
           "case_battery_level",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["buttons", 12],
+        ["touch_tone", 1],
+        ["wearing_detection", 1],
+        ["gaming_mode", 1],
+        ["case_battery", 1],
+        ["skip", 2]
+      ]
     },
     {
       "model": "A3947",
@@ -535,7 +1044,49 @@
           "dual_battery",
           "case_battery_level"
         ]
-      }
+      },
+      "commands": {
+        "gaming_mode": "1085"
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["equalizer", 22],
+        ["skip", 1],
+        ["hear_id", 48],
+        ["skip", 1],
+        ["buttons", 16],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 7],
+        ["skip", 6],
+        ["case_battery", 1],
+        ["skip", 1],
+        ["sound_leak_compensation", 1],
+        ["skip", 1],
+        ["gaming_mode", 1],
+        ["touch_tone", 1],
+        ["skip", 3],
+        ["surround_sound", 1],
+        ["limit_high_volume", 3],
+        ["auto_play_pause", 1],
+        ["wearing_tone", 1],
+        ["auto_power_off", 2],
+        ["touch_lock", 1],
+        ["low_battery_prompt", 1]
+      ]
     },
     {
       "model": "A3948",
@@ -553,7 +1104,25 @@
           "tws_status",
           "dual_battery"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 11],
+        ["buttons", 12],
+        ["skip", 5],
+        ["touch_tone", 1],
+        ["skip", 15]
+      ]
     },
     {
       "model": "A3949",
@@ -574,7 +1143,25 @@
           "tws_status",
           "dual_battery"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 11],
+        ["buttons", 12],
+        ["skip", 4],
+        ["gaming_mode", 1],
+        ["touch_tone", 1]
+      ]
     },
     {
       "model": "A3951",
@@ -595,7 +1182,28 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["equalizer", 18],
+        ["gender", 1],
+        ["age_range", 1],
+        ["custom_hear_id", 39],
+        ["buttons", 12],
+        ["sound_modes", 4],
+        ["side_tone", 1],
+        ["wearing_detection", 1],
+        ["touch_tone", 1],
+        ["optional:skip", 2],
+        ["optional:skip", 2]
+      ]
     },
     {
       "model": "A3952",
@@ -620,7 +1228,41 @@
           "case_battery_level",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["skip", 1],
+        ["buttons", 12],
+        ["skip", 4],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 6],
+        ["touch_tone", 1],
+        ["wearing_detection", 1],
+        ["skip", 1],
+        ["case_battery", 1],
+        ["skip", 2],
+        ["ldac", 1],
+        ["skip", 2],
+        ["wearing_tone", 1],
+        ["skip", 1],
+        ["auto_power_off", 2]
+      ]
     },
     {
       "model": "A3954",
@@ -653,7 +1295,51 @@
           "serial_number_and_dual_firmware_version",
           "a3954_case_serial_number_and_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 100,
+          "offset": 0
+        },
+        "case": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["case_firmware", 5],
+        ["case_battery", 1],
+        ["case_serial", 6],
+        ["equalizer", 22],
+        ["skip", 1],
+        ["custom_hear_id", 48],
+        ["skip", 1],
+        ["buttons", 8],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 4],
+        ["skip", 3],
+        ["case_features", 4],
+        ["air_pressure", 1],
+        ["skip", 3],
+        ["low_battery_prompt", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["limit_high_volume", 3],
+        ["spatial_audio", 3],
+        ["skip", 2],
+        ["sound_leak_compensation", 1],
+        ["skip", 3],
+        ["case_language", 1],
+        ["easy_chat_wait_time", 1],
+        ["wearing_detection", 1],
+        ["skip", 1],
+        ["buttons", 4]
+      ]
     },
     {
       "model": "A3955",
@@ -679,7 +1365,41 @@
           "case_battery_level",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["case_battery", 1],
+        ["equalizer", 22],
+        ["hear_id_status", 1],
+        ["custom_hear_id", 48],
+        ["skip", 1],
+        ["buttons", 8],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 7],
+        ["skip", 6],
+        ["anc_personalized", 1],
+        ["skip", 1],
+        ["touch_tone", 1],
+        ["dual_connections_enabled", 1],
+        ["limit_high_volume", 3],
+        ["auto_power_off", 2],
+        ["skip", 1],
+        ["low_battery_prompt", 1]
+      ]
     },
     {
       "model": "A3957",
@@ -709,7 +1429,50 @@
           "case_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "commands": {
+        "gaming_mode": "1085"
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        },
+        "case": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["case_battery", 1],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["skip", 1],
+        ["buttons", 8],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 7],
+        ["skip", 1],
+        ["wearing_tone", 1],
+        ["low_battery_prompt", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["limit_high_volume", 3],
+        ["immersive_experience", 1],
+        ["skip", 6],
+        ["sound_leak_compensation", 1],
+        ["wearing_detection", 1],
+        ["touch_tone", 1],
+        ["gaming_mode", 1],
+        ["pressure_sensitivity", 1],
+        ["skip", 6]
+      ]
     },
     {
       "model": "A3959",
@@ -735,6 +1498,34 @@
           "dual_battery",
           "serial_number_and_dual_firmware_version"
         ]
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 11],
+        ["buttons", 8],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 7],
+        ["skip", 1],
+        ["touch_tone", 1],
+        ["dual_connections_enabled", 1],
+        ["surround_sound", 1],
+        ["auto_power_off", 2],
+        ["low_battery_prompt", 1],
+        ["gaming_mode", 1],
+        ["skip", 12]
+      ],
+      "min_firmware": {
+        "gaming_mode": "01.60"
       }
     },
     {
@@ -758,7 +1549,38 @@
           "case_battery_level",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["case_battery", 1],
+        ["equalizer", 22],
+        ["skip", 1],
+        ["custom_hear_id", 48],
+        ["skip", 1],
+        ["buttons", 6],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 6],
+        ["skip", 1],
+        ["surround_sound", 1],
+        ["skip", 1],
+        ["dual_connections_enabled", 1],
+        ["touch_tone", 1],
+        ["auto_power_off", 2]
+      ]
     },
     {
       "model": "D1101",
@@ -779,7 +1601,28 @@
           "dual_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery_level", 2],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["skip", 1],
+        ["buttons", 8],
+        ["skip", 1],
+        ["low_battery_prompt", 1],
+        ["dual_connections_enabled", 1],
+        ["disable_all_buttons", 1],
+        ["auto_power_off", 2],
+        ["ldac", 1]
+      ]
     },
     {
       "model": "D1202",
@@ -805,7 +1648,40 @@
           "case_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        },
+        "case": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["case_battery", 1],
+        ["equalizer", 22],
+        ["skip", 1],
+        ["custom_hear_id", 48],
+        ["skip", 1],
+        ["buttons", 8],
+        ["skip", 1],
+        ["sound_modes", 8],
+        ["skip", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["limit_high_volume", 3],
+        ["spatial_audio", 2]
+      ]
     },
     {
       "model": "D1202C",
@@ -831,7 +1707,40 @@
           "case_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        },
+        "case": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["case_battery", 1],
+        ["equalizer", 22],
+        ["skip", 1],
+        ["custom_hear_id", 48],
+        ["skip", 1],
+        ["buttons", 8],
+        ["skip", 1],
+        ["sound_modes", 8],
+        ["skip", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["limit_high_volume", 3],
+        ["spatial_audio", 2]
+      ]
     },
     {
       "model": "D1301",
@@ -858,7 +1767,40 @@
           "dual_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
-      }
+      },
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery_level", 2],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 6],
+        ["firmware", 5],
+        ["skip", 5],
+        ["buttons", 4],
+        ["skip", 15],
+        ["listening_mode", 1],
+        ["default_listening_mode", 1],
+        ["skip", 2],
+        ["low_battery_prompt", 1],
+        ["skip", 67],
+        ["auto_power_off_prompt", 1],
+        ["listening_mode_prompt", 1],
+        ["skip", 1],
+        ["noise_canceling", 1],
+        ["incoming_calls_during_bluetooth", 1],
+        ["skip", 2],
+        ["post_sleep_audio", 1],
+        ["skip", 1],
+        ["tap_controls_disabled", 1],
+        ["noise_canceling_prompt", 1],
+        ["auto_switch_once_asleep", 1]
+      ]
     }
   ]
 }

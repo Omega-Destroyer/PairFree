@@ -23,7 +23,33 @@ public object SoundcoreModels {
         return "A" + suffix.drop(1)
     }
 
+    /**
+     * The model a Bluetooth name belongs to, matched against the names in data/soundcore/devices.json
+     * (from OpenSCQ30), ignoring case. For earbuds whose service UUID does not name the model.
+     */
+    public fun fromName(name: String): String? {
+        val n = name.trim()
+        if (n.isEmpty()) return null
+        return SOUNDCORE_MODEL_TABLE.firstOrNull { m -> m.names.any { it.equals(n, ignoreCase = true) } }?.code
+    }
+
     /** True for a Soundcore vendor service UUID, whatever model it names. */
     public fun isVendorService(uuid: String): Boolean =
         uuid.length == 36 && uuid.lowercase().startsWith(SoundcoreWire.VENDOR_SERVICE_PREFIX)
+
+    /** A paired device SoundPeter can control: its model and the RFCOMM service to open, null for the standard serial port. */
+    public data class Match(val model: String, val service: String?)
+
+    /**
+     * The model of a paired device and the service to open, or null when SoundPeter has no layout for it.
+     * The service is chosen as OpenSCQ30 chooses it: the vendor service when the device has one, else the
+     * standard serial port, unless the model fixes its own. The model is the one the vendor service names,
+     * else the one the Bluetooth name belongs to.
+     */
+    public fun identify(name: String, serviceUuids: List<String>): Match? {
+        val vendor = serviceUuids.firstOrNull(::isVendorService)
+        val model = vendor?.let(::fromServiceUuid)?.takeIf { SoundcoreLayout.of(it) != null } ?: fromName(name)
+        val layout = SoundcoreLayout.of(model) ?: return null
+        return Match(layout.model, layout.serviceUuid ?: vendor)
+    }
 }

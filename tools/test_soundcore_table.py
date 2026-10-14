@@ -11,7 +11,7 @@ class SoundcoreTable(unittest.TestCase):
         cls.devices = {m["model"]: m for m in cls.data["devices"]}
 
     def cells(self, model):
-        row = next(r for r in gen.rows([self.devices[model]]))
+        row = next(r for r in gen.rows([self.devices[model]], gen.checked_models()))
         return [c.split(">", 1)[1] for c in row.removeprefix("<tr>").removesuffix("</tr>").split("</td>")[:-1]]
 
     def test_readme_is_up_to_date(self):
@@ -36,6 +36,13 @@ class SoundcoreTable(unittest.TestCase):
             self.assertEqual(gen.YES, a40[column], column)
         self.assertEqual(gen.YES, a40["3D / spatial"], "3D sound, confirmed on the A40 beyond OpenSCQ30")
         self.assertEqual(gen.NO, a40["Wear detection"])
+
+    def test_status(self):
+        headers = ["Model", "Number", "Status", "Battery"] + [c for c, _ in gen.COLUMNS]
+        status = lambda code: dict(zip(headers, self.cells(code)))["Status"]
+        self.assertEqual("Checked", status("A3947"), "Liberty 4 NC: replies in OpenSCQ30's tests")
+        self.assertEqual("Not tested", status("A3028"), "Life Q30: no reply in OpenSCQ30's tests")
+        self.assertTrue(gen.checked_models() <= set(self.devices))
 
     def test_every_model_has_a_name_and_features(self):
         self.assertGreaterEqual(len(self.devices), 39)

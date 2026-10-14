@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.soundcore
 
+import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
@@ -212,6 +213,21 @@ class SoundcoreSessionTest {
         assertEquals(80, session.state.batteryLeft)
         assertEquals(60, session.state.batteryRight)
         assertEquals(50, session.state.batteryCase)
+        // The earbuds report fifths, shown as bars as in the Soundcore app; the A40's case reports percent.
+        assertEquals(BatteryLevel(4, 5), session.state.battery(Command.BATTERY_LEFT))
+        assertEquals(BatteryLevel(3, 5), session.state.battery(Command.BATTERY_RIGHT))
+        assertEquals(BatteryLevel(50), session.state.battery(Command.BATTERY_CASE))
+        assertTrue(session.state.battery(Command.BATTERY_CASE)!!.isPercent)
+        assertTrue(session.receive(SoundcorePacket(SoundcoreCommand.BATTERY, byteArrayOf(-1, 3, 50))))
+        assertEquals(BatteryLevel(null, 5), session.state.battery(Command.BATTERY_LEFT), "the left earbud is away")
+    }
+
+    @Test
+    fun theStateGivesBatteriesInTheModelsSteps() {
+        val session = connected()
+        assertEquals(BatteryLevel(5, 5), session.state.battery(Command.BATTERY_LEFT), "05 in the recorded state")
+        assertEquals(BatteryLevel(5, 5), session.state.battery(Command.BATTERY_RIGHT))
+        assertEquals(BatteryLevel(15), session.state.battery(Command.BATTERY_CASE), "the case reads 15%")
     }
 
     @Test
@@ -338,6 +354,15 @@ class SoundcoreLayoutTest {
         assertNull(BatteryScale(5).percent(255), "an earbud that is away")
         assertEquals(0, BatteryScale(10, 1).percent(1))
         assertNull(BatteryScale(10, 1).percent(0))
+        // Any number of steps: the reading keeps them, and only 100 is a percentage.
+        assertEquals(BatteryLevel(3, 5), BatteryScale(5).reading(3))
+        assertEquals(BatteryLevel(6, 7), BatteryScale(7).reading(6))
+        assertEquals(BatteryLevel(9, 10), BatteryScale(10, 1).reading(10))
+        assertEquals(BatteryLevel(null, 10), BatteryScale(10, 1).reading(0), "below the scale: away")
+        assertEquals(BatteryLevel(null, 5), BatteryScale(5).reading(null))
+        assertTrue(!BatteryScale(5).reading(3).isPercent)
+        assertTrue(BatteryScale(100).reading(42).isPercent)
+        assertEquals(85, BatteryLevel(6, 7).percent)
     }
 }
 

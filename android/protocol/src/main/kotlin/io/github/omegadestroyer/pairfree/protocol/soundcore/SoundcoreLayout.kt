@@ -1,11 +1,22 @@
 package io.github.omegadestroyer.pairfree.protocol.soundcore
 
+import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
+
 /** One field of a state reply: its name in data/soundcore/devices.json, its size, and whether only some firmware sends it. */
 public data class SoundcoreField(val name: String, val size: Int, val optional: Boolean = false)
 
-/** A battery level's scale: percent = (value - offset) * 100 / max. */
+/**
+ * A battery level's scale: the model reports [max] steps, from [offset] (empty) to offset + max
+ * (full), so percent = (value - offset) * 100 / max. A max of 100 is a percentage.
+ */
 public data class BatteryScale(val max: Int, val offset: Int = 0) {
-    public fun percent(value: Int): Int? = (value - offset).takeIf { it in 0..max }?.let { it * 100 / max }
+    /** The level in steps, 0 to [max], or null when [value] is outside the scale (an earbud away). */
+    public fun level(value: Int): Int? = (value - offset).takeIf { it in 0..max }
+
+    public fun percent(value: Int): Int? = level(value)?.let { it * 100 / max }
+
+    /** [value] as a reading for the screens, which show a percentage or one bar per step. */
+    public fun reading(value: Int?): BatteryLevel = BatteryLevel(value?.let(::level), max)
 }
 
 /**
@@ -82,12 +93,20 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
         return u8(name)?.let { it != 0 }
     }
 
-    public val batteryLeft: Int? get() = earbud(0)
-    public val batteryRight: Int? get() = earbud(1)
+    /** Battery levels in percent. [batteryReading] keeps the model's own steps. */
+    public val batteryLeft: Int? get() = earbud(0)?.let { layout.battery?.percent(it) }
+    public val batteryRight: Int? get() = earbud(1)?.let { layout.battery?.percent(it) }
 
+    /** An earbud's battery ([side] 0 left, 1 right) in the model's steps; null when the model has no scale for it. */
+    public fun batteryReading(side: Int): BatteryLevel? = layout.battery?.reading(earbud(side))
+
+    /** The case's battery in its steps; null when the model has no scale for it. */
+    public val caseReading: BatteryLevel? get() = layout.case?.reading(u8("case_battery"))
+
+    /** An earbud's raw battery byte, as the model sends it. */
     private fun earbud(side: Int): Int? {
-        val scale = layout.battery ?: return null
-        val raw = when {
+        if (layout.battery == null) return null
+        return when {
             layout.has("dual_battery") -> u8("dual_battery", side)
             layout.has("dual_battery_level") -> u8("dual_battery_level", side)
             // One battery (headphones): shown as the left one.
@@ -97,7 +116,6 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
             layout.has("battery_level") -> u8("battery_level", 0)
             else -> null
         }
-        return raw?.let(scale::percent)
     }
 
     public val batteryCase: Int? get() = layout.case?.let { scale -> u8("case_battery")?.let(scale::percent) }

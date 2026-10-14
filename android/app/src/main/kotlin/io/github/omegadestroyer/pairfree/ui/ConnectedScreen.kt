@@ -34,8 +34,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.omegadestroyer.pairfree.AppViewModel
@@ -45,6 +48,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Model
@@ -153,19 +157,20 @@ private fun HomeScreen(
             StudioButton(stringResource(R.string.switch_earbuds), actions::switchEarbuds)
         }
 
-        // Battery for left, case and right: drawing, percentage, bar. Only what the earbuds report.
-        // Headphones and speakers report one battery, shown as the whole product.
+        // Battery for left, case and right: drawing, then a percentage and a bar, or one bar per step
+        // for earbuds that report steps. Only what the earbuds report. Headphones and speakers
+        // report one battery, shown as the whole product.
         val batteries = when (form) {
             Form.EARBUDS -> listOfNotNull(
-                Battery(R.string.left, state.batteryLeft, art.bud, mirrored = false)
+                Battery(R.string.left, state.battery(Command.BATTERY_LEFT), art.bud, mirrored = false)
                     .takeIf { state.supports(Command.BATTERY_LEFT) },
-                Battery(R.string.case_label, state.batteryCase, art.case, mirrored = false)
+                Battery(R.string.case_label, state.battery(Command.BATTERY_CASE), art.case, mirrored = false)
                     .takeIf { state.supports(Command.BATTERY_CASE) },
-                Battery(R.string.right, state.batteryRight, art.bud, mirrored = true)
+                Battery(R.string.right, state.battery(Command.BATTERY_RIGHT), art.bud, mirrored = true)
                     .takeIf { state.supports(Command.BATTERY_RIGHT) },
             )
             Form.HEADPHONES, Form.SPEAKER -> listOfNotNull(
-                Battery(if (form == Form.SPEAKER) R.string.speaker else R.string.headphones, state.batteryLeft, art.bud, mirrored = false)
+                Battery(if (form == Form.SPEAKER) R.string.speaker else R.string.headphones, state.battery(Command.BATTERY_LEFT), art.bud, mirrored = false)
                     .takeIf { state.supports(Command.BATTERY_LEFT) },
             )
         }
@@ -186,8 +191,12 @@ private fun HomeScreen(
     }
 }
 
-private data class Battery(@StringRes val label: Int, val percent: Int?, @DrawableRes val drawing: Int?, val mirrored: Boolean)
+private data class Battery(@StringRes val label: Int, val reading: BatteryLevel?, @DrawableRes val drawing: Int?, val mirrored: Boolean)
 
+/**
+ * One battery: its drawing and name, then a percentage over a bar, or for earbuds that report
+ * steps (fifths on the Space A40) one bar per step and no number, as their own app shows it.
+ */
 @Composable
 private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -202,11 +211,29 @@ private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) {
             )
         }
         Label(stringResource(battery.label))
-        Text(
-            battery.percent?.let { stringResource(R.string.percent, it) } ?: stringResource(R.string.unknown),
-            style = Studio.type.bigNumber,
-        )
-        LevelBar(battery.percent)
+        val reading = battery.reading
+        val level = reading?.level
+        if (reading == null || level == null || reading.isPercent) {
+            val percent = reading?.percent
+            Text(
+                percent?.let { stringResource(R.string.percent, it) } ?: stringResource(R.string.unknown),
+                style = Studio.type.bigNumber,
+            )
+            LevelBar(percent)
+        } else {
+            // The bars take the place of the number, as tall as it, so a row that mixes them lines up.
+            val bars = pluralStringResource(R.plurals.battery_bars, reading.levels, level, reading.levels)
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .clearAndSetSemantics { contentDescription = bars },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("0", style = Studio.type.bigNumber, color = Color.Transparent)
+                StepBar(level, reading.levels)
+            }
+            Spacer(Modifier.height(4.dp))
+        }
     }
 }
 

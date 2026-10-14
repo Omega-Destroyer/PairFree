@@ -33,6 +33,10 @@
     <string name="headphones">Headphones</string>
     <string name="speaker">Speaker</string>
     <string name="percent">%1$d%%</string>
+    <plurals name="battery_bars">
+        <item quantity="one">%1$d of %2$d bar</item>
+        <item quantity="other">%1$d of %2$d bars</item>
+    </plurals>
     <string name="unknown">—</string>
 
     <string name="tab_home">Home</string>

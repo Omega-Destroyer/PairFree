@@ -26,6 +26,7 @@ class EarbudStateTest {
         assertEquals("S5", connected.firmware?.code)
         assertEquals(100, connected.batteryLeft)
         assertEquals(47, connected.batteryCase)
+        assertEquals(BatteryLevel(47), connected.battery(Command.BATTERY_CASE), "SOUNDPEATS earbuds report percent")
         assertEquals(0, connected.number(Command.ANC_MODE))
         assertEquals(true, connected.switch(Command.LDAC))
         assertEquals(Level(0x11, true), connected.levels(Command.ANC_LEVEL).first())

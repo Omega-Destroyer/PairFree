@@ -183,6 +183,26 @@ fun LevelBar(percent: Int?, modifier: Modifier = Modifier) {
 }
 
 /**
+ * A level in whole steps, such as a battery in fifths: one segment per step, amber up to [level]
+ * and a hairline track after it. All track when the level is unknown.
+ */
+@Composable
+fun StepBar(level: Int?, steps: Int, modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(2.dp)
+    Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+        for (step in 1..steps) {
+            Box(
+                Modifier
+                    .weight(1f)
+                    .height(12.dp)
+                    .clip(shape)
+                    .background(if (level != null && step <= level) Studio.colors.accent else Studio.colors.hairline),
+            )
+        }
+    }
+}
+
+/**
  * One of a few choices, side by side. A primary choice selects with an amber fill and dark
  * text; a secondary one with an amber outline and amber text. Either way the selected
  * label is also set heavier, so the state never rests on colour alone.

@@ -34,9 +34,17 @@ public data class EarbudState(
     public val firmware: FirmwareVersion?
         get() = (values[Command.FIRMWARE_VERSION] as? Value.Text)?.let { FirmwareVersion(it.text) }
 
-    public val batteryLeft: Int? get() = number(Command.BATTERY_LEFT)
-    public val batteryRight: Int? get() = number(Command.BATTERY_RIGHT)
-    public val batteryCase: Int? get() = number(Command.BATTERY_CASE)
+    /** Battery levels in percent, whatever scale the earbuds report in; see [battery] for the scale. */
+    public val batteryLeft: Int? get() = battery(Command.BATTERY_LEFT)?.percent
+    public val batteryRight: Int? get() = battery(Command.BATTERY_RIGHT)?.percent
+    public val batteryCase: Int? get() = battery(Command.BATTERY_CASE)?.percent
+
+    /** A battery as the earbuds report it: a percentage, or steps such as fifths. Null before it has answered. */
+    public fun battery(command: Command): BatteryLevel? = when (val v = values[command]) {
+        is Value.Number -> BatteryLevel(v.value)
+        is Value.Steps -> BatteryLevel(v.value, v.steps)
+        else -> null
+    }
 
     public fun number(command: Command): Int? = (values[command] as? Value.Number)?.value
 

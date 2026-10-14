@@ -15,6 +15,22 @@ public data class FirmwareVersion(val text: String) {
     public val version: String get() = text.substringAfterLast('_').removePrefix("V")
 }
 
+/**
+ * A battery reading: [level] of [levels], or a null level while it is unknown (an earbud away).
+ * Most earbuds report a percentage ([PERCENT] levels); some report a few steps, such as fifths,
+ * and the screens show those as bars, one per step, as the brand's own app does.
+ */
+public data class BatteryLevel(val level: Int?, val levels: Int = PERCENT) {
+    public val isPercent: Boolean get() = levels == PERCENT
+
+    /** The level as a percentage, for anything that needs one. */
+    public val percent: Int? get() = level?.let { it * 100 / levels }
+
+    public companion object {
+        public const val PERCENT: Int = 100
+    }
+}
+
 /** What a reply says, decoded according to its command's [Kind]. */
 public sealed interface Value {
     /** Percent, enum or minutes. Null when the earbuds report `FF` (unknown). */
@@ -27,6 +43,9 @@ public sealed interface Value {
     public data class Keys(val keys: List<KeyBinding>) : Value
 
     public data class Text(val text: String) : Value
+
+    /** A level in whole steps, such as a battery in fifths: [value] of [steps]. Null while unknown. */
+    public data class Steps(val value: Int?, val steps: Int) : Value
 
     public class Raw(public val bytes: ByteArray) : Value {
         override fun equals(other: Any?): Boolean = other is Raw && bytes.contentEquals(other.bytes)

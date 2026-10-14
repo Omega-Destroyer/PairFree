@@ -130,6 +130,10 @@ Everything here fits without scrolling on a 390 by 844 screen.
 2. Battery for left, case and right, each with a drawing, a percentage and a bar. Headphones
    and speakers report one battery: it shows once, named and drawn as the product, with a
    generic headphones or speaker drawing until the model has its own (owner, 2026-10-14).
+   Earbuds that report their battery in steps rather than percent (fifths on the Space A40,
+   tenths on some Soundcore models) show one bar per step, filled up to the level, and no
+   number, as their own app does (owner, 2026-10-14). The model's data gives the number of
+   steps, so any count works; a row that mixes bars and a percentage lines up.
 3. **Active Noise Cancelling.** One control with three choices in this order:
    Off, Cancelling, Transparency.
    - Under Cancelling: the scene choices the earbuds report (Adaptive, Indoor,

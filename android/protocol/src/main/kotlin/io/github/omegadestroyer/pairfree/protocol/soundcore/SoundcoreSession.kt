@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.soundcore
 
+import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Value
@@ -45,10 +46,10 @@ public class SoundcoreSession(public val model: String) {
                 val values = buildMap {
                     put(Command.FIRMWARE_VERSION, Value.Text("${model}_${s.firmware ?: "unknown"}"))
                     if (l.battery != null && EARBUD_BATTERIES.any(l::has)) {
-                        put(Command.BATTERY_LEFT, Value.Number(s.batteryLeft))
-                        if (l.has("dual_battery") || l.has("dual_battery_level")) put(Command.BATTERY_RIGHT, Value.Number(s.batteryRight))
+                        put(Command.BATTERY_LEFT, steps(s.batteryReading(0)))
+                        if (l.has("dual_battery") || l.has("dual_battery_level")) put(Command.BATTERY_RIGHT, steps(s.batteryReading(1)))
                     }
-                    if (l.case != null && l.has("case_battery")) put(Command.BATTERY_CASE, Value.Number(s.batteryCase))
+                    if (l.case != null && l.has("case_battery")) put(Command.BATTERY_CASE, steps(s.caseReading))
                     if (l.has("sound_modes")) put(Command.ANC_MODE, Value.Number(ancValue(s.ambientMode)))
                     s.flag("gaming_mode")?.let { put(Command.GAME_MODE, Value.Switch(it)) }
                     s.flag("ldac")?.let { put(Command.LDAC, Value.Switch(it)) }
@@ -65,10 +66,10 @@ public class SoundcoreSession(public val model: String) {
                 if (body.size < (if (dual) 2 else 1)) return false
                 state = state.copy(
                     values = state.values + buildMap {
-                        put(Command.BATTERY_LEFT, Value.Number(scale.percent(body.u8(0))))
-                        if (dual) put(Command.BATTERY_RIGHT, Value.Number(scale.percent(body.u8(1))))
+                        put(Command.BATTERY_LEFT, steps(scale.reading(body.u8(0))))
+                        if (dual) put(Command.BATTERY_RIGHT, steps(scale.reading(body.u8(1))))
                         val case = l.case
-                        if (model == A3936 && case != null && body.size >= 3) put(Command.BATTERY_CASE, Value.Number(case.percent(body.u8(2))))
+                        if (model == A3936 && case != null && body.size >= 3) put(Command.BATTERY_CASE, steps(case.reading(body.u8(2))))
                     },
                 )
             }
@@ -134,6 +135,9 @@ public class SoundcoreSession(public val model: String) {
     }
 
     private fun ByteArray.u8(at: Int): Int = this[at].toInt() and 0xFF
+
+    // A battery in the model's own steps (fifths on most), so the screens can show bars as the Soundcore app does.
+    private fun steps(reading: BatteryLevel?): Value = Value.Steps(reading?.level, reading?.levels ?: BatteryLevel.PERCENT)
 
     public companion object {
         public const val A3936: String = "A3936"

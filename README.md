@@ -11,8 +11,8 @@ directly over Bluetooth.
 - **Nothing leaves your phone** unless you share it yourself, such as a device report or an
   equalizer profile. No ads, no analytics, no crash reports, no cloud backup of your
   settings.
-- **One app for several brands.** Earbuds of every brand get the same screens, so you need
-  one app, not one per brand.
+- **One app to rule them all.** Every brand gets the same screens, so one app replaces a
+  drawer full of vendor apps.
 - **One permission.** Bluetooth, to talk to earbuds you have already paired. No location, no
   scanning, no contacts.
 - **Small and quick.** About 3 MB, with no login and no server to wait for.
@@ -21,8 +21,8 @@ directly over Bluetooth.
 - **Reproducible builds.** The published APK can be rebuilt from the source and checked byte
   for byte, apart from the signature.
 - **Your equalizer, as files.** Save your own curves, and export and share them.
-- **Grows with its users.** A model nobody on the project owns is added from a report its
-  owner copies from the app.
+- **Grows with its users.** Anyone can help add a new model by sending in a device report
+  (see [Help add your model](#help-add-your-model)).
 
 ## What it controls
 
@@ -56,9 +56,9 @@ Screenshots with a SOUNDPEATS H3, using replies recorded from real earbuds.
 
 ## Status
 
-Early, and growing one brand at a time. The models nobody on the project owns rest on the
-protocol work of other open-source projects and on reports from their owners; each brand's
-page says which models have been tried.
+Early, and growing one brand at a time. Most models have not been tried on real earbuds yet.
+Their support comes from other open-source projects that worked out each brand's protocol,
+and from reports their owners send in. Each brand's page shows which models have been tried.
 
 | Piece                 | State |
 |-----------------------|-------|
@@ -211,3 +211,7 @@ cd android
 
 GNU General Public License, version 3 or (at your option) any later version
 (GPL-3.0-or-later). See `LICENSE`.
+
+The Galaxy Buds code in `android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/samsung/`
+is ported from GalaxyBudsClient, which is licensed under version 3 of the GPL only, so those
+files are GPL-3.0-only. The app built with them is shared under version 3.

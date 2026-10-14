@@ -5,7 +5,7 @@ Why PairFree:
 • No account: nothing to sign up for or log in to
 • No internet: the app has no internet permission, so it cannot go online
 • Nothing leaves your phone unless you share it yourself, such as a device report or an equalizer profile. No ads, no analytics, no crash reports, no cloud backup of your settings
-• One app for several brands, with the same screens for each
+• One app to rule them all: the same screens for every brand, instead of one vendor app each
 • One permission: Bluetooth, for earbuds you have already paired. No location, no scanning, no contacts
 • Small and quick: about 3 MB, with no login and no server to wait for
 • Open source (GPL-3.0), with every protocol documented and tested in its repository

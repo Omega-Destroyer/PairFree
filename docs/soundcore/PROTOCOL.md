@@ -156,6 +156,14 @@ names its model (section 4), the start of the state reply (TWS status, battery, 
 versions, the serial number), the sound modes block (6 bytes, byte 0: 0 noise cancelling,
 1 transparency, 2 normal), and the touch-action and touch-tone commands.
 
+**Settings tried from SoundPeter (2026-10-13).** Game mode (`01 87`), LDAC (`01 FF`) and two
+devices (`0B 84`) each take one byte, 1 on and 0 off, as OpenSCQ30 sends them. Every LDAC or
+two-devices change makes the earbuds restart their connection, so the control channel closes
+and opens again a few seconds later. LDAC on turns two devices off and LDAC off turns it back
+on; with LDAC off, two devices can be switched by itself (`ldac_excludes` in
+`data/soundcore/devices.json`). With two devices on, the earbuds send their connected-device
+list (`0B 01`, 42 bytes per device) unasked; it holds other devices' names and addresses.
+
 **EQ.** The Soundcore app writes the whole curve with `03 87` (92 bytes):
 
 | Bytes | What |

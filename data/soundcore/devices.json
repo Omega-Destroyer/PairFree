@@ -1,0 +1,15 @@
+{
+  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. ldac_excludes lists features that LDAC turns off on the earbuds, as seen on hardware; ids are SoundPeter's (data/soundpeats/commands.json). reports lists recordings in data/soundcore/reports.",
+  "devices": [
+    {
+      "model": "A3936",
+      "names": ["Soundcore Space A40"],
+      "ldac_excludes": ["multipoint"],
+      "reports": ["data/soundcore/reports/A3936_06.43.txt"],
+      "notes": [
+        "LDAC on turns two devices off, and LDAC off turns it back on. With LDAC off, two devices can be turned off and on by itself.",
+        "Every LDAC or two-devices change makes the earbuds restart their connection; the control channel closes and can be opened again a few seconds later."
+      ]
+    }
+  ]
+}

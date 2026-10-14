@@ -1,7 +1,15 @@
 package io.github.omegadestroyer.soundpeter.protocol.soundcore
 
+import io.github.omegadestroyer.soundpeter.protocol.Model
+
 /** Telling Soundcore models apart before connecting (docs/soundcore/PROTOCOL.md section 4). */
 public object SoundcoreModels {
+    /** Every Soundcore model in data/soundcore/devices.json. */
+    public val ALL: List<Model> get() = SOUNDCORE_MODEL_TABLE
+
+    /** The table entry for a model number such as `A3936`, or null. */
+    public fun model(code: String?): Model? = SOUNDCORE_MODEL_TABLE.firstOrNull { it.code == code }
+
     /**
      * The model the earbuds' vendor service UUID names: `A3936` from
      * `0cf12d31-fac3-4553-bd80-d6832e7b3936`. Null for any other UUID. Both models seen so far

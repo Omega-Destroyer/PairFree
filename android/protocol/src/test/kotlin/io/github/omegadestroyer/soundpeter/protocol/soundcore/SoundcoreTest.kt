@@ -235,6 +235,20 @@ class SoundcoreSessionTest {
 
 class SoundcoreModelsTest {
     @Test
+    fun tableMatchesDevicesJson() {
+        val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
+        assertEquals(devices.map { it.str("model") }, SoundcoreModels.ALL.map { it.code })
+        for (d in devices) {
+            val model = SoundcoreModels.model(d.str("model"))!!
+            val excludes = d["ldac_excludes"]?.jsonArray?.map { Command.valueOf(it.jsonPrimitive.content.uppercase()) }.orEmpty().toSet()
+            assertEquals(excludes, model.ldacExcludes)
+            assertTrue(!model.isQualcomm, "never send GAIA frames to Soundcore earbuds")
+            assertTrue(model.code in SoundcoreSession.SUPPORTED_MODELS, "a model in the table needs a known state layout")
+        }
+        assertEquals(setOf(Command.MULTIPOINT), SoundcoreModels.model("A3936")!!.ldacExcludes)
+    }
+
+    @Test
     fun modelFromServiceUuid() {
         assertEquals("A3936", SoundcoreModels.fromServiceUuid("0cf12d31-fac3-4553-bd80-d6832e7b3936"))
         assertEquals("A3936", SoundcoreModels.fromServiceUuid("0CF12D31-FAC3-4553-BD80-D6832E7B3936"))

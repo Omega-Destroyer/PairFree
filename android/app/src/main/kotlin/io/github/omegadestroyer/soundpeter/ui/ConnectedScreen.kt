@@ -48,6 +48,7 @@ import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.EarbudState
 import io.github.omegadestroyer.soundpeter.protocol.Model
 import io.github.omegadestroyer.soundpeter.protocol.Models
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.soundpeter.protocol.blockedByLdac
 import io.github.omegadestroyer.soundpeter.ui.theme.Studio
 import io.github.omegadestroyer.soundpeter.ui.theme.StudioShape
@@ -63,7 +64,7 @@ internal enum class Tab(@StringRes val title: Int) {
 @Composable
 fun ConnectedScreen(vm: AppViewModel, device: Paired, live: Boolean) {
     val state by vm.connection.state.collectAsStateWithLifecycle()
-    val model = Models.find(state.firmware?.code, device.name)
+    val model = modelOf(device, state)
     LaunchedEffect(device.address, model) { vm.equalizer.open(device.address, model) }
     val eq by vm.equalizer.state.collectAsStateWithLifecycle()
     ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live)
@@ -81,7 +82,7 @@ internal fun ConnectedScreen(
 ) {
     var tab by rememberSaveable { mutableStateOf(startTab) }
     var fitTest by rememberSaveable { mutableStateOf(false) }
-    val model = Models.find(state.firmware?.code, device.name)
+    val model = modelOf(device, state)
     if (fitTest) {
         FitTestScreen(device, state, actions, onClose = { fitTest = false })
         return
@@ -98,6 +99,15 @@ internal fun ConnectedScreen(
         }
         TabBar(tab) { tab = it }
     }
+}
+
+/**
+ * The model's table entry: SoundPEATS by firmware code, or by name until the code is known;
+ * Soundcore by the model number its service named (data/soundcore/devices.json).
+ */
+internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.brand) {
+    Brand.SOUNDCORE -> SoundcoreModels.model(state.firmware?.code)
+    Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 
 /** A tab's content: scrolls if it must, 16 px gutters, 16 px between blocks. */

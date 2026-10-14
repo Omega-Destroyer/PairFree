@@ -22,8 +22,10 @@ from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` 
   against the official app's code or the owner's Soundcore earbuds before building on it.
   What the owner's Space A40 confirmed is marked there, with its recordings in
   `data/soundcore/reports/`.
-- `data/soundcore/commands.json` is the Soundcore command table; `generateSoundcoreTables`
-  turns it into `SoundcoreCommand` and `SoundcoreWire` in the `protocol.soundcore` package.
+- `data/soundcore/commands.json` is the Soundcore command table and `data/soundcore/devices.json`
+  its model table; `generateSoundcoreTables` turns them into `SoundcoreCommand`, `SoundcoreWire`
+  and `SoundcoreModels` in the `protocol.soundcore` package. The app shows Soundcore earbuds on
+  the same screens through `SoundcoreSession`, which maps their state to `EarbudState`.
   `data/soundcore/test_vectors.json` holds the A40's recorded frames, its state and its EQ
   writes; the Kotlin tests rebuild every one byte for byte. Never send `SoundcoreCommand.NEVER_SEND`.
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from

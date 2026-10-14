@@ -184,11 +184,15 @@ val generateTables = tasks.register<GenerateTables>("generateTables") {
     outputDir = layout.buildDirectory.dir("generated/tables")
 }
 
-/** Writes the Soundcore frame constants and command numbers from data/soundcore/commands.json. */
+/** Writes the Soundcore frame constants, command numbers and models from data/soundcore. */
 abstract class GenerateSoundcoreTables : DefaultTask() {
     @get:InputFile
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
 
     @get:Input
     abstract val packageName: Property<String>
@@ -231,6 +235,20 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
         out.appendLine("    public val NEVER_SEND: Set<Int> = setOf($never)")
         out.appendLine("}")
 
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String) + "\""
+        out.appendLine()
+        out.appendLine("/** Every model in data/soundcore/devices.json, as a [io.github.omegadestroyer.soundpeter.protocol.Model] for the screens. */")
+        out.appendLine("internal val SOUNDCORE_MODEL_TABLE: List<io.github.omegadestroyer.soundpeter.protocol.Model> = listOf(")
+        for (d in devices) {
+            val names = (d.getValue("names") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+            val excludes = (d["ldac_excludes"] as List<*>? ?: emptyList<Any>())
+                .joinToString(", ", "setOf(", ")") { "io.github.omegadestroyer.soundpeter.protocol.Command.${(it as String).uppercase()}" }
+            out.appendLine("    io.github.omegadestroyer.soundpeter.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes),")
+        }
+        out.appendLine(")")
+
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()
         dir.resolve("SoundcoreTables.kt").writeText(out.toString())
@@ -239,6 +257,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
 
 val generateSoundcoreTables = tasks.register<GenerateSoundcoreTables>("generateSoundcoreTables") {
     commandsJson = rootProject.layout.projectDirectory.file("../data/soundcore/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/soundcore/devices.json")
     packageName = "io.github.omegadestroyer.soundpeter.protocol.soundcore"
     outputDir = layout.buildDirectory.dir("generated/soundcore")
 }

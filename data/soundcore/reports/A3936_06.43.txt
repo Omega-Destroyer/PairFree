@@ -180,3 +180,144 @@ in the case.
 - 05 01 read all zero this time: 05 81 clears the statistics 05 01 reads.
 - 3D sound is not in OpenSCQ30's A40 module. Which state byte holds it is not known yet: the
   state was read only while it was off.
+
+
+==== Third session: SoundPeter (debug build), 23:01 to 23:04 ====
+The owner used SoundPeter with the Soundcore app closed: noise modes from the app and by touch,
+LDAC off and on, game mode on and off, two devices off and on, then took the device report.
+SoundPeter's own debug log, decoded. The earbuds' connected-device entries (0B 01) carry other
+devices' names and addresses and are left out; so is the serial number.
+
+23:01:12  could not open (the earbuds were still restarting)
+23:01:13  channel open
+23:01:13  ->  01 01  
+23:01:13  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 15
+23:01:19  <-  01 03  05 05 0f
+23:01:21  ->  06 81  00 30 01 00 01 00
+23:01:22  <-  06 81  (acknowledged, no body)
+23:01:22  <-  06 01  00 30 01 00 01 00
+23:01:24  ->  01 01  
+23:01:24  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 00 30 01 00 01 00, charging 00 00, case 15
+23:01:28  ->  06 81  01 30 01 00 01 00
+23:01:28  <-  06 81  (acknowledged, no body)
+23:01:29  <-  06 01  01 30 01 00 01 00
+23:01:31  ->  01 01  
+23:01:32  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 01 30 01 00 01 00, charging 00 00, case 15
+23:01:40  <-  01 03  05 05 0f
+23:01:43  ->  06 81  02 30 01 00 01 00
+23:01:43  <-  06 81  (acknowledged, no body)
+23:01:43  ->  01 01  
+23:01:43  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 01 30 01 00 01 00, charging 00 00, case 15
+23:01:43  <-  06 01  02 30 01 00 01 00
+23:01:46  ->  01 01  
+23:01:46  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 15
+23:01:49  <-  01 03  05 05 0f
+23:01:49  ->  01 ff  00
+23:01:49  <-  01 ff  (acknowledged, no body)
+23:01:51  <-  01 02  00 01
+23:01:52  channel closed
+23:01:56  channel open
+23:01:56  ->  01 01  
+23:01:57  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:01:57  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:02:02  ->  01 ff  01
+23:02:02  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:02:02  <-  01 ff  (acknowledged, no body)
+23:02:04  channel closed
+23:02:06  could not open (the earbuds were still restarting)
+23:02:10  channel open
+23:02:10  ->  01 01  
+23:02:10  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:02:10  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:02:13  <-  01 03  05 05 ff
+23:02:40  ->  01 01  
+23:02:40  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:02:43  <-  01 03  05 05 ff
+23:02:43  <-  01 03  05 05 ff
+23:02:57  channel open
+23:02:57  ->  01 01  
+23:02:57  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:03:13  <-  01 03  05 05 ff
+23:03:16  <-  06 01  00 30 01 00 01 00
+23:03:23  <-  01 03  05 05 ff
+23:03:24  <-  06 01  02 30 01 00 01 00
+23:03:27  ->  01 01  
+23:03:27  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 00 00, case 255
+23:03:30  <-  06 01  00 30 01 00 01 00
+23:03:42  ->  01 ff  00
+23:03:42  <-  01 ff  (acknowledged, no body)
+23:03:43  <-  01 03  05 05 ff
+23:03:43  channel closed
+23:03:49  could not open (the earbuds were still restarting)
+23:03:51  channel open
+23:03:51  ->  01 01  
+23:03:51  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 00 30 01 00 01 00, charging 00 00, case 255
+23:03:52  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:03:53  ->  01 87  01
+23:03:53  <-  01 87  (acknowledged, no body)
+23:03:55  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:03:56  ->  01 01  
+23:03:56  <-  01 01  state: LDAC 0, two devices 1, game mode 1, sound modes 00 30 01 00 01 00, charging 00 00, case 255
+23:03:57  ->  01 87  00
+23:03:57  <-  01 87  (acknowledged, no body)
+23:04:00  ->  01 01  
+23:04:00  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 00 30 01 00 01 00, charging 00 00, case 255
+23:04:00  ->  0b 84  00
+23:04:00  <-  0b 84  00 90 00 78 53 01
+23:04:01  ->  0b 84  00
+23:04:03  ->  01 01  
+23:04:03  channel closed
+23:04:07  could not open (the earbuds were still restarting)
+23:04:09  channel open
+23:04:09  ->  01 01  
+23:04:09  <-  01 01  state: LDAC 0, two devices 0, game mode 0, sound modes 00 30 01 00 01 00, charging 00 00, case 255
+23:04:10  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:11  <-  01 03  05 05 ff
+23:04:13  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:17  ->  0b 84  01
+23:04:17  <-  0b 84  01 91 00 80 4f 01
+23:04:19  channel closed
+23:04:22  channel open
+23:04:22  ->  01 01  
+23:04:22  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 00 30 01 00 01 00, charging 01 01, case 255
+23:04:23  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:23  <-  01 04  01 00
+23:04:23  <-  01 04  00 00
+23:04:23  <-  01 02  01 01
+23:04:26  ->  06 81  01 30 01 00 01 00
+23:04:27  <-  06 81  (acknowledged, no body)
+23:04:27  <-  06 01  01 30 01 00 01 00
+23:04:28  <-  01 03  05 05 ff
+23:04:29  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:29  ->  01 01  
+23:04:29  <-  01 01  state: LDAC 0, two devices 1, game mode 0, sound modes 01 30 01 00 01 00, charging 00 00, case 255
+23:04:31  ->  06 81  02 30 01 00 01 00
+23:04:31  <-  06 81  (acknowledged, no body)
+23:04:31  <-  06 01  02 30 01 00 01 00
+23:04:32  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:33  ->  01 ff  01
+23:04:33  <-  01 ff  (acknowledged, no body)
+23:04:34  ->  01 01  
+23:04:34  channel closed
+23:04:38  channel open
+23:04:38  ->  01 01  
+23:04:38  <-  01 01  state: LDAC 1, two devices 0, game mode 0, sound modes 02 30 01 00 01 00, charging 01 01, case 255
+23:04:38  <-  01 04  01 00
+23:04:38  <-  01 04  00 00
+23:04:38  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+23:04:38  <-  01 02  01 01
+23:04:41  <-  0b 01  connected-device entries (not recorded: each holds a device's address and name)
+
+---- Notes on the third session ----
+- Game mode (01 87), LDAC (01 FF) and two devices (0B 84) work as OpenSCQ30 sends them: one byte,
+  1 on, 0 off. The earbuds acknowledge 01 87 and 01 FF with no body, and 0B 84 with 6 bytes
+  whose first is the new setting. No 01 11 or 01 7F update arrived; the next state shows the change.
+- Every LDAC or two-devices change makes the earbuds restart their connection: the channel
+  closes within about 2 s and opens again a few seconds later.
+- LDAC on turns two devices off; LDAC off turns it back on. With LDAC off, two devices can be
+  turned off and on by itself (23:04:00 and 23:04:17).
+- With two devices on, the earbuds send their connected-device list (0B 01, 42 bytes per entry)
+  unasked, again after changes.
+- Noise mode changes by touch arrive as 06 01, as after a set from the app.
+- 01 02 (TWS status) and 01 04 (charging) arrive unasked when the earbuds go in or out of the case.
+- The case battery reads 255 (unknown) after the case is closed.

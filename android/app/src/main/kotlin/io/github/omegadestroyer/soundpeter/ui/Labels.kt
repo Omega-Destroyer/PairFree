@@ -5,6 +5,7 @@ import androidx.compose.ui.res.stringResource
 import io.github.omegadestroyer.soundpeter.R
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.CustomKeys
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.TouchPress
 
 // Words for the values in data/soundpeats/commands.json. The numbers come from the generated
 // tables; only their names are matched here.
@@ -64,6 +65,39 @@ fun actionName(action: Int): String = when (CustomKeys.ACTIONS[action]) {
     "anc_cycle" -> stringResource(R.string.action_anc_cycle)
     "voice_assistant" -> stringResource(R.string.action_voice_assistant)
     else -> unknownCode(action)
+}
+
+/** A Soundcore press (data/soundcore/devices.json buttons). */
+@Composable
+fun pressName(press: TouchPress): String = stringResource(
+    when (press) {
+        TouchPress.SINGLE -> R.string.gesture_tap
+        TouchPress.DOUBLE -> R.string.gesture_double
+        TouchPress.TRIPLE -> R.string.gesture_triple
+        TouchPress.LONG -> R.string.gesture_hold
+        TouchPress.SLIDE_UP -> R.string.gesture_slide_up
+        TouchPress.SLIDE_DOWN -> R.string.gesture_slide_down
+    },
+)
+
+/** A Soundcore touch action by its name in data/soundcore/button_actions.json. */
+@Composable
+fun soundcoreActionName(name: String): String = when (name) {
+    "volume_up" -> stringResource(R.string.action_volume_up)
+    "volume_down" -> stringResource(R.string.action_volume_down)
+    "previous_song" -> stringResource(R.string.action_previous)
+    "next_song" -> stringResource(R.string.action_next)
+    "play_pause" -> stringResource(R.string.action_play_pause)
+    "ambient_sound_mode" -> stringResource(R.string.action_anc_cycle)
+    "voice_assistant" -> stringResource(R.string.action_voice_assistant)
+    "gaming_mode" -> stringResource(R.string.action_game_mode)
+    "answer_call" -> stringResource(R.string.action_answer_call)
+    "decline_call" -> stringResource(R.string.action_decline_call)
+    "bass_up" -> stringResource(R.string.action_bass_up)
+    "lights" -> stringResource(R.string.action_lights)
+    "noise_canceling" -> stringResource(R.string.action_noise_cancelling)
+    "change_mode" -> stringResource(R.string.action_change_mode)
+    else -> name
 }
 
 /** Prompt languages in their own words. */

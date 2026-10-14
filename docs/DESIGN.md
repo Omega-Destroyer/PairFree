@@ -194,6 +194,15 @@ helps.
 The official app's gesture table has no slide gestures. Their command codes are
 unknown until someone finds them on hardware.
 
+Soundcore earbuds (docs/soundcore/PROTOCOL.md section 9) use the same tab. The side switch shows
+only when the model has buttons on both sides. Rows list what the model has, slides included (the
+Liberty 4 Pro); a press that can be turned off has Off in its picker. A third group, During calls,
+shows on the C30i, and presses the model fixes (single press on the three one-button headphones)
+show without a picker. Soundcore earbuds keep separate actions for when one earbud is used alone:
+a line under the groups says which set is on screen, following whether both earbuds are in. Then
+touch controls on or off, touch lock and touch tone, which noise modes the noise-control action
+cycles through (at least one stays on), and Reset gestures, each only where the model has it.
+
 ### Device
 
 - Header: model and firmware version, read from the earbuds.

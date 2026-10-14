@@ -34,10 +34,12 @@ import io.github.omegadestroyer.soundpeter.protocol.LoggedReads
 import io.github.omegadestroyer.soundpeter.protocol.Model
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.RecordingReport
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreEqSpec
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreLayout
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreState
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.soundpeter.ui.CaptureActions
 import io.github.omegadestroyer.soundpeter.ui.EarbudsActions
 import kotlinx.coroutines.Dispatchers
@@ -194,6 +196,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     override fun set(command: Command, vararg payload: Int) = connection.set(command, *payload)
 
     override fun factoryResetConfirmedByUser() = connection.factoryResetConfirmedByUser()
+
+    override fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) = connection.changeSoundcoreTouch(make)
+
+    override fun resetTouch() = connection.resetSoundcoreTouch()
 
     override fun startFitTest() {
         val name = (connection.status.value as? LinkStatus.Connected)?.device?.name

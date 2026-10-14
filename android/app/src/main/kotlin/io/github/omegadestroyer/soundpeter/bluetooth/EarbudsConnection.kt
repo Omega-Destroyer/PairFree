@@ -10,10 +10,12 @@ import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.Replies
 import io.github.omegadestroyer.soundpeter.protocol.Requests
 import io.github.omegadestroyer.soundpeter.protocol.Wire
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreParser
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreSession
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreState
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreTouch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -288,14 +290,37 @@ class EarbudsConnection(
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
+    /**
+     * Changes Soundcore touch controls ([SoundcoreTouch], from the last state the earbuds sent):
+     * the change shows at once, goes out as the model's packets, and [READ_BACK_MS] later the
+     * whole state is read back, so the earbuds' answer replaces the guess.
+     */
+    fun changeSoundcoreTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) {
+        val session = soundcore ?: return
+        val change = session.touch?.let(make) ?: return
+        if (!send(session.frames(change.packets), then = session.requestState())) return
+        session.expect(change)
+        _soundcoreState.value = session.lastState
+    }
+
+    /** Puts Soundcore touch actions back to the model's defaults, then reads the state back. */
+    fun resetSoundcoreTouch() {
+        val session = soundcore ?: return
+        val packet = session.touch?.reset() ?: return
+        send(session.frames(listOf(packet)), then = session.requestState())
+    }
+
     /** Queues [frame] on the open channel, then [then] [READ_BACK_MS] later. False when there is no channel. */
-    private fun send(frame: ByteArray, then: ByteArray?): Boolean {
+    private fun send(frame: ByteArray, then: ByteArray?): Boolean = send(listOf(frame), then)
+
+    /** Queues [frames] on the open channel, then [then] [READ_BACK_MS] later. False when there is no channel. */
+    private fun send(frames: List<ByteArray>, then: ByteArray?): Boolean {
         if (_status.value !is LinkStatus.Connected) return false
         val s = session ?: return false
         val l = link ?: return false
         s.launch {
             try {
-                l.send(frame)
+                for (frame in frames) l.send(frame)
                 if (then != null) {
                     delay(READ_BACK_MS)
                     l.send(then)

@@ -50,6 +50,7 @@ import io.github.omegadestroyer.soundpeter.protocol.Form
 import io.github.omegadestroyer.soundpeter.protocol.Model
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.soundpeter.protocol.blockedByLdac
 import io.github.omegadestroyer.soundpeter.ui.theme.Studio
 import io.github.omegadestroyer.soundpeter.ui.theme.StudioShape
@@ -68,9 +69,11 @@ fun ConnectedScreen(vm: AppViewModel, device: Paired, live: Boolean) {
     val model = modelOf(device, state)
     LaunchedEffect(device.address, model) { vm.openEqualizer(device, model) }
     val eq by vm.equalizer.state.collectAsStateWithLifecycle()
-    ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live)
+    val soundcore by vm.connection.soundcoreState.collectAsStateWithLifecycle()
+    ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live, touch = soundcore?.let(SoundcoreTouch::of))
 }
 
+/** [touch] is the Soundcore earbuds' touch controls, from the last state they sent; null for SoundPEATS earbuds. */
 @Composable
 internal fun ConnectedScreen(
     device: Paired,
@@ -80,6 +83,7 @@ internal fun ConnectedScreen(
     eqActions: EqActions,
     startTab: Tab = Tab.HOME,
     live: Boolean = true,
+    touch: SoundcoreTouch? = null,
 ) {
     var tab by rememberSaveable { mutableStateOf(startTab) }
     var fitTest by rememberSaveable { mutableStateOf(false) }
@@ -94,7 +98,7 @@ internal fun ConnectedScreen(
                 Tab.HOME -> HomeScreen(device, state, model, actions, live, eq) { tab = Tab.SOUND }
                 // Recording from the official app exists for SoundPEATS only so far.
                 Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture.takeIf { device.brand == Brand.SOUNDPEATS })
-                Tab.CONTROLS -> ControlsScreen(device, state, actions)
+                Tab.CONTROLS -> ControlsScreen(device, state, actions, touch)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions) { fitTest = true }
             }
         }

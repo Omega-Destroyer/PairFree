@@ -1,7 +1,7 @@
 package io.github.omegadestroyer.soundpeter.protocol
 
 /**
- * What a recorded EQ curve is, when it is one SoundPeter already knows: byte for byte the
+ * What a recorded EQ curve is, when it is one PairFree already knows: byte for byte the
  * base curve or a preset of a model in data/devices.json, or that base curve plus whole-dB
  * slider gains (the user's own curve in PeatsAudio, which teaches nothing new).
  */

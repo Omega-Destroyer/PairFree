@@ -1,6 +1,6 @@
 # Device reports
 
-Raw output from real earbuds: `tools/probe.py`, SoundPeter's device report or its Record
+Raw output from real earbuds: `tools/probe.py`, PairFree's device report or its Record
 from PeatsAudio report, or earbud frames taken from a phone's Bluetooth log. The README's
 [Tested earbuds](../../README.md#tested-earbuds) table is built from these.
 

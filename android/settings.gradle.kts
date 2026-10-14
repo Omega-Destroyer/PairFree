@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SoundPeter"
+rootProject.name = "PairFree"
 include(":app", ":protocol")

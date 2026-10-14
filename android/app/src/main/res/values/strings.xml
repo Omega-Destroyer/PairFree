@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SoundPeter</string>
+    <string name="app_name">PairFree</string>
 
     <string name="permission_title">Bluetooth access</string>
-    <string name="permission_body">SoundPeter talks to your earbuds over Bluetooth, and Android asks you to allow that. It is the only permission the app uses.</string>
+    <string name="permission_body">PairFree talks to your earbuds over Bluetooth, and Android asks you to allow that. It is the only permission the app uses.</string>
     <string name="permission_allow">Allow Bluetooth access</string>
     <string name="permission_denied">Without Bluetooth access the app cannot reach your earbuds.</string>
     <string name="permission_settings">Open app settings</string>
@@ -19,7 +19,7 @@
     <string name="failed_could_not_open">Could not reach the controls of %1$s. Close PeatsAudio if it is open, check the earbuds are connected for audio, then try again.</string>
     <string name="failed_lost">The connection to %1$s dropped.</string>
     <string name="failed_bluetooth_off">Bluetooth is off.</string>
-    <string name="failed_no_permission">Bluetooth access is turned off for SoundPeter.</string>
+    <string name="failed_no_permission">Bluetooth access is turned off for PairFree.</string>
 
     <string name="connected">Connected</string>
     <string name="reconnecting">Reconnecting…</string>
@@ -70,7 +70,7 @@
     <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
 
     <string name="sound_profile">Sound</string>
-    <string name="eq_unavailable">SoundPeter does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
+    <string name="eq_unavailable">PairFree does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
     <string name="eq_stock">Stock</string>
     <string name="eq_new">New</string>
     <string name="eq_new_unsaved">New, not saved</string>
@@ -93,11 +93,11 @@
     <string name="eq_exported">Saved the profile file.</string>
     <string name="eq_export_failed">Could not write the file.</string>
     <string name="eq_imported">Added the profile from the file.</string>
-    <string name="eq_import_wrong">That file is not a SoundPeter profile for these earbuds.</string>
+    <string name="eq_import_wrong">That file is not a PairFree profile for these earbuds.</string>
     <string name="eq_delete">Delete %1$s</string>
     <string name="eq_delete_title">Delete %1$s?</string>
     <string name="eq_delete_body">The profile is removed from this phone. The earbuds keep the sound they have now.</string>
-    <string name="eq_note">0 dB on every band is the earbuds\' own tuning. The earbuds cannot report their EQ, so each time SoundPeter connects it puts back the one this phone last set, as the official app does.</string>
+    <string name="eq_note">0 dB on every band is the earbuds\' own tuning. The earbuds cannot report their EQ, so each time PairFree connects it puts back the one this phone last set, as the official app does.</string>
 
     <string name="taps">Taps</string>
     <string name="gesture_tap">Tap</string>
@@ -168,20 +168,20 @@
     <string name="capture_open">Record from PeatsAudio</string>
     <string name="capture_title">Record from PeatsAudio</string>
     <string name="capture_close">Close</string>
-    <string name="capture_intro">SoundPeter learns what a model can do, and its equalizer, from what the official PeatsAudio app reads from the earbuds and sends to them. Android can log that, and one recording per model is enough to add it for everyone.</string>
+    <string name="capture_intro">PairFree learns what a model can do, and its equalizer, from what the official PeatsAudio app reads from the earbuds and sends to them. Android can log that, and one recording per model is enough to add it for everyone.</string>
     <string name="capture_step_developer">Turn on Developer options: in Settings, open About phone and tap Build number seven times. On Samsung it is under About phone, Software information.</string>
     <string name="capture_step_log">In Settings, Developer options, set Bluetooth HCI snoop log to Enabled (not Filtered). Then turn Bluetooth off and on.</string>
-    <string name="capture_step_peats">Open PeatsAudio with these earbuds connected. Open each of its screens once without changing anything, so it reads every setting, and run its fit test if it has one. Then on its EQ screen tap SOUNDPEATS Classic and every other preset once, a few seconds apart. Do not come back to SoundPeter yet.</string>
+    <string name="capture_step_peats">Open PeatsAudio with these earbuds connected. Open each of its screens once without changing anything, so it reads every setting, and run its fit test if it has one. Then on its EQ screen tap SOUNDPEATS Classic and every other preset once, a few seconds apart. Do not come back to PairFree yet.</string>
     <string name="capture_step_report">Back in Developer options, tap Take bug report, then Full report.</string>
     <string name="capture_step_report_wait">It takes several minutes, and Android shows nothing while it works. Wait for the notification that says it is ready.</string>
-    <string name="capture_step_share">When the notification says the bug report is ready, tap it and share it to SoundPeter. If you miss the notification, tap Choose a bug report below, open the menu and pick Bug reports to find it.</string>
-    <string name="capture_step_name">SoundPeter shows what it found. Name the EQ curves in the order you tapped them, then send the report. If SoundPeter is connected to the same earbuds, its own device report goes in too.</string>
+    <string name="capture_step_share">When the notification says the bug report is ready, tap it and share it to PairFree. If you miss the notification, tap Choose a bug report below, open the menu and pick Bug reports to find it.</string>
+    <string name="capture_step_name">PairFree shows what it found. Name the EQ curves in the order you tapped them, then send the report. If PairFree is connected to the same earbuds, its own device report goes in too.</string>
     <string name="capture_step_cleanup">Afterwards, set Bluetooth HCI snoop log back to Disabled and delete the bug report. It holds a lot of personal data.</string>
     <string name="capture_choose">Choose a bug report</string>
     <string name="capture_reading">Reading the bug report. This can take a minute.</string>
-    <string name="capture_privacy_title">What SoundPeter reads</string>
-    <string name="capture_privacy">SoundPeter reads the bug report only on this phone. From the Bluetooth log inside it, it reads only the messages exchanged with SoundPEATS earbuds and skips everything else. It does not keep the file. Nothing is sent to any server until you send the report yourself, which opens GitHub in your browser. SoundPeter has no internet access at all: its app info in Android lists no network permission.</string>
-    <string name="capture_source">See SoundPeter\'s source code</string>
+    <string name="capture_privacy_title">What PairFree reads</string>
+    <string name="capture_privacy">PairFree reads the bug report only on this phone. From the Bluetooth log inside it, it reads only the messages exchanged with SoundPEATS earbuds and skips everything else. It does not keep the file. Nothing is sent to any server until you send the report yourself, which opens GitHub in your browser. PairFree has no internet access at all: its app info in Android lists no network permission.</string>
+    <string name="capture_source">See PairFree\'s source code</string>
     <string name="capture_no_log">This bug report has no Bluetooth log. Set Bluetooth HCI snoop log to Enabled, turn Bluetooth off and on, use PeatsAudio again, then take a new bug report.</string>
     <string name="capture_none">The Bluetooth log in this bug report has nothing from SoundPEATS earbuds. Check that the snoop log was set to Enabled, not Filtered, and Bluetooth turned off and on, before you used PeatsAudio.</string>
     <string name="capture_not_report">That file is not a bug report.</string>
@@ -194,7 +194,7 @@
         <item quantity="one">%d is new: tap it and pick the preset you tapped in PeatsAudio.</item>
         <item quantity="other">%d are new: tap each and pick the preset you tapped in PeatsAudio, in order.</item>
     </plurals>
-    <string name="capture_all_known">All of them are presets SoundPeter already knows, named for you.</string>
+    <string name="capture_all_known">All of them are presets PairFree already knows, named for you.</string>
     <string name="capture_needs_name">Needs a name</string>
     <string name="capture_known_preset">known %1$s preset</string>
     <string name="capture_custom_curve">Your own slider curve</string>
@@ -206,9 +206,9 @@
     <string name="capture_show_recording">Recording only</string>
     <string name="capture_earbuds">Earbuds in the log</string>
     <string name="capture_no_firmware">Not in the log. Turning Bluetooth off and on before opening PeatsAudio records it. The report is still useful without it.</string>
-    <string name="capture_new_model">A model SoundPeter does not know yet (%1$s)</string>
-    <string name="capture_own_report">SoundPeter\'s own device report for these earbuds goes in too.</string>
-    <string name="capture_own_report_missing">To add SoundPeter\'s own device report as well, connect these earbuds in SoundPeter before sending.</string>
+    <string name="capture_new_model">A model PairFree does not know yet (%1$s)</string>
+    <string name="capture_own_report">PairFree\'s own device report for these earbuds goes in too.</string>
+    <string name="capture_own_report_missing">To add PairFree\'s own device report as well, connect these earbuds in PairFree before sending.</string>
     <string name="capture_no_curves">No EQ curves in this recording. The settings are still worth sending.</string>
     <plurals name="capture_settings_read">
         <item quantity="one">%d setting read by PeatsAudio</item>

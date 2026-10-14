@@ -42,7 +42,7 @@ import io.github.omegadestroyer.soundpeter.capture.Capture
 import io.github.omegadestroyer.soundpeter.ui.theme.Studio
 
 @Composable
-fun SoundPeterApp(vm: AppViewModel = viewModel()) {
+fun PairFreeApp(vm: AppViewModel = viewModel()) {
     LifecycleStartEffect(vm) {
         vm.onStart()
         onStopOrDispose { vm.onStop() }

@@ -46,7 +46,7 @@ Same layout in both directions. No checksum. Big-endian.
 
 This is Qualcomm's GAIA serial framing carrying SoundPEATS' own command set.
 
-The H3 sends its frames with version `03`, while the phone (PeatsAudio and SoundPeter
+The H3 sends its frames with version `03`, while the phone (PeatsAudio and PairFree
 alike) sends `04` (section 11). A reader should not insist on `04`.
 
 - GET: command `03 xx`, empty payload.
@@ -131,7 +131,7 @@ From SOUNDPEATS 2.5.3:
 - Known phones (`03 52`): the phones the earbuds have connected to. The reply is an entry
   number, 1 if that phone is connected now, its Bluetooth address (6 bytes) and its name,
   ending in a 0 byte. On `S13` a 41-byte reply has one extra leading byte. It holds other
-  people's device names and addresses, so SoundPeter never reads it unasked.
+  people's device names and addresses, so PairFree never reads it unasked.
 - Auracast (`03 78`): the earbuds answer with `83 78`. The payload starts with a
   sub-command (1 scan, 2 join a source, 4 listening control, 5 listening state) and carries
   fields tagged by type (1 name, 2 broadcast id, 3 features, 4 address, 5 listening state,
@@ -171,7 +171,7 @@ On hardware the H3 (`S5`) reports `11`, `12`, `13` and `14`, with `11` active, a
 Indoor, Outdoor, Traffic and Adaptive, so its Adaptive is most likely `11`. By the rule
 above the app would label `11` "normal mode" on the H3, since `S5` is not one of the three
 codes; what PeatsAudio shows while `11` is active is still to check. Picking scenes from
-SoundPeter (SET `03 25`) changes them on the H3, by ear (section 11).
+PairFree (SET `03 25`) changes them on the H3, by ear (section 11).
 
 ### 3.2 Custom keys
 
@@ -460,7 +460,7 @@ model list is the one used in section 5.2.
   `BT5106-3040`, `T28Pro`, `T28`, `T57`, `ATS3019DK12`, `OPERA03`, `OPERA05`, `HILISTENING`,
   `FREELITE` or `JULIRUNFREE`. `AIR3DELUXEHSW53D` is no longer in the list. It inverts the
   state it shows; how it writes the switch was not traced. `touch_disable_inverted` in
-  `data/devices.json` marks these models; SoundPeter does not act on it yet.
+  `data/devices.json` marks these models; PairFree does not act on it yet.
 - `S9`: when a feature that conflicts with EQ is turned off, the app does not put
   the previous EQ back. On every other model it does.
 - `S22`: see section 3.1.
@@ -635,8 +635,8 @@ Tested 2026-10-10 from Windows over the SPP COM port. Report: `data/reports/S5_0
   `1102` within 0.4 s. Battery left worked the same way. The 4-byte header is dropped
   in both directions.
 
-Phone session, 2026-10-10, from SoundPeter's frame log and the phone's Bluetooth HCI
-snoop log (raw frames at the end of the report). SoundPeter and then PeatsAudio did the
+Phone session, 2026-10-10, from PairFree's frame log and the phone's Bluetooth HCI
+snoop log (raw frames at the end of the report). PairFree and then PeatsAudio did the
 same steps.
 
 - The earbuds send their frames with version byte `03`; both apps send `04`.
@@ -654,7 +654,7 @@ same steps.
 - Right after the channel reopened following LDAC off, an unasked `83 17 00 01` arrived.
   `83 17` is the reply to "connect classic" (`03 17`, section 3), which the app defines
   but never sends; here the earbuds sent it without being asked. What `00 01` means is
-  not known. SoundPeter only listens for it and never sends `03 17`.
+  not known. PairFree only listens for it and never sends `03 17`.
 - EQ, as PeatsAudio writes it to the H3: command `0E 01` on vendor `00 1D`, ten bands,
   all ten in every write, about 50 ms apart, no reply. Master gain is -2.0 dB in every
   frame. Bands, with the Q and base gain the app sends when every slider is at 0 (its
@@ -680,7 +680,7 @@ same steps.
   screen sends the current curve. The base curve is the model's stock tuning: Reset
   sends it alone.
 - Every `0E 01` band write is answered within about 50 ms by vendor `00 1D` command
-  `0F 81` with payload `01`, for PeatsAudio and SoundPeter alike. The same value every
+  `0F 81` with payload `01`, for PeatsAudio and PairFree alike. The same value every
   time; what it means beyond "received" is not known.
 - PeatsAudio sends its saved curve about 2.5 s after it connects, so it overwrites an
   EQ another app set.
@@ -723,7 +723,7 @@ Every frame was approved by the owner before it went out. Report:
   returned five bands of 7 bytes, every gain 0.
 - After PeatsAudio's Reset curve and then its Bass Boost were sent as `0E 01` writes,
   `0A 00`, `0A 02` and `0A 05` answered exactly as before. SoundPEATS' EQ does not go
-  through Qualcomm's EQ feature, so it cannot be read there. SoundPeter puts its own EQ
+  through Qualcomm's EQ feature, so it cannot be read there. PairFree puts its own EQ
   back on every connect instead, as PeatsAudio does.
 - Not tried: anything else on features `01`, `07`, `08`, `0C` and `0D`. Feature
   `06` is the firmware update feature on Qualcomm devices and must not be probed.
@@ -746,8 +746,8 @@ frames are the `gaia` cases in `data/test_vectors.json`.
   apart with the same payload. Both earbuds in the ears gave `01 01`, which PeatsAudio
   showed as a good fit; both on a desk gave `02 02`, shown as "Not fit". So `01` is a good
   fit and `02` is not, one byte per earbud. The first byte is the left earbud: on
-  2026-10-12, with only the left earbud in the ear, SoundPeter's run got `01 02`.
-- SoundPeter reads `00 01` on connect for models in the QUALCOMM family, offers the fit
+  2026-10-12, with only the left earbud in the ear, PairFree's run got `01 02`.
+- PairFree reads `00 01` on connect for models in the QUALCOMM family, offers the fit
   test when feature `09` is listed, registers for `09` and sends the start. It sends
   version `04` throughout and skips the transport parameters; the H3 answers GAIA reads
   that way.
@@ -756,10 +756,10 @@ frames are the `gaia` cases in `data/test_vectors.json`.
   `13 00` and `12 80` result about 9 s later.
 - With ANC on (captured 2026-10-12), PeatsAudio sends `03 11 00` (ANC off) and starts the
   GAIA setup 1.7 s later, then runs the test as above. It does not turn ANC back on: 13 s
-  after the result, its reads still found ANC off. The pause matters: SoundPeter once
+  after the result, its reads still found ANC off. The pause matters: PairFree once
   started the test 0.3 s after the H3 confirmed ANC off (2 s after the SET), and the H3
   answered `12 80 02 02` (poor fit on both) 1.6 s later instead of after about 9 s.
-  SoundPeter now waits for the confirmation (about 1.7 s) and then 1.5 s more, and puts
+  PairFree now waits for the confirmation (about 1.7 s) and then 1.5 s more, and puts
   the noise mode back once the result is in. Per section 9 the
   app leaves ANC alone on `S27` and `S32` (Air6 Pro): `fit_keeps_anc` in
   `data/devices.json`.

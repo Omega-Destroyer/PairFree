@@ -13,7 +13,7 @@ import java.io.File
 class RecordingReportTest {
     private val firmware = FirmwareVersion("S5_20250605_V0.4.9")
 
-    /** Every reply SoundPeter got from the H3 on connect (the last section of its report). */
+    /** Every reply PairFree got from the H3 on connect (the last section of its report). */
     private val h3Replies: Map<Command, ByteArray> = File(dataDir, "reports/S5_0.4.9.txt").readLines()
         .dropWhile { !it.startsWith("---- Every read SoundPeter sends") }
         .mapNotNull { Regex("""^([a-z_]+) +[0-9A-F]{4}  raw=(.*)$""").find(it) }
@@ -32,7 +32,7 @@ class RecordingReportTest {
     }
 
     private fun worstCase(compact: Boolean): List<String> {
-        // PeatsAudio's reads as if it asked everything, plus SoundPeter's own report.
+        // PeatsAudio's reads as if it asked everything, plus PairFree's own report.
         val logged = LoggedReads.Earbuds(firmware, Requests.ON_CONNECT.associateWith { h3Replies[it] }, gaia)
         val own = RecordingReport.OwnReads(firmware, h3Replies, gaia)
         return RecordingReport.sections(listOf(logged), own, curves, compact)

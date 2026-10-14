@@ -56,7 +56,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     private val adapter = app.getSystemService(BluetoothManager::class.java)?.adapter
     private val prefs = app.getSharedPreferences("soundpeter", Context.MODE_PRIVATE)
 
-    /** Debug builds log every frame to Logcat under the tag `SoundPeter`; release builds log nothing. */
+    /** Debug builds log every frame to Logcat under the tag `PairFree`; release builds log nothing. */
     val connection = EarbudsConnection(
         viewModelScope,
         adapter,
@@ -91,7 +91,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         return now + TimeZone.getDefault().getOffset(now)
     }
 
-    /** SoundPeter's own channel sessions of the last days, the open one included, widened by [OWN_MARGIN_MS]. */
+    /** PairFree's own channel sessions of the last days, the open one included, widened by [OWN_MARGIN_MS]. */
     private fun ownSessions(): List<LongRange> {
         val open = openSince?.let { listOf(it..snoopClockMs()) }.orEmpty()
         return (storedSessions() + open).map { (it.first - OWN_MARGIN_MS)..(it.last + OWN_MARGIN_MS) }
@@ -179,7 +179,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val firmware = connection.state.value.firmware
         val date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'").format(LocalDateTime.now(ZoneOffset.UTC))
         return buildString {
-            appendLine("SoundPeter device report")
+            appendLine("PairFree device report")
             appendLine("Paste this whole report into a new issue at")
             appendLine("$ISSUES to help add support")
             appendLine("for this model. It holds no account, address or other personal data.")
@@ -187,7 +187,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
             appendLine("Firmware:        ${firmware?.text ?: "unknown"}")
             appendLine("Firmware code:   ${firmware?.code ?: "unknown"}")
-            appendLine("App:             SoundPeter $version (SPP)")
+            appendLine("App:             PairFree $version (SPP)")
             appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
             appendLine("Captured:        $date")
             appendLine()
@@ -199,7 +199,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             connection.state.value.gaiaFeatures?.let { appendLine(DeviceReport.gaiaLine(it)) }
             appendLine()
             appendLine("This is enough to add this model's controls. For its equalizer too, use")
-            appendLine("\"Record from PeatsAudio\" on SoundPeter's Device tab instead.")
+            appendLine("\"Record from PeatsAudio\" on PairFree's Device tab instead.")
         }
     }
 
@@ -231,7 +231,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     /**
      * Works out the recording from what the file held: where it starts (RecordingReport.start),
-     * its EQ curves with the names of those SoundPeter knows, and the settings read.
+     * its EQ curves with the names of those PairFree knows, and the settings read.
      */
     private fun analyse(result: CaptureResult, wholeLog: Boolean): Capture.Done {
         val frames = (result as? CaptureResult.Found)?.frames.orEmpty()
@@ -254,7 +254,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     fun importBugReport(files: List<Uri>) {
         _capture.value = Capture.Reading
         val resolver = getApplication<Application>().contentResolver
-        // What SoundPeter sent itself (its connect reads, its EQ put back) is not PeatsAudio's.
+        // What PairFree sent itself (its connect reads, its EQ put back) is not PeatsAudio's.
         val own = ownSessions()
         val mine = { timeMicros: Long -> own.any { timeMicros / 1000 in it } }
         viewModelScope.launch {
@@ -291,13 +291,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val version = app.packageManager.getPackageInfo(app.packageName, 0).versionName
         val first = (named.map { it.second.timeMicros }).minOrNull()
         return buildString {
-            appendLine("SoundPeter recording from PeatsAudio")
+            appendLine("PairFree recording from PeatsAudio")
             appendLine("Paste this whole report into a new issue at")
             appendLine("$ISSUES so this model's controls and")
             appendLine("equalizer can be added. It holds no names, addresses or other personal data.")
             appendLine()
             appendLine("Model:     ${captureModel(done)}")
-            appendLine("App:       SoundPeter $version")
+            appendLine("App:       PairFree $version")
             appendLine("Phone:     Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}), ${Build.MANUFACTURER} ${Build.MODEL}")
             // Snoop log times are the phone's local time (SnoopScanner.Found).
             if (first != null) appendLine("Recorded:  ${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(Instant.ofEpochMilli(first / 1000).atOffset(ZoneOffset.UTC))}, phone's local time")
@@ -324,7 +324,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         done.firmware?.let(RecordingReport::earbudsName) ?: "unknown (the firmware reply is not in the log)"
 
     /**
-     * SoundPeter's own reads, when it is connected to earbuds of a model in the recording:
+     * PairFree's own reads, when it is connected to earbuds of a model in the recording:
      * every read it knows, which PeatsAudio may not send.
      */
     private fun ownReads(done: Capture.Done): RecordingReport.OwnReads? {
@@ -358,12 +358,12 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     private companion object {
         const val KEY_LAST = "last_earbuds"
-        const val LOG_TAG = "SoundPeter"
-        const val ISSUES = "https://github.com/Omega-Destroyer/SoundPeter/issues"
+        const val LOG_TAG = "PairFree"
+        const val ISSUES = "https://github.com/Omega-Destroyer/PairFree/issues"
 
         /** GitHub refuses links much longer than this; a longer report is pasted instead. */
         const val MAX_LINK = 8000
-        const val PASTE_HERE = "Paste the report that SoundPeter copied here."
+        const val PASTE_HERE = "Paste the report that PairFree copied here."
 
         const val KEY_OWN_SESSIONS = "own_sessions"
         const val KEY_RECORD_OPENED = "record_opened"
@@ -371,7 +371,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         /** A recording run lasts at most this long from opening the screen to sharing the bug report. */
         const val RECORD_RUN_MS = 3L * 60 * 60 * 1000
 
-        /** Frames this close to SoundPeter's own session count as its own. */
+        /** Frames this close to PairFree's own session count as its own. */
         const val OWN_MARGIN_MS = 1_500L
         const val OWN_SESSIONS_KEPT_MS = 7L * 24 * 60 * 60 * 1000
         const val MAX_OWN_SESSIONS = 200

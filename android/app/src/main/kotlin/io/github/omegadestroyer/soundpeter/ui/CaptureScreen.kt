@@ -62,7 +62,7 @@ interface CaptureActions {
  * Records a model from PeatsAudio (docs/DESIGN.md, Record from PeatsAudio): the steps, then
  * what the bug report held (the settings PeatsAudio read and the EQ curves it sent, each
  * curve named by the user), then a report to send. [connectedCode] is the firmware code of
- * the earbuds SoundPeter is connected to, whose own device report then goes in too.
+ * the earbuds PairFree is connected to, whose own device report then goes in too.
  */
 @Composable
 internal fun CaptureScreen(capture: Capture, actions: CaptureActions, connectedCode: String? = null) {
@@ -305,7 +305,7 @@ private fun WriteRow(number: Int, write: EqCapture.Write, name: String?, match: 
                 name != null -> Text(name)
                 match is CurveMatch.Custom -> Text(stringResource(R.string.capture_custom_curve), color = c.label)
                 match != null -> Text(stringResource(R.string.capture_left_out), color = c.label)
-                // A curve SoundPeter does not know: the one that needs the user.
+                // A curve PairFree does not know: the one that needs the user.
                 else -> Text(stringResource(R.string.capture_needs_name), color = c.accent, style = Studio.type.heading)
             }
             val details = listOfNotNull(
@@ -353,10 +353,10 @@ private sealed interface NameOption {
     data object LeaveOut : NameOption
 }
 
-/** The preset names of every model SoundPeter knows, SOUNDPEATS Classic first, then Other and Leave out. */
+/** The preset names of every model PairFree knows, SOUNDPEATS Classic first, then Other and Leave out. */
 private fun nameOptions(): List<NameOption> {
     val known = listOf(EqCapture.CLASSIC) + Models.ALL.flatMap { m -> m.eq?.presets.orEmpty().map { it.name } }
     return known.distinct().map { NameOption.Named(it) } + NameOption.Other + NameOption.LeaveOut
 }
 
-private const val SOURCE = "https://github.com/Omega-Destroyer/SoundPeter"
+private const val SOURCE = "https://github.com/Omega-Destroyer/PairFree"

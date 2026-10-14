@@ -12,7 +12,7 @@ def report(code, vectors, firmware):
     """A report in the app's format (EqCapture.reportLines), from the test vectors."""
     reset = next(c for c in vectors["eq_layout"] if c["model"] == code and c["name"].startswith("Reset"))
     presets = [c for c in vectors["eq_preset"] if c["model"] == code]
-    lines = ["SoundPeter EQ capture", "", "Model:     whatever", f"Firmware:  {firmware}",
+    lines = ["PairFree EQ capture", "", "Model:     whatever", f"Firmware:  {firmware}",
              "EQ:        command 0E01, 10 bands, master gain -2 dB"]
     for i, (name, payloads) in enumerate([("SOUNDPEATS Classic", reset["payloads"])] +
                                          [(c["preset"], c["payloads"]) for c in presets], start=1):
@@ -49,7 +49,7 @@ class ImportEqCaptureTest(unittest.TestCase):
         self.assertEqual(imp.build(flat)["eq"], imp.build(text)["eq"])
 
     def test_report_with_the_settings_sections(self):
-        # A recording also lists the settings PeatsAudio and SoundPeter read, before the curves.
+        # A recording also lists the settings PeatsAudio and PairFree read, before the curves.
         settings = "\n".join([
             "---- What PeatsAudio read from SOUNDPEATS H3, firmware S5_20250605_V0.4.9 (from the Bluetooth log) ----",
             "firmware_version     0309  'S5_20250605_V0.4.9'                     raw=00 53 35 5f 32 30 32 35 30 36 30 35 5f 56 30 2e 34 2e 39",

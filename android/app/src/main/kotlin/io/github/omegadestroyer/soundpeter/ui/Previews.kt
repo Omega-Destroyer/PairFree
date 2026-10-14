@@ -64,7 +64,7 @@ private val H3_EQ: EqState = run {
 @Composable
 private fun Connected(tab: Tab, eq: EqState = H3_EQ) {
     StudioTheme {
-        // Padded for the system bars as in SoundPeterApp, so a preview run on a device matches the app.
+        // Padded for the system bars as in PairFreeApp, so a preview run on a device matches the app.
         Box(Modifier.background(Studio.colors.background).safeDrawingPadding()) {
             ConnectedScreen(H3, H3_STATE, NoActions, eq, NoEqActions, tab)
         }

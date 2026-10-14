@@ -199,5 +199,5 @@ tasks.test {
     useJUnitPlatform()
     inputs.dir(dataDir).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
-    systemProperty("soundpeter.data", dataDir.asFile.absolutePath)
+    systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

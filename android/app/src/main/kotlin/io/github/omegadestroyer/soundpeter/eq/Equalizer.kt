@@ -204,7 +204,7 @@ class Equalizer(
 
     override fun exportJson(): String {
         val s = _state.value ?: return ""
-        val name = s.basis?.takeIf { !it.builtIn }?.name ?: "SoundPeter EQ"
+        val name = s.basis?.takeIf { !it.builtIn }?.name ?: "PairFree EQ"
         return JSONObject()
             .put("format", FORMAT)
             .put("version", 1)
@@ -220,7 +220,7 @@ class Equalizer(
         val s = _state.value ?: return false
         return try {
             val json = JSONObject(text)
-            if (json.optString("format") != FORMAT || json.optInt("version") != 1) return false
+            if (json.optString("format") !in FORMATS || json.optInt("version") != 1) return false
             val hz = json.getJSONArray("bands_hz").let { a -> List(a.length()) { a.getInt(it) } }
             if (hz != s.layout.bands.map { it.hz }) return false
             val range = -s.layout.userRangeDb..s.layout.userRangeDb
@@ -303,7 +303,10 @@ class Equalizer(
         /** The preamp only lowers the master gain, never raises it. */
         const val PREAMP_MIN_DB = -6
 
-        const val FORMAT = "soundpeter-eq"
+        const val FORMAT = "pairfree-eq"
+
+        /** Profile files this app reads: its own, and those exported while it was called SoundPeter. */
+        val FORMATS = setOf(FORMAT, "soundpeter-eq")
         private const val MAX_NAME = 24
         private const val KEY_PROFILES = "eq_profiles_"
         private const val KEY_SETTING = "eq_setting_"

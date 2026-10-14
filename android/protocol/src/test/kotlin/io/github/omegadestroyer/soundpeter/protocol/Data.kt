@@ -8,7 +8,7 @@ import java.io.File
 
 /** The repo's data/ folder. Gradle passes its location. */
 internal val dataDir: File
-    get() = File(System.getProperty("soundpeter.data") ?: error("soundpeter.data is not set; run the tests through Gradle"))
+    get() = File(System.getProperty("pairfree.data") ?: error("pairfree.data is not set; run the tests through Gradle"))
 
 /** Loads a JSON file from the repo's data/ folder. */
 internal fun loadData(name: String): JsonObject = Json.parseToJsonElement(File(dataDir, name).readText()).jsonObject

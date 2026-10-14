@@ -5,8 +5,10 @@ app. Everything below comes from reading the source of
 [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) (commit `bc77a29`, 2026-09-26), an
 open-source Soundcore app that supports about 40 models, under GPL-3.0-or-later like
 SoundPeter. [Gadgetbridge](https://gadgetbridge.org/gadgets/headphones/anker/) supports eight
-Soundcore models as well. Next steps: compare this with the official app's code, then try it on
-the owner's Soundcore earbuds.
+Soundcore models as well. The official Soundcore app (6.4.0) cannot be read: its code is
+encrypted by a commercial protector (ijiami), and the unencrypted Flutter part holds no protocol.
+So the next steps are trying this on the owner's Space A40 (section 6) and recording what the
+Soundcore app sends to it.
 
 ## 1. Transport
 
@@ -76,7 +78,8 @@ has not confirmed it.
 **How this differs from SoundPEATS:** SoundPEATS earbuds have one read per feature, and a
 feature counts as present once its read answers. Soundcore earbuds answer `01 01` with one block
 holding the whole state. That block's layout depends on the model, so the app must know the
-model before it can read anything.
+model before it can read anything. The EQ is part of that block, so unlike on SoundPEATS
+earbuds it can be read back.
 
 ## 4. Identifying the model
 
@@ -88,7 +91,8 @@ Candidates for how:
 - the Bluetooth name;
 - a BLE advertisement.
 
-The official app's code should show which one it uses.
+The official app's code is encrypted, so the answer has to come from the earbuds and from a
+recording of the Soundcore app.
 
 ## 5. Adding models nobody on the project owns
 
@@ -97,7 +101,48 @@ development mode. SoundPeter can do better with the same recording it uses for S
 bug report's Bluetooth log, made while the official Soundcore app is in use, holds the state
 reply, every setting the app sends and its EQ curves.
 
-## 6. Open questions, for the official app's code
+## 6. Space A40 (A3936)
+
+The owner has a pair, so this is the first Soundcore model to support. Everything here is from
+OpenSCQ30's `a3936` module.
+
+**Connecting.** OpenSCQ30 sends `01 01` and parses the reply as below. If multipoint is on, it
+then reads the connected devices with `0B 01`.
+
+**State reply, in order:**
+1. TWS status (whether both earbuds are connected)
+2. Battery of each earbud
+3. Firmware version of each earbud
+4. Serial number
+5. EQ: a preset number (`0xFEFE` for a custom curve), then 10 bands for each earbud
+6. Age range, for HearID
+7. Custom HearID, with the favourite music genre at the end
+8. One byte OpenSCQ30 does not know
+9. Touch actions: single, double and long press on each side
+10. Which modes the noise-control gesture cycles through
+11. Sound modes, 6 bytes: ambient mode (normal, noise cancelling, transparency), manual or
+    adaptive noise cancelling, transparency mode, noise-cancelling mode, wind-noise reduction,
+    adaptive sensitivity
+12. Touch tone
+13. Case battery
+14. Colour
+15. LDAC
+16. Multipoint on or off
+17. Auto power-off
+18. Gaming mode
+
+**What OpenSCQ30 offers on it:** noise control with its modes, the EQ with HearID, touch actions
+(and resetting them), the noise-control cycle, multipoint and its device list, auto power-off
+in half-hour steps, LDAC, touch tone, gaming mode, both earbuds' and the case's battery, and the
+serial number and firmware versions.
+
+**Still to check on the owner's pair:**
+- Which RFCOMM service it offers (section 1), and whether the frames carry a checksum.
+- Whether the serial number, the Bluetooth name or the service UUID can identify it (section 4).
+- The byte sizes of each field above; OpenSCQ30's shared structures hold them, and a
+  recording from the Soundcore app would confirm them.
+
+## 7. Open questions
 
 1. How the app identifies the model (section 4).
 2. The full model list, and whether each model's features are in the app or come from a server.

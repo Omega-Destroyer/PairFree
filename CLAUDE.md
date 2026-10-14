@@ -3,11 +3,11 @@
 ## What this is
 
 The app was called SoundPeter until 0.1.3 (renamed 2026-10-14). Some internal names keep the old
-one on purpose: the app's settings file (`getSharedPreferences("soundpeter")`: renamed, installed
-copies would lose their settings), the signing properties `soundpeter.*` in the owner's
-`~/.gradle/gradle.properties`, the key file, and the raw recordings in `data/<brand>/reports/`. The
-app ID and the Kotlin package are `io.github.omegadestroyer.pairfree`; EQ profile files from
-SoundPeter still import.
+one on purpose: the signing properties `soundpeter.*` in the owner's `~/.gradle/gradle.properties`,
+the key file, and the raw recordings in `data/<brand>/reports/`. The app ID, the Kotlin package and
+the settings file are `pairfree` (the settings file was renamed after 0.1.4, which reset the
+settings of the few copies installed then; owner's choice). EQ profile files from SoundPeter still
+import.
 
 ## Branches
 

@@ -64,8 +64,7 @@ import java.util.TimeZone
  */
 class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, CaptureActions {
     private val adapter = app.getSystemService(BluetoothManager::class.java)?.adapter
-    // Keeps the app's old name: renamed, every installed copy would lose its settings.
-    private val prefs = app.getSharedPreferences("soundpeter", Context.MODE_PRIVATE)
+    private val prefs = app.getSharedPreferences("pairfree", Context.MODE_PRIVATE)
 
     /** Debug builds log every frame to Logcat under the tag `PairFree`; release builds log nothing. */
     val connection = EarbudsConnection(

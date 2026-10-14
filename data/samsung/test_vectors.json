@@ -1,0 +1,54 @@
+{
+  "_about": "Samsung Galaxy Buds test vectors. galaxybudsclient_extended_status: GalaxyBudsClient's tests of its extended status parser (github.com/timschneeb/GalaxyBudsClient, GPL-3.0, commit 754b6fd): each frame as recorded from the earbuds, and what each field must read as, by GalaxyBudsClient's field names in snake case. Touch options are the byte the earbuds send; placements, wear states, the main earbud (1 left, 0 right), noise control modes and colours are the numbers GalaxyBudsClient gives them.",
+  "galaxybudsclient_extended_status": [
+    {
+      "model": "SM-R170",
+      "galaxybudsclient_test": "Buds/ExtendedStatusUpdateTests.cs",
+      "revision": 3,
+      "frame": "fe0112610300465f0100000000020107002201a575ee",
+      "expect": {"revision": 3, "ear_type": 0, "battery_l": 70, "battery_r": 95, "is_coupled": true, "main_connection": 0, "wear_state": 0, "placement_l": 2, "placement_r": 2, "equalizer_mode": 7, "touchpad_lock": false, "touchpad_option_l": 2, "touchpad_option_r": 2, "seamless_connection_enabled": false, "ambient_sound_enabled": false, "ambient_sound_volume": 2, "ambient_sound_mode": 0, "equalizer_enabled": true}
+    },
+    {
+      "model": "SM-R177",
+      "galaxybudsclient_test": "Buds2/ExtendedStatusUpdateTests.cs",
+      "revision": 10,
+      "frame": "fd2810610a0364640101113300033f2201003c013c0102000366000100100000000011020101000000bea3dd",
+      "expect": {"revision": 10, "ear_type": 3, "battery_l": 100, "battery_r": 100, "is_coupled": true, "main_connection": 1, "wear_state": 17, "equalizer_mode": 3, "touchpad_lock": true, "touchpad_option_l": 2, "touchpad_option_r": 2, "seamless_connection_enabled": true, "ambient_sound_volume": 1, "placement_l": 1, "placement_r": 1, "battery_case": 51, "outside_double_tap": true, "color_l": 316, "color_r": 316, "adjust_sound_sync": false, "side_tone_enabled": true, "extra_high_ambient_enabled": false, "voice_wake_up": false, "voice_wake_up_lang": 2, "fmm_revision": 3, "noise_control_mode": 1, "noise_control_touch_off": false, "noise_control_touch_anc": true, "noise_control_touch_ambient": true, "noise_control_touch_left_off": false, "noise_control_touch_left_anc": true, "noise_control_touch_left_ambient": true, "speak_seamlessly": false, "noise_reduction_level": 0, "auto_switch_audio_output": false, "spatial_audio": false, "hearing_enhancements": 16, "single_tap_on": true, "double_tap_on": true, "triple_tap_on": true, "touch_hold_on": true, "double_tap_for_call_on": true, "touch_hold_on_for_call_on": true, "touch_type": 0, "noise_controls_with_one_earbud": false, "ambient_custom_volume_on": false, "ambient_custom_volume_left": 1, "ambient_custom_volume_right": 1, "ambient_custom_sound_tone": 2, "call_path_control": true, "is_left_charging": false, "is_right_charging": false, "is_case_charging": false}
+    },
+    {
+      "model": "SM-R510",
+      "galaxybudsclient_test": "Buds2Pro/ExtendedStatusUpdateTests.cs",
+      "revision": 13,
+      "frame": "fd3100610d046464010033580001bf220001460146010000033500030010010101013203010101000cae0100030001000101b637dd",
+      "expect": {"revision": 13, "ear_type": 4, "battery_l": 100, "battery_r": 100, "is_coupled": true, "main_connection": 0, "wear_state": 0, "equalizer_mode": 1, "touchpad_lock": false, "touchpad_option_l": 2, "touchpad_option_r": 2, "seamless_connection_enabled": true, "ambient_sound_volume": 3, "placement_l": 3, "placement_r": 3, "battery_case": 88, "outside_double_tap": true, "color_l": 326, "color_r": 326, "adjust_sound_sync": false, "side_tone_enabled": true, "extra_high_ambient_enabled": true, "voice_wake_up": true, "voice_wake_up_lang": 0, "fmm_revision": 3, "noise_control_mode": 0, "noise_control_touch_off": true, "noise_control_touch_anc": true, "noise_control_touch_ambient": false, "noise_control_touch_left_off": true, "noise_control_touch_left_anc": false, "noise_control_touch_left_ambient": true, "speak_seamlessly": false, "noise_reduction_level": 0, "auto_switch_audio_output": false, "detect_conversations": true, "detect_conversations_duration": 1, "spatial_audio": false, "hearing_enhancements": 16, "single_tap_on": true, "double_tap_on": true, "triple_tap_on": true, "touch_hold_on": true, "double_tap_for_call_on": true, "touch_hold_on_for_call_on": true, "touch_type": 0, "noise_controls_with_one_earbud": true, "ambient_custom_volume_on": true, "ambient_custom_volume_left": 3, "ambient_custom_volume_right": 2, "ambient_custom_sound_tone": 3, "call_path_control": false, "is_left_charging": false, "is_right_charging": false, "is_case_charging": false, "hearing_test_value": 3, "bixby_keyword": 0, "neck_stretch_calibration": true, "customize_noise_reduction_level": 174, "customize_conversation_boost": true, "extra_clear_call_sound": true, "spatial_audio_head_tracking": true, "auto_adjust_sound": false}
+    },
+    {
+      "model": "SM-R400N",
+      "galaxybudsclient_test": "BudsFe/ExtendedStatusUpdateTests.cs",
+      "revision": 2,
+      "frame": "fd31106102063a590100110000008f3300004a014a01030004650001001000000101110300000000e80300009d0e1d005000c2cfdd",
+      "expect": {"revision": 2, "ear_type": 6, "battery_l": 58, "battery_r": 89, "is_coupled": true, "main_connection": 0, "wear_state": 17, "equalizer_mode": 0, "touchpad_lock": false, "touchpad_option_l": 3, "touchpad_option_r": 3, "seamless_connection_enabled": true, "ambient_sound_volume": 1, "placement_l": 1, "placement_r": 1, "battery_case": 0, "outside_double_tap": false, "color_l": 330, "color_r": 330, "adjust_sound_sync": false, "side_tone_enabled": false, "extra_high_ambient_enabled": false, "voice_wake_up": false, "voice_wake_up_lang": 3, "fmm_revision": 4, "noise_control_mode": 0, "noise_control_touch_off": true, "noise_control_touch_anc": true, "noise_control_touch_ambient": false, "noise_control_touch_left_off": false, "noise_control_touch_left_anc": true, "noise_control_touch_left_ambient": true, "speak_seamlessly": false, "noise_reduction_level": 0, "auto_switch_audio_output": false, "detect_conversations": false, "detect_conversations_duration": 0, "spatial_audio": false, "hearing_enhancements": 16, "single_tap_on": true, "double_tap_on": true, "triple_tap_on": true, "touch_hold_on": true, "double_tap_for_call_on": false, "touch_hold_on_for_call_on": false, "touch_type": 0, "noise_controls_with_one_earbud": true, "ambient_custom_volume_on": true, "ambient_custom_volume_left": 1, "ambient_custom_volume_right": 1, "ambient_custom_sound_tone": 3, "call_path_control": true, "is_left_charging": false, "is_right_charging": false, "is_case_charging": false, "hearing_test_value": 157, "bixby_keyword": 0, "neck_stretch_calibration": false, "customize_noise_reduction_level": 3, "customize_conversation_boost": true, "extra_clear_call_sound": false, "spatial_audio_head_tracking": true, "auto_adjust_sound": true}
+    },
+    {
+      "model": "SM-R180",
+      "galaxybudsclient_test": "BudsLive/ExtendedStatusUpdateTests.cs",
+      "revision": 9,
+      "frame": "fd1c106109010f610100116400000022010017011701000003001000000281dd",
+      "expect": {"revision": 9, "ear_type": 1, "battery_l": 15, "battery_r": 97, "is_coupled": true, "main_connection": 0, "wear_state": 17, "equalizer_mode": 0, "touchpad_lock": false, "touchpad_option_l": 2, "touchpad_option_r": 2, "seamless_connection_enabled": true, "ambient_sound_volume": 0, "placement_l": 1, "placement_r": 1, "battery_case": 100, "outside_double_tap": false, "color_l": 279, "color_r": 279, "adjust_sound_sync": false, "side_tone_enabled": false, "extra_high_ambient_enabled": false, "voice_wake_up": false, "voice_wake_up_lang": 0, "fmm_revision": 3, "noise_cancelling": true, "hearing_enhancements": 16, "call_path_control": true}
+    },
+    {
+      "model": "SM-R175",
+      "galaxybudsclient_test": "BudsPlus/ExtendedStatusUpdateTests.cs",
+      "revision": 13,
+      "frame": "fd1b10610d00575401001165000000030022010401040100000003001e55dd",
+      "expect": {"revision": 13, "ear_type": 0, "battery_l": 87, "battery_r": 84, "is_coupled": true, "main_connection": 0, "wear_state": 17, "equalizer_mode": 3, "touchpad_lock": false, "touchpad_option_l": 2, "touchpad_option_r": 2, "seamless_connection_enabled": true, "ambient_sound_volume": 0, "placement_l": 1, "placement_r": 1, "battery_case": 101, "outside_double_tap": true, "color_l": 260, "color_r": 260, "adjust_sound_sync": false, "side_tone_enabled": false, "extra_high_ambient_enabled": false, "fmm_revision": 3, "call_path_control": true}
+    },
+    {
+      "model": "SM-R190",
+      "galaxybudsclient_test": "BudsPro/ExtendedStatusUpdateTests.cs",
+      "revision": 10,
+      "frame": "fd290c610a02595e010113640001002200002a012a0101000355000201000002001000010000220200009d24dd",
+      "expect": {"revision": 10, "ear_type": 2, "battery_l": 89, "battery_r": 94, "is_coupled": true, "main_connection": 1, "wear_state": 16, "equalizer_mode": 1, "touchpad_lock": false, "touchpad_option_l": 2, "touchpad_option_r": 2, "seamless_connection_enabled": true, "ambient_sound_volume": 2, "placement_l": 1, "placement_r": 3, "battery_case": 100, "outside_double_tap": true, "color_l": 298, "color_r": 298, "adjust_sound_sync": false, "side_tone_enabled": false, "extra_high_ambient_enabled": false, "voice_wake_up": false, "voice_wake_up_lang": 1, "fmm_revision": 3, "noise_control_mode": 0, "noise_control_touch_off": true, "noise_control_touch_anc": true, "noise_control_touch_ambient": false, "noise_control_touch_left_off": true, "noise_control_touch_left_anc": true, "noise_control_touch_left_ambient": false, "speak_seamlessly": false, "noise_reduction_level": 1, "auto_switch_audio_output": false, "detect_conversations": false, "detect_conversations_duration": 2, "spatial_audio": false, "hearing_enhancements": 16, "noise_controls_with_one_earbud": false, "ambient_custom_volume_on": false, "ambient_custom_volume_left": 2, "ambient_custom_volume_right": 2, "ambient_custom_sound_tone": 2, "call_path_control": true}
+    }
+  ]
+}

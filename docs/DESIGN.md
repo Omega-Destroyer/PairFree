@@ -39,8 +39,8 @@ These came from the owner and are not up for trade.
 - The protocol code sits in its own module with no Android dependencies, so iOS can
   reuse it through Kotlin Multiplatform or reimplement it against
   `data/soundpeats/test_vectors.json`.
-- Permissions: `BLUETOOTH_CONNECT`. Add `POST_NOTIFICATIONS` only when the
-  notification controls ship. Nothing else.
+- Permissions: `BLUETOOTH_CONNECT`. Add `POST_NOTIFICATIONS`, and what the companion
+  device setup and the background connection need, when the notification ships. Nothing else.
 
 ## Looks
 
@@ -198,6 +198,8 @@ unknown until someone finds them on hardware.
   official app, and back on after it, which the official app does not do.
 - Water drain, where the earbuds answer its read: one button, with the advice to take
   the earbuds out first. It shows "Draining" until the earbuds report it finished.
+- Notification: a switch for the notification controls (on by default). The note under it
+  says that while it is on, the official apps (PeatsAudio, Soundcore) cannot connect.
 - Maintenance: copy device report, record the EQ from PeatsAudio, factory reset.
 
 Copy device report puts the same information as `tools/probe.py` on the clipboard,
@@ -271,16 +273,33 @@ Proposed, not yet reviewed by the owner.
   devices need LDAC off.
 - **Optimistic, then confirmed.** A change shows at once and is read back from the
   earbuds afterwards.
-- **No background work by default.** The app talks to the earbuds while it is on
-  screen. A background connection exists only if the user turns on the
-  notification controls.
+- **One connection, shared.** The app holds one control connection to the earbuds; the
+  screens and the notification both use it. While the notification is on (the default,
+  owner 2026-10-13) the connection stays open whenever the earbuds are connected, so the
+  battery and the noise mode are live: the earbuds report changes themselves, and the
+  battery is also read every few minutes. Other apps, the official ones included, cannot
+  connect meanwhile; turning the notification off in the Device tab frees the earbuds,
+  and then the app holds the connection only while it is on screen.
 
 ## Outside the app
+
+### Notification (owner, 2026-10-13; to build after Soundcore support)
+
+- Shown while supported earbuds are connected, on by default, off with a switch in the
+  Device tab.
+- Battery for left, case and right, like Google's Fast Pair notification without the
+  pictures.
+- Buttons: one that steps through the noise modes, then game mode and 3D sound, each only
+  on earbuds that have it.
+- Android needs SoundPeter set up as the earbuds' companion app (a one-time system prompt
+  per pair) to start when they connect, and the notification permission on Android 13 and
+  later.
+- On earbuds that support Google Fast Pair (the Space A40) Google's own battery
+  notification shows as well; SoundPeter cannot hide it.
 
 Planned, not yet designed:
 
 - A quick settings tile that cycles the noise mode.
-- Notification controls with battery and noise mode.
 - A home screen widget.
 
 ## Device drawings
@@ -315,7 +334,7 @@ Planned, not yet designed:
 - A light version of Studio.
 - Which side the Air5 Pro+ drawing shows. It has not been checked against the L/R
   marking on a real pair.
-- Widget, tile and notification designs.
+- Widget and tile designs.
 - The EQ of every model other than the H3 and Air5 Pro+, until someone records it
   (Record from PeatsAudio above).
 - Whether a hearing-test profile is worth building. It can be done offline.

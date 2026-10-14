@@ -57,6 +57,9 @@ import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqProfile
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.SettingGroup
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.ui.theme.Studio
 import io.github.omegadestroyer.pairfree.ui.theme.StudioShape
 import java.io.IOException
@@ -70,7 +73,13 @@ import kotlin.math.roundToInt
  * every band is the earbuds' own tuning.
  */
 @Composable
-internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit)? = {}) {
+internal fun SoundScreen(
+    eq: EqState?,
+    actions: EqActions,
+    onRecord: (() -> Unit)? = {},
+    settings: List<SettingGroup> = emptyList(),
+    onSetting: (SettingChange) -> Unit = {},
+) {
     if (eq == null) {
         TabContent {
             Text(stringResource(R.string.tab_sound), style = Studio.type.title)
@@ -80,6 +89,7 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit
             } else {
                 Text(stringResource(R.string.eq_soundcore_unchecked), color = Studio.colors.secondaryText)
             }
+            SettingGroups(settings, SettingTab.SOUND, onSetting)
         }
         return
     }
@@ -125,7 +135,7 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit
             items(eq.profiles, key = { it.id }) { profile ->
                 Chip(profileName(profile), eq.selected == profile) { actions.select(profile) }
             }
-            item { Chip(stringResource(R.string.eq_new), selected = false) { actions.startNew() } }
+            if (eq.target.hasCustom) item { Chip(stringResource(R.string.eq_new), selected = false) { actions.startNew() } }
         }
         Label(stringResource(R.string.eq_on_earbuds, currentProfileName(eq)))
         if (!eq.known) {
@@ -133,11 +143,13 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit
             Text(stringResource(hint), style = Studio.type.small, color = Studio.colors.secondaryText)
         }
 
-        val editable = eq.preset == null
-        Panel {
-            EqGraph(eq, selected, editable, onSelect = { band = it }) { b, g ->
-                band = b
-                actions.setGain(b, g)
+        val editable = eq.preset == null && eq.target.hasCustom
+        if (editable || eq.target.presetCurves) {
+            Panel {
+                EqGraph(eq, selected, editable, onSelect = { band = it }) { b, g ->
+                    band = b
+                    actions.setGain(b, g)
+                }
             }
         }
 
@@ -163,7 +175,11 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit
                 }
             }
         } else {
-            val fixed = if (eq.target.hasStock) R.string.eq_preset_fixed else R.string.eq_preset_fixed_no_stock
+            val fixed = when {
+                !eq.target.presetCurves -> R.string.eq_preset_applied_by_earbuds
+                eq.target.hasStock -> R.string.eq_preset_fixed
+                else -> R.string.eq_preset_fixed_no_stock
+            }
             Text(stringResource(fixed), style = Studio.type.small, color = Studio.colors.secondaryText)
         }
 
@@ -178,7 +194,7 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit
         }
 
         if (editable) StudioButton(stringResource(R.string.eq_save), { saving = true }, Modifier.fillMaxWidth(), primary = true)
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        if (eq.target.hasCustom) Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StudioButton(
                 stringResource(R.string.eq_import),
                 { importer.launch(arrayOf("application/json", "text/plain", "application/octet-stream")) },
@@ -193,7 +209,13 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit
             StudioButton(stringResource(R.string.eq_delete, profile.name), { deleting = profile }, Modifier.fillMaxWidth(), destructive = true)
         }
         message?.let { Text(stringResource(it), style = Studio.type.small, color = Studio.colors.secondaryText) }
-        Text(stringResource(if (eq.target.reportsEq) R.string.eq_note_reported else R.string.eq_note), style = Studio.type.small, color = Studio.colors.label)
+        val note = when {
+            !eq.target.presetCurves -> R.string.eq_note_samsung
+            eq.target.reportsEq -> R.string.eq_note_reported
+            else -> R.string.eq_note
+        }
+        Text(stringResource(note), style = Studio.type.small, color = Studio.colors.label)
+        SettingGroups(settings, SettingTab.SOUND, onSetting)
     }
 
     if (saving) {

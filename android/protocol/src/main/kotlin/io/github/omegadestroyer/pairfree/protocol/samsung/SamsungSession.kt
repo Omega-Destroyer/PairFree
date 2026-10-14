@@ -32,6 +32,10 @@ public class SamsungSession(
     public var status: SamsungStatus? = null
         private set
 
+    /** The last full state as the earbuds sent it, for the device report. It holds no serial number or address. */
+    public var lastStatusPayload: ByteArray? = null
+        private set
+
     private var firmware: String? = null
     private var finding = false
     private var mutedLeft = false
@@ -49,6 +53,7 @@ public class SamsungSession(
             SamsungMessage.EXTENDED_STATUS_UPDATED -> {
                 val first = status == null
                 status = SamsungStatus.parse(model, p) ?: return false
+                lastStatusPayload = p.copyOf()
                 if (first) {
                     outbox += SamsungPacket(SamsungMessage.MANAGER_INFO, byteArrayOf(1, if (phoneIsSamsung) 1 else 2, androidSdk.toByte()))
                     // The Buds3 and later do not answer the version request (GalaxyBudsClient).

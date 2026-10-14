@@ -47,6 +47,12 @@ interface EqTarget {
     /** True when a Stock profile (every gain 0 on the base curve) belongs in the list. */
     val hasStock: Boolean
 
+    /** False when the model takes only its presets, no curve of the user's own. */
+    val hasCustom: Boolean get() = true
+
+    /** False when the earbuds apply their presets themselves and their curves are not known, so none is drawn. */
+    val presetCurves: Boolean get() = true
+
     /** The frames that put [setting] on the earbuds; [preset] when the setting is one of the model's presets. */
     fun frames(layout: EqLayout, setting: EqSetting, preset: EqPreset?): List<ByteArray>
 }
@@ -186,6 +192,21 @@ class Equalizer(
         val setting = s.setting.copy(profileId = id, gains = gains)
         if (setting == s.setting && s.known) return
         _state.value = s.copy(setting = setting, known = true)
+    }
+
+    /**
+     * Sends again the custom curve this phone last set on [address], if that is what it last set:
+     * for earbuds that report they hold a custom curve but forget the curve itself when they power
+     * off (Galaxy Buds), once per connection. Nothing when this phone never set one.
+     */
+    fun resendCustom(address: String) {
+        val s = _state.value ?: return
+        if (this.address != address || !s.target.hasCustom) return
+        val saved = loadSetting(address, s.layout) ?: return
+        if (s.profiles.firstOrNull { it.id == saved.profileId }?.preset != null) return
+        _state.value = s.copy(setting = saved, known = true)
+        send(s.target.frames(s.layout, saved, null))
+        sentAt = System.currentTimeMillis()
     }
 
     /**

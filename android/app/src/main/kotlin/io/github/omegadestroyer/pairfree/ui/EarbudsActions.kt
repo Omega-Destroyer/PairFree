@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.ui
 
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 
@@ -29,6 +30,9 @@ interface EarbudsActions {
 
     /** Puts Soundcore touch actions back to the model's defaults. Call only from a confirmation. */
     fun resetTouch()
+
+    /** Changes one of the brand's own settings (the connection's settings groups). */
+    fun changeSetting(change: SettingChange)
 }
 
 /** Does nothing. For previews. */
@@ -41,4 +45,5 @@ object NoActions : EarbudsActions {
     override fun startFitTest() = Unit
     override fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) = Unit
     override fun resetTouch() = Unit
+    override fun changeSetting(change: SettingChange) = Unit
 }

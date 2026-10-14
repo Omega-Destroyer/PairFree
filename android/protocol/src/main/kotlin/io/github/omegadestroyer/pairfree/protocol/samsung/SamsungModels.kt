@@ -47,8 +47,8 @@ public data class SamsungModel(
 public object SamsungModels {
     public val ALL: List<SamsungModel> get() = SAMSUNG_MODELS
 
-    /** Every model as a [Model] for the screens. */
-    public val TABLE: List<Model> by lazy { SAMSUNG_MODELS.map { Model(it.model, it.names, "SAMSUNG", form = Form.EARBUDS) } }
+    /** Every model as a [Model] for the screens. The earbuds run their fit test as they are, noise mode and all. */
+    public val TABLE: List<Model> by lazy { SAMSUNG_MODELS.map { Model(it.model, it.names, "SAMSUNG", fitKeepsAnc = true, form = Form.EARBUDS) } }
 
     public fun of(model: String?): SamsungModel? = SAMSUNG_MODELS.firstOrNull { it.model == model }
 

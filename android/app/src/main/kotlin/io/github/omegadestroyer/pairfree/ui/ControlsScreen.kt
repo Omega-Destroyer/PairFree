@@ -29,6 +29,8 @@ import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.CustomKeys
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.SettingGroup
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.soundcore.AmbientMode
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtonGroup
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
@@ -44,9 +46,26 @@ import io.github.omegadestroyer.pairfree.ui.theme.Studio
  * touch controls in their state ([touch]); see [SoundcoreControls].
  */
 @Composable
-internal fun ControlsScreen(device: Paired, state: EarbudState, actions: EarbudsActions, touch: SoundcoreTouch? = null) {
+internal fun ControlsScreen(
+    device: Paired,
+    state: EarbudState,
+    actions: EarbudsActions,
+    touch: SoundcoreTouch? = null,
+    settings: List<SettingGroup> = emptyList(),
+) {
     if (device.brand == Brand.SOUNDCORE) {
         SoundcoreControls(device, state, touch, actions)
+        return
+    }
+    if (device.brand == Brand.SAMSUNG) {
+        // Galaxy Buds' touch settings come as generic rows (SamsungSession).
+        TabContent {
+            Text(stringResource(R.string.tab_controls), style = Studio.type.title)
+            if (settings.none { it.tab == SettingTab.CONTROLS }) {
+                Text(stringResource(R.string.no_controls), color = Studio.colors.secondaryText)
+            }
+            SettingGroups(settings, SettingTab.CONTROLS, actions::changeSetting)
+        }
         return
     }
     var side by rememberSaveable { mutableStateOf(Side.LEFT) }

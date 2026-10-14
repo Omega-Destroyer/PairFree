@@ -23,6 +23,8 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.SettingGroup
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
 import io.github.omegadestroyer.pairfree.protocol.offers
@@ -36,7 +38,14 @@ private enum class Picker { LANGUAGE, SHUTDOWN }
 
 /** The earbuds themselves (docs/DESIGN.md, Device). Sections show only for what the earbuds answered. */
 @Composable
-internal fun DeviceScreen(device: Paired, state: EarbudState, model: Model?, actions: EarbudsActions, onFitTest: () -> Unit = {}) {
+internal fun DeviceScreen(
+    device: Paired,
+    state: EarbudState,
+    model: Model?,
+    actions: EarbudsActions,
+    settings: List<SettingGroup> = emptyList(),
+    onFitTest: () -> Unit = {},
+) {
     var picker by remember { mutableStateOf<Picker?>(null) }
     var confirmReset by remember { mutableStateOf(false) }
     var copied by remember { mutableStateOf(false) }
@@ -143,6 +152,8 @@ internal fun DeviceScreen(device: Paired, state: EarbudState, model: Model?, act
                 }
             }
         }
+
+        SettingGroups(settings, SettingTab.DEVICE, actions::changeSetting)
 
         Panel {
             Label(stringResource(R.string.maintenance))

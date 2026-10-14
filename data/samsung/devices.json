@@ -1,0 +1,758 @@
+{
+  "_about": "Samsung Galaxy Buds models PairFree knows. model is Samsung's model number (SM-R...), names the names the earbuds use. galaxybudsclient holds what GalaxyBudsClient's device specification gives (tools/import_galaxybudsclient.py): its name for the model and the generation it compares (newer models have higher numbers), the part of the Bluetooth name it matches (base_name), the RFCOMM service, the framing (legacy: start FE, end EE, a type and a one-byte length; standard: start FD, end DD, a two-byte length), the highest ambient sound volume step, the touch-and-hold options as [byte, option] (custom runs a phone-side action, set in Samsung's app), the colours by device id, and the features, each with the lowest state revision that has it (null: every revision). The rest is PairFree's: reports lists recordings in data/samsung/reports, notes what was found on the earbuds.",
+  "source": {
+    "project": "GalaxyBudsClient",
+    "url": "https://github.com/timschneeb/GalaxyBudsClient",
+    "author": "Tim Schneeberger",
+    "license": "GPL-3.0",
+    "commit": "754b6fdfb1c151b022cece775c8aaad4eb185afa",
+    "date": "2026-10-01",
+    "note": "Model numbers, names and specifications come from GalaxyBudsClient's source at this commit (tools/import_galaxybudsclient.py). Its author worked them out from Samsung's own apps and the earbuds' replies."
+  },
+  "devices": [
+    {
+      "model": "SM-R170",
+      "names": [
+        "Galaxy Buds"
+      ],
+      "galaxybudsclient": {
+        "device": "Buds",
+        "generation": 1,
+        "base_name": "Galaxy Buds (",
+        "service_uuid": "00001102-0000-1000-8000-00805f9b34fd",
+        "framing": "legacy",
+        "max_ambient_volume": 4,
+        "touch_hold": [
+          [0, "voice_assistant"],
+          [1, "quick_ambient_sound"],
+          [2, "volume"],
+          [3, "ambient_sound"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "257": "default",
+          "14336": "unknown"
+        },
+        "features": {
+          "seamless_connection": 3,
+          "ambient_voice_focus": null,
+          "ambient_sound": null,
+          "legacy_ambient_sound_volume_levels": null,
+          "build_info": null,
+          "battery_type": null,
+          "voltage": null,
+          "current": null,
+          "pairing_mode": null,
+          "ambient_sound_volume": null,
+          "spp_legacy_message_header": null,
+          "usage_report": null
+        }
+      }
+    },
+    {
+      "model": "SM-R175",
+      "names": [
+        "Galaxy Buds+"
+      ],
+      "galaxybudsclient": {
+        "device": "BudsPlus",
+        "generation": 2,
+        "base_name": "Galaxy Buds+ (",
+        "service_uuid": "00001101-0000-1000-8000-00805f9b34fb",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "ambient_sound"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "258": "blue",
+          "259": "pink",
+          "260": "black",
+          "261": "white",
+          "262": "thom_brown",
+          "263": "red",
+          "264": "deep_blue",
+          "265": "olympic",
+          "266": "purple"
+        },
+        "features": {
+          "ambient_sound": null,
+          "ambient_sidetone": 8,
+          "ambient_extra_loud": 9,
+          "seamless_connection": 11,
+          "firmware_updates": 8,
+          "gaming_mode": null,
+          "double_tap_volume": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "build_info": null,
+          "voltage": null,
+          "call_path_control": 13,
+          "pairing_mode": null,
+          "ambient_sound_volume": null,
+          "device_color": null,
+          "smart_things_find": 12,
+          "usage_report": null,
+          "hidden_at_mode": null
+        }
+      }
+    },
+    {
+      "model": "SM-R180",
+      "names": [
+        "Galaxy Buds Live"
+      ],
+      "galaxybudsclient": {
+        "device": "BudsLive",
+        "generation": 3,
+        "base_name": "Buds Live",
+        "service_uuid": "00001101-0000-1000-8000-00805f9b34fb",
+        "framing": "standard",
+        "max_ambient_volume": 0,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "anc"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "278": "black",
+          "279": "white",
+          "280": "bronze",
+          "281": "red",
+          "282": "blue",
+          "283": "thom_brown",
+          "284": "grey"
+        },
+        "features": {
+          "seamless_connection": 3,
+          "ambient_passthrough": 5,
+          "anc": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "stereo_pan": 7,
+          "spatial_sensor": 9,
+          "bixby_wakeup": 1,
+          "firmware_updates": null,
+          "build_info": null,
+          "voltage": null,
+          "debug_sku": null,
+          "call_path_control": 8,
+          "pairing_mode": null,
+          "ambient_sound_volume": null,
+          "device_color": null,
+          "smart_things_find": 4,
+          "usage_report": null,
+          "hidden_at_mode": null
+        }
+      }
+    },
+    {
+      "model": "SM-R190",
+      "names": [
+        "Galaxy Buds Pro"
+      ],
+      "galaxybudsclient": {
+        "device": "BudsPro",
+        "generation": 4,
+        "base_name": "Buds Pro",
+        "service_uuid": "00001101-0000-1000-8000-00805f9b34fb",
+        "framing": "standard",
+        "max_ambient_volume": 3,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "298": "black",
+          "299": "silver",
+          "300": "violet",
+          "301": "white"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": 5,
+          "double_tap_volume": 7,
+          "firmware_updates": null,
+          "detect_conversations": null,
+          "noise_control": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "spatial_sensor": null,
+          "voltage": null,
+          "bixby_wakeup": null,
+          "ambient_sound": null,
+          "anc": null,
+          "anc_noise_reduction_levels": null,
+          "build_info": null,
+          "ambient_sidetone": 8,
+          "ambient_customize": 8,
+          "ambient_customize_legacy": 8,
+          "debug_sku": null,
+          "call_path_control": 10,
+          "noise_control_mode_dual_side": 8,
+          "pairing_mode": null,
+          "ambient_sound_volume": null,
+          "noise_controls_with_one_earbud": 8,
+          "device_color": null,
+          "smart_things_find": null,
+          "usage_report": null,
+          "hidden_at_mode": null
+        }
+      }
+    },
+    {
+      "model": "SM-R177",
+      "names": [
+        "Galaxy Buds2"
+      ],
+      "galaxybudsclient": {
+        "device": "Buds2",
+        "generation": 5,
+        "base_name": "Buds2",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "313": "white",
+          "314": "black",
+          "315": "yellow",
+          "316": "green",
+          "317": "violet",
+          "318": "thom_brown",
+          "319": "maison_kitsune",
+          "320": "absolute_black",
+          "321": "grey",
+          "14337": "unknown"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "firmware_updates": null,
+          "noise_control": null,
+          "ambient_sound": null,
+          "anc": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "bixby_wakeup": null,
+          "gear_fit_test": null,
+          "double_tap_volume": 5,
+          "advanced_touch_lock": 4,
+          "advanced_touch_lock_for_calls": 7,
+          "noise_controls_with_one_earbud": 3,
+          "ambient_customize": 5,
+          "ambient_sidetone": 6,
+          "fmg_ring_while_wearing": 9,
+          "debug_sku": null,
+          "call_path_control": 7,
+          "charging_state": 10,
+          "noise_control_mode_dual_side": 5,
+          "pairing_mode": null,
+          "ambient_sound_volume": null,
+          "device_color": null,
+          "rename": null,
+          "spatial_sensor": 10,
+          "smart_things_find": null,
+          "usage_report": null
+        }
+      }
+    },
+    {
+      "model": "SM-R510",
+      "names": [
+        "Galaxy Buds2 Pro"
+      ],
+      "galaxybudsclient": {
+        "device": "Buds2Pro",
+        "generation": 6,
+        "base_name": "Buds2 Pro",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "325": "unknown",
+          "326": "grey",
+          "327": "white",
+          "328": "violet"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "double_tap_volume": null,
+          "firmware_updates": null,
+          "detect_conversations": null,
+          "noise_control": null,
+          "noise_control_mode_dual_side": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "spatial_sensor": null,
+          "bixby_wakeup": null,
+          "gear_fit_test": null,
+          "extra_clear_call_sound": 13,
+          "ambient_extra_loud": 13,
+          "ambient_sound": null,
+          "anc": null,
+          "ambient_sidetone": 1,
+          "ambient_customize": null,
+          "noise_controls_with_one_earbud": null,
+          "debug_sku": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": 1,
+          "fmg_ring_while_wearing": 4,
+          "call_path_control": 1,
+          "charging_state": 11,
+          "auto_adjust_sound": 3,
+          "head_tracking": 8,
+          "cradle_serial_number": null,
+          "device_color": null,
+          "rename": null,
+          "smart_things_find": null,
+          "usage_report": null
+        }
+      }
+    },
+    {
+      "model": "SM-R400N",
+      "names": [
+        "Galaxy Buds FE"
+      ],
+      "galaxybudsclient": {
+        "device": "BudsFe",
+        "generation": 7,
+        "base_name": "Buds FE",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "330": "graphite",
+          "331": "white"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "double_tap_volume": null,
+          "firmware_updates": null,
+          "noise_control": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "gear_fit_test": null,
+          "fragmented_messages": null,
+          "bixby_wakeup": null,
+          "ambient_sound": null,
+          "anc": null,
+          "anc_noise_reduction_levels": null,
+          "ambient_sidetone": null,
+          "ambient_customize": null,
+          "noise_controls_with_one_earbud": null,
+          "debug_sku": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "call_path_control": null,
+          "fmg_ring_while_wearing": null,
+          "charging_state": null,
+          "noise_control_mode_dual_side": null,
+          "device_color": null,
+          "rename": null,
+          "smart_things_find": null,
+          "usage_report": null
+        }
+      }
+    },
+    {
+      "model": "SM-R410",
+      "names": [
+        "Galaxy Buds Core"
+      ],
+      "galaxybudsclient": {
+        "device": "BudsCore",
+        "generation": 8,
+        "base_name": "Buds Core",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "322": "onyx",
+          "323": "white"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "double_tap_volume": null,
+          "firmware_updates": null,
+          "noise_control": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "gear_fit_test": null,
+          "fragmented_messages": null,
+          "bixby_wakeup": null,
+          "ambient_sound": null,
+          "anc": null,
+          "anc_noise_reduction_levels": null,
+          "ambient_sidetone": null,
+          "ambient_customize": null,
+          "noise_controls_with_one_earbud": null,
+          "debug_sku": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "call_path_control": null,
+          "fmg_ring_while_wearing": null,
+          "charging_state": null,
+          "noise_control_mode_dual_side": null,
+          "device_color": null,
+          "rename": null,
+          "smart_things_find": null,
+          "usage_report": null
+        }
+      }
+    },
+    {
+      "model": "SM-R530",
+      "names": [
+        "Galaxy Buds3"
+      ],
+      "galaxybudsclient": {
+        "device": "Buds3",
+        "generation": 9,
+        "base_name": "Buds3",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "333": "silver",
+          "334": "white"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "custom_equalizer": null,
+          "firmware_updates": null,
+          "noise_control": null,
+          "ambient_sound": null,
+          "anc": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "bixby_wakeup": null,
+          "gear_fit_test": null,
+          "double_tap_volume": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "noise_controls_with_one_earbud": null,
+          "ambient_customize": null,
+          "ambient_sidetone": null,
+          "fmg_ring_while_wearing": null,
+          "debug_sku": null,
+          "call_path_control": null,
+          "charging_state": null,
+          "noise_control_mode_dual_side": null,
+          "pairing_mode": null,
+          "ambient_sound_volume": null,
+          "device_color": null,
+          "rename": null,
+          "spatial_sensor": null,
+          "smart_things_find": null,
+          "usage_report": null,
+          "hot_command_language_update": 2
+        }
+      }
+    },
+    {
+      "model": "SM-R630",
+      "names": [
+        "Galaxy Buds3 Pro"
+      ],
+      "galaxybudsclient": {
+        "device": "Buds3Pro",
+        "generation": 10,
+        "base_name": "Buds3 Pro",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "340": "silver",
+          "341": "white"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "custom_equalizer": null,
+          "double_tap_volume": null,
+          "firmware_updates": null,
+          "detect_conversations": null,
+          "noise_control": null,
+          "noise_control_mode_dual_side": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "spatial_sensor": null,
+          "bixby_wakeup": null,
+          "gear_fit_test": null,
+          "extra_clear_call_sound": null,
+          "ambient_extra_loud": null,
+          "ambient_sound": null,
+          "anc": null,
+          "ambient_sidetone": null,
+          "ambient_customize": null,
+          "noise_controls_with_one_earbud": null,
+          "debug_sku": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "fmg_ring_while_wearing": null,
+          "call_path_control": null,
+          "charging_state": null,
+          "auto_adjust_sound": null,
+          "head_tracking": null,
+          "cradle_serial_number": null,
+          "device_color": null,
+          "rename": null,
+          "smart_things_find": null,
+          "usage_report": null,
+          "hot_command_language_update": 2
+        }
+      }
+    },
+    {
+      "model": "SM-R420",
+      "names": [
+        "Galaxy Buds3 FE"
+      ],
+      "galaxybudsclient": {
+        "device": "Buds3Fe",
+        "generation": 11,
+        "base_name": "Buds3 FE",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "347": "silver",
+          "348": "white"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "custom_equalizer": null,
+          "double_tap_volume": null,
+          "firmware_updates": null,
+          "noise_control": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "gear_fit_test": null,
+          "fragmented_messages": null,
+          "bixby_wakeup": null,
+          "ambient_sound": null,
+          "anc": null,
+          "anc_noise_reduction_levels": null,
+          "ambient_sidetone": null,
+          "ambient_customize": null,
+          "noise_controls_with_one_earbud": null,
+          "debug_sku": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "call_path_control": null,
+          "fmg_ring_while_wearing": null,
+          "charging_state": null,
+          "noise_control_mode_dual_side": null,
+          "device_color": null,
+          "rename": null,
+          "smart_things_find": null,
+          "usage_report": null
+        }
+      }
+    },
+    {
+      "model": "SM-R540",
+      "names": [
+        "Galaxy Buds4"
+      ],
+      "galaxybudsclient": {
+        "device": "Buds4",
+        "generation": 12,
+        "base_name": "Buds4",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 2,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "355": "black",
+          "356": "white"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "custom_equalizer": null,
+          "firmware_updates": null,
+          "noise_control": null,
+          "ambient_sound": null,
+          "anc": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "bixby_wakeup": null,
+          "gear_fit_test": null,
+          "double_tap_volume": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "noise_controls_with_one_earbud": null,
+          "ambient_customize": null,
+          "ambient_sidetone": null,
+          "fmg_ring_while_wearing": null,
+          "debug_sku": null,
+          "call_path_control": null,
+          "charging_state": null,
+          "noise_control_mode_dual_side": null,
+          "pairing_mode": null,
+          "ambient_sound_volume": null,
+          "device_color": null,
+          "rename": null,
+          "spatial_sensor": null,
+          "smart_things_find": null,
+          "usage_report": null,
+          "hot_command_language_update": 2
+        }
+      }
+    },
+    {
+      "model": "SM-R640",
+      "names": [
+        "Galaxy Buds4 Pro"
+      ],
+      "galaxybudsclient": {
+        "device": "Buds4Pro",
+        "generation": 13,
+        "base_name": "Buds4 Pro",
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 4,
+        "touch_hold": [
+          [1, "voice_assistant"],
+          [2, "noise_control"],
+          [3, "volume"],
+          [4, "spotify"],
+          [5, "custom"],
+          [6, "custom"]
+        ],
+        "colors": {
+          "359": "black",
+          "360": "white",
+          "361": "apricot"
+        },
+        "features": {
+          "seamless_connection": null,
+          "stereo_pan": null,
+          "firmware_updates": null,
+          "detect_conversations": null,
+          "noise_control": null,
+          "noise_control_mode_dual_side": null,
+          "gaming_mode": null,
+          "case_battery": null,
+          "fragmented_messages": null,
+          "spatial_sensor": null,
+          "bixby_wakeup": null,
+          "gear_fit_test": null,
+          "extra_clear_call_sound": null,
+          "ambient_sound": null,
+          "ambient_sound_volume": null,
+          "custom_equalizer": null,
+          "anc": null,
+          "ambient_sidetone": null,
+          "ambient_customize": null,
+          "noise_controls_with_one_earbud": null,
+          "debug_sku": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "fmg_ring_while_wearing": null,
+          "call_path_control": null,
+          "charging_state": null,
+          "auto_adjust_sound": null,
+          "head_tracking": null,
+          "cradle_serial_number": null,
+          "device_color": null,
+          "rename": null,
+          "smart_things_find": null,
+          "usage_report": null,
+          "hot_command_language_update": 2
+        }
+      }
+    }
+  ]
+}

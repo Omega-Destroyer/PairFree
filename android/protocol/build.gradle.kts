@@ -394,9 +394,87 @@ val generateSoundcoreTables = tasks.register<GenerateSoundcoreTables>("generateS
     outputDir = layout.buildDirectory.dir("generated/soundcore")
 }
 
+/** Writes the Samsung message numbers and models from data/samsung. */
+abstract class GenerateSamsungTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val messagesJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val messages = (JsonSlurper().parse(messagesJson.get().asFile) as Map<String, Any?>).getValue("messages") as List<Map<String, Any?>>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String) + "\""
+        fun int(v: Any?) = (v as Number).toInt()
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/samsung by the generateSamsungTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        out.appendLine("/** Samsung message numbers (data/samsung/messages.json), from GalaxyBudsClient. */")
+        out.appendLine("public object SamsungMessage {")
+        for (m in messages) {
+            m["note"]?.let { out.appendLine("    /** $it */") }
+            out.appendLine("    public const val ${(m.getValue("id") as String).uppercase()}: Int = ${int(m["number"])}")
+        }
+        val never = messages.filter { it["never_send"] == true }.joinToString(", ") { int(it["number"]).toString() }
+        out.appendLine("    /** Messages PairFree never sends. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf($never)")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/samsung/devices.json, with GalaxyBudsClient's specification of it. */")
+        out.appendLine("internal val SAMSUNG_MODELS: List<SamsungModel> = listOf(")
+        for (d in devices) {
+            @Suppress("UNCHECKED_CAST")
+            val g = d.getValue("galaxybudsclient") as Map<String, Any?>
+            val names = (d.getValue("names") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+            val touch = (g.getValue("touch_hold") as List<*>).joinToString(", ", "listOf(", ")") { p ->
+                val pair = p as List<*>
+                "${int(pair[0])} to ${str(pair[1])}"
+            }
+            @Suppress("UNCHECKED_CAST")
+            val colors = (g.getValue("colors") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "$k to ${str(v)}" }
+            @Suppress("UNCHECKED_CAST")
+            val features = (g.getValue("features") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { (k, v) ->
+                "${str(k)} to ${(v as Number?)?.toInt() ?: "null"}"
+            }
+            out.appendLine(
+                "    SamsungModel(${str(d["model"])}, $names, ${str(g["device"])}, ${int(g["generation"])}, ${str(g["base_name"])}, " +
+                    "${str(g["service_uuid"])}, legacy = ${g["framing"] == "legacy"}, maxAmbientVolume = ${int(g["max_ambient_volume"])}, " +
+                    "touchHold = $touch, colors = $colors, features = $features),",
+            )
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("SamsungTables.kt").writeText(out.toString())
+    }
+}
+
+val generateSamsungTables = tasks.register<GenerateSamsungTables>("generateSamsungTables") {
+    messagesJson = rootProject.layout.projectDirectory.file("../data/samsung/messages.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/samsung/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.samsung"
+    outputDir = layout.buildDirectory.dir("generated/samsung")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
     kotlin.srcDir(generateSoundcoreTables)
+    kotlin.srcDir(generateSamsungTables)
 }
 
 dependencies {
@@ -410,6 +488,7 @@ tasks.test {
     useJUnitPlatform()
     inputs.dir(dataDir).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/soundcore")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/samsung")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

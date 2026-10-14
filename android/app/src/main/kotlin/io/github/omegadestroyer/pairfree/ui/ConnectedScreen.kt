@@ -53,6 +53,9 @@ import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Models
+import io.github.omegadestroyer.pairfree.protocol.SettingGroup
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
@@ -74,10 +77,14 @@ fun ConnectedScreen(vm: AppViewModel, device: Paired, live: Boolean) {
     LaunchedEffect(device.address, model) { vm.openEqualizer(device, model) }
     val eq by vm.equalizer.state.collectAsStateWithLifecycle()
     val soundcore by vm.connection.soundcoreState.collectAsStateWithLifecycle()
-    ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live, touch = soundcore?.let(SoundcoreTouch::of))
+    val settings by vm.connection.settings.collectAsStateWithLifecycle()
+    ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live, touch = soundcore?.let(SoundcoreTouch::of), settings = settings)
 }
 
-/** [touch] is the Soundcore earbuds' touch controls, from the last state they sent; null for SoundPEATS earbuds. */
+/**
+ * [touch] is the Soundcore earbuds' touch controls, from the last state they sent; null for other
+ * brands. [settings] are the brand's own settings beyond the shared ones, drawn on their tabs.
+ */
 @Composable
 internal fun ConnectedScreen(
     device: Paired,
@@ -88,6 +95,7 @@ internal fun ConnectedScreen(
     startTab: Tab = Tab.HOME,
     live: Boolean = true,
     touch: SoundcoreTouch? = null,
+    settings: List<SettingGroup> = emptyList(),
 ) {
     var tab by rememberSaveable { mutableStateOf(startTab) }
     var fitTest by rememberSaveable { mutableStateOf(false) }
@@ -99,11 +107,11 @@ internal fun ConnectedScreen(
     Column(Modifier.fillMaxSize()) {
         Box(Modifier.weight(1f)) {
             when (tab) {
-                Tab.HOME -> HomeScreen(device, state, model, actions, live, eq) { tab = Tab.SOUND }
+                Tab.HOME -> HomeScreen(device, state, model, actions, live, eq, settings) { tab = Tab.SOUND }
                 // Recording from the official app exists for SoundPEATS only so far.
-                Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture.takeIf { device.brand == Brand.SOUNDPEATS })
-                Tab.CONTROLS -> ControlsScreen(device, state, actions, touch)
-                Tab.DEVICE -> DeviceScreen(device, state, model, actions) { fitTest = true }
+                Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture.takeIf { device.brand == Brand.SOUNDPEATS }, settings, actions::changeSetting)
+                Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
+                Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings) { fitTest = true }
             }
         }
         TabBar(tab) { tab = it }
@@ -112,10 +120,12 @@ internal fun ConnectedScreen(
 
 /**
  * The model's table entry: SoundPEATS by firmware code, or by name until the code is known;
- * Soundcore by the model number its service or name gave (data/soundcore/devices.json).
+ * Soundcore by the model number its service or name gave (data/soundcore/devices.json); Galaxy
+ * Buds by the model number their name gave (data/samsung/devices.json).
  */
 internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.brand) {
     Brand.SOUNDCORE -> SoundcoreModels.model(device.model ?: state.firmware?.code)
+    Brand.SAMSUNG -> SamsungModels.model(device.model ?: state.firmware?.code)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 
@@ -141,6 +151,7 @@ private fun HomeScreen(
     actions: EarbudsActions,
     live: Boolean,
     eq: EqState?,
+    settings: List<SettingGroup>,
     onOpenSound: () -> Unit,
 ) {
     val form = model?.form ?: Form.EARBUDS
@@ -186,6 +197,7 @@ private fun HomeScreen(
         }
 
         if (state.supports(Command.ANC_MODE)) NoiseControl(state, actions)
+        SettingGroups(settings, SettingTab.HOME, actions::changeSetting)
         eq?.let { SoundCard(it, onOpenSound) }
         QuickSwitches(state, model, actions)
     }

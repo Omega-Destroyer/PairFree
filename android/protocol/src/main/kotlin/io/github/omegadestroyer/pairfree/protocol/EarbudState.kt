@@ -13,6 +13,8 @@ public data class EarbudState(
     val gaiaFeatures: Set<Int>? = null,
     /** The last fit test result, or null before one has arrived. */
     val fit: FitResult? = null,
+    /** The earbuds have a fit test by their model, not by a GAIA feature (Galaxy Buds). */
+    val fitTest: Boolean = false,
 ) {
     /** Applies one received frame. Frames that are not replies the app understands are ignored. */
     public fun update(frame: Frame): EarbudState {
@@ -28,8 +30,8 @@ public data class EarbudState(
 
     public fun supports(command: Command): Boolean = command in values
 
-    /** True when the earbuds have the GAIA fit-test feature (Qualcomm models). */
-    public val hasFitTest: Boolean get() = gaiaFeatures?.contains(Gaia.FIT_FEATURE) == true
+    /** True when the earbuds have a fit test: the GAIA feature on Qualcomm models, or by model ([fitTest]). */
+    public val hasFitTest: Boolean get() = fitTest || gaiaFeatures?.contains(Gaia.FIT_FEATURE) == true
 
     public val firmware: FirmwareVersion?
         get() = (values[Command.FIRMWARE_VERSION] as? Value.Text)?.let { FirmwareVersion(it.text) }

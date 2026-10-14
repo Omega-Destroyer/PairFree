@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.bluetooth
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.os.Build
 import android.os.SystemClock
 import androidx.annotation.RequiresPermission
 import io.github.omegadestroyer.pairfree.protocol.Command
@@ -9,7 +10,13 @@ import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.Replies
 import io.github.omegadestroyer.pairfree.protocol.Requests
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.Wire
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungSession
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreParser
@@ -31,12 +38,13 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
-enum class Brand { SOUNDPEATS, SOUNDCORE }
+enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
  * null for the standard serial port, which SoundPEATS earbuds use. [model] is the Soundcore
- * model number, from the earbuds' service or name ([SoundcoreModels.identify]).
+ * model number, from the earbuds' service or name ([SoundcoreModels.identify]), or the Galaxy
+ * Buds model number from the name ([SamsungModels.fromName]).
  */
 data class Paired(
     val address: String,
@@ -65,7 +73,9 @@ sealed interface LinkStatus {
  * for the channel opening and closing.
  *
  * Soundcore earbuds speak another protocol; a [SoundcoreSession] turns it into the same
- * [state] and turns [set] into Soundcore packets, so the screens work for both brands.
+ * [state] and turns [set] into Soundcore packets, so the screens work for both brands. Galaxy
+ * Buds go through a [SamsungSession] the same way, and their settings beyond the shared ones
+ * come out as [settings].
  */
 class EarbudsConnection(
     private val scope: CoroutineScope,
@@ -91,6 +101,21 @@ class EarbudsConnection(
     /** The Soundcore session, while connected to Soundcore earbuds; for the device report. */
     val soundcoreSession: SoundcoreSession? get() = soundcore
 
+    private var samsung: SamsungSession? = null   // set while connected to Galaxy Buds
+
+    /** The Samsung session, while connected to Galaxy Buds; for the device report. */
+    val samsungSession: SamsungSession? get() = samsung
+
+    private val _settings = MutableStateFlow<List<SettingGroup>>(emptyList())
+
+    /** Settings beyond the shared ones, as generic rows for the screens; empty for brands without them. */
+    val settings: StateFlow<List<SettingGroup>> = _settings.asStateFlow()
+
+    private val _samsungStatus = MutableStateFlow<SamsungStatus?>(null)
+
+    /** The Galaxy Buds' state as they last sent it, with changes since; the Sound tab reads their EQ from it. */
+    val samsungStatus: StateFlow<SamsungStatus?> = _samsungStatus.asStateFlow()
+
     private val _soundcoreState = MutableStateFlow<SoundcoreState?>(null)
 
     /** Each full state Soundcore earbuds send, as they send it; the Sound tab reads their EQ from it. */
@@ -103,6 +128,9 @@ class EarbudsConnection(
         replies = emptyMap()
         soundcore = null
         _soundcoreState.value = null
+        samsung = null
+        _settings.value = emptyList()
+        _samsungStatus.value = null
         val remote = adapter?.takeIf { it.isEnabled }?.getRemoteDevice(device.address)
         if (remote == null) {
             _status.value = LinkStatus.Failed(device, LinkStatus.Reason.BLUETOOTH_OFF)
@@ -138,7 +166,11 @@ class EarbudsConnection(
                 _status.value = LinkStatus.Connected(device)
                 log?.invoke("open")
                 val openedAt = SystemClock.elapsedRealtime()
-                if (device.brand == Brand.SOUNDCORE) serveSoundcore(opened, device) else serve(opened, device)
+                when (device.brand) {
+                    Brand.SOUNDCORE -> serveSoundcore(opened, device)
+                    Brand.SAMSUNG -> serveSamsung(opened, device)
+                    Brand.SOUNDPEATS -> serve(opened, device)
+                }
                 log?.invoke("closed")
                 opened.close()
                 // A channel that keeps closing straight away does not earn fresh retries.
@@ -212,12 +244,54 @@ class EarbudsConnection(
     }
 
     /**
+     * Galaxy Buds: they send their whole state on connecting, then each change as it happens, so
+     * nothing is asked for. Every packet updates [state] and [settings]; what the session wants to
+     * say back (the manager info, the version request) goes out at once.
+     */
+    private suspend fun serveSamsung(opened: SppLink, device: Paired) = coroutineScope {
+        val model = SamsungModels.of(device.model) ?: return@coroutineScope
+        val phoneIsSamsung = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
+        val session = SamsungSession(model, phoneIsSamsung = phoneIsSamsung, androidSdk = Build.VERSION.SDK_INT)
+        samsung = session
+        try {
+            val parser = SamsungParser(model.legacy)
+            opened.reads().collect { bytes ->
+                for (packet in parser.feed(bytes)) {
+                    log?.invoke("recv $packet")
+                    if (session.receive(packet)) publish(session)
+                    for (frame in session.frames(session.takeOutbox())) opened.send(frame)
+                }
+            }
+        } catch (_: IOException) {
+        }
+    }
+
+    private fun publish(session: SamsungSession) {
+        _state.value = session.state
+        _settings.value = session.groups
+        _samsungStatus.value = session.status
+    }
+
+    /** Changes one of the [settings]: it shows at once, and the earbuds' acknowledgement or next state confirms it. */
+    fun changeSetting(change: SettingChange) {
+        val session = samsung ?: return
+        val packets = session.change(change) ?: return
+        if (send(session.frames(packets), then = null)) publish(session)
+    }
+
+    /**
      * Sends a SET. The change shows at once, and [READ_BACK_MS] later the value is read
      * back, so the earbuds' answer replaces the guess (docs/DESIGN.md). Factory reset and
      * reboot are refused; see [factoryResetConfirmedByUser]. On Soundcore earbuds the
-     * setting goes out as a Soundcore packet, and the whole state is read back.
+     * setting goes out as a Soundcore packet, and the whole state is read back; on Galaxy
+     * Buds as a Samsung message, which the earbuds acknowledge.
      */
     fun set(command: Command, vararg payload: Int) {
+        samsung?.let { session ->
+            val packets = session.set(command, payload.singleOrNull() ?: return) ?: return
+            if (send(session.frames(packets), then = null)) publish(session)
+            return
+        }
         soundcore?.let { session ->
             val frame = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (send(frame, then = session.requestState())) _state.value = session.state
@@ -257,6 +331,12 @@ class EarbudsConnection(
      * section 11), and back to what it was once the result is in. The official app leaves it off.
      */
     fun startFitTest(keepAnc: Boolean) {
+        samsung?.let { session ->
+            // Galaxy Buds run the test themselves; the result arrives as its own message.
+            val packets = session.startFitTest() ?: return
+            if (send(session.frames(packets), then = null)) publish(session)
+            return
+        }
         if (_status.value !is LinkStatus.Connected || soundcore != null) return
         val s = session ?: return
         val l = link ?: return
@@ -286,7 +366,7 @@ class EarbudsConnection(
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null) return
+        if (soundcore != null || samsung != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -338,6 +418,7 @@ class EarbudsConnection(
         link?.close()             // unblocks a pending connect or read
         link = null
         soundcore = null
+        samsung = null
         session?.cancel()
         session = null
         _status.value = LinkStatus.Idle

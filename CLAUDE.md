@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker) is being added on the `anker` branch. The owner wants agents to do as much of the
+(Anker) and Samsung Galaxy Buds are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Where the truth lives
@@ -31,7 +31,7 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 `tools/device_art/<brand>/`. App-wide documents stay at the top level. Each brand also has a page
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
-from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` branch.
+from one brand to another. So far: `soundpeats`, `soundcore` and `samsung`.
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -66,6 +66,26 @@ from one brand to another. So far: `soundpeats`, and `soundcore` on the `anker` 
   `data/soundcore/test_vectors.json` holds the A40's recorded frames, its state, its EQ and touch
   writes, and the state replies, EQ and touch tests from OpenSCQ30's tests (serials zeroed); the
   Kotlin tests rebuild or read every one. Never send `SoundcoreCommand.NEVER_SEND`.
+- `docs/samsung/PROTOCOL.md` is the Galaxy Buds protocol, all of it from GalaxyBudsClient's source
+  (github.com/timschneeb/GalaxyBudsClient, Tim Schneeberger, GPLv3 without "or later"). No Galaxy
+  Buds have been tried; the owner has none, so every model relies on users' device reports. 7
+  models' state layouts are checked against the replies in GalaxyBudsClient's tests
+  (`data/samsung/test_vectors.json`); the Buds Core, Buds3 and later are its code alone.
+- `data/samsung/messages.json` is the message table and `data/samsung/devices.json` the model table;
+  `generateSamsungTables` turns them into `SamsungMessage` and the model list in the
+  `protocol.samsung` package. The app finds Galaxy Buds by Bluetooth name
+  (`SamsungModels.fromName`) and shows them through `SamsungSession`: the battery, noise mode and
+  fit test go to `EarbudState`, and every other setting to brand-neutral rows (`SettingGroup` in
+  `protocol/Settings.kt`, drawn by `ui/SettingRows.kt` on the tab each group names). A new brand's
+  settings that fit no shared screen go the same way. The EQ goes through the Sound tab via
+  `SamsungEqTarget`: presets the earbuds apply themselves (their curves are unknown, so none is
+  drawn) and, on the Buds3 and later, a nine-band custom curve resent once per connection.
+  `python tools/import_galaxybudsclient.py PATH` refreshes `devices.json` from a local checkout,
+  keeping `names`, `reports`, `notes` and `kind`; then run `python tools/gen_samsung_table.py`.
+  The state layout (`SamsungStatus.kt`) is a line-by-line port of GalaxyBudsClient's decoder:
+  after a refresh to a newer commit, compare the decoder with it. Credit GalaxyBudsClient wherever
+  its code or facts are used. Never send `SamsungMessage.NEVER_SEND`; there is no codec message,
+  so no codec switch can be offered.
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

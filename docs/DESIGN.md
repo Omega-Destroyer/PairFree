@@ -22,7 +22,8 @@ These came from the owner and are not up for trade.
   images, no fonts, no sounds.
 - **One app for every brand.** (Owner, 2026-10-13.) The aim is a universal control app
   for any earbuds or headphones whose protocol can be worked out, so people with
-  several pairs need one app. SoundPEATS comes first, then Soundcore (Anker). The screens
+  several pairs need one app. SoundPEATS comes first, then Soundcore (Anker), then Samsung
+  Galaxy Buds. The screens
   stay the same for every brand; each model shows only the features it has. Each
   brand's protocol, model table, reports and drawings live in folders named after the
   brand (`docs/<brand>/`, `data/<brand>/`, `assets/devices/<brand>/`). Models nobody on
@@ -185,6 +186,15 @@ range (±6 dB on most). The screen offers the EQ only on models whose EQ write a
 OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8); the others say a device report
 helps.
 
+Galaxy Buds report which preset they use (docs/samsung/PROTOCOL.md section 6). The profiles are
+Normal and Samsung's five presets; there is no Stock and no preamp. The earbuds apply the presets
+themselves and nobody knows their curves, so a preset shows its name and a line saying so, and no
+graph. On the Buds3 and later a nine-band custom curve (−10 to 10 steps) joins them, with New and
+the user's saved profiles; on older models, which have no custom curve, New, import and export do
+not show. The earbuds forget a custom curve when they turn off and report only that it is custom,
+so the app keeps the last one it set and sends it again once per connection, as GalaxyBudsClient
+does.
+
 ### Controls
 
 - Left and Right switch, with a drawing of the pair and the chosen side highlighted.
@@ -229,6 +239,40 @@ cycles through (at least one stays on), and Reset gestures, each only where the 
 Copy device report puts the same information as `tools/probe.py` on the clipboard,
 so anyone can contribute a new model from their phone. Factory reset asks for
 confirmation every time.
+
+### Settings only one brand has
+
+A brand's settings that fit none of the screens above show as generic rows (Galaxy Buds first,
+2026-10-14). The brand's session lists them in groups. Each group has a heading and names its
+tab, and its panel goes on that tab after the tab's own controls:
+
+- **Home:** after noise control.
+- **Sound:** under the equalizer.
+- **Controls:** the whole tab, for a brand without the gesture table.
+- **Device:** before Maintenance.
+
+A row is one of four kinds:
+
+- **Switch:** a title, an optional note, and the switch.
+- **Choice:** the title and the current option; tapping the row opens a picker.
+- **Level:** up to five steps as a segmented row. More steps get a slider with minus and plus
+  buttons, sent 300 ms after it settles. A level that runs from one side to the other, such as
+  balance, centres its slider and names the middle.
+- **Button:** for something that runs, such as Find my earbuds. While it runs it says Stop, and
+  the rows that only make sense then (mute left, mute right) appear under it.
+
+A row the earbuds cannot take right now shows disabled, such as a gesture switch while touch is
+off. The labels are PairFree's own words, not the brand's.
+
+On Galaxy Buds these hold:
+
+- **Home:** the ambient sound level and its extras, voice detect and the noise cancelling level.
+- **Sound:** balance.
+- **Controls:** the gesture switches and what touch and hold does.
+- **Device:** each earbud's ambient level and tone, the call settings, seamless connection and
+  voice wake-up, and Find my earbuds.
+
+The fit test uses the shared page, but noise control stays as it is.
 
 ### Record from PeatsAudio
 

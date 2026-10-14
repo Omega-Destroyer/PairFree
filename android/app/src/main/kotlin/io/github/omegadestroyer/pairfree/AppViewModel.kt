@@ -24,6 +24,7 @@ import io.github.omegadestroyer.pairfree.capture.BugReport
 import io.github.omegadestroyer.pairfree.capture.Capture
 import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
 import io.github.omegadestroyer.pairfree.protocol.Command
@@ -34,6 +35,9 @@ import io.github.omegadestroyer.pairfree.protocol.LoggedReads
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.RecordingReport
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
@@ -84,6 +88,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
      * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
      */
     fun openEqualizer(device: Paired, model: Model?) {
+        if (device.brand == Brand.SAMSUNG) {
+            soundcoreEq = null
+            val target = SamsungModels.of(device.model)?.let(::SamsungEqTarget)
+            samsungEq = target
+            equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
+            connection.samsungStatus.value?.let(::reportSamsungEq)
+            return
+        }
+        samsungEq = null
         if (device.brand != Brand.SOUNDCORE) {
             soundcoreEq = null
             equalizer.open(device.address, model)
@@ -101,9 +114,33 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         equalizer.reported(profile, gains)
     }
 
+    /** The Galaxy Buds EQ while the Sound tab shows Galaxy Buds. */
+    private var samsungEq: SamsungEqTarget? = null
+
+    /** Galaxy Buds whose custom curve went out again on this connection, so it goes once. */
+    private var samsungCurveResent: String? = null
+
+    /**
+     * Galaxy Buds report which preset they hold, or that they hold a custom curve, but not the curve;
+     * the Sound tab shows the curve this phone last sent. A custom curve goes out again once per
+     * connection, as the earbuds forget it when they power off.
+     */
+    private fun reportSamsungEq(status: SamsungStatus) {
+        val reported = samsungEq?.reported(status) ?: return
+        val gains = equalizer.state.value?.setting?.gains ?: return
+        equalizer.reported(reported.profileId, gains)
+        val address = (connection.status.value as? LinkStatus.Connected)?.device?.address ?: return
+        if (reported.custom && samsungCurveResent != address) {
+            samsungCurveResent = address
+            equalizer.resendCustom(address)
+        }
+    }
+
     init {
         // Soundcore earbuds report their EQ with every state; the Sound tab follows it.
         viewModelScope.launch { connection.soundcoreState.collect { s -> s?.let(::reportEq) } }
+        viewModelScope.launch { connection.samsungStatus.collect { s -> s?.let(::reportSamsungEq) } }
+        viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
         // SoundPEATS earbuds cannot report their EQ, so each newly opened channel gets this phone's back.
         // It also notes when its channel is open, so a recording can leave out what it sent itself.
         viewModelScope.launch {
@@ -201,6 +238,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     override fun resetTouch() = connection.resetSoundcoreTouch()
 
+    override fun changeSetting(change: SettingChange) = connection.changeSetting(change)
+
     override fun startFitTest() {
         val name = (connection.status.value as? LinkStatus.Connected)?.device?.name
         val model = Models.find(connection.state.value.firmware?.code, name)
@@ -219,6 +258,29 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val device = (connection.status.value as? LinkStatus.Connected)?.device
         val firmware = connection.state.value.firmware
         val date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'").format(LocalDateTime.now(ZoneOffset.UTC))
+        connection.samsungSession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Bluetooth name:  ${SamsungModels.maskedName(device?.name.orEmpty())}")
+                appendLine("Brand:           Samsung")
+                appendLine("Model:           ${session.model.model} (${session.model.name})")
+                appendLine("Firmware:        ${firmware?.version ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine()
+                val payload = session.lastStatusPayload
+                appendLine("The earbuds' full state (message 97, revision ${session.status?.revision ?: "?"}, ${payload?.size ?: 0} bytes), as hex:")
+                appendLine(payload?.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') } ?: "no state yet")
+                appendLine()
+                appendLine("As PairFree read it:")
+                session.status?.values?.forEach { (k, v) -> appendLine("  $k = $v") }
+            }
+        }
         connection.soundcoreSession?.let { session ->
             return buildString {
                 appendLine("PairFree device report")
@@ -407,14 +469,16 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         // Only earbuds the app can control, not every bonded audio device. The AUDIO_VIDEO
         // class also drops SoundPEATS watches, which share the brand name. Soundcore earbuds
         // are known by their vendor service, which can name the model, or else by their name
-        // (docs/soundcore/PROTOCOL.md).
+        // (docs/soundcore/PROTOCOL.md); Galaxy Buds by their name (docs/samsung/PROTOCOL.md).
         _paired.value = if (!on) emptyList() else adapter.bondedDevices
             .filter { it.bluetoothClass?.majorDeviceClass == BluetoothClass.Device.Major.AUDIO_VIDEO }
             .mapNotNull { d ->
                 val name = d.name ?: d.address
                 val soundcore = SoundcoreModels.identify(name, d.uuids.orEmpty().map { it.uuid.toString() })
+                val samsung = SamsungModels.fromName(name)
                 when {
                     soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore.service, soundcore.model)
+                    samsung != null -> Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model)
                     Models.isSupported(d.name ?: "") -> Paired(d.address, name)
                     else -> null
                 }

@@ -1,16 +1,47 @@
 # PairFree
 
-An alternative to the Android PeatsAudio app that ships with SoundPEATS earbuds.
+PairFree aims to be one app for the settings of nearly any earbuds and headphones. It
+replaces heavy, brand-specific apps with a light, fast one that talks to your earbuds
+directly over Bluetooth.
 
-No account. No cloud. Just the controls: battery, noise cancelling, EQ, gestures,
-codec and multipoint switches.
+## Why PairFree
 
-Soundcore (Anker) earbuds are being added on the same screens: see
-[Supported devices](#supported-devices).
+- **No account.** Nothing to sign up for or log in to.
+- **No internet.** The app does not have the internet permission, so it cannot go online.
+- **Nothing leaves your phone** unless you share it yourself, such as a device report or an
+  equalizer profile. No ads, no analytics, no crash reports, no cloud backup of your
+  settings.
+- **One app for several brands.** Earbuds of every brand get the same screens, so you need
+  one app, not one per brand.
+- **One permission.** Bluetooth, to talk to earbuds you have already paired. No location, no
+  scanning, no contacts.
+- **Small and quick.** About 3 MB, with no login and no server to wait for.
+- **Open source.** GPL-3.0. Every protocol is documented in this repo with tests, so anyone
+  can check what the app sends to their earbuds.
+- **Reproducible builds.** The published APK can be rebuilt from the source and checked byte
+  for byte, apart from the signature.
+- **Your equalizer, as files.** Save your own curves, and export and share them.
+- **Grows with its users.** A model nobody on the project owns is added from a report its
+  owner copies from the app.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SoundPEATS or
-Anker. It was called SoundPeter until version 0.1.3; the new name fits an app meant for earbuds
-of every brand, and keeps clear of any vendor's name.
+## What it controls
+
+Each model shows only what it has:
+
+- Battery for each earbud and the case.
+- Noise control: off, noise cancelling, transparency or ambient sound, with their scenes and
+  levels.
+- The equalizer: the brand's presets, your own curves and saved profiles.
+- Touch controls: what each tap and hold does on each earbud, and turning touch off.
+- Game mode, two devices at once, LDAC and LE Audio.
+- The ear tip fit test, find my earbuds, voice prompts and water drain.
+- Settings only one brand has, such as each Galaxy Bud's ambient sound level, or voice detect.
+
+PairFree needs Android 12 or later.
+
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS,
+Anker or Samsung. It was called SoundPeter until version 0.1.3, when it was still an app for
+SOUNDPEATS earbuds alone.
 
 <p>
   <img src="docs/screenshots/home.png" width="250" alt="Home: battery for each earbud and the case, noise control and scenes, the sound profile, and quick switches">
@@ -25,21 +56,19 @@ Screenshots with a SOUNDPEATS H3, using replies recorded from real earbuds.
 
 ## Status
 
-Early. The control protocol is documented from the official Android app and has been
-partly confirmed on an H3. Nothing here is ready for daily use.
+Early, and growing one brand at a time. The models nobody on the project owns rest on the
+protocol work of other open-source projects and on reports from their owners; each brand's
+page says which models have been tried.
 
-| Piece                                   | State                                   |
-|-----------------------------------------|-----------------------------------------|
-| Protocol spec                           | Written, from static analysis           |
-| Command table and test vectors          | Written, checked against the app's code |
-| Probe script (PC)                       | Written, run on an H3                   |
-| Confirmed on hardware                   | SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40: see [Supported devices](#supported-devices) |
-| App design                              | Written. One look (Studio), five screens. |
-| Android app                             | All four tabs (Home, Sound, Controls, Device), the fit test and Record from PeatsAudio. Being tried on an H3, an Air5 Pro+ and a Space A40. |
-| iOS and Windows apps                    | Planned, after Android                  |
-| Firmware update                         | Planned for Qualcomm models, opt-in     |
+| Piece                 | State |
+|-----------------------|-------|
+| Android app           | Released for SOUNDPEATS (v0.1.4). Soundcore and Galaxy Buds come with the next release. |
+| Tried on real earbuds | SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40 |
+| Protocols             | One document, data set and test suite per brand, in `docs/<brand>/` and `data/<brand>/` |
+| iOS and Windows apps  | Planned, after Android |
+| Firmware update       | Planned for Qualcomm-based models, opt-in |
 
-## Supported devices
+## Supported brands
 
 Each brand has a page listing every model PairFree knows and what works on each.
 
@@ -48,6 +77,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 |-------|--------|-----------------------|
 | [SOUNDPEATS](docs/devices/soundpeats.md) | 45 | Air5 Pro+, H3 |
 | [Soundcore (Anker)](docs/devices/soundcore.md) | 39 | Space A40 |
+| [Samsung Galaxy Buds](docs/devices/samsung.md) | 13 | — |
 <!-- devices-summary:end -->
 
 **Known issue:** LDAC does not work on the Air5 Pro+, at least with a Samsung Galaxy S24 FE. If
@@ -70,10 +100,12 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 | `data/<brand>/reports/`   | Device reports and recordings from real earbuds, one file per model and firmware |
 | `data/soundpeats/qcy_commands.json` | The separate protocol for the SOUNDPEATS Capsule3 Pro   |
 | `data/soundcore/eq_presets.json`, `button_actions.json` | Soundcore EQ presets and touch actions, from OpenSCQ30 |
+| `data/samsung/messages.json` | The Galaxy Buds message table, from GalaxyBudsClient          |
 | `tools/probe.py`          | Read-only probe for SOUNDPEATS earbuds. Asks them what they support. |
 | `tools/import_eq_capture.py` | Turns the equalizer part of a recording from PeatsAudio into a model's EQ data. |
 | `tools/import_openscq30.py` | Refreshes the Soundcore model list from a local copy of OpenSCQ30. |
-| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS) and `gen_soundcore_table.py` (Soundcore). |
+| `tools/import_galaxybudsclient.py` | Refreshes the Galaxy Buds model list from a local copy of GalaxyBudsClient. |
+| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore) and `gen_samsung_table.py` (Samsung). |
 | `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
 | `tools/test_*.py`         | Tests for the tools and the data files. No hardware needed.       |
 | `assets/devices/<brand>/` | Vector drawings of each model's earbud and case, per look         |
@@ -84,8 +116,9 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 ## Help add your model
 
 One report from someone who owns a model adds it to its brand's page
-([Supported devices](#supported-devices)) for everyone. There are three ways to make one. The
-first gives the most, on SOUNDPEATS earbuds; on Soundcore earbuds, use Copy device report.
+([Supported brands](#supported-brands)) for everyone. There are three ways to make one. The
+first gives the most, on SOUNDPEATS earbuds; on Soundcore earbuds and Galaxy Buds, use Copy
+device report.
 
 ### Record from PeatsAudio
 
@@ -115,7 +148,9 @@ Quicker, and no PeatsAudio needed, but no equalizer. Connect the earbuds in Pair
 tap **Copy device report** on the Device tab, and paste it into a new issue. It lists every
 setting PairFree can read and what the earbuds answered. On Soundcore earbuds it holds the
 earbuds' whole state reply, with the serial number masked, which checks the model's row in
-the [Soundcore table](docs/devices/soundcore.md#all-models).
+the [Soundcore table](docs/devices/soundcore.md#all-models). On Galaxy Buds it holds their
+whole state, as bytes and as PairFree read it, for the
+[Samsung table](docs/devices/samsung.md#all-models).
 
 ### Probe from a PC
 
@@ -167,6 +202,9 @@ cd android
 - [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) by Kyle Scheuing (GPL-3.0-or-later): the
   Soundcore protocol, model list and per-model features that PairFree's Soundcore support is
   ported from. Code ported from it says so where it is.
+- [GalaxyBudsClient](https://github.com/timschneeb/GalaxyBudsClient) by Tim Schneeberger (GPLv3):
+  the Galaxy Buds protocol, model list, per-model features and state layouts that PairFree's
+  Samsung support is ported from. Code ported from it says so where it is.
 - [IBM Plex](https://github.com/IBM/plex) fonts (SIL Open Font License 1.1).
 
 ## License

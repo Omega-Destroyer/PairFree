@@ -22,8 +22,9 @@ import java.io.IOException
 import java.util.UUID
 
 /**
- * The earbuds' control channel: classic Bluetooth serial (RFCOMM) on the SPP UUID.
- * The earbuds must already be paired and connected for audio. There is no handshake.
+ * The earbuds' control channel: classic Bluetooth serial (RFCOMM) on [uuid], the standard SPP
+ * UUID for SoundPEATS, the earbuds' own service for Soundcore. The earbuds must already be
+ * paired and connected for audio. There is no handshake.
  *
  * The socket is created up front so [close] can abort a [connect] that is still waiting.
  * Reads have no timeout on purpose: after a touch control the H3 goes quiet for up to
@@ -33,8 +34,9 @@ class SppLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constru
     device: BluetoothDevice,
     /** Gets one line per frame sent or received, when set. */
     private val log: ((String) -> Unit)? = null,
+    uuid: String = Wire.SPP_UUID,
 ) : Closeable {
-    private val socket: BluetoothSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(Wire.SPP_UUID))
+    private val socket: BluetoothSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid))
     private val writeLock = Mutex()
     private var lastWrite = 0L
 
@@ -51,21 +53,31 @@ class SppLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constru
             socket.outputStream.flush()
         }
         lastWrite = SystemClock.elapsedRealtime()
-        log?.let { log -> FrameParser().feed(frame).forEach { log("send ${it.summary()}") } }
+        log?.let { log ->
+            val frames = FrameParser().feed(frame)
+            if (frames.isEmpty()) log("send ${frame.joinToString("") { "%02x".format(it) }}") else frames.forEach { log("send ${it.summary()}") }
+        }
     }
 
-    /** Every frame the earbuds send, reassembled by length. Ends with an IOException when the channel closes. */
+    /** Every SoundPEATS frame the earbuds send, reassembled by length. Ends with an IOException when the channel closes. */
     fun frames(): Flow<Frame> = flow {
         val parser = FrameParser()
+        reads().collect { bytes ->
+            for (frame in parser.feed(bytes)) {
+                log?.invoke("recv ${frame.summary()}")
+                emit(frame)
+            }
+        }
+    }
+
+    /** The bytes of each read, as they come. Ends with an IOException when the channel closes. */
+    fun reads(): Flow<ByteArray> = flow {
         val buffer = ByteArray(1024)
         val input = socket.inputStream
         while (true) {
             val n = input.read(buffer)
             if (n < 0) throw IOException("channel closed")
-            for (frame in parser.feed(buffer.copyOf(n))) {
-                log?.invoke("recv ${frame.summary()}")
-                emit(frame)
-            }
+            emit(buffer.copyOf(n))
         }
     }.flowOn(Dispatchers.IO)
 

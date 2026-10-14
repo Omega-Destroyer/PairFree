@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.omegadestroyer.soundpeter.R
+import io.github.omegadestroyer.soundpeter.bluetooth.Brand
 import io.github.omegadestroyer.soundpeter.bluetooth.Paired
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.EarbudState
@@ -156,8 +157,11 @@ internal fun DeviceScreen(device: Paired, state: EarbudState, model: Model?, act
                 Modifier.fillMaxWidth(),
             )
             if (copied) Text(stringResource(R.string.report_copied), style = Studio.type.small, color = c.secondaryText)
-            StudioButton(stringResource(R.string.capture_open), actions::openCapture, Modifier.fillMaxWidth())
-            StudioButton(stringResource(R.string.factory_reset), { confirmReset = true }, Modifier.fillMaxWidth(), destructive = true)
+            // Recording from the official app and factory reset are known for SoundPEATS only so far.
+            if (device.brand == Brand.SOUNDPEATS) {
+                StudioButton(stringResource(R.string.capture_open), actions::openCapture, Modifier.fillMaxWidth())
+                StudioButton(stringResource(R.string.factory_reset), { confirmReset = true }, Modifier.fillMaxWidth(), destructive = true)
+            }
         }
 
         Text(

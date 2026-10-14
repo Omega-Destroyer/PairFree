@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.omegadestroyer.soundpeter.AppViewModel
 import io.github.omegadestroyer.soundpeter.R
+import io.github.omegadestroyer.soundpeter.bluetooth.Brand
 import io.github.omegadestroyer.soundpeter.bluetooth.Paired
 import io.github.omegadestroyer.soundpeter.eq.EqActions
 import io.github.omegadestroyer.soundpeter.eq.EqState
@@ -89,7 +90,8 @@ internal fun ConnectedScreen(
         Box(Modifier.weight(1f)) {
             when (tab) {
                 Tab.HOME -> HomeScreen(device, state, model, actions, live, eq) { tab = Tab.SOUND }
-                Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture)
+                // Recording from the official app exists for SoundPEATS only so far.
+                Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture.takeIf { device.brand == Brand.SOUNDPEATS })
                 Tab.CONTROLS -> ControlsScreen(device, state, actions)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions) { fitTest = true }
             }

@@ -70,12 +70,16 @@ import kotlin.math.roundToInt
  * every band is the earbuds' own tuning.
  */
 @Composable
-internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: () -> Unit = {}) {
+internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit)? = {}) {
     if (eq == null) {
         TabContent {
             Text(stringResource(R.string.tab_sound), style = Studio.type.title)
-            Text(stringResource(R.string.eq_unavailable), color = Studio.colors.secondaryText)
-            StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
+            if (onRecord != null) {
+                Text(stringResource(R.string.eq_unavailable), color = Studio.colors.secondaryText)
+                StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
+            } else {
+                Text(stringResource(R.string.eq_soundcore_later), color = Studio.colors.secondaryText)
+            }
         }
         return
     }

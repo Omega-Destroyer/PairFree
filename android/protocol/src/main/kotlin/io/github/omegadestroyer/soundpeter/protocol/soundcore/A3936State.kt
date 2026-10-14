@@ -63,6 +63,11 @@ public class A3936State private constructor(private val body: ByteArray) {
     /** Bytes after the fields OpenSCQ30 knows. */
     public val trailing: ByteArray get() = body.copyOfRange(KNOWN_SIZE, body.size)
 
+    /** The state as hex, with the Bluetooth address in the serial number shown as XX, for reports. */
+    public fun reportHex(): String = body.indices.joinToString(" ") { i ->
+        if (i in SERIAL + 4 until SERIAL + 16) "XX" else (body[i].toInt() and 0xFF).toString(16).padStart(2, '0')
+    }
+
     /** The sound modes block with the noise control choice changed. */
     public fun soundModesWith(mode: AmbientMode): ByteArray = soundModes.also { it[0] = mode.value.toByte() }
 

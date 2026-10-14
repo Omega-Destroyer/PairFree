@@ -16,6 +16,7 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.omegadestroyer.soundpeter.bluetooth.Brand
 import io.github.omegadestroyer.soundpeter.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.soundpeter.bluetooth.LinkStatus
 import io.github.omegadestroyer.soundpeter.bluetooth.Paired
@@ -30,6 +31,8 @@ import io.github.omegadestroyer.soundpeter.protocol.EqCapture
 import io.github.omegadestroyer.soundpeter.protocol.LoggedReads
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.RecordingReport
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
+import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreSession
 import io.github.omegadestroyer.soundpeter.ui.CaptureActions
 import io.github.omegadestroyer.soundpeter.ui.EarbudsActions
 import kotlinx.coroutines.Dispatchers
@@ -116,7 +119,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     private val _paired = MutableStateFlow<List<Paired>>(emptyList())
 
-    /** Paired audio devices, SoundPEATS first. */
+    /** Paired earbuds SoundPeter can control, of every brand, by name. */
     val paired: StateFlow<List<Paired>> = _paired.asStateFlow()
 
     private val _bluetoothOn = MutableStateFlow(true)
@@ -178,6 +181,26 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val device = (connection.status.value as? LinkStatus.Connected)?.device
         val firmware = connection.state.value.firmware
         val date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'").format(LocalDateTime.now(ZoneOffset.UTC))
+        connection.soundcoreSession?.let { session ->
+            return buildString {
+                appendLine("SoundPeter device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help add support")
+                appendLine("for this model. The serial number's Bluetooth address is masked.")
+                appendLine()
+                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Brand:           Soundcore")
+                appendLine("Model:           ${session.model}")
+                appendLine("Service:         ${device?.service.orEmpty()}")
+                appendLine("Firmware:        ${session.lastState?.let { "${it.firmwareLeft} ${it.firmwareRight}" } ?: "unknown"}")
+                appendLine("App:             SoundPeter $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine()
+                appendLine("The earbuds' reply to the state request (01 01), as hex:")
+                appendLine(session.lastState?.reportHex() ?: "no reply yet")
+            }
+        }
         return buildString {
             appendLine("SoundPeter device report")
             appendLine("Paste this whole report into a new issue at")
@@ -341,12 +364,21 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         if (!checkPermission()) return
         val on = adapter?.isEnabled == true
         _bluetoothOn.value = on
-        // Only SoundPEATS models the app can control, not every bonded audio device. The
-        // AUDIO_VIDEO class also drops SoundPEATS watches, which share the brand name.
+        // Only earbuds the app can control, not every bonded audio device. The AUDIO_VIDEO
+        // class also drops SoundPEATS watches, which share the brand name. Soundcore earbuds
+        // are known by their vendor service, which names the model (docs/soundcore/PROTOCOL.md).
         _paired.value = if (!on) emptyList() else adapter.bondedDevices
             .filter { it.bluetoothClass?.majorDeviceClass == BluetoothClass.Device.Major.AUDIO_VIDEO }
-            .filter { Models.isSupported(it.name ?: "") }
-            .map { Paired(it.address, it.name ?: it.address) }
+            .mapNotNull { d ->
+                val name = d.name ?: d.address
+                val soundcore = d.uuids.orEmpty().map { it.uuid.toString() }
+                    .firstOrNull { SoundcoreModels.fromServiceUuid(it) in SoundcoreSession.SUPPORTED_MODELS }
+                when {
+                    soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore)
+                    Models.isSupported(d.name ?: "") -> Paired(d.address, name)
+                    else -> null
+                }
+            }
             .sortedBy { it.name }
     }
 

@@ -9,14 +9,14 @@
     <string name="permission_settings">Open app settings</string>
 
     <string name="connect_title">Connect your earbuds</string>
-    <string name="connect_hint">Pick your SoundPEATS earbuds. Close PeatsAudio first: only one app can hold the controls.</string>
+    <string name="connect_hint">Pick your earbuds. Close the official app (PeatsAudio, Soundcore) first: only one app can hold the controls.</string>
     <string name="connect">Connect</string>
     <string name="connecting">Connecting…</string>
-    <string name="no_paired">No SoundPEATS earbuds paired. Pair them in the Bluetooth settings first.</string>
+    <string name="no_paired">No supported earbuds paired. Pair them in the Bluetooth settings first.</string>
     <string name="bluetooth_off">Bluetooth is off.</string>
     <string name="bluetooth_settings">Bluetooth settings</string>
     <string name="privacy_line">No account. No internet. Nothing leaves this phone.</string>
-    <string name="failed_could_not_open">Could not reach the controls of %1$s. Close PeatsAudio if it is open, check the earbuds are connected for audio, then try again.</string>
+    <string name="failed_could_not_open">Could not reach the controls of %1$s. Close the official app (PeatsAudio, Soundcore) if it is open, check the earbuds are connected for audio, then try again.</string>
     <string name="failed_lost">The connection to %1$s dropped.</string>
     <string name="failed_bluetooth_off">Bluetooth is off.</string>
     <string name="failed_no_permission">Bluetooth access is turned off for SoundPeter.</string>
@@ -70,6 +70,7 @@
     <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
 
     <string name="sound_profile">Sound</string>
+    <string name="eq_soundcore_later">SoundPeter does not change the equalizer on Soundcore earbuds yet. It is the next step.</string>
     <string name="eq_unavailable">SoundPeter does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
     <string name="eq_stock">Stock</string>
     <string name="eq_new">New</string>

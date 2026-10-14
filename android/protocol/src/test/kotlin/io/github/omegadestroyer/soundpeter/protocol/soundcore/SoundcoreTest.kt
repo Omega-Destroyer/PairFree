@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.soundpeter.protocol.soundcore
 
+import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.hexBytes
 import io.github.omegadestroyer.soundpeter.protocol.repoFile
 import kotlinx.serialization.json.Json
@@ -156,6 +157,79 @@ class SoundcoreEqTest {
         assertEquals(0xB4.toByte(), SoundcoreEq.toByte(60))
         assertEquals(0x3C.toByte(), SoundcoreEq.toByte(-60))
         assertArrayEquals(intArrayOf(0, 60, -60), byteArrayOf(0x78, 0xB4.toByte(), 0x3C).map { SoundcoreEq.toTenths(it) }.toIntArray())
+    }
+}
+
+/** The A40 on SoundPeter's screens, replayed from the recording. */
+class SoundcoreSessionTest {
+    private val frames = vectors.getValue("frames").jsonArray.map { it.jsonObject }
+
+    private fun packet(direction: String, command: String, nth: Int = 0): SoundcorePacket =
+        frames.filter { it.str("direction") == direction && it.str("command") == command }[nth]
+            .let { SoundcorePacket(it.str("command").toInt(16), it.str("body").hexBytes()) }
+
+    private fun connected(): SoundcoreSession =
+        SoundcoreSession(SoundcoreSession.A3936).also { assertTrue(it.receive(packet("from_earbuds", "0101"))) }
+
+    private fun ancNumber(name: String) = Command.ANC_MODE.labels.entries.first { it.value == name }.key
+
+    @Test
+    fun stateBecomesWhatTheScreensRead() {
+        val s = connected().state
+        assertEquals(100, s.batteryLeft)
+        assertEquals(100, s.batteryRight)
+        assertEquals(15, s.batteryCase)
+        assertEquals(ancNumber("off"), s.number(Command.ANC_MODE))
+        assertEquals(true, s.switch(Command.LDAC))
+        assertEquals(false, s.switch(Command.MULTIPOINT))
+        assertEquals(false, s.switch(Command.GAME_MODE))
+        assertEquals("A3936", s.firmware?.code)
+        assertEquals("06.43", s.firmware?.version)
+    }
+
+    @Test
+    fun noiseModesSendWhatTheSoundcoreAppSent() {
+        val session = connected()
+        val anc = Command.ANC_MODE
+        val sent = frames.filter { it.str("direction") == "to_earbuds" && it.str("command") == "0681" }.map { it.str("frame") }
+        assertEquals(sent[0], session.set(anc, ancNumber("anc"))!!.hex())
+        assertEquals(ancNumber("anc"), session.state.number(anc))
+        session.receive(packet("from_earbuds", "0601", 0))
+        assertEquals(sent[1], session.set(anc, ancNumber("off"))!!.hex())
+        session.receive(packet("from_earbuds", "0601", 1))
+        assertEquals(ancNumber("off"), session.state.number(anc))
+    }
+
+    @Test
+    fun pushesUpdateTheScreens() {
+        val session = connected()
+        assertTrue(!session.receive(packet("from_earbuds", "0103")), "the same battery changes nothing")
+        assertTrue(!session.receive(SoundcorePacket(SoundcoreCommand.SET_SOUND_MODES, ByteArray(0))), "an acknowledgement changes nothing")
+        assertTrue(session.receive(SoundcorePacket(SoundcoreCommand.BATTERY, byteArrayOf(4, 3, 50))))
+        assertEquals(80, session.state.batteryLeft)
+        assertEquals(60, session.state.batteryRight)
+        assertEquals(50, session.state.batteryCase)
+    }
+
+    @Test
+    fun switchesAreOneByteFlags() {
+        val session = connected()
+        assertEquals(SoundcorePacket.build(SoundcoreCommand.GAMING_MODE, byteArrayOf(1)).hex(), session.set(Command.GAME_MODE, 1)!!.hex())
+        assertEquals(SoundcorePacket.build(SoundcoreCommand.LDAC, byteArrayOf(0)).hex(), session.set(Command.LDAC, 0)!!.hex())
+        assertEquals(SoundcorePacket.build(SoundcoreCommand.DUAL_CONNECTIONS_ENABLED, byteArrayOf(1)).hex(), session.set(Command.MULTIPOINT, 1)!!.hex())
+        assertNull(session.set(Command.PROMPT_VOLUME, 50), "settings the A40 does not share are refused")
+    }
+
+    @Test
+    fun neverBuildsANeverSendCommand() {
+        val session = connected()
+        for (command in Command.entries) {
+            for (value in 0..2) {
+                val frame = session.set(command, value) ?: continue
+                val number = ((frame[5].toInt() and 0xFF) shl 8) or (frame[6].toInt() and 0xFF)
+                assertTrue(number !in SoundcoreCommand.NEVER_SEND, command.name)
+            }
+        }
     }
 }
 

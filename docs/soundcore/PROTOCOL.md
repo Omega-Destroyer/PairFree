@@ -6,7 +6,7 @@ checksum, and the commands for the state, noise control, touch actions and touch
 is unconfirmed. Everything below comes from reading the source of
 [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) (commit `bc77a29`, 2026-09-26), an
 open-source Soundcore app that supports about 40 models, under GPL-3.0-or-later like
-SoundPeter. [Gadgetbridge](https://gadgetbridge.org/gadgets/headphones/anker/) supports eight
+PairFree. [Gadgetbridge](https://gadgetbridge.org/gadgets/headphones/anker/) supports eight
 Soundcore models as well. The official Soundcore app (6.4.0) cannot be read: its code is
 encrypted by a commercial protector (ijiami), and the unencrypted Flutter part holds no protocol.
 Each model's state layout (section 5) was read from OpenSCQ30's parsers on 2026-10-13 and checked
@@ -80,7 +80,7 @@ has not confirmed it.
 
 Seen on the A40 but not in OpenSCQ30: the Soundcore app reads usage statistics with `05 01`
 right after the state (little-endian counters), then clears them with `05 81`, which has no
-body; the next `05 01` reads all zero. SoundPeter has no use for either and sends neither.
+body; the next `05 01` reads all zero. PairFree has no use for either and sends neither.
 
 On the A40 every setting is acknowledged with the same command and no body, and after `06 81`
 the earbuds also send the new sound modes as `06 01`. They send the battery (`01 03`) and the
@@ -94,14 +94,14 @@ earbuds it can be read back.
 
 ## 4. Identifying the model
 
-OpenSCQ30 does not detect the model: the user picks it when adding the earbuds. SoundPeter finds
+OpenSCQ30 does not detect the model: the user picks it when adding the earbuds. PairFree finds
 SoundPEATS models by itself (from the firmware code), and does the same for Soundcore.
 
 On the A40 two things name the model: the vendor service UUID ends in `3936`, and the serial
 number in the state reply starts with `3936`. The rest of the serial number is the earbuds'
 Bluetooth address, so reports mask it. Its Bluetooth name is "Soundcore Space A40".
 
-SoundPeter (`SoundcoreModels.identify`) takes the model from the vendor service UUID when it
+PairFree (`SoundcoreModels.identify`) takes the model from the vendor service UUID when it
 names a model in `data/soundcore/devices.json` (`b` and the model number, as on the A3116 and
 A3936), and otherwise from the Bluetooth name, matched without case against the names
 OpenSCQ30 gives each model. Only the A40's name is confirmed to be the one the earbuds use. A
@@ -115,7 +115,7 @@ OpenSCQ30 fixes it (the A3116 always uses its vendor service, the A3930 the seri
 
 `data/soundcore/devices.json` holds each model's reply to the state request (`01 01`) as
 `[field, bytes]` in order, read from the model's parser in OpenSCQ30. `skip` marks bytes
-SoundPeter does not use; `optional:` marks fields only some firmware sends. Each model also has
+PairFree does not use; `optional:` marks fields only some firmware sends. Each model also has
 the scale of its battery levels: percent = (value - offset) * 100 / max, so most report fifths
 (max 5), some tenths or percent, and a level outside 0 to max (`FF`) means that earbud is away.
 `SoundcoreLayout` and `SoundcoreState` read any model's reply from that table.
@@ -133,14 +133,14 @@ Quirks from OpenSCQ30:
 - In a dual firmware field an earbud that is away sends bytes that are not a version, so the
   version is taken from the other earbud.
 - The battery update (`01 03`) holds one level per earbud, then two bytes OpenSCQ30 does not
-  name. On the A40 the third is the case in percent (section 6); on other models SoundPeter
+  name. On the A40 the third is the case in percent (section 6); on other models PairFree
   ignores them.
 
 How far each layout is checked:
 - **Tested:** the A40 (section 6).
 - **Checked:** 21 models whose replies OpenSCQ30's tests hold, 37 replies in all, many from its
   users' bug reports. They are in `data/soundcore/test_vectors.json` (`openscq30_states`) with
-  the serial numbers replaced by zeros, and SoundPeter's tests read every one: the firmware is a
+  the serial numbers replaced by zeros, and PairFree's tests read every one: the firmware is a
   version, the batteries are 0 to 100 or away, the noise mode is known.
 - **Not tested:** the other 17 models, read from OpenSCQ30's parsers alone. A device report from
   one of them (the state reply as hex) checks its layout.
@@ -150,7 +150,7 @@ The README's Soundcore table shows which is which.
 ### Adding models nobody on the project owns
 
 OpenSCQ30 asks owners of an unsupported model to copy the raw state reply from its
-development mode. SoundPeter's Copy device report gives the same reply, with the serial number
+development mode. PairFree's Copy device report gives the same reply, with the serial number
 masked, and says how long it was against the length the layout expects. A bug report's
 Bluetooth log, made while the official Soundcore app is in use, gives more: the state reply,
 every setting the app sends and its EQ curves.
@@ -195,7 +195,7 @@ names its model (section 4), the start of the state reply (TWS status, battery, 
 versions, the serial number), the sound modes block (6 bytes, byte 0: 0 noise cancelling,
 1 transparency, 2 normal), and the touch-action and touch-tone commands.
 
-**Settings tried from SoundPeter (2026-10-13).** Game mode (`01 87`), LDAC (`01 FF`) and two
+**Settings tried from PairFree (2026-10-13).** Game mode (`01 87`), LDAC (`01 FF`) and two
 devices (`0B 84`) each take one byte, 1 on and 0 off, as OpenSCQ30 sends them. Every LDAC or
 two-devices change makes the earbuds restart their connection, so the control channel closes
 and opens again a few seconds later. LDAC on turns two devices off and LDAC off turns it back
@@ -218,7 +218,7 @@ list (`0B 01`, 42 bytes per device) unasked; it holds other devices' names and a
 | 20 | The 10 bands again for each earbud, after OpenSCQ30's `apply_drc()` (`volume_adjustments.rs`) |
 
 The app's sliders went from `3C` (-6 dB) to `B4` (+6 dB). A preset write sends 9 bands and a
-`00` for each earbud. The state reply carries the EQ too, so SoundPeter can show the curve
+`00` for each earbud. The state reply carries the EQ too, so PairFree can show the curve
 the earbuds hold.
 
 **3D sound:** `02 86`, 1 on and 0 off. OpenSCQ30 knows the command (surround sound) but does not
@@ -276,7 +276,7 @@ each model's block is described part by part (`eq.hear_id.parts`), since five la
 
 **Where the Space A40 differs from OpenSCQ30.** The Soundcore app sends gender `FF` where
 OpenSCQ30 sends `00`, and an empty HearID curve as `FF` bytes ending in `00` where OpenSCQ30 sends
-all `FF` (`eq.gender`, `eq.hear_id.empty_curve_ends_in_zero`). SoundPeter follows the recordings.
+all `FF` (`eq.gender`, `eq.hear_id.empty_curve_ends_in_zero`). PairFree follows the recordings.
 
 **How far each model is checked.** The A40: its 7 recorded writes. 11 models: OpenSCQ30's own EQ
 tests, 14 cases of a state reply, a choice and the exact packet (`openscq30_eq` in

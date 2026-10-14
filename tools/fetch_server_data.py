@@ -51,7 +51,7 @@ HEADERS = {
     "appVersion": "v1.9.45",
     "lang": "en_US",
     "userId": "",
-    "User-Agent": "SoundPeter-research (one request per 30 s)",
+    "User-Agent": "PairFree-research (one request per 30 s)",
 }
 # Tried in order for the feature list when the firmware version is not known.
 FALLBACK_VERSIONS = ["", "0.0.1", "9.9.9"]

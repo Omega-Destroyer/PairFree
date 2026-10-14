@@ -4,9 +4,9 @@ usage: python tools/import_openscq30.py PATH_TO_OPENSCQ30
 
 OpenSCQ30 (https://github.com/Oppzippy/OpenSCQ30, Kyle Scheuing, GPL-3.0-or-later) supports
 about 40 Soundcore models. This reads its source and writes, for every model, the facts
-SoundPeter uses: the model number, its English name, the OpenSCQ30 module that implements it,
+PairFree uses: the model number, its English name, the OpenSCQ30 module that implements it,
 and the features that module offers. Nothing of OpenSCQ30's code is copied into this repo.
-What SoundPeter learned itself (reports, ldac_excludes, extra_features, notes, state) is kept.
+What PairFree learned itself (reports, ldac_excludes, extra_features, notes, state) is kept.
 """
 import json
 import re
@@ -88,7 +88,7 @@ def main():
         "note": "Model numbers, names and each model's features come from OpenSCQ30's source at this commit "
                 "(tools/import_openscq30.py). Each model's state layout, battery scales, checksum, service and "
                 "command overrides were read from OpenSCQ30's parsers at the same commit and checked against its "
-                "tests. What SoundPeter found on hardware is in reports and notes, and in battery notes where it "
+                "tests. What PairFree found on hardware is in reports and notes, and in battery notes where it "
                 "differs from OpenSCQ30.",
     }
     data["devices"] = devices

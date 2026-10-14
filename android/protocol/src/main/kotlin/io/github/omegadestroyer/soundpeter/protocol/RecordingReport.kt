@@ -2,12 +2,12 @@ package io.github.omegadestroyer.soundpeter.protocol
 
 /**
  * The body of a Record from PeatsAudio report (docs/DESIGN.md): what PeatsAudio read from
- * each pair of earbuds in the log, SoundPeter's own reads, and the EQ curves the user named.
+ * each pair of earbuds in the log, PairFree's own reads, and the EQ curves the user named.
  * The settings lines are device report lines, which tools/gen_models_table.py reads; the
  * equalizer part is what tools/import_eq_capture.py reads.
  */
 public object RecordingReport {
-    /** SoundPeter's own reads from the earbuds it is connected to. */
+    /** PairFree's own reads from the earbuds it is connected to. */
     public class OwnReads(
         public val firmware: FirmwareVersion?,
         public val replies: Map<Command, ByteArray>,
@@ -32,7 +32,7 @@ public object RecordingReport {
         }
         if (own != null) {
             out += ""
-            out += "---- What SoundPeter reads on connect from ${earbudsName(own.firmware)} ----"
+            out += "---- What PairFree reads on connect from ${earbudsName(own.firmware)} ----"
             out += DeviceReport.lines(own.replies, compact = compact)
             own.gaiaFeatures?.let { out += DeviceReport.gaiaLine(it, compact) }
         }
@@ -65,7 +65,7 @@ public object RecordingReport {
     /** The model's name from its firmware code, and the firmware version. */
     public fun earbudsName(firmware: FirmwareVersion?): String {
         firmware ?: return "earbuds with no firmware reply in the log"
-        val name = Models.find(firmware.code, null)?.names?.firstOrNull() ?: "a model not in SoundPeter's table yet"
+        val name = Models.find(firmware.code, null)?.names?.firstOrNull() ?: "a model not in PairFree's table yet"
         return "$name, firmware ${firmware.text}"
     }
 }

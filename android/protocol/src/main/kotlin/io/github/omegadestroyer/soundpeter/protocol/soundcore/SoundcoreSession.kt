@@ -5,7 +5,7 @@ import io.github.omegadestroyer.soundpeter.protocol.EarbudState
 import io.github.omegadestroyer.soundpeter.protocol.Value
 
 /**
- * One connection to Soundcore earbuds, shown on SoundPeter's screens. The screens work in the
+ * One connection to Soundcore earbuds, shown on PairFree's screens. The screens work in the
  * SoundPEATS command table ([Command], [EarbudState]), so the earbuds' state becomes
  * [EarbudState] values and a setting from the screens becomes a Soundcore packet. Only the
  * settings both brands share are mapped: battery, noise control, game mode, LDAC and two
@@ -29,7 +29,7 @@ public class SoundcoreSession(public val model: String) {
 
     /**
      * Applies one packet from the earbuds. Returns true when [state] changed. Acknowledgements
-     * (empty bodies) and packets SoundPeter does not use change nothing.
+     * (empty bodies) and packets PairFree does not use change nothing.
      */
     public fun receive(packet: SoundcorePacket): Boolean {
         val body = packet.body
@@ -123,7 +123,7 @@ public class SoundcoreSession(public val model: String) {
     public companion object {
         public const val A3936: String = "A3936"
 
-        /** Models whose state SoundPeter can read: every model with a layout in data/soundcore/devices.json. */
+        /** Models whose state PairFree can read: every model with a layout in data/soundcore/devices.json. */
         public val SUPPORTED_MODELS: Set<String> get() = SoundcoreLayout.ALL.map { it.model }.toSet()
 
         private val EARBUD_BATTERIES = listOf("dual_battery", "dual_battery_level", "single_battery", "single_battery_charging_first", "battery_level")

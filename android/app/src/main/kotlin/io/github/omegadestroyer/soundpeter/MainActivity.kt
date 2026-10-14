@@ -10,7 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.content.IntentCompat
-import io.github.omegadestroyer.soundpeter.ui.SoundPeterApp
+import io.github.omegadestroyer.soundpeter.ui.PairFreeApp
 import io.github.omegadestroyer.soundpeter.ui.theme.StudioTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
         )
         setContent {
-            StudioTheme { SoundPeterApp(vm) }
+            StudioTheme { PairFreeApp(vm) }
         }
     }
 

@@ -1,4 +1,4 @@
-# SoundPeter app design
+# PairFree app design
 
 This records the design decisions made so far. It covers the Android app first.
 iOS and Windows follow the same structure.
@@ -116,8 +116,8 @@ when nothing is connected.
 ### Not connected
 
 - A drawing of an open case.
-- Every paired device SoundPeter supports, of any brand (SoundPEATS, Soundcore, ...), each
-  with a Connect button. The user picks a device, never a brand: SoundPeter works out the
+- Every paired device PairFree supports, of any brand (SoundPEATS, Soundcore, ...), each
+  with a Connect button. The user picks a device, never a brand: PairFree works out the
   brand and model by itself (owner, 2026-10-13).
 - A button that opens the system Bluetooth settings.
 - One line: "No account. No internet. Nothing leaves this phone."
@@ -223,12 +223,12 @@ The earbuds cannot report their EQ, and SoundPEATS' server is closed, so a model
 curve and presets can only be learnt from what PeatsAudio sends. Which features the
 official app offers on a model is also on that server; PeatsAudio's reads show it. This
 screen lets anyone record both from the phone alone, once per model, with no computer, and
-adds SoundPeter's own device report when it is connected to the same model. It opens from the
+adds PairFree's own device report when it is connected to the same model. It opens from the
 Device tab, from the Sound tab when a model has no EQ yet ("If you want to change EQ
 settings, you can contribute to the project" and a button), and when a bug report is
 shared to the app.
 
-- First, a panel says what SoundPeter reads: only the Bluetooth messages exchanged with
+- First, a panel says what PairFree reads: only the Bluetooth messages exchanged with
   SoundPEATS earbuds, on the phone; nothing is sent until the user submits the GitHub
   issue in the browser; the app has no internet access. It links to the source code.
   People hesitate to hand a bug report to an app from an unknown developer.
@@ -238,16 +238,16 @@ shared to the app.
 - The steps: turn on Developer options, set Bluetooth HCI snoop log to Enabled and
   restart Bluetooth, open each PeatsAudio screen once without changing anything and run
   its fit test, tap SOUNDPEATS Classic and then every preset, take a bug report, share it
-  to SoundPeter, then turn the log off and delete the bug report.
-- SoundPeter reads the bug report on the phone (`capture/BugReport.kt`), only the files
+  to PairFree, then turn the log off and delete the bug report.
+- PairFree reads the bug report on the phone (`capture/BugReport.kt`), only the files
   named like the Bluetooth snoop log, and keeps only SoundPEATS control frames
   (`SnoopScanner`, `EqCapture`, `LoggedReads` in `:protocol`). The file itself is never
   stored.
-- SoundPeter notes when its own channel is open and leaves those messages out: its
+- PairFree notes when its own channel is open and leaves those messages out: its
   connect reads and its EQ put back are not PeatsAudio's. Sessions from before an update
   that added this are not known, so a log that old can still hold some.
 - It lists each pair of earbuds in the log with how many settings PeatsAudio read, and says
-  whether SoundPeter's own device report goes in (it does when SoundPeter is connected to
+  whether PairFree's own device report goes in (it does when PairFree is connected to
   earbuds with the same firmware code).
 - A phone keeps one Bluetooth log for hours, through Bluetooth being turned off and on,
   so the recording starts when the user opened this screen (remembered for up to three
@@ -256,8 +256,8 @@ shared to the app.
 - It lists every complete EQ write in the recording, with its time and a small curve, and
   marks repeats. A curve that is byte for byte the base curve or a preset of a known model
   is named already ("known H3 preset"); the user's own slider curve is recognised and left
-  out. Only a curve SoundPeter does not know shows "Needs a name". A recording with no EQ
-  curves can still be sent for its settings. The user names each one from the preset names SoundPeter knows, types another,
+  out. Only a curve PairFree does not know shows "Needs a name". A recording with no EQ
+  curves can still be sent for its settings. The user names each one from the preset names PairFree knows, types another,
   or leaves it out. The firmware reply in the log identifies the model.
 - Send on GitHub copies the report and opens a new issue with it filled in (in a code
   block), through the browser: the app still has no internet permission. The link carries
@@ -265,7 +265,7 @@ shared to the app.
   payloads on one line) so a full recording fits GitHub's limit of about 8000 characters;
   only a longer one asks the user to paste. Share sends the full text anywhere else.
 - The report holds the model, app and Android version, phone maker and model; what
-  PeatsAudio read from each pair of earbuds, in device report lines; SoundPeter's own
+  PeatsAudio read from each pair of earbuds, in device report lines; PairFree's own
   device report; and every named write's decoded bands and exact bytes. No names or
   addresses.
 - A maintainer saves it under `data/soundpeats/reports/`, where `tools/gen_models_table.py` reads
@@ -302,11 +302,11 @@ Proposed, not yet reviewed by the owner.
   pictures.
 - Buttons: one that steps through the noise modes, then game mode and 3D sound, each only
   on earbuds that have it.
-- Android needs SoundPeter set up as the earbuds' companion app (a one-time system prompt
+- Android needs PairFree set up as the earbuds' companion app (a one-time system prompt
   per pair) to start when they connect, and the notification permission on Android 13 and
   later.
 - On earbuds that support Google Fast Pair (the Space A40) Google's own battery
-  notification shows as well; SoundPeter cannot hide it.
+  notification shows as well; PairFree cannot hide it.
 
 Planned, not yet designed:
 

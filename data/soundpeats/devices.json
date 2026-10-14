@@ -2345,7 +2345,7 @@
     "fit_keeps_anc": "The official app leaves the noise mode as it is during the fit test. On every other model it turns ANC off first (docs/soundpeats/PROTOCOL.md sections 9 and 11).",
     "confirmed": "Commands marked per_model in data/soundpeats/commands.json that the official app offers on this model, as the owner saw in PeatsAudio. Without this, the app does not offer them even if the earbuds answer the read.",
     "eq": "The EQ the official app writes to this model, read from a phone capture: one band per entry with its centre frequency, Q and the base gain the user's gain is added to; the master gain sent with every band; the range of the app's sliders. eq.presets are complete curves sent as they are, with the same master gain.",
-    "touch_disable_inverted": "SOUNDPEATS 2.5.3 shows the touch-disable switch the other way round on this model: its firmware code contains one of the 17 codes in that app's list (docs/soundpeats/PROTOCOL.md section 9). Whether the earbuds' reply, the write or both are inverted was not traced, so SoundPeter does not act on it yet."
+    "touch_disable_inverted": "SOUNDPEATS 2.5.3 shows the touch-disable switch the other way round on this model: its firmware code contains one of the 17 codes in that app's list (docs/soundpeats/PROTOCOL.md section 9). Whether the earbuds' reply, the write or both are inverted was not traced, so PairFree does not act on it yet."
   },
   "reported_chips": {
     "_about": "Chips named in public reviews. Not from the app and not confirmed on hardware. Use only to guess a family before a probe report exists.",

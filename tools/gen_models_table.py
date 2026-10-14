@@ -126,10 +126,10 @@ def table():
         START,
         f"{len(supported)} models in the official app's table, {reported} with a device report and "
         f"{with_eq} with their equalizer recorded. Some models have more than one firmware code: "
-        "SoundPeter tells them apart by the code the earbuds report.",
+        "PairFree tells them apart by the code the earbuds report.",
         "",
-        f"{YES} works with SoundPeter on this model. {NO} the model does not have it, or SoundPeter "
-        "does not offer it there. A model without a device report can still be used: SoundPeter "
+        f"{YES} works with PairFree on this model. {NO} the model does not have it, or PairFree "
+        "does not offer it there. A model without a device report can still be used: PairFree "
         "shows whatever the earbuds answer, but nobody has reported what that is yet.",
         "",
         "<table>",

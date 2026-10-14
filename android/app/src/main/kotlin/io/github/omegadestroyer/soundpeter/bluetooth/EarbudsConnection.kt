@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
-/** A brand SoundPeter can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
+/** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
 enum class Brand { SOUNDPEATS, SOUNDCORE }
 
 /**

@@ -1,6 +1,12 @@
-# SoundPeter: notes for coding agents
+# PairFree: notes for coding agents
 
 ## What this is
+
+The app was called SoundPeter until 0.1.3 (renamed 2026-10-14). Some internal names keep the old
+one on purpose: the Kotlin package `io.github.omegadestroyer.soundpeter` (to be renamed once the
+`anker` branch is merged), the signing properties `soundpeter.*` in the owner's
+`~/.gradle/gradle.properties`, the key file, and the raw recordings in `data/<brand>/reports/`. The
+app ID is `io.github.omegadestroyer.pairfree`; EQ profile files from SoundPeter still import.
 
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
@@ -88,8 +94,8 @@ Confirmed on the Air5 Pro+ (firmware code `S2`, version 1.2), from phone capture
 PeatsAudio: its firmware code, its EQ layout, base curve and presets, the replies to the
 reads PeatsAudio sends on connecting (the same as the H3's), drainage (about 30 s, then it
 reports itself off) and LE Audio (the earbuds restart and reconnect). Also every read
-SoundPeter sends on connect (the probe's list; `data/soundpeats/reports/S2_1.2.txt`), and on
-2026-10-12 the owner tried every feature SoundPeter offers on it, and all worked. The
+PairFree sends on connect (the probe's list; `data/soundpeats/reports/S2_1.2.txt`), and on
+2026-10-12 the owner tried every feature PairFree offers on it, and all worked. The
 README's Tested earbuds table is the summary. Specific open questions:
 
 - Whether the Air5 Pro+ fit test gives a good result in a well-fitted ear: the only pair
@@ -187,7 +193,7 @@ reports from other people.
   there. Never send GAIA frames to other families.
 - New models come from users. The best report is the app's Record from PeatsAudio
   (`docs/DESIGN.md`): from a bug report shared to it, on the phone, it lists what
-  PeatsAudio read from the earbuds, SoundPeter's own device report and the EQ curves
+  PeatsAudio read from the earbuds, PairFree's own device report and the EQ curves
   PeatsAudio sent. Copy device report and `tools/probe.py` give the settings alone.
 - For the controls: save the report as `data/soundpeats/reports/<code>_<version>.txt`, list it under
   the model's `reports` in `data/soundpeats/devices.json`, then run `python tools/gen_models_table.py`
@@ -198,8 +204,8 @@ reports from other people.
   check the output (the firmware code, the names, that SOUNDPEATS Classic is there), then
   add its `eq` entry to the model in `data/soundpeats/devices.json` and its cases to
   `data/soundpeats/test_vectors.json`. Never copy one model's EQ to another.
-- Debug builds log every frame to Logcat under the tag `SoundPeter`
-  (`adb logcat -s SoundPeter`); release builds log nothing.
+- Debug builds log every frame to Logcat under the tag `PairFree`
+  (`adb logcat -s PairFree`); release builds log nothing.
 - Gradle 9 refuses to build from a folder Java reports as not writable, which happens
   on some network shares even when writing works. If the repo lives on such a share,
   build from a copy on a local disk.
@@ -207,7 +213,7 @@ reports from other people.
   from the GitHub release only if the two are identical apart from the signature. Bump
   `versionCode` and `versionName`, tag, build `:app:assembleRelease` from a fresh clone of
   the tag (never from a copy with local edits), and upload it to the release as
-  `SoundPeter-X.Y.Z.apk`. Files under `android/app/src/main/assets/` go into the APK byte
+  `PairFree-X.Y.Z.apk`. Files under `android/app/src/main/assets/` go into the APK byte
   for byte; `.gitattributes` keeps them as committed, so a Windows checkout matches F-Droid's.
 - Control runs over classic Bluetooth serial (RFCOMM) on the standard SPP UUID
   `00001101-0000-1000-8000-00805F9B34FB`. The earbuds must already be paired and
@@ -230,7 +236,7 @@ reports from other people.
 
 1. Run `tools/probe.py` on the H3 and the Air5 Pro+. Save both outputs in
    `data/soundpeats/reports/` and add the two models to `data/soundpeats/devices.json`. Done for both; the
-   Air5 Pro+'s reads came from SoundPeter's connect, which sends the probe's list.
+   Air5 Pro+'s reads came from PairFree's connect, which sends the probe's list.
 2. Try one harmless SET on each (ANC mode is audible) and record whether a reply comes back.
    Done for both.
 3. Scan for the GAIA BLE service on both. H3 done; Air5 Pro+ deferred.
@@ -241,7 +247,7 @@ reports from other people.
 5. Screens in this order: connection and battery, ANC, switches, gestures, EQ.
    Studio is the only look for now. Keep colours, fonts and drawings behind a theme
    so another look can be added later as a skin, not a second set of screens. All four
-   tabs are built. Every feature SoundPeter offers has been tried on both the H3 and the
+   tabs are built. Every feature PairFree offers has been tried on both the H3 and the
    Air5 Pro+ (owner, 2026-10-12). Released as v0.1.0 on 2026-10-12.
 6. Work out the Qualcomm EQ band layout on hardware. H3 and Air5 Pro+ done from phone
    captures (`docs/soundpeats/PROTOCOL.md` section 11).

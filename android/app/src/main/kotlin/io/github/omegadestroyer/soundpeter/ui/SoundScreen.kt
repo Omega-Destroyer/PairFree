@@ -185,7 +185,7 @@ internal fun SoundScreen(eq: EqState?, actions: EqActions, onRecord: (() -> Unit
                 Modifier.weight(1f),
             )
             if (editable) {
-                val fileName = (eq.basis?.takeIf { !it.builtIn }?.name ?: "soundpeter-eq") + ".json"
+                val fileName = (eq.basis?.takeIf { !it.builtIn }?.name ?: "pairfree-eq") + ".json"
                 StudioButton(stringResource(R.string.eq_export), { exporter.launch(fileName) }, Modifier.weight(1f))
             }
         }

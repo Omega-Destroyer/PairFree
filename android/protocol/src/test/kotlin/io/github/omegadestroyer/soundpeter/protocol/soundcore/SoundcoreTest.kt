@@ -162,7 +162,7 @@ class SoundcoreEqTest {
     }
 }
 
-/** The A40 on SoundPeter's screens, replayed from the recording. */
+/** The A40 on PairFree's screens, replayed from the recording. */
 class SoundcoreSessionTest {
     private val frames = vectors.getValue("frames").jsonArray.map { it.jsonObject }
 
@@ -338,7 +338,7 @@ class SoundcoreLayoutTest {
     }
 }
 
-/** Other models on SoundPeter's screens, from the replies in OpenSCQ30's tests. */
+/** Other models on PairFree's screens, from the replies in OpenSCQ30's tests. */
 class SoundcoreModelSessionTest {
     private val replies = vectors.getValue("openscq30_states").jsonArray.map { it.jsonObject }
 
@@ -637,7 +637,7 @@ class SoundcoreModelsTest {
             assertTrue(!model.isQualcomm, "never send GAIA frames to Soundcore earbuds")
         }
         val codes = SoundcoreModels.ALL.map { it.code }.toSet()
-        assertTrue(codes.containsAll(SoundcoreSession.SUPPORTED_MODELS), "a model SoundPeter can read is in the table")
+        assertTrue(codes.containsAll(SoundcoreSession.SUPPORTED_MODELS), "a model PairFree can read is in the table")
         assertEquals(setOf(Command.MULTIPOINT), SoundcoreModels.model("A3936")!!.ldacExcludes)
     }
 

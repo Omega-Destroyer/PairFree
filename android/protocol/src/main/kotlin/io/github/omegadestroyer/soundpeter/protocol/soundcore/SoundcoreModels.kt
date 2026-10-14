@@ -37,11 +37,11 @@ public object SoundcoreModels {
     public fun isVendorService(uuid: String): Boolean =
         uuid.length == 36 && uuid.lowercase().startsWith(SoundcoreWire.VENDOR_SERVICE_PREFIX)
 
-    /** A paired device SoundPeter can control: its model and the RFCOMM service to open, null for the standard serial port. */
+    /** A paired device PairFree can control: its model and the RFCOMM service to open, null for the standard serial port. */
     public data class Match(val model: String, val service: String?)
 
     /**
-     * The model of a paired device and the service to open, or null when SoundPeter has no layout for it.
+     * The model of a paired device and the service to open, or null when PairFree has no layout for it.
      * The service is chosen as OpenSCQ30 chooses it: the vendor service when the device has one, else the
      * standard serial port, unless the model fixes its own. The model is the one the vendor service names,
      * else the one the Bluetooth name belongs to.

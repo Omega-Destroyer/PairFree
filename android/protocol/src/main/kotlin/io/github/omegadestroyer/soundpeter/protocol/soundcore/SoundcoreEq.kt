@@ -26,7 +26,7 @@ public object SoundcoreEq {
      *
      * Ported from OpenSCQ30's `VolumeAdjustments::apply_drc`
      * (lib/src/devices/soundcore/common/structures/volume_adjustments.rs), GPL-3.0-or-later, the
-     * same licence as SoundPeter. The recorded writes in data/soundcore/test_vectors.json pin it.
+     * same licence as PairFree. The recorded writes in data/soundcore/test_vectors.json pin it.
      */
     public fun smooth(tenths: IntArray): IntArray {
         require(tenths.size == BANDS) { "need $BANDS bands, got ${tenths.size}" }

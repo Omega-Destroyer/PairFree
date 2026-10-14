@@ -8,7 +8,7 @@ import java.io.File
 
 /** The repo's data/soundpeats/ folder. Gradle passes its location. */
 internal val dataDir: File
-    get() = File(System.getProperty("soundpeter.data") ?: error("soundpeter.data is not set; run the tests through Gradle"))
+    get() = File(System.getProperty("pairfree.data") ?: error("pairfree.data is not set; run the tests through Gradle"))
 
 /** A file in the repo, by its path from the repo's root. */
 internal fun repoFile(path: String): File = File(dataDir, "../../$path").canonicalFile

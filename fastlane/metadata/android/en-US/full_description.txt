@@ -1,4 +1,4 @@
-SoundPeter is an open alternative to PeatsAudio, the official app for SoundPEATS earbuds. It talks to the earbuds directly over Bluetooth: no account, no cloud, and no internet permission at all.
+PairFree is an open alternative to PeatsAudio, the official app for SoundPEATS earbuds. It talks to the earbuds directly over Bluetooth: no account, no cloud, and no internet permission at all.
 
 What it does, on the models that support each feature:
 
@@ -10,8 +10,8 @@ What it does, on the models that support each feature:
 • A 10-band equalizer with the official presets, your own saved profiles, and profile files you can share
 • Ear tip fit test and water drain
 
-Tested on the SOUNDPEATS H3 and Air5 Pro+. Other SoundPEATS models use the same protocol and should work; SoundPeter shows whatever your earbuds support. If your model has not been tested, Record from PeatsAudio (Device tab) gathers its settings and equalizer from the official app into one report you can send, so it can be added for everyone. It reads that bug report only on your phone and keeps nothing but the messages exchanged with your earbuds.
+Tested on the SOUNDPEATS H3 and Air5 Pro+. Other SoundPEATS models use the same protocol and should work; PairFree shows whatever your earbuds support. If your model has not been tested, Record from PeatsAudio (Device tab) gathers its settings and equalizer from the official app into one report you can send, so it can be added for everyone. It reads that bug report only on your phone and keeps nothing but the messages exchanged with your earbuds.
 
-Close PeatsAudio before using SoundPeter: only one app can control the earbuds at a time.
+Close PeatsAudio before using PairFree: only one app can control the earbuds at a time.
 
-SoundPeter is an independent project. It is not affiliated with or endorsed by SoundPEATS.
+PairFree is an independent project. It is not affiliated with or endorsed by SoundPEATS.

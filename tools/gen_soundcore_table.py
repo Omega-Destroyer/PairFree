@@ -5,7 +5,7 @@ usage: python tools/gen_soundcore_table.py          rewrite the table in README.
 
 One row per model in data/soundcore/devices.json. What a model has comes from OpenSCQ30, whose
 source lists the features it implements for each model (tools/import_openscq30.py), plus what
-SoundPeter confirmed on the earbuds (extra_features). A model counts as tested once it has a
+PairFree confirmed on the earbuds (extra_features). A model counts as tested once it has a
 recording under data/soundcore/reports, and as checked when its state layout reads the replies
 in OpenSCQ30's tests (openscq30_states in data/soundcore/test_vectors.json).
 """
@@ -106,19 +106,19 @@ def table():
         START,
         f"{len(devices)} models. What each model has, and where each setting sits in its replies, comes from "
         f'<a href="{escape(src["url"])}">OpenSCQ30</a> (commit <code>{escape(src["commit"][:7])}</code>, '
-        f"{escape(src['date'])}), the open-source Soundcore app by {escape(src['author'])}, plus what SoundPeter "
+        f"{escape(src['date'])}), the open-source Soundcore app by {escape(src['author'])}, plus what PairFree "
         "confirmed on the earbuds.",
         "",
-        f"<b>Tested</b> ({tested}): tried on the earbuds with SoundPeter. "
-        f"<b>Checked</b> ({len(checked - {m['model'] for m in devices if m.get('reports')})}): SoundPeter reads "
+        f"<b>Tested</b> ({tested}): tried on the earbuds with PairFree. "
+        f"<b>Checked</b> ({len(checked - {m['model'] for m in devices if m.get('reports')})}): PairFree reads "
         "every reply from the model that OpenSCQ30's tests hold, most of them from its users' bug reports. "
         "<b>Not tested</b>: read from OpenSCQ30's code alone. A device report from one of these helps "
         "(Help add your model, below).",
         "",
-        f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows. SoundPeter shows battery, noise "
+        f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise "
         "control, two devices, LDAC and game mode on every model that has them, and the equalizer where its "
         "column says Tested (recorded from the Soundcore app) or Checked (OpenSCQ30's tests hold the exact "
-        "packet); the other columns are not in SoundPeter yet.",
+        "packet); the other columns are not in PairFree yet.",
         "",
         "<table>",
         f"<tr>{header}</tr>",

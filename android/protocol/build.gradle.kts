@@ -235,7 +235,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
             out.appendLine("    public const val ${(c.getValue("id") as String).uppercase()}: Int = 0x${c.getValue("command")}")
         }
         val never = commands.filter { it["never_send"] == true }.joinToString(", ") { "0x${it.getValue("command")}" }
-        out.appendLine("    /** Commands SoundPeter never sends. */")
+        out.appendLine("    /** Commands PairFree never sends. */")
         out.appendLine("    public val NEVER_SEND: Set<Int> = setOf($never)")
         out.appendLine("}")
 
@@ -358,5 +358,5 @@ tasks.test {
     inputs.dir(dataDir).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/soundcore")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
-    systemProperty("soundpeter.data", dataDir.asFile.absolutePath)
+    systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

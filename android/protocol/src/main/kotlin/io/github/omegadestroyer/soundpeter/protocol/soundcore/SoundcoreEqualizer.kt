@@ -91,7 +91,7 @@ public class SoundcoreHearId(
 /**
  * Reading and writing a Soundcore model's EQ. Ported from OpenSCQ30
  * (github.com/Oppzippy/OpenSCQ30 by Kyle Scheuing, GPL-3.0-or-later, the same licence as
- * SoundPeter): its equalizer module, its shared EQ packets (`set_equalizer`,
+ * PairFree): its equalizer module, its shared EQ packets (`set_equalizer`,
  * `set_equalizer_with_drc`, `SetEqualizerAndCustomHearId`) and each model's own EQ packet.
  * data/soundcore/test_vectors.json holds OpenSCQ30's EQ tests and the Space A40's recorded writes,
  * and the tests rebuild every one byte for byte.

@@ -363,8 +363,8 @@ class Equalizer(
 
         const val FORMAT = "pairfree-eq"
 
-        /** Profile files this app reads: its own, and those exported while it was called PairFree. */
-        val FORMATS = setOf(FORMAT, "pairfree-eq")
+        /** Profile files this app reads: its own, and those exported while it was called SoundPeter. */
+        val FORMATS = setOf(FORMAT, "soundpeter-eq")
         private const val MAX_NAME = 24
         private const val KEY_PROFILES = "eq_profiles_"
         private const val KEY_SETTING = "eq_setting_"

@@ -30,6 +30,8 @@
     <string name="left">Left</string>
     <string name="right">Right</string>
     <string name="case_label">Case</string>
+    <string name="headphones">Headphones</string>
+    <string name="speaker">Speaker</string>
     <string name="percent">%1$d%%</string>
     <string name="unknown">—</string>
 

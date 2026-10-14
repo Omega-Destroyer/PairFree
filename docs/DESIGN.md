@@ -127,7 +127,9 @@ when nothing is connected.
 Everything here fits without scrolling on a 390 by 844 screen.
 
 1. Model name and connection state. A button to switch earbuds.
-2. Battery for left, case and right, each with a drawing, a percentage and a bar.
+2. Battery for left, case and right, each with a drawing, a percentage and a bar. Headphones
+   and speakers report one battery: it shows once, named and drawn as the product, with a
+   generic headphones or speaker drawing until the model has its own (owner, 2026-10-14).
 3. **Active Noise Cancelling.** One control with three choices in this order:
    Off, Cancelling, Transparency.
    - Under Cancelling: the scene choices the earbuds report (Adaptive, Indoor,

@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.soundpeter.protocol.soundcore
 
 import io.github.omegadestroyer.soundpeter.protocol.Command
+import io.github.omegadestroyer.soundpeter.protocol.Form
 import io.github.omegadestroyer.soundpeter.protocol.hexBytes
 import io.github.omegadestroyer.soundpeter.protocol.repoFile
 import kotlinx.serialization.json.Json
@@ -439,6 +440,18 @@ class SoundcoreModelsTest {
         val names = SoundcoreModels.ALL.flatMap { m -> m.names.map { it.lowercase() } }
         assertEquals(names.size, names.toSet().size)
         for (m in SoundcoreModels.ALL) for (n in m.names) assertEquals(m.code, SoundcoreModels.fromName(n))
+    }
+
+    @Test
+    fun oneBatteryMeansHeadphonesOrASpeaker() {
+        for (m in SoundcoreModels.ALL) {
+            val layout = SoundcoreLayout.of(m.code)!!
+            val twoEarbuds = layout.has("dual_battery") || layout.has("dual_battery_level")
+            assertEquals(twoEarbuds, m.form == Form.EARBUDS, m.code)
+        }
+        assertEquals(Form.SPEAKER, SoundcoreModels.model("A3116")!!.form, "Motion+")
+        assertEquals(Form.HEADPHONES, SoundcoreModels.model("A3028")!!.form, "Life Q30")
+        assertEquals(Form.EARBUDS, SoundcoreModels.model("A3936")!!.form, "Space A40")
     }
 
     @Test

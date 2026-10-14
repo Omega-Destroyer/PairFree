@@ -46,6 +46,7 @@ import io.github.omegadestroyer.soundpeter.eq.EqActions
 import io.github.omegadestroyer.soundpeter.eq.EqState
 import io.github.omegadestroyer.soundpeter.protocol.Command
 import io.github.omegadestroyer.soundpeter.protocol.EarbudState
+import io.github.omegadestroyer.soundpeter.protocol.Form
 import io.github.omegadestroyer.soundpeter.protocol.Model
 import io.github.omegadestroyer.soundpeter.protocol.Models
 import io.github.omegadestroyer.soundpeter.protocol.soundcore.SoundcoreModels
@@ -134,7 +135,8 @@ private fun HomeScreen(
     eq: EqState?,
     onOpenSound: () -> Unit,
 ) {
-    val art = deviceArt(state.firmware?.code, device.name)
+    val form = model?.form ?: Form.EARBUDS
+    val art = deviceArt(state.firmware?.code, device.name, form)
     TabContent {
         // Model name and connection state, and a button to switch earbuds.
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -148,14 +150,21 @@ private fun HomeScreen(
         }
 
         // Battery for left, case and right: drawing, percentage, bar. Only what the earbuds report.
-        val batteries = listOfNotNull(
-            Battery(R.string.left, state.batteryLeft, art.bud, mirrored = false)
-                .takeIf { state.supports(Command.BATTERY_LEFT) },
-            Battery(R.string.case_label, state.batteryCase, art.case, mirrored = false)
-                .takeIf { state.supports(Command.BATTERY_CASE) },
-            Battery(R.string.right, state.batteryRight, art.bud, mirrored = true)
-                .takeIf { state.supports(Command.BATTERY_RIGHT) },
-        )
+        // Headphones and speakers report one battery, shown as the whole product.
+        val batteries = when (form) {
+            Form.EARBUDS -> listOfNotNull(
+                Battery(R.string.left, state.batteryLeft, art.bud, mirrored = false)
+                    .takeIf { state.supports(Command.BATTERY_LEFT) },
+                Battery(R.string.case_label, state.batteryCase, art.case, mirrored = false)
+                    .takeIf { state.supports(Command.BATTERY_CASE) },
+                Battery(R.string.right, state.batteryRight, art.bud, mirrored = true)
+                    .takeIf { state.supports(Command.BATTERY_RIGHT) },
+            )
+            Form.HEADPHONES, Form.SPEAKER -> listOfNotNull(
+                Battery(if (form == Form.SPEAKER) R.string.speaker else R.string.headphones, state.batteryLeft, art.bud, mirrored = false)
+                    .takeIf { state.supports(Command.BATTERY_LEFT) },
+            )
+        }
         if (batteries.isEmpty()) {
             Label(stringResource(R.string.reading))
         } else {

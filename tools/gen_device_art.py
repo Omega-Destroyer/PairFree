@@ -541,6 +541,27 @@ def generic_case():
     ], "Charging case")
 
 
+# For headphones and speakers, which report one battery: the whole product, not any one model.
+def generic_headphones():
+    return drawing(96, 96, [
+        path(dashes(48, 2, 48, 94), LABEL, FINE),
+        path("M20 58C20 30 32 12 48 12C64 12 76 30 76 58", INK, STROKE),
+        path(rounded_rect(10, 50, 20, 34, 9), INK, STROKE, fill=PANEL),
+        path(rounded_rect(66, 50, 20, 34, 9), INK, STROKE, fill=PANEL),
+        path(rounded_rect(16, 57, 8, 20, 4), ACCENT, STROKE, fill=RAISED),
+        path(rounded_rect(72, 57, 8, 20, 4), ACCENT, STROKE, fill=RAISED),
+    ], "Headphones")
+
+
+def generic_speaker():
+    return drawing(96, 96, [
+        path(dashes(48, 2, 48, 94), LABEL, FINE),
+        path(rounded_rect(8, 26, 80, 46, 12), INK, STROKE, fill=PANEL),
+        path(rounded_rect(16, 36, 64, 28, 7), ACCENT, STROKE, fill=RAISED),
+        path(fmt(circle_path(48, 31, 1.6)), fill=ACCENT),
+    ], "Speaker")
+
+
 # ------------------------------------------------------------- output --------
 # slug: (name, bud, case or None, Bluetooth names that use these drawings)
 DEVICES = {
@@ -564,6 +585,8 @@ def _traced(d):
 for f in sorted(ART_DATA.glob("*.json")) if ART_DATA.exists() else []:
     DEVICES[f.stem] = _traced(json.loads(f.read_text(encoding="utf-8")))
 DEVICES["generic"] = ("Any other model", generic_bud, generic_case, [])
+DEVICES["generic-headphones"] = ("Any headphones", generic_headphones, None, [])
+DEVICES["generic-speaker"] = ("Any speaker", generic_speaker, None, [])
 only = ARGS.models.split(",") if ARGS.models else list(DEVICES)
 
 cells = []
@@ -611,7 +634,9 @@ KT.write_text(
     + "".join(f'    "{c}" to {kotlin_art(s)},\n' for c, s in sorted(by_code.items()))
     + ")\n\n"
     "/** For models without drawings of their own. */\n"
-    f"internal val GENERIC_ART: DeviceArt = {kotlin_art('generic')}\n",
+    f"internal val GENERIC_ART: DeviceArt = {kotlin_art('generic')}\n"
+    f"internal val GENERIC_HEADPHONES_ART: DeviceArt = {kotlin_art('generic-headphones')}\n"
+    f"internal val GENERIC_SPEAKER_ART: DeviceArt = {kotlin_art('generic-speaker')}\n",
     newline="\n",
 )
 

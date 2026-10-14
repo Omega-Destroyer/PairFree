@@ -245,7 +245,8 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
             val names = (d.getValue("names") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
             val excludes = (d["ldac_excludes"] as List<*>? ?: emptyList<Any>())
                 .joinToString(", ", "setOf(", ")") { "io.github.omegadestroyer.soundpeter.protocol.Command.${(it as String).uppercase()}" }
-            out.appendLine("    io.github.omegadestroyer.soundpeter.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes),")
+            val form = "io.github.omegadestroyer.soundpeter.protocol.Form." + ((d["kind"] as String?) ?: "earbuds").uppercase()
+            out.appendLine("    io.github.omegadestroyer.soundpeter.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes, form = $form),")
         }
         out.appendLine(")")
 

@@ -67,3 +67,5 @@ internal val ART_BY_CODE: Map<String, DeviceArt> = mapOf(
 
 /** For models without drawings of their own. */
 internal val GENERIC_ART: DeviceArt = DeviceArt(R.drawable.device_generic_bud, R.drawable.device_generic_case)
+internal val GENERIC_HEADPHONES_ART: DeviceArt = DeviceArt(R.drawable.device_generic_headphones_bud, null)
+internal val GENERIC_SPEAKER_ART: DeviceArt = DeviceArt(R.drawable.device_generic_speaker_bud, null)

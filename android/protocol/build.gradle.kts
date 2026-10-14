@@ -194,6 +194,10 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val devicesJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val eqPresetsJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -280,6 +284,48 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
         }
         out.appendLine(")")
 
+        fun ints(v: Any?) = (v as List<*>).joinToString(", ") { (it as Number).toInt().toString() }
+        @Suppress("UNCHECKED_CAST")
+        val sets = (JsonSlurper().parse(eqPresetsJson.get().asFile) as Map<String, Any?>).getValue("sets") as Map<String, Map<String, Any?>>
+        out.appendLine()
+        out.appendLine("/** The EQ preset sets in data/soundcore/eq_presets.json, read from OpenSCQ30. */")
+        out.appendLine("internal val SOUNDCORE_PRESET_SETS: Map<String, SoundcorePresetSet> = mapOf(")
+        for ((name, s) in sets) {
+            @Suppress("UNCHECKED_CAST")
+            val presets = (s.getValue("presets") as List<Map<String, Any?>>).joinToString(",\n        ", "listOf(\n        ", ",\n    )") { p ->
+                "SoundcorePreset(${(p.getValue("id") as Number).toInt()}, ${str(p["key"])}, ${str(p["name"])}, intArrayOf(${ints(p["values"])}))"
+            }
+            val custom = (s["custom_preset"] as Number?)?.toInt()?.toString() ?: "null"
+            val range = s.getValue("custom_range") as List<*>
+            out.appendLine("    ${str(name)} to SoundcorePresetSet($custom, listOf(${ints(s["band_hz"])}), listOf(${ints(s["hidden_bands"])}), " +
+                "${(range[0] as Number).toInt()}, ${(range[1] as Number).toInt()}, $presets),")
+        }
+        out.appendLine(")")
+
+        out.appendLine()
+        out.appendLine("/** Every model's equalizer (data/soundcore/devices.json eq), read from OpenSCQ30. */")
+        out.appendLine("internal val SOUNDCORE_EQ: List<SoundcoreEqSpec> = listOf(")
+        for (d in devices) {
+            @Suppress("UNCHECKED_CAST")
+            val eq = d["eq"] as Map<String, Any?>? ?: continue
+            val range = eq.getValue("range") as List<*>
+            val channels = (eq.getValue("channels") as Number).toInt()
+            @Suppress("UNCHECKED_CAST")
+            val hearId = (eq["hear_id"] as Map<String, Any?>?)?.let { h ->
+                "SoundcoreHearIdLayout(${str(h["field"])}, ${(h.getValue("channels") as Number).toInt()}, " +
+                    "${(h.getValue("bands") as Number).toInt()}, listOf(${(h.getValue("parts") as List<*>).joinToString(", ") { str(it) }}), " +
+                    "${h["empty_curve_ends_in_zero"] == true})"
+            } ?: "null"
+            out.appendLine(
+                "    SoundcoreEqSpec(${str(d["model"])}, ${str(eq["write"])}, $channels, ${(eq.getValue("bands") as Number).toInt()}, " +
+                    "${(range[0] as Number).toInt()}, ${(range[1] as Number).toInt()}, ${(eq.getValue("digits") as Number).toInt()}, " +
+                    "presets = ${str(eq["presets"])}, presetBytes = ${(eq["preset_bytes"] as Number?)?.toInt() ?: 2}, " +
+                    "stateChannels = ${(eq["state_channels"] as Number?)?.toInt() ?: channels}, presetOnly = ${eq["state"] == "preset_only"}, " +
+                    "hearId = $hearId, gender = ${(eq["gender"] as Number?)?.toInt() ?: "null"}),",
+            )
+        }
+        out.appendLine(")")
+
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()
         dir.resolve("SoundcoreTables.kt").writeText(out.toString())
@@ -289,6 +335,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
 val generateSoundcoreTables = tasks.register<GenerateSoundcoreTables>("generateSoundcoreTables") {
     commandsJson = rootProject.layout.projectDirectory.file("../data/soundcore/commands.json")
     devicesJson = rootProject.layout.projectDirectory.file("../data/soundcore/devices.json")
+    eqPresetsJson = rootProject.layout.projectDirectory.file("../data/soundcore/eq_presets.json")
     packageName = "io.github.omegadestroyer.soundpeter.protocol.soundcore"
     outputDir = layout.buildDirectory.dir("generated/soundcore")
 }

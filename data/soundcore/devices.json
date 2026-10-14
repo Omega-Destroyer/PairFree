@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by SoundPeter: ldac_excludes lists features LDAC turns off on the earbuds (SoundPeter's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports. state is the model's reply to the state request (01 01) as [field, bytes] in order, read from OpenSCQ30's parser and checked against its test replies where it has any; skip marks bytes SoundPeter does not use, optional: fields only some firmware sends. battery gives each level's scale: percent = (value - offset) * 100 / max. checksum false means the packets carry none. service_uuid fixes the RFCOMM service when OpenSCQ30 does. commands overrides a command number for one model, as OpenSCQ30 does (game mode on the A3947 and A3957). min_firmware names fields the earbuds send but only use from a firmware version on; both earbuds must have that version or newer. kind is what the product is when it is not earbuds (headphones or speaker); those report one battery, and the app labels and draws it as the product.",
+  "_about": "Soundcore models SoundPeter knows. model is Soundcore's model number, which the earbuds' vendor service UUID and serial number carry. openscq30 holds the module and features OpenSCQ30 implements for the model (see source, refreshed by tools/import_openscq30.py). The rest was found by SoundPeter: ldac_excludes lists features LDAC turns off on the earbuds (SoundPeter's ids, data/soundpeats/commands.json), extra_features lists features confirmed on the earbuds that OpenSCQ30 does not offer, and reports lists recordings in data/soundcore/reports. state is the model's reply to the state request (01 01) as [field, bytes] in order, read from OpenSCQ30's parser and checked against its test replies where it has any; skip marks bytes SoundPeter does not use, optional: fields only some firmware sends. battery gives each level's scale: percent = (value - offset) * 100 / max. checksum false means the packets carry none. service_uuid fixes the RFCOMM service when OpenSCQ30 does. commands overrides a command number for one model, as OpenSCQ30 does (game mode on the A3947 and A3957). min_firmware names fields the earbuds send but only use from a firmware version on; both earbuds must have that version or newer. kind is what the product is when it is not earbuds (headphones or speaker); those report one battery, and the app labels and draws it as the product. eq is the model's equalizer, read from OpenSCQ30: write names the packet format (docs/soundcore/PROTOCOL.md section 8), channels and bands its curves, range and digits the value scale, presets the set in eq_presets.json, hear_id the HearID block the write passes on from the state.",
   "source": {
     "project": "OpenSCQ30",
     "url": "https://github.com/Oppzippy/OpenSCQ30",
@@ -37,7 +37,18 @@
         ["serial", 16],
         ["equalizer", 12],
         ["sound_modes", 4]
-      ]
+      ],
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3005",
@@ -70,7 +81,18 @@
         ["dual_connections_enabled", 1],
         ["skip", 4],
         ["auto_power_off", 2]
-      ]
+      ],
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3005"
+      }
     },
     {
       "model": "A3027",
@@ -105,7 +127,18 @@
         ["serial", 16],
         ["wearing_detection", 1],
         ["optional:skip", 1]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 1,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3028",
@@ -140,7 +173,18 @@
         ["firmware", 5],
         ["serial", 16],
         ["optional:skip", 7]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 1,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3029",
@@ -174,7 +218,18 @@
         ["firmware", 5],
         ["serial", 16],
         ["optional:skip", 7]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 1,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3030",
@@ -209,7 +264,18 @@
         ["serial", 16],
         ["wearing_detection", 1],
         ["optional:skip", 1]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 1,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3031",
@@ -243,7 +309,18 @@
         ["side_tone", 1],
         ["touch_tone", 1],
         ["auto_power_off", 2]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3033",
@@ -272,7 +349,18 @@
         ["firmware", 5],
         ["serial", 16],
         ["wearing_detection", 1]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 1,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3035",
@@ -326,7 +414,31 @@
         ["limit_high_volume", 3],
         ["sound_mode_voice_prompt", 1],
         ["battery_alert", 1]
-      ]
+      ],
+      "eq": {
+        "write": "a3035",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3035",
+        "hear_id": {
+          "field": "hear_id",
+          "channels": 1,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre1"
+          ]
+        }
+      }
     },
     {
       "model": "A3040",
@@ -377,7 +489,32 @@
         ["low_battery_prompt", 1],
         ["skip", 5],
         ["hear_id", 58]
-      ]
+      ],
+      "eq": {
+        "write": "a3040",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3040",
+        "hear_id": {
+          "field": "hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "skip10",
+            "genre2"
+          ]
+        }
+      }
     },
     {
       "model": "A3062",
@@ -430,7 +567,31 @@
         ["limit_high_volume", 3],
         ["side_tone", 1],
         ["sound_mode_voice_prompt", 1]
-      ]
+      ],
+      "eq": {
+        "write": "a3062",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3062",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 1,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      }
     },
     {
       "model": "A3116",
@@ -466,7 +627,19 @@
         ["firmware", 5],
         ["serial", 16],
         ["equalizer", 10]
-      ]
+      ],
+      "eq": {
+        "write": "a3116",
+        "channels": 1,
+        "bands": 9,
+        "range": [
+          -6,
+          6
+        ],
+        "digits": 0,
+        "preset_bytes": 1,
+        "presets": "a3116"
+      }
     },
     {
       "model": "A3330",
@@ -518,7 +691,18 @@
         ["equalizer", 12],
         ["skip", 1],
         ["call_buttons", 4]
-      ]
+      ],
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3330"
+      }
     },
     {
       "model": "A3388",
@@ -569,7 +753,19 @@
         ["skip", 1],
         ["equalizer", 12],
         ["optional:skip", 0]
-      ]
+      ],
+      "eq": {
+        "write": "a3388",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "state_channels": 1,
+        "presets": "type_2"
+      }
     },
     {
       "model": "A3876",
@@ -616,7 +812,18 @@
         ["gaming_mode", 1],
         ["volume_balance", 1],
         ["dual_connections_enabled", 1]
-      ]
+      ],
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3876"
+      }
     },
     {
       "model": "A3909",
@@ -646,7 +853,19 @@
         ["age_range", 1],
         ["hear_id", 21],
         ["buttons", 4]
-      ]
+      ],
+      "eq": {
+        "write": "a3909",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -12,
+          12
+        ],
+        "digits": 0,
+        "state": "preset_only",
+        "presets": "a3909"
+      }
     },
     {
       "model": "A3926",
@@ -679,7 +898,28 @@
         ["age_range", 1],
         ["basic_hear_id", 21],
         ["buttons", 12]
-      ]
+      ],
+      "eq": {
+        "write": "hear_id",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common",
+        "hear_id": {
+          "field": "basic_hear_id",
+          "channels": 2,
+          "bands": 8,
+          "parts": [
+            "enabled",
+            "curve",
+            "time"
+          ]
+        }
+      }
     },
     {
       "model": "A3930",
@@ -716,7 +956,31 @@
         ["sound_modes", 4],
         ["side_tone", 1],
         ["optional:skip", 2]
-      ]
+      ],
+      "eq": {
+        "write": "hear_id",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 8,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "genre1",
+            "custom"
+          ]
+        }
+      }
     },
     {
       "model": "A3931",
@@ -752,7 +1016,18 @@
         ["side_tone", 1],
         ["touch_tone", 1],
         ["auto_power_off", 2]
-      ]
+      ],
+      "eq": {
+        "write": "drc",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3933",
@@ -798,7 +1073,18 @@
         ["sound_mode_cycle", 1],
         ["sound_modes", 4],
         ["skip", 2]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3935",
@@ -834,7 +1120,18 @@
         ["side_tone", 1],
         ["touch_tone", 1],
         ["auto_power_off", 2]
-      ]
+      ],
+      "eq": {
+        "write": "drc",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3936",
@@ -891,6 +1188,33 @@
         ["auto_power_off", 2],
         ["gaming_mode", 1]
       ],
+      "eq": {
+        "write": "hear_id_forced",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ],
+          "empty_curve_ends_in_zero": true
+        },
+        "gender": 255,
+        "note": "Recorded from the Soundcore app (data/soundcore/reports/A3936_06.43.txt): gender is sent as FF, and a HearID curve the earbuds do not hold as FF bytes ending in 00. OpenSCQ30 sends 00 and FF bytes."
+      },
       "reports": [
         "data/soundcore/reports/A3936_06.43.txt"
       ],
@@ -949,7 +1273,18 @@
         ["sound_mode_cycle", 1],
         ["sound_modes", 4],
         ["skip", 2]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3944",
@@ -982,7 +1317,18 @@
         ["buttons", 12],
         ["skip", 5],
         ["touch_tone", 1]
-      ]
+      ],
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3944"
+      }
     },
     {
       "model": "A3945",
@@ -1026,7 +1372,18 @@
         ["gaming_mode", 1],
         ["case_battery", 1],
         ["skip", 2]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      }
     },
     {
       "model": "A3947",
@@ -1055,9 +1412,6 @@
           "dual_battery",
           "case_battery_level"
         ]
-      },
-      "commands": {
-        "gaming_mode": "1085"
       },
       "battery": {
         "earbuds": {
@@ -1097,7 +1451,35 @@
         ["auto_power_off", 2],
         ["touch_lock", 1],
         ["low_battery_prompt", 1]
-      ]
+      ],
+      "eq": {
+        "write": "a3947",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre1",
+            "skip1"
+          ]
+        }
+      },
+      "commands": {
+        "gaming_mode": "1085"
+      }
     },
     {
       "model": "A3948",
@@ -1133,7 +1515,18 @@
         ["skip", 5],
         ["touch_tone", 1],
         ["skip", 15]
-      ]
+      ],
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2"
+      }
     },
     {
       "model": "A3949",
@@ -1172,7 +1565,18 @@
         ["skip", 4],
         ["gaming_mode", 1],
         ["touch_tone", 1]
-      ]
+      ],
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3949"
+      }
     },
     {
       "model": "A3951",
@@ -1214,7 +1618,31 @@
         ["touch_tone", 1],
         ["optional:skip", 2],
         ["optional:skip", 2]
-      ]
+      ],
+      "eq": {
+        "write": "hear_id",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 8,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "genre1",
+            "custom"
+          ]
+        }
+      }
     },
     {
       "model": "A3952",
@@ -1273,7 +1701,31 @@
         ["wearing_tone", 1],
         ["skip", 1],
         ["auto_power_off", 2]
-      ]
+      ],
+      "eq": {
+        "write": "hear_id",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3952",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      }
     },
     {
       "model": "A3954",
@@ -1350,7 +1802,31 @@
         ["wearing_detection", 1],
         ["skip", 1],
         ["buttons", 4]
-      ]
+      ],
+      "eq": {
+        "write": "interleaved",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      }
     },
     {
       "model": "A3955",
@@ -1410,7 +1886,31 @@
         ["auto_power_off", 2],
         ["skip", 1],
         ["low_battery_prompt", 1]
-      ]
+      ],
+      "eq": {
+        "write": "a3955",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      }
     },
     {
       "model": "A3957",
@@ -1440,9 +1940,6 @@
           "case_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
-      },
-      "commands": {
-        "gaming_mode": "1085"
       },
       "battery": {
         "earbuds": {
@@ -1483,7 +1980,34 @@
         ["gaming_mode", 1],
         ["pressure_sensitivity", 1],
         ["skip", 6]
-      ]
+      ],
+      "eq": {
+        "write": "interleaved",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      },
+      "commands": {
+        "gaming_mode": "1085"
+      }
     },
     {
       "model": "A3959",
@@ -1537,6 +2061,17 @@
       ],
       "min_firmware": {
         "gaming_mode": "01.60"
+      },
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2"
       }
     },
     {
@@ -1591,7 +2126,31 @@
         ["dual_connections_enabled", 1],
         ["touch_tone", 1],
         ["auto_power_off", 2]
-      ]
+      ],
+      "eq": {
+        "write": "hear_id",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      }
     },
     {
       "model": "D1101",
@@ -1633,7 +2192,19 @@
         ["disable_all_buttons", 1],
         ["auto_power_off", 2],
         ["ldac", 1]
-      ]
+      ],
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "state_channels": 1,
+        "presets": "d1101"
+      }
     },
     {
       "model": "D1202",
@@ -1692,7 +2263,31 @@
         ["auto_power_off", 2],
         ["limit_high_volume", 3],
         ["spatial_audio", 2]
-      ]
+      ],
+      "eq": {
+        "write": "interleaved",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      }
     },
     {
       "model": "D1202C",
@@ -1751,7 +2346,31 @@
         ["auto_power_off", 2],
         ["limit_high_volume", 3],
         ["spatial_audio", 2]
-      ]
+      ],
+      "eq": {
+        "write": "interleaved",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      }
     },
     {
       "model": "D1301",

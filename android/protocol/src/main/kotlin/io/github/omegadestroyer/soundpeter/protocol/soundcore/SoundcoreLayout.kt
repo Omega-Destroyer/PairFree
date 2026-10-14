@@ -56,6 +56,9 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
     /** The reply's length in bytes. */
     public val size: Int get() = body.size
 
+    /** A field's bytes as the layout places them, or null when the model or this reply does not send it. */
+    public fun field(name: String): ByteArray? = bytes(name)
+
     private fun bytes(name: String): ByteArray? =
         layout.locate(name)?.let { (at, size) -> if (at + size <= body.size) body.copyOfRange(at, at + size) else null }
 

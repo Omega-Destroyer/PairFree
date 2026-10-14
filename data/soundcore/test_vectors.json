@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout.",
+  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body.",
   "frames": [
     {
       "direction": "to_earbuds",
@@ -821,6 +821,567 @@
       "model": "D1301",
       "openscq30_test": "d1301.rs::delete_alarm_shifts_indices",
       "body": "0101090938312e303038312e303030303030303030303030303030303030dfba70d9bf9030312e30300000000006dd660000ffffffffffffffff001e0001ffffff000000000032110100060000000000000000000001cb313d00000000000202018000000000000004030280000000000000040403800000000000000405048000000000000004010000010800000001010000010100"
+    }
+  ],
+  "openscq30_eq": [
+    {
+      "model": "A3035",
+      "openscq30_test": "a3035.rs::set_preset_eq",
+      "state": "05ff30362e38373030303030303030303030303030303000007878787878787878fafa1eff00ffffffffffffffffff000000000000ffffffffffffffffff00000004040703005000000105000100000031010001000102005a000101000000",
+      "preset": "Acoustic",
+      "packets": [
+        {
+          "command": "0387",
+          "body": "01000000a0828c8ca0a0a08c7800ffff00ffffffffffffffffff000000000000ffffffffffffffffff007d767b787c7a7c79780000"
+        }
+      ]
+    },
+    {
+      "model": "A3035",
+      "openscq30_test": "a3035.rs::set_custom_eq",
+      "state": "05ff30362e38373030303030303030303030303030303000007878787878787878fafa1eff00ffffffffffffffffff000000000000ffffffffffffffffff00000004040703005000000105000100000031010001000102005a000101000000",
+      "bands": [
+        -60,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        60
+      ],
+      "packets": [
+        {
+          "command": "0387",
+          "body": "fefe00003c787878787878b47878ffff00ffffffffffffffffff000000000000ffffffffffffffffff00707c777977797481780000"
+        }
+      ]
+    },
+    {
+      "model": "A3040",
+      "openscq30_test": "a3040.rs::set_equalizer_soundcore_signature",
+      "state": "03ff30322e3334303030303030303030303030303030301100968c6e6e8296a0aa78007a7a7677797a7a7e780004040707005000010005ff0000ff00310001ff000100005a0001010100113201018f8f808a96968f8f3c3c8f8f808a96968f8f3c3c64988ccd008f8f808a96968f8f3c3c000000000000000000007a7a77797a7a797b7200110000000000000000",
+      "preset": "SoundcoreSignature",
+      "packets": [
+        {
+          "command": "0387",
+          "body": "0000110078787878787878787800787878787878787878000001008f8f808a96968f8f3c3c8f8f808a96968f8f3c3c64988ccd008f8f808a96968f8f3c3c8f8f808a96968f8f3c3c787878787878787878007878787878787878780000"
+        }
+      ]
+    },
+    {
+      "model": "A3040",
+      "openscq30_test": "a3040.rs::set_equalizer_custom",
+      "state": "03ff30322e3334303030303030303030303030303030301100968c6e6e8296a0aa78007a7a7677797a7a7e780004040707005000010005ff0000ff00310001ff000100005a0001010100113201018f8f808a96968f8f3c3c8f8f808a96968f8f3c3c64988ccd008f8f808a96968f8f3c3c000000000000000000007a7a77797a7a797b7200110000000000000000",
+      "bands": [
+        60,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -60
+      ],
+      "packets": [
+        {
+          "command": "0387",
+          "body": "fefe1100b47878787878783c7878b47878787878783c78780001008f8f808a96968f8f3c3c8f8f808a96968f8f3c3c64988ccd008f8f808a96968f8f3c3c8f8f808a96968f8f3c3c8074797779777c6f78008074797779777c6f780000"
+        }
+      ]
+    },
+    {
+      "model": "A3388",
+      "openscq30_test": "a3388.rs::equalizer_preset_sets_both_channels",
+      "state": "0001080830312e343930312e343930303030303030303030303030303030c40e38f9d407076666323355553100010101000105005a8ca0a0968c78640000010000ff",
+      "preset": "BassBooster",
+      "packets": [
+        {
+          "command": "0283",
+          "body": "0200a0968278787878787800a0968278787878787800"
+        }
+      ]
+    },
+    {
+      "model": "A3876",
+      "openscq30_test": "a3876.rs::set_custom_eq",
+      "state": "0101050930332e313530332e313530303030303030303030303030303030fffffffffffffefe7878787878787878fafa7878787878787878fafa09fff6f363fff5fff001042d0117bbef3101010200006401000000000000000000000000",
+      "bands": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        60
+      ],
+      "packets": [
+        {
+          "command": "0283",
+          "body": "fefe78787878787878b4787878787878787974817800"
+        }
+      ]
+    },
+    {
+      "model": "A3944",
+      "openscq30_test": "a3944.rs::set_eq_packet_matches",
+      "state": "00010505000030322e323730322e323730303030303030303030303030303030000078787878787878787800000000000000000000000e010001000166016601320133ffffff360001ffffffffffffffffffffffffffffff",
+      "preset": "Acoustic",
+      "packets": [
+        {
+          "command": "0283",
+          "body": "0100a0828c8ca0a0a08c78007d767b787c7a7c797800"
+        }
+      ]
+    },
+    {
+      "model": "A3947",
+      "openscq30_test": "a3947.rs::it_turns_off_hear_id",
+      "state": "01010204000030352e383830352e38383030303030303030303030303030303030302e3030fefe78787878787878787878ffffffffffffffffffff000170758c94968e86833c3c70758c94968e86833c3c686422400070758c94968e86833c3c70758c94968e86833c3c00001211661165113211331144114400210020350050010001010300000000ff0102310100000100000100015001000001010101ff",
+      "bands": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "packets": [
+        {
+          "command": "0387",
+          "body": "fefe000078797a7b7c7d7e7f787878797a7b7c7d7e7f787800000070758c94968e86833c3c70758c94968e86833c3c686422400070758c94968e86833c3c70758c94968e86833c3c787878787878787978007878787878787879780000"
+        }
+      ]
+    },
+    {
+      "model": "A3949",
+      "openscq30_test": "a3949.rs::r50i_set_eq_matches_soundcore_app",
+      "state": "00010303000031392e343331392e343330303030303030303030303030303030000078787878787878787800000000000000000000000e01f601f60162016301330133ffffff310000ffffffffffffffffffffffffffffff",
+      "preset": "Piano",
+      "packets": [
+        {
+          "command": "0283",
+          "body": "0e007896968ca0aa96a07800777b7a787b7c787d7800"
+        }
+      ]
+    },
+    {
+      "model": "A3954",
+      "openscq30_test": "a3954.rs::set_eq_packet",
+      "state": "00016364000030332e323930332e32393030303030303030303030303030303030322e353809000000000000fefe78787878787878787878ffffffffffffffffffff000191938b8d7a6f69643c3c91938b8d7a6f69643c3c000000000191938b827a8585723c3c91938b827a8585723c3c00000a66663233ffff44443302060000ff01ff000000005e016e010000000100015f000001000000006e0100010000ff00001111",
+      "bands": [
+        60,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -60
+      ],
+      "packets": [
+        {
+          "command": "0387",
+          "body": "fefe0000b47878787878783c7878b47878787878783c787800000091938b8d7a6f69643c3c91938b8d7a6f69643c3c000000000191938b827a8585723c3c91938b827a8585723c3cb4007800780078007800780078003c0078007800b4007800780078007800780078003c00780078000000"
+        }
+      ]
+    },
+    {
+      "model": "A3955",
+      "openscq30_test": "a3955.rs::set_equalizer_with_hear_id_uninitialized_byte_set",
+      "state": "00010402000030312e363730312e363730303030303030303030303030303030302e312e3801fefeb4988c8c7885888e7878ffffffffffffffffffffff0178787878787878787878787878787878787878780000000002ffffffffffffffffff00ffffffffffffffffff0000000a11ff636633334433330051000201000100000000ffff0131010101520201030101ffffffffffffffffff19",
+      "bands": [
+        60,
+        -60,
+        60,
+        -60,
+        60,
+        -60,
+        60,
+        -60
+      ],
+      "packets": [
+        {
+          "command": "0387",
+          "body": "fefe0000b43cb43cb43cb43c7878b43cb43cb43cb43c7878ffff00ffffffffffffffffff00ffffffffffffffffff000000000000ffffffffffffffffff00ffffffffffffffffff0085648d628e638c6a780085648d628e638c6a780000"
+        }
+      ]
+    },
+    {
+      "model": "A3955",
+      "openscq30_test": "a3955.rs::set_equalizer_with_hear_id_initialized",
+      "state": "00010402000030312e363730312e363730303030303030303030303030303030302e312e3801fefeb4988c8c7885888e7878ffffffffffffffffffff000178787878787878787878787878787878787878780000000002787878787878787878787878787878787878787800000a11ff636633334433330051000201000100000000ffff0131010101520201030101ffffffffffffffffff19",
+      "bands": [
+        -60,
+        -60,
+        -60,
+        -60,
+        -60,
+        -60,
+        -60,
+        -60
+      ],
+      "packets": [
+        {
+          "command": "0387",
+          "body": "fefe00003c3c3c3c3c3c3c3c78783c3c3c3c3c3c3c3c7878000000787878787878787878787878787878787878787800000000027878787878787878787878787878787878787878737574747474747278007375747474747472780000"
+        }
+      ]
+    },
+    {
+      "model": "A3959",
+      "openscq30_test": "a3959.rs::test_set_equalizer_configuration",
+      "state": "01010009ffff30312e363430312e363430303030303030303030303030303030fefe6578a1abab98903c7878000000000000000000000af1f06666f2f34444330055000001ff013101010001000100000000000000000000000000",
+      "bands": [
+        -19,
+        0,
+        41,
+        51,
+        51,
+        32,
+        13,
+        -35
+      ],
+      "packets": [
+        {
+          "command": "0283",
+          "body": "fefe6578a1abab988555787876777c7b7c797b727800"
+        }
+      ]
+    },
+    {
+      "model": "D1202",
+      "openscq30_test": "d1202.rs::set_preset_eq",
+      "state": "01010909000030312e383330312e38333030303030303030303030303030303030312e383303000078787878787878787878ffffffffffffffffffff000078787878787878787878787878787878787878780000000002787878787878787878787878787878787878787800000affff6366ffff444433005000020000000032010100010102005a0001030000000000000000ffffffffff",
+      "preset": "Acoustic",
+      "packets": [
+        {
+          "command": "0387",
+          "body": "01000000a0828c8ca0a0a08c7800a0828c8ca0a0a08c7800000000787878787878787878787878787878787878787800000000027878787878787878787878787878787878787878a00082008c008c00a000a000a0008c0078000000a00082008c008c00a000a000a0008c00780000000000"
+        }
+      ]
+    }
+  ],
+  "openscq30_eq_formats": [
+    {
+      "format": "plain",
+      "openscq30_test": "common/packet/outbound/set_equalizer.rs::it_matches_an_example_custom_eq_packet",
+      "preset": 65278,
+      "channels": [
+        [
+          -60,
+          60,
+          23,
+          40,
+          22,
+          60,
+          -4,
+          16
+        ]
+      ],
+      "frame": "08ee00000002811400fefe3cb48fa08eb47488e6"
+    },
+    {
+      "format": "plain",
+      "openscq30_test": "common/packet/outbound/set_equalizer.rs::it_matches_an_example_soundcore_signature_packet",
+      "preset": 0,
+      "channels": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "frame": "08ee00000002811400000078787878787878784d"
+    },
+    {
+      "format": "plain",
+      "openscq30_test": "common/packet/outbound/set_equalizer.rs::it_matches_an_example_treble_reducer_packet",
+      "preset": 21,
+      "channels": [
+        [
+          0,
+          0,
+          0,
+          -20,
+          -30,
+          -40,
+          -40,
+          -60
+        ]
+      ],
+      "frame": "08ee000000028114001500787878645a50503ca4"
+    },
+    {
+      "format": "plain",
+      "openscq30_test": "common/packet/outbound/set_equalizer.rs::it_sends_second_channel_if_present",
+      "preset": 21,
+      "channels": [
+        [
+          0,
+          0,
+          0,
+          -20,
+          -30,
+          -40,
+          -40,
+          -60
+        ],
+        [
+          0,
+          0,
+          0,
+          -20,
+          -30,
+          -40,
+          -40,
+          -60
+        ]
+      ],
+      "frame": "08ee00000002811c001500787878645a50503c787878645a50503cae"
+    },
+    {
+      "format": "drc",
+      "openscq30_test": "common/packet/outbound/set_equalizer_with_drc.rs::it_matches_a_manually_crafted_packet",
+      "preset": 65278,
+      "channels": [
+        [
+          -60,
+          60,
+          23,
+          120,
+          22,
+          -120,
+          -4,
+          16
+        ]
+      ],
+      "frame": "08ee00000002831c00fefe3cb48ff08e0074886d8670887b667e794f"
+    },
+    {
+      "format": "hear_id",
+      "openscq30_test": "common/packet/outbound/set_equalizer_and_custom_hear_id.rs::it_matches_a_generated_packet_with_hear_id_set",
+      "preset": 65278,
+      "channels": [
+        [
+          -52,
+          -66,
+          -64,
+          -67,
+          -108,
+          -22,
+          -49,
+          -101
+        ],
+        [
+          -52,
+          -66,
+          -64,
+          -67,
+          -108,
+          -22,
+          -49,
+          -101
+        ]
+      ],
+      "hear_id": {
+        "enabled": true,
+        "curve": [
+          [
+            -67,
+            -104,
+            -72,
+            -111,
+            -44,
+            -51,
+            -76,
+            -50
+          ],
+          [
+            -78,
+            -104,
+            -10,
+            -95,
+            -4,
+            -92,
+            -80,
+            -66
+          ]
+        ],
+        "time": 2693136640,
+        "type": 1,
+        "genre": 65278,
+        "custom": [
+          [
+            -109,
+            -52,
+            -73,
+            -2,
+            -101,
+            -116,
+            -118,
+            -39
+          ],
+          [
+            -12,
+            -112,
+            -36,
+            -41,
+            -24,
+            -113,
+            -106,
+            -21
+          ]
+        ]
+      },
+      "gender": 1,
+      "age": 2,
+      "forced": false,
+      "frame": "08ee00000003875600fefefefe443638350c624713443638350c624713010200351030094c452c462a106e19741c2836a0860100010b442f76130402516c08544f60070e63747474776b7c756c747474776b7c756c0a"
+    },
+    {
+      "format": "hear_id",
+      "openscq30_test": "common/packet/outbound/set_equalizer_and_custom_hear_id.rs::it_matches_a_generated_packet_with_no_hear_id",
+      "preset": 0,
+      "channels": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "hear_id": {
+        "enabled": true,
+        "curve": [
+          [
+            -33,
+            -1,
+            -33,
+            -62,
+            -9,
+            -99,
+            -19,
+            -21
+          ],
+          [
+            -46,
+            -19,
+            -111,
+            -2,
+            -10,
+            -6,
+            -100,
+            -101
+          ]
+        ],
+        "time": 100000,
+        "type": 0,
+        "genre": 0,
+        "custom": [
+          [
+            -90,
+            -67,
+            -53,
+            -79,
+            -13,
+            -12,
+            -73,
+            -99
+          ],
+          [
+            -24,
+            -67,
+            -40,
+            -41,
+            -38,
+            -102,
+            -119,
+            -24
+          ]
+        ]
+      },
+      "gender": 1,
+      "age": 255,
+      "forced": false,
+      "frame": "08ee00000003865400000078787878787878787878787878787878ffff00ffffffffffffffffffffffffffffffff0000000000ffffffffffffffffffffffffffffffff78787878787878787878787878787878b1"
+    },
+    {
+      "format": "a3062",
+      "openscq30_test": "a3062/packets/outbound.rs::set_equalizer_matches_known_good_packet",
+      "preset": 65278,
+      "channels": [
+        [
+          -60,
+          5,
+          -60,
+          28,
+          -7,
+          -25,
+          24,
+          -9,
+          0,
+          0
+        ]
+      ],
+      "hear_id": {
+        "enabled": false,
+        "curve": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            -60
+          ]
+        ],
+        "time": 0,
+        "type": 2,
+        "genre": 0,
+        "custom": [
+          [
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            -60
+          ]
+        ]
+      },
+      "command": "0387",
+      "body": "fefe00003c7d3c94715f906f78780000007878787878787878783c00000000028282828282828282823c3c7d3c94715f906f787800"
     }
   ]
 }

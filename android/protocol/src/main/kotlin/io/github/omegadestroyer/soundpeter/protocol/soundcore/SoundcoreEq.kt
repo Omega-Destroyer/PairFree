@@ -30,24 +30,35 @@ public object SoundcoreEq {
      */
     public fun smooth(tenths: IntArray): IntArray {
         require(tenths.size == BANDS) { "need $BANDS bands, got ${tenths.size}" }
-        val db = DoubleArray(BANDS) { tenths[it] / 10.0 }
+        return drc(tenths, 1, MIN_TENTHS, MAX_TENTHS)
+    }
+
+    /**
+     * [smooth] for any model: [values] has 8 or more bands with [digits] decimal digits, and the
+     * result is clamped to [min]..[max]. Bands 9 and 10 come back as 0 and -120, as in OpenSCQ30.
+     */
+    public fun drc(values: IntArray, digits: Int, min: Int, max: Int): IntArray {
+        require(values.size >= 8) { "need 8 bands or more, got ${values.size}" }
+        var scale = 1
+        repeat(digits) { scale *= 10 }
+        val db = DoubleArray(values.size) { values[it].toDouble() / scale.toDouble() }
         val lows = db[2] * 0.81 * SMALLER
         val highs = db[5] * 0.81 * SMALLER
-        val out = IntArray(BANDS)
-        for (band in 0 until 8) {
-            var sum = 0.0
-            for (index in 0 until 8) {
-                sum = when {
-                    (band == 1 || band == 3) && index == 2 -> sum - lows
-                    (band == 4 || band == 6) && index == 5 -> sum - highs
-                    else -> sum + db[index] * COEFFICIENTS[band][index]
+        return IntArray(values.size) { band ->
+            if (band < 8) {
+                var sum = 0.0
+                for (index in 0 until 8) {
+                    sum = when {
+                        (band == 1 || band == 3) && index == 2 -> sum - lows
+                        (band == 4 || band == 6) && index == 5 -> sum - highs
+                        else -> sum + db[index] * COEFFICIENTS[band][index]
+                    }
                 }
+                roundHalfAwayFromZero(sum / 10.0 * scale.toDouble()).coerceIn(min, max)
+            } else {
+                (if (band == 9) MIN_TENTHS else 0).coerceIn(min, max)
             }
-            out[band] = roundHalfAwayFromZero(sum / 10.0 * 10.0).coerceIn(MIN_TENTHS, MAX_TENTHS)
         }
-        out[8] = 0
-        out[9] = MIN_TENTHS
-        return out
     }
 
     // Rust's f64::round, which OpenSCQ30 uses: halves go away from zero.

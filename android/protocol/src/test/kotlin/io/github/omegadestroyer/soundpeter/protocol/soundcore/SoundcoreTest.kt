@@ -418,6 +418,139 @@ class SoundcoreModelSessionTest {
     }
 }
 
+/**
+ * Every model's EQ (data/soundcore/devices.json eq, eq_presets.json), checked against OpenSCQ30's EQ
+ * tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later) and the Space A40's recorded writes.
+ */
+class SoundcoreEqualizerTest {
+    private val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
+    private val presetSets = load("eq_presets.json").getValue("sets").jsonObject
+
+    private fun packets(list: List<SoundcorePacket>) = list.map { "%04x".format(it.command) to it.body.hex() }
+
+    private fun values(e: kotlinx.serialization.json.JsonElement?): IntArray? =
+        if (e == null || e is kotlinx.serialization.json.JsonNull) null else e.jsonArray.map { it.jsonPrimitive.int }.toIntArray()
+
+    @Test
+    fun specsMatchTheData() {
+        val withEq = devices.filter { "eq" in it }
+        assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
+        assertEquals(38, withEq.size, "every model but the Sleep A30")
+        for (d in withEq) {
+            val eq = d.getValue("eq").jsonObject
+            val spec = SoundcoreEqSpec.of(d.str("model"))!!
+            assertEquals(eq.str("write"), spec.write, spec.model)
+            assertEquals(eq.getValue("channels").jsonPrimitive.int, spec.channels, spec.model)
+            assertEquals(eq.getValue("bands").jsonPrimitive.int, spec.bands, spec.model)
+            assertEquals(eq.str("presets"), spec.presets, spec.model)
+            val set = presetSets.getValue(spec.presets).jsonObject
+            assertEquals(set.getValue("presets").jsonArray.size, spec.presetSet.presets.size, spec.model)
+            assertTrue(spec.presetSet.presets.isNotEmpty(), spec.model)
+            // the EQ field in the state layout has room for what the spec reads
+            val layout = SoundcoreLayout.of(spec.model)!!
+            if (!spec.presetOnly) assertEquals(spec.presetBytes + spec.stateChannels * spec.bands, layout.locate("equalizer")!!.second, spec.model)
+            spec.hearId?.let { h -> assertTrue(layout.has(h.field), "${spec.model} ${h.field}") }
+        }
+        assertEquals(255, SoundcoreEqSpec.of("A3936")!!.gender, "the Soundcore app sends FF on the A40")
+        assertTrue(!SoundcoreEqSpec.of("A3949")!!.hasCustom, "OpenSCQ30: the P20i has no custom EQ")
+    }
+
+    @Test
+    fun rebuildsOpenScq30sEqTests() {
+        val cases = vectors.getValue("openscq30_eq").jsonArray.map { it.jsonObject }
+        assertEquals(14, cases.size)
+        assertEquals(11, cases.map { it.str("model") }.toSet().size)
+        for (c in cases) {
+            val where = c.str("openscq30_test")
+            val spec = SoundcoreEqSpec.of(c.str("model"))!!
+            val state = SoundcoreState.parse(SoundcoreLayout.of(spec.model)!!, c.str("state").hexBytes())!!
+            val target = c["preset"]?.let { SoundcoreEqualizer.forPreset(spec, spec.preset(it.jsonPrimitive.content)!!) }
+                ?: SoundcoreEqualizer.forCustom(spec, values(c["bands"])!!)!!
+            val expected = c.getValue("packets").jsonArray.map { it.jsonObject.str("command") to it.jsonObject.str("body") }
+            assertEquals(expected, packets(SoundcoreEqualizer.write(spec, state, target)), where)
+        }
+    }
+
+    @Test
+    fun rebuildsOpenScq30sPacketTests() {
+        val cases = vectors.getValue("openscq30_eq_formats").jsonArray.map { it.jsonObject }
+        assertEquals(8, cases.size)
+        for (c in cases) {
+            val where = c.str("openscq30_test")
+            val channels = c.getValue("channels").jsonArray.map { values(it) }
+            val bands = channels.first()!!.size
+            val h = c["hear_id"]?.jsonObject
+            val hearChannels = h?.getValue("curve")?.jsonArray?.size ?: 0
+            val format = c.str("format").let { if (it == "hear_id" && c["forced"]?.jsonPrimitive?.boolean == true) "hear_id_forced" else it }
+            val spec = SoundcoreEqSpec(
+                "test", format, channels.size, bands, -120, 134, 1, presets = "common",
+                hearId = h?.let { SoundcoreHearIdLayout("custom_hear_id", hearChannels, bands, emptyList()) },
+            )
+            val hearId = h?.let {
+                SoundcoreHearId(
+                    it.getValue("curve").jsonArray.map { v -> values(v) },
+                    it.getValue("time").jsonPrimitive.content.toLong(),
+                    it.getValue("type").jsonPrimitive.int,
+                    it.getValue("genre").jsonPrimitive.int,
+                    it.getValue("custom").jsonArray.map { v -> values(v) },
+                )
+            }
+            val got = SoundcoreEqualizer.write(
+                spec, SoundcoreEqConfig(c.getValue("preset").jsonPrimitive.int, channels), hearId,
+                gender = c["gender"]?.jsonPrimitive?.int ?: 0, age = c["age"]?.jsonPrimitive?.int ?: 0,
+                hearIdInitialized = true, current = null,
+            ).single()
+            if ("frame" in c) {
+                assertEquals(c.str("frame"), SoundcorePacket.build(got.command, got.body).hex(), where)
+            } else {
+                assertEquals(c.str("command") to c.str("body"), "%04x".format(got.command) to got.body.hex(), where)
+            }
+        }
+    }
+
+    @Test
+    fun rebuildsTheA40sRecordedWrites() {
+        // The Soundcore app's own writes, recorded from the owner's Space A40.
+        val spec = SoundcoreEqSpec.of("A3936")!!
+        val state = SoundcoreState.parse(SoundcoreLayout.of("A3936")!!, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())!!
+        val writes = vectors.getValue("eq_writes").jsonArray.map { it.jsonObject }
+        assertEquals(7, writes.size)
+        for (w in writes) {
+            val target = SoundcoreEqConfig(w.getValue("preset").jsonPrimitive.int, listOf(ints(w, "left_tenths"), ints(w, "right_tenths")))
+            assertEquals(listOf("0387" to w.str("body")), packets(SoundcoreEqualizer.write(spec, state, target)))
+        }
+    }
+
+    @Test
+    fun presetsAndCustomCurvesAsTheSoundcoreAppSendsThem() {
+        // Recorded on the A40: a custom curve sends bands 9 and 10 as 0, Soundcore Signature sends band 10 as -12 dB.
+        val spec = SoundcoreEqSpec.of("A3936")!!
+        val writes = vectors.getValue("eq_writes").jsonArray.map { it.jsonObject }
+        val custom = writes.first { it.getValue("preset").jsonPrimitive.int == SoundcoreEq.CUSTOM_PRESET && ints(it, "left_tenths")[0] == 60 }
+        val curve = ints(custom, "left_tenths").copyOf(8)
+        assertEquals(SoundcoreEqConfig(SoundcoreEq.CUSTOM_PRESET, listOf(ints(custom, "left_tenths"), ints(custom, "right_tenths"))), SoundcoreEqualizer.forCustom(spec, curve))
+        val signature = writes.first { it.getValue("preset").jsonPrimitive.int == 0 }
+        assertEquals(SoundcoreEqConfig(0, listOf(ints(signature, "left_tenths"), ints(signature, "right_tenths"))), SoundcoreEqualizer.forPreset(spec, spec.preset("SoundcoreSignature")!!))
+    }
+
+    @Test
+    fun readsTheEqBackFromTheState() {
+        val spec = SoundcoreEqSpec.of("A3936")!!
+        val body = vectors.getValue("a3936_state").jsonObject.str("body").hexBytes()
+        val own = A3936State.parse(body)!!
+        val read = SoundcoreEqualizer.read(spec, SoundcoreState.parse(SoundcoreLayout.of("A3936")!!, body)!!)!!
+        assertEquals(own.eqPreset, read.preset)
+        // Every model with a state reply in OpenSCQ30's tests: the EQ reads, with a preset or a curve in range.
+        for (c in vectors.getValue("openscq30_states").jsonArray.map { it.jsonObject }) {
+            val s = SoundcoreEqSpec.of(c.str("model")) ?: continue
+            val state = SoundcoreState.parse(SoundcoreLayout.of(s.model)!!, c.str("body").hexBytes())!!
+            val eq = SoundcoreEqualizer.read(s, state)
+            assertNotNull(eq, c.str("openscq30_test"))
+            for (ch in eq!!.channels.filterNotNull()) assertTrue(ch.all { it in s.min..s.max }, c.str("openscq30_test"))
+        }
+    }
+}
+
 class SoundcoreModelsTest {
     @Test
     fun identifiesPairedDevices() {

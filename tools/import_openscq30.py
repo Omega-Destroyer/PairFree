@@ -16,7 +16,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DEVICES = ROOT / "data" / "soundcore" / "devices.json"
-OURS = ("reports", "ldac_excludes", "extra_features", "notes", "state", "checksum", "service_uuid", "battery", "commands", "min_firmware", "kind")
+OURS = ("reports", "ldac_excludes", "extra_features", "notes", "state", "checksum", "service_uuid", "battery", "commands",
+        "min_firmware", "kind", "eq")
 
 
 def names(scq: Path) -> dict:

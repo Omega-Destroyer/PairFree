@@ -51,6 +51,7 @@ public class A3936State private constructor(private val body: ByteArray) {
     public val ambientMode: AmbientMode? get() = AmbientMode.of(u8(MODES))
 
     public val touchTone: Boolean get() = u8(TONE) != 0
+    /** The case's battery in percent: it read 15 while Google Fast Pair showed 15%. */
     public val caseBattery: Int get() = u8(CASE)
     public val color: Int get() = u8(COLOR)
     public val ldac: Boolean get() = u8(LDAC) != 0

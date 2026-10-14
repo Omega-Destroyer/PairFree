@@ -126,7 +126,7 @@ then reads the connected devices with `0B 01`.
 
 **State reply, in order:**
 1. TWS status (whether both earbuds are connected)
-2. Battery of each earbud
+2. Battery of each earbud, 0 to 5 (5 while Fast Pair showed 91% and 92%), then whether each is charging
 3. Firmware version of each earbud
 4. Serial number
 5. EQ: a preset number (`0xFEFE` for a custom curve), then 10 bands for each earbud
@@ -139,7 +139,7 @@ then reads the connected devices with `0B 01`.
     adaptive noise cancelling, transparency mode, noise-cancelling mode, wind-noise reduction,
     adaptive sensitivity
 12. Touch tone
-13. Case battery
+13. Case battery: a percentage on the A40 (it read 15 while Google Fast Pair showed the case at 15%)
 14. Colour
 15. LDAC
 16. Multipoint on or off

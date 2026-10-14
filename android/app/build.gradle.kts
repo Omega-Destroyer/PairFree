@@ -13,8 +13,8 @@ android {
         // Going lower would also need the old BLUETOOTH permission.
         minSdk = 31
         targetSdk = 37
-        versionCode = 4
-        versionName = "0.1.3"
+        versionCode = 5
+        versionName = "0.1.4"
     }
 
     // The release key lives outside the repo. Its file and passwords come from
@@ -47,6 +47,13 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    // The build tools add an encrypted list of dependencies to the APK's signing block for Google
+    // Play. Nothing else reads it, and F-Droid rejects APKs that carry it.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 }
 

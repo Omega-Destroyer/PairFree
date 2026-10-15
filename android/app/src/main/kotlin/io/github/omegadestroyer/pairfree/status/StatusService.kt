@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.os.Bundle
 import android.os.IBinder
 import android.view.View
 import android.widget.RemoteViews
@@ -27,6 +28,7 @@ import io.github.omegadestroyer.pairfree.hub
 import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
 import io.github.omegadestroyer.pairfree.ui.modelOf
 import io.github.omegadestroyer.pairfree.ui.numberOf
 import kotlinx.coroutines.CoroutineScope
@@ -91,10 +93,8 @@ class StatusService : Service() {
         if (watching == null) watching = scope.launch { watch() }
     }
 
-    /** What a notification says, to post it again only when that changes. */
-    private fun key(notification: Notification): String =
-        notification.extras.getCharSequence(Notification.EXTRA_TITLE).toString() + "|" +
-            notification.extras.getCharSequence(Notification.EXTRA_TEXT) + "|" + notification.actions?.joinToString { it.title }
+    /** What a notification shows, its buttons included, to post it again only when that changes. */
+    private fun key(notification: Notification): String? = notification.extras.getString(StatusNotification.SHOWS)
 
     /** Follows the connection: updates the notification, opens the channel again a few times while the earbuds finish connecting, and ends when it is gone. */
     @SuppressLint("MissingPermission") // the permission was there when the notification started
@@ -162,7 +162,11 @@ class StatusService : Service() {
 
     private fun toggleGameMode() {
         val connection = hub.connection
-        val on = connection.state.value.switch(Command.GAME_MODE) ?: return
+        val state = connection.state.value
+        val on = state.switch(Command.GAME_MODE) ?: return
+        val earbuds = device ?: return
+        // The official app offers game mode on some models only with LDAC off; nor does PairFree. Off always works.
+        if (!on && state.blockedByLdac(Command.GAME_MODE, modelOf(earbuds, state))) return
         connection.set(Command.GAME_MODE, if (on) 0 else 1)
     }
 
@@ -277,6 +281,9 @@ internal object StatusNotification {
         }
         val noise = noiseName(state)?.takeIf { connected && state.supports(Command.ANC_MODE) }
         val game = state.switch(Command.GAME_MODE)?.takeIf { connected }
+        // As on the Home tab: some models offer game mode only with LDAC off (ldac_excludes). Turning
+        // it off stays possible, in case it was turned on with LDAC on anyway.
+        val gameBlocked = game == false && device != null && state.blockedByLdac(Command.GAME_MODE, modelOf(device, state))
         val nextNoise = action(context, StatusService.ACTION_NEXT_NOISE)
         val toggleGame = action(context, StatusService.ACTION_GAME_MODE)
 
@@ -291,6 +298,11 @@ internal object StatusNotification {
             noiseButton(this, noise, nextNoise, getString(R.string.status_noise_button, noise ?: ""))
             if (game == null) {
                 setViewVisibility(R.id.status_game, View.GONE)
+            } else if (gameBlocked) {
+                // Shown dimmed, with no action of its own: a tap opens PairFree, where LDAC is.
+                setViewVisibility(R.id.status_game, View.VISIBLE)
+                setTextViewText(R.id.status_game, getString(R.string.status_game_needs_ldac_off))
+                setFloat(R.id.status_game, "setAlpha", DIMMED)
             } else {
                 setViewVisibility(R.id.status_game, View.VISIBLE)
                 setTextViewText(R.id.status_game, getString(if (game) R.string.status_game_is_on else R.string.status_game_is_off))
@@ -316,8 +328,14 @@ internal object StatusNotification {
             .setShowWhen(false)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .addExtras(Bundle().apply { putString(SHOWS, listOf(title, line, noise, game, gameBlocked).joinToString("|")) })
             .build()
     }
+
+    /** The extra that holds everything the notification shows, for [StatusService] to compare. */
+    const val SHOWS = "io.github.omegadestroyer.pairfree.status.SHOWS"
+
+    private const val DIMMED = 0.45f
 
     /** The noise mode as a button that steps to the next mode, or nothing on earbuds without noise control. */
     private fun Context.noiseButton(views: RemoteViews, noise: String?, next: PendingIntent, label: String) {

@@ -378,7 +378,9 @@ Proposed, not yet reviewed by the owner.
   cancelling, transparency, round again), and game mode. They are real buttons in the
   notification's own layout, so the noise mode works even while the notification is
   collapsed, where Android hides ordinary action buttons (owner's test on One UI 8,
-  2026-10-14); expanded, game mode joins it. Tapping elsewhere opens PairFree. 3D sound joins
+  2026-10-14); expanded, game mode joins it. On models that offer game mode only with LDAC off
+  (`ldac_excludes`), the game mode button is dimmed and says so while LDAC is on, as the Home
+  tab's switch is, but turning game mode off always works. Tapping elsewhere opens PairFree. 3D sound joins
   them once the app sets it.
 - Android 14 and later let the user swipe away any app's notification while the phone is
   unlocked, a foreground service's included. While the earbuds stay connected PairFree puts

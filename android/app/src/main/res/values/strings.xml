@@ -360,6 +360,7 @@
     <string name="status_noise_description">Noise control: %1$s. Tap for the next mode.</string>
     <string name="status_game_is_on">Game mode: on</string>
     <string name="status_game_is_off">Game mode: off</string>
+    <string name="status_game_needs_ldac_off">Game mode: LDAC is on</string>
     <string name="status_battery_left">L %1$s</string>
     <string name="status_battery_case">Case %1$s</string>
     <string name="status_battery_right">R %1$s</string>

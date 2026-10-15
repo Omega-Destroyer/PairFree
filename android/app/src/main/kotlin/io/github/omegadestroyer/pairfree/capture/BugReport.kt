@@ -9,10 +9,15 @@ import java.io.InputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.ZipInputStream
 
-/** What a shared file held, for Record from PeatsAudio. */
+/** What a shared file held, for Record from the official app. */
 sealed interface CaptureResult {
-    /** Every SoundPEATS control frame in the log's files, except those [BugReport.read] was told to skip. */
-    data class Found(val frames: List<SnoopScanner.Found>) : CaptureResult
+    /**
+     * Every SOUNDPEATS control frame ([frames]) and every Soundcore and Samsung packet ([packets])
+     * in the log's files, except those [BugReport.read] was told to skip.
+     */
+    data class Found(val frames: List<SnoopScanner.Found>, val packets: List<SnoopScanner.Packet> = emptyList()) : CaptureResult {
+        val isEmpty: Boolean get() = frames.isEmpty() && packets.isEmpty()
+    }
 
     /** A bug report with no Bluetooth log in it: the snoop log was off. */
     data object NoBluetoothLog : CaptureResult
@@ -25,7 +30,8 @@ sealed interface CaptureResult {
 /**
  * Reads an Android bug report (a zip, sometimes with a zip inside) or a bare btsnoop file,
  * on this phone only. Only files named like the Bluetooth snoop log are read, and of those
- * only SoundPEATS control frames are kept ([SnoopScanner]); the rest is never stored.
+ * only the control messages of earbuds PairFree knows are kept ([SnoopScanner]); the rest is
+ * never stored.
  */
 object BugReport {
     /** Reads [uri]. Frames for which [skip] is true (by snoop log time) are left out. */
@@ -48,18 +54,23 @@ object BugReport {
             got += n
         }
         stream.reset()
-        val frames = mutableListOf<SnoopScanner.Found>()
+        val found = Found()
         val logs = when {
-            got >= 4 && head.startsWith(ZIP) -> zip(ZipInputStream(stream), frames, depth = 0)
-            got >= 8 && head.startsWith(SNOOP) -> if (scan(stream, frames)) 1 else 0
+            got >= 4 && head.startsWith(ZIP) -> zip(ZipInputStream(stream), found, depth = 0)
+            got >= 8 && head.startsWith(SNOOP) -> if (scan(stream, found)) 1 else 0
             else -> return CaptureResult.NotABugReport
         }
         if (logs == 0) return CaptureResult.NoBluetoothLog
-        return CaptureResult.Found(frames.filterNot { skip(it.timeMicros) })
+        return CaptureResult.Found(found.frames.filterNot { skip(it.timeMicros) }, found.packets.filterNot { skip(it.timeMicros) })
+    }
+
+    private class Found {
+        val frames = mutableListOf<SnoopScanner.Found>()
+        val packets = mutableListOf<SnoopScanner.Packet>()
     }
 
     /** Reads every snoop log in [zip], and in a zip inside it. Returns how many were logs. */
-    private fun zip(zip: ZipInputStream, frames: MutableList<SnoopScanner.Found>, depth: Int): Int {
+    private fun zip(zip: ZipInputStream, frames: Found, depth: Int): Int {
         var logs = 0
         while (true) {
             val entry = zip.nextEntry ?: return logs
@@ -75,7 +86,7 @@ object BugReport {
     }
 
     /** Feeds one file to a fresh [SnoopScanner]. True if it was a snoop log. */
-    private fun scan(input: InputStream, frames: MutableList<SnoopScanner.Found>): Boolean {
+    private fun scan(input: InputStream, found: Found): Boolean {
         val scanner = SnoopScanner()
         val buffer = ByteArray(BUFFER)
         while (true) {
@@ -84,7 +95,8 @@ object BugReport {
             scanner.feed(buffer, 0, n)
             if (scanner.problem != null) break
         }
-        frames += scanner.frames()
+        found.frames += scanner.frames()
+        found.packets += scanner.packets()
         return scanner.isSnoopLog
     }
 

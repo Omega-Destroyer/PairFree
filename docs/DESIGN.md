@@ -274,41 +274,58 @@ On Galaxy Buds these hold:
 
 The fit test uses the shared page, but noise control stays as it is.
 
-### Record from PeatsAudio
+### Record from the official app
 
 The earbuds cannot report their EQ, and SoundPEATS' server is closed, so a model's base
 curve and presets can only be learnt from what PeatsAudio sends. Which features the
-official app offers on a model is also on that server; PeatsAudio's reads show it. This
-screen lets anyone record both from the phone alone, once per model, with no computer, and
-adds PairFree's own device report when it is connected to the same model. It opens from the
-Device tab, from the Sound tab when a model has no EQ yet ("If you want to change EQ
-settings, you can contribute to the project" and a button), and when a bug report is
-shared to the app.
+official app offers on a model is also on that server; PeatsAudio's reads show it. For the
+other brands (the Soundcore app, Galaxy Wearable), what their app sends for each setting is
+what confirms a write on a model nobody on the project owns (owner, 2026-10-14: record from
+any vendor's app, not only PeatsAudio). This screen lets anyone record that from the phone
+alone, once per model, with no computer, and adds PairFree's own device report when it is
+connected to the same earbuds. It opens from the Device tab for every brand, from the Sound
+tab when a model has no EQ yet ("If you want to change EQ settings, you can contribute to
+the project" and a button), and when a bug report is shared to the app.
 
 - First, a panel says what PairFree reads: only the Bluetooth messages exchanged with
-  SoundPEATS earbuds, on the phone; nothing is sent until the user submits the GitHub
-  issue in the browser; the app has no internet access. It links to the source code.
-  People hesitate to hand a bug report to an app from an unknown developer.
+  earbuds of the brands it supports, on the phone, and what the report shows of them;
+  nothing is sent until the user submits the GitHub issue in the browser; the app has no
+  internet access. It links to the source code. People hesitate to hand a bug report to an
+  app from an unknown developer.
 - If the user misses the bug report notification, Choose a bug report opens the system
   picker, where Android lists bug reports under Bug reports in the menu.
 
 - The steps: turn on Developer options, set Bluetooth HCI snoop log to Enabled and
-  restart Bluetooth, open each PeatsAudio screen once without changing anything and run
-  its fit test, tap SOUNDPEATS Classic and then every preset, take a bug report, share it
-  to PairFree, then turn the log off and delete the bug report.
+  restart Bluetooth, open each screen of the official app once, then change each setting to
+  learn, one at a time, and note the order; on SOUNDPEATS earbuds also run PeatsAudio's fit
+  test and tap SOUNDPEATS Classic and then every preset; take a bug report, share it to
+  PairFree, then turn the log off and delete the bug report.
 - PairFree reads the bug report on the phone (`capture/BugReport.kt`), only the files
-  named like the Bluetooth snoop log, and keeps only SoundPEATS control frames
-  (`SnoopScanner`, `EqCapture`, `LoggedReads` in `:protocol`). The file itself is never
-  stored.
+  named like the Bluetooth snoop log, and keeps only the control messages of the brands it
+  supports (`SnoopScanner`, `EqCapture`, `LoggedReads`, `VendorRecording` in `:protocol`):
+  SOUNDPEATS frames, and Soundcore and Samsung packets read from each RFCOMM channel. The
+  log's connection events give each connection's address, which only matches the earbuds
+  to a paired device and is masked. The file itself is never stored.
 - PairFree notes when its own channel is open and leaves those messages out: its
   connect reads and its EQ put back are not PeatsAudio's. Sessions from before an update
   that added this are not known, so a log that old can still hold some.
-- It lists each pair of earbuds in the log with how many settings PeatsAudio read, and says
-  whether PairFree's own device report goes in (it does when PairFree is connected to
-  earbuds with the same firmware code).
+- It lists each pair of earbuds in the log. SOUNDPEATS earbuds show how many settings
+  PeatsAudio read, and whether PairFree's own device report goes in (it does when PairFree
+  is connected to earbuds with the same firmware code). Other brands' earbuds show their
+  model, from the paired device at their address, how many messages the app and the
+  earbuds sent, and which messages the app sent, by name, so the user sees their changes
+  were caught.
+- For other brands the report holds a timeline per pair of earbuds: seconds from the first
+  message, who sent it, its number and name, and its bytes, with a repeated message shown
+  once with a count, then a place for the user to write what they changed, in order.
+  It goes into a public issue, so the earbuds' address and anything that looks like a
+  serial number are masked, bodies marked private (Soundcore's list of known devices and
+  its serial number) and firmware-update messages are left out, and a message PairFree
+  does not know shows at most four bytes, too few for an address, a name or a key.
 - A phone keeps one Bluetooth log for hours, through Bluetooth being turned off and on,
   so the recording starts when the user opened this screen (remembered for up to three
-  hours), or else just before PeatsAudio's last connect. Show all widens it to the whole
+  hours), or else just before an official app last connected (PeatsAudio's last firmware
+  read, or when other earbuds last connected). Show all widens it to the whole
   log; Recording only narrows it again.
 - It lists every complete EQ write in the recording, with its time and a small curve, and
   marks repeats. A curve that is byte for byte the base curve or a preset of a known model
@@ -404,5 +421,5 @@ Planned, not yet designed:
   marking on a real pair.
 - Widget and tile designs.
 - The EQ of every model other than the H3 and Air5 Pro+, until someone records it
-  (Record from PeatsAudio above).
+  (Record from the official app above).
 - Whether a hearing-test profile is worth building. It can be done offline.

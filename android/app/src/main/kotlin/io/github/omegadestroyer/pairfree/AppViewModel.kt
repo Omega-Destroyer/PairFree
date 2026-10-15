@@ -34,8 +34,10 @@ import io.github.omegadestroyer.pairfree.protocol.EqCapture
 import io.github.omegadestroyer.pairfree.protocol.LoggedReads
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Models
+import io.github.omegadestroyer.pairfree.protocol.RecordedBrand
 import io.github.omegadestroyer.pairfree.protocol.RecordingReport
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.VendorRecording
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
@@ -324,7 +326,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             connection.state.value.gaiaFeatures?.let { appendLine(DeviceReport.gaiaLine(it)) }
             appendLine()
             appendLine("This is enough to add this model's controls. For its equalizer too, use")
-            appendLine("\"Record from PeatsAudio\" on PairFree's Device tab instead.")
+            appendLine("\"Record from the official app\" on PairFree's Device tab instead.")
         }
     }
 
@@ -356,17 +358,41 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     /**
      * Works out the recording from what the file held: where it starts (RecordingReport.start),
-     * its EQ curves with the names of those PairFree knows, and the settings read.
+     * its EQ curves with the names of those PairFree knows, the settings read, and what other
+     * brands' apps and earbuds sent each other, with each pair's model.
      */
     private fun analyse(result: CaptureResult, wholeLog: Boolean): Capture.Done {
-        val frames = (result as? CaptureResult.Found)?.frames.orEmpty()
+        val found = result as? CaptureResult.Found
+        val frames = found?.frames.orEmpty()
+        val packets = found?.packets.orEmpty()
         val opened = prefs.getLong(KEY_RECORD_OPENED, 0).takeIf { it > 0 && snoopClockMs() - it < RECORD_RUN_MS }
-        val since = if (wholeLog) null else RecordingReport.start(frames, opened?.times(1000))
+        val since = if (wholeLog) null else RecordingReport.start(frames, opened?.times(1000), packets)
         val writes = EqCapture.writes(frames, since)
         val matches = writes.map(CurveMatch::of)
         // Known presets are named already; the user's own slider curves teach nothing and stay out.
         val names = matches.map { (it as? CurveMatch.Preset)?.name }
-        return Capture.Done(result, since, wholeLog, writes, matches, LoggedReads.of(frames, since), names)
+        val vendor = VendorRecording.of(packets, since)
+        return Capture.Done(result, since, wholeLog, writes, matches, LoggedReads.of(frames, since), names, vendor, vendor.map(::vendorName))
+    }
+
+    /** The paired device at the address of [earbuds] in a recording; the address itself goes into no report. */
+    private fun pairedFor(earbuds: VendorRecording.Earbuds): Paired? {
+        val address = earbuds.address?.reversedArray()?.joinToString(":") { "%02X".format(it) } ?: return null
+        return _paired.value.firstOrNull { it.address.equals(address, ignoreCase = true) }
+    }
+
+    /** The model of other earbuds in a recording, as PairFree knows the paired device at their address. */
+    private fun vendorName(earbuds: VendorRecording.Earbuds): String {
+        val code = pairedFor(earbuds)?.model
+        val model = when (earbuds.brand) {
+            RecordedBrand.SOUNDCORE -> SoundcoreModels.model(code)
+            RecordedBrand.SAMSUNG -> SamsungModels.model(code)
+        }
+        if (model != null) return "${model.names.first()} (${model.code})"
+        return when (earbuds.brand) {
+            RecordedBrand.SOUNDCORE -> "Soundcore earbuds (model not matched)"
+            RecordedBrand.SAMSUNG -> "Galaxy Buds (model not matched)"
+        }
     }
 
     /** Reads a bug report picked on the capture screen, off the main thread. */
@@ -378,8 +404,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
      */
     fun importBugReport(files: List<Uri>) {
         _capture.value = Capture.Reading
+        // Other brands' earbuds in the log are matched to the paired devices by address.
+        refreshPaired()
         val resolver = getApplication<Application>().contentResolver
-        // What PairFree sent itself (its connect reads, its EQ put back) is not PeatsAudio's.
+        // What PairFree sent itself (its connect reads, its EQ put back) is not the official app's.
         val own = ownSessions()
         val mine = { timeMicros: Long -> own.any { timeMicros / 1000 in it } }
         viewModelScope.launch {
@@ -416,7 +444,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val version = app.packageManager.getPackageInfo(app.packageName, 0).versionName
         val first = (named.map { it.second.timeMicros }).minOrNull()
         return buildString {
-            appendLine("PairFree recording from PeatsAudio")
+            appendLine("PairFree recording from the official app")
             appendLine("Paste this whole report into a new issue at")
             appendLine("$ISSUES so this model's controls and")
             appendLine("equalizer can be added. It holds no names, addresses or other personal data.")
@@ -426,8 +454,30 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             appendLine("Phone:     Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}), ${Build.MANUFACTURER} ${Build.MODEL}")
             // Snoop log times are the phone's local time (SnoopScanner.Found).
             if (first != null) appendLine("Recorded:  ${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(Instant.ofEpochMilli(first / 1000).atOffset(ZoneOffset.UTC))}, phone's local time")
-            RecordingReport.sections(done.reads, ownReads(done), named, compact).forEach(::appendLine)
+            RecordingReport.sections(done.reads, ownReads(done), named, compact, done.vendorNames.zip(done.vendor)).forEach(::appendLine)
+            ownVendorReport(done)?.let { (name, lines) ->
+                appendLine()
+                appendLine("---- PairFree's own device report for $name ----")
+                lines.forEach(::appendLine)
+            }
+            if (done.vendor.isNotEmpty()) {
+                appendLine()
+                appendLine("---- What I changed in the official app, in order ----")
+                appendLine("(Write it here.)")
+            }
         }
+    }
+
+    /**
+     * PairFree's own device report, without its opening lines, when it is connected to other
+     * brands' earbuds that are in the recording: how PairFree reads the same state.
+     */
+    private fun ownVendorReport(done: Capture.Done): Pair<String, List<String>>? {
+        val device = (connection.status.value as? LinkStatus.Connected)?.device ?: return null
+        val index = done.vendor.indexOfFirst { pairedFor(it)?.address == device.address }
+        if (index < 0) return null
+        val lines = deviceReport().lines()
+        return done.vendorNames[index] to lines.drop(lines.indexOfFirst(String::isEmpty) + 1).dropLastWhile(String::isEmpty)
     }
 
     /**
@@ -445,8 +495,11 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         return filled.takeIf { it.toString().length <= MAX_LINK } ?: link(PASTE_HERE)
     }
 
-    private fun captureModel(done: Capture.Done): String =
-        done.firmware?.let(RecordingReport::earbudsName) ?: "unknown (the firmware reply is not in the log)"
+    private fun captureModel(done: Capture.Done): String = when {
+        done.firmware != null -> RecordingReport.earbudsName(done.firmware)
+        !done.hasSoundpeats && done.vendorNames.isNotEmpty() -> done.vendorNames.distinct().joinToString(", ")
+        else -> "unknown (the firmware reply is not in the log)"
+    }
 
     /**
      * PairFree's own reads, when it is connected to earbuds of a model in the recording:

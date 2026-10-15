@@ -168,9 +168,9 @@ internal fun DeviceScreen(
                 Modifier.fillMaxWidth(),
             )
             if (copied) Text(stringResource(R.string.report_copied), style = Studio.type.small, color = c.secondaryText)
-            // Recording from the official app and factory reset are known for SoundPEATS only so far.
+            StudioButton(stringResource(R.string.capture_open), actions::openCapture, Modifier.fillMaxWidth())
+            // Factory reset is known for SoundPEATS only so far.
             if (device.brand == Brand.SOUNDPEATS) {
-                StudioButton(stringResource(R.string.capture_open), actions::openCapture, Modifier.fillMaxWidth())
                 StudioButton(stringResource(R.string.factory_reset), { confirmReset = true }, Modifier.fillMaxWidth(), destructive = true)
             }
         }

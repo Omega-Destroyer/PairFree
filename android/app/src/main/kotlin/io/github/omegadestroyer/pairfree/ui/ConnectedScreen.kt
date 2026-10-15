@@ -108,8 +108,11 @@ internal fun ConnectedScreen(
         Box(Modifier.weight(1f)) {
             when (tab) {
                 Tab.HOME -> HomeScreen(device, state, model, actions, live, eq, settings) { tab = Tab.SOUND }
-                // Recording from the official app exists for SoundPEATS only so far.
-                Tab.SOUND -> SoundScreen(eq, eqActions, actions::openCapture.takeIf { device.brand == Brand.SOUNDPEATS }, settings, actions::changeSetting)
+                // With no equalizer to offer yet, a recording from the official app adds it.
+                Tab.SOUND -> SoundScreen(
+                    eq, eqActions, actions::openCapture, settings, actions::changeSetting,
+                    unavailableNote = if (device.brand == Brand.SOUNDCORE) R.string.eq_soundcore_unchecked else R.string.eq_unavailable,
+                )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings) { fitTest = true }
             }

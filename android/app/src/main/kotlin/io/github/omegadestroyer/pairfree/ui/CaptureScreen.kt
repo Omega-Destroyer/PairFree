@@ -59,10 +59,11 @@ interface CaptureActions {
 }
 
 /**
- * Records a model from PeatsAudio (docs/DESIGN.md, Record from PeatsAudio): the steps, then
- * what the bug report held (the settings PeatsAudio read and the EQ curves it sent, each
- * curve named by the user), then a report to send. [connectedCode] is the firmware code of
- * the earbuds PairFree is connected to, whose own device report then goes in too.
+ * Records a model from its official app (docs/DESIGN.md, Record from the official app): the
+ * steps, then what the bug report held (for SOUNDPEATS earbuds the settings PeatsAudio read and
+ * the EQ curves it sent, each curve named by the user; for other brands what their app and
+ * earbuds sent each other), then a report to send. [connectedCode] is the firmware code of the
+ * SOUNDPEATS earbuds PairFree is connected to, whose own device report then goes in too.
  */
 @Composable
 internal fun CaptureScreen(capture: Capture, actions: CaptureActions, connectedCode: String? = null) {
@@ -120,7 +121,8 @@ private fun Guide(onChoose: () -> Unit) {
         val steps = listOf(
             R.string.capture_step_developer,
             R.string.capture_step_log,
-            R.string.capture_step_peats,
+            R.string.capture_step_app,
+            R.string.capture_step_peats_eq,
             R.string.capture_step_report,
             R.string.capture_step_share,
             R.string.capture_step_name,
@@ -150,7 +152,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
         CaptureResult.NoBluetoothLog -> R.string.capture_no_log
         CaptureResult.NotABugReport -> R.string.capture_not_report
         CaptureResult.Unreadable -> R.string.capture_unreadable
-        is CaptureResult.Found -> if (result.frames.isEmpty()) R.string.capture_none else null
+        is CaptureResult.Found -> if (result.isEmpty) R.string.capture_none else null
     }
     if (problem != null) {
         Panel { Text(stringResource(problem), color = c.destructive) }
@@ -165,22 +167,35 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
     val firmware = (done.reads.mapNotNull { it.firmware?.text } + writes.mapNotNull { it.firmware?.text }).distinct()
     Panel {
         Label(stringResource(R.string.capture_earbuds))
-        if (firmware.isEmpty()) {
+        if (firmware.isEmpty() && (done.hasSoundpeats || done.vendor.isEmpty())) {
             Text(stringResource(R.string.capture_no_firmware), color = c.secondaryText)
-        } else {
-            for (f in firmware) {
-                val model = Models.find(f.substringBefore('_'), null)?.names?.firstOrNull()
-                Text(if (model != null) "$model ($f)" else stringResource(R.string.capture_new_model, f))
-                val settings = done.reads.firstOrNull { it.firmware?.text == f }?.replies?.size ?: 0
-                Text(pluralStringResource(R.plurals.capture_settings_read, settings, settings), style = Studio.type.small, color = c.secondaryText)
-            }
         }
-        val included = connectedCode != null && firmware.any { it.substringBefore('_') == connectedCode }
-        Text(
-            stringResource(if (included) R.string.capture_own_report else R.string.capture_own_report_missing),
-            style = Studio.type.small,
-            color = c.secondaryText,
-        )
+        for (f in firmware) {
+            val model = Models.find(f.substringBefore('_'), null)?.names?.firstOrNull()
+            Text(if (model != null) "$model ($f)" else stringResource(R.string.capture_new_model, f))
+            val settings = done.reads.firstOrNull { it.firmware?.text == f }?.replies?.size ?: 0
+            Text(pluralStringResource(R.plurals.capture_settings_read, settings, settings), style = Studio.type.small, color = c.secondaryText)
+        }
+        if (done.hasSoundpeats) {
+            val included = connectedCode != null && firmware.any { it.substringBefore('_') == connectedCode }
+            Text(
+                stringResource(if (included) R.string.capture_own_report else R.string.capture_own_report_missing),
+                style = Studio.type.small,
+                color = c.secondaryText,
+            )
+        }
+        done.vendor.forEachIndexed { i, earbuds ->
+            Text(done.vendorNames.getOrElse(i) { "" })
+            Text(
+                pluralStringResource(R.plurals.capture_vendor_messages, earbuds.fromApp, earbuds.fromApp) + ", " +
+                    pluralStringResource(R.plurals.capture_vendor_replies, earbuds.fromEarbuds, earbuds.fromEarbuds),
+                style = Studio.type.small,
+                color = c.secondaryText,
+            )
+            val sent = earbuds.sent.joinToString(", ") { (name, times) -> if (times > 1) "$name ($times)" else name }
+            if (sent.isNotEmpty()) Text(stringResource(R.string.capture_vendor_sent, sent), style = Studio.type.small, color = c.secondaryText)
+        }
+        if (done.vendor.isNotEmpty()) Text(stringResource(R.string.capture_vendor_hint), style = Studio.type.small, color = c.secondaryText)
     }
     // The log holds hours of earlier traffic; the recording starts where the user opened this screen.
     val since = done.since
@@ -199,7 +214,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
         }
     }
     if (writes.isEmpty()) {
-        Text(stringResource(R.string.capture_no_curves), color = c.secondaryText)
+        if (done.reads.isNotEmpty()) Text(stringResource(R.string.capture_no_curves), color = c.secondaryText)
     } else {
         val unnamed = done.unnamedNew
         Text(

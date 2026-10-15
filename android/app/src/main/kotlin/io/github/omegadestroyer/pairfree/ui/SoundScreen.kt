@@ -79,16 +79,13 @@ internal fun SoundScreen(
     onRecord: (() -> Unit)? = {},
     settings: List<SettingGroup> = emptyList(),
     onSetting: (SettingChange) -> Unit = {},
+    unavailableNote: Int = R.string.eq_unavailable,
 ) {
     if (eq == null) {
         TabContent {
             Text(stringResource(R.string.tab_sound), style = Studio.type.title)
-            if (onRecord != null) {
-                Text(stringResource(R.string.eq_unavailable), color = Studio.colors.secondaryText)
-                StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
-            } else {
-                Text(stringResource(R.string.eq_soundcore_unchecked), color = Studio.colors.secondaryText)
-            }
+            Text(stringResource(unavailableNote), color = Studio.colors.secondaryText)
+            if (onRecord != null) StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
             SettingGroups(settings, SettingTab.SOUND, onSetting)
         }
         return

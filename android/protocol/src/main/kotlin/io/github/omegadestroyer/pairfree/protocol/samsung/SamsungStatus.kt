@@ -341,7 +341,7 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
             f["double_pinch_and_hold_advanced"] = u8(51)
             f["siren_detect"] = bool(52)
             f["adapt_sound_enabled"] = bool(53)
-            f["hot_command_version"] = "${p[54].toInt()}.${p[55].toInt()}.${p[56].toInt()}"
+            f["hot_command_version"] = "${u8(54)}.${u8(55)}.${u8(56)}"
             f["voice_boost"] = bool(57)
             f["volume_normalization"] = bool(58)
             f["digital_assistant"] = u8(59)

@@ -53,6 +53,7 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
@@ -353,7 +354,7 @@ class EarbudsConnection(
         try {
             val parser = FrameParser()
             opened.reads().collect { bytes ->
-                for (frame in parser.feed(bytes)) {
+                for (frame in parser.feed(bytes)) guardPacket {
                     log?.invoke("recv ${frame.summary()}")
                     Replies.commandFor(frame)?.let { replies = replies + (it to frame.payload) }
                     _state.update { it.update(frame) }
@@ -384,7 +385,7 @@ class EarbudsConnection(
         try {
             val parser = SoundcoreParser(checksum = session.layout?.checksum ?: true)
             opened.reads().collect { bytes ->
-                for (packet in parser.feed(bytes)) {
+                for (packet in parser.feed(bytes)) guardPacket {
                     log?.invoke("recv $packet")
                     if (session.receive(packet)) _state.value = session.state
                     if (session.lastState !== _soundcoreState.value) _soundcoreState.value = session.lastState
@@ -409,7 +410,7 @@ class EarbudsConnection(
         try {
             val parser = SamsungParser(model.legacy)
             opened.reads().collect { bytes ->
-                for (packet in parser.feed(bytes)) {
+                for (packet in parser.feed(bytes)) guardPacket {
                     log?.invoke("recv $packet")
                     if (session.receive(packet)) publish(session)
                     _samsungEqCurves.value = session.eqCurves
@@ -469,7 +470,7 @@ class EarbudsConnection(
         try {
             val parser = SonyParser()
             opened.reads().collect { bytes ->
-                for (message in parser.feed(bytes)) {
+                for (message in parser.feed(bytes)) guardPacket {
                     log?.invoke("recv $message")
                     if (message.dataType == SonyWire.ACK) {
                         if (link.acked(message)) acked.trySend(Unit)
@@ -524,7 +525,7 @@ class EarbudsConnection(
         try {
             val parser = BoseParser()
             opened.reads().collect { bytes ->
-                for (packet in parser.feed(bytes)) {
+                for (packet in parser.feed(bytes)) guardPacket {
                     log?.invoke("recv $packet")
                     if (session.receive(packet)) publish(session)
                     answered.trySend(packet)
@@ -574,7 +575,7 @@ class EarbudsConnection(
             val parser = JblReader()
             val notifications = opened is GattLink
             opened.reads().collect { bytes ->
-                for (packet in parser.feed(bytes, newMessage = notifications)) {
+                for (packet in parser.feed(bytes, newMessage = notifications)) guardPacket {
                     log?.invoke("recv $packet")
                     if (session.receive(packet)) publish(session)
                     heard.trySend(Unit)
@@ -612,10 +613,12 @@ class EarbudsConnection(
         }
         try {
             opened.reads().collect { bytes ->
-                // The information packet carries serial numbers: keep them out of the log.
-                val packet = AapPacket.parse(bytes)
-                log?.invoke(if (packet?.opcode == AppleOpcode.INFORMATION) "recv information (${bytes.size} bytes)" else "recv ${bytes.joinToString("") { "%02x".format(it) }}")
-                if (session.receive(bytes)) publish(session)
+                guardPacket {
+                    // The information packet carries serial numbers: keep them out of the log.
+                    val packet = AapPacket.parse(bytes)
+                    log?.invoke(if (packet?.opcode == AppleOpcode.INFORMATION) "recv information (${bytes.size} bytes)" else "recv ${bytes.joinToString("") { "%02x".format(it) }}")
+                    if (session.receive(bytes)) publish(session)
+                }
             }
         } catch (_: IOException) {
         }
@@ -892,6 +895,21 @@ class EarbudsConnection(
     }
 
     /** Reports a failure of [token]'s attempt, unless [disconnect] or a newer attempt replaced it. */
+    /**
+     * Runs one packet's handling, keeping a single bad frame from killing the connection: a thrown
+     * exception (other than cancellation) is logged and the frame dropped, so the channel stays open.
+     * None of the device code has been tried on most models, so an unforeseen byte must not freeze it.
+     */
+    private inline fun guardPacket(block: () -> Unit) {
+        try {
+            block()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            log?.invoke("dropped a frame: ${e.message}")
+        }
+    }
+
     private fun fail(token: Any, device: Paired, reason: LinkStatus.Reason) {
         if (attempt !== token) return
         attempt = null

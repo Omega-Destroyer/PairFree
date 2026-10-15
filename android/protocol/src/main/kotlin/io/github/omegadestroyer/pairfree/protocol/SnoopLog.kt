@@ -1,6 +1,9 @@
 package io.github.omegadestroyer.pairfree.protocol
 
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyCommand
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyParser
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyWire
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreParser
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreWire
 
@@ -8,13 +11,13 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreWire
  * Reads an Android Bluetooth HCI snoop log (the btsnoop format, found inside a bug report)
  * and keeps only the control messages of earbuds PairFree knows: SOUNDPEATS frames
  * (docs/soundpeats/PROTOCOL.md section 2) on vendor `00 0A` or `00 1D` ([frames]), and
- * Soundcore and Samsung Galaxy Buds packets ([packets]). Everything else in the log is skipped
+ * Soundcore, Samsung Galaxy Buds and Sony packets ([packets]). Everything else in the log is skipped
  * and never kept.
  *
  * Feed the file in chunks of any size with [feed]; a large log never has to fit in memory.
  * ACL packets are put back together into L2CAP frames per connection and direction. Each one
  * is searched for SOUNDPEATS frames, as the PC script that found the H3's and Air5 Pro+'s EQ
- * did. RFCOMM data is also read channel by channel and fed to the Soundcore and Samsung parsers,
+ * did. RFCOMM data is also read channel by channel and fed to the Soundcore, Samsung and Sony parsers,
  * so their packets are found even when split across RFCOMM frames. The connection events give
  * each connection's remote address, which goes with its packets so a recording can be matched
  * to a paired device and the address masked; it is never shown.
@@ -33,8 +36,8 @@ public class SnoopScanner {
     )
 
     /**
-     * One Soundcore or Samsung packet in the log: its [id] (a Soundcore command or a Samsung
-     * message) and payload, on RFCOMM [channel] (the DLCI) of ACL [connection]. [address] is the
+     * One Soundcore, Samsung or Sony packet in the log: its [id] (a Soundcore command, a Samsung
+     * message or a Sony command, [VendorRecording.sonyId]) and payload, on RFCOMM [channel] (the DLCI) of ACL [connection]. [address] is the
      * remote device's Bluetooth address as the connection event gave it (least significant byte
      * first), and [connectedAtMicros] when that connection was made; both null when the log
      * started after the connection.
@@ -70,6 +73,9 @@ public class SnoopScanner {
     private val l2cap = HashMap<Int, Assembly>()
     private val links = HashMap<Int, Link>()
     private val streams = HashMap<Int, Stream>()
+
+    /** Each Sony channel's table set, once the earbuds' first reply showed it. */
+    private val sonySets = HashMap<Int, Int>()
     private val packets = mutableListOf<Packet>()
 
     /** A connection the log saw being made: the remote address and when. */
@@ -80,6 +86,7 @@ public class SnoopScanner {
         val soundcore = SoundcoreParser(if (fromEarbuds) SoundcoreWire.FROM_EARBUDS_HEADER else SoundcoreWire.TO_EARBUDS_HEADER)
         val samsung = SamsungParser(legacy = false)
         val samsungLegacy = SamsungParser(legacy = true)
+        val sony = SonyParser()
     }
 
     private enum class Stage { FILE_HEADER, RECORD_HEADER, RECORD, STOPPED }
@@ -102,12 +109,13 @@ public class SnoopScanner {
     public fun frames(): List<Found> = found.toList()
 
     /**
-     * Every Soundcore and Samsung packet found so far, in log order. A CRC can match by chance,
-     * so Samsung packets count only on a channel that carried at least two.
+     * Every Soundcore, Samsung and Sony packet found so far, in log order. A check byte can match by
+     * chance, so Samsung and Sony packets count only on a channel that carried at least two.
      */
     public fun packets(): List<Packet> {
-        val samsung = packets.filter { it.brand == RecordedBrand.SAMSUNG }.groupingBy { it.connection to it.channel }.eachCount()
-        return packets.filter { it.brand != RecordedBrand.SAMSUNG || (samsung[it.connection to it.channel] ?: 0) >= MIN_SAMSUNG_PACKETS }
+        val checked = setOf(RecordedBrand.SAMSUNG, RecordedBrand.SONY)
+        val counts = packets.filter { it.brand in checked }.groupingBy { Triple(it.brand, it.connection, it.channel) }.eachCount()
+        return packets.filter { it.brand !in checked || (counts[Triple(it.brand, it.connection, it.channel)] ?: 0) >= MIN_SAMSUNG_PACKETS }
     }
 
     private fun step() {
@@ -219,6 +227,7 @@ public class SnoopScanner {
 
     private fun dropStreams(handle: Int) {
         streams.keys.removeAll { it shr STREAM_HANDLE_SHIFT == handle }
+        sonySets.keys.removeAll { it shr STREAM_HANDLE_SHIFT == handle }
     }
 
     /**
@@ -254,6 +263,19 @@ public class SnoopScanner {
         stream.soundcore.feed(data).forEach { add(RecordedBrand.SOUNDCORE, it.command, it.body) }
         stream.samsung.feed(data).forEach { add(RecordedBrand.SAMSUNG, it.id, it.payload) }
         stream.samsungLegacy.feed(data).forEach { add(RecordedBrand.SAMSUNG, it.id, it.payload) }
+        // Sony: acknowledgements carry nothing; the earbuds' first reply says the table set (4 bytes set 1, 8 set 2).
+        val channel = key and 1.inv()
+        for (m in stream.sony.feed(data)) {
+            if (m.dataType == SonyWire.ACK || m.payload.isEmpty()) continue
+            val table = if (m.dataType == SonyWire.TABLE2) 2 else 1
+            if (fromEarbuds && table == 1 && m.command == SonyCommand.Set1.CONNECT_RET_PROTOCOL_INFO) {
+                when (m.payload.size) {
+                    SONY_SET1_REPLY -> sonySets[channel] = 1
+                    SONY_SET2_REPLY -> sonySets[channel] = 2
+                }
+            }
+            add(RecordedBrand.SONY, VendorRecording.sonyId(sonySets[channel] ?: 0, table, m.command), m.payload.copyOfRange(1, m.payload.size))
+        }
     }
 
     /** Finds `FF 03|04 00 LEN VENDOR COMMAND PAYLOAD` frames in one L2CAP payload. */
@@ -294,6 +316,8 @@ public class SnoopScanner {
         const val UIH_CREDIT = 0xFF
         const val STREAM_HANDLE_SHIFT = 7
         const val MIN_SAMSUNG_PACKETS = 2
+        const val SONY_SET1_REPLY = 4
+        const val SONY_SET2_REPLY = 8
         const val FLAG_RECEIVED = 0x01
         const val FLAG_COMMAND_OR_EVENT = 0x02
         const val MAX_RECORD = 1 shl 20

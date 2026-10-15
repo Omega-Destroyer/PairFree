@@ -56,6 +56,7 @@ import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
@@ -120,7 +121,11 @@ internal fun ConnectedScreen(
                 // With no equalizer to offer yet, a recording from the official app adds it.
                 Tab.SOUND -> SoundScreen(
                     eq, eqActions, actions::openCapture, settings, actions::changeSetting,
-                    unavailableNote = if (device.brand == Brand.SOUNDCORE) R.string.eq_soundcore_unchecked else R.string.eq_unavailable,
+                    unavailableNote = when (device.brand) {
+                        Brand.SOUNDCORE -> R.string.eq_soundcore_unchecked
+                        Brand.SONY -> R.string.eq_sony_none
+                        else -> R.string.eq_unavailable
+                    },
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status) { fitTest = true }
@@ -138,6 +143,8 @@ internal fun ConnectedScreen(
 internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.brand) {
     Brand.SOUNDCORE -> SoundcoreModels.model(device.model ?: state.firmware?.code)
     Brand.SAMSUNG -> SamsungModels.model(device.model ?: state.firmware?.code)
+    // Sony's by the model name the earbuds give, else their Bluetooth name; one battery is headphones.
+    Brand.SONY -> SonyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

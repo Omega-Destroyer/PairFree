@@ -340,6 +340,17 @@
     <string name="setting_conversation_boost">Conversation boost</string>
     <string name="setting_hold_bixby">Bixby</string>
     <string name="setting_hold_digital_assistant">Digital assistant</string>
+    <string name="setting_wind_reduction">Wind noise reduction</string>
+    <string name="setting_wind_reduction_note">Sony\'s single noise cancelling setting, made for wind. Only while noise cancelling is on.</string>
+    <string name="setting_speak_to_chat">Speak-to-chat</string>
+    <string name="setting_speak_to_chat_note">Pauses the music and lets in ambient sound when you start speaking.</string>
+    <string name="setting_clear_bass">Clear Bass</string>
+    <string name="setting_dsee">DSEE upscaling</string>
+    <string name="setting_dsee_note">Sony\'s upscaling for compressed music. On means automatic.</string>
+    <string name="setting_pause_taken_off">Pause when taken off</string>
+    <string name="setting_voice_guidance">Voice guidance</string>
+    <string name="eq_note_sony">The earbuds report the preset or curve they hold, whichever app set it. They apply their presets themselves, so no curve is drawn for those. Clear Bass is below.</string>
+    <string name="eq_sony_none">These Sony earbuds have not listed an equalizer, or have not answered yet.</string>
     <string name="status_title">Status notification</string>
     <string name="status_option_pairfree">PairFree</string>
     <string name="status_option_fast_pair">Fast Pair</string>

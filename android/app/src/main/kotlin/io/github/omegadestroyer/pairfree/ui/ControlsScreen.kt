@@ -57,8 +57,8 @@ internal fun ControlsScreen(
         SoundcoreControls(device, state, touch, actions)
         return
     }
-    if (device.brand == Brand.SAMSUNG) {
-        // Galaxy Buds' touch settings come as generic rows (SamsungSession).
+    if (device.brand == Brand.SAMSUNG || device.brand == Brand.SONY) {
+        // Galaxy Buds' touch settings come as generic rows (SamsungSession); Sony's are not offered yet.
         TabContent {
             Text(stringResource(R.string.tab_controls), style = Studio.type.title)
             if (settings.none { it.tab == SettingTab.CONTROLS }) {

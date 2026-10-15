@@ -488,10 +488,139 @@ val generateSamsungTables = tasks.register<GenerateSamsungTables>("generateSamsu
     outputDir = layout.buildDirectory.dir("generated/samsung")
 }
 
+/** Writes Sony's command numbers, function codes and models from data/sony. */
+abstract class GenerateSonyTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val functionsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val presetsJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val functions = JsonSlurper().parse(functionsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String) + "\""
+        fun int(v: Any?) = (v as Number).toInt()
+        fun hex(v: Int) = "0x" + v.toString(16).uppercase().padStart(2, '0')
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/sony by the generateSonyTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val services = commands.getValue("services") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val types = commands.getValue("data_types") as Map<String, Any?>
+        out.appendLine("/** Sony's services and data types (data/sony/commands.json). */")
+        out.appendLine("public object SonyWire {")
+        out.appendLine("    /** The RFCOMM service of table set 1. */")
+        out.appendLine("    public const val SET1_SERVICE: String = ${str(services["set1"])}")
+        out.appendLine("    /** The RFCOMM service of table set 2. */")
+        out.appendLine("    public const val SET2_SERVICE: String = ${str(services["set2"])}")
+        out.appendLine("    public const val ACK: Int = ${hex(int(types["ack"]))}")
+        out.appendLine("    /** The data type of table 1's messages. */")
+        out.appendLine("    public const val TABLE1: Int = ${hex(int(types["table1"]))}")
+        out.appendLine("    /** The data type of table 2's messages. */")
+        out.appendLine("    public const val TABLE2: Int = ${hex(int(types["table2"]))}")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val tables = commands.getValue("tables") as Map<String, Map<String, Any?>>
+        val objects = mapOf("set1_table1" to "Set1", "set1_table2" to "Set1Table2", "set2_table1" to "Set2", "set2_table2" to "Set2Table2")
+        out.appendLine("/** Sony's command numbers (data/sony/commands.json), one object per table: Set1 and Set2 are table 1 of each set. */")
+        out.appendLine("public object SonyCommand {")
+        for ((key, obj) in objects) {
+            @Suppress("UNCHECKED_CAST")
+            val rows = tables.getValue(key)["commands"] as List<Map<String, Any?>>
+            out.appendLine("    public object $obj {")
+            for (c in rows) out.appendLine("        public const val ${c["name"]}: Int = ${hex(int(c["number"]))}")
+            val never = rows.filter { it["never_send"] == true }.joinToString(", ") { hex(int(it["number"])) }
+            out.appendLine("        /** Commands PairFree never sends: firmware update, test and logs. */")
+            out.appendLine("        public val NEVER_SEND: Set<Int> = setOf($never)")
+            out.appendLine("        public val NAMES: Map<Int, String> = mapOf(${rows.joinToString(", ") { "${hex(int(it["number"]))} to ${str(it["name"])}" }})")
+            out.appendLine("    }")
+        }
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** The functions earbuds list in their reply to CONNECT_GET_SUPPORT_FUNCTION (data/sony/functions.json). */")
+        out.appendLine("public object SonyFunction {")
+        for ((key, obj) in listOf("set1" to "Set1", "set2_table1" to "Set2", "set2_table2" to "Set2Table2")) {
+            @Suppress("UNCHECKED_CAST")
+            val rows = functions.getValue(key) as List<Map<String, Any?>>
+            out.appendLine("    public object $obj {")
+            for (f in rows) out.appendLine("        public const val ${f["name"]}: Int = ${hex(int(f["code"]))}")
+            out.appendLine("        public val NAMES: Map<Int, String> = mapOf(${rows.joinToString(", ") { "${hex(int(it["code"]))} to ${str(it["name"])}" }})")
+            out.appendLine("    }")
+        }
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val presetData = JsonSlurper().parse(presetsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val presets = presetData.getValue("presets") as List<Map<String, Any?>>
+        out.appendLine("/** Sony's EQ presets by id (data/sony/eq_presets.json). */")
+        out.appendLine("internal val SONY_EQ_PRESETS: List<SonyEqPreset> = listOf(")
+        for (e in presets) out.appendLine("    SonyEqPreset(${hex(int(e["id"]))}, ${str(e["name"])}, ${str(e["label"])}, custom = ${e["custom"] == true}),")
+        out.appendLine(")")
+        out.appendLine()
+        out.appendLine("/** The preset id that names no preset, which set 1 sends with its own bands. */")
+        out.appendLine("internal const val SONY_EQ_UNSPECIFIED: Int = ${hex(int(presetData["unspecified"]))}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/sony/devices.json. */")
+        out.appendLine("internal val SONY_MODELS: List<SonyModel> = listOf(")
+        for (d in devices) {
+            val names = (d.getValue("names") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headphones", "neckband" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            val set = (d["table_set"] as Number?)?.toInt()?.toString() ?: "null"
+            out.appendLine("    SonyModel(${str(d["name"])}, $names, io.github.omegadestroyer.pairfree.protocol.Form.$form, tableSet = $set),")
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("SonyTables.kt").writeText(out.toString())
+    }
+}
+
+val generateSonyTables = tasks.register<GenerateSonyTables>("generateSonyTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/sony/commands.json")
+    functionsJson = rootProject.layout.projectDirectory.file("../data/sony/functions.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/sony/devices.json")
+    presetsJson = rootProject.layout.projectDirectory.file("../data/sony/eq_presets.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.sony"
+    outputDir = layout.buildDirectory.dir("generated/sony")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
     kotlin.srcDir(generateSoundcoreTables)
     kotlin.srcDir(generateSamsungTables)
+    kotlin.srcDir(generateSonyTables)
 }
 
 dependencies {
@@ -506,6 +635,7 @@ tasks.test {
     inputs.dir(dataDir).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/soundcore")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/samsung")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/sony")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

@@ -36,14 +36,15 @@ Each model shows only what it has:
 - Touch controls: what each tap and hold does on each earbud, and turning touch off.
 - Game mode, two devices at once, LDAC and LE Audio.
 - The ear tip fit test, find my earbuds, voice prompts and water drain.
-- Settings only one brand has, such as each Galaxy Bud's ambient sound level, or voice detect.
+- Settings only one brand has, such as each Galaxy Bud's ambient sound level, voice detect, or
+  Sony's speak-to-chat and DSEE upscaling.
 - A status notification with the battery and buttons for noise control and game mode, in
   place of Google's Fast Pair notification if you like.
 
 PairFree needs Android 12 or later.
 
 PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS,
-Anker or Samsung. It was called SoundPeter until version 0.1.3, when it was still an app for
+Anker, Samsung or Sony. It was called SoundPeter until version 0.1.3, when it was still an app for
 SOUNDPEATS earbuds alone.
 
 <p>
@@ -65,7 +66,7 @@ and from reports their owners send in. Each brand's page shows which models have
 
 | Piece                 | State |
 |-----------------------|-------|
-| Android app           | Released for SOUNDPEATS (v0.1.4). Soundcore and Galaxy Buds come with the next release. |
+| Android app           | Released for SOUNDPEATS (v0.1.4). Soundcore, Galaxy Buds and Sony come with the next release. |
 | Tried on real earbuds | SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40 |
 | Protocols             | One document, data set and test suite per brand, in `docs/<brand>/` and `data/<brand>/` |
 | iOS and Windows apps  | Planned, after Android |
@@ -81,6 +82,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [SOUNDPEATS](docs/devices/soundpeats.md) | 45 | Air5 Pro+, H3 |
 | [Soundcore (Anker)](docs/devices/soundcore.md) | 39 | Space A40 |
 | [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
+| [Sony](docs/devices/sony.md) | 24 | — |
 <!-- devices-summary:end -->
 
 **Known issue:** LDAC does not work on the Air5 Pro+, at least with a Samsung Galaxy S24 FE. If
@@ -104,11 +106,12 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 | `data/soundpeats/qcy_commands.json` | The separate protocol for the SOUNDPEATS Capsule3 Pro   |
 | `data/soundcore/eq_presets.json`, `button_actions.json` | Soundcore EQ presets and touch actions, from OpenSCQ30 |
 | `data/samsung/messages.json` | The Galaxy Buds message table, from GalaxyBudsClient          |
+| `data/sony/functions.json`, `eq_presets.json` | What Sony earbuds list they have, and Sony's EQ presets, from Sony's app |
 | `tools/probe.py`          | Read-only probe for SOUNDPEATS earbuds. Asks them what they support. |
 | `tools/import_eq_capture.py` | Turns the equalizer part of a recording from PeatsAudio into a model's EQ data. |
 | `tools/import_openscq30.py` | Refreshes the Soundcore model list from a local copy of OpenSCQ30. |
 | `tools/import_galaxybudsclient.py` | Refreshes the Galaxy Buds model list from a local copy of GalaxyBudsClient. |
-| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore) and `gen_samsung_table.py` (Samsung). |
+| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore), `gen_samsung_table.py` (Samsung) and `gen_sony_table.py` (Sony). |
 | `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
 | `tools/test_*.py`         | Tests for the tools and the data files. No hardware needed.       |
 | `assets/devices/<brand>/` | Vector drawings of each model's earbud and case, per look         |
@@ -125,9 +128,9 @@ first, a recording of the brand's own app, gives the most.
 ### Record from the official app
 
 This gathers everything in one go, from the brand's own app: PeatsAudio (or SOUNDPEATS) for
-SOUNDPEATS earbuds, Soundcore for Soundcore earbuds, Galaxy Wearable for Galaxy Buds. It
-records what that app reads from your earbuds and what it sends when you change a setting,
-which shows exactly how PairFree should set it, and adds PairFree's own device report. On
+SOUNDPEATS earbuds, Soundcore for Soundcore earbuds, Galaxy Wearable for Galaxy Buds, Sound
+Connect for Sony earbuds and headphones. It records what that app reads from your earbuds and
+what it sends when you change a setting, which shows exactly how PairFree should set it, and adds PairFree's own device report. On
 SOUNDPEATS earbuds it also gets the equalizer curves and presets. It takes about ten minutes
 on your phone, with no computer.
 
@@ -160,7 +163,9 @@ setting PairFree can read and what the earbuds answered. On Soundcore earbuds it
 earbuds' whole state reply, with the serial number masked, which checks the model's row in
 the [Soundcore table](docs/devices/soundcore.md#all-models). On Galaxy Buds it holds their
 whole state, as bytes and as PairFree read it, for the
-[Samsung table](docs/devices/samsung.md#all-models).
+[Samsung table](docs/devices/samsung.md#all-models). On Sony earbuds and headphones it lists the
+functions they report and the last message of each kind they sent, for the
+[Sony table](docs/devices/sony.md#all-models).
 
 ### Probe from a PC
 
@@ -215,6 +220,9 @@ cd android
 - [GalaxyBudsClient](https://github.com/timschneeb/GalaxyBudsClient) by Tim Schneeberger (GPLv3):
   the Galaxy Buds protocol, model list, per-model features and state layouts that PairFree's
   Samsung support is ported from. Code ported from it says so where it is.
+- [Gadgetbridge](https://codeberg.org/Freeyourgadget/Gadgetbridge) (AGPL-3.0): its Sony support,
+  used with real headphones, confirms the Sony messages PairFree reads from Sony's app, and its
+  notes give the Sony model names and table sets. Facts only; none of its code is in PairFree.
 - [IBM Plex](https://github.com/IBM/plex) fonts (SIL Open Font License 1.1).
 
 ## License

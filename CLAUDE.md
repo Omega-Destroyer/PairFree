@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker) and Samsung Galaxy Buds are being added. The owner wants agents to do as much of the
+(Anker), Samsung Galaxy Buds and Sony are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Where the truth lives
@@ -31,7 +31,7 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 `tools/device_art/<brand>/`. App-wide documents stay at the top level. Each brand also has a page
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
-from one brand to another. So far: `soundpeats`, `soundcore` and `samsung`.
+from one brand to another. So far: `soundpeats`, `soundcore`, `samsung` and `sony`.
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -91,6 +91,22 @@ from one brand to another. So far: `soundpeats`, `soundcore` and `samsung`.
   after a refresh to a newer commit, compare the decoder with it. Credit GalaxyBudsClient wherever
   its code or facts are used. Never send `SamsungMessage.NEVER_SEND`; there is no codec message,
   so no codec switch can be offered.
+- `docs/sony/PROTOCOL.md` is the Sony protocol, read from Sony's own app (Sony | Sound Connect
+  13.3.0, decompiled outside the repo on 2026-10-14) and checked against Gadgetbridge's Sony support
+  (codeberg.org/Freeyourgadget/Gadgetbridge, AGPL-3.0: facts only, never its code), which has been
+  used with real headphones. No Sony model has been tried; the owner has none. Sony's app has two
+  table sets, chosen by the RFCOMM service (`SonyWire.SET1_SERVICE`, `SET2_SERVICE`) and confirmed
+  by the length of the earbuds' first reply; each message waits for its acknowledgement
+  (`SonyLink`), so Sony traffic goes through `EarbudsConnection.serveSony`'s queue, never straight
+  to the socket. `data/sony/commands.json` (all four tables), `functions.json` (what the earbuds
+  list they have), `devices.json` (names only: the earbuds report their own features) and
+  `eq_presets.json` become `SonyCommand`, `SonyFunction`, `SonyWire` and the model and preset lists
+  through `generateSonyTables`. `SonySession` reads only the functions the earbuds list; noise
+  control (`SonyNoise`) writes back in the layout of the earbuds' own last reply; the EQ goes
+  through the Sound tab via `SonyEqTarget`, whose "frames" are message payloads for that queue.
+  Set 2 writes on as 0 and off as 1 for its switches. After a change to `devices.json` run
+  `python tools/gen_sony_table.py`. Never send `SonyCommand.*.NEVER_SEND` (firmware update, test,
+  logs).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

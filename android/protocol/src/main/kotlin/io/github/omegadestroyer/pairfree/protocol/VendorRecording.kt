@@ -1,13 +1,14 @@
 package io.github.omegadestroyer.pairfree.protocol
 
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungMessage
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyCommand
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreCommand
 
 /** A brand whose official app a recording can hold, besides SOUNDPEATS (whose frames are [SnoopScanner.Found]). */
-public enum class RecordedBrand { SOUNDCORE, SAMSUNG }
+public enum class RecordedBrand { SOUNDCORE, SAMSUNG, SONY }
 
 /**
- * What another brand's official app (the Soundcore app, Galaxy Wearable) and its earbuds sent each
+ * What another brand's official app (the Soundcore app, Galaxy Wearable, Sony's app) and its earbuds sent each
  * other, found in a Bluetooth log ([SnoopScanner.packets]), as a timeline for a report: when each
  * message went, which way, its number and name, and its bytes. A recording shows what the
  * official app sends for each setting, which is what confirms a model's protocol.
@@ -93,9 +94,10 @@ public object VendorRecording {
         val withheld = when (brand) {
             RecordedBrand.SOUNDCORE -> id in SoundcoreCommand.PRIVATE || id in SoundcoreCommand.NEVER_SEND
             RecordedBrand.SAMSUNG -> id in SamsungMessage.NEVER_SEND
+            RecordedBrand.SONY -> sonyNeverSend(id)
         }
         if (withheld || (!known && payload.size > SHOWN_UNKNOWN)) return "(${payload.size} bytes left out)"
-        val hidden = masked(payload, address, serials = brand == RecordedBrand.SOUNDCORE)
+        val hidden = masked(payload, address, serials = brand != RecordedBrand.SAMSUNG)
         return payload.indices.joinToString(" ") { i -> if (hidden[i]) "XX" else hex(payload[i]) }
     }
 
@@ -145,13 +147,53 @@ public object VendorRecording {
     public fun name(brand: RecordedBrand, id: Int): String? = when (brand) {
         RecordedBrand.SOUNDCORE -> SoundcoreCommand.NAMES[id]
         RecordedBrand.SAMSUNG -> SamsungMessage.NAMES[id]
+        RecordedBrand.SONY -> sonyName(id)
     }
 
-    /** A Soundcore command as four hex digits, as its docs write it; a Samsung message in decimal, as GalaxyBudsClient numbers them. */
+    /**
+     * A Soundcore command as four hex digits, as its docs write it; a Samsung message in decimal, as
+     * GalaxyBudsClient numbers them; a Sony command as its table, a dot and its number in hex.
+     */
     public fun idText(brand: RecordedBrand, id: Int): String = when (brand) {
         RecordedBrand.SOUNDCORE -> id.toString(16).uppercase().padStart(4, '0')
         RecordedBrand.SAMSUNG -> id.toString().padStart(3, ' ')
+        RecordedBrand.SONY -> "${(id shr SONY_TABLE_SHIFT) and 0xF}.${(id and 0xFF).toString(16).uppercase().padStart(2, '0')}"
     }
+
+    /**
+     * A Sony message as a packet id: its table set (0 while the recording has not shown it), its table
+     * and its command. The two sets number some commands differently (docs/sony/PROTOCOL.md section 1).
+     */
+    public fun sonyId(tableSet: Int, table: Int, command: Int): Int = (tableSet shl SONY_SET_SHIFT) or (table shl SONY_TABLE_SHIFT) or command
+
+    /** The Sony command's name in its set's table; with the set unknown, only a name both sets share. */
+    private fun sonyName(id: Int): String? {
+        val command = id and 0xFF
+        val table = (id shr SONY_TABLE_SHIFT) and 0xF
+        val one = (if (table == 2) SonyCommand.Set1Table2.NAMES else SonyCommand.Set1.NAMES)[command]
+        val two = (if (table == 2) SonyCommand.Set2Table2.NAMES else SonyCommand.Set2.NAMES)[command]
+        return when (id shr SONY_SET_SHIFT) {
+            1 -> one
+            2 -> two
+            else -> one?.takeIf { it == two }
+        }?.lowercase()
+    }
+
+    /** Firmware update, test and log messages, in either set, are left out of a report. */
+    private fun sonyNeverSend(id: Int): Boolean {
+        val command = id and 0xFF
+        val table = (id shr SONY_TABLE_SHIFT) and 0xF
+        val one = command in (if (table == 2) SonyCommand.Set1Table2.NEVER_SEND else SonyCommand.Set1.NEVER_SEND)
+        val two = command in (if (table == 2) SonyCommand.Set2Table2.NEVER_SEND else SonyCommand.Set2.NEVER_SEND)
+        return when (id shr SONY_SET_SHIFT) {
+            1 -> one
+            2 -> two
+            else -> one || two
+        }
+    }
+
+    private const val SONY_TABLE_SHIFT = 8
+    private const val SONY_SET_SHIFT = 12
 
     /** At most this many bytes of a message PairFree does not know go into a report. */
     public const val SHOWN_UNKNOWN: Int = 4

@@ -17,6 +17,14 @@ import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungSession
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
+import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyEq
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyLink
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyOut
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyParser
+import io.github.omegadestroyer.pairfree.protocol.sony.SonySession
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyWire
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreParser
@@ -26,6 +34,7 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,13 +47,14 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
-enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG }
+enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
  * null for the standard serial port, which SoundPEATS earbuds use. [model] is the Soundcore
- * model number, from the earbuds' service or name ([SoundcoreModels.identify]), or the Galaxy
- * Buds model number from the name ([SamsungModels.fromName]).
+ * model number, from the earbuds' service or name ([SoundcoreModels.identify]), the Galaxy
+ * Buds model number from the name ([SamsungModels.fromName]), or the Sony model from the name
+ * ([SonyModels.identify]), null for a Sony model not in the table.
  */
 data class Paired(
     val address: String,
@@ -75,7 +85,7 @@ sealed interface LinkStatus {
  * Soundcore earbuds speak another protocol; a [SoundcoreSession] turns it into the same
  * [state] and turns [set] into Soundcore packets, so the screens work for both brands. Galaxy
  * Buds go through a [SamsungSession] the same way, and their settings beyond the shared ones
- * come out as [settings].
+ * come out as [settings]; Sony earbuds and headphones through a [SonySession].
  */
 class EarbudsConnection(
     private val scope: CoroutineScope,
@@ -122,6 +132,17 @@ class EarbudsConnection(
     /** The Galaxy Buds' EQ curves by equalizer number, where they reported them; the Sound tab draws the presets from them. */
     val samsungEqCurves: StateFlow<List<List<Int>>> = _samsungEqCurves.asStateFlow()
 
+    private var sony: SonySession? = null   // set while connected to Sony earbuds
+    private var sonyQueue: Channel<SonyOut>? = null
+
+    /** The Sony session, while connected to Sony earbuds or headphones; for the device report. */
+    val sonySession: SonySession? get() = sony
+
+    private val _sonyEq = MutableStateFlow<SonyEq?>(null)
+
+    /** The Sony equalizer as the earbuds last reported it; the Sound tab follows it. */
+    val sonyEq: StateFlow<SonyEq?> = _sonyEq.asStateFlow()
+
     private val _soundcoreState = MutableStateFlow<SoundcoreState?>(null)
 
     /** Each full state Soundcore earbuds send, as they send it; the Sound tab reads their EQ from it. */
@@ -135,6 +156,8 @@ class EarbudsConnection(
         soundcore = null
         _soundcoreState.value = null
         samsung = null
+        sony = null
+        _sonyEq.value = null
         _settings.value = emptyList()
         _samsungStatus.value = null
         val remote = adapter?.takeIf { it.isEnabled }?.getRemoteDevice(device.address)
@@ -175,6 +198,7 @@ class EarbudsConnection(
                 when (device.brand) {
                     Brand.SOUNDCORE -> serveSoundcore(opened, device)
                     Brand.SAMSUNG -> serveSamsung(opened, device)
+                    Brand.SONY -> serveSony(opened, device)
                     Brand.SOUNDPEATS -> serve(opened, device)
                 }
                 log?.invoke("closed")
@@ -274,6 +298,89 @@ class EarbudsConnection(
         }
     }
 
+    /**
+     * Sony earbuds and headphones: each message waits for its acknowledgement before the next goes,
+     * as Sony's app sends them (docs/sony/PROTOCOL.md section 2), and every message from them is
+     * acknowledged at once. The session asks for the protocol, then for what the earbuds list; the
+     * battery is read again every [BATTERY_POLL_MS], and changes arrive as notifications. A message
+     * never acknowledged leaves the two sides' sequence numbers in doubt, so the channel closes and
+     * opens again, as Sony's app does.
+     */
+    private suspend fun serveSony(opened: SppLink, device: Paired) = coroutineScope {
+        val session = SonySession(SonyModels.tableSetOf(device.service), SonyModels.of(device.model))
+        sony = session
+        val link = SonyLink()
+        val queue = Channel<SonyOut>(Channel.UNLIMITED)
+        val acked = Channel<Unit>(Channel.CONFLATED)
+        sonyQueue = queue
+        val sender = launch {
+            try {
+                for (out in queue) {
+                    if (!session.allowed(out)) continue
+                    val frame = link.frame(out)
+                    acked.tryReceive()
+                    var acknowledged = false
+                    for (attempt in 0..SONY_RESENDS) {
+                        opened.send(frame)
+                        if (withTimeoutOrNull(SONY_ACK_MS) { acked.receive() } != null) {
+                            acknowledged = true
+                            break
+                        }
+                    }
+                    if (!acknowledged) {
+                        log?.invoke("no acknowledgement for $out")
+                        opened.close()
+                        break
+                    }
+                }
+            } catch (_: IOException) {
+                // the channel closed; the reader below notices too
+            }
+        }
+        session.start().forEach(queue::trySend)
+        val poll = launch {
+            while (true) {
+                delay(BATTERY_POLL_MS)
+                session.batteryRequests().forEach(queue::trySend)
+            }
+        }
+        try {
+            val parser = SonyParser()
+            opened.reads().collect { bytes ->
+                for (message in parser.feed(bytes)) {
+                    log?.invoke("recv $message")
+                    if (message.dataType == SonyWire.ACK) {
+                        if (link.acked(message)) acked.trySend(Unit)
+                        continue
+                    }
+                    val (ack, fresh) = link.received(message)
+                    opened.send(ack)
+                    if (fresh && session.receive(message)) publish(session)
+                    session.takeOutbox().forEach(queue::trySend)
+                }
+            }
+        } catch (_: IOException) {
+        }
+        poll.cancel()
+        sender.cancel()
+        queue.close()
+        if (sonyQueue === queue) sonyQueue = null
+    }
+
+    private fun publish(session: SonySession) {
+        _state.value = session.state
+        _settings.value = session.groups
+        _sonyEq.value = session.eq
+    }
+
+    /** Queues Sony messages on the open channel. False when there is none. */
+    private fun sendSony(outs: List<SonyOut>): Boolean {
+        if (_status.value !is LinkStatus.Connected) return false
+        val queue = sonyQueue ?: return false
+        outs.forEach(queue::trySend)
+        return true
+    }
+
     private fun publish(session: SamsungSession) {
         _state.value = session.state
         _settings.value = session.groups
@@ -282,6 +389,11 @@ class EarbudsConnection(
 
     /** Changes one of the [settings]: it shows at once, and the earbuds' acknowledgement or next state confirms it. */
     fun changeSetting(change: SettingChange) {
+        sony?.let { session ->
+            val outs = session.change(change) ?: return
+            if (sendSony(outs)) publish(session)
+            return
+        }
         val session = samsung ?: return
         val packets = session.change(change) ?: return
         if (send(session.frames(packets), then = null)) publish(session)
@@ -295,6 +407,11 @@ class EarbudsConnection(
      * Buds as a Samsung message, which the earbuds acknowledge.
      */
     fun set(command: Command, vararg payload: Int) {
+        sony?.let { session ->
+            val outs = session.set(command, payload.singleOrNull() ?: return) ?: return
+            if (sendSony(outs)) publish(session)
+            return
+        }
         samsung?.let { session ->
             val packets = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (send(session.frames(packets), then = null)) publish(session)
@@ -318,6 +435,11 @@ class EarbudsConnection(
      */
     fun sendEq(frames: List<ByteArray>) {
         if (_status.value !is LinkStatus.Connected) return
+        // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
+        sony?.let { session ->
+            if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
+            return
+        }
         val s = session ?: return
         val l = link ?: return
         val readBack = soundcore?.requestState()
@@ -345,7 +467,7 @@ class EarbudsConnection(
             if (send(session.frames(packets), then = null)) publish(session)
             return
         }
-        if (_status.value !is LinkStatus.Connected || soundcore != null) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -374,7 +496,7 @@ class EarbudsConnection(
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null || samsung != null) return
+        if (soundcore != null || samsung != null || sony != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -427,6 +549,8 @@ class EarbudsConnection(
         link = null
         soundcore = null
         samsung = null
+        sony = null
+        sonyQueue = null
         session?.cancel()
         session = null
         _status.value = LinkStatus.Idle
@@ -464,6 +588,12 @@ class EarbudsConnection(
 
         /** Longest wait for a fit result before noise control goes back on regardless. */
         const val FIT_WAIT_MS = 20_000L
+
+        /** Sony's app waits this long for an acknowledgement before it sends a message again ... */
+        const val SONY_ACK_MS = 750L
+
+        /** ... and sends it again at most this many times. */
+        const val SONY_RESENDS = 10
 
         /** ANC mode "off" (data/soundpeats/commands.json). */
         private val ANC_OFF = Command.ANC_MODE.labels.entries.first { it.value == "off" }.key

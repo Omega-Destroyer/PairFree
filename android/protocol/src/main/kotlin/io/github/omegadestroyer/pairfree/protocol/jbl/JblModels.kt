@@ -20,11 +20,17 @@ public data class JblModel(
     val autoOffMinutes: List<Int>,
     val autoPlayPause: Boolean,
 ) {
-    /** How the model's settings go: one command each ([DIRECT]) or Harman's feature records, command 06 ([FEATURE]). */
-    public enum class Family { DIRECT, FEATURE }
+    /**
+     * How the model's settings go: one command each ([DIRECT]), Harman's feature records, command 06
+     * ([FEATURE]), or JBL's protocol 4 ([P4]).
+     */
+    public enum class Family { DIRECT, FEATURE, P4 }
 
-    /** How noise control goes: command 91's modes, or commands 31 and 32 ([OLD]; [CLUB] turns it off with 31 alone). */
-    public enum class Noise { MODES, OLD, CLUB }
+    /**
+     * How noise control goes: command 91's modes, commands 31 and 32 ([OLD]; [CLUB] turns it off with 31
+     * alone), or protocol 4's ambient sound control and mode features ([ASC]).
+     */
+    public enum class Noise { MODES, OLD, CLUB, ASC }
 
     /** The noise modes JBL's app offers on the model, besides off. */
     public enum class Mode { ANC, AMBIENT_AWARE, TALK_THRU }

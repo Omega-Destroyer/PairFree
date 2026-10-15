@@ -117,34 +117,41 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 
 One report from someone who owns a model adds it to its brand's page
 ([Supported brands](#supported-brands)) for everyone. There are three ways to make one. The
-first gives the most, on SOUNDPEATS earbuds; on Soundcore earbuds and Galaxy Buds, use Copy
-device report.
+first, a recording of the brand's own app, gives the most.
 
-### Record from PeatsAudio
+### Record from the official app
 
-This gathers everything in one go: every setting the official PeatsAudio app reads from
-your earbuds (which shows what SoundPEATS supports on your model), the equalizer curves
-and presets it sends, and PairFree's own device report. It takes about ten minutes on
-your phone, with no computer.
+This gathers everything in one go, from the brand's own app: PeatsAudio (or SOUNDPEATS) for
+SOUNDPEATS earbuds, Soundcore for Soundcore earbuds, Galaxy Wearable for Galaxy Buds. It
+records what that app reads from your earbuds and what it sends when you change a setting,
+which shows exactly how PairFree should set it, and adds PairFree's own device report. On
+SOUNDPEATS earbuds it also gets the equalizer curves and presets. It takes about ten minutes
+on your phone, with no computer.
 
-In PairFree, open the Device tab and tap **Record from PeatsAudio** (or the button on the
-Sound tab). It walks you through it:
+In PairFree, open the Device tab and tap **Record from the official app** (or the button on
+the Sound tab). It walks you through it:
 
 1. Turn on Developer options and set **Bluetooth HCI snoop log** to **Enabled**.
-2. In PeatsAudio, open each screen once without changing anything, run its fit test if it
-   has one, then tap SOUNDPEATS Classic and every other EQ preset once.
+2. In the official app, open each screen once. Then change each setting you want PairFree to
+   learn, one at a time and a few seconds apart, and note what you changed. On SOUNDPEATS
+   earbuds, also run PeatsAudio's fit test if it has one, and tap SOUNDPEATS Classic and
+   every other EQ preset once.
 3. Take a bug report from Developer options (**Take bug report**, then **Full report**).
    **It takes several minutes, and Android shows nothing while it works: wait for the
    notification that says it is ready.** Then tap it and share it to PairFree.
-4. Name each EQ curve PairFree found, and tap **Send on GitHub**.
+4. On SOUNDPEATS earbuds, name each EQ curve PairFree found. Tap **Send on GitHub**, and
+   write in the report what you changed in the official app, in order.
 
 PairFree reads the bug report only on your phone and keeps nothing but the messages
-exchanged with your SoundPEATS earbuds. The report you send has no names or addresses.
-Afterwards, turn the snoop log off and delete the bug report.
+exchanged with your earbuds. The report you send has no names or addresses: it shows only
+the messages PairFree knows, with the earbuds' address and serial number masked, and of the
+others little more than their number and size. Afterwards, turn the snoop log off and
+delete the bug report.
 
 ### Copy device report
 
-Quicker, and no PeatsAudio needed, but no equalizer. Connect the earbuds in PairFree,
+Quicker, and no official app needed, but it holds only what the earbuds report: no
+equalizer curves, and nothing of how the official app changes a setting. Connect the earbuds in PairFree,
 tap **Copy device report** on the Device tab, and paste it into a new issue. It lists every
 setting PairFree can read and what the earbuds answered. On Soundcore earbuds it holds the
 earbuds' whole state reply, with the serial number masked, which checks the model's row in

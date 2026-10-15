@@ -241,6 +241,12 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
         val never = commands.filter { it["never_send"] == true }.joinToString(", ") { "0x${it.getValue("command")}" }
         out.appendLine("    /** Commands PairFree never sends. */")
         out.appendLine("    public val NEVER_SEND: Set<Int> = setOf($never)")
+        val private = commands.filter { it["private"] == true }.joinToString(", ") { "0x${it.getValue("command")}" }
+        out.appendLine("    /** Commands whose body can carry personal data; a recording of the official app leaves it out. */")
+        out.appendLine("    public val PRIVATE: Set<Int> = setOf($private)")
+        val names = commands.joinToString(", ") { "0x${it.getValue("command")} to \"${it.getValue("id")}\"" }
+        out.appendLine("    /** Each command's name in data/soundcore/commands.json. */")
+        out.appendLine("    public val NAMES: Map<Int, String> = mapOf($names)")
         out.appendLine("}")
 
         @Suppress("UNCHECKED_CAST")
@@ -432,6 +438,9 @@ abstract class GenerateSamsungTables : DefaultTask() {
         val never = messages.filter { it["never_send"] == true }.joinToString(", ") { int(it["number"]).toString() }
         out.appendLine("    /** Messages PairFree never sends. */")
         out.appendLine("    public val NEVER_SEND: Set<Int> = setOf($never)")
+        val names = messages.joinToString(", ") { "${int(it["number"])} to \"${it.getValue("id")}\"" }
+        out.appendLine("    /** Each message's name in data/samsung/messages.json. */")
+        out.appendLine("    public val NAMES: Map<Int, String> = mapOf($names)")
         out.appendLine("}")
         out.appendLine()
         out.appendLine("/** Every model in data/samsung/devices.json, with GalaxyBudsClient's specification of it. */")

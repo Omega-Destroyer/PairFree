@@ -76,7 +76,7 @@
     <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
 
     <string name="sound_profile">Sound</string>
-    <string name="eq_soundcore_unchecked">PairFree does not change the equalizer on this model yet: nothing has confirmed the EQ it would send. A device report from the Device tab, pasted into an issue on GitHub, helps add it.</string>
+    <string name="eq_soundcore_unchecked">PairFree does not change the equalizer on this model yet: nothing has confirmed the EQ it would send. A recording of the Soundcore app setting it, sent from the button below, adds it for everyone.</string>
     <string name="eq_unavailable">PairFree does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
     <string name="eq_stock">Stock</string>
     <string name="eq_new">New</string>
@@ -265,25 +265,26 @@
     <string name="le_audio">LE Audio</string>
     <string name="le_audio_note">Uses Bluetooth LE Audio where the phone supports it. The earbuds restart to switch and reconnect by themselves.</string>
     <!-- EQ capture (docs/DESIGN.md) -->
-    <string name="capture_open">Record from PeatsAudio</string>
-    <string name="capture_title">Record from PeatsAudio</string>
+    <string name="capture_open">Record from the official app</string>
+    <string name="capture_title">Record from the official app</string>
     <string name="capture_close">Close</string>
-    <string name="capture_intro">PairFree learns what a model can do, and its equalizer, from what the official PeatsAudio app reads from the earbuds and sends to them. Android can log that, and one recording per model is enough to add it for everyone.</string>
+    <string name="capture_intro">PairFree learns what a model can do, and its equalizer, from what its official app (PeatsAudio, Soundcore or Galaxy Wearable) reads from the earbuds and sends to them. Android can log that, and one recording per model is enough to add it for everyone.</string>
     <string name="capture_step_developer">Turn on Developer options: in Settings, open About phone and tap Build number seven times. On Samsung it is under About phone, Software information.</string>
     <string name="capture_step_log">In Settings, Developer options, set Bluetooth HCI snoop log to Enabled (not Filtered). Then turn Bluetooth off and on.</string>
-    <string name="capture_step_peats">Open PeatsAudio with these earbuds connected. Open each of its screens once without changing anything, so it reads every setting, and run its fit test if it has one. Then on its EQ screen tap SOUNDPEATS Classic and every other preset once, a few seconds apart. Do not come back to PairFree yet.</string>
+    <string name="capture_step_app">Open the official app for these earbuds with them connected. Open each of its screens once, so it reads every setting. Then change each setting you want PairFree to learn, one at a time and a few seconds apart, and note what you changed. Do not come back to PairFree yet.</string>
+    <string name="capture_step_peats_eq">On SOUNDPEATS earbuds, also run PeatsAudio\'s fit test if it has one, and on its EQ screen tap SOUNDPEATS Classic and every other preset once, a few seconds apart.</string>
     <string name="capture_step_report">Back in Developer options, tap Take bug report, then Full report.</string>
     <string name="capture_step_report_wait">It takes several minutes, and Android shows nothing while it works. Wait for the notification that says it is ready.</string>
     <string name="capture_step_share">When the notification says the bug report is ready, tap it and share it to PairFree. If you miss the notification, tap Choose a bug report below, open the menu and pick Bug reports to find it.</string>
-    <string name="capture_step_name">PairFree shows what it found. Name the EQ curves in the order you tapped them, then send the report. If PairFree is connected to the same earbuds, its own device report goes in too.</string>
+    <string name="capture_step_name">PairFree shows what it found. On SOUNDPEATS earbuds, name the EQ curves in the order you tapped them. Then send the report, and write in it what you changed in the official app. If PairFree is connected to the same earbuds, its own device report goes in too.</string>
     <string name="capture_step_cleanup">Afterwards, set Bluetooth HCI snoop log back to Disabled and delete the bug report. It holds a lot of personal data.</string>
     <string name="capture_choose">Choose a bug report</string>
     <string name="capture_reading">Reading the bug report. This can take a minute.</string>
     <string name="capture_privacy_title">What PairFree reads</string>
-    <string name="capture_privacy">PairFree reads the bug report only on this phone. From the Bluetooth log inside it, it reads only the messages exchanged with SoundPEATS earbuds and skips everything else. It does not keep the file. Nothing is sent to any server until you send the report yourself, which opens GitHub in your browser. PairFree has no internet access at all: its app info in Android lists no network permission.</string>
+    <string name="capture_privacy">PairFree reads the bug report only on this phone. From the Bluetooth log inside it, it reads only the messages exchanged with earbuds of the brands PairFree supports, and skips everything else. The report shows only messages PairFree knows, with the earbuds\' address and serial number masked; of the others it shows little more than their number and size. It does not keep the file. Nothing is sent to any server until you send the report yourself, which opens GitHub in your browser. PairFree has no internet access at all: its app info in Android lists no network permission.</string>
     <string name="capture_source">See PairFree\'s source code</string>
-    <string name="capture_no_log">This bug report has no Bluetooth log. Set Bluetooth HCI snoop log to Enabled, turn Bluetooth off and on, use PeatsAudio again, then take a new bug report.</string>
-    <string name="capture_none">The Bluetooth log in this bug report has nothing from SoundPEATS earbuds. Check that the snoop log was set to Enabled, not Filtered, and Bluetooth turned off and on, before you used PeatsAudio.</string>
+    <string name="capture_no_log">This bug report has no Bluetooth log. Set Bluetooth HCI snoop log to Enabled, turn Bluetooth off and on, use the official app again, then take a new bug report.</string>
+    <string name="capture_none">The Bluetooth log in this bug report has nothing from earbuds PairFree supports. Check that the snoop log was set to Enabled, not Filtered, and Bluetooth turned off and on, before you used the official app.</string>
     <string name="capture_not_report">That file is not a bug report.</string>
     <string name="capture_unreadable">Could not read that file.</string>
     <plurals name="capture_found">
@@ -310,6 +311,16 @@
     <string name="capture_own_report">PairFree\'s own device report for these earbuds goes in too.</string>
     <string name="capture_own_report_missing">To add PairFree\'s own device report as well, connect these earbuds in PairFree before sending.</string>
     <string name="capture_no_curves">No EQ curves in this recording. The settings are still worth sending.</string>
+    <plurals name="capture_vendor_messages">
+        <item quantity="one">%d message from the official app</item>
+        <item quantity="other">%d messages from the official app</item>
+    </plurals>
+    <plurals name="capture_vendor_replies">
+        <item quantity="one">%d from the earbuds</item>
+        <item quantity="other">%d from the earbuds</item>
+    </plurals>
+    <string name="capture_vendor_sent">The app sent: %1$s</string>
+    <string name="capture_vendor_hint">At its end the report has a place to write what you changed in the official app, in order. That tells which message is which setting.</string>
     <plurals name="capture_settings_read">
         <item quantity="one">%d setting read by PeatsAudio</item>
         <item quantity="other">%d settings read by PeatsAudio</item>

@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore command table. A command is two bytes, written as hex. source: openscq30 (read from OpenSCQ30's source) or soundcore_app (seen in a recording of the official app). confirmed lists the models a recording in data/soundcore/reports confirms it on. See docs/soundcore/PROTOCOL.md.",
+  "_about": "Soundcore command table. A command is two bytes, written as hex. source: openscq30 (read from OpenSCQ30's source) or soundcore_app (seen in a recording of the official app). confirmed lists the models a recording in data/soundcore/reports confirms it on. private marks bodies that can carry personal data (addresses, names, serial numbers): a recording from the official app leaves them out. See docs/soundcore/PROTOCOL.md.",
   "frame": {
     "to_earbuds_header": "08EE000000",
     "from_earbuds_header": "09FF000001",
@@ -17,7 +17,8 @@
      "note": "The earbuds send it unasked: left, right, case."},
     {"id": "charging", "command": "0104", "source": "openscq30", "confirmed": ["A3936"],
      "note": "The earbuds send it unasked: left, right, 1 while charging."},
-    {"id": "serial_and_firmware", "command": "0105", "source": "openscq30"},
+    {"id": "serial_and_firmware", "command": "0105", "source": "openscq30", "private": true,
+     "note": "The serial number and the firmware. The serial can hold the earbuds' Bluetooth address."},
     {"id": "touch_tone", "command": "0183", "source": "openscq30", "confirmed": ["A3936"],
      "note": "Body: 1 on, 0 off."},
     {"id": "auto_power_off", "command": "0186", "source": "openscq30"},
@@ -65,7 +66,7 @@
      "note": "Body: the sound modes block, 6 bytes on the A3936; byte 0: 0 noise cancelling, 1 transparency, 2 normal."},
     {"id": "sound_mode_cycle", "command": "0682", "source": "openscq30",
      "note": "Which noise modes the noise-control touch action cycles through. Body: 1 noise cancelling + 2 transparency + 4 normal; on models with a TWS cycle, the low four bits with both earbuds in, the high four with one."},
-    {"id": "dual_connections_devices", "command": "0B01", "source": "openscq30", "confirmed": ["A3936"],
+    {"id": "dual_connections_devices", "command": "0B01", "source": "openscq30", "confirmed": ["A3936"], "private": true,
      "note": "With two devices on, the earbuds send one entry per known device unasked, 42 bytes each on the A3936. Each holds a device's address and name: never put them in a report."},
     {"id": "dual_connections_enabled", "command": "0B84", "source": "openscq30", "confirmed": ["A3936"],
      "note": "Two devices at once. Body: 1 on, 0 off."}

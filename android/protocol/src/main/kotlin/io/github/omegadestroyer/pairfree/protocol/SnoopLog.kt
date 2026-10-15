@@ -1,13 +1,23 @@
 package io.github.omegadestroyer.pairfree.protocol
 
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreParser
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreWire
+
 /**
  * Reads an Android Bluetooth HCI snoop log (the btsnoop format, found inside a bug report)
- * and keeps only SoundPEATS control frames (docs/soundpeats/PROTOCOL.md section 2) on vendor `00 0A`
- * or `00 1D`. Everything else in the log is skipped and never kept.
+ * and keeps only the control messages of earbuds PairFree knows: SOUNDPEATS frames
+ * (docs/soundpeats/PROTOCOL.md section 2) on vendor `00 0A` or `00 1D` ([frames]), and
+ * Soundcore and Samsung Galaxy Buds packets ([packets]). Everything else in the log is skipped
+ * and never kept.
  *
  * Feed the file in chunks of any size with [feed]; a large log never has to fit in memory.
- * ACL packets are put back together into L2CAP frames per connection and direction, and each
- * one is searched for frames, as the PC script that found the H3's and Air5 Pro+'s EQ did.
+ * ACL packets are put back together into L2CAP frames per connection and direction. Each one
+ * is searched for SOUNDPEATS frames, as the PC script that found the H3's and Air5 Pro+'s EQ
+ * did. RFCOMM data is also read channel by channel and fed to the Soundcore and Samsung parsers,
+ * so their packets are found even when split across RFCOMM frames. The connection events give
+ * each connection's remote address, which goes with its packets so a recording can be matched
+ * to a paired device and the address masked; it is never shown.
  */
 public class SnoopScanner {
     /**
@@ -20,6 +30,25 @@ public class SnoopScanner {
         public val fromEarbuds: Boolean,
         public val connection: Int,
         public val frame: Frame,
+    )
+
+    /**
+     * One Soundcore or Samsung packet in the log: its [id] (a Soundcore command or a Samsung
+     * message) and payload, on RFCOMM [channel] (the DLCI) of ACL [connection]. [address] is the
+     * remote device's Bluetooth address as the connection event gave it (least significant byte
+     * first), and [connectedAtMicros] when that connection was made; both null when the log
+     * started after the connection.
+     */
+    public class Packet(
+        public val timeMicros: Long,
+        public val fromEarbuds: Boolean,
+        public val connection: Int,
+        public val channel: Int,
+        public val brand: RecordedBrand,
+        public val id: Int,
+        public val payload: ByteArray,
+        public val address: ByteArray?,
+        public val connectedAtMicros: Long?,
     )
 
     /** False until the first 16 bytes have been read; stays false if they are not a btsnoop header. */
@@ -39,6 +68,19 @@ public class SnoopScanner {
     private var recordFlags = 0
     private var recordTime = 0L
     private val l2cap = HashMap<Int, Assembly>()
+    private val links = HashMap<Int, Link>()
+    private val streams = HashMap<Int, Stream>()
+    private val packets = mutableListOf<Packet>()
+
+    /** A connection the log saw being made: the remote address and when. */
+    private class Link(val address: ByteArray, val atMicros: Long)
+
+    /** One direction of one RFCOMM channel, with a parser per protocol it may carry. */
+    private class Stream(fromEarbuds: Boolean) {
+        val soundcore = SoundcoreParser(if (fromEarbuds) SoundcoreWire.FROM_EARBUDS_HEADER else SoundcoreWire.TO_EARBUDS_HEADER)
+        val samsung = SamsungParser(legacy = false)
+        val samsungLegacy = SamsungParser(legacy = true)
+    }
 
     private enum class Stage { FILE_HEADER, RECORD_HEADER, RECORD, STOPPED }
 
@@ -58,6 +100,15 @@ public class SnoopScanner {
 
     /** Every control frame found so far, in log order. */
     public fun frames(): List<Found> = found.toList()
+
+    /**
+     * Every Soundcore and Samsung packet found so far, in log order. A CRC can match by chance,
+     * so Samsung packets count only on a channel that carried at least two.
+     */
+    public fun packets(): List<Packet> {
+        val samsung = packets.filter { it.brand == RecordedBrand.SAMSUNG }.groupingBy { it.connection to it.channel }.eachCount()
+        return packets.filter { it.brand != RecordedBrand.SAMSUNG || (samsung[it.connection to it.channel] ?: 0) >= MIN_SAMSUNG_PACKETS }
+    }
 
     private fun step() {
         when (stage) {
@@ -104,11 +155,19 @@ public class SnoopScanner {
         stage = Stage.STOPPED
     }
 
-    /** One HCI packet. Only ACL data is of interest. */
+    /** One HCI packet: ACL data, and the events that say which device a connection is with. */
     private fun record(data: ByteArray, size: Int) {
         val start = when (datalink) {
-            DATALINK_H4 -> if (size > 0 && data[0].toInt() == H4_ACL) 1 else return
-            else -> if (recordFlags and FLAG_COMMAND_OR_EVENT != 0) return else 0
+            DATALINK_H4 -> when {
+                size > 0 && data[0].toInt() == H4_ACL -> 1
+                size > 0 && data[0].toInt() == H4_EVENT -> return event(data, 1, size)
+                else -> return
+            }
+            else -> when {
+                recordFlags and FLAG_COMMAND_OR_EVENT == 0 -> 0
+                recordFlags and FLAG_RECEIVED != 0 -> return event(data, 0, size)
+                else -> return
+            }
         }
         if (size - start < 4) return
         val header = data.u16le(start)
@@ -135,6 +194,66 @@ public class SnoopScanner {
         if (assembly.size < 4 + l2len) return
         l2cap.remove(key)
         scan(assembly.bytes, 4, 4 + l2len, fromEarbuds, handle)
+        if (assembly.bytes.u16le(2) >= FIRST_DYNAMIC_CID) rfcomm(assembly.bytes, 4, 4 + l2len, fromEarbuds, handle)
+    }
+
+    /** A connection made or ended: the remote address goes with the connection's packets. */
+    private fun event(data: ByteArray, at: Int, size: Int) {
+        if (size - at < 2) return
+        val code = data[at].toInt() and 0xFF
+        val params = at + 2
+        val length = minOf(data[at + 1].toInt() and 0xFF, size - params)
+        when {
+            code == EVENT_CONNECTION_COMPLETE && length >= 10 && data[params].toInt() == 0 && data[params + 9].toInt() == LINK_ACL -> {
+                val handle = data.u16le(params + 1) and 0x0FFF
+                links[handle] = Link(data.copyOfRange(params + 3, params + 9), recordTime)
+                dropStreams(handle)
+            }
+            code == EVENT_DISCONNECTION_COMPLETE && length >= 3 && data[params].toInt() == 0 -> {
+                val handle = data.u16le(params + 1) and 0x0FFF
+                links.remove(handle)
+                dropStreams(handle)
+            }
+        }
+    }
+
+    private fun dropStreams(handle: Int) {
+        streams.keys.removeAll { it shr STREAM_HANDLE_SHIFT == handle }
+    }
+
+    /**
+     * Reads one L2CAP payload as an RFCOMM UIH frame (address, control, length, an optional
+     * credit byte, the data, a check byte) and feeds the data of a data channel to its stream's
+     * parsers. Anything that does not add up to exactly that is not RFCOMM and is skipped.
+     */
+    private fun rfcomm(bytes: ByteArray, from: Int, to: Int, fromEarbuds: Boolean, handle: Int) {
+        if (to - from < 4) return
+        val address = bytes[from].toInt() and 0xFF
+        val dlci = address shr 2
+        val control = bytes[from + 1].toInt() and 0xFF
+        if (address and 1 == 0 || dlci == 0 || (control != UIH && control != UIH_CREDIT)) return
+        var at = from + 2
+        val first = bytes[at].toInt() and 0xFF
+        val length = if (first and 1 == 1) {
+            at += 1
+            first shr 1
+        } else {
+            if (at + 1 >= to) return
+            at += 2
+            (first shr 1) or ((bytes[at - 1].toInt() and 0xFF) shl 7)
+        }
+        if (control == UIH_CREDIT) at += 1
+        if (length == 0 || at + length + 1 != to) return
+        val data = bytes.copyOfRange(at, at + length)
+        val key = (handle shl STREAM_HANDLE_SHIFT) or (dlci shl 1) or (if (fromEarbuds) 1 else 0)
+        val stream = streams.getOrPut(key) { Stream(fromEarbuds) }
+        val link = links[handle]
+        fun add(brand: RecordedBrand, id: Int, payload: ByteArray) {
+            packets += Packet(recordTime, fromEarbuds, handle, dlci, brand, id, payload, link?.address?.copyOf(), link?.atMicros)
+        }
+        stream.soundcore.feed(data).forEach { add(RecordedBrand.SOUNDCORE, it.command, it.body) }
+        stream.samsung.feed(data).forEach { add(RecordedBrand.SAMSUNG, it.id, it.payload) }
+        stream.samsungLegacy.feed(data).forEach { add(RecordedBrand.SAMSUNG, it.id, it.payload) }
     }
 
     /** Finds `FF 03|04 00 LEN VENDOR COMMAND PAYLOAD` frames in one L2CAP payload. */
@@ -166,6 +285,15 @@ public class SnoopScanner {
         const val DATALINK_HCI = 1001
         const val DATALINK_H4 = 1002
         const val H4_ACL = 0x02
+        const val H4_EVENT = 0x04
+        const val EVENT_CONNECTION_COMPLETE = 0x03
+        const val EVENT_DISCONNECTION_COMPLETE = 0x05
+        const val LINK_ACL = 0x01
+        const val FIRST_DYNAMIC_CID = 0x0040
+        const val UIH = 0xEF
+        const val UIH_CREDIT = 0xFF
+        const val STREAM_HANDLE_SHIFT = 7
+        const val MIN_SAMSUNG_PACKETS = 2
         const val FLAG_RECEIVED = 0x01
         const val FLAG_COMMAND_OR_EVENT = 0x02
         const val MAX_RECORD = 1 shl 20

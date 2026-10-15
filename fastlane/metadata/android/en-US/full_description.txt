@@ -27,7 +27,7 @@ What it controls, on the models that have each:
 • The ear tip fit test, find my earbuds, voice prompts and water drain
 • Settings only one brand has, such as each Galaxy Bud's ambient sound level, or voice detect
 
-PairFree shows only what your earbuds support. If your model has not been tried, the Device tab copies a device report you can send, so it can be added for everyone. On SOUNDPEATS earbuds, Record from PeatsAudio also gathers the equalizer from the official app; it reads that bug report only on your phone and keeps nothing but the messages exchanged with your earbuds.
+PairFree shows only what your earbuds support. If your model has not been tried, the Device tab copies a device report you can send, so it can be added for everyone. Record from the official app goes further: it reads, on your phone, what the brand's own app sends to your earbuds when you change a setting (and on SOUNDPEATS earbuds the equalizer curves), so PairFree can learn to do the same. It keeps nothing but the messages exchanged with your earbuds, and the report it makes masks their address and serial number.
 
 Close the brand's own app before using PairFree: only one app can control the earbuds at a time.
 

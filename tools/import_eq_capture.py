@@ -2,7 +2,7 @@
 
 usage: python tools/import_eq_capture.py report.txt > eq.json
 
-The report is the text the app's "Record from PeatsAudio" screen produces (paste it from the
+The report is the text the app's "Record from the official app" screen produces (paste it from the
 GitHub issue into a file). Its settings sections are for tools/gen_models_table.py; this reads
 only the equalizer section, where each named curve lists the exact payload of every band write. This decodes them, checks every value re-encodes to the same bytes, and prints:
 

@@ -28,14 +28,20 @@ describes the protocol.
 
 ## Help wanted
 
-A device report from any Galaxy Buds model helps:
+A report from any Galaxy Buds model helps. The best is a recording of Galaxy Wearable
+changing each setting: on PairFree's Device tab, tap **Record from the official app** and
+follow its steps ([details](../../README.md#record-from-the-official-app)). It shows exactly
+what Samsung's own app sends for each setting.
+
+Quicker, a device report:
 1. Connect the earbuds in PairFree.
 2. Tap **Copy device report** on the Device tab.
 3. Paste it into a new issue.
 
-The report holds the earbuds' whole state, as bytes and as PairFree read it. It contains no
-serial number or address. Say which settings worked and which did not. Reports from the Buds3
-and later help most: their layouts have not been checked against any real reply.
+The device report holds the earbuds' whole state, as bytes and as PairFree read it. It
+contains no serial number or address. Say which settings worked and which did not. Reports
+from the Buds3 and later help most: their layouts have not been checked against any real
+reply.
 
 ## All models
 

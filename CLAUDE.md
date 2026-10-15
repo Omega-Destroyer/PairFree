@@ -227,10 +227,16 @@ reports from other people.
 - On QUALCOMM models the app also reads the GAIA feature list (`Requests.gaiaFeatures`,
   vendor `00 1D`) after the connect reads, and offers the fit test when feature `09` is
   there. Never send GAIA frames to other families.
-- New models come from users. The best report is the app's Record from PeatsAudio
+- New models come from users. The best report is the app's Record from the official app
   (`docs/DESIGN.md`): from a bug report shared to it, on the phone, it lists what
   PeatsAudio read from the earbuds, PairFree's own device report and the EQ curves
-  PeatsAudio sent. Copy device report and `tools/probe.py` give the settings alone.
+  PeatsAudio sent. Copy device report and `tools/probe.py` give the settings alone. On
+  Soundcore earbuds and Galaxy Buds the same screen gives a timeline of what the brand's app
+  and the earbuds sent each other (`VendorRecording`), with the user's list of what they
+  changed: the way to confirm a write before building on it. A report goes into a public
+  issue, so it masks the earbuds' address and serial-like text, leaves out bodies marked
+  `private` in `data/soundcore/commands.json` and firmware-update messages, and shows at most
+  four bytes of a message PairFree does not know. Keep it that way.
 - For the controls: save the report as `data/soundpeats/reports/<code>_<version>.txt`, list it under
   the model's `reports` in `data/soundpeats/devices.json`, then run `python tools/gen_models_table.py`
   to update the All models table in `docs/devices/soundpeats.md`; a test fails while it is out of date. On

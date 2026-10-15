@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.provider.Settings
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -53,7 +54,19 @@ class Hub(private val app: Application) {
         scope,
         adapter,
         log = if (app.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) { line -> Log.d(LOG_TAG, line) } else null,
+        assistantIsGoogle = ::assistantIsGoogle,
     )
+
+    /**
+     * Whether the phone's digital assistant is Google's, as Samsung's plugin decides it for the Buds4
+     * family's touch-and-hold option. Android may not let an app read the setting; Google is then assumed.
+     */
+    private fun assistantIsGoogle(): Boolean = try {
+        val assistant = Settings.Secure.getString(app.contentResolver, "assistant").orEmpty()
+        assistant.isEmpty() || assistant.substringBefore('/') == GOOGLE_ASSISTANT
+    } catch (_: SecurityException) {
+        true
+    }
 
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
     val equalizer = Equalizer(prefs, scope) { frames -> connection.sendEq(frames) }
@@ -153,6 +166,7 @@ class Hub(private val app: Application) {
 
     companion object {
         const val LOG_TAG = "PairFree"
+        private const val GOOGLE_ASSISTANT = "com.google.android.googlequicksearchbox"
         private const val KEY_OWN_SESSIONS = "own_sessions"
 
         /** Frames this close to PairFree's own session count as its own. */

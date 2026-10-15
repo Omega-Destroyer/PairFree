@@ -1,5 +1,5 @@
 {
-  "_about": "Samsung Galaxy Buds models PairFree knows. model is Samsung's model number (SM-R...), names the names the earbuds use. galaxybudsclient holds what GalaxyBudsClient's device specification gives (tools/import_galaxybudsclient.py): its name for the model and the generation it compares (newer models have higher numbers), the part of the Bluetooth name it matches (base_name), the RFCOMM service, the framing (legacy: start FE, end EE, a type and a one-byte length; standard: start FD, end DD, a two-byte length), the highest ambient sound volume step, the touch-and-hold options as [byte, option] (custom runs a phone-side action, set in Samsung's app), the colours by device id, and the features, each with the lowest state revision that has it (null: every revision). The rest is PairFree's: reports lists recordings in data/samsung/reports, notes what was found on the earbuds.",
+  "_about": "Samsung Galaxy Buds models PairFree knows. model is Samsung's model number (SM-R...), names the names the earbuds use. galaxybudsclient holds what GalaxyBudsClient's device specification gives (tools/import_galaxybudsclient.py): its name for the model and the generation it compares (newer models have higher numbers), the part of the Bluetooth name it matches (base_name), the RFCOMM service, the framing (legacy: start FE, end EE, a type and a one-byte length; standard: start FD, end DD, a two-byte length), the highest ambient sound volume step, the touch-and-hold options as [byte, option] (custom runs a phone-side action, set in Samsung's app), the colours by device id, and the features, each with the lowest state revision that has it (null: every revision). The rest is PairFree's: reports lists recordings in data/samsung/reports, notes what was found on the earbuds. samsung_app holds what Samsung's own Galaxy Buds plugin says, where PairFree has read it (com.samsung.accessory.budsunitemgr 9.0.10): the codename, the state layout, the names the plugin matches, the touch-and-hold codes and the features. It overrides galaxybudsclient field by field, and models only Samsung's plugin knows have it alone. kind is headphones for a headset.",
   "source": {
     "project": "GalaxyBudsClient",
     "url": "https://github.com/timschneeb/GalaxyBudsClient",
@@ -689,6 +689,40 @@
           "usage_report": null,
           "hot_command_language_update": 2
         }
+      },
+      "samsung_app": {
+        "plugin": "com.samsung.accessory.budsunitemgr 9.0.10",
+        "codename": "handel",
+        "layout": "buds4",
+        "match_names": [
+          "Galaxy Buds4",
+          "Buds4"
+        ],
+        "touch_hold": [
+          [1, "bixby"],
+          [2, "noise_control"],
+          [3, "digital_assistant"],
+          [6, "volume"],
+          [5, "custom"]
+        ],
+        "features": {
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "ambient_sidetone": null,
+          "ambient_sound": null,
+          "anc": null,
+          "bixby_wakeup": null,
+          "call_path_control": null,
+          "case_battery": null,
+          "charging_state": null,
+          "custom_equalizer": null,
+          "fmg_ring_while_wearing": null,
+          "noise_control": null,
+          "noise_control_mode_dual_side": null,
+          "noise_controls_with_one_earbud": null,
+          "seamless_connection": null,
+          "stereo_pan": null
+        }
       }
     },
     {
@@ -752,7 +786,173 @@
           "usage_report": null,
           "hot_command_language_update": 2
         }
+      },
+      "samsung_app": {
+        "plugin": "com.samsung.accessory.budsunitemgr 9.0.10",
+        "codename": "bach",
+        "layout": "buds4",
+        "match_names": [
+          "Galaxy Buds4 Pro",
+          "Buds4 Pro"
+        ],
+        "touch_hold": [
+          [1, "bixby"],
+          [2, "noise_control"],
+          [3, "digital_assistant"],
+          [6, "volume"],
+          [5, "custom"]
+        ],
+        "features": {
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "ambient_customize": null,
+          "ambient_sound": null,
+          "ambient_sound_volume": null,
+          "anc": null,
+          "anc_noise_reduction_levels": null,
+          "auto_pause": null,
+          "bixby_wakeup": null,
+          "call_path_control": null,
+          "case_battery": null,
+          "charging_state": null,
+          "custom_equalizer": null,
+          "detect_conversations": null,
+          "fmg_ring_while_wearing": null,
+          "gear_fit_test": null,
+          "noise_control": null,
+          "noise_control_mode_dual_side": null,
+          "noise_controls_with_one_earbud": null,
+          "seamless_connection": null,
+          "siren_detect": null,
+          "stereo_pan": null
+        },
+        "max_ambient_volume": 4
       }
+    },
+    {
+      "model": "SM-U600",
+      "names": [
+        "Galaxy Buds On"
+      ],
+      "samsung_app": {
+        "plugin": "com.samsung.accessory.budsunitemgr 9.0.10",
+        "codename": "able",
+        "layout": "buds4",
+        "match_names": [
+          "Galaxy Buds On",
+          "Buds On"
+        ],
+        "touch_hold": [
+          [1, "bixby"],
+          [2, "noise_control"],
+          [3, "digital_assistant"],
+          [6, "volume"],
+          [5, "custom"]
+        ],
+        "features": {},
+        "device": "BudsOn",
+        "generation": 14,
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 4,
+        "colors": {}
+      },
+      "notes": "The plugin lists the Buds On, but its features are not in the plugin's code: only the battery is shown."
+    },
+    {
+      "model": "SM-U700",
+      "names": [
+        "Samsung H1"
+      ],
+      "samsung_app": {
+        "plugin": "com.samsung.accessory.budsunitemgr 9.0.10",
+        "codename": "h1",
+        "layout": "buds4",
+        "match_names": [
+          "Galaxy H1",
+          "Samsung H1"
+        ],
+        "touch_hold": [
+          [1, "bixby"],
+          [2, "noise_control"],
+          [3, "digital_assistant"],
+          [6, "volume"],
+          [5, "custom"]
+        ],
+        "features": {
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "ambient_sidetone": null,
+          "ambient_sound": null,
+          "ambient_sound_volume": null,
+          "anc": null,
+          "anc_noise_reduction_levels": null,
+          "bixby_wakeup": null,
+          "charging_state": null,
+          "custom_equalizer": null,
+          "fmg_ring_while_wearing": null,
+          "noise_control": null,
+          "seamless_connection": null,
+          "stereo_pan": null
+        },
+        "device": "H1",
+        "generation": 15,
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 4,
+        "colors": {}
+      },
+      "notes": "A headset: one battery, touch-and-hold without left and right. Also an auto power-off timer, not offered yet.",
+      "kind": "headphones"
+    },
+    {
+      "model": "SM-R545",
+      "names": [
+        "Samsung T1"
+      ],
+      "samsung_app": {
+        "plugin": "com.samsung.accessory.budsunitemgr 9.0.10",
+        "codename": "t1",
+        "layout": "buds4",
+        "match_names": [
+          "Galaxy T1",
+          "Samsung T1"
+        ],
+        "touch_hold": [
+          [1, "bixby"],
+          [2, "noise_control"],
+          [3, "digital_assistant"],
+          [6, "volume"],
+          [5, "custom"]
+        ],
+        "features": {
+          "adaptive_volume": null,
+          "advanced_touch_lock": null,
+          "advanced_touch_lock_for_calls": null,
+          "ambient_sidetone": null,
+          "ambient_sound": null,
+          "ambient_sound_volume": null,
+          "anc": null,
+          "anc_noise_reduction_levels": null,
+          "bixby_wakeup": null,
+          "case_battery": null,
+          "charging_state": null,
+          "custom_equalizer": null,
+          "fmg_ring_while_wearing": null,
+          "gear_fit_test": null,
+          "noise_control": null,
+          "seamless_connection": null,
+          "siren_detect": null,
+          "stereo_pan": null
+        },
+        "device": "T1",
+        "generation": 16,
+        "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
+        "framing": "standard",
+        "max_ambient_volume": 4,
+        "colors": {}
+      },
+      "notes": "The plugin lists no noise-control card for it but has ambient volume and noise cancelling levels; noise control is offered on that ground. Also an auto power-off timer, not offered yet."
     }
   ]
 }

@@ -81,6 +81,7 @@ class EarbudsConnection(
     private val scope: CoroutineScope,
     private val adapter: BluetoothAdapter?,
     private val log: ((String) -> Unit)? = null,
+    private val assistantIsGoogle: () -> Boolean = { true },
 ) {
     private val _status = MutableStateFlow<LinkStatus>(LinkStatus.Idle)
     val status: StateFlow<LinkStatus> = _status.asStateFlow()
@@ -115,6 +116,11 @@ class EarbudsConnection(
 
     /** The Galaxy Buds' state as they last sent it, with changes since; the Sound tab reads their EQ from it. */
     val samsungStatus: StateFlow<SamsungStatus?> = _samsungStatus.asStateFlow()
+
+    private val _samsungEqCurves = MutableStateFlow<List<List<Int>>>(emptyList())
+
+    /** The Galaxy Buds' EQ curves by equalizer number, where they reported them; the Sound tab draws the presets from them. */
+    val samsungEqCurves: StateFlow<List<List<Int>>> = _samsungEqCurves.asStateFlow()
 
     private val _soundcoreState = MutableStateFlow<SoundcoreState?>(null)
 
@@ -251,14 +257,16 @@ class EarbudsConnection(
     private suspend fun serveSamsung(opened: SppLink, device: Paired) = coroutineScope {
         val model = SamsungModels.of(device.model) ?: return@coroutineScope
         val phoneIsSamsung = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
-        val session = SamsungSession(model, phoneIsSamsung = phoneIsSamsung, androidSdk = Build.VERSION.SDK_INT)
+        val session = SamsungSession(model, phoneIsSamsung = phoneIsSamsung, androidSdk = Build.VERSION.SDK_INT, assistantIsGoogle = assistantIsGoogle())
         samsung = session
+        _samsungEqCurves.value = emptyList()
         try {
             val parser = SamsungParser(model.legacy)
             opened.reads().collect { bytes ->
                 for (packet in parser.feed(bytes)) {
                     log?.invoke("recv $packet")
                     if (session.receive(packet)) publish(session)
+                    _samsungEqCurves.value = session.eqCurves
                     for (frame in session.frames(session.takeOutbox())) opened.send(frame)
                 }
             }

@@ -9,6 +9,11 @@ parser reproduces every state reply in GalaxyBudsClient's tests (7 models,
 `data/samsung/test_vectors.json`). Each model's row on the [device page](../devices/samsung.md)
 says whether it is among them.
 
+For the Buds4 family PairFree follows Samsung's own Galaxy Buds plugin instead
+(`com.samsung.accessory.budsunitemgr` 9.0.10, read on 2026-10-14 outside the repo; none of its
+code is in it). It covers the Galaxy Buds4 and Buds4 Pro and three models GalaxyBudsClient does
+not have, and differs from GalaxyBudsClient for them in places: section 12.
+
 `data/samsung/messages.json` is the message table and `data/samsung/devices.json` the model
 table; `generateSamsungTables` (in `android/protocol/build.gradle.kts`) turns them into
 `SamsungMessage` and the model list. `tools/import_galaxybudsclient.py PATH` refreshes the model
@@ -84,8 +89,9 @@ There is no handshake. After the channel opens:
    Samsung, `02` other), then its Android SDK version. Samsung's app sends it the same way.
 3. PairFree asks for the version, message 99 with no payload. Models before the Buds3
    answer with each earbud's hardware and software version; PairFree spells the software
-   version as Samsung writes it, such as `R177XXU0AXF3`. The Buds3 and later do not answer, so
-   PairFree shows no firmware for them.
+   version as Samsung writes it, such as `R177XXU0AXF3`. The Buds3 and later do not answer.
+   PairFree asks them for the long version (104) instead, which the Buds4 family answers with
+   the software versions as text (section 12); whether the Buds3 models answer it is not known.
 
 ## 5. State
 
@@ -122,22 +128,24 @@ soft, dynamic, clear and treble boost. Message 134 selects one:
 | Galaxy Buds (2019) | on (1 or 0), then the preset + 5 |
 | Every other model | `00` for Normal, else the preset + 1 |
 
-The state reports the mode the same way. Samsung does not publish the presets' curves, and the
-earbuds do not report them, so PairFree shows the preset's name and draws no curve.
+The state reports the mode the same way. Samsung does not publish the presets' curves. Message
+105 asks the earbuds for them; PairFree sends it to the Buds4 family, as Samsung's plugin does,
+and draws the presets from the reply (section 12). For other models it shows the preset's name
+and draws no curve.
 
 Models with the `custom_equalizer` feature (the Buds3 and later) also take a nine-band custom
 curve:
 - **Bands:** 63, 125, 250, 500, 1000, 2000, 4000, 8000 and 16000 Hz.
 - **Message 137:** the band count (`09`), then each band's gain from −10 to 10, one signed byte
   each.
-- **Message 134:** then sent with `07`, which selects the custom curve.
+- **Message 134:** then sent with `07`, which selects the custom curve. On the Buds4 family the
+  custom curve is `06`, selected first, then sent (section 12).
 
 The earbuds forget the custom curve when they turn off. PairFree keeps the last one it set and
 sends it again once per connection, as GalaxyBudsClient does.
 
-**Unknown:** what one step of the custom curve is in dB. GalaxyBudsClient shows the steps as
-they are. Message 105 asks for every preset's bands and the custom bands; PairFree does not send
-it yet.
+**Unknown:** what one step of the custom curve is in dB. GalaxyBudsClient and Samsung's plugin
+both handle the steps as they are.
 
 ## 7. Touch controls
 
@@ -163,8 +171,9 @@ it yet.
   - **The Buds3 and later:** a newer bit layout with adaptive among the modes (bit 0 ambient,
     1 adaptive, 2 off, 3 noise cancelling, bits 4 to 7 the same for the left). PairFree reads
     it that way. GalaxyBudsClient's parser has this branch but gates it on a feature no model
-    lists, and its writer for these models leaves the ambient bit out. PairFree does not offer
-    the choice on these models until a user's report shows the right write.
+    lists, and its writer for these models leaves the ambient bit out. Samsung's plugin writes it
+    for the Buds4 family as two bytes, left then right, in the same bits (section 12), so PairFree
+    offers the choice there. For the Buds3 models it waits for a user's report.
 - **Double tap the edge for volume (message 149):** one byte, 1 on.
 
 ## 8. Other settings, find and the fit test
@@ -217,7 +226,8 @@ offers none.
 
 Some settings PairFree reads but does not offer:
 - **Game mode** (message 135): every model but the 2019 Buds lists it, but GalaxyBudsClient
-  never sends it.
+  never sends it. Samsung's plugin shows why: on the Buds4 family it is not a setting but the
+  phone's state, which the app reports by itself (section 12).
 - **Spatial audio** (`SET_SPATIAL_AUDIO`): GalaxyBudsClient turns it on only while it streams
   the head-tracking sensor to its own page.
 - **Also read only:** the hearing test values and the Buds3's newer settings (adaptive volume,
@@ -228,9 +238,87 @@ Some settings PairFree reads but does not offer:
 
 Each of these needs a user's device report:
 
-- The layouts of the Buds Core, Buds3, Buds3 Pro, Buds3 FE, Buds4 and Buds4 Pro (section 5).
-- The write for which modes touch and hold switches between on the Buds3 and later
-  (section 7).
+- The layouts of the Buds Core, Buds3, Buds3 Pro and Buds3 FE (section 5); for the Buds4 family
+  Samsung's plugin gives one, still to be checked against a real reply (section 12).
+- The write for which modes touch and hold switches between on the Buds3 models (section 7).
 - What one step of the custom EQ is in dB (section 6).
-- How to read the firmware of the Buds3 and later, which do not answer the version request
-  (section 4).
+- Whether the Buds3 models answer the long version request (section 4).
+- The Galaxy Buds On's features, which the plugin does not list.
+
+## 12. The Buds4 family, from Samsung's own plugin
+
+Samsung's Galaxy Buds plugin 9.0.10 (`com.samsung.accessory.budsunitemgr`) covers these models
+(`samsung_app` in `data/samsung/devices.json`):
+
+| Model | Number | Codename |
+|---|---|---|
+| Galaxy Buds4 | SM-R540 | handel |
+| Galaxy Buds4 Pro | SM-R640 | bach |
+| Galaxy Buds On | SM-U600 | able |
+| Samsung H1 (a headset) | SM-U700 | h1 |
+| Samsung T1 | SM-R545 | t1 |
+
+It matches each by two names, such as "Galaxy H1" and "Samsung H1". All use the `2e73a4ad-...`
+service and the standard frames. Where it differs from GalaxyBudsClient, PairFree follows it.
+
+**State (message 97).** Bytes 0 to 39 are as in section 5, except that byte 19, seamless
+connection, is 1 for on. From byte 40:
+
+| Byte | Field | Byte | Field |
+|---|---|---|---|
+| 40 | noise reduction amplify | 50 | adaptive volume |
+| 41 | auto adjust sound | 51 | quick launch (advanced) |
+| 42 | head tracking | 52 | siren detection |
+| 43 | charging: 0x10 left, 0x04 right, 0x01 case | 53 | adapt sound |
+| 44 | extra clear calls | 54-56 | voice command version a.b.c |
+| 45 | extra high ambient | 57 | voice boost |
+| 46 | pause when an earbud is taken out | 58 | volume normalisation |
+| 47 | voice commands | 59 | digital assistant |
+| 48 | voice command language | | |
+| 49 | adjust sound fit | | |
+
+GalaxyBudsClient reads 40 to 50 differently (a hearing test value at 40, no auto adjust sound,
+and lighting at 50), so its charging, extra clear calls and extra high ambient land on the wrong
+bytes for these models. Then each model adds its own: the Buds4 Pro loud noise reduction and the
+adaptive response level, and from revision 5 the noise monitor and the hearing aid's WDRC for
+calls and music; the H1 and T1 an auto power-off timer; the Buds On gestures and the automatic
+left/right switch.
+
+**Writes that differ:**
+- **121, which modes touch and hold switches between:** left, then right, each 1 ambient,
+  2 adaptive, 4 off, 8 noise cancelling, as in the state's byte 21.
+- **130, ambient sound per earbud:** on, left level, right level, conversation boost, noise
+  reduction amplify, its level. There is no tone.
+- **144, touch lock:** touch on, single, double, triple, hold, double tap and hold during calls,
+  swipe, then 1 and 1.
+- **146, touch and hold:** the left and right codes, then each side's assistant: 1 Google,
+  2 another, 0 when the option is not the assistant. Codes: 1 Bixby, 2 noise control, 3 the
+  digital assistant, 6 volume, 5 anything else.
+- **175, seamless connection:** 1 for on.
+- **134 and 137, the custom curve:** it is equalizer number 6 (Balanced 0, then bass boost,
+  smooth, dynamic, clear, treble boost, custom). The plugin selects 6, then sends the bands.
+
+**Connecting.** After the first state the plugin answers message 97 and sends 34, 41 (the serial
+numbers), 104 (the long version), 38, 118, the manager info (136, as in section 4), 105 (the EQ
+curves) and 167 (the time). PairFree sends the manager info, 104 and 105.
+
+- **104, long version:** the reply holds each earbud's hardware version (a byte each), each one's
+  software version as 20 bytes of text, left first, then two bytes.
+- **105, EQ curves:** the reply holds the preset count, the band count, then each preset's bands
+  as signed steps. With six presets it leaves out the flat Balanced curve, which goes first.
+
+**New settings PairFree offers where the model has them:** pause when an earbud is taken out
+(108), adaptive volume (217), siren detection (222), each 1 on; and conversation boost, inside
+message 130. Their acknowledgements (66) carry the value as set.
+
+**Features.** The plugin keeps a feature list per model. It gives the Buds4 no fit test,
+ambient volume, noise cancelling level, voice detect or ambient sound per earbud, which
+GalaxyBudsClient's list has. PairFree follows the plugin's lists, mapped to its own feature names.
+
+**Game mode (135)** is the phone reporting its state, a short: bit 0 the phone in use, bit 4 a
+game running. PairFree does not send it.
+
+Also in the plugin, not used by PairFree: adaptive response level (0x49), the Bixby keyword
+(0x66), voice boost and volume normalisation (0x6A), the auto power-off timer (0x6B), spatial
+audio and head tracking (0x7C), the hearing aid's WDRC (0xB8), neck stretch (0xC9), adjust sound
+fit (0xDA) and self diagnostics (0xEA, never sent).

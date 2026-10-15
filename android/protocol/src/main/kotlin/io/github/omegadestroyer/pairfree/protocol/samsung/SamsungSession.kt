@@ -3,6 +3,7 @@ package io.github.omegadestroyer.pairfree.protocol.samsung
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -14,15 +15,19 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * on connecting and after changes ([SamsungStatus]); the battery, the noise mode (on models with
  * noise controls), the firmware and the fit test go to [state] for the shared screens, and every
  * other setting the model has goes to [groups] as generic rows. Each change becomes the message
- * GalaxyBudsClient sends for it (github.com/timschneeb/GalaxyBudsClient, GPL-3.0) and shows at
+ * GalaxyBudsClient sends for it (github.com/timschneeb/GalaxyBudsClient, GPL-3.0), or for the
+ * Buds4 family the message Samsung's own plugin sends ([SamsungModel.buds4Layout]), and shows at
  * once; the earbuds' acknowledgement or next state confirms it.
  *
  * [phoneIsSamsung] and [androidSdk] go to the earbuds in the manager info, as Samsung's app sends them.
+ * [assistantIsGoogle] says which digital assistant the phone uses, which the Buds4 family's touch-and-hold
+ * option names when it starts the assistant.
  */
 public class SamsungSession(
     public val model: SamsungModel,
     private val phoneIsSamsung: Boolean = false,
     private val androidSdk: Int = 34,
+    private val assistantIsGoogle: Boolean = true,
 ) {
     /** What the shared screens show. */
     public var state: EarbudState = EarbudState(fitTest = model.supports("gear_fit_test", null))
@@ -37,6 +42,13 @@ public class SamsungSession(
         private set
 
     private var firmware: String? = null
+
+    /**
+     * Each EQ preset's curve as the earbuds reported it (message 105), by equalizer number: Normal
+     * first, then the presets, then the custom curve. Empty until they answer.
+     */
+    public var eqCurves: List<List<Int>> = emptyList()
+        private set
     private var finding = false
     private var mutedLeft = false
     private var mutedRight = false
@@ -56,8 +68,12 @@ public class SamsungSession(
                 lastStatusPayload = p.copyOf()
                 if (first) {
                     outbox += SamsungPacket(SamsungMessage.MANAGER_INFO, byteArrayOf(1, if (phoneIsSamsung) 1 else 2, androidSdk.toByte()))
-                    // The Buds3 and later do not answer the version request (GalaxyBudsClient).
+                    // The Buds3 and later do not answer the version request (GalaxyBudsClient); the Buds4 family
+                    // answers the long one (Samsung's plugin), which PairFree also asks the Buds3 models for.
                     if (!model.atLeast("Buds3")) outbox += SamsungPacket(SamsungMessage.VERSION_INFO, ByteArray(0))
+                    else outbox += SamsungPacket(SamsungMessage.VERSION_INFO_LONG, ByteArray(0))
+                    // Samsung's plugin asks for every preset's curve; the earbuds hold them.
+                    if (model.buds4Layout && SamsungEq.hasCustom(model)) outbox += SamsungPacket(SamsungMessage.CUSTOM_EQUALIZE_RECV, ByteArray(0))
                 }
             }
             SamsungMessage.STATUS_UPDATED -> status = status?.with(basicStatus(p) ?: return false)
@@ -68,6 +84,8 @@ public class SamsungSession(
             SamsungMessage.TOUCH_UPDATED -> if (p.isNotEmpty()) update("touchpad_lock", p.u8(0) != 0)
             SamsungMessage.UNIVERSAL_ACK -> if (p.size >= 2) acknowledged(p.u8(0), p.u8(1))
             SamsungMessage.VERSION_INFO -> if (p.size >= 8) firmware = version(p, 2)
+            SamsungMessage.VERSION_INFO_LONG -> longVersion(p)?.let { firmware = it }
+            SamsungMessage.CUSTOM_EQUALIZE_RECV -> eqCurves = SamsungEq.curves(p)
             SamsungMessage.CHECK_THE_FIT_OF_EARBUDS_RESULT -> if (p.size >= 2) state = state.copy(fit = FitResult(fit(p.u8(0)), fit(p.u8(1))))
             SamsungMessage.MUTE_EARBUD_STATUS_UPDATED -> if (p.size >= 2) {
                 mutedLeft = p.u8(0) != 0
@@ -87,6 +105,8 @@ public class SamsungSession(
     private fun acknowledged(id: Int, v: Int) {
         val field = ACKS[id] ?: return
         if (model.legacy && id == SamsungMessage.EQUALIZER) return
+        // The Buds4 family acknowledges seamless connection with 1 for on (Samsung's plugin).
+        if (id == SamsungMessage.SET_SEAMLESS_CONNECTION && model.buds4Layout) return update("seamless_connection_enabled", v == 1)
         update(field.first, field.second(v))
     }
 
@@ -123,8 +143,13 @@ public class SamsungSession(
         val values = buildMap {
             // Only models before the Buds3 answer the version request; the others show none.
             firmware?.let { put(Command.FIRMWARE_VERSION, Value.Text("${model.model}_$it")) }
-            put(Command.BATTERY_LEFT, Value.Number(battery(s, "battery_l", "placement_l")))
-            put(Command.BATTERY_RIGHT, Value.Number(battery(s, "battery_r", "placement_r")))
+            if (model.form == Form.HEADPHONES) {
+                // A headset: one battery, whichever side it reports in.
+                put(Command.BATTERY_LEFT, Value.Number(s.int("battery_l")?.takeIf { it in 0..100 } ?: s.int("battery_r")?.takeIf { it in 0..100 }))
+            } else {
+                put(Command.BATTERY_LEFT, Value.Number(battery(s, "battery_l", "placement_l")))
+                put(Command.BATTERY_RIGHT, Value.Number(battery(s, "battery_r", "placement_r")))
+            }
             if (model.supports("case_battery", s.revision)) put(Command.BATTERY_CASE, Value.Number(s.int("battery_case")?.takeIf { it in 0..100 }))
             if (supports(s, "noise_control")) put(Command.ANC_MODE, Value.Number(s.int("noise_control_mode")?.let(::ancNumberOf)))
         }
@@ -145,7 +170,13 @@ public class SamsungSession(
             val s = status ?: return emptyList()
             return listOfNotNull(
                 noiseGroup(s),
-                group("sound", SettingTab.SOUND, listOfNotNull(level(s, "balance", "hearing_enhancements", 0, BALANCE_MAX, "stereo_pan"))),
+                group(
+                    "sound", SettingTab.SOUND,
+                    listOfNotNull(
+                        level(s, "balance", "hearing_enhancements", 0, BALANCE_MAX, "stereo_pan"),
+                        toggle(s, "adaptive_volume", "adaptive_volume_enabled", "adaptive_volume"),
+                    ),
+                ),
                 touchGroup(s),
                 ambientCustomGroup(s),
                 group(
@@ -161,6 +192,7 @@ public class SamsungSession(
                     listOfNotNull(
                         toggle(s, "seamless_connection", "seamless_connection_enabled", "seamless_connection"),
                         toggle(s, "voice_wakeup", "voice_wake_up", "bixby_wakeup"),
+                        toggle(s, "auto_pause", "auto_pause_resume", "auto_pause"),
                     ),
                 ),
                 group(
@@ -202,6 +234,7 @@ public class SamsungSession(
             }
             toggle(s, "noise_one_earbud", "noise_controls_with_one_earbud", "noise_controls_with_one_earbud")?.let(::add)
             toggle(s, "voice_detect", "detect_conversations", "detect_conversations")?.let { add(it) }
+            toggle(s, "siren_detect", "siren_detect", "siren_detect")?.let(::add)
             if (supports(s, "detect_conversations")) {
                 s.int("detect_conversations_duration")?.let { add(Setting.Choice("voice_detect_wait", VOICE_DETECT_WAITS.getOrElse(it) { "10" }, VOICE_DETECT_WAITS)) }
             }
@@ -213,15 +246,15 @@ public class SamsungSession(
         if (!supports(s, "ambient_customize")) return null
         val on = s.flag("ambient_custom_volume_on") ?: return null
         val sideMax = ambientCustomSideMax(s)
-        return group(
-            "ambient_customize", SettingTab.DEVICE,
-            listOf(
-                Setting.Toggle("ambient_custom", on),
-                Setting.Level("ambient_custom_left", (s.int("ambient_custom_volume_left") ?: 0).coerceIn(0, sideMax), 0, sideMax),
-                Setting.Level("ambient_custom_right", (s.int("ambient_custom_volume_right") ?: 0).coerceIn(0, sideMax), 0, sideMax),
-                Setting.Level("ambient_custom_tone", (s.int("ambient_custom_sound_tone") ?: 0).coerceIn(0, TONE_MAX), 0, TONE_MAX),
-            ),
-        )
+        val left = Setting.Level("ambient_custom_left", (s.int("ambient_custom_volume_left") ?: 0).coerceIn(0, sideMax), 0, sideMax)
+        val right = Setting.Level("ambient_custom_right", (s.int("ambient_custom_volume_right") ?: 0).coerceIn(0, sideMax), 0, sideMax)
+        // The Buds4 family has conversation boost where the others have the tone (Samsung's plugin).
+        val last = if (model.buds4Layout) {
+            Setting.Toggle("conversation_boost", s.flag("customize_conversation_boost") == true)
+        } else {
+            Setting.Level("ambient_custom_tone", (s.int("ambient_custom_sound_tone") ?: 0).coerceIn(0, TONE_MAX), 0, TONE_MAX)
+        }
+        return group("ambient_customize", SettingTab.DEVICE, listOf(Setting.Toggle("ambient_custom", on), left, right, last))
     }
 
     private fun ambientCustomSideMax(s: SamsungStatus): Int =
@@ -257,11 +290,13 @@ public class SamsungSession(
 
     /**
      * Which modes touch and hold switches between, while it is set to noise controls. Offered on
-     * models before the Buds3 only: for those, GalaxyBudsClient's tests confirm how the state holds
-     * it; for the Buds3 and later its writer is unfinished.
+     * models before the Buds3, for which GalaxyBudsClient's tests confirm how the state holds it, and
+     * on the Buds4 family, whose write Samsung's plugin shows. For the Buds3 GalaxyBudsClient's writer
+     * is unfinished.
      */
     private fun cycleChoices(s: SamsungStatus, left: String?, right: String?): List<Setting> {
-        if (!supports(s, "noise_control") || SamsungStatus.newCycleLayout(model) || s.int(SamsungStatus.NOISE_CYCLE) == null) return emptyList()
+        val writable = !SamsungStatus.newCycleLayout(model) || model.buds4Layout
+        if (!supports(s, "noise_control") || !writable || s.int(SamsungStatus.NOISE_CYCLE) == null) return emptyList()
         return if (supports(s, "noise_control_mode_dual_side")) {
             listOfNotNull(
                 Setting.Choice("hold_cycle_left", cycle(s, left = true), CYCLES).takeIf { left == NOISE_OPTION },
@@ -311,7 +346,15 @@ public class SamsungSession(
                     "extra_clear_call" -> listOf(SamsungPacket(SamsungMessage.EXTRA_CLEAR_SOUND_CALL, flag(on))).also { update("extra_clear_call_sound", on) }
                     "sidetone" -> listOf(SamsungPacket(SamsungMessage.SET_SIDETONE, flag(on))).also { update("side_tone_enabled", on) }
                     "call_path" -> listOf(send(SamsungMessage.SET_CALL_PATH_CONTROL, if (on) 0 else 1)).also { update("call_path_control", on) }
-                    "seamless_connection" -> listOf(send(SamsungMessage.SET_SEAMLESS_CONNECTION, if (on) 0 else 1)).also { update("seamless_connection_enabled", on) }
+                    "seamless_connection" -> {
+                        // 1 is on for the Buds4 family (Samsung's plugin), 0 for the others (GalaxyBudsClient).
+                        val value = if (model.buds4Layout == on) 1 else 0
+                        listOf(send(SamsungMessage.SET_SEAMLESS_CONNECTION, value)).also { update("seamless_connection_enabled", on) }
+                    }
+                    "auto_pause" -> listOf(SamsungPacket(SamsungMessage.SET_PAUSE_MEDIA_ONE_BUD_REMOVED, flag(on))).also { update("auto_pause_resume", on) }
+                    "siren_detect" -> listOf(SamsungPacket(SamsungMessage.SET_SIREN_DETECT, flag(on))).also { update("siren_detect", on) }
+                    "adaptive_volume" -> listOf(SamsungPacket(SamsungMessage.SET_ADAPTIVE_VOLUME, flag(on))).also { update("adaptive_volume_enabled", on) }
+                    "conversation_boost" -> ambientCustom(s, boost = on)
                     "voice_wakeup" -> listOf(SamsungPacket(SamsungMessage.SET_VOICE_WAKE_UP, flag(on))).also { update("voice_wake_up", on) }
                     "edge_double_tap" -> listOf(SamsungPacket(SamsungMessage.OUTSIDE_DOUBLE_TAP, flag(on))).also { update("outside_double_tap", on) }
                     "find_mute_left", "find_mute_right" -> {
@@ -367,13 +410,29 @@ public class SamsungSession(
         )
     }
 
-    private fun ambientCustom(s: SamsungStatus, on: Boolean? = null, left: Int? = null, right: Int? = null, tone: Int? = null): List<SamsungPacket> {
+    private fun ambientCustom(
+        s: SamsungStatus,
+        on: Boolean? = null,
+        left: Int? = null,
+        right: Int? = null,
+        tone: Int? = null,
+        boost: Boolean? = null,
+    ): List<SamsungPacket> {
         val o = on ?: (s.flag("ambient_custom_volume_on") ?: false)
         val l = left ?: s.int("ambient_custom_volume_left") ?: 0
         val r = right ?: s.int("ambient_custom_volume_right") ?: 0
+        fun b(v: Boolean) = (if (v) 1 else 0).toByte()
+        if (model.buds4Layout) {
+            // Samsung's plugin: on, left, right, conversation boost, noise reduction amplify and its level.
+            val c = boost ?: (s.flag("customize_conversation_boost") ?: false)
+            val amplify = s.flag("noise_reduction_amplify") ?: false
+            val level = s.int("customize_noise_reduction_level") ?: 0
+            status = s.with(mapOf("ambient_custom_volume_on" to o, "ambient_custom_volume_left" to l, "ambient_custom_volume_right" to r, "customize_conversation_boost" to c))
+            return listOf(SamsungPacket(SamsungMessage.CUSTOMIZE_AMBIENT_SOUND, byteArrayOf(b(o), l.toByte(), r.toByte(), b(c), b(amplify), level.toByte())))
+        }
         val t = tone ?: s.int("ambient_custom_sound_tone") ?: 0
         status = s.with(mapOf("ambient_custom_volume_on" to o, "ambient_custom_volume_left" to l, "ambient_custom_volume_right" to r, "ambient_custom_sound_tone" to t))
-        return listOf(SamsungPacket(SamsungMessage.CUSTOMIZE_AMBIENT_SOUND, byteArrayOf(if (o) 1 else 0, l.toByte(), r.toByte(), t.toByte())))
+        return listOf(SamsungPacket(SamsungMessage.CUSTOMIZE_AMBIENT_SOUND, byteArrayOf(b(o), l.toByte(), r.toByte(), t.toByte())))
     }
 
     /** The touch lock: one switch on older models; on models with per-gesture locks every switch at once. */
@@ -388,7 +447,12 @@ public class SamsungSession(
             (if (next.flag("touchpad_lock") == true) 0 else 1).toByte(),
             b("single_tap_on"), b("double_tap_on"), b("triple_tap_on"), b("touch_hold_on"),
         )
-        if (supports(s, "advanced_touch_lock_for_calls")) payload += listOf(b("double_tap_for_call_on"), b("touch_hold_on_for_call_on"))
+        if (model.buds4Layout) {
+            // Samsung's plugin: both call gestures, swipe, then two bytes that are always 1.
+            payload += listOf(b("double_tap_for_call_on"), b("touch_hold_on_for_call_on"), b("swipe_on"), 1, 1)
+        } else if (supports(s, "advanced_touch_lock_for_calls")) {
+            payload += listOf(b("double_tap_for_call_on"), b("touch_hold_on_for_call_on"))
+        }
         return listOf(SamsungPacket(SamsungMessage.LOCK_TOUCHPAD, payload.toByteArray()))
     }
 
@@ -398,16 +462,42 @@ public class SamsungSession(
         if (l == null || r == null) return null
         update("touchpad_option_l", l)
         update("touchpad_option_r", r)
+        if (model.buds4Layout) {
+            // Samsung's plugin adds each side's assistant: 1 Google, 2 another, 0 when the option is not the assistant.
+            fun assistant(byte: Int) = if (holdOption(byte) == DIGITAL_ASSISTANT) (if (assistantIsGoogle) 1 else 2) else 0
+            return listOf(SamsungPacket(SamsungMessage.SET_TOUCHPAD_OPTION, byteArrayOf(l.toByte(), r.toByte(), assistant(l).toByte(), assistant(r).toByte())))
+        }
         return listOf(SamsungPacket(SamsungMessage.SET_TOUCHPAD_OPTION, byteArrayOf(l.toByte(), r.toByte())))
     }
 
-    /** As GalaxyBudsClient's TouchAndHoldNoiseControls for models before the Buds3: off, ambient, ANC flags per side. */
+    /**
+     * As GalaxyBudsClient's TouchAndHoldNoiseControls for models before the Buds3: off, ambient, ANC
+     * flags per side. The Buds4 family takes Samsung's plugin's form: left, then right, each the
+     * state's bits (1 ambient, 2 adaptive, 4 off, 8 noise cancelling).
+     */
     private fun cycleChange(s: SamsungStatus, key: String, option: String): List<SamsungPacket>? {
         val dual = supports(s, "noise_control_mode_dual_side")
         val leftNow = cycle(s, left = true)
         val rightNow = cycle(s, left = false)
         val left = if (key == "hold_cycle_left") option else leftNow
         val right = if (key == "hold_cycle_right" || key == "hold_cycle") option else rightNow
+        fun flags(prefix: String, mode: String) = mapOf(
+            "noise_control_touch_${prefix}anc" to (mode != "ambient_off"),
+            "noise_control_touch_${prefix}ambient" to (mode != "anc_off"),
+            "noise_control_touch_${prefix}off" to (mode != "anc_ambient"),
+        )
+        if (model.buds4Layout) {
+            fun bits(mode: String?): Int? = when (mode) {
+                "anc_off" -> CYCLE_ANC or CYCLE_OFF
+                "ambient_off" -> CYCLE_AMBIENT or CYCLE_OFF
+                "anc_ambient" -> CYCLE_ANC or CYCLE_AMBIENT
+                else -> null
+            }
+            val r = bits(right) ?: return null
+            val l = if (dual) (bits(left) ?: return null) else r
+            status = s.with(flags("", right!!) + if (dual) flags("left_", left!!) else emptyMap())
+            return listOf(SamsungPacket(SamsungMessage.SET_TOUCH_AND_HOLD_NOISE_CONTROLS, byteArrayOf(l.toByte(), r.toByte())))
+        }
         fun bytes(mode: String?): List<Byte>? = when (mode) {
             "anc_off" -> listOf(1, 0, 1)
             "ambient_off" -> listOf(0, 1, 1)
@@ -415,11 +505,6 @@ public class SamsungSession(
             else -> null
         }?.map { it.toByte() }
         val payload = if (dual) (bytes(left) ?: return null) + (bytes(right) ?: return null) else bytes(right) ?: return null
-        fun flags(prefix: String, mode: String) = mapOf(
-            "noise_control_touch_${prefix}anc" to (mode != "ambient_off"),
-            "noise_control_touch_${prefix}ambient" to (mode != "anc_off"),
-            "noise_control_touch_${prefix}off" to (mode != "anc_ambient"),
-        )
         status = s.with(flags("", right!!) + if (dual) flags("left_", left!!) else emptyMap())
         return listOf(SamsungPacket(SamsungMessage.SET_TOUCH_AND_HOLD_NOISE_CONTROLS, payload.toByteArray()))
     }
@@ -460,6 +545,17 @@ public class SamsungSession(
     public fun frames(packets: List<SamsungPacket>): List<ByteArray> =
         packets.filter { it.id !in SamsungMessage.NEVER_SEND }.map { SamsungPacket.build(it.id, it.payload, model.legacy) }
 
+    /**
+     * The software version in the long version reply (Samsung's plugin): each earbud's hardware
+     * version, then each one's software version as 20 bytes of text, left first. The left one, or the
+     * right when the left is empty.
+     */
+    private fun longVersion(p: ByteArray): String? {
+        if (p.size < 2 + 2 * LONG_VERSION_TEXT) return null
+        fun text(at: Int) = p.copyOfRange(at, at + LONG_VERSION_TEXT).takeWhile { it != 0.toByte() }.toByteArray().decodeToString().trim()
+        return text(2).ifEmpty { text(2 + LONG_VERSION_TEXT) }.ifEmpty { null }
+    }
+
     /** The left earbud's software version, as GalaxyBudsClient spells it out from the version reply. */
     private fun version(p: ByteArray, at: Int): String {
         val variant = if (p.u8(at) == 0) "E" else "U"
@@ -481,6 +577,11 @@ public class SamsungSession(
         private const val TONE_MAX = 4
         private const val NOISE_OPTION = "noise_control"
         private const val CUSTOM_OPTION = "custom"
+        private const val DIGITAL_ASSISTANT = "digital_assistant"
+        private const val LONG_VERSION_TEXT = 20
+        private const val CYCLE_AMBIENT = 1
+        private const val CYCLE_OFF = 4
+        private const val CYCLE_ANC = 8
 
         private val VOICE_DETECT_WAITS = listOf("5", "10", "15")
         private val CYCLES = listOf("anc_ambient", "anc_off", "ambient_off")
@@ -516,6 +617,9 @@ public class SamsungSession(
             SamsungMessage.SET_VOICE_WAKE_UP to ("voice_wake_up" to { v: Int -> v == 1 }),
             SamsungMessage.SET_SEAMLESS_CONNECTION to ("seamless_connection_enabled" to { v: Int -> v == 0 }),
             SamsungMessage.SET_CALL_PATH_CONTROL to ("call_path_control" to { v: Int -> v == 0 }),
+            SamsungMessage.SET_PAUSE_MEDIA_ONE_BUD_REMOVED to ("auto_pause_resume" to { v: Int -> v == 1 }),
+            SamsungMessage.SET_SIREN_DETECT to ("siren_detect" to { v: Int -> v == 1 }),
+            SamsungMessage.SET_ADAPTIVE_VOLUME to ("adaptive_volume_enabled" to { v: Int -> v == 1 }),
         )
 
         private fun fit(v: Int): FitResult.Fit = when (v) {

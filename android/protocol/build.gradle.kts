@@ -446,9 +446,17 @@ abstract class GenerateSamsungTables : DefaultTask() {
         out.appendLine("/** Every model in data/samsung/devices.json, with GalaxyBudsClient's specification of it. */")
         out.appendLine("internal val SAMSUNG_MODELS: List<SamsungModel> = listOf(")
         for (d in devices) {
+            // Samsung's own plugin (samsung_app) wins over GalaxyBudsClient field by field.
             @Suppress("UNCHECKED_CAST")
-            val g = d.getValue("galaxybudsclient") as Map<String, Any?>
+            val app = d["samsung_app"] as Map<String, Any?>? ?: emptyMap()
+            @Suppress("UNCHECKED_CAST")
+            val g = (d["galaxybudsclient"] as Map<String, Any?>? ?: emptyMap()) + app
             val names = (d.getValue("names") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+            val matchNames = (app["match_names"] as List<*>? ?: emptyList<Any>())
+            val match = matchNames.joinToString(", ", "listOf(", ")") { str(it) }
+            val baseName = g["base_name"] ?: matchNames.first()
+            val layout = app["layout"]?.let { str(it) } ?: "null"
+            val form = if (d["kind"] == "headphones") "io.github.omegadestroyer.pairfree.protocol.Form.HEADPHONES" else "io.github.omegadestroyer.pairfree.protocol.Form.EARBUDS"
             val touch = (g.getValue("touch_hold") as List<*>).joinToString(", ", "listOf(", ")") { p ->
                 val pair = p as List<*>
                 "${int(pair[0])} to ${str(pair[1])}"
@@ -460,9 +468,9 @@ abstract class GenerateSamsungTables : DefaultTask() {
                 "${str(k)} to ${(v as Number?)?.toInt() ?: "null"}"
             }
             out.appendLine(
-                "    SamsungModel(${str(d["model"])}, $names, ${str(g["device"])}, ${int(g["generation"])}, ${str(g["base_name"])}, " +
+                "    SamsungModel(${str(d["model"])}, $names, ${str(g["device"])}, ${int(g["generation"])}, ${str(baseName)}, " +
                     "${str(g["service_uuid"])}, legacy = ${g["framing"] == "legacy"}, maxAmbientVolume = ${int(g["max_ambient_volume"])}, " +
-                    "touchHold = $touch, colors = $colors, features = $features),",
+                    "touchHold = $touch, colors = $colors, features = $features, layout = $layout, matchNames = $match, form = $form),",
             )
         }
         out.appendLine(")")

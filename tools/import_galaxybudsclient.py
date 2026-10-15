@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DEVICES = ROOT / "data" / "samsung" / "devices.json"
-OURS = ("names", "reports", "notes", "kind", "fast_pair")
+OURS = ("names", "reports", "notes", "kind", "fast_pair", "samsung_app")
 SERVICES = {"SppLegacy": "00001102-0000-1000-8000-00805f9b34fd", "SppStandard": "00001101-0000-1000-8000-00805f9b34fb",
             "SppNew": "2e73a4ad-332d-41fc-90e2-16bef06523f2"}
 TOUCH_OPTIONS = {"VoiceAssistant": "voice_assistant", "QuickAmbientSound": "quick_ambient_sound", "Volume": "volume",
@@ -124,7 +124,10 @@ def main():
             if key in old.get(number, {}) and key != "names":
                 entry[key] = old[number][key]
         devices.append(entry)
-    devices.sort(key=lambda d: d["galaxybudsclient"]["generation"])
+    # Models only Samsung's own plugin lists (samsung_app alone) stay as they are.
+    known = {d["model"] for d in devices}
+    devices += [d for d in old.values() if d["model"] not in known and "samsung_app" in d and "galaxybudsclient" not in d]
+    devices.sort(key=lambda d: (d.get("samsung_app") or {}).get("generation") or d["galaxybudsclient"]["generation"])
     data = {
         "_about": ("Samsung Galaxy Buds models PairFree knows. model is Samsung's model number (SM-R...), names the "
                    "names the earbuds use. galaxybudsclient holds what GalaxyBudsClient's device specification gives "
@@ -134,7 +137,10 @@ def main():
                    "DD, a two-byte length), the highest ambient sound volume step, the touch-and-hold options as [byte, "
                    "option] (custom runs a phone-side action, set in Samsung's app), the colours by device id, and the "
                    "features, each with the lowest state revision that has it (null: every revision). The rest is "
-                   "PairFree's: reports lists recordings in data/samsung/reports, notes what was found on the earbuds."),
+                   "PairFree's: reports lists recordings in data/samsung/reports, notes what was found on the earbuds. samsung_app holds what Samsung's own Galaxy Buds plugin says, where PairFree has read it"
+                   " (com.samsung.accessory.budsunitemgr 9.0.10): the codename, the state layout, the names the plugin matches, the"
+                   " touch-and-hold codes and the features. It overrides galaxybudsclient field by field, and"
+                   " models only Samsung's plugin knows have it alone. kind is headphones for a headset."),
         "source": {
             "project": "GalaxyBudsClient",
             "url": "https://github.com/timschneeb/GalaxyBudsClient",

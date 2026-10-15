@@ -57,7 +57,16 @@ class SamsungTable(unittest.TestCase):
     def test_models_in_samsungs_order(self):
         order = [r.split("</td><td>")[1] for r in gen.rows(self.data["devices"])]
         self.assertEqual("SM-R170", order[0])
-        self.assertEqual(sorted(order, key=lambda m: self.devices[m]["galaxybudsclient"]["generation"]), order)
+        self.assertEqual(sorted(order, key=lambda m: gen.spec(self.devices[m])["generation"]), order)
+
+    def test_samsungs_plugin_wins_for_the_buds4_family(self):
+        buds4, pro = self.row("SM-R540"), self.row("SM-R640")
+        self.assertEqual("Samsung's app", buds4["Status"])
+        self.assertEqual(gen.NO, buds4["Fit test"], "Samsung's plugin lists no fit test for the Buds4")
+        self.assertEqual(gen.YES, pro["Fit test"])
+        self.assertEqual(gen.YES, pro["Hold switches between"], "Samsung's plugin shows the write")
+        self.assertEqual("One", self.row("SM-U700")["Battery"], "the H1 is a headset")
+        self.assertEqual("Samsung's app", self.row("SM-R545")["Status"])
 
 
 if __name__ == "__main__":

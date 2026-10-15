@@ -88,7 +88,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     fun openEqualizer(device: Paired, model: Model?) {
         if (device.brand == Brand.SAMSUNG) {
             soundcoreEq = null
-            val target = SamsungModels.of(device.model)?.let(::SamsungEqTarget)
+            val target = SamsungModels.of(device.model)?.let { SamsungEqTarget(it, connection.samsungEqCurves.value) }
             samsungEq = target
             equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
             connection.samsungStatus.value?.let(::reportSamsungEq)
@@ -138,6 +138,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         // Soundcore earbuds report their EQ with every state; the Sound tab follows it.
         viewModelScope.launch { connection.soundcoreState.collect { s -> s?.let(::reportEq) } }
         viewModelScope.launch { connection.samsungStatus.collect { s -> s?.let(::reportSamsungEq) } }
+        // The Galaxy Buds' preset curves arrive after the screen opened: draw them then.
+        viewModelScope.launch {
+            connection.samsungEqCurves.collect { curves ->
+                val target = samsungEq ?: return@collect
+                val device = (connection.status.value as? LinkStatus.Connected)?.device ?: return@collect
+                if (curves.isNotEmpty()) openEqualizer(device, SamsungModels.model(target.model.model))
+            }
+        }
         viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
     }
 

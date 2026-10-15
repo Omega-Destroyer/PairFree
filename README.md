@@ -88,7 +88,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
 | [Sony](docs/devices/sony.md) | 24 | — |
 | [Bose](docs/devices/bose.md) | 22 | — |
-| [JBL](docs/devices/jbl.md) | 61 | — |
+| [JBL](docs/devices/jbl.md) | 83 | — |
 | [AirPods and Beats](docs/devices/apple.md) | 30 | — |
 <!-- devices-summary:end -->
 

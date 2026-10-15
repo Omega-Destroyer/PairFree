@@ -130,13 +130,15 @@ Beats on Apple's chips).
   first and scans only when that fails (`JblFinder`); the scan needs `BLUETOOTH_SCAN`
   (`neverForLocation`), which the owner allowed for JBL alone on 2026-10-15, asked only when the
   user opens a JBL model (`docs/DESIGN.md`, Permissions). `data/jbl/commands.json` and
-  `devices.json` (61 models from JBL's product list and dashboard configs, with each model's
+  `devices.json` (83 models from JBL's product list and dashboard configs, with each model's
   family, noise commands and auto power-off encoding, section 5) become `JblCommand`,
   `JblStatus`, `JblNoise`, `JblAmbient`, `JblFeature` and `JblModels` through
   `generateJblTables`; `JblSession` maps replies to the screens and reads each change back 3 s
-  later. `EarbudsConnection.serveJbl` sends one command at a time, waiting up to 1 s, as JBL's
-  app does. Protocol 4 (frames starting `00 DD`, `JblP4Packet`, section 6) is covered for the models
-  with no BLE security mode; the authenticated ones, Airoha and LE Audio models are not, nor the EQ. After a
+  later. `JblReader` splits both Harman's `AA` frames and protocol 4's `00 DD` frames (`JblP4Packet`). `EarbudsConnection.serveJbl` sends one command at a time, waiting up to 1 s, as JBL's
+  app does. Protocol 4 (section 6) is covered, including the models with a BLE security mode 1 to 3,
+  which add a transport step `GattLink` runs itself (the raw characteristic, the host-name checksum,
+  section 7): no key is needed. JBL's genuine-product check needs a key from a native library, so it
+  is left out (hard rules); Airoha and LE Audio models and the EQ are not covered. After a
   change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
   `JblCommand.NEVER_SEND` (factory reset, power off, firmware update, analytics).
 - `docs/apple/PROTOCOL.md` is Apple's accessory protocol for AirPods and Apple-chip Beats, ported from

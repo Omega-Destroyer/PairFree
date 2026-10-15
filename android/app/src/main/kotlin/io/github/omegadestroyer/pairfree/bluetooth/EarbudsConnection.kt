@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.bluetooth
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
@@ -21,8 +22,11 @@ import io.github.omegadestroyer.pairfree.protocol.Wire
 import io.github.omegadestroyer.pairfree.protocol.apple.AapPacket
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleOpcode
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblAdvert
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblFrame
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblP4
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblP4Packet
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblReader
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
 import io.github.omegadestroyer.pairfree.protocol.summary
@@ -284,15 +288,32 @@ class EarbudsConnection(
         val model = if (device.brand == Brand.JBL) JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } else null
         val ctx = context
         if (model?.gatt != true || ctx == null) return SppLink(remote, log, device.service ?: Wire.SPP_UUID).also { link = it }.apply { connect() }
+        // JBL's protocol 4 security modes add connection steps (docs/jbl/PROTOCOL.md section 7); modes 1 and 3 use
+        // the raw characteristic, and mode 3 writes the phone's name checksum to it first.
+        val rawNotify = model.security == 1 || model.security == 3
+        val preamble = if (model.security == 3) jblHostNameCrc() else null
+        fun gatt(d: BluetoothDevice) = GattLink(ctx, d, log, rawNotify = rawNotify, rawPreamble = preamble).also { link = it }
         try {
-            return GattLink(ctx, remote, log).also { link = it }.apply { connect() }
+            return gatt(remote).apply { connect() }
         } catch (e: IOException) {
             log?.invoke("LE on the classic address: ${e.message}")
         }
         currentCoroutineContext().ensureActive()   // not after a disconnect closed the first try
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
         val found = adapter?.let { JblFinder(it, log).find(model, device.address) } ?: throw IOException("not found over LE")
-        return GattLink(ctx, found, log).also { link = it }.apply { connect() }
+        return gatt(found).apply { connect() }
+    }
+
+    /** The checksum of this phone's Bluetooth name, as JBL's security mode 3 writes it (JblAdvert's CRC-16/ARC, low byte first). */
+    @SuppressLint("MissingPermission") // only called with the permission
+    private fun jblHostNameCrc(): ByteArray? {
+        val name = try {
+            adapter?.name
+        } catch (_: SecurityException) {
+            null
+        } ?: return null
+        val crc = JblAdvert.crc16(name.encodeToByteArray())
+        return JblP4Packet.set(JblP4.FEATURE_HOST_NAME_CRC to byteArrayOf(crc.toByte(), (crc shr 8).toByte())).bytes()
     }
 
     /** JBL earbuds that need an LE scan, which the user has not allowed. */

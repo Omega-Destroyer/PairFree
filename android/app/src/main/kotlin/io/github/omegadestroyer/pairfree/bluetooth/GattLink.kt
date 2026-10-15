@@ -33,14 +33,23 @@ class GattLink(
     private val context: Context,
     private val device: BluetoothDevice,
     private val log: ((String) -> Unit)? = null,
+    /** JBL's protocol 4 security modes 1 and 3 also subscribe the raw characteristic (docs/jbl/PROTOCOL.md section 7). */
+    private val rawNotify: Boolean = false,
+    /** Mode 3 writes this frame (the host name's checksum) to the raw characteristic before the main subscription. */
+    private val rawPreamble: ByteArray? = null,
 ) : ControlLink {
     private var gatt: BluetoothGatt? = null
     private var write: BluetoothGattCharacteristic? = null
+    private var raw: BluetoothGattCharacteristic? = null
     private val ready = CompletableDeferred<Unit>()
     private val incoming = Channel<ByteArray>(Channel.UNLIMITED)
     private val written = Channel<Int>(Channel.CONFLATED)
     private val writeLock = Mutex()
     @Volatile private var closed = false
+
+    /** Where the opening sequence is: through the raw characteristic's extra steps, or the main subscription. */
+    private enum class Phase { RAW_SUBSCRIBE, RAW_WRITE, NOTIFY_SUBSCRIBE }
+    private var phase = Phase.NOTIFY_SUBSCRIBE
 
     private val callback = object : BluetoothGattCallback() {
         @Suppress("MissingPermission") // the link is only made with the permission
@@ -69,39 +78,74 @@ class GattLink(
                 return
             }
             write = w
-            val cccd = notify.getDescriptor(CCCD)
-            if (!gatt.setCharacteristicNotification(notify, true) || cccd == null) {
-                fail("could not subscribe")
-                return
-            }
-            val value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-            val started = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                gatt.writeDescriptor(cccd, value) == BluetoothStatusCodes.SUCCESS
+            raw = service.getCharacteristic(RAW)
+            // Modes 1 and 3 subscribe the raw characteristic first, as JBL's app does; without it, go straight to notify.
+            if (rawNotify && raw != null) {
+                phase = Phase.RAW_SUBSCRIBE
+                if (!subscribe(gatt, raw!!)) subscribeNotify(gatt)
             } else {
-                @Suppress("DEPRECATION")
-                cccd.setValue(value) && gatt.writeDescriptor(cccd)
+                subscribeNotify(gatt)
             }
-            if (!started) fail("could not subscribe")
+        }
+
+        @Suppress("MissingPermission")
+        private fun subscribeNotify(gatt: BluetoothGatt) {
+            phase = Phase.NOTIFY_SUBSCRIBE
+            val notify = gatt.getService(SERVICE)?.getCharacteristic(NOTIFY)
+            if (notify == null || !subscribe(gatt, notify)) fail("could not subscribe")
         }
 
         override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
-            if (status == BluetoothGatt.GATT_SUCCESS) ready.complete(Unit) else fail("subscribe refused (status $status)")
+            when (phase) {
+                // The raw steps are best-effort: carry on even if they are refused, so the main channel still opens.
+                Phase.RAW_SUBSCRIBE -> if (rawPreamble != null && raw != null && writeRaw(gatt)) phase = Phase.RAW_WRITE else subscribeNotify(gatt)
+                Phase.NOTIFY_SUBSCRIBE -> if (status == BluetoothGatt.GATT_SUCCESS) ready.complete(Unit) else fail("subscribe refused (status $status)")
+                Phase.RAW_WRITE -> Unit
+            }
         }
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
-            written.trySend(status)
+            if (characteristic.uuid == RAW && phase == Phase.RAW_WRITE) subscribeNotify(gatt) else written.trySend(status)
+        }
+
+        @Suppress("MissingPermission")
+        private fun writeRaw(gatt: BluetoothGatt): Boolean {
+            val c = raw ?: return false
+            val frame = rawPreamble ?: return false
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                gatt.writeCharacteristic(c, frame, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT) == BluetoothStatusCodes.SUCCESS
+            } else {
+                @Suppress("DEPRECATION")
+                c.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                @Suppress("DEPRECATION")
+                (c.setValue(frame) && gatt.writeCharacteristic(c))
+            }
         }
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray) {
-            if (characteristic.uuid == NOTIFY) incoming.trySend(value.copyOf())
+            if (characteristic.uuid == NOTIFY || characteristic.uuid == RAW) incoming.trySend(value.copyOf())
         }
 
         // Android 13 and later call both forms; before 13 only this one.
         @Deprecated("Deprecated in Java")
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || characteristic.uuid != NOTIFY) return
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || (characteristic.uuid != NOTIFY && characteristic.uuid != RAW)) return
             @Suppress("DEPRECATION")
             characteristic.value?.let { incoming.trySend(it.copyOf()) }
+        }
+    }
+
+    /** Turns on notifications for [characteristic] and writes its client-config descriptor. */
+    @Suppress("MissingPermission")
+    private fun subscribe(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic): Boolean {
+        val cccd = characteristic.getDescriptor(CCCD) ?: return false
+        if (!gatt.setCharacteristicNotification(characteristic, true)) return false
+        val value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            gatt.writeDescriptor(cccd, value) == BluetoothStatusCodes.SUCCESS
+        } else {
+            @Suppress("DEPRECATION")
+            (cccd.setValue(value) && gatt.writeDescriptor(cccd))
         }
     }
 
@@ -170,6 +214,9 @@ class GattLink(
         val SERVICE: UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0000")
         val NOTIFY: UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0001")
         val WRITE: UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0002")
+
+        /** The raw characteristic JBL's security modes 1 and 3 use for their extra handshake steps. */
+        val RAW: UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0003")
         private val CCCD: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
         /** The MTU JBL's app asks for. */

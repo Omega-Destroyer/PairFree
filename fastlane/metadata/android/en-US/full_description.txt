@@ -19,7 +19,7 @@ Supported brands:
 • Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6, WF-1000XM5 and LinkBuds, not yet tried on real headphones. Written from Sony's own app and checked against the open-source Gadgetbridge
 • Bose: 22 models, from the QC35 to the QC Ultra 2 headphones and earbuds, not yet tried with PairFree. Written from Bose's own app and the open-source bosectl. PairFree never signs in to Bose's cloud, so anything that needs it stays out of reach
 • AirPods and Beats on Apple's chips: 30 models, not yet tried with PairFree. Ported from the open-source LibrePods. Android 17 is needed, or a Pixel on Android 16 QPR3, or a OnePlus, OPPO or realme phone on Android 16
-• JBL: 61 models, from the Tune 520BT to the Tune Flex 3, not yet tried with PairFree. Written from JBL's own app and checked against the open-source JblTray
+• JBL: 83 models, from the Tune 520BT to the Live Buds 4, not yet tried with PairFree. Written from JBL's own app and checked against the open-source JblTray
 
 What it controls, on the models that have each:
 

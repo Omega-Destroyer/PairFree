@@ -59,6 +59,7 @@ import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
+import io.github.omegadestroyer.pairfree.status.StatusUi
 import io.github.omegadestroyer.pairfree.ui.theme.Studio
 import io.github.omegadestroyer.pairfree.ui.theme.StudioShape
 
@@ -78,12 +79,19 @@ fun ConnectedScreen(vm: AppViewModel, device: Paired, live: Boolean) {
     val eq by vm.equalizer.state.collectAsStateWithLifecycle()
     val soundcore by vm.connection.soundcoreState.collectAsStateWithLifecycle()
     val settings by vm.connection.settings.collectAsStateWithLifecycle()
-    ConnectedScreen(device, state, vm, eq, vm.equalizer, live = live, touch = soundcore?.let(SoundcoreTouch::of), settings = settings)
+    val status by vm.statusUi.collectAsStateWithLifecycle()
+    val prompt by vm.statusPrompt.collectAsStateWithLifecycle()
+    StatusPrompts(prompt, device.address, vm::statusPromptDone)
+    ConnectedScreen(
+        device, state, vm, eq, vm.equalizer, live = live, touch = soundcore?.let(SoundcoreTouch::of), settings = settings,
+        status = status?.takeIf { it.address == device.address },
+    )
 }
 
 /**
  * [touch] is the Soundcore earbuds' touch controls, from the last state they sent; null for other
  * brands. [settings] are the brand's own settings beyond the shared ones, drawn on their tabs.
+ * [status] is the choice of battery notification, on the Device tab.
  */
 @Composable
 internal fun ConnectedScreen(
@@ -96,6 +104,7 @@ internal fun ConnectedScreen(
     live: Boolean = true,
     touch: SoundcoreTouch? = null,
     settings: List<SettingGroup> = emptyList(),
+    status: StatusUi? = null,
 ) {
     var tab by rememberSaveable { mutableStateOf(startTab) }
     var fitTest by rememberSaveable { mutableStateOf(false) }
@@ -114,7 +123,7 @@ internal fun ConnectedScreen(
                     unavailableNote = if (device.brand == Brand.SOUNDCORE) R.string.eq_soundcore_unchecked else R.string.eq_unavailable,
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
-                Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings) { fitTest = true }
+                Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status) { fitTest = true }
             }
         }
         TabBar(tab) { tab = it }

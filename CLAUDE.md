@@ -199,7 +199,10 @@ reports from other people.
 - On connect the app sends `Requests.ON_CONNECT`, the probe's read-only GET list (a test
   keeps the two in step), then reads the battery every 30 s. `EarbudState` takes every
   reply, asked for or not; a feature counts as supported once its GET has answered.
-  The app holds the channel only while it is on screen.
+  The channel lives in the app process (`Hub`): the screens hold it while they are on
+  screen, and the status notification (`status/`) while it shows, for earbuds whose
+  choice is PairFree's (docs/DESIGN.md, Notification). It closes when neither needs it.
+  No app can hide Google's Fast Pair notification; PairFree only links to its settings.
 - A SET from the app shows at once (`EarbudState.expect`), then the app reads the value
   back 3 s later; the earbuds' reply replaces the guess. Factory reset goes only through
   `Requests.factoryResetConfirmedByUser`, called from the confirmation dialog.

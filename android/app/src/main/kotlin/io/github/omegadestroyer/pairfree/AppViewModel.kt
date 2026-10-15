@@ -38,12 +38,23 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
+import io.github.omegadestroyer.pairfree.status.CompanionLink
+import io.github.omegadestroyer.pairfree.status.FastPairCheck
+import io.github.omegadestroyer.pairfree.status.StatusChoice
+import io.github.omegadestroyer.pairfree.status.StatusPrompt
+import io.github.omegadestroyer.pairfree.status.StatusService
+import io.github.omegadestroyer.pairfree.status.StatusSettings
+import io.github.omegadestroyer.pairfree.status.StatusUi
+import io.github.omegadestroyer.pairfree.status.canNotify
 import io.github.omegadestroyer.pairfree.ui.CaptureActions
 import io.github.omegadestroyer.pairfree.ui.EarbudsActions
+import io.github.omegadestroyer.pairfree.ui.modelOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URLEncoder
@@ -128,6 +139,114 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         viewModelScope.launch { connection.soundcoreState.collect { s -> s?.let(::reportEq) } }
         viewModelScope.launch { connection.samsungStatus.collect { s -> s?.let(::reportSamsungEq) } }
         viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
+    }
+
+    private val statusSettings = StatusSettings(prefs)
+    private val _statusUi = MutableStateFlow<StatusUi?>(null)
+
+    /** The battery notification choice for the connected earbuds, for the Device tab. */
+    val statusUi: StateFlow<StatusUi?> = _statusUi.asStateFlow()
+
+    private val _statusPrompt = MutableStateFlow<StatusPrompt?>(null)
+
+    /** What to ask Android for next, the first time earbuds with PairFree's notification connect. */
+    val statusPrompt: StateFlow<StatusPrompt?> = _statusPrompt.asStateFlow()
+
+    /** Earbuds whose Fast Pair was looked for on the earbuds during this run. */
+    private val fastPairChecked = mutableSetOf<String>()
+
+    // After the fields above: the collectors run at once on the main thread.
+    init {
+        // The status notification follows the earbuds the screens connect to.
+        viewModelScope.launch {
+            connection.status.collect {
+                when (it) {
+                    is LinkStatus.Connected -> earbudsConnected(it.device)
+                    is LinkStatus.Idle -> _statusUi.value = null
+                    else -> Unit
+                }
+            }
+        }
+        // A SOUNDPEATS model is known for sure once its firmware answers.
+        viewModelScope.launch {
+            connection.state.map { it.firmware?.code }.distinctUntilChanged().collect { connectedDevice()?.let(::refreshStatus) }
+        }
+    }
+
+    private fun connectedDevice(): Paired? = (connection.status.value as? LinkStatus.Connected)?.device
+
+    /**
+     * Earbuds connected: learns whether they have Fast Pair when their model does not say
+     * (FastPairCheck), then starts or ends the notification, asking for what it needs the first time.
+     */
+    @SuppressLint("MissingPermission") // checked first
+    private fun earbudsConnected(device: Paired) {
+        val fastPair = statusSettings.fastPair(device, modelOf(device, connection.state.value))
+        val remote = adapter?.takeIf { checkPermission() }?.getRemoteDevice(device.address)
+        if (fastPair == null && remote != null && fastPairChecked.add(device.address)) {
+            refreshStatus(device)
+            // The prompts wait for the answer: earbuds with Fast Pair keep Google's notification until the user chooses.
+            FastPairCheck.run(getApplication(), remote) { found ->
+                found?.let { statusSettings.detected(device.address, it) }
+                if (connectedDevice()?.address == device.address) applyStatus(device, prompt = true)
+            }
+            return
+        }
+        applyStatus(device, prompt = true)
+    }
+
+    private fun refreshStatus(device: Paired) {
+        val app = getApplication<Application>()
+        val fastPair = statusSettings.fastPair(device, modelOf(device, connection.state.value))
+        _statusUi.value = StatusUi(
+            device.address,
+            statusSettings.options(fastPair),
+            statusSettings.choice(device, fastPair),
+            fastPair == true,
+            canNotify(app),
+            CompanionLink.isAssociated(app, device.address),
+        )
+    }
+
+    /** Starts or ends the notification as the choice says; with [prompt], the first time, asks for what it needs. */
+    private fun applyStatus(device: Paired, prompt: Boolean) {
+        refreshStatus(device)
+        val ui = _statusUi.value ?: return
+        val app = getApplication<Application>()
+        if (ui.choice != StatusChoice.PAIRFREE) {
+            StatusService.stop(app, device.address)
+            return
+        }
+        if (ui.canNotify) StatusService.startIfWanted(app, device.address, fromBackground = false)
+        if (prompt && !statusSettings.asked(device.address)) {
+            statusSettings.markAsked(device.address)
+            _statusPrompt.value = when {
+                !ui.canNotify -> StatusPrompt.NOTIFICATIONS
+                !ui.linked -> StatusPrompt.LINK
+                else -> null
+            }
+        }
+    }
+
+    override fun chooseStatus(choice: StatusChoice) {
+        val device = connectedDevice() ?: return
+        statusSettings.choose(device.address, choice)
+        applyStatus(device, prompt = false)
+    }
+
+    override fun statusChanged() {
+        connectedDevice()?.let { applyStatus(it, prompt = false) }
+    }
+
+    /** A first-time prompt closed: the notification starts if it now can, and the companion link is asked for next. */
+    fun statusPromptDone(prompt: StatusPrompt) {
+        _statusPrompt.value = null
+        val device = connectedDevice() ?: return
+        applyStatus(device, prompt = false)
+        val ui = _statusUi.value ?: return
+        if (prompt == StatusPrompt.NOTIFICATIONS && ui.choice == StatusChoice.PAIRFREE && ui.canNotify && !ui.linked) {
+            _statusPrompt.value = StatusPrompt.LINK
+        }
     }
 
     private val _hasPermission = MutableStateFlow(checkPermission())

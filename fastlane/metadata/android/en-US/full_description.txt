@@ -6,7 +6,7 @@ Why PairFree:
 • No internet: the app has no internet permission, so it cannot go online
 • Nothing leaves your phone unless you share it yourself, such as a device report or an equalizer profile. No ads, no analytics, no crash reports, no cloud backup of your settings
 • One app to rule them all: the same screens for every brand, instead of one vendor app each
-• One permission: Bluetooth, for earbuds you have already paired. No location, no scanning, no contacts
+• Few permissions: Bluetooth, for earbuds you have already paired, and notifications for the optional status notification. No location, no scanning, no contacts
 • Small and quick: about 3 MB, with no login and no server to wait for
 • Open source (GPL-3.0), with every protocol documented and tested in its repository
 • Your equalizer as files: save your own curves, and export and share them
@@ -26,6 +26,7 @@ What it controls, on the models that have each:
 • Game mode, two devices at once, LDAC and LE Audio
 • The ear tip fit test, find my earbuds, voice prompts and water drain
 • Settings only one brand has, such as each Galaxy Bud's ambient sound level, or voice detect
+• A status notification with the battery and buttons for noise control and game mode, in place of Google's Fast Pair notification if you like
 
 PairFree shows only what your earbuds support. If your model has not been tried, the Device tab copies a device report you can send, so it can be added for everyone. Record from the official app goes further: it reads, on your phone, what the brand's own app sends to your earbuds when you change a setting (and on SOUNDPEATS earbuds the equalizer curves), so PairFree can learn to do the same. It keeps nothing but the messages exchanged with your earbuds, and the report it makes masks their address and serial number.
 

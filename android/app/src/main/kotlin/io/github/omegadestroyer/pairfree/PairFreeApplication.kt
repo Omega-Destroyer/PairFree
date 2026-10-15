@@ -20,6 +20,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.Models
+import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
@@ -104,7 +105,8 @@ class Hub(private val app: Application) {
      * name the model, or else by their name (docs/soundcore/PROTOCOL.md); Galaxy Buds by their name
      * (docs/samsung/PROTOCOL.md); Sony's by their services or name (docs/sony/PROTOCOL.md); Bose's
      * by Bose's services or "Bose" in the name (docs/bose/PROTOCOL.md); JBL's by the model's name
-     * (docs/jbl/PROTOCOL.md). Empty without the permission or with Bluetooth off.
+     * (docs/jbl/PROTOCOL.md); AirPods and Apple-chip Beats by Apple's accessory service, else "AirPods"
+     * in the name (docs/apple/PROTOCOL.md). Empty without the permission or with Bluetooth off.
      */
     @SuppressLint("MissingPermission") // checked first
     fun pairedEarbuds(): List<Paired> {
@@ -124,6 +126,7 @@ class Hub(private val app: Application) {
                     sony != null -> Paired(d.address, name, Brand.SONY, sony.service, sony.model?.name)
                     BoseModels.isBose(name, uuids) -> Paired(d.address, name, Brand.BOSE)
                     jbl != null -> Paired(d.address, name, Brand.JBL, model = jbl.name)
+                    AppleModels.identify(name, uuids) -> Paired(d.address, name, Brand.APPLE)
                     Models.isSupported(d.name ?: "") -> Paired(d.address, name)
                     else -> null
                 }

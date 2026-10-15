@@ -1,0 +1,45 @@
+{
+  "_about": "Apple's accessory protocol (AAP, which LibrePods calls AACP) as PairFree uses it with AirPods and Beats on Apple's chips, from LibrePods (github.com/kavishdevar/librepods, GPL-3.0-or-later: AACPManager, docs/) and MagicPodsCore (github.com/steam3d/MagicPodsCore, GPL-3.0: sdk/aap). A packet is the header, a two-byte opcode (low byte first) and data; a control command is opcode 09 with a one-byte id and four bytes of value (docs/apple/PROTOCOL.md). never_send lists what PairFree never sends.",
+  "psm": 4097,
+  "service_uuid": "74ec2172-0bad-4d01-8f77-997b2be0722a",
+  "header": "04000400",
+  "handshake": "00000400010002000000000000000000",
+  "feature_flags": "4d00d700000000000000",
+  "notifications": "0f00ffffffff",
+  "opcodes": {
+    "battery": "04",
+    "ear_detection": "06",
+    "control": "09",
+    "information": "1d",
+    "conversation_awareness": "4b"
+  },
+  "switch": {"on": 1, "off": 2},
+  "controls": [
+    {"name": "listening_mode", "id": "0d", "values": {"1": "off", "2": "anc", "3": "transparency", "4": "adaptive"}},
+    {"name": "ear_detection", "id": "0a", "kind": "switch"},
+    {"name": "press_speed", "id": "17", "values": {"0": "default", "1": "slower", "2": "slowest"}},
+    {"name": "hold_duration", "id": "18", "values": {"0": "default", "1": "shorter", "2": "shortest"}},
+    {"name": "one_bud_anc", "id": "1b", "kind": "switch"},
+    {"name": "volume_swipe_length", "id": "23", "values": {"0": "default", "1": "longer", "2": "longest"}},
+    {"name": "volume_swipe", "id": "25", "kind": "switch"},
+    {"name": "personalized_volume", "id": "26", "kind": "switch"},
+    {"name": "conversation_awareness", "id": "28", "kind": "switch"},
+    {"name": "adaptive_level", "id": "2e", "kind": "level", "min": 0, "max": 100},
+    {"name": "allow_off", "id": "34", "kind": "switch"}
+  ],
+  "never_send": {
+    "opcodes": {
+      "10": "smart routing, which takes the AirPods over from other devices",
+      "14": "sends a device's address",
+      "17": "head tracking",
+      "1a": "renames the AirPods",
+      "30": "asks for the AirPods' keys"
+    },
+    "controls": {
+      "06": "owns the connection",
+      "20": "connect automatically",
+      "36": "allow auto connect",
+      "3a": "temporary pairing"
+    }
+  }
+}

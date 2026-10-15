@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker), Samsung Galaxy Buds, Sony, Bose and JBL are being added. The owner wants agents to do as much of the
+(Anker), Samsung Galaxy Buds, Sony, Bose, JBL and AirPods are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Where the truth lives
@@ -31,7 +31,8 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 `tools/device_art/<brand>/`. App-wide documents stay at the top level. Each brand also has a page
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
-from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose` and `jbl`.
+from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose`, `jbl` and `apple` (AirPods and the
+Beats on Apple's chips).
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -137,6 +138,20 @@ from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`,
   app does. JBL's protocol 4, Airoha and LE Audio models are not covered, nor the EQ. After a
   change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
   `JblCommand.NEVER_SEND` (factory reset, power off, firmware update, analytics).
+- `docs/apple/PROTOCOL.md` is Apple's accessory protocol for AirPods and Apple-chip Beats, ported from
+  LibrePods (github.com/kavishdevar/librepods, GPL-3.0-or-later) and checked against MagicPodsCore
+  (github.com/steam3d/MagicPodsCore, GPL-3.0: facts only, the Beats and AirPods Max models). No
+  AirPods have been tried with PairFree. The channel is classic L2CAP PSM 0x1001, opened through
+  `BluetoothSocket`'s hidden constructors (`AppleLink`, LibrePods' list); Android's stack refuses it
+  before Android 17 except on LibrePods' list (`AppleSupport`: Pixel on 16 QPR3, OnePlus/OPPO/realme
+  on 16). The owner chose (2026-10-15) to say Android 17 is needed on the other phones instead of
+  trying: no root, no Xposed, no posing as an Apple device.
+  `data/apple/commands.json` and `devices.json` become `AppleWire`, `AppleOpcode`, `AppleControl`
+  and `AppleModels` through `generateAppleTables`; `AppleSession` shows each setting once the AirPods
+  report it. The information packet holds serial numbers: keep it out of logs, reports and test
+  vectors (zeroed there). After a change to `devices.json` run `python tools/gen_apple_table.py`.
+  Never send `AppleOpcode.NEVER_SEND` or `AppleControl.NEVER_SEND` (smart routing, keys, renaming,
+  connection ownership and pairing).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

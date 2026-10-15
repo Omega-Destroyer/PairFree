@@ -18,6 +18,9 @@ import io.github.omegadestroyer.pairfree.protocol.Requests
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.Wire
+import io.github.omegadestroyer.pairfree.protocol.apple.AapPacket
+import io.github.omegadestroyer.pairfree.protocol.apple.AppleOpcode
+import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblPacket
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblParser
@@ -62,7 +65,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
-enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL }
+enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
@@ -89,8 +92,11 @@ sealed interface LinkStatus {
     data class Reconnecting(val device: Paired) : LinkStatus
     data class Failed(val device: Paired, val reason: Reason) : LinkStatus
 
-    /** [NO_SCAN_PERMISSION]: JBL earbuds that did not answer on their classic address, which PairFree may not scan for. */
-    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION }
+    /**
+     * [NO_SCAN_PERMISSION]: JBL earbuds that did not answer on their classic address, which PairFree may not
+     * scan for. [NEEDS_NEWER_ANDROID]: AirPods whose channel this phone's Bluetooth stack refuses ([AppleSupport]).
+     */
+    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION, NEEDS_NEWER_ANDROID }
 }
 
 /**
@@ -103,8 +109,9 @@ sealed interface LinkStatus {
  * [state] and turns [set] into Soundcore packets, so the screens work for both brands. Galaxy
  * Buds go through a [SamsungSession] the same way, and their settings beyond the shared ones
  * come out as [settings]; Sony earbuds and headphones through a [SonySession], Bose's through a
- * [BoseSession], JBL's through a [JblSession], over Bluetooth LE ([GattLink]) for most of them.
- * [context] opens LE connections.
+ * [BoseSession], JBL's through a [JblSession], over Bluetooth LE ([GattLink]) for most of them, and
+ * AirPods and Apple-chip Beats through an [AppleSession] over L2CAP ([AppleLink]). [context] opens LE
+ * connections.
  */
 class EarbudsConnection(
     private val scope: CoroutineScope,
@@ -170,6 +177,11 @@ class EarbudsConnection(
     /** The JBL session, while connected to JBL headphones or earbuds; for the device report. */
     val jblSession: JblSession? get() = jbl
 
+    private var apple: AppleSession? = null   // set while connected to AirPods or Beats
+
+    /** The Apple session, while connected to AirPods or Beats; for the device report. */
+    val appleSession: AppleSession? get() = apple
+
     private val _sonyEq = MutableStateFlow<SonyEq?>(null)
 
     /** The Sony equalizer as the earbuds last reported it; the Sound tab follows it. */
@@ -191,6 +203,7 @@ class EarbudsConnection(
         sony = null
         bose = null
         jbl = null
+        apple = null
         _sonyEq.value = null
         _settings.value = emptyList()
         _samsungStatus.value = null
@@ -218,6 +231,10 @@ class EarbudsConnection(
                     return@launch
                 } catch (e: IOException) {
                     log?.invoke("could not open: ${e.message}")
+                    if (e is NeedsNewerAndroid && !everOpen) {
+                        fail(token, device, LinkStatus.Reason.NEEDS_NEWER_ANDROID)
+                        return@launch
+                    }
                     if (everOpen && retries < RECONNECT_DELAYS_MS.size) {
                         delay(RECONNECT_DELAYS_MS[retries++])
                         continue
@@ -238,6 +255,7 @@ class EarbudsConnection(
                     Brand.SONY -> serveSony(opened, device)
                     Brand.BOSE -> serveBose(opened)
                     Brand.JBL -> serveJbl(opened, device)
+                    Brand.APPLE -> serveApple(opened)
                     Brand.SOUNDPEATS -> serve(opened, device)
                 }
                 log?.invoke("closed")
@@ -262,6 +280,7 @@ class EarbudsConnection(
      */
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private suspend fun open(remote: BluetoothDevice, device: Paired): ControlLink {
+        if (device.brand == Brand.APPLE) return openApple(remote)
         val model = if (device.brand == Brand.JBL) JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } else null
         val ctx = context
         if (model?.gatt != true || ctx == null) return SppLink(remote, log, device.service ?: Wire.SPP_UUID).also { link = it }.apply { connect() }
@@ -278,6 +297,21 @@ class EarbudsConnection(
 
     /** JBL earbuds that need an LE scan, which the user has not allowed. */
     private class ScanNotAllowed : IOException("scan not allowed")
+
+    /**
+     * AirPods' channel over L2CAP, on phones whose Bluetooth stack opens it ([AppleSupport]). On the others
+     * it is not tried: what a refused channel does to the AirPods' sound there is not known, and the user
+     * is told Android 17 is needed instead, as the owner chose (2026-10-15) and as LibrePods does by default.
+     */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private suspend fun openApple(remote: BluetoothDevice): ControlLink {
+        if (!AppleSupport.opensChannel()) throw NeedsNewerAndroid()
+        val a = adapter ?: throw IOException("no Bluetooth adapter")
+        return AppleLink(a, remote, log).also { link = it }.apply { connect() }
+    }
+
+    /** AirPods on a phone whose Bluetooth stack LibrePods' list does not include. */
+    private class NeedsNewerAndroid : IOException("needs Android 17")
 
     /** Asks for everything, reads the battery now and then, and applies every reply until the channel closes. */
     private suspend fun serve(opened: ControlLink, device: Paired) = coroutineScope {
@@ -534,6 +568,59 @@ class EarbudsConnection(
         if (jblQueue === queue) jblQueue = null
     }
 
+    /**
+     * AirPods and Apple-chip Beats: the handshake, the feature flags and the notification request, 200 ms
+     * apart and once more 5 s later, as LibrePods sends them (docs/apple/PROTOCOL.md section 3). The AirPods
+     * then send their battery and settings, and every change, as it happens; nothing is polled.
+     */
+    private suspend fun serveApple(opened: ControlLink) = coroutineScope {
+        val session = AppleSession()
+        apple = session
+        val opening = launch {
+            try {
+                repeat(APPLE_OPENING_ROUNDS) { round ->
+                    if (round > 0) delay(APPLE_AGAIN_MS)
+                    for (frame in session.start()) {
+                        if (session.allowed(frame)) opened.send(frame)
+                        delay(APPLE_GAP_MS)
+                    }
+                }
+            } catch (_: IOException) {
+                // the channel closed; the reader below notices too
+            }
+        }
+        try {
+            opened.reads().collect { bytes ->
+                // The information packet carries serial numbers: keep them out of the log.
+                val packet = AapPacket.parse(bytes)
+                log?.invoke(if (packet?.opcode == AppleOpcode.INFORMATION) "recv information (${bytes.size} bytes)" else "recv ${bytes.joinToString("") { "%02x".format(it) }}")
+                if (session.receive(bytes)) publish(session)
+            }
+        } catch (_: IOException) {
+        }
+        opening.cancel()
+    }
+
+    private fun publish(session: AppleSession) {
+        _state.value = session.state
+        _settings.value = session.groups
+    }
+
+    /** Sends AirPods packets on the open channel. False when there is none. */
+    private fun sendApple(session: AppleSession, packets: List<AapPacket>): Boolean {
+        if (_status.value !is LinkStatus.Connected) return false
+        val s = this.session ?: return false
+        val l = link ?: return false
+        s.launch {
+            try {
+                for (p in packets) if (session.allowed(p.bytes())) l.send(p.bytes())
+            } catch (_: IOException) {
+                // the channel closed; the reader notices and reports it
+            }
+        }
+        return true
+    }
+
     private fun publish(session: JblSession) {
         _state.value = session.state
         _settings.value = session.groups
@@ -580,6 +667,11 @@ class EarbudsConnection(
 
     /** Changes one of the [settings]: it shows at once, and the earbuds' acknowledgement or next state confirms it. */
     fun changeSetting(change: SettingChange) {
+        apple?.let { session ->
+            val packets = session.change(change) ?: return
+            if (sendApple(session, packets)) publish(session)
+            return
+        }
         jbl?.let { session ->
             val packets = session.change(change) ?: return
             if (sendJbl(session, packets)) publish(session)
@@ -613,6 +705,11 @@ class EarbudsConnection(
     fun set(command: Command, vararg payload: Int) {
         // Bose's settings are all brand rows (changeSetting); nothing of the shared commands goes to them.
         if (bose != null) return
+        apple?.let { session ->
+            val packets = session.set(command, payload.singleOrNull() ?: return) ?: return
+            if (sendApple(session, packets)) publish(session)
+            return
+        }
         jbl?.let { session ->
             val packets = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (sendJbl(session, packets)) publish(session)
@@ -646,7 +743,7 @@ class EarbudsConnection(
      */
     fun sendEq(frames: List<ByteArray>) {
         if (_status.value !is LinkStatus.Connected) return
-        if (bose != null || jbl != null) return
+        if (bose != null || jbl != null || apple != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
@@ -679,7 +776,7 @@ class EarbudsConnection(
             if (send(session.frames(packets), then = null)) publish(session)
             return
         }
-        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -708,7 +805,7 @@ class EarbudsConnection(
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -767,6 +864,7 @@ class EarbudsConnection(
         boseQueue = null
         jbl = null
         jblQueue = null
+        apple = null
         session?.cancel()
         session = null
         _status.value = LinkStatus.Idle
@@ -816,6 +914,13 @@ class EarbudsConnection(
 
         /** How long a JBL command waits for the earbuds before the next goes, as JBL's app waits (HandleSend). */
         const val JBL_REPLY_MS = 1_000L
+
+        /** LibrePods leaves 200 ms between its opening frames ... */
+        const val APPLE_GAP_MS = 200L
+
+        /** ... and sends them again 5 s later. */
+        const val APPLE_AGAIN_MS = 5_000L
+        private const val APPLE_OPENING_ROUNDS = 2
 
         /** ANC mode "off" (data/soundpeats/commands.json). */
         private val ANC_OFF = Command.ANC_MODE.labels.entries.first { it.value == "off" }.key

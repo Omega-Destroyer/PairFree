@@ -430,6 +430,28 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 }
             }
         }
+        connection.appleSession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Brand:           Apple (AirPods or Beats)")
+                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (model number ${session.modelNumber ?: "unknown"})")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})")
+                appendLine("Captured:        $date")
+                appendLine()
+                appendLine("Battery (count, then component, 01, level, status, 01 each), as hex:")
+                appendLine("  ${session.batteryData?.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') } ?: "none yet"}")
+                appendLine("Settings the AirPods reported (control command id: value, as hex):")
+                session.controls.forEach { (id, value) ->
+                    appendLine("  %02x: %s".format(id, value.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }))
+                }
+            }
+        }
         connection.jblSession?.let { session ->
             return buildString {
                 appendLine("PairFree device report")

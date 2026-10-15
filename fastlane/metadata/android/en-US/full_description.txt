@@ -15,7 +15,8 @@ Supported brands:
 
 • SOUNDPEATS: tried on the H3 and Air5 Pro+. Other models use the same protocol and should work
 • Soundcore (Anker): 39 models, tried on the Space A40. Built on the open-source OpenSCQ30
-• Samsung Galaxy Buds: 13 models, from the 2019 Buds to the Buds4 Pro, not yet tried on real earbuds. Built on the open-source GalaxyBudsClient
+• Samsung Galaxy Buds: 16 models, from the 2019 Buds to the Buds4 Pro, not yet tried on real earbuds. Built on the open-source GalaxyBudsClient and Samsung's own plugin
+• Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6, WF-1000XM5 and LinkBuds, not yet tried on real headphones. Written from Sony's own app and checked against the open-source Gadgetbridge
 
 What it controls, on the models that have each:
 
@@ -25,11 +26,11 @@ What it controls, on the models that have each:
 • Touch controls: what each tap and hold does on each earbud, and turning touch off
 • Game mode, two devices at once, LDAC and LE Audio
 • The ear tip fit test, find my earbuds, voice prompts and water drain
-• Settings only one brand has, such as each Galaxy Bud's ambient sound level, or voice detect
+• Settings only one brand has, such as each Galaxy Bud's ambient sound level, voice detect, or Sony's speak-to-chat and DSEE upscaling
 • A status notification with the battery and buttons for noise control and game mode, in place of Google's Fast Pair notification if you like
 
 PairFree shows only what your earbuds support. If your model has not been tried, the Device tab copies a device report you can send, so it can be added for everyone. Record from the official app goes further: it reads, on your phone, what the brand's own app sends to your earbuds when you change a setting (and on SOUNDPEATS earbuds the equalizer curves), so PairFree can learn to do the same. It keeps nothing but the messages exchanged with your earbuds, and the report it makes masks their address and serial number.
 
 Close the brand's own app before using PairFree: only one app can control the earbuds at a time.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker or Samsung.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung or Sony.

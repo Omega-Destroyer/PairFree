@@ -106,7 +106,8 @@ private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) 
 }
 
 /** The slider's centre for levels that run from one side to the other, such as balance. */
-private fun levelOrigin(setting: Setting.Level): Int = if (setting.key == "balance") (setting.min + setting.max) / 2 else setting.min
+private fun levelOrigin(setting: Setting.Level): Int =
+    if (setting.key == "balance" || setting.key == "clear_bass") (setting.min + setting.max) / 2 else setting.min
 
 private const val SEND_AFTER_MS = 300L
 
@@ -169,6 +170,12 @@ private fun settingTitle(key: String): String = when (key) {
     "siren_detect" -> stringResource(R.string.setting_siren_detect)
     "adaptive_volume" -> stringResource(R.string.setting_adaptive_volume)
     "conversation_boost" -> stringResource(R.string.setting_conversation_boost)
+    "wind_reduction" -> stringResource(R.string.setting_wind_reduction)
+    "speak_to_chat" -> stringResource(R.string.setting_speak_to_chat)
+    "clear_bass" -> stringResource(R.string.setting_clear_bass)
+    "dsee" -> stringResource(R.string.setting_dsee)
+    "pause_taken_off" -> stringResource(R.string.setting_pause_taken_off)
+    "voice_guidance" -> stringResource(R.string.setting_voice_guidance)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
     else -> key
@@ -186,6 +193,9 @@ private fun settingNote(key: String): String? = when (key) {
     "sidetone" -> stringResource(R.string.setting_sidetone_note)
     "call_path" -> stringResource(R.string.setting_call_path_note)
     "seamless_connection" -> stringResource(R.string.setting_seamless_connection_note)
+    "wind_reduction" -> stringResource(R.string.setting_wind_reduction_note)
+    "speak_to_chat" -> stringResource(R.string.setting_speak_to_chat_note)
+    "dsee" -> stringResource(R.string.setting_dsee_note)
     else -> null
 }
 
@@ -228,6 +238,7 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
             else -> stringResource(R.string.setting_balance_middle)
         }
     }
+    "clear_bass" -> if (value > 0) "+$value" else value.toString()
     "ambient_custom_tone" -> when (value - max / 2) {
         -2 -> stringResource(R.string.setting_tone_softer)
         -1 -> stringResource(R.string.setting_tone_soft)

@@ -1,0 +1,30 @@
+{
+  "_about": "Sony earbuds and headphones PairFree recognises by their Bluetooth name. The earbuds say themselves what they have (functions.json), so this table only names the models and says what each is. names are matched within the Bluetooth name, longest first, case aside; a name starting with LE_ is the earbuds' LE Audio side and is left out. kind is earbuds, headphones or neckband. table_set is the table set the model answered with in Gadgetbridge's notes (its first reply: 4 bytes for set 1, 8 for set 2), or null where nobody has written it down; first_reply is that reply. source: gadgetbridge for Gadgetbridge's Sony support (codeberg.org/Freeyourgadget/Gadgetbridge, AGPL-3.0, facts only, at the commit below), sony_app for the names Sony's own app (com.sony.songpal.mdr 13.3.0) knows. reports lists device reports under data/sony/reports.",
+  "gadgetbridge_commit": "53e478e5fe6265edbf9776a522fd1e93fadd708c",
+  "devices": [
+    {"name": "WH-1000XM2", "names": ["WH-1000XM2"], "kind": "headphones", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WH-1000XM3", "names": ["WH-1000XM3"], "kind": "headphones", "table_set": 1, "first_reply": "01 00 40 10", "source": "gadgetbridge"},
+    {"name": "WH-1000XM4", "names": ["WH-1000XM4"], "kind": "headphones", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WH-1000XM5", "names": ["WH-1000XM5"], "kind": "headphones", "table_set": 2, "first_reply": "01 00 03 00 00 00 00 00", "source": "gadgetbridge"},
+    {"name": "WH-1000XM6", "names": ["WH-1000XM6"], "kind": "headphones", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WH-CH720N", "names": ["WH-CH720N"], "kind": "headphones", "table_set": null, "source": "gadgetbridge"},
+    {"name": "ULT WEAR", "names": ["ULT WEAR", "Sony ULT"], "kind": "headphones", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WF-1000XM3", "names": ["WF-1000XM3"], "kind": "earbuds", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WF-1000XM4", "names": ["WF-1000XM4"], "kind": "earbuds", "table_set": 2, "first_reply": "01 00 01 00 00 00 00 00", "source": "gadgetbridge"},
+    {"name": "WF-1000XM5", "names": ["WF-1000XM5"], "kind": "earbuds", "table_set": 2, "first_reply": "01 00 03 00 10 04 00 00", "source": "gadgetbridge"},
+    {"name": "WF-1000XM6", "names": ["WF-1000XM6"], "kind": "earbuds", "table_set": null, "source": "sony_app"},
+    {"name": "WF-SP800N", "names": ["WF-SP800N"], "kind": "earbuds", "table_set": 1, "first_reply": "01 00 70 00", "source": "gadgetbridge"},
+    {"name": "WF-C500", "names": ["WF-C500"], "kind": "earbuds", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WF-C510", "names": ["WF-C510"], "kind": "earbuds", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WF-C700N", "names": ["WF-C700N"], "kind": "earbuds", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WF-C710N", "names": ["WF-C710N"], "kind": "earbuds", "table_set": null, "source": "gadgetbridge"},
+    {"name": "LinkBuds", "names": ["LinkBuds"], "kind": "earbuds", "table_set": 2, "first_reply": "01 00 02 00 10 00 00 00", "source": "gadgetbridge"},
+    {"name": "LinkBuds S", "names": ["LinkBuds S"], "kind": "earbuds", "table_set": 2, "first_reply": "01 00 03 00 00 07 00 00", "source": "gadgetbridge"},
+    {"name": "LinkBuds UC", "names": ["LinkBuds UC"], "kind": "earbuds", "table_set": null, "source": "sony_app"},
+    {"name": "LinkBuds Open", "names": ["LinkBuds Open"], "kind": "earbuds", "table_set": null, "source": "sony_app"},
+    {"name": "LinkBuds Fit", "names": ["LinkBuds Fit"], "kind": "earbuds", "table_set": null, "source": "sony_app"},
+    {"name": "LinkBuds Clip", "names": ["LinkBuds Clip"], "kind": "earbuds", "table_set": null, "source": "sony_app"},
+    {"name": "WI-C100", "names": ["WI-C100"], "kind": "neckband", "table_set": null, "source": "gadgetbridge"},
+    {"name": "WI-SP600N", "names": ["WI-SP600N"], "kind": "neckband", "table_set": 1, "first_reply": "01 00 40 10", "source": "gadgetbridge"}
+  ]
+}

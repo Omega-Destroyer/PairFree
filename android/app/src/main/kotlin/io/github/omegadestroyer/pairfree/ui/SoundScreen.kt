@@ -57,6 +57,7 @@ import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqProfile
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
@@ -207,6 +208,7 @@ internal fun SoundScreen(
         }
         message?.let { Text(stringResource(it), style = Studio.type.small, color = Studio.colors.secondaryText) }
         val note = when {
+            eq.target is SonyEqTarget -> R.string.eq_note_sony
             !eq.target.presetCurves -> R.string.eq_note_samsung
             eq.target.reportsEq -> R.string.eq_note_reported
             else -> R.string.eq_note

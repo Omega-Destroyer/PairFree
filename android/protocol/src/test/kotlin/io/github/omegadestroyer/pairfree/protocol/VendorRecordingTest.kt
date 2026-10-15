@@ -2,6 +2,8 @@ package io.github.omegadestroyer.pairfree.protocol
 
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungMessage
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungPacket
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyFrame
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyWire
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreCommand
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcorePacket
 import kotlinx.serialization.json.Json
@@ -14,7 +16,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 
-/** Soundcore and Galaxy Buds traffic in a snoop log built here: found, matched to its connection, and shown without personal data. */
+/** Soundcore, Galaxy Buds and Sony traffic in a snoop log built here: found, matched to its connection, and shown without personal data. */
 class VendorRecordingTest {
     private val t0 = 1_760_000_000_000_000L
     private val address = "AA:BB:CC:DD:EE:F1"
@@ -99,6 +101,29 @@ class VendorRecordingTest {
         val compact = VendorRecording.lines(earbuds, compact = true)
         assertTrue(compact[0].startsWith("0.000 buds  97 "), compact[0])
         assertEquals(listOf("0.100 app 136 01 02 22", "0.400 app 120 02"), compact.drop(1))
+    }
+
+    @Test
+    fun findsSonyMessagesAndLearnsTheTableSet() {
+        val log = SnoopLog()
+        log.connected(t0, 0x0D, addressBytes)
+        // Sony's app asks for the protocol; the earbuds acknowledge, then answer with set 2's 8 bytes.
+        log.rfcomm(t0 + 100_000, false, 0x0D, dlci = 8, SonyFrame.build(SonyWire.TABLE1, 0, "0000".hexBytes()))
+        log.rfcomm(t0 + 120_000, true, 0x0D, 8, SonyFrame.ack(0))
+        log.rfcomm(t0 + 150_000, true, 0x0D, 8, SonyFrame.build(SonyWire.TABLE1, 0, "0100030000000000".hexBytes()))
+        // Then a set 2 battery request (22), which set 1 numbers as power off, and a noise control change.
+        log.rfcomm(t0 + 200_000, false, 0x0D, 8, SonyFrame.build(SonyWire.TABLE1, 1, "2201".hexBytes()))
+        log.rfcomm(t0 + 900_000, false, 0x0D, 8, SonyFrame.build(SonyWire.TABLE1, 0, "681701010000 0c".replace(" ", "").hexBytes()))
+
+        val packets = SnoopScanner().apply { feed(log.bytes()) }.packets()
+        assertEquals(4, packets.size, "the acknowledgement carries nothing")
+        val earbuds = VendorRecording.of(packets).single()
+        assertEquals(RecordedBrand.SONY, earbuds.brand)
+        val lines = VendorRecording.lines(earbuds)
+        assertTrue(lines[1].contains("app  1.00 connect_get_protocol_info"), "a name both sets share: ${lines[1]}")
+        assertTrue(lines.any { it.contains("1.22 power_get_status") && it.endsWith(" 01") }, lines.joinToString("\n"))
+        assertTrue(lines.last().contains("1.68 ncasm_set_param") && lines.last().endsWith("17 01 01 00 00 0c"), lines.last())
+        assertEquals(listOf("connect_get_protocol_info" to 1, "power_get_status" to 1, "ncasm_set_param" to 1), earbuds.sent)
     }
 
     @Test

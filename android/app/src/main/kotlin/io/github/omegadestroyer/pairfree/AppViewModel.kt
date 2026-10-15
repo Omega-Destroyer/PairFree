@@ -17,6 +17,7 @@ import io.github.omegadestroyer.pairfree.capture.Capture
 import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
+import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
 import io.github.omegadestroyer.pairfree.protocol.Command
@@ -32,6 +33,9 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyEq
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyFunction
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
@@ -86,6 +90,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
      * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
      */
     fun openEqualizer(device: Paired, model: Model?) {
+        if (device.brand == Brand.SONY) {
+            soundcoreEq = null
+            samsungEq = null
+            openSonyEq(device, model)
+            return
+        }
+        sonyEq = null
         if (device.brand == Brand.SAMSUNG) {
             soundcoreEq = null
             val target = SamsungModels.of(device.model)?.let { SamsungEqTarget(it, connection.samsungEqCurves.value) }
@@ -105,6 +116,39 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         soundcoreEq = target
         equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
         connection.soundcoreState.value?.let(::reportEq)
+    }
+
+    /** The Sony EQ while the Sound tab shows Sony earbuds, with the EQ and the earbuds it was opened for. */
+    private var sonyEq: Triple<SonyEqTarget, SonyEq, String>? = null
+
+    /**
+     * Sony earbuds list their presets and bands as they answer; the Sound tab opens once they have, and
+     * again if what they listed changes. Until then it shows no EQ.
+     */
+    private fun openSonyEq(device: Paired, model: Model?) {
+        val session = connection.sonySession
+        val eq = connection.sonyEq.value
+        if (session == null || eq == null || eq.steps == null || eq.bands == null) {
+            sonyEq = null
+            equalizer.open(device.address, null)
+            return
+        }
+        // The same earbuds, connection and layout: the screen stays as it is, and follows their reports.
+        sonyEq?.let { (target, shape, address) ->
+            val same = address == device.address && target.session === session &&
+                shape.presets == eq.presets && shape.bands == eq.bands && shape.steps == eq.steps
+            if (same && equalizer.state.value != null) return
+        }
+        val target = SonyEqTarget(session, eq)
+        sonyEq = Triple(target, eq, device.address)
+        // A layout of its own per band set, so profiles saved for one model's bands stay with it.
+        equalizer.open(device.address, model, target.layout, target)
+        reportSonyEq(eq)
+    }
+
+    private fun reportSonyEq(eq: SonyEq) {
+        val (profile, gains) = sonyEq?.first?.reported(eq) ?: return
+        equalizer.reported(profile, gains)
     }
 
     private fun reportEq(state: SoundcoreState) {
@@ -147,6 +191,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             }
         }
         viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
+        // Sony earbuds tell their EQ bit by bit: open it once they have, then follow what they hold.
+        viewModelScope.launch {
+            connection.sonyEq.collect { eq ->
+                val device = connectedDevice() ?: return@collect
+                if (device.brand != Brand.SONY || eq == null) return@collect
+                openSonyEq(device, modelOf(device, connection.state.value))
+                reportSonyEq(eq)
+            }
+        }
     }
 
     private val statusSettings = StatusSettings(prefs)
@@ -354,6 +407,32 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 session.status?.values?.forEach { (k, v) -> appendLine("  $k = $v") }
             }
         }
+        connection.sonySession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Brand:           Sony")
+                appendLine("Model:           ${session.modelName ?: session.model?.name ?: "unknown"}")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("Table set:       ${session.tableSet} (service ${device?.service ?: "unknown"})")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine()
+                val names = if (session.tableSet == 1) SonyFunction.Set1.NAMES else SonyFunction.Set2.NAMES
+                appendLine("Functions the earbuds list (data/sony/functions.json):")
+                session.functions.sorted().forEach { appendLine("  %02x %s".format(it, names[it] ?: "unknown")) }
+                appendLine()
+                appendLine("The last message of each kind they sent (table, command, type: payload as hex):")
+                session.replies.forEach { (key, payload) ->
+                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
+                }
+            }
+        }
         connection.soundcoreSession?.let { session ->
             return buildString {
                 appendLine("PairFree device report")
@@ -458,11 +537,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val model = when (earbuds.brand) {
             RecordedBrand.SOUNDCORE -> SoundcoreModels.model(code)
             RecordedBrand.SAMSUNG -> SamsungModels.model(code)
+            RecordedBrand.SONY -> code?.let { SonyModels.model(it) }
         }
-        if (model != null) return "${model.names.first()} (${model.code})"
+        // Sony models are known by their name alone, which is also their code.
+        if (model != null) return if (model.names.first() == model.code) model.code else "${model.names.first()} (${model.code})"
         return when (earbuds.brand) {
             RecordedBrand.SOUNDCORE -> "Soundcore earbuds (model not matched)"
             RecordedBrand.SAMSUNG -> "Galaxy Buds (model not matched)"
+            RecordedBrand.SONY -> "Sony earbuds or headphones (model not matched)"
         }
     }
 

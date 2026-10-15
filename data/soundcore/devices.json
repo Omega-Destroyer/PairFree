@@ -1331,6 +1331,7 @@
       "names": [
         "Soundcore Space A40"
       ],
+      "fast_pair": true,
       "openscq30": {
         "module": "a3936",
         "features": [

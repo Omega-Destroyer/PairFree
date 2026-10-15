@@ -11,6 +11,7 @@
 
     <!-- Nothing leaves the phone except files the user exports: no cloud backup or device transfer. -->
     <application
+        android:name=".PairFreeApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"

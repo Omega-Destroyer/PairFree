@@ -374,8 +374,15 @@ Proposed, not yet reviewed by the owner.
 - Shown while supported earbuds are connected (`status/StatusService.kt`, a connected-device
   foreground service holding the channel), with their name, battery for left, case and right
   (percent, or steps such as 3/5), and the noise mode.
-- Buttons: Next noise mode (off, cancelling, transparency, round again) and Turn game mode on
-  or off, each only on earbuds that have it. 3D sound joins them once the app sets it.
+- Buttons, each only on earbuds that have it: the noise mode, which steps to the next (off,
+  cancelling, transparency, round again), and game mode. They are real buttons in the
+  notification's own layout, so the noise mode works even while the notification is
+  collapsed, where Android hides ordinary action buttons (owner's test on One UI 8,
+  2026-10-14); expanded, game mode joins it. Tapping elsewhere opens PairFree. 3D sound joins
+  them once the app sets it.
+- Android 14 and later let the user swipe away any app's notification while the phone is
+  unlocked, a foreground service's included. While the earbuds stay connected PairFree puts
+  it straight back (owner, 2026-10-14); None on the Device tab is the way to be rid of it.
 - A choice per pair of earbuds on the Device tab, Status notification: PairFree, Fast Pair
   or None. Fast Pair shows only on earbuds that have it; elsewhere there are two choices.
   PairFree replaces Google's Fast Pair notification as far as Android allows: no app can

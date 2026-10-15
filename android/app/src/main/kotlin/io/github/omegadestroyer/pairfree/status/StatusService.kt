@@ -12,6 +12,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.IBinder
+import android.view.View
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
@@ -56,6 +58,7 @@ class StatusService : Service() {
             ACTION_SHOW -> show(intent.getStringExtra(EXTRA_ADDRESS))
             ACTION_NEXT_NOISE -> nextNoise()
             ACTION_GAME_MODE -> toggleGameMode()
+            ACTION_DISMISSED -> putBack()
             ACTION_STOP -> {
                 val address = intent.getStringExtra(EXTRA_ADDRESS)
                 if (address == null || address == device?.address) stop() else if (device == null) stop()
@@ -130,6 +133,24 @@ class StatusService : Service() {
         }
     }
 
+    /**
+     * Android 14 and later let the user swipe away even a foreground service's notification
+     * while the phone is unlocked; the earbuds are still connected, so it comes straight back
+     * (owner, 2026-10-14). Choosing None on the Device tab is how to be rid of it.
+     */
+    @SuppressLint("MissingPermission") // canNotify checks the notification permission
+    private fun putBack() {
+        val earbuds = device ?: return
+        scope.launch {
+            delay(PUT_BACK_MS)
+            if (device != earbuds || !canNotify(this@StatusService)) return@launch
+            val hub = hub
+            val notification = StatusNotification.build(this@StatusService, earbuds, hub.connection.state.value, hub.connection.status.value)
+            shown = key(notification)
+            NotificationManagerCompat.from(this@StatusService).notify(NOTIFICATION_ID, notification)
+        }
+    }
+
     /** Off, cancelling, transparency, and round again, in the order the Home tab shows them. */
     private fun nextNoise() {
         val connection = hub.connection
@@ -168,6 +189,10 @@ class StatusService : Service() {
         private const val ACTION_STOP = "io.github.omegadestroyer.pairfree.status.STOP"
         internal const val ACTION_NEXT_NOISE = "io.github.omegadestroyer.pairfree.status.NEXT_NOISE"
         internal const val ACTION_GAME_MODE = "io.github.omegadestroyer.pairfree.status.GAME_MODE"
+        internal const val ACTION_DISMISSED = "io.github.omegadestroyer.pairfree.status.DISMISSED"
+
+        /** Long enough for the swipe to finish before the notification comes back. */
+        private const val PUT_BACK_MS = 600L
         private const val EXTRA_ADDRESS = "address"
 
         /** Earbuds can take a few seconds after connecting before their control channel opens. */
@@ -236,31 +261,74 @@ class ConnectionReceiver : BroadcastReceiver() {
 
 /** The status notification's look: the earbuds' name, their battery and noise mode, and the buttons they have. */
 internal object StatusNotification {
+    /**
+     * The notification for [device] in [state]. Its own layout puts the noise mode on a real
+     * button even while the notification is collapsed, where Android hides action buttons:
+     * tapping it steps to the next mode. Expanded, game mode has a button too. Tapping
+     * elsewhere opens PairFree.
+     */
     fun build(context: Context, device: Paired?, state: EarbudState, status: LinkStatus): Notification = with(context) {
-        val text = when (status) {
-            is LinkStatus.Connected -> listOfNotNull(batteryLine(state), noiseName(state)).joinToString("  ·  ").ifEmpty { getString(R.string.status_connected) }
+        val title = device?.name ?: getString(R.string.app_name)
+        val connected = status is LinkStatus.Connected
+        val line = when (status) {
+            is LinkStatus.Connected -> batteryLine(state) ?: getString(R.string.status_connected)
             is LinkStatus.Reconnecting -> getString(R.string.status_reconnecting)
             else -> getString(R.string.status_connecting)
         }
+        val noise = noiseName(state)?.takeIf { connected && state.supports(Command.ANC_MODE) }
+        val game = state.switch(Command.GAME_MODE)?.takeIf { connected }
+        val nextNoise = action(context, StatusService.ACTION_NEXT_NOISE)
+        val toggleGame = action(context, StatusService.ACTION_GAME_MODE)
+
+        val small = RemoteViews(packageName, R.layout.status_notification).apply {
+            setTextViewText(R.id.status_title, title)
+            setTextViewText(R.id.status_battery, line)
+            noiseButton(this, noise, nextNoise, noise ?: "")
+        }
+        val big = RemoteViews(packageName, R.layout.status_notification_big).apply {
+            setTextViewText(R.id.status_title, title)
+            setTextViewText(R.id.status_battery, line)
+            noiseButton(this, noise, nextNoise, getString(R.string.status_noise_button, noise ?: ""))
+            if (game == null) {
+                setViewVisibility(R.id.status_game, View.GONE)
+            } else {
+                setViewVisibility(R.id.status_game, View.VISIBLE)
+                setTextViewText(R.id.status_game, getString(if (game) R.string.status_game_is_on else R.string.status_game_is_off))
+                setOnClickPendingIntent(R.id.status_game, toggleGame)
+            }
+            setViewVisibility(R.id.status_buttons, if (noise == null && game == null) View.GONE else View.VISIBLE)
+        }
+
         val open = PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
-        val builder = NotificationCompat.Builder(context, StatusService.CHANNEL)
+        NotificationCompat.Builder(context, StatusService.CHANNEL)
             .setSmallIcon(R.drawable.ic_status)
-            .setContentTitle(device?.name ?: getString(R.string.app_name))
-            .setContentText(text)
+            // The plain title and text stay for screen readers, the lock screen and the status bar's summaries.
+            .setContentTitle(title)
+            .setContentText(listOfNotNull(line, noise).joinToString("  ·  "))
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(small)
+            .setCustomBigContentView(big)
             .setContentIntent(open)
+            .setDeleteIntent(action(context, StatusService.ACTION_DISMISSED))
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setSilent(true)
             .setShowWhen(false)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-        if (status is LinkStatus.Connected) {
-            if (state.supports(Command.ANC_MODE)) builder.addAction(0, getString(R.string.status_next_noise), action(context, StatusService.ACTION_NEXT_NOISE))
-            state.switch(Command.GAME_MODE)?.let { on ->
-                builder.addAction(0, getString(if (on) R.string.status_game_off else R.string.status_game_on), action(context, StatusService.ACTION_GAME_MODE))
-            }
+            .build()
+    }
+
+    /** The noise mode as a button that steps to the next mode, or nothing on earbuds without noise control. */
+    private fun Context.noiseButton(views: RemoteViews, noise: String?, next: PendingIntent, label: String) {
+        if (noise == null) {
+            views.setViewVisibility(R.id.status_noise, View.GONE)
+            return
         }
-        builder.build()
+        views.setViewVisibility(R.id.status_noise, View.VISIBLE)
+        views.setTextViewText(R.id.status_noise, label)
+        views.setContentDescription(R.id.status_noise, getString(R.string.status_noise_description, noise))
+        views.setOnClickPendingIntent(R.id.status_noise, next)
     }
 
     private fun action(context: Context, action: String): PendingIntent =

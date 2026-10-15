@@ -356,9 +356,10 @@
     <string name="status_connecting">Connecting…</string>
     <string name="status_reconnecting">Reconnecting…</string>
     <string name="status_connected">Connected</string>
-    <string name="status_next_noise">Next noise mode</string>
-    <string name="status_game_on">Turn on game mode</string>
-    <string name="status_game_off">Turn off game mode</string>
+    <string name="status_noise_button">Noise: %1$s</string>
+    <string name="status_noise_description">Noise control: %1$s. Tap for the next mode.</string>
+    <string name="status_game_is_on">Game mode: on</string>
+    <string name="status_game_is_off">Game mode: off</string>
     <string name="status_battery_left">L %1$s</string>
     <string name="status_battery_case">Case %1$s</string>
     <string name="status_battery_right">R %1$s</string>

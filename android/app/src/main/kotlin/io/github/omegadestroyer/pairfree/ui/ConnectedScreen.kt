@@ -56,6 +56,7 @@ import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
+import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
@@ -124,6 +125,7 @@ internal fun ConnectedScreen(
                     unavailableNote = when (device.brand) {
                         Brand.SOUNDCORE -> R.string.eq_soundcore_unchecked
                         Brand.SONY -> R.string.eq_sony_none
+                        Brand.BOSE -> R.string.eq_bose
                         else -> R.string.eq_unavailable
                     },
                 )
@@ -145,6 +147,8 @@ internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.
     Brand.SAMSUNG -> SamsungModels.model(device.model ?: state.firmware?.code)
     // Sony's by the model name the earbuds give, else their Bluetooth name; one battery is headphones.
     Brand.SONY -> SonyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
+    // Bose's by the product the device reports, which names the firmware line; before then, its name.
+    Brand.BOSE -> BoseModels.model(state.firmware?.code ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

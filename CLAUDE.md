@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker), Samsung Galaxy Buds and Sony are being added. The owner wants agents to do as much of the
+(Anker), Samsung Galaxy Buds, Sony and Bose are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Where the truth lives
@@ -31,7 +31,7 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 `tools/device_art/<brand>/`. App-wide documents stay at the top level. Each brand also has a page
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
-from one brand to another. So far: `soundpeats`, `soundcore`, `samsung` and `sony`.
+from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony` and `bose`.
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -107,6 +107,19 @@ from one brand to another. So far: `soundpeats`, `soundcore`, `samsung` and `son
   Set 2 writes on as 0 and off as 1 for its switches. After a change to `devices.json` run
   `python tools/gen_sony_table.py`. Never send `SonyCommand.*.NEVER_SEND` (firmware update, test,
   logs).
+- `docs/bose/PROTOCOL.md` is Bose's BMAP, read from Bose's own app (13.3.4, decompiled outside the
+  repo on 2026-10-14) and from bosectl (github.com/aaronsb/bosectl, aaronsb, MIT), which was tried
+  on seven Bose models; where they differ, Bose's app wins (multipoint's bits). No Bose model has
+  been tried with PairFree. BMAP packets have no start byte or checksum, so the reader splits by
+  the length byte, and `EarbudsConnection.serveBose` sends one request at a time, waiting for its
+  answer. Bose's cloud sign-in guards plain SET; PairFree writes only with SETGET (as Bose's app
+  does) and START, never signs in and never calls Bose's servers, and reads a setting again when
+  the device refuses a write. `data/bose/commands.json` (functions, operators, errors) and
+  `devices.json` (by product id, which the device reports) become `BoseFunction`, `BoseOperator`
+  and `BoseModels` through `generateBoseTables`; `BoseSession` maps replies to the screens. The
+  device report keeps only PairFree's own reads: unasked messages can hold other devices'
+  addresses. After a change to `devices.json` run `python tools/gen_bose_table.py`. Never send
+  `BoseFunction.NEVER_SEND` (firmware update, factory default, power, authentication).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

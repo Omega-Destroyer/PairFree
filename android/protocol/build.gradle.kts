@@ -616,11 +616,104 @@ val generateSonyTables = tasks.register<GenerateSonyTables>("generateSonyTables"
     outputDir = layout.buildDirectory.dir("generated/sony")
 }
 
+/** Writes Bose's BMAP functions and models from data/bose. */
+abstract class GenerateBoseTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String) + "\""
+        fun int(v: Any?) = (v as Number).toInt()
+        fun hex(v: Int, digits: Int) = "0x" + v.toString(16).uppercase().padStart(digits, '0')
+        // SettingsMultipoint -> SETTINGS_MULTIPOINT, ControlANROnly -> CONTROL_ANR_ONLY.
+        fun snake(name: String) = name.replace(Regex("([a-z0-9])([A-Z])"), "$1_$2").replace(Regex("([A-Z]+)([A-Z][a-z])"), "$1_$2").uppercase()
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/bose by the generateBoseTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val operators = commands.getValue("operators") as Map<String, Any?>
+        out.appendLine("/** BMAP operators (data/bose/commands.json), the low four bits of a packet's third byte. */")
+        out.appendLine("public object BoseOperator {")
+        for ((name, value) in operators) out.appendLine("    public const val ${name.uppercase()}: Int = ${int(value)}")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val blocks = commands.getValue("blocks") as List<Map<String, Any?>>
+        out.appendLine("/**")
+        out.appendLine(" * Bose's BMAP functions (data/bose/commands.json), each as its function block shifted left by 8 and its")
+        out.appendLine(" * function: [block] and [function] take them apart.")
+        out.appendLine(" */")
+        out.appendLine("public object BoseFunction {")
+        val seen = mutableSetOf<String>()
+        val all = mutableListOf<Triple<String, Int, Boolean>>()
+        for (b in blocks) {
+            @Suppress("UNCHECKED_CAST")
+            for (f in b.getValue("functions") as List<Map<String, Any?>>) {
+                val name = snake(f.getValue("name") as String)
+                check(seen.add(name)) { "two functions named $name" }
+                val id = (int(b["block"]) shl 8) or int(f["function"])
+                all += Triple(f.getValue("name") as String, id, f["never_send"] == true)
+                out.appendLine("    public const val $name: Int = ${hex(id, 4)}")
+            }
+        }
+        out.appendLine("    /** Functions PairFree never sends: firmware update, factory default, ship mode, reset, power and authentication. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${all.filter { it.third }.joinToString(", ") { hex(it.second, 4) }})")
+        out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${all.joinToString(", ") { "${hex(it.second, 4)} to ${str(it.first)}" }})")
+        out.appendLine("    public fun block(id: Int): Int = id shr 8")
+        out.appendLine("    public fun function(id: Int): Int = id and 0xFF")
+        out.appendLine("    public fun of(block: Int, function: Int): Int = (block shl 8) or function")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/bose/devices.json. */")
+        out.appendLine("internal val BOSE_MODELS: List<BoseModel> = listOf(")
+        for (d in devices) {
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headphones", "neckband" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            val id = (d.getValue("product_id") as String).toInt(16)
+            out.appendLine("    BoseModel(${hex(id, 4)}, ${str(d["name"])}, ${str(d["codename"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form),")
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("BoseTables.kt").writeText(out.toString())
+    }
+}
+
+val generateBoseTables = tasks.register<GenerateBoseTables>("generateBoseTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/bose/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/bose/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.bose"
+    outputDir = layout.buildDirectory.dir("generated/bose")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
     kotlin.srcDir(generateSoundcoreTables)
     kotlin.srcDir(generateSamsungTables)
     kotlin.srcDir(generateSonyTables)
+    kotlin.srcDir(generateBoseTables)
 }
 
 dependencies {
@@ -636,6 +729,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/soundcore")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/samsung")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/sony")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/bose")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

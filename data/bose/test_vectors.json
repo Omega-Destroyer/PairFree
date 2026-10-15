@@ -1,0 +1,21 @@
+{
+  "_about": "Replies from real Bose devices, from bosectl's captures and fixtures (github.com/aaronsb/bosectl, MIT, commit 70570b29c1d3c9ba775b08a29eaea72385de27b5): each function's payload as a GET answered it, and requests as bosectl's notes give them. qc_ultra2_headphones is the QC Ultra Headphones (2nd Gen), product 4082, firmware 8.2.20; qc_ultra2_earbuds_battery the QC Ultra Earbuds (2nd Gen) battery. Nothing that names or addresses the device is kept.",
+  "qc_ultra2_headphones": [
+    {"function": "0.3", "payload": "408201"},
+    {"function": "0.5", "payload": "382e322e32302b6733346366303239"},
+    {"function": "1.3", "payload": "41000081020000"},
+    {"function": "1.5", "payload": "0b0003"},
+    {"function": "1.7", "payload": "f60a0000f60afe01f60afa02"},
+    {"function": "1.10", "payload": "07"},
+    {"function": "1.11", "payload": "01020f"},
+    {"function": "1.24", "payload": "01"},
+    {"function": "1.27", "payload": "01"},
+    {"function": "2.2", "payload": "50ffff00"}
+  ],
+  "qc_ultra2_earbuds_battery": "3cffff013cffff023cffff0450ffff03",
+  "requests": [
+    {"what": "read the battery (GET 2.2)", "bytes": "02020100"},
+    {"what": "switch to mode 0, Quiet, without a voice prompt (START 31.3)", "bytes": "1f0305020000"},
+    {"what": "noise cancelling level 5, auto off, spatial off, wind block off, ANC on (SETGET 31.10)", "bytes": "1f0a02050500000001"}
+  ]
+}

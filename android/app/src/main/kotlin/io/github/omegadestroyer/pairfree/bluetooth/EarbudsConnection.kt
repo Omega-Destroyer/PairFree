@@ -18,6 +18,9 @@ import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungSession
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
+import io.github.omegadestroyer.pairfree.protocol.bose.BosePacket
+import io.github.omegadestroyer.pairfree.protocol.bose.BoseParser
+import io.github.omegadestroyer.pairfree.protocol.bose.BoseSession
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyEq
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyLink
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
@@ -47,7 +50,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
-enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY }
+enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
@@ -85,7 +88,8 @@ sealed interface LinkStatus {
  * Soundcore earbuds speak another protocol; a [SoundcoreSession] turns it into the same
  * [state] and turns [set] into Soundcore packets, so the screens work for both brands. Galaxy
  * Buds go through a [SamsungSession] the same way, and their settings beyond the shared ones
- * come out as [settings]; Sony earbuds and headphones through a [SonySession].
+ * come out as [settings]; Sony earbuds and headphones through a [SonySession], Bose's through a
+ * [BoseSession].
  */
 class EarbudsConnection(
     private val scope: CoroutineScope,
@@ -138,6 +142,12 @@ class EarbudsConnection(
     /** The Sony session, while connected to Sony earbuds or headphones; for the device report. */
     val sonySession: SonySession? get() = sony
 
+    private var bose: BoseSession? = null   // set while connected to Bose headphones or earbuds
+    private var boseQueue: Channel<BosePacket>? = null
+
+    /** The Bose session, while connected to Bose headphones or earbuds; for the device report. */
+    val boseSession: BoseSession? get() = bose
+
     private val _sonyEq = MutableStateFlow<SonyEq?>(null)
 
     /** The Sony equalizer as the earbuds last reported it; the Sound tab follows it. */
@@ -157,6 +167,7 @@ class EarbudsConnection(
         _soundcoreState.value = null
         samsung = null
         sony = null
+        bose = null
         _sonyEq.value = null
         _settings.value = emptyList()
         _samsungStatus.value = null
@@ -199,6 +210,7 @@ class EarbudsConnection(
                     Brand.SOUNDCORE -> serveSoundcore(opened, device)
                     Brand.SAMSUNG -> serveSamsung(opened, device)
                     Brand.SONY -> serveSony(opened, device)
+                    Brand.BOSE -> serveBose(opened)
                     Brand.SOUNDPEATS -> serve(opened, device)
                 }
                 log?.invoke("closed")
@@ -367,6 +379,61 @@ class EarbudsConnection(
         if (sonyQueue === queue) sonyQueue = null
     }
 
+    /**
+     * Bose headphones and earbuds: one request at a time, each waiting for its answer (or
+     * [BOSE_REPLY_MS]), as bosectl and Bose's app send them (docs/bose/PROTOCOL.md section 2). The
+     * device also sends changes made with its buttons as they happen.
+     */
+    private suspend fun serveBose(opened: SppLink) = coroutineScope {
+        val session = BoseSession()
+        bose = session
+        val queue = Channel<BosePacket>(Channel.UNLIMITED)
+        val answered = Channel<BosePacket>(Channel.UNLIMITED)
+        boseQueue = queue
+        val sender = launch {
+            try {
+                for (packet in queue) {
+                    if (!session.allowed(packet)) continue
+                    while (answered.tryReceive().isSuccess) Unit
+                    opened.send(packet.bytes())
+                    withTimeoutOrNull(BOSE_REPLY_MS) {
+                        while (!session.answers(packet, answered.receive())) Unit
+                    }
+                }
+            } catch (_: IOException) {
+                // the channel closed; the reader below notices too
+            }
+        }
+        session.start().forEach(queue::trySend)
+        val poll = launch {
+            while (true) {
+                delay(BATTERY_POLL_MS)
+                session.batteryRequests().forEach(queue::trySend)
+            }
+        }
+        try {
+            val parser = BoseParser()
+            opened.reads().collect { bytes ->
+                for (packet in parser.feed(bytes)) {
+                    log?.invoke("recv $packet")
+                    if (session.receive(packet)) publish(session)
+                    answered.trySend(packet)
+                    session.takeOutbox().forEach(queue::trySend)
+                }
+            }
+        } catch (_: IOException) {
+        }
+        poll.cancel()
+        sender.cancel()
+        queue.close()
+        if (boseQueue === queue) boseQueue = null
+    }
+
+    private fun publish(session: BoseSession) {
+        _state.value = session.state
+        _settings.value = session.groups
+    }
+
     private fun publish(session: SonySession) {
         _state.value = session.state
         _settings.value = session.groups
@@ -389,6 +456,14 @@ class EarbudsConnection(
 
     /** Changes one of the [settings]: it shows at once, and the earbuds' acknowledgement or next state confirms it. */
     fun changeSetting(change: SettingChange) {
+        bose?.let { session ->
+            val packets = session.change(change) ?: return
+            val queue = boseQueue ?: return
+            if (_status.value !is LinkStatus.Connected) return
+            packets.forEach(queue::trySend)
+            publish(session)
+            return
+        }
         sony?.let { session ->
             val outs = session.change(change) ?: return
             if (sendSony(outs)) publish(session)
@@ -407,6 +482,8 @@ class EarbudsConnection(
      * Buds as a Samsung message, which the earbuds acknowledge.
      */
     fun set(command: Command, vararg payload: Int) {
+        // Bose's settings are all brand rows (changeSetting); nothing of the shared commands goes to them.
+        if (bose != null) return
         sony?.let { session ->
             val outs = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (sendSony(outs)) publish(session)
@@ -435,6 +512,7 @@ class EarbudsConnection(
      */
     fun sendEq(frames: List<ByteArray>) {
         if (_status.value !is LinkStatus.Connected) return
+        if (bose != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
@@ -467,7 +545,7 @@ class EarbudsConnection(
             if (send(session.frames(packets), then = null)) publish(session)
             return
         }
-        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -496,7 +574,7 @@ class EarbudsConnection(
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -551,6 +629,8 @@ class EarbudsConnection(
         samsung = null
         sony = null
         sonyQueue = null
+        bose = null
+        boseQueue = null
         session?.cancel()
         session = null
         _status.value = LinkStatus.Idle
@@ -594,6 +674,9 @@ class EarbudsConnection(
 
         /** ... and sends it again at most this many times. */
         const val SONY_RESENDS = 10
+
+        /** How long a Bose request waits for its answer before the next goes; bosectl waits 2 s. */
+        const val BOSE_REPLY_MS = 2_000L
 
         /** ANC mode "off" (data/soundpeats/commands.json). */
         private val ANC_OFF = Command.ANC_MODE.labels.entries.first { it.value == "off" }.key

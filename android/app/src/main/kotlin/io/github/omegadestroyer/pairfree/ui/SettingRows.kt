@@ -107,7 +107,7 @@ private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) 
 
 /** The slider's centre for levels that run from one side to the other, such as balance. */
 private fun levelOrigin(setting: Setting.Level): Int =
-    if (setting.key == "balance" || setting.key == "clear_bass") (setting.min + setting.max) / 2 else setting.min
+    if (setting.key == "balance" || setting.key == "clear_bass" || setting.key.startsWith("eq_")) (setting.min + setting.max) / 2 else setting.min
 
 private const val SEND_AFTER_MS = 300L
 
@@ -176,6 +176,18 @@ private fun settingTitle(key: String): String = when (key) {
     "dsee" -> stringResource(R.string.setting_dsee)
     "pause_taken_off" -> stringResource(R.string.setting_pause_taken_off)
     "voice_guidance" -> stringResource(R.string.setting_voice_guidance)
+    "audio_mode" -> stringResource(R.string.setting_audio_mode)
+    "anr" -> stringResource(R.string.setting_anr)
+    "noise_level" -> stringResource(R.string.setting_noise_level)
+    "eq_bass" -> stringResource(R.string.setting_eq_bass)
+    "eq_low_mid" -> stringResource(R.string.setting_eq_low_mid)
+    "eq_mid" -> stringResource(R.string.setting_eq_mid)
+    "eq_high_mid" -> stringResource(R.string.setting_eq_high_mid)
+    "eq_treble" -> stringResource(R.string.setting_eq_treble)
+    "multipoint" -> stringResource(R.string.setting_multipoint)
+    "auto_answer" -> stringResource(R.string.setting_auto_answer)
+    "voice_prompts" -> stringResource(R.string.setting_voice_prompts)
+    "sidetone_level" -> stringResource(R.string.setting_sidetone)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
     else -> key
@@ -196,6 +208,7 @@ private fun settingNote(key: String): String? = when (key) {
     "wind_reduction" -> stringResource(R.string.setting_wind_reduction_note)
     "speak_to_chat" -> stringResource(R.string.setting_speak_to_chat_note)
     "dsee" -> stringResource(R.string.setting_dsee_note)
+    "noise_level" -> stringResource(R.string.setting_noise_level_note)
     else -> null
 }
 
@@ -203,6 +216,15 @@ private fun settingNote(key: String): String? = when (key) {
 private fun optionName(key: String, option: String): String = when {
     key == "anc_level" -> stringResource(if (option == "high") R.string.setting_anc_level_high else R.string.setting_anc_level_low)
     key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
+    key == "anr" || key == "sidetone_level" -> stringResource(
+        when (option) {
+            "off" -> R.string.setting_level_off
+            "low" -> R.string.setting_level_low
+            "medium" -> R.string.setting_level_medium
+            "wind" -> R.string.setting_anr_wind
+            else -> R.string.setting_level_high
+        },
+    )
     key.startsWith("hold_cycle") -> stringResource(
         when (option) {
             "anc_ambient" -> R.string.setting_cycle_anc_ambient
@@ -238,7 +260,7 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
             else -> stringResource(R.string.setting_balance_middle)
         }
     }
-    "clear_bass" -> if (value > 0) "+$value" else value.toString()
+    "clear_bass", "eq_bass", "eq_low_mid", "eq_mid", "eq_high_mid", "eq_treble" -> if (value > 0) "+$value" else value.toString()
     "ambient_custom_tone" -> when (value - max / 2) {
         -2 -> stringResource(R.string.setting_tone_softer)
         -1 -> stringResource(R.string.setting_tone_soft)

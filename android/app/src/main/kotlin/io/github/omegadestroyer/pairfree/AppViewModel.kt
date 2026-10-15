@@ -407,6 +407,29 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 session.status?.values?.forEach { (k, v) -> appendLine("  $k = $v") }
             }
         }
+        connection.boseSession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Brand:           Bose")
+                val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
+                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product $id, variant ${session.variant ?: "?"})")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine()
+                appendLine("The last message of each kind the device sent (block.function, operator: payload as hex;")
+                appendLine("operator 3 is a value, 4 an error, whose first byte says which):")
+                session.replies.forEach { (key, payload) ->
+                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
+                }
+            }
+        }
         connection.sonySession?.let { session ->
             return buildString {
                 appendLine("PairFree device report")

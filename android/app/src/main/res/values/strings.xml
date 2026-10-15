@@ -3,7 +3,7 @@
     <string name="app_name">PairFree</string>
 
     <string name="permission_title">Bluetooth access</string>
-    <string name="permission_body">PairFree talks to your earbuds over Bluetooth, and Android asks you to allow that. It is the only permission the app uses.</string>
+    <string name="permission_body">PairFree talks to your earbuds over Bluetooth, and Android asks you to allow that. Later it may ask for two more things, both only for its status notification and both optional: to show notifications, and to link PairFree to your earbuds so the notification can appear when they connect.</string>
     <string name="permission_allow">Allow Bluetooth access</string>
     <string name="permission_denied">Without Bluetooth access the app cannot reach your earbuds.</string>
     <string name="permission_settings">Open app settings</string>
@@ -345,7 +345,11 @@
     <string name="status_google_settings">Google\'s notification settings</string>
     <string name="status_needs_permission">Android does not let PairFree show notifications yet.</string>
     <string name="status_allow">Allow notifications</string>
-    <string name="status_link_note">To show it when the earbuds connect while PairFree is closed, Android asks once to let PairFree manage these earbuds.</string>
+    <string name="status_link_note">To show it when the earbuds connect while PairFree is closed, Android asks once to link PairFree to these earbuds. Its prompt says a linked app can sync information such as a caller\'s name; PairFree uses the link only to start this notification.</string>
+    <string name="status_link_title">Show it when the earbuds connect?</string>
+    <string name="status_link_body">Android starts PairFree\'s notification when these earbuds connect, with PairFree closed, only once PairFree is linked to them. Android\'s prompt that follows says a linked app can sync information such as a caller\'s name. PairFree uses the link only to start this notification, and it still has no internet access.</string>
+    <string name="status_link_continue">Continue</string>
+    <string name="status_link_later">Not now</string>
     <string name="status_link">Link PairFree to these earbuds</string>
     <string name="status_channel">Earbuds status</string>
     <string name="status_channel_description">The battery and noise control of the connected earbuds.</string>

@@ -9,12 +9,15 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.status.CompanionLink
@@ -59,8 +62,9 @@ internal fun StatusSection(status: StatusUi, actions: EarbudsActions) {
 
 /**
  * The first time earbuds connect with PairFree's notification chosen, asks Android for what it
- * needs, one prompt after the other: notifications, then the companion link. [onDone] gets each
- * prompt as it closes, whatever the answer.
+ * needs, one prompt after the other: notifications, then the companion link. Android's link
+ * prompt speaks of syncing a caller's name, so PairFree says first what it uses the link for.
+ * [onDone] gets each prompt as it closes, whatever the answer.
  */
 @Composable
 internal fun StatusPrompts(prompt: StatusPrompt?, address: String, onDone: (StatusPrompt) -> Unit) {
@@ -68,10 +72,20 @@ internal fun StatusPrompts(prompt: StatusPrompt?, address: String, onDone: (Stat
     val notify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { onDone(StatusPrompt.NOTIFICATIONS) }
     val link = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { onDone(StatusPrompt.LINK) }
     LaunchedEffect(prompt, address) {
-        when (prompt) {
-            StatusPrompt.NOTIFICATIONS -> if (!askNotifications(context) { notify.launch(it) }) onDone(StatusPrompt.NOTIFICATIONS)
-            StatusPrompt.LINK -> CompanionLink.associate(context, address, { link.launch(IntentSenderRequest.Builder(it).build()) }) { onDone(StatusPrompt.LINK) }
-            null -> Unit
+        if (prompt == StatusPrompt.NOTIFICATIONS && !askNotifications(context) { notify.launch(it) }) onDone(StatusPrompt.NOTIFICATIONS)
+    }
+    if (prompt == StatusPrompt.LINK) {
+        StudioDialog(stringResource(R.string.status_link_title), { onDone(StatusPrompt.LINK) }) {
+            Text(stringResource(R.string.status_link_body), color = Studio.colors.secondaryText)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                StudioButton(stringResource(R.string.status_link_later), { onDone(StatusPrompt.LINK) }, Modifier.weight(1f))
+                StudioButton(
+                    stringResource(R.string.status_link_continue),
+                    { CompanionLink.associate(context, address, { link.launch(IntentSenderRequest.Builder(it).build()) }) { onDone(StatusPrompt.LINK) } },
+                    Modifier.weight(1f),
+                    primary = true,
+                )
+            }
         }
     }
 }

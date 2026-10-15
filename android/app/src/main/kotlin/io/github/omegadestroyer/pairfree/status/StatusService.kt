@@ -65,22 +65,33 @@ class StatusService : Service() {
         return START_NOT_STICKY
     }
 
-    @SuppressLint("MissingPermission") // checked in show()
+    @SuppressLint("MissingPermission") // checked first
     private fun show(address: String?) {
         createChannel(this)
-        // Android wants the notification at once; it fills in as the earbuds answer.
-        ServiceCompat.startForeground(this, NOTIFICATION_ID, StatusNotification.build(this, null, EarbudState(), LinkStatus.Idle), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
         val hub = hub
-        val target = hub.pairedEarbuds().firstOrNull { it.address == address }
-        if (target == null || !hub.hasPermission()) return stop()
+        val target = if (hub.hasPermission()) hub.pairedEarbuds().firstOrNull { it.address == address } else null
+        val status = hub.connection.status.value
+        val onIt = target != null && (
+            (status as? LinkStatus.Connected)?.device?.address == target.address ||
+                (status as? LinkStatus.Reconnecting)?.device?.address == target.address
+            )
+        // Android wants the notification at once, on every start: the earbuds as they stand when
+        // the channel is open already, else connecting. A placeholder here would stay until the
+        // earbuds next change something.
+        val first = if (onIt) StatusNotification.build(this, target, hub.connection.state.value, status) else StatusNotification.build(this, target, EarbudState(), LinkStatus.Idle)
+        ServiceCompat.startForeground(this, NOTIFICATION_ID, first, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
+        shown = key(first)
+        if (target == null) return stop()
         device = target
         hub.notification(holds = true)
-        val status = hub.connection.status.value
-        val onIt = (status as? LinkStatus.Connected)?.device?.address == target.address ||
-            (status as? LinkStatus.Reconnecting)?.device?.address == target.address
         if (!onIt) hub.connection.connect(target)
         if (watching == null) watching = scope.launch { watch() }
     }
+
+    /** What a notification says, to post it again only when that changes. */
+    private fun key(notification: Notification): String =
+        notification.extras.getCharSequence(Notification.EXTRA_TITLE).toString() + "|" +
+            notification.extras.getCharSequence(Notification.EXTRA_TEXT) + "|" + notification.actions?.joinToString { it.title }
 
     /** Follows the connection: updates the notification, opens the channel again a few times while the earbuds finish connecting, and ends when it is gone. */
     @SuppressLint("MissingPermission") // the permission was there when the notification started
@@ -111,7 +122,7 @@ class StatusService : Service() {
                 else -> Unit
             }
             val notification = StatusNotification.build(this, device, state, status)
-            val key = notification.extras.getCharSequence(Notification.EXTRA_TEXT).toString() + notification.actions?.joinToString { it.title }
+            val key = key(notification)
             if (key != shown) {
                 shown = key
                 if (canNotify(this)) NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, notification)

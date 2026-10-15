@@ -392,8 +392,10 @@ Proposed, not yet reviewed by the owner.
 - What Android needs: the notification permission on Android 13 and later, and, to start
   the notification when the earbuds connect while PairFree is closed, PairFree linked to them
   as their companion app (a one-time system prompt per pair). The first time earbuds with
-  PairFree's notification connect, the app asks for both, one after the other; afterwards
-  the Device tab has a button for whichever is missing. Without the link the notification
+  PairFree's notification connect, the app asks for both, one after the other. Before the
+  link it says in its own dialog what the link is for: Android's prompt says a linked app can
+  sync information such as a caller's name, which PairFree does not do (owner's test,
+  2026-10-14). Afterwards the Device tab has a button for whichever is missing. Without the link the notification
   starts only when PairFree is opened.
 - While it shows, the official app cannot connect; the recording steps say to choose None
   first.

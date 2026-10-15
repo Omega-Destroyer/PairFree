@@ -1,0 +1,37 @@
+{
+  "_about": "JBL frames every implementation must build or read byte for byte. Requests marked jbltray were recorded from a Tune Flex 2 by JblTray (github.com/emperorbug46/JblTray, emperorbug46, MIT, commit 5ccf929); replies marked fajkpes were recorded from a Tune 720BT by FajkPes's JBL-Headphones-App (github.com/FajkPes/JBL-Headphones-App, commit 3f383d1, no licence: the bytes are used as facts); those marked app are built the way JBL Headphones 5.37.10 builds them, not yet seen on a device.",
+  "requests": [
+    {"name": "device_info", "source": "jbltray", "hex": "aa1100"},
+    {"name": "battery", "source": "jbltray", "hex": "aa250100"},
+    {"name": "noise_get", "source": "jbltray", "hex": "aa910111"},
+    {"name": "noise_anc", "source": "jbltray", "hex": "aa910710010102000300"},
+    {"name": "noise_ambient_aware", "source": "jbltray", "hex": "aa910710010002010300"},
+    {"name": "noise_talk_thru", "source": "jbltray", "hex": "aa910710010002000301"},
+    {"name": "noise_off", "source": "jbltray", "hex": "aa910113"},
+    {"name": "feature_get_spatial", "source": "jbltray", "hex": "aa06030001000c"},
+    {"name": "status_all", "source": "app", "hex": "aa210130"},
+    {"name": "set_anc_on", "source": "app", "hex": "aa310101"},
+    {"name": "set_ambient_talk_thru", "source": "app", "hex": "aa320101"},
+    {"name": "set_auto_off_v1_on_10", "source": "app", "hex": "aa33018a"},
+    {"name": "set_auto_off_v2_on_30", "source": "app", "hex": "aa3303011e00"},
+    {"name": "set_auto_play_pause_on", "source": "app", "hex": "aa350101"},
+    {"name": "feature_set_auto_off_on_60", "source": "app", "hex": "aa06070000000b03013c00"},
+    {"name": "feature_set_auto_play_pause_off", "source": "app", "hex": "aa0605000000110100"}
+  ],
+  "replies": [
+    {
+      "name": "status_all", "source": "fajkpes", "model": "JBL Tune 720BT",
+      "hex": "aa220d3000009ee60001000000011e00",
+      "anc": false, "ambient": 0, "auto_off": {"on": true, "minutes": 30}, "auto_play_pause": false
+    },
+    {
+      "name": "battery", "source": "fajkpes", "model": "JBL Tune 720BT",
+      "hex": "aa250d0100005050ffffffffffffffff",
+      "left": 80, "right": 80, "case": null
+    },
+    {
+      "name": "voice_prompt_language", "source": "fajkpes", "model": "JBL Tune 720BT",
+      "hex": "aa93050201000005"
+    }
+  ]
+}

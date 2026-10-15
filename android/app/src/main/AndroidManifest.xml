@@ -4,6 +4,13 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
+    <!-- JBL only (docs/DESIGN.md, Permissions): most JBL models are controlled over Bluetooth LE,
+         and when their LE side does not answer on the paired address, PairFree looks for its
+         advert. Asked for only when the user opens a JBL model; never used for location. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+
     <!-- The status notification (docs/DESIGN.md, Notification): it shows the battery, and holds
          the earbuds' channel as a connected-device foreground service while it does. Android
          lets it start when the earbuds connect with PairFree closed only once the user has

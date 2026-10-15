@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.ui
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,11 +33,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.omegadestroyer.pairfree.AppViewModel
 import io.github.omegadestroyer.pairfree.R
+import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.capture.Capture
@@ -111,6 +115,13 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
     val paired by vm.paired.collectAsStateWithLifecycle()
     val bluetoothOn by vm.bluetoothOn.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    // JBL's LE models may need a scan to be found (docs/jbl/PROTOCOL.md section 3). The permission is
+    // asked for only here, when the user opens one, and connecting goes ahead whatever the answer.
+    var opening by remember { mutableStateOf<Paired?>(null) }
+    val scan = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        opening?.let(vm::connect)
+        opening = null
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -136,7 +147,14 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
             else -> Panel {
                 for (device in paired) {
                     PairedRow(device, connecting = (status as? LinkStatus.Connecting)?.device == device) {
-                        vm.connect(device)
+                        val needsScan = device.brand == Brand.JBL &&
+                            ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
+                        if (needsScan) {
+                            opening = device
+                            scan.launch(Manifest.permission.BLUETOOTH_SCAN)
+                        } else {
+                            vm.connect(device)
+                        }
                     }
                 }
             }
@@ -177,5 +195,6 @@ private fun failure(status: LinkStatus): String? {
         LinkStatus.Reason.LOST -> stringResource(R.string.failed_lost, name)
         LinkStatus.Reason.BLUETOOTH_OFF -> stringResource(R.string.failed_bluetooth_off)
         LinkStatus.Reason.NO_PERMISSION -> stringResource(R.string.failed_no_permission)
+        LinkStatus.Reason.NO_SCAN_PERMISSION -> stringResource(R.string.failed_no_scan_permission, name)
     }
 }

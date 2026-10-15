@@ -41,7 +41,12 @@ These came from the owner and are not up for trade.
   reuse it through Kotlin Multiplatform or reimplement it against
   `data/soundpeats/test_vectors.json`.
 - Permissions: `BLUETOOTH_CONNECT`. Add `POST_NOTIFICATIONS`, and what the companion
-  device setup and the background connection need, when the notification ships. Nothing else.
+  device setup and the background connection need, when the notification ships. And for JBL
+  alone, `BLUETOOTH_SCAN` with `neverForLocation` (owner, 2026-10-15): most JBL models take
+  their settings over Bluetooth LE, and when their LE side does not answer on the paired
+  address, the only way to find it is its advert (`docs/jbl/PROTOCOL.md` section 3). It is
+  asked for only when the user opens a JBL model, the scan lasts at most 10 s and keeps
+  nothing, and connecting goes ahead without it where the direct way works. Nothing else.
 
 ## Looks
 

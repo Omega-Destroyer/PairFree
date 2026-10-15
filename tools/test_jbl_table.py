@@ -1,0 +1,89 @@
+"""The JBL page's table must match data/jbl/devices.json, and data/jbl must hold together."""
+import json
+import unittest
+from pathlib import Path
+
+import gen_jbl_table as gen
+
+DATA = Path(__file__).resolve().parent.parent / "data" / "jbl"
+
+
+def load(name):
+    return json.loads((DATA / name).read_text(encoding="utf-8"))
+
+
+class JblTable(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.data = gen.load()
+        cls.headers = ["Model", "Product", "Type", "Connection", "Settings", "Status"]
+
+    def row(self, pid):
+        row = next(r for r in gen.rows(self.data["devices"]) if f"<code>{pid}</code>" in r)
+        cells = [c.split(">", 1)[1] for c in row.removeprefix("<tr>").removesuffix("</tr>").split("</td>")[:-1]]
+        return dict(zip(self.headers, cells))
+
+    def test_page_is_up_to_date(self):
+        text = gen.PAGE.read_text(encoding="utf-8")
+        start, end = text.index(gen.START), text.index(gen.END) + len(gen.END)
+        self.assertEqual(text[start:end], gen.table(), "run python tools/gen_jbl_table.py")
+
+    def test_summary(self):
+        s = gen.summary()
+        self.assertEqual(len(self.data["devices"]), s["models"])
+        self.assertEqual([], s["tested"], "no JBL model tried with PairFree yet")
+
+    def test_rows(self):
+        flex2 = self.row("210E")
+        self.assertEqual("Tune Flex 2", flex2["Model"])
+        self.assertEqual("Earbuds", flex2["Type"])
+        self.assertEqual("Bluetooth LE", flex2["Connection"])
+        self.assertEqual("noise cancelling, Ambient Aware, TalkThru", flex2["Settings"])
+        self.assertIn("JblTray", flex2["Status"])
+        self.assertEqual("Serial", self.row("2113")["Connection"], "the Quantum 360")
+        self.assertEqual("auto power-off", self.row("20B4")["Settings"], "the Tune 720BT has no noise control")
+
+
+class JblData(unittest.TestCase):
+    def test_devices(self):
+        devices = load("devices.json")["devices"]
+        pids = [p for d in devices for p in d["pids"]]
+        self.assertEqual(len(pids), len(set(pids)), "each product id names one model")
+        for d in devices:
+            self.assertIn(d["kind"], gen.KINDS, d["name"])
+            self.assertIn(d["connect"], gen.CONNECT, d["name"])
+            self.assertIn(d["family"], ("direct", "feature"), d["name"])
+            self.assertTrue(d["name"].startswith("JBL "), d["name"])
+            for p in d["pids"]:
+                self.assertEqual(4, len(p))
+                self.assertEqual(p.upper(), p)
+                int(p, 16)
+            self.assertEqual(bool(d.get("modes")), "noise" in d, d["name"])
+            self.assertTrue(set(d.get("modes", [])) <= set(gen.MODES), d["name"])
+            self.assertIn(d.get("auto_off"), (None, "v1", "v2", "feature"), d["name"])
+            if d.get("tried"):
+                self.assertIn(d["tried"], gen.TRIED)
+
+    def test_commands(self):
+        data = load("commands.json")
+        names = [c["name"] for c in data["commands"]]
+        self.assertEqual(len(names), len(set(names)))
+        self.assertEqual(170, data["start"])
+        for number in ("95", "97", "f0"):
+            self.assertIn(number, data["never_send"], "factory reset, power off and firmware update are never sent")
+        used = {c["command"] for c in data["commands"]}
+        self.assertFalse(used & set(data["never_send"]))
+
+    def test_vectors(self):
+        vectors = load("test_vectors.json")
+        for r in vectors["requests"] + vectors["replies"]:
+            frame = bytes.fromhex(r["hex"])
+            self.assertEqual(0xAA, frame[0], r["name"])
+            wide = frame[1] == 0x06
+            length = frame[2] | (frame[3] << 8) if wide else frame[2]
+            self.assertEqual(len(frame), (4 if wide else 3) + length, r["name"])
+            self.assertIn(r["source"], ("jbltray", "fajkpes", "app"), r["name"])
+
+
+if __name__ == "__main__":
+    unittest.main()

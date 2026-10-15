@@ -33,7 +33,7 @@ shows. The control classes fall into families (`com.harman.cmdctrl.imp.control.u
 |--------|----------------|----------|
 | `bes` (31 classes) | Harman commands (section 2) | Yes, the classes with a dash4 config |
 | `protocol3` (7) | Harman commands, settings as feature records | Yes |
-| `protocol4` (22) | JBL's newer protocol (section 6), mostly behind a BLE security mode | Yes, the models with no security mode |
+| `protocol4` (22) | JBL's newer protocol (section 6) | Yes, with each model's BLE security step (section 7) |
 | `airoha`, `lea`, `hid` | Airoha's SDK, LE Audio, USB | No |
 
 The older `com.harman.cmdctrl.imp.bes` classes (Live 220BT to Tour Pro+) have no dash4 config,
@@ -208,10 +208,10 @@ later, so the screen shows what the earbuds hold.
 
 JBL's newest models speak another frame (`com.harman.protocol4`: `AssembleCmd4`,
 `DeviceInfoList4Cmd`, `CommonParse`), over the same GATT service and characteristics when the
-product list gives the model no BLE security mode, as for the 13 models in `devices.json`
-(Tune Buds, Beam and Flex 3; Vibe and Wave Buds, Beam and Flex 3; Sense Lite; Endurance Zone;
-Tune 135BT and 235BT). The others (Tour Pro 4, Live 4, Tune 680NC and more) first authenticate
-over a separate characteristic (`bleSecurityMode` 1 to 3); PairFree leaves them out.
+product list gives the model, over the same GATT service and characteristics. Some models add a
+connection step, which the product list marks as a BLE security mode (section 7). Tour Pro 4 (over
+classic Bluetooth), Tour One M4 and the second Smart Tx are left out; JBL's app marks them
+unsupported and gives them no control class.
 
 ```
 identifier (2)  command (2)  packet count (1)  packet index (1)  length (2)  payload
@@ -230,28 +230,68 @@ case's, `24` noise cancelling, `25` Ambient Aware, `26` TalkThru, `73` ambient s
 and `47` host type. A battery or mode is one byte: bit 7 the status (charging, or the mode
 selected), bits 0 to 6 the level; a level of 127 leaves it as it is.
 
-On connecting, JBL's app writes host type 1 and then reads. On the models with noise control
-(`TuneFlex3Control`, `WaveFlex3Control`, `TuneBeam3Control`), it sets a mode by writing ambient
-sound control on together with the mode's feature, status 1 and the mode's level, and turns
-noise control off by writing ambient sound control off with the current mode. It reads the
-mode back as the one of noise cancelling, Ambient Aware and TalkThru whose status is 1, and off
-when ambient sound control is off (`gn.l0`). PairFree does the same, with the level each mode
-last reported, or 127 before it has reported one.
+Auto power-off (feature `18`) is a two-byte feature: bit 15 the status, bits 0 to 14 the time in
+seconds (JBL writes minutes x 60; 32767 is unknown). Auto play/pause (feature `42`) is a one-byte
+feature. The host name's checksum is feature `7` (section 7).
 
-## 7. Never sent
+On connecting, JBL's app writes host type 1 and then reads. There are two noise-control writes:
+- **asc** (the classes that override `setAncSetting`: `TuneFlex3Control`, `WaveFlex3Control`,
+  `TuneBeam3Control`, `Live680NCControl`, `LiveTws4Control`) writes ambient sound control on with
+  the mode's feature, status 1 and its level; off writes ambient sound control off with the
+  current mode.
+- **mode4** (the base `General4Control.setAncSetting`: `TourOneM3Control`, `Tune680Control`,
+  `EndurancePeak4Control`) writes the single mode feature with status 1 and level 127; off writes
+  noise cancelling with status 0.
+
+Both read the mode back as the one of noise cancelling, Ambient Aware and TalkThru whose status is
+1, and off when ambient sound control is off or every mode is off (`gn.l0`). PairFree does the
+same.
+
+## 7. Security modes
+
+The product list gives each protocol 4 model a `bleSecurityMode` (1 to 3). These are transport
+steps JBL's app runs when the GATT link opens (`BleDevice`); none needs a key or a secret, so
+PairFree does them itself. They are a direct port of JBL's steps and have not been tried on a
+device.
+
+- **Mode 1** (Live 680NC and 780NC, Tour One M3, Smart Tx): the app also subscribes to the raw
+  characteristic `...0003`; commands still go to `...0002`.
+- **Mode 2** (Tune 530/535/730/735/520BT2, Tune 680/780/785NC, Sense Pro, Soundgear Clips, Junior
+  Free, Endurance Pace, Run 3 and Peak 4): the app waits for the earbuds to report PairingStatus
+  (feature `46`) = 1, which arrives on `...0001` as a normal frame, before it treats the link as
+  up. It never bonds itself, so this reflects the ordinary Bluetooth pairing. PairFree does not
+  block on it: its reads simply go unanswered until the earbuds are ready, as for any brand.
+- **Mode 3** (Live Beam, Buds and Flex 4): the app subscribes `...0003`, writes the checksum of
+  this phone's Bluetooth name (CRC-16/ARC, section 3) as feature `7` to `...0003`, waits up to 1 s
+  for the earbuds to echo it, then carries on regardless. PairFree writes the checksum and carries
+  on without waiting.
+
+PairFree runs the extra steps where the model needs them, but never lets them fail the main
+connection: if the raw characteristic is missing or a step is refused, it still opens `...0001`
+and sends. Whether a model's commands are gated on these steps is not known
+([device page](../devices/jbl.md)).
+
+Beyond the security modes, JBL's app also runs a counterfeit check on protocol 4 models (an RSA
+challenge whose key lives in a native library, `com.jbl.counterfeit`). It is not part of
+control — it only shows an "is this genuine" popup — and PairFree cannot do it without extracting
+JBL's embedded key, which the project's rules forbid. PairFree leaves it out.
+
+## 8. Never sent
 
 `commands.json`'s `never_send`: `95` factory reset, `97` power off, `F0` firmware update, `AA`
 preserve settings, `13` and `15` analytics. In protocol 4: `00FF` factory reset, `0101` to
 `0104` firmware update, `0201` and `02FF` analytics. JBL's firmware updates go over separate
 services PairFree never opens.
 
-## 8. Open questions
+## 9. Open questions
 
 - Whether bytes 7–8 of the classic advert are the CRC of the classic address, as the name JBL's
   app gives them says; it does not compare them for these models.
 - Which models' LE side answers on the classic address, as the Tune Flex 2's does.
 - Whether the feature-family headphones (Junior, Quantum 360) answer the battery read `25`.
-- Protocol 4 has no recorded frame yet: everything in section 6 is from JBL's app alone.
+- Protocol 4 has no recorded frame yet: sections 6 and 7 are from JBL's app alone.
+- Whether a security-mode model answers commands before its step (mode 2's pairing report, mode
+  3's host checksum) is unknown; PairFree runs the step but does not block on it.
 - What the acknowledgement's status values mean; PairFree reads a setting back rather than
   trusting them.
 - The equalizer: JBL's app writes a whole curve of filters as floating-point numbers with a

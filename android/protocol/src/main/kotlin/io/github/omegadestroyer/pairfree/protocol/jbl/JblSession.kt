@@ -144,6 +144,13 @@ public class JblSession(initial: JblModel) {
                     ascOn = v.u8(0) and STATUS_BIT != 0
                     noise = true
                 }
+                // Auto power-off (size 2): status at bit 15, the time in seconds in bits 0 to 14; 32767 is unknown.
+                JblP4.FEATURE_AUTO_OFF -> if (v.size >= 2) {
+                    val word = v.u8(0) or (v.u8(1) shl 8)
+                    autoOffOn = word and P4_STATUS16 != 0
+                    (word and P4_LEVEL16).takeIf { it != P4_LEVEL16 }?.let { autoOffMinutes = it / SECONDS_PER_MINUTE }
+                }
+                JblP4.FEATURE_AUTO_PLAY_PAUSE -> autoPlayPause = v.u8(0) and STATUS_BIT != 0
                 else -> P4_MODES[id]?.let { m ->
                     modeOn[m] = v.u8(0) and STATUS_BIT != 0
                     modeLevel[m] = v.u8(0) and LEVEL_BITS
@@ -151,7 +158,8 @@ public class JblSession(initial: JblModel) {
                 }
             }
         }
-        if (noise && model.noise == JblModel.Noise.ASC && modeOn.isNotEmpty()) {
+        if (noise && (model.noise == JblModel.Noise.ASC || model.noise == JblModel.Noise.MODE4) && modeOn.isNotEmpty()) {
+            // Off when ambient sound control is off (asc models) or every mode's status is 0.
             mode = if (ascOn == false) null else MODE_ORDER.firstOrNull { modeOn[it] == true }
             noiseKnown = true
         }
@@ -407,6 +415,15 @@ public class JblSession(initial: JblModel) {
                     ),
                 )
             }
+            JblModel.Noise.MODE4 -> {
+                // The base General4Control.setAncSetting: the single mode feature with status 1, and off is
+                // noise cancelling with status 0. No ambient sound control feature.
+                readBacks += JblP4Packet.get(p4NoiseFeatures())
+                for (it in MODE_ORDER) modeOn[it] = it == m
+                // The base write always uses level 127 (General4Control.setAncSetting), not the reported level.
+                val feature = P4_FEATURES.getValue(m ?: Mode.ANC)
+                listOf(JblP4Packet.set(feature to JblP4Packet.statusLevel(m != null, JblP4.IGNORE_LEVEL)))
+            }
             JblModel.Noise.MODES -> {
                 readBacks += JblPacket.of(JblCommand.NOISE_MODES, JblNoise.GET)
                 if (m == null) {
@@ -447,12 +464,17 @@ public class JblSession(initial: JblModel) {
 
     private fun autoOff(on: Boolean, minutes: Int): List<JblFrame>? {
         val kind = model.autoOff ?: return null
-        val out = when (kind) {
+        val out: JblFrame = when (kind) {
             JblModel.AutoOff.V1 -> JblPacket.of(JblCommand.SET_AUTO_OFF, (if (on) AUTO_OFF_ON else 0) or (minutes and AUTO_OFF_MINUTES))
             JblModel.AutoOff.V2 -> JblPacket.of(JblCommand.SET_AUTO_OFF, if (on) 1 else 0, minutes and 0xFF, (minutes shr 8) and 0xFF)
             JblModel.AutoOff.FEATURE -> JblPacket.featureSet(JblFeature.AUTO_OFF, if (on) 1 else 0, minutes and 0xFF, (minutes shr 8) and 0xFF)
+            // Protocol 4 (StatusLevelSize2): status at bit 15, the time in seconds in bits 0 to 14 (JBL sends minutes x 60).
+            JblModel.AutoOff.P4 -> {
+                val word = (if (on) P4_STATUS16 else 0) or ((minutes * SECONDS_PER_MINUTE) and P4_LEVEL16)
+                JblP4Packet.set(JblP4.FEATURE_AUTO_OFF to byteArrayOf(word.toByte(), (word shr 8).toByte()))
+            }
         }
-        readBacks += settingsRead(JblFeature.AUTO_OFF)
+        readBacks += settingsRead(JblFeature.AUTO_OFF, JblP4.FEATURE_AUTO_OFF)
         autoOffOn = on
         autoOffMinutes = minutes
         return listOf(out)
@@ -460,25 +482,33 @@ public class JblSession(initial: JblModel) {
 
     private fun autoPlay(on: Boolean): List<JblFrame>? {
         if (!model.autoPlayPause) return null
-        val out = when (model.family) {
+        val out: JblFrame = when (model.family) {
             JblModel.Family.DIRECT -> JblPacket.of(JblCommand.SET_AUTO_PLAY_PAUSE, if (on) 1 else 0)
             JblModel.Family.FEATURE -> JblPacket.featureSet(JblFeature.AUTO_PLAY_PAUSE, if (on) 1 else 0)
-            JblModel.Family.P4 -> return null
+            // Protocol 4 (StatusLevelSize1): status at bit 7, the level left as it is.
+            JblModel.Family.P4 -> JblP4Packet.set(JblP4.FEATURE_AUTO_PLAY_PAUSE to JblP4Packet.statusLevel(on, JblP4.IGNORE_LEVEL))
         }
-        readBacks += settingsRead(JblFeature.AUTO_PLAY_PAUSE)
+        readBacks += settingsRead(JblFeature.AUTO_PLAY_PAUSE, JblP4.FEATURE_AUTO_PLAY_PAUSE)
         autoPlayPause = on
         return listOf(out)
     }
 
-    /** The read that reports a setting: the whole status on direct models, the one feature on the others. */
-    private fun settingsRead(feature: Int): JblFrame = when (model.family) {
-        JblModel.Family.DIRECT, JblModel.Family.P4 -> JblPacket.of(JblCommand.STATUS, JblStatus.ALL)
+    /** The read that reports a setting: the whole status on direct models, the command-06 feature on feature models, the protocol 4 feature on p4 ones. */
+    private fun settingsRead(feature: Int, p4Feature: Int): JblFrame = when (model.family) {
+        JblModel.Family.DIRECT -> JblPacket.of(JblCommand.STATUS, JblStatus.ALL)
         JblModel.Family.FEATURE -> JblPacket.featureGet(listOf(feature))
+        JblModel.Family.P4 -> JblP4Packet.get(listOf(p4Feature))
     }
 
-    /** Protocol 4: the product id, firmware, batteries and, on models with noise control, its features. */
-    private fun p4Features(): List<Int> = listOf(JblP4.FEATURE_PRODUCT_ID, JblP4.FEATURE_FIRMWARE) + p4Batteries() +
-        (if (model.noise == JblModel.Noise.ASC) p4NoiseFeatures() else emptyList())
+    /** Protocol 4: the product id, firmware, batteries, its noise features and the settings PairFree offers. */
+    private fun p4Features(): List<Int> = buildList {
+        add(JblP4.FEATURE_PRODUCT_ID)
+        add(JblP4.FEATURE_FIRMWARE)
+        addAll(p4Batteries())
+        if (model.noise == JblModel.Noise.ASC || model.noise == JblModel.Noise.MODE4) addAll(p4NoiseFeatures())
+        if (model.autoOff != null) add(JblP4.FEATURE_AUTO_OFF)
+        if (model.autoPlayPause) add(JblP4.FEATURE_AUTO_PLAY_PAUSE)
+    }
 
     private fun p4Batteries(): List<Int> =
         if (model.form == Form.HEADPHONES) listOf(JblP4.FEATURE_BATTERY_LEFT) else listOf(JblP4.FEATURE_BATTERY_LEFT, JblP4.FEATURE_BATTERY_RIGHT, JblP4.FEATURE_BATTERY_CASE)
@@ -486,7 +516,7 @@ public class JblSession(initial: JblModel) {
     private fun p4NoiseFeatures(): List<Int> = listOf(JblP4.FEATURE_ANC, JblP4.FEATURE_AMBIENT_AWARE, JblP4.FEATURE_TALK_THRU, JblP4.FEATURE_AMBIENT_SOUND_CONTROL)
 
     private fun noiseReads(): List<JblPacket> = when (model.noise) {
-        JblModel.Noise.ASC -> emptyList()
+        JblModel.Noise.ASC, JblModel.Noise.MODE4 -> emptyList()
         JblModel.Noise.MODES -> listOf(JblPacket.of(JblCommand.NOISE_MODES, JblNoise.GET))
         JblModel.Noise.OLD -> listOf(JblPacket.of(JblCommand.STATUS, JblStatus.ANC), JblPacket.of(JblCommand.STATUS, JblStatus.AMBIENT))
         JblModel.Noise.CLUB -> listOf(JblPacket.of(JblCommand.STATUS, JblStatus.ANC))
@@ -547,14 +577,17 @@ public class JblSession(initial: JblModel) {
 
         fun modeOf(number: Int): Mode? = MODE_NUMBERS.entries.firstOrNull { it.value == number }?.key
 
-        // Protocol 4: a status in bit 7, a level in bits 0 to 6; the mode features by mode.
+        // Protocol 4: a size-1 feature's status in bit 7, level in bits 0 to 6; a size-2 feature's status in bit 15.
         const val STATUS_BIT = 0x80
         const val LEVEL_BITS = 0x7F
+        const val P4_STATUS16 = 0x8000
+        const val P4_LEVEL16 = 0x7FFF
+        const val SECONDS_PER_MINUTE = 60
         val P4_FEATURES = mapOf(Mode.ANC to JblP4.FEATURE_ANC, Mode.AMBIENT_AWARE to JblP4.FEATURE_AMBIENT_AWARE, Mode.TALK_THRU to JblP4.FEATURE_TALK_THRU)
         val P4_MODES = P4_FEATURES.entries.associate { it.value to it.key }
         val REPORTED_P4 = setOf(
             JblP4.FEATURE_PRODUCT_ID, JblP4.FEATURE_FIRMWARE, JblP4.FEATURE_BATTERY_LEFT, JblP4.FEATURE_BATTERY_RIGHT,
-            JblP4.FEATURE_BATTERY_CASE, JblP4.FEATURE_AMBIENT_SOUND_CONTROL,
+            JblP4.FEATURE_BATTERY_CASE, JblP4.FEATURE_AMBIENT_SOUND_CONTROL, JblP4.FEATURE_AUTO_OFF, JblP4.FEATURE_AUTO_PLAY_PAUSE,
         ) + P4_MODES.keys
 
         fun level(v: Int): Int? = v.takeIf { it <= 100 }

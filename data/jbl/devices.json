@@ -1,5 +1,5 @@
 {
-  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06) or p4 (JBL's protocol 4, frames starting 00 DD); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32) or asc (protocol 4: ambient sound control and the mode); auto_off is v1 (one byte), v2 (three bytes) or feature. Protocol 4 models with a BLE security mode, models on Airoha's SDK or LE Audio, and models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports.",
+  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06) or p4 (JBL's protocol 4, frames starting 00 DD); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode) or mode4 (protocol 4: the mode feature alone); auto_off is v1 (one byte), v2 (three bytes), feature or p4. security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. Models on Airoha's SDK or LE Audio, and models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports.",
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "devices": [
     {
@@ -199,7 +199,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_tour_one_m2.json"
     },
@@ -238,7 +238,7 @@
       "control": "Tune520BTControl",
       "family": "direct",
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_520bt.json"
     },
     {
@@ -250,7 +250,7 @@
       "control": "Tune520BTControl",
       "family": "direct",
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_520bt_cr.json"
     },
     {
@@ -262,7 +262,7 @@
       "control": "Tune720BTControl",
       "family": "direct",
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_720bt.json",
       "tried": "FajkPes"
     },
@@ -311,7 +311,7 @@
       "control": "Tune520BTControl",
       "family": "direct",
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_525bt.json"
     },
     {
@@ -325,7 +325,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_live_670nc.json"
     },
@@ -340,7 +340,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_live_770nc.json"
     },
@@ -353,7 +353,7 @@
       "control": "SoundGearSenseControl",
       "family": "direct",
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_soundgear_sense.json"
     },
     {
@@ -399,7 +399,7 @@
       "control": "Quantum360Control",
       "family": "feature",
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360x.json"
     },
     {
@@ -411,7 +411,7 @@
       "control": "Quantum360Control",
       "family": "feature",
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360p.json"
     },
     {
@@ -425,7 +425,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_live_675nc.json"
     },
@@ -499,7 +499,7 @@
       "control": "Junior320Control",
       "family": "feature",
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_junior_320bt.json"
     },
     {
@@ -513,7 +513,7 @@
       "noise": "modes",
       "modes": ["anc"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_junior_470bt.json"
     },
     {
@@ -525,7 +525,7 @@
       "control": "Quantum360Control",
       "family": "feature",
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360.json"
     },
     {
@@ -553,6 +553,22 @@
       "config": "jbl_vibe_buds_2.json"
     },
     {
+      "name": "JBL Tour One M3",
+      "pids": ["2101"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "TourOneM3Control",
+      "family": "p4",
+      "security": 1,
+      "noise": "mode4",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "auto_play_pause": true,
+      "config": "jbl_tour_one_m3.json"
+    },
+    {
       "name": "JBL Live 775NC",
       "pids": ["2124"],
       "kind": "headphones",
@@ -563,7 +579,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_live_775nc.json"
     },
@@ -576,7 +592,7 @@
       "control": "Tune520BTControl",
       "family": "direct",
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60],
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_527bt.json"
     },
     {
@@ -599,8 +615,8 @@
       "platform": "Bes",
       "control": "TourOneM3Control",
       "family": "p4",
-      "auto_off": null,
-      "auto_off_minutes": [30, 60],
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_sense_lite.json"
     },
     {
@@ -611,8 +627,8 @@
       "platform": "Bes",
       "control": "TourOneM3Control",
       "family": "p4",
-      "auto_off": null,
-      "auto_off_minutes": [30, 60],
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
       "config": "jbl_endurance_zone.json"
     },
     {
@@ -636,6 +652,84 @@
       "config": "jbl_tune_235bt.json"
     },
     {
+      "name": "JBL Soundgear Clips",
+      "pids": ["2152"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "SoundgearClipControl",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_soundgear_clips.json"
+    },
+    {
+      "name": "JBL Junior Free",
+      "pids": ["2154"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "JuniorFreeControl",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_junior_free.json"
+    },
+    {
+      "name": "JBL Endurance Run 3 Wireless",
+      "pids": ["214F"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "EnduranceRun3Control",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_endurance_run_3_wireless.json"
+    },
+    {
+      "name": "JBL Endurance Pace",
+      "pids": ["2150"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "EndurancePaceControl",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_endurance_pace.json"
+    },
+    {
+      "name": "JBL Endurance Peak 4",
+      "pids": ["2151"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Rtk",
+      "control": "EndurancePeak4Control",
+      "family": "p4",
+      "security": 2,
+      "noise": "mode4",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_endurance_peak_4.json"
+    },
+    {
+      "name": "JBL Sense Pro",
+      "pids": ["2153"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "SenseProControl",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_sense_pro.json"
+    },
+    {
       "name": "JBL Tune 255NC",
       "pids": ["2164"],
       "kind": "earbuds",
@@ -646,6 +740,211 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune_255nc.json"
+    },
+    {
+      "name": "JBL Tune 530BT",
+      "pids": ["2162"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Rtk",
+      "control": "Tune530Control",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_530bt.json"
+    },
+    {
+      "name": "JBL Tune 530BT",
+      "pids": ["2189"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Rtk",
+      "control": "Tune530Control",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_530bt_2nd.json"
+    },
+    {
+      "name": "JBL Tune 730BT",
+      "pids": ["2163"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Rtk",
+      "control": "Tune530Control",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_730bt.json"
+    },
+    {
+      "name": "JBL Tune 680NC",
+      "pids": ["215E"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Tune680Control",
+      "family": "p4",
+      "security": 2,
+      "noise": "mode4",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_680nc.json"
+    },
+    {
+      "name": "JBL Tune 780NC",
+      "pids": ["215F"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Tune680Control",
+      "family": "p4",
+      "security": 2,
+      "noise": "mode4",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_780nc.json"
+    },
+    {
+      "name": "JBL Smart Tx",
+      "pids": ["214B"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "SmartTxControl",
+      "family": "p4",
+      "security": 1,
+      "config": "jbl_smart_tx.json"
+    },
+    {
+      "name": "JBL Live 680NC",
+      "pids": ["2160"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Live680NCControl",
+      "family": "p4",
+      "security": 1,
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "auto_play_pause": true,
+      "config": "jbl_live_680nc.json"
+    },
+    {
+      "name": "JBL Live 780NC",
+      "pids": ["2161"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Live680NCControl",
+      "family": "p4",
+      "security": 1,
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "auto_play_pause": true,
+      "config": "jbl_live_780nc.json"
+    },
+    {
+      "name": "JBL Live Beam 4",
+      "pids": ["2179"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "LiveTws4Control",
+      "family": "p4",
+      "security": 3,
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_live_beam_4.json"
+    },
+    {
+      "name": "JBL Live Buds 4",
+      "pids": ["217B"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "LiveTws4Control",
+      "family": "p4",
+      "security": 3,
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_live_buds_4.json"
+    },
+    {
+      "name": "JBL Live Flex 4",
+      "pids": ["217D"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "LiveTws4Control",
+      "family": "p4",
+      "security": 3,
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_live_flex_4.json"
+    },
+    {
+      "name": "JBL Tune 785NC",
+      "pids": ["21A4"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Tune680Control",
+      "family": "p4",
+      "security": 2,
+      "noise": "mode4",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_785nc.json"
+    },
+    {
+      "name": "JBL Tune 520BT2",
+      "pids": ["2188"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Rtk",
+      "control": "Tune530Control",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_520bt_m2.json"
+    },
+    {
+      "name": "JBL Tune 535BT",
+      "pids": ["2194"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Rtk",
+      "control": "Tune530Control",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_535bt.json"
+    },
+    {
+      "name": "JBL Tune 735BT",
+      "pids": ["2195"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Rtk",
+      "control": "Tune530Control",
+      "family": "p4",
+      "security": 2,
+      "auto_off": "p4",
+      "auto_off_minutes": [30, 60, 120],
+      "config": "jbl_tune_735bt.json"
     },
     {
       "name": "JBL Vibe Buds 3",

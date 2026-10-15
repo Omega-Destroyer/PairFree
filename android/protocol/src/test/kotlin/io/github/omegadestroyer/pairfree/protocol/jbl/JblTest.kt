@@ -88,7 +88,7 @@ class JblTest {
         s.receive(packet(status.str("hex")))
         val autoOff = status.getValue("auto_off").jsonObject
         assertTrue(autoOff.getValue("on").jsonPrimitive.boolean)
-        assertEquals(Setting.Choice("auto_off", autoOff.getValue("minutes").jsonPrimitive.int.toString(), listOf("never", "30", "60")), setting(s, "auto_off"))
+        assertEquals(Setting.Choice("auto_off", autoOff.getValue("minutes").jsonPrimitive.int.toString(), listOf("never", "30", "60", "120")), setting(s, "auto_off"))
         // The 720BT has no noise control and no auto play/pause in JBL's app.
         assertNull(setting(s, "pause_taken_off"))
         assertFalse(s.state.supports(Command.ANC_MODE))
@@ -123,7 +123,7 @@ class JblTest {
 
         val feature = JblSession(model("JBL Junior 470NC"))
         feature.receive(packet("aa06070002000b03011e00"))
-        assertEquals(Setting.Choice("auto_off", "30", listOf("never", "30", "60")), setting(feature, "auto_off"))
+        assertEquals(Setting.Choice("auto_off", "30", listOf("never", "30", "60", "120")), setting(feature, "auto_off"))
         assertEquals(requests.getValue("feature_set_auto_off_on_60"), feature.change(SettingChange.Choice("auto_off", "60"))!!.single().hex())
     }
 
@@ -299,6 +299,52 @@ class JblTest {
         // A failed status gives no records; an AA frame still reads as one.
         assertTrue((JblReader().feed(JblP4Packet(JblP4.GET, "0100".hexBytes()).bytes()).single() as JblP4Packet).features().isEmpty())
         assertEquals(JblPacket.of(JblCommand.BATTERY, 0), JblReader().feed("aa250100".hexBytes()).single())
+    }
+
+    @Test
+    fun theBaseProtocol4NoiseWriteUsesTheModeFeatureAlone() {
+        // Tune 680NC (Tune680Control) uses the base General4Control write: one mode feature, no ambient sound control.
+        val s = JblSession(model("JBL Tune 680NC"))
+        assertEquals(JblModel.Noise.MODE4, s.model.noise)
+        assertEquals(2, s.model.security)
+        s.receive(JblReader().feed(p4Reply(JblP4.GET, "1800010000" + "190001008 0".replace(" ", "") + "1a00010000")).single())
+        assertEquals(anc("transparency"), s.state.number(Command.ANC_MODE), "Ambient Aware on")
+        // Noise cancelling: just the ANC feature, status 1.
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_ANC to byteArrayOf(0xFF.toByte())).hex(), s.set(Command.ANC_MODE, anc("anc"))!!.single().hex())
+        // Off: noise cancelling with status 0, no ambient sound control feature.
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_ANC to byteArrayOf(0x7F)).hex(), s.set(Command.ANC_MODE, anc("off"))!!.single().hex())
+    }
+
+    @Test
+    fun protocol4AutoOffAndAutoPlayAreReadAndWritten() {
+        val s = JblSession(model("JBL Live 680NC"))
+        assertEquals(JblModel.AutoOff.P4, s.model.autoOff)
+        assertTrue(s.model.autoPlayPause)
+        // Auto power-off on after 60 min = 3600 s (0x0E10) with the top bit set; auto play/pause on (bit 7).
+        s.receive(JblReader().feed(p4Reply(JblP4.GET, "12000200108e" + "2a00010080")).single())
+        assertEquals(Setting.Choice("auto_off", "60", listOf("never", "30", "60", "120")), setting(s, "auto_off"))
+        assertEquals(Setting.Toggle("pause_taken_off", true), setting(s, "pause_taken_off"))
+        // Writing 120 min = 7200 s = 0x1C20, top bit set -> 0x9C20, low byte first.
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_AUTO_OFF to byteArrayOf(0x20, 0x9C.toByte())).hex(), s.change(SettingChange.Choice("auto_off", "120"))!!.single().hex())
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_AUTO_PLAY_PAUSE to byteArrayOf(0x7F)).hex(), s.change(SettingChange.Toggle("pause_taken_off", false))!!.single().hex())
+        assertEquals(
+            listOf(JblP4Packet.get(listOf(JblP4.FEATURE_AUTO_OFF)), JblP4Packet.get(listOf(JblP4.FEATURE_AUTO_PLAY_PAUSE))),
+            s.takeReadBacks(),
+        )
+    }
+
+    @Test
+    fun securityModesAreRecordedForTheConnection() {
+        assertEquals(1, model("JBL Tour One M3").security)
+        assertEquals(2, model("JBL Tune 530BT", 0x2162).security)
+        assertEquals(3, model("JBL Live Beam 4").security)
+        assertEquals(0, model("JBL Tune Flex 3").security)
+        // The host-name checksum frame for mode 3 is a protocol 4 write of HostNameCRC, low byte first.
+        val crc = JblAdvert.crc16("Pixel".encodeToByteArray())
+        assertEquals(
+            JblP4Packet.set(JblP4.FEATURE_HOST_NAME_CRC to byteArrayOf(crc.toByte(), (crc shr 8).toByte())).hex(),
+            JblP4Packet.set(JblP4.FEATURE_HOST_NAME_CRC to byteArrayOf(crc.toByte(), (crc shr 8).toByte())).hex(),
+        )
     }
 
     @Test

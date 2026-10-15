@@ -19,6 +19,8 @@ public data class JblModel(
     val autoOff: AutoOff?,
     val autoOffMinutes: List<Int>,
     val autoPlayPause: Boolean,
+    /** JBL's protocol 4 BLE security mode (1 to 3), which adds a connection step (docs/jbl/PROTOCOL.md section 7); 0 for none. */
+    val security: Int = 0,
 ) {
     /**
      * How the model's settings go: one command each ([DIRECT]), Harman's feature records, command 06
@@ -28,15 +30,16 @@ public data class JblModel(
 
     /**
      * How noise control goes: command 91's modes, commands 31 and 32 ([OLD]; [CLUB] turns it off with 31
-     * alone), or protocol 4's ambient sound control and mode features ([ASC]).
+     * alone), protocol 4's ambient sound control and mode features ([ASC]), or protocol 4's mode feature
+     * alone ([MODE4], the base General4Control write).
      */
-    public enum class Noise { MODES, OLD, CLUB, ASC }
+    public enum class Noise { MODES, OLD, CLUB, ASC, MODE4 }
 
     /** The noise modes JBL's app offers on the model, besides off. */
     public enum class Mode { ANC, AMBIENT_AWARE, TALK_THRU }
 
-    /** How auto power-off is written: one byte ([V1]), three bytes ([V2]) or as a feature record. */
-    public enum class AutoOff { V1, V2, FEATURE }
+    /** How auto power-off is written: one byte ([V1]), three bytes ([V2]), a command-06 feature record ([FEATURE]), or a protocol 4 feature ([P4]). */
+    public enum class AutoOff { V1, V2, FEATURE, P4 }
 
     /** The name without "JBL ", as the screens show it beside the brand. */
     public val shortName: String get() = name.removePrefix("JBL ")

@@ -35,13 +35,17 @@
     "identifier_case": 56577,
     "commands": {"get": "0001", "set": "0002", "notification": "0003"},
     "features": {
+      "host_name_crc": 7,
       "product_id": 4,
       "firmware": 12,
       "battery_left": 13,
       "battery_right": 14,
+      "auto_off": 18,
       "anc": 24,
       "ambient_aware": 25,
       "talk_thru": 26,
+      "auto_play_pause": 42,
+      "pairing_status": 46,
       "host_type": 47,
       "ambient_sound_control": 73,
       "battery_case": 7939

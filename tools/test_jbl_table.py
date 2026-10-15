@@ -43,7 +43,9 @@ class JblTable(unittest.TestCase):
         self.assertEqual("Serial", self.row("2113")["Connection"], "the Quantum 360")
         self.assertEqual("auto power-off", self.row("20B4")["Settings"], "the Tune 720BT has no noise control")
         self.assertEqual("noise cancelling, Ambient Aware, TalkThru", self.row("21B6")["Settings"], "the Tune Flex 3, on protocol 4")
-        self.assertEqual("battery only", self.row("2133")["Settings"], "the Sense Lite")
+        self.assertEqual("auto power-off", self.row("2133")["Settings"], "the Sense Lite")
+        self.assertEqual("battery only", self.row("2135")["Settings"], "the Tune 135BT")
+        self.assertEqual("noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off", self.row("2160")["Settings"], "the Live 680NC, security mode 1")
 
 
 class JblData(unittest.TestCase):
@@ -62,7 +64,8 @@ class JblData(unittest.TestCase):
                 int(p, 16)
             self.assertEqual(bool(d.get("modes")), "noise" in d, d["name"])
             self.assertTrue(set(d.get("modes", [])) <= set(gen.MODES), d["name"])
-            self.assertIn(d.get("auto_off"), (None, "v1", "v2", "feature"), d["name"])
+            self.assertIn(d.get("auto_off"), (None, "v1", "v2", "feature", "p4"), d["name"])
+            self.assertIn(d.get("security", 0), (0, 1, 2, 3), d["name"])
             if d.get("tried"):
                 self.assertIn(d["tried"], gen.TRIED)
 

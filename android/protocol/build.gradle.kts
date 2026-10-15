@@ -817,10 +817,11 @@ abstract class GenerateJblTables : DefaultTask() {
                 "BT" -> "false"
                 else -> error("unknown connect ${d["connect"]}")
             }
+            val security = (d["security"] as Number?)?.toInt() ?: 0
             out.appendLine(
                 "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +
                     "family = JblModel.Family.$family, noise = $noise, modes = listOf($modes), autoOff = $autoOff, " +
-                    "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}),",
+                    "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}, security = $security),",
             )
         }
         out.appendLine(")")

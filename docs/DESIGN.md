@@ -232,8 +232,9 @@ cycles through (at least one stays on), and Reset gestures, each only where the 
   official app, and back on after it, which the official app does not do.
 - Water drain, where the earbuds answer its read: one button, with the advice to take
   the earbuds out first. It shows "Draining" until the earbuds report it finished.
-- Notification: a switch for the notification controls (on by default). The note under it
-  says that while it is on, the official apps (PeatsAudio, Soundcore) cannot connect.
+- Status notification: PairFree, Fast Pair (on earbuds with it) or None, with what each
+  means and buttons for what Android still needs (Notification above). The note under
+  PairFree says that while it shows, the official app cannot connect.
 - Maintenance: copy device report, record the EQ from PeatsAudio, factory reset.
 
 Copy device report puts the same information as `tools/probe.py` on the clipboard,
@@ -358,29 +359,55 @@ Proposed, not yet reviewed by the owner.
   devices need LDAC off.
 - **Optimistic, then confirmed.** A change shows at once and is read back from the
   earbuds afterwards.
-- **One connection, shared.** The app holds one control connection to the earbuds; the
-  screens and the notification both use it. While the notification is on (the default,
-  owner 2026-10-13) the connection stays open whenever the earbuds are connected, so the
-  battery and the noise mode are live: the earbuds report changes themselves, and the
-  battery is also read every few minutes. Other apps, the official ones included, cannot
-  connect meanwhile; turning the notification off in the Device tab frees the earbuds,
-  and then the app holds the connection only while it is on screen.
+- **One connection, shared.** The app holds one control connection to the earbuds, in the
+  app process (`Hub`), and the screens and the notification both use it. While PairFree's
+  notification is chosen for the earbuds, the connection stays open whenever they are
+  connected, so the battery and the noise mode are live: the earbuds report changes
+  themselves, and the battery is also read as before. Other apps, the official ones
+  included, cannot connect meanwhile; choosing Fast Pair or None in the Device tab frees the
+  earbuds, and then the app holds the connection only while it is on screen.
 
 ## Outside the app
 
-### Notification (owner, 2026-10-13; to build after Soundcore support)
+### Notification (owner, 2026-10-13; the choice with Fast Pair, 2026-10-14)
 
-- Shown while supported earbuds are connected, on by default, off with a switch in the
-  Device tab.
-- Battery for left, case and right, like Google's Fast Pair notification without the
-  pictures.
-- Buttons: one that steps through the noise modes, then game mode and 3D sound, each only
-  on earbuds that have it.
-- Android needs PairFree set up as the earbuds' companion app (a one-time system prompt
-  per pair) to start when they connect, and the notification permission on Android 13 and
-  later.
-- On earbuds that support Google Fast Pair (the Space A40) Google's own battery
-  notification shows as well; PairFree cannot hide it.
+- Shown while supported earbuds are connected (`status/StatusService.kt`, a connected-device
+  foreground service holding the channel), with their name, battery for left, case and right
+  (percent, or steps such as 3/5), and the noise mode.
+- Buttons, each only on earbuds that have it: the noise mode, which steps to the next (off,
+  cancelling, transparency, round again), and game mode. They are real buttons in the
+  notification's own layout, so the noise mode works even while the notification is
+  collapsed, where Android hides ordinary action buttons (owner's test on One UI 8,
+  2026-10-14); expanded, game mode joins it. On models that offer game mode only with LDAC off
+  (`ldac_excludes`), the game mode button is dimmed and says so while LDAC is on, as the Home
+  tab's switch is, but turning game mode off always works. Tapping elsewhere opens PairFree. 3D sound joins
+  them once the app sets it.
+- Android 14 and later let the user swipe away any app's notification while the phone is
+  unlocked, a foreground service's included. While the earbuds stay connected PairFree puts
+  it straight back (owner, 2026-10-14); None on the Device tab is the way to be rid of it.
+- A choice per pair of earbuds on the Device tab, Status notification: PairFree, Fast Pair
+  or None. Fast Pair shows only on earbuds that have it; elsewhere there are two choices.
+  PairFree replaces Google's Fast Pair notification as far as Android allows: no app can
+  hide Google's, which Google Play services shows for every Fast Pair device. So PairFree's
+  choice, and None, show a note and a button to Google Play services' notification
+  settings, where the user turns Google's off.
+- Default: PairFree's, except on earbuds with Fast Pair, which keep Google's until the user
+  chooses, so nobody sees two at once (owner, 2026-10-14).
+- Which earbuds have Fast Pair: `fast_pair` in the brand's devices.json where an owner saw
+  it (the Space A40 has it; the H3 and Air5 Pro+ do not), else PairFree looks for Google's
+  Fast Pair service (`FE2C`) on the earbuds with a short Bluetooth LE connection, once, and
+  remembers the answer. Earbuds that use another address for LE give no answer and get two
+  choices.
+- What Android needs: the notification permission on Android 13 and later, and, to start
+  the notification when the earbuds connect while PairFree is closed, PairFree linked to them
+  as their companion app (a one-time system prompt per pair). The first time earbuds with
+  PairFree's notification connect, the app asks for both, one after the other. Before the
+  link it says in its own dialog what the link is for: Android's prompt says a linked app can
+  sync information such as a caller's name, which PairFree does not do (owner's test,
+  2026-10-14). Afterwards the Device tab has a button for whichever is missing. Without the link the notification
+  starts only when PairFree is opened.
+- While it shows, the official app cannot connect; the recording steps say to choose None
+  first.
 
 Planned, not yet designed:
 

@@ -28,6 +28,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
 import io.github.omegadestroyer.pairfree.protocol.offers
+import io.github.omegadestroyer.pairfree.status.StatusUi
 import io.github.omegadestroyer.pairfree.ui.theme.Studio
 import kotlinx.coroutines.delay
 
@@ -44,6 +45,7 @@ internal fun DeviceScreen(
     model: Model?,
     actions: EarbudsActions,
     settings: List<SettingGroup> = emptyList(),
+    status: StatusUi? = null,
     onFitTest: () -> Unit = {},
 ) {
     var picker by remember { mutableStateOf<Picker?>(null) }
@@ -154,6 +156,8 @@ internal fun DeviceScreen(
         }
 
         SettingGroups(settings, SettingTab.DEVICE, actions::changeSetting)
+
+        status?.let { StatusSection(it, actions) }
 
         Panel {
             Label(stringResource(R.string.maintenance))

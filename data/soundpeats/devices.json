@@ -1,5 +1,5 @@
 {
-  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android), plus what the app's code says about each model. Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; the reports are in data/soundpeats/reports/. Names and rules marked SOUNDPEATS 2.5.3 come from that app, PeatsAudio's successor from the same company, which downloads its model data too.",
+  "_about": "Device table compiled into PeatsAudio 1.9.45 (Android), plus what the app's code says about each model. Newer models, including the H3 and Air5 Pro+, are not in the APK: the app downloads their entries at runtime. Add them here as they are confirmed on hardware. Entries with a `reports` field come from hardware, not the APK; the reports are in data/soundpeats/reports/. Names and rules marked SOUNDPEATS 2.5.3 come from that app, PeatsAudio's successor from the same company, which downloads its model data too. fast_pair says whether the phone shows Google's Fast Pair battery notification for the model, as an owner saw it; a model without it is checked on the earbuds.",
   "devices": [
     {
       "firmware_code": "ATS3019DK12",
@@ -507,6 +507,7 @@
       "names": [
         "SOUNDPEATS Air5 Pro+"
       ],
+      "fast_pair": false,
       "family": "QUALCOMM",
       "family_sources": {
         "marketed_chip": "QCC3091"
@@ -1200,6 +1201,7 @@
       "names": [
         "SOUNDPEATS H3"
       ],
+      "fast_pair": false,
       "family": "QUALCOMM",
       "family_sources": {
         "marketed_chip": "QCC3091",

@@ -4,6 +4,7 @@ import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
+import io.github.omegadestroyer.pairfree.status.StatusChoice
 
 /** What the connected screens can ask for. The app passes its view model; previews pass [NoActions]. */
 interface EarbudsActions {
@@ -33,6 +34,12 @@ interface EarbudsActions {
 
     /** Changes one of the brand's own settings (the connection's settings groups). */
     fun changeSetting(change: SettingChange)
+
+    /** Picks the battery notification for the connected earbuds. */
+    fun chooseStatus(choice: StatusChoice)
+
+    /** After the user answered a notification or companion prompt from the Device tab. */
+    fun statusChanged()
 }
 
 /** Does nothing. For previews. */
@@ -46,4 +53,6 @@ object NoActions : EarbudsActions {
     override fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) = Unit
     override fun resetTouch() = Unit
     override fun changeSetting(change: SettingChange) = Unit
+    override fun chooseStatus(choice: StatusChoice) = Unit
+    override fun statusChanged() = Unit
 }

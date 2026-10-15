@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DEVICES = ROOT / "data" / "samsung" / "devices.json"
-OURS = ("names", "reports", "notes", "kind")
+OURS = ("names", "reports", "notes", "kind", "fast_pair")
 SERVICES = {"SppLegacy": "00001102-0000-1000-8000-00805f9b34fd", "SppStandard": "00001101-0000-1000-8000-00805f9b34fb",
             "SppNew": "2e73a4ad-332d-41fc-90e2-16bef06523f2"}
 TOUCH_OPTIONS = {"VoiceAssistant": "voice_assistant", "QuickAmbientSound": "quick_ambient_sound", "Volume": "volume",

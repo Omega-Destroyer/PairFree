@@ -13,6 +13,8 @@ package io.github.omegadestroyer.pairfree.protocol
  * @property fitKeepsAnc the official app leaves the noise mode alone during the fit test;
  *   on other models it turns ANC off first.
  * @property form what the product is, for its battery label and drawing.
+ * @property fastPair whether the phone shows Google's Fast Pair battery notification for the
+ *   model, as an owner saw it (`fast_pair` in the brand's devices.json); null when not known.
  */
 public data class Model(
     val code: String,
@@ -24,6 +26,7 @@ public data class Model(
     val confirmed: Set<Command> = emptySet(),
     val fitKeepsAnc: Boolean = false,
     val form: Form = Form.EARBUDS,
+    val fastPair: Boolean? = null,
 ) {
     /** Qualcomm chips also answer GAIA v3 on vendor `00 1D` ([Gaia]). */
     val isQualcomm: Boolean get() = family == QUALCOMM_FAMILY

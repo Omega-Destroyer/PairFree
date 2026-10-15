@@ -167,7 +167,7 @@ abstract class GenerateTables : DefaultTask() {
                 "EqLayout(${hex(eqJson["command"])}, ${num(eqJson["master_gain_db"])}, " +
                     "${(eqJson.getValue("user_range_db") as Number).toInt()}, ${bands(eqJson["bands"], "base_gain_db")}, $presets)"
             }
-            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc),")
+            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}),")
         }
         out.appendLine(")")
 
@@ -260,7 +260,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
             val excludes = (d["ldac_excludes"] as List<*>? ?: emptyList<Any>())
                 .joinToString(", ", "setOf(", ")") { "io.github.omegadestroyer.pairfree.protocol.Command.${(it as String).uppercase()}" }
             val form = "io.github.omegadestroyer.pairfree.protocol.Form." + ((d["kind"] as String?) ?: "earbuds").uppercase()
-            out.appendLine("    io.github.omegadestroyer.pairfree.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes, form = $form),")
+            out.appendLine("    io.github.omegadestroyer.pairfree.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes, form = $form, fastPair = ${d["fast_pair"]}),")
         }
         out.appendLine(")")
 

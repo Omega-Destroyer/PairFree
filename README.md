@@ -13,8 +13,9 @@ directly over Bluetooth.
   settings.
 - **One app to rule them all.** Every brand gets the same screens, so one app replaces a
   drawer full of vendor apps.
-- **One permission.** Bluetooth, to talk to earbuds you have already paired. No location, no
-  scanning, no contacts.
+- **Few permissions.** Bluetooth, to talk to earbuds you have already paired, and
+  notifications for the optional status notification. No location, no scanning, no
+  contacts.
 - **Small and quick.** About 3 MB, with no login and no server to wait for.
 - **Open source.** GPL-3.0. Every protocol is documented in this repo with tests, so anyone
   can check what the app sends to their earbuds.
@@ -36,6 +37,8 @@ Each model shows only what it has:
 - Game mode, two devices at once, LDAC and LE Audio.
 - The ear tip fit test, find my earbuds, voice prompts and water drain.
 - Settings only one brand has, such as each Galaxy Bud's ambient sound level, or voice detect.
+- A status notification with the battery and buttons for noise control and game mode, in
+  place of Google's Fast Pair notification if you like.
 
 PairFree needs Android 12 or later.
 

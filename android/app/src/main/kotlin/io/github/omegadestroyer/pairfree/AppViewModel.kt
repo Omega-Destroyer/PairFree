@@ -1,17 +1,9 @@
 package io.github.omegadestroyer.pairfree
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
-import android.bluetooth.BluetoothClass
-import android.bluetooth.BluetoothManager
-import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.util.Log
-import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
@@ -46,41 +38,45 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
+import io.github.omegadestroyer.pairfree.status.CompanionLink
+import io.github.omegadestroyer.pairfree.status.FastPairCheck
+import io.github.omegadestroyer.pairfree.status.StatusChoice
+import io.github.omegadestroyer.pairfree.status.StatusPrompt
+import io.github.omegadestroyer.pairfree.status.StatusService
+import io.github.omegadestroyer.pairfree.status.StatusSettings
+import io.github.omegadestroyer.pairfree.status.StatusUi
+import io.github.omegadestroyer.pairfree.status.canNotify
 import io.github.omegadestroyer.pairfree.ui.CaptureActions
 import io.github.omegadestroyer.pairfree.ui.EarbudsActions
+import io.github.omegadestroyer.pairfree.ui.modelOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONException
 import java.net.URLEncoder
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.TimeZone
 
 /**
- * Holds the connection while the app is on screen. The app talks to the earbuds only
- * while it is visible (docs/DESIGN.md): [onStart] reconnects to the last earbuds,
- * [onStop] closes the channel.
+ * The screens' side of the app. The connection lives in the [Hub], which the status
+ * notification shares: [onStart] reconnects to the last earbuds, and [onStop] lets the channel
+ * go unless the notification holds it (docs/DESIGN.md).
  */
 class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, CaptureActions {
-    private val adapter = app.getSystemService(BluetoothManager::class.java)?.adapter
-    private val prefs = app.getSharedPreferences("pairfree", Context.MODE_PRIVATE)
+    private val hub = app.hub
+    private val adapter = hub.adapter
+    private val prefs = hub.prefs
 
-    /** Debug builds log every frame to Logcat under the tag `PairFree`; release builds log nothing. */
-    val connection = EarbudsConnection(
-        viewModelScope,
-        adapter,
-        log = if (app.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) { line -> Log.d(LOG_TAG, line) } else null,
-    )
+    val connection: EarbudsConnection = hub.connection
 
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
-    val equalizer = Equalizer(prefs, viewModelScope) { frames -> connection.sendEq(frames) }
+    val equalizer: Equalizer = hub.equalizer
 
     /** The Soundcore EQ while the Sound tab shows Soundcore earbuds whose EQ write is confirmed. */
     private var soundcoreEq: SoundcoreEqTarget? = null
@@ -143,48 +139,114 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         viewModelScope.launch { connection.soundcoreState.collect { s -> s?.let(::reportEq) } }
         viewModelScope.launch { connection.samsungStatus.collect { s -> s?.let(::reportSamsungEq) } }
         viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
-        // SoundPEATS earbuds cannot report their EQ, so each newly opened channel gets this phone's back.
-        // It also notes when its channel is open, so a recording can leave out what it sent itself.
+    }
+
+    private val statusSettings = StatusSettings(prefs)
+    private val _statusUi = MutableStateFlow<StatusUi?>(null)
+
+    /** The battery notification choice for the connected earbuds, for the Device tab. */
+    val statusUi: StateFlow<StatusUi?> = _statusUi.asStateFlow()
+
+    private val _statusPrompt = MutableStateFlow<StatusPrompt?>(null)
+
+    /** What to ask Android for next, the first time earbuds with PairFree's notification connect. */
+    val statusPrompt: StateFlow<StatusPrompt?> = _statusPrompt.asStateFlow()
+
+    /** Earbuds whose Fast Pair was looked for on the earbuds during this run. */
+    private val fastPairChecked = mutableSetOf<String>()
+
+    // After the fields above: the collectors run at once on the main thread.
+    init {
+        // The status notification follows the earbuds the screens connect to.
         viewModelScope.launch {
             connection.status.collect {
-                if (it is LinkStatus.Connected) {
-                    equalizer.channelOpened(it.device.address)
-                    if (openSince == null) openSince = snoopClockMs()
-                } else {
-                    openSince?.let { start -> storeOwnSession(start, snoopClockMs()) }
-                    openSince = null
+                when (it) {
+                    is LinkStatus.Connected -> earbudsConnected(it.device)
+                    is LinkStatus.Idle -> _statusUi.value = null
+                    else -> Unit
                 }
+            }
+        }
+        // A SOUNDPEATS model is known for sure once its firmware answers.
+        viewModelScope.launch {
+            connection.state.map { it.firmware?.code }.distinctUntilChanged().collect { connectedDevice()?.let(::refreshStatus) }
+        }
+    }
+
+    private fun connectedDevice(): Paired? = (connection.status.value as? LinkStatus.Connected)?.device
+
+    /**
+     * Earbuds connected: learns whether they have Fast Pair when their model does not say
+     * (FastPairCheck), then starts or ends the notification, asking for what it needs the first time.
+     */
+    @SuppressLint("MissingPermission") // checked first
+    private fun earbudsConnected(device: Paired) {
+        val fastPair = statusSettings.fastPair(device, modelOf(device, connection.state.value))
+        val remote = adapter?.takeIf { checkPermission() }?.getRemoteDevice(device.address)
+        if (fastPair == null && remote != null && fastPairChecked.add(device.address)) {
+            refreshStatus(device)
+            // The prompts wait for the answer: earbuds with Fast Pair keep Google's notification until the user chooses.
+            FastPairCheck.run(getApplication(), remote) { found ->
+                found?.let { statusSettings.detected(device.address, it) }
+                if (connectedDevice()?.address == device.address) applyStatus(device, prompt = true)
+            }
+            return
+        }
+        applyStatus(device, prompt = true)
+    }
+
+    private fun refreshStatus(device: Paired) {
+        val app = getApplication<Application>()
+        val fastPair = statusSettings.fastPair(device, modelOf(device, connection.state.value))
+        _statusUi.value = StatusUi(
+            device.address,
+            statusSettings.options(fastPair),
+            statusSettings.choice(device, fastPair),
+            fastPair == true,
+            canNotify(app),
+            CompanionLink.isAssociated(app, device.address),
+        )
+    }
+
+    /** Starts or ends the notification as the choice says; with [prompt], the first time, asks for what it needs. */
+    private fun applyStatus(device: Paired, prompt: Boolean) {
+        refreshStatus(device)
+        val ui = _statusUi.value ?: return
+        val app = getApplication<Application>()
+        if (ui.choice != StatusChoice.PAIRFREE) {
+            StatusService.stop(app, device.address)
+            return
+        }
+        if (ui.canNotify) StatusService.startIfWanted(app, device.address, fromBackground = false)
+        if (prompt && !statusSettings.asked(device.address)) {
+            statusSettings.markAsked(device.address)
+            _statusPrompt.value = when {
+                !ui.canNotify -> StatusPrompt.NOTIFICATIONS
+                !ui.linked -> StatusPrompt.LINK
+                else -> null
             }
         }
     }
 
-    /** When the current channel opened, on [snoopClockMs]; null while none is open. */
-    private var openSince: Long? = null
-
-    /** Now, as a snoop log counts it: local wall-clock time read as UTC (SnoopScanner.Found). */
-    private fun snoopClockMs(): Long {
-        val now = System.currentTimeMillis()
-        return now + TimeZone.getDefault().getOffset(now)
+    override fun chooseStatus(choice: StatusChoice) {
+        val device = connectedDevice() ?: return
+        statusSettings.choose(device.address, choice)
+        applyStatus(device, prompt = false)
     }
 
-    /** PairFree's own channel sessions of the last days, the open one included, widened by [OWN_MARGIN_MS]. */
-    private fun ownSessions(): List<LongRange> {
-        val open = openSince?.let { listOf(it..snoopClockMs()) }.orEmpty()
-        return (storedSessions() + open).map { (it.first - OWN_MARGIN_MS)..(it.last + OWN_MARGIN_MS) }
+    override fun statusChanged() {
+        connectedDevice()?.let { applyStatus(it, prompt = false) }
     }
 
-    private fun storedSessions(): List<LongRange> = try {
-        val a = JSONArray(prefs.getString(KEY_OWN_SESSIONS, "[]"))
-        List(a.length()) { a.getJSONArray(it).let { s -> s.getLong(0)..s.getLong(1) } }
-    } catch (_: JSONException) {
-        emptyList()
-    }
-
-    private fun storeOwnSession(start: Long, end: Long) {
-        val keep = storedSessions().filter { it.last > end - OWN_SESSIONS_KEPT_MS } + listOf(start..end)
-        val a = JSONArray()
-        for (s in keep.takeLast(MAX_OWN_SESSIONS)) a.put(JSONArray().put(s.first).put(s.last))
-        prefs.edit { putString(KEY_OWN_SESSIONS, a.toString()) }
+    /** A first-time prompt closed: the notification starts if it now can, and the companion link is asked for next. */
+    fun statusPromptDone(prompt: StatusPrompt) {
+        _statusPrompt.value = null
+        val device = connectedDevice() ?: return
+        applyStatus(device, prompt = false)
+        val ui = _statusUi.value ?: return
+        if (prompt == StatusPrompt.NOTIFICATIONS && ui.choice == StatusChoice.PAIRFREE && ui.canNotify && !ui.linked) {
+            _statusPrompt.value = StatusPrompt.LINK
+        }
     }
 
     private val _hasPermission = MutableStateFlow(checkPermission())
@@ -199,6 +261,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     val bluetoothOn: StateFlow<Boolean> = _bluetoothOn.asStateFlow()
 
     fun onStart() {
+        hub.screens(visible = true)
         _hasPermission.value = checkPermission()
         if (!_hasPermission.value) return
         refreshPaired()
@@ -208,7 +271,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         }
     }
 
-    fun onStop() = connection.disconnect()
+    fun onStop() = hub.screens(visible = false)
 
     fun onPermissionResult(granted: Boolean) {
         _hasPermission.value = granted
@@ -341,7 +404,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         // A recording starts here: what is older in the Bluetooth log is left out. Opening the
         // screen again during the same run keeps the first time.
         val opened = prefs.getLong(KEY_RECORD_OPENED, 0)
-        if (snoopClockMs() - opened > RECORD_RUN_MS) prefs.edit { putLong(KEY_RECORD_OPENED, snoopClockMs()) }
+        if (hub.snoopClockMs() - opened > RECORD_RUN_MS) prefs.edit { putLong(KEY_RECORD_OPENED, hub.snoopClockMs()) }
     }
 
     override fun closeCapture() {
@@ -365,7 +428,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val found = result as? CaptureResult.Found
         val frames = found?.frames.orEmpty()
         val packets = found?.packets.orEmpty()
-        val opened = prefs.getLong(KEY_RECORD_OPENED, 0).takeIf { it > 0 && snoopClockMs() - it < RECORD_RUN_MS }
+        val opened = prefs.getLong(KEY_RECORD_OPENED, 0).takeIf { it > 0 && hub.snoopClockMs() - it < RECORD_RUN_MS }
         val since = if (wholeLog) null else RecordingReport.start(frames, opened?.times(1000), packets)
         val writes = EqCapture.writes(frames, since)
         val matches = writes.map(CurveMatch::of)
@@ -408,7 +471,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         refreshPaired()
         val resolver = getApplication<Application>().contentResolver
         // What PairFree sent itself (its connect reads, its EQ put back) is not the official app's.
-        val own = ownSessions()
+        val own = hub.ownSessions()
         val mine = { timeMicros: Long -> own.any { timeMicros / 1000 in it } }
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
@@ -514,55 +577,28 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         return RecordingReport.OwnReads(state.firmware, connection.lastReplies, state.gaiaFeatures)
     }
 
-    @SuppressLint("MissingPermission") // callers check the permission first
     fun refreshPaired() {
         if (!checkPermission()) return
-        val on = adapter?.isEnabled == true
-        _bluetoothOn.value = on
-        // Only earbuds the app can control, not every bonded audio device. The AUDIO_VIDEO
-        // class also drops SoundPEATS watches, which share the brand name. Soundcore earbuds
-        // are known by their vendor service, which can name the model, or else by their name
-        // (docs/soundcore/PROTOCOL.md); Galaxy Buds by their name (docs/samsung/PROTOCOL.md).
-        _paired.value = if (!on) emptyList() else adapter.bondedDevices
-            .filter { it.bluetoothClass?.majorDeviceClass == BluetoothClass.Device.Major.AUDIO_VIDEO }
-            .mapNotNull { d ->
-                val name = d.name ?: d.address
-                val soundcore = SoundcoreModels.identify(name, d.uuids.orEmpty().map { it.uuid.toString() })
-                val samsung = SamsungModels.fromName(name)
-                when {
-                    soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore.service, soundcore.model)
-                    samsung != null -> Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model)
-                    Models.isSupported(d.name ?: "") -> Paired(d.address, name)
-                    else -> null
-                }
-            }
-            .sortedBy { it.name }
+        _bluetoothOn.value = adapter?.isEnabled == true
+        _paired.value = hub.pairedEarbuds()
     }
 
-    override fun onCleared() = connection.disconnect()
+    override fun onCleared() = hub.screens(visible = false)
 
-    private fun checkPermission(): Boolean =
-        ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.BLUETOOTH_CONNECT) ==
-            PackageManager.PERMISSION_GRANTED
+    private fun checkPermission(): Boolean = hub.hasPermission()
 
     private companion object {
         const val KEY_LAST = "last_earbuds"
-        const val LOG_TAG = "PairFree"
         const val ISSUES = "https://github.com/Omega-Destroyer/PairFree/issues"
 
         /** GitHub refuses links much longer than this; a longer report is pasted instead. */
         const val MAX_LINK = 8000
         const val PASTE_HERE = "Paste the report that PairFree copied here."
 
-        const val KEY_OWN_SESSIONS = "own_sessions"
         const val KEY_RECORD_OPENED = "record_opened"
 
         /** A recording run lasts at most this long from opening the screen to sharing the bug report. */
         const val RECORD_RUN_MS = 3L * 60 * 60 * 1000
 
-        /** Frames this close to PairFree's own session count as its own. */
-        const val OWN_MARGIN_MS = 1_500L
-        const val OWN_SESSIONS_KEPT_MS = 7L * 24 * 60 * 60 * 1000
-        const val MAX_OWN_SESSIONS = 200
     }
 }

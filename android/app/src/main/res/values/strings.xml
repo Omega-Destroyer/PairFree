@@ -334,6 +334,12 @@
     <string name="capture_name_first">Name at least one curve to send the report.</string>
     <string name="capture_send_hint">Nothing has left this phone yet. Send on GitHub copies the report and opens a new issue with it filled in, in your browser. It is sent only when you submit the issue there. If the issue is empty, paste the report into it.</string>
     <string name="capture_copied">Copied. If the new issue on GitHub is empty, paste the report into it, then submit it.</string>
+    <string name="setting_auto_pause">Pause when an earbud is taken out</string>
+    <string name="setting_siren_detect">Siren detection</string>
+    <string name="setting_adaptive_volume">Adaptive volume</string>
+    <string name="setting_conversation_boost">Conversation boost</string>
+    <string name="setting_hold_bixby">Bixby</string>
+    <string name="setting_hold_digital_assistant">Digital assistant</string>
     <string name="status_title">Status notification</string>
     <string name="status_option_pairfree">PairFree</string>
     <string name="status_option_fast_pair">Fast Pair</string>

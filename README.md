@@ -80,7 +80,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 |-------|--------|-----------------------|
 | [SOUNDPEATS](docs/devices/soundpeats.md) | 45 | Air5 Pro+, H3 |
 | [Soundcore (Anker)](docs/devices/soundcore.md) | 39 | Space A40 |
-| [Samsung Galaxy Buds](docs/devices/samsung.md) | 13 | — |
+| [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
 <!-- devices-summary:end -->
 
 **Known issue:** LDAC does not work on the Air5 Pro+, at least with a Samsung Galaxy S24 FE. If

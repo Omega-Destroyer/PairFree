@@ -65,13 +65,18 @@ class SamsungProtocolTest {
     @Test
     fun modelsMatchTheData() {
         assertEquals(devices.map { it.str("model") }, SamsungModels.ALL.map { it.model })
-        assertEquals(13, SamsungModels.ALL.size)
+        assertEquals(16, SamsungModels.ALL.size)
         for (d in devices) {
             val m = SamsungModels.of(d.str("model"))!!
-            val g = d.getValue("galaxybudsclient").jsonObject
-            assertEquals(g.str("base_name"), m.baseName)
-            assertEquals(g.str("framing") == "legacy", m.legacy)
-            assertEquals(g.getValue("features").jsonObject.keys, m.features.keys, m.model)
+            // Samsung's own plugin (samsung_app) wins over GalaxyBudsClient where both exist.
+            val app = d["samsung_app"]?.jsonObject
+            val g = d["galaxybudsclient"]?.jsonObject
+            assertEquals((app ?: g)!!.getValue("features").jsonObject.keys, m.features.keys, m.model)
+            assertEquals(app != null, m.buds4Layout, m.model)
+            if (g != null) {
+                assertEquals(g.str("base_name"), m.baseName)
+                assertEquals(g.str("framing") == "legacy", m.legacy)
+            }
         }
         assertTrue(SamsungModels.of("SM-R170")!!.legacy, "the Galaxy Buds (2019)")
         assertEquals("00001102-0000-1000-8000-00805f9b34fd", SamsungModels.of("SM-R170")!!.serviceUuid)
@@ -92,6 +97,14 @@ class SamsungProtocolTest {
         assertEquals("SM-R180", SamsungModels.fromName("Galaxy Buds Live (A1B2)")?.model)
         assertEquals("SM-R420", SamsungModels.fromName("Galaxy Buds3 FE (A1B2)")?.model)
         assertNull(SamsungModels.fromName("Soundcore Space A40"))
+        // Models Samsung's plugin matches by more than one name.
+        assertEquals("SM-R640", SamsungModels.fromName("Galaxy Buds4 Pro (A1B2)")?.model)
+        assertEquals("SM-R540", SamsungModels.fromName("Galaxy Buds4 (A1B2)")?.model)
+        assertEquals("SM-U600", SamsungModels.fromName("Galaxy Buds On (A1B2)")?.model)
+        assertEquals("SM-U700", SamsungModels.fromName("Samsung H1")?.model)
+        assertEquals("SM-U700", SamsungModels.fromName("Galaxy H1 (A1B2)")?.model)
+        assertEquals("SM-R545", SamsungModels.fromName("Galaxy T1 (A1B2)")?.model)
+        assertNull(SamsungModels.fromName("SOUNDPEATS H1"), "another brand's H1")
     }
 
     @Test

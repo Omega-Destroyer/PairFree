@@ -70,7 +70,12 @@ from one brand to another. So far: `soundpeats`, `soundcore` and `samsung`.
   (github.com/timschneeb/GalaxyBudsClient, Tim Schneeberger, GPLv3 without "or later"). No Galaxy
   Buds have been tried; the owner has none, so every model relies on users' device reports. 7
   models' state layouts are checked against the replies in GalaxyBudsClient's tests
-  (`data/samsung/test_vectors.json`); the Buds Core, Buds3 and later are its code alone.
+  (`data/samsung/test_vectors.json`); the Buds Core and Buds3 models are its code alone. For the
+  Buds4 family and three models GalaxyBudsClient lacks (Buds On, H1, T1), `samsung_app` in
+  `data/samsung/devices.json` holds what Samsung's own Galaxy Buds plugin says (budsunitemgr
+  9.0.10, decompiled outside the repo on 2026-10-14): it wins over GalaxyBudsClient field by field,
+  and `SamsungModel.buds4Layout` switches to its state layout and writes
+  (`docs/samsung/PROTOCOL.md` section 12).
 - `data/samsung/messages.json` is the message table and `data/samsung/devices.json` the model table;
   `generateSamsungTables` turns them into `SamsungMessage` and the model list in the
   `protocol.samsung` package. The app finds Galaxy Buds by Bluetooth name

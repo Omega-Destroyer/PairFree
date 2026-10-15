@@ -16,6 +16,10 @@ import io.github.omegadestroyer.pairfree.protocol.Model
  * @property touchHold the touch-and-hold options as (byte, option).
  * @property colors the colours by the device id the state reports.
  * @property features each feature with the lowest state revision that has it (null: every revision).
+ * @property layout the state layout Samsung's own plugin reads, where PairFree has read it (`buds4` for the
+ *   Buds4 family and the models only that plugin knows), else null for GalaxyBudsClient's.
+ * @property matchNames more Bluetooth names Samsung's plugin matches, besides [baseName].
+ * @property form earbuds, or a headset with one battery.
  */
 public data class SamsungModel(
     val model: String,
@@ -29,7 +33,13 @@ public data class SamsungModel(
     val touchHold: List<Pair<Int, String>>,
     val colors: Map<Int, String>,
     val features: Map<String, Int?>,
+    val layout: String? = null,
+    val matchNames: List<String> = emptyList(),
+    val form: Form = Form.EARBUDS,
 ) {
+    /** The layout and writes of Samsung's own plugin for the Buds4 family (docs/samsung/PROTOCOL.md section 12). */
+    public val buds4Layout: Boolean get() = layout == "buds4"
+
     /** True when the model has [feature] at state [revision], as GalaxyBudsClient decides it. */
     public fun supports(feature: String, revision: Int?): Boolean {
         if (feature !in features) return false
@@ -48,7 +58,7 @@ public object SamsungModels {
     public val ALL: List<SamsungModel> get() = SAMSUNG_MODELS
 
     /** Every model as a [Model] for the screens. The earbuds run their fit test as they are, noise mode and all. */
-    public val TABLE: List<Model> by lazy { SAMSUNG_MODELS.map { Model(it.model, it.names, "SAMSUNG", fitKeepsAnc = true, form = Form.EARBUDS) } }
+    public val TABLE: List<Model> by lazy { SAMSUNG_MODELS.map { Model(it.model, it.names, "SAMSUNG", fitKeepsAnc = true, form = it.form) } }
 
     public fun of(model: String?): SamsungModel? = SAMSUNG_MODELS.firstOrNull { it.model == model }
 
@@ -58,12 +68,14 @@ public object SamsungModels {
 
     /**
      * The model for a paired device's Bluetooth [name], or null when it is not a Galaxy Buds name.
-     * As in GalaxyBudsClient, the name must contain the model's base name, and longer base names are
-     * tried first, so `Buds3 Pro` wins over `Buds3`. The Galaxy Buds2 and later can be renamed;
+     * As in GalaxyBudsClient, the name must contain the model's base name, or one of the names Samsung's
+     * plugin matches, and longer names are tried first, so `Buds3 Pro` wins over `Buds3`. The Galaxy Buds2 and later can be renamed;
      * a renamed pair is not found.
      */
     public fun fromName(name: String): SamsungModel? =
-        SAMSUNG_MODELS.sortedByDescending { it.baseName.length }.firstOrNull { name.contains(it.baseName, ignoreCase = true) }
+        SAMSUNG_MODELS.flatMap { m -> (listOf(m.baseName) + m.matchNames).map { it to m } }
+            .sortedByDescending { it.first.length }
+            .firstOrNull { name.contains(it.first, ignoreCase = true) }?.second
 
     /** The service the earbuds offer for their settings, as GalaxyBudsClient opens it. */
     public fun serviceFor(model: SamsungModel): String = model.serviceUuid

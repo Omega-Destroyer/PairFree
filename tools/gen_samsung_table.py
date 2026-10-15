@@ -5,9 +5,11 @@ usage: python tools/gen_samsung_table.py          rewrite it, and every other de
 
 One row per model in data/samsung/devices.json, in Samsung's order. What a model has comes from
 GalaxyBudsClient's specification of it (tools/import_galaxybudsclient.py), some features only from
-a state revision on, which newer firmware sends. A model counts as tested once it has a report
-under data/samsung/reports, and as checked when PairFree reads the state replies GalaxyBudsClient's
-tests hold for it (galaxybudsclient_extended_status in data/samsung/test_vectors.json).
+a state revision on, which newer firmware sends, or for the Buds4 family and the models only it
+knows from Samsung's own Galaxy Buds plugin (samsung_app), which wins where both exist. A model
+counts as tested once it has a report under data/samsung/reports, and as checked when PairFree
+reads the state replies GalaxyBudsClient's tests hold for it (galaxybudsclient_extended_status in
+data/samsung/test_vectors.json).
 """
 import json
 from html import escape
@@ -37,6 +39,11 @@ def checked_models():
     return {c["model"] for c in vectors.get("galaxybudsclient_extended_status", [])}
 
 
+def spec(model):
+    """GalaxyBudsClient's block with Samsung's plugin's (samsung_app) over it, field by field."""
+    return {**model.get("galaxybudsclient", {}), **model.get("samsung_app", {})}
+
+
 def mark(features, name):
     """✅ when the model has the feature, with the lowest state revision that has it where there is one."""
     if name not in features:
@@ -55,25 +62,29 @@ def equalizer(f):
 
 
 def hold_cycle(model, generations):
-    """Which modes touch and hold switches between: offered before the Buds3, read only from then on."""
-    if "noise_control" not in model["galaxybudsclient"]["features"]:
+    """Which modes touch and hold switches between: offered before the Buds3 and on the Buds4 family
+    (Samsung's plugin shows its write), read only on the others."""
+    s = spec(model)
+    if "noise_control" not in s["features"] or "noise_control_mode_dual_side" not in s["features"] and s.get("layout"):
         return NO
-    return "Not yet" if model["galaxybudsclient"]["generation"] >= generations[NEW_CYCLE_FROM] else YES
+    if s.get("layout") == "buds4":
+        return YES
+    return "Not yet" if s["generation"] >= generations[NEW_CYCLE_FROM] else YES
 
 
 # Column header and its cell. The last two are not in PairFree.
 COLUMNS = [
-    ("Noise control", lambda m, g: noise(m["galaxybudsclient"]["features"])),
-    ("Equalizer", lambda m, g: equalizer(m["galaxybudsclient"]["features"])),
+    ("Noise control", lambda m, g: noise(spec(m)["features"])),
+    ("Equalizer", lambda m, g: equalizer(spec(m)["features"])),
     ("Touch controls", lambda m, g: YES),
     ("Hold switches between", hold_cycle),
-    ("Fit test", lambda m, g: mark(m["galaxybudsclient"]["features"], "gear_fit_test")),
-    ("Ambient per earbud", lambda m, g: mark(m["galaxybudsclient"]["features"], "ambient_customize")),
-    ("Voice detect", lambda m, g: mark(m["galaxybudsclient"]["features"], "detect_conversations")),
-    ("Balance", lambda m, g: mark(m["galaxybudsclient"]["features"], "stereo_pan")),
-    ("Seamless connection", lambda m, g: mark(m["galaxybudsclient"]["features"], "seamless_connection")),
-    ("Game mode", lambda m, g: mark(m["galaxybudsclient"]["features"], "gaming_mode")),
-    ("Spatial audio", lambda m, g: mark(m["galaxybudsclient"]["features"], "spatial_sensor")),
+    ("Fit test", lambda m, g: mark(spec(m)["features"], "gear_fit_test")),
+    ("Ambient per earbud", lambda m, g: mark(spec(m)["features"], "ambient_customize")),
+    ("Voice detect", lambda m, g: mark(spec(m)["features"], "detect_conversations")),
+    ("Balance", lambda m, g: mark(spec(m)["features"], "stereo_pan")),
+    ("Seamless connection", lambda m, g: mark(spec(m)["features"], "seamless_connection")),
+    ("Game mode", lambda m, g: mark(spec(m)["features"], "gaming_mode")),
+    ("Spatial audio", lambda m, g: mark(spec(m)["features"], "spatial_sensor")),
 ]
 
 
@@ -82,13 +93,13 @@ def battery(f):
 
 
 def short(name):
-    return name.removeprefix("Galaxy ")
+    return name.removeprefix("Galaxy ").removeprefix("Samsung ")
 
 
 def rows(devices, checked=frozenset()):
-    generations = {m["galaxybudsclient"]["device"]: m["galaxybudsclient"]["generation"] for m in devices}
+    generations = {spec(m)["device"]: spec(m)["generation"] for m in devices}
     out = []
-    for m in sorted(devices, key=lambda m: m["galaxybudsclient"]["generation"]):
+    for m in sorted(devices, key=lambda m: spec(m)["generation"]):
         name = escape(", ".join(short(n) for n in m["names"]))
         reports = [r for r in m.get("reports", []) if (ROOT / r).exists()]
         code = escape(m["model"])
@@ -99,7 +110,10 @@ def rows(devices, checked=frozenset()):
             status = "Checked"
         else:
             status = "Not tested"
-        cells = [name, code, status, battery(m["galaxybudsclient"]["features"])]
+        if status == "Not tested" and "samsung_app" in m:
+            status = "Samsung's app"
+        kind = "One" if m.get("kind") == "headphones" else battery(spec(m)["features"])
+        cells = [name, code, status, kind]
         cells += [cell(m, generations) for _, cell in COLUMNS]
         out.append("<tr>" + "".join(f"<td>{c}</td>" for c in cells) + "</tr>")
     return out
@@ -116,11 +130,14 @@ def table():
         START,
         f"{len(devices)} models. What each model has, and where each setting sits in its state, comes from "
         f'<a href="{escape(src["url"])}">GalaxyBudsClient</a> (commit <code>{escape(src["commit"][:7])}</code>, '
-        f"{escape(src['date'])}), the open-source Galaxy Buds app by {escape(src['author'])}.",
+        f"{escape(src['date'])}), the open-source Galaxy Buds app by {escape(src['author'])}. For the Buds4 family "
+        "and three models GalaxyBudsClient does not have, it comes from Samsung's own Galaxy Buds plugin "
+        "(budsunitemgr 9.0.10), which corrects GalaxyBudsClient where they differ.",
         "",
         f"<b>Tested</b> ({len(tested)}): tried on the earbuds with PairFree. "
         f"<b>Checked</b> ({len(checked - tested)}): PairFree reads the state replies from the model that "
-        "GalaxyBudsClient's tests hold. <b>Not tested</b>: read from GalaxyBudsClient's code alone. A device "
+        "GalaxyBudsClient's tests hold. <b>Samsung's app</b>: read from Samsung's own plugin, with no reply from "
+        "real earbuds yet. <b>Not tested</b>: read from GalaxyBudsClient's code alone. A device "
         f'report from any model helps (<a href="{HELP}">Help add your model</a>).',
         "",
         f"{YES} the model has it. {NO} it does not, as far as GalaxyBudsClient knows. <i>rev. N+</i>: only "

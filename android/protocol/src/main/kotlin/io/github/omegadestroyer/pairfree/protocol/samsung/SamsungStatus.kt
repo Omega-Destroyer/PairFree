@@ -140,7 +140,7 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
                     f["touch_hold_on_for_call_on"] = bit(10, 5)
                     f["double_tap_for_call_on"] = bit(10, 4)
                 }
-                if (supports("advanced_touch_lock_swipe")) f["swipe_on"] = bit(10, 6)
+                if (supports("advanced_touch_lock_swipe") || model.buds4Layout) f["swipe_on"] = bit(10, 6)
             }
             f["touchpad_option_l"] = (u8(11) and 0xF0) shr 4
             f["touchpad_option_r"] = u8(11) and 0x0F
@@ -149,7 +149,8 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
             f["color_l"] = color(14)
             f["color_r"] = color(16)
             f["voice_wake_up_lang"] = u8(18)
-            if (supports("seamless_connection")) f["seamless_connection_enabled"] = u8(19) == 0
+            // Samsung's plugin reads 1 as on for the Buds4 family; GalaxyBudsClient 0 as on for the others.
+            if (supports("seamless_connection")) f["seamless_connection_enabled"] = if (model.buds4Layout) u8(19) == 1 else u8(19) == 0
             if (supports("smart_things_find")) f["fmm_revision"] = u8(20)
 
             if (device == "BudsLive") {
@@ -248,6 +249,8 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
                 f["is_case_charging"] = b and 0x01 != 0
             }
 
+            if (model.buds4Layout) return readBuds4(model, p, f, revision)
+
             if (model.device == "Buds2Pro") {
                 if (revision >= 1) {
                     f["call_path_control"] = next() == 0
@@ -306,6 +309,63 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
             if (model.supports("hot_command_language_update", revision)) f["hot_command_version"] = "${next()}.${next()}.${next()}"
         }
 
+        /**
+         * The rest of the state as Samsung's own plugin reads it for the Buds4 family and the models only it knows
+         * (docs/samsung/PROTOCOL.md section 12), from byte 34. It differs from GalaxyBudsClient's from byte 40: an auto
+         * adjust sound byte at 41 and no lighting byte, so head tracking, charging and the settings after them sit one
+         * byte later. Each model then adds its own fields.
+         */
+        private fun readBuds4(model: SamsungModel, p: ByteArray, f: MutableMap<String, Any>, revision: Int) {
+            fun u8(i: Int): Int = p[i].toInt() and 0xFF
+            fun bool(i: Int): Boolean = u8(i) == 1
+            f["call_path_control"] = u8(34) == 0
+            f["spatial_audio"] = bool(35)
+            f["customize_conversation_boost"] = bool(36)
+            f["customize_noise_reduction_level"] = u8(37)
+            f["neck_stretch_calibration"] = bool(38)
+            f["bixby_keyword"] = u8(39)
+            f["noise_reduction_amplify"] = bool(40)
+            f["auto_adjust_sound"] = bool(41)
+            f["spatial_audio_head_tracking"] = bool(42)
+            val charging = u8(43)
+            f["is_left_charging"] = charging and 0x10 != 0
+            f["is_right_charging"] = charging and 0x04 != 0
+            f["is_case_charging"] = charging and 0x01 != 0
+            f["extra_clear_call_sound"] = bool(44)
+            f["extra_high_ambient_enabled"] = bool(45)
+            f["auto_pause_resume"] = bool(46)
+            f["hot_command_enabled"] = bool(47)
+            f["hot_command_language"] = u8(48)
+            f["adjust_sound_fit"] = u8(49)
+            f["adaptive_volume_enabled"] = bool(50)
+            f["double_pinch_and_hold_advanced"] = u8(51)
+            f["siren_detect"] = bool(52)
+            f["adapt_sound_enabled"] = bool(53)
+            f["hot_command_version"] = "${p[54].toInt()}.${p[55].toInt()}.${p[56].toInt()}"
+            f["voice_boost"] = bool(57)
+            f["volume_normalization"] = bool(58)
+            f["digital_assistant"] = u8(59)
+            var at = 60
+            fun more(): Boolean = at < p.size
+            when (model.device) {
+                "BudsOn" -> {
+                    if (more()) f["gesture_on"] = u8(at++) == 3
+                    if (more()) f["gesture_mode"] = u8(at++)
+                    if (more()) f["auto_switch_left_right"] = u8(at++) == 1
+                }
+                "Buds4Pro" -> {
+                    f["loud_noise_reduction"] = bool(at++)
+                    f["adaptive_response_level"] = u8(at++)
+                    if (revision >= 5 && more()) f["noise_monitor"] = u8(at++) == 1
+                    if (revision >= 5 && more()) {
+                        f["wdrc_call"] = u8(at++) == 1
+                        f["wdrc_music"] = u8(at++) == 1
+                    }
+                }
+                "H1", "T1" -> if (more()) f["auto_power_off_timer"] = u8(at++)
+            }
+        }
+
         /** The raw byte that says which modes touch and hold switches between (docs/samsung/PROTOCOL.md section 7). */
         public const val NOISE_CYCLE: String = "noise_cycle"
 
@@ -313,6 +373,7 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
          * The Galaxy Buds3 and later write that byte in a newer layout, with adaptive among the
          * modes. GalaxyBudsClient writes it so for them, and its parser has the matching branch,
          * but gates the branch on a feature no model lists; PairFree reads it as it is written.
+         * Samsung's own plugin reads and writes it so for the Buds4 family.
          */
         public fun newCycleLayout(model: SamsungModel): Boolean = model.atLeast("Buds3")
 

@@ -165,6 +165,10 @@ private fun settingTitle(key: String): String = when (key) {
     "call_path" -> stringResource(R.string.setting_call_path)
     "seamless_connection" -> stringResource(R.string.setting_seamless_connection)
     "voice_wakeup" -> stringResource(R.string.setting_voice_wakeup)
+    "auto_pause" -> stringResource(R.string.setting_auto_pause)
+    "siren_detect" -> stringResource(R.string.setting_siren_detect)
+    "adaptive_volume" -> stringResource(R.string.setting_adaptive_volume)
+    "conversation_boost" -> stringResource(R.string.setting_conversation_boost)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
     else -> key
@@ -199,6 +203,8 @@ private fun optionName(key: String, option: String): String = when {
     key.startsWith("hold_") -> stringResource(
         when (option) {
             "voice_assistant" -> R.string.action_voice_assistant
+            "bixby" -> R.string.setting_hold_bixby
+            "digital_assistant" -> R.string.setting_hold_digital_assistant
             "noise_control" -> R.string.action_anc_cycle
             "volume" -> R.string.setting_hold_volume
             "spotify" -> R.string.setting_hold_spotify

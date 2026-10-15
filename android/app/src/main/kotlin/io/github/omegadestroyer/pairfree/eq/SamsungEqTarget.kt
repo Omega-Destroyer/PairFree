@@ -13,14 +13,15 @@ import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
  * Galaxy Buds (docs/samsung/PROTOCOL.md section 6): Normal or one of five presets, which the
  * earbuds apply themselves, and on models that take one a nine-band custom curve. The earbuds
  * report which they hold, but not the custom curve, and forget the curve when they power off; so
- * this phone keeps the curve it last sent and sends it again once per connection.
+ * this phone keeps the curve it last sent and sends it again once per connection. Where the
+ * earbuds reported every preset's curve ([curves], the Buds4 family), the presets are drawn.
  */
-class SamsungEqTarget(val model: SamsungModel) : EqTarget {
+class SamsungEqTarget(val model: SamsungModel, private val curves: List<List<Int>> = emptyList()) : EqTarget {
     override val reportsEq: Boolean = true
     override val hasPreamp: Boolean = false
     override val hasStock: Boolean = false
     override val hasCustom: Boolean = SamsungEq.hasCustom(model)
-    override val presetCurves: Boolean = false
+    override val presetCurves: Boolean = curves.size > SamsungEq.PRESETS.size && curves.all { it.size == SamsungEq.CUSTOM_BANDS_HZ.size }
 
     /** The screen's view: the custom curve's bands (also on models without one, for the profile lists) and the presets. */
     val layout: EqLayout = EqLayout(
@@ -28,8 +29,10 @@ class SamsungEqTarget(val model: SamsungModel) : EqTarget {
         masterGainDb = 0.0,
         userRangeDb = SamsungEq.CUSTOM_RANGE,
         bands = SamsungEq.CUSTOM_BANDS_HZ.map { EqBand(it, 0.0, 0.0) },
-        presets = (listOf(SamsungEq.NORMAL) + SamsungEq.PRESETS).map { key ->
-            EqPreset(NAMES.getValue(key), SamsungEq.CUSTOM_BANDS_HZ.map { EqBand(it, 0.0, 0.0) })
+        // By equalizer number: Normal, then the presets, as the earbuds' curves come.
+        presets = (listOf(SamsungEq.NORMAL) + SamsungEq.PRESETS).mapIndexed { i, key ->
+            val curve = curves.getOrNull(i).takeIf { presetCurves }
+            EqPreset(NAMES.getValue(key), SamsungEq.CUSTOM_BANDS_HZ.mapIndexed { b, hz -> EqBand(hz, 0.0, curve?.get(b)?.toDouble() ?: 0.0) })
         },
     )
 

@@ -21,6 +21,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
+import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
@@ -99,7 +100,8 @@ class Hub(private val app: Application) {
      * control, not every bonded audio device. The AUDIO_VIDEO class also drops SoundPEATS watches,
      * which share the brand name. Soundcore earbuds are known by their vendor service, which can
      * name the model, or else by their name (docs/soundcore/PROTOCOL.md); Galaxy Buds by their name
-     * (docs/samsung/PROTOCOL.md); Sony's by their services or name (docs/sony/PROTOCOL.md). Empty
+     * (docs/samsung/PROTOCOL.md); Sony's by their services or name (docs/sony/PROTOCOL.md); Bose's
+     * by Bose's services or "Bose" in the name (docs/bose/PROTOCOL.md). Empty
      * without the permission or with Bluetooth off.
      */
     @SuppressLint("MissingPermission") // checked first
@@ -117,6 +119,7 @@ class Hub(private val app: Application) {
                     soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore.service, soundcore.model)
                     samsung != null -> Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model)
                     sony != null -> Paired(d.address, name, Brand.SONY, sony.service, sony.model?.name)
+                    BoseModels.isBose(name, uuids) -> Paired(d.address, name, Brand.BOSE)
                     Models.isSupported(d.name ?: "") -> Paired(d.address, name)
                     else -> null
                 }

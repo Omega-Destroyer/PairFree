@@ -1,0 +1,28 @@
+{
+  "_about": "Bose's headphones, earbuds and neckbands by the product id they report (ProductInfo 0.3), with the name and codename Bose's app (com.bose.bosemusic 13.3.4 (Bose), BoseProductId) gives them; its speakers, soundbars, glasses, hearing devices and unreleased codenames are left out. kind is headphones, earbuds or neckband. bosectl says where bosectl (github.com/aaronsb/bosectl, MIT, commit below) was tried on the model. reports lists device reports under data/bose/reports.",
+  "bosectl_commit": "70570b29c1d3c9ba775b08a29eaea72385de27b5",
+  "devices": [
+    {"product_id": "400C", "name": "Bose QuietComfort 35", "codename": "wolfcastle", "kind": "headphones", "bosectl": "tested as QC35 or QC35 II"},
+    {"product_id": "4020", "name": "Bose QuietComfort 35 Series 2", "codename": "baywolf", "kind": "headphones", "bosectl": "tested as QC35 or QC35 II"},
+    {"product_id": "4024", "name": "Bose NC 700 Headphones", "codename": "goodyear", "kind": "headphones"},
+    {"product_id": "4039", "name": "Bose QC 45", "codename": "duran", "kind": "headphones", "bosectl": "tested"},
+    {"product_id": "4075", "name": "Bose QuietComfort Headphones", "codename": "prince", "kind": "headphones", "bosectl": "tested"},
+    {"product_id": "4066", "name": "Bose QC Ultra Headphones", "codename": "lonestarr", "kind": "headphones"},
+    {"product_id": "4082", "name": "Bose QC Ultra 2 HP", "codename": "wolverine", "kind": "headphones", "bosectl": "tested"},
+    {"product_id": "4083", "name": "Bose QC 2 HP", "codename": "mariah", "kind": "headphones"},
+    {"product_id": "4012", "name": "Bose SoundSport", "codename": "ice", "kind": "neckband"},
+    {"product_id": "4013", "name": "Bose SoundSport Pulse", "codename": "flurry", "kind": "neckband"},
+    {"product_id": "4014", "name": "Bose QuietControl 30", "codename": "powder", "kind": "neckband"},
+    {"product_id": "4018", "name": "Bose SoundSport Free", "codename": "levi", "kind": "earbuds"},
+    {"product_id": "402D", "name": "Bose Sport Earbuds", "codename": "revel", "kind": "earbuds"},
+    {"product_id": "402F", "name": "Bose QuietComfort Earbuds", "codename": "lando", "kind": "earbuds", "bosectl": "tested"},
+    {"product_id": "403A", "name": "Bose Sport Open Earbuds", "codename": "gwen", "kind": "earbuds"},
+    {"product_id": "4064", "name": "Bose QC Earbuds II", "codename": "smalls", "kind": "earbuds"},
+    {"product_id": "4068", "name": "Bose Ultra Open Earbuds", "codename": "serena", "kind": "earbuds", "bosectl": "tested"},
+    {"product_id": "4072", "name": "Bose QC Ultra Earbuds", "codename": "scotty", "kind": "earbuds"},
+    {"product_id": "4062", "name": "Bose QC Ultra 2 Earbuds", "codename": "edith", "kind": "earbuds", "bosectl": "tested"},
+    {"product_id": "4089", "name": "Bose Ultra Open 2 Earbuds", "codename": "aubrey", "kind": "earbuds"},
+    {"product_id": "4097", "name": "Bose Sport Open Earbuds", "codename": "spice", "kind": "earbuds"},
+    {"product_id": "0023", "name": "Bose QuietComfort Earbuds", "codename": "brussels", "kind": "earbuds"}
+  ]
+}

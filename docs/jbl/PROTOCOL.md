@@ -33,12 +33,12 @@ shows. The control classes fall into families (`com.harman.cmdctrl.imp.control.u
 |--------|----------------|----------|
 | `bes` (31 classes) | Harman commands (section 2) | Yes, the classes with a dash4 config |
 | `protocol3` (7) | Harman commands, settings as feature records | Yes |
-| `protocol4` (22) | JBL's newer protocol, mostly behind a BLE security mode | No |
+| `protocol4` (22) | JBL's newer protocol (section 6), mostly behind a BLE security mode | Yes, the models with no security mode |
 | `airoha`, `lea`, `hid` | Airoha's SDK, LE Audio, USB | No |
 
 The older `com.harman.cmdctrl.imp.bes` classes (Live 220BT to Tour Pro+) have no dash4 config,
 so what each model has is not in the app; they are left out until reports say. `devices.json`
-lists the 48 models PairFree covers; section 5 says how each model's class sends its settings.
+lists the 61 models PairFree covers; section 5 says how each model's class sends its settings.
 
 ## 2. Frames
 
@@ -84,7 +84,10 @@ company id 3787 (`0x0ECB`), or service data on `FDDF`. Its "classic" advert hold
 The CRC is CRC-16/ARC (`com.harman.utils.c`), of the name's first 31 bytes, or of its first 50.
 JBL's app takes a classic advert whose product id it knows and that carries this phone's name
 CRC, so it connects to earbuds already connected to the phone. Its newer "p5" advert (protocol 4
-models) holds the CRC of the classic address, which the app compares with the paired device's.
+models) holds the CRC of the classic address, which the app compares with the paired device's:
+after the product id comes a two-byte word whose bits say which fields follow (bit 15 colour, 14
+and 13 the phones' name CRCs, 12 the address CRC, 11 the address and more), then those fields in
+that order (`qi.b`, BroadcastParse). PairFree reads both layouts.
 
 PairFree first connects over LE to the classic address itself, since JblTray found the Tune
 Flex 2 answers there, and needs no scan for that. Only if that fails within 10 s does it scan,
@@ -181,14 +184,15 @@ and `1B` left and right earbud, `1C` case (each: charging, level).
   `feature` models (`protocol3`, and the Junior 320BT and 470NC, Live Beam 3, Live Flex 3 and
   Quantum 360 classes) read and write auto power-off and auto play/pause, and read the product
   id, firmware and battery, as feature records. All read the battery with `25` too, as JblTray
-  does on the Tune Flex 2.
+  does on the Tune Flex 2. `p4` models speak protocol 4 (section 6).
 - **noise:** `modes` (command `91`, every class whose `setAncSetting` uses `VERSION_NEW`),
-  `old` (`31` and `32`: Live 460NC and 660NC, Reflect Flow Pro, Endurance Race; off sends both)
-  or `club` (the Club One: off sends `31` alone, `VERSION_OLD_CLUB_950_ONE`).
+  `old` (`31` and `32`: Live 460NC and 660NC, Reflect Flow Pro, Endurance Race; off sends both),
+  `club` (the Club One: off sends `31` alone, `VERSION_OLD_CLUB_950_ONE`) or `asc` (protocol 4,
+  section 6).
 - **modes:** which of noise cancelling, Ambient Aware and TalkThru the model's noise card in
   JBL's dashboard offers: `AscCard` and its variants all three, `AscCardNoAnc` the two ambient
   ones, `AscCardNoAaTt`, `AscOnlyANCCard`, `AncCard` and `AncClubOneCard` noise cancelling
-  alone. A model with no noise card (the Tune 520BT, for one) gets no noise control, even
+  alone; protocol 4's `AscStatusCard` and its two variants all three. A model with no noise card (the Tune 520BT, for one) gets no noise control, even
   though its config lists the three modes.
 - **auto_off:** `v1`, `v2` or `feature`, by the class's `setAutoPowerOffStatus`, where the
   dashboard has `AutoPowerOffCard` (never, 30 or 60 minutes) or `AutoOffCard` (on or off; JBL's
@@ -200,18 +204,54 @@ noise cancelling and ambient sound) when a model has both, and TalkThru as a swi
 models with other sets get a switch per mode. After a change it reads the setting again 3 s
 later, so the screen shows what the earbuds hold.
 
-## 6. Never sent
+## 6. Protocol 4
+
+JBL's newest models speak another frame (`com.harman.protocol4`: `AssembleCmd4`,
+`DeviceInfoList4Cmd`, `CommonParse`), over the same GATT service and characteristics when the
+product list gives the model no BLE security mode, as for the 13 models in `devices.json`
+(Tune Buds, Beam and Flex 3; Vibe and Wave Buds, Beam and Flex 3; Sense Lite; Endurance Zone;
+Tune 135BT and 235BT). The others (Tour Pro 4, Live 4, Tune 680NC and more) first authenticate
+over a separate characteristic (`bleSecurityMode` 1 to 3); PairFree leaves them out.
+
+```
+identifier (2)  command (2)  packet count (1)  packet index (1)  length (2)  payload
+```
+
+Two-byte fields are low byte first. The identifier is `DD00`, or `DD01` for what concerns the
+charging case; commands are `0001` read, `0002` write, `0003` a notification from the earbuds.
+A read's payload lists feature ids (two bytes each); a write's gives per feature its id, the
+value's length (two bytes each) and the value. An answer's or notification's first packet
+starts with a status code (two bytes, 0 when all is well) and then the same records as a write.
+JBL's app splits payloads over 497 bytes into several packets and joins answers by index.
+
+Features PairFree uses (`DeviceInfoFeature5`): `4` product id (two bytes), `12` firmware (its
+bytes, shown joined by dots), `13` and `14` the left and right earbud's battery, `7939` the
+case's, `24` noise cancelling, `25` Ambient Aware, `26` TalkThru, `73` ambient sound control
+and `47` host type. A battery or mode is one byte: bit 7 the status (charging, or the mode
+selected), bits 0 to 6 the level; a level of 127 leaves it as it is.
+
+On connecting, JBL's app writes host type 1 and then reads. On the models with noise control
+(`TuneFlex3Control`, `WaveFlex3Control`, `TuneBeam3Control`), it sets a mode by writing ambient
+sound control on together with the mode's feature, status 1 and the mode's level, and turns
+noise control off by writing ambient sound control off with the current mode. It reads the
+mode back as the one of noise cancelling, Ambient Aware and TalkThru whose status is 1, and off
+when ambient sound control is off (`gn.l0`). PairFree does the same, with the level each mode
+last reported, or 127 before it has reported one.
+
+## 7. Never sent
 
 `commands.json`'s `never_send`: `95` factory reset, `97` power off, `F0` firmware update, `AA`
-preserve settings, `13` and `15` analytics. JBL's firmware updates go over separate services
-PairFree never opens.
+preserve settings, `13` and `15` analytics. In protocol 4: `00FF` factory reset, `0101` to
+`0104` firmware update, `0201` and `02FF` analytics. JBL's firmware updates go over separate
+services PairFree never opens.
 
-## 7. Open questions
+## 8. Open questions
 
 - Whether bytes 7–8 of the classic advert are the CRC of the classic address, as the name JBL's
   app gives them says; it does not compare them for these models.
 - Which models' LE side answers on the classic address, as the Tune Flex 2's does.
 - Whether the feature-family headphones (Junior, Quantum 360) answer the battery read `25`.
+- Protocol 4 has no recorded frame yet: everything in section 6 is from JBL's app alone.
 - What the acknowledgement's status values mean; PairFree reads a setting back rather than
   trusting them.
 - The equalizer: JBL's app writes a whole curve of filters as floating-point numbers with a

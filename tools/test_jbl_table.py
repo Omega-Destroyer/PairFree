@@ -42,6 +42,8 @@ class JblTable(unittest.TestCase):
         self.assertIn("JblTray", flex2["Status"])
         self.assertEqual("Serial", self.row("2113")["Connection"], "the Quantum 360")
         self.assertEqual("auto power-off", self.row("20B4")["Settings"], "the Tune 720BT has no noise control")
+        self.assertEqual("noise cancelling, Ambient Aware, TalkThru", self.row("21B6")["Settings"], "the Tune Flex 3, on protocol 4")
+        self.assertEqual("battery only", self.row("2133")["Settings"], "the Sense Lite")
 
 
 class JblData(unittest.TestCase):
@@ -52,7 +54,7 @@ class JblData(unittest.TestCase):
         for d in devices:
             self.assertIn(d["kind"], gen.KINDS, d["name"])
             self.assertIn(d["connect"], gen.CONNECT, d["name"])
-            self.assertIn(d["family"], ("direct", "feature"), d["name"])
+            self.assertIn(d["family"], ("direct", "feature", "p4"), d["name"])
             self.assertTrue(d["name"].startswith("JBL "), d["name"])
             for p in d["pids"]:
                 self.assertEqual(4, len(p))
@@ -71,6 +73,8 @@ class JblData(unittest.TestCase):
         self.assertEqual(170, data["start"])
         for number in ("95", "97", "f0"):
             self.assertIn(number, data["never_send"], "factory reset, power off and firmware update are never sent")
+        for number in ("00ff", "0101", "0102"):
+            self.assertIn(number, data["protocol4"]["never_send"], "protocol 4's factory reset and firmware update")
         used = {c["command"] for c in data["commands"]}
         self.assertFalse(used & set(data["never_send"]))
 
@@ -78,6 +82,9 @@ class JblData(unittest.TestCase):
         vectors = load("test_vectors.json")
         for r in vectors["requests"] + vectors["replies"]:
             frame = bytes.fromhex(r["hex"])
+            if frame[1] == 0xDD:
+                self.assertEqual(len(frame), 8 + (frame[6] | (frame[7] << 8)), r["name"])
+                continue
             self.assertEqual(0xAA, frame[0], r["name"])
             wide = frame[1] == 0x06
             length = frame[2] | (frame[3] << 8) if wide else frame[2]

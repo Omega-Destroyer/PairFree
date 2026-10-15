@@ -22,8 +22,8 @@ import io.github.omegadestroyer.pairfree.protocol.apple.AapPacket
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleOpcode
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblPacket
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblParser
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblFrame
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblReader
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
 import io.github.omegadestroyer.pairfree.protocol.summary
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
@@ -172,7 +172,7 @@ class EarbudsConnection(
     val boseSession: BoseSession? get() = bose
 
     private var jbl: JblSession? = null   // set while connected to JBL headphones or earbuds
-    private var jblQueue: Channel<JblPacket>? = null
+    private var jblQueue: Channel<JblFrame>? = null
 
     /** The JBL session, while connected to JBL headphones or earbuds; for the device report. */
     val jblSession: JblSession? get() = jbl
@@ -527,7 +527,7 @@ class EarbudsConnection(
         val model = JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } ?: return@coroutineScope
         val session = JblSession(model)
         jbl = session
-        val queue = Channel<JblPacket>(Channel.UNLIMITED)
+        val queue = Channel<JblFrame>(Channel.UNLIMITED)
         val heard = Channel<Unit>(Channel.CONFLATED)
         jblQueue = queue
         val sender = launch {
@@ -550,7 +550,7 @@ class EarbudsConnection(
             }
         }
         try {
-            val parser = JblParser()
+            val parser = JblReader()
             val notifications = opened is GattLink
             opened.reads().collect { bytes ->
                 for (packet in parser.feed(bytes, newMessage = notifications)) {
@@ -627,7 +627,7 @@ class EarbudsConnection(
     }
 
     /** Queues JBL commands on the open channel, then [READ_BACK_MS] later the reads that confirm them. False when there is none. */
-    private fun sendJbl(session: JblSession, packets: List<JblPacket>): Boolean {
+    private fun sendJbl(session: JblSession, packets: List<JblFrame>): Boolean {
         val reads = session.takeReadBacks()
         if (_status.value !is LinkStatus.Connected) return false
         val queue = jblQueue ?: return false

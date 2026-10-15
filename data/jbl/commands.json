@@ -29,6 +29,34 @@
     "battery_right": 27,
     "battery_case": 28
   },
+  "protocol4": {
+    "_about": "JBL's protocol 4 (com.harman.protocol4): an identifier (DD00 from the headphones, DD01 for the case), a command, a packet count and index, a length (all two bytes, low first, but count and index one byte each) and the payload: feature ids to read, or per feature its id, a length and the value. A reply's first packet starts with a status code (0 is fine).",
+    "identifier": 56576,
+    "identifier_case": 56577,
+    "commands": {"get": "0001", "set": "0002", "notification": "0003"},
+    "features": {
+      "product_id": 4,
+      "firmware": 12,
+      "battery_left": 13,
+      "battery_right": 14,
+      "anc": 24,
+      "ambient_aware": 25,
+      "talk_thru": 26,
+      "host_type": 47,
+      "ambient_sound_control": 73,
+      "battery_case": 7939
+    },
+    "ignore_level": 127,
+    "never_send": {
+      "00ff": "factory reset",
+      "0101": "starts a firmware update",
+      "0102": "firmware update data",
+      "0103": "stops a firmware update",
+      "0104": "firmware update notification",
+      "0201": "analytics read",
+      "02ff": "clears the analytics"
+    }
+  },
   "never_send": {
     "13": "analytics read",
     "15": "clears the analytics",

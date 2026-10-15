@@ -5,10 +5,10 @@ package io.github.omegadestroyer.pairfree.protocol.jbl
  * and the payload. The commands in [JblCommand.WIDE] have a two-byte length, low byte first. There is
  * no checksum.
  */
-public class JblPacket(public val command: Int, public val payload: ByteArray = ByteArray(0)) {
+public class JblPacket(public val command: Int, public val payload: ByteArray = ByteArray(0)) : JblFrame {
     public val wide: Boolean get() = command in JblCommand.WIDE
 
-    public fun bytes(): ByteArray {
+    override fun bytes(): ByteArray {
         val n = payload.size
         require(n <= if (wide) 0xFFFF else 0xFF) { "payload too long: $n bytes" }
         val header = if (wide) byteArrayOf(START, command.toByte(), n.toByte(), (n shr 8).toByte()) else byteArrayOf(START, command.toByte(), n.toByte())

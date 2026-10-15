@@ -25,7 +25,7 @@ private fun load(name: String): JsonObject = Json.parseToJsonElement(repoFile("d
 
 private fun JsonObject.str(key: String) = getValue(key).jsonPrimitive.content
 
-private fun JblPacket.hex() = bytes().joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
+private fun JblFrame.hex() = bytes().joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
 
 /** Frames, the tables and a session, against frames JblTray and FajkPes recorded from JBL earbuds and headphones. */
 class JblTest {
@@ -144,7 +144,7 @@ class JblTest {
         val s = JblSession(model("JBL LIVE460NC"))
         assertEquals(
             listOf(JblPacket.of(JblCommand.STATUS, JblStatus.ANC), JblPacket.of(JblCommand.STATUS, JblStatus.AMBIENT)),
-            s.start().filter { it.command == JblCommand.STATUS && it.sub != JblStatus.ALL },
+            s.start().filterIsInstance<JblPacket>().filter { it.command == JblCommand.STATUS && it.sub != JblStatus.ALL },
         )
         s.receive(packet("aa22023100"))
         s.receive(packet("aa22023202"))
@@ -238,6 +238,91 @@ class JblTest {
         assertEquals(1, JblAdvert.score(advert(0x210E, phone, 0), m, mac, "Pixel 9"))
         assertEquals(0, JblAdvert.score(advert(0x210E, 0, 0), m, mac, "Pixel 9"))
         assertEquals(0, JblAdvert.score(advert(0x210C, 0, crc), m, mac, "Pixel 9"))
+    }
+
+    /** A protocol 4 answer as JBL's app reads it: identifier, command, one packet, length, status 0, then [records]. */
+    private fun p4Reply(command: Int, records: String): ByteArray {
+        val payload = "0000$records".hexBytes()
+        return JblP4Packet(command, payload).bytes()
+    }
+
+    @Test
+    fun protocol4FramesAreBuiltAsJblsAppBuildsThem() {
+        assertEquals("00dd010001000600180019001a00", JblP4Packet.get(listOf(JblP4.FEATURE_ANC, JblP4.FEATURE_AMBIENT_AWARE, JblP4.FEATURE_TALK_THRU)).hex())
+        // General4Control's noise cancelling on: the ANC feature, status 1, level 127 (left as it is).
+        assertEquals("00dd0200010005001800" + "0100ff", JblP4Packet.set(JblP4.FEATURE_ANC to JblP4Packet.statusLevel(true, JblP4.IGNORE_LEVEL)).hex())
+        val s = JblSession(model("JBL Tune Flex 3"))
+        // Host type first, then the reads.
+        assertEquals("00dd020001000500" + "2f00" + "0100" + "01", s.start().first().hex())
+        assertTrue(s.start().all(s::allowed))
+        assertFalse(s.allowed(JblP4Packet(0x00FF)), "factory reset")
+    }
+
+    @Test
+    fun aProtocol4AnswerFillsTheScreens() {
+        val s = JblSession(model("JBL Tune Flex 3"))
+        val records = "04000200b621" + "0c0003000102 03".replace(" ", "") + "0d00010050" + "0e000100c6" + "031f010064" +
+            "1800010085" + "1900010003" + "1a00010001" + "49000100ff"
+        assertTrue(s.receive(JblReader().feed(p4Reply(JblP4.GET, records)).single()))
+        assertEquals(0x21B6, s.productId)
+        assertEquals("1.2.3", s.firmware)
+        assertEquals(80, s.state.batteryLeft)
+        assertEquals(70, s.state.batteryRight, "the charging bit is not the level")
+        assertEquals(100, s.state.batteryCase)
+        assertEquals(anc("anc"), s.state.number(Command.ANC_MODE))
+        // TalkThru: ambient sound control on, and TalkThru with the level it reported (1).
+        assertEquals(
+            JblP4Packet.set(JblP4.FEATURE_AMBIENT_SOUND_CONTROL to byteArrayOf(0xFF.toByte()), JblP4.FEATURE_TALK_THRU to byteArrayOf(0x81.toByte())).hex(),
+            s.change(SettingChange.Toggle("talk_thru", true))!!.single().hex(),
+        )
+        // Off: ambient sound control off, keeping the current mode.
+        assertEquals(
+            JblP4Packet.set(JblP4.FEATURE_AMBIENT_SOUND_CONTROL to byteArrayOf(0x7F), JblP4.FEATURE_TALK_THRU to byteArrayOf(0x81.toByte())).hex(),
+            s.set(Command.ANC_MODE, anc("off"))!!.single().hex(),
+        )
+        assertEquals(listOf(JblP4Packet.get(listOf(JblP4.FEATURE_ANC, JblP4.FEATURE_AMBIENT_AWARE, JblP4.FEATURE_TALK_THRU, JblP4.FEATURE_AMBIENT_SOUND_CONTROL))), s.takeReadBacks())
+        // A notification that ambient sound control went off shows off.
+        s.receive(JblReader().feed(p4Reply(JblP4.NOTIFICATION, "490001007f")).single())
+        assertEquals(anc("off"), s.state.number(Command.ANC_MODE))
+    }
+
+    @Test
+    fun protocol4RepliesInSeveralPacketsAreJoined() {
+        val payload = "0000" + "0d00010050" + "0e00010046"
+        val whole = payload.hexBytes()
+        fun part(index: Int, bytes: ByteArray) =
+            byteArrayOf(0x00, 0xDD.toByte(), 0x01, 0x00, 2, index.toByte(), bytes.size.toByte(), 0) + bytes
+        val reader = JblReader()
+        assertTrue(reader.feed(part(0, whole.copyOfRange(0, 7))).isEmpty())
+        val frame = reader.feed(part(1, whole.copyOfRange(7, whole.size))).single() as JblP4Packet
+        assertEquals(mapOf(JblP4.FEATURE_BATTERY_LEFT to 0x50, JblP4.FEATURE_BATTERY_RIGHT to 0x46), frame.features().mapValues { it.value[0].toInt() })
+        // A failed status gives no records; an AA frame still reads as one.
+        assertTrue((JblReader().feed(JblP4Packet(JblP4.GET, "0100".hexBytes()).bytes()).single() as JblP4Packet).features().isEmpty())
+        assertEquals(JblPacket.of(JblCommand.BATTERY, 0), JblReader().feed("aa250100".hexBytes()).single())
+    }
+
+    @Test
+    fun protocol4ModelsWithoutNoiseControlReadOnlyTheBasics() {
+        val s = JblSession(model("JBL Sense Lite"))
+        assertEquals(JblModel.Family.P4, s.model.family)
+        assertNull(s.model.noise)
+        val read = s.start()[1] as JblP4Packet
+        assertFalse(read.payload.toList().windowed(2, 2).any { (it[0].toInt() and 0xFF) == JblP4.FEATURE_ANC }, "no noise reads")
+        assertNull(s.set(Command.ANC_MODE, anc("anc")))
+    }
+
+    @Test
+    fun protocol4AdvertsAreReadByTheirFlags() {
+        val m = model("JBL Tune Flex 3")
+        val mac = "12:34:56:78:9A:BC"
+        val crc = JblAdvert.crc16(JblAdvert.macBytes(mac)!!)
+        // Product id 21B6, flags: colour and address CRC (bits 15 and 12), then the colour and the CRC.
+        val advert = byteArrayOf(0xB6.toByte(), 0x21, 0x00, 0x90.toByte(), 3, crc.toByte(), (crc shr 8).toByte())
+        assertEquals(2, JblAdvert.score(advert, m, mac, null))
+        // With the name CRCs flagged too (bits 14 and 13), the address CRC comes after them.
+        val phone = JblAdvert.crc16("Pixel 9".encodeToByteArray())
+        val withNames = byteArrayOf(0xB6.toByte(), 0x21, 0x00, 0x70, phone.toByte(), (phone shr 8).toByte(), 0, 0, 0, 0)
+        assertEquals(1, JblAdvert.score(withNames, m, mac, "Pixel 9"))
     }
 
     private fun anc(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key

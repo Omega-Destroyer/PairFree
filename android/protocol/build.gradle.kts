@@ -772,6 +772,23 @@ abstract class GenerateJblTables : DefaultTask() {
         constants("JblAmbient", "Command 32's values (data/jbl/commands.json).", map("ambient_values").mapValues { int(it.value) }, out)
         constants("JblFeature", "Harman's feature record types and the feature ids PairFree reads or writes (data/jbl/commands.json).",
             map("feature_types").mapKeys { "type_" + it.key }.mapValues { int(it.value) } + map("features").mapValues { int(it.value) }, out)
+        val p4 = map("protocol4")
+        @Suppress("UNCHECKED_CAST")
+        val p4Never = p4.getValue("never_send") as Map<String, Any?>
+        out.appendLine("/** JBL's protocol 4: its identifiers, commands and the feature ids PairFree uses (data/jbl/commands.json). */")
+        out.appendLine("public object JblP4 {")
+        out.appendLine("    public const val IDENTIFIER: Int = ${hex(int(p4["identifier"]))}")
+        out.appendLine("    public const val IDENTIFIER_CASE: Int = ${hex(int(p4["identifier_case"]))}")
+        @Suppress("UNCHECKED_CAST")
+        for ((k, v) in p4.getValue("commands") as Map<String, Any?>) out.appendLine("    public const val ${k.uppercase()}: Int = ${hex((v as String).toInt(16))}")
+        @Suppress("UNCHECKED_CAST")
+        for ((k, v) in p4.getValue("features") as Map<String, Any?>) out.appendLine("    public const val FEATURE_${k.uppercase()}: Int = ${hex(int(v))}")
+        out.appendLine("    /** A level of 127 leaves the mode's level as it is. */")
+        out.appendLine("    public const val IGNORE_LEVEL: Int = ${int(p4["ignore_level"])}")
+        out.appendLine("    /** Commands PairFree never sends: ${p4Never.values.joinToString(", ")}. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${p4Never.keys.joinToString(", ") { hex(it.toInt(16)) }})")
+        out.appendLine("}")
+        out.appendLine()
 
         out.appendLine("/** Every model in data/jbl/devices.json. */")
         out.appendLine("internal val JBL_MODELS: List<JblModel> = listOf(")
@@ -786,6 +803,7 @@ abstract class GenerateJblTables : DefaultTask() {
             val family = when (d["family"]) {
                 "direct" -> "DIRECT"
                 "feature" -> "FEATURE"
+                "p4" -> "P4"
                 else -> error("unknown family ${d["family"]}")
             }
             val noise = d["noise"]?.let { "JblModel.Noise." + (it as String).uppercase() } ?: "null"

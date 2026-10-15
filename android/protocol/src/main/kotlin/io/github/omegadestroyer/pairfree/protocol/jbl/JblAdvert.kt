@@ -5,7 +5,10 @@ package io.github.omegadestroyer.pairfree.protocol.jbl
  * does not answer on the classic address (docs/jbl/PROTOCOL.md section 3). The manufacturer data under
  * Harman's company id holds the product id (two bytes, low first), a colour, the CRCs of the Bluetooth
  * names of the two phones the earbuds are connected to, and a CRC JBL's app stores as the classic
- * address's, each two bytes, low first. The CRC is CRC-16/ARC, as JBL's app computes it.
+ * address's, each two bytes, low first. Protocol 4 models send a "p5" advert instead: the product id, a
+ * two-byte word whose bits say which fields follow (bit 15 colour, 14 and 13 the phones' name CRCs, 12 the
+ * classic address's CRC, and so on), then those fields in that order (JBL's BroadcastParse). The CRC is
+ * CRC-16/ARC, as JBL's app computes it.
  */
 public object JblAdvert {
     /** Harman International's Bluetooth company id, under which the adverts carry their data. */
@@ -32,12 +35,27 @@ public object JblAdvert {
      */
     public fun score(data: ByteArray, model: JblModel, address: String, phoneName: String?): Int {
         if (pid(data)?.let { it in model.pids } != true) return 0
+        val fields = if (model.family == JblModel.Family.P4) p5(data) else Fields(data.u16(SOURCE_1), data.u16(SOURCE_2), data.u16(ADDRESS_CRC))
         val mac = macBytes(address)
-        if (mac != null && data.u16(ADDRESS_CRC) == crc16(mac)) return 2
+        if (mac != null && fields.addressCrc == crc16(mac)) return 2
         val name = phoneName?.takeIf { it.isNotEmpty() }?.encodeToByteArray() ?: return 0
         // JBL's app compares the CRC of the name's first 31 bytes and of its first 50.
         val crcs = setOf(crc16(name, NAME_SHORT), crc16(name, NAME_LONG))
-        return if (data.u16(SOURCE_1) in crcs || data.u16(SOURCE_2) in crcs) 1 else 0
+        return if (fields.source1 in crcs || fields.source2 in crcs) 1 else 0
+    }
+
+    /** The name CRCs and the address CRC an advert carries, where it has them. */
+    private class Fields(val source1: Int?, val source2: Int?, val addressCrc: Int?)
+
+    /** The fields of a p5 advert up to the address CRC: each is there only where its bit in the flags word is set. */
+    private fun p5(data: ByteArray): Fields {
+        val flags = data.u16(P5_FLAGS) ?: return Fields(null, null, null)
+        var at = P5_FIELDS
+        if (flags and P5_COLOUR != 0) at += 1
+        val source1 = if (flags and P5_SOURCE_1 != 0) data.u16(at).also { at += 2 } else null
+        val source2 = if (flags and P5_SOURCE_2 != 0) data.u16(at).also { at += 2 } else null
+        val addressCrc = if (flags and P5_ADDRESS_CRC != 0) data.u16(at) else null
+        return Fields(source1, source2, addressCrc)
     }
 
     /** "AA:BB:CC:DD:EE:FF" as its six bytes in that order, or null. */
@@ -53,6 +71,12 @@ public object JblAdvert {
     private const val SOURCE_1 = 3
     private const val SOURCE_2 = 5
     private const val ADDRESS_CRC = 7
+    private const val P5_FLAGS = 2
+    private const val P5_FIELDS = 4
+    private const val P5_COLOUR = 1 shl 15
+    private const val P5_SOURCE_1 = 1 shl 14
+    private const val P5_SOURCE_2 = 1 shl 13
+    private const val P5_ADDRESS_CRC = 1 shl 12
     private const val NAME_SHORT = 31
     private const val NAME_LONG = 50
     private const val MAC_BYTES = 6

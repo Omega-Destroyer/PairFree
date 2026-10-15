@@ -1,5 +1,5 @@
 {
-  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting) or feature (Harman's feature records, command 06); noise is modes (command 91), old (31 and 32) or club (31 and 32, off without 32); auto_off is v1 (one byte), v2 (three bytes) or feature. Models on JBL's protocol 4, Airoha's SDK or LE Audio, and models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports.",
+  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06) or p4 (JBL's protocol 4, frames starting 00 DD); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32) or asc (protocol 4: ambient sound control and the mode); auto_off is v1 (one byte), v2 (three bytes) or feature. Protocol 4 models with a BLE security mode, models on Airoha's SDK or LE Audio, and models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports.",
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "devices": [
     {
@@ -592,6 +592,50 @@
       "config": "jbl_endurance_peak_3_212a.json"
     },
     {
+      "name": "JBL Sense Lite",
+      "pids": ["2133"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "TourOneM3Control",
+      "family": "p4",
+      "auto_off": null,
+      "auto_off_minutes": [30, 60],
+      "config": "jbl_sense_lite.json"
+    },
+    {
+      "name": "JBL Endurance Zone",
+      "pids": ["2134"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "TourOneM3Control",
+      "family": "p4",
+      "auto_off": null,
+      "auto_off_minutes": [30, 60],
+      "config": "jbl_endurance_zone.json"
+    },
+    {
+      "name": "JBL Tune 135BT",
+      "pids": ["2135"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "TourOneM3Control",
+      "family": "p4",
+      "config": "jbl_tune_135bt.json"
+    },
+    {
+      "name": "JBL Tune 235BT",
+      "pids": ["2136"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "TourOneM3Control",
+      "family": "p4",
+      "config": "jbl_tune_235bt.json"
+    },
+    {
       "name": "JBL Tune 255NC",
       "pids": ["2164"],
       "kind": "earbuds",
@@ -602,6 +646,114 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune_255nc.json"
+    },
+    {
+      "name": "JBL Vibe Buds 3",
+      "pids": ["21B3"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "WaveFlex3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_vibe_buds_3.json"
+    },
+    {
+      "name": "JBL Vibe Beam 3",
+      "pids": ["21B4"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "WaveFlex3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_vibe_beam_3.json"
+    },
+    {
+      "name": "JBL Vibe Flex 3",
+      "pids": ["21B2"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "WaveFlex3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_vibe_flex_3.json"
+    },
+    {
+      "name": "JBL Wave Buds 3",
+      "pids": ["21AB"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "WaveFlex3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_wave_buds_3.json"
+    },
+    {
+      "name": "JBL Wave Beam 3",
+      "pids": ["21AC"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "WaveFlex3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_wave_beam_3.json"
+    },
+    {
+      "name": "JBL Wave Flex 3",
+      "pids": ["21AD"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "WaveFlex3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_wave_flex_3.json"
+    },
+    {
+      "name": "JBL Tune Buds 3",
+      "pids": ["21B7"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "TuneFlex3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_tune_buds_3.json"
+    },
+    {
+      "name": "JBL Tune Beam 3",
+      "pids": ["21B8"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "TuneBeam3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_tune_beam_3.json"
+    },
+    {
+      "name": "JBL Tune Flex 3",
+      "pids": ["21B6"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "TuneFlex3Control",
+      "family": "p4",
+      "noise": "asc",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "config": "jbl_tune_flex_3.json"
     }
   ]
 }

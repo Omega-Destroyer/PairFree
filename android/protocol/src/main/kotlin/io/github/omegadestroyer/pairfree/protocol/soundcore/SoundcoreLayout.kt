@@ -128,7 +128,8 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
         get() {
             bytes("firmware")?.decodeToString()?.takeIf(::isVersion)?.let { return listOf(it) }
             val dual = bytes("dual_firmware") ?: return emptyList()
-            return listOf(dual.copyOfRange(0, 5), dual.copyOfRange(5, 10)).map { it.decodeToString() }.filter(::isVersion)
+            // Two five-byte versions; guard the split so a short field can never throw out of bounds.
+            return dual.toList().chunked(5).filter { it.size == 5 }.map { it.toByteArray().decodeToString() }.filter(::isVersion)
         }
 
     /** The noise mode block, as [SoundcoreCommand.SET_SOUND_MODES] takes it; its first byte is the [AmbientMode]. */

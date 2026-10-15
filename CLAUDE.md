@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker), Samsung Galaxy Buds, Sony and Bose are being added. The owner wants agents to do as much of the
+(Anker), Samsung Galaxy Buds, Sony, Bose and JBL are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Where the truth lives
@@ -31,7 +31,7 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 `tools/device_art/<brand>/`. App-wide documents stay at the top level. Each brand also has a page
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
-from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony` and `bose`.
+from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose` and `jbl`.
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -120,6 +120,23 @@ from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony` 
   device report keeps only PairFree's own reads: unasked messages can hold other devices'
   addresses. After a change to `devices.json` run `python tools/gen_bose_table.py`. Never send
   `BoseFunction.NEVER_SEND` (firmware update, factory default, power, authentication).
+- `docs/jbl/PROTOCOL.md` is JBL's Harman command set, read from JBL's own app (JBL Headphones
+  5.37.10, decompiled outside the repo on 2026-10-15) and checked against JblTray
+  (github.com/emperorbug46/JblTray, MIT), which recorded a Tune Flex 2, and FajkPes's
+  JBL-Headphones-App (no licence: facts only), which recorded a Tune 720BT. No JBL model has
+  been tried with PairFree. Most models are controlled over Bluetooth LE GATT (`GattLink`), the
+  Quantum 360 family over the serial channel. PairFree connects over LE to the classic address
+  first and scans only when that fails (`JblFinder`); the scan needs `BLUETOOTH_SCAN`
+  (`neverForLocation`), which the owner allowed for JBL alone on 2026-10-15, asked only when the
+  user opens a JBL model (`docs/DESIGN.md`, Permissions). `data/jbl/commands.json` and
+  `devices.json` (48 models from JBL's product list and dashboard configs, with each model's
+  family, noise commands and auto power-off encoding, section 5) become `JblCommand`,
+  `JblStatus`, `JblNoise`, `JblAmbient`, `JblFeature` and `JblModels` through
+  `generateJblTables`; `JblSession` maps replies to the screens and reads each change back 3 s
+  later. `EarbudsConnection.serveJbl` sends one command at a time, waiting up to 1 s, as JBL's
+  app does. JBL's protocol 4, Airoha and LE Audio models are not covered, nor the EQ. After a
+  change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
+  `JblCommand.NEVER_SEND` (factory reset, power off, firmware update, analytics).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce
@@ -298,7 +315,8 @@ reports from other people.
   `00001101-0000-1000-8000-00805F9B34FB`. The earbuds must already be paired and
   connected for audio. There is no handshake.
 - Android 12 and later need the `BLUETOOTH_CONNECT` runtime permission. No scan
-  permission is needed to talk to a bonded device.
+  permission is needed to talk to a bonded device, except JBL's LE models when their LE side
+  does not answer on the classic address (`BLUETOOTH_SCAN`, JBL only, above).
 - Only one app can hold the channel. Close PeatsAudio before connecting.
 - Reassemble incoming bytes by the frame's length byte. Do not assume one read is
   one frame.

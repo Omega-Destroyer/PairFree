@@ -708,12 +708,125 @@ val generateBoseTables = tasks.register<GenerateBoseTables>("generateBoseTables"
     outputDir = layout.buildDirectory.dir("generated/bose")
 }
 
+/** Writes JBL's Harman commands and models from data/jbl. */
+abstract class GenerateJblTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String) + "\""
+        fun hex(v: Int) = "0x" + v.toString(16).uppercase().padStart(2, '0')
+        fun byte(v: Any?) = (v as String).toInt(16)
+        fun int(v: Any?) = (v as Number).toInt()
+        @Suppress("UNCHECKED_CAST")
+        fun map(key: String) = commands.getValue(key) as Map<String, Any?>
+        fun constants(name: String, doc: String, values: Map<String, Int>, out: StringBuilder) {
+            out.appendLine("/** $doc */")
+            out.appendLine("public object $name {")
+            for ((k, v) in values) out.appendLine("    public const val ${k.uppercase()}: Int = ${hex(v)}")
+            out.appendLine("}")
+            out.appendLine()
+        }
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/jbl by the generateJblTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val list = commands.getValue("commands") as List<Map<String, Any?>>
+        out.appendLine("/** Harman's command numbers (data/jbl/commands.json); a reply comes back under the command's reply number. */")
+        out.appendLine("public object JblCommand {")
+        out.appendLine("    public const val START: Int = ${hex(int(commands["start"]))}")
+        for (c in list) {
+            val name = (c.getValue("name") as String).uppercase()
+            out.appendLine("    public const val $name: Int = ${hex(byte(c["command"]))}")
+            c["reply"]?.let { out.appendLine("    public const val ${name}_REPLY: Int = ${hex(byte(it))}") }
+        }
+        out.appendLine("    /** Commands with a two-byte length, low byte first. */")
+        out.appendLine("    public val WIDE: Set<Int> = setOf(${list.filter { it["wide"] == true }.joinToString(", ") { hex(byte(it["command"])) }})")
+        @Suppress("UNCHECKED_CAST")
+        val never = commands.getValue("never_send") as Map<String, Any?>
+        out.appendLine("    /** Commands PairFree never sends: ${never.values.joinToString(", ")}. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${never.keys.joinToString(", ") { hex(byte(it)) }})")
+        out.appendLine("}")
+        out.appendLine()
+        constants("JblStatus", "The status types of command 21 (data/jbl/commands.json).", map("status_types").mapValues { byte(it.value) }, out)
+        constants("JblNoise", "Command 91's sub-commands, and its modes (data/jbl/commands.json).",
+            map("noise_sub").mapValues { byte(it.value) } + map("noise_modes").mapKeys { "mode_" + it.key }.mapValues { int(it.value) }, out)
+        constants("JblAmbient", "Command 32's values (data/jbl/commands.json).", map("ambient_values").mapValues { int(it.value) }, out)
+        constants("JblFeature", "Harman's feature record types and the feature ids PairFree reads or writes (data/jbl/commands.json).",
+            map("feature_types").mapKeys { "type_" + it.key }.mapValues { int(it.value) } + map("features").mapValues { int(it.value) }, out)
+
+        out.appendLine("/** Every model in data/jbl/devices.json. */")
+        out.appendLine("internal val JBL_MODELS: List<JblModel> = listOf(")
+        for (d in devices) {
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headphones", "glasses" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            @Suppress("UNCHECKED_CAST")
+            val pids = (d.getValue("pids") as List<String>).joinToString(", ") { "0x" + it.uppercase() }
+            val family = when (d["family"]) {
+                "direct" -> "DIRECT"
+                "feature" -> "FEATURE"
+                else -> error("unknown family ${d["family"]}")
+            }
+            val noise = d["noise"]?.let { "JblModel.Noise." + (it as String).uppercase() } ?: "null"
+            @Suppress("UNCHECKED_CAST")
+            val modes = (d["modes"] as List<String>?).orEmpty().joinToString(", ") { "JblModel.Mode." + it.uppercase() }
+            val autoOff = d["auto_off"]?.let { "JblModel.AutoOff." + (it as String).uppercase() } ?: "null"
+            @Suppress("UNCHECKED_CAST")
+            val minutes = (d["auto_off_minutes"] as List<Number>?).orEmpty().joinToString(", ")
+            val gatt = when (d["connect"]) {
+                "BLE" -> "true"
+                "BT" -> "false"
+                else -> error("unknown connect ${d["connect"]}")
+            }
+            out.appendLine(
+                "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +
+                    "family = JblModel.Family.$family, noise = $noise, modes = listOf($modes), autoOff = $autoOff, " +
+                    "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}),",
+            )
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("JblTables.kt").writeText(out.toString())
+    }
+}
+
+val generateJblTables = tasks.register<GenerateJblTables>("generateJblTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/jbl/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/jbl/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.jbl"
+    outputDir = layout.buildDirectory.dir("generated/jbl")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
     kotlin.srcDir(generateSoundcoreTables)
     kotlin.srcDir(generateSamsungTables)
     kotlin.srcDir(generateSonyTables)
     kotlin.srcDir(generateBoseTables)
+    kotlin.srcDir(generateJblTables)
 }
 
 dependencies {
@@ -730,6 +843,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/samsung")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/sony")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/bose")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/jbl")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

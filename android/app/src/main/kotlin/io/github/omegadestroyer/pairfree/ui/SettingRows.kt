@@ -120,6 +120,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ambient_customize" -> R.string.setting_group_ambient_customize
         "calls" -> R.string.setting_group_calls
         "connection" -> R.string.connection
+        "other" -> R.string.setting_group_other
         "find" -> R.string.find_earbuds
         else -> R.string.setting_group_other
     },
@@ -135,6 +136,9 @@ private fun groupNote(key: String): String? = when (key) {
 private fun settingTitle(key: String): String = when (key) {
     "ambient_sound" -> stringResource(R.string.setting_ambient_sound)
     "anc" -> stringResource(R.string.setting_anc)
+    "ambient_aware" -> stringResource(R.string.setting_ambient_aware)
+    "talk_thru" -> stringResource(R.string.setting_talk_thru)
+    "auto_off" -> stringResource(R.string.auto_shutdown)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure)
     "ambient_volume" -> stringResource(R.string.setting_ambient_volume)
     "voice_focus" -> stringResource(R.string.setting_voice_focus)
@@ -209,6 +213,7 @@ private fun settingNote(key: String): String? = when (key) {
     "speak_to_chat" -> stringResource(R.string.setting_speak_to_chat_note)
     "dsee" -> stringResource(R.string.setting_dsee_note)
     "noise_level" -> stringResource(R.string.setting_noise_level_note)
+    "talk_thru" -> stringResource(R.string.setting_talk_thru_note)
     else -> null
 }
 
@@ -216,6 +221,7 @@ private fun settingNote(key: String): String? = when (key) {
 private fun optionName(key: String, option: String): String = when {
     key == "anc_level" -> stringResource(if (option == "high") R.string.setting_anc_level_high else R.string.setting_anc_level_low)
     key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
+    key == "auto_off" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.shutdown_never)
     key == "anr" || key == "sidetone_level" -> stringResource(
         when (option) {
             "off" -> R.string.setting_level_off

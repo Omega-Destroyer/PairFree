@@ -20,6 +20,7 @@
     <string name="failed_lost">The connection to %1$s dropped.</string>
     <string name="failed_bluetooth_off">Bluetooth is off.</string>
     <string name="failed_no_permission">Bluetooth access is turned off for PairFree.</string>
+    <string name="failed_no_scan_permission">%1$s did not answer on its Bluetooth address. PairFree can look for it nearby if you allow it to find nearby devices; it never uses that for your location.</string>
 
     <string name="connected">Connected</string>
     <string name="reconnecting">Reconnecting…</string>
@@ -159,6 +160,9 @@
     <string name="setting_group_other">More settings</string>
     <string name="setting_ambient_sound">Ambient sound</string>
     <string name="setting_anc">Noise cancelling</string>
+    <string name="setting_ambient_aware">Ambient Aware</string>
+    <string name="setting_talk_thru">TalkThru</string>
+    <string name="setting_talk_thru_note">Turns the music down and lets voices through, for a quick talk.</string>
     <string name="setting_relieve_pressure">Relieve pressure with ambient sound</string>
     <string name="setting_relieve_pressure_note">Lets in a little ambient sound, so the ears do not feel blocked while noise cancelling is off.</string>
     <string name="setting_ambient_volume">Ambient sound level</string>
@@ -368,6 +372,7 @@
     <string name="setting_multipoint">Two devices at once</string>
     <string name="setting_auto_answer">Answer calls automatically</string>
     <string name="setting_voice_prompts">Voice prompts</string>
+    <string name="eq_jbl">PairFree cannot set the equalizer of JBL headphones and earbuds yet. JBL\'s app sends a whole curve of filters, and PairFree does not send what it has not checked.</string>
     <string name="eq_bose">Bose earbuds and headphones have a tone control rather than an equalizer of bands by frequency. Where the model has one, it is below.</string>
     <string name="status_title">Status notification</string>
     <string name="status_option_pairfree">PairFree</string>

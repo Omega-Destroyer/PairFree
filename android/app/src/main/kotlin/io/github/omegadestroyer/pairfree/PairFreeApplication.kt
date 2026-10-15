@@ -22,6 +22,7 @@ import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
@@ -55,6 +56,7 @@ class Hub(private val app: Application) {
     val connection = EarbudsConnection(
         scope,
         adapter,
+        context = app,
         log = if (app.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) { line -> Log.d(LOG_TAG, line) } else null,
         assistantIsGoogle = ::assistantIsGoogle,
     )
@@ -101,8 +103,8 @@ class Hub(private val app: Application) {
      * which share the brand name. Soundcore earbuds are known by their vendor service, which can
      * name the model, or else by their name (docs/soundcore/PROTOCOL.md); Galaxy Buds by their name
      * (docs/samsung/PROTOCOL.md); Sony's by their services or name (docs/sony/PROTOCOL.md); Bose's
-     * by Bose's services or "Bose" in the name (docs/bose/PROTOCOL.md). Empty
-     * without the permission or with Bluetooth off.
+     * by Bose's services or "Bose" in the name (docs/bose/PROTOCOL.md); JBL's by the model's name
+     * (docs/jbl/PROTOCOL.md). Empty without the permission or with Bluetooth off.
      */
     @SuppressLint("MissingPermission") // checked first
     fun pairedEarbuds(): List<Paired> {
@@ -115,11 +117,13 @@ class Hub(private val app: Application) {
                 val soundcore = SoundcoreModels.identify(name, uuids)
                 val samsung = SamsungModels.fromName(name)
                 val sony = SonyModels.identify(name, uuids)
+                val jbl = JblModels.fromName(name)
                 when {
                     soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore.service, soundcore.model)
                     samsung != null -> Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model)
                     sony != null -> Paired(d.address, name, Brand.SONY, sony.service, sony.model?.name)
                     BoseModels.isBose(name, uuids) -> Paired(d.address, name, Brand.BOSE)
+                    jbl != null -> Paired(d.address, name, Brand.JBL, model = jbl.name)
                     Models.isSupported(d.name ?: "") -> Paired(d.address, name)
                     else -> null
                 }

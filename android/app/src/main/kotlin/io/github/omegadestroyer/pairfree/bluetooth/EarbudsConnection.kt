@@ -2,17 +2,27 @@ package io.github.omegadestroyer.pairfree.bluetooth
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.SystemClock
 import androidx.annotation.RequiresPermission
+import androidx.core.content.ContextCompat
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FrameParser
 import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.Replies
 import io.github.omegadestroyer.pairfree.protocol.Requests
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.Wire
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblPacket
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblParser
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
+import io.github.omegadestroyer.pairfree.protocol.summary
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungSession
@@ -39,6 +49,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,14 +62,15 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
-enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE }
+enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
  * null for the standard serial port, which SoundPEATS earbuds use. [model] is the Soundcore
  * model number, from the earbuds' service or name ([SoundcoreModels.identify]), the Galaxy
  * Buds model number from the name ([SamsungModels.fromName]), or the Sony model from the name
- * ([SonyModels.identify]), null for a Sony model not in the table.
+ * ([SonyModels.identify]), null for a Sony model not in the table, or the JBL model's name
+ * ([JblModels.fromName]).
  */
 data class Paired(
     val address: String,
@@ -76,7 +89,8 @@ sealed interface LinkStatus {
     data class Reconnecting(val device: Paired) : LinkStatus
     data class Failed(val device: Paired, val reason: Reason) : LinkStatus
 
-    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION }
+    /** [NO_SCAN_PERMISSION]: JBL earbuds that did not answer on their classic address, which PairFree may not scan for. */
+    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION }
 }
 
 /**
@@ -89,11 +103,13 @@ sealed interface LinkStatus {
  * [state] and turns [set] into Soundcore packets, so the screens work for both brands. Galaxy
  * Buds go through a [SamsungSession] the same way, and their settings beyond the shared ones
  * come out as [settings]; Sony earbuds and headphones through a [SonySession], Bose's through a
- * [BoseSession].
+ * [BoseSession], JBL's through a [JblSession], over Bluetooth LE ([GattLink]) for most of them.
+ * [context] opens LE connections.
  */
 class EarbudsConnection(
     private val scope: CoroutineScope,
     private val adapter: BluetoothAdapter?,
+    private val context: Context? = null,
     private val log: ((String) -> Unit)? = null,
     private val assistantIsGoogle: () -> Boolean = { true },
 ) {
@@ -105,7 +121,7 @@ class EarbudsConnection(
 
     // All of this is touched only from the scope's (main) thread.
     private var session: CoroutineScope? = null   // everything one connection runs; cancelled on disconnect
-    private var link: SppLink? = null
+    private var link: ControlLink? = null
     private var attempt: Any? = null      // the current connection attempt; null after disconnect()
     private var replies: Map<Command, ByteArray> = emptyMap()
     private var soundcore: SoundcoreSession? = null   // set while connected to Soundcore earbuds
@@ -148,6 +164,12 @@ class EarbudsConnection(
     /** The Bose session, while connected to Bose headphones or earbuds; for the device report. */
     val boseSession: BoseSession? get() = bose
 
+    private var jbl: JblSession? = null   // set while connected to JBL headphones or earbuds
+    private var jblQueue: Channel<JblPacket>? = null
+
+    /** The JBL session, while connected to JBL headphones or earbuds; for the device report. */
+    val jblSession: JblSession? get() = jbl
+
     private val _sonyEq = MutableStateFlow<SonyEq?>(null)
 
     /** The Sony equalizer as the earbuds last reported it; the Sound tab follows it. */
@@ -168,6 +190,7 @@ class EarbudsConnection(
         samsung = null
         sony = null
         bose = null
+        jbl = null
         _sonyEq.value = null
         _settings.value = emptyList()
         _samsungStatus.value = null
@@ -189,7 +212,10 @@ class EarbudsConnection(
             var retries = 0
             while (true) {
                 val opened = try {
-                    SppLink(remote, log, device.service ?: Wire.SPP_UUID).also { link = it }.apply { connect() }
+                    open(remote, device)
+                } catch (_: ScanNotAllowed) {
+                    fail(token, device, LinkStatus.Reason.NO_SCAN_PERMISSION)
+                    return@launch
                 } catch (e: IOException) {
                     log?.invoke("could not open: ${e.message}")
                     if (everOpen && retries < RECONNECT_DELAYS_MS.size) {
@@ -211,6 +237,7 @@ class EarbudsConnection(
                     Brand.SAMSUNG -> serveSamsung(opened, device)
                     Brand.SONY -> serveSony(opened, device)
                     Brand.BOSE -> serveBose(opened)
+                    Brand.JBL -> serveJbl(opened, device)
                     Brand.SOUNDPEATS -> serve(opened, device)
                 }
                 log?.invoke("closed")
@@ -228,8 +255,32 @@ class EarbudsConnection(
         }
     }
 
+    /**
+     * Opens the control channel: the classic serial channel, or for JBL's LE models GATT, first on the
+     * classic address, where the Tune Flex 2's LE side answers (JblTray), else on the LE device a scan
+     * finds (docs/jbl/PROTOCOL.md section 3). Each link is [link] while it opens, so [disconnect] can abort it.
+     */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private suspend fun open(remote: BluetoothDevice, device: Paired): ControlLink {
+        val model = if (device.brand == Brand.JBL) JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } else null
+        val ctx = context
+        if (model?.gatt != true || ctx == null) return SppLink(remote, log, device.service ?: Wire.SPP_UUID).also { link = it }.apply { connect() }
+        try {
+            return GattLink(ctx, remote, log).also { link = it }.apply { connect() }
+        } catch (e: IOException) {
+            log?.invoke("LE on the classic address: ${e.message}")
+        }
+        currentCoroutineContext().ensureActive()   // not after a disconnect closed the first try
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
+        val found = adapter?.let { JblFinder(it, log).find(model, device.address) } ?: throw IOException("not found over LE")
+        return GattLink(ctx, found, log).also { link = it }.apply { connect() }
+    }
+
+    /** JBL earbuds that need an LE scan, which the user has not allowed. */
+    private class ScanNotAllowed : IOException("scan not allowed")
+
     /** Asks for everything, reads the battery now and then, and applies every reply until the channel closes. */
-    private suspend fun serve(opened: SppLink, device: Paired) = coroutineScope {
+    private suspend fun serve(opened: ControlLink, device: Paired) = coroutineScope {
         val requests = launch {
             try {
                 for (command in Requests.ON_CONNECT) opened.send(Requests.get(command))
@@ -245,9 +296,13 @@ class EarbudsConnection(
             }
         }
         try {
-            opened.frames().collect { frame ->
-                Replies.commandFor(frame)?.let { replies = replies + (it to frame.payload) }
-                _state.update { it.update(frame) }
+            val parser = FrameParser()
+            opened.reads().collect { bytes ->
+                for (frame in parser.feed(bytes)) {
+                    log?.invoke("recv ${frame.summary()}")
+                    Replies.commandFor(frame)?.let { replies = replies + (it to frame.payload) }
+                    _state.update { it.update(frame) }
+                }
             }
         } catch (_: IOException) {
         }
@@ -258,7 +313,7 @@ class EarbudsConnection(
      * Soundcore earbuds: asks for the state on connecting and every [BATTERY_POLL_MS] after,
      * and applies every packet until the channel closes. The earbuds also send changes unasked.
      */
-    private suspend fun serveSoundcore(opened: SppLink, device: Paired) = coroutineScope {
+    private suspend fun serveSoundcore(opened: ControlLink, device: Paired) = coroutineScope {
         val session = SoundcoreSession(device.model.orEmpty())
         soundcore = session
         val requests = launch {
@@ -290,7 +345,7 @@ class EarbudsConnection(
      * nothing is asked for. Every packet updates [state] and [settings]; what the session wants to
      * say back (the manager info, the version request) goes out at once.
      */
-    private suspend fun serveSamsung(opened: SppLink, device: Paired) = coroutineScope {
+    private suspend fun serveSamsung(opened: ControlLink, device: Paired) = coroutineScope {
         val model = SamsungModels.of(device.model) ?: return@coroutineScope
         val phoneIsSamsung = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
         val session = SamsungSession(model, phoneIsSamsung = phoneIsSamsung, androidSdk = Build.VERSION.SDK_INT, assistantIsGoogle = assistantIsGoogle())
@@ -318,7 +373,7 @@ class EarbudsConnection(
      * never acknowledged leaves the two sides' sequence numbers in doubt, so the channel closes and
      * opens again, as Sony's app does.
      */
-    private suspend fun serveSony(opened: SppLink, device: Paired) = coroutineScope {
+    private suspend fun serveSony(opened: ControlLink, device: Paired) = coroutineScope {
         val session = SonySession(SonyModels.tableSetOf(device.service), SonyModels.of(device.model))
         sony = session
         val link = SonyLink()
@@ -384,7 +439,7 @@ class EarbudsConnection(
      * [BOSE_REPLY_MS]), as bosectl and Bose's app send them (docs/bose/PROTOCOL.md section 2). The
      * device also sends changes made with its buttons as they happen.
      */
-    private suspend fun serveBose(opened: SppLink) = coroutineScope {
+    private suspend fun serveBose(opened: ControlLink) = coroutineScope {
         val session = BoseSession()
         bose = session
         val queue = Channel<BosePacket>(Channel.UNLIMITED)
@@ -429,6 +484,75 @@ class EarbudsConnection(
         if (boseQueue === queue) boseQueue = null
     }
 
+    /**
+     * JBL headphones and earbuds: one command at a time, each waiting for anything from the earbuds or
+     * [JBL_REPLY_MS], as JBL's app sends them (docs/jbl/PROTOCOL.md section 2). The earbuds also send
+     * changes made with their buttons as they happen. Over GATT each notification is one frame.
+     */
+    private suspend fun serveJbl(opened: ControlLink, device: Paired) = coroutineScope {
+        val model = JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } ?: return@coroutineScope
+        val session = JblSession(model)
+        jbl = session
+        val queue = Channel<JblPacket>(Channel.UNLIMITED)
+        val heard = Channel<Unit>(Channel.CONFLATED)
+        jblQueue = queue
+        val sender = launch {
+            try {
+                for (packet in queue) {
+                    if (!session.allowed(packet)) continue
+                    heard.tryReceive()
+                    opened.send(packet.bytes())
+                    withTimeoutOrNull(JBL_REPLY_MS) { heard.receive() }
+                }
+            } catch (_: IOException) {
+                // the channel closed; the reader below notices too
+            }
+        }
+        session.start().forEach(queue::trySend)
+        val poll = launch {
+            while (true) {
+                delay(BATTERY_POLL_MS)
+                session.batteryRequests().forEach(queue::trySend)
+            }
+        }
+        try {
+            val parser = JblParser()
+            val notifications = opened is GattLink
+            opened.reads().collect { bytes ->
+                for (packet in parser.feed(bytes, newMessage = notifications)) {
+                    log?.invoke("recv $packet")
+                    if (session.receive(packet)) publish(session)
+                    heard.trySend(Unit)
+                    session.takeOutbox().forEach(queue::trySend)
+                }
+            }
+        } catch (_: IOException) {
+        }
+        poll.cancel()
+        sender.cancel()
+        queue.close()
+        if (jblQueue === queue) jblQueue = null
+    }
+
+    private fun publish(session: JblSession) {
+        _state.value = session.state
+        _settings.value = session.groups
+    }
+
+    /** Queues JBL commands on the open channel, then [READ_BACK_MS] later the reads that confirm them. False when there is none. */
+    private fun sendJbl(session: JblSession, packets: List<JblPacket>): Boolean {
+        val reads = session.takeReadBacks()
+        if (_status.value !is LinkStatus.Connected) return false
+        val queue = jblQueue ?: return false
+        val s = this.session ?: return false
+        packets.forEach(queue::trySend)
+        s.launch {
+            delay(READ_BACK_MS)
+            reads.forEach(queue::trySend)
+        }
+        return true
+    }
+
     private fun publish(session: BoseSession) {
         _state.value = session.state
         _settings.value = session.groups
@@ -456,6 +580,11 @@ class EarbudsConnection(
 
     /** Changes one of the [settings]: it shows at once, and the earbuds' acknowledgement or next state confirms it. */
     fun changeSetting(change: SettingChange) {
+        jbl?.let { session ->
+            val packets = session.change(change) ?: return
+            if (sendJbl(session, packets)) publish(session)
+            return
+        }
         bose?.let { session ->
             val packets = session.change(change) ?: return
             val queue = boseQueue ?: return
@@ -484,6 +613,11 @@ class EarbudsConnection(
     fun set(command: Command, vararg payload: Int) {
         // Bose's settings are all brand rows (changeSetting); nothing of the shared commands goes to them.
         if (bose != null) return
+        jbl?.let { session ->
+            val packets = session.set(command, payload.singleOrNull() ?: return) ?: return
+            if (sendJbl(session, packets)) publish(session)
+            return
+        }
         sony?.let { session ->
             val outs = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (sendSony(outs)) publish(session)
@@ -512,7 +646,7 @@ class EarbudsConnection(
      */
     fun sendEq(frames: List<ByteArray>) {
         if (_status.value !is LinkStatus.Connected) return
-        if (bose != null) return
+        if (bose != null || jbl != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
@@ -545,7 +679,7 @@ class EarbudsConnection(
             if (send(session.frames(packets), then = null)) publish(session)
             return
         }
-        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -574,7 +708,7 @@ class EarbudsConnection(
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null || bose != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -631,6 +765,8 @@ class EarbudsConnection(
         sonyQueue = null
         bose = null
         boseQueue = null
+        jbl = null
+        jblQueue = null
         session?.cancel()
         session = null
         _status.value = LinkStatus.Idle
@@ -677,6 +813,9 @@ class EarbudsConnection(
 
         /** How long a Bose request waits for its answer before the next goes; bosectl waits 2 s. */
         const val BOSE_REPLY_MS = 2_000L
+
+        /** How long a JBL command waits for the earbuds before the next goes, as JBL's app waits (HandleSend). */
+        const val JBL_REPLY_MS = 1_000L
 
         /** ANC mode "off" (data/soundpeats/commands.json). */
         private val ANC_OFF = Command.ANC_MODE.labels.entries.first { it.value == "off" }.key

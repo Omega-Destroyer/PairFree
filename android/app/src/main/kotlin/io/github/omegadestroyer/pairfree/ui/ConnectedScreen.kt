@@ -57,6 +57,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
@@ -126,6 +127,7 @@ internal fun ConnectedScreen(
                         Brand.SOUNDCORE -> R.string.eq_soundcore_unchecked
                         Brand.SONY -> R.string.eq_sony_none
                         Brand.BOSE -> R.string.eq_bose
+                        Brand.JBL -> R.string.eq_jbl
                         else -> R.string.eq_unavailable
                     },
                 )
@@ -149,6 +151,8 @@ internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.
     Brand.SONY -> SonyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
     // Bose's by the product the device reports, which names the firmware line; before then, its name.
     Brand.BOSE -> BoseModels.model(state.firmware?.code ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
+    // JBL's by the model its product id names, which the firmware line carries; before then, its name.
+    Brand.JBL -> JblModels.model(state.firmware?.code ?: device.model ?: device.name)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

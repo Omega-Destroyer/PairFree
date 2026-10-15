@@ -1,0 +1,40 @@
+{
+  "_about": "The Harman commands PairFree uses with JBL headphones and earbuds, read from JBL Headphones 5.37.10 (jbl.stc.com: CommandHeader, RetHeader, CmdGen, CmdBase, Command3, GenDeviceInfoCmd, HandleParse). A frame is AA, the command, a one-byte length and the payload; commands marked wide have a two-byte length, low byte first (docs/jbl/PROTOCOL.md section 2). A reply comes back under the command's reply number. never_send lists commands PairFree never sends.",
+  "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
+  "start": 170,
+  "commands": [
+    {"name": "ack", "command": "00", "from": "device", "note": "The earbuds' acknowledgement of a write: the command and a status byte."},
+    {"name": "device_info", "command": "11", "reply": "12", "note": "Name, product id, battery, address, firmware."},
+    {"name": "status", "command": "21", "reply": "22", "note": "One byte, the status type; the reply starts with it."},
+    {"name": "battery", "command": "25", "note": "Payload 00; the reply's first byte is 01."},
+    {"name": "set_anc", "command": "31", "note": "00 off, 01 on (models with the old noise commands)."},
+    {"name": "set_ambient", "command": "32", "note": "00 off, 01 TalkThru, 02 Ambient Aware (models with the old noise commands)."},
+    {"name": "set_auto_off", "command": "33", "note": "v1: one byte, bit 7 on and bits 0 to 6 the minutes; v2: on, then the minutes in two bytes."},
+    {"name": "set_auto_play_pause", "command": "35", "note": "00 off, 01 on."},
+    {"name": "feature", "command": "06", "wide": true, "note": "Harman's feature records: a type (00 set, 01 get, 02 reply), then per feature its id in two bytes (high first), and for a set or reply a length and the value."},
+    {"name": "noise_modes", "command": "91", "note": "A sub-command first (noise_sub), then pairs of mode and value."}
+  ],
+  "status_types": {"all": "30", "anc": "31", "ambient": "32", "auto_off": "33", "auto_play_pause": "38"},
+  "noise_sub": {"set": "10", "get": "11", "reply": "12", "off": "13"},
+  "noise_modes": {"anc": 1, "ambient_aware": 2, "talk_thru": 3},
+  "ambient_values": {"off": 0, "talk_thru": 1, "ambient_aware": 2},
+  "feature_types": {"set": 0, "get": 1, "reply": 2},
+  "features": {
+    "product_id": 2,
+    "firmware": 5,
+    "auto_off": 11,
+    "auto_play_pause": 17,
+    "battery_headband": 25,
+    "battery_left": 26,
+    "battery_right": 27,
+    "battery_case": 28
+  },
+  "never_send": {
+    "13": "analytics read",
+    "15": "clears the analytics",
+    "95": "factory reset",
+    "97": "power off",
+    "aa": "preserve settings",
+    "f0": "firmware update"
+  }
+}

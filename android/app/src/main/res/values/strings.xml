@@ -20,6 +20,7 @@
     <string name="failed_lost">The connection to %1$s dropped.</string>
     <string name="failed_bluetooth_off">Bluetooth is off.</string>
     <string name="failed_no_permission">Bluetooth access is turned off for PairFree.</string>
+    <string name="failed_needs_newer_android">The settings of %1$s need Android 17 on this phone. Before Android 17, Android\'s Bluetooth opens their channel only on Pixels with Android 16 QPR3 and on OnePlus, OPPO and realme phones with Android 16.</string>
     <string name="failed_no_scan_permission">%1$s did not answer on its Bluetooth address. PairFree can look for it nearby if you allow it to find nearby devices; it never uses that for your location.</string>
 
     <string name="connected">Connected</string>
@@ -162,6 +163,28 @@
     <string name="setting_anc">Noise cancelling</string>
     <string name="setting_ambient_aware">Ambient Aware</string>
     <string name="setting_talk_thru">TalkThru</string>
+    <string name="setting_adaptive_audio">Adaptive Audio</string>
+    <string name="setting_adaptive_audio_note">Blends noise cancelling and transparency to suit your surroundings.</string>
+    <string name="setting_adaptive_level">Adaptive noise reduction</string>
+    <string name="setting_adaptive_level_note">How much noise Adaptive Audio lets through: 0 lets in the most, 100 the least.</string>
+    <string name="setting_conversation_awareness">Conversation Awareness</string>
+    <string name="setting_conversation_awareness_note">Turns the media down and lets voices in when you start speaking.</string>
+    <string name="setting_personalized_volume">Personalized Volume</string>
+    <string name="setting_personalized_volume_note">Adjusts the media volume to your surroundings.</string>
+    <string name="setting_press_speed">Press speed</string>
+    <string name="setting_hold_duration">Press and hold duration</string>
+    <string name="setting_volume_swipe">Swipe to change volume</string>
+    <string name="setting_volume_swipe_length">Volume swipe length</string>
+    <string name="setting_ear_detection">Automatic ear detection</string>
+    <string name="setting_allow_off">Off as a listening mode</string>
+    <string name="setting_allow_off_note">Lets pressing and holding the stem switch noise control off too.</string>
+    <string name="setting_option_default">Default</string>
+    <string name="setting_option_slower">Slower</string>
+    <string name="setting_option_slowest">Slowest</string>
+    <string name="setting_option_shorter">Shorter</string>
+    <string name="setting_option_shortest">Shortest</string>
+    <string name="setting_option_longer">Longer</string>
+    <string name="setting_option_longest">Longest</string>
     <string name="setting_talk_thru_note">Turns the music down and lets voices through, for a quick talk.</string>
     <string name="setting_relieve_pressure">Relieve pressure with ambient sound</string>
     <string name="setting_relieve_pressure_note">Lets in a little ambient sound, so the ears do not feel blocked while noise cancelling is off.</string>
@@ -372,6 +395,7 @@
     <string name="setting_multipoint">Two devices at once</string>
     <string name="setting_auto_answer">Answer calls automatically</string>
     <string name="setting_voice_prompts">Voice prompts</string>
+    <string name="eq_apple">PairFree cannot set the equalizer of AirPods and Beats yet.</string>
     <string name="eq_jbl">PairFree cannot set the equalizer of JBL headphones and earbuds yet. JBL\'s app sends a whole curve of filters, and PairFree does not send what it has not checked.</string>
     <string name="eq_bose">Bose earbuds and headphones have a tone control rather than an equalizer of bands by frequency. Where the model has one, it is below.</string>
     <string name="status_title">Status notification</string>

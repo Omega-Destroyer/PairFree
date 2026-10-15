@@ -1,0 +1,26 @@
+{
+  "_about": "AirPods packets every implementation must build or read byte for byte, from LibrePods' notes (docs/AAP Definitions.md, captured from AirPods Pro 2 (USB-C), firmware 7A305) and code (AACPManager). The information packet is LibrePods' example with its serial numbers replaced by zeros and its encrypted tail left out.",
+  "requests": [
+    {"name": "handshake", "hex": "00000400010002000000000000000000"},
+    {"name": "feature_flags", "hex": "040004004d00d700000000000000"},
+    {"name": "notifications", "hex": "040004000f00ffffffff"},
+    {"name": "listening_mode_transparency", "hex": "0400040009000d03000000"},
+    {"name": "conversation_awareness_on", "hex": "0400040009002801000000"},
+    {"name": "adaptive_level_50", "hex": "0400040009002e32000000"}
+  ],
+  "replies": [
+    {
+      "name": "battery",
+      "hex": "04000400040003020164020104016301010801110201",
+      "left": 99, "right": 100, "case": 17
+    },
+    {"name": "listening_mode_transparency", "hex": "0400040009000d03000000", "listening_mode": "transparency"},
+    {"name": "conversation_awareness_on", "hex": "0400040009002801000000", "conversation_awareness": true},
+    {"name": "ear_detection", "hex": "0400040006000001"},
+    {
+      "name": "information",
+      "hex": "040004001d0002d5000400416972506f64732050726f004133303438004170706c6520496e632e00303030303030303030300036312e313836383034303030323030303030302e323731330036312e313836383034303030323030303030302e3237313300312e302e3000636f6d2e6170706c652e6163636573736f72792e757064617465722e6170702e37310030303030303030303030303000303030303030303030303030003633353735333600",
+      "model_number": "A3048", "firmware": "61.1868040002000000.2713"
+    }
+  ]
+}

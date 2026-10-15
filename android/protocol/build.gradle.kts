@@ -820,8 +820,116 @@ val generateJblTables = tasks.register<GenerateJblTables>("generateJblTables") {
     outputDir = layout.buildDirectory.dir("generated/jbl")
 }
 
+/** Writes Apple's accessory protocol constants and the AirPods and Beats models from data/apple. */
+abstract class GenerateAppleTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String) + "\""
+        fun hex(v: Int) = "0x" + v.toString(16).uppercase().padStart(2, '0')
+        fun byte(v: Any?) = (v as String).toInt(16)
+        fun bytes(v: Any?) = "byteArrayOf(" + (v as String).chunked(2).joinToString(", ") { "0x${it.uppercase()}.toByte()" } + ")"
+        @Suppress("UNCHECKED_CAST")
+        fun map(key: String) = commands.getValue(key) as Map<String, Any?>
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/apple by the generateAppleTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        out.appendLine("/** The channel and the fixed packets of Apple's accessory protocol (data/apple/commands.json). */")
+        out.appendLine("public object AppleWire {")
+        out.appendLine("    /** The L2CAP channel (PSM) the AirPods listen on. */")
+        out.appendLine("    public const val PSM: Int = ${(commands["psm"] as Number).toInt()}")
+        out.appendLine("    /** The service AirPods and Apple-chip Beats list, by which a paired device is known as one. */")
+        out.appendLine("    public const val SERVICE_UUID: String = ${str(commands["service_uuid"])}")
+        out.appendLine("    public val HEADER: ByteArray get() = ${bytes(commands["header"])}")
+        out.appendLine("    /** Sent first, whole; the AirPods answer nothing before it. */")
+        out.appendLine("    public val HANDSHAKE: ByteArray get() = ${bytes(commands["handshake"])}")
+        out.appendLine("    /** The opcode and data that switch on features Apple keeps to its own devices. */")
+        out.appendLine("    public val FEATURE_FLAGS: ByteArray get() = ${bytes(commands["feature_flags"])}")
+        out.appendLine("    /** The opcode and data that ask for notifications: battery, ear detection, settings. */")
+        out.appendLine("    public val NOTIFICATIONS: ByteArray get() = ${bytes(commands["notifications"])}")
+        val switch = map("switch")
+        out.appendLine("    public const val ON: Int = ${(switch["on"] as Number).toInt()}")
+        out.appendLine("    public const val OFF: Int = ${(switch["off"] as Number).toInt()}")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val never = commands.getValue("never_send") as Map<String, Map<String, Any?>>
+        out.appendLine("/** The opcodes PairFree reads (data/apple/commands.json). */")
+        out.appendLine("public object AppleOpcode {")
+        for ((name, v) in map("opcodes")) out.appendLine("    public const val ${name.uppercase()}: Int = ${hex(byte(v))}")
+        out.appendLine("    /** Opcodes PairFree never sends: ${never.getValue("opcodes").values.joinToString("; ")}. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${never.getValue("opcodes").keys.joinToString(", ") { hex(byte(it)) }})")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val controls = commands.getValue("controls") as List<Map<String, Any?>>
+        out.appendLine("/** Control command ids (opcode 09) and the values of those with named ones (data/apple/commands.json). */")
+        out.appendLine("public object AppleControl {")
+        for (c in controls) out.appendLine("    public const val ${(c.getValue("name") as String).uppercase()}: Int = ${hex(byte(c["id"]))}")
+        out.appendLine("    /** Control commands PairFree never sends: ${never.getValue("controls").values.joinToString("; ")}. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${never.getValue("controls").keys.joinToString(", ") { hex(byte(it)) }})")
+        out.appendLine("    public val VALUES: Map<Int, Map<Int, String>> = mapOf(")
+        for (c in controls) {
+            @Suppress("UNCHECKED_CAST")
+            val values = c["values"] as Map<String, Any?>? ?: continue
+            out.appendLine("        ${hex(byte(c["id"]))} to mapOf(${values.entries.joinToString(", ") { "${it.key.toInt()} to ${str(it.value)}" }}),")
+        }
+        out.appendLine("    )")
+        out.appendLine("    public val SWITCHES: Set<Int> = setOf(${controls.filter { it["kind"] == "switch" }.joinToString(", ") { hex(byte(it["id"])) }})")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/apple/devices.json. */")
+        out.appendLine("internal val APPLE_MODELS: List<AppleModel> = listOf(")
+        for (d in devices) {
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headphones" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            @Suppress("UNCHECKED_CAST")
+            val numbers = (d.getValue("model_numbers") as List<String>).joinToString(", ") { str(it) }
+            out.appendLine(
+                "    AppleModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, listOf($numbers), " +
+                    "0x${d["product_id"]}, adaptive = ${d["adaptive"] == true}),",
+            )
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("AppleTables.kt").writeText(out.toString())
+    }
+}
+
+val generateAppleTables = tasks.register<GenerateAppleTables>("generateAppleTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/apple/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/apple/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.apple"
+    outputDir = layout.buildDirectory.dir("generated/apple")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
+    kotlin.srcDir(generateAppleTables)
     kotlin.srcDir(generateSoundcoreTables)
     kotlin.srcDir(generateSamsungTables)
     kotlin.srcDir(generateSonyTables)
@@ -844,6 +952,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/sony")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/bose")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/jbl")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/apple")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

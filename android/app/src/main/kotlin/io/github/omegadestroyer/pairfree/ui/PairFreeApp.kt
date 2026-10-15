@@ -196,5 +196,6 @@ private fun failure(status: LinkStatus): String? {
         LinkStatus.Reason.BLUETOOTH_OFF -> stringResource(R.string.failed_bluetooth_off)
         LinkStatus.Reason.NO_PERMISSION -> stringResource(R.string.failed_no_permission)
         LinkStatus.Reason.NO_SCAN_PERMISSION -> stringResource(R.string.failed_no_scan_permission, name)
+        LinkStatus.Reason.NEEDS_NEWER_ANDROID -> stringResource(R.string.failed_needs_newer_android, name)
     }
 }

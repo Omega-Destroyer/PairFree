@@ -18,6 +18,7 @@ Supported brands:
 • Samsung Galaxy Buds: 16 models, from the 2019 Buds to the Buds4 Pro, not yet tried on real earbuds. Built on the open-source GalaxyBudsClient and Samsung's own plugin
 • Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6, WF-1000XM5 and LinkBuds, not yet tried on real headphones. Written from Sony's own app and checked against the open-source Gadgetbridge
 • Bose: 22 models, from the QC35 to the QC Ultra 2 headphones and earbuds, not yet tried with PairFree. Written from Bose's own app and the open-source bosectl. PairFree never signs in to Bose's cloud, so anything that needs it stays out of reach
+• AirPods and Beats on Apple's chips: 30 models, not yet tried with PairFree. Ported from the open-source LibrePods. Android 17 is needed, or a Pixel on Android 16 QPR3, or a OnePlus, OPPO or realme phone on Android 16
 • JBL: 48 models, from the Tune 520BT to the Tour Pro 2, not yet tried with PairFree. Written from JBL's own app and checked against the open-source JblTray
 
 What it controls, on the models that have each:
@@ -28,11 +29,11 @@ What it controls, on the models that have each:
 • Touch controls: what each tap and hold does on each earbud, and turning touch off
 • Game mode, two devices at once, LDAC and LE Audio
 • The ear tip fit test, find my earbuds, voice prompts and water drain
-• Settings only one brand has, such as each Galaxy Bud's ambient sound level, voice detect, Sony's speak-to-chat and DSEE upscaling, Bose's listening modes, or JBL's TalkThru
+• Settings only one brand has, such as each Galaxy Bud's ambient sound level, voice detect, Sony's speak-to-chat and DSEE upscaling, Bose's listening modes, JBL's TalkThru, or the AirPods' Conversation Awareness
 • A status notification with the battery and buttons for noise control and game mode, in place of Google's Fast Pair notification if you like
 
 PairFree shows only what your earbuds support. If your model has not been tried, the Device tab copies a device report you can send, so it can be added for everyone. Record from the official app goes further: it reads, on your phone, what the brand's own app sends to your earbuds when you change a setting (and on SOUNDPEATS earbuds the equalizer curves), so PairFree can learn to do the same. It keeps nothing but the messages exchanged with your earbuds, and the report it makes masks their address and serial number.
 
 Close the brand's own app before using PairFree: only one app can control the earbuds at a time.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose or Harman (JBL).
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL) or Apple.

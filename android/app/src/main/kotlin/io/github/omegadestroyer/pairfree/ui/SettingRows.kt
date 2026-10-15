@@ -138,6 +138,16 @@ private fun settingTitle(key: String): String = when (key) {
     "anc" -> stringResource(R.string.setting_anc)
     "ambient_aware" -> stringResource(R.string.setting_ambient_aware)
     "talk_thru" -> stringResource(R.string.setting_talk_thru)
+    "adaptive" -> stringResource(R.string.setting_adaptive_audio)
+    "adaptive_level" -> stringResource(R.string.setting_adaptive_level)
+    "conversation_awareness" -> stringResource(R.string.setting_conversation_awareness)
+    "personalized_volume" -> stringResource(R.string.setting_personalized_volume)
+    "press_speed" -> stringResource(R.string.setting_press_speed)
+    "hold_duration" -> stringResource(R.string.setting_hold_duration)
+    "volume_swipe" -> stringResource(R.string.setting_volume_swipe)
+    "volume_swipe_length" -> stringResource(R.string.setting_volume_swipe_length)
+    "ear_detection" -> stringResource(R.string.setting_ear_detection)
+    "allow_off" -> stringResource(R.string.setting_allow_off)
     "auto_off" -> stringResource(R.string.auto_shutdown)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure)
     "ambient_volume" -> stringResource(R.string.setting_ambient_volume)
@@ -214,6 +224,11 @@ private fun settingNote(key: String): String? = when (key) {
     "dsee" -> stringResource(R.string.setting_dsee_note)
     "noise_level" -> stringResource(R.string.setting_noise_level_note)
     "talk_thru" -> stringResource(R.string.setting_talk_thru_note)
+    "adaptive" -> stringResource(R.string.setting_adaptive_audio_note)
+    "adaptive_level" -> stringResource(R.string.setting_adaptive_level_note)
+    "conversation_awareness" -> stringResource(R.string.setting_conversation_awareness_note)
+    "personalized_volume" -> stringResource(R.string.setting_personalized_volume_note)
+    "allow_off" -> stringResource(R.string.setting_allow_off_note)
     else -> null
 }
 
@@ -221,6 +236,17 @@ private fun settingNote(key: String): String? = when (key) {
 private fun optionName(key: String, option: String): String = when {
     key == "anc_level" -> stringResource(if (option == "high") R.string.setting_anc_level_high else R.string.setting_anc_level_low)
     key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
+    key == "press_speed" || key == "hold_duration" || key == "volume_swipe_length" -> stringResource(
+        when (option) {
+            "slower" -> R.string.setting_option_slower
+            "slowest" -> R.string.setting_option_slowest
+            "shorter" -> R.string.setting_option_shorter
+            "shortest" -> R.string.setting_option_shortest
+            "longer" -> R.string.setting_option_longer
+            "longest" -> R.string.setting_option_longest
+            else -> R.string.setting_option_default
+        },
+    )
     key == "auto_off" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.shutdown_never)
     key == "anr" || key == "sidetone_level" -> stringResource(
         when (option) {

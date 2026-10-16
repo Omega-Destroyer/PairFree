@@ -1,0 +1,17 @@
+{
+ "name": "Beats Fit Pro",
+ "names": [
+  "Beats Fit Pro",
+  "Powerbeats Fit"
+ ],
+ "source": "Traced from Apple's store render (Beats Fit Pro, the left earbud from outside), with a transparent background",
+ "bud": {
+  "kind": "bud",
+  "body": "218,182 230,184 248,192 281,215 297,237 303,259 303,282 297,305 302,328 298,355 290,370 281,380 266,389 252,392 213,392 196,388 181,379 158,380 146,377 132,370 123,362 117,352 115,341 115,326 118,314 126,303 136,295 155,287 178,288 198,277 226,271 257,254 258,248 251,236 214,205 212,190",
+  "axis": [
+   208.9,
+   287.1
+  ]
+ },
+ "case": "generic"
+}

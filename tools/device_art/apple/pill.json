@@ -1,0 +1,18 @@
+{
+ "name": "Beats Studio Buds",
+ "names": [
+  "Beats Studio Buds",
+  "Beats Studio Buds +",
+  "Beats Solo Buds"
+ ],
+ "source": "Traced from Apple's store render (Beats Studio Buds, the left earbud from outside), with a transparent background",
+ "bud": {
+  "kind": "bud",
+  "body": "237,228 256,229 274,238 286,253 291,272 290,289 293,325 290,342 278,367 268,379 254,389 239,396 222,400 198,402 166,399 148,395 124,381 96,385 72,380 50,367 37,353 30,328 32,300 43,281 61,266 86,257 101,256 120,258 142,244 163,237 220,234",
+  "axis": [
+   161.5,
+   315.1
+  ]
+ },
+ "case": "generic"
+}

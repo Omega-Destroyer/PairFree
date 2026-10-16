@@ -1,0 +1,43 @@
+{
+ "name": "JBL Tune Flex 2",
+ "names": [
+  "JBL LIVE FLEX",
+  "JBL LIVE PRO 2 TWS",
+  "JBL Live Beam 3",
+  "JBL Live Beam 4",
+  "JBL Live Flex 3",
+  "JBL Live Flex 4",
+  "JBL TOUR PRO 2",
+  "JBL TUNE BEAM",
+  "JBL TUNE FLEX",
+  "JBL TUNE230NC TWS",
+  "JBL TUNE235NC TWS",
+  "JBL Tune 245NC TWS",
+  "JBL Tune 255NC",
+  "JBL Tune Beam 2",
+  "JBL Tune Beam 3",
+  "JBL Tune Flex 2",
+  "JBL Tune Flex 3",
+  "JBL Vibe Beam 3",
+  "JBL Vibe Flex 2",
+  "JBL Vibe Flex 3",
+  "JBL WAVE BEAM",
+  "JBL WAVE FLEX",
+  "JBL Wave Beam 3",
+  "JBL Wave Flex 2",
+  "JBL Wave Flex 3"
+ ],
+ "source": "Traced from JBL's own product render (Tune Flex 2, front, the right-hand bud facing forward), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "476,95 498,96 514,99 534,105 551,115 568,131 580,149 588,166 591,183 591,200 586,223 578,239 561,262 558,270 554,504 549,518 539,529 523,539 512,542 493,539 477,530 465,516 459,498 458,293 454,289 416,274 370,244 361,229 355,198 354,180 359,167 405,125 436,106",
+  "accent": [
+   "503,221 509,212 515,221 515,236 509,245 503,236"
+  ],
+  "axis": [
+   509,
+   228
+  ]
+ },
+ "case": "generic"
+}

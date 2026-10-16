@@ -5,11 +5,12 @@ android/app/src/main/res/drawable/device_<model>_<part>.xml (brand-prefixed for 
 other than SoundPEATS, so names never collide), so the app uses the same shapes. Change
 the shapes here, never in the generated files.
 
-So far SoundPEATS and Apple. SoundPEATS models are below; the Apple ones (AirPods traced
+So far SoundPEATS, Apple and JBL. SoundPEATS models are below; the Apple ones (AirPods traced
 from LibrePods' renders, AirPods Max and the Beats drawn from face-on product photos) are
-in the Apple section. The app's DeviceArtTable.kt maps a Bluetooth name, then a per-brand
-code (a SoundPEATS firmware code, or the Apple model name the information packet carries),
-to a drawing.
+in the Apple section; JBL's are traced from JBL's own product renders and kept as data in
+tools/device_art/jbl/, in the same format as SoundPEATS'. The app's DeviceArtTable.kt maps a
+Bluetooth name, then a per-brand code (a SoundPEATS firmware code, or the Apple or JBL model
+name the earbuds' session puts before the firmware version), to a drawing.
 
 H3: the earbud outlines are traced from a front-view product photo of the left
 earbud: the shell, the chrome rim, the faceplate and the gold nozzle band, plus an
@@ -53,6 +54,7 @@ _ap.add_argument("--res", default=str(_ROOT / "android" / "app" / "src" / "main"
                  help="where the Android vector drawables go")
 _ap.add_argument("--models", default="")
 _ap.add_argument("--sheet", default="")
+_ap.add_argument("--kt", default="", help="where DeviceArtTable.kt goes (for previews; default: the app)")
 ARGS = _ap.parse_args()
 OUT = pathlib.Path(ARGS.out)
 RES = pathlib.Path(ARGS.res)
@@ -778,13 +780,29 @@ DEVICES["generic"] = ("Any other model", generic_bud, generic_case, [])
 DEVICES["generic-headphones"] = ("Any headphones", generic_headphones, None, [])
 DEVICES["generic-speaker"] = ("Any speaker", generic_speaker, None, [])
 SOUNDPEATS_DEVICES = DEVICES
+
+# JBL: traced from JBL's own product renders, kept as data in tools/device_art/jbl/<slug>.json in
+# the SoundPEATS format above. Their names are model names from data/jbl/devices.json.
+JBL_DEVICES = {f.stem: _traced(json.loads(f.read_text(encoding="utf-8")))
+               for f in sorted((_ROOT / "tools" / "device_art" / "jbl").glob("*.json"))}
+
 # brand: (its drawings, the assets/devices/<subdir>, the drawable name prefix). SoundPEATS
 # keeps its unprefixed names; other brands are prefixed so names never collide.
 BRANDS = [
     ("soundpeats", SOUNDPEATS_DEVICES, "soundpeats", ""),
     ("apple", APPLE_DEVICES, "apple", "apple_"),
+    ("jbl", JBL_DEVICES, "jbl", "jbl_"),
 ]
 wanted = set(ARGS.models.split(",")) if ARGS.models else None
+
+
+def write(path, text):
+    """Writes text with LF endings, leaving a file alone that already holds it (with either
+    ending), so a Windows checkout does not show unchanged drawings as modified."""
+    if path.exists() and path.read_text(encoding="utf-8").replace("\r\n", "\n") == text:
+        return
+    path.write_text(text, encoding="utf-8", newline="\n")
+
 
 cells = []
 for brand, devices, subdir, prefix in BRANDS:
@@ -798,8 +816,8 @@ for brand, devices, subdir, prefix in BRANDS:
             if not callable(fn) or (fn in (generic_bud, generic_case) and slug != "generic"):
                 continue
             dr = fn()
-            (d / f"{part}.svg").write_text(svg(dr), newline="\n")
-            (RES / f"device_{prefix}{slug.replace('-', '_')}_{part}.xml").write_text(vector(dr), newline="\n")
+            write(d / f"{part}.svg", svg(dr))
+            write(RES / f"device_{prefix}{slug.replace('-', '_')}_{part}.xml", vector(dr))
         if brand == "soundpeats":
             cells.append((name, svg(bud()), svg(case()) if callable(case) else svg(generic_case()) if case == "generic" else ""))
 
@@ -834,13 +852,16 @@ for code, slugs in sp_codes.items():
         by_code[code] = art_ref(SOUNDPEATS_DEVICES, "", slugs.pop())
 # Apple: the information packet carries the model name, which reaches deviceArt() as the
 # firmware code; the default Bluetooth name is the model name too, so map both (AirPods can be renamed).
-for slug, (_, _, _, names) in APPLE_DEVICES.items():
-    for mn in names:
-        by_name[mn.lower()] = art_ref(APPLE_DEVICES, "apple_", slug)
-        by_code[mn] = art_ref(APPLE_DEVICES, "apple_", slug)
+# JBL does the same: JblSession puts the model name before the firmware version.
+for devices, prefix in ((APPLE_DEVICES, "apple_"), (JBL_DEVICES, "jbl_")):
+    for slug, (_, _, _, names) in devices.items():
+        for mn in names:
+            by_name[mn.lower()] = art_ref(devices, prefix, slug)
+            by_code[mn] = art_ref(devices, prefix, slug)
 
-KT = _ROOT / "android" / "app" / "src" / "main" / "kotlin" / "io" / "github" / "omegadestroyer" / "pairfree" / "ui" / "DeviceArtTable.kt"
-KT.write_text(
+KT = pathlib.Path(ARGS.kt) if ARGS.kt else (
+    _ROOT / "android" / "app" / "src" / "main" / "kotlin" / "io" / "github" / "omegadestroyer" / "pairfree" / "ui" / "DeviceArtTable.kt")
+write(KT,
     "// Generated by tools/gen_device_art.py from its drawings and data/<brand>/devices.json. Do not edit.\n"
     "package io.github.omegadestroyer.pairfree.ui\n\n"
     "import io.github.omegadestroyer.pairfree.R\n\n"
@@ -848,7 +869,7 @@ KT.write_text(
     "internal val ART_BY_NAME: Map<String, DeviceArt> = mapOf(\n"
     + "".join(f'    "{n}" to {v},\n' for n, v in sorted(by_name.items()))
     + ")\n\n"
-    "/** Drawings by per-brand code: a SoundPEATS firmware code, or an Apple model name. */\n"
+    "/** Drawings by per-brand code: a SoundPEATS firmware code, or an Apple or JBL model name. */\n"
     "internal val ART_BY_CODE: Map<String, DeviceArt> = mapOf(\n"
     + "".join(f'    "{c}" to {v},\n' for c, v in sorted(by_code.items()))
     + ")\n\n"
@@ -856,7 +877,6 @@ KT.write_text(
     f"internal val GENERIC_ART: DeviceArt = {art_ref(SOUNDPEATS_DEVICES, '', 'generic')}\n"
     f"internal val GENERIC_HEADPHONES_ART: DeviceArt = {art_ref(SOUNDPEATS_DEVICES, '', 'generic-headphones')}\n"
     f"internal val GENERIC_SPEAKER_ART: DeviceArt = {art_ref(SOUNDPEATS_DEVICES, '', 'generic-speaker')}\n",
-    newline="\n",
 )
 
 if ARGS.sheet:

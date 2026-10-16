@@ -1,0 +1,19 @@
+{
+ "name": "JBL Soundgear Sense",
+ "names": [
+  "JBL Endurance Zone",
+  "JBL Sense Lite",
+  "JBL Sense Pro",
+  "JBL Soundgear Sense"
+ ],
+ "source": "Traced from JBL's own product render (Soundgear Sense, front, the right-hand bud facing forward), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "437,199 473,203 510,217 542,241 566,271 584,311 591,350 591,368 586,393 580,409 572,418 559,419 552,410 560,371 561,343 555,316 542,290 525,267 504,249 478,236 452,230 430,230 409,234 395,241 383,251 376,261 374,274 380,314 388,319 430,317 489,320 509,322 522,327 538,341 548,362 549,385 543,404 535,416 523,426 510,431 494,433 392,427 374,420 359,404 350,384 336,289 336,270 341,252 356,229 376,214 404,204",
+  "axis": [
+   463.5,
+   316.2
+  ]
+ },
+ "case": "generic"
+}

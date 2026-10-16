@@ -1,0 +1,19 @@
+{
+ "name": "JBL Smart Tx",
+ "names": [
+  "JBL Smart Tx"
+ ],
+ "source": "Traced from JBL's own product render (Tour One M3 Smart Tx, detail), not in the repo.",
+ "bud": {
+  "kind": "headphones",
+  "body": "427,30 460,32 484,39 507,55 519,76 527,110 549,324 550,352 544,374 533,389 511,407 246,596 222,606 203,610 173,607 149,600 132,589 120,577 112,563 107,542 73,302 73,275 79,255 89,241 105,228 368,52 400,36",
+  "panel": [
+   "256,312 488,168 492,348 283,483"
+  ],
+  "axis": [
+   311.3,
+   320.1
+  ]
+ },
+ "case": null
+}

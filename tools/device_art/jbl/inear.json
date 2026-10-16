@@ -1,0 +1,30 @@
+{
+ "name": "JBL Tune Buds 2",
+ "names": [
+  "JBL ENDURANCE RACE TWS",
+  "JBL Live Buds 4",
+  "JBL RFL FLOW PRO",
+  "JBL TUNE BUDS",
+  "JBL TUNE130NC TWS",
+  "JBL Tune Buds 2",
+  "JBL Tune Buds 3",
+  "JBL Vibe Buds 2",
+  "JBL Vibe Buds 3",
+  "JBL WAVE BUDS",
+  "JBL Wave Buds 2",
+  "JBL Wave Buds 3"
+ ],
+ "source": "Traced from JBL's own product render (Tune Buds 2, front), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "95,232 108,232 121,235 136,243 151,255 193,253 217,257 236,264 252,275 268,298 275,324 275,338 271,357 256,381 241,394 228,401 211,405 181,407 109,406 92,400 76,389 62,373 54,354 50,333 52,315 48,289 52,269 61,253 75,240",
+  "accent": [
+   "222,328 235,328 238,330 238,333 233,336 216,335 216,330"
+  ],
+  "axis": [
+   161.5,
+   319.5
+  ]
+ },
+ "case": "generic"
+}

@@ -5,10 +5,10 @@ android/app/src/main/res/drawable/device_<model>_<part>.xml (brand-prefixed for 
 other than SoundPEATS, so names never collide), so the app uses the same shapes. Change
 the shapes here, never in the generated files.
 
-So far SoundPEATS, Apple and JBL. SoundPEATS models are below; the Apple ones (AirPods traced
-from LibrePods' renders, AirPods Max and the Beats drawn from face-on product photos) are
-in the Apple section; JBL's are traced from JBL's own product renders and kept as data in
-tools/device_art/jbl/, in the same format as SoundPEATS'. The app's DeviceArtTable.kt maps a
+So far SoundPEATS, Apple and JBL. SoundPEATS models are below. Apple's and JBL's are traced
+from product renders (LibrePods' for the AirPods and their cases, Apple's store renders for
+AirPods Max and the Beats, JBL's own for JBL) and kept as data in tools/device_art/<brand>/,
+in the same format as SoundPEATS' and drawn by the same code. The app's DeviceArtTable.kt maps a
 Bluetooth name, then a per-brand code (a SoundPEATS firmware code, or the Apple or JBL model
 name the earbuds' session puts before the firmware version), to a drawing.
 
@@ -572,189 +572,6 @@ def generic_speaker():
 
 
 # ------------------------------------------------------------- output --------
-# --------------------------------------------------------------- Apple -------
-# The AirPods are auto-traced from LibrePods' reference renders (github.com/kavishdevar/
-# librepods, GPL-3.0-or-later): the silhouette taken per row, low-pass filtered to drop
-# pixel jitter, and reduced to points a Catmull-Rom curve passes through. AirPods Max and
-# the Beats are drawn from face-on product photos on Wikimedia Commons (as the device sits
-# in the ear). The reference images are not in the repo. Logos and text are left out; the
-# one amber detail is the speaker outlet, or the Digital Crown / "b" on the headphones.
-# Models that share a look share one drawing (data/apple/devices.json names them).
-AP_CLASSIC = ("170.4,18.0 90.9,58.0 39.4,104.0 32.0,147.0 33.8,253.0 41.1,271.0 59.9,291.0 127.8,335.0 "
-              "154.7,345.0 282.0,364.0 282.0,828.0 285.5,849.0 298.6,869.0 398.3,869.0 410.4,850.0 414.0,830.0 "
-              "414.0,379.0 402.4,249.0 378.8,162.0 345.8,94.0 305.4,51.0 245.7,18.0")
-AP_OPEN = ("122.9,2.0 69.2,31.0 37.9,60.0 11.4,105.0 1.7,150.0 9.3,208.0 43.9,278.0 43.9,625.0 51.5,645.0 "
-           "74.4,665.0 146.9,665.0 169.8,644.0 176.7,624.0 179.0,386.0 293.5,367.0 327.5,350.0 377.8,294.0 "
-           "394.7,259.0 401.5,228.0 393.2,164.0 358.2,106.0 290.7,48.0 200.2,2.0")
-AP_PRO = ("291.3,9.0 189.3,60.0 148.5,96.0 112.6,145.0 50.6,182.0 20.5,223.0 9.0,273.0 13.3,302.0 28.5,337.0 "
-          "53.3,371.0 79.5,393.0 101.1,403.0 245.8,422.0 244.9,627.0 252.5,647.0 272.5,666.0 341.3,666.0 "
-          "362.0,645.0 368.7,624.0 371.7,338.0 428.0,286.0 456.1,251.0 474.8,211.0 481.0,169.0 472.9,119.0 "
-          "449.6,73.0 417.2,39.0 365.9,9.0")
-AP_CASE_PORTRAIT = ("248.5,0.0 144.3,32.0 107.3,57.0 76.1,90.0 53.3,127.0 37.2,172.0 26.0,301.0 29.0,862.0 "
-                    "40.1,965.0 66.5,1029.0 110.1,1080.0 162.4,1112.0 244.8,1136.0 741.4,1136.0 824.8,1112.0 "
-                    "878.5,1079.0 923.5,1025.0 948.1,962.0 959.0,838.0 961.0,271.0 948.5,165.0 931.7,122.0 "
-                    "907.6,85.0 876.5,54.0 839.2,30.0 737.9,0.0")
-AP_CASE_WIDE = ("281.2,0.0 162.4,38.0 114.9,68.0 75.9,105.0 44.1,150.0 21.3,200.0 7.7,251.0 0.0,317.0 0.4,691.0 "
-                "10.2,760.0 26.5,812.0 66.1,881.0 118.6,933.0 186.8,971.0 280.7,998.0 797.4,998.0 916.9,960.0 "
-                "960.4,933.0 998.7,898.0 1030.5,856.0 1055.3,805.0 1071.3,748.0 1079.0,684.0 1079.0,317.0 "
-                "1069.5,242.0 1052.4,186.0 1012.8,117.0 956.1,62.0 891.8,27.0 797.7,0.0")
-
-
-def _ap_bud(body, details, label):
-    """An AirPods earbud: the traced body, with amber details placed by fractions of its box."""
-    g, _ = fit({"body": curve_through(points(body))}, 96, 96, 6)
-    pts = [p for _, ps in g["body"] for p in ps]
-    x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts)
-    y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
-    detail_els, gx, gy = [], (x0 + x1) / 2, (y0 + y1) / 2
-    for i, (kind, fx, fy, frx, fry, ang) in enumerate(details):
-        cx, cy = x0 + fx * (x1 - x0), y0 + fy * (y1 - y0)
-        e = tf(ellipse_path(cx, cy, frx * (x1 - x0), fry * (y1 - y0)), rotate_about(cx, cy, ang))
-        if i == 0:
-            gx, gy = cx, cy
-        detail_els.append(path(fmt(e), ACCENT, DETAIL, fill=RAISED if kind == "outlet" else None))
-    return drawing(96, 96, [
-        path(dashes(gx, 2, gx, 94) + dashes(2, gy, 94, gy), LABEL, FINE),
-        path(fmt(g["body"]), INK, STROKE, fill=PANEL),
-    ] + detail_els, label)
-
-
-def _ap_case(outline, seam_fy, label):
-    g, _ = fit({"o": curve_through(points(outline))}, 120, 96, 6)
-    pts = [p for _, ps in g["o"] for p in ps]
-    x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts)
-    y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
-    cx, sy = (x0 + x1) / 2, y0 + seam_fy * (y1 - y0)
-    return drawing(120, 96, [
-        path(dashes(cx, 3, cx, 93), LABEL, FINE),
-        path(fmt(g["o"]), INK, STROKE, fill=PANEL),
-        path(f"M{x0 + 3:.1f} {sy:.1f}L{x1 - 3:.1f} {sy:.1f}", INK, DETAIL),
-        path(fmt(circle_path(cx, y0 + 0.42 * (y1 - y0), 2.0)), fill=ACCENT),
-    ], label)
-
-
-def ap_classic():
-    return _ap_bud(AP_CLASSIC, [("grille", 0.46, 0.31, 0.14, 0.11, 0)], "AirPods left earbud")
-
-
-def ap_open():
-    return _ap_bud(AP_OPEN, [("outlet", 0.50, 0.33, 0.15, 0.11, -10)], "AirPods left earbud")
-
-
-def ap_pro():
-    return _ap_bud(AP_PRO, [("outlet", 0.50, 0.32, 0.15, 0.11, -12)], "AirPods Pro left earbud")
-
-
-def ap_case_portrait():
-    return _ap_case(AP_CASE_PORTRAIT, 0.20, "AirPods charging case")
-
-
-def ap_case_wide():
-    return _ap_case(AP_CASE_WIDE, 0.52, "AirPods charging case")
-
-
-def ap_max():
-    canopy = curve_through([(23, 40), (30, 22), (48, 16), (66, 22), (73, 40)], closed=False)
-    return drawing(96, 96, [
-        path(dashes(48, 2, 48, 94), LABEL, FINE),
-        path(rounded_rect(10, 42, 28, 42, 13), INK, STROKE, fill=PANEL),
-        path(rounded_rect(58, 42, 28, 42, 13), INK, STROKE, fill=PANEL),
-        path(fmt(ellipse_path(24, 63, 9, 15)), LABEL, FINE, fill=RAISED),
-        path(fmt(ellipse_path(72, 63, 9, 15)), LABEL, FINE, fill=RAISED),
-        path("M24 41L24 46", INK, 2.5),
-        path("M72 41L72 46", INK, 2.5),
-        path(fmt(canopy), INK, 5.0),
-        path(rounded_rect(74, 45, 5, 7, 2), fill=ACCENT),
-    ], "AirPods Max")
-
-
-def ap_pbhook():
-    body = curve_through([(45, 46), (56, 44), (65, 50), (68, 60), (63, 70), (52, 74), (43, 70), (39, 61), (40, 52)])
-    tip = tf(ellipse_path(33, 60, 10, 7), rotate_about(33, 60, 8))
-    hook = curve_through([(55, 45), (63, 35), (74, 36), (81, 46), (80, 59), (73, 66)], closed=False)
-    return drawing(96, 96, [
-        path(dashes(54, 2, 54, 94) + dashes(2, 57, 94, 57), LABEL, FINE),
-        path(fmt(tip), INK, STROKE, fill=PANEL),
-        path(fmt(body), INK, STROKE, fill=PANEL),
-        path(fmt(hook), INK, 4.5),
-        path(fmt(ellipse_path(54, 57, 5.5, 5.5)), ACCENT, DETAIL),
-    ], "Powerbeats ear-hook earbud")
-
-
-def ap_wingtip():
-    body = curve_through([(44, 44), (60, 43), (70, 50), (72, 62), (63, 70), (49, 70), (42, 62), (41, 52)])
-    tip = tf(ellipse_path(32, 58, 10, 7), rotate_about(32, 58, 6))
-    wing = curve_through([(49, 44), (56, 36), (66, 38), (67, 45), (58, 46)], closed=False)
-    return drawing(96, 96, [
-        path(dashes(56, 2, 56, 94) + dashes(2, 56, 94, 56), LABEL, FINE),
-        path(fmt(tip), INK, STROKE, fill=PANEL),
-        path(fmt(body), INK, STROKE, fill=PANEL),
-        path(fmt(wing), INK, 2.5),
-        path(fmt(ellipse_path(56, 56, 5, 5)), ACCENT, DETAIL),
-    ], "Beats Fit Pro earbud")
-
-
-def ap_neckband():
-    cable = curve_through([(18, 30), (15, 52), (26, 70), (48, 75), (70, 70), (81, 52), (78, 30)], closed=False)
-    budL = tf(ellipse_path(18, 27, 6.5, 9), rotate_about(18, 27, 12))
-    budR = tf(ellipse_path(78, 27, 6.5, 9), rotate_about(78, 27, -12))
-    return drawing(96, 96, [
-        path(dashes(48, 2, 48, 94), LABEL, FINE),
-        path(fmt(cable), INK, 3.0),
-        path(fmt(budL), INK, STROKE, fill=PANEL),
-        path(fmt(budR), INK, STROKE, fill=PANEL),
-        path(rounded_rect(69, 46, 6, 10, 2), fill=ACCENT),
-    ], "Beats neckband earbuds")
-
-
-def ap_pill():
-    body = curve_through([(45, 43), (64, 46), (70, 57), (63, 68), (48, 69), (41, 59), (41, 49)])
-    tip = tf(ellipse_path(31, 58, 10, 7), rotate_about(31, 58, 6))
-    return drawing(96, 96, [
-        path(dashes(55, 2, 55, 94) + dashes(2, 56, 94, 56), LABEL, FINE),
-        path(fmt(tip), INK, STROKE, fill=PANEL),
-        path(fmt(body), INK, STROKE, fill=PANEL),
-        path(fmt(ellipse_path(55, 56, 5, 5)), ACCENT, DETAIL),
-    ], "Beats Studio Buds earbud")
-
-
-def ap_onear():
-    band = curve_through([(26, 54), (30, 30), (48, 22), (66, 30), (70, 54)], closed=False)
-    return drawing(96, 96, [
-        path(dashes(48, 2, 48, 94), LABEL, FINE),
-        path(fmt(ellipse_path(26, 60, 16, 18)), INK, STROKE, fill=PANEL),
-        path(fmt(ellipse_path(70, 60, 16, 18)), INK, STROKE, fill=PANEL),
-        path(fmt(ellipse_path(26, 60, 9, 11)), LABEL, FINE, fill=RAISED),
-        path(fmt(ellipse_path(70, 60, 9, 11)), LABEL, FINE, fill=RAISED),
-        path(fmt(band), INK, 4.0),
-        path(fmt(ellipse_path(70, 60, 4.5, 4.5)), ACCENT, DETAIL),
-    ], "Beats on-ear headphones")
-
-
-# slug: (name, bud, case or None or "generic", model names in data/apple/devices.json)
-APPLE_DEVICES = {
-    "classic": ("AirPods", ap_classic, ap_case_portrait,
-                ["AirPods (1st generation)", "AirPods (2nd generation)"]),
-    "open": ("AirPods", ap_open, ap_case_wide,
-             ["AirPods (3rd generation)", "AirPods 4", "AirPods 4 with Active Noise Cancellation",
-              "AirPods 5", "AirPods 5 with Wireless Charging Case"]),
-    "pro": ("AirPods Pro", ap_pro, ap_case_wide,
-            ["AirPods Pro", "AirPods Pro 2 (Lightning)", "AirPods Pro 2 (USB-C)", "AirPods Pro 3"]),
-    "max": ("AirPods Max", ap_max, None,
-            ["AirPods Max", "AirPods Max (USB-C)", "AirPods Max 2"]),
-    "pbhook": ("Powerbeats", ap_pbhook, "generic",
-               ["Powerbeats3", "Powerbeats4", "Powerbeats Pro", "Powerbeats Pro 2"]),
-    "wingtip": ("Beats Fit Pro", ap_wingtip, "generic",
-                ["Beats Fit Pro", "Powerbeats Fit"]),
-    "neckband": ("Beats neckband", ap_neckband, None,
-                 ["BeatsX", "Beats Flex"]),
-    "pill": ("Beats Studio Buds", ap_pill, "generic",
-             ["Beats Studio Buds", "Beats Studio Buds +", "Beats Solo Buds"]),
-    "onear": ("Beats on-ear", ap_onear, None,
-              ["Beats Solo3", "Beats Solo Pro", "Beats Solo 4", "Beats Studio3", "Beats Studio Pro"]),
-}
-
-
 # slug: (name, bud, case or None, Bluetooth names that use these drawings)
 DEVICES = {
     "h3": ("SoundPEATS H3", h3_bud, h3_case, ["SOUNDPEATS H3"]),
@@ -781,10 +598,20 @@ DEVICES["generic-headphones"] = ("Any headphones", generic_headphones, None, [])
 DEVICES["generic-speaker"] = ("Any speaker", generic_speaker, None, [])
 SOUNDPEATS_DEVICES = DEVICES
 
-# JBL: traced from JBL's own product renders, kept as data in tools/device_art/jbl/<slug>.json in
-# the SoundPEATS format above. Their names are model names from data/jbl/devices.json.
-JBL_DEVICES = {f.stem: _traced(json.loads(f.read_text(encoding="utf-8")))
-               for f in sorted((_ROOT / "tools" / "device_art" / "jbl").glob("*.json"))}
+
+
+def traced_brand(brand):
+    """A brand's drawings kept as data in tools/device_art/<brand>/<slug>.json, in the SoundPEATS
+    format above. Their names are model names from data/<brand>/devices.json."""
+    return {f.stem: _traced(json.loads(f.read_text(encoding="utf-8")))
+            for f in sorted((_ROOT / "tools" / "device_art" / brand).glob("*.json"))}
+
+
+# Apple: the AirPods and their cases traced from LibrePods' reference renders (github.com/
+# kavishdevar/librepods, GPL-3.0-or-later), AirPods Max and the Beats from Apple's store renders.
+APPLE_DEVICES = traced_brand("apple")
+# JBL: traced from JBL's own product renders.
+JBL_DEVICES = traced_brand("jbl")
 
 # brand: (its drawings, the assets/devices/<subdir>, the drawable name prefix). SoundPEATS
 # keeps its unprefixed names; other brands are prefixed so names never collide.

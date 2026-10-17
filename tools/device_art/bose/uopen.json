@@ -1,0 +1,17 @@
+{
+ "name": "Bose Ultra Open Earbuds",
+ "names": [
+  "Bose Ultra Open Earbuds",
+  "Bose Ultra Open 2 Earbuds"
+ ],
+ "source": "Traced from an Ultra Open Earbuds retail studio photo; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "174,0 194,1 236,14 260,26 282,42 308,69 321,89 325,109 323,133 316,149 307,159 289,172 275,175 253,172 211,151 200,150 202,155 257,221 265,241 266,259 262,273 249,294 232,314 211,328 190,335 169,336 151,334 124,342 104,345 77,343 61,335 48,324 22,291 4,261 0,239 5,179 15,158 36,127 104,43 122,26 140,14 158,5",
+  "axis": [
+   162.7,
+   172.8
+  ]
+ },
+ "case": "generic"
+}

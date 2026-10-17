@@ -1,0 +1,19 @@
+{
+ "name": "Galaxy Buds Live",
+ "names": [
+  "Galaxy Buds Live"
+ ],
+ "codes": [
+  "SM-R180"
+ ],
+ "source": "Traced from GalaxyBudsClient's realistic render of the left earbud (BudsLiveBlack-0.png; github.com/timschneeb/GalaxyBudsClient, GPLv3), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "232,1 249,0 280,5 320,20 354,46 382,78 406,120 423,166 436,224 441,298 435,366 418,444 400,496 374,544 340,586 307,612 269,629 222,636 185,631 158,622 127,605 100,582 81,558 64,527 55,495 52,462 58,422 86,353 93,323 90,286 68,225 62,186 63,150 72,114 82,93 96,72 115,50 136,33 156,21 181,11",
+  "axis": [
+   246.5,
+   318.1
+  ]
+ },
+ "case": "generic"
+}

@@ -1,0 +1,19 @@
+{
+ "name": "Galaxy Buds2",
+ "names": [
+  "Galaxy Buds2"
+ ],
+ "codes": [
+  "SM-R177"
+ ],
+ "source": "Traced from GalaxyBudsClient's realistic render of the left earbud (Buds2AbsoluteBlack-0.png; github.com/timschneeb/GalaxyBudsClient, GPLv3), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "330,57 354,57 385,63 410,74 431,86 456,107 471,123 492,151 509,181 522,210 534,248 546,327 545,350 538,393 521,441 498,480 464,516 428,541 381,561 353,568 316,572 274,568 235,559 196,574 155,581 123,578 90,568 63,553 42,535 24,512 11,487 4,463 0,433 5,404 13,381 32,349 60,322 92,303 126,292 133,288 152,223 167,189 187,153 219,113 245,90 269,74 296,63",
+  "axis": [
+   273.0,
+   319.0
+  ]
+ },
+ "case": "generic"
+}

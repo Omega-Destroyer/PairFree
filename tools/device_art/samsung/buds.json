@@ -1,0 +1,21 @@
+{
+ "name": "Galaxy Buds+",
+ "names": [
+  "Galaxy Buds",
+  "Galaxy Buds+"
+ ],
+ "codes": [
+  "SM-R170",
+  "SM-R175"
+ ],
+ "source": "Traced from GalaxyBudsClient's realistic render of the left earbud (BudsPlusBlack-0.png; github.com/timschneeb/GalaxyBudsClient, GPLv3), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "260,81 287,82 321,87 351,95 376,106 417,134 437,155 457,182 479,231 488,268 490,292 489,323 485,352 477,385 468,409 444,455 412,494 392,512 368,528 340,542 321,549 286,556 253,555 215,546 182,533 155,538 134,537 106,531 73,519 44,501 20,475 6,445 1,413 5,383 15,356 27,337 50,312 54,262 67,215 83,185 98,164 120,139 145,120 167,106 197,93 231,85",
+  "axis": [
+   245.3,
+   318.6
+  ]
+ },
+ "case": "generic"
+}

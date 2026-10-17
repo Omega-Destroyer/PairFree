@@ -600,26 +600,31 @@ SOUNDPEATS_DEVICES = DEVICES
 
 
 
+CODES = {}   # (brand, slug): the codes that reach deviceArt() for these drawings
+
+
 def traced_brand(brand):
     """A brand's drawings kept as data in tools/device_art/<brand>/<slug>.json, in the SoundPEATS
-    format above. Their names are model names from data/<brand>/devices.json."""
-    return {f.stem: _traced(json.loads(f.read_text(encoding="utf-8")))
-            for f in sorted((_ROOT / "tools" / "device_art" / brand).glob("*.json"))}
+    format above. names are the Bluetooth or model names; codes, when given, are what the brand's
+    session puts before the firmware version (a model number), else the names themselves."""
+    out = {}
+    for f in sorted((_ROOT / "tools" / "device_art" / brand).glob("*.json")):
+        d = json.loads(f.read_text(encoding="utf-8"))
+        out[f.stem] = _traced(d)
+        CODES[(brand, f.stem)] = d.get("codes", d["names"])
+    return out
 
 
-# Apple: the AirPods and their cases traced from LibrePods' reference renders (github.com/
-# kavishdevar/librepods, GPL-3.0-or-later), AirPods Max and the Beats from Apple's store renders.
-APPLE_DEVICES = traced_brand("apple")
-# JBL: traced from JBL's own product renders.
-JBL_DEVICES = traced_brand("jbl")
+# Traced from product renders: Apple (the AirPods and their cases from LibrePods' reference
+# renders, github.com/kavishdevar/librepods, GPL-3.0-or-later; AirPods Max and the Beats from
+# Apple's store renders), JBL from JBL's, Samsung from GalaxyBudsClient's (github.com/
+# timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose and Soundcore from each brand's own.
+TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore"]
+TRACED_DEVICES = {b: traced_brand(b) for b in TRACED}
 
 # brand: (its drawings, the assets/devices/<subdir>, the drawable name prefix). SoundPEATS
 # keeps its unprefixed names; other brands are prefixed so names never collide.
-BRANDS = [
-    ("soundpeats", SOUNDPEATS_DEVICES, "soundpeats", ""),
-    ("apple", APPLE_DEVICES, "apple", "apple_"),
-    ("jbl", JBL_DEVICES, "jbl", "jbl_"),
-]
+BRANDS = [("soundpeats", SOUNDPEATS_DEVICES, "soundpeats", "")] + [(b, TRACED_DEVICES[b], b, b + "_") for b in TRACED]
 wanted = set(ARGS.models.split(",")) if ARGS.models else None
 
 
@@ -677,14 +682,16 @@ for dev in json.loads((_ROOT / "data" / "soundpeats" / "devices.json").read_text
 for code, slugs in sp_codes.items():
     if len(slugs) == 1:
         by_code[code] = art_ref(SOUNDPEATS_DEVICES, "", slugs.pop())
-# Apple: the information packet carries the model name, which reaches deviceArt() as the
-# firmware code; the default Bluetooth name is the model name too, so map both (AirPods can be renamed).
-# JBL does the same: JblSession puts the model name before the firmware version.
-for devices, prefix in ((APPLE_DEVICES, "apple_"), (JBL_DEVICES, "jbl_")):
-    for slug, (_, _, _, names) in devices.items():
-        for mn in names:
-            by_name[mn.lower()] = art_ref(devices, prefix, slug)
-            by_code[mn] = art_ref(devices, prefix, slug)
+# The other brands' sessions put a model identifier before the firmware version, which reaches
+# deviceArt() as the code: the model name (Apple, JBL, Sony, Bose) or model number (Samsung,
+# Soundcore). The Bluetooth name is tried first (users can rename AirPods, so the code is the backstop).
+for b in TRACED:
+    for slug, (_, _, _, names) in TRACED_DEVICES[b].items():
+        ref = art_ref(TRACED_DEVICES[b], b + "_", slug)
+        for n in names:
+            by_name[n.lower()] = ref
+        for c in CODES[(b, slug)]:
+            by_code[c] = ref
 
 KT = pathlib.Path(ARGS.kt) if ARGS.kt else (
     _ROOT / "android" / "app" / "src" / "main" / "kotlin" / "io" / "github" / "omegadestroyer" / "pairfree" / "ui" / "DeviceArtTable.kt")
@@ -696,7 +703,7 @@ write(KT,
     "internal val ART_BY_NAME: Map<String, DeviceArt> = mapOf(\n"
     + "".join(f'    "{n}" to {v},\n' for n, v in sorted(by_name.items()))
     + ")\n\n"
-    "/** Drawings by per-brand code: a SoundPEATS firmware code, or an Apple or JBL model name. */\n"
+    "/** Drawings by per-brand code: a SoundPEATS firmware code, or another brand's model name or number. */\n"
     "internal val ART_BY_CODE: Map<String, DeviceArt> = mapOf(\n"
     + "".join(f'    "{c}" to {v},\n' for c, v in sorted(by_code.items()))
     + ")\n\n"

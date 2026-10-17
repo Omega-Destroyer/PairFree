@@ -1,0 +1,19 @@
+{
+ "name": "Galaxy Buds3 Pro",
+ "names": [
+  "Galaxy Buds3 Pro"
+ ],
+ "codes": [
+  "SM-R630"
+ ],
+ "source": "Traced from GalaxyBudsClient's realistic render of the left earbud (Buds3ProSilver-0.png; github.com/timschneeb/GalaxyBudsClient, GPLv3), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "340,1 364,0 393,7 415,17 437,33 456,55 472,82 481,111 486,139 484,162 478,187 469,210 451,238 448,249 447,595 444,605 435,615 413,631 400,636 388,634 349,617 340,606 335,591 334,329 332,322 326,319 293,325 264,325 225,346 196,356 168,357 144,353 127,346 112,337 89,311 70,277 62,253 59,234 62,213 70,191 82,172 97,157 122,140 163,124 197,79 223,55 253,33 297,11",
+  "axis": [
+   272.5,
+   318.1
+  ]
+ },
+ "case": "generic"
+}

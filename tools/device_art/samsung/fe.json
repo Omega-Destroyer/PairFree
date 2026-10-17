@@ -1,0 +1,19 @@
+{
+ "name": "Galaxy Buds FE",
+ "names": [
+  "Galaxy Buds FE"
+ ],
+ "codes": [
+  "SM-R400N"
+ ],
+ "source": "Traced from GalaxyBudsClient's realistic render of the left earbud (BudsFeGraphite-0.png; github.com/timschneeb/GalaxyBudsClient, GPLv3), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "355,49 374,50 396,57 428,72 455,89 475,106 495,128 523,173 541,226 550,289 543,349 527,406 503,452 469,497 428,533 404,549 381,561 353,570 330,574 308,574 273,570 245,584 216,590 178,585 147,575 124,564 102,548 84,530 69,509 62,491 56,465 59,445 65,422 87,385 126,346 130,303 139,267 151,236 172,205 204,173 264,131 325,63 340,53",
+  "axis": [
+   303.1,
+   319.6
+  ]
+ },
+ "case": "generic"
+}

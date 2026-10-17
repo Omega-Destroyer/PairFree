@@ -1,0 +1,19 @@
+{
+ "name": "Galaxy Buds Core",
+ "names": [
+  "Galaxy Buds Core"
+ ],
+ "codes": [
+  "SM-R410"
+ ],
+ "source": "Traced from GalaxyBudsClient's realistic render of the left earbud (BudsCoreOnyx-0.png; github.com/timschneeb/GalaxyBudsClient, GPLv3), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "279,97 295,98 314,105 340,118 360,132 390,162 414,201 424,227 431,256 433,305 428,344 414,392 396,427 372,461 344,486 305,510 284,518 258,524 236,524 209,521 185,532 164,536 133,532 103,523 83,513 67,501 53,486 42,469 35,453 32,434 33,418 39,398 57,368 87,339 93,297 100,271 111,248 126,226 153,198 205,160 254,108 266,101",
+  "axis": [
+   232.5,
+   316.7
+  ]
+ },
+ "case": "generic"
+}

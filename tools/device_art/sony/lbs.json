@@ -1,0 +1,21 @@
+{
+ "name": "Sony LinkBuds S",
+ "names": [
+  "LinkBuds S",
+  "LinkBuds UC"
+ ],
+ "codes": [
+  "LinkBuds S",
+  "LinkBuds UC"
+ ],
+ "source": "Traced from Sony's LinkBuds S render, mirrored to face forward; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "484,228 459,229 441,236 428,243 409,263 396,289 377,293 363,300 352,311 345,323 342,335 342,353 353,375 365,387 386,397 410,413 425,416 443,414 455,409 478,393 512,381 534,365 542,355 552,335 557,307 552,282 543,264 529,248 515,238 502,232",
+  "axis": [
+   449.5,
+   322.2
+  ]
+ },
+ "case": "generic"
+}

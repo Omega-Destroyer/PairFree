@@ -1,0 +1,19 @@
+{
+ "name": "Sony LinkBuds Fit",
+ "names": [
+  "LinkBuds Fit"
+ ],
+ "codes": [
+  "LinkBuds Fit"
+ ],
+ "source": "Traced from Sony's LinkBuds Fit render, mirrored to face forward; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "413,114 399,119 395,125 394,133 399,144 418,156 419,164 393,193 377,220 364,224 355,233 343,258 343,279 348,293 362,307 379,313 395,314 411,310 423,304 430,294 448,290 464,282 486,258 499,227 502,200 500,184 494,167 484,152 470,138 455,128 438,120",
+  "axis": [
+   422.3,
+   214.2
+  ]
+ },
+ "case": "generic"
+}

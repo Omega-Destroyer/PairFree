@@ -1,0 +1,19 @@
+{
+ "name": "Galaxy Buds3",
+ "names": [
+  "Galaxy Buds3"
+ ],
+ "codes": [
+  "SM-R530"
+ ],
+ "source": "Traced from GalaxyBudsClient's realistic render of the left earbud (Buds3Silver-0.png; github.com/timschneeb/GalaxyBudsClient, GPLv3), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "318,1 346,1 376,7 402,18 424,33 443,52 461,78 471,105 476,129 477,153 472,182 464,205 450,231 447,243 445,597 442,607 433,616 406,634 397,638 386,636 344,618 335,609 329,594 327,571 328,342 326,335 318,332 279,343 248,344 218,339 186,327 162,307 133,268 119,241 112,215 113,180 122,145 141,110 163,84 198,54 243,26 278,10",
+  "axis": [
+   294.2,
+   319.3
+  ]
+ },
+ "case": "generic"
+}

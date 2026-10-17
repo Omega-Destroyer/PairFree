@@ -1,0 +1,19 @@
+{
+ "name": "Galaxy Buds3 FE",
+ "names": [
+  "Galaxy Buds3 FE"
+ ],
+ "codes": [
+  "SM-R420"
+ ],
+ "source": "Traced from GalaxyBudsClient's realistic render of the left earbud (Buds3FeSilver-0.png; github.com/timschneeb/GalaxyBudsClient, GPLv3), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "320,35 348,35 372,40 394,50 415,64 433,84 445,102 455,130 460,153 459,178 452,205 441,225 420,253 415,263 414,574 410,582 403,588 359,604 340,602 298,586 287,579 282,570 281,329 279,322 273,319 250,319 215,337 188,344 162,345 137,339 112,326 93,306 74,274 65,244 66,223 73,202 84,184 101,167 122,154 155,140 192,97 241,62 280,44",
+  "axis": [
+   262.4,
+   319.7
+  ]
+ },
+ "case": "generic"
+}

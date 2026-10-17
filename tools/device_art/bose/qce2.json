@@ -1,0 +1,18 @@
+{
+ "name": "Bose QuietComfort Earbuds II",
+ "names": [
+  "Bose QC Earbuds II",
+  "Bose QC Ultra Earbuds",
+  "Bose QC Ultra 2 Earbuds"
+ ],
+ "source": "Traced from a QuietComfort Ultra Earbuds retail studio photo; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "205,1 222,2 243,6 279,26 294,38 307,53 314,67 316,82 314,91 306,106 308,135 304,162 287,202 300,229 306,248 306,271 301,294 286,315 255,337 225,348 196,350 171,345 150,335 141,323 135,302 102,304 85,301 62,292 45,280 25,257 10,228 2,201 1,174 7,142 23,108 46,73 76,42 94,30 113,22 156,16 185,5",
+  "axis": [
+   158.5,
+   175.7
+  ]
+ },
+ "case": "generic"
+}

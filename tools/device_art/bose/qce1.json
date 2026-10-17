@@ -1,0 +1,16 @@
+{
+ "name": "Bose QuietComfort Earbuds",
+ "names": [
+  "Bose QuietComfort Earbuds"
+ ],
+ "source": "Traced from Bose's QuietComfort Earbuds render; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "76,162 82,162 87,165 90,181 114,167 139,163 158,168 179,178 209,173 220,173 233,179 246,189 255,202 262,241 276,263 281,282 281,300 278,313 265,335 238,355 226,358 206,356 163,340 122,314 110,298 81,274 66,248 62,232 60,207 66,178",
+  "axis": [
+   170.5,
+   259.8
+  ]
+ },
+ "case": "generic"
+}

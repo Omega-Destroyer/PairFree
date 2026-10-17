@@ -1,0 +1,21 @@
+{
+ "name": "Soundcore Space A40",
+ "names": [
+  "Soundcore Life A2 NC",
+  "Soundcore Space A40"
+ ],
+ "codes": [
+  "A3935",
+  "A3936"
+ ],
+ "source": "Traced from Soundcore's Space A40 product photo; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "225,36 239,36 256,40 271,49 283,60 295,88 295,121 284,149 263,170 235,181 217,192 203,195 187,193 172,187 157,172 150,153 151,135 158,118 174,102 178,77 188,58 204,44",
+  "axis": [
+   222.6,
+   115.5
+  ]
+ },
+ "case": "generic"
+}

@@ -1,0 +1,25 @@
+{
+ "name": "Soundcore Life Note 3",
+ "names": [
+  "Soundcore Life Note 3",
+  "Soundcore Life Note 3S",
+  "Soundcore Life P2 Mini",
+  "Soundcore Life P3"
+ ],
+ "codes": [
+  "A3933",
+  "A3939",
+  "A3944",
+  "A3945"
+ ],
+ "source": "Traced from a Life Note 3 retail studio photo; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "521,157 540,159 570,168 585,169 599,172 621,187 631,205 634,228 626,251 612,267 586,278 584,281 638,397 638,405 634,412 614,425 599,428 588,421 527,306 506,286 481,277 469,270 457,257 450,243 446,225 447,214 453,196 460,185 471,174 484,166 500,160",
+  "axis": [
+   542.0,
+   292.6
+  ]
+ },
+ "case": "generic"
+}

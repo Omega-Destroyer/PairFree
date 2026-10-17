@@ -1,0 +1,30 @@
+{
+ "name": "Soundcore P20i",
+ "names": [
+  "Soundcore P20i",
+  "Soundcore P25i",
+  "Soundcore P30i",
+  "Soundcore P31i",
+  "Soundcore P40i",
+  "Soundcore R50i",
+  "Soundcore R50i NC",
+  "Soundcore R60i NC"
+ ],
+ "codes": [
+  "A3949",
+  "A3955",
+  "A3959",
+  "D1202",
+  "D1202C"
+ ],
+ "source": "Traced from Soundcore's P20i product photo; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "290,46 306,47 319,54 329,66 332,79 327,99 311,119 309,198 303,206 293,210 281,207 274,198 270,139 255,140 241,135 231,125 226,110 231,93 247,79 260,61 274,51",
+  "axis": [
+   279.1,
+   128.2
+  ]
+ },
+ "case": "generic"
+}

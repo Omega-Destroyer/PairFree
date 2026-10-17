@@ -1,0 +1,23 @@
+{
+ "name": "Soundcore Life Dot 2",
+ "names": [
+  "Soundcore Life Dot 2 NC",
+  "Soundcore Life Dot 2S",
+  "Soundcore Sleep A30"
+ ],
+ "codes": [
+  "A3926",
+  "A3931",
+  "D1301"
+ ],
+ "source": "Traced from Soundcore's Life Dot 2 product photo; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "187,209 206,210 231,217 250,229 269,250 281,274 288,298 290,319 285,346 276,369 262,391 245,411 227,425 209,434 166,446 151,458 140,463 124,466 106,464 88,455 76,442 70,424 71,402 80,384 106,363 119,318 142,277 142,272 130,256 132,243 143,230 156,220 170,213",
+  "axis": [
+   179.8,
+   337.7
+  ]
+ },
+ "case": "generic"
+}

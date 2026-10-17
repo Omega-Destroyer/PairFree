@@ -1,0 +1,25 @@
+{
+ "name": "Soundcore Liberty 5",
+ "names": [
+  "Soundcore Liberty 4 NC",
+  "Soundcore Liberty 4 Pro",
+  "Soundcore Liberty 5",
+  "Soundcore Liberty Air 2 Pro"
+ ],
+ "codes": [
+  "A3947",
+  "A3951",
+  "A3954",
+  "A3957"
+ ],
+ "source": "Traced from Soundcore's Liberty 5 render; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "273,58 290,60 305,69 314,82 319,99 318,111 314,123 298,145 293,235 287,245 275,249 263,245 256,234 252,168 228,173 210,170 195,156 189,137 192,122 205,105 223,95 236,77 248,67 260,61",
+  "axis": [
+   254.0,
+   153.7
+  ]
+ },
+ "case": "generic"
+}

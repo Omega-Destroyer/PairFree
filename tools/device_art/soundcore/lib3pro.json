@@ -1,0 +1,23 @@
+{
+ "name": "Soundcore Liberty 3 Pro",
+ "names": [
+  "Soundcore Liberty 2 Pro",
+  "Soundcore Liberty 2 Pro+",
+  "Soundcore Liberty 3 Pro"
+ ],
+ "codes": [
+  "A3909",
+  "A3930",
+  "A3952"
+ ],
+ "source": "Traced from Soundcore's Liberty 3 Pro product photo; not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "251,283 269,284 287,293 299,305 307,321 309,335 306,352 298,366 281,386 299,409 306,428 305,448 297,471 283,487 269,498 249,506 227,510 205,510 178,506 153,498 132,488 119,480 106,466 96,451 90,435 89,414 93,394 89,366 91,354 97,339 111,324 134,315 158,315 200,325 207,312 222,296 235,288",
+  "axis": [
+   199.0,
+   396.7
+  ]
+ },
+ "case": "generic"
+}

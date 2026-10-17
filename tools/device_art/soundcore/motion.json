@@ -1,0 +1,19 @@
+{
+ "name": "Soundcore Motion+",
+ "names": [
+  "Soundcore Motion+"
+ ],
+ "codes": [
+  "A3116"
+ ],
+ "source": "Traced from Soundcore's Motion+ product photo; not in the repo.",
+ "bud": {
+  "kind": "speaker",
+  "body": "86,204 490,208 522,212 549,221 572,234 592,251 608,269 615,286 620,321 620,357 614,395 602,430 587,458 560,481 539,490 522,494 476,497 436,491 383,479 62,395 44,376 38,364 30,327 31,299 37,269 48,243 69,214",
+  "axis": [
+   325.4,
+   350.6
+  ]
+ },
+ "case": null
+}

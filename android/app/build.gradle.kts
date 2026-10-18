@@ -41,11 +41,16 @@ android {
         // Builds for testers (assembleDev): a debug build under its own id and name ("PairFree Dev",
         // src/dev), so it installs beside the released app without touching it or its settings. It is
         // signed with this computer's debug key, so later dev builds install over it only from here.
+        // Shrunk as release is, so it carries no unused library code, but with readable names
+        // (proguard-dev.pro) so its crash traces and logs need no mapping file.
         create("dev") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             matchingFallbacks += "debug"
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro", "proguard-dev.pro")
         }
     }
 

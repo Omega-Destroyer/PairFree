@@ -1,0 +1,9474 @@
+{
+ "_about": "QCY's earbuds and headphones by the vendor id they advertise (manufacturer data under company 0x521C, bytes 0-1), from Quicky (github.com/hui1601/Quicky, commit below, internal/product/products.json): its dump of QCY's own product list and control panels, which QCY's app downloads from its server. Quicky has no licence, so these are facts only. Only category earphones is kept (the owner's choice, 2026-10-18); watches, speakers and accessories are left out. family is the chip, from bits 4-7 of the vendor id as QCY's app reads them (Devicebind); protocol is how PairFree talks to it: qcy for QCY's own items over Bluetooth LE service A001, jieli for JieLi's RCSP, jieli_custom for QCY's items inside JieLi's custom command. kind headphones marks vendor ids QCY's app treats as not true wireless. anc lists the noise modes as QCY packs them (three bytes: mode, scene, value; one byte on older models), eq and touch what the model's control panel offers, settings the switches it has by item. docs/qcy/PROTOCOL.md explains them.",
+ "quicky_commit": "d13c68f08a6c8b031083eede968fb443824c7af0",
+ "devices": [
+  {
+   "vendor_id": 4577,
+   "name": "QCY C1",
+   "names": [
+    "QCY-C1",
+    "C1",
+    "QCY C1"
+   ],
+   "family": "0xE0",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 4578,
+   "name": "QCY C2",
+   "names": [
+    "QCY-C2",
+    "C2",
+    "QCY C2"
+   ],
+   "family": "0xE0",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 4579,
+   "name": "QCY Crossky Link2",
+   "names": [
+    "QCY Crossky Link2"
+   ],
+   "family": "0xE0",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     360,
+     500,
+     800,
+     1400,
+     2000,
+     2500,
+     4000,
+     8000,
+     12000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 4580,
+   "name": "QCY C1 OPEN",
+   "names": [
+    "QCY C1 OPEN"
+   ],
+   "family": "0xE0",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 4581,
+   "name": "QCY C1 CANAL",
+   "names": [
+    "QCY C1 CANAL"
+   ],
+   "family": "0xE0",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 4583,
+   "name": "QCY Era 5",
+   "names": [
+    "QCY Era 5"
+   ],
+   "family": "0xE0",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2D",
+     "setting": "spatial_audio"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6513,
+   "name": "QCY ArcBuds Lite",
+   "names": [
+    "QCY ArcBuds Lite"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6514,
+   "name": "QCY AilyBuds Lite",
+   "names": [
+    "QCY AilyBuds Lite"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     20,
+     90,
+     300,
+     800,
+     900,
+     1500,
+     3000,
+     5000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6515,
+   "name": "QCY TWS QT29",
+   "names": [
+    "TWS QT29",
+    "QCY TWS QT29"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     20,
+     90,
+     300,
+     800,
+     900,
+     1500,
+     3000,
+     5000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6516,
+   "name": "QCY TWS QT27",
+   "names": [
+    "TWS QT27",
+    "QCY TWS QT27"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6517,
+   "name": "QCY T29 APP",
+   "names": [
+    "QCY T29 APP"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     20,
+     90,
+     300,
+     800,
+     900,
+     1500,
+     3000,
+     5000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6518,
+   "name": "QCY Buds",
+   "names": [
+    "QCY Buds"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6519,
+   "name": "QCY T43 Buds",
+   "names": [
+    "QCY T43 Buds"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6520,
+   "name": "QCY T41 Motif",
+   "names": [
+    "QCY T41 Motif"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 6577,
+   "name": "QCY AilyPodsBuds Lite",
+   "names": [
+    "QCY AilyPodsBuds Lite"
+   ],
+   "family": "0xB0",
+   "protocol": "qcy",
+   "kind": "earbuds"
+  },
+  {
+   "vendor_id": 16737,
+   "name": "QCY Crossky Link",
+   "names": [
+    "QCY Crossky Link"
+   ],
+   "family": "0x60",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16738,
+   "name": "QCY-T22APP",
+   "names": [
+    "QCY-T22APP"
+   ],
+   "family": "0x60",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16753,
+   "name": "QCY H2",
+   "names": [
+    "QCY-H2",
+    "H2",
+    "QCY H2"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic",
+     "Bass"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16754,
+   "name": "QCY H2 Pro",
+   "names": [
+    "QCY-H2 Pro",
+    "H2 Pro",
+    "QCY H2 Pro"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic",
+     "Bass"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16755,
+   "name": "QCY H3",
+   "names": [
+    "QCY H3"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     55,
+     220,
+     500,
+     1000,
+     1800,
+     2800,
+     4500,
+     7500,
+     10000,
+     22000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16756,
+   "name": "QCY H2APP PRO HEADSET",
+   "names": [
+    "QCY H2APP PRO HEADSET"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic",
+     "Bass"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16757,
+   "name": "QCY H3 ANC HEADSET",
+   "names": [
+    "QCY H3 ANC HEADSET"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     55,
+     220,
+     500,
+     1000,
+     1800,
+     2800,
+     4500,
+     7500,
+     10000,
+     22000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16758,
+   "name": "QCY H3 Lite",
+   "names": [
+    "QCY H3 Lite"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010000",
+     "to": "010000",
+     "default": "010000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16759,
+   "name": "QCY H3 Pro",
+   "names": [
+    "QCY H3 Pro"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16760,
+   "name": "QCY H3",
+   "names": [
+    "QCY H3"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     55,
+     220,
+     500,
+     1000,
+     1800,
+     2800,
+     4500,
+     7500,
+     10000,
+     22000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16761,
+   "name": "QCY Era 7",
+   "names": [
+    "QCY Era 7"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16762,
+   "name": "QCY H3 Lite ANC APP",
+   "names": [
+    "QCY H3 Lite ANC APP"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010000",
+     "to": "010000",
+     "default": "010000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16763,
+   "name": "QCY H3 PRO ANC",
+   "names": [
+    "QCY H3 PRO ANC"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16764,
+   "name": "QCY H3S",
+   "names": [
+    "QCY H3S"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16818,
+   "name": "QCY Heroad V200",
+   "names": [
+    "QCY Heroad V200"
+   ],
+   "family": "0xB0",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Rock",
+     "Pop",
+     "Classic",
+     "Countryside",
+     "Jazz"
+    ]
+   }
+  },
+  {
+   "vendor_id": 16849,
+   "name": "QCY H4",
+   "names": [
+    "QCY H4"
+   ],
+   "family": "bes",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "040100",
+     "to": "040100",
+     "default": "040100"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 16850,
+   "name": "QCY H4 ANC HEADSET",
+   "names": [
+    "QCY H4 ANC HEADSET"
+   ],
+   "family": "bes",
+   "protocol": "qcy",
+   "kind": "headphones",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "040100",
+     "to": "040100",
+     "default": "040100"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18289,
+   "name": "QCY DT10",
+   "names": [
+    "QCY-DT10",
+    "DT10",
+    "QCY DT10"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18290,
+   "name": "QCY T13 ANC",
+   "names": [
+    "QCY-T13 ANC",
+    "T13 ANC",
+    "QCY T13 ANC"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18293,
+   "name": "QCY Crossky GTR",
+   "names": [
+    "QCY Crossky GTR"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18294,
+   "name": "QCY T13 ANC2",
+   "names": [
+    "QCY T13 ANC2"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     30,
+     60,
+     200,
+     300,
+     500,
+     1800,
+     2600,
+     6500,
+     12000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18295,
+   "name": "QCY T13 ANC2 APP",
+   "names": [
+    "QCY T13 ANC2 APP"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     30,
+     60,
+     200,
+     300,
+     500,
+     1800,
+     2600,
+     6500,
+     12000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18296,
+   "name": "QCY AilyBuds E10",
+   "names": [
+    "QCY AilyBuds E10"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18297,
+   "name": "QCY AilyBuds E20",
+   "names": [
+    "QCY AilyBuds E20"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010500",
+     "to": "010500",
+     "default": "010500"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Adaptive Audio",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18298,
+   "name": "QCY MeloBuds N50",
+   "names": [
+    "QCY MeloBuds N50"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18299,
+   "name": "QCY Crossky C10",
+   "names": [
+    "QCY Crossky C10"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18300,
+   "name": "QCY HT12 MeloBuds N50",
+   "names": [
+    "QCY HT12 MeloBuds N50"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18301,
+   "name": "QCY CT01 APP",
+   "names": [
+    "QCY CT01 APP"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18302,
+   "name": "QCY-T37 ANC AilyBuds",
+   "names": [
+    "QCY-T37 ANC AilyBuds"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010500",
+     "to": "010500",
+     "default": "010500"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Adaptive Audio",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18303,
+   "name": "QCY-T35 AilyBuds",
+   "names": [
+    "QCY-T35 AilyBuds"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     64,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18801,
+   "name": "QCY T17",
+   "names": [
+    "QCY-T17",
+    "T17",
+    "QCY T17"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18802,
+   "name": "QCY T17",
+   "names": [
+    "QCY-T17",
+    "T17",
+    "QCY T17"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18803,
+   "name": "QCY T1C",
+   "names": [
+    "QCY-T1C",
+    "T1C",
+    "QCY T1C"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18804,
+   "name": "QCY T19",
+   "names": [
+    "QCY-T19",
+    "T19",
+    "QCY T19"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18805,
+   "name": "QCY T2C",
+   "names": [
+    "QCY-T2C",
+    "T2C",
+    "QCY T2C"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18806,
+   "name": "QCY AilyPods",
+   "names": [
+    "QCY AilyPods",
+    "AilyPods"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18808,
+   "name": "QCY DT08",
+   "names": [
+    "DT08",
+    "QCY DT08"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18809,
+   "name": "QCY FairyBuds",
+   "names": [
+    "QCY FairyBuds"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18810,
+   "name": "QCY DT08",
+   "names": [
+    "DT08",
+    "QCY DT08"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18811,
+   "name": "QCY DT08",
+   "names": [
+    "DT08",
+    "QCY DT08"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18812,
+   "name": "QCY Ailypods Neo",
+   "names": [
+    "QCY Ailypods Neo"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds"
+  },
+  {
+   "vendor_id": 18813,
+   "name": "QCY T1C Pro",
+   "names": [
+    "QCY-T1C Pro",
+    "T1C Pro",
+    "QCY T1C Pro"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18814,
+   "name": "QCY Ailypods Neo",
+   "names": [
+    "QCY Ailypods Neo"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds"
+  },
+  {
+   "vendor_id": 18815,
+   "name": "QCY T13X",
+   "names": [
+    "QCY T13X"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 18863,
+   "name": "QCY T2C",
+   "names": [
+    "QCY-T2C",
+    "T2C",
+    "QCY T2C"
+   ],
+   "family": "rd",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 5,
+    "max_db": 8,
+    "freqs": [
+     62,
+     250,
+     1000,
+     4000,
+     8000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 18961,
+   "name": "QCY T18",
+   "names": [
+    "QCY-T18",
+    "T18",
+    "QCY T18"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19057,
+   "name": "QCY T5",
+   "names": [
+    "QCY-T5",
+    "T5",
+    "QCY T5"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19058,
+   "name": "QCY QT12",
+   "names": [
+    "QCY-QT12",
+    "QT12",
+    "QCY QT12"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19059,
+   "name": "QCY T13",
+   "names": [
+    "QCY-T13",
+    "T13",
+    "QCY T13"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19060,
+   "name": "QCY T7",
+   "names": [
+    "QCY-T7",
+    "T7",
+    "QCY T7"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19061,
+   "name": "QCY T8",
+   "names": [
+    "QCY-T8",
+    "T8",
+    "QCY T8"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19063,
+   "name": "QCY T5",
+   "names": [
+    "QCY-T5 UTC",
+    "T5",
+    "QCY T5"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19064,
+   "name": "QCY T8",
+   "names": [
+    "QCY-T8",
+    "T8",
+    "QCY T8"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19065,
+   "name": "QCY M18",
+   "names": [
+    "QCY-M18",
+    "M18",
+    "QCY M18"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19067,
+   "name": "QCY T8S",
+   "names": [
+    "QCY-T8S",
+    "T8S",
+    "QCY T8S"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19068,
+   "name": "QCY T13 Pro",
+   "names": [
+    "QCY-T13 Pro",
+    "T13 Pro",
+    "QCY T13 Pro"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19069,
+   "name": "QCY T13",
+   "names": [
+    "QCY-T13",
+    "T13",
+    "QCY T13"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19071,
+   "name": "QCY Air",
+   "names": [
+    "QCY Air"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19218,
+   "name": "QCY QT16",
+   "names": [
+    "QCY-QT16",
+    "QT16",
+    "QCY QT16"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19219,
+   "name": "QCY T17S",
+   "names": [
+    "QCY-T17S",
+    "T17S",
+    "QCY T17S"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19220,
+   "name": "QCY T18",
+   "names": [
+    "QCY-T18",
+    "T18",
+    "QCY T18"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds"
+  },
+  {
+   "vendor_id": 19221,
+   "name": "QCY DT06",
+   "names": [
+    "QCY-DT06",
+    "DT06",
+    "QCY DT06"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19313,
+   "name": "QCY AT02",
+   "names": [
+    "QCY-AT02",
+    "AT02",
+    "QCY AT02"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19393,
+   "name": "QCY HT03",
+   "names": [
+    "QCY-HT03",
+    "HT03",
+    "QCY HT03"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19394,
+   "name": "QCY HT02",
+   "names": [
+    "QCY-HT02",
+    "HT02",
+    "QCY HT02"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19396,
+   "name": "QCY HT03",
+   "names": [
+    "QCY-HT03",
+    "HT03",
+    "QCY HT03"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19397,
+   "name": "QCY HT02",
+   "names": [
+    "QCY-HT02",
+    "HT02",
+    "QCY HT02"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19489,
+   "name": "QCY G1",
+   "names": [
+    "QCY-G1",
+    "G1",
+    "QCY G1"
+   ],
+   "family": "0x20",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "12",
+     "setting": "led"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19569,
+   "name": "QCY T8",
+   "names": [
+    "QCY-T8",
+    "T8",
+    "QCY T8"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19570,
+   "name": "QCY QT12",
+   "names": [
+    "QCY-QT12",
+    "QT12",
+    "QCY QT12"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19571,
+   "name": "QCY T5",
+   "names": [
+    "QCY-T5",
+    "T5",
+    "QCY T5"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19572,
+   "name": "QCY M18",
+   "names": [
+    "QCY-M18",
+    "M18",
+    "QCY M18"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19573,
+   "name": "QCY T7",
+   "names": [
+    "QCY-T7",
+    "T7",
+    "QCY T7"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19574,
+   "name": "QCY T8",
+   "names": [
+    "QCY-T8",
+    "T8",
+    "QCY T8"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19575,
+   "name": "QCY M18",
+   "names": [
+    "QCY-M18",
+    "M18",
+    "QCY M18"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19576,
+   "name": "QCY T8",
+   "names": [
+    "QCY-T8",
+    "T8",
+    "QCY T8"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19649,
+   "name": "QCY HT01C",
+   "names": [
+    "QCY-HT01C",
+    "HT01C",
+    "QCY HT01C"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "settings": [
+    {
+     "item": "06",
+     "setting": "in_ear"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19730,
+   "name": "QCY T1X",
+   "names": [
+    "QCY-T1X",
+    "T1X",
+    "QCY T1X"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19732,
+   "name": "QCY QT10S",
+   "names": [
+    "QCY-QT10S",
+    "QT10S",
+    "QCY QT10S"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 5,
+    "max_db": 8,
+    "freqs": [
+     62,
+     250,
+     1000,
+     4000,
+     8000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19733,
+   "name": "QCY T4S",
+   "names": [
+    "QCY-T4S",
+    "T4S",
+    "QCY T4S"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19735,
+   "name": "QCY T11S",
+   "names": [
+    "QCY-QT11S",
+    "T11S",
+    "QCY T11S"
+   ],
+   "family": "qualcomm",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "06",
+     "setting": "in_ear"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19745,
+   "name": "QCY T5",
+   "names": [
+    "QCY-T5",
+    "T5",
+    "QCY T5"
+   ],
+   "family": "0x20",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19746,
+   "name": "QCY T5S",
+   "names": [
+    "QCY-T5S",
+    "T5S",
+    "QCY T5S"
+   ],
+   "family": "0x20",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19747,
+   "name": "QCY T6",
+   "names": [
+    "QCY-T6",
+    "T6",
+    "QCY T6"
+   ],
+   "family": "0x20",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19748,
+   "name": "QCY T3",
+   "names": [
+    "QCY-T3",
+    "T3",
+    "QCY T3"
+   ],
+   "family": "0x20",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19749,
+   "name": "QCY T5 Pro",
+   "names": [
+    "QCY-T5 Pro",
+    "T5 Pro",
+    "QCY T5 Pro"
+   ],
+   "family": "0x20",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19751,
+   "name": "QCY T4",
+   "names": [
+    "QCY-T4",
+    "T4",
+    "QCY T4"
+   ],
+   "family": "0x20",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19761,
+   "name": "QCY T4",
+   "names": [
+    "QCY-T4",
+    "T4",
+    "QCY T4"
+   ],
+   "family": "0x30",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19762,
+   "name": "QCY T1C",
+   "names": [
+    "QCY-T1C",
+    "T1C",
+    "QCY T1C"
+   ],
+   "family": "0x30",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 5,
+    "max_db": 8,
+    "freqs": [
+     62,
+     250,
+     1000,
+     4000,
+     8000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19763,
+   "name": "QCY T1S",
+   "names": [
+    "QCY-T1S",
+    "T1S",
+    "QCY T1S"
+   ],
+   "family": "0x30",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19764,
+   "name": "QCY T9S",
+   "names": [
+    "QCY-T9S",
+    "T9S",
+    "QCY T9S"
+   ],
+   "family": "0x30",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 5,
+    "max_db": 8,
+    "freqs": [
+     62,
+     250,
+     1000,
+     4000,
+     8000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19765,
+   "name": "QCY T6",
+   "names": [
+    "QCY-T6",
+    "T6",
+    "QCY T6"
+   ],
+   "family": "0x30",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19777,
+   "name": "QCY Melobuds ANC",
+   "names": [
+    "QCY Melobuds ANC",
+    "Melobuds ANC"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "41",
+     "to": "9f",
+     "default": "63",
+     "scenes": [
+      {
+       "scene": "indoor",
+       "from": "41",
+       "to": "43"
+      },
+      {
+       "scene": "commuting",
+       "from": "51",
+       "to": "53"
+      },
+      {
+       "scene": "noisy",
+       "from": "61",
+       "to": "63"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "a0",
+     "to": "a6",
+     "default": "a4"
+    },
+    {
+     "mode": "off",
+     "from": "02",
+     "to": "02",
+     "default": "02"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19778,
+   "name": "QCY TWS HT05",
+   "names": [
+    "TWS HT05",
+    "QCY TWS HT05"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "41",
+     "to": "9f",
+     "default": "63",
+     "scenes": [
+      {
+       "scene": "indoor",
+       "from": "41",
+       "to": "43"
+      },
+      {
+       "scene": "commuting",
+       "from": "51",
+       "to": "53"
+      },
+      {
+       "scene": "noisy",
+       "from": "61",
+       "to": "63"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "a0",
+     "to": "a6",
+     "default": "a4"
+    },
+    {
+     "mode": "off",
+     "from": "02",
+     "to": "02",
+     "default": "02"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19779,
+   "name": "QCY ArcBuds",
+   "names": [
+    "QCY ArcBuds"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "41",
+     "to": "9f",
+     "default": "63",
+     "scenes": [
+      {
+       "scene": "indoor",
+       "from": "41",
+       "to": "43"
+      },
+      {
+       "scene": "commuting",
+       "from": "51",
+       "to": "53"
+      },
+      {
+       "scene": "noisy",
+       "from": "61",
+       "to": "63"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "71",
+       "to": "71"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "a0",
+     "to": "a6",
+     "default": "a4"
+    },
+    {
+     "mode": "off",
+     "from": "02",
+     "to": "02",
+     "default": "02"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19780,
+   "name": "QCY Crossky Link2",
+   "names": [
+    "QCY Crossky Link2"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19782,
+   "name": "QCY TWS HT07",
+   "names": [
+    "TWS HT07",
+    "QCY TWS HT07"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19783,
+   "name": "QCY HT07 ANC APP",
+   "names": [
+    "QCY HT07 ANC APP"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "41",
+     "to": "9f",
+     "default": "63",
+     "scenes": [
+      {
+       "scene": "indoor",
+       "from": "41",
+       "to": "43"
+      },
+      {
+       "scene": "commuting",
+       "from": "51",
+       "to": "53"
+      },
+      {
+       "scene": "noisy",
+       "from": "61",
+       "to": "63"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "71",
+       "to": "71"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "a0",
+     "to": "a6",
+     "default": "a4"
+    },
+    {
+     "mode": "off",
+     "from": "02",
+     "to": "02",
+     "default": "02"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19784,
+   "name": "QCY AilyBuds Pro",
+   "names": [
+    "QCY AilyBuds Pro"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010500",
+     "to": "010500",
+     "default": "010500"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Adaptive Audio",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19785,
+   "name": "QCY HT08",
+   "names": [
+    "HT08",
+    "QCY HT08"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "indoor",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "06",
+     "setting": "in_ear"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19786,
+   "name": "QCY MeloBuds Pro",
+   "names": [
+    "QCY MeloBuds Pro"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "indoor",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19787,
+   "name": "QCY AilyBuds Pro+",
+   "names": [
+    "QCY AilyBuds Pro+"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010500",
+     "to": "010500",
+     "default": "010500"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Adaptive Sound Effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19788,
+   "name": "QCY HT10ANC APP",
+   "names": [
+    "QCY HT10ANC APP"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010500",
+     "to": "010500",
+     "default": "010500"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Adaptive Audio",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19789,
+   "name": "QCY HT10 Hires ANC APP",
+   "names": [
+    "QCY HT10 Hires ANC APP"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010500",
+     "to": "010500",
+     "default": "010500"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Adaptive Sound Effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19790,
+   "name": "QCY HT08 MeloBuds Pro Plus",
+   "names": [
+    "QCY HT08 MeloBuds Pro Plus"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "indoor",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19791,
+   "name": "QCY Crossky R70",
+   "names": [
+    "QCY Crossky R70"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19794,
+   "name": "QCY Crossky C30",
+   "names": [
+    "QCY Crossky C30"
+   ],
+   "family": "0x50",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2D",
+     "setting": "spatial_audio"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19795,
+   "name": "QCY T33 APP",
+   "names": [
+    "QCY T33 APP"
+   ],
+   "family": "0x50",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2D",
+     "setting": "spatial_audio"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19796,
+   "name": "QCY Crossky C30S",
+   "names": [
+    "QCY Crossky C30S"
+   ],
+   "family": "0x50",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2D",
+     "setting": "spatial_audio"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19797,
+   "name": "QCY Crossky C50",
+   "names": [
+    "QCY Crossky C50"
+   ],
+   "family": "0x50",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "40",
+     "setting": "adaptive_volume"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "27",
+     "setting": "dynamic_eq"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19798,
+   "name": "QCY Crossky R50",
+   "names": [
+    "QCY Crossky R50"
+   ],
+   "family": "0x50",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "40",
+     "setting": "adaptive_volume"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19799,
+   "name": "QCY Crossky C50",
+   "names": [
+    "QCY Crossky C50"
+   ],
+   "family": "0x50",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "40",
+     "setting": "adaptive_volume"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "27",
+     "setting": "dynamic_eq"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19801,
+   "name": "QCY CT06 BlueTooth 6.0",
+   "names": [
+    "QCY CT06 BlueTooth 6.0"
+   ],
+   "family": "0x50",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "40",
+     "setting": "adaptive_volume"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "27",
+     "setting": "dynamic_eq"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19802,
+   "name": "QCY RACE",
+   "names": [
+    "QCY RACE"
+   ],
+   "family": "0x50",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19825,
+   "name": "QCY T7",
+   "names": [
+    "QCY-T7",
+    "T7",
+    "QCY T7"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19826,
+   "name": "QCY T8",
+   "names": [
+    "QCY-T8",
+    "T8",
+    "QCY T8"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19841,
+   "name": "QCY T7S",
+   "names": [
+    "QCY-T7S",
+    "T7S",
+    "QCY T7S"
+   ],
+   "family": "0x80",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19842,
+   "name": "QCY T8S",
+   "names": [
+    "QCY-T8S",
+    "T8S",
+    "QCY T8S"
+   ],
+   "family": "0x80",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "06",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19846,
+   "name": "QCY QT12",
+   "names": [
+    "QCY-QT12",
+    "QT12",
+    "QCY QT12"
+   ],
+   "family": "0x80",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19857,
+   "name": "QCY T9",
+   "names": [
+    "QCY-T9",
+    "T9",
+    "QCY T9"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19858,
+   "name": "QCY T7",
+   "names": [
+    "QCY-T7",
+    "T7",
+    "QCY T7"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19859,
+   "name": "QCY T8",
+   "names": [
+    "QCY-T8",
+    "T8",
+    "QCY T8"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19860,
+   "name": "QCY T1C",
+   "names": [
+    "QCY-T1C",
+    "T1C",
+    "QCY T1C"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 5,
+    "max_db": 8,
+    "freqs": [
+     62,
+     250,
+     1000,
+     4000,
+     8000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19861,
+   "name": "QCY M10",
+   "names": [
+    "QCY-M10",
+    "M10",
+    "QCY M10"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 5,
+    "max_db": 8,
+    "freqs": [
+     62,
+     250,
+     1000,
+     4000,
+     8000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19862,
+   "name": "QCY T1S",
+   "names": [
+    "QCY-T1S",
+    "T1S",
+    "QCY T1S"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19863,
+   "name": "QCY T2C",
+   "names": [
+    "QCY-T2C",
+    "T2C",
+    "QCY T2C"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 5,
+    "max_db": 8,
+    "freqs": [
+     62,
+     250,
+     1000,
+     4000,
+     8000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19865,
+   "name": "QCY QT12S",
+   "names": [
+    "QCY-QT12S",
+    "QT12S",
+    "QCY QT12S"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19866,
+   "name": "QCY T13",
+   "names": [
+    "QCY-T13",
+    "T13",
+    "QCY T13"
+   ],
+   "family": "zr",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19873,
+   "name": "QCY HT01",
+   "names": [
+    "QCY-HT01",
+    "HT01",
+    "QCY HT01"
+   ],
+   "family": "rd",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "settings": [
+    {
+     "item": "06",
+     "setting": "in_ear"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19889,
+   "name": "QCY T8",
+   "names": [
+    "QCY-T8",
+    "T8",
+    "QCY T8"
+   ],
+   "family": "0xB0",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "2C",
+     "setting": "in_ear"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19905,
+   "name": "QCY QT10",
+   "names": [
+    "QCY-QT10",
+    "QT10",
+    "QCY QT10"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19906,
+   "name": "QCY QT11",
+   "names": [
+    "QCY-QT11",
+    "QT11",
+    "QCY QT11"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19908,
+   "name": "QCY QT12S",
+   "names": [
+    "QCY-QT12S",
+    "QT12S",
+    "QCY QT12S"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
+  },
+  {
+   "vendor_id": 19909,
+   "name": "QCY QT10 Pro",
+   "names": [
+    "QT10 Pro",
+    "QCY QT10 Pro"
+   ],
+   "family": "realtek",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   },
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 19921,
+   "name": "QCY HT03S",
+   "names": [
+    "QCY-HT03S",
+    "HT03S",
+    "QCY HT03S"
+   ],
+   "family": "bes",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 22897,
+   "name": "QCY T13X APP",
+   "names": [
+    "QCY T13X APP"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 6,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23153,
+   "name": "QCY T13X",
+   "names": [
+    "QCY T13X"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     60,
+     100,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23154,
+   "name": "QCY Crossky GTR2",
+   "names": [
+    "QCY Crossky GTR2"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     55,
+     220,
+     500,
+     1000,
+     1800,
+     2800,
+     4500,
+     7500,
+     10000,
+     22000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23155,
+   "name": "QCY MeloBuds Neo",
+   "names": [
+    "QCY MeloBuds Neo"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     60,
+     100,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23156,
+   "name": "QCY TWS QT26",
+   "names": [
+    "TWS QT26",
+    "QCY TWS QT26"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     60,
+     100,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23157,
+   "name": "QCY AilyBuds Clear",
+   "names": [
+    "QCY AilyBuds Clear"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23158,
+   "name": "QCY T13X APP",
+   "names": [
+    "QCY T13X APP"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     60,
+     100,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23159,
+   "name": "QCY T30 AIR",
+   "names": [
+    "QCY T30 AIR"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     55,
+     220,
+     500,
+     1000,
+     1800,
+     2800,
+     4500,
+     7500,
+     10000,
+     22000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23160,
+   "name": "QCY T31 MeloBuds Neo",
+   "names": [
+    "QCY T31 MeloBuds Neo"
+   ],
+   "family": "jieli",
+   "protocol": "jieli",
+   "kind": "earbuds",
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     32,
+     60,
+     100,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23872,
+   "name": "QCY MeloBuds N70",
+   "names": [
+    "QCY MeloBuds N70"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010500",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "indoor",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Soft Soundstage",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23873,
+   "name": "QCY AilyBuds E50",
+   "names": [
+    "QCY AilyBuds E50"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010500",
+     "to": "010500",
+     "default": "010500"
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "AEQ",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "2D",
+     "setting": "spatial_audio"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23874,
+   "name": "QCY MeloBuds N60",
+   "names": [
+    "QCY MeloBuds N60"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010500",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "indoor",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Master Quality",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23875,
+   "name": "QCY CT03",
+   "names": [
+    "CT03",
+    "QCY CT03"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds"
+  },
+  {
+   "vendor_id": 23877,
+   "name": "QCY MeloBuds N70",
+   "names": [
+    "QCY MeloBuds N70"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010500",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "indoor",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Soft Soundstage",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23878,
+   "name": "QCY AilyBuds E50",
+   "names": [
+    "QCY AilyBuds E50"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010500",
+     "to": "010500",
+     "default": "010500"
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "AEQ",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "2D",
+     "setting": "spatial_audio"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 23879,
+   "name": "QCY MeloBuds N60",
+   "names": [
+    "QCY MeloBuds N60"
+   ],
+   "family": "wuqi",
+   "protocol": "qcy",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010500",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "indoor",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "noisy",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030100",
+     "to": "030106",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Master Quality",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "2A",
+     "setting": "wind_detection"
+    },
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "23",
+     "setting": "ldac"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 32881,
+   "name": "QCY MeloBuds N30",
+   "names": [
+    "QCY MeloBuds N30"
+   ],
+   "family": "jieli",
+   "protocol": "jieli_custom",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 32882,
+   "name": "QCY Buds ANC",
+   "names": [
+    "QCY Buds ANC"
+   ],
+   "family": "jieli",
+   "protocol": "jieli_custom",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 32883,
+   "name": "QCY HT16 MeloBuds",
+   "names": [
+    "QCY HT16 MeloBuds"
+   ],
+   "family": "jieli",
+   "protocol": "jieli_custom",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 32884,
+   "name": "QCY MeloBuds N20",
+   "names": [
+    "QCY MeloBuds N20"
+   ],
+   "family": "jieli",
+   "protocol": "jieli_custom",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  },
+  {
+   "vendor_id": 32885,
+   "name": "QCY T13 Plus",
+   "names": [
+    "QCY T13 Plus"
+   ],
+   "family": "jieli",
+   "protocol": "jieli_custom",
+   "kind": "earbuds",
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010100",
+     "to": "01ffff",
+     "default": "010102",
+     "scenes": [
+      {
+       "scene": "adaptive",
+       "from": "010500",
+       "to": "010500"
+      },
+      {
+       "scene": "noisy",
+       "from": "010100",
+       "to": "010102"
+      },
+      {
+       "scene": "commuting",
+       "from": "010200",
+       "to": "010202"
+      },
+      {
+       "scene": "indoor",
+       "from": "010300",
+       "to": "010302"
+      },
+      {
+       "scene": "anti_wind",
+       "from": "010400",
+       "to": "010400"
+      }
+     ]
+    },
+    {
+     "mode": "transparency",
+     "from": "030104",
+     "to": "030104",
+     "default": "030104"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "eq": {
+    "bands": 10,
+    "max_db": 8,
+    "freqs": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ],
+    "presets": [
+     "Spatial sound effects",
+     "Default",
+     "Pop",
+     "Heavy Bass",
+     "Rock",
+     "Soft",
+     "Classic"
+    ]
+   },
+   "balance": true,
+   "settings": [
+    {
+     "item": "10",
+     "setting": "sleep_mode"
+    },
+    {
+     "item": "09",
+     "setting": "game_mode"
+    },
+    {
+     "item": "24",
+     "setting": "multipoint"
+    }
+   ]
+  }
+ ]
+}

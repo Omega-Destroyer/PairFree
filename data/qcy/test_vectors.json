@@ -1,0 +1,48 @@
+{
+ "_about": "Test cases for QCY's own protocol. n70 is OpenQCY-Desktop's transcript of a QCY MeloBuds N70 (vendor id 23877, firmware 3.0.13; github.com/GiorgioRafael/OpenQCY-Desktop, MIT, docs/protocol-research.md): each request PairFree builds must match its bytes, and each reply must read as noted. capsule3 are the examples docs/soundpeats/PROTOCOL.md section 10 gives for the QCY-built SOUNDPEATS Capsule3 Pro. advert is a QCY advert built by hand from the layout QCY's app reads (Devicebind.refreshInfoFromAVData), with a made-up address.",
+ "n70": {
+  "vendor_id": 23877,
+  "requests": [
+   {"what": "ask for wearing detection", "item": "2C", "bytes": "ff03fe012c"},
+   {"what": "ask for the noise mode", "item": "17", "bytes": "ff03fe0117"},
+   {"what": "ask for game mode", "item": "09", "bytes": "ff03fe0109"},
+   {"what": "ask for sleep mode", "item": "10", "bytes": "ff03fe0110"},
+   {"what": "ask for LDAC", "item": "23", "bytes": "ff03fe0123"},
+   {"what": "ask for multipoint", "item": "24", "bytes": "ff03fe0124"},
+   {"what": "ask for wind detection", "item": "2A", "bytes": "ff03fe012a"}
+  ],
+  "replies": [
+   {"what": "wearing detection off", "bytes": "ff052c03000101", "item": "2C", "value": "000101"},
+   {"what": "noise cancelling, noisy scene, value 2", "bytes": "ff051703010302", "item": "17", "value": "010302"},
+   {"what": "game mode off", "bytes": "ff03090102", "item": "09", "value": "02"},
+   {"what": "sleep mode off", "bytes": "ff03100100", "item": "10", "value": "00"},
+   {"what": "LDAC on", "bytes": "ff03230101", "item": "23", "value": "01"},
+   {"what": "multipoint on", "bytes": "ff03240101", "item": "24", "value": "01"},
+   {"what": "wind detection on", "bytes": "ff032a0101", "item": "2A", "value": "01"},
+   {"what": "prompt volume 4 of 15", "bytes": "ff041d02040f", "item": "1D", "value": "040f"},
+   {"what": "auto power-off never", "bytes": "ff061404ffff0000", "item": "14", "value": "ffff0000"}
+  ],
+  "writes": [
+   {"what": "noise cancelling, adaptive", "bytes": "ff051703010500"},
+   {"what": "noise cancelling, indoor at value 2", "bytes": "ff051703010102"},
+   {"what": "noise cancelling, commuting at value 2", "bytes": "ff051703010202"},
+   {"what": "noise cancelling, noisy at value 2", "bytes": "ff051703010302"},
+   {"what": "noise cancelling, anti-wind", "bytes": "ff051703010400"},
+   {"what": "wearing detection on, keeping the other bytes", "bytes": "ff052c03010101"},
+   {"what": "wearing detection off, keeping the other bytes", "bytes": "ff052c03020101"}
+  ]
+ },
+ "capsule3": [
+  {"what": "noise cancelling on (one-byte noise mode)", "bytes": "ff030c0163"},
+  {"what": "ask for multipoint", "bytes": "ff03fe0124"}
+ ],
+ "advert": {
+  "bytes": "5d45000500bc602b000000bbaaccffeedd00221133665544",
+  "vendor_id": 23877,
+  "classic": "AA:BB:CC:DD:EE:FF",
+  "other": "11:22:33:44:55:66",
+  "left": 60,
+  "right": 96,
+  "case": 43
+ }
+}

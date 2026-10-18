@@ -26,6 +26,7 @@ import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
@@ -109,7 +110,8 @@ class Hub(private val app: Application) {
      * by Bose's services or "Bose" in the name (docs/bose/PROTOCOL.md); JBL's by the model's name
      * (docs/jbl/PROTOCOL.md); AirPods and Apple-chip Beats by Apple's accessory service, else "AirPods"
      * in the name (docs/apple/PROTOCOL.md); Nothing's and CMF's by Nothing's control service, else the name
-     * (docs/nothing/PROTOCOL.md). Empty without the permission or with Bluetooth off.
+     * (docs/nothing/PROTOCOL.md); QCY's by the name (docs/qcy/PROTOCOL.md), the model by the advert once
+     * PairFree looks for it. Empty without the permission or with Bluetooth off.
      */
     @SuppressLint("MissingPermission") // checked first
     fun pairedEarbuds(): List<Paired> {
@@ -132,6 +134,7 @@ class Hub(private val app: Application) {
                     AppleModels.identify(name, uuids) -> Paired(d.address, name, Brand.APPLE)
                     NothingModels.identify(name, uuids) ->
                         Paired(d.address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)
+                    QcyModels.identify(name) -> Paired(d.address, name, Brand.QCY, model = QcyModels.fromName(name).singleOrNull()?.code)
                     Models.isSupported(d.name ?: "") -> Paired(d.address, name)
                     else -> null
                 }

@@ -1055,8 +1055,115 @@ val generateNothingTables = tasks.register<GenerateNothingTables>("generateNothi
     outputDir = layout.buildDirectory.dir("generated/nothing")
 }
 
+/** Writes QCY's items, characteristics and models from data/qcy. */
+abstract class GenerateQcyTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
+        fun int(v: Any?) = (v as Number).toInt()
+        fun hex(v: Any?) = "0x" + (v as String).uppercase()
+        fun strings(v: Any?) = (v as List<*>?).orEmpty().joinToString(", ", "listOf(", ")") { str(it) }
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/qcy by the generateQcyTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val chars = commands.getValue("characteristics") as Map<String, Any?>
+        out.appendLine("/** QCY's Bluetooth LE service, its characteristics and the advert's company id (data/qcy/commands.json). */")
+        out.appendLine("public object QcyWire {")
+        out.appendLine("    public const val SERVICE: String = ${str(commands["service"])}")
+        out.appendLine("    public const val COMPANY: Int = ${hex(commands["company_id"])}")
+        for ((name, uuid) in chars) {
+            out.appendLine("    public const val ${name.uppercase()}: String = ${str(uuid)}")
+            // The 16-bit short form, which the GATT envelope carries.
+            out.appendLine("    public const val ${name.uppercase()}_SHORT: Int = 0x${(uuid as String).substring(4, 8)}")
+        }
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val items = commands.getValue("items") as List<Map<String, Any?>>
+        out.appendLine("/** The items QCY's packets carry (data/qcy/commands.json), by their names in QCY's app. */")
+        out.appendLine("public object QcyItem {")
+        for (i in items) out.appendLine("    public const val ${i["name"]}: Int = ${hex(i["id"])}")
+        out.appendLine("    /** Resets, pairing, test and firmware traffic, renaming, clock and alarm writes: never sent. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${items.filter { it["never_send"] == true }.joinToString(", ") { hex(it["id"]) }})")
+        out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${items.joinToString(", ") { "${hex(it["id"])} to ${str(it["name"])}" }})")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val keys = commands.getValue("keys") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        fun map(name: String) = (keys.getValue(name) as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { "${hex(it.key)} to ${str(it.value)}" }
+        out.appendLine("/** The key table's keys and actions (data/qcy/commands.json, keys). */")
+        out.appendLine("public object QcyKeys {")
+        out.appendLine("    public val KEYS: Map<Int, String> = ${map("keys")}")
+        out.appendLine("    public val ACTIONS: Map<Int, String> = ${map("actions")}")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/qcy/devices.json. */")
+        out.appendLine("internal val QCY_MODELS: List<QcyModel> = listOf(")
+        for (d in devices) {
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headphones" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            val protocol = (d["protocol"] as String).uppercase()
+            @Suppress("UNCHECKED_CAST")
+            val anc = (d["anc"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { m ->
+                @Suppress("UNCHECKED_CAST")
+                val scenes = (m["scenes"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { s ->
+                    "QcyScene(${str(s["scene"])}, ${hex(s["from"])}, ${hex(s["to"])})"
+                }
+                "QcyNoiseMode(${str(m["mode"])}, ${hex(m["from"])}, ${hex(m["to"])}, ${hex(m["default"])}, $scenes)"
+            }
+            @Suppress("UNCHECKED_CAST")
+            val touch = (d["touch"] as Map<String, Any?>?)?.let { "QcyTouch(${strings(it["gestures"])}, ${strings(it["actions"])})" } ?: "null"
+            @Suppress("UNCHECKED_CAST")
+            val settings = (d["settings"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { "QcySetting(${hex(it["item"])}, ${str(it["setting"])})" }
+            out.appendLine("    QcyModel(")
+            out.appendLine("        ${int(d["vendor_id"])}, ${str(d["name"])}, ${strings(d["names"])}, ${str(d["family"])}, QcyProtocol.$protocol,")
+            out.appendLine("        io.github.omegadestroyer.pairfree.protocol.Form.$form, anc = $anc,")
+            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings,")
+            out.appendLine("    ),")
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("QcyTables.kt").writeText(out.toString())
+    }
+}
+
+val generateQcyTables = tasks.register<GenerateQcyTables>("generateQcyTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/qcy/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/qcy/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.qcy"
+    outputDir = layout.buildDirectory.dir("generated/qcy")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
+    kotlin.srcDir(generateQcyTables)
     kotlin.srcDir(generateNothingTables)
     kotlin.srcDir(generateAppleTables)
     kotlin.srcDir(generateSoundcoreTables)
@@ -1083,6 +1190,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/jbl")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/apple")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/nothing")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/qcy")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

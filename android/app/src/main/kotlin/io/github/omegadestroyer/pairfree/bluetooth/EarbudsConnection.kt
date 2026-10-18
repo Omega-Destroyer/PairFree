@@ -33,6 +33,10 @@ import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingParser
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingSession
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyProtocol
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcySession
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyWire
 import io.github.omegadestroyer.pairfree.protocol.summary
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
@@ -74,7 +78,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
-enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING }
+enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, QCY }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
@@ -102,10 +106,12 @@ sealed interface LinkStatus {
     data class Failed(val device: Paired, val reason: Reason) : LinkStatus
 
     /**
-     * [NO_SCAN_PERMISSION]: JBL earbuds that did not answer on their classic address, which PairFree may not
-     * scan for. [NEEDS_NEWER_ANDROID]: AirPods whose channel this phone's Bluetooth stack refuses ([AppleSupport]).
+     * [NO_SCAN_PERMISSION]: JBL earbuds that did not answer on their classic address, or QCY earbuds, which
+     * PairFree may not scan for. [NEEDS_NEWER_ANDROID]: AirPods whose channel this phone's Bluetooth stack
+     * refuses ([AppleSupport]). [NOT_FOUND]: QCY earbuds whose advert a scan did not find. [NOT_YET]: QCY
+     * earbuds on JieLi's protocol, which PairFree does not speak yet.
      */
-    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION, NEEDS_NEWER_ANDROID }
+    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION, NEEDS_NEWER_ANDROID, NOT_FOUND, NOT_YET }
 }
 
 /**
@@ -197,6 +203,13 @@ class EarbudsConnection(
     /** The Nothing session, while connected to Nothing or CMF earbuds or headphones; for the device report. */
     val nothingSession: NothingSession? get() = nothing
 
+    private var qcy: QcySession? = null   // set while connected to QCY earbuds or headphones
+    private var qcyQueue: Channel<ByteArray>? = null
+    private var qcyFound: QcyFinder.Found? = null   // what the scan found before the channel opened
+
+    /** The QCY session, while connected to QCY earbuds or headphones; for the device report. */
+    val qcySession: QcySession? get() = qcy
+
     private val _sonyEq = MutableStateFlow<SonyEq?>(null)
 
     /** The Sony equalizer as the earbuds last reported it; the Sound tab follows it. */
@@ -220,6 +233,8 @@ class EarbudsConnection(
         jbl = null
         apple = null
         nothing = null
+        qcy = null
+        qcyFound = null
         _sonyEq.value = null
         _settings.value = emptyList()
         _samsungStatus.value = null
@@ -244,6 +259,12 @@ class EarbudsConnection(
                     open(remote, device)
                 } catch (_: ScanNotAllowed) {
                     fail(token, device, LinkStatus.Reason.NO_SCAN_PERMISSION)
+                    return@launch
+                } catch (_: NotFound) {
+                    fail(token, device, LinkStatus.Reason.NOT_FOUND)
+                    return@launch
+                } catch (_: NotYet) {
+                    fail(token, device, LinkStatus.Reason.NOT_YET)
                     return@launch
                 } catch (e: IOException) {
                     log?.invoke("could not open: ${e.message}")
@@ -273,6 +294,7 @@ class EarbudsConnection(
                     Brand.JBL -> serveJbl(opened, device)
                     Brand.APPLE -> serveApple(opened)
                     Brand.NOTHING -> serveNothing(opened, device)
+                    Brand.QCY -> serveQcy(opened)
                     Brand.SOUNDPEATS -> serve(opened, device)
                 }
                 log?.invoke("closed")
@@ -298,6 +320,7 @@ class EarbudsConnection(
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private suspend fun open(remote: BluetoothDevice, device: Paired): ControlLink {
         if (device.brand == Brand.APPLE) return openApple(remote)
+        if (device.brand == Brand.QCY) return openQcy(device)
         val model = if (device.brand == Brand.JBL) JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } else null
         val ctx = context
         if (model?.gatt != true || ctx == null) return SppLink(remote, log, device.service ?: Wire.SPP_UUID).also { link = it }.apply { connect() }
@@ -331,6 +354,29 @@ class EarbudsConnection(
 
     /** JBL earbuds that need an LE scan, which the user has not allowed. */
     private class ScanNotAllowed : IOException("scan not allowed")
+
+    /**
+     * QCY earbuds over Bluetooth LE (docs/qcy/PROTOCOL.md section 2): a scan finds their advert, which names
+     * the model and the LE side to connect to. A scan that already found them is used again on a reconnect.
+     */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private suspend fun openQcy(device: Paired): ControlLink {
+        val ctx = context ?: throw IOException("no context for Bluetooth LE")
+        val found = qcyFound ?: run {
+            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
+            adapter?.let { QcyFinder(it, log).find(device.address) } ?: throw NotFound()
+        }
+        qcyFound = found
+        val model = QcyModels.of(found.advert.vendorId)
+        if (model != null && model.protocol != QcyProtocol.QCY) throw NotYet()
+        return EnvelopeGattLink(ctx, found.device, java.util.UUID.fromString(QcyWire.SERVICE), log).also { link = it }.apply { connect() }
+    }
+
+    /** QCY earbuds whose advert a scan did not find. */
+    private class NotFound : IOException("not found")
+
+    /** QCY earbuds on JieLi's protocol, which PairFree does not speak yet. */
+    private class NotYet : IOException("protocol not supported yet")
 
     /**
      * AirPods' channel over L2CAP, on phones whose Bluetooth stack opens it ([AppleSupport]). On the others
@@ -689,6 +735,70 @@ class EarbudsConnection(
         if (nothingQueue === queue) nothingQueue = null
     }
 
+    /**
+     * QCY earbuds and headphones on QCY's own protocol: one GATT operation at a time, as QCY's app sends them
+     * (docs/qcy/PROTOCOL.md section 3). The earbuds report each setting asked for, and every change made on
+     * them, as notifications on the settings characteristic.
+     */
+    private suspend fun serveQcy(opened: ControlLink) = coroutineScope {
+        val found = qcyFound
+        val session = QcySession(found?.let { QcyModels.of(it.advert.vendorId) }, found?.advert)
+        qcy = session
+        publish(session)
+        val queue = Channel<ByteArray>(Channel.UNLIMITED)
+        qcyQueue = queue
+        val sender = launch {
+            try {
+                for (envelope in queue) {
+                    if (!session.allowed(envelope)) continue
+                    opened.send(envelope)
+                    delay(QCY_GAP_MS)
+                }
+            } catch (_: IOException) {
+                // the channel closed; the reader below notices too
+            }
+        }
+        session.start().forEach(queue::trySend)
+        val poll = launch {
+            while (true) {
+                delay(BATTERY_POLL_MS)
+                session.batteryRequests().forEach(queue::trySend)
+            }
+        }
+        try {
+            opened.reads().collect { bytes ->
+                guardPacket {
+                    log?.invoke("recv ${bytes.joinToString("") { "%02x".format(it) }}")
+                    if (session.receive(bytes)) publish(session)
+                }
+            }
+        } catch (_: IOException) {
+        }
+        poll.cancel()
+        sender.cancel()
+        queue.close()
+        if (qcyQueue === queue) qcyQueue = null
+    }
+
+    private fun publish(session: QcySession) {
+        _state.value = session.state
+        _settings.value = session.groups
+    }
+
+    /** Queues QCY messages on the open channel, then [READ_BACK_MS] later the requests that confirm them. False when there is none. */
+    private fun sendQcy(session: QcySession, messages: List<ByteArray>): Boolean {
+        val reads = session.takeReadBacks()
+        if (_status.value !is LinkStatus.Connected) return false
+        val queue = qcyQueue ?: return false
+        val s = this.session ?: return false
+        messages.forEach(queue::trySend)
+        s.launch {
+            delay(READ_BACK_MS)
+            reads.forEach(queue::trySend)
+        }
+        return true
+    }
+
     private fun publish(session: NothingSession) {
         _state.value = session.state
         _settings.value = session.groups
@@ -774,6 +884,11 @@ class EarbudsConnection(
 
     /** Changes one of the [settings]: it shows at once, and the earbuds' acknowledgement or next state confirms it. */
     fun changeSetting(change: SettingChange) {
+        qcy?.let { session ->
+            val messages = session.change(change) ?: return
+            if (sendQcy(session, messages)) publish(session)
+            return
+        }
         nothing?.let { session ->
             val frames = session.change(change) ?: return
             if (sendNothing(session, frames)) publish(session)
@@ -817,6 +932,11 @@ class EarbudsConnection(
     fun set(command: Command, vararg payload: Int) {
         // Bose's settings are all brand rows (changeSetting); nothing of the shared commands goes to them.
         if (bose != null) return
+        qcy?.let { session ->
+            val messages = session.set(command, payload.singleOrNull() ?: return) ?: return
+            if (sendQcy(session, messages)) publish(session)
+            return
+        }
         nothing?.let { session ->
             val frames = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (sendNothing(session, frames)) publish(session)
@@ -860,7 +980,7 @@ class EarbudsConnection(
      */
     fun sendEq(frames: List<ByteArray>) {
         if (_status.value !is LinkStatus.Connected) return
-        if (bose != null || jbl != null || apple != null || nothing != null) return
+        if (bose != null || jbl != null || apple != null || nothing != null || qcy != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
@@ -893,7 +1013,7 @@ class EarbudsConnection(
             if (send(session.frames(packets), then = null)) publish(session)
             return
         }
-        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || nothing != null) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || qcy != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -922,7 +1042,7 @@ class EarbudsConnection(
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || qcy != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -984,6 +1104,8 @@ class EarbudsConnection(
         apple = null
         nothing = null
         nothingQueue = null
+        qcy = null
+        qcyQueue = null
         session?.cancel()
         session = null
         _status.value = LinkStatus.Idle
@@ -1054,6 +1176,9 @@ class EarbudsConnection(
 
         /** Nothing X leaves 40 ms between frames (HeadsetSppConnector.SEND_DELAY). */
         const val NOTHING_GAP_MS = 40L
+
+        /** Between QCY messages, as SOUNDPEATS' app leaves between its writes. */
+        const val QCY_GAP_MS = 50L
 
         /** LibrePods leaves 200 ms between its opening frames ... */
         const val APPLE_GAP_MS = 200L

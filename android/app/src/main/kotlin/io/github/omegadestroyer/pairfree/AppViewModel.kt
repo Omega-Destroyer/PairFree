@@ -453,6 +453,28 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 }
             }
         }
+        connection.qcySession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Brand:           QCY")
+                val model = session.model
+                appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (vendor id ${model?.code ?: "unknown"})")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine()
+                appendLine("The last value of each item and characteristic PairFree read (item or name: value as hex):")
+                session.replies.forEach { (key, payload) ->
+                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
+                }
+            }
+        }
         connection.appleSession?.let { session ->
             return buildString {
                 appendLine("PairFree device report")

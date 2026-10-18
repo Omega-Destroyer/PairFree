@@ -6,7 +6,7 @@ usage: python tools/device_pages.py          rewrite every generated table
 Each brand has a page under docs/devices/ listing every model PairFree knows, with a table
 generated from the brand's data: tools/gen_models_table.py for SOUNDPEATS,
 tools/gen_soundcore_table.py for Soundcore, tools/gen_samsung_table.py for Samsung,
-tools/gen_sony_table.py for Sony, tools/gen_bose_table.py for Bose, tools/gen_jbl_table.py for JBL, tools/gen_apple_table.py for AirPods and Beats and tools/gen_nothing_table.py for Nothing and CMF. The README shows one summary row per brand that
+tools/gen_sony_table.py for Sony, tools/gen_bose_table.py for Bose, tools/gen_jbl_table.py for JBL, tools/gen_apple_table.py for AirPods and Beats, tools/gen_nothing_table.py for Nothing and CMF and tools/gen_qcy_table.py for QCY. The README shows one summary row per brand that
 links to its page. Running either generator rewrites all of them, so they never disagree.
 """
 import sys
@@ -30,10 +30,11 @@ def brands():
     import gen_jbl_table
     import gen_models_table
     import gen_nothing_table
+    import gen_qcy_table
     import gen_samsung_table
     import gen_sony_table
     import gen_soundcore_table
-    return [gen_models_table, gen_soundcore_table, gen_samsung_table, gen_sony_table, gen_bose_table, gen_jbl_table, gen_apple_table, gen_nothing_table]
+    return [gen_models_table, gen_soundcore_table, gen_samsung_table, gen_sony_table, gen_bose_table, gen_jbl_table, gen_apple_table, gen_nothing_table, gen_qcy_table]
 
 
 def summary():

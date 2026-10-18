@@ -46,7 +46,11 @@ These came from the owner and are not up for trade.
   their settings over Bluetooth LE, and when their LE side does not answer on the paired
   address, the only way to find it is its advert (`docs/jbl/PROTOCOL.md` section 3). It is
   asked for only when the user opens a JBL model, the scan lasts at most 10 s and keeps
-  nothing, and connecting goes ahead without it where the direct way works. Nothing else.
+  nothing, and connecting goes ahead without it where the direct way works. The owner allowed the
+  same for QCY on 2026-10-18 ("still related to a Bluetooth permission"): QCY's earbuds are
+  controlled over Bluetooth LE, and their advert names both the model and the LE side to connect to
+  (`docs/qcy/PROTOCOL.md` section 2). Asked for only when the user opens QCY earbuds, under the same
+  terms. Nothing else.
 
 ## Looks
 

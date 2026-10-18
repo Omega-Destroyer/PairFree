@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker), Samsung Galaxy Buds, Sony, Bose, JBL, AirPods and Nothing (with CMF) are being added. The owner wants agents to do as much of the
+(Anker), Samsung Galaxy Buds, Sony, Bose, JBL, AirPods, Nothing (with CMF) and QCY are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Where the truth lives
@@ -32,7 +32,7 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
 from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose`, `jbl`, `apple` (AirPods and the
-Beats on Apple's chips) and `nothing` (Nothing and CMF).
+Beats on Apple's chips), `nothing` (Nothing and CMF) and `qcy`.
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -172,6 +172,21 @@ Beats on Apple's chips) and `nothing` (Nothing and CMF).
   `python tools/gen_nothing_table.py`. Never send `NothingCommand.NEVER_SEND` (factory reset, firmware
   update, calibration, debug) or `NothingCommand.PRIVATE` (reads that return the serial number or other
   devices' addresses).
+- `docs/qcy/PROTOCOL.md` is QCY's own protocol, read from QCY's app (4.0.7, decompiled outside the repo on
+  2026-10-18) and checked against OpenQCY-Desktop (github.com/GiorgioRafael/OpenQCY-Desktop, MIT), which
+  recorded a MeloBuds N70. No QCY model has been tried with PairFree. The model list is QCY's own product
+  list as Quicky (github.com/hui1601/Quicky, no licence: facts only) dumped it from QCY's server, keeping the
+  171 earphones (owner, 2026-10-18); refresh `data/qcy/devices.json` from a newer Quicky only with the owner's
+  OK, and never fetch QCY's server from this repo. QCY's earbuds are controlled over Bluetooth LE: PairFree
+  scans for their advert (company 0x521C), which names the model (vendor id) and the LE side to connect to,
+  with `BLUETOOTH_SCAN`, which the owner allowed for QCY on 2026-10-18 (`docs/DESIGN.md`, Permissions). The
+  service spreads over several characteristics, so `EnvelopeGattLink` carries `GattEnvelope`s (operation,
+  short UUID, value). `data/qcy/commands.json` and `devices.json` become `QcyWire`, `QcyItem`, `QcyKeys` and
+  the model list through `generateQcyTables`; `QcySession` asks for each item the model's control panel
+  lists. About half of QCY's models use JieLi's RCSP instead, which PairFree does not speak yet and says so
+  for (its settings need no authentication: JieLi's native auth is only in its OTA and watch SDKs). After a
+  change to `devices.json` run `python tools/gen_qcy_table.py`. Never send `QcyItem.NEVER_SEND` (resets,
+  pairing, test, rename, restart, clock and alarm).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

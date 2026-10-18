@@ -215,6 +215,14 @@ private fun settingTitle(key: String): String = when (key) {
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio)
     "head_tracking" -> stringResource(R.string.setting_head_tracking)
     "codec" -> stringResource(R.string.setting_codec)
+    "anc_scene" -> stringResource(R.string.setting_anc_scene)
+    "anc_scene_level" -> stringResource(R.string.setting_anc_scene_level)
+    "transparency_strength" -> stringResource(R.string.setting_transparency_strength)
+    "dynamic_eq" -> stringResource(R.string.setting_dynamic_eq)
+    "adaptive_volume" -> stringResource(R.string.setting_adaptive_volume_qcy)
+    "sleep_mode" -> stringResource(R.string.setting_sleep_mode)
+    "wind_detection" -> stringResource(R.string.setting_wind_detection)
+    "led" -> stringResource(R.string.setting_led)
     else -> touchTitle(key) ?: key
 }
 
@@ -257,6 +265,7 @@ private fun settingNote(key: String): String? = when (key) {
     "allow_off" -> stringResource(R.string.setting_allow_off_note)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
     "codec" -> stringResource(R.string.setting_codec_note)
+    "sleep_mode" -> stringResource(R.string.setting_sleep_mode_note)
     else -> null
 }
 
@@ -279,6 +288,15 @@ private fun optionName(key: String, option: String): String = when {
             "custom" -> R.string.setting_eq_custom
             "dirac" -> R.string.setting_eq_dirac
             else -> R.string.setting_eq_balanced
+        },
+    )
+    key == "anc_scene" -> stringResource(
+        when (option) {
+            "adaptive" -> R.string.scene_adaptive
+            "indoor" -> R.string.scene_indoor
+            "commuting" -> R.string.setting_scene_commuting
+            "noisy" -> R.string.setting_scene_noisy
+            else -> R.string.scene_wind
         },
     )
     key == "codec" -> when (option) {

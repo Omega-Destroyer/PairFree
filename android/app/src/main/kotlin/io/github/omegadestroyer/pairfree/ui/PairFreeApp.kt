@@ -115,8 +115,9 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
     val paired by vm.paired.collectAsStateWithLifecycle()
     val bluetoothOn by vm.bluetoothOn.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    // JBL's LE models may need a scan to be found (docs/jbl/PROTOCOL.md section 3). The permission is
-    // asked for only here, when the user opens one, and connecting goes ahead whatever the answer.
+    // JBL's LE models may need a scan to be found (docs/jbl/PROTOCOL.md section 3), and QCY's always do
+    // (docs/qcy/PROTOCOL.md section 2). The permission is asked for only here, when the user opens one, and
+    // connecting goes ahead whatever the answer.
     var opening by remember { mutableStateOf<Paired?>(null) }
     val scan = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         opening?.let(vm::connect)
@@ -147,7 +148,7 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
             else -> Panel {
                 for (device in paired) {
                     PairedRow(device, connecting = (status as? LinkStatus.Connecting)?.device == device) {
-                        val needsScan = device.brand == Brand.JBL &&
+                        val needsScan = (device.brand == Brand.JBL || device.brand == Brand.QCY) &&
                             ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
                         if (needsScan) {
                             opening = device
@@ -197,5 +198,7 @@ private fun failure(status: LinkStatus): String? {
         LinkStatus.Reason.NO_PERMISSION -> stringResource(R.string.failed_no_permission)
         LinkStatus.Reason.NO_SCAN_PERMISSION -> stringResource(R.string.failed_no_scan_permission, name)
         LinkStatus.Reason.NEEDS_NEWER_ANDROID -> stringResource(R.string.failed_needs_newer_android, name)
+        LinkStatus.Reason.NOT_FOUND -> stringResource(R.string.failed_not_found, name)
+        LinkStatus.Reason.NOT_YET -> stringResource(R.string.failed_not_yet, name)
     }
 }

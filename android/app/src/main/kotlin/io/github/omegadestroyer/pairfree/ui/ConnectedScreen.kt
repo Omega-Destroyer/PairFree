@@ -60,6 +60,7 @@ import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
@@ -132,6 +133,7 @@ internal fun ConnectedScreen(
                         Brand.JBL -> R.string.eq_jbl
                         Brand.APPLE -> R.string.eq_apple
                         Brand.NOTHING -> R.string.eq_nothing
+                        Brand.QCY -> R.string.eq_qcy
                         else -> R.string.eq_unavailable
                     },
                 )
@@ -161,6 +163,8 @@ internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.
     Brand.APPLE -> AppleModels.model(state.firmware?.code ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
     // Nothing's by the product id the earbuds report, which the firmware line carries; before then, the name's.
     Brand.NOTHING -> NothingModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
+    // QCY's by the vendor id the advert named, which the firmware line carries; before then, the name's.
+    Brand.QCY -> QcyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

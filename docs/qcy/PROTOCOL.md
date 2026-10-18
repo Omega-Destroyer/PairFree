@@ -11,7 +11,7 @@ PairFree yet.
     library PeatsAudio carries for the SOUNDPEATS Capsule3 Pro (`docs/soundpeats/PROTOCOL.md`
     section 10), and 4.0.7's copy is larger.
   - `Devicebind`: the advert, and how a model's chip is read.
-  - `JLDeviceImpl`: the JieLi path.
+  - `JLDeviceImpl`: the JieLi path, and the copy of JieLi's RCSP SDK (`com.jieli.jl_bt_rcsp`) it runs on.
 - **QCY's product list and control panels**, which QCY's app downloads from QCY's server, as
   [Quicky](https://github.com/hui1601/Quicky) by hui1601 dumped them. Quicky has no licence, so it gives
   facts only. Its protocol notes, read from a QCY HT07's traffic, agree with QCY's app.
@@ -39,9 +39,8 @@ vendor id names (`Devicebind`):
 
 Bits 8-11 of `0x100` mark a product that is not true wireless (`isNotTWS`): one battery.
 
-- **JieLi:** PairFree does not speak JieLi's RCSP yet and says so for those models. QCY's app needs no
-  authentication for their settings: JieLi's authentication (`RcspAuth`, native code) is only in
-  JieLi's firmware-update and watch SDKs.
+- **JieLi:** section 6. QCY's app needs no authentication for their settings: JieLi's authentication
+  (`RcspAuth`, native code) is only in JieLi's firmware-update and watch SDKs, not in `jl_bt_rcsp`.
 - **ZR models:** these get QCY's settings, but not their touch controls or EQ.
 
 ## 2. Finding the earbuds
@@ -157,9 +156,66 @@ commuting `01 02 02`, noisy `01 03 02` and anti-wind `01 04 00`.
 PairFree shows off, cancelling and transparency on the shared control where the model has all three,
 a switch where it has two, then the scene, its strength and the transparency level.
 
-## 6. Not yet
+## 6. JieLi models
 
-- **JieLi:** JieLi's RCSP (79 models), and QCY's items inside its custom command (5 models).
+84 models are on JieLi chips. They advertise as the others do (section 2), and PairFree finds them the
+same way, but their settings go through JieLi's RCSP over another GATT service. Most of what QCY's app
+sends there is QCY's own items (section 3), so PairFree reads and writes them as for the other models
+and only changes how they travel (`QcyJieliSession`). The newer models (vendor ids with bits `0x8070`,
+`isNewJLDevice`, 5 models: `jieli_custom` in `data/qcy/devices.json`) take more of them as QCY's items.
+
+**Service** `0000A002-…`: write `00000001`, notify `00000002`.
+
+**Frame** (`jl_bt_rcsp`'s `BasePacket`): `FE DC BA`, a flags byte, the opcode, the parameters' length
+(two bytes, high first), the parameters, `EF`. Bit 7 of the flags marks a command, bit 6 that an answer
+is wanted. A command's parameters start with its sequence number; an answer's with a status (0 success)
+and the sequence number of the command it answers. A frame can span several notifications.
+
+| Opcode | Name | Use |
+|--------|------|-----|
+| `03` | Target info | 4-byte mask of attributes, then the platform (0). PairFree asks only for attribute 5, the firmware version: two bytes, one digit per nibble (`1.2.3.4`). JieLi's SDK reads it on every connection. |
+| `C0` | Set attributes | length-type-value attributes (the length counts the type) |
+| `C1` | Get attributes | 4-byte mask, bit *n* for attribute *n*; the answer is length-type-value attributes |
+| `C4` | Earbuds ask | the earbuds' own command; QCY's app reads the settings again on the older models |
+| `FF` | Custom | QCY's items as in section 3, without the `FF` and length in front |
+
+The earbuds' own commands that want an answer get one: status 0 and their sequence number.
+
+**Attributes** (`C0`, `C1`) that QCY's app uses:
+
+| Attribute | Name | Value |
+|-----------|------|-------|
+| 0 | Battery | three bytes as in the advert |
+| 5 | Work mode | 2 game mode, 1 normal |
+| 8 | In-ear detection | 01 on, 02 off |
+| 10 | Sleep mode | 01 on, 02 off |
+| 12 | Balance | 0 left to 100 right |
+
+**Which goes where**, as `JLDeviceImpl` and `QCYConnectManager` send it:
+
+| Setting | Older models | Newer models |
+|---------|--------------|--------------|
+| Battery | attribute 0 | item `2F`, three bytes as in the advert |
+| Firmware | target info attribute 5 | item `30`, three bytes (six: left, then right) |
+| Noise control | item `17` | item `17` |
+| Game mode | attribute 5 | item `09` |
+| Sleep mode | attribute 10 | item `10` |
+| In-ear detection | attribute 8 | attribute 8 |
+| Balance | attribute 12 | attribute 12 |
+| Other switches | QCY's items | QCY's items |
+
+Every JieLi model's noise values in QCY's control panels are packed ones (section 5), which QCY's app
+sends only as item `17`.
+
+**Never sent:** reboot `E7`, function `0E` and system info `08` writes, system operations `C5` (factory
+reset among them), the attributes PairFree does not write (the name among them), and QCY's never-sent
+items (section 3) inside the custom command.
+
+**Left out:** the touch controls (no JieLi model's panel in Quicky lists them) and the EQ, which the
+older models take through JieLi's own EQ setting and the newer ones as items `20` and `22`.
+
+## 7. Not yet
+
 - **EQ:** the presets' values came from QCY's server, so PairFree leaves the EQ out. The custom EQ is
   `0000000B` with the preset id and a signed gain per band, or parametric items `20` and `22`, which
   OpenQCY writes on the N70.

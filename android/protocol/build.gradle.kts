@@ -1119,6 +1119,25 @@ abstract class GenerateQcyTables : DefaultTask() {
         out.appendLine("    public val ACTIONS: Map<Int, String> = ${map("actions")}")
         out.appendLine("}")
         out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val jieli = commands.getValue("jieli") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val opcodes = jieli.getValue("opcodes") as List<Map<String, Any?>>
+        out.appendLine("/** JieLi's RCSP as QCY's JieLi models speak it (data/qcy/commands.json, jieli). */")
+        out.appendLine("public object JieliWire {")
+        out.appendLine("    public const val SERVICE: String = ${str(jieli["service"])}")
+        for (name in listOf("write", "notify")) {
+            out.appendLine("    public const val ${name.uppercase()}_SHORT: Int = 0x${(jieli[name] as String).substring(4, 8)}")
+        }
+        for (o in opcodes) out.appendLine("    public const val ${o["name"]}: Int = ${hex(o["id"])}")
+        out.appendLine("    /** Opcodes PairFree never sends. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${opcodes.filter { it["never_send"] == true }.joinToString(", ") { hex(it["id"]) }})")
+        @Suppress("UNCHECKED_CAST")
+        for ((name, v) in jieli.getValue("adv") as Map<String, Any?>) out.appendLine("    public const val ADV_$name: Int = ${int(v)}")
+        @Suppress("UNCHECKED_CAST")
+        for ((name, v) in jieli.getValue("target_info") as Map<String, Any?>) out.appendLine("    public const val TARGET_$name: Int = ${int(v)}")
+        out.appendLine("}")
+        out.appendLine()
         out.appendLine("/** Every model in data/qcy/devices.json. */")
         out.appendLine("internal val QCY_MODELS: List<QcyModel> = listOf(")
         for (d in devices) {

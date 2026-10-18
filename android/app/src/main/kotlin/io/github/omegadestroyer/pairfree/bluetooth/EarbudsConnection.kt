@@ -33,9 +33,10 @@ import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingParser
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingSession
+import io.github.omegadestroyer.pairfree.protocol.qcy.JieliWire
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyControl
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyProtocol
-import io.github.omegadestroyer.pairfree.protocol.qcy.QcySession
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyWire
 import io.github.omegadestroyer.pairfree.protocol.summary
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
@@ -108,10 +109,9 @@ sealed interface LinkStatus {
     /**
      * [NO_SCAN_PERMISSION]: JBL earbuds that did not answer on their classic address, or QCY earbuds, which
      * PairFree may not scan for. [NEEDS_NEWER_ANDROID]: AirPods whose channel this phone's Bluetooth stack
-     * refuses ([AppleSupport]). [NOT_FOUND]: QCY earbuds whose advert a scan did not find. [NOT_YET]: QCY
-     * earbuds on JieLi's protocol, which PairFree does not speak yet.
+     * refuses ([AppleSupport]). [NOT_FOUND]: QCY earbuds whose advert a scan did not find.
      */
-    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION, NEEDS_NEWER_ANDROID, NOT_FOUND, NOT_YET }
+    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION, NEEDS_NEWER_ANDROID, NOT_FOUND }
 }
 
 /**
@@ -203,12 +203,12 @@ class EarbudsConnection(
     /** The Nothing session, while connected to Nothing or CMF earbuds or headphones; for the device report. */
     val nothingSession: NothingSession? get() = nothing
 
-    private var qcy: QcySession? = null   // set while connected to QCY earbuds or headphones
+    private var qcy: QcyControl? = null   // set while connected to QCY earbuds or headphones
     private var qcyQueue: Channel<ByteArray>? = null
     private var qcyFound: QcyFinder.Found? = null   // what the scan found before the channel opened
 
     /** The QCY session, while connected to QCY earbuds or headphones; for the device report. */
-    val qcySession: QcySession? get() = qcy
+    val qcySession: QcyControl? get() = qcy
 
     private val _sonyEq = MutableStateFlow<SonyEq?>(null)
 
@@ -262,9 +262,6 @@ class EarbudsConnection(
                     return@launch
                 } catch (_: NotFound) {
                     fail(token, device, LinkStatus.Reason.NOT_FOUND)
-                    return@launch
-                } catch (_: NotYet) {
-                    fail(token, device, LinkStatus.Reason.NOT_YET)
                     return@launch
                 } catch (e: IOException) {
                     log?.invoke("could not open: ${e.message}")
@@ -358,6 +355,7 @@ class EarbudsConnection(
     /**
      * QCY earbuds over Bluetooth LE (docs/qcy/PROTOCOL.md section 2): a scan finds their advert, which names
      * the model and the LE side to connect to. A scan that already found them is used again on a reconnect.
+     * Models on JieLi's chips take their settings through JieLi's service (section 6), the others QCY's own.
      */
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private suspend fun openQcy(device: Paired): ControlLink {
@@ -367,16 +365,13 @@ class EarbudsConnection(
             adapter?.let { QcyFinder(it, log).find(device.address) } ?: throw NotFound()
         }
         qcyFound = found
-        val model = QcyModels.of(found.advert.vendorId)
-        if (model != null && model.protocol != QcyProtocol.QCY) throw NotYet()
-        return EnvelopeGattLink(ctx, found.device, java.util.UUID.fromString(QcyWire.SERVICE), log).also { link = it }.apply { connect() }
+        val jieli = QcyModels.of(found.advert.vendorId)?.protocol.let { it == QcyProtocol.JIELI || it == QcyProtocol.JIELI_CUSTOM }
+        val service = if (jieli) JieliWire.SERVICE else QcyWire.SERVICE
+        return EnvelopeGattLink(ctx, found.device, java.util.UUID.fromString(service), log).also { link = it }.apply { connect() }
     }
 
     /** QCY earbuds whose advert a scan did not find. */
     private class NotFound : IOException("not found")
-
-    /** QCY earbuds on JieLi's protocol, which PairFree does not speak yet. */
-    private class NotYet : IOException("protocol not supported yet")
 
     /**
      * AirPods' channel over L2CAP, on phones whose Bluetooth stack opens it ([AppleSupport]). On the others
@@ -736,13 +731,13 @@ class EarbudsConnection(
     }
 
     /**
-     * QCY earbuds and headphones on QCY's own protocol: one GATT operation at a time, as QCY's app sends them
-     * (docs/qcy/PROTOCOL.md section 3). The earbuds report each setting asked for, and every change made on
-     * them, as notifications on the settings characteristic.
+     * QCY earbuds and headphones: one GATT operation at a time, as QCY's app sends them (docs/qcy/PROTOCOL.md
+     * section 3). The earbuds report each setting asked for, and every change made on them, as notifications:
+     * on QCY's settings characteristic, or as JieLi RCSP frames, whose own commands get an answer.
      */
     private suspend fun serveQcy(opened: ControlLink) = coroutineScope {
         val found = qcyFound
-        val session = QcySession(found?.let { QcyModels.of(it.advert.vendorId) }, found?.advert)
+        val session = QcyControl.of(found?.let { QcyModels.of(it.advert.vendorId) }, found?.advert)
         qcy = session
         publish(session)
         val queue = Channel<ByteArray>(Channel.UNLIMITED)
@@ -770,6 +765,7 @@ class EarbudsConnection(
                 guardPacket {
                     log?.invoke("recv ${bytes.joinToString("") { "%02x".format(it) }}")
                     if (session.receive(bytes)) publish(session)
+                    session.takeOutbox().forEach(queue::trySend)
                 }
             }
         } catch (_: IOException) {
@@ -780,13 +776,13 @@ class EarbudsConnection(
         if (qcyQueue === queue) qcyQueue = null
     }
 
-    private fun publish(session: QcySession) {
+    private fun publish(session: QcyControl) {
         _state.value = session.state
         _settings.value = session.groups
     }
 
     /** Queues QCY messages on the open channel, then [READ_BACK_MS] later the requests that confirm them. False when there is none. */
-    private fun sendQcy(session: QcySession, messages: List<ByteArray>): Boolean {
+    private fun sendQcy(session: QcyControl, messages: List<ByteArray>): Boolean {
         val reads = session.takeReadBacks()
         if (_status.value !is LinkStatus.Connected) return false
         val queue = qcyQueue ?: return false

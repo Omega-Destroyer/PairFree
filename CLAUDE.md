@@ -183,10 +183,14 @@ Beats on Apple's chips), `nothing` (Nothing and CMF) and `qcy`.
   service spreads over several characteristics, so `EnvelopeGattLink` carries `GattEnvelope`s (operation,
   short UUID, value). `data/qcy/commands.json` and `devices.json` become `QcyWire`, `QcyItem`, `QcyKeys` and
   the model list through `generateQcyTables`; `QcySession` asks for each item the model's control panel
-  lists. About half of QCY's models use JieLi's RCSP instead, which PairFree does not speak yet and says so
-  for (its settings need no authentication: JieLi's native auth is only in its OTA and watch SDKs). After a
-  change to `devices.json` run `python tools/gen_qcy_table.py`. Never send `QcyItem.NEVER_SEND` (resets,
-  pairing, test, rename, restart, clock and alarm).
+  lists. About half of QCY's models are on JieLi's chips and take the same items through JieLi's RCSP
+  (service A002, section 6): `QcyJieliSession` wraps `QcySession` and turns its messages into RCSP frames
+  (`RcspFrame`, the `jieli` part of `commands.json` as `JieliWire`), QCY's items in RCSP's custom command and
+  a few settings as JieLi's own attributes, as QCY's app sends each; `QcyControl.of` picks the session by the
+  model's `protocol`. Its settings need no authentication: JieLi's native auth is only in its OTA and watch
+  SDKs. After a change to `devices.json` run `python tools/gen_qcy_table.py`. Never send
+  `QcyItem.NEVER_SEND` (resets, pairing, test, rename, restart, clock and alarm) or `JieliWire.NEVER_SEND`
+  (reboot, system operations and writes).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

@@ -41,7 +41,7 @@ class QcyTable(unittest.TestCase):
         self.assertIn("LDAC", n70["Also"])
         self.assertEqual("Not tested", n70["Status"])
         h3 = self.row("4177")
-        self.assertEqual(("Headphones", "JieLi", "Not yet (JieLi)"), (h3["Type"], h3["Chip"], h3["Status"]))
+        self.assertEqual(("Headphones", "JieLi", "Not tested"), (h3["Type"], h3["Chip"], h3["Status"]))
 
 
 class QcyData(unittest.TestCase):

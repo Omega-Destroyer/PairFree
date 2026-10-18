@@ -199,6 +199,5 @@ private fun failure(status: LinkStatus): String? {
         LinkStatus.Reason.NO_SCAN_PERMISSION -> stringResource(R.string.failed_no_scan_permission, name)
         LinkStatus.Reason.NEEDS_NEWER_ANDROID -> stringResource(R.string.failed_needs_newer_android, name)
         LinkStatus.Reason.NOT_FOUND -> stringResource(R.string.failed_not_found, name)
-        LinkStatus.Reason.NOT_YET -> stringResource(R.string.failed_not_yet, name)
     }
 }

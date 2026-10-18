@@ -74,5 +74,28 @@
   "_about": "The key table on characteristic 000D: pairs of key and action. Keys and actions by Quicky's tables (facts only), which match QCY's KeyFuncDataBean layout; QCY's app takes each model's numbers from its control panel.",
   "keys": {"01": "single_left", "02": "single_right", "03": "double_left", "04": "double_right", "05": "triple_left", "06": "triple_right", "09": "hold_left", "0A": "hold_right"},
   "actions": {"00": "none", "01": "play_pause", "02": "previous", "03": "next", "04": "voice_assistant", "05": "volume_up", "06": "volume_down", "07": "game_mode"}
+ },
+ "jieli": {
+  "_about": "JieLi's RCSP, as QCY's app speaks it to its JieLi models (JLDeviceImpl over JieLi's jl_bt_rcsp SDK, in QCY's app 4.0.7; docs/qcy/PROTOCOL.md section 6). A frame is FE DC BA, a flags byte (bit 7 a command, bit 6 an answer wanted), the opcode, the parameters' length (2 bytes, high first), the parameters and EF; a command's parameters start with its sequence number, an answer's with a status byte (0 success) and the sequence number. never_send marks what PairFree never sends.",
+  "service": "0000A002-0000-1000-8000-00805F9B34FB",
+  "write": "00000001-0000-1000-8000-00805F9B34FB",
+  "notify": "00000002-0000-1000-8000-00805F9B34FB",
+  "opcodes": [
+   {"id": "03", "name": "GET_TARGET_INFO"},
+   {"id": "07", "name": "GET_SYS_INFO"},
+   {"id": "08", "name": "SET_SYS_INFO", "never_send": true},
+   {"id": "0E", "name": "FUNCTION", "never_send": true},
+   {"id": "C0", "name": "ADV_SET"},
+   {"id": "C1", "name": "ADV_GET"},
+   {"id": "C2", "name": "ADV_NOTIFY"},
+   {"id": "C3", "name": "ADV_NOTIFY_SETTINGS"},
+   {"id": "C4", "name": "ADV_REQUEST_OPERATION"},
+   {"id": "C5", "name": "ADV_SYSTEM_OPERATION", "never_send": true},
+   {"id": "D1", "name": "SETTINGS_MTU"},
+   {"id": "E7", "name": "REBOOT", "never_send": true},
+   {"id": "FF", "name": "CUSTOM", "note": "QCY's own items, without QCY's FF and length header"}
+  ],
+  "adv": {"BATTERY": 0, "DEVICE_NAME": 1, "KEY_SETTINGS": 2, "LED": 3, "MIC_CHANNEL": 4, "WORK_MODE": 5, "PRODUCT": 6, "IN_EAR": 8, "LANGUAGE": 9, "SLEEP_MODE": 10, "NOISE_MODE": 11, "BALANCE": 12},
+  "target_info": {"FIRMWARE": 5}
  }
 }

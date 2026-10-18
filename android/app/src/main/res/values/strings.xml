@@ -22,7 +22,6 @@
     <string name="failed_no_permission">Bluetooth access is turned off for PairFree.</string>
     <string name="failed_needs_newer_android">The settings of %1$s need Android 17 on this phone. Before Android 17, Android\'s Bluetooth opens their channel only on Pixels with Android 16 QPR3 and on OnePlus, OPPO and realme phones with Android 16.</string>
     <string name="failed_not_found">PairFree could not find %1$s nearby over Bluetooth. Take the earbuds out of the case, check they are connected for audio, close the official app, then try again.</string>
-    <string name="failed_not_yet">PairFree cannot control %1$s yet: these earbuds use JieLi\'s protocol, which PairFree is still adding.</string>
     <string name="failed_no_scan_permission">To reach %1$s, PairFree has to look for it nearby over Bluetooth, which needs your permission to find nearby devices. PairFree never uses that for your location.</string>
 
     <string name="connected">Connected</string>

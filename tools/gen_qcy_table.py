@@ -5,8 +5,8 @@ usage: python tools/gen_qcy_table.py          rewrite it, and every other device
 
 One row per model in data/qcy/devices.json, by name. QCY earbuds advertise a vendor id that names the
 model, and several vendor ids share a name (one per chip). The table says what each model's control panel
-offers and whether PairFree speaks its protocol yet: QCY's own, or JieLi's, which is still to come. A model
-counts as tested once it has a report under data/qcy/reports.
+offers; the chip says the protocol: QCY's own, or on JieLi's chips JieLi's RCSP carrying QCY's settings. A
+model counts as tested once it has a report under data/qcy/reports.
 """
 import json
 from html import escape
@@ -66,12 +66,12 @@ def features(model):
 def status(model):
     if reports(model):
         return "Tested"
-    return "Not tested" if model["protocol"] == "qcy" else "Not yet (JieLi)"
+    return "Not tested"
 
 
 def rows(devices):
     out = []
-    for m in sorted(devices, key=lambda m: (m["protocol"] != "qcy", m["name"].lower(), m["vendor_id"])):
+    for m in sorted(devices, key=lambda m: (m["name"].lower(), m["vendor_id"])):
         name = escape(m["name"])
         found = reports(m)
         if found:
@@ -85,12 +85,12 @@ def rows(devices):
 def table():
     data = load()
     devices = data["devices"]
-    supported = [m for m in devices if m["protocol"] == "qcy"]
+    own = [m for m in devices if m["protocol"] == "qcy"]
     header = "".join(f"<th>{h}</th>" for h in ["Model", "Vendor id", "Chip", "Type", "Noise control", "Also", "Status"])
     return "\n".join([
         START,
-        f"{len(devices)} models by the vendor id they advertise, {len(supported)} of them on QCY's own protocol, which PairFree "
-        f"speaks. The rest use JieLi's protocol, which PairFree is still adding. From QCY's product list as "
+        f"{len(devices)} models by the vendor id they advertise: {len(own)} on QCY's own protocol, and "
+        f"{len(devices) - len(own)} on JieLi's chips, whose protocol carries the same settings. From QCY's product list as "
         f'<a href="{QUICKY}">Quicky</a> (commit <code>{escape(data["quicky_commit"][:7])}</code>) recorded it.',
         "",
         "<b>Tested</b>: tried with PairFree. <b>Not tested</b>: from QCY's app and product list alone. "

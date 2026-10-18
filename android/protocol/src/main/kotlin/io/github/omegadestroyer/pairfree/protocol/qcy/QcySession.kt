@@ -23,15 +23,17 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * @param model the model the advert named, or null when the earbuds were not found by their advert or
  *   advertise a vendor id PairFree does not know: then every common setting is asked for.
  */
-public class QcySession(public val model: QcyModel?, advert: QcyAdvert? = null) {
-    public var state: EarbudState = EarbudState()
+public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null) : QcyControl {
+    override var state: EarbudState = EarbudState()
         private set
 
-    public var firmware: String? = null
+    override var firmware: String? = null
         private set
+
+    override val service: String get() = QcyWire.SERVICE
 
     /** The last value of each item and characteristic PairFree reads, for the device report. */
-    public val replies: Map<String, ByteArray> get() = _replies
+    override val replies: Map<String, ByteArray> get() = _replies
     private val _replies = linkedMapOf<String, ByteArray>()
 
     private val form: Form get() = model?.form ?: Form.EARBUDS
@@ -49,7 +51,7 @@ public class QcySession(public val model: QcyModel?, advert: QcyAdvert? = null) 
     private fun raw(level: Int?): Byte = (level ?: 0).toByte()
 
     /** What is read on opening the channel: the version, battery and settings, then each item the model has. */
-    public fun start(): List<ByteArray> = buildList {
+    override fun start(): List<ByteArray> = buildList {
         add(GattEnvelope.read(QcyWire.VERSION_SHORT))
         add(GattEnvelope.read(QcyWire.BATTERY_SHORT))
         add(GattEnvelope.read(QcyWire.SETTINGS_SHORT))
@@ -72,13 +74,13 @@ public class QcySession(public val model: QcyModel?, advert: QcyAdvert? = null) 
     private fun command(item: Int, vararg value: Int) = GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(item, *value))
 
     /** The battery read, to send again now and then. */
-    public fun batteryRequests(): List<ByteArray> = listOf(GattEnvelope.read(QcyWire.BATTERY_SHORT))
+    override fun batteryRequests(): List<ByteArray> = listOf(GattEnvelope.read(QcyWire.BATTERY_SHORT))
 
     /** The requests that confirm the last changes, for the connection to send a little later. */
-    public fun takeReadBacks(): List<ByteArray> = readBacks.distinctBy { it.toList() }.also { readBacks.clear() }
+    override fun takeReadBacks(): List<ByteArray> = readBacks.distinctBy { it.toList() }.also { readBacks.clear() }
 
     /** False for what PairFree never sends: resets, pairing, test and firmware traffic, renaming, clock and alarm. */
-    public fun allowed(envelope: ByteArray): Boolean {
+    override fun allowed(envelope: ByteArray): Boolean {
         val out = GattEnvelope.out(envelope) ?: return false
         if (out.operation == GattEnvelope.READ) return out.short in READABLE
         return when (out.short) {
@@ -89,7 +91,7 @@ public class QcySession(public val model: QcyModel?, advert: QcyAdvert? = null) 
     }
 
     /** Applies one message from the earbuds. Returns true when [state] or [groups] changed. */
-    public fun receive(envelope: ByteArray): Boolean {
+    override fun receive(envelope: ByteArray): Boolean {
         val message = GattEnvelope.parse(envelope) ?: return false
         val before = state to groups
         val v = message.value
@@ -199,7 +201,7 @@ public class QcySession(public val model: QcyModel?, advert: QcyAdvert? = null) 
         get() = model == null || listOf(OFF, CANCELLING, TRANSPARENCY).all { model.mode(it) != null }
 
     /** Every setting the earbuds have, grouped by heading and tab. */
-    public val groups: List<SettingGroup>
+    override val groups: List<SettingGroup>
         get() = listOfNotNull(
             group("noise", SettingTab.HOME, noiseRows()),
             group(
@@ -264,7 +266,7 @@ public class QcySession(public val model: QcyModel?, advert: QcyAdvert? = null) 
     private fun group(key: String, tab: SettingTab, settings: List<Setting>) = settings.takeIf { it.isNotEmpty() }?.let { SettingGroup(key, tab, it) }
 
     /** The messages for a shared setting from the screens, or null when the earbuds do not have it. */
-    public fun set(command: Command, value: Int): List<ByteArray>? {
+    override fun set(command: Command, value: Int): List<ByteArray>? {
         if (command !in state.values) return null
         val out: ByteArray = when (command) {
             Command.ANC_MODE -> {
@@ -329,7 +331,7 @@ public class QcySession(public val model: QcyModel?, advert: QcyAdvert? = null) 
     private fun fallback(): Map<String, Int> = if ((noise ?: 0x10000) <= 0xFF) LEGACY_FALLBACK else FALLBACK
 
     /** The messages for a change to one of the [groups], or null when the earbuds do not have the setting. */
-    public fun change(change: SettingChange): List<ByteArray>? {
+    override fun change(change: SettingChange): List<ByteArray>? {
         val setting = groups.flatMap { it.settings }.firstOrNull { it.key == change.key } ?: return null
         val out: ByteArray = when (change) {
             is SettingChange.Toggle -> {

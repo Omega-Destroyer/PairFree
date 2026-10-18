@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol
 
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingCommand
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungMessage
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungPacket
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyFrame
@@ -16,7 +18,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 
-/** Soundcore, Galaxy Buds and Sony traffic in a snoop log built here: found, matched to its connection, and shown without personal data. */
+/** Soundcore, Galaxy Buds, Sony and Nothing traffic in a snoop log built here: found, matched to its connection, and shown without personal data. */
 class VendorRecordingTest {
     private val t0 = 1_760_000_000_000_000L
     private val address = "AA:BB:CC:DD:EE:F1"
@@ -125,6 +127,34 @@ class VendorRecordingTest {
         assertTrue(lines.last().contains("1.68 ncasm_set_param") && lines.last().endsWith("17 01 01 00 00 0c"), lines.last())
         assertEquals(listOf("connect_get_protocol_info" to 1, "power_get_status" to 1, "ncasm_set_param" to 1), earbuds.sent)
     }
+
+    @Test
+    fun findsNothingFramesAndLeavesOutTheSerialNumber() {
+        val log = SnoopLog()
+        log.connected(t0, 0x0E, addressBytes)
+        fun frame(command: Int, payload: String, fromEarbuds: Boolean) =
+            NothingFrame(command, payload.hexBytes(), if (fromEarbuds) 0x0120 else NothingFrame.control(crc = true)).bytes()
+        // Nothing X reads the battery and the configuration (with the serial number), then sets transparency.
+        log.rfcomm(t0 + 100_000, false, 0x0E, 12, frame(NothingCommand.GET_REMOTE_BATTERY_LEVEL, "", false))
+        log.rfcomm(t0 + 150_000, true, 0x0E, 12, frame(0x4007, "03025003480450", true))
+        log.rfcomm(t0 + 200_000, false, 0x0E, 12, frame(NothingCommand.GET_REMOTE_CONFIGURATION, "", false))
+        log.rfcomm(t0 + 250_000, true, 0x0E, 12, frame(0x4006, hex("02,4,SH10212543006451"), true))
+        log.rfcomm(t0 + 900_000, false, 0x0E, 12, frame(NothingCommand.SET_CURRENT_NOISE_REDUCTION, "010700", false))
+
+        val packets = SnoopScanner().apply { feed(log.bytes()) }.packets()
+        assertEquals(5, packets.size)
+        val earbuds = VendorRecording.of(packets).single()
+        assertEquals(RecordedBrand.NOTHING, earbuds.brand)
+        val lines = VendorRecording.lines(earbuds)
+        assertTrue(lines[2].contains("buds 4007 get_remote_battery_level reply") && lines[2].endsWith("03 02 50 03 48 04 50"), lines[2])
+        assertTrue(lines[4].contains("4006") && lines[4].endsWith("bytes left out)"), "the serial number stays out: ${lines[4]}")
+        assertTrue(lines.last().contains("app  F00F set_current_noise_reduction") && lines.last().endsWith("01 07 00"), lines.last())
+        // A lone chance match on another channel does not count.
+        val lone = SnoopLog().apply { rfcomm(t0, true, 0x0E, 14, frame(0x4007, "00", true)) }
+        assertTrue(SnoopScanner().apply { feed(lone.bytes()) }.packets().isEmpty())
+    }
+
+    private fun hex(text: String) = text.encodeToByteArray().spaced().replace(" ", "")
 
     @Test
     fun aRecordingStartsWhenTheEarbudsLastConnected() {

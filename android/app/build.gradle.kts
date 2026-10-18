@@ -38,6 +38,15 @@ android {
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+        // Builds for testers (assembleDev): a debug build under its own id and name ("PairFree Dev",
+        // src/dev), so it installs beside the released app without touching it or its settings. It is
+        // signed with this computer's debug key, so later dev builds install over it only from here.
+        create("dev") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            matchingFallbacks += "debug"
+        }
     }
 
     compileOptions {

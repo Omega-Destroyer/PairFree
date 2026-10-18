@@ -1,0 +1,744 @@
+{
+ "_about": "Nothing's control commands, read from Nothing X 3.4.15 (com.nothing.smartcenter, decompiled outside the repo on 2026-10-18; none of its code is here): com.nothing.base.protocol.constant.ProtocolConstant, by the names it gives, and the EQ commands com.nothing.core.ext.TWSDeviceExtKt keeps to itself. code is the 16-bit command in hex: reads are C0xx, writes F0xx, events the earbuds send unasked E0xx, debug FCxx. The earbuds answer a command with it and bit 15 cleared. never_send marks firmware update, factory reset, calibration, test and debug traffic; private marks reads whose replies hold a serial number or other devices' addresses, which PairFree never sends. docs/nothing/PROTOCOL.md explains the frame and the payloads.",
+ "frame": {
+  "service_uuid": "AEAC4A03-DFF5-498F-843A-34487CF133EB",
+  "start": "55",
+  "layout": [
+   "start",
+   "control (2, little-endian)",
+   "command (2, little-endian)",
+   "length (2, little-endian)",
+   "fsn",
+   "payload",
+   "crc16 (2, little-endian), when control bit 0x20 is set"
+  ],
+  "control_bits": {
+   "response_code": "001F",
+   "crc": "0020",
+   "multi_frames": "0040",
+   "device_type": "0F00"
+  },
+  "control_sent": "0160",
+  "device_type_tws": 1,
+  "crc": "CRC-16/MODBUS: reflected polynomial A001, initial FFFF, over every byte before it",
+  "reply_mask": "7FFF",
+  "fsn_wrap": 254
+ },
+ "commands": [
+  {
+   "code": "F000",
+   "name": "HOST_SET_COMMANDS",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F001",
+   "name": "SET_PROTOCOL_ACTIVATED",
+   "kind": "set",
+   "note": "Sent only when a reply says the channel is not activated (response code 2); docs/nothing/PROTOCOL.md section 3."
+  },
+  {
+   "code": "F002",
+   "name": "SET_WHERE_AM_I",
+   "kind": "set"
+  },
+  {
+   "code": "F003",
+   "name": "SET_KEY_CONFIGURATION",
+   "kind": "set"
+  },
+  {
+   "code": "F004",
+   "name": "SET_EXTRA_FEATURE_STATUS",
+   "kind": "set"
+  },
+  {
+   "code": "F007",
+   "name": "SET_EQ_STATUS",
+   "kind": "set"
+  },
+  {
+   "code": "F008",
+   "name": "SET_HIGH_VOLUME_GAIN_LEVEL",
+   "kind": "set"
+  },
+  {
+   "code": "F00A",
+   "name": "SET_UTC_TIME",
+   "kind": "set"
+  },
+  {
+   "code": "F00B",
+   "name": "SET_AUTO_POWER_OFF_TIME",
+   "kind": "set"
+  },
+  {
+   "code": "F00D",
+   "name": "SET_BOX_LED_COLOR",
+   "kind": "set"
+  },
+  {
+   "code": "F00E",
+   "name": "SET_NOISE_REDUCTION_CONFIGURATION",
+   "kind": "set"
+  },
+  {
+   "code": "F00F",
+   "name": "SET_CURRENT_NOISE_REDUCTION",
+   "kind": "set"
+  },
+  {
+   "code": "F010",
+   "name": "SET_EQ_MODE",
+   "kind": "set"
+  },
+  {
+   "code": "F011",
+   "name": "SET_PERSONALIZED",
+   "kind": "set"
+  },
+  {
+   "code": "F012",
+   "name": "SET_CALIBRATION",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F013",
+   "name": "SET_CALIBRATION_FORCE",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F014",
+   "name": "SET_LEAK_DETECT",
+   "kind": "set"
+  },
+  {
+   "code": "F015",
+   "name": "SET_MIMI_ENABLE",
+   "kind": "set"
+  },
+  {
+   "code": "F016",
+   "name": "SET_MIMI_INTENSITY",
+   "kind": "set"
+  },
+  {
+   "code": "F017",
+   "name": "SET_MIMI_PRESET_PAYLOAD",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F018",
+   "name": "SET_MIMI_PRESET_ID",
+   "kind": "set"
+  },
+  {
+   "code": "F019",
+   "name": "SET_3D_SOUND",
+   "kind": "set"
+  },
+  {
+   "code": "F01A",
+   "name": "SET_DUAL_ENABLE",
+   "kind": "set"
+  },
+  {
+   "code": "F01B",
+   "name": "SET_CONNECT_DEVICE",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F01C",
+   "name": "SET_LHDC_COMMANDS",
+   "kind": "set"
+  },
+  {
+   "code": "F01D",
+   "name": "SET_DIRAC_OPTEO_EQ",
+   "kind": "set"
+  },
+  {
+   "code": "F03D",
+   "name": "RESTORE_FACTORY_SETTING",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F03E",
+   "name": "REGISTER_NOTIFICATION",
+   "kind": "set"
+  },
+  {
+   "code": "F03F",
+   "name": "UNREGISTER_NOTIFICATION",
+   "kind": "set"
+  },
+  {
+   "code": "F040",
+   "name": "SET_LAG_MODE",
+   "kind": "set"
+  },
+  {
+   "code": "F041",
+   "name": "SET_CUSTOM_EQ",
+   "kind": "set"
+  },
+  {
+   "code": "F042",
+   "name": "SET_ADAPTIVE_EQ",
+   "kind": "set"
+  },
+  {
+   "code": "F044",
+   "name": "OTA_FIND_NEW_VERSION",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F045",
+   "name": "OTA_DOWNLOADED_NEW_VERSION",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F046",
+   "name": "OTA_STOP_ERROR",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F04F",
+   "name": "SET_ADVANCE_CUSTOM_EQ_MODE",
+   "kind": "set"
+  },
+  {
+   "code": "F050",
+   "name": "SET_ADVANCE_CUSTOM_EQ_VALUE",
+   "kind": "set"
+  },
+  {
+   "code": "F051",
+   "name": "SET_BASS_BOOST",
+   "kind": "set"
+  },
+  {
+   "code": "F052",
+   "name": "SET_SPATIAL_AUDIO",
+   "kind": "set"
+  },
+  {
+   "code": "F053",
+   "name": "SET_FIR_ANC_MODE",
+   "kind": "set"
+  },
+  {
+   "code": "F057",
+   "name": "SET_BASS_ENHANCER_MODE",
+   "kind": "set"
+  },
+  {
+   "code": "F058",
+   "name": "SET_SMART_FREE_MODE",
+   "kind": "set"
+  },
+  {
+   "code": "F059",
+   "name": "SET_SMART_ANC_MODE",
+   "kind": "set"
+  },
+  {
+   "code": "F05A",
+   "name": "SET_LE_SWITCH_MODEL",
+   "kind": "set",
+   "never_send": true
+  },
+  {
+   "code": "F05B",
+   "name": "SET_SYSTEM_AUDIO",
+   "kind": "set"
+  },
+  {
+   "code": "F062",
+   "name": "SET_ESSENTIAL_SAPCE_STATUS",
+   "kind": "set"
+  },
+  {
+   "code": "E001",
+   "name": "EVENT_BATTERY_CHANGED",
+   "kind": "event"
+  },
+  {
+   "code": "E002",
+   "name": "EVENT_DEVICE_STATUS_CHANGED",
+   "kind": "event"
+  },
+  {
+   "code": "E003",
+   "name": "EVENT_NOISE_REDUCTION_LEVEL_CHANGED",
+   "kind": "event"
+  },
+  {
+   "code": "E005",
+   "name": "EVENT_GAME_MODE_CHANGED",
+   "kind": "event"
+  },
+  {
+   "code": "E006",
+   "name": "EVENT_DUAL_DEVICE_SWITCH_STATE",
+   "kind": "event"
+  },
+  {
+   "code": "E009",
+   "name": "EVENT_WORKING_STATUS_CHANGE",
+   "kind": "event"
+  },
+  {
+   "code": "E00B",
+   "name": "EVENT_LED_COLOR_SYNC_NOTIFICATION",
+   "kind": "event"
+  },
+  {
+   "code": "E00C",
+   "name": "EVENT_PERSONALIZE_SYNC_NOTIFICATION",
+   "kind": "event"
+  },
+  {
+   "code": "E00D",
+   "name": "EVENT_TIP_FIT_RESULT",
+   "kind": "event"
+  },
+  {
+   "code": "E00E",
+   "name": "EVENT_DUAL_DEVICE_CONNECT_STATE",
+   "kind": "event"
+  },
+  {
+   "code": "E00F",
+   "name": "NOTIFY_DISCONNECT_PROFILE",
+   "kind": "event"
+  },
+  {
+   "code": "E010",
+   "name": "NOTIFY_REQUEST_START_OTA",
+   "kind": "event",
+   "never_send": true
+  },
+  {
+   "code": "E011",
+   "name": "NOTIFY_REQUEST_STOP_OTA",
+   "kind": "event",
+   "never_send": true
+  },
+  {
+   "code": "E014",
+   "name": "EVENT_MAGIC_BUTTON",
+   "kind": "event"
+  },
+  {
+   "code": "E015",
+   "name": "EVENT_HEAD_TRACK",
+   "kind": "event"
+  },
+  {
+   "code": "E016",
+   "name": "EVENT_LE_AUDIO_CONNECT",
+   "kind": "event"
+  },
+  {
+   "code": "E018",
+   "name": "EVENT_RECORDING",
+   "kind": "event"
+  },
+  {
+   "code": "C001",
+   "name": "GET_PROTOCOL_VERSION",
+   "kind": "get"
+  },
+  {
+   "code": "C002",
+   "name": "GET_FIND_EAR_STATE",
+   "kind": "get"
+  },
+  {
+   "code": "C003",
+   "name": "GET_REMOTE_MTU",
+   "kind": "get"
+  },
+  {
+   "code": "C004",
+   "name": "GET_REMOTE_VID",
+   "kind": "get"
+  },
+  {
+   "code": "C005",
+   "name": "GET_REMOTE_DEVICE_IDENTIFICATION",
+   "kind": "get",
+   "private": true
+  },
+  {
+   "code": "C006",
+   "name": "GET_REMOTE_CONFIGURATION",
+   "kind": "get",
+   "private": true
+  },
+  {
+   "code": "C007",
+   "name": "GET_REMOTE_BATTERY_LEVEL",
+   "kind": "get"
+  },
+  {
+   "code": "C008",
+   "name": "GET_UPGRADE_CAPABILITY",
+   "kind": "get"
+  },
+  {
+   "code": "C009",
+   "name": "GET_SUPPORTED_GESTURE",
+   "kind": "get"
+  },
+  {
+   "code": "C00A",
+   "name": "GET_EARPHONE_STATUS",
+   "kind": "get"
+  },
+  {
+   "code": "C00B",
+   "name": "GET_REMOTE_EXTRA_VERSION_CODE",
+   "kind": "get"
+  },
+  {
+   "code": "C00C",
+   "name": "GET_REMOTE_COLOR_ID",
+   "kind": "get"
+  },
+  {
+   "code": "C00D",
+   "name": "GET_SUPPORTED_FEATURE",
+   "kind": "get"
+  },
+  {
+   "code": "C00E",
+   "name": "GET_EXTRA_FEATURE_STATUS",
+   "kind": "get"
+  },
+  {
+   "code": "C00F",
+   "name": "GET_EQ_ID",
+   "kind": "get"
+  },
+  {
+   "code": "C010",
+   "name": "GET_HIGH_VOLUME_GAIN_LEVEL",
+   "kind": "get"
+  },
+  {
+   "code": "C011",
+   "name": "GET_AUTO_POWER_OFF_TIME",
+   "kind": "get"
+  },
+  {
+   "code": "C013",
+   "name": "GET_EARPHONE_CONNECTED_STATUS",
+   "kind": "get"
+  },
+  {
+   "code": "C014",
+   "name": "GET_VOLUME",
+   "kind": "get"
+  },
+  {
+   "code": "C015",
+   "name": "GET_CODEC_CAPABILITY",
+   "kind": "get"
+  },
+  {
+   "code": "C016",
+   "name": "GET_MANUFACTURE",
+   "kind": "get",
+   "private": true
+  },
+  {
+   "code": "C017",
+   "name": "GET_BOX_LED_COLOR",
+   "kind": "get"
+  },
+  {
+   "code": "C018",
+   "name": "GET_KEY_CONFIGURATION",
+   "kind": "get"
+  },
+  {
+   "code": "C019",
+   "name": "GET_DEVICE_WORKING_STATUS",
+   "kind": "get"
+  },
+  {
+   "code": "C01C",
+   "name": "GET_DEVICE_MODEL",
+   "kind": "get"
+  },
+  {
+   "code": "C01D",
+   "name": "GET_NOISE_REDUCTION_CONFIGURATION",
+   "kind": "get"
+  },
+  {
+   "code": "C01E",
+   "name": "GET_CURRENT_NOISE_REDUCTION",
+   "kind": "get"
+  },
+  {
+   "code": "C01F",
+   "name": "GET_EQ_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C020",
+   "name": "GET_PERSONALIZED_ANC",
+   "kind": "get"
+  },
+  {
+   "code": "C021",
+   "name": "GET_PERSONALIZED_NOISE_VALUE",
+   "kind": "get"
+  },
+  {
+   "code": "C022",
+   "name": "GET_MIMI_ENABLE",
+   "kind": "get"
+  },
+  {
+   "code": "C023",
+   "name": "GET_MIMI_INTENSITY",
+   "kind": "get"
+  },
+  {
+   "code": "C024",
+   "name": "GET_MIMI_PRESET_ID",
+   "kind": "get"
+  },
+  {
+   "code": "C025",
+   "name": "GET_MIMI_FITTING_TECH_LEVEL",
+   "kind": "get"
+  },
+  {
+   "code": "C026",
+   "name": "GET_3D_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C027",
+   "name": "GET_DUAL_ENABLE",
+   "kind": "get"
+  },
+  {
+   "code": "C028",
+   "name": "GET_DUAL_DEVICE_LIST",
+   "kind": "get",
+   "private": true
+  },
+  {
+   "code": "C029",
+   "name": "GET_LHDC_COMMANDS",
+   "kind": "get"
+  },
+  {
+   "code": "C03D",
+   "name": "GET_SUPPORTED_NOTIFICATION",
+   "kind": "get"
+  },
+  {
+   "code": "C03E",
+   "name": "GET_REGISTERED_NOTIFICATION",
+   "kind": "get"
+  },
+  {
+   "code": "C03F",
+   "name": "GET_HOST_UTC_TIME",
+   "kind": "get"
+  },
+  {
+   "code": "C041",
+   "name": "GET_HOST_LAG_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C042",
+   "name": "GET_HOST_VERSION_DEVICE",
+   "kind": "get"
+  },
+  {
+   "code": "C043",
+   "name": "GET_ADAPTIVE_EQ_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C044",
+   "name": "GET_CUSTOM_EQ_VALUE",
+   "kind": "get"
+  },
+  {
+   "code": "C04C",
+   "name": "GET_ADVANCE_CUSTOM_EQ_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C04D",
+   "name": "GET_ADVANCE_CUSTOM_EQ_VALUE",
+   "kind": "get"
+  },
+  {
+   "code": "C04E",
+   "name": "GET_BASS_BOOST",
+   "kind": "get"
+  },
+  {
+   "code": "C04F",
+   "name": "GET_SPATIAL_AUDIO",
+   "kind": "get"
+  },
+  {
+   "code": "C050",
+   "name": "GET_DIRAC_OPTEO_EQ",
+   "kind": "get"
+  },
+  {
+   "code": "C051",
+   "name": "GET_ANC_FIR_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C053",
+   "name": "GET_BASS_ENHANCER_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C054",
+   "name": "GET_SMART_FREE_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C055",
+   "name": "GET_SMART_ANC_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C056",
+   "name": "GET_LE_SWITCH",
+   "kind": "get"
+  },
+  {
+   "code": "C057",
+   "name": "GET_SYSTEM_AUDIO",
+   "kind": "get"
+  },
+  {
+   "code": "C058",
+   "name": "GET_HEADTRACK_START",
+   "kind": "get"
+  },
+  {
+   "code": "C059",
+   "name": "GET_LE_AUDIO_CONNECT_MODE",
+   "kind": "get"
+  },
+  {
+   "code": "C05C",
+   "name": "GET_BOX_VERSION",
+   "kind": "get"
+  },
+  {
+   "code": "C062",
+   "name": "GET_MUTUALLY_EXCLUSIVE",
+   "kind": "get"
+  },
+  {
+   "code": "C063",
+   "name": "GET_SKY_WALK_SUPPORT",
+   "kind": "get"
+  },
+  {
+   "code": "FC01",
+   "name": "ENTER_TEST_MODE",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC02",
+   "name": "PARAMETER_NEGOTIATION",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC03",
+   "name": "GET_FILE_LIST",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC04",
+   "name": "QUERY_SINGLE_FILE_INFO",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC05",
+   "name": "REQUEST_SINGLE_FILE_INFO",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC06",
+   "name": "DEVICE_SEND_DATA",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC07",
+   "name": "EXIT_TEST_MODE",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC08",
+   "name": "CHANGE_LEVEL",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC09",
+   "name": "GET_DEBUG_INFO",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC20",
+   "name": "BURIED_DEVICE_SEND",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC21",
+   "name": "BURIED_LOG_INFO",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC22",
+   "name": "BURIED_LOG_REQUEST",
+   "kind": "debug",
+   "never_send": true
+  },
+  {
+   "code": "FC30",
+   "name": "DEBUG_CURVE_COMMAND",
+   "kind": "debug",
+   "never_send": true
+  }
+ ]
+}

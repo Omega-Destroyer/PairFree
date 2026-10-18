@@ -59,6 +59,7 @@ import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
@@ -130,6 +131,7 @@ internal fun ConnectedScreen(
                         Brand.BOSE -> R.string.eq_bose
                         Brand.JBL -> R.string.eq_jbl
                         Brand.APPLE -> R.string.eq_apple
+                        Brand.NOTHING -> R.string.eq_nothing
                         else -> R.string.eq_unavailable
                     },
                 )
@@ -157,6 +159,8 @@ internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.
     Brand.JBL -> JblModels.model(state.firmware?.code ?: device.model ?: device.name)
     // AirPods by the model their model number names, which the firmware line carries; one battery is headphones.
     Brand.APPLE -> AppleModels.model(state.firmware?.code ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
+    // Nothing's by the product id the earbuds report, which the firmware line carries; before then, the name's.
+    Brand.NOTHING -> NothingModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

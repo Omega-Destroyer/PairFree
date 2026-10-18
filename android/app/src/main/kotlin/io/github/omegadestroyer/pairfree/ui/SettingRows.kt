@@ -111,6 +111,8 @@ private fun levelOrigin(setting: Setting.Level): Int =
 
 private const val SEND_AFTER_MS = 300L
 
+private val TOUCH_SIDES = setOf("left", "right", "whole")
+
 @Composable
 private fun groupTitle(key: String): String = stringResource(
     when (key) {
@@ -122,6 +124,8 @@ private fun groupTitle(key: String): String = stringResource(
         "connection" -> R.string.connection
         "other" -> R.string.setting_group_other
         "find" -> R.string.find_earbuds
+        "touch_left" -> R.string.setting_group_touch_left
+        "touch_right" -> R.string.setting_group_touch_right
         else -> R.string.setting_group_other
     },
 )
@@ -204,7 +208,29 @@ private fun settingTitle(key: String): String = when (key) {
     "sidetone_level" -> stringResource(R.string.setting_sidetone)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
-    else -> key
+    "noise_strength" -> stringResource(R.string.setting_noise_strength)
+    "eq_preset" -> stringResource(R.string.setting_eq_preset)
+    "bass_boost" -> stringResource(R.string.setting_bass_boost)
+    "bass_level" -> stringResource(R.string.setting_bass_level)
+    "spatial_audio" -> stringResource(R.string.setting_spatial_audio)
+    "head_tracking" -> stringResource(R.string.setting_head_tracking)
+    "codec" -> stringResource(R.string.setting_codec)
+    else -> touchTitle(key) ?: key
+}
+
+/** A gesture row of the form touch_<gesture>_<side> (Nothing's: left, right or whole), by its gesture. */
+@Composable
+private fun touchTitle(key: String): String? {
+    val side = key.substringAfterLast('_')
+    if (!key.startsWith("touch_") || side !in TOUCH_SIDES) return null
+    return when (key.removePrefix("touch_").removeSuffix("_$side")) {
+        "single" -> stringResource(R.string.setting_touch_single)
+        "double" -> stringResource(R.string.setting_touch_double)
+        "triple" -> stringResource(R.string.setting_touch_triple)
+        "hold" -> stringResource(R.string.setting_touch_hold)
+        "double_hold" -> stringResource(R.string.setting_touch_double_hold)
+        else -> null
+    }
 }
 
 @Composable
@@ -229,12 +255,56 @@ private fun settingNote(key: String): String? = when (key) {
     "conversation_awareness" -> stringResource(R.string.setting_conversation_awareness_note)
     "personalized_volume" -> stringResource(R.string.setting_personalized_volume_note)
     "allow_off" -> stringResource(R.string.setting_allow_off_note)
+    "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
+    "codec" -> stringResource(R.string.setting_codec_note)
     else -> null
 }
 
 @Composable
 private fun optionName(key: String, option: String): String = when {
     key == "anc_level" -> stringResource(if (option == "high") R.string.setting_anc_level_high else R.string.setting_anc_level_low)
+    key == "noise_strength" -> stringResource(
+        when (option) {
+            "adaptive" -> R.string.scene_adaptive
+            "high" -> R.string.setting_level_high
+            "mid" -> R.string.setting_level_mid
+            else -> R.string.setting_level_low
+        },
+    )
+    key == "eq_preset" -> stringResource(
+        when (option) {
+            "bass" -> R.string.setting_eq_more_bass
+            "treble" -> R.string.setting_eq_more_treble
+            "voice" -> R.string.setting_eq_voice
+            "custom" -> R.string.setting_eq_custom
+            "dirac" -> R.string.setting_eq_dirac
+            else -> R.string.setting_eq_balanced
+        },
+    )
+    key == "codec" -> when (option) {
+        "ldac" -> "LDAC"
+        "lhdc" -> "LHDC"
+        else -> stringResource(R.string.setting_codec_standard)
+    }
+    key.startsWith("touch_") && touchTitle(key) != null -> stringResource(
+        when (option) {
+            "none" -> R.string.action_none
+            "play_pause" -> R.string.action_play_pause
+            "previous" -> R.string.action_previous
+            "next" -> R.string.action_next
+            "noise_control" -> R.string.action_anc_cycle
+            "voice_assistant" -> R.string.action_voice_assistant
+            "game_mode" -> R.string.action_game_mode
+            "volume_up" -> R.string.action_volume_up
+            "volume_down" -> R.string.action_volume_down
+            "spatial_audio" -> R.string.action_spatial_audio
+            "mic_mute" -> R.string.action_mic_mute
+            "eq_preset" -> R.string.action_eq_preset
+            "bass_boost" -> R.string.action_bass_boost
+            "treble_boost" -> R.string.action_treble_boost
+            else -> R.string.action_other
+        },
+    )
     key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
     key == "press_speed" || key == "hold_duration" || key == "volume_swipe_length" -> stringResource(
         when (option) {

@@ -24,6 +24,8 @@ import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
@@ -106,7 +108,8 @@ class Hub(private val app: Application) {
      * (docs/samsung/PROTOCOL.md); Sony's by their services or name (docs/sony/PROTOCOL.md); Bose's
      * by Bose's services or "Bose" in the name (docs/bose/PROTOCOL.md); JBL's by the model's name
      * (docs/jbl/PROTOCOL.md); AirPods and Apple-chip Beats by Apple's accessory service, else "AirPods"
-     * in the name (docs/apple/PROTOCOL.md). Empty without the permission or with Bluetooth off.
+     * in the name (docs/apple/PROTOCOL.md); Nothing's and CMF's by Nothing's control service, else the name
+     * (docs/nothing/PROTOCOL.md). Empty without the permission or with Bluetooth off.
      */
     @SuppressLint("MissingPermission") // checked first
     fun pairedEarbuds(): List<Paired> {
@@ -127,6 +130,8 @@ class Hub(private val app: Application) {
                     BoseModels.isBose(name, uuids) -> Paired(d.address, name, Brand.BOSE)
                     jbl != null -> Paired(d.address, name, Brand.JBL, model = jbl.name)
                     AppleModels.identify(name, uuids) -> Paired(d.address, name, Brand.APPLE)
+                    NothingModels.identify(name, uuids) ->
+                        Paired(d.address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)
                     Models.isSupported(d.name ?: "") -> Paired(d.address, name)
                     else -> null
                 }

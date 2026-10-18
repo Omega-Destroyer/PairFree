@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker), Samsung Galaxy Buds, Sony, Bose, JBL and AirPods are being added. The owner wants agents to do as much of the
+(Anker), Samsung Galaxy Buds, Sony, Bose, JBL, AirPods and Nothing (with CMF) are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Where the truth lives
@@ -31,8 +31,8 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 `tools/device_art/<brand>/`. App-wide documents stay at the top level. Each brand also has a page
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
-from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose`, `jbl` and `apple` (AirPods and the
-Beats on Apple's chips).
+from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose`, `jbl`, `apple` (AirPods and the
+Beats on Apple's chips) and `nothing` (Nothing and CMF).
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -155,6 +155,23 @@ Beats on Apple's chips).
   vectors (zeroed there). After a change to `devices.json` run `python tools/gen_apple_table.py`.
   Never send `AppleOpcode.NEVER_SEND` or `AppleControl.NEVER_SEND` (smart routing, keys, renaming,
   connection ownership and pairing).
+- `docs/nothing/PROTOCOL.md` is Nothing's protocol for Nothing and CMF earbuds and headphones, read from
+  Nothing X 3.4.15 (decompiled outside the repo on 2026-10-18: the protocol is plain Kotlin behind a Flutter
+  UI) and checked against nada (github.com/chukfinley/nada) and nadamas (github.com/ezvk/nadamas), both MIT,
+  which were tried on a CMF Buds 2 Plus, an Ear (2), an Ear (3a) and a CMF Buds Pro 2; where they and
+  Nothing X differ, Nothing X wins until a report settles it (the EQ preset numbers, section 5). No Nothing
+  model has been tried with PairFree. Frames are `55`, control, command, length, sequence number, payload
+  and a CRC-16/MODBUS (none on the Ear (1)) over the serial service `AEAC4A03-…`; a reply is the command
+  with bit 15 cleared, and `EarbudsConnection.serveNothing` sends one command at a time, waiting up to
+  1 s. `data/nothing/commands.json` (Nothing X's ProtocolConstant) and `devices.json` (19 models by
+  product id, which the earbuds report on read `C01C`, with each firmware range's features from the table
+  Nothing X bundles) become `NothingCommand`, `NothingWire` and the model list through
+  `generateNothingTables`; `NothingSession` shows a setting only where the model has it and the earbuds
+  answered its read. Two fields of that table are decoded by inference (the noise mode bits and the
+  codecs, section 6): say so wherever they matter. After a change to `devices.json` run
+  `python tools/gen_nothing_table.py`. Never send `NothingCommand.NEVER_SEND` (factory reset, firmware
+  update, calibration, debug) or `NothingCommand.PRIVATE` (reads that return the serial number or other
+  devices' addresses).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

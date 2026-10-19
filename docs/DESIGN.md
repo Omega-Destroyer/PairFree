@@ -225,7 +225,10 @@ cycles through (at least one stays on), and Reset gestures, each only where the 
 ### Device
 
 - Header: model and firmware version, read from the earbuds.
-- Connection: two devices at once, LDAC.
+- Connection: two devices at once, LDAC. Turning LDAC on opens a short dialog: the phone picks the
+  codec, and Samsung phones can need LDAC on for the earbuds in their own Bluetooth settings too, with a
+  button to those settings; while LDAC is on, a note under the switch says the same. Android does not
+  let PairFree read the codec in use, so it cannot tell whether the phone followed.
 - Prompts and power: voice prompt volume, prompt language, turn off when idle.
 - Find my earbuds: beep left, beep right.
 - Connection: LE Audio too, on models PeatsAudio offers it on (`confirmed` in

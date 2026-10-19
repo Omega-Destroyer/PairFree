@@ -75,6 +75,10 @@
     <string name="in_ear_detection">In-ear detection</string>
     <string name="ldac">LDAC</string>
     <string name="needs_ldac_off">Turn LDAC off to use this</string>
+    <string name="ldac_phone_note">Your phone picks the codec. On Samsung phones, also check that LDAC is on for these earbuds in the phone\'s Bluetooth settings.</string>
+    <string name="ldac_on_title">Turn on LDAC on the phone too</string>
+    <string name="ldac_on_body">The earbuds now offer LDAC, but your phone picks the codec it plays. On Samsung phones, open Bluetooth settings, tap the gear next to these earbuds and check that LDAC is on there. Other phones may have a similar switch, such as HD audio. Android does not let PairFree see which codec the phone uses.</string>
+    <string name="close">Close</string>
     <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
 
     <string name="sound_profile">Sound</string>

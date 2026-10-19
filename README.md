@@ -92,9 +92,10 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [AirPods and Beats](docs/devices/apple.md) | 30 | — |
 <!-- devices-summary:end -->
 
-**Known issue:** LDAC does not work on the Air5 Pro+, at least with a Samsung Galaxy S24 FE. If
-you have one and another phone, you can help find out why:
-[details](docs/devices/soundpeats.md#known-issue-air5-pro-ldac-does-not-work).
+**LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks
+the codec. Samsung phones can also need LDAC turned on for the earbuds in their own Bluetooth settings
+(tap the gear next to the earbuds); other phones may have a similar switch. PairFree reminds you when you turn
+LDAC on: [details](docs/devices/soundpeats.md#ldac-on-samsung-phones).
 
 ## What is in the repo
 

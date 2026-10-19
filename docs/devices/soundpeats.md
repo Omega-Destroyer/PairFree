@@ -22,7 +22,7 @@ of features. These two have been tested on real earbuds. Their reports in
 | Transparency: voice or standard   | ✅ ¹                       | ✅                         |
 | Game mode                         | ✅ only with LDAC off      | ✅ only with LDAC off      |
 | Two devices at once               | ✅ either this or LDAC ²   | ✅ either this or LDAC ²   |
-| LDAC                              | ✅ 96 kHz / 32-bit ²       | ⚠️ the phone refuses it (below) |
+| LDAC                              | ✅ 96 kHz / 32-bit ²       | ✅ ² (on Samsung phones, see below) |
 | LE Audio                          | —                          | ✅ ³                       |
 | Turn touch controls off           | ✅                         | ✅                         |
 | Gestures (tap, double, triple, hold) | ✅                      | ✅                         |
@@ -134,24 +134,26 @@ your phone adds its controls and its equalizer to the table.
 The Capsule3 Pro is the exception. It uses a different protocol over Bluetooth LE,
 documented in `docs/soundpeats/PROTOCOL.md` section 10, and PairFree does not support it yet.
 
-## Known issue: Air5 Pro+ LDAC does not work
+## LDAC on Samsung phones
 
-On a Samsung Galaxy S24 FE (Android 16, One UI 8), the **Air5 Pro+** advertises LDAC but
-the phone refuses to use it: audio stays on AAC, and forcing LDAC in Developer options is
-rejected. Turning LDAC on also removes aptX, so it *lowers* quality. The **H3**, with the
-same Qualcomm QCC3091 chip, runs LDAC at 96 kHz / 32-bit on the same phone, so this looks
-like an Air5 Pro+ firmware bug. It has been reported to SoundPEATS. Until it is fixed,
-leave LDAC off on the Air5 Pro+ and you get aptX.
+Turning LDAC on in PairFree (or PeatsAudio) makes the earbuds offer LDAC. The phone still picks
+the codec it plays, and Samsung phones keep a switch of their own for it, per pair of earbuds:
 
-Details and the log evidence: `docs/soundpeats/PROTOCOL.md` section 12 and
-`data/soundpeats/reports/air5-pro-plus_ldac.txt`.
+1. Open **Settings > Connections > Bluetooth** (PairFree's **Bluetooth settings** button opens it).
+2. Tap the gear next to the earbuds.
+3. Under **Codecs**, turn on **LDAC**.
 
-**Have an Air5 Pro+ and a different phone?** Please help find out whether this is
-Samsung-only:
+Without it the phone plays AAC, and forcing LDAC in Developer options is refused, as happened with
+an Air5 Pro+ on a Galaxy S24 FE until the switch was turned on; SoundPEATS pointed to it. The same
+phone had the switch on for the H3 already. Other phones may have a similar switch (on Pixel phones
+it is called HD audio). Android does not let apps read which codec the
+phone uses, so PairFree cannot tell whether the phone followed; it reminds you of the switch when
+you turn LDAC on. On the Air5 Pro+, turning LDAC on also stops the earbuds offering aptX, so if
+the phone's switch stays off the sound falls back to AAC.
 
-1. Turn LDAC on (in PeatsAudio or PairFree), connect, and play music.
-2. Enable Developer options on the phone, open **Bluetooth Audio Codec**, and note which
-   codec is active and which are listed.
-3. Select **LDAC**. Does the codec change (a brief audio pause) or stay on AAC?
-4. Open an issue with your phone model, Android version, the Air5 Pro+ firmware version
-   (from PeatsAudio; the one tested here is S2 1.2) and what you saw.
+Whether every pair of LDAC earbuds needs this switch, or only some, is not known yet. If you can
+help, open an issue with your phone, its Android version, your earbuds, whether the switch was on
+before you touched it, and which codec **Bluetooth Audio Codec** in Developer options shows with the
+switch on and off.
+
+Details: `docs/soundpeats/PROTOCOL.md` section 12.

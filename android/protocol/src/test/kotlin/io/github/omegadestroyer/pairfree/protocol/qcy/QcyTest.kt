@@ -113,9 +113,9 @@ class QcyTest {
     fun theSessionAsksForWhatTheModelHas() {
         val start = n70().start()
         val reads = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.READ }.map { it.short }
-        assertEquals(listOf(QcyWire.VERSION_SHORT, QcyWire.BATTERY_SHORT, QcyWire.SETTINGS_SHORT, QcyWire.KEYS_SHORT), reads)
+        assertEquals(listOf(QcyWire.VERSION_SHORT, QcyWire.BATTERY_SHORT, QcyWire.SETTINGS_SHORT, QcyWire.KEYS_SHORT, QcyWire.EQ_SHORT), reads)
         val asked = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.WRITE }.map { QcyPacket.parse(it.value).single().u8(0) }
-        assertEquals(listOf(QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE), asked)
+        assertEquals(listOf(QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE, QcyItem.MULTI_EQ_2), asked)
         val s = n70()
         assertTrue(start.all(s::allowed))
         assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.FACTORY_RESET))))
@@ -206,4 +206,41 @@ class QcyTest {
     }
 
     private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
+
+    @Test
+    fun theParametricEq() {
+        val s = QcySession(QcyModels.of(23877))
+        val start = s.start().mapNotNull { GattEnvelope.out(it) }
+        assertTrue(start.any { it.operation == GattEnvelope.READ && it.short == QcyWire.EQ_SHORT })
+        assertTrue(start.any { it.short == QcyWire.COMMAND_SHORT && hex(it.value) == "ff03fe0122" })
+        assertNull(s.eq, "nothing before the earbuds answer")
+        // Three bands as Quicky's notes lay item 22 out: 31 Hz +3 dB, 1 kHz -1.5 dB, 16 kHz 0 dB (built by hand, not recorded).
+        s.receive(settings("ff1a2218" + "080000" + "1f002c01640000" + "e8036aff8d0001" + "803e0000460002"))
+        assertEquals(QcyEq(listOf(31, 1000, 16000), listOf(3, -2, 0), custom = true, maxDb = 8), s.eq)
+        // A curve of the user's own: QCY's custom index, a master gain that keeps the highest band from clipping, the earbuds' bands and Qs.
+        val w = s.eqCustom(listOf(4, -9, 8))!!.single()
+        assertEquals("ff1a2218" + "ffe0fc" + "1f009001640000" + "e803e0fc8d0001" + "803e2003460002", hex(GattEnvelope.out(w)!!.value))
+        assertTrue(s.allowed(w))
+        assertEquals("ff03fe0122", hex(GattEnvelope.out(s.takeReadBacks().single())!!.value))
+    }
+
+    @Test
+    fun theEqCharacteristic() {
+        val s = QcySession(QcyModels.of(4577))
+        // A preset (type 1): its curve is QCY's server data, so it is not a known curve.
+        s.receive(GattEnvelope.received(QcyWire.EQ_SHORT, "0100000000000000000000".hexBytes()))
+        assertEquals(false, s.eq?.custom)
+        // A custom curve: type FF, then a gain per band in dB.
+        val w = s.eqCustom(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, -9))!!.single()
+        val out = GattEnvelope.out(w)!!
+        assertEquals(QcyWire.EQ_SHORT, out.short)
+        assertEquals("ff010203040506070808f8", hex(out.value))
+        assertTrue(s.allowed(w))
+        assertFalse(s.allowed(GattEnvelope.write(QcyWire.EQ_SHORT, "0100000000000000000000".hexBytes())), "a preset write: PairFree has no preset curves")
+        s.receive(GattEnvelope.received(QcyWire.EQ_SHORT, "ff010203040506070808f8".hexBytes()))
+        assertEquals(QcyEq(listOf(31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000), listOf(1, 2, 3, 4, 5, 6, 7, 8, 8, -8), custom = true, maxDb = 8), s.eq)
+        // A JieLi model takes the parametric EQ only, inside JieLi's custom command.
+        val jl = QcyJieliSession(QcyModels.of(32883))
+        assertNull(jl.eqCustom(List(10) { 0 }))
+    }
 }

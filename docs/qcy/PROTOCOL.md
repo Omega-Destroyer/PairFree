@@ -214,9 +214,33 @@ items (section 3) inside the custom command.
 **Left out:** the touch controls (no JieLi model's panel in Quicky lists them) and the EQ, which the
 older models take through JieLi's own EQ setting and the newer ones as items `20` and `22`.
 
-## 7. Not yet
+## 7. EQ
 
-- **EQ:** the presets' values came from QCY's server, so PairFree leaves the EQ out. The custom EQ is
-  `0000000B` with the preset id and a signed gain per band, or parametric items `20` and `22`, which
-  OpenQCY writes on the N70.
+QCY's app has two EQs, and each model's control panel says which (`SysEQSeted.isSupportMultiEQ`); the
+panels are QCY's server data. PairFree asks for both on connecting and uses the one the earbuds answer:
+
+- **Parametric (item `22`, older `20`):** `FE 22` asks for it; the answer is the EQ index, the master gain,
+  then per band its frequency (Hz), gain and Q (hundredths of a dB and of Q, signed for the gains), two bytes
+  each low first, and on item `22` a filter type. OpenQCY read and wrote it on the MeloBuds N70, which has no
+  `000B`. PairFree writes the earbuds' own bands back with new gains, under QCY's custom index 255 and with a
+  master gain of minus the highest gain. QCY's app computes its master gain from the bands' summed response
+  (`getMaxGain`), which can be lower; minus the highest gain keeps a single band from clipping.
+- **The EQ characteristic `0000000B`:** a type, then a signed gain per band in whole dB
+  (`EQDataBean`), with two more bytes on some models (a game EQ type and the mode). QCY's app writes a curve of
+  the user's own as type `FF` with the gains in dB (`CustomEQLayout`), plus the panel's `basedb`, which is 0
+  in the panels QCY's app bundles for when it is offline (`controlpan_default`, `controlpan_jl`) and in most
+  of its other bundled panels (−5 in two); Quicky did not keep it, so PairFree adds nothing.
+- **Presets** are curves in the panels. QCY's app writes them with their gains in tenths of a dB, so what the
+  earbuds take there is unclear, and PairFree offers no presets: only Stock (every band at 0) and curves of
+  the user's own. A characteristic that reports a preset's type counts as an EQ PairFree does not know.
+- **Range and bands:** each model's band count, frequencies and range are in `data/qcy/devices.json` (`eq`);
+  the parametric EQ uses the bands the earbuds report.
+- **JieLi models:** the newer ones take items `22` and `20` in the custom command, so the parametric EQ
+  goes there too. The older ones take JieLi's own EQ setting (system info `08`), which PairFree does not send.
+
+None of this has been tried with PairFree; the N70's parametric EQ is OpenQCY's.
+
+## 8. Not yet
+
+- **EQ:** QCY's presets, and the older JieLi models' EQ (section 7).
 - **Other:** the fit test (`11`), auto power-off (`14`) and prompt volume (`1D`).

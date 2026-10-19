@@ -35,6 +35,12 @@ public data class QcyTouch(val gestures: List<String>, val actions: List<String>
 /** One switch a model has: its item and PairFree's name for it. */
 public data class QcySetting(val item: Int, val setting: String)
 
+/**
+ * A model's equalizer as its control panel lays it out: [bands] bands at [freqs] (Hz), each from minus to plus
+ * [maxDb] in whole dB, and the names of the panel's presets, whose curves are QCY's server data.
+ */
+public data class QcyEqSpec(val bands: Int, val maxDb: Int, val freqs: List<Int>, val presets: List<String>)
+
 /** One QCY model from data/qcy/devices.json, by the vendor id it advertises. */
 public data class QcyModel(
     val vendorId: Int,
@@ -47,6 +53,7 @@ public data class QcyModel(
     val touch: QcyTouch?,
     val balance: Boolean,
     val settings: List<QcySetting>,
+    val eq: QcyEqSpec? = null,
 ) {
     /** The vendor id as four hex digits, as PairFree's tables and reports name the model. */
     val code: String get() = vendorId.toString(16).uppercase().padStart(4, '0')

@@ -16,14 +16,16 @@ What it shows, where the model has it:
 - **Home:** the battery (each earbud and the case, or one for headphones), noise control (off, noise
   cancelling, transparency), the noise cancelling scene (adaptive, indoor, commuting, noisy or wind)
   and its strength, and the transparency level.
-- **Sound:** the balance between the earbuds, spatial audio, dynamic EQ and adaptive volume.
+- **Sound:** the equalizer, as a curve of your own over the bands the earbuds report (QCY's presets are
+  curves QCY's app gets from QCY's servers, so PairFree has none), the balance between the earbuds,
+  spatial audio, dynamic EQ and adaptive volume.
 - **Controls:** what a tap, double tap, triple tap and hold do on each earbud (not on JieLi's chips:
   QCY's product list gives their touch controls for none of them).
 - **Device:** game mode, in-ear detection, LDAC, two devices at once, sleep mode (touch controls off),
   wind noise detection and the status light.
 
-Not yet: the equalizer (QCY's app takes each model's presets from QCY's servers, which PairFree does not
-contact) and the ear tip fit test.
+Not yet: QCY's equalizer presets, the equalizer of the older models on JieLi's chips, and the ear tip fit
+test.
 
 QCY support is written from QCY's own app (QCY 4.0.7), read for its messages, and checked against
 [OpenQCY-Desktop](https://github.com/GiorgioRafael/OpenQCY-Desktop) by GiorgioRafael (MIT), which was

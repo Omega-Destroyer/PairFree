@@ -399,7 +399,7 @@
     <string name="eq_apple">PairFree cannot set the equalizer of AirPods and Beats yet.</string>
     <string name="eq_jbl">PairFree cannot set the equalizer of JBL headphones and earbuds yet. JBL\'s app sends a whole curve of filters, and PairFree does not send what it has not checked.</string>
     <string name="eq_bose">Bose earbuds and headphones have a tone control rather than an equalizer of bands by frequency. Where the model has one, it is below.</string>
-    <string name="eq_qcy">PairFree cannot set the equalizer of QCY earbuds yet: QCY\'s app takes each model\'s presets from QCY\'s servers, which PairFree does not contact.</string>
+    <string name="eq_qcy">PairFree shows the equalizer once the earbuds have reported theirs. The older QCY models on JieLi\'s chips keep their equalizer in a setting PairFree does not send yet.</string>
     <string name="setting_anc_scene">Noise cancelling scene</string>
     <string name="setting_anc_scene_level">Strength</string>
     <string name="setting_transparency_strength">Transparency level</string>

@@ -43,6 +43,8 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     private var lastCancelling: Int? = null
     private var lastTransparency: Int? = null
     private var keys: Map<Int, Int>? = null
+    private var graphic: Pair<Int, List<Int>>? = null   // the EQ characteristic: its type, then a gain per band in dB
+    private var parametric: QcyParametric? = null
 
     init {
         advert?.let { battery(byteArrayOf(raw(it.left), raw(it.right), raw(it.case))) }
@@ -57,6 +59,11 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         add(GattEnvelope.read(QcyWire.SETTINGS_SHORT))
         for (item in items()) add(request(item))
         if (model == null || model.touch != null) add(GattEnvelope.read(QcyWire.KEYS_SHORT))
+        // The EQ: the characteristic on models that have it, and the parametric EQ on those that answer for it.
+        if (model?.eq != null) {
+            add(GattEnvelope.read(QcyWire.EQ_SHORT))
+            add(request(QcyItem.MULTI_EQ_2))
+        }
     }
 
     /** The items asked for: the model's noise item and switches, or for an unknown model the common ones. */
@@ -86,6 +93,8 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         return when (out.short) {
             QcyWire.COMMAND_SHORT -> QcyPacket.parse(out.value).none { it.item in QcyItem.NEVER_SEND }
             QcyWire.KEYS_SHORT -> true
+            // A custom curve only: the type for it, then a gain per band.
+            QcyWire.EQ_SHORT -> out.value.size > 1 && out.value[0].toInt() and 0xFF == EQ_CUSTOM
             else -> false
         }
     }
@@ -109,6 +118,10 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
                 _replies["keys"] = v.copyOf()
                 keys = (0 until v.size / 2).associate { (v[it * 2].toInt() and 0xFF) to (v[it * 2 + 1].toInt() and 0xFF) }
             }
+            QcyWire.EQ_SHORT -> {
+                _replies["eq"] = v.copyOf()
+                graphicEq(v)
+            }
         }
         refresh()
         return (state to groups) != before
@@ -124,8 +137,61 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
             QcyItem.BATTERY -> battery(e.value)
             QcyItem.VERSION -> version(e.value)
             QcyItem.KEY_FUNCTION -> keys = (0 until e.value.size / 2).associate { e.u8(it * 2) to e.u8(it * 2 + 1) }
+            QcyItem.MULTI_EQ_2 -> QcyParametric.parse(e.value, typed = true)?.let { parametric = it }
+            QcyItem.MULTI_EQ -> QcyParametric.parse(e.value, typed = false)?.let { parametric = it }
             else -> values[e.item] = e.value.copyOf()
         }
+    }
+
+    /**
+     * The EQ characteristic as QCY's EQDataBean reads it: the type (0xFF a custom curve), then a gain per band in
+     * signed whole dB; with two more bytes on some models (the game EQ type and the mode).
+     */
+    private fun graphicEq(v: ByteArray) {
+        val bands = model?.eq?.bands ?: return
+        if (v.size < 1 + bands) return
+        graphic = (v[0].toInt() and 0xFF) to (1..bands).map { v[it].toInt() }
+    }
+
+    /**
+     * The EQ the earbuds reported: the parametric one where they answered for it, else the characteristic's.
+     * The characteristic's counts as a known curve only while it holds a custom one (type 0xFF): QCY's presets
+     * are its server's curves, which PairFree does not have.
+     */
+    override val eq: QcyEq?
+        get() {
+            val spec = model?.eq ?: return null
+            parametric?.let { p -> return QcyEq(p.bands.map { it.hz }, p.bands.map { b -> roundDb(b.gainHundredths) }, custom = true, maxDb = spec.maxDb) }
+            val (type, gains) = graphic ?: return null
+            return QcyEq(spec.freqs, gains, custom = type == EQ_CUSTOM, maxDb = spec.maxDb)
+        }
+
+    /** True while the EQ PairFree knows is the parametric one, which travels as QCY's items. */
+    internal val parametricOnly: Boolean get() = parametric != null
+
+    private fun roundDb(hundredths: Int): Int = (if (hundredths < 0) hundredths - 50 else hundredths + 50) / 100
+
+    /**
+     * A curve of the user's own, as QCY's app writes one: the parametric EQ (item 22, or 20 on models that
+     * answered that) with the earbuds' own bands and new gains, under QCY's custom index (255) and a master gain
+     * that keeps the highest band from clipping; else the characteristic with QCY's custom type (0xFF) and a gain
+     * per band.
+     */
+    override fun eqCustom(gains: List<Int>): List<ByteArray>? {
+        val spec = model?.eq ?: return null
+        val clamped = gains.map { it.coerceIn(-spec.maxDb, spec.maxDb) }
+        parametric?.let { p ->
+            if (clamped.size != p.bands.size) return null
+            val next = p.copy(index = EQ_CUSTOM, masterHundredths = -(clamped.maxOrNull() ?: 0).coerceAtLeast(0) * 100,
+                bands = p.bands.mapIndexed { i, b -> b.copy(gainHundredths = clamped[i] * 100) })
+            parametric = next
+            readBacks += request(p.item)
+            return listOf(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.build(QcyEntry(p.item, next.bytes()))))
+        }
+        if (graphic == null || clamped.size != spec.bands) return null
+        graphic = EQ_CUSTOM to clamped
+        readBacks += GattEnvelope.read(QcyWire.EQ_SHORT)
+        return listOf(GattEnvelope.write(QcyWire.EQ_SHORT, byteArrayOf(EQ_CUSTOM.toByte()) + ByteArray(clamped.size) { clamped[it].toByte() }))
     }
 
     private fun noise(v: Int) {
@@ -425,9 +491,48 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
             "sleep_mode" to QcyItem.SLEEP_MODE, "wind_detection" to QcyItem.WIND_DETECTION, "led" to QcyItem.LED_MODE,
         )
 
-        private val READABLE = setOf(QcyWire.VERSION_SHORT, QcyWire.BATTERY_SHORT, QcyWire.SETTINGS_SHORT, QcyWire.KEYS_SHORT)
+        private val READABLE = setOf(QcyWire.VERSION_SHORT, QcyWire.BATTERY_SHORT, QcyWire.SETTINGS_SHORT, QcyWire.KEYS_SHORT, QcyWire.EQ_SHORT)
+
+        /** QCY's type and index for a curve of the user's own (CustomEQLayout, QCYConnectManager.setEQData). */
+        private const val EQ_CUSTOM = 0xFF
         private val PRINTABLE = 0x20.toByte()..0x7E.toByte()
 
         private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
+    }
+}
+
+/** QCY earbuds' EQ as they reported it: the bands' frequencies (Hz) and gains (whole dB), each from minus to plus [maxDb]. */
+public data class QcyEq(val freqs: List<Int>, val gains: List<Int>, val custom: Boolean, val maxDb: Int)
+
+/**
+ * The parametric EQ (items 20 and 22, as Quicky's notes and OpenQCY lay them out): the EQ index, the master gain,
+ * then per band its frequency (Hz), gain and Q (hundredths, signed for gains), each two bytes low first, and on
+ * item 22 a filter type.
+ */
+public data class QcyParametric(val item: Int, val index: Int, val masterHundredths: Int, val bands: List<Band>) {
+    public data class Band(val hz: Int, val gainHundredths: Int, val qHundredths: Int, val type: Int?)
+
+    public fun bytes(): ByteArray {
+        val out = mutableListOf(index, masterHundredths and 0xFF, (masterHundredths shr 8) and 0xFF)
+        for (b in bands) {
+            out += listOf(b.hz and 0xFF, (b.hz shr 8) and 0xFF, b.gainHundredths and 0xFF, (b.gainHundredths shr 8) and 0xFF, b.qHundredths and 0xFF, (b.qHundredths shr 8) and 0xFF)
+            if (item == QcyItem.MULTI_EQ_2) out += (b.type ?: 0)
+        }
+        return ByteArray(out.size) { out[it].toByte() }
+    }
+
+    public companion object {
+        public fun parse(v: ByteArray, typed: Boolean): QcyParametric? {
+            val size = if (typed) 7 else 6
+            if (v.size < 3 + size || (v.size - 3) % size != 0) return null
+            fun u16(at: Int) = (v[at].toInt() and 0xFF) or ((v[at + 1].toInt() and 0xFF) shl 8)
+            fun s16(at: Int) = u16(at).let { if (it >= 0x8000) it - 0x10000 else it }
+            val bands = (0 until (v.size - 3) / size).map { i ->
+                val at = 3 + i * size
+                Band(u16(at), s16(at + 2), u16(at + 4), if (typed) v[at + 6].toInt() and 0xFF else null)
+            }.filter { it.hz > 0 }
+            if (bands.isEmpty()) return null
+            return QcyParametric(if (typed) QcyItem.MULTI_EQ_2 else QcyItem.MULTI_EQ, v[0].toInt() and 0xFF, s16(1), bands)
+        }
     }
 }

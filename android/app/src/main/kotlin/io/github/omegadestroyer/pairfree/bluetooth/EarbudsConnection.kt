@@ -31,10 +31,12 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.JblReader
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreEq
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreFrame
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreParser
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreWire
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingParser
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingSession
@@ -230,8 +232,13 @@ class EarbudsConnection(
     private var oneMore: OneMoreSession? = null   // set while connected to 1MORE earbuds or headphones
     private var oneMoreQueue: Channel<OneMoreFrame>? = null
 
-    /** The 1MORE session, while connected to 1MORE earbuds or headphones; for the device report. */
+    /** The 1MORE session, while connected to 1MORE earbuds or headphones; for the device report and the EQ. */
     val oneMoreSession: OneMoreSession? get() = oneMore
+
+    private val _oneMoreEq = MutableStateFlow<OneMoreEq?>(null)
+
+    /** The 1MORE EQ as the earbuds last reported it; the Sound tab follows it. */
+    val oneMoreEq: StateFlow<OneMoreEq?> = _oneMoreEq.asStateFlow()
 
     private val _sonyEq = MutableStateFlow<SonyEq?>(null)
 
@@ -261,6 +268,7 @@ class EarbudsConnection(
         qcyFound = null
         _qcyEq.value = null
         oneMore = null
+        _oneMoreEq.value = null
         _sonyEq.value = null
         _settings.value = emptyList()
         _samsungStatus.value = null
@@ -854,9 +862,17 @@ class EarbudsConnection(
         if (oneMoreQueue === queue) oneMoreQueue = null
     }
 
+    /** A frame the 1MORE session built, read back from its bytes, its length field included. */
+    private fun oneMoreFrame(bytes: ByteArray): OneMoreFrame? {
+        if (bytes.size < OneMoreWire.HEADER) return null
+        fun u16(at: Int) = ((bytes[at].toInt() and 0xFF) shl 8) or (bytes[at + 1].toInt() and 0xFF)
+        return OneMoreFrame(u16(2), bytes.copyOfRange(OneMoreWire.HEADER, bytes.size), u16(6), u16(0), u16(4))
+    }
+
     private fun publish(session: OneMoreSession) {
         _state.value = session.state
         _settings.value = session.groups
+        _oneMoreEq.value = session.eq
     }
 
     /** Queues 1MORE frames on the open channel, then [READ_BACK_MS] later the reads that confirm them. False when there is none. */
@@ -1096,7 +1112,12 @@ class EarbudsConnection(
             if (sendQcy(session, frames)) publish(session)
             return
         }
-        if (bose != null || jbl != null || apple != null || oneMore != null) return
+        // 1MORE's EQ target hands over its session's frames as bytes; they go through the 1MORE link's queue, as sent.
+        oneMore?.let { session ->
+            if (sendOneMore(session, frames.mapNotNull(::oneMoreFrame))) publish(session)
+            return
+        }
+        if (bose != null || jbl != null || apple != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq

@@ -17,6 +17,7 @@ import io.github.omegadestroyer.pairfree.capture.Capture
 import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
+import io.github.omegadestroyer.pairfree.eq.OneMoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.QcyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
@@ -34,6 +35,7 @@ import io.github.omegadestroyer.pairfree.protocol.RecordingReport
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreEq
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
@@ -98,6 +100,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     fun openEqualizer(device: Paired, model: Model?) {
         if (device.brand != Brand.NOTHING) nothingEq = null
         if (device.brand != Brand.QCY) qcyEq = null
+        if (device.brand != Brand.ONEMORE) oneMoreEq = null
+        if (device.brand == Brand.ONEMORE) {
+            soundcoreEq = null
+            samsungEq = null
+            sonyEq = null
+            openOneMoreEq(device, model)
+            return
+        }
         if (device.brand == Brand.QCY) {
             soundcoreEq = null
             samsungEq = null
@@ -138,6 +148,32 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         soundcoreEq = target
         equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
         connection.soundcoreState.value?.let(::reportEq)
+    }
+
+    /** The 1MORE EQ while the Sound tab shows 1MORE earbuds whose model has presets or a custom EQ. */
+    private var oneMoreEq: OneMoreEqTarget? = null
+
+    /** 1MORE models' EQ is in their table; the Sound tab opens it at once and follows what the earbuds report. */
+    private fun openOneMoreEq(device: Paired, model: Model?) {
+        val session = connection.oneMoreSession
+        val m = session?.model
+        if (session == null || m == null || (m.eqPresets.isEmpty() && m.eqBands == null)) {
+            oneMoreEq = null
+            equalizer.open(device.address, null)
+            return
+        }
+        if (oneMoreEq?.session === session && equalizer.state.value != null) return
+        val target = OneMoreEqTarget(session)
+        oneMoreEq = target
+        equalizer.open(device.address, model, target.layout, target)
+        connection.oneMoreEq.value?.let(::reportOneMoreEq)
+    }
+
+    private fun reportOneMoreEq(eq: OneMoreEq) {
+        val target = oneMoreEq ?: return
+        val current = equalizer.state.value?.setting?.gains ?: return
+        val (profile, gains) = target.reported(eq, current) ?: return
+        equalizer.reported(profile, gains)
     }
 
     /** The QCY EQ while the Sound tab shows QCY earbuds that reported an EQ PairFree can set. */
@@ -265,6 +301,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             }
         }
         viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
+        // 1MORE earbuds report their preset and curve after connecting: follow what they hold.
+        viewModelScope.launch {
+            connection.oneMoreEq.collect { eq ->
+                val device = connectedDevice() ?: return@collect
+                if (device.brand != Brand.ONEMORE || eq == null) return@collect
+                openOneMoreEq(device, modelOf(device, connection.state.value))
+                reportOneMoreEq(eq)
+            }
+        }
         // QCY earbuds report their EQ after connecting: open it once they have, then follow what they hold.
         viewModelScope.launch {
             connection.qcyEq.collect { eq ->

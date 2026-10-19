@@ -89,6 +89,26 @@ read again at once.
 - **Noise cancelling without a choice made** is mode 1, and transparency mode 3 (`HeadsetActivity`,
   `prevNoiseReduction`, `prevTransparent`).
 
+**EQ** (`CustomSoundActivity`, `DefaultSoundActivity`, `TestKt.custSoundData`):
+
+- **Preset sounds (`006A`, `0069`):** one byte: 00 studio, 01 bass reducer, 02 bass booster, 03 acoustic
+  (SOUND BY LUCA on the HQ60), 04 classical, 05 podcast, 06 deep, 07 electronic, 08 hip-hop, 09 lounge, 0A pop,
+  0B loud (shown as Voice Enhancement), 0C custom, 0D THX. Each model lists six, four or twelve of them
+  (`eq_presets` in `data/1more/devices.json`); the HQ60's THX depends on its firmware and is left out.
+- **Custom EQ (`0054`, `0053`):** per band a record of 7 bytes: `01`, the raw gain, the frequency (Hz) and the Q
+  (hundredths), two bytes each, high first. 1MORE's app writes every band at once when it resets a curve, and one
+  band at a time while the user drags; PairFree writes every band at once.
+  - The gain: 1MORE's app's slider goes from 0 to 120 around 60, and the raw gain is 5 times it plus the model's
+    `gainBValue` (900, or 1200 on most headphones), so 0 dB is 1200 (or 1500) and the range is -3 to 3 dB in steps
+    of 0.05 dB. PairFree uses whole dB. The HQ36 adds its own offset on some bands.
+  - The Q12 and HQ60 take whole dB from -3 to 3 as (dB + 15) x 100 (`useProtocolGain`).
+  - Each model's frequencies and Qs are in 1MORE's app code (`getEqBandConfig`), `eq_bands` in
+    `data/1more/devices.json`.
+  - The read (`0054`) names every band's frequency; 1MORE's app writes its length field as 20 whatever the band
+    count, which the Q12 (12 bands) overruns, and PairFree sends it the same way. The answer is the same records.
+  - 1MORE's app does not switch the preset sound before it writes a curve; PairFree reads both again after a write.
+- Only the models whose product list has the custom flag get the custom EQ; presets follow the preset flag.
+
 **Never sent:** the handshake (`004D`), the AI licence read (`004F`), deleting music (`0049`) and the music
 upload frames (`0071` to `0073`).
 
@@ -116,7 +136,7 @@ actions without the assistant, and hearing your own voice and the volume limit (
 
 ## 6. Not yet
 
-- **EQ:** the music and sleep styles (`003B`), presets (`0069`) and custom EQ (`0053`).
+- **EQ:** the music and sleep styles (`003B`), the HQ60's THX preset, and 1MORE's finer gain steps.
 - **The lights** of the NANO (`008A` to `008D`).
 - **Music on the earbuds** (`0038` to `003A`, `0049`, `0071` to `0073`) and the sleep timer (`0068`).
 - **The `FE` frames** (section 2), and whether the earbuds' XOR and length field always hold.

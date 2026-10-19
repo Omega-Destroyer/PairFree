@@ -35,6 +35,37 @@ EAR_RETURN = {"1MORE HQ20"}
 # Tuya's AI earbuds (DataKt.aIDeviceList): 1MORE's app reaches them through Tuya's platform, not its serial protocol.
 TUYA = {"1MORE S52", "1MORE S22Ultra"}
 
+# The presets each model lists (TestKt.custSoundData), by data/1more/commands.json's preset names; 1MORE's app sends
+# each as its byte (DefaultSoundActivity.getStyleCmd). The HQ60 lists SOUND BY LUCA (luca), sent as acoustic's byte; its
+# THX preset depends on its firmware and is left out.
+SIX = ["studio", "bass_reducer", "bass_booster", "loud", "classical", "pop"]
+TWELVE = ["studio", "bass_reducer", "bass_booster", "acoustic", "classical", "podcast", "deep", "electronic", "hiphop", "lounge", "pop", "loud"]
+PRESETS_SIX = {"1MORE S51", "1MORE S70", "1MORE HQ20", "1MORE S20", "1MORE S52", "1MORE S22", "1MORE S22Ultra", "1MORE S20NOVA",
+               "1MORE S25", "1MORE S20PRO", "1MORE S20Ultra", "1MORE Q12", "1MORE S23", "1MORE AERO Q32", "1MORE S21", "1MORE G50",
+               "1MORE Q50", "1MORE S11", "1MORE S12", "1MORE S10AI", "1MORE S10S", "1MORE Q21", "1MORE NANO", "1MORE HQ36"}
+PRESETS = {"1MORE S-31": ["studio", "bass_reducer", "bass_booster", "loud"],
+           "1MORE HQ60": ["studio", "luca", "bass_reducer", "bass_booster", "classical", "podcast", "deep", "electronic", "hiphop", "lounge", "pop", "loud"]}
+
+# The custom EQ's bands (CustomSoundActivity.getEqBandConfig and its per-band Qs): frequencies (Hz), Qs (hundredths),
+# the raw gain that is 0 dB (gainBValue plus 300), per-band offsets (the HQ36's), and whole_db for the models whose
+# gains go in whole dB steps (useProtocolGain). Gains are from -3 to 3 dB.
+DEFAULT_Q = [60, 70, 80, 90, 100, 140, 150, 200, 220, 200]
+DEFAULT_BANDS = {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": DEFAULT_Q, "zero": 1200}
+HQ31_BANDS = {"hz": [68, 288, 682, 1600, 2000, 3560, 4800, 7192, 9300, 13236], "q": DEFAULT_Q, "zero": 1500}
+BANDS = {
+    "1MORE Q12": {"hz": [95, 200, 300, 650, 1000, 2000, 3200, 4500, 5500, 7500, 9800, 12000],
+                  "q": [80, 90, 80, 100, 100, 100, 160, 160, 160, 160, 160, 160], "zero": 1500, "whole_db": True},
+    "1MORE SonoFlow QC30": {"hz": [68, 288, 682, 1600, 2000, 3560, 4800, 7400, 9308, 13236], "q": DEFAULT_Q, "zero": 1500},
+    "1MORE HQ36": {"hz": [74, 200, 800, 1200, 2000, 3200, 4800, 6700, 11000, 13500], "q": [80, 200, 110, 70, 90, 80, 150, 100, 200, 200],
+                   "zero": 1500, "offsets": [450, -800, 250, 0, 0, 300, 0, 0, 150, 0]},
+    "1MORE HQ51": {"hz": [68, 282, 682, 1234, 2013, 3080, 4800, 6794, 9815, 13236], "q": DEFAULT_Q, "zero": 1500},
+    "1MORE HQ60": {"hz": [76, 260, 680, 1200, 2200, 3200, 4800, 7300, 10000, 13000],
+                   "q": [130, 80, 90, 100, 120, 220, 120, 160, 200, 200], "zero": 1500, "whole_db": True},
+    "1MORE NANO": {"hz": [85, 105, 225, 315, 1680, 2500, 3900, 6800, 10000, 14000], "q": DEFAULT_Q, "zero": 1500},
+    "1MORE HQ31": HQ31_BANDS,
+    "1MORE SonoFlow S": HQ31_BANDS,
+}
+
 
 def on(row, field):
     return row.get(field) == 1
@@ -85,6 +116,8 @@ def device(r):
         "touch": touch,
         "touch_assistant": touch is not None and name not in NO_ASSISTANT_TOUCH,
         "eq": [k for k, f in EQ if on(r, f)],
+        "eq_presets": (SIX if name in PRESETS_SIX else PRESETS.get(name, TWELVE)) if on(r, "presetsoundEffects") else [],
+        "eq_bands": BANDS.get(name, DEFAULT_BANDS) if on(r, "customizesoundEffects") else None,
         "ear_return": name in EAR_RETURN,
         "volume_limit": name in EAR_RETURN,
         "pictures": pictures(r),
@@ -103,7 +136,7 @@ def main(dump_path, out_path=OUT):
         "_about": "1MORE's models (docs/1more/PROTOCOL.md section 5): one entry per Bluetooth name, as 1MORE's app matches them, with the "
                   "controls its product list gives each model. The list is 1MORE's own (system/headphone/list, which 1MORE's app 2.0.0 "
                   "downloads), fetched once by hand on 2026-10-18 with the owner's OK; PairFree never contacts 1MORE. listen_modes uses "
-                  "data/1more/commands.json's names; tuya, kind, case, touch_assistant, ear_return and volume_limit come from 1MORE's app code; tuya marks "
+                  "data/1more/commands.json's names; tuya, kind, case, touch_assistant, ear_return, volume_limit, eq_presets and eq_bands come from 1MORE's app code; tuya marks "
                   "the two models 1MORE's app reaches through Tuya's platform instead, which PairFree does not control. "
                   "pictures are paths on https://newapp.1more.com/prod-api, per colour, kept for tracing device art.",
         "fetched": "2026-10-18",

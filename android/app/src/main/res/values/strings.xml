@@ -474,7 +474,7 @@
     <string name="factory_reset">Factory reset</string>
     <string name="factory_reset_title">Factory reset the earbuds?</string>
     <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this phone; then pair them again in the Bluetooth settings.</string>
-    <string name="eq_onemore">PairFree cannot set the equalizer of 1MORE earbuds and headphones yet.</string>
+    <string name="eq_onemore">This 1MORE model has no equalizer in 1MORE\'s product list.</string>
     <string name="setting_transparency_mode">Transparency mode</string>
     <string name="setting_transparency_normal">Transparency</string>
     <string name="setting_transparency_pass_through">Pass-through</string>

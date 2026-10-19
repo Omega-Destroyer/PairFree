@@ -12,13 +12,14 @@ What it shows, where the model has it:
 - **Home:** the battery (each earbud and the case, or one for headphones), noise control (off, noise
   cancelling, transparency), the kind of noise cancelling (adaptive, strong, mild or wind) and the kind
   of transparency (plain, pass-through or voice enhancement).
-- **Sound:** spatial audio.
+- **Sound:** the equalizer: the model's preset sounds and, on the models with one, a curve of your own from -3
+  to 3 dB a band; spatial audio.
 - **Controls:** what a double and a triple tap do, on each earbud or on both alike.
 - **Device:** two devices at once, the connection mode (standard, game mode or LDAC), what happens when
   you take them out, sleep detection, voice commands, finding a lost earbud, and on the HQ20 hearing your
   own voice and the volume limit.
 
-Not yet: the equalizer.
+Not yet: the music and sleep sound styles.
 
 Two models, the S52 and the S22Ultra, are Tuya AI earbuds: 1MORE's app reaches them through Tuya's
 platform instead of its own connection, so PairFree does not list them.
@@ -47,44 +48,44 @@ address or name. Say which settings worked and which did nothing.
 
 <table>
 <tr><th>Model</th><th>Product</th><th>Type</th><th>Noise control</th><th>Also</th><th>Status</th></tr>
-<tr><td>1MORE Aero</td><td><code>ES903</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through)</td><td>two devices, spatial audio, pause when taken out, voice commands, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE AERO Q32</td><td><code>AERO Q32</code></td><td>Earbuds</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE Aero</td><td><code>ES903</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through)</td><td>two devices, spatial audio, pause when taken out, voice commands, EQ presets, custom EQ, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE AERO Q32</td><td><code>AERO Q32</code></td><td>Earbuds</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
 <tr><td>1MORE ComfoBuds Mini</td><td><code>ES603</code></td><td>Earbuds</td><td>ANC (strong, mild, wind), transparency</td><td>pause when taken out, sleep detection, touch controls</td><td>Not tested</td></tr>
-<tr><td>1MORE EVO</td><td><code>EH902</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through, voice enhancement)</td><td>LDAC, two devices, pause when taken out, voice commands, touch controls</td><td>Not tested</td></tr>
-<tr><td>1MORE G50</td><td><code>G50</code></td><td>Headphones</td><td>—</td><td>game mode, LDAC, two devices, spatial audio</td><td>Not tested</td></tr>
-<tr><td>1MORE HQ20</td><td><code>HQ20</code></td><td>Headphones</td><td>—</td><td>game mode, two devices, hear your own voice, volume limit</td><td>Not tested</td></tr>
-<tr><td>1MORE HQ31</td><td><code>HQ31</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio</td><td>Not tested</td></tr>
-<tr><td>1MORE HQ36</td><td><code>HQ36</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices</td><td>Not tested</td></tr>
-<tr><td>1MORE HQ51</td><td><code>HQ51</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio</td><td>Not tested</td></tr>
-<tr><td>1MORE HQ60</td><td><code>HQ60</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio</td><td>Not tested</td></tr>
-<tr><td>1MORE NANO</td><td><code>S200</code></td><td>Headphones</td><td>—</td><td>two devices</td><td>Not tested</td></tr>
-<tr><td>1MORE PistonBuds PRO Q30</td><td><code>EC305</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency</td><td>game mode, spatial audio, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE Q12</td><td><code>Q12</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE Q21</td><td><code>Q21</code></td><td>Earbuds</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE Q22</td><td><code>Q22</code></td><td>Earbuds</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE Q50</td><td><code>Q50</code></td><td>Earbuds</td><td>ANC (strong, mild, wind), transparency</td><td>game mode, LDAC, two devices, pause when taken out, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S-31</td><td><code>S-31</code></td><td>Earbuds</td><td>—</td><td>touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S10AI</td><td><code>S10AI</code></td><td>Earbuds</td><td>—</td><td>game mode, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S10S</td><td><code>S10S</code></td><td>Earbuds</td><td>—</td><td>game mode, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S11</td><td><code>S11</code></td><td>Earbuds</td><td>—</td><td>game mode, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S12</td><td><code>S12</code></td><td>Earbuds</td><td>—</td><td>game mode, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S15</td><td><code>S15</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S20</td><td><code>S20</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S20NOVA</td><td><code>S20NOVA</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S20PRO</td><td><code>S20PRO</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S20Ultra</td><td><code>S20Ultra</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S21</td><td><code>S21</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S21Air</td><td><code>S21Air</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S22</td><td><code>S22</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S22Ultra</td><td><code>S22Ultra</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, touch controls (each earbud)</td><td>Not supported (Tuya)</td></tr>
-<tr><td>1MORE S25</td><td><code>S25</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S32</td><td><code>S32</code></td><td>Earbuds</td><td>—</td><td>game mode, touch controls</td><td>Not tested</td></tr>
-<tr><td>1MORE S51</td><td><code>S51</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE EVO</td><td><code>EH902</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through, voice enhancement)</td><td>LDAC, two devices, pause when taken out, voice commands, EQ presets, custom EQ, touch controls</td><td>Not tested</td></tr>
+<tr><td>1MORE G50</td><td><code>G50</code></td><td>Headphones</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
+<tr><td>1MORE HQ20</td><td><code>HQ20</code></td><td>Headphones</td><td>—</td><td>game mode, two devices, hear your own voice, volume limit, EQ presets, custom EQ</td><td>Not tested</td></tr>
+<tr><td>1MORE HQ31</td><td><code>HQ31</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
+<tr><td>1MORE HQ36</td><td><code>HQ36</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, EQ presets, custom EQ</td><td>Not tested</td></tr>
+<tr><td>1MORE HQ51</td><td><code>HQ51</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
+<tr><td>1MORE HQ60</td><td><code>HQ60</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
+<tr><td>1MORE NANO</td><td><code>S200</code></td><td>Headphones</td><td>—</td><td>two devices, EQ presets</td><td>Not tested</td></tr>
+<tr><td>1MORE PistonBuds PRO Q30</td><td><code>EC305</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency</td><td>game mode, spatial audio, EQ presets, custom EQ, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE Q12</td><td><code>Q12</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, EQ presets, custom EQ, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE Q21</td><td><code>Q21</code></td><td>Earbuds</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE Q22</td><td><code>Q22</code></td><td>Earbuds</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE Q50</td><td><code>Q50</code></td><td>Earbuds</td><td>ANC (strong, mild, wind), transparency</td><td>game mode, LDAC, two devices, pause when taken out, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S-31</td><td><code>S-31</code></td><td>Earbuds</td><td>—</td><td>EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S10AI</td><td><code>S10AI</code></td><td>Earbuds</td><td>—</td><td>game mode, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S10S</td><td><code>S10S</code></td><td>Earbuds</td><td>—</td><td>game mode, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S11</td><td><code>S11</code></td><td>Earbuds</td><td>—</td><td>game mode, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S12</td><td><code>S12</code></td><td>Earbuds</td><td>—</td><td>game mode, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S15</td><td><code>S15</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S20</td><td><code>S20</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S20NOVA</td><td><code>S20NOVA</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S20PRO</td><td><code>S20PRO</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S20Ultra</td><td><code>S20Ultra</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S21</td><td><code>S21</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S21Air</td><td><code>S21Air</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S22</td><td><code>S22</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S22Ultra</td><td><code>S22Ultra</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, EQ presets, touch controls (each earbud)</td><td>Not supported (Tuya)</td></tr>
+<tr><td>1MORE S25</td><td><code>S25</code></td><td>Earbuds</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S32</td><td><code>S32</code></td><td>Earbuds</td><td>—</td><td>game mode, EQ presets, touch controls</td><td>Not tested</td></tr>
+<tr><td>1MORE S51</td><td><code>S51</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
 <tr><td>1MORE S52</td><td><code>S52</code></td><td>Earbuds</td><td>—</td><td>—</td><td>Not supported (Tuya)</td></tr>
-<tr><td>1MORE S70</td><td><code>S70</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE S90</td><td><code>S90</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through, voice enhancement)</td><td>game mode, LDAC, two devices, pause when taken out, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE SonoFlow QC30</td><td><code>SonoFlow QC30</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio</td><td>Not tested</td></tr>
-<tr><td>1MORE SonoFlow S</td><td><code>HC905S</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio</td><td>Not tested</td></tr>
+<tr><td>1MORE S70</td><td><code>S70</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE S90</td><td><code>S90</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through, voice enhancement)</td><td>game mode, LDAC, two devices, pause when taken out, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE SonoFlow QC30</td><td><code>SonoFlow QC30</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
+<tr><td>1MORE SonoFlow S</td><td><code>HC905S</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
 <tr><td>1MORE Z30</td><td><code>Z30</code></td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 </table>
 <!-- 1more-table:end -->

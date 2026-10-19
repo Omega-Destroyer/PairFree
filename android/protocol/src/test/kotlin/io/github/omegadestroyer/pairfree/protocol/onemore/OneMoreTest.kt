@@ -227,4 +227,48 @@ class OneMoreTest {
         assertFalse(s.allowed(reply(OneMoreCommand.GET_LISTEN_MODE, "00")), "a frame from the earbuds")
         assertTrue(s.allowed(s.frame(OneMoreCommand.SET_LISTEN_MODE, 0)))
     }
+
+    @Test
+    fun theEqAsTheAppWritesIt() {
+        val s = OneMoreSession(aero)
+        val start = s.start()
+        assertTrue(OneMoreCommand.GET_PRESET_SOUND in start.map { it.command })
+        // The read names every band's frequency, with the length field 1MORE's app writes (20).
+        val read = start.single { it.command == OneMoreCommand.GET_EQ_PARAMETERS }
+        assertEquals("0045011a02aa04d207dd0c2312211a8a265736e5", hex(read.payload))
+        assertEquals("0014", hex(read.bytes().copyOfRange(4, 6)))
+        // +3 dB on the first band and -3 dB on the last: raw 900 + 5 x the app's slider (60 + 20 per dB), with each band's frequency and Q.
+        val w = s.eqCustom(listOf(3, 0, 0, 0, 0, 0, 0, 0, 0, -3))!!.single()
+        assertEquals(OneMoreCommand.SET_EQ_PARAMETERS, w.command)
+        assertEquals(70, w.payload.size)
+        assertEquals("0105dc0045003c", hex(w.payload.copyOfRange(0, 7)))
+        assertEquals("01038436e500c8", hex(w.payload.copyOfRange(63, 70)))
+        // The earbuds answer the read in the same records; the custom preset sound (0C) means they hold the curve.
+        s.receive(reply(OneMoreCommand.GET_EQ_PARAMETERS, hex(w.payload)))
+        s.receive(reply(OneMoreCommand.GET_PRESET_SOUND, "0c"))
+        assertEquals(OneMoreEq(null, true, listOf(3, 0, 0, 0, 0, 0, 0, 0, 0, -3)), s.eq)
+        // A preset sound goes as its byte.
+        assertEquals("0a", hex(s.eqPreset("pop")!!.single().payload))
+        s.receive(reply(OneMoreCommand.GET_PRESET_SOUND, "0a"))
+        assertEquals("pop", s.eq?.preset)
+        assertNull(s.eqPreset("thx"), "the Aero does not list it")
+    }
+
+    @Test
+    fun eqBandsThatDiffer() {
+        // The HQ36 adds its own offset to some bands: band 1 at 0 dB is 1200 + 300 + 450.
+        val hq36 = OneMoreSession(OneMoreModels.fromName("1MORE HQ36"))
+        val w = hq36.eqCustom(List(10) { 0 })!!.single()
+        assertEquals("01079e004a0050", hex(w.payload.copyOfRange(0, 7)))
+        assertEquals("0102bc00c800c8", hex(w.payload.copyOfRange(7, 14)))
+        // The Q12 has 12 bands in whole dB: 2 dB is (2 + 15) x 100.
+        val q12 = OneMoreSession(OneMoreModels.fromName("1MORE Q12"))
+        val w12 = q12.eqCustom(listOf(2) + List(11) { 0 })!!.single()
+        assertEquals(84, w12.payload.size)
+        assertEquals("0106a4005f0050", hex(w12.payload.copyOfRange(0, 7)))
+        assertEquals("0014", hex(q12.start().single { it.command == OneMoreCommand.GET_EQ_PARAMETERS }.bytes().copyOfRange(4, 6)), "as 1MORE's app writes it")
+        // Models without a custom EQ have presets only.
+        assertNull(OneMoreSession(OneMoreModels.fromName("1MORE S20")).eqCustom(List(10) { 0 }))
+        assertEquals(listOf("studio", "bass_reducer", "bass_booster", "loud", "classical", "pop"), OneMoreModels.fromName("1MORE S20")?.eqPresets)
+    }
 }

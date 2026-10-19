@@ -53,6 +53,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     private var earReturnDepth: Int? = null
     private var volumeLimit: Int? = null
     private var findSupported = false
+    private var presetSound: Int? = null
+    private var eqRaw: List<Int>? = null   // the custom EQ's raw gain per band, as the earbuds reported it
     private val ringing = mutableSetOf<String>()
 
     /** A frame to the earbuds with the next sequence number. */
@@ -85,6 +87,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             add(frame(OneMoreCommand.GET_EAR_RETURN_DEPTH))
         }
         if (m.volumeLimit) add(frame(OneMoreCommand.GET_MAX_SOUND_LIMIT))
+        if (m.eqPresets.isNotEmpty()) add(frame(OneMoreCommand.GET_PRESET_SOUND))
+        eqRead()?.let(::add)
         // 1MORE's app asks with 01 whether the earbuds can ring; earbuds that can answer it.
         if (form == Form.EARBUDS) add(frame(OneMoreCommand.FIND_DEVICE_SUPPORT, 1))
     }
@@ -112,7 +116,7 @@ public class OneMoreSession(public val model: OneMoreModel?) {
         val read = READ_OF[frame.command]
         if (read != null) {
             // A write's answer: one byte, 1 success. A refused write is read again, so the screen shows what the earbuds hold.
-            if (p.isEmpty() || p.u8(0) != RESULT_SUCCESS) outbox += frame(read)
+            if (p.isEmpty() || p.u8(0) != RESULT_SUCCESS) outbox += (if (read == OneMoreCommand.GET_EQ_PARAMETERS) eqRead() else frame(read)) ?: return false
         } else {
             if (frame.command in OneMoreCommand.NAMES) _replies[key(frame.command)] = p.copyOf()
             if (p.isNotEmpty()) reply(frame.command, p)
@@ -139,6 +143,11 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.GET_EAR_RETURN_DEPTH -> earReturnDepth = v
             OneMoreCommand.GET_MAX_SOUND_LIMIT -> volumeLimit = v
             OneMoreCommand.FIND_DEVICE_SUPPORT -> findSupported = true
+            OneMoreCommand.GET_PRESET_SOUND -> presetSound = v
+            // One record per band: a flag, then the gain, frequency and Q, two bytes each, high first.
+            OneMoreCommand.GET_EQ_PARAMETERS -> model?.eqBands?.let { b ->
+                if (p.size >= b.hz.size * EQ_RECORD) eqRaw = b.hz.indices.map { i -> (p.u8(i * EQ_RECORD + 1) shl 8) or p.u8(i * EQ_RECORD + 2) }
+            }
             // The earbuds report which side is ringing: a 0 ends that side's ring.
             OneMoreCommand.FIND_DEVICE -> {
                 findSupported = true
@@ -196,6 +205,69 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             values[Command.FIND_RIGHT] = Value.Switch(RIGHT in ringing)
         }
         state = state.copy(values = values)
+    }
+
+    /**
+     * The custom EQ's read, as 1MORE's app sends it: each band's frequency, two bytes high first, with a length field
+     * of 20 whatever the band count (BluetoothOrderConstents writes the header out in full).
+     */
+    private fun eqRead(): OneMoreFrame? {
+        val b = model?.eqBands ?: return null
+        val payload = ByteArray(b.hz.size * 2) { i -> (if (i % 2 == 0) b.hz[i / 2] shr 8 else b.hz[i / 2]).toByte() }
+        return OneMoreFrame(OneMoreCommand.GET_EQ_PARAMETERS, payload, nextSequence(), declaredLength = EQ_READ_LENGTH)
+    }
+
+    /** A band's raw gain as a whole dB from -3 to 3: hundredths above the model's zero, or whole dB from 15 (useProtocolGain). */
+    private fun db(b: OneMoreEqBands, band: Int, raw: Int): Int {
+        val db = if (b.wholeDb) raw / 100 - WHOLE_DB_ZERO else (raw - b.zero - (b.offsets.getOrNull(band) ?: 0)).let { if (it < 0) (it - 50) / 100 else (it + 50) / 100 }
+        return db.coerceIn(-EQ_RANGE, EQ_RANGE)
+    }
+
+    private fun raw(b: OneMoreEqBands, band: Int, db: Int): Int =
+        if (b.wholeDb) (db + WHOLE_DB_ZERO) * 100 else b.zero + (b.offsets.getOrNull(band) ?: 0) + db * 100
+
+    /**
+     * The EQ the earbuds last reported: the preset sound by its name (custom when they hold the custom curve), and
+     * the custom curve's gains in whole dB, where the model has one.
+     */
+    public val eq: OneMoreEq?
+        get() {
+            val m = model ?: return null
+            val byte = presetSound
+            val gains = m.eqBands?.let { b -> eqRaw?.mapIndexed { i, r -> db(b, i, r) } }
+            if (byte == null && gains == null) return null
+            val custom = byte != null && ONEMORE_PRESET_SOUNDS[byte] == CUSTOM_PRESET || byte == null && m.eqPresets.isEmpty()
+            return OneMoreEq(m.eqPresets.firstOrNull { presetByte(it) == byte }, custom, gains)
+        }
+
+    /** The byte for preset sound [name]; SOUND BY LUCA, on the HQ60, goes as acoustic's (getStyleCmd). */
+    private fun presetByte(name: String): Int? =
+        if (name == LUCA) presetByte(ACOUSTIC) else ONEMORE_PRESET_SOUNDS.entries.firstOrNull { it.value == name }?.key
+
+    /** The frames that put preset sound [name] on the earbuds: its byte, as 1MORE's app sends it (DefaultSoundActivity.getStyleCmd). */
+    public fun eqPreset(name: String): List<OneMoreFrame>? {
+        if (name !in (model?.eqPresets ?: return null)) return null
+        val v = presetByte(name) ?: return null
+        presetSound = v
+        readBacks += frame(OneMoreCommand.GET_PRESET_SOUND)
+        return listOf(frame(OneMoreCommand.SET_PRESET_SOUND, v))
+    }
+
+    /**
+     * The frames that put the custom curve [gains] (whole dB from -3 to 3, one per band) on the earbuds, every band
+     * in one write as 1MORE's app resets the curve (CustomSoundActivity.reset): per band 01, the raw gain, the
+     * frequency and the Q, two bytes each, high first.
+     */
+    public fun eqCustom(gains: List<Int>): List<OneMoreFrame>? {
+        val b = model?.eqBands ?: return null
+        if (gains.size != b.hz.size) return null
+        val raws = gains.mapIndexed { i, g -> raw(b, i, g.coerceIn(-EQ_RANGE, EQ_RANGE)) }
+        eqRaw = raws
+        val payload = mutableListOf<Int>()
+        for (i in b.hz.indices) payload += listOf(1, raws[i] shr 8, raws[i] and 0xFF, b.hz[i] shr 8, b.hz[i] and 0xFF, b.q[i] shr 8, b.q[i] and 0xFF)
+        eqRead()?.let { readBacks += it }
+        readBacks += frame(OneMoreCommand.GET_PRESET_SOUND)
+        return listOf(frame(OneMoreCommand.SET_EQ_PARAMETERS, *payload.toIntArray()))
     }
 
     /** The cancelling and transparency modes the model has, in 1MORE's app's order. */
@@ -437,6 +509,16 @@ public class OneMoreSession(public val model: OneMoreModel?) {
         private const val OFF = 0
         private const val PERCENT = 100
         private const val BINAURAL_SIZE = 10
+
+        // The custom EQ (section 4): 7 bytes a band, whole dB from -3 to 3, 15 dB as zero on the whole-dB models,
+        // and the read's length field as 1MORE's app writes it.
+        private const val EQ_RECORD = 7
+        public const val EQ_RANGE: Int = 3
+        private const val WHOLE_DB_ZERO = 15
+        private const val EQ_READ_LENGTH = 20
+        private const val CUSTOM_PRESET = "custom"
+        private const val LUCA = "luca"
+        private const val ACOUSTIC = "acoustic"
         private const val CUSTOM_GESTURES = 4
         private const val LEFT = "left"
         private const val RIGHT = "right"
@@ -495,9 +577,17 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.SET_EAR_RETURN to OneMoreCommand.GET_EAR_RETURN,
             OneMoreCommand.SET_EAR_RETURN_DEPTH to OneMoreCommand.GET_EAR_RETURN_DEPTH,
             OneMoreCommand.SET_MAX_SOUND_LIMIT to OneMoreCommand.GET_MAX_SOUND_LIMIT,
+            OneMoreCommand.SET_PRESET_SOUND to OneMoreCommand.GET_PRESET_SOUND,
+            OneMoreCommand.SET_EQ_PARAMETERS to OneMoreCommand.GET_EQ_PARAMETERS,
         )
 
         /** The shared noise mode's number for [name] (data/soundpeats/commands.json). */
         private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
     }
 }
+
+/**
+ * 1MORE earbuds' EQ as they last reported it: the [preset] sound by the model's names, [custom] while they hold the
+ * custom curve, and [gains] that curve in whole dB, where they reported one.
+ */
+public data class OneMoreEq(val preset: String?, val custom: Boolean, val gains: List<Int>?)

@@ -1248,6 +1248,11 @@ abstract class GenerateOneMoreTables : DefaultTask() {
         out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${list.joinToString(", ") { "0x${it["code"]} to ${str(it["name"])}" }})")
         out.appendLine("}")
         out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val presets = (commands.getValue("values") as Map<String, Any?>).getValue("preset_sound") as Map<String, Any?>
+        out.appendLine("/** The preset sounds by the byte 1MORE's app sends for each (data/1more/commands.json, values.preset_sound). */")
+        out.appendLine("public val ONEMORE_PRESET_SOUNDS: Map<Int, String> = mapOf(${presets.entries.joinToString(", ") { "${it.key} to ${str(it.value)}" }})")
+        out.appendLine()
         out.appendLine("/** Every model in data/1more/devices.json. */")
         out.appendLine("internal val ONEMORE_MODELS: List<OneMoreModel> = listOf(")
         for (d in devices) {
@@ -1262,6 +1267,13 @@ abstract class GenerateOneMoreTables : DefaultTask() {
             out.appendLine("        autoplay = ${d["autoplay"]}, spatialAudio = ${d["spatial_audio"]}, sleepDetection = ${d["sleep_detection"]}, dualDevice = ${d["dual_device"]}, hotWord = ${d["hot_word"]},")
             out.appendLine("        touch = ${d["touch"]?.let(::str) ?: "null"}, touchAssistant = ${d["touch_assistant"]}, eq = ${strings(d["eq"])},")
             out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]},")
+            @Suppress("UNCHECKED_CAST")
+            val bands = (d["eq_bands"] as Map<String, Any?>?)?.let { b ->
+                fun ints(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { (it as Number).toInt().toString() }
+                "OneMoreEqBands(${ints(b["hz"])}, ${ints(b["q"])}, ${(b["zero"] as Number).toInt()}, " +
+                    "${b["offsets"]?.let(::ints) ?: "emptyList()"}, wholeDb = ${b["whole_db"] == true})"
+            } ?: "null"
+            out.appendLine("        eqPresets = ${strings(d["eq_presets"])}, eqBands = $bands,")
             out.appendLine("    ),")
         }
         out.appendLine(")")

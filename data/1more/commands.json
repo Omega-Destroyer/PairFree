@@ -71,6 +71,7 @@
   "click_both": {"0": "none", "1": "play_pause", "2": "previous_next", "3": "volume", "4": "voice_assistant"},
   "click_each": {"0": "none", "1": "next", "2": "previous", "3": "volume_down", "4": "volume_up", "5": "play_pause", "6": "voice_assistant"},
   "custom_gesture": {"1": "double_left", "2": "double_right", "3": "triple_left", "4": "triple_right"},
-  "level": {"0": "off", "1": "low", "2": "medium", "3": "high"}
+  "level": {"0": "off", "1": "low", "2": "medium", "3": "high"},
+  "preset_sound": {"0": "studio", "1": "bass_reducer", "2": "bass_booster", "3": "acoustic", "4": "classical", "5": "podcast", "6": "deep", "7": "electronic", "8": "hiphop", "9": "lounge", "10": "pop", "11": "loud", "12": "custom", "13": "thx"}
  }
 }

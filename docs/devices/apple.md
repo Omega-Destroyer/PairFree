@@ -24,10 +24,12 @@ their settings when PairFree connects, and PairFree shows only the ones they rep
 - **Home:** the battery (each earbud and the case, or one for headphones); noise control: off,
   noise cancelling, transparency and, on models that have it, Adaptive Audio with its noise
   reduction; Conversation Awareness; noise control with one AirPod in; Personalized Volume.
+- **Sound:** a custom equalizer of low, mid and high, on the AirPods firmware that has one (Apple's newest
+  beta firmware, as LibrePods found).
 - **Controls:** press speed, press and hold duration, swipe to change volume and its length.
 - **Device:** automatic ear detection, and Off as a listening mode for the stem.
 
-Not yet: the equalizer, head gestures, renaming, hearing health and hearing aid settings,
+Not yet: head gestures, renaming, hearing health and hearing aid settings,
 transparency customisation, and anything that needs the phone to pose as an Apple device.
 PairFree never asks the AirPods for their keys and never takes them over from your other
 devices.

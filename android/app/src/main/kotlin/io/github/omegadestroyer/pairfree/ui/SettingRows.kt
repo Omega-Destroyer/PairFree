@@ -247,6 +247,7 @@ private fun settingTitle(key: String): String = when (key) {
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio)
     "head_tracking" -> stringResource(R.string.setting_head_tracking)
     "codec" -> stringResource(R.string.setting_codec)
+    "custom_eq" -> stringResource(R.string.setting_custom_eq)
     else -> touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
@@ -314,6 +315,7 @@ private fun settingNote(key: String): String? = when (key) {
     "allow_off" -> stringResource(R.string.setting_allow_off_note)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
     "codec" -> stringResource(R.string.setting_codec_note)
+    "custom_eq" -> stringResource(R.string.setting_custom_eq_note)
     else -> null
 }
 

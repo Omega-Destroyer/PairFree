@@ -140,4 +140,23 @@ class AppleTest {
         assertFalse(AppleModels.identify("Beats Studio Buds", emptyList()), "Beats only by the service")
         assertEquals(4097, AppleWire.PSM)
     }
+
+    @Test
+    fun theCustomEqOnNewerFirmware() {
+        val s = AppleSession()
+        assertTrue(s.groups.none { it.key == "sound" }, "nothing before the AirPods report it")
+        // As LibrePods reads it: a length of 5, 01, on (2), then low 60, mid 50 and high 30 of 100.
+        s.receive(AapPacket(AppleOpcode.CUSTOM_EQ, byteArrayOf(5, 0, 1, 2, 60, 50, 30)).bytes())
+        val rows = s.groups.single { it.key == "sound" }.settings
+        assertEquals(Setting.Toggle("custom_eq", true), rows[0])
+        assertEquals(listOf(10, 0, -20), rows.drop(1).map { (it as Setting.Level).value })
+        // Mid up by 5: the whole packet again, as LibrePods' CustomEq.toPacket writes it.
+        val w = s.change(SettingChange.Level("eq_mid", 5))!!.single()
+        assertEquals("04000400" + "6300" + "050001023c371e", w.bytes().joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') })
+        assertTrue(s.allowed(w.bytes()))
+        // Off: the bands stay in the packet and leave the screen.
+        val off = s.change(SettingChange.Toggle("custom_eq", false))!!.single()
+        assertEquals("050001013c371e", off.data.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') })
+        assertEquals(1, s.groups.single { it.key == "sound" }.settings.size)
+    }
 }

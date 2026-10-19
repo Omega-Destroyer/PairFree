@@ -42,6 +42,9 @@ public class AppleSession {
     public var batteryData: ByteArray? = null
         private set
 
+    /** The custom EQ as the AirPods last reported it: the state (2 on, 1 off), then low, mid and high from 0 to 100. */
+    private var customEq: ByteArray? = null
+
     /** The mode before Adaptive was switched on, to go back to when it is switched off. */
     private var beforeAdaptive: Int = MODE_TRANSPARENCY
 
@@ -67,6 +70,7 @@ public class AppleSession {
             AppleOpcode.BATTERY -> battery(packet.data)
             AppleOpcode.CONTROL -> packet.control?.let { (id, value) -> _controls[id] = value }
             AppleOpcode.INFORMATION -> information(packet.data)
+            AppleOpcode.CUSTOM_EQ -> if (packet.data.size >= EQ_DATA) customEq = packet.data.copyOfRange(EQ_STATE, EQ_DATA)
         }
         refresh()
         return (state to groups) != before
@@ -151,6 +155,7 @@ public class AppleSession {
                     switch(AppleControl.PERSONALIZED_VOLUME)?.let { Setting.Toggle("personalized_volume", it) },
                 ),
             ),
+            group("sound", SettingTab.SOUND, eqRows()),
             group(
                 "touch", SettingTab.CONTROLS,
                 listOfNotNull(
@@ -169,6 +174,22 @@ public class AppleSession {
             ),
         )
 
+    /**
+     * The custom EQ LibrePods found on AirPods' newest firmware (docs/apple/PROTOCOL.md section 6): a switch, then the
+     * low, mid and high bands around their middle (50 of 100), while it is on. Only once the AirPods reported it.
+     */
+    private fun eqRows(): List<Setting> {
+        val eq = customEq ?: return emptyList()
+        val on = eq[0].toInt() == EQ_ON
+        return listOf(Setting.Toggle("custom_eq", on)) + if (on) EQ_BANDS.mapIndexed { i, key -> Setting.Level(key, (eq[1 + i].toInt() and 0xFF) - EQ_MIDDLE, -EQ_MIDDLE, EQ_MIDDLE) } else emptyList()
+    }
+
+    /** The custom EQ packet as LibrePods writes it (CustomEq.toPacket): opcode 63, a length of 5, 01, the state, then the three bands. */
+    private fun eqWrite(eq: ByteArray): AapPacket {
+        customEq = eq
+        return AapPacket.of(byteArrayOf(AppleOpcode.CUSTOM_EQ.toByte(), 0, EQ_LENGTH.toByte(), 0, 1) + eq)
+    }
+
     private fun choiceRow(key: String, id: Int): Setting? {
         if (id !in _controls) return null
         return Setting.Choice(key, choice(id), AppleControl.VALUES.getValue(id).toSortedMap().values.toList())
@@ -185,6 +206,11 @@ public class AppleSession {
         return when (change) {
             is SettingChange.Toggle -> {
                 if (setting !is Setting.Toggle) return null
+                if (change.key == "custom_eq") {
+                    val eq = customEq?.copyOf() ?: return null
+                    eq[0] = (if (change.on) EQ_ON else EQ_OFF).toByte()
+                    return listOf(eqWrite(eq))
+                }
                 if (change.key == "adaptive") {
                     val current = listeningMode ?: return null
                     if (change.on && current != MODE_ADAPTIVE) beforeAdaptive = current
@@ -200,7 +226,14 @@ public class AppleSession {
                 listOf(write(id, value))
             }
             is SettingChange.Level -> {
-                if (setting !is Setting.Level || change.key != "adaptive_level") return null
+                if (setting !is Setting.Level) return null
+                val band = EQ_BANDS.indexOf(change.key)
+                if (band >= 0) {
+                    val eq = customEq?.copyOf() ?: return null
+                    eq[1 + band] = (change.value.coerceIn(-EQ_MIDDLE, EQ_MIDDLE) + EQ_MIDDLE).toByte()
+                    return listOf(eqWrite(eq))
+                }
+                if (change.key != "adaptive_level") return null
                 listOf(write(AppleControl.ADAPTIVE_LEVEL, change.value.coerceIn(0, ADAPTIVE_MAX)))
             }
             is SettingChange.Press -> null
@@ -230,6 +263,15 @@ public class AppleSession {
 
     private companion object {
         const val BATTERY_RECORD = 5
+
+        // The custom EQ packet's data (LibrePods' parseCustomEqPacket): a two-byte length, 01, the state, the three bands.
+        const val EQ_STATE = 3
+        const val EQ_DATA = 7
+        const val EQ_LENGTH = 5
+        const val EQ_ON = 2
+        const val EQ_OFF = 1
+        const val EQ_MIDDLE = 50
+        val EQ_BANDS = listOf("eq_bass", "eq_mid", "eq_treble")
         const val SINGLE = 1
         const val RIGHT = 2
         const val LEFT = 4

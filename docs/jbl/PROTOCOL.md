@@ -295,5 +295,11 @@ services PairFree never opens.
 - What the acknowledgement's status values mean; PairFree reads a setting back rather than
   trusting them.
 - The equalizer: JBL's app writes a whole curve of filters as floating-point numbers with a
-  calibration (`41`, `EQControl`), and its presets are curves the app holds (`assets/eq`).
-  Nothing of it has been checked on a device, so PairFree does not send it.
+  calibration (`41` on older models, `A2` `EQCmd` on others, as FajkPes's notes lay them out), and its
+  presets are curves the app holds (`assets/eq`). The calibration comes from a native library
+  (`EqCalibration.calculateCalib` in `libcalibrationLib`), which works it out from the model's design EQ and
+  the new curve; PairFree cannot port it (hard rules) and does not guess it, since a wrong value can make the
+  sound much louder. Picking a preset by its index (`AA 40`, `MessageID.PRESET_EQ`) needs no calibration, but
+  JBL's app sends it only on its BES models' older path (on protocol 3 `setEQPreset` is not implemented), its
+  index list differs per family, and nothing of it has been checked on a device. So PairFree does not send
+  the EQ yet.

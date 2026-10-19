@@ -55,6 +55,11 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
 
     override fun change(change: SettingChange): List<ByteArray>? = inner.change(change)?.let(::translate)
 
+    /** The parametric EQ only: QCY's items in the custom command; JieLi's own EQ setting is not covered. */
+    override val eq: QcyEq? get() = inner.eq?.takeIf { inner.parametricOnly }
+
+    override fun eqCustom(gains: List<Int>): List<ByteArray>? = inner.eqCustom(gains)?.takeIf { inner.parametricOnly }?.let(::translate)
+
     /** The JieLi settings attribute that holds a QCY item on this model, or null when it goes in the custom command. */
     private fun attribute(item: Int): Int? = when (item) {
         QcyItem.IN_EAR, QcyItem.WEARING -> JieliWire.ADV_IN_EAR

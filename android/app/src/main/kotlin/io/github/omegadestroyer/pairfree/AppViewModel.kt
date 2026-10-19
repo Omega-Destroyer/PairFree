@@ -18,6 +18,7 @@ import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
 import io.github.omegadestroyer.pairfree.eq.PixelEqTarget
+import io.github.omegadestroyer.pairfree.eq.QcyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
@@ -38,6 +39,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
@@ -109,6 +111,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             return
         }
         if (device.brand != Brand.NOTHING) nothingEq = null
+        if (device.brand != Brand.QCY) qcyEq = null
+        if (device.brand == Brand.QCY) {
+            soundcoreEq = null
+            samsungEq = null
+            sonyEq = null
+            openQcyEq(device, model)
+            return
+        }
         if (device.brand == Brand.NOTHING) {
             soundcoreEq = null
             samsungEq = null
@@ -174,6 +184,30 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val target = pixelEq ?: return
         val (profile, whole) = target.reported(gains)
         equalizer.reported(profile, whole)
+    }
+
+    /** The QCY EQ while the Sound tab shows QCY earbuds that reported an EQ PairFree can set. */
+    private var qcyEq: QcyEqTarget? = null
+
+    /** QCY earbuds report their EQ after they connect; the Sound tab's EQ opens once they have, over the bands they report. */
+    private fun openQcyEq(device: Paired, model: Model?) {
+        val session = connection.qcySession
+        val eq = connection.qcyEq.value
+        if (session == null || eq == null) {
+            qcyEq = null
+            equalizer.open(device.address, null)
+            return
+        }
+        qcyEq?.let { if (it.session === session && it.freqs == eq.freqs && equalizer.state.value != null) return }
+        val target = QcyEqTarget(session, eq)
+        qcyEq = target
+        equalizer.open(device.address, model, target.layout, target)
+        reportQcyEq(eq)
+    }
+
+    private fun reportQcyEq(eq: QcyEq) {
+        val gains = qcyEq?.reported(eq) ?: return
+        equalizer.reported(null, gains)
     }
 
     /** The Nothing EQ while the Sound tab shows Nothing or CMF earbuds whose model PairFree knows. */
@@ -284,6 +318,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 if (device.brand != Brand.PIXEL || eq == null) return@collect
                 openPixelEq(device, modelOf(device, connection.state.value))
                 reportPixelEq(eq)
+            }
+        }
+        // QCY earbuds report their EQ after connecting: open it once they have, then follow what they hold.
+        viewModelScope.launch {
+            connection.qcyEq.collect { eq ->
+                val device = connectedDevice() ?: return@collect
+                if (device.brand != Brand.QCY || eq == null) return@collect
+                openQcyEq(device, modelOf(device, connection.state.value))
+                reportQcyEq(eq)
             }
         }
         // Nothing earbuds name their model, then report their EQ: open it once they have, then follow what they hold.

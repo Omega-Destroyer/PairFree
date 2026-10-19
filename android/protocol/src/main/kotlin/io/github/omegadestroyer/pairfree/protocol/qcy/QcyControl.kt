@@ -45,6 +45,12 @@ public interface QcyControl {
     /** The messages for a change to one of the [groups], or null when the earbuds do not have the setting. */
     public fun change(change: SettingChange): List<ByteArray>?
 
+    /** The EQ as the earbuds last reported it, or null while they have not reported one PairFree can set. */
+    public val eq: QcyEq? get() = null
+
+    /** The messages that put a curve of [gains] (whole dB, one per band of [eq]) on the earbuds, or null when PairFree cannot. */
+    public fun eqCustom(gains: List<Int>): List<ByteArray>? = null
+
     public companion object {
         /** The session for [model]'s protocol; QCY's own for a model PairFree does not know. */
         public fun of(model: QcyModel?, advert: QcyAdvert?): QcyControl = when (model?.protocol) {

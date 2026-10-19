@@ -1407,7 +1407,12 @@ abstract class GenerateQcyTables : DefaultTask() {
             out.appendLine("    QcyModel(")
             out.appendLine("        ${int(d["vendor_id"])}, ${str(d["name"])}, ${strings(d["names"])}, ${str(d["family"])}, QcyProtocol.$protocol,")
             out.appendLine("        io.github.omegadestroyer.pairfree.protocol.Form.$form, anc = $anc,")
-            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true},")
+            @Suppress("UNCHECKED_CAST")
+            val eq = (d["eq"] as Map<String, Any?>?)?.let { e ->
+                "QcyEqSpec(${int(e[\"bands\"])}, ${int(e[\"max_db\"])}, ${(e[\"freqs\"] as List<*>).joinToString(\", \", \"listOf(\", \")\") { int(it).toString() }}, ${strings(e[\"presets\"])})"
+            } ?: "null"
+            out.appendLine("        touch = $touch, balance = ${d[\"balance\"] == true}, settings = $settings, sleepTimer = ${d[\"sleep_timer\"] == true},")
+            out.appendLine("        eq = $eq,")
             out.appendLine("    ),")
         }
         out.appendLine(")")

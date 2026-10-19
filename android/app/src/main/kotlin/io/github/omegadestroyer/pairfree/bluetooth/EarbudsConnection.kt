@@ -49,6 +49,7 @@ import io.github.omegadestroyer.pairfree.protocol.pixel.PixelSession
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelTransport
 import io.github.omegadestroyer.pairfree.protocol.qcy.JieliWire
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyControl
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyEq
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyProtocol
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyWire
@@ -259,8 +260,13 @@ class EarbudsConnection(
     private var qcyQueue: Channel<ByteArray>? = null
     private var qcyFound: QcyFinder.Found? = null   // what the scan found before the channel opened
 
-    /** The QCY session, while connected to QCY earbuds or headphones; for the device report. */
+    /** The QCY session, while connected to QCY earbuds or headphones; for the device report and the EQ. */
     val qcySession: QcyControl? get() = qcy
+
+    private val _qcyEq = MutableStateFlow<QcyEq?>(null)
+
+    /** The QCY EQ as the earbuds last reported it; the Sound tab follows it. */
+    val qcyEq: StateFlow<QcyEq?> = _qcyEq.asStateFlow()
 
     private var oneMore: OneMoreSession? = null   // set while connected to 1MORE earbuds or headphones
     private var oneMoreQueue: Channel<OneMoreFrame>? = null
@@ -296,6 +302,7 @@ class EarbudsConnection(
         _pixelEq.value = null
         qcy = null
         qcyFound = null
+        _qcyEq.value = null
         oneMore = null
         _sonyEq.value = null
         _settings.value = emptyList()
@@ -1248,7 +1255,12 @@ class EarbudsConnection(
             if (sendNothing(session, parsed)) publish(session)
             return
         }
-        if (bose != null || jbl != null || apple != null || qcy != null || oneMore != null) return
+        // QCY's EQ target hands over GATT messages; they go through the QCY link's queue.
+        qcy?.let { session ->
+            if (sendQcy(session, frames)) publish(session)
+            return
+        }
+        if (bose != null || jbl != null || apple != null || oneMore != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq

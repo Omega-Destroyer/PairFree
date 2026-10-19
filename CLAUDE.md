@@ -137,7 +137,8 @@ Beats on Apple's chips), `nothing` (Nothing and CMF), `qcy` and `1more` (the Kot
   later. `JblReader` splits both Harman's `AA` frames and protocol 4's `00 DD` frames (`JblP4Packet`). `EarbudsConnection.serveJbl` sends one command at a time, waiting up to 1 s, as JBL's
   app does. Protocol 4 (section 6) is covered, including the models with a BLE security mode 1 to 3,
   which add a transport step `GattLink` runs itself (the raw characteristic, the host-name checksum,
-  section 7): no key is needed. JBL's genuine-product check needs a key from a native library, so it
+  section 7): no key is needed. JBL's EQ is left out: its calibration comes from a native library
+  (`calculateCalib`). JBL's genuine-product check needs a key from a native library, so it
   is left out (hard rules); Airoha and LE Audio models and the EQ are not covered. After a
   change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
   `JblCommand.NEVER_SEND` (factory reset, power off, firmware update, analytics).
@@ -153,6 +154,7 @@ Beats on Apple's chips), `nothing` (Nothing and CMF), `qcy` and `1more` (the Kot
   and `AppleModels` through `generateAppleTables`; `AppleSession` shows each setting once the AirPods
   report it. The information packet holds serial numbers: keep it out of logs, reports and test
   vectors (zeroed there). After a change to `devices.json` run `python tools/gen_apple_table.py`.
+  LibrePods' custom EQ (opcode 63) shows as Sound tab rows once the AirPods report it (newest beta firmware only).
   Never send `AppleOpcode.NEVER_SEND` or `AppleControl.NEVER_SEND` (smart routing, keys, renaming,
   connection ownership and pairing).
 - `docs/nothing/PROTOCOL.md` is Nothing's protocol for Nothing and CMF earbuds and headphones, read from
@@ -169,7 +171,9 @@ Beats on Apple's chips), `nothing` (Nothing and CMF), `qcy` and `1more` (the Kot
   `generateNothingTables`; `NothingSession` shows a setting only where the model has it and the earbuds
   answered its read. Two fields of that table are decoded by inference (the noise mode bits and the
   codecs, section 6): say so wherever they matter. After a change to `devices.json` run
-  `python tools/gen_nothing_table.py`. Never send `NothingCommand.NEVER_SEND` (factory reset, firmware
+  `python tools/gen_nothing_table.py`. The Sound tab's EQ goes through `NothingEqTarget`: the presets and Nothing
+  X's simple custom EQ (three filters at each model's `simple_eq` frequencies), both of which the earbuds report.
+  Never send `NothingCommand.NEVER_SEND` (factory reset, firmware
   update, calibration, debug) or `NothingCommand.PRIVATE` (reads that return the serial number or other
   devices' addresses).
 - `docs/qcy/PROTOCOL.md` is QCY's own protocol, read from QCY's app (4.0.7, decompiled outside the repo on
@@ -188,7 +192,9 @@ Beats on Apple's chips), `nothing` (Nothing and CMF), `qcy` and `1more` (the Kot
   (`RcspFrame`, the `jieli` part of `commands.json` as `JieliWire`), QCY's items in RCSP's custom command and
   a few settings as JieLi's own attributes, as QCY's app sends each; `QcyControl.of` picks the session by the
   model's `protocol`. Its settings need no authentication: JieLi's native auth is only in its OTA and watch
-  SDKs. After a change to `devices.json` run `python tools/gen_qcy_table.py`. Never send
+  SDKs. The EQ (`QcyEqTarget`, section 7) is a curve of the user's own only, on the parametric EQ (item 22) where
+  the earbuds answer for it, else the EQ characteristic with type FF; QCY's presets are server curves and are left
+  out, as is the older JieLi models' EQ. After a change to `devices.json` run `python tools/gen_qcy_table.py`. Never send
   `QcyItem.NEVER_SEND` (resets, pairing, test, rename, restart, clock and alarm) or `JieliWire.NEVER_SEND`
   (reboot, system operations and writes).
 - `docs/1more/PROTOCOL.md` is 1MORE's protocol, read from 1MORE's app (2.0.0, decompiled outside the repo on
@@ -204,7 +210,9 @@ Beats on Apple's chips), `nothing` (Nothing and CMF), `qcy` and `1more` (the Kot
   model list through `generateOneMoreTables`; `OneMoreSession` reads only what the model's entry lists and
   shows each setting once its read answered. Models match by the whole Bluetooth name, as in 1MORE's app;
   the S52 and S22Ultra are Tuya devices (`tuya`) and are not listed. `data/1more/test_vectors.json` holds
-  the frames 1MORE's app writes out in full. After a change to `devices.json` run
+  the frames 1MORE's app writes out in full. The EQ (`OneMoreEqTarget`) is the model's preset sounds and, where
+  it has one, the custom EQ at the bands and gain zero its `eq_bands` gives (from 1MORE's app code). After a change
+  to `devices.json` run
   `python tools/gen_1more_table.py`. Never send `OneMoreCommand.NEVER_SEND` (handshake, AI licence, music
   delete and upload).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from

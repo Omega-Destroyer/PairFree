@@ -39,8 +39,7 @@ A device report from any QCY model helps:
 3. Paste it into a new issue.
 
 It lists the model and firmware and the last value of each setting PairFree reads, with no serial
-number, address or name. Say which settings worked and which did nothing. On models marked "Not yet",
-the report is empty for now; say which model you have, so it can go first when JieLi's protocol comes.
+number, address or name. Say which settings worked and which did nothing.
 
 ## All models
 

@@ -93,8 +93,8 @@ Each brand has a page listing every model PairFree knows and what works on each.
 <!-- devices-summary:end -->
 
 **LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks
-the codec. Samsung phones also need LDAC turned on for the earbuds in their own Bluetooth settings (tap
-the gear next to the earbuds); other phones may have a similar switch. PairFree reminds you when you turn
+the codec. Samsung phones can also need LDAC turned on for the earbuds in their own Bluetooth settings
+(tap the gear next to the earbuds); other phones may have a similar switch. PairFree reminds you when you turn
 LDAC on: [details](docs/devices/soundpeats.md#ldac-on-samsung-phones).
 
 ## What is in the repo

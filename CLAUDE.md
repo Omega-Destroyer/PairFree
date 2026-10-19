@@ -205,6 +205,8 @@ Tested earbuds table in `docs/devices/soundpeats.md` is the summary. Specific op
 
 - Whether the Air5 Pro+ fit test gives a good result in a well-fitted ear: the only pair
   available has someone else's ear tips.
+- Whether every LDAC earbud needs the Samsung phone's own LDAC switch, or only some. It was on
+  for the H3 and off for the Air5 Pro+ on the same phone. Needs reports from others.
 - Whether `0x11` is the H3's Adaptive scene. The H3 lists levels `11` to `14`, not
   `15`, and does not answer the environment-adaptive GET `03 64`.
 - The EQ layout of every model except the H3 and Air5 Pro+. The official app downloads a
@@ -280,8 +282,8 @@ reports from other people.
 - The `ldac` switch only changes which codecs the earbuds advertise; the phone picks the
   codec, and no app can, nor read which one it plays (`docs/soundpeats/PROTOCOL.md` section 12).
   Samsung phones also need LDAC turned on for the earbuds in their own Bluetooth settings (the
-  device's gear, Codecs); the owner found on 2026-10-19 that this, not the earbuds, kept the Air5
-  Pro+ on AAC. The app reminds the user of it when LDAC is turned on (`LdacPhoneDialog`).
+  device's gear, Codecs); SoundPEATS pointed the owner to it on 2026-10-19, and it, not the earbuds,
+  kept the Air5 Pro+ on AAC. The app reminds the user of it when LDAC is turned on (`LdacPhoneDialog`).
 - The EQ is write-only (the H3 acknowledges each band with `0F 81 01`). The app sends the
   model's base curve plus the user's gains, or one of the model's presets as it is
   (`EqLayout` from the `eq` entry in `data/soundpeats/devices.json`), and remembers on the phone what

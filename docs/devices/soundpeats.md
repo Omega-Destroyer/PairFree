@@ -144,10 +144,16 @@ the codec it plays, and Samsung phones keep a switch of their own for it, per pa
 3. Under **Codecs**, turn on **LDAC**.
 
 Without it the phone plays AAC, and forcing LDAC in Developer options is refused, as happened with
-an Air5 Pro+ on a Galaxy S24 FE until the switch was turned on. Other phones may have a similar
-switch (on Pixel phones it is called HD audio). Android does not let apps read which codec the
+an Air5 Pro+ on a Galaxy S24 FE until the switch was turned on; SoundPEATS pointed to it. The same
+phone had the switch on for the H3 already. Other phones may have a similar switch (on Pixel phones
+it is called HD audio). Android does not let apps read which codec the
 phone uses, so PairFree cannot tell whether the phone followed; it reminds you of the switch when
 you turn LDAC on. On the Air5 Pro+, turning LDAC on also stops the earbuds offering aptX, so if
 the phone's switch stays off the sound falls back to AAC.
+
+Whether every pair of LDAC earbuds needs this switch, or only some, is not known yet. If you can
+help, open an issue with your phone, its Android version, your earbuds, whether the switch was on
+before you touched it, and which codec **Bluetooth Audio Codec** in Developer options shows with the
+switch on and off.
 
 Details: `docs/soundpeats/PROTOCOL.md` section 12.

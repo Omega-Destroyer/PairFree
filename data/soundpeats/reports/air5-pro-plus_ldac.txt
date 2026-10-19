@@ -58,7 +58,7 @@ Enabling LDAC on the Air5 Pro+ here lowers quality (removes aptX, lands on AAC).
 reports from other phones to tell whether it is Samsung-specific. Bug report sent to SoundPEATS.
 
 
----- Resolved 2026-10-19 (owner) ----
+---- Resolved 2026-10-19 (owner, pointed to it by SoundPEATS) ----
 
 The cause was the phone, not the earbuds: Samsung phones keep an LDAC switch per paired device
 (Settings > Connections > Bluetooth > the device's gear > Codecs > LDAC). It was off for the Air5 Pro+

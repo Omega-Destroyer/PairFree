@@ -48,7 +48,7 @@ PairFree needs Android 12 or later. AirPods need Android 17, or one of the few p
 Android 16 that already open their settings channel ([AirPods and Beats](docs/devices/apple.md)).
 
 PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS,
-Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing (and its CMF brand) or QCY. It was called SoundPeter until version 0.1.3, when it was still an app for
+Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing (and its CMF brand), QCY or 1MORE. It was called SoundPeter until version 0.1.3, when it was still an app for
 SOUNDPEATS earbuds alone.
 
 <p>
@@ -70,7 +70,7 @@ and from reports their owners send in. Each brand's page shows which models have
 
 | Piece                 | State |
 |-----------------------|-------|
-| Android app           | Released (v0.2.0) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats. Nothing, CMF and QCY come with the next release. |
+| Android app           | Released (v0.2.0) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats. Nothing, CMF, QCY and 1MORE come with the next release. |
 | Tried on real earbuds | SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40 |
 | Protocols             | One document, data set and test suite per brand, in `docs/<brand>/` and `data/<brand>/` |
 | iOS and Windows apps  | Planned, after Android |
@@ -92,6 +92,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [AirPods and Beats](docs/devices/apple.md) | 30 | — |
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | — |
 | [QCY](docs/devices/qcy.md) | 171 | — |
+| [1MORE](docs/devices/1more.md) | 39 | — |
 <!-- devices-summary:end -->
 
 **Known issue:** LDAC does not work on the Air5 Pro+, at least with a Samsung Galaxy S24 FE. If
@@ -121,11 +122,13 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 | `data/apple/commands.json` | Apple's accessory protocol as PairFree uses it with AirPods, from LibrePods |
 | `data/nothing/commands.json` | Nothing's command table, from Nothing X                      |
 | `data/qcy/commands.json`  | QCY's Bluetooth LE service and packet items, from QCY's app       |
+| `data/1more/commands.json` | 1MORE's command table, from 1MORE's app                          |
 | `tools/probe.py`          | Read-only probe for SOUNDPEATS earbuds. Asks them what they support. |
 | `tools/import_eq_capture.py` | Turns the equalizer part of a recording from PeatsAudio into a model's EQ data. |
 | `tools/import_openscq30.py` | Refreshes the Soundcore model list from a local copy of OpenSCQ30. |
 | `tools/import_galaxybudsclient.py` | Refreshes the Galaxy Buds model list from a local copy of GalaxyBudsClient. |
-| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore), `gen_samsung_table.py` (Samsung), `gen_sony_table.py` (Sony), `gen_bose_table.py` (Bose), `gen_jbl_table.py` (JBL), `gen_apple_table.py` (AirPods and Beats), `gen_nothing_table.py` (Nothing and CMF) and `gen_qcy_table.py` (QCY). |
+| `tools/import_1more_list.py` | Rewrites the 1MORE model list from a saved copy of 1MORE's product list. It fetches nothing. |
+| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore), `gen_samsung_table.py` (Samsung), `gen_sony_table.py` (Sony), `gen_bose_table.py` (Bose), `gen_jbl_table.py` (JBL), `gen_apple_table.py` (AirPods and Beats), `gen_nothing_table.py` (Nothing and CMF) and `gen_qcy_table.py` (QCY) and `gen_1more_table.py` (1MORE). |
 | `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
 | `tools/test_*.py`         | Tests for the tools and the data files. No hardware needed.       |
 | `assets/devices/<brand>/` | Vector drawings of each model's earbud and case, per look         |
@@ -143,7 +146,7 @@ first, a recording of the brand's own app, gives the most.
 
 This gathers everything in one go, from the brand's own app: PeatsAudio (or SOUNDPEATS) for
 SOUNDPEATS earbuds, Soundcore for Soundcore earbuds, Galaxy Wearable for Galaxy Buds, Sound
-Connect for Sony earbuds and headphones, Nothing X for Nothing and CMF (not yet Bose, JBL, AirPods, Beats or QCY: see their pages). It records what that app
+Connect for Sony earbuds and headphones, Nothing X for Nothing and CMF (not yet Bose, JBL, AirPods, Beats, QCY or 1MORE: see their pages). It records what that app
 reads from your earbuds and what it sends when you change a setting, which shows exactly how PairFree should set it, and adds PairFree's own device report. On
 SOUNDPEATS earbuds it also gets the equalizer curves and presets. It takes about ten minutes
 on your phone, with no computer.
@@ -187,7 +190,8 @@ the model number, firmware, battery and the settings they reported, for the
 lists the product, the firmware and each read's last answer, for the
 [Nothing and CMF table](docs/devices/nothing.md#all-models). On QCY earbuds it lists the model the
 earbuds advertise, the firmware and the last value of each setting PairFree read, for the
-[QCY table](docs/devices/qcy.md#all-models).
+[QCY table](docs/devices/qcy.md#all-models). On 1MORE earbuds and headphones it lists the model, the
+firmware and each read's last answer, for the [1MORE table](docs/devices/1more.md#all-models).
 
 ### Probe from a PC
 

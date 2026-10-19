@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker), Samsung Galaxy Buds, Sony, Bose, JBL, AirPods, Nothing (with CMF) and QCY are being added. The owner wants agents to do as much of the
+(Anker), Samsung Galaxy Buds, Sony, Bose, JBL, AirPods, Nothing (with CMF), QCY and 1MORE are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Where the truth lives
@@ -32,7 +32,7 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
 from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose`, `jbl`, `apple` (AirPods and the
-Beats on Apple's chips), `nothing` (Nothing and CMF) and `qcy`.
+Beats on Apple's chips), `nothing` (Nothing and CMF), `qcy` and `1more` (the Kotlin package is `onemore`).
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -191,6 +191,22 @@ Beats on Apple's chips), `nothing` (Nothing and CMF) and `qcy`.
   SDKs. After a change to `devices.json` run `python tools/gen_qcy_table.py`. Never send
   `QcyItem.NEVER_SEND` (resets, pairing, test, rename, restart, clock and alarm) or `JieliWire.NEVER_SEND`
   (reboot, system operations and writes).
+- `docs/1more/PROTOCOL.md` is 1MORE's protocol, read from 1MORE's app (2.0.0, decompiled outside the repo on
+  2026-10-18). No open-source project for it was found, and no 1MORE model has been tried with PairFree.
+  Frames are `11 01` (from the phone) or `01 00`, the command, the length and a sequence number (two bytes
+  each, high first), the XOR of those eight bytes, and the payload, over the standard serial port; reads and
+  writes are separate commands, and a write is answered with one result byte. 1MORE's app takes each model's
+  features from 1MORE's product list (`system/headphone/list`), which the owner let PairFree fetch once by
+  hand on 2026-10-18 (raw reply in `server_dump/1more/`, git-ignored); `data/1more/devices.json` keeps only
+  what the owner approved: the Bluetooth name, the product model, the control flags and the pictures' paths
+  (no burn-in code, Sound ID, OTA data or ids). Fetch the list again only with the owner's OK, by hand, never
+  from code in this repo; `python tools/import_1more_list.py` then rewrites `devices.json` from the saved reply. `data/1more/commands.json` and `devices.json` become `OneMoreWire`, `OneMoreCommand` and the
+  model list through `generateOneMoreTables`; `OneMoreSession` reads only what the model's entry lists and
+  shows each setting once its read answered. Models match by the whole Bluetooth name, as in 1MORE's app;
+  the S52 and S22Ultra are Tuya devices (`tuya`) and are not listed. `data/1more/test_vectors.json` holds
+  the frames 1MORE's app writes out in full. After a change to `devices.json` run
+  `python tools/gen_1more_table.py`. Never send `OneMoreCommand.NEVER_SEND` (handshake, AI licence, music
+  delete and upload).
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

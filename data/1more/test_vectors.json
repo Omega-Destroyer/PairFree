@@ -1,0 +1,27 @@
+{
+ "_about": "Frames 1MORE's app 2.0.0 writes as fixed text (module/spp/BluetoothOrderConstents.getCmdByType), each with its sequence number; PairFree's frame builder must give the same bytes for the same command, payload and sequence number. No 1MORE model has been recorded yet, so there are no replies here.",
+ "sent": [
+  {"command": "0063", "sequence": 1, "payload": "", "hex": "110100630000000172"},
+  {"command": "0062", "sequence": 1, "payload": "01", "hex": "11010062000100017201"},
+  {"command": "005F", "sequence": 1, "payload": "", "hex": "1101005f000000014e"},
+  {"command": "005E", "sequence": 1, "payload": "03", "hex": "1101005e000100014e03"},
+  {"command": "004E", "sequence": 1, "payload": "", "hex": "1101004e000000015f"},
+  {"command": "005B", "sequence": 310, "payload": "01", "hex": "1101005b000101367d01"},
+  {"command": "005A", "sequence": 1, "payload": "0100", "hex": "1101005a00020001490100"},
+  {"command": "0065", "sequence": 1, "payload": "", "hex": "110100650000000174"},
+  {"command": "0064", "sequence": 1, "payload": "02", "hex": "11010064000100017402"},
+  {"command": "0067", "sequence": 1, "payload": "", "hex": "110100670000000176"},
+  {"command": "006C", "sequence": 1, "payload": "", "hex": "1101006c000000017d"},
+  {"command": "006B", "sequence": 1, "payload": "01", "hex": "1101006b000100017b01"},
+  {"command": "0070", "sequence": 1, "payload": "", "hex": "110100700000000161"},
+  {"command": "006F", "sequence": 1, "payload": "00", "hex": "1101006f000100017f00"},
+  {"command": "0077", "sequence": 1, "payload": "", "hex": "110100770000000166"},
+  {"command": "0076", "sequence": 1, "payload": "01", "hex": "11010076000100016601"},
+  {"command": "0081", "sequence": 1, "payload": "", "hex": "110100810000000190"},
+  {"command": "0083", "sequence": 1, "payload": "", "hex": "110100830000000192"},
+  {"command": "0082", "sequence": 1, "payload": "01", "hex": "11010082000100019201"},
+  {"command": "0084", "sequence": 1, "payload": "0305", "hex": "1101008400020001970305"},
+  {"command": "0087", "sequence": 1, "payload": "", "hex": "110100870000000196"},
+  {"command": "003C", "sequence": 1, "payload": "", "hex": "1101003c000000012d"}
+ ]
+}

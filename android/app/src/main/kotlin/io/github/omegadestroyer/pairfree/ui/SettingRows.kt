@@ -223,6 +223,13 @@ private fun settingTitle(key: String): String = when (key) {
     "sleep_mode" -> stringResource(R.string.setting_sleep_mode)
     "wind_detection" -> stringResource(R.string.setting_wind_detection)
     "led" -> stringResource(R.string.setting_led)
+    "transparency_mode" -> stringResource(R.string.setting_transparency_mode)
+    "connection_mode" -> stringResource(R.string.setting_connection_mode)
+    "smart_playback" -> stringResource(R.string.setting_smart_playback)
+    "sleep_detection" -> stringResource(R.string.setting_sleep_detection)
+    "voice_command" -> stringResource(R.string.setting_voice_command)
+    "ear_return" -> stringResource(R.string.setting_ear_return)
+    "volume_limit" -> stringResource(R.string.setting_volume_limit)
     else -> touchTitle(key) ?: key
 }
 
@@ -266,6 +273,8 @@ private fun settingNote(key: String): String? = when (key) {
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
     "codec" -> stringResource(R.string.setting_codec_note)
     "sleep_mode" -> stringResource(R.string.setting_sleep_mode_note)
+    "connection_mode" -> stringResource(R.string.setting_connection_mode_note)
+    "ear_return" -> stringResource(R.string.setting_ear_return_note)
     else -> null
 }
 
@@ -277,6 +286,7 @@ private fun optionName(key: String, option: String): String = when {
             "adaptive" -> R.string.scene_adaptive
             "high" -> R.string.setting_level_high
             "mid" -> R.string.setting_level_mid
+            "wind" -> R.string.scene_wind
             else -> R.string.setting_level_low
         },
     )
@@ -297,6 +307,33 @@ private fun optionName(key: String, option: String): String = when {
             "commuting" -> R.string.setting_scene_commuting
             "noisy" -> R.string.setting_scene_noisy
             else -> R.string.scene_wind
+        },
+    )
+    key == "transparency_mode" -> stringResource(
+        when (option) {
+            "pass_through" -> R.string.setting_transparency_pass_through
+            "voice" -> R.string.setting_transparency_voice
+            else -> R.string.setting_transparency_normal
+        },
+    )
+    key == "connection_mode" -> when (option) {
+        "ldac" -> "LDAC"
+        "game" -> stringResource(R.string.action_game_mode)
+        else -> stringResource(R.string.setting_connection_standard)
+    }
+    key == "smart_playback" -> stringResource(
+        when (option) {
+            "pause_play" -> R.string.setting_playback_pause_play
+            "pause" -> R.string.setting_playback_pause
+            else -> R.string.setting_level_off
+        },
+    )
+    key == "ear_return" || key == "volume_limit" -> stringResource(
+        when (option) {
+            "off" -> R.string.setting_level_off
+            "low" -> R.string.setting_level_low
+            "medium" -> R.string.setting_level_medium
+            else -> R.string.setting_level_high
         },
     )
     key == "codec" -> when (option) {
@@ -320,6 +357,8 @@ private fun optionName(key: String, option: String): String = when {
             "eq_preset" -> R.string.action_eq_preset
             "bass_boost" -> R.string.action_bass_boost
             "treble_boost" -> R.string.action_treble_boost
+            "previous_next" -> R.string.action_previous_next
+            "volume" -> R.string.action_volume
             else -> R.string.action_other
         },
     )

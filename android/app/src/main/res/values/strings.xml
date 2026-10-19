@@ -474,4 +474,22 @@
     <string name="factory_reset">Factory reset</string>
     <string name="factory_reset_title">Factory reset the earbuds?</string>
     <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this phone; then pair them again in the Bluetooth settings.</string>
+    <string name="eq_onemore">PairFree cannot set the equalizer of 1MORE earbuds and headphones yet.</string>
+    <string name="setting_transparency_mode">Transparency mode</string>
+    <string name="setting_transparency_normal">Transparency</string>
+    <string name="setting_transparency_pass_through">Pass-through</string>
+    <string name="setting_transparency_voice">Voice enhancement</string>
+    <string name="setting_connection_mode">Connection mode</string>
+    <string name="setting_connection_mode_note">Game mode lowers the delay of the sound; LDAC raises its quality where your phone supports it. Your phone still picks the codec when the earbuds connect.</string>
+    <string name="setting_connection_standard">Standard</string>
+    <string name="setting_smart_playback">When you take them out</string>
+    <string name="setting_playback_pause_play">Pause, and play again when put back in</string>
+    <string name="setting_playback_pause">Pause only</string>
+    <string name="setting_sleep_detection">Sleep detection</string>
+    <string name="setting_voice_command">Voice commands</string>
+    <string name="setting_ear_return">Hear your own voice</string>
+    <string name="setting_ear_return_note">Plays your voice from the microphone back to you, so you can hear yourself while you talk.</string>
+    <string name="setting_volume_limit">Volume limit</string>
+    <string name="action_previous_next">Previous or next track</string>
+    <string name="action_volume">Volume</string>
 </resources>

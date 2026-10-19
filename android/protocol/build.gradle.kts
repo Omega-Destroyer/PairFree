@@ -1180,8 +1180,97 @@ val generateQcyTables = tasks.register<GenerateQcyTables>("generateQcyTables") {
     outputDir = layout.buildDirectory.dir("generated/qcy")
 }
 
+/** Writes 1MORE's commands, frame constants and models from data/1more. */
+abstract class GenerateOneMoreTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\$") + "\""
+        fun strings(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/1more by the generateOneMoreTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val frame = commands.getValue("frame") as Map<String, Any?>
+        out.appendLine("/** The frame's constants (data/1more/commands.json, frame). */")
+        out.appendLine("public object OneMoreWire {")
+        out.appendLine("    /** The serial service 1MORE's app opens: the standard serial port. */")
+        out.appendLine("    public const val SERVICE_UUID: String = ${str(frame["service_uuid"])}")
+        out.appendLine("    /** The first two bytes of a frame from the phone ... */")
+        out.appendLine("    public const val SENT: Int = 0x${frame["sent"]}")
+        out.appendLine("    /** ... and of one from the earbuds. */")
+        out.appendLine("    public const val REPLY: Int = 0x${frame["reply"]}")
+        out.appendLine("    public const val HEADER: Int = ${(frame["header"] as Number).toInt()}")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val list = commands.getValue("commands") as List<Map<String, Any?>>
+        out.appendLine("/** 1MORE's commands (data/1more/commands.json), by the names 1MORE's app gives them. */")
+        out.appendLine("public object OneMoreCommand {")
+        val seen = mutableSetOf<String>()
+        for (c in list) {
+            val name = c.getValue("name") as String
+            check(seen.add(name)) { "two commands named $name" }
+            out.appendLine("    public const val $name: Int = 0x${c["code"]}")
+        }
+        out.appendLine("    /** The handshake, the AI licence read, and deleting or uploading music: never sent. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${list.filter { it["never_send"] == true }.joinToString(", ") { "0x${it["code"]}" }})")
+        out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${list.joinToString(", ") { "0x${it["code"]} to ${str(it["name"])}" }})")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/1more/devices.json. */")
+        out.appendLine("internal val ONEMORE_MODELS: List<OneMoreModel> = listOf(")
+        for (d in devices) {
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headphones" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            out.appendLine("    OneMoreModel(")
+            out.appendLine("        ${str(d["name"])}, ${str(d["model"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, case = ${d["case"]}, tuya = ${d["tuya"]},")
+            out.appendLine("        listenModes = ${strings(d["listen_modes"])}, connection = ${strings(d["connection"])},")
+            out.appendLine("        autoplay = ${d["autoplay"]}, spatialAudio = ${d["spatial_audio"]}, sleepDetection = ${d["sleep_detection"]}, dualDevice = ${d["dual_device"]}, hotWord = ${d["hot_word"]},")
+            out.appendLine("        touch = ${d["touch"]?.let(::str) ?: "null"}, touchAssistant = ${d["touch_assistant"]}, eq = ${strings(d["eq"])},")
+            out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]},")
+            out.appendLine("    ),")
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("OneMoreTables.kt").writeText(out.toString())
+    }
+}
+
+val generateOneMoreTables = tasks.register<GenerateOneMoreTables>("generateOneMoreTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/1more/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/1more/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.onemore"
+    outputDir = layout.buildDirectory.dir("generated/onemore")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
+    kotlin.srcDir(generateOneMoreTables)
     kotlin.srcDir(generateQcyTables)
     kotlin.srcDir(generateNothingTables)
     kotlin.srcDir(generateAppleTables)

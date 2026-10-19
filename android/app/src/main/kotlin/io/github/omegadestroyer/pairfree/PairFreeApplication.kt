@@ -26,6 +26,7 @@ import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
@@ -111,7 +112,8 @@ class Hub(private val app: Application) {
      * (docs/jbl/PROTOCOL.md); AirPods and Apple-chip Beats by Apple's accessory service, else "AirPods"
      * in the name (docs/apple/PROTOCOL.md); Nothing's and CMF's by Nothing's control service, else the name
      * (docs/nothing/PROTOCOL.md); QCY's by the name (docs/qcy/PROTOCOL.md), the model by the advert once
-     * PairFree looks for it. Empty without the permission or with Bluetooth off.
+     * PairFree looks for it; 1MORE's by the whole name, as 1MORE's app matches it (docs/1more/PROTOCOL.md).
+     * Empty without the permission or with Bluetooth off.
      */
     @SuppressLint("MissingPermission") // checked first
     fun pairedEarbuds(): List<Paired> {
@@ -125,6 +127,7 @@ class Hub(private val app: Application) {
                 val samsung = SamsungModels.fromName(name)
                 val sony = SonyModels.identify(name, uuids)
                 val jbl = JblModels.fromName(name)
+                val oneMore = OneMoreModels.identify(name)
                 when {
                     soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore.service, soundcore.model)
                     samsung != null -> Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model)
@@ -135,6 +138,7 @@ class Hub(private val app: Application) {
                     NothingModels.identify(name, uuids) ->
                         Paired(d.address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)
                     QcyModels.identify(name) -> Paired(d.address, name, Brand.QCY, model = QcyModels.fromName(name).singleOrNull()?.code)
+                    oneMore != null -> Paired(d.address, name, Brand.ONEMORE, model = oneMore.name)
                     Models.isSupported(d.name ?: "") -> Paired(d.address, name)
                     else -> null
                 }

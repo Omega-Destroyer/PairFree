@@ -6,7 +6,7 @@ usage: python tools/device_pages.py          rewrite every generated table
 Each brand has a page under docs/devices/ listing every model PairFree knows, with a table
 generated from the brand's data: tools/gen_models_table.py for SOUNDPEATS,
 tools/gen_soundcore_table.py for Soundcore, tools/gen_samsung_table.py for Samsung,
-tools/gen_sony_table.py for Sony, tools/gen_bose_table.py for Bose, tools/gen_jbl_table.py for JBL, tools/gen_apple_table.py for AirPods and Beats, tools/gen_nothing_table.py for Nothing and CMF and tools/gen_qcy_table.py for QCY. The README shows one summary row per brand that
+tools/gen_sony_table.py for Sony, tools/gen_bose_table.py for Bose, tools/gen_jbl_table.py for JBL, tools/gen_apple_table.py for AirPods and Beats, tools/gen_nothing_table.py for Nothing and CMF, tools/gen_qcy_table.py for QCY and tools/gen_1more_table.py for 1MORE. The README shows one summary row per brand that
 links to its page. Running either generator rewrites all of them, so they never disagree.
 """
 import sys
@@ -25,6 +25,7 @@ HELP = TO_ROOT + "README.md#help-add-your-model"
 
 def brands():
     """The generator for each brand, in the order the README lists them."""
+    import gen_1more_table
     import gen_apple_table
     import gen_bose_table
     import gen_jbl_table
@@ -34,7 +35,7 @@ def brands():
     import gen_samsung_table
     import gen_sony_table
     import gen_soundcore_table
-    return [gen_models_table, gen_soundcore_table, gen_samsung_table, gen_sony_table, gen_bose_table, gen_jbl_table, gen_apple_table, gen_nothing_table, gen_qcy_table]
+    return [gen_models_table, gen_soundcore_table, gen_samsung_table, gen_sony_table, gen_bose_table, gen_jbl_table, gen_apple_table, gen_nothing_table, gen_qcy_table, gen_1more_table]
 
 
 def summary():

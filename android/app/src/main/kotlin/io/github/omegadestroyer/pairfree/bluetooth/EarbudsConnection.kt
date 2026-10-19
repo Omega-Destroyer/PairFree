@@ -30,6 +30,10 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.JblP4Packet
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblReader
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreFrame
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreParser
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingParser
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingSession
@@ -79,7 +83,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
-enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, QCY }
+enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, QCY, ONEMORE }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
@@ -87,7 +91,8 @@ enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHI
  * model number, from the earbuds' service or name ([SoundcoreModels.identify]), the Galaxy
  * Buds model number from the name ([SamsungModels.fromName]), or the Sony model from the name
  * ([SonyModels.identify]), null for a Sony model not in the table, the JBL model's name
- * ([JblModels.fromName]), or the Nothing model's product id from the name ([NothingModels.fromName]).
+ * ([JblModels.fromName]), the Nothing model's product id from the name ([NothingModels.fromName]), or the
+ * 1MORE model's name ([OneMoreModels.identify]).
  */
 data class Paired(
     val address: String,
@@ -125,8 +130,8 @@ sealed interface LinkStatus {
  * Buds go through a [SamsungSession] the same way, and their settings beyond the shared ones
  * come out as [settings]; Sony earbuds and headphones through a [SonySession], Bose's through a
  * [BoseSession], JBL's through a [JblSession], over Bluetooth LE ([GattLink]) for most of them, and
- * AirPods and Apple-chip Beats through an [AppleSession] over L2CAP ([AppleLink]), and Nothing's and CMF's
- * through a [NothingSession]. [context] opens LE connections.
+ * AirPods and Apple-chip Beats through an [AppleSession] over L2CAP ([AppleLink]), Nothing's and CMF's
+ * through a [NothingSession], and 1MORE's through a [OneMoreSession]. [context] opens LE connections.
  */
 class EarbudsConnection(
     private val scope: CoroutineScope,
@@ -210,6 +215,12 @@ class EarbudsConnection(
     /** The QCY session, while connected to QCY earbuds or headphones; for the device report. */
     val qcySession: QcyControl? get() = qcy
 
+    private var oneMore: OneMoreSession? = null   // set while connected to 1MORE earbuds or headphones
+    private var oneMoreQueue: Channel<OneMoreFrame>? = null
+
+    /** The 1MORE session, while connected to 1MORE earbuds or headphones; for the device report. */
+    val oneMoreSession: OneMoreSession? get() = oneMore
+
     private val _sonyEq = MutableStateFlow<SonyEq?>(null)
 
     /** The Sony equalizer as the earbuds last reported it; the Sound tab follows it. */
@@ -235,6 +246,7 @@ class EarbudsConnection(
         nothing = null
         qcy = null
         qcyFound = null
+        oneMore = null
         _sonyEq.value = null
         _settings.value = emptyList()
         _samsungStatus.value = null
@@ -292,6 +304,7 @@ class EarbudsConnection(
                     Brand.APPLE -> serveApple(opened)
                     Brand.NOTHING -> serveNothing(opened, device)
                     Brand.QCY -> serveQcy(opened)
+                    Brand.ONEMORE -> serveOneMore(opened, device)
                     Brand.SOUNDPEATS -> serve(opened, device)
                 }
                 log?.invoke("closed")
@@ -776,6 +789,76 @@ class EarbudsConnection(
         if (qcyQueue === queue) qcyQueue = null
     }
 
+    /**
+     * 1MORE earbuds and headphones over the standard serial port (docs/1more/PROTOCOL.md section 3): one command
+     * at a time, each waiting for its answer (or [ONEMORE_REPLY_MS]). The earbuds answer a read with the same
+     * command and a write with success or failure.
+     */
+    private suspend fun serveOneMore(opened: ControlLink, device: Paired) = coroutineScope {
+        val session = OneMoreSession(OneMoreModels.identify(device.model ?: device.name) ?: OneMoreModels.identify(device.name))
+        oneMore = session
+        val queue = Channel<OneMoreFrame>(Channel.UNLIMITED)
+        val answered = Channel<OneMoreFrame>(Channel.UNLIMITED)
+        oneMoreQueue = queue
+        val sender = launch {
+            try {
+                for (frame in queue) {
+                    if (!session.allowed(frame)) continue
+                    while (answered.tryReceive().isSuccess) Unit
+                    opened.send(frame.bytes())
+                    withTimeoutOrNull(ONEMORE_REPLY_MS) {
+                        while (!session.answers(frame, answered.receive())) Unit
+                    }
+                    delay(ONEMORE_GAP_MS)
+                }
+            } catch (_: IOException) {
+                // the channel closed; the reader below notices too
+            }
+        }
+        session.start().forEach(queue::trySend)
+        val poll = launch {
+            while (true) {
+                delay(BATTERY_POLL_MS)
+                session.batteryRequests().forEach(queue::trySend)
+            }
+        }
+        try {
+            val parser = OneMoreParser()
+            opened.reads().collect { bytes ->
+                for (frame in parser.feed(bytes)) guardPacket {
+                    log?.invoke("recv $frame")
+                    if (session.receive(frame)) publish(session)
+                    answered.trySend(frame)
+                    session.takeOutbox().forEach(queue::trySend)
+                }
+            }
+        } catch (_: IOException) {
+        }
+        poll.cancel()
+        sender.cancel()
+        queue.close()
+        if (oneMoreQueue === queue) oneMoreQueue = null
+    }
+
+    private fun publish(session: OneMoreSession) {
+        _state.value = session.state
+        _settings.value = session.groups
+    }
+
+    /** Queues 1MORE frames on the open channel, then [READ_BACK_MS] later the reads that confirm them. False when there is none. */
+    private fun sendOneMore(session: OneMoreSession, frames: List<OneMoreFrame>): Boolean {
+        val reads = session.takeReadBacks()
+        if (_status.value !is LinkStatus.Connected) return false
+        val queue = oneMoreQueue ?: return false
+        val s = this.session ?: return false
+        frames.forEach(queue::trySend)
+        s.launch {
+            delay(READ_BACK_MS)
+            reads.forEach(queue::trySend)
+        }
+        return true
+    }
+
     private fun publish(session: QcyControl) {
         _state.value = session.state
         _settings.value = session.groups
@@ -880,6 +963,11 @@ class EarbudsConnection(
 
     /** Changes one of the [settings]: it shows at once, and the earbuds' acknowledgement or next state confirms it. */
     fun changeSetting(change: SettingChange) {
+        oneMore?.let { session ->
+            val frames = session.change(change) ?: return
+            if (sendOneMore(session, frames)) publish(session)
+            return
+        }
         qcy?.let { session ->
             val messages = session.change(change) ?: return
             if (sendQcy(session, messages)) publish(session)
@@ -928,6 +1016,11 @@ class EarbudsConnection(
     fun set(command: Command, vararg payload: Int) {
         // Bose's settings are all brand rows (changeSetting); nothing of the shared commands goes to them.
         if (bose != null) return
+        oneMore?.let { session ->
+            val frames = session.set(command, payload.singleOrNull() ?: return) ?: return
+            if (sendOneMore(session, frames)) publish(session)
+            return
+        }
         qcy?.let { session ->
             val messages = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (sendQcy(session, messages)) publish(session)
@@ -976,7 +1069,7 @@ class EarbudsConnection(
      */
     fun sendEq(frames: List<ByteArray>) {
         if (_status.value !is LinkStatus.Connected) return
-        if (bose != null || jbl != null || apple != null || nothing != null || qcy != null) return
+        if (bose != null || jbl != null || apple != null || nothing != null || qcy != null || oneMore != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
@@ -1009,7 +1102,7 @@ class EarbudsConnection(
             if (send(session.frames(packets), then = null)) publish(session)
             return
         }
-        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || qcy != null) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || qcy != null || oneMore != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -1038,7 +1131,7 @@ class EarbudsConnection(
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || qcy != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || qcy != null || oneMore != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -1102,6 +1195,8 @@ class EarbudsConnection(
         nothingQueue = null
         qcy = null
         qcyQueue = null
+        oneMore = null
+        oneMoreQueue = null
         session?.cancel()
         session = null
         _status.value = LinkStatus.Idle
@@ -1175,6 +1270,12 @@ class EarbudsConnection(
 
         /** Between QCY messages, as SOUNDPEATS' app leaves between its writes. */
         const val QCY_GAP_MS = 50L
+
+        /** How long a 1MORE command waits for its answer before the next goes. 1MORE's app does not wait; PairFree waits as for Nothing's. */
+        const val ONEMORE_REPLY_MS = 1_000L
+
+        /** Between 1MORE frames, as SOUNDPEATS' app leaves between its writes. */
+        const val ONEMORE_GAP_MS = 50L
 
         /** LibrePods leaves 200 ms between its opening frames ... */
         const val APPLE_GAP_MS = 200L

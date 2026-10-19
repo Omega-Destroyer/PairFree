@@ -16,6 +16,7 @@ import io.github.omegadestroyer.pairfree.capture.BugReport
 import io.github.omegadestroyer.pairfree.capture.Capture
 import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
@@ -31,6 +32,7 @@ import io.github.omegadestroyer.pairfree.protocol.RecordedBrand
 import io.github.omegadestroyer.pairfree.protocol.RecordingReport
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
@@ -92,6 +94,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
      * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
      */
     fun openEqualizer(device: Paired, model: Model?) {
+        if (device.brand != Brand.NOTHING) nothingEq = null
+        if (device.brand == Brand.NOTHING) {
+            soundcoreEq = null
+            samsungEq = null
+            sonyEq = null
+            openNothingEq(device, model)
+            return
+        }
         if (device.brand == Brand.SONY) {
             soundcoreEq = null
             samsungEq = null
@@ -118,6 +128,34 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         soundcoreEq = target
         equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
         connection.soundcoreState.value?.let(::reportEq)
+    }
+
+    /** The Nothing EQ while the Sound tab shows Nothing or CMF earbuds whose model PairFree knows. */
+    private var nothingEq: NothingEqTarget? = null
+
+    /**
+     * Nothing earbuds name their model in their first answers; the Sound tab's EQ opens once they have, with the
+     * model's presets and custom curve, and follows what they report from then on.
+     */
+    private fun openNothingEq(device: Paired, model: Model?) {
+        val session = connection.nothingSession
+        if (session == null || session.model == null || (session.eqPresets.isEmpty() && session.simpleEqFilters == null)) {
+            nothingEq = null
+            equalizer.open(device.address, null)
+            return
+        }
+        if (nothingEq?.session === session && equalizer.state.value != null) return
+        val target = NothingEqTarget(session)
+        nothingEq = target
+        equalizer.open(device.address, model, target.layout, target)
+        connection.nothingEq.value?.let(::reportNothingEq)
+    }
+
+    private fun reportNothingEq(eq: NothingEq) {
+        val target = nothingEq ?: return
+        val current = equalizer.state.value?.setting?.gains ?: return
+        val (profile, gains) = target.reported(eq, current) ?: return
+        equalizer.reported(profile, gains)
     }
 
     /** The Sony EQ while the Sound tab shows Sony earbuds, with the EQ and the earbuds it was opened for. */
@@ -193,6 +231,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             }
         }
         viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
+        // Nothing earbuds name their model, then report their EQ: open it once they have, then follow what they hold.
+        viewModelScope.launch {
+            connection.nothingEq.collect { eq ->
+                val device = connectedDevice() ?: return@collect
+                if (device.brand != Brand.NOTHING || eq == null) return@collect
+                openNothingEq(device, modelOf(device, connection.state.value))
+                reportNothingEq(eq)
+            }
+        }
         // Sony earbuds tell their EQ bit by bit: open it once they have, then follow what they hold.
         viewModelScope.launch {
             connection.sonyEq.collect { eq ->

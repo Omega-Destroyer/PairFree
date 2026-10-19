@@ -29,6 +29,7 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.JblP4
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblP4Packet
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblReader
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreFrame
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
@@ -205,8 +206,13 @@ class EarbudsConnection(
     private var nothing: NothingSession? = null   // set while connected to Nothing or CMF earbuds or headphones
     private var nothingQueue: Channel<NothingFrame>? = null
 
-    /** The Nothing session, while connected to Nothing or CMF earbuds or headphones; for the device report. */
+    /** The Nothing session, while connected to Nothing or CMF earbuds or headphones; for the device report and the EQ. */
     val nothingSession: NothingSession? get() = nothing
+
+    private val _nothingEq = MutableStateFlow<NothingEq?>(null)
+
+    /** The Nothing or CMF EQ as the earbuds last reported it; the Sound tab follows it. */
+    val nothingEq: StateFlow<NothingEq?> = _nothingEq.asStateFlow()
 
     private var qcy: QcyControl? = null   // set while connected to QCY earbuds or headphones
     private var qcyQueue: Channel<ByteArray>? = null
@@ -244,6 +250,7 @@ class EarbudsConnection(
         jbl = null
         apple = null
         nothing = null
+        _nothingEq.value = null
         qcy = null
         qcyFound = null
         oneMore = null
@@ -881,6 +888,7 @@ class EarbudsConnection(
     private fun publish(session: NothingSession) {
         _state.value = session.state
         _settings.value = session.groups
+        _nothingEq.value = session.eq
     }
 
     /** Queues Nothing frames on the open channel, then [READ_BACK_MS] later the reads that confirm them. False when there is none. */
@@ -1069,7 +1077,13 @@ class EarbudsConnection(
      */
     fun sendEq(frames: List<ByteArray>) {
         if (_status.value !is LinkStatus.Connected) return
-        if (bose != null || jbl != null || apple != null || nothing != null || qcy != null || oneMore != null) return
+        // Nothing's EQ target hands over its session's frames as bytes; they go through the Nothing link's queue.
+        nothing?.let { session ->
+            val parsed = frames.flatMap { NothingParser().feed(it) }
+            if (sendNothing(session, parsed)) publish(session)
+            return
+        }
+        if (bose != null || jbl != null || apple != null || qcy != null || oneMore != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq

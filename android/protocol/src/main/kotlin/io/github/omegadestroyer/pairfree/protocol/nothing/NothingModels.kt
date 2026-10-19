@@ -28,7 +28,8 @@ public data class NothingModel(
 /**
  * What a model has on one firmware range, from the table Nothing X bundles (docs/nothing/PROTOCOL.md
  * section 6). [anc] lists the noise modes (high, mid, low, adaptive, transparency, off); [codecs] the
- * high-quality codecs (lhdc, ldac) beside the standard ones.
+ * high-quality codecs (lhdc, ldac) beside the standard ones; [simpleEq] the custom EQ's three filters, where
+ * the model has one.
  */
 public data class NothingConfig(
     val minFirmware: String?,
@@ -41,6 +42,7 @@ public data class NothingConfig(
     val earDetection: Boolean,
     val lowLatency: Boolean,
     val gestures: List<NothingGesture>,
+    val simpleEq: NothingSimpleEq? = null,
 ) {
     /**
      * True when [firmware] is in this range. Nothing X's ranges name the last two fields ("*.*.1.74"),
@@ -58,6 +60,19 @@ public data class NothingConfig(
 
     private fun compare(a: List<Int>, b: List<Int>): Int = if (a[0] != b[0]) a[0].compareTo(b[0]) else a[1].compareTo(b[1])
 }
+
+/**
+ * The custom EQ Nothing X calls simple (docs/nothing/PROTOCOL.md section 5): a low shelf, a peak and a high
+ * shelf at these frequencies (Hz) and Qs, from the feature table's customEQ.
+ */
+public data class NothingSimpleEq(
+    val lowHz: Double,
+    val lowQ: Double,
+    val peakHz: Double,
+    val peakQ: Double,
+    val highHz: Double,
+    val highQ: Double,
+)
 
 /**
  * One gesture Nothing X lets the user set: on [device] (2 an earbud, which the app writes to the left, 2,

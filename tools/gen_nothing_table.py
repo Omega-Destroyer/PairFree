@@ -60,6 +60,8 @@ def features(config):
     out = []
     if config["eq_presets"]:
         out.append("EQ presets")
+    if "simple_eq" in config:
+        out.append("custom EQ")
     if config["bass_boost"]:
         out.append("bass boost")
     if config["spatial_audio"]:

@@ -186,10 +186,17 @@ class NothingTest {
     fun soundSettings() {
         val s = session("B184")
         s.receive(reply(NothingCommand.GET_EQ_MODE, "0300"))
-        assertEquals(Setting.Choice("eq_preset", "bass", listOf("balanced", "bass", "treble", "voice")), setting(s, "eq_preset"))
-        val eq = s.change(SettingChange.Choice("eq_preset", "voice"))!!.single()
+        // A known model's presets are on the Sound tab's equalizer, not a row.
+        assertNull(setting(s, "eq_preset"))
+        assertEquals(NothingEq("bass", false, null), s.eq)
+        assertEquals(listOf("balanced", "bass", "treble", "voice"), s.eqPresets)
+        val eq = s.eqPreset("voice")!!.single()
         assertEquals(NothingCommand.SET_EQ_MODE, eq.command)
         assertEquals("0100", hex(eq.payload))
+        // A model PairFree does not know keeps the row.
+        val unknown = NothingSession()
+        unknown.receive(reply(NothingCommand.GET_EQ_MODE, "0300"))
+        assertEquals(Setting.Choice("eq_preset", "bass", listOf("balanced", "bass", "treble", "voice")), setting(unknown, "eq_preset"))
         s.receive(reply(NothingCommand.GET_BASS_BOOST, "0003"))
         assertEquals(Setting.Toggle("bass_boost", false), setting(s, "bass_boost"))
         assertNull(setting(s, "bass_level"), "the level shows while Ultra Bass is on")
@@ -198,16 +205,44 @@ class NothingTest {
         s.receive(reply(NothingCommand.GET_SPATIAL_AUDIO, "00"))
         assertEquals("01", hex(s.change(SettingChange.Toggle("spatial_audio", true))!!.single().payload))
         assertNull(setting(s, "head_tracking"), "earbuds have no head tracking")
-        // Dirac models (eq 0 in Nothing X's table) have no presets PairFree knows.
+        // Dirac models (eq 0 in Nothing X's table) have no presets PairFree knows, but the custom curve.
         val dirac = session("B172")
         dirac.receive(reply(NothingCommand.GET_EQ_MODE, "0000"))
         assertNull(setting(dirac, "eq_preset"))
+        assertTrue(dirac.eqPresets.isEmpty())
+        assertNotNull(dirac.simpleEqFilters)
         // Headphones with head tracking write both bytes.
         val hp = session("B170")
         hp.receive(reply(NothingCommand.GET_SPATIAL_AUDIO, "0100"))
         val ht = setting(hp, "head_tracking") as Setting.Toggle
         assertTrue(ht.enabled)
         assertEquals("0101", hex(hp.change(SettingChange.Toggle("head_tracking", true))!!.single().payload))
+    }
+
+    @Test
+    fun theCustomEqAsNothingXWritesIt() {
+        val s = session("B155")
+        assertTrue(NothingCommand.GET_CUSTOM_EQ_VALUE in NothingSession(NothingModels.of("B155")).start().map { it.command })
+        assertEquals(NothingSimpleEq(140.0, 0.8, 980.0, 0.7, 3400.0, 1.0), s.simpleEqFilters)
+        s.receive(reply(NothingCommand.GET_EQ_MODE, "0000"))
+        // Bass +3, mid -2, treble +6: the custom mode first, then mid, treble and bass with a total gain of -6,
+        // as little-endian floats, and the zeros Nothing X's buffer leaves at the end (computed in Python).
+        val frames = s.eqCustom(listOf(3, -2, 6))!!
+        assertEquals(listOf(NothingCommand.SET_EQ_MODE, NothingCommand.SET_CUSTOM_EQ), frames.map { it.command })
+        assertEquals("0500", hex(frames[0].payload))
+        assertEquals(
+            "030000c0c001000000c0000075443333333f020000c040008054450000803f000000404000000c43cdcc4c3f000000000000000000",
+            hex(frames[1].payload),
+        )
+        assertEquals(listOf(NothingCommand.GET_EQ_MODE, NothingCommand.GET_CUSTOM_EQ_VALUE), s.takeReadBacks().map { it.command })
+        // Once custom, only the curve goes.
+        assertEquals(listOf(NothingCommand.SET_CUSTOM_EQ), s.eqCustom(listOf(0, 0, 0))!!.map { it.command })
+        // The earbuds report the curve as they hold it, in their order.
+        s.receive(reply(NothingCommand.GET_CUSTOM_EQ_VALUE, "030000c0c001000000c0000075443333333f020000c040008054450000803f000000404000000c43cdcc4c3f"))
+        s.receive(reply(NothingCommand.GET_EQ_MODE, "0500"))
+        assertEquals(NothingEq(null, true, listOf(3, -2, 6)), s.eq)
+        // The Ear (1) has presets only.
+        assertNull(session("B181").eqCustom(listOf(0, 0, 0)))
     }
 
     @Test

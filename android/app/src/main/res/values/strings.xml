@@ -411,7 +411,7 @@
     <string name="setting_sleep_mode_note">Turns the touch controls off, so lying on an earbud does not pause the music.</string>
     <string name="setting_wind_detection">Wind noise detection</string>
     <string name="setting_led">Status light</string>
-    <string name="eq_nothing">Nothing\'s equalizer presets are below, where the model has them. PairFree cannot set a custom equalizer curve on these earbuds yet.</string>
+    <string name="eq_nothing">PairFree shows the equalizer once the earbuds have said which model they are, for the models it knows.</string>
     <string name="setting_noise_strength">Noise cancelling strength</string>
     <string name="setting_level_mid">Mid</string>
     <string name="setting_eq_preset">Equalizer</string>

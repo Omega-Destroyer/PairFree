@@ -57,6 +57,7 @@ public class NothingSession(private val hint: NothingModel? = null) {
     private var noiseMode: Int? = null      // the mode in effect (group 1 of the noise report)
     private var noiseLevel: Int? = null     // the cancelling strength to go back to (group 2)
     private var eqMode: Int? = null
+    private var customEq: Map<Int, Int>? = null   // the custom EQ's gain by filter type, whole dB
     private var bass: Pair<Boolean, Int>? = null
     private var spatial: ByteArray? = null
     private var codec: Int? = null
@@ -85,6 +86,7 @@ public class NothingSession(private val hint: NothingModel? = null) {
         // Nothing X asks for the noise report's three groups.
         add(frame(NothingCommand.GET_CURRENT_NOISE_REDUCTION, NOISE_GROUPS))
         add(frame(NothingCommand.GET_EQ_MODE))
+        if (hasSimpleEq) add(frame(NothingCommand.GET_CUSTOM_EQ_VALUE))
         add(frame(NothingCommand.GET_EXTRA_FEATURE_STATUS))
         add(frame(NothingCommand.GET_HOST_LAG_MODE))
         add(frame(NothingCommand.GET_BASS_BOOST))
@@ -158,6 +160,7 @@ public class NothingSession(private val hint: NothingModel? = null) {
             NothingCommand.GET_REMOTE_BATTERY_LEVEL -> battery(p)
             NothingCommand.GET_CURRENT_NOISE_REDUCTION -> noise(p)
             NothingCommand.GET_EQ_MODE -> eqMode = le(p)
+            NothingCommand.GET_CUSTOM_EQ_VALUE -> customEq = simpleEq(p)
             NothingCommand.GET_EXTRA_FEATURE_STATUS -> pairs(p).firstOrNull { it.first == FEATURE_WEAR_DETECT }?.let { earDetection = it.second == 1 }
             NothingCommand.GET_HOST_LAG_MODE -> lowLag = p.u8(0) == LAG_ON
             NothingCommand.GET_BASS_BOOST -> bass = (p.u8(0) == 1) to (if (p.size > 1) p.u8(1) else BASS_MIN).coerceIn(BASS_MIN, BASS_MAX)
@@ -201,6 +204,78 @@ public class NothingSession(private val hint: NothingModel? = null) {
                 NOISE_LEVEL -> if (value in LEVELS.values) noiseLevel = value
             }
         }
+    }
+
+    /**
+     * The custom EQ as Nothing X reads it (CustomEQ): a count, the total gain (a float), then per filter its
+     * type (0 low shelf, 1 peak, 2 high shelf) and its gain, frequency and Q as little-endian floats.
+     */
+    private fun simpleEq(p: ByteArray): Map<Int, Int>? {
+        val n = p.u8(0)
+        if (p.size < SIMPLE_EQ_HEAD + n * SIMPLE_EQ_FILTER) return null
+        return (0 until n).associate { i ->
+            val at = SIMPLE_EQ_HEAD + i * SIMPLE_EQ_FILTER
+            p.u8(at) to floatLe(p, at + 1).roundToIntSafe()
+        }
+    }
+
+    private fun Float.roundToIntSafe(): Int = if (isNaN()) 0 else (if (this < 0) this - 0.5f else this + 0.5f).toInt()
+
+    private fun floatLe(p: ByteArray, at: Int): Float = Float.fromBits(le(p.copyOfRange(at, at + 4)))
+
+    private fun floatBytes(f: Float): List<Int> = f.toRawBits().let { b -> (0 until 4).map { (b shr (8 * it)) and 0xFF } }
+
+    /** True when the model has the custom EQ Nothing X calls simple. */
+    private val hasSimpleEq: Boolean get() = model?.configs?.any { it.simpleEq != null } == true
+
+    /**
+     * The EQ the earbuds last reported: the mode (0 balanced, 1 voice, 2 more treble, 3 more bass, 5 the
+     * custom curve) and the custom curve's gains in whole dB, bass, mid and treble, where they have one.
+     */
+    public val eq: NothingEq? get() = eqMode?.let { NothingEq(EQ_PRESETS[it], it == EQ_CUSTOM, customEq?.let { c -> SIMPLE_ORDER.map { t -> c[t] ?: 0 } }) }
+
+    /** The presets the model has, in the order Nothing X lists them, by [EQ_ORDER]'s names. */
+    public val eqPresets: List<String> get() = if (config?.eqPresets != false) EQ_ORDER else emptyList()
+
+    /** The custom EQ's filters (docs/nothing/PROTOCOL.md section 5), or null where the model has none. */
+    public val simpleEqFilters: NothingSimpleEq? get() = config?.simpleEq
+
+    /** The frames that put preset [name] on the earbuds. */
+    public fun eqPreset(name: String): List<NothingFrame>? {
+        val v = EQ_PRESETS.entries.firstOrNull { it.value == name }?.key ?: return null
+        eqMode = v
+        readBacks += frame(NothingCommand.GET_EQ_MODE)
+        // The mode as two bytes, low byte first, as Nothing X writes it.
+        return listOf(frame(NothingCommand.SET_EQ_MODE, v, 0))
+    }
+
+    /**
+     * The frames that put the custom curve [gains] (bass, mid, treble in whole dB, from -6 to 6) on the earbuds,
+     * as Nothing X's SimpleEqualizerViewModel writes them: the custom mode first where it is not on, then the
+     * three filters with a total gain of minus the highest gain, so the curve does not clip.
+     */
+    public fun eqCustom(gains: List<Int>): List<NothingFrame>? {
+        val f = config?.simpleEq ?: return null
+        if (gains.size != SIMPLE_ORDER.size) return null
+        val byType = SIMPLE_ORDER.zip(gains.map { it.coerceIn(-SIMPLE_EQ_RANGE, SIMPLE_EQ_RANGE) }).toMap()
+        val out = mutableListOf<NothingFrame>()
+        if (eqMode != EQ_CUSTOM) out += frame(NothingCommand.SET_EQ_MODE, EQ_CUSTOM, 0)
+        eqMode = EQ_CUSTOM
+        customEq = byType
+        val total = -(byType.values.maxOrNull() ?: 0).coerceAtLeast(0).toFloat()
+        val filters = mapOf(LOW_SHELF to (f.lowHz to f.lowQ), PEAK to (f.peakHz to f.peakQ), HIGH_SHELF to (f.highHz to f.highQ))
+        val payload = mutableListOf(SIMPLE_WIRE_ORDER.size)
+        payload += floatBytes(total)
+        for (type in SIMPLE_WIRE_ORDER) {
+            val (hz, q) = filters.getValue(type)
+            payload += listOf(type) + floatBytes(byType.getValue(type).toFloat()) + floatBytes(hz.toFloat()) + floatBytes(q.toFloat())
+        }
+        // Nothing X's CustomEQ sizes its buffer at 16 bytes a filter and fills 13: the rest goes out as zeros.
+        while (payload.size < SIMPLE_EQ_HEAD + SIMPLE_WIRE_ORDER.size * SIMPLE_EQ_BUFFER) payload += 0
+        out += frame(NothingCommand.SET_CUSTOM_EQ, *payload.toIntArray())
+        readBacks += frame(NothingCommand.GET_EQ_MODE)
+        readBacks += frame(NothingCommand.GET_CUSTOM_EQ_VALUE)
+        return out
     }
 
     /** The key table: a count, then the device, button, gesture and action of each. */
@@ -251,7 +326,8 @@ public class NothingSession(private val hint: NothingModel? = null) {
                 group(
                     "sound", SettingTab.SOUND,
                     listOfNotNull(
-                        eqMode?.takeIf { c?.eqPresets != false }?.let { Setting.Choice("eq_preset", EQ_PRESETS[it] ?: EQ_OTHER[it], EQ_ORDER) },
+                        // A known model's presets are on the Sound tab's equalizer; this row is for the others.
+                        eqMode?.takeIf { c == null }?.let { Setting.Choice("eq_preset", EQ_PRESETS[it] ?: EQ_OTHER[it], EQ_ORDER) },
                         bass?.takeIf { c?.bassBoost != false }?.let { Setting.Toggle("bass_boost", it.first) },
                         bass?.takeIf { c?.bassBoost != false && it.first }?.let { Setting.Level("bass_level", it.second, BASS_MIN, BASS_MAX) },
                         spatial?.takeIf { c?.spatialAudio != false }?.let { Setting.Toggle("spatial_audio", it.u8(0) == 1) },
@@ -490,6 +566,21 @@ public class NothingSession(private val hint: NothingModel? = null) {
         /** Nothing X's EQModeEntity: the presets by value. 4 is Dirac's EQ and 5 the custom one. */
         private val EQ_PRESETS = mapOf(0 to "balanced", 1 to "voice", 2 to "treble", 3 to "bass")
         private val EQ_OTHER = mapOf(4 to "dirac", 5 to "custom")
+        private const val EQ_CUSTOM = 5
+
+        // The custom EQ's filter types (CustomEQ), the order PairFree shows them in (bass, mid, treble) and the
+        // order Nothing X sends them in (its radar: mid, treble, bass).
+        private const val LOW_SHELF = 0
+        private const val PEAK = 1
+        private const val HIGH_SHELF = 2
+        private val SIMPLE_ORDER = listOf(LOW_SHELF, PEAK, HIGH_SHELF)
+        private val SIMPLE_WIRE_ORDER = listOf(PEAK, HIGH_SHELF, LOW_SHELF)
+        private const val SIMPLE_EQ_HEAD = 5
+        private const val SIMPLE_EQ_FILTER = 13
+        private const val SIMPLE_EQ_BUFFER = 16
+
+        /** Nothing X's radar goes from -6 to 6 dB in whole steps (EQLabelItem.convertToGain). */
+        public const val SIMPLE_EQ_RANGE: Int = 6
 
         /** The order Nothing X lists them in. */
         private val EQ_ORDER = listOf("balanced", "bass", "treble", "voice")
@@ -518,6 +609,7 @@ public class NothingSession(private val hint: NothingModel? = null) {
         private val WRITES: Map<Int, Pair<Int, IntArray>> = mapOf(
             NothingCommand.SET_CURRENT_NOISE_REDUCTION to (NothingCommand.GET_CURRENT_NOISE_REDUCTION to intArrayOf(NOISE_GROUPS)),
             NothingCommand.SET_EQ_MODE to (NothingCommand.GET_EQ_MODE to intArrayOf()),
+            NothingCommand.SET_CUSTOM_EQ to (NothingCommand.GET_CUSTOM_EQ_VALUE to intArrayOf()),
             NothingCommand.SET_EXTRA_FEATURE_STATUS to (NothingCommand.GET_EXTRA_FEATURE_STATUS to intArrayOf()),
             NothingCommand.SET_LAG_MODE to (NothingCommand.GET_HOST_LAG_MODE to intArrayOf()),
             NothingCommand.SET_BASS_BOOST to (NothingCommand.GET_BASS_BOOST to intArrayOf()),
@@ -528,3 +620,9 @@ public class NothingSession(private val hint: NothingModel? = null) {
         )
     }
 }
+
+/**
+ * Nothing earbuds' EQ as they last reported it: the [preset] by [NothingSession.eqPresets]' names, or null for
+ * another mode; [custom] when the custom curve is on; [gains] that curve (bass, mid, treble), where they hold one.
+ */
+public data class NothingEq(val preset: String?, val custom: Boolean, val gains: List<Int>?)

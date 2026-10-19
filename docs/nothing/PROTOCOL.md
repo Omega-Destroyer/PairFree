@@ -126,6 +126,21 @@ Every number of two bytes is low byte first.
     until a report settles it.
   - Models whose feature table sets `eq` to 0 use Dirac Opteo presets, which PairFree does not
     know (section 6).
+  - PairFree shows the presets on the Sound tab's equalizer for the models it knows; for a product
+    id it does not know, as a row.
+- **Custom EQ (`C044`, `F041`):** what Nothing X calls the simple custom EQ
+  (`SimpleEqualizerViewModel.setCustomEQ`, `CustomEQ`). Picking it sets the EQ mode to 5 (`F010 05 00`);
+  each change then sends the curve:
+  - A count (3), the total gain as a little-endian float, then per filter its type (0 low shelf, 1 peak,
+    2 high shelf), and its gain, frequency and Q as little-endian floats. Nothing X sends the peak, then
+    the high shelf, then the low shelf (its radar's mid, treble and bass).
+  - The gains are whole dB from -6 to 6 (`EQLabelItem.convertToGain`); the total gain is minus the
+    highest gain, or 0 when none is above 0.
+  - Each model's frequencies and Qs are in the feature table (`customEQ`: `freqLow`, `qLow`,
+    `freqPeak`, `qPeak`, `freqHigh`, `qHigh`), `simple_eq` in `data/nothing/devices.json`.
+  - `CustomEQ` sizes its buffer at 16 bytes a filter and fills 13, so 9 zero bytes follow the three
+    filters; PairFree sends them too.
+  - `C044` answers in the same layout without the zeros, so PairFree reads the curve back.
 - **Extra features (`C00E`, `F004`):** a count, then a feature and its value for each. Feature 1
   is in-ear detection (`DeviceExtraFeatureStatus`). Set with `F004 01 01 <on>`.
 - **Low lag (`C041`, `F040`):** 1 on, 2 off, written as two bytes.
@@ -178,9 +193,6 @@ for.
 
 ## 7. Not yet
 
-- **Custom EQ:** the simple three-band custom EQ (`F041`/`C044`: a count, the total gain as a
-  little-endian float, then type, gain, frequency and Q as floats for each band). Each model's
-  frequencies and Qs are in the feature table (`customEQ`).
 - **Advanced EQ:** `F04F`/`C04C` for the mode, `F050`/`C04D` for eight bands with a profile
   index. nada uses `C06C`/`C06D`, which are not in 3.4.15.
 - **Dual connection** (`F01A`/`C027`): what its value means is in Dart, so it is left out. Some

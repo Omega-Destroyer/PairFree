@@ -13,13 +13,14 @@ What it shows, where the model has it:
 - **Home:** the battery (each earbud and the case, or one for headphones), noise control (off,
   noise cancelling, transparency) and the noise cancelling strength (adaptive, high, mid, low).
   The Ear (stick) has a noise cancelling switch from firmware x.x.2 on.
-- **Sound:** the equalizer presets (balanced, more bass, more treble, voice), bass boost and its
+- **Sound:** the equalizer: presets (balanced, more bass, more treble, voice) and a curve of your own
+  over bass, mid and treble; bass boost and its
   level, spatial audio, and head tracking on the headphones.
 - **Controls:** what each tap, double tap, triple tap and hold does, for each earbud.
 - **Device:** low lag mode, in-ear detection, the codec the earbuds offer (LDAC or LHDC on the
   models that have them), and making each earbud beep to find it.
 
-Not yet: Nothing's custom and advanced equalizers and the Dirac presets on CMF models, dual
+Not yet: Nothing's advanced equalizer and the Dirac presets on CMF models, dual
 connection, the ear tip fit test, personalised noise cancelling and sound, the headphones'
 extra buttons and the CMF Buds Pro 2's case dial.
 
@@ -56,24 +57,24 @@ the official app ([Record from the official app](../../README.md#record-from-the
 
 <table>
 <tr><th>Model</th><th>Product</th><th>Type</th><th>Noise control</th><th>Also</th><th>Status</th></tr>
-<tr><td>Nothing Ear (2)</td><td><code>B155</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, LHDC, in-ear detection, low lag, touch controls</td><td>nadamas</td></tr>
-<tr><td>Nothing Ear (stick)</td><td><code>B157</code></td><td>Earbuds</td><td>ANC</td><td>EQ presets, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>Nothing Ear (a)</td><td><code>B162</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>Nothing Ear</td><td><code>B171</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, LHDC and LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>Nothing Ear (3)</td><td><code>B173</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>Nothing Ear (open)</td><td><code>B174</code></td><td>Earbuds</td><td>—</td><td>EQ presets, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>Nothing Ear (2)</td><td><code>B155</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, LHDC, in-ear detection, low lag, touch controls</td><td>nadamas</td></tr>
+<tr><td>Nothing Ear (stick)</td><td><code>B157</code></td><td>Earbuds</td><td>ANC</td><td>EQ presets, custom EQ, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>Nothing Ear (a)</td><td><code>B162</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, bass boost, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>Nothing Ear</td><td><code>B171</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, bass boost, LHDC and LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>Nothing Ear (3)</td><td><code>B173</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>Nothing Ear (open)</td><td><code>B174</code></td><td>Earbuds</td><td>—</td><td>EQ presets, custom EQ, low lag, touch controls</td><td>Not tested</td></tr>
 <tr><td>Nothing Ear (1)</td><td><code>B181</code></td><td>Earbuds</td><td>ANC (high, low), transparency</td><td>EQ presets, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>Nothing (project 24272)</td><td><code>B183</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>Nothing (project 24272)</td><td><code>B183</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, bass boost, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
 <tr><td>Nothing Ear (3a)</td><td><code>B190</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, spatial audio, LDAC, in-ear detection, low lag</td><td>nadamas</td></tr>
-<tr><td>CMF Buds Pro</td><td><code>B163</code></td><td>Earbuds</td><td>ANC (high, mid, low), transparency</td><td>EQ presets, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>CMF Buds</td><td><code>B168</code></td><td>Earbuds</td><td>ANC, transparency</td><td>bass boost, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>CMF Buds Pro 2</td><td><code>B172</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>CMF Buds 2</td><td><code>B179</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, spatial audio, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>CMF Buds 2 Plus</td><td><code>B184</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>nada</td></tr>
-<tr><td>CMF Buds 2a</td><td><code>B185</code></td><td>Earbuds</td><td>ANC, transparency</td><td>bass boost, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>CMF Buds Pro 2</td><td><code>B187</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>nadamas</td></tr>
-<tr><td>Nothing Headphone (1)</td><td><code>B170</code></td><td>Headphones</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>CMF Headphone Pro</td><td><code>B175</code></td><td>Headphones</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, spatial audio, LDAC, low lag, touch controls</td><td>Not tested</td></tr>
-<tr><td>CMF Neckband Pro</td><td><code>B164</code></td><td>Neckband</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, bass boost, spatial audio, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>CMF Buds Pro</td><td><code>B163</code></td><td>Earbuds</td><td>ANC (high, mid, low), transparency</td><td>EQ presets, custom EQ, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>CMF Buds</td><td><code>B168</code></td><td>Earbuds</td><td>ANC, transparency</td><td>custom EQ, bass boost, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>CMF Buds Pro 2</td><td><code>B172</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>custom EQ, bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>CMF Buds 2</td><td><code>B179</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, bass boost, spatial audio, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>CMF Buds 2 Plus</td><td><code>B184</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>nada</td></tr>
+<tr><td>CMF Buds 2a</td><td><code>B185</code></td><td>Earbuds</td><td>ANC, transparency</td><td>custom EQ, bass boost, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>CMF Buds Pro 2</td><td><code>B187</code></td><td>Earbuds</td><td>ANC (adaptive, high, mid, low), transparency</td><td>custom EQ, bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>nadamas</td></tr>
+<tr><td>Nothing Headphone (1)</td><td><code>B170</code></td><td>Headphones</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, bass boost, spatial audio, LDAC, in-ear detection, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>CMF Headphone Pro</td><td><code>B175</code></td><td>Headphones</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, spatial audio, LDAC, low lag, touch controls</td><td>Not tested</td></tr>
+<tr><td>CMF Neckband Pro</td><td><code>B164</code></td><td>Neckband</td><td>ANC (adaptive, high, mid, low), transparency</td><td>EQ presets, custom EQ, bass boost, spatial audio, low lag, touch controls</td><td>Not tested</td></tr>
 </table>
 <!-- nothing-table:end -->

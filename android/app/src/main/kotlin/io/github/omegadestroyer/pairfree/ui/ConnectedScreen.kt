@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -329,6 +330,8 @@ private fun QuickSwitches(state: EarbudState, model: Model?, actions: EarbudsAct
         Command.LDAC to R.string.ldac,
     ).filter { state.supports(it.first) }
     if (switches.isEmpty()) return
+    var ldacDialog by remember { mutableStateOf(false) }
+    if (ldacDialog) LdacPhoneDialog { ldacDialog = false }
     Panel {
         Label(stringResource(R.string.quick_switches))
         for (row in switches.chunked(2)) {
@@ -339,7 +342,9 @@ private fun QuickSwitches(state: EarbudState, model: Model?, actions: EarbudsAct
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 for ((command, title) in row) {
-                    SwitchTile(command, stringResource(title), state, model, actions, Modifier.weight(1f))
+                    SwitchTile(command, stringResource(title), state, model, actions, Modifier.weight(1f)) {
+                        if (command == Command.LDAC) ldacDialog = true
+                    }
                 }
                 if (row.size == 1) Spacer(Modifier.weight(1f))
             }
@@ -356,6 +361,7 @@ private fun SwitchTile(
     model: Model?,
     actions: EarbudsActions,
     modifier: Modifier = Modifier,
+    onTurnedOn: () -> Unit = {},
 ) {
     val c = Studio.colors
     val shape = RoundedCornerShape(StudioShape.smallCorner)
@@ -367,7 +373,10 @@ private fun SwitchTile(
             .clip(shape)
             .background(c.raised)
             .border(StudioShape.hairline, if (on && !blocked) c.accent else c.hairline, shape)
-            .toggleable(value = on, enabled = !blocked, role = Role.Switch) { actions.set(command, if (it) 1 else 0) }
+            .toggleable(value = on, enabled = !blocked, role = Role.Switch) {
+                actions.set(command, if (it) 1 else 0)
+                if (it) onTurnedOn()
+            }
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {

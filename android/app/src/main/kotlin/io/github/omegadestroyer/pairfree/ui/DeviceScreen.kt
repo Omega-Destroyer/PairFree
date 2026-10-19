@@ -50,6 +50,7 @@ internal fun DeviceScreen(
 ) {
     var picker by remember { mutableStateOf<Picker?>(null) }
     var confirmReset by remember { mutableStateOf(false) }
+    var ldacDialog by remember { mutableStateOf(false) }
     var copied by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val c = Studio.colors
@@ -74,13 +75,18 @@ internal fun DeviceScreen(
                 connection.forEachIndexed { i, (command, title) ->
                     if (i > 0) Divider()
                     val blocked = state.blockedByLdac(command, model)
+                    val on = state.switch(command) == true
                     SwitchRow(
                         stringResource(title),
-                        on = state.switch(command) == true,
-                        onChange = { actions.set(command, if (it) 1 else 0) },
+                        on = on,
+                        onChange = {
+                            actions.set(command, if (it) 1 else 0)
+                            if (it && command == Command.LDAC) ldacDialog = true
+                        },
                         note = when {
                             blocked -> stringResource(R.string.needs_ldac_off)
                             command == Command.LE_AUDIO -> stringResource(R.string.le_audio_note)
+                            command == Command.LDAC && on -> stringResource(R.string.ldac_phone_note)
                             else -> null
                         },
                         enabled = !blocked,
@@ -207,6 +213,7 @@ internal fun DeviceScreen(
         )
         null -> Unit
     }
+    if (ldacDialog) LdacPhoneDialog { ldacDialog = false }
     if (confirmReset) {
         ConfirmDialog(
             title = stringResource(R.string.factory_reset_title),

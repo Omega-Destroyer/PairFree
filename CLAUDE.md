@@ -204,11 +204,7 @@ PairFree sends on connect (the probe's list; `data/soundpeats/reports/S2_1.2.txt
 Tested earbuds table in `docs/devices/soundpeats.md` is the summary. Specific open questions:
 
 - Whether the Air5 Pro+ fit test gives a good result in a well-fitted ear: the only pair
-  available has someone else's ear tips. Its LDAC does not work (`docs/soundpeats/PROTOCOL.md`
-  section 12).
-- Whether the Air5 Pro+ LDAC bug is Samsung-specific. On a Galaxy S24 FE (One UI 8) the
-  phone disables the Air5's advertised LDAC and falls back to AAC, while the H3's LDAC
-  works on the same phone. Needs reports from other phones. A bug report went to SoundPEATS.
+  available has someone else's ear tips.
 - Whether `0x11` is the H3's Adaptive scene. The H3 lists levels `11` to `14`, not
   `15`, and does not answer the environment-adaptive GET `03 64`.
 - The EQ layout of every model except the H3 and Air5 Pro+. The official app downloads a
@@ -282,9 +278,10 @@ reports from other people.
   drops the channel. Once a channel has been open, the app reopens it on its own after a
   drop, keeping the last state on screen.
 - The `ldac` switch only changes which codecs the earbuds advertise; the phone picks the
-  codec, and no app can (`docs/soundpeats/PROTOCOL.md` section 12). On the Air5 Pro+ turning LDAC on
-  removes aptX and the phone then refuses LDAC, so it lands on AAC: a known firmware bug,
-  not an app fault.
+  codec, and no app can, nor read which one it plays (`docs/soundpeats/PROTOCOL.md` section 12).
+  Samsung phones also need LDAC turned on for the earbuds in their own Bluetooth settings (the
+  device's gear, Codecs); the owner found on 2026-10-19 that this, not the earbuds, kept the Air5
+  Pro+ on AAC. The app reminds the user of it when LDAC is turned on (`LdacPhoneDialog`).
 - The EQ is write-only (the H3 acknowledges each band with `0F 81 01`). The app sends the
   model's base curve plus the user's gains, or one of the model's presets as it is
   (`EqLayout` from the `eq` entry in `data/soundpeats/devices.json`), and remembers on the phone what

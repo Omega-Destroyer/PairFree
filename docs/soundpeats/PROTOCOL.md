@@ -797,7 +797,7 @@ method as the H3's EQ). Report: `data/soundpeats/reports/S2_1.2.txt`.
   curves; every one differs from the H3's. SOUNDPEATS Classic is the base curve; Pop and HIFI
   move some bands. All are in `data/soundpeats/devices.json` (`S2`, `eq.presets`) and are the `S2`
   cases of `eq_layout` and `eq_preset` in `data/soundpeats/test_vectors.json`.
-- LDAC does not work on this model with a Samsung phone; see section 12.
+- LDAC works once the phone's own LDAC switch for these earbuds is on; see section 12.
 - Drainage and LE Audio (captured 2026-10-11, same report as the H3's fit test).
   PeatsAudio offers both on the Air5 Pro+ and neither on the H3, with LDAC on or off.
   The H3 does not answer the drainage read `03 50`; it answers the LE Audio read `03 35`
@@ -810,7 +810,7 @@ method as the H3's EQ). Report: `data/soundpeats/reports/S2_1.2.txt`.
     classic serial channel, and `03 35` then read `01`. LDAC still read on. `03 34 00`
     turns it off the same way.
 
-## 12. Codecs (A2DP) and the Air5 Pro+ LDAC bug
+## 12. Codecs (A2DP), and LDAC on Samsung phones
 
 Audio codec selection (SBC, AAC, the aptX family, LDAC, LC3) is A2DP, negotiated between
 the phone and the earbuds. It is not on the SPP control channel, and no app picks the
@@ -834,23 +834,25 @@ Evidence: `data/soundpeats/reports/air5-pro-plus_ldac.txt`.
   force-selected in Android Developer options; it switches cleanly (a real A2DP
   reconfigure, heard as a brief pause).
 
-### Air5 Pro+ (LDAC broken) — suspected firmware bug
+### Air5 Pro+ (works once the phone's LDAC switch is on)
 
 - With `ldac` on, the Air5 Pro+ advertises AAC, SBC and LDAC, and stops advertising aptX.
-- The phone does not use LDAC: it plays AAC, and a manual force to LDAC is rejected. The
-  log shows `A2dpService: enableOptionalCodecs ldac disabled` at connection and
+- On 2026-10-11 the phone did not use LDAC: it played AAC, and a manual force to LDAC was
+  rejected. The log shows `A2dpService: enableOptionalCodecs ldac disabled` at connection and
   `A2dpService: setCodecConfigPreference ldac disabled` on a manual switch; the codec
-  stays AAC, with no reconfigure (none of the brief pause a real switch causes).
-- Reproducible on a fresh connection with `ldac` pre-enabled, so it is not a stale-session
-  artifact. LDAC outranks AAC in the phone's codec priority, so the fall-back to AAC is
-  itself a sign the phone cannot configure the Air5's LDAC stream.
-- Same phone, OS and chip as the H3, tested minutes apart; the only variable is the earbud
-  model. So the Air5 Pro+ firmware appears to advertise its LDAC A2DP endpoint in a form
-  the Android / One UI stack rejects. A different-brand phone might accept it, so strictly
-  it is an Air5-firmware / Samsung-stack interop failure; from the user's side LDAC simply
-  does not work.
-- Net effect on this phone: enabling LDAC on the Air5 Pro+ *lowers* quality, because it
-  removes aptX and lands on AAC. Keep `ldac` off (aptX) until the firmware is fixed.
-- A bug report was sent to SoundPEATS. Whether it is specific to Samsung One UI or affects
-  all phones is not yet known and needs reports from other handsets. The Air5 Pro+ tested
-  runs firmware `S2_20250816_V1.2` (section 11).
+  stayed AAC, with no reconfigure.
+- The cause (owner, 2026-10-19): Samsung phones keep an LDAC switch per paired device, under
+  Settings > Connections > Bluetooth > the device's gear > Codecs. It was off for the Air5 Pro+
+  and on for the H3. With it on, the phone plays LDAC on the Air5 Pro+. The log's "ldac
+  disabled" is that switch (Android's optional codecs setting for the device, which Pixel phones
+  show as HD audio). It is not an earbud fault; the earlier suspicion of a firmware bug, and the
+  report sent to SoundPEATS, were wrong.
+- With the switch off, turning `ldac` on lowers quality on the Air5 Pro+: it removes aptX and
+  the phone lands on AAC.
+
+### What PairFree does
+
+Android's public API does not let an app read the codec in use (`BluetoothA2dp.getCodecStatus` and
+the codec-changed broadcast are system APIs), so PairFree cannot tell whether the phone followed
+the earbuds. When the user turns LDAC on, it explains the phone's switch and offers a button to the
+phone's Bluetooth settings, and while LDAC is on the Device tab says so under the switch.

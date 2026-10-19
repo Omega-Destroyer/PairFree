@@ -396,7 +396,7 @@
     <string name="setting_multipoint">Two devices at once</string>
     <string name="setting_auto_answer">Answer calls automatically</string>
     <string name="setting_voice_prompts">Voice prompts</string>
-    <string name="eq_apple">PairFree cannot set the equalizer of AirPods and Beats yet.</string>
+    <string name="eq_apple">AirPods have an equalizer only on Apple\'s newest beta firmware. Where they report one, it is below.</string>
     <string name="eq_jbl">PairFree cannot set the equalizer of JBL headphones and earbuds yet. JBL\'s app sends a whole curve of filters, and PairFree does not send what it has not checked.</string>
     <string name="eq_bose">Bose earbuds and headphones have a tone control rather than an equalizer of bands by frequency. Where the model has one, it is below.</string>
     <string name="eq_qcy">PairFree shows the equalizer once the earbuds have reported theirs. The older QCY models on JieLi\'s chips keep their equalizer in a setting PairFree does not send yet.</string>
@@ -492,4 +492,6 @@
     <string name="setting_volume_limit">Volume limit</string>
     <string name="action_previous_next">Previous or next track</string>
     <string name="action_volume">Volume</string>
+    <string name="setting_custom_eq">Custom equalizer</string>
+    <string name="setting_custom_eq_note">Low, mid and high, on the AirPods firmware that has it.</string>
 </resources>

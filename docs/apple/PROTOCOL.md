@@ -99,6 +99,11 @@ transparency go on the shared noise control; Adaptive is a switch beside it on m
 it (`adaptive` in `devices.json`, from LibrePods' and MagicPodsCore's lists) or that report being
 in it, and switching it off goes back to the mode before.
 
+**Custom EQ (opcode `63`, LibrePods' `CustomEq`):** a two-byte length (5), `01`, the state (`02` on, `01` off),
+then low, mid and high from 0 to 100 (50 is flat). LibrePods found it on AirPods' newest beta firmware, which an
+Apple device on OS 27 installs; the AirPods send it when PairFree asks for notifications, and PairFree shows it
+only then. A change writes the whole packet again, as LibrePods does. Not tried with PairFree.
+
 ## 5. Models
 
 AirPods name their model by its A number in the information packet (LibrePods' `AirPodsModels`).

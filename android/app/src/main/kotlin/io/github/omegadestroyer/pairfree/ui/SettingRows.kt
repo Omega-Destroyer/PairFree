@@ -230,6 +230,7 @@ private fun settingTitle(key: String): String = when (key) {
     "voice_command" -> stringResource(R.string.setting_voice_command)
     "ear_return" -> stringResource(R.string.setting_ear_return)
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
+    "custom_eq" -> stringResource(R.string.setting_custom_eq)
     else -> touchTitle(key) ?: key
 }
 
@@ -275,6 +276,7 @@ private fun settingNote(key: String): String? = when (key) {
     "sleep_mode" -> stringResource(R.string.setting_sleep_mode_note)
     "connection_mode" -> stringResource(R.string.setting_connection_mode_note)
     "ear_return" -> stringResource(R.string.setting_ear_return_note)
+    "custom_eq" -> stringResource(R.string.setting_custom_eq_note)
     else -> null
 }
 

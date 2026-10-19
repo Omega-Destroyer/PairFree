@@ -10,6 +10,8 @@ public class OneMoreFrame(
     public val payload: ByteArray = ByteArray(0),
     public val sequence: Int = 0,
     public val head: Int = OneMoreWire.SENT,
+    /** The length field when it is not the payload's: 1MORE's app reads the 12-band EQ with a length of 20 (BluetoothOrderConstents). */
+    public val declaredLength: Int = payload.size,
 ) {
     /** True for a frame the earbuds sent. */
     public val fromEarbuds: Boolean get() = head == OneMoreWire.REPLY
@@ -19,7 +21,7 @@ public class OneMoreFrame(
         val header = byteArrayOf(
             (head shr 8).toByte(), head.toByte(),
             (command shr 8).toByte(), command.toByte(),
-            (payload.size shr 8).toByte(), payload.size.toByte(),
+            (declaredLength shr 8).toByte(), declaredLength.toByte(),
             (sequence shr 8).toByte(), sequence.toByte(),
         )
         return header + byteArrayOf(xor(header, 0, header.size).toByte()) + payload

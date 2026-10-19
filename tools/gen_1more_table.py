@@ -55,6 +55,10 @@ def features(model):
                       ("volume_limit", "volume limit")]:
         if model[key]:
             out.append(name)
+    if model.get("eq_presets"):
+        out.append("EQ presets")
+    if model.get("eq_bands"):
+        out.append("custom EQ")
     if model["touch"] == "each":
         out.append("touch controls (each earbud)")
     elif model["touch"] == "both":

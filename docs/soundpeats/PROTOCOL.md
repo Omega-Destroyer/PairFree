@@ -841,8 +841,7 @@ Evidence: `data/soundpeats/reports/air5-pro-plus_ldac.txt`.
   rejected. The log shows `A2dpService: enableOptionalCodecs ldac disabled` at connection and
   `A2dpService: setCodecConfigPreference ldac disabled` on a manual switch; the codec
   stayed AAC, with no reconfigure.
-- The cause, which SoundPEATS pointed the owner to on 2026-10-19 in answer to the bug report:
-  Samsung phones keep an LDAC switch per paired device, under
+- The cause (owner, 2026-10-19): Samsung phones keep an LDAC switch per paired device, under
   Settings > Connections > Bluetooth > the device's gear > Codecs. It was off for the Air5 Pro+
   and on for the H3. With it on, the phone plays LDAC on the Air5 Pro+. The log's "ldac
   disabled" is that switch (Android's optional codecs setting for the device, which Pixel phones

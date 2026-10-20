@@ -281,9 +281,9 @@ reports from other people.
   drop, keeping the last state on screen.
 - The `ldac` switch only changes which codecs the earbuds advertise; the phone picks the
   codec, and no app can, nor read which one it plays (`docs/soundpeats/PROTOCOL.md` section 12).
-  Samsung phones also need LDAC turned on for the earbuds in their own Bluetooth settings (the
-  device's gear, Codecs); SoundPEATS pointed the owner to it on 2026-10-19, and it, not the earbuds,
-  kept the Air5 Pro+ on AAC. The app reminds the user of it when LDAC is turned on (`LdacPhoneDialog`).
+  Samsung phones can also need LDAC turned on for the earbuds in their own Bluetooth settings (the
+  device's gear, Codecs); the owner found on 2026-10-19 that this, not the earbuds, kept the Air5
+  Pro+ on AAC. The app reminds the user of it when LDAC is turned on (`LdacPhoneDialog`).
 - The EQ is write-only (the H3 acknowledges each band with `0F 81 01`). The app sends the
   model's base curve plus the user's gains, or one of the model's presets as it is
   (`EqLayout` from the `eq` entry in `data/soundpeats/devices.json`), and remembers on the phone what

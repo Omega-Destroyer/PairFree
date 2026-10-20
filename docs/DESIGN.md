@@ -438,6 +438,9 @@ Planned, not yet designed:
   shows the part that way (the H3 and Air5 Pro+ earbuds), otherwise from the angle the
   photo shows. Each model's data and the photo it came from are in
   `tools/device_art/soundpeats/<model>.json`; the H3 and Air5 Pro+ are in the script itself.
+- Other brands' drawings are traced the same way from each brand's own renders and kept in
+  `tools/device_art/<brand>/<drawing>.json`, with the Bluetooth names and model codes each one
+  covers; models that look alike share one.
 - Headphones are drawn whole; ear hooks and clips as one earbud.
 - Models without art of their own, or a part no photo shows clearly, use a generic
   earbud or case. The app picks drawings by Bluetooth name, then firmware code.

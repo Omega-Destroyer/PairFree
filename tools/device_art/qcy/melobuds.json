@@ -1,0 +1,49 @@
+{
+ "name": "QCY MeloBuds N60",
+ "names": [
+  "HT02",
+  "HT08",
+  "QCY HT02",
+  "QCY HT08",
+  "QCY HT08 MeloBuds Pro Plus",
+  "QCY HT12 MeloBuds N50",
+  "QCY HT16 MeloBuds",
+  "QCY MeloBuds N20",
+  "QCY MeloBuds N30",
+  "QCY MeloBuds N50",
+  "QCY MeloBuds N60",
+  "QCY MeloBuds N70",
+  "QCY MeloBuds Neo",
+  "QCY MeloBuds Pro",
+  "QCY T31 MeloBuds Neo",
+  "QCY-HT02"
+ ],
+ "codes": [
+  "477A",
+  "477C",
+  "4BC2",
+  "4BC5",
+  "4D49",
+  "4D4A",
+  "4D4E",
+  "5A73",
+  "5A78",
+  "5D40",
+  "5D42",
+  "5D45",
+  "5D47",
+  "8071",
+  "8073",
+  "8074"
+ ],
+ "source": "Traced from QCY's own product render (MeloBuds N60, front, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "220,252 245,255 264,265 277,286 281,305 280,319 275,335 250,367 252,494 250,506 240,519 224,525 205,519 195,504 193,493 193,388 190,387 164,394 142,390 131,382 120,367 113,346 117,326 131,309 151,296 166,278 182,266 201,257",
+  "axis": [
+   222.5,
+   325.9
+  ]
+ },
+ "case": "generic"
+}

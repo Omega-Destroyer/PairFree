@@ -5,12 +5,11 @@ android/app/src/main/res/drawable/device_<model>_<part>.xml (brand-prefixed for 
 other than SoundPEATS, so names never collide), so the app uses the same shapes. Change
 the shapes here, never in the generated files.
 
-So far SoundPEATS, Apple and JBL. SoundPEATS models are below. Apple's and JBL's are traced
-from product renders (LibrePods' for the AirPods and their cases, Apple's store renders for
-AirPods Max and the Beats, JBL's own for JBL) and kept as data in tools/device_art/<brand>/,
-in the same format as SoundPEATS' and drawn by the same code. The app's DeviceArtTable.kt maps a
-Bluetooth name, then a per-brand code (a SoundPEATS firmware code, or the Apple or JBL model
-name the earbuds' session puts before the firmware version), to a drawing.
+SoundPEATS models are below. Every other brand's are traced from product renders (see TRACED)
+and kept as data in tools/device_art/<brand>/, in the same format as SoundPEATS' and drawn by the
+same code. The app's DeviceArtTable.kt maps a Bluetooth name, then a per-brand code (a SoundPEATS
+firmware code, or the model name, number or product id the earbuds' session puts before the
+firmware version), to a drawing.
 
 H3: the earbud outlines are traced from a front-view product photo of the left
 earbud: the shell, the chrome rim, the faceplate and the gold nozzle band, plus an
@@ -618,8 +617,8 @@ def traced_brand(brand):
 # Traced from product renders: Apple (the AirPods and their cases from LibrePods' reference
 # renders, github.com/kavishdevar/librepods, GPL-3.0-or-later; AirPods Max and the Beats from
 # Apple's store renders), JBL from JBL's, Samsung from GalaxyBudsClient's (github.com/
-# timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose and Soundcore from each brand's own.
-TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore"]
+# timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose, Soundcore, Nothing and QCY from each brand's own.
+TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing", "qcy"]
 TRACED_DEVICES = {b: traced_brand(b) for b in TRACED}
 
 # brand: (its drawings, the assets/devices/<subdir>, the drawable name prefix). SoundPEATS

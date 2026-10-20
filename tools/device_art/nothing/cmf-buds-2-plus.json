@@ -1,0 +1,19 @@
+{
+ "name": "CMF Buds 2 Plus",
+ "names": [
+  "CMF Buds 2 Plus"
+ ],
+ "codes": [
+  "B184"
+ ],
+ "source": "Traced from Nothing's own product render (CMF Buds 2 Plus, front, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "248,198 271,200 292,210 307,227 313,251 311,265 305,281 282,310 282,422 280,433 270,447 255,452 243,451 234,446 225,429 223,335 197,339 178,332 162,315 154,293 155,280 160,267 167,258 182,248 195,228 222,207",
+  "axis": [
+   253.4,
+   267.0
+  ]
+ },
+ "case": "generic"
+}

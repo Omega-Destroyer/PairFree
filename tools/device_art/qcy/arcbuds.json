@@ -1,0 +1,30 @@
+{
+ "name": "QCY ArcBuds",
+ "names": [
+  "QCY Air",
+  "QCY ArcBuds",
+  "QCY ArcBuds Lite",
+  "QCY HT07 ANC APP",
+  "QCY RACE",
+  "QCY TWS HT07",
+  "TWS HT07"
+ ],
+ "codes": [
+  "1971",
+  "4A7F",
+  "4D43",
+  "4D46",
+  "4D47",
+  "4D5A"
+ ],
+ "source": "Traced from QCY's own product render (ArcBuds, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "137,80 158,83 177,94 189,107 197,127 199,148 192,173 180,190 165,202 152,209 130,215 100,215 81,208 63,194 46,195 35,192 17,179 9,169 2,152 2,131 8,115 22,101 34,95 50,92 66,94 87,100 116,85",
+  "axis": [
+   98.3,
+   116.9
+  ]
+ },
+ "case": "generic"
+}

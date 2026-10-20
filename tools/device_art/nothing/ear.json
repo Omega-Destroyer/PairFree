@@ -1,0 +1,31 @@
+{
+ "name": "Nothing Ear (2)",
+ "names": [
+  "ear (1)",
+  "Nothing ear (1)",
+  "Ear (2)",
+  "Nothing Ear (2)",
+  "Nothing Ear",
+  "Nothing Ear (3)",
+  "Ear (3)"
+ ],
+ "codes": [
+  "B181",
+  "B155",
+  "B171",
+  "B173"
+ ],
+ "source": "Traced from Nothing's own product render (Ear (2), front, the right-hand bud, mirrored; Ear (1), Ear and Ear (3) share its form), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "268,188 252,190 235,195 195,222 181,236 171,253 145,274 138,285 135,299 136,315 142,328 154,346 167,356 183,361 195,361 229,348 231,449 240,461 257,467 280,464 287,459 292,451 293,322 322,291 329,274 332,256 327,231 314,210 294,195",
+  "accent": [
+   "260,273 258,280 252,284 245,284 239,280 236,273 239,266 245,261 252,261 258,266"
+  ],
+  "axis": [
+   248.5,
+   272.6
+  ]
+ },
+ "case": "generic"
+}

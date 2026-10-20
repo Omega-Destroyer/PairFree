@@ -1,0 +1,20 @@
+{
+ "name": "CMF Buds Pro 2",
+ "names": [
+  "CMF Buds Pro 2"
+ ],
+ "codes": [
+  "B172",
+  "B187"
+ ],
+ "source": "Traced from Nothing's own product render (CMF Buds Pro 2, front, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "233,180 258,181 280,191 291,201 298,212 304,235 303,250 296,273 268,310 268,430 266,441 256,456 239,463 228,462 218,457 207,441 204,347 177,347 156,337 138,316 132,294 138,271 144,261 158,248 165,232 177,214 201,192 217,185",
+  "axis": [
+   237.4,
+   256.8
+  ]
+ },
+ "case": "generic"
+}

@@ -1,0 +1,24 @@
+{
+ "name": "1MORE ComfoBuds Mini",
+ "names": [
+  "1MORE ComfoBuds Mini",
+  "1MORE Q50"
+ ],
+ "codes": [
+  "ES603",
+  "Q50"
+ ],
+ "source": "Traced from 1MORE's own drawing of the left earbud in its app (ES603, Q50), filled in; the touch area, where drawn, is the accent. Not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "196,200 232,203 253,212 267,223 278,236 286,251 292,268 295,291 291,331 275,365 260,380 246,389 229,396 210,399 179,395 142,374 116,372 89,363 77,353 67,340 59,322 56,306 57,288 62,269 73,251 85,239 112,226 146,224 169,209",
+  "accent": [
+   "202,231 223,234 242,244 257,262 263,282 262,306 252,330 236,345 213,353 198,352 186,349 171,339 156,319 151,298 154,270 163,253 180,239"
+  ],
+  "axis": [
+   207.0,
+   292.2
+  ]
+ },
+ "case": "generic"
+}

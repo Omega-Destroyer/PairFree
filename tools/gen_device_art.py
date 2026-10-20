@@ -617,8 +617,9 @@ def traced_brand(brand):
 # Traced from product renders: Apple (the AirPods and their cases from LibrePods' reference
 # renders, github.com/kavishdevar/librepods, GPL-3.0-or-later; AirPods Max and the Beats from
 # Apple's store renders), JBL from JBL's, Samsung from GalaxyBudsClient's (github.com/
-# timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose, Soundcore, Nothing and QCY from each brand's own.
-TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing", "qcy"]
+# timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose, Soundcore, Nothing and QCY from each brand's
+# own, and 1MORE from the drawings and photos its app shows for each model.
+TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing", "qcy", "1more"]
 TRACED_DEVICES = {b: traced_brand(b) for b in TRACED}
 
 # brand: (its drawings, the assets/devices/<subdir>, the drawable name prefix). SoundPEATS
@@ -684,12 +685,17 @@ for code, slugs in sp_codes.items():
 # The other brands' sessions put a model identifier before the firmware version, which reaches
 # deviceArt() as the code: the model name (Apple, JBL, Sony, Bose) or model number (Samsung,
 # Soundcore). The Bluetooth name is tried first (users can rename AirPods, so the code is the backstop).
+# A code belongs to the first brand that has it: 1MORE's model S32 is also a SoundPEATS firmware
+# code, so that 1MORE model is found by its Bluetooth name alone.
+code_brand = {c: "soundpeats" for c in sp_codes}
 for b in TRACED:
     for slug, (_, _, _, names) in TRACED_DEVICES[b].items():
         ref = art_ref(TRACED_DEVICES[b], b + "_", slug)
         for n in names:
             by_name[n.lower()] = ref
         for c in CODES[(b, slug)]:
+            if code_brand.setdefault(c, b) != b:
+                continue
             by_code[c] = ref
 
 KT = pathlib.Path(ARGS.kt) if ARGS.kt else (

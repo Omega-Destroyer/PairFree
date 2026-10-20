@@ -5,6 +5,7 @@ Run from the repo root:  python -m unittest discover -s tools -v
 """
 import json
 import pathlib
+import re
 import socket
 import sys
 import threading
@@ -124,6 +125,18 @@ class DeviceArt(unittest.TestCase):
                 self.assertTrue(value is None or value == "generic" or isinstance(value, dict), f.name)
             if isinstance(art["bud"], dict):
                 self.assertIn(art["bud"].get("kind", "bud"), ("bud", "hook", "clip", "headphones"), f.name)
+
+    def test_firmware_codes_keep_soundpeats_art(self):
+        """Another brand's model code can equal a SoundPEATS firmware code (1MORE's S32); the table keeps SoundPEATS'."""
+        brands = [d.name for d in (HERE / "device_art").iterdir() if d.is_dir() and d.name != "soundpeats"]
+        kt = (HERE.parent / "android" / "app" / "src" / "main" / "kotlin" / "io" / "github" / "omegadestroyer" / "pairfree"
+              / "ui" / "DeviceArtTable.kt").read_text(encoding="utf-8")
+        by_code = kt.split("ART_BY_CODE", 1)[1].split(")\n\n", 1)[0]
+        lines = {m.group(1): m.group(2) for m in re.finditer(r'"([^"]+)" to (DeviceArt\([^)]*\))', by_code)}
+        for code in {d["firmware_code"] for d in load("devices.json")["devices"]}:
+            if code in lines:
+                for b in brands:
+                    self.assertNotIn(f"device_{b}_", lines[code], code)
 
 
 class Describe(unittest.TestCase):

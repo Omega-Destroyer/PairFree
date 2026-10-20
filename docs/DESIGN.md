@@ -440,7 +440,9 @@ Planned, not yet designed:
   `tools/device_art/soundpeats/<model>.json`; the H3 and Air5 Pro+ are in the script itself.
 - Other brands' drawings are traced the same way from each brand's own renders and kept in
   `tools/device_art/<brand>/<drawing>.json`, with the Bluetooth names and model codes each one
-  covers; models that look alike share one.
+  covers; models that look alike share one. 1MORE's earbuds are traced from the line drawings
+  1MORE's app shows for each model, filled in, with the touch area as the accent. A model code
+  that is also a SoundPEATS firmware code (1MORE's S32) is left to the Bluetooth name.
 - Headphones are drawn whole; ear hooks and clips as one earbud.
 - Models without art of their own, or a part no photo shows clearly, use a generic
   earbud or case. The app picks drawings by Bluetooth name, then firmware code.

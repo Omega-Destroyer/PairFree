@@ -617,8 +617,8 @@ def traced_brand(brand):
 # Traced from product renders: Apple (the AirPods and their cases from LibrePods' reference
 # renders, github.com/kavishdevar/librepods, GPL-3.0-or-later; AirPods Max and the Beats from
 # Apple's store renders), JBL from JBL's, Samsung from GalaxyBudsClient's (github.com/
-# timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose, Soundcore and Nothing from each brand's own.
-TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing"]
+# timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose, Soundcore, Nothing and QCY from each brand's own.
+TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing", "qcy"]
 TRACED_DEVICES = {b: traced_brand(b) for b in TRACED}
 
 # brand: (its drawings, the assets/devices/<subdir>, the drawable name prefix). SoundPEATS

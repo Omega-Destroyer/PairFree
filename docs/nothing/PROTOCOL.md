@@ -143,10 +143,21 @@ Every number of two bytes is low byte first.
 - **Touch controls (`C018`, `F003`):** the reply is a count, then device, button, gesture and
   action for each. A write is `F003 01 <device> <button> <gesture> <action>`, as Nothing X
   writes it (`DeviceProtocol.setGestureData`).
-  - **Devices:** 2 left, 3 right, 4 the CMF Buds Pro 2's case dial, 6 the whole product.
-  - **Gestures:** 1 single, 2 double, 3 triple, 7 hold, 9 double and hold, 10 turn.
-  - **Actions:** Nothing X's operation numbers, `ACTIONS` in `NothingSession`. The default hold
-    action 0x16 is a noise cycle the operation lists do not name.
+  - **Devices:** 2 left, 3 right, 4 the CMF Buds Pro 2's case dial (Nothing X's Smart Dial),
+    6 the whole product.
+  - **Buttons:** 1 the gesture itself, 9 what the same gesture does during a call. Nothing X lists
+    the call actions as a gesture's second operation group (`default_call_controls`, with
+    `callControlsButton` 9); the CMF Buds Pro 2's dial has them for double press (answer, or answer
+    and mute during a call) and triple press (hang up or decline). Its default key table holds
+    both entries (`04 09 02 01`, `04 09 03 01`).
+  - **Gestures:** 1 single, 2 double, 3 triple, 7 hold, 9 double and hold, 10 turn (the dial; its
+    action is 23, volume, or 1, none).
+  - **Actions:** Nothing X's operation numbers, `ACTIONS` in `NothingSession`: 3 answer, 23 volume,
+    25 answer or mute, 26 hang up or decline, 17 game mode, among others. The default hold action
+    0x16 is a noise cycle the operation lists do not name. 31 is Nothing's news summary, offered on
+    Nothing phones; PairFree leaves it out.
+  - The dial locks and unlocks with a double press and hold, which Nothing X shows but does not let
+    the user change.
   - nadamas wrote new double-press actions to an Ear (3a): it acknowledged them and read them
     back, but kept the old behaviour. Whether that model needs something more is open.
 
@@ -187,4 +198,4 @@ for.
   models restart after a change (`dualConnectionReboot`).
 - **Ear tip fit test:** the result arrives as `E00D`; how to start it is in Dart.
 - **Other features:** personalised noise cancelling and sound (Mimi), the headphones' extra
-  buttons, the case dial.
+  buttons.

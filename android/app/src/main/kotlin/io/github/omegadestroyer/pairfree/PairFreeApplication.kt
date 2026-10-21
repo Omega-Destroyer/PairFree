@@ -125,9 +125,11 @@ class Hub(private val app: Application) {
                 val uuids = d.uuids.orEmpty().map { it.uuid.toString() }
                 val soundcore = SoundcoreModels.identify(name, uuids)
                 // Samsung's models are matched by part of the name ("Buds Pro", as GalaxyBudsClient does), which
-                // other brands' names hold too (CMF Buds Pro 2, QCY MeloBuds Pro): a brand that knows the whole name
-                // comes first.
-                val samsung = SamsungModels.fromName(name)?.takeUnless { NothingModels.identify(name, uuids) || QcyModels.identify(name) }
+                // other brands' names hold too (CMF Buds Pro 2, QCY MeloBuds Pro, 1MORE PistonBuds PRO Q30): a brand
+                // that knows the whole name comes first.
+                val samsung = SamsungModels.fromName(name)?.takeUnless {
+                    NothingModels.identify(name, uuids) || QcyModels.identify(name) || OneMoreModels.fromName(name) != null
+                }
                 val sony = SonyModels.identify(name, uuids)
                 val jbl = JblModels.fromName(name)
                 val oneMore = OneMoreModels.identify(name)

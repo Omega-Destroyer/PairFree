@@ -1,5 +1,5 @@
 {
- "_about": "Nothing and CMF earbuds and headphones by the product id they report (read 0xC01C), from Nothing X 3.4.15 (com.nothing.smartcenter, decompiled outside the repo on 2026-10-18; none of its code or files are here): the product classes (IOTProductDevice*, their protocol class for crc and activate) and the per-model feature table the app bundles (ear_white_list.json), one entry in configs per firmware range. Names the app gives only as project numbers come from nada and nadamas (MIT), which read them from real devices; B183 is unknown. B190 comes from nadamas alone (its source field). anc decodes ancLevel as bits 0 high, 1 mid, 2 low, 3 adaptive, 4 transparency, 5 off (inferred: the app reads it in its Dart code; docs/nothing/PROTOCOL.md section 6). codecs decodes highQualityAudio (2 LHDC, 4 LDAC). eq_presets is false where the table sets eq 0 (Dirac Opteo models). gestures: device 2 left, 3 right, 6 the whole product; operations the actions the app offers, fixed the ones it shows but does not let the user pick. tried names the open-source project (nada or nadamas, both MIT) that was used with a real one, sending the same messages PairFree sends. reports lists device reports under data/nothing/reports.",
+ "_about": "Nothing and CMF earbuds and headphones by the product id they report (read 0xC01C), from Nothing X 3.4.15 (com.nothing.smartcenter, decompiled outside the repo on 2026-10-18; none of its code or files are here): the product classes (IOTProductDevice*, their protocol class for crc and activate) and the per-model feature table the app bundles (ear_white_list.json), one entry in configs per firmware range. Names the app gives only as project numbers come from nada and nadamas (MIT), which read them from real devices; B183 is unknown. B190 comes from nadamas alone (its source field). anc decodes ancLevel as bits 0 high, 1 mid, 2 low, 3 adaptive, 4 transparency, 5 off (inferred: the app reads it in its Dart code; docs/nothing/PROTOCOL.md section 6). codecs decodes highQualityAudio (2 LHDC, 4 LDAC). eq_presets is false where the table sets eq 0 (Dirac Opteo models). gestures: device 2 left, 3 right, 4 the CMF Buds Pro 2's case dial, 6 the whole product; button 1 the gesture, and button 9 what the same gesture does during a call (Nothing X's call controls group, callControlsButton); operations the actions the app offers, fixed the ones it shows but does not let the user pick. tried names the open-source project (nada or nadamas, both MIT) that was used with a real one, sending the same messages PairFree sends. reports lists device reports under data/nothing/reports.",
  "devices": [
   {
    "product_id": "B181",
@@ -1862,13 +1862,23 @@
         11,
         17,
         31,
-        1,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 9,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
         3,
         25,
         1
        ],
        "fixed": [],
-       "default": 1
+       "default": null
       },
       {
        "device": 4,
@@ -1882,12 +1892,22 @@
         11,
         17,
         31,
-        1,
-        26,
         1
        ],
        "fixed": [],
        "default": 1
+      },
+      {
+       "device": 4,
+       "button": 9,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        26,
+        1
+       ],
+       "fixed": [],
+       "default": null
       },
       {
        "device": 4,
@@ -2396,13 +2416,23 @@
         11,
         17,
         31,
-        1,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 9,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
         3,
         25,
         1
        ],
        "fixed": [],
-       "default": 1
+       "default": null
       },
       {
        "device": 4,
@@ -2416,12 +2446,22 @@
         11,
         17,
         31,
-        1,
-        26,
         1
        ],
        "fixed": [],
        "default": 1
+      },
+      {
+       "device": 4,
+       "button": 9,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        26,
+        1
+       ],
+       "fixed": [],
+       "default": null
       },
       {
        "device": 4,

@@ -360,19 +360,22 @@ public class NothingSession(private val hint: NothingModel? = null) {
     }
 
     /**
-     * The touch controls, one group per side (or the whole product), with the actions Nothing X offers for
-     * each gesture. Only once the earbuds reported their key table, and only for gestures the user can set.
+     * The touch controls, one group per side (or the whole product, or the CMF Buds Pro 2's case dial), with the
+     * actions Nothing X offers for each gesture, and for what a gesture does during a call where Nothing X lets
+     * the user set that too (button 9). Only once the earbuds reported their key table, and only for gestures the
+     * user can set.
      */
     private fun touchGroups(c: NothingConfig?): List<SettingGroup> {
         if (!keysRead || c == null) return emptyList()
         val sides = mutableMapOf<String, MutableList<Setting>>()
         for (g in c.gestures) {
-            if (!g.custom || g.button != BUTTON_TOUCH) continue
-            val name = GESTURES[g.gesture] ?: continue
+            if (!g.custom || g.button != BUTTON_TOUCH && g.button != BUTTON_CALL) continue
+            val name = (GESTURES[g.gesture] ?: continue) + if (g.button == BUTTON_CALL) CALL_SUFFIX else ""
             val options = g.operations.mapNotNull { ACTIONS[it] }.distinct()
             if (options.size < 2) continue
             val targets = when (g.device) {
                 DEVICE_EARBUD -> listOf(PART_LEFT to "left", PART_RIGHT to "right")
+                PART_CASE -> listOf(PART_CASE to "case")
                 PART_WHOLE -> listOf(PART_WHOLE to "whole")
                 else -> emptyList()
             }
@@ -507,15 +510,19 @@ public class NothingSession(private val hint: NothingModel? = null) {
         val c = config ?: return null
         val side = key.substringAfterLast('_')
         val name = key.removePrefix("touch_").removeSuffix("_$side")
-        val gesture = GESTURES.entries.firstOrNull { it.value == name }?.key ?: return null
+        val button = if (name.endsWith(CALL_SUFFIX)) BUTTON_CALL else BUTTON_TOUCH
+        val gesture = GESTURES.entries.firstOrNull { it.value == name.removeSuffix(CALL_SUFFIX) }?.key ?: return null
         val device = when (side) {
             "left" -> PART_LEFT
             "right" -> PART_RIGHT
+            "case" -> PART_CASE
             "whole" -> PART_WHOLE
             else -> return null
         }
-        val g = c.gestures.firstOrNull { it.gesture == gesture && it.button == BUTTON_TOUCH && it.custom && (it.device == device || it.device == DEVICE_EARBUD && device != PART_WHOLE) }
-            ?: return null
+        val g = c.gestures.firstOrNull {
+            it.gesture == gesture && it.button == button && it.custom &&
+                (it.device == device || it.device == DEVICE_EARBUD && (device == PART_LEFT || device == PART_RIGHT))
+        } ?: return null
         val action = g.operations.firstOrNull { ACTIONS[it] == option } ?: return null
         keys = keys + (Triple(device, g.button, gesture) to action)
         readBacks += frame(NothingCommand.GET_KEY_CONFIGURATION)
@@ -590,13 +597,23 @@ public class NothingSession(private val hint: NothingModel? = null) {
         private val CODECS = mapOf(0 to CODEC_STANDARD, 1 to "lhdc", 2 to "ldac")
 
         private const val BUTTON_TOUCH = 1
-        private val GESTURES = mapOf(1 to "single", 2 to "double", 3 to "triple", 7 to "hold", 9 to "double_hold")
 
-        /** The actions PairFree offers on a gesture, by Nothing X's operation number (its control_* labels). */
+        /** The key table's button for what a gesture does during a call (Nothing X's callControlsButton). */
+        private const val BUTTON_CALL = 9
+        private const val CALL_SUFFIX = "_call"
+
+        /** 10 is turning the CMF Buds Pro 2's case dial. */
+        private val GESTURES = mapOf(1 to "single", 2 to "double", 3 to "triple", 7 to "hold", 9 to "double_hold", 10 to "turn")
+
+        /**
+         * The actions PairFree offers on a gesture, by Nothing X's operation number (its control_* and case_* labels).
+         * 31, Nothing's news summary on Nothing phones, is left out.
+         */
         private val ACTIONS = mapOf(
-            1 to "none", 2 to "play_pause", 8 to "previous", 9 to "next", 10 to "noise_control", 11 to "voice_assistant",
-            17 to "game_mode", 18 to "volume_up", 19 to "volume_down", 27 to "spatial_audio", 29 to "mic_mute",
-            34 to "eq_preset", 35 to "bass_boost", 36 to "treble_boost",
+            1 to "none", 2 to "play_pause", 3 to "answer_call", 8 to "previous", 9 to "next", 10 to "noise_control",
+            11 to "voice_assistant", 17 to "game_mode", 18 to "volume_up", 19 to "volume_down", 23 to "volume_control",
+            25 to "answer_mute", 26 to "hang_up", 27 to "spatial_audio", 29 to "mic_mute", 34 to "eq_preset",
+            35 to "bass_boost", 36 to "treble_boost",
         )
 
         /** Actions the earbuds can hold that PairFree shows but does not offer: the default noise cycle (0x16). */

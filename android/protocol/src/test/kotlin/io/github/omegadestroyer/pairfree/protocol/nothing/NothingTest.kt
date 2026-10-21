@@ -328,6 +328,29 @@ class NothingTest {
     }
 
     @Test
+    fun caseDial() {
+        // The CMF Buds Pro 2's default key table from Nothing X: the earbuds, then the case dial (device 4), whose
+        // double and triple press also have an entry for calls (button 9).
+        val s = session("B172")
+        s.receive(reply(NothingCommand.GET_KEY_CONFIGURATION,
+            "0f03010209030103080301071603010901020102090201030802010716020109010401010104010201040103010401070104010a010409020104090301"))
+        val dial = s.groups.first { it.key == "touch_case" }
+        assertEquals(SettingTab.CONTROLS, dial.tab)
+        assertEquals(listOf("touch_single_case", "touch_double_case", "touch_double_call_case", "touch_triple_case", "touch_triple_call_case", "touch_hold_case", "touch_turn_case"),
+            dial.settings.map { it.key })
+        // Nothing's news summary (31) is left out.
+        assertEquals(Setting.Choice("touch_single_case", "none", listOf("play_pause", "next", "previous", "voice_assistant", "game_mode", "none")),
+            dial.settings.first { it.key == "touch_single_case" })
+        assertEquals(listOf("answer_call", "answer_mute", "none"), (dial.settings.first { it.key == "touch_double_call_case" } as Setting.Choice).options)
+        assertEquals(listOf("volume_control", "none"), (dial.settings.first { it.key == "touch_turn_case" } as Setting.Choice).options)
+        assertEquals("0104010a17", hex(s.change(SettingChange.Choice("touch_turn_case", "volume_control"))!!.single().payload))
+        assertEquals("0104090203", hex(s.change(SettingChange.Choice("touch_double_call_case", "answer_call"))!!.single().payload))
+        assertEquals("answer_call", (s.groups.first { it.key == "touch_case" }.settings.first { it.key == "touch_double_call_case" } as Setting.Choice).value)
+        // The earbuds' own rows are unchanged.
+        assertTrue(s.groups.any { it.key == "touch_left" } && s.groups.any { it.key == "touch_right" })
+    }
+
+    @Test
     fun theModelTable() {
         val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
         assertEquals(devices.size, NothingModels.ALL.size)

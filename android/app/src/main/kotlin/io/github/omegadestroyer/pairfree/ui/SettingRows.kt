@@ -111,7 +111,7 @@ private fun levelOrigin(setting: Setting.Level): Int =
 
 private const val SEND_AFTER_MS = 300L
 
-private val TOUCH_SIDES = setOf("left", "right", "whole")
+private val TOUCH_SIDES = setOf("left", "right", "whole", "case")
 
 @Composable
 private fun groupTitle(key: String): String = stringResource(
@@ -126,6 +126,7 @@ private fun groupTitle(key: String): String = stringResource(
         "find" -> R.string.find_earbuds
         "touch_left" -> R.string.setting_group_touch_left
         "touch_right" -> R.string.setting_group_touch_right
+        "touch_case" -> R.string.setting_group_touch_case
         else -> R.string.setting_group_other
     },
 )
@@ -133,6 +134,7 @@ private fun groupTitle(key: String): String = stringResource(
 @Composable
 private fun groupNote(key: String): String? = when (key) {
     "find" -> stringResource(R.string.setting_find_note)
+    "touch_case" -> stringResource(R.string.setting_group_touch_case_note)
     else -> null
 }
 
@@ -218,17 +220,34 @@ private fun settingTitle(key: String): String = when (key) {
     else -> touchTitle(key) ?: key
 }
 
-/** A gesture row of the form touch_<gesture>_<side> (Nothing's: left, right or whole), by its gesture. */
+/**
+ * A gesture row of the form touch_<gesture>[_call]_<side> (Nothing's: left, right, whole, or case for the
+ * CMF Buds Pro 2's case dial, which is pressed and turned rather than tapped), by its gesture.
+ */
 @Composable
 private fun touchTitle(key: String): String? {
     val side = key.substringAfterLast('_')
     if (!key.startsWith("touch_") || side !in TOUCH_SIDES) return null
-    return when (key.removePrefix("touch_").removeSuffix("_$side")) {
+    val gesture = key.removePrefix("touch_").removeSuffix("_$side")
+    if (side == "case") return when (gesture) {
+        "single" -> stringResource(R.string.setting_dial_press)
+        "double" -> stringResource(R.string.setting_dial_double)
+        "triple" -> stringResource(R.string.setting_dial_triple)
+        "hold" -> stringResource(R.string.setting_dial_hold)
+        "turn" -> stringResource(R.string.setting_dial_turn)
+        "double_call" -> stringResource(R.string.setting_dial_double_call)
+        "triple_call" -> stringResource(R.string.setting_dial_triple_call)
+        else -> null
+    }
+    return when (gesture) {
         "single" -> stringResource(R.string.setting_touch_single)
         "double" -> stringResource(R.string.setting_touch_double)
         "triple" -> stringResource(R.string.setting_touch_triple)
         "hold" -> stringResource(R.string.setting_touch_hold)
         "double_hold" -> stringResource(R.string.setting_touch_double_hold)
+        "double_call" -> stringResource(R.string.setting_touch_double_call)
+        "triple_call" -> stringResource(R.string.setting_touch_triple_call)
+        "hold_call" -> stringResource(R.string.setting_touch_hold_call)
         else -> null
     }
 }
@@ -299,6 +318,10 @@ private fun optionName(key: String, option: String): String = when {
             "volume_down" -> R.string.action_volume_down
             "spatial_audio" -> R.string.action_spatial_audio
             "mic_mute" -> R.string.action_mic_mute
+            "answer_call" -> R.string.action_answer_call
+            "answer_mute" -> R.string.action_answer_mute
+            "hang_up" -> R.string.action_hang_up
+            "volume_control" -> R.string.action_volume_control
             "eq_preset" -> R.string.action_eq_preset
             "bass_boost" -> R.string.action_bass_boost
             "treble_boost" -> R.string.action_treble_boost

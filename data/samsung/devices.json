@@ -1,5 +1,5 @@
 {
-  "_about": "Samsung Galaxy Buds models PairFree knows. model is Samsung's model number (SM-R...), names the names the earbuds use. galaxybudsclient holds what GalaxyBudsClient's device specification gives (tools/import_galaxybudsclient.py): its name for the model and the generation it compares (newer models have higher numbers), the part of the Bluetooth name it matches (base_name), the RFCOMM service, the framing (legacy: start FE, end EE, a type and a one-byte length; standard: start FD, end DD, a two-byte length), the highest ambient sound volume step, the touch-and-hold options as [byte, option] (custom runs a phone-side action, set in Samsung's app), the colours by device id, and the features, each with the lowest state revision that has it (null: every revision). The rest is PairFree's: reports lists recordings in data/samsung/reports, notes what was found on the earbuds. samsung_app holds what Samsung's own Galaxy Buds plugin says, where PairFree has read it (com.samsung.accessory.budsunitemgr 9.0.10): the codename, the state layout, the names the plugin matches, the touch-and-hold codes and the features. It overrides galaxybudsclient field by field, and models only Samsung's plugin knows have it alone. kind is headphones for a headset.",
+  "_about": "Samsung Galaxy Buds models PairFree knows. model is Samsung's model number (SM-R...), names the names the earbuds use. galaxybudsclient holds what GalaxyBudsClient's device specification gives (tools/import_galaxybudsclient.py): its name for the model and the generation it compares (newer models have higher numbers), the part of the Bluetooth name it matches (base_name), the RFCOMM service, the framing (legacy: start FE, end EE, a type and a one-byte length; standard: start FD, end DD, a two-byte length), the highest ambient sound volume step, the touch-and-hold options as [byte, option] (custom runs a phone-side action, set in Samsung's app), the colours by device id, and the features, each with the lowest state revision that has it (null: every revision). The rest is PairFree's: reports lists recordings in data/samsung/reports, notes what was found on the earbuds. samsung_app holds what Samsung's own Galaxy Buds plugin says, where PairFree has read it (com.samsung.accessory.budsunitemgr 9.0.10): the codename, the state layout, the names the plugin matches, the touch-and-hold codes, the features and, for the Buds On, the device ids its table (nr.b) gives. It overrides galaxybudsclient field by field, and models only Samsung's plugin knows have it alone. kind is headphones for a headset. The device ids under colors are also the model id a paired Buds2 or later publishes in its service list (docs/samsung/PROTOCOL.md section 4).",
   "source": {
     "project": "GalaxyBudsClient",
     "url": "https://github.com/timschneeb/GalaxyBudsClient",
@@ -855,7 +855,10 @@
         "service_uuid": "2e73a4ad-332d-41fc-90e2-16bef06523f2",
         "framing": "standard",
         "max_ambient_volume": 4,
-        "colors": {}
+        "colors": {
+          "363": "unknown",
+          "364": "unknown"
+        }
       },
       "notes": "The plugin lists the Buds On, but its features are not in the plugin's code: only the battery is shown."
     },

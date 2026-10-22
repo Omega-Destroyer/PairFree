@@ -108,6 +108,30 @@ class SamsungProtocolTest {
     }
 
     @Test
+    fun modelsFromTheirServiceList() {
+        val sppNew = "2e73a4ad-332d-41fc-90e2-16bef06523f2"
+        val spp = "00001101-0000-1000-8000-00805f9b34fb"
+        val handsFree = "0000111e-0000-1000-8000-00805f9b34fb"
+        val leAudio = "0000184e-0000-1000-8000-00805f9b34fb"
+        // A Buds2 or later publishes its model id (a colour code) in its service list, so a renamed pair is found.
+        assertEquals(326, SamsungModels.deviceIdIn(listOf(sppNew, "D908AAB5-7A90-4CBE-8641-86A553DB0146")))
+        assertEquals("SM-R510", SamsungModels.identify("My earbuds", listOf(sppNew, "d908aab5-7a90-4cbe-8641-86a553db0146"))?.model)
+        assertEquals("SM-R640", SamsungModels.identify("Galaxy Buds4 Pro (A1B2)", listOf("d908aab5-7a90-4cbe-8641-86a553db0169"))?.model)
+        assertEquals("SM-U600", SamsungModels.identify("Buds", listOf(sppNew, "d908aab5-7a90-4cbe-8641-86a553db016b"))?.model)
+        // The id wins over the name.
+        assertEquals("SM-R530", SamsungModels.identify("Galaxy Buds3 Pro (A1B2)", listOf(sppNew, "d908aab5-7a90-4cbe-8641-86a553db014d"))?.model)
+        // Without an id, the name, when the device has the model's service or Android has no service list yet.
+        assertEquals("SM-R190", SamsungModels.identify("Galaxy Buds Pro (A1B2)", listOf(spp, handsFree))?.model)
+        assertEquals("SM-R190", SamsungModels.identify("Galaxy Buds Pro (A1B2)", emptyList())?.model)
+        // Another brand's name holding a base name, without Samsung's service: not Galaxy Buds (a CMF Buds Pro 2).
+        assertNull(SamsungModels.identify("CMF Buds Pro 2", listOf("aeac4a03-dff5-498f-843a-34487cf133eb", handsFree)))
+        // The Buds2-and-later service with neither: Samsung's plugin's own guesses.
+        assertEquals("SM-R510", SamsungModels.identify("Renamed", listOf(sppNew, handsFree, leAudio))?.model)
+        assertEquals("SM-R177", SamsungModels.identify("Renamed", listOf(sppNew, handsFree))?.model)
+        assertNull(SamsungModels.identify("Soundcore Space A40", listOf(spp, handsFree)))
+    }
+
+    @Test
     fun reportsMaskTheDigitsInTheName() {
         assertEquals("Galaxy Buds2 Pro (xxxx)", SamsungModels.maskedName("Galaxy Buds2 Pro (A1b2)"))
         assertEquals("Galaxy Buds3 (Kitchen)", SamsungModels.maskedName("Galaxy Buds3 (Kitchen)"))

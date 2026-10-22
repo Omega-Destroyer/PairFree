@@ -117,12 +117,13 @@ class Hub(private val app: Application) {
                 val name = d.name ?: d.address
                 val uuids = d.uuids.orEmpty().map { it.uuid.toString() }
                 val soundcore = SoundcoreModels.identify(name, uuids)
-                val samsung = SamsungModels.fromName(name)
+                val samsung = SamsungModels.identify(name, uuids)
                 val sony = SonyModels.identify(name, uuids)
                 val jbl = JblModels.fromName(name)
                 when {
                     soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore.service, soundcore.model)
-                    samsung != null -> Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model)
+                    samsung != null ->
+                        Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model, SamsungModels.deviceIdIn(uuids))
                     sony != null -> Paired(d.address, name, Brand.SONY, sony.service, sony.model?.name)
                     BoseModels.isBose(name, uuids) -> Paired(d.address, name, Brand.BOSE)
                     jbl != null -> Paired(d.address, name, Brand.JBL, model = jbl.name)

@@ -67,15 +67,48 @@ public object SamsungModels {
     public fun model(code: String?): Model? = TABLE.firstOrNull { it.code == code }
 
     /**
+     * The model of a paired device from its [uuids], the service list Android keeps for it, and its Bluetooth [name]
+     * (docs/samsung/PROTOCOL.md section 4), or null when it is not Galaxy Buds:
+     * 1. The model id a Buds2 or later publishes in its service list ([deviceIdIn]), as Samsung's plugin reads it.
+     * 2. Else the name ([fromName]), but while the service list is known only for a model whose own service is on
+     *    it: PairFree talks to the earbuds on that service, and another brand's "Buds Pro" has none.
+     * 3. Else, for a pair with the Buds2-and-later service, what Samsung's plugin falls back to: a Buds2 Pro when
+     *    it also has hands-free and LE Audio, otherwise a Buds2.
+     */
+    public fun identify(name: String, uuids: List<String>): SamsungModel? {
+        val list = uuids.map { it.lowercase() }
+        deviceIdIn(list)?.let { id -> fromDeviceId(id)?.let { return it } }
+        fromName(name)?.let { m -> if (list.isEmpty() || m.serviceUuid.lowercase() in list) return m }
+        if (SERVICE_NEW !in list) return null
+        return of(if (HANDS_FREE in list && LE_AUDIO in list) "SM-R510" else "SM-R177")
+    }
+
+    /**
+     * The model id in a service list: a Buds2 or later publishes one as the last four hex digits of a service
+     * `d908aab5-7a90-4cbe-8641-86a553db....`. It is one of the colour codes in each model's [SamsungModel.colors].
+     */
+    public fun deviceIdIn(uuids: List<String>): Int? = uuids.firstNotNullOfOrNull { u ->
+        u.lowercase().takeIf { it.startsWith(DEVICE_ID_PREFIX) }?.removePrefix(DEVICE_ID_PREFIX)?.toIntOrNull(16)
+    }
+
+    /** The model with the colour code [id], the model id a pair publishes and its state repeats. */
+    public fun fromDeviceId(id: Int): SamsungModel? = SAMSUNG_MODELS.firstOrNull { id in it.colors }
+
+    /**
      * The model for a paired device's Bluetooth [name], or null when it is not a Galaxy Buds name.
      * As in GalaxyBudsClient, the name must contain the model's base name, or one of the names Samsung's
-     * plugin matches, and longer names are tried first, so `Buds3 Pro` wins over `Buds3`. The Galaxy Buds2 and later can be renamed;
-     * a renamed pair is not found.
+     * plugin matches, and longer names are tried first, so `Buds3 Pro` wins over `Buds3`. Other brands' names can
+     * hold a base name too (CMF Buds Pro 2), so [identify] checks the service list first.
      */
     public fun fromName(name: String): SamsungModel? =
         SAMSUNG_MODELS.flatMap { m -> (listOf(m.baseName) + m.matchNames).map { it to m } }
             .sortedByDescending { it.first.length }
             .firstOrNull { name.contains(it.first, ignoreCase = true) }?.second
+
+    private const val DEVICE_ID_PREFIX = "d908aab5-7a90-4cbe-8641-86a553db"
+    private const val SERVICE_NEW = "2e73a4ad-332d-41fc-90e2-16bef06523f2"
+    private const val HANDS_FREE = "0000111e-0000-1000-8000-00805f9b34fb"
+    private const val LE_AUDIO = "0000184e-0000-1000-8000-00805f9b34fb"
 
     /** The service the earbuds offer for their settings, as GalaxyBudsClient opens it. */
     public fun serviceFor(model: SamsungModel): String = model.serviceUuid

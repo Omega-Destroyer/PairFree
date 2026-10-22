@@ -139,8 +139,10 @@ def main():
                    "features, each with the lowest state revision that has it (null: every revision). The rest is "
                    "PairFree's: reports lists recordings in data/samsung/reports, notes what was found on the earbuds. samsung_app holds what Samsung's own Galaxy Buds plugin says, where PairFree has read it"
                    " (com.samsung.accessory.budsunitemgr 9.0.10): the codename, the state layout, the names the plugin matches, the"
-                   " touch-and-hold codes and the features. It overrides galaxybudsclient field by field, and"
-                   " models only Samsung's plugin knows have it alone. kind is headphones for a headset."),
+                   " touch-and-hold codes, the features and, for the Buds On, the device ids its table (nr.b) gives. It"
+                   " overrides galaxybudsclient field by field, and models only Samsung's plugin knows have it alone."
+                   " kind is headphones for a headset. The device ids under colors are also the model id a paired Buds2"
+                   " or later publishes in its service list (docs/samsung/PROTOCOL.md section 4)."),
         "source": {
             "project": "GalaxyBudsClient",
             "url": "https://github.com/timschneeb/GalaxyBudsClient",

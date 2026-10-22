@@ -394,6 +394,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("Bluetooth name:  ${SamsungModels.maskedName(device?.name.orEmpty())}")
                 appendLine("Brand:           Samsung")
                 appendLine("Model:           ${session.model.model} (${session.model.name})")
+                appendLine("Found by:        ${device?.modelId?.let { "model id $it in the service list" } ?: "Bluetooth name"}")
                 appendLine("Firmware:        ${firmware?.version ?: "unknown"}")
                 appendLine("App:             PairFree $version")
                 appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")

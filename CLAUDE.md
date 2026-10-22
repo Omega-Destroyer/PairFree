@@ -79,8 +79,10 @@ Beats on Apple's chips).
   (`docs/samsung/PROTOCOL.md` section 12).
 - `data/samsung/messages.json` is the message table and `data/samsung/devices.json` the model table;
   `generateSamsungTables` turns them into `SamsungMessage` and the model list in the
-  `protocol.samsung` package. The app finds Galaxy Buds by Bluetooth name
-  (`SamsungModels.fromName`) and shows them through `SamsungSession`: the battery, noise mode and
+  `protocol.samsung` package. The app finds Galaxy Buds by the model id a Buds2 or later publishes in
+  its service list, else by Bluetooth name where the device has the model's service
+  (`SamsungModels.identify`, `docs/samsung/PROTOCOL.md` section 4), and shows them through
+  `SamsungSession`: the battery, noise mode and
   fit test go to `EarbudState`, and every other setting to brand-neutral rows (`SettingGroup` in
   `protocol/Settings.kt`, drawn by `ui/SettingRows.kt` on the tab each group names). A new brand's
   settings that fit no shared screen go the same way. The EQ goes through the Sound tab via

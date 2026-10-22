@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.ui
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,6 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -490,6 +493,31 @@ fun StudioDialog(title: String, onDismiss: () -> Unit, content: @Composable Colu
         ) {
             Text(title, style = Studio.type.title)
             content()
+        }
+    }
+}
+
+/**
+ * After LDAC is turned on in the earbuds: the phone still picks the codec, and Samsung phones (and maybe others)
+ * also need LDAC turned on for the earbuds in their own Bluetooth settings. Android does not let an app read the
+ * codec in use, so PairFree cannot tell whether the phone followed (docs/soundpeats/PROTOCOL.md section 12).
+ */
+@Composable
+fun LdacPhoneDialog(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    StudioDialog(stringResource(R.string.ldac_on_title), onDismiss) {
+        Text(stringResource(R.string.ldac_on_body), color = Studio.colors.secondaryText)
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            StudioButton(stringResource(R.string.close), onDismiss, Modifier.weight(1f))
+            StudioButton(
+                stringResource(R.string.bluetooth_settings),
+                {
+                    onDismiss()
+                    context.startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
+                },
+                Modifier.weight(1f),
+                primary = true,
+            )
         }
     }
 }

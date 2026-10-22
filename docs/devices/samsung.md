@@ -4,8 +4,9 @@ PairFree is growing into one app for earbuds of several brands, with the same sc
 each. Galaxy Buds support is new and has not been tried on any earbuds yet: nobody on the
 project owns a pair, so every model relies on reports from people who do.
 
-PairFree lists every model below among your paired earbuds by its Bluetooth name. If you have
-renamed your earbuds, it does not find them yet.
+PairFree lists every model below among your paired earbuds. It recognises the Galaxy Buds2 and later
+by the model id they publish to your phone, so renamed earbuds should be found too, and older models
+by their Bluetooth name.
 
 It shows the battery and noise control on the Home tab, and the equalizer on the Sound tab:
 - **Presets:** Normal plus Samsung's five presets on every model.

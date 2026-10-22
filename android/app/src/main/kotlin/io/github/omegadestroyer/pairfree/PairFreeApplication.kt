@@ -124,18 +124,20 @@ class Hub(private val app: Application) {
                 val name = d.name ?: d.address
                 val uuids = d.uuids.orEmpty().map { it.uuid.toString() }
                 val soundcore = SoundcoreModels.identify(name, uuids)
-                // Samsung's models are matched by part of the name ("Buds Pro", as GalaxyBudsClient does), which
-                // other brands' names hold too (CMF Buds Pro 2, QCY MeloBuds Pro, 1MORE PistonBuds PRO Q30): a brand
-                // that knows the whole name comes first.
-                val samsung = SamsungModels.fromName(name)?.takeUnless {
-                    NothingModels.identify(name, uuids) || QcyModels.identify(name) || OneMoreModels.fromName(name) != null
+                // Without a model id, Samsung's models are matched by part of the name ("Buds Pro", as GalaxyBudsClient
+                // does), which other brands' names hold too (CMF Buds Pro 2, QCY MeloBuds Pro, 1MORE PistonBuds PRO Q30):
+                // a brand that knows the whole name comes first.
+                val samsung = SamsungModels.identify(name, uuids)?.takeUnless {
+                    SamsungModels.deviceIdIn(uuids) == null &&
+                        (NothingModels.identify(name, uuids) || QcyModels.identify(name) || OneMoreModels.fromName(name) != null)
                 }
                 val sony = SonyModels.identify(name, uuids)
                 val jbl = JblModels.fromName(name)
                 val oneMore = OneMoreModels.identify(name)
                 when {
                     soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore.service, soundcore.model)
-                    samsung != null -> Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model)
+                    samsung != null ->
+                        Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model, SamsungModels.deviceIdIn(uuids))
                     sony != null -> Paired(d.address, name, Brand.SONY, sony.service, sony.model?.name)
                     BoseModels.isBose(name, uuids) -> Paired(d.address, name, Brand.BOSE)
                     jbl != null -> Paired(d.address, name, Brand.JBL, model = jbl.name)

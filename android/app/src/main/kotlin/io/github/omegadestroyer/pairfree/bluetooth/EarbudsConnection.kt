@@ -104,6 +104,8 @@ data class Paired(
     val brand: Brand = Brand.SOUNDPEATS,
     val service: String? = null,
     val model: String? = null,
+    /** The model id Galaxy Buds2 and later publish in their service list, when it was there (for the device report). */
+    val modelId: Int? = null,
 )
 
 sealed interface LinkStatus {

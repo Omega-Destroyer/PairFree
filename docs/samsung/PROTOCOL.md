@@ -76,11 +76,28 @@ a change made by touch, the earbuds send an update instead:
 
 ## 4. Identifying the model and connecting
 
-The earbuds do not say their model in a way PairFree uses. GalaxyBudsClient reads a model id
-from the device's service list, but that code has a bug and is not used. PairFree matches the
-paired device's Bluetooth name, as GalaxyBudsClient also does. A name matches when it contains
-the model's `base_name`. Longer base names are tried first, so "Buds3 Pro" wins over "Buds3".
-The Buds2 and later can be renamed in Samsung's app, and a renamed pair is not found.
+A paired device is matched from the service list Android keeps for it (its SDP UUIDs, which an
+app reads with the connect permission alone, no scan) and its Bluetooth name
+(`SamsungModels.identify`), in this order:
+
+1. **The model id.** A Buds2 or later publishes a service
+   `d908aab5-7a90-4cbe-8641-86a553db` followed by four hex digits: its model id, which is the
+   colour code (device id) of its model and colour, such as `0146` (326) for a grey Buds2 Pro.
+   Samsung's plugin reads it this way (`BluetoothUuidUtil.getDeviceIdFromUUID`), and its table
+   (`nr.b`) maps each code to a model; it agrees with GalaxyBudsClient's `DeviceIds` (the
+   `colors` of each model in `data/samsung/devices.json`) and adds the Buds On's 363 and 364.
+   GalaxyBudsClient has the same lookup, but its parsing reads the prefix instead of the id, so
+   it never matches. This finds a renamed pair.
+2. **The name**, as GalaxyBudsClient matches it: it contains the model's `base_name` or one of the
+   names Samsung's plugin matches, longer ones first, so "Buds3 Pro" wins over "Buds3". While
+   Android has a service list for the device, the model's own service (section 1) must be on it:
+   other brands' names hold base names too (the CMF Buds Pro 2 matched "Buds Pro"), and
+   PairFree could not talk to such a device as Galaxy Buds anyway.
+3. **Samsung's fallback** for a pair with the Buds2-and-later service but no id and no name:
+   a Buds2 Pro when it also has hands-free (`111E`) and LE Audio (`184E`), otherwise a Buds2.
+
+The device report says which way the model was found. Which models publish the id is not known
+yet: none has been tried.
 
 There is no handshake. After the channel opens:
 

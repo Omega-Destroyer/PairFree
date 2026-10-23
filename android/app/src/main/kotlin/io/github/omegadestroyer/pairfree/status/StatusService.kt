@@ -6,13 +6,16 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.os.Bundle
 import android.os.IBinder
+import android.os.SystemClock
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -45,13 +48,33 @@ import kotlinx.coroutines.launch
  * PairFree's ([StatusChoice]) are connected, it holds the channel through the [hub] and shows
  * their battery and noise mode, with a button for the next noise mode and one for game mode,
  * each where the earbuds have it. It ends when the earbuds disconnect, when the user picks
- * another choice or other earbuds, or when the channel cannot be opened.
+ * another choice or other earbuds, or when the channel cannot be opened. That the earbuds are
+ * gone it learns from Android's disconnect broadcast and from Bluetooth turning off, and, should
+ * a broadcast not arrive, from their sound profiles ([io.github.omegadestroyer.pairfree.bluetooth.AudioLinks]).
  */
 class StatusService : Service() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var watching: Job? = null
     private var device: Paired? = null
     private var shown: String? = null
+
+    /** When the notification started, so earbuds that are still connecting get a moment. */
+    private var since = 0L
+    private var listening = false
+
+    /** The earbuds disconnecting, or Bluetooth turning off, while the notification shows. */
+    private val links = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
+                    val gone = IntentCompat.getParcelableExtra(intent, BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+                    if (gone != null && gone.address == device?.address) stop()
+                }
+                BluetoothAdapter.ACTION_STATE_CHANGED ->
+                    if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_ON) != BluetoothAdapter.STATE_ON) stop()
+            }
+        }
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -87,10 +110,40 @@ class StatusService : Service() {
         ServiceCompat.startForeground(this, NOTIFICATION_ID, first, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
         shown = key(first)
         if (target == null) return stop()
+        if (device?.address != target.address) since = SystemClock.elapsedRealtime()
         device = target
+        hub.audio.start()
+        listen()
         hub.notification(holds = true)
         if (!onIt) hub.connection.connect(target)
-        if (watching == null) watching = scope.launch { watch() }
+        if (watching == null) {
+            watching = scope.launch {
+                launch { watchLink() }
+                watch()
+            }
+        }
+    }
+
+    private fun listen() {
+        if (listening) return
+        listening = true
+        val filter = IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED).apply { addAction(BluetoothAdapter.ACTION_STATE_CHANGED) }
+        ContextCompat.registerReceiver(this, links, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+    }
+
+    /**
+     * While the channel is not open, checks every few seconds that the earbuds are still connected to the
+     * phone for sound, and ends the notification once they are not: a missed disconnect broadcast otherwise
+     * left it on Connecting while PairFree kept trying earbuds that were in their case.
+     */
+    private suspend fun watchLink() {
+        while (true) {
+            delay(LINK_CHECK_MS)
+            val current = device ?: return
+            if (hub.connection.status.value is LinkStatus.Connected) continue
+            if (SystemClock.elapsedRealtime() - since < LINK_GRACE_MS) continue
+            if (hub.audio.connected(current.address) == false) return stop()
+        }
     }
 
     /** What a notification shows, its buttons included, to post it again only when that changes. */
@@ -114,7 +167,9 @@ class StatusService : Service() {
                 }
                 is LinkStatus.Failed -> {
                     if (status.device.address != current.address) return@collect stop()
-                    if (status.reason == LinkStatus.Reason.COULD_NOT_OPEN && retries < MAX_RETRIES && hub.hasPermission()) {
+                    if (status.reason == LinkStatus.Reason.COULD_NOT_OPEN && retries < MAX_RETRIES && hub.hasPermission() &&
+                        hub.audio.connected(current.address) != false
+                    ) {
                         retries++
                         delay(RETRY_MS)
                         hub.connection.connect(current)
@@ -175,6 +230,10 @@ class StatusService : Service() {
         watching = null
         device = null
         shown = null
+        if (listening) {
+            listening = false
+            unregisterReceiver(links)
+        }
         hub.notification(holds = false)
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -182,6 +241,10 @@ class StatusService : Service() {
 
     override fun onDestroy() {
         scope.cancel()
+        if (listening) {
+            listening = false
+            unregisterReceiver(links)
+        }
         hub.notification(holds = false)
         super.onDestroy()
     }
@@ -202,6 +265,10 @@ class StatusService : Service() {
         /** Earbuds can take a few seconds after connecting before their control channel opens. */
         private const val MAX_RETRIES = 5
         private const val RETRY_MS = 3_000L
+
+        /** How often the earbuds' sound connection is checked while the channel is not open, and how long after the start it is not. */
+        private const val LINK_CHECK_MS = 2_000L
+        private const val LINK_GRACE_MS = 10_000L
 
         fun createChannel(context: Context) {
             val channel = NotificationChannel(CHANNEL, context.getString(R.string.status_channel), NotificationManager.IMPORTANCE_LOW).apply {

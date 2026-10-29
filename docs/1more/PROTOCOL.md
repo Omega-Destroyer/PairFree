@@ -76,6 +76,8 @@ read again at once.
 | `0091` | `0090` | Hearing your own voice | 0 off, 1 on |
 | `0093` | `0092` | Its depth | 1 low, 2 medium, 3 high |
 | `0095` | `0094` | Volume limit | 0 off, 1 low, 2 medium, 3 high |
+| `008A` | `008B` | The NANO's light mode | 0 one colour, 1 breathing, 2 colour cycle (RGB), 3 off |
+| `008C` | `008D` | The NANO's light colour | 0 ice blue, 1 white, 2 green, 3 red, 4 yellow |
 | `005B` | — | Finding the earbuds | sent with `01`; earbuds that can ring answer it |
 | — | `005A` | Ring | left, right: 1 ring, 0 stop; the earbuds report the same two bytes, and 0 when a side stops |
 
@@ -86,6 +88,8 @@ read again at once.
 - **Touch actions, both alike:** 0 none, 1 play or pause, 2 previous or next, 3 volume, 4 voice assistant.
 - **Hearing your own voice:** 1MORE's app turns it on (`0090 01`), then sets the depth; off is `0090 00`.
   It sends both only while both earbuds report a battery.
+- **The light:** 1MORE's app shows it for the 1MORE NANO alone (`HeadsetActivity`), and reads the new value
+  from the answer to a change as from a read.
 - **Noise cancelling without a choice made** is mode 1, and transparency mode 3 (`HeadsetActivity`,
   `prevNoiseReduction`, `prevTransparent`).
 
@@ -116,7 +120,8 @@ actions without the assistant, and hearing your own voice and the volume limit (
 
 ## 6. Not yet
 
-- **EQ:** the music and sleep styles (`003B`), presets (`0069`) and custom EQ (`0053`).
-- **The lights** of the NANO (`008A` to `008D`).
-- **Music on the earbuds** (`0038` to `003A`, `0049`, `0071` to `0073`) and the sleep timer (`0068`).
+- **EQ:** presets (`0069`) and custom EQ (`0053`).
+- **Music on the earbuds** (`0038` to `003A`, `0049`, `0071` to `0073`).
+- **The music and sleep styles (`003B`/`003C`) and the play time (`0068`):** 1MORE's app 2.0.0 declares them
+  (`BluetoothOrderConstents`) but never sends them, so nothing shows their payloads.
 - **The `FE` frames** (section 2), and whether the earbuds' XOR and length field always hold.

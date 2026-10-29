@@ -1250,7 +1250,7 @@ abstract class GenerateOneMoreTables : DefaultTask() {
             out.appendLine("        listenModes = ${strings(d["listen_modes"])}, connection = ${strings(d["connection"])},")
             out.appendLine("        autoplay = ${d["autoplay"]}, spatialAudio = ${d["spatial_audio"]}, sleepDetection = ${d["sleep_detection"]}, dualDevice = ${d["dual_device"]}, hotWord = ${d["hot_word"]},")
             out.appendLine("        touch = ${d["touch"]?.let(::str) ?: "null"}, touchAssistant = ${d["touch_assistant"]}, eq = ${strings(d["eq"])},")
-            out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]},")
+            out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]}, lights = ${d["lights"] == true},")
             out.appendLine("    ),")
         }
         out.appendLine(")")

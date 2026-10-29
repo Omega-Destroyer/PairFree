@@ -52,6 +52,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     private var earReturn: Boolean? = null
     private var earReturnDepth: Int? = null
     private var volumeLimit: Int? = null
+    private var lightMode: Int? = null
+    private var lightColour: Int? = null
     private var findSupported = false
     private val ringing = mutableSetOf<String>()
 
@@ -85,6 +87,10 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             add(frame(OneMoreCommand.GET_EAR_RETURN_DEPTH))
         }
         if (m.volumeLimit) add(frame(OneMoreCommand.GET_MAX_SOUND_LIMIT))
+        if (m.lights) {
+            add(frame(OneMoreCommand.GET_LIGHT_MODE))
+            add(frame(OneMoreCommand.GET_LIGHT_COLOR))
+        }
         // 1MORE's app asks with 01 whether the earbuds can ring; earbuds that can answer it.
         if (form == Form.EARBUDS) add(frame(OneMoreCommand.FIND_DEVICE_SUPPORT, 1))
     }
@@ -138,6 +144,9 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.GET_EAR_RETURN -> earReturn = v == ON
             OneMoreCommand.GET_EAR_RETURN_DEPTH -> earReturnDepth = v
             OneMoreCommand.GET_MAX_SOUND_LIMIT -> volumeLimit = v
+            // The light: its mode and colour, a byte each, answered to the read and to a change alike (HeadsetActivity).
+            OneMoreCommand.GET_LIGHT_MODE, OneMoreCommand.SET_LIGHT_MODE -> if (v in LIGHT_MODES) lightMode = v
+            OneMoreCommand.GET_LIGHT_COLOR, OneMoreCommand.SET_LIGHT_COLOR -> if (v in LIGHT_COLOURS) lightColour = v
             OneMoreCommand.FIND_DEVICE_SUPPORT -> findSupported = true
             // The earbuds report which side is ringing: a 0 ends that side's ring.
             OneMoreCommand.FIND_DEVICE -> {
@@ -230,6 +239,13 @@ public class OneMoreSession(public val model: OneMoreModel?) {
                             Setting.Choice("ear_return", LEVELS[if (on) earReturnDepth ?: LEVEL_LOW else LEVEL_OFF], LEVELS.values.toList())
                         },
                         volumeLimit?.takeIf { m?.volumeLimit == true }?.let { Setting.Choice("volume_limit", LEVELS[it], LEVELS.values.toList()) },
+                    ),
+                ),
+                group(
+                    "light", SettingTab.DEVICE,
+                    listOfNotNull(
+                        lightMode?.takeIf { m?.lights == true }?.let { Setting.Choice("light_mode", LIGHT_MODES[it], LIGHT_MODES.values.toList()) },
+                        lightColour?.takeIf { m?.lights == true }?.let { Setting.Choice("light_colour", LIGHT_COLOURS[it], LIGHT_COLOURS.values.toList()) },
                     ),
                 ),
             ) + touchGroups()
@@ -378,6 +394,18 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             readBacks += frame(OneMoreCommand.GET_CONNECTION_MODE)
             listOf(frame(OneMoreCommand.SET_CONNECTION_MODE, v))
         }
+        "light_mode" -> {
+            val v = LIGHT_MODES.entries.firstOrNull { it.value == option }?.key ?: return null
+            lightMode = v
+            readBacks += frame(OneMoreCommand.GET_LIGHT_MODE)
+            listOf(frame(OneMoreCommand.SET_LIGHT_MODE, v))
+        }
+        "light_colour" -> {
+            val v = LIGHT_COLOURS.entries.firstOrNull { it.value == option }?.key ?: return null
+            lightColour = v
+            readBacks += frame(OneMoreCommand.GET_LIGHT_COLOR)
+            listOf(frame(OneMoreCommand.SET_LIGHT_COLOR, v))
+        }
         "smart_playback" -> {
             val v = AUTOPLAY.entries.firstOrNull { it.value == option }?.key ?: return null
             autoplay = v
@@ -431,6 +459,10 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     private fun ByteArray.u8(at: Int): Int = this[at].toInt() and 0xFF
 
     public companion object {
+        /** The NANO's light (LightModeActivity, LightActivity): its modes and colours, by value. */
+        private val LIGHT_MODES = mapOf(0 to "monochrome", 1 to "breathe", 2 to "rgb", 3 to "off")
+        private val LIGHT_COLOURS = mapOf(0 to "ice_blue", 1 to "white", 2 to "green", 3 to "red", 4 to "yellow")
+
         private const val BRAND = "1MORE"
         private const val RESULT_SUCCESS = 1
         private const val ON = 1

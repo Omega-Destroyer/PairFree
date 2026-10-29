@@ -32,6 +32,8 @@ ONE_BATTERY = {"1MORE HQ20", "1MORE HQ31", "1MORE HQ36", "1MORE HQ51", "1MORE HQ
 NO_CASE = {"1MORE S11", "1MORE S12"}
 NO_ASSISTANT_TOUCH = {"1MORE S-31", "1MORE S51", "1MORE S70", "1MORE HQ20", "1MORE S25"}
 EAR_RETURN = {"1MORE HQ20"}
+# The light's mode and colour: HeadsetActivity shows them for this name alone.
+LIGHTS = {"1MORE NANO"}
 # Tuya's AI earbuds (DataKt.aIDeviceList): 1MORE's app reaches them through Tuya's platform, not its serial protocol.
 TUYA = {"1MORE S52", "1MORE S22Ultra"}
 
@@ -87,6 +89,7 @@ def device(r):
         "eq": [k for k, f in EQ if on(r, f)],
         "ear_return": name in EAR_RETURN,
         "volume_limit": name in EAR_RETURN,
+        "lights": name in LIGHTS,
         "pictures": pictures(r),
         "reports": [],
     }
@@ -103,7 +106,7 @@ def main(dump_path, out_path=OUT):
         "_about": "1MORE's models (docs/1more/PROTOCOL.md section 5): one entry per Bluetooth name, as 1MORE's app matches them, with the "
                   "controls its product list gives each model. The list is 1MORE's own (system/headphone/list, which 1MORE's app 2.0.0 "
                   "downloads), fetched once by hand on 2026-10-18 with the owner's OK; PairFree never contacts 1MORE. listen_modes uses "
-                  "data/1more/commands.json's names; tuya, kind, case, touch_assistant, ear_return and volume_limit come from 1MORE's app code; tuya marks "
+                  "data/1more/commands.json's names; tuya, kind, case, touch_assistant, ear_return, volume_limit and lights come from 1MORE's app code; tuya marks "
                   "the two models 1MORE's app reaches through Tuya's platform instead, which PairFree does not control. "
                   "pictures are paths on https://newapp.1more.com/prod-api, per colour, kept for tracing device art.",
         "fetched": "2026-10-18",

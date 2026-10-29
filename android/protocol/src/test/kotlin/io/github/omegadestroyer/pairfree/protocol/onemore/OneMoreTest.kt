@@ -194,6 +194,31 @@ class OneMoreTest {
     }
 
     @Test
+    fun theNanosLight() {
+        // 1MORE's app reads and sets the NANO's light mode and colour, one byte each, and shows them for that name alone.
+        val nano = OneMoreSession(OneMoreModels.fromName("1MORE NANO"))
+        val start = nano.start().map { it.command }
+        assertTrue(OneMoreCommand.GET_LIGHT_MODE in start && OneMoreCommand.GET_LIGHT_COLOR in start)
+        nano.receive(reply(OneMoreCommand.GET_LIGHT_MODE, "01"))
+        nano.receive(reply(OneMoreCommand.GET_LIGHT_COLOR, "03"))
+        val light = nano.groups.single { it.key == "light" }.settings
+        assertEquals(Setting.Choice("light_mode", "breathe", listOf("monochrome", "breathe", "rgb", "off")), light[0])
+        assertEquals(Setting.Choice("light_colour", "red", listOf("ice_blue", "white", "green", "red", "yellow")), light[1])
+        val off = nano.change(SettingChange.Choice("light_mode", "off"))!!.single()
+        assertEquals(OneMoreCommand.SET_LIGHT_MODE, off.command)
+        assertEquals("03", hex(off.payload))
+        assertEquals("00", hex(nano.change(SettingChange.Choice("light_colour", "ice_blue"))!!.single().payload))
+        // The answer to a change holds the new value too.
+        nano.receive(reply(OneMoreCommand.SET_LIGHT_COLOR, "04"))
+        assertEquals("yellow", (nano.groups.single { it.key == "light" }.settings[1] as Setting.Choice).value)
+        // Other models have no light.
+        val q21 = OneMoreSession(OneMoreModels.fromName("1MORE Q21"))
+        assertTrue(OneMoreCommand.GET_LIGHT_MODE !in q21.start().map { it.command })
+        q21.receive(reply(OneMoreCommand.GET_LIGHT_MODE, "01"))
+        assertTrue(q21.groups.none { it.key == "light" })
+    }
+
+    @Test
     fun earReturnAndFind() {
         val hq20 = OneMoreSession(OneMoreModels.fromName("1MORE HQ20"))
         hq20.receive(reply(OneMoreCommand.GET_EAR_RETURN, "00"))

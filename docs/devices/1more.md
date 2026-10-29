@@ -15,8 +15,8 @@ What it shows, where the model has it:
 - **Sound:** spatial audio.
 - **Controls:** what a double and a triple tap do, on each earbud or on both alike.
 - **Device:** two devices at once, the connection mode (standard, game mode or LDAC), what happens when
-  you take them out, sleep detection, voice commands, finding a lost earbud, and on the HQ20 hearing your
-  own voice and the volume limit.
+  you take them out, sleep detection, voice commands, finding a lost earbud, on the HQ20 hearing your
+  own voice and the volume limit, and on the NANO its light's mode and colour.
 
 Not yet: the equalizer.
 

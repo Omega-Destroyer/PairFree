@@ -30,6 +30,8 @@ public data class OneMoreModel(
     val eq: List<String>,
     val earReturn: Boolean,
     val volumeLimit: Boolean,
+    /** The light's mode and colour (1MORE's app: the NANO alone). */
+    val lights: Boolean = false,
 )
 
 /** Every 1MORE model PairFree knows, and how a paired device is recognised as one. */

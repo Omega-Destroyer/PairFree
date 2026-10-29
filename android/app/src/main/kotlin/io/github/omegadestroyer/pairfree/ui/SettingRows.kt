@@ -124,6 +124,7 @@ private fun groupTitle(key: String): String = stringResource(
         "connection" -> R.string.connection
         "other" -> R.string.setting_group_other
         "find" -> R.string.find_earbuds
+        "light" -> R.string.setting_group_light
         "touch_left" -> R.string.setting_group_touch_left
         "touch_right" -> R.string.setting_group_touch_right
         "touch_case" -> R.string.setting_group_touch_case
@@ -155,6 +156,8 @@ private fun settingTitle(key: String): String = when (key) {
     "ear_detection" -> stringResource(R.string.setting_ear_detection)
     "allow_off" -> stringResource(R.string.setting_allow_off)
     "auto_off" -> stringResource(R.string.auto_shutdown)
+    "light_mode" -> stringResource(R.string.setting_light_mode)
+    "light_colour" -> stringResource(R.string.setting_light_colour)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure)
     "ambient_volume" -> stringResource(R.string.setting_ambient_volume)
     "voice_focus" -> stringResource(R.string.setting_voice_focus)
@@ -398,6 +401,19 @@ private fun optionName(key: String, option: String): String = when {
         },
     )
     key == "auto_off" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.shutdown_never)
+    key == "light_mode" || key == "light_colour" -> stringResource(
+        when (option) {
+            "monochrome" -> R.string.setting_light_monochrome
+            "breathe" -> R.string.setting_light_breathe
+            "rgb" -> R.string.setting_light_rgb
+            "ice_blue" -> R.string.setting_light_ice_blue
+            "white" -> R.string.setting_light_white
+            "green" -> R.string.setting_light_green
+            "red" -> R.string.setting_light_red
+            "yellow" -> R.string.setting_light_yellow
+            else -> R.string.action_off
+        },
+    )
     key == "anr" || key == "sidetone_level" -> stringResource(
         when (option) {
             "off" -> R.string.setting_level_off

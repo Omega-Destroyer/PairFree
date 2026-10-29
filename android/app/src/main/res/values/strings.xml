@@ -505,4 +505,15 @@
     <string name="setting_volume_limit">Volume limit</string>
     <string name="action_previous_next">Previous or next track</string>
     <string name="action_volume">Volume</string>
+    <string name="setting_group_light">Light</string>
+    <string name="setting_light_mode">Light mode</string>
+    <string name="setting_light_colour">Light colour</string>
+    <string name="setting_light_monochrome">One colour</string>
+    <string name="setting_light_breathe">Breathing</string>
+    <string name="setting_light_rgb">Colour cycle</string>
+    <string name="setting_light_ice_blue">Ice blue</string>
+    <string name="setting_light_white">White</string>
+    <string name="setting_light_green">Green</string>
+    <string name="setting_light_red">Red</string>
+    <string name="setting_light_yellow">Yellow</string>
 </resources>

@@ -121,6 +121,8 @@ private fun groupTitle(key: String): String = stringResource(
         "calls" -> R.string.setting_group_calls
         "connection" -> R.string.connection
         "other" -> R.string.setting_group_other
+        "sound_effects" -> R.string.setting_group_sound_effects
+        "noise_adaptive" -> R.string.setting_group_noise_adaptive
         "find" -> R.string.find_earbuds
         else -> R.string.setting_group_other
     },
@@ -204,6 +206,20 @@ private fun settingTitle(key: String): String = when (key) {
     "sidetone_level" -> stringResource(R.string.setting_sidetone)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
+    // SOUNDPEATS (SoundpeatsSettings)
+    "sp_dynamic_eq" -> stringResource(R.string.setting_sp_dynamic_eq)
+    "sp_dynamic_bass" -> stringResource(R.string.setting_dynamic_bass)
+    "sp_movie_mode" -> stringResource(R.string.setting_movie_mode)
+    "sp_spatial_audio" -> stringResource(R.string.setting_sp_spatial_audio)
+    "sp_dolby" -> stringResource(R.string.setting_dolby)
+    "sp_personal_volume" -> stringResource(R.string.setting_personalized_volume)
+    "sp_panoramic_sound" -> stringResource(R.string.setting_panoramic_sound)
+    "sp_volume_balance" -> stringResource(R.string.setting_balance)
+    "sp_hearing_protection" -> stringResource(R.string.setting_hearing_protection)
+    "sp_anc_env_adaptive" -> stringResource(R.string.setting_anc_env_adaptive)
+    "sp_privacy_mode" -> stringResource(R.string.setting_privacy_mode)
+    "sp_fall_detection" -> stringResource(R.string.setting_fall_detection)
+    "sp_light_effect" -> stringResource(R.string.setting_light_effect)
     else -> key
 }
 
@@ -234,6 +250,13 @@ private fun settingNote(key: String): String? = when (key) {
 
 @Composable
 private fun optionName(key: String, option: String): String = when {
+    key == "sp_panoramic_sound" -> stringResource(
+        when (option) {
+            "music" -> R.string.setting_panoramic_music
+            "movie" -> R.string.setting_panoramic_movie
+            else -> R.string.setting_panoramic_normal
+        },
+    )
     key == "anc_level" -> stringResource(if (option == "high") R.string.setting_anc_level_high else R.string.setting_anc_level_low)
     key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
     key == "press_speed" || key == "hold_duration" || key == "volume_swipe_length" -> stringResource(

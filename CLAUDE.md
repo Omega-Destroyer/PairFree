@@ -293,6 +293,10 @@ reports from other people.
   app sends that again 2.5 s after every channel opens, as PeatsAudio does (owner's choice,
   2026-10-11). For earbuds this phone has never set, it sends nothing and shows the EQ as
   not known. Any profile whose bytes match what is on the earbuds shows as selected.
+- The official app's other settings (dynamic EQ and bass, movie mode, spatial audio, Dolby, adaptive and
+  personal volume, panoramic sound, volume balance and limit, adaptive noise cancelling, privacy mode, fall
+  detection and the light) show as brand rows (`SoundpeatsSettings`, keys `sp_<id>`) once their GET answers;
+  the H3 and Air5 Pro+ answer none of them.
 - A feature counts as supported once its GET answers, except commands marked `per_model`
   in `data/soundpeats/commands.json` (LE Audio): those also need the model's `confirmed` list in
   `data/soundpeats/devices.json` (`EarbudState.offers`). The H3 answers the LE Audio read, yet

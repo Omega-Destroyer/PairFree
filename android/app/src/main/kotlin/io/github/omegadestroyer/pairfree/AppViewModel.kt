@@ -20,6 +20,7 @@ import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
+import io.github.omegadestroyer.pairfree.protocol.SoundpeatsSettings
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.CurveMatch
 import io.github.omegadestroyer.pairfree.protocol.DeviceReport
@@ -364,7 +365,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     override fun resetTouch() = connection.resetSoundcoreTouch()
 
-    override fun changeSetting(change: SettingChange) = connection.changeSetting(change)
+    override fun changeSetting(change: SettingChange) {
+        // SOUNDPEATS earbuds' extra settings are commands of their own table, sent as any SET is.
+        if (connectedDevice()?.brand == Brand.SOUNDPEATS) {
+            SoundpeatsSettings.change(change)?.let { (command, value) -> connection.set(command, value) }
+            return
+        }
+        connection.changeSetting(change)
+    }
 
     override fun startFitTest() {
         val name = (connection.status.value as? LinkStatus.Connected)?.device?.name

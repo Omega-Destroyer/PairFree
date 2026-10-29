@@ -14,8 +14,8 @@ import.
 `main` is what gets released: F-Droid builds the `vX.Y.Z` tags on it. New work goes on a short
 branch from `main`, one per brand (`brand/<name>`, for example `brand/jlab`) or per larger feature,
 and is merged back with a merge commit as soon as it works for one model, then deleted. A feature
-that is not ready for every model can stay hidden on the others through the brand's data (as
-`eq.checked` does for the Soundcore EQ), so it does not have to wait on a branch. Do not keep a
+that is not ready for every model can stay hidden on the others through the brand's data, so it
+does not have to wait on a branch. Do not keep a
 long-lived branch per brand, and do not mix brands on one branch. Push only when the owner asks.
 
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
@@ -48,8 +48,9 @@ Beats on Apple's chips).
   else Bluetooth name) and shows it on the same screens through `SoundcoreSession`, which reads the
   state with the model's layout and maps it to `EarbudState`. It sends a setting only when the
   last state showed it. The equalizer (`SoundcoreEqualizer`, `eq` in `devices.json`, presets in
-  `eq_presets.json`) goes through the same Sound tab via `SoundcoreEqTarget`, and only for models
-  whose `eq.checked` is set: a recording of the Soundcore app or an OpenSCQ30 test pins the write.
+  `eq_presets.json`) goes through the same Sound tab via `SoundcoreEqTarget`, for every model with an
+  `eq` entry (owner, 2026-10-29); `eq.checked` says whether a recording of the Soundcore app or an
+  OpenSCQ30 test pins the write, and the Sound tab says when neither does.
   Touch controls (`SoundcoreButtons`, `SoundcoreTouch`, `buttons` in `devices.json`, action sets in
   `button_actions.json`) show on the Controls tab for every model that has them, tested or not
   (owner, 2026-10-14); `buttons.checked` only says how far the writes are confirmed. Where the A40's

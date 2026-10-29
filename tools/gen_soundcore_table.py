@@ -122,9 +122,9 @@ def table():
         "",
         f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise "
         "control, two devices, LDAC, game mode, touch controls and touch tone on every model that has them, "
-        "and the equalizer where its column says Tested (recorded from the Soundcore app) or Checked "
-        "(OpenSCQ30's tests hold the exact packet). Touch controls say the same of their writes. The other "
-        "columns are not in PairFree yet.",
+        "and the equalizer: its column says Tested (recorded from the Soundcore app), Checked "
+        "(OpenSCQ30's tests hold the exact packet) or Not tested (OpenSCQ30's code alone). Touch controls say "
+        "the same of their writes. The other columns are not in PairFree yet.",
         "",
         "<table>",
         f"<tr>{header}</tr>",

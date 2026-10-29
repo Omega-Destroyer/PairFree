@@ -111,7 +111,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             equalizer.open(device.address, model)
             return
         }
-        val spec = SoundcoreEqSpec.of(device.model)?.takeIf { it.checked != null }
+        // Every model with an EQ in data/soundcore/devices.json (owner, 2026-10-29); the screen says when its write is not confirmed.
+        val spec = SoundcoreEqSpec.of(device.model)
         val target = spec?.let { SoundcoreEqTarget(it, { connection.soundcoreState.value }, SoundcoreLayout.of(it.model)?.checksum ?: true) }
         soundcoreEq = target
         equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)

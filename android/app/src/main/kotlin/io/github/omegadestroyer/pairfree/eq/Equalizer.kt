@@ -53,6 +53,9 @@ interface EqTarget {
     /** False when the earbuds apply their presets themselves and their curves are not known, so none is drawn. */
     val presetCurves: Boolean get() = true
 
+    /** False when nothing has confirmed the frames for this model yet: the screen says so. */
+    val confirmed: Boolean get() = true
+
     /** The frames that put [setting] on the earbuds; [preset] when the setting is one of the model's presets. */
     fun frames(layout: EqLayout, setting: EqSetting, preset: EqPreset?): List<ByteArray>
 }

@@ -22,7 +22,7 @@ confirmed them, and showed that its case reports its battery in percent.
 
 <b>Tested</b> (2): tried on the earbuds with PairFree. <b>Checked</b> (20): PairFree reads every reply from the model that OpenSCQ30's tests hold, most of them from its users' bug reports. <b>Not tested</b>: read from OpenSCQ30's code alone. A device report from one of these helps (<a href="../../README.md#help-add-your-model">Help add your model</a>).
 
-✅ the model has it. — it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise control, two devices, LDAC, game mode, touch controls and touch tone on every model that has them, and the equalizer where its column says Tested (recorded from the Soundcore app) or Checked (OpenSCQ30's tests hold the exact packet). Touch controls say the same of their writes. The other columns are not in PairFree yet.
+✅ the model has it. — it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise control, two devices, LDAC, game mode, touch controls and touch tone on every model that has them, and the equalizer: its column says Tested (recorded from the Soundcore app), Checked (OpenSCQ30's tests hold the exact packet) or Not tested (OpenSCQ30's code alone). Touch controls say the same of their writes. The other columns are not in PairFree yet.
 
 <table>
 <tr><th>Model</th><th>Number</th><th>Status</th><th>Battery</th><th>Noise control</th><th>Equalizer</th><th>HearID</th><th>Touch controls</th><th>Two devices</th><th>LDAC</th><th>Game mode</th><th>3D / spatial</th><th>Wear detection</th><th>Touch tone</th><th>Auto power-off</th></tr>

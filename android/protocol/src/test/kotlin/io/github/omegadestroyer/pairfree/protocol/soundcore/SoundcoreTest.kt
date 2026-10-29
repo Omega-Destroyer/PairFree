@@ -292,6 +292,25 @@ class SoundcoreLayoutTest {
     }
 
     @Test
+    fun everyModelsEqualizerWrites() {
+        // The Sound tab offers every model's EQ, confirmed or not: each preset and a custom curve must make a write.
+        val models = SoundcoreLayout.ALL.map { it.model }.filter { SoundcoreEqSpec.of(it) != null }
+        assertTrue(models.size >= 38, "models with an EQ: ${models.size}")
+        for (model in models) {
+            val spec = SoundcoreEqSpec.of(model)!!
+            for (preset in spec.presetSet.presets) {
+                val packets = SoundcoreEqualizer.write(spec, null, SoundcoreEqualizer.forPreset(spec, preset))
+                assertTrue(packets.isNotEmpty() && packets.all { it.body.isNotEmpty() }, "$model ${preset.name}")
+            }
+            // Some models take their presets only (the P20i's set has no custom preset).
+            if (spec.presetSet.customPreset == null) continue
+            val custom = SoundcoreEqScreen.custom(spec, List(SoundcoreEqScreen.layout(spec).bands.size) { 0 })
+            assertNotNull(custom, "$model custom")
+            assertTrue(SoundcoreEqualizer.write(spec, null, custom!!).isNotEmpty(), "$model custom write")
+        }
+    }
+
+    @Test
     fun readsUsersReports() {
         val reports = vectors.getValue("report_states").jsonArray.map { it.jsonObject }
         assertTrue(reports.isNotEmpty())

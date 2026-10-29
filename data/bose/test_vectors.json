@@ -7,6 +7,7 @@
     {"function": "1.5", "payload": "0b0003"},
     {"function": "1.7", "payload": "f60a0000f60afe01f60afa02"},
     {"function": "1.10", "payload": "07"},
+    {"function": "1.9", "payload": "80090e00094002"},
     {"function": "1.11", "payload": "01020f"},
     {"function": "1.24", "payload": "01"},
     {"function": "1.27", "payload": "01"},

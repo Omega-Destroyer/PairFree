@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.bose
 
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -152,6 +153,47 @@ class BoseTest {
         // With them (31.10), there, the rest as the device reported.
         s.receive(status(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, "0000000001"))
         assertEquals(listOf(setGet(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, 3, 0, 0, 0, 1)), s.change(SettingChange.Level("noise_level", 3)))
+    }
+
+    @Test
+    fun theButtonAsBosesAppReadsItsMasks() {
+        // bosectl's QC Ultra 2: the shortcut (80), long press (09), disabled (0E), then the mask 00 09 40 02. Read as
+        // Bose's app reads it (bit 0 in the last byte): voice assistant, disabled, Spotify Tap and immersive audio;
+        // the device's own action is among them, which bosectl's reading (switch device, track back, 22, 25) misses.
+        val s = ultra2()
+        assertEquals(
+            Setting.Choice("bose_button_128", "disabled", listOf("voice_assistant", "disabled", "spatial_audio")),
+            setting(s, "bose_button_128"),
+            "Spotify Tap needs Spotify set up, so it is not offered",
+        )
+        assertEquals(SettingTab.CONTROLS, s.groups.single { g -> g.settings.any { it.key == "bose_button_128" } }.tab)
+        // bosectl's notes: SETGET with the button, its gesture and the action.
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_BUTTONS, 0x80, 0x09, 1)), s.change(SettingChange.Choice("bose_button_128", "voice_assistant")))
+        assertEquals("voice_assistant", (setting(s, "bose_button_128") as Setting.Choice).value)
+        // An action the device cannot take now (the second mask) is not offered.
+        s.receive(status(BoseFunction.SETTINGS_BUTTONS, "80090e0009400200000002"))
+        assertEquals(listOf("disabled", "spatial_audio"), (setting(s, "bose_button_128") as Setting.Choice).options)
+    }
+
+    @Test
+    fun standbyTimerAndSpatialAudio() {
+        val s = BoseSession()
+        assertTrue(BosePacket.get(BoseFunction.SETTINGS_STANDBY_TIMER) in s.start())
+        assertTrue(BosePacket.get(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE) in s.start())
+        // Minutes, as based-connect writes them to the QC35 (0 is never).
+        s.receive(status(BoseFunction.SETTINGS_STANDBY_TIMER, "14"))
+        assertEquals(Setting.Choice("auto_off", "20", listOf("5", "20", "40", "60", "180", "never")), setting(s, "auto_off"))
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_STANDBY_TIMER, 0)), s.change(SettingChange.Choice("auto_off", "never")))
+        assertEquals("never", (setting(s, "auto_off") as Setting.Choice).value)
+        // Bose's app reads three bytes as the first and the third: 24 hours here, kept as a choice.
+        s.receive(status(BoseFunction.SETTINGS_STANDBY_TIMER, "a00005"))
+        assertEquals("1440", (setting(s, "auto_off") as Setting.Choice).value)
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_STANDBY_TIMER, 0xA0, 0x05)), s.change(SettingChange.Choice("auto_off", "1440")))
+
+        // Spatial audio (5.15): 0 off, 1 fixed to the room, 2 to the head.
+        s.receive(status(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE, "01"))
+        assertEquals(Setting.Choice("spatial_audio_mode", "room", listOf("off", "room", "head")), setting(s, "spatial_audio_mode"))
+        assertEquals(listOf(setGet(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE, 2)), s.change(SettingChange.Choice("spatial_audio_mode", "head")))
     }
 
     @Test

@@ -13,11 +13,14 @@ What it shows, where the model has it:
 - **Home:** the battery (each earbud and the case, or one for headphones), the listening mode
   (Quiet, Aware and the modes you set up in Bose's app), the noise cancelling level, and on the
   QC35 noise cancelling off, low, high or wind.
-- **Sound:** the tone control: bass, mid and treble, from -10 to +10.
-- **Device:** two devices at once, pause when taken off, answering calls automatically, voice
-  prompts, and how much of your own voice you hear during calls.
+- **Sound:** the tone control: bass, mid and treble, from -10 to +10; and immersive audio (off,
+  still or motion).
+- **Controls:** what the shortcut or action button does, from the actions the model lists. One
+  set to Spotify Tap or Alexa in Bose's app shows it and keeps it.
+- **Device:** the auto-off timer, two devices at once, pause when taken off, answering calls
+  automatically, voice prompts, and how much of your own voice you hear during calls.
 
-Not yet: buttons, the standby timer, spatial audio, changing the modes themselves, and anything
+Not yet: changing the modes themselves, and anything
 Bose's app does through Bose's cloud. PairFree never contacts Bose's servers, so whatever needs
 Bose's sign-in stays out of reach: a model that refuses a change keeps its setting, and PairFree
 shows what it holds.

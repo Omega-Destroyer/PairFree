@@ -190,6 +190,13 @@ private fun settingTitle(key: String): String = when (key) {
     "dsee" -> stringResource(R.string.setting_dsee)
     "pause_taken_off" -> stringResource(R.string.setting_pause_taken_off)
     "voice_guidance" -> stringResource(R.string.setting_voice_guidance)
+    "spatial_audio_mode" -> stringResource(R.string.setting_bose_spatial_audio)
+    "bose_button_0" -> stringResource(R.string.setting_bose_button_noise)
+    "bose_button_2" -> stringResource(R.string.setting_bose_button_assistant)
+    "bose_button_3" -> stringResource(R.string.setting_bose_button_shortcut_side, stringResource(R.string.right))
+    "bose_button_4" -> stringResource(R.string.setting_bose_button_shortcut_side, stringResource(R.string.left))
+    "bose_button_16" -> stringResource(R.string.setting_bose_button_action)
+    "bose_button_128" -> stringResource(R.string.setting_bose_button_shortcut)
     "audio_mode" -> stringResource(R.string.setting_audio_mode)
     "anr" -> stringResource(R.string.setting_anr)
     "noise_level" -> stringResource(R.string.setting_noise_level)
@@ -204,7 +211,7 @@ private fun settingTitle(key: String): String = when (key) {
     "sidetone_level" -> stringResource(R.string.setting_sidetone)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
-    else -> key
+    else -> if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 @Composable
@@ -248,6 +255,33 @@ private fun optionName(key: String, option: String): String = when {
         },
     )
     key == "auto_off" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.shutdown_never)
+    key == "spatial_audio_mode" -> stringResource(
+        when (option) {
+            "room" -> R.string.setting_bose_spatial_room
+            "head" -> R.string.setting_bose_spatial_head
+            else -> R.string.action_off
+        },
+    )
+    key.startsWith("bose_button_") -> stringResource(
+        when (option) {
+            "voice_assistant" -> R.string.action_voice_assistant
+            "noise_cycle" -> R.string.action_anc_cycle
+            "battery_level" -> R.string.setting_bose_action_battery
+            "play_pause" -> R.string.action_play_pause
+            "cnc_up" -> R.string.setting_bose_action_cnc_up
+            "cnc_down" -> R.string.setting_bose_action_cnc_down
+            "switch_device" -> R.string.setting_bose_action_switch_device
+            "conversation_mode" -> R.string.setting_bose_action_conversation
+            "track_forward" -> R.string.action_next
+            "track_back" -> R.string.action_previous
+            "wind_mode" -> R.string.setting_bose_action_wind
+            "disabled" -> R.string.action_none
+            "modes_carousel" -> R.string.action_change_mode
+            "volume_presets" -> R.string.setting_bose_action_volume_presets
+            "spatial_audio" -> R.string.setting_bose_spatial_audio
+            else -> R.string.setting_bose_action_other
+        },
+    )
     key == "anr" || key == "sidetone_level" -> stringResource(
         when (option) {
             "off" -> R.string.setting_level_off

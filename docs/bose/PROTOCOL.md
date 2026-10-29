@@ -6,7 +6,9 @@ Its BMAP library keeps Bose's names, which this document uses. What works withou
 comes from [bosectl](https://github.com/aaronsb/bosectl) by aaronsb (MIT, commit `70570b2`),
 which was tried on the QC Ultra Headphones (2nd Gen), QC Ultra Earbuds (2nd Gen), QuietComfort
 Headphones, QC35, QC Earbuds, QC45 and Ultra Open Earbuds. Where the two differ, Bose's app
-wins. Nothing here has been tried with PairFree yet; a device report from any model helps
+wins. The standby timer's choices and its "never" come from
+[based-connect](https://github.com/Denton-L/based-connect) (Denton Liu, GPL-3.0: facts only),
+which controls the QC35. Nothing here has been tried with PairFree yet; a device report from any model helps
 ([device page](../devices/bose.md)).
 
 The data is in `data/bose/`: `commands.json` (every function block and function, the operators
@@ -63,7 +65,8 @@ PairFree reads, in order:
 | Product | GET 0.3 | product id (2 bytes, big-endian), variant: `40 82 01` is the QC Ultra Headphones (2nd Gen) |
 | Firmware | GET 0.5 | text, such as `8.2.20+g34cf029` |
 | Battery | GET 2.2 | section 5 |
-| Settings | GET 1.3, 1.5, 1.6, 1.7, 1.10, 1.11, 1.24, 1.27 | section 6 |
+| Settings | GET 1.3, 1.4, 1.5, 1.6, 1.7, 1.9, 1.10, 1.11, 1.24, 1.27 | section 6 |
+| Spatial audio | GET 5.15 | section 6 |
 | Mode | GET 31.3, GET 31.10, START 31.1 | section 7 |
 
 A function the device does not have answers with an ERROR, and PairFree offers nothing for it.
@@ -84,13 +87,18 @@ new value.
 | Function | Answer | Write | Notes |
 |---|---|---|---|
 | 1.3 voice prompts | a byte: language (bits 0 to 4), on (bit 5), default (bit 6), can be switched (bit 7); then the languages it has (4 bytes) and two bytes for battery announcements | the byte with on and the language | PairFree offers the switch only where bit 7 is set |
+| 1.4 standby timer | minutes, 0 never; Bose's app reads a reply of three bytes or more as the first byte (low) and the third (high) | minutes in one byte up to 255, else two, the low one first | PairFree offers based-connect's choices for the QC35 (5, 20, 40, 60 and 180 minutes, never) and the device's own value; Bose's app also names 10 minutes and 24 hours |
 | 1.5 CNC | number of steps, the step, flags (bit 0 on) | step, on | the noise cancelling level |
 | 1.6 ANR | the mode: 0 off, 1 high, 2 wind, 3 low | the mode | the QC35's noise cancelling |
 | 1.7 range control | four bytes per band: minimum, maximum, value (signed), band (0 bass, 1 mid, 2 treble, 3 low mid, 4 high mid) | value, band | the tone control |
+| 1.9 buttons | the button (Bose's `ConfigurableButtonId`), its gesture, its action (`ActionButtonMode`), a 4-byte mask of the actions it can take, then one of those it cannot take now and the reasons | button, gesture, action | the masks as Bose's app reads them: bit 0 is in the last byte. bosectl reads them the other way round; Bose's reading puts the device's own action among them on bosectl's QC Ultra 2 capture (`80 09 0E 00 09 40 02`: voice assistant, disabled, Spotify Tap, immersive audio). PairFree offers the actions that need no app or account set up |
 | 1.10 multipoint | bit 0 on, bit 1 supported, bit 2 can be turned off | 1 or 0 | bosectl reads bit 1 as on; Bose's app does not |
 | 1.11 sidetone | kept (bit 0), level (0 off, 1 high, 2 medium, 3 low), the levels it has (a bit each) | kept, level | how much of your own voice you hear in calls |
 | 1.24 auto play/pause | 1 on, 0 off | the same | pause when taken off |
 | 1.27 auto answer | 1 on, 0 off | the same | |
+
+Spatial audio is AudioManagement 5.15 (Bose's `SpatialAudioModeTypes`): GET answers one byte,
+0 off, 1 fixed to the room ("still" in Bose's app), 2 fixed to the head ("motion"); SETGET writes it.
 
 The noise cancelling level: on models with AudioModes' settings (31.10, section 7) PairFree
 writes it there, as bosectl does, and the CNC step and that value count the same way in
@@ -121,6 +129,8 @@ are marked `never_send` in `commands.json`, and PairFree's Bose session refuses 
 - Everything here, on real devices with PairFree.
 - Which models refuse which SETGET without Bose's sign-in (bosectl: Settings' CNC on the QC
   Ultra Headphones; multipoint not yet tried).
-- Buttons (1.9), the standby timer (1.4), spatial audio and editing modes.
+- Whether every model takes the button, standby timer and spatial audio writes as Bose's app sends
+  them, and which standby times each model accepts.
+- Editing modes.
 - A recording of Bose's app: with no start byte or checksum, Bose's packets cannot be picked out
   of a Bluetooth log with any certainty yet.

@@ -24,6 +24,29 @@ every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); S
 (Anker), Samsung Galaxy Buds, Sony, Bose, JBL, AirPods and Nothing (with CMF) are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
+## Versions
+
+Releases are numbered x.y.z (owner, 2026-10-29). x is the major version; 1.0 has not been released.
+y goes up by one for each new vendor a release adds (a release adding two goes up by two), and z resets
+to 0 then. z goes up for everything else: more models of a vendor PairFree has, fixes, settings newly
+offered, device reports added. The schema started at 0.3.0 (Nothing and CMF); earlier releases were
+numbered by hand. `versionCode` is x * 1,000,000 + y * 1,000 + z, written out as a number so F-Droid's
+update check can read it; `tools/test_version.py` fails when the two disagree.
+
+## Adding a brand: make every model as complete as the sources allow
+
+A brand is not done when it connects and shows the battery and noise control. Before it is merged, go
+through everything the vendor's own app offers for each model (its feature tables, per-model cards or
+panels, and every screen) and every open-source project for that brand, and build every setting their
+combined information makes workable: equalizer, touch controls, timers, prompts, lights, codecs and
+the rest. Where the vendor app and an open-source project differ, the vendor app wins unless a
+recording says otherwise. Leave a setting out only when no source gives its layout or its values, or
+when sending it could do harm (factory reset, firmware, powering off), and then say why in the brand's
+protocol doc. The 2026-10-29 audit found the earlier brands missing settings that their sources
+already described (Sony's touch keys and auto power-off, Bose's button and timer, Nothing's headphone
+controls, the Soundcore models its older app reads); the owner does not want that again. The same
+applies to adding models to a brand.
+
 ## Where the truth lives
 
 Each brand has its own folders, named after the brand as people know it rather than the
@@ -364,7 +387,7 @@ reports from other people.
   build from a copy on a local disk.
 - Releases are reproducible. F-Droid builds each `vX.Y.Z` tag itself and publishes the APK
   from the GitHub release only if the two are identical apart from the signature. Bump
-  `versionCode` and `versionName`, tag, build `:app:assembleRelease` from a fresh clone of
+  `versionCode` and `versionName` (Versions, above), tag, build `:app:assembleRelease` from a fresh clone of
   the tag (never from a copy with local edits), and upload it to the release as
   `PairFree-X.Y.Z.apk`. Files under `android/app/src/main/assets/` go into the APK byte
   for byte; `.gitattributes` keeps them as committed, so a Windows checkout matches F-Droid's.

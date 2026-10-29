@@ -55,7 +55,9 @@ Beats on Apple's chips).
   (owner, 2026-10-14); `buttons.checked` only says how far the writes are confirmed. Where the A40's
   recordings and OpenSCQ30 differ, the recordings win (`docs/soundcore/PROTOCOL.md` sections 8 and 9).
 - Every Soundcore model comes from OpenSCQ30 (github.com/Oppzippy/OpenSCQ30, Kyle Scheuing,
-  GPL-3.0-or-later). `python tools/import_openscq30.py PATH` refreshes the model list and features
+  GPL-3.0-or-later). The Sleep A20 (A6611), which its library does not support, comes from its device
+  faker's captured state (`tools/soundcore-device-faker/devices/a6611.toml`): `module` null, read-only
+  (battery and firmware) until a report confirms more, and kept by the importer. `python tools/import_openscq30.py PATH` refreshes the model list and features
   in `data/soundcore/devices.json` from a local checkout and records the commit; everything else
   in an entry (state, battery, checksum, service_uuid, commands, min_firmware, kind, eq, buttons,
   reports, ldac_excludes, extra_features, notes) is kept. The state layouts, EQs and touch controls

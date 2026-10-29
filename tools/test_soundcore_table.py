@@ -22,7 +22,7 @@ class SoundcoreTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.devices), s["models"])
-        self.assertEqual(["Space A40"], s["tested"], "the models with a recording")
+        self.assertEqual(["AeroClip", "Space A40"], s["tested"], "the models with a recording or a user's report")
 
     def test_source_is_credited(self):
         src = self.data["source"]

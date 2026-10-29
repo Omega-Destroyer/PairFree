@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body. openscq30_buttons: OpenSCQ30's touch-control tests: a state reply with its serial numbers zeroed, what it reads as (reads: a button's action, null when off), and changes (steps, each from the state the one before left) with every packet they must send, in any order. a3936_buttons: the A40's recorded touch-control changes and the frames the Soundcore app sent for them.",
+  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body. openscq30_buttons: OpenSCQ30's touch-control tests: a state reply with its serial numbers zeroed, what it reads as (reads: a button's action, null when off), and changes (steps, each from the state the one before left) with every packet they must send, in any order. a3936_buttons: the A40's recorded touch-control changes and the frames the Soundcore app sent for them. report_states: state replies from users' PairFree device reports (data/soundcore/reports), and the Sleep A20's from OpenSCQ30's device faker, serials zeroed, with what PairFree must read from them.",
   "frames": [
     {
       "direction": "to_earbuds",
@@ -1633,5 +1633,31 @@
         ]
       }
     ]
-  }
+  },
+  "report_states": [
+    {
+      "model": "A3388",
+      "report": "data/soundcore/reports/A3388_02.49.txt",
+      "body": "0101090930322e343930322e343900000000000000000000000000000000bdc3ec51be0907666631305555310001010100010200a0968278787878787800010000ff",
+      "battery_left": 100,
+      "battery_right": 100,
+      "case_battery": 100,
+      "firmware": "02.49",
+      "flags": {
+        "touch_tone": true,
+        "low_battery_prompt": true,
+        "disable_all_buttons": false
+      }
+    },
+    {
+      "model": "A6611",
+      "report": "OpenSCQ30 tools/soundcore-device-faker/devices/a6611.toml (a Sleep A20's state; not a user's report)",
+      "body": "0101070830312e353030312e353000000000000000000000000000000000040096966464788c96a07800ffffffffffffffffffff06dd331100ff03013208ffffff000002780000ffffff010100310002000400728a05000000000002016d8a05000000000002025a8a0500000000000203658a05000000000002010300010800000000",
+      "battery_left": 80,
+      "battery_right": 90,
+      "case_battery": 90,
+      "firmware": "01.50",
+      "flags": {}
+    }
+  ]
 }

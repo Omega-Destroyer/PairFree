@@ -99,6 +99,10 @@ def main():
             if key in old.get(model, {}):
                 entry[key] = old[model][key]
         devices.append(entry)
+    # Models OpenSCQ30's library does not list, taken from elsewhere in its repository (module null and a source,
+    # such as its device faker's captured states), stay as they are.
+    devices += [d for m, d in old.items() if m not in all_modules and d.get("openscq30", {}).get("module") is None]
+    devices.sort(key=lambda d: d["model"])
     data["source"] = {
         "project": "OpenSCQ30",
         "url": "https://github.com/Oppzippy/OpenSCQ30",

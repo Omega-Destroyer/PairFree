@@ -292,6 +292,21 @@ class SoundcoreLayoutTest {
     }
 
     @Test
+    fun readsUsersReports() {
+        val reports = vectors.getValue("report_states").jsonArray.map { it.jsonObject }
+        assertTrue(reports.isNotEmpty())
+        for (c in reports) {
+            val where = c.str("report")
+            val s = SoundcoreState.parse(SoundcoreLayout.of(c.str("model"))!!, c.str("body").hexBytes())!!
+            assertEquals(c.getValue("battery_left").jsonPrimitive.int, s.batteryLeft, where)
+            assertEquals(c.getValue("battery_right").jsonPrimitive.int, s.batteryRight, where)
+            assertEquals(c.getValue("case_battery").jsonPrimitive.int, s.batteryCase, where)
+            assertEquals(c.str("firmware"), s.firmware, where)
+            for ((flag, on) in c.getValue("flags").jsonObject) assertEquals(on.jsonPrimitive.boolean, s.flag(flag), "$where: $flag")
+        }
+    }
+
+    @Test
     fun readsEveryReplyInOpenScq30sTests() {
         assertEquals(37, replies.size)
         assertEquals(21, replies.map { it.str("model") }.toSet().size)
@@ -352,13 +367,17 @@ class SoundcoreLayoutTest {
         assertEquals(100, BatteryScale(5).percent(5))
         assertEquals(60, BatteryScale(5).percent(3))
         assertNull(BatteryScale(5).percent(255), "an earbud that is away")
-        assertEquals(0, BatteryScale(10, 1).percent(1))
-        assertNull(BatteryScale(10, 1).percent(0))
+        // An offset of 1, as OpenSCQ30 reads it: 0 is the first of ten steps and 9 the last (an AeroClip's report).
+        assertEquals(10, BatteryScale(10, 1).percent(0))
+        assertEquals(20, BatteryScale(10, 1).percent(1))
+        assertEquals(100, BatteryScale(10, 1).percent(9))
+        assertNull(BatteryScale(10, 1).percent(10), "above the scale")
         // Any number of steps: the reading keeps them, and only 100 is a percentage.
         assertEquals(BatteryLevel(3, 5), BatteryScale(5).reading(3))
         assertEquals(BatteryLevel(6, 7), BatteryScale(7).reading(6))
-        assertEquals(BatteryLevel(9, 10), BatteryScale(10, 1).reading(10))
-        assertEquals(BatteryLevel(null, 10), BatteryScale(10, 1).reading(0), "below the scale: away")
+        assertEquals(BatteryLevel(10, 10), BatteryScale(10, 1).reading(9))
+        assertEquals(BatteryLevel(1, 10), BatteryScale(10, 1).reading(0))
+        assertEquals(BatteryLevel(null, 10), BatteryScale(10, 1).reading(255), "an earbud that is away")
         assertEquals(BatteryLevel(null, 5), BatteryScale(5).reading(null))
         assertTrue(!BatteryScale(5).reading(3).isPercent)
         assertTrue(BatteryScale(100).reading(42).isPercent)
@@ -402,7 +421,8 @@ class SoundcoreModelSessionTest {
     @Test
     fun headphonesHaveOneBattery() {
         val s = connected("A3005").state
-        assertEquals(60, s.batteryLeft)
+        // 7 in OpenSCQ30's test reply, which with its level_offset of 1 is 8 of 10.
+        assertEquals(80, s.batteryLeft)
         assertNull(s.values[Command.BATTERY_RIGHT])
         assertNull(s.values[Command.BATTERY_CASE])
         assertEquals(true, s.switch(Command.MULTIPOINT))

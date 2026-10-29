@@ -848,7 +848,10 @@
           }
         ],
         "reset": true
-      }
+      },
+      "reports": [
+        "data/soundcore/reports/A3388_02.49.txt"
+      ]
     },
     {
       "model": "A3876",
@@ -2574,6 +2577,42 @@
           }
         ]
       }
+    },
+    {
+      "model": "A6611",
+      "names": [
+        "Soundcore Sleep A20"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "tools/soundcore-device-faker/devices/a6611.toml",
+        "features": [
+          "tws_status",
+          "dual_battery_level_custom",
+          "case_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery_level", 2],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 96],
+        ["case_battery", 1],
+        ["optional:skip", 0]
+      ],
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        },
+        "case": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "notes": "OpenSCQ30's library does not support the Sleep A20; its device faker holds a Sleep A20's state reply (131 bytes) with what each byte is, as far as OpenSCQ30 knows. PairFree reads the battery of each earbud and the case and the firmware from it, and sends nothing else until a user's device report or a recording of the Soundcore app confirms the rest: the EQ (bytes 30-51), touch controls (53-56), the alarm (58-61), sleep mode and its timer (65-70), touch tone (75), low battery prompt (76) and the auto power-off and mode switch prompts (124-125)."
     },
     {
       "model": "D1101",

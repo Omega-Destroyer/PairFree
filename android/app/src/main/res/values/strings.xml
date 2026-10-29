@@ -476,4 +476,20 @@
     <string name="setting_sony_quick_access">Quick Access</string>
     <string name="setting_sony_no_function">Nothing</string>
     <string name="setting_sony_other_function">Set in Sony\'s app</string>
+    <string name="setting_bose_spatial_audio">Immersive audio</string>
+    <string name="setting_bose_spatial_room">Still</string>
+    <string name="setting_bose_spatial_head">Motion</string>
+    <string name="setting_bose_button_noise">Noise cancelling button</string>
+    <string name="setting_bose_button_assistant">Voice assistant button</string>
+    <string name="setting_bose_button_shortcut_side">%1$s shortcut</string>
+    <string name="setting_bose_button_action">Action button</string>
+    <string name="setting_bose_button_shortcut">Shortcut</string>
+    <string name="setting_bose_action_battery">Battery level</string>
+    <string name="setting_bose_action_cnc_up">More noise cancelling</string>
+    <string name="setting_bose_action_cnc_down">Less noise cancelling</string>
+    <string name="setting_bose_action_switch_device">Switch device</string>
+    <string name="setting_bose_action_conversation">Conversation mode</string>
+    <string name="setting_bose_action_wind">Wind block</string>
+    <string name="setting_bose_action_volume_presets">Volume presets</string>
+    <string name="setting_bose_action_other">Set in Bose\'s app</string>
 </resources>

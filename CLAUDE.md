@@ -137,7 +137,9 @@ Beats on Apple's chips).
   and `BoseModels` through `generateBoseTables`; `BoseSession` maps replies to the screens. The
   device report keeps only PairFree's own reads: unasked messages can hold other devices'
   addresses. After a change to `devices.json` run `python tools/gen_bose_table.py`. Never send
-  `BoseFunction.NEVER_SEND` (firmware update, factory default, power, authentication).
+  `BoseFunction.NEVER_SEND` (firmware update, factory default, power, authentication). The button's masks
+  are read as Bose's app reads them (bit 0 in the last byte), not as bosectl does; the standby timer's
+  choices come from based-connect (GPL-3.0, facts only).
 - `docs/jbl/PROTOCOL.md` is JBL's Harman command set, read from JBL's own app (JBL Headphones
   5.37.10, decompiled outside the repo on 2026-10-15) and checked against JblTray
   (github.com/emperorbug46/JblTray, MIT), which recorded a Tune Flex 2, and FajkPes's

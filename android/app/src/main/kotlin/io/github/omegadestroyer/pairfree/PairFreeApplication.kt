@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import io.github.omegadestroyer.pairfree.bluetooth.AudioLinks
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
@@ -72,6 +73,9 @@ class Hub(private val app: Application) {
     } catch (_: SecurityException) {
         true
     }
+
+    /** Whether paired earbuds are connected to the phone for sound, for the status notification. */
+    val audio = AudioLinks(app, adapter)
 
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
     val equalizer = Equalizer(prefs, scope) { frames -> connection.sendEq(frames) }

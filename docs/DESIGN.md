@@ -382,6 +382,12 @@ Proposed, not yet reviewed by the owner.
 - Shown while supported earbuds are connected (`status/StatusService.kt`, a connected-device
   foreground service holding the channel), with their name, battery for left, case and right
   (percent, or steps such as 3/5), and the noise mode.
+- It ends when the earbuds disconnect: on Android's disconnect broadcast, when Bluetooth turns
+  off, and, should the broadcast not arrive, once the earbuds are no longer connected for sound
+  (A2DP, hands-free or LE Audio, through Android's profile proxies; `bluetooth/AudioLinks.kt`),
+  checked every 2 s while the channel is not open, after 10 s for earbuds still connecting. It
+  does not keep trying to open the channel to earbuds that are not connected (owner's report,
+  2026-10-23: it stayed on Connecting after the earbuds went into their case).
 - Buttons, each only on earbuds that have it: the noise mode, which steps to the next (off,
   cancelling, transparency, round again), and game mode. They are real buttons in the
   notification's own layout, so the noise mode works even while the notification is

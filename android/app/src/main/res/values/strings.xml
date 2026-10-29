@@ -441,4 +441,20 @@
     <string name="factory_reset">Factory reset</string>
     <string name="factory_reset_title">Factory reset the earbuds?</string>
     <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this phone; then pair them again in the Bluetooth settings.</string>
+    <string name="setting_sp_dynamic_eq">Dynamic EQ</string>
+    <string name="setting_dynamic_bass">Dynamic bass</string>
+    <string name="setting_movie_mode">Movie mode</string>
+    <string name="setting_sp_spatial_audio">Spatial audio</string>
+    <string name="setting_dolby">Dolby Audio</string>
+    <string name="setting_panoramic_sound">Panoramic sound</string>
+    <string name="setting_panoramic_normal">Normal</string>
+    <string name="setting_panoramic_music">Music</string>
+    <string name="setting_panoramic_movie">Movie</string>
+    <string name="setting_hearing_protection">Volume limit</string>
+    <string name="setting_anc_env_adaptive">Adapt noise cancelling to the surroundings</string>
+    <string name="setting_privacy_mode">Privacy mode</string>
+    <string name="setting_fall_detection">Fall detection</string>
+    <string name="setting_light_effect">Light</string>
+    <string name="setting_group_sound_effects">Sound effects</string>
+    <string name="setting_group_noise_adaptive">Adaptive noise cancelling</string>
 </resources>

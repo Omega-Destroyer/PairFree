@@ -48,6 +48,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqState
+import io.github.omegadestroyer.pairfree.protocol.SoundpeatsSettings
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
@@ -83,7 +84,9 @@ fun ConnectedScreen(vm: AppViewModel, device: Paired, live: Boolean) {
     LaunchedEffect(device.address, model) { vm.openEqualizer(device, model) }
     val eq by vm.equalizer.state.collectAsStateWithLifecycle()
     val soundcore by vm.connection.soundcoreState.collectAsStateWithLifecycle()
-    val settings by vm.connection.settings.collectAsStateWithLifecycle()
+    val brandSettings by vm.connection.settings.collectAsStateWithLifecycle()
+    // SOUNDPEATS earbuds have no session of their own: their extra settings follow from the state they answered.
+    val settings = if (device.brand == Brand.SOUNDPEATS) SoundpeatsSettings.groups(state, model) else brandSettings
     val status by vm.statusUi.collectAsStateWithLifecycle()
     val prompt by vm.statusPrompt.collectAsStateWithLifecycle()
     StatusPrompts(prompt, device.address, vm::statusPromptDone)

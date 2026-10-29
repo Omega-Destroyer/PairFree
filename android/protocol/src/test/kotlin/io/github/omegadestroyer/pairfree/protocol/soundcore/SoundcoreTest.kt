@@ -283,12 +283,52 @@ class SoundcoreLayoutTest {
             assertEquals(gaming ?: SoundcoreCommand.GAMING_MODE, layout.gamingModeCommand, layout.model)
             val minFirmware = d["min_firmware"]?.jsonObject?.mapValues { it.value.jsonPrimitive.content }.orEmpty()
             assertEquals(minFirmware, layout.minFirmware, layout.model)
-            val features = d.getValue("openscq30").jsonObject.getValue("features").jsonArray + d["extra_features"]?.jsonArray.orEmpty()
-            assertEquals(features.map { it.jsonPrimitive.content }.toSet(), layout.features, layout.model)
+            val app = d["soundcore_app"]?.jsonObject
+            val lacks = app?.get("lacks")?.jsonArray.orEmpty().map { it.jsonPrimitive.content }.toSet()
+            val features = d.getValue("openscq30").jsonObject.getValue("features").jsonArray + app?.get("features")?.jsonArray.orEmpty() +
+                d["extra_features"]?.jsonArray.orEmpty()
+            assertEquals(features.map { it.jsonPrimitive.content }.toSet() - lacks, layout.features, layout.model)
+            assertEquals(d["vendor_ids"]?.jsonArray.orEmpty().map { it.jsonPrimitive.content }.toSet(), layout.vendorIds, layout.model)
         }
+        assertEquals(BatteryScale(4), SoundcoreLayout.of("A3926")!!.battery, "the Soundcore app reads the A3926's levels from 0 to 4")
+        assertTrue("sound_modes" !in SoundcoreLayout.of("A3926")!!.features, "the Soundcore app shows the A3926 no noise control")
         assertEquals(0x1085, SoundcoreLayout.of("A3947")!!.gamingModeCommand, "OpenSCQ30 a3947/modules/flag.rs")
         assertEquals(false, SoundcoreLayout.of("A3116")!!.checksum, "OpenSCQ30 a3116.rs: ChecksumKind::None")
         assertEquals(131, SoundcoreLayout.of("A3936")!!.minSize, "the A40's reply, as recorded")
+    }
+
+    @Test
+    fun everyModelsEqualizerWrites() {
+        // The Sound tab offers every model's EQ, confirmed or not: each preset and a custom curve must make a write.
+        val models = SoundcoreLayout.ALL.map { it.model }.filter { SoundcoreEqSpec.of(it) != null }
+        assertTrue(models.size >= 38, "models with an EQ: ${models.size}")
+        for (model in models) {
+            val spec = SoundcoreEqSpec.of(model)!!
+            for (preset in spec.presetSet.presets) {
+                val packets = SoundcoreEqualizer.write(spec, null, SoundcoreEqualizer.forPreset(spec, preset))
+                assertTrue(packets.isNotEmpty() && packets.all { it.body.isNotEmpty() }, "$model ${preset.name}")
+            }
+            // Some models take their presets only (the P20i's set has no custom preset).
+            if (spec.presetSet.customPreset == null) continue
+            val custom = SoundcoreEqScreen.custom(spec, List(SoundcoreEqScreen.layout(spec).bands.size) { 0 })
+            assertNotNull(custom, "$model custom")
+            assertTrue(SoundcoreEqualizer.write(spec, null, custom!!).isNotEmpty(), "$model custom write")
+        }
+    }
+
+    @Test
+    fun readsUsersReports() {
+        val reports = vectors.getValue("report_states").jsonArray.map { it.jsonObject }
+        assertTrue(reports.isNotEmpty())
+        for (c in reports) {
+            val where = c.str("report")
+            val s = SoundcoreState.parse(SoundcoreLayout.of(c.str("model"))!!, c.str("body").hexBytes())!!
+            assertEquals(c.getValue("battery_left").jsonPrimitive.int, s.batteryLeft, where)
+            assertEquals(c.getValue("battery_right").jsonPrimitive.int, s.batteryRight, where)
+            assertEquals(c.getValue("case_battery").jsonPrimitive.int, s.batteryCase, where)
+            assertEquals(c.str("firmware"), s.firmware, where)
+            for ((flag, on) in c.getValue("flags").jsonObject) assertEquals(on.jsonPrimitive.boolean, s.flag(flag), "$where: $flag")
+        }
     }
 
     @Test
@@ -352,13 +392,17 @@ class SoundcoreLayoutTest {
         assertEquals(100, BatteryScale(5).percent(5))
         assertEquals(60, BatteryScale(5).percent(3))
         assertNull(BatteryScale(5).percent(255), "an earbud that is away")
-        assertEquals(0, BatteryScale(10, 1).percent(1))
-        assertNull(BatteryScale(10, 1).percent(0))
+        // An offset of 1, as OpenSCQ30 reads it: 0 is the first of ten steps and 9 the last (an AeroClip's report).
+        assertEquals(10, BatteryScale(10, 1).percent(0))
+        assertEquals(20, BatteryScale(10, 1).percent(1))
+        assertEquals(100, BatteryScale(10, 1).percent(9))
+        assertNull(BatteryScale(10, 1).percent(10), "above the scale")
         // Any number of steps: the reading keeps them, and only 100 is a percentage.
         assertEquals(BatteryLevel(3, 5), BatteryScale(5).reading(3))
         assertEquals(BatteryLevel(6, 7), BatteryScale(7).reading(6))
-        assertEquals(BatteryLevel(9, 10), BatteryScale(10, 1).reading(10))
-        assertEquals(BatteryLevel(null, 10), BatteryScale(10, 1).reading(0), "below the scale: away")
+        assertEquals(BatteryLevel(10, 10), BatteryScale(10, 1).reading(9))
+        assertEquals(BatteryLevel(1, 10), BatteryScale(10, 1).reading(0))
+        assertEquals(BatteryLevel(null, 10), BatteryScale(10, 1).reading(255), "an earbud that is away")
         assertEquals(BatteryLevel(null, 5), BatteryScale(5).reading(null))
         assertTrue(!BatteryScale(5).reading(3).isPercent)
         assertTrue(BatteryScale(100).reading(42).isPercent)
@@ -402,7 +446,8 @@ class SoundcoreModelSessionTest {
     @Test
     fun headphonesHaveOneBattery() {
         val s = connected("A3005").state
-        assertEquals(60, s.batteryLeft)
+        // 7 in OpenSCQ30's test reply, which with its level_offset of 1 is 8 of 10.
+        assertEquals(80, s.batteryLeft)
         assertNull(s.values[Command.BATTERY_RIGHT])
         assertNull(s.values[Command.BATTERY_CASE])
         assertEquals(true, s.switch(Command.MULTIPOINT))
@@ -463,7 +508,7 @@ class SoundcoreEqualizerTest {
     fun specsMatchTheData() {
         val withEq = devices.filter { "eq" in it }
         assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
-        assertEquals(38, withEq.size, "every model but the Sleep A30")
+        assertEquals(46, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip")
         for (d in withEq) {
             val eq = d.getValue("eq").jsonObject
             val spec = SoundcoreEqSpec.of(d.str("model"))!!
@@ -631,6 +676,30 @@ class SoundcoreModelsTest {
     }
 
     @Test
+    fun reportOnlyModels() {
+        // Models only the Soundcore app's strings name: found by their service or name, with nothing to read but a report.
+        val liberty4 = "0cf12d31-fac3-4553-bd80-d6832e7b3953"
+        assertEquals(SoundcoreModels.Match("A3953", liberty4), SoundcoreModels.identify("soundcore Liberty 4", listOf(liberty4)))
+        assertEquals(SoundcoreModels.Match("A3953", null), SoundcoreModels.identify("Soundcore Liberty 4", emptyList()))
+        assertTrue(SoundcoreModels.model("A3953")!!.reportOnly)
+        assertTrue(SoundcoreLayout.of("A3953")!!.fields.isEmpty())
+        assertTrue(!SoundcoreModels.model("A3936")!!.reportOnly)
+        // A Soundcore vendor service naming a number PairFree does not know at all: report only too.
+        val unknown = "0cf12d31-fac3-4553-bd80-d6832e7b9999"
+        assertEquals(SoundcoreModels.Match("A9999", unknown), SoundcoreModels.identify("Some new earbuds", listOf(unknown)))
+        assertTrue(SoundcoreLayout.orReportOnly("A9999").fields.isEmpty())
+        // The session keeps the reply for the report, with anything that looks like a serial number masked.
+        val session = SoundcoreSession("A9999")
+        val serial = "9999A1B2C3D4E5F6".encodeToByteArray()
+        val body = byteArrayOf(1, 1, 5, 5) + "01.23".encodeToByteArray() + serial + byteArrayOf(0x10, 0x20)
+        session.receive(SoundcorePacket(SoundcoreCommand.STATE, body))
+        val hex = session.lastState!!.reportHex().split(" ")
+        assertEquals(body.size, hex.size)
+        assertEquals(List(serial.size) { "XX" }, hex.subList(9, 9 + serial.size))
+        assertEquals(listOf("01", "01", "05", "05"), hex.subList(0, 4))
+    }
+
+    @Test
     fun everyNameNamesOneModel() {
         val names = SoundcoreModels.ALL.flatMap { m -> m.names.map { it.lowercase() } }
         assertEquals(names.size, names.toSet().size)
@@ -640,6 +709,7 @@ class SoundcoreModelsTest {
     @Test
     fun oneBatteryMeansHeadphonesOrASpeaker() {
         for (m in SoundcoreModels.ALL) {
+            if (m.reportOnly) continue // no layout yet: their form comes from the Soundcore app's product names
             val layout = SoundcoreLayout.of(m.code)!!
             val twoEarbuds = layout.has("dual_battery") || layout.has("dual_battery_level")
             assertEquals(twoEarbuds, m.form == Form.EARBUDS, m.code)
@@ -676,6 +746,30 @@ class SoundcoreModelsTest {
         assertEquals("A3116", SoundcoreModels.fromServiceUuid("0cf12d31-fac3-4553-bd80-d6832e7b3116"))
         assertNull(SoundcoreModels.fromServiceUuid("00001101-0000-1000-8000-00805f9b34fb"))
         assertTrue(SoundcoreModels.isVendorService("0cf12d31-fac3-4553-bd80-d6832e7b3936"))
+        // Hex ids, as the Soundcore app (2.9.9) has them: a variant a model lists, else an id of its own, for a report.
+        assertEquals("A3926", SoundcoreModels.fromServiceUuid("0cf12d31-fac3-4553-bd80-d6832e7b392b"))
+        assertEquals("A39AC", SoundcoreModels.fromServiceUuid("0cf12d31-fac3-4553-bd80-d6832e7b39ac"))
+        assertNull(SoundcoreModels.fromServiceUuid("0cf12d31-fac3-4553-bd80-d6832e7b39zz"))
+        val variant = "0cf12d31-fac3-4553-bd80-d6832e7b392b"
+        assertEquals(SoundcoreModels.Match("A3926", variant), SoundcoreModels.identify("Soundcore Life Dot 2S", listOf(variant)))
+        val unknown = "0cf12d31-fac3-4553-bd80-d6832e7b39ac"
+        assertEquals(SoundcoreModels.Match("A39AC", unknown), SoundcoreModels.identify("New earbuds", listOf(unknown)))
+    }
+
+    @Test
+    fun modelsTheSoundcoreAppReadsLikeAnother() {
+        // Not in OpenSCQ30: found by their service or name, with the layout of the model the Soundcore app reads them like.
+        val lifeA1 = "0cf12d31-fac3-4553-bd80-d6832e7b3927"
+        assertEquals(SoundcoreModels.Match("A3927", lifeA1), SoundcoreModels.identify("Soundcore Life A1", listOf(lifeA1)))
+        val spp = "00001101-0000-1000-8000-00805f9b34fb"
+        assertEquals(SoundcoreModels.Match("A3913", spp), SoundcoreModels.identify("Soundcore Liberty 2", emptyList()), "SPP, as the app opens")
+        assertEquals(SoundcoreModels.Match("A3910", spp), SoundcoreModels.identify("Soundcore Liberty Air 2", emptyList()))
+        for ((model, like) in mapOf("A3927" to "A3926", "A3982" to "A3933", "A3993" to "A3933", "A3913" to "A3909", "A3025" to "A3029")) {
+            assertTrue(!SoundcoreModels.model(model)!!.reportOnly, model)
+            assertEquals(SoundcoreLayout.of(like)!!.fields, SoundcoreLayout.of(model)!!.fields, model)
+            assertEquals(SoundcoreButtonSpec.of(like)?.groups, SoundcoreButtonSpec.of(model)?.groups, model)
+        }
+        assertEquals(Form.HEADPHONES, SoundcoreModels.model("A3025")!!.form, "Life Q20")
     }
 }
 
@@ -712,17 +806,19 @@ class SoundcoreButtonsTest {
 
     private fun read(touch: SoundcoreTouch, name: String): TouchButton {
         val (side, press) = button(name)
-        return touch.groups.first { !it.first.duringCall }.second.first { it.side == side && it.press == press }
+        return touch.groups.filter { !it.first.duringCall }.flatMap { it.second }.first { it.side == side && it.press == press }
     }
 
     @Test
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(30, withButtons.size)
+        assertEquals(37, withButtons.size)
         for (d in devices) {
-            // OpenSCQ30 offers touch actions on exactly these models (the A3031's state holds them, but it does not).
-            val features = d.getValue("openscq30").jsonObject.getValue("features").jsonArray.map { it.jsonPrimitive.content }
+            // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
+            // A3031's state holds them, but OpenSCQ30 does not offer them).
+            val app = d["soundcore_app"]?.jsonObject?.get("features")?.jsonArray.orEmpty()
+            val features = (d.getValue("openscq30").jsonObject.getValue("features").jsonArray + app).map { it.jsonPrimitive.content }
             assertEquals(features.any { it.endsWith("button_configuration") && !it.startsWith("reset") }, "buttons" in d, d.str("model"))
         }
         for (d in withButtons) {
@@ -838,6 +934,32 @@ class SoundcoreButtonsTest {
         assertEquals(listOf("0484" to "010001000100010000000000"), packets(change.packets))
         assertNull(read(SoundcoreTouch.of(change.state), "right_single").actionId)
         assertNull(touch.setButton(group, TouchSide.LEFT, TouchPress.DOUBLE, null), "double press cannot be turned off")
+    }
+
+    @Test
+    fun theLibertyAir2SwitchesEachTouchOnItsOwn() {
+        // The Soundcore app (2.9.9) reads a switch and an action for each touch, then on newer firmware single taps.
+        val layout = SoundcoreLayout.of("A3910")!!
+        val head = ByteArray(31).also { it[1] = 1 } // TWS status 00 01, zeros up to the end of the HearID
+        val buttons = byteArrayOf(1, 2, 1, 5, 1, 3, 0, 6) // left double previous, left long assistant, right double next, right long off
+        val touch = SoundcoreTouch.of(SoundcoreState.parse(layout, head + buttons + byteArrayOf(0, 1) + byteArrayOf(1, 6, 0, 6))!!)
+        assertEquals(2, touch.groups.size)
+        assertEquals("previous_song", read(touch, "left_double").action?.name)
+        assertEquals("voice_assistant", read(touch, "left_long").action?.name)
+        assertNull(read(touch, "right_long").actionId, "its switch is off")
+        assertEquals("play_pause", read(touch, "left_single").action?.name)
+        assertNull(read(touch, "right_single").actionId)
+        assertTrue(read(touch, "left_double").canTurnOff)
+        assertTrue(read(touch, "left_double").choices.none { it.name == "ambient_sound_mode" }, "the app offers no noise-mode action")
+        val group = touch.groups.first().first
+        val off = touch.setButton(group, TouchSide.LEFT, TouchPress.DOUBLE, null)!!
+        assertEquals(listOf("0483" to "000000"), packets(off.packets), "only that switch, as the app sends it")
+        assertNull(read(SoundcoreTouch.of(off.state), "left_double").actionId)
+        assertEquals("next_song", read(SoundcoreTouch.of(off.state), "right_double").action?.name, "the other side keeps its own")
+        val on = touch.setButton(group, TouchSide.RIGHT, TouchPress.LONG, 2)!!
+        assertEquals(listOf("0481" to "010102", "0483" to "010101"), packets(on.packets))
+        // Older firmware: no single taps.
+        assertEquals(1, SoundcoreTouch.of(SoundcoreState.parse(layout, head + buttons + byteArrayOf(0))!!).groups.size)
     }
 
     @Test

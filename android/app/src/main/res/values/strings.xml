@@ -82,7 +82,10 @@
     <string name="ldac_or_multipoint">On these earbuds LDAC and two devices take turns: turning one off turns the other on. The earbuds reconnect each time, which takes a few seconds.</string>
 
     <string name="sound_profile">Sound</string>
-    <string name="eq_soundcore_unchecked">PairFree does not change the equalizer on this model yet: nothing has confirmed the EQ it would send. A recording of the Soundcore app setting it, sent from the button below, adds it for everyone.</string>
+    <string name="eq_soundcore_unchecked">PairFree does not know this model\'s equalizer yet. A recording of the Soundcore app setting it, sent from the button below, adds it for everyone.</string>
+    <string name="report_only_title">PairFree cannot read these earbuds yet</string>
+    <string name="report_only_note">The Soundcore app lists this model, but PairFree does not know yet where its battery and settings are. Copy the device report on the Device tab and send it: it holds what the earbuds answered, and adds them for everyone.</string>
+    <string name="eq_unconfirmed">Not yet tried on this model: PairFree sends the equalizer as OpenSCQ30\'s code gives it. If the sound does not change as shown, a recording of the official app setting it fixes it for everyone.</string>
     <string name="eq_unavailable">PairFree does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
     <string name="eq_stock">Stock</string>
     <string name="eq_new">New</string>

@@ -1,0 +1,52 @@
+Soundcore AeroClip (A3388): firmware 02.49
+==========================================
+
+Date:      2026-10-29
+Firmware:  02.49 on both earbuds (from the state reply)
+Phone:     a user's phone, Android 16 (API 36)
+App:       PairFree 0.2.0
+Method:    PairFree's device report (Device tab, Copy device report), sent to the owner by a user.
+           The serial number is masked (XX), as PairFree masks it.
+
+---- The report as sent ----
+Bluetooth name:  soundcore AeroClip
+Brand:           Soundcore
+Model:           A3388
+Service:         0cf12d31-fac3-4553-bd80-d6832e7b3388
+Firmware:        02.49
+App:             PairFree 0.2.0
+OS:              Android 16 (API 36)
+Captured:        2026-10-29 07:16 UTC
+
+The earbuds' reply to the state request (01 01) (66 bytes, at least 62 bytes expected), as hex:
+01 01 09 09 30 32 2e 34 39 30 32 2e 34 39 XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX
+bd c3 ec 51 be 09 07 66 66 31 30 55 55 31 00 01 01 01 00 01 02 00 a0 96 82 78 78 78 78 78
+78 00 01 00 00 ff
+
+---- Read with the A3388 layout (data/soundcore/devices.json) ----
+The reply fits the layout OpenSCQ30's parser gives: its 62 bytes, then 4 more (01 00 00 ff) that
+the layout leaves as an optional tail.
+
+tws_status            01 01           host 1, both earbuds connected
+dual_battery_level    09 09           9 and 9: with OpenSCQ30's level_offset of 1, 10/10 each (100%)
+dual_firmware         30 32 2e 34 39  "02.49" for each earbud
+serial                XX ... (16)     masked
+skip                  bd c3 ec 51 be
+case_battery          09              10/10 (100%), same scale
+skip                  07
+buttons               66 66 31 30     left double, right double, left triple, right triple
+skip                  55 55 31
+surround_sound        00              off
+touch_tone            01              on
+low_battery_prompt    01              on
+dual_connections      01              on
+disable_all_buttons   00              buttons on
+skip                  01
+equalizer             02 00 a0 96 82 78 78 78 78 78 78 00
+                                      preset 2, then the bands (120 is 0 dB)
+tail                  01 00 00 ff
+
+---- What it showed ----
+PairFree 0.2.0 read this reply as 8 of 10 on each earbud and the case: it subtracted the level
+offset where OpenSCQ30 adds it ("if 1, 0 will represent 1", dual_battery_level.rs). Fixed with
+this report; every model with an offset of 1 read two steps low before.

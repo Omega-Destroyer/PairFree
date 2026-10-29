@@ -260,7 +260,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
             val excludes = (d["ldac_excludes"] as List<*>? ?: emptyList<Any>())
                 .joinToString(", ", "setOf(", ")") { "io.github.omegadestroyer.pairfree.protocol.Command.${(it as String).uppercase()}" }
             val form = "io.github.omegadestroyer.pairfree.protocol.Form." + ((d["kind"] as String?) ?: "earbuds").uppercase()
-            out.appendLine("    io.github.omegadestroyer.pairfree.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes, form = $form, fastPair = ${d["fast_pair"]}),")
+            out.appendLine("    io.github.omegadestroyer.pairfree.protocol.Model(${str(d["model"])}, $names, \"SOUNDCORE\", ldacExcludes = $excludes, form = $form, fastPair = ${d["fast_pair"]}, reportOnly = ${d["report_only"] == true}),")
         }
         out.appendLine(")")
 
@@ -290,10 +290,16 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
             @Suppress("UNCHECKED_CAST")
             val minFirmware = (d["min_firmware"] as Map<String, Any?>? ?: emptyMap())
                 .entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${str(k)} to ${str(v)}" }
+            // What OpenSCQ30 offers, what the Soundcore app's own code shows on a model OpenSCQ30 lacks, and what PairFree
+            // confirmed, less what the Soundcore app shows the model does not have.
             @Suppress("UNCHECKED_CAST")
-            val features = (((d["openscq30"] as Map<String, Any?>?)?.get("features") as List<*>? ?: emptyList<Any>()) +
-                (d["extra_features"] as List<*>? ?: emptyList<Any>())).distinct().joinToString(", ", "setOf(", ")") { str(it) }
-            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features),")
+            val app = d["soundcore_app"] as Map<String, Any?>? ?: emptyMap()
+            @Suppress("UNCHECKED_CAST")
+            val features = ((((d["openscq30"] as Map<String, Any?>?)?.get("features") as List<*>? ?: emptyList<Any>()) +
+                (app["features"] as List<*>? ?: emptyList<Any>()) + (d["extra_features"] as List<*>? ?: emptyList<Any>())) -
+                (app["lacks"] as List<*>? ?: emptyList<Any>()).toSet()).distinct().joinToString(", ", "setOf(", ")") { str(it) }
+            val vendorIds = (d["vendor_ids"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
+            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds),")
         }
         out.appendLine(")")
 

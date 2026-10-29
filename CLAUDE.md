@@ -14,8 +14,8 @@ import.
 `main` is what gets released: F-Droid builds the `vX.Y.Z` tags on it. New work goes on a short
 branch from `main`, one per brand (`brand/<name>`, for example `brand/jlab`) or per larger feature,
 and is merged back with a merge commit as soon as it works for one model, then deleted. A feature
-that is not ready for every model can stay hidden on the others through the brand's data (as
-`eq.checked` does for the Soundcore EQ), so it does not have to wait on a branch. Do not keep a
+that is not ready for every model can stay hidden on the others through the brand's data, so it
+does not have to wait on a branch. Do not keep a
 long-lived branch per brand, and do not mix brands on one branch. Push only when the owner asks.
 
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
@@ -39,7 +39,9 @@ Beats on Apple's chips).
 - `docs/soundcore/PROTOCOL.md` is what is known of the Soundcore protocol so far. All of it
   comes from OpenSCQ30's source. What the owner's Space A40 confirmed is marked there, with its
   recordings in `data/soundcore/reports/`; 21 more models' layouts are checked against the
-  replies in OpenSCQ30's tests. Treat the rest as a lead, and check it against a user's device
+  replies in OpenSCQ30's tests, and 23 against the parsers of the Soundcore app 2.9.9, the last version
+  that is not ijiami-packed (`soundcore_app` in `devices.json`, section 10 of the doc; decompiled
+  outside the repo on 2026-10-29). Treat the rest as a lead, and check it against a user's device
   report before building more on it.
 - `data/soundcore/commands.json` is the Soundcore command table and `data/soundcore/devices.json`
   its model table; `generateSoundcoreTables` turns them into `SoundcoreCommand`, `SoundcoreWire`,
@@ -48,17 +50,27 @@ Beats on Apple's chips).
   else Bluetooth name) and shows it on the same screens through `SoundcoreSession`, which reads the
   state with the model's layout and maps it to `EarbudState`. It sends a setting only when the
   last state showed it. The equalizer (`SoundcoreEqualizer`, `eq` in `devices.json`, presets in
-  `eq_presets.json`) goes through the same Sound tab via `SoundcoreEqTarget`, and only for models
-  whose `eq.checked` is set: a recording of the Soundcore app or an OpenSCQ30 test pins the write.
+  `eq_presets.json`) goes through the same Sound tab via `SoundcoreEqTarget`, for every model with an
+  `eq` entry (owner, 2026-10-29); `eq.checked` says whether a recording of the Soundcore app or an
+  OpenSCQ30 test pins the write, and the Sound tab says when neither does.
   Touch controls (`SoundcoreButtons`, `SoundcoreTouch`, `buttons` in `devices.json`, action sets in
   `button_actions.json`) show on the Controls tab for every model that has them, tested or not
   (owner, 2026-10-14); `buttons.checked` only says how far the writes are confirmed. Where the A40's
   recordings and OpenSCQ30 differ, the recordings win (`docs/soundcore/PROTOCOL.md` sections 8 and 9).
 - Every Soundcore model comes from OpenSCQ30 (github.com/Oppzippy/OpenSCQ30, Kyle Scheuing,
-  GPL-3.0-or-later). `python tools/import_openscq30.py PATH` refreshes the model list and features
+  GPL-3.0-or-later). The Sleep A20 (A6611), which its library does not support, comes from its device
+  faker's captured state (`tools/soundcore-device-faker/devices/a6611.toml`): `module` null, read-only
+  (battery and firmware) until a report confirms more, and kept by the importer. Earbuds and headphones only the
+  Soundcore app's strings name (6.4.0, which is ijiami-packed: only its resources are readable) are `report_only`:
+  PairFree finds them, asks for their state and offers a device report (serial-like text masked), and shows no
+  settings until their layout is known; a vendor service naming an unknown number is treated the same. Eight of
+  them are in Soundcore 2.9.9, which reads them with another model's code, so they have that model's layout
+  (`soundcore_app.same_as`; the A3910 has its own). Where 2.9.9 shows a model lacks something OpenSCQ30 lists,
+  `soundcore_app.lacks` leaves it out. The
+  app's other names for a model (its European names and the like) are among `names`. `python tools/import_openscq30.py PATH` refreshes the model list and features
   in `data/soundcore/devices.json` from a local checkout and records the commit; everything else
   in an entry (state, battery, checksum, service_uuid, commands, min_firmware, kind, eq, buttons,
-  reports, ldac_excludes, extra_features, notes) is kept. The state layouts, EQs and touch controls
+  reports, ldac_excludes, extra_features, notes, report_only, soundcore_app, vendor_ids) is kept. The state layouts, EQs and touch controls
   were read from OpenSCQ30's code; after a refresh to a newer commit, compare its parsers, EQ and
   button settings with them. Then run
   `python tools/gen_soundcore_table.py` for the Soundcore table in `docs/devices/soundcore.md`; a test

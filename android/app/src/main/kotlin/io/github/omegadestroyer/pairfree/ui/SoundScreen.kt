@@ -140,6 +140,10 @@ internal fun SoundScreen(
             val hint = if (eq.target.reportsEq) R.string.eq_reading else R.string.eq_unknown_hint
             Text(stringResource(hint), style = Studio.type.small, color = Studio.colors.secondaryText)
         }
+        if (!eq.target.confirmed) {
+            Text(stringResource(R.string.eq_unconfirmed), style = Studio.type.small, color = Studio.colors.secondaryText)
+            if (onRecord != null) StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth())
+        }
 
         val editable = eq.preset == null && eq.target.hasCustom
         if (editable || eq.target.presetCurves) {

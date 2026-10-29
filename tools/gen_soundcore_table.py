@@ -4,10 +4,12 @@ usage: python tools/gen_soundcore_table.py          rewrite it, and every other 
        python tools/gen_soundcore_table.py --check  exit 1 if one is out of date
 
 One row per model in data/soundcore/devices.json. What a model has comes from OpenSCQ30, whose
-source lists the features it implements for each model (tools/import_openscq30.py), plus what
-PairFree confirmed on the earbuds (extra_features). A model counts as tested once it has a
-recording under data/soundcore/reports, and as checked when its state layout reads the replies
-in OpenSCQ30's tests (openscq30_states in data/soundcore/test_vectors.json).
+source lists the features it implements for each model (tools/import_openscq30.py), or for a model
+OpenSCQ30 lacks from the Soundcore app's own code (soundcore_app), plus what PairFree confirmed on the
+earbuds (extra_features), less what the Soundcore app shows the model lacks. A model counts as tested
+once it has a recording under data/soundcore/reports, and as checked when its state layout reads the
+replies in OpenSCQ30's tests (openscq30_states in data/soundcore/test_vectors.json) or is the one the
+Soundcore app's own parser reads (soundcore_app).
 """
 import json
 from html import escape
@@ -50,14 +52,17 @@ def load():
     return json.loads((ROOT / "data" / "soundcore" / "devices.json").read_text(encoding="utf-8"))
 
 
-def checked_models():
-    """Models with at least one state reply from OpenSCQ30's tests, which the Gradle tests read with the model's layout."""
+def checked_models(devices=()):
+    """Models with at least one state reply from OpenSCQ30's tests, which the Gradle tests read with the model's layout,
+    and models whose layout is the one the Soundcore app's own parser reads."""
     vectors = json.loads((ROOT / "data" / "soundcore" / "test_vectors.json").read_text(encoding="utf-8"))
-    return {c["model"] for c in vectors.get("openscq30_states", [])}
+    return {c["model"] for c in vectors.get("openscq30_states", [])} | {m["model"] for m in devices if "soundcore_app" in m}
 
 
 def features(model):
-    return model["openscq30"]["features"] + model.get("extra_features", [])
+    app = model.get("soundcore_app", {})
+    found = model["openscq30"]["features"] + app.get("features", []) + model.get("extra_features", [])
+    return [f for f in found if f not in app.get("lacks", [])]
 
 
 def battery(f):
@@ -91,6 +96,8 @@ def rows(devices, checked=frozenset()):
         if reports:
             code = f'<a href="{escape(TO_ROOT + reports[0])}">{code}</a>'
             status = "Tested"
+        elif m.get("report_only"):
+            status = "Report only"
         elif m["model"] in checked:
             status = "Checked"
         else:
@@ -105,26 +112,30 @@ def table():
     devices = data["devices"]
     src = data["source"]
     tested = sum(1 for m in devices if m.get("reports"))
-    checked = checked_models()
+    checked = checked_models(devices)
+    app = sorted({m["soundcore_app"]["version"] for m in devices if "soundcore_app" in m})
     header = "".join(f"<th>{escape(h)}</th>" for h in ["Model", "Number", "Status", "Battery"] + [c for c, _ in COLUMNS])
     return "\n".join([
         START,
         f"{len(devices)} models. What each model has, and where each setting sits in its replies, comes from "
         f'<a href="{escape(src["url"])}">OpenSCQ30</a> (commit <code>{escape(src["commit"][:7])}</code>, '
-        f"{escape(src['date'])}), the open-source Soundcore app by {escape(src['author'])}, plus what PairFree "
-        "confirmed on the earbuds.",
+        f"{escape(src['date'])}), the open-source Soundcore app by {escape(src['author'])}, checked against the "
+        f"Soundcore app's own code (version {escape(', '.join(app))}, the last one that can be read) where it has the "
+        "model, plus what PairFree confirmed on the earbuds.",
         "",
         f"<b>Tested</b> ({tested}): tried on the earbuds with PairFree. "
         f"<b>Checked</b> ({len(checked - {m['model'] for m in devices if m.get('reports')})}): PairFree reads "
-        "every reply from the model that OpenSCQ30's tests hold, most of them from its users' bug reports. "
-        "<b>Not tested</b>: read from OpenSCQ30's code alone. A device report from one of these helps "
-        f'(<a href="{HELP}">Help add your model</a>).',
+        "every reply from the model that OpenSCQ30's tests hold, most of them from its users' bug reports, or reads "
+        "the reply as the Soundcore app's own code does. "
+        "<b>Not tested</b>: read from OpenSCQ30's code alone. <b>Report only</b>: the Soundcore app lists it, but "
+        "nothing gives its layout yet; PairFree finds it and offers a device report, and shows no settings. A device "
+        f'report from any of these helps (<a href="{HELP}">Help add your model</a>).',
         "",
         f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise "
         "control, two devices, LDAC, game mode, touch controls and touch tone on every model that has them, "
-        "and the equalizer where its column says Tested (recorded from the Soundcore app) or Checked "
-        "(OpenSCQ30's tests hold the exact packet). Touch controls say the same of their writes. The other "
-        "columns are not in PairFree yet.",
+        "and the equalizer: its column says Tested (recorded from the Soundcore app), Checked "
+        "(OpenSCQ30's tests hold the exact packet) or Not tested (OpenSCQ30's code alone). Touch controls say "
+        "the same of their writes. The other columns are not in PairFree yet.",
         "",
         "<table>",
         f"<tr>{header}</tr>",

@@ -27,6 +27,8 @@ public data class Model(
     val fitKeepsAnc: Boolean = false,
     val form: Form = Form.EARBUDS,
     val fastPair: Boolean? = null,
+    /** PairFree knows the model's name and number but not yet how to read it: the screens ask for a device report. */
+    val reportOnly: Boolean = false,
 ) {
     /** Qualcomm chips also answer GAIA v3 on vendor `00 1D` ([Gaia]). */
     val isQualcomm: Boolean get() = family == QUALCOMM_FAMILY

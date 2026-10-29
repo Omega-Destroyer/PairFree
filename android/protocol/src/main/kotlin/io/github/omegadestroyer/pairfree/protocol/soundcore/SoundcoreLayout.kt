@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.soundcore
 
 import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
+import io.github.omegadestroyer.pairfree.protocol.VendorRecording
 
 /** One field of a state reply: its name in data/soundcore/devices.json, its size, and whether only some firmware sends it. */
 public data class SoundcoreField(val name: String, val size: Int, val optional: Boolean = false)
@@ -37,8 +38,13 @@ public class SoundcoreLayout(
     public val gamingModeCommand: Int = SoundcoreCommand.GAMING_MODE,
     /** Fields the earbuds send but only use from a firmware version on, such as `01.60`; both earbuds must have it. */
     public val minFirmware: Map<String, String> = emptyMap(),
-    /** What OpenSCQ30 offers on the model (its module names, such as `touch_tone`), and what PairFree confirmed on it. */
+    /**
+     * What OpenSCQ30 offers on the model (its module names, such as `touch_tone`), or for a model OpenSCQ30 lacks what
+     * the Soundcore app's code shows, and what PairFree confirmed on it.
+     */
     public val features: Set<String> = emptySet(),
+    /** Other ids the model's vendor service may end in, such as `392B` for a variant of the A3926 (devices.json vendor_ids). */
+    public val vendorIds: Set<String> = emptySet(),
 ) {
     /** The bytes every reply has; optional fields come after them. */
     public val minSize: Int = fields.filterNot { it.optional }.sumOf { it.size }
@@ -62,6 +68,12 @@ public class SoundcoreLayout(
         public val ALL: List<SoundcoreLayout> get() = SOUNDCORE_LAYOUTS
 
         public fun of(model: String?): SoundcoreLayout? = SOUNDCORE_LAYOUTS.firstOrNull { it.model == model }
+
+        /**
+         * The layout for [model], or, for a model PairFree does not know at all (a Soundcore vendor service names a
+         * number not in data/soundcore/devices.json), an empty one: its state is asked for and only reported.
+         */
+        public fun orReportOnly(model: String): SoundcoreLayout = of(model) ?: SoundcoreLayout(model, emptyList(), null, null)
     }
 }
 
@@ -141,8 +153,11 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
     /** The reply as hex, with the serial numbers' bytes shown as XX: they can carry the earbuds' Bluetooth address. */
     public fun reportHex(): String {
         val hidden = listOf("serial", "case_serial").mapNotNull(layout::locate).map { (at, size) -> at until at + size }
+        // Also anything that looks like a serial number (12 or more hex digits as text, which holds the earbuds'
+        // address), for models whose layout does not locate it: a report goes into a public issue.
+        val serialLike = VendorRecording.masked(body, null, serials = true)
         return body.indices.joinToString(" ") { i ->
-            if (hidden.any { i in it }) "XX" else (body[i].toInt() and 0xFF).toString(16).padStart(2, '0')
+            if (serialLike[i] || hidden.any { i in it }) "XX" else (body[i].toInt() and 0xFF).toString(16).padStart(2, '0')
         }
     }
 

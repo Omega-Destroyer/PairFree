@@ -7,10 +7,12 @@ rest is unconfirmed. Everything below comes from reading the source of
 [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) (commit `bc77a29`, 2026-09-26), an
 open-source Soundcore app that supports about 40 models, under GPL-3.0-or-later like
 PairFree. [Gadgetbridge](https://gadgetbridge.org/gadgets/headphones/anker/) supports eight
-Soundcore models as well. The official Soundcore app (6.4.0) cannot be read: its code is
-encrypted by a commercial protector (ijiami), and the unencrypted Flutter part holds no protocol.
-Each model's state layout (section 5) was read from OpenSCQ30's parsers on 2026-10-13 and checked
-against the replies in its tests.
+Soundcore models as well. The official Soundcore app cannot be read from 3.9 on (6.4.0, 5.0.24,
+4.0.82 and 3.9.13 were tried): its code is encrypted by a commercial protector (ijiami), and the
+unencrypted Flutter part holds no protocol. Version 2.9.9 is not encrypted, and its parsers were read
+on 2026-10-29 (section 10). Each model's state layout (section 5) was read from OpenSCQ30's parsers
+on 2026-10-13 and checked against the replies in its tests and, where 2.9.9 has the model, against the
+app's own parser.
 
 ## 1. Transport
 
@@ -25,7 +27,10 @@ Two models get a fixed service instead:
 
 The Space A40 (A3936) offers `0cf12d31-fac3-4553-bd80-d6832e7b3936` (RFCOMM channel 5), so
 both known vendor UUIDs end in `b` and the model number: the earbuds name their model in their
-service list (section 4).
+service list (section 4). The Soundcore app (2.9.9) opens this form for most of its models, with
+four hex digits after the `b` that are the model number or, for a variant, another id (`392B` for
+a variant of the A3926, `393C` for the A3935W); for its older earbuds and headphones (A3909, A3910,
+A3913, A3027 to A3030, A3930, A3931, A3935, A3951) it opens the standard serial port.
 
 ## 2. Frames
 
@@ -108,13 +113,14 @@ Bluetooth address, so reports mask it. Its Bluetooth name is "Soundcore Space A4
 
 PairFree (`SoundcoreModels.identify`) takes the model from the vendor service UUID when it
 names a model in `data/soundcore/devices.json` (`b` and the model number, as on the A3116 and
-A3936), and otherwise from the Bluetooth name, matched without case against the names
+A3936, or an id a model lists in `vendor_ids`), and otherwise from the Bluetooth name, matched without case against the names
 OpenSCQ30 gives each model. Only the A40's name is confirmed to be the one the earbuds use. A
 pair renamed by its owner, on a model whose service does not name it, is not found.
 
 The service to open is chosen as OpenSCQ30 chooses it (`soundcore/common/device.rs`): the vendor
 service when the earbuds have one, else the standard serial port, except on the two models where
-OpenSCQ30 fixes it (the A3116 always uses its vendor service, the A3930 the serial port).
+OpenSCQ30 fixes it (the A3116 always uses its vendor service, the A3930 the serial port) and on the
+A3910 and A3913, not in OpenSCQ30, which use the serial port as the Soundcore app does.
 
 ## 5. Every model
 
@@ -151,8 +157,11 @@ How far each layout is checked:
   users' bug reports. They are in `data/soundcore/test_vectors.json` (`openscq30_states`) with
   the serial numbers replaced by zeros, and PairFree's tests read every one: the firmware is a
   version, the batteries are 0 to 100 or away, the noise mode is known.
-- **Not tested:** the other 17 models, read from OpenSCQ30's parsers alone. A device report from
-  one of them (the state reply as hex) checks its layout.
+- **Checked against the Soundcore app:** 15 of OpenSCQ30's models whose layout the app's own
+  parser (2.9.9) reads the same way, and 8 models OpenSCQ30 lacks that the app reads with another
+  model's code (section 10). They are marked `soundcore_app` in `data/soundcore/devices.json`.
+- **Not tested:** the rest, read from OpenSCQ30's parsers alone. A device report from one of them
+  (the state reply as hex) checks its layout.
 
 The Soundcore device page ([docs/devices/soundcore.md](../devices/soundcore.md)) shows which is which.
 
@@ -250,7 +259,8 @@ hold them), and a state read with 3D sound on and with a custom EQ.
 3. Whether the 26 models whose EQ write no test pins take what OpenSCQ30 sends (section 8), and
    whether the Soundcore app sends gender `FF` and empty HearID curves ending in `00` on models
    other than the A40, as it does there.
-4. The state layout of the 17 models with no reply to check it against (section 5).
+4. The state layout of the models with no reply to check it against and not in the readable
+   Soundcore app (section 5), and of the report-only models (section 10).
 5. Anything the app sends on connecting, before it asks for the state.
 6. What the two bytes after the earbud levels in the battery update (`01 03`) are on models
    other than the A40, where the first is the case (section 5).
@@ -332,8 +342,8 @@ cancelling and 13 change mode, and the C30i during calls: 0 decline, 1 answer).
 when the action changed, then `04 83` (side, button number, the whole enabled byte) when the
 enabled byte changed. Button numbers: 0 double, 1 long, 2 single, 5 triple, 6 slide up, 7 slide
 down. Only the four bits for how the earbuds are worn now change. A change that touches several
-buttons goes as one `04 84` with every button's bytes, on the four models that take it (the
-A3926, A3933 and A3939, A3945, A3951). The C30i's (A3330) actions during calls use `04 87`
+buttons goes as one `04 84` with every button's bytes, on the models that take it (the
+A3926, A3933 and A3939, A3945, A3951, and the models the Soundcore app reads like the A3926 or A3933). The C30i's (A3330) actions during calls use `04 87`
 instead of `04 81`. `04 82` (no body) restores the defaults; OpenSCQ30 then asks for the state.
 
 **Turning a button off.** Each press says whether it can be: never, one side at a time, or both
@@ -355,3 +365,34 @@ in an optional block at the end of the state, which only some firmware sends.
 OpenSCQ30's tests of their touch writes (`openscq30_buttons`), with the C50i's and Liberty 4
 NC's switches. The rest come from OpenSCQ30's code alone; PairFree offers them anyway (owner,
 2026-10-14), since a wrong touch setting can be changed back in the app.
+
+## 10. The Soundcore app 2.9.9
+
+Soundcore 2.9.9 (`com.oceanwing.soundcore`) is the last version whose code is not encrypted. It was
+decompiled outside the repo on 2026-10-29 and its state parsers compared with `devices.json`; nothing
+of its code is in the repo. It reads the earbuds with three parsers, each for a family of models,
+and the Liberty 3 Pro with a fourth:
+
+- **A3933 family** (A3933, A3939, A3945, and the A3982, A3983, A3992 and A3993 with their EU
+  versions): the same layouts as OpenSCQ30's. Battery levels run from 0 to 5.
+- **A3951 family** (A3951, A3931, A3935, A3027, A3028, A3029, A3030, A3025, A3930, A3033, A3926,
+  A3927): the same layouts as OpenSCQ30's, except that the A3926, A3927 and the A3926's variant read
+  their levels from 0 to 4 (4 is full, and anything higher reads as 4), where OpenSCQ30 reads them
+  out of 5. Those three have no noise control in the app, and their touch actions leave out the
+  noise mode. The Life Q20 (A3025) has the noise modes but none of their sub-modes.
+- **A3909 family** (A3909, A3913, A3910): the A3909's layout. The A3909 and A3913 offer volume,
+  track, voice assistant and nothing else as touch actions, with no way to turn a touch off. The
+  Liberty Air 2 (A3910) has its own parser after the HearID: for each touch a switch and an action
+  (left double, left long, right double, right long), a switch the app calls transparency, then on
+  newer firmware wear detection and single taps (switch and action, left then right). It adds play
+  and pause to the actions, and each touch is turned off by its own switch: `04 83` with side, touch
+  (0 double, 1 long, 2 single) and 0 or 1, and set with `04 81` with side, touch and action.
+- **Liberty 3 Pro** (A3952): the app finds the noise-mode bytes after the touch controls by the
+  length in byte 103 of the reply. When it is 18, as in OpenSCQ30's test reply, its offsets are the
+  ones in `devices.json`.
+
+From this, the A3927, A3982, A3983, A3992, A3993, A3913, A3025 and A3910 have layouts (`soundcore_app`
+with `same_as` names the model whose layout they share), and are no longer report only. Not
+covered: the Life NC (A3201), which the app asks for each setting with a message of its own, an older
+protocol than the one state reply PairFree reads, and the Life Q20+ (A3045), for which 2.9.9 has no
+code. Both stay report only, with the models newer than 2.9.9.

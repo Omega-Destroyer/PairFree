@@ -22,6 +22,12 @@ class SoundcoreEqTarget(
     override val hasPreamp: Boolean = false
     override val hasStock: Boolean = false
 
+    /** Models whose preset set has no custom preset (the P20i) take their presets only. */
+    override val hasCustom: Boolean = spec.presetSet.customPreset != null
+
+    /** Confirmed by a recording of the Soundcore app or by OpenSCQ30's tests; otherwise from OpenSCQ30's code alone. */
+    override val confirmed: Boolean = spec.checked != null
+
     /** The screen's view of this model's EQ. */
     val layout: EqLayout = SoundcoreEqScreen.layout(spec)
 

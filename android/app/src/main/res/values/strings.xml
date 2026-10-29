@@ -487,4 +487,7 @@
     <string name="factory_reset">Factory reset</string>
     <string name="factory_reset_title">Factory reset the earbuds?</string>
     <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this phone; then pair them again in the Bluetooth settings.</string>
+    <string name="setting_sleep_timer">Timed power off</string>
+    <string name="setting_sleep_timer_minutes">In %1$d min</string>
+    <string name="setting_sleep_timer_note">The earbuds turn off once, when the time is up.</string>
 </resources>

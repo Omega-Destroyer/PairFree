@@ -155,6 +155,7 @@ private fun settingTitle(key: String): String = when (key) {
     "ear_detection" -> stringResource(R.string.setting_ear_detection)
     "allow_off" -> stringResource(R.string.setting_allow_off)
     "auto_off" -> stringResource(R.string.auto_shutdown)
+    "sleep_timer" -> stringResource(R.string.setting_sleep_timer)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure)
     "ambient_volume" -> stringResource(R.string.setting_ambient_volume)
     "voice_focus" -> stringResource(R.string.setting_voice_focus)
@@ -285,6 +286,7 @@ private fun settingNote(key: String): String? = when (key) {
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
     "codec" -> stringResource(R.string.setting_codec_note)
     "sleep_mode" -> stringResource(R.string.setting_sleep_mode_note)
+    "sleep_timer" -> stringResource(R.string.setting_sleep_timer_note)
     else -> null
 }
 
@@ -359,6 +361,7 @@ private fun optionName(key: String, option: String): String = when {
         },
     )
     key == "auto_off" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.shutdown_never)
+    key == "sleep_timer" -> option.toIntOrNull()?.let { stringResource(R.string.setting_sleep_timer_minutes, it) } ?: stringResource(R.string.action_off)
     key == "anr" || key == "sidetone_level" -> stringResource(
         when (option) {
             "off" -> R.string.setting_level_off

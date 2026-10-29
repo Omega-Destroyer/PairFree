@@ -192,6 +192,12 @@ private fun settingTitle(key: String): String = when (key) {
     "dsee" -> stringResource(R.string.setting_dsee)
     "pause_taken_off" -> stringResource(R.string.setting_pause_taken_off)
     "voice_guidance" -> stringResource(R.string.setting_voice_guidance)
+    "connection_priority" -> stringResource(R.string.setting_sony_connection_priority)
+    "assign_left" -> stringResource(R.string.setting_sony_assign_side, stringResource(R.string.left))
+    "assign_right" -> stringResource(R.string.setting_sony_assign_side, stringResource(R.string.right))
+    "assign_custom" -> stringResource(R.string.setting_sony_assign_custom)
+    "assign_c" -> stringResource(R.string.setting_sony_assign_c)
+    "assign_nc_amb" -> stringResource(R.string.setting_sony_assign_nc_amb)
     "audio_mode" -> stringResource(R.string.setting_audio_mode)
     "anr" -> stringResource(R.string.setting_anr)
     "noise_level" -> stringResource(R.string.setting_noise_level)
@@ -238,6 +244,7 @@ private fun settingNote(key: String): String? = when (key) {
     "wind_reduction" -> stringResource(R.string.setting_wind_reduction_note)
     "speak_to_chat" -> stringResource(R.string.setting_speak_to_chat_note)
     "dsee" -> stringResource(R.string.setting_dsee_note)
+    "connection_priority" -> stringResource(R.string.setting_sony_connection_priority_note)
     "noise_level" -> stringResource(R.string.setting_noise_level_note)
     "talk_thru" -> stringResource(R.string.setting_talk_thru_note)
     "adaptive" -> stringResource(R.string.setting_adaptive_audio_note)
@@ -270,7 +277,31 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_option_default
         },
     )
+    key == "auto_off" && option == "when_taken_off" -> stringResource(R.string.shutdown_when_taken_off)
     key == "auto_off" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.shutdown_never)
+    key == "connection_priority" -> stringResource(
+        when (option) {
+            "sound_quality" -> R.string.setting_sony_sound_quality
+            "low_latency" -> R.string.setting_sony_low_latency
+            else -> R.string.setting_sony_stable
+        },
+    )
+    key.startsWith("assign_") -> stringResource(
+        when (option) {
+            "noise_control" -> R.string.action_anc_cycle
+            "noise_control_mic" -> R.string.setting_sony_noise_control_mic
+            "noise_control_listening_mode" -> R.string.setting_sony_noise_control_listening_mode
+            "volume" -> R.string.setting_hold_volume
+            "playback", "playback_limited" -> R.string.setting_sony_playback
+            "track" -> R.string.setting_sony_track
+            "voice_assistant" -> R.string.action_voice_assistant
+            "google_assistant" -> R.string.setting_sony_google_assistant
+            "alexa" -> R.string.setting_sony_alexa
+            "quick_access", "noise_control_quick_access", "listening_mode_quick_access" -> R.string.setting_sony_quick_access
+            "none" -> R.string.setting_sony_no_function
+            else -> R.string.setting_sony_other_function
+        },
+    )
     key == "anr" || key == "sidetone_level" -> stringResource(
         when (option) {
             "off" -> R.string.setting_level_off

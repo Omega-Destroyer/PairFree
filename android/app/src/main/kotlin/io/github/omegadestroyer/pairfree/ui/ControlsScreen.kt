@@ -57,8 +57,8 @@ internal fun ControlsScreen(
         SoundcoreControls(device, state, touch, actions)
         return
     }
-    if (device.brand == Brand.SAMSUNG || device.brand == Brand.SONY || device.brand == Brand.BOSE || device.brand == Brand.JBL || device.brand == Brand.APPLE) {
-        // Galaxy Buds' and AirPods' touch settings come as generic rows; Sony's, Bose's and JBL's are not offered yet.
+    if (device.brand == Brand.SAMSUNG || device.brand == Brand.SONY || device.brand == Brand.BOSE || device.brand == Brand.JBL || device.brand == Brand.APPLE || device.brand == Brand.NOTHING) {
+        // Galaxy Buds', AirPods' and Nothing's touch settings come as generic rows; Sony's, Bose's and JBL's are not offered yet.
         TabContent {
             Text(stringResource(R.string.tab_controls), style = Studio.type.title)
             if (settings.none { it.tab == SettingTab.CONTROLS }) {

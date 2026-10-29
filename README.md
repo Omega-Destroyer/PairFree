@@ -48,7 +48,7 @@ PairFree needs Android 12 or later. AirPods need Android 17, or one of the few p
 Android 16 that already open their settings channel ([AirPods and Beats](docs/devices/apple.md)).
 
 PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS,
-Anker, Samsung, Sony, Bose, Harman (JBL) or Apple. It was called SoundPeter until version 0.1.3, when it was still an app for
+Anker, Samsung, Sony, Bose, Harman (JBL), Apple or Nothing (and its CMF brand). It was called SoundPeter until version 0.1.3, when it was still an app for
 SOUNDPEATS earbuds alone.
 
 <p>
@@ -70,7 +70,7 @@ and from reports their owners send in. Each brand's page shows which models have
 
 | Piece                 | State |
 |-----------------------|-------|
-| Android app           | Released for SOUNDPEATS (v0.1.4). Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats come with the next release. |
+| Android app           | Released (v0.2.0) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats. Nothing and CMF come with the next release. |
 | Tried on real earbuds | SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40 |
 | Protocols             | One document, data set and test suite per brand, in `docs/<brand>/` and `data/<brand>/` |
 | iOS and Windows apps  | Planned, after Android |
@@ -90,6 +90,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [Bose](docs/devices/bose.md) | 22 | — |
 | [JBL](docs/devices/jbl.md) | 83 | — |
 | [AirPods and Beats](docs/devices/apple.md) | 30 | — |
+| [Nothing and CMF](docs/devices/nothing.md) | 19 | — |
 <!-- devices-summary:end -->
 
 **LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks
@@ -118,11 +119,12 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 | `data/bose/commands.json` | Bose's BMAP function table, from Bose's app                      |
 | `data/jbl/commands.json`  | The Harman commands PairFree uses with JBL models, from JBL's app |
 | `data/apple/commands.json` | Apple's accessory protocol as PairFree uses it with AirPods, from LibrePods |
+| `data/nothing/commands.json` | Nothing's command table, from Nothing X                      |
 | `tools/probe.py`          | Read-only probe for SOUNDPEATS earbuds. Asks them what they support. |
 | `tools/import_eq_capture.py` | Turns the equalizer part of a recording from PeatsAudio into a model's EQ data. |
 | `tools/import_openscq30.py` | Refreshes the Soundcore model list from a local copy of OpenSCQ30. |
 | `tools/import_galaxybudsclient.py` | Refreshes the Galaxy Buds model list from a local copy of GalaxyBudsClient. |
-| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore), `gen_samsung_table.py` (Samsung), `gen_sony_table.py` (Sony), `gen_bose_table.py` (Bose), `gen_jbl_table.py` (JBL) and `gen_apple_table.py` (AirPods and Beats). |
+| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore), `gen_samsung_table.py` (Samsung), `gen_sony_table.py` (Sony), `gen_bose_table.py` (Bose), `gen_jbl_table.py` (JBL), `gen_apple_table.py` (AirPods and Beats) and `gen_nothing_table.py` (Nothing and CMF). |
 | `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
 | `tools/test_*.py`         | Tests for the tools and the data files. No hardware needed.       |
 | `assets/devices/<brand>/` | Vector drawings of each model's earbud and case, per look         |
@@ -140,7 +142,7 @@ first, a recording of the brand's own app, gives the most.
 
 This gathers everything in one go, from the brand's own app: PeatsAudio (or SOUNDPEATS) for
 SOUNDPEATS earbuds, Soundcore for Soundcore earbuds, Galaxy Wearable for Galaxy Buds, Sound
-Connect for Sony earbuds and headphones (not yet Bose, JBL, AirPods or Beats: see their pages). It records what that app
+Connect for Sony earbuds and headphones, Nothing X for Nothing and CMF (not yet Bose, JBL, AirPods or Beats: see their pages). It records what that app
 reads from your earbuds and what it sends when you change a setting, which shows exactly how PairFree should set it, and adds PairFree's own device report. On
 SOUNDPEATS earbuds it also gets the equalizer curves and presets. It takes about ten minutes
 on your phone, with no computer.
@@ -180,7 +182,9 @@ functions they report and the last message of each kind they sent, for the
 product, the firmware and each read's last answer, for the [Bose table](docs/devices/bose.md#all-models),
 and on JBL's the same for the [JBL table](docs/devices/jbl.md#all-models). On AirPods and Beats it lists
 the model number, firmware, battery and the settings they reported, for the
-[AirPods and Beats table](docs/devices/apple.md#all-models).
+[AirPods and Beats table](docs/devices/apple.md#all-models). On Nothing and CMF earbuds and headphones it
+lists the product, the firmware and each read's last answer, for the
+[Nothing and CMF table](docs/devices/nothing.md#all-models).
 
 ### Probe from a PC
 
@@ -252,6 +256,10 @@ cd android
 - [MagicPodsCore](https://github.com/steam3d/MagicPodsCore) by Aleksandr Maslov and Andrei Litvintsev
   (GPL-3.0): the AirPods setting values it confirms, and the Beats and AirPods Max models. Facts only;
   none of its code is in PairFree.
+- [nada](https://github.com/chukfinley/nada) by chukfinley and [nadamas](https://github.com/ezvk/nadamas)
+  by ezvk, a fork of [something-x](https://github.com/SoaOaoS/something-x) by SoaOaoS (all MIT): the
+  Nothing and CMF protocol as they read it from Nothing X and tried it on real earbuds, which PairFree's
+  Nothing support checks against Nothing X itself.
 - [IBM Plex](https://github.com/IBM/plex) fonts (SIL Open Font License 1.1).
 
 ## License

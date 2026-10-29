@@ -32,6 +32,7 @@ import io.github.omegadestroyer.pairfree.protocol.RecordedBrand
 import io.github.omegadestroyer.pairfree.protocol.RecordingReport
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyEq
@@ -440,6 +441,28 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 }
             }
         }
+        connection.nothingSession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Brand:           Nothing")
+                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product ${session.productId ?: "unknown"})")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine()
+                appendLine("The last answer to each read PairFree sent, and the battery and noise events")
+                appendLine("(command: payload as hex; empty means the earbuds answered without a value):")
+                session.replies.forEach { (key, payload) ->
+                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
+                }
+            }
+        }
         connection.appleSession?.let { session ->
             return buildString {
                 appendLine("PairFree device report")
@@ -616,6 +639,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             RecordedBrand.SOUNDCORE -> SoundcoreModels.model(code)
             RecordedBrand.SAMSUNG -> SamsungModels.model(code)
             RecordedBrand.SONY -> code?.let { SonyModels.model(it) }
+            RecordedBrand.NOTHING -> NothingModels.model(code)
         }
         // Sony models are known by their name alone, which is also their code.
         if (model != null) return if (model.names.first() == model.code) model.code else "${model.names.first()} (${model.code})"
@@ -623,6 +647,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             RecordedBrand.SOUNDCORE -> "Soundcore earbuds (model not matched)"
             RecordedBrand.SAMSUNG -> "Galaxy Buds (model not matched)"
             RecordedBrand.SONY -> "Sony earbuds or headphones (model not matched)"
+            RecordedBrand.NOTHING -> "Nothing or CMF earbuds (model not matched)"
         }
     }
 

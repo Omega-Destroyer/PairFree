@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol
 
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingParser
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyCommand
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyParser
@@ -87,6 +88,7 @@ public class SnoopScanner {
         val samsung = SamsungParser(legacy = false)
         val samsungLegacy = SamsungParser(legacy = true)
         val sony = SonyParser()
+        val nothing = NothingParser()
     }
 
     private enum class Stage { FILE_HEADER, RECORD_HEADER, RECORD, STOPPED }
@@ -109,11 +111,11 @@ public class SnoopScanner {
     public fun frames(): List<Found> = found.toList()
 
     /**
-     * Every Soundcore, Samsung and Sony packet found so far, in log order. A check byte can match by
-     * chance, so Samsung and Sony packets count only on a channel that carried at least two.
+     * Every Soundcore, Samsung, Sony and Nothing packet found so far, in log order. A check byte can match
+     * by chance, so Samsung, Sony and Nothing packets count only on a channel that carried at least two.
      */
     public fun packets(): List<Packet> {
-        val checked = setOf(RecordedBrand.SAMSUNG, RecordedBrand.SONY)
+        val checked = setOf(RecordedBrand.SAMSUNG, RecordedBrand.SONY, RecordedBrand.NOTHING)
         val counts = packets.filter { it.brand in checked }.groupingBy { Triple(it.brand, it.connection, it.channel) }.eachCount()
         return packets.filter { it.brand !in checked || (counts[Triple(it.brand, it.connection, it.channel)] ?: 0) >= MIN_SAMSUNG_PACKETS }
     }
@@ -263,6 +265,7 @@ public class SnoopScanner {
         stream.soundcore.feed(data).forEach { add(RecordedBrand.SOUNDCORE, it.command, it.body) }
         stream.samsung.feed(data).forEach { add(RecordedBrand.SAMSUNG, it.id, it.payload) }
         stream.samsungLegacy.feed(data).forEach { add(RecordedBrand.SAMSUNG, it.id, it.payload) }
+        stream.nothing.feed(data).forEach { add(RecordedBrand.NOTHING, it.command, it.payload) }
         // Sony: acknowledgements carry nothing; the earbuds' first reply says the table set (4 bytes set 1, 8 set 2).
         val channel = key and 1.inv()
         for (m in stream.sony.feed(data)) {

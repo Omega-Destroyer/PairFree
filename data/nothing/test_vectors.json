@@ -1,0 +1,21 @@
+{
+ "_about": "Test cases for the Nothing protocol. crc_check is the published check value of CRC-16/MODBUS, which Nothing X's Utils.obtainCrc16 computes. frames were built by hand with an independent implementation (Python, outside the repo) from the layout in docs/nothing/PROTOCOL.md section 2; they are not captures. payloads were read from real devices by nada (github.com/chukfinley/nada, MIT, a CMF Buds 2 Plus, B184) and nadamas (github.com/ezvk/nadamas, MIT, an Ear (3a), B190, and a CMF Buds Pro 2, B187), as their notes give them; nothing that names or addresses a device is kept.",
+ "crc_check": {"ascii": "123456789", "crc": "4B37"},
+ "frames": [
+  {"what": "read the battery (C007), fsn 0", "command": "C007", "fsn": 0, "crc": true, "payload": "", "bytes": "55600107c00000006d1f"},
+  {"what": "read the noise report's three groups (C01E 03), fsn 3", "command": "C01E", "fsn": 3, "crc": true, "payload": "03", "bytes": "5560011ec0010003039de9"},
+  {"what": "transparency (F00F 01 07 00), fsn 5", "command": "F00F", "fsn": 5, "crc": true, "payload": "010700", "bytes": "5560010ff0030005010700fb47"},
+  {"what": "Ultra Bass on at level 4 (F051 01 04), fsn 9, the write nada tried on a B184", "command": "F051", "fsn": 9, "crc": true, "payload": "0104", "bytes": "55600151f00200090104f73c"},
+  {"what": "read the battery on an Ear (1), which takes no CRC", "command": "C007", "fsn": 0, "crc": false, "payload": "", "bytes": "55400107c0000000"}
+ ],
+ "replies": [
+  {"what": "a noise report from the earbuds (401E) with a CRC", "bytes": "5520011e4006000301070002040011ba", "command": "401E", "payload": "010700020400"}
+ ],
+ "payloads": {
+  "b184_noise_transparency": {"source": "nada, CMF Buds 2 Plus: after setting transparency", "command": "401E", "payload": "010700020400"},
+  "b184_noise_high": {"source": "nada, CMF Buds 2 Plus: after setting ANC high", "command": "401E", "payload": "010100020100"},
+  "b190_model": {"source": "nadamas, Ear (3a): the device model read", "command": "401C", "payload": "90b1", "product_id": "B190"},
+  "b187_model": {"source": "nadamas, CMF Buds Pro 2: the device model read", "command": "401C", "payload": "87b1", "product_id": "B187"},
+  "b187_firmware": {"source": "nadamas, CMF Buds Pro 2: firmware 1.0.1.74", "command": "4042", "payload": "312e302e312e3734", "firmware": "1.0.1.74"}
+ }
+}

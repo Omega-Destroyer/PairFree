@@ -1,0 +1,2931 @@
+{
+ "_about": "Nothing and CMF earbuds and headphones by the product id they report (read 0xC01C), from Nothing X 3.4.15 (com.nothing.smartcenter, decompiled outside the repo on 2026-10-18; none of its code or files are here): the product classes (IOTProductDevice*, their protocol class for crc and activate) and the per-model feature table the app bundles (ear_white_list.json), one entry in configs per firmware range. Names the app gives only as project numbers come from nada and nadamas (MIT), which read them from real devices; B183 is unknown. B190 comes from nadamas alone (its source field). anc decodes ancLevel as bits 0 high, 1 mid, 2 low, 3 adaptive, 4 transparency, 5 off (inferred: the app reads it in its Dart code; docs/nothing/PROTOCOL.md section 6). codecs decodes highQualityAudio (2 LHDC, 4 LDAC). eq_presets is false where the table sets eq 0 (Dirac Opteo models). gestures: device 2 left, 3 right, 4 the CMF Buds Pro 2's case dial, 6 the whole product; button 1 the gesture, and button 9 what the same gesture does during a call (Nothing X's call controls group, callControlsButton); operations the actions the app offers, fixed the ones it shows but does not let the user pick. tried names the open-source project (nada or nadamas, both MIT) that was used with a real one, sending the same messages PairFree sends. reports lists device reports under data/nothing/reports.",
+ "devices": [
+  {
+   "product_id": "B181",
+   "name": "Nothing Ear (1)",
+   "codename": "earone",
+   "names": [
+    "ear (1)",
+    "Nothing ear (1)"
+   ],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "crc": false,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "max_firmware": "*.*.1.74",
+     "anc": [
+      "high",
+      "low",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": false,
+     "dual_connection": false,
+     "fit_test": false,
+     "default_controls": "06020102080301020802010308030103080201070a0301070a",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        1
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 10
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1,
+        29
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 5,
+       "gesture": 5,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    },
+    {
+     "min_firmware": "*.*.1.75",
+     "max_firmware": "*.*.1.85",
+     "anc": [
+      "high",
+      "low",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": false,
+     "fit_test": false,
+     "default_controls": "06020102080301020802010308030103080201070a0301070a",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        1
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 10
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1,
+        29
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 5,
+       "gesture": 5,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    },
+    {
+     "min_firmware": "*.*.1.86",
+     "anc": [
+      "high",
+      "low",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": false,
+     "fit_test": false,
+     "default_controls": "06020102080301020802010308030103080201070a0301070a",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        1
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 10
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1,
+        29
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 5,
+       "gesture": 5,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B155",
+   "name": "Nothing Ear (2)",
+   "codename": "eartwo",
+   "names": [
+    "Ear (2)",
+    "Nothing Ear (2)"
+   ],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "tried": "nadamas",
+   "crc": true,
+   "activate": false,
+   "head_tracking": false,
+   "configs": [
+    {
+     "max_firmware": "*.*.1.94",
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3400.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [
+      "lhdc"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "dual_connection_reboot": true,
+     "fit_test": true,
+     "personalized_anc": true,
+     "default_controls": "080201020903010209020103080301030802010716030107160201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    },
+    {
+     "min_firmware": "*.*.1.95",
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3400.0,
+      "qHigh": 1.0
+     },
+     "advanced_eq": true,
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [
+      "lhdc"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "dual_connection_reboot": true,
+     "fit_test": true,
+     "personalized_anc": true,
+     "default_controls": "080201020903010209020103080301030802010716030107160201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B157",
+   "name": "Nothing Ear (stick)",
+   "codename": "earstick",
+   "names": [
+    "Ear (stick)",
+    "Nothing Ear (stick)"
+   ],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "min_firmware": "*.*.2.0",
+     "anc": [
+      "high",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.66,
+      "freqHigh": 3500.0,
+      "qHigh": 1.0
+     },
+     "advanced_eq": true,
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": false,
+     "fit_test": false,
+     "default_controls": "08020102090301020902010308030103080201070a0301070a0201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11
+       ],
+       "fixed": [],
+       "default": 10
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    },
+    {
+     "max_firmware": "*.*.1.79",
+     "anc": [],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.66,
+      "freqHigh": 3500.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": false,
+     "fit_test": false,
+     "default_controls": "080201020903010209020103080301030802010713030107120201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11
+       ],
+       "fixed": [],
+       "default": null
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    },
+    {
+     "min_firmware": "*.*.1.80",
+     "max_firmware": "*.*.1.999",
+     "anc": [],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.66,
+      "freqHigh": 3500.0,
+      "qHigh": 1.0
+     },
+     "advanced_eq": true,
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": false,
+     "fit_test": false,
+     "default_controls": "080201020903010209020103080301030802010713030107120201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11
+       ],
+       "fixed": [],
+       "default": null
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B162",
+   "name": "Nothing Ear (a)",
+   "codename": "earcolor",
+   "names": [
+    "Nothing Ear (a)"
+   ],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "crc": true,
+   "activate": false,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3400.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": false,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": true,
+     "default_controls": "080201020903010209020103080301030802010716030107160201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        31
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B171",
+   "name": "Nothing Ear",
+   "codename": "eartwos",
+   "names": [
+    "Nothing Ear"
+   ],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3400.0,
+      "qHigh": 1.0
+     },
+     "advanced_eq": true,
+     "bass_boost": true,
+     "spatial_audio": false,
+     "codecs": [
+      "lhdc",
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": true,
+     "default_controls": "080201020903010209020103080301030802010716030107160201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        31
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B173",
+   "name": "Nothing Ear (3)",
+   "codename": "earthree",
+   "names": [
+    "Nothing Ear (3)",
+    "Ear (3)"
+   ],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3400.0,
+      "qHigh": 1.0
+     },
+     "advanced_eq": true,
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": true,
+     "default_controls": "0902010209030102090201030803010308020107160301071602010901030109010401070b",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        9,
+        8,
+        11,
+        31
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        9,
+        8,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        31,
+        18,
+        19,
+        29,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        31,
+        18,
+        19,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        33,
+        11,
+        1
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 11
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [],
+       "fixed": [
+        29
+       ],
+       "default": 29
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B174",
+   "name": "Nothing Ear (open)",
+   "codename": "flaffy",
+   "names": [
+    "Nothing ear (open)"
+   ],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3400.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": false,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": false,
+     "default_controls": "080201020903010209020103080301030802010713030107120201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        31
+       ],
+       "fixed": [],
+       "default": null
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B183",
+   "name": "Nothing (project 24272)",
+   "codename": "hitmontop",
+   "names": [],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "crc": true,
+   "activate": false,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3400.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": false,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": true,
+     "default_controls": "080201020903010209020103080301030802010716030107160201090103010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        31
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        10,
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 2,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B190",
+   "name": "Nothing Ear (3a)",
+   "codename": "",
+   "names": [
+    "Nothing Ear (3a)"
+   ],
+   "kind": "earbuds",
+   "brand": "Nothing",
+   "tried": "nadamas",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "source": "nadamas (MIT), which read product B190 (90 b1) from a real Ear (3a); Nothing X 3.4.15 does not list it, so its features are nadamas' and its gestures unknown",
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": false,
+     "default_controls": "",
+     "gestures": []
+    }
+   ]
+  },
+  {
+   "product_id": "B163",
+   "name": "CMF Buds Pro",
+   "codename": "corsola",
+   "names": [
+    "CMF Buds Pro",
+    "Buds Pro"
+   ],
+   "kind": "earbuds",
+   "brand": "CMF",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3400.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": false,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": false,
+     "fit_test": false,
+     "default_controls": "080201020902010308020107160201090103010209030103080301071603010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        8,
+        9,
+        11
+       ],
+       "fixed": [
+        3
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B164",
+   "name": "CMF Neckband Pro",
+   "codename": "crobat",
+   "names": [
+    "CMF Neckband Pro"
+   ],
+   "kind": "neckband",
+   "brand": "CMF",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 6900.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [],
+     "ear_detection": false,
+     "low_latency": true,
+     "dual_connection": true,
+     "dual_connection_reboot": true,
+     "fit_test": false,
+     "default_controls": "03060102090601030806010716",
+     "gestures": [
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [
+        29
+       ],
+       "default": 9
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11
+       ],
+       "fixed": [],
+       "default": 8
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 6,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 8,
+       "gesture": 10,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        23
+       ],
+       "default": 23
+      },
+      {
+       "device": 6,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 7,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        1
+       ],
+       "default": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B168",
+   "name": "CMF Buds",
+   "codename": "donphan",
+   "names": [
+    "CMF Buds"
+   ],
+   "kind": "earbuds",
+   "brand": "CMF",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": false,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 6900.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "dual_connection_reboot": true,
+     "fit_test": false,
+     "dirac_opteo": true,
+     "default_controls": "080201020902010308020107160201090103010209030103080301071603010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        8,
+        9,
+        11,
+        1
+       ],
+       "fixed": [
+        3
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        1
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B172",
+   "name": "CMF Buds Pro 2",
+   "codename": "espeon",
+   "names": [
+    "CMF Buds Pro 2"
+   ],
+   "kind": "earbuds",
+   "brand": "CMF",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": false,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 6900.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "dual_connection_reboot": true,
+     "fit_test": true,
+     "dirac_opteo": true,
+     "default_controls": "0f03010209030103080301071603010901020102090201030802010716020109010401010104010201040103010401070104010a010409020104090301",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        3
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 1,
+       "custom": true,
+       "operations": [
+        2,
+        9,
+        8,
+        11,
+        17,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        9,
+        8,
+        11,
+        17,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 9,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        3,
+        25,
+        1
+       ],
+       "fixed": [],
+       "default": null
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        2,
+        9,
+        8,
+        11,
+        17,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 9,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        26,
+        1
+       ],
+       "fixed": [],
+       "default": null
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        17,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 10,
+       "custom": true,
+       "operations": [
+        23,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 2,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B179",
+   "name": "CMF Buds 2",
+   "codename": "girafarig",
+   "names": [
+    "CMF Buds 2"
+   ],
+   "kind": "earbuds",
+   "brand": "CMF",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 6900.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": true,
+     "dirac_opteo": true,
+     "default_controls": "080301020903010308030107160301090102010209020103080201071602010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        3
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B184",
+   "name": "CMF Buds 2 Plus",
+   "codename": "gligar",
+   "names": [
+    "CMF Buds 2 Plus"
+   ],
+   "kind": "earbuds",
+   "brand": "CMF",
+   "tried": "nada",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 6900.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": true,
+     "dirac_opteo": true,
+     "default_controls": "080301020903010308030107160301090102010209020103080201071602010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        3
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B185",
+   "name": "CMF Buds 2a",
+   "codename": "hoothoot",
+   "names": [
+    "CMF Buds 2a"
+   ],
+   "kind": "earbuds",
+   "brand": "CMF",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": false,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 6900.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": false,
+     "codecs": [],
+     "ear_detection": false,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": false,
+     "dirac_opteo": true,
+     "default_controls": "080201020902010308020107160201090103010209030103080301071603010901",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        3
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B187",
+   "name": "CMF Buds Pro 2",
+   "codename": "heracross",
+   "names": [
+    "CMF Buds Pro 2"
+   ],
+   "kind": "earbuds",
+   "brand": "CMF",
+   "tried": "nadamas",
+   "crc": true,
+   "activate": true,
+   "head_tracking": false,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": false,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 6900.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "dual_connection_reboot": true,
+     "fit_test": true,
+     "dirac_opteo": true,
+     "default_controls": "0f020102090201030802010716020109010301020903010308030107160301090104010101040102010409020104010301040903010401070104010a01",
+     "gestures": [
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        3
+       ],
+       "default": 9
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        8,
+        9,
+        11,
+        31,
+        1
+       ],
+       "fixed": [
+        4
+       ],
+       "default": 8
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 2,
+       "button": 1,
+       "gesture": 9,
+       "custom": true,
+       "operations": [
+        18,
+        19,
+        11,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 1,
+       "custom": true,
+       "operations": [
+        2,
+        9,
+        8,
+        11,
+        17,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        2,
+        9,
+        8,
+        11,
+        17,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 9,
+       "gesture": 2,
+       "custom": true,
+       "operations": [
+        3,
+        25,
+        1
+       ],
+       "fixed": [],
+       "default": null
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        2,
+        9,
+        8,
+        11,
+        17,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 9,
+       "gesture": 3,
+       "custom": true,
+       "operations": [
+        26,
+        1
+       ],
+       "fixed": [],
+       "default": null
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        11,
+        17,
+        31,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 10,
+       "custom": true,
+       "operations": [
+        23,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 4,
+       "button": 1,
+       "gesture": 2,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B170",
+   "name": "Nothing Headphone (1)",
+   "codename": "elekid",
+   "names": [
+    "Nothing Headphone (1)"
+   ],
+   "kind": "headphones",
+   "brand": "Nothing",
+   "crc": true,
+   "activate": true,
+   "head_tracking": true,
+   "configs": [
+    {
+     "max_firmware": "*.*.1.74",
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3500.0,
+      "qHigh": 1.0
+     },
+     "advanced_eq": true,
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": false,
+     "default_controls": "0306010716060a010b060a0701",
+     "gestures": [
+      {
+       "device": 6,
+       "button": 10,
+       "gesture": 1,
+       "custom": true,
+       "operations": [
+        32,
+        11,
+        31,
+        10,
+        27,
+        29,
+        34,
+        1
+       ],
+       "fixed": [
+        -3
+       ],
+       "default": 11
+      },
+      {
+       "device": 6,
+       "button": 10,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        32,
+        11,
+        31,
+        10,
+        27,
+        33,
+        29,
+        34,
+        1
+       ],
+       "fixed": [
+        -3
+       ],
+       "default": 1
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        2
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": -4,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -4
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": -5,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": -6,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -2
+       ],
+       "default": null
+      }
+     ]
+    },
+    {
+     "min_firmware": "*.*.1.75",
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3500.0,
+      "qHigh": 1.0
+     },
+     "advanced_eq": true,
+     "bass_boost": true,
+     "spatial_audio": true,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": true,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": false,
+     "default_controls": "0306010716060a010b060a0701",
+     "gestures": [
+      {
+       "device": 6,
+       "button": 10,
+       "gesture": 1,
+       "custom": true,
+       "operations": [
+        32,
+        11,
+        31,
+        10,
+        27,
+        29,
+        34,
+        1
+       ],
+       "fixed": [
+        -3
+       ],
+       "default": 11
+      },
+      {
+       "device": 6,
+       "button": 10,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        32,
+        11,
+        31,
+        10,
+        27,
+        33,
+        29,
+        34,
+        1
+       ],
+       "fixed": [
+        -3
+       ],
+       "default": 1
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        2
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10,
+        1
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": -4,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -4
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": -5,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": -6,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -2
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "product_id": "B175",
+   "name": "CMF Headphone Pro",
+   "codename": "forretress",
+   "names": [
+    "CMF Headphone Pro"
+   ],
+   "kind": "headphones",
+   "brand": "CMF",
+   "crc": true,
+   "activate": true,
+   "head_tracking": true,
+   "configs": [
+    {
+     "anc": [
+      "high",
+      "mid",
+      "low",
+      "adaptive",
+      "transparency",
+      "off"
+     ],
+     "eq_presets": true,
+     "simple_eq": {
+      "freqLow": 140.0,
+      "qLow": 0.8,
+      "freqPeak": 980.0,
+      "qPeak": 0.7,
+      "freqHigh": 3500.0,
+      "qHigh": 1.0
+     },
+     "bass_boost": false,
+     "spatial_audio": true,
+     "codecs": [
+      "ldac"
+     ],
+     "ear_detection": false,
+     "low_latency": true,
+     "dual_connection": true,
+     "fit_test": false,
+     "dirac_opteo": true,
+     "default_controls": "04060a0701060a010b0605012306010716",
+     "gestures": [
+      {
+       "device": 6,
+       "button": 10,
+       "gesture": 1,
+       "custom": true,
+       "operations": [
+        31,
+        11,
+        10,
+        27,
+        29,
+        1
+       ],
+       "fixed": [],
+       "default": 11
+      },
+      {
+       "device": 6,
+       "button": 10,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        31,
+        11,
+        10,
+        27,
+        33,
+        29,
+        1
+       ],
+       "fixed": [],
+       "default": 1
+      },
+      {
+       "device": 6,
+       "button": 5,
+       "gesture": 1,
+       "custom": true,
+       "operations": [
+        35,
+        36
+       ],
+       "fixed": [],
+       "default": 35
+      },
+      {
+       "device": 6,
+       "button": 1,
+       "gesture": 7,
+       "custom": true,
+       "operations": [
+        10
+       ],
+       "fixed": [],
+       "default": 22
+      },
+      {
+       "device": 6,
+       "button": 8,
+       "gesture": 1,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 8,
+       "gesture": 2,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 8,
+       "gesture": 3,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      },
+      {
+       "device": 6,
+       "button": 8,
+       "gesture": -4,
+       "custom": false,
+       "operations": [],
+       "fixed": [
+        -1
+       ],
+       "default": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

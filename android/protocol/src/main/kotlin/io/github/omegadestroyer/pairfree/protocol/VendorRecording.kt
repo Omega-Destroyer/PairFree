@@ -1,22 +1,23 @@
 package io.github.omegadestroyer.pairfree.protocol
 
+import io.github.omegadestroyer.pairfree.protocol.nothing.NothingCommand
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungMessage
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyCommand
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreCommand
 
 /** A brand whose official app a recording can hold, besides SOUNDPEATS (whose frames are [SnoopScanner.Found]). */
-public enum class RecordedBrand { SOUNDCORE, SAMSUNG, SONY }
+public enum class RecordedBrand { SOUNDCORE, SAMSUNG, SONY, NOTHING }
 
 /**
- * What another brand's official app (the Soundcore app, Galaxy Wearable, Sony's app) and its earbuds sent each
+ * What another brand's official app (the Soundcore app, Galaxy Wearable, Sony's app, Nothing X) and its earbuds sent each
  * other, found in a Bluetooth log ([SnoopScanner.packets]), as a timeline for a report: when each
  * message went, which way, its number and name, and its bytes. A recording shows what the
  * official app sends for each setting, which is what confirms a model's protocol.
  *
  * The report goes into a public issue, so the bytes are shown only where they cannot carry
  * personal data:
- * - messages marked private (Soundcore's list of known devices and its serial number) and
- *   firmware update messages are left out, with their size;
+ * - messages marked private (Soundcore's list of known devices and its serial number, Nothing's serial
+ *   number and paired devices) and firmware update messages are left out, with their size;
  * - a message PairFree does not know is shown only up to [SHOWN_UNKNOWN] bytes, too few for an
  *   address, a name or a key;
  * - the earbuds' Bluetooth address is masked wherever it appears, as bytes or as text, and so is
@@ -95,6 +96,7 @@ public object VendorRecording {
             RecordedBrand.SOUNDCORE -> id in SoundcoreCommand.PRIVATE || id in SoundcoreCommand.NEVER_SEND
             RecordedBrand.SAMSUNG -> id in SamsungMessage.NEVER_SEND
             RecordedBrand.SONY -> sonyNeverSend(id)
+            RecordedBrand.NOTHING -> nothingWithheld(id)
         }
         if (withheld || (!known && payload.size > SHOWN_UNKNOWN)) return "(${payload.size} bytes left out)"
         val hidden = masked(payload, address, serials = brand != RecordedBrand.SAMSUNG)
@@ -148,14 +150,16 @@ public object VendorRecording {
         RecordedBrand.SOUNDCORE -> SoundcoreCommand.NAMES[id]
         RecordedBrand.SAMSUNG -> SamsungMessage.NAMES[id]
         RecordedBrand.SONY -> sonyName(id)
+        RecordedBrand.NOTHING -> nothingName(id)
     }
 
     /**
      * A Soundcore command as four hex digits, as its docs write it; a Samsung message in decimal, as
-     * GalaxyBudsClient numbers them; a Sony command as its table, a dot and its number in hex.
+     * GalaxyBudsClient numbers them; a Sony command as its table, a dot and its number in hex; a Nothing
+     * command as four hex digits.
      */
     public fun idText(brand: RecordedBrand, id: Int): String = when (brand) {
-        RecordedBrand.SOUNDCORE -> id.toString(16).uppercase().padStart(4, '0')
+        RecordedBrand.SOUNDCORE, RecordedBrand.NOTHING -> id.toString(16).uppercase().padStart(4, '0')
         RecordedBrand.SAMSUNG -> id.toString().padStart(3, ' ')
         RecordedBrand.SONY -> "${(id shr SONY_TABLE_SHIFT) and 0xF}.${(id and 0xFF).toString(16).uppercase().padStart(2, '0')}"
     }
@@ -191,6 +195,26 @@ public object VendorRecording {
             else -> one || two
         }
     }
+
+    /**
+     * A Nothing command's name, lowercase; a reply (bit 15 cleared) by the command it answers. Ids are the
+     * frame's command, so the app's reads and writes and the earbuds' events keep bit 15.
+     */
+    private fun nothingName(id: Int): String? =
+        NothingCommand.NAMES[id]?.lowercase() ?: NothingCommand.NAMES[id or NOTHING_REQUEST]?.let { "${it.lowercase()} reply" }
+
+    /**
+     * Left out of a report: what PairFree never sends (firmware update, factory reset, debug), the replies
+     * to the reads that hold the serial number or paired devices' addresses, and the events about other
+     * connected devices.
+     */
+    private fun nothingWithheld(id: Int): Boolean {
+        val request = id or NOTHING_REQUEST
+        return request in NothingCommand.NEVER_SEND || request in NothingCommand.PRIVATE || id in NOTHING_PRIVATE_EVENTS
+    }
+
+    private const val NOTHING_REQUEST = 0x8000
+    private val NOTHING_PRIVATE_EVENTS = setOf(NothingCommand.EVENT_DUAL_DEVICE_CONNECT_STATE, NothingCommand.EVENT_DUAL_DEVICE_SWITCH_STATE)
 
     private const val SONY_TABLE_SHIFT = 8
     private const val SONY_SET_SHIFT = 12

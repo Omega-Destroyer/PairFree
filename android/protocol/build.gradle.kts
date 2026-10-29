@@ -952,8 +952,118 @@ val generateAppleTables = tasks.register<GenerateAppleTables>("generateAppleTabl
     outputDir = layout.buildDirectory.dir("generated/apple")
 }
 
+/** Writes Nothing's commands, frame constants and models from data/nothing. */
+abstract class GenerateNothingTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
+        fun int(v: Any?) = (v as Number).toInt()
+        fun hex(v: Int) = "0x" + v.toString(16).uppercase().padStart(4, '0')
+        fun strings(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+        fun ints(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/nothing by the generateNothingTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val frame = commands.getValue("frame") as Map<String, Any?>
+        out.appendLine("/** The frame's constants (data/nothing/commands.json, frame). */")
+        out.appendLine("public object NothingWire {")
+        out.appendLine("    /** The serial service Nothing's earbuds offer for control. */")
+        out.appendLine("    public const val SERVICE_UUID: String = ${str(frame["service_uuid"])}")
+        out.appendLine("    public const val START: Int = 0x${frame["start"]}")
+        out.appendLine("    /** The control field Nothing's app sends: a TWS headset, multi-frame bit, and a CRC. */")
+        out.appendLine("    public const val CONTROL_SENT: Int = 0x${frame["control_sent"]}")
+        out.appendLine("    public const val DEVICE_TYPE_TWS: Int = ${int(frame["device_type_tws"])}")
+        out.appendLine("    /** A reply is the command it answers with this mask applied. */")
+        out.appendLine("    public const val REPLY_MASK: Int = 0x${frame["reply_mask"]}")
+        out.appendLine("    /** The frame sequence number counts up to this, then starts over at 0. */")
+        out.appendLine("    public const val FSN_WRAP: Int = ${int(frame["fsn_wrap"])}")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val list = commands.getValue("commands") as List<Map<String, Any?>>
+        out.appendLine("/** Nothing's commands (data/nothing/commands.json), by the names Nothing X gives them. */")
+        out.appendLine("public object NothingCommand {")
+        val seen = mutableSetOf<String>()
+        for (c in list) {
+            val name = c.getValue("name") as String
+            check(seen.add(name)) { "two commands named $name" }
+            out.appendLine("    public const val $name: Int = 0x${c["code"]}")
+        }
+        fun codes(pred: (Map<String, Any?>) -> Boolean) = list.filter(pred).joinToString(", ") { "0x${it["code"]}" }
+        out.appendLine("    /** Firmware update, factory reset, calibration, test and debug traffic: never sent. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${codes { it["never_send"] == true }})")
+        out.appendLine("    /** Reads whose replies hold a serial number or other devices' addresses: never sent. */")
+        out.appendLine("    public val PRIVATE: Set<Int> = setOf(${codes { it["private"] == true }})")
+        out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${list.joinToString(", ") { "0x${it["code"]} to ${str(it["name"])}" }})")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/nothing/devices.json. */")
+        out.appendLine("internal val NOTHING_MODELS: List<NothingModel> = listOf(")
+        for (d in devices) {
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headphones", "neckband" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            out.appendLine("    NothingModel(")
+            out.appendLine("        ${str(d["product_id"])}, ${str(d["name"])}, ${str(d["codename"])}, ${strings(d["names"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form,")
+            out.appendLine("        crc = ${d["crc"]}, activate = ${d["activate"]}, headTracking = ${d["head_tracking"]},")
+            out.appendLine("        configs = listOf(")
+            @Suppress("UNCHECKED_CAST")
+            for (c in d.getValue("configs") as List<Map<String, Any?>>) {
+                @Suppress("UNCHECKED_CAST")
+                val gestures = (c["gestures"] as List<Map<String, Any?>>).joinToString(", ", "listOf(", ")") { g ->
+                    "NothingGesture(${int(g["device"])}, ${int(g["button"])}, ${int(g["gesture"])}, ${g["custom"]}, ${ints(g["operations"])}, ${ints(g["fixed"])})"
+                }
+                out.appendLine("            NothingConfig(")
+                out.appendLine("                minFirmware = ${c["min_firmware"]?.let(::str) ?: "null"}, maxFirmware = ${c["max_firmware"]?.let(::str) ?: "null"},")
+                out.appendLine("                anc = ${strings(c["anc"])}, eqPresets = ${c["eq_presets"]}, bassBoost = ${c["bass_boost"]}, spatialAudio = ${c["spatial_audio"]},")
+                out.appendLine("                codecs = ${strings(c["codecs"])}, earDetection = ${c["ear_detection"]}, lowLatency = ${c["low_latency"]},")
+                out.appendLine("                gestures = $gestures,")
+                out.appendLine("            ),")
+            }
+            out.appendLine("        ),")
+            out.appendLine("    ),")
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("NothingTables.kt").writeText(out.toString())
+    }
+}
+
+val generateNothingTables = tasks.register<GenerateNothingTables>("generateNothingTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/nothing/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/nothing/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.nothing"
+    outputDir = layout.buildDirectory.dir("generated/nothing")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateTables)
+    kotlin.srcDir(generateNothingTables)
     kotlin.srcDir(generateAppleTables)
     kotlin.srcDir(generateSoundcoreTables)
     kotlin.srcDir(generateSamsungTables)
@@ -978,6 +1088,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/bose")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/jbl")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/apple")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/nothing")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

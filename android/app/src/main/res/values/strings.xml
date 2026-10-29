@@ -514,4 +514,20 @@
     <string name="action_volume">Volume</string>
     <string name="setting_custom_eq">Custom equalizer</string>
     <string name="setting_custom_eq_note">Low, mid and high, on the AirPods firmware that has it.</string>
+    <string name="setting_sp_dynamic_eq">Dynamic EQ</string>
+    <string name="setting_dynamic_bass">Dynamic bass</string>
+    <string name="setting_movie_mode">Movie mode</string>
+    <string name="setting_sp_spatial_audio">Spatial audio</string>
+    <string name="setting_dolby">Dolby Audio</string>
+    <string name="setting_panoramic_sound">Panoramic sound</string>
+    <string name="setting_panoramic_normal">Normal</string>
+    <string name="setting_panoramic_music">Music</string>
+    <string name="setting_panoramic_movie">Movie</string>
+    <string name="setting_hearing_protection">Volume limit</string>
+    <string name="setting_anc_env_adaptive">Adapt noise cancelling to the surroundings</string>
+    <string name="setting_privacy_mode">Privacy mode</string>
+    <string name="setting_fall_detection">Fall detection</string>
+    <string name="setting_light_effect">Light</string>
+    <string name="setting_group_sound_effects">Sound effects</string>
+    <string name="setting_group_noise_adaptive">Adaptive noise cancelling</string>
 </resources>

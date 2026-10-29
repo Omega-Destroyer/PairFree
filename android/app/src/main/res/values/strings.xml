@@ -438,4 +438,23 @@
     <string name="factory_reset">Factory reset</string>
     <string name="factory_reset_title">Factory reset the earbuds?</string>
     <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this phone; then pair them again in the Bluetooth settings.</string>
+    <string name="shutdown_when_taken_off">When taken off</string>
+    <string name="setting_sony_connection_priority">Bluetooth connection</string>
+    <string name="setting_sony_connection_priority_note">Sound quality lets the phone use LDAC; a stable connection drops out less in crowded places.</string>
+    <string name="setting_sony_sound_quality">Priority on sound quality</string>
+    <string name="setting_sony_stable">Priority on a stable connection</string>
+    <string name="setting_sony_low_latency">Low latency</string>
+    <string name="setting_sony_assign_side">%1$s touch sensor</string>
+    <string name="setting_sony_assign_custom">Custom button</string>
+    <string name="setting_sony_assign_c">C button</string>
+    <string name="setting_sony_assign_nc_amb">NC/AMB button</string>
+    <string name="setting_sony_noise_control_mic">Noise control and mic</string>
+    <string name="setting_sony_noise_control_listening_mode">Noise control and listening mode</string>
+    <string name="setting_sony_playback">Playback control</string>
+    <string name="setting_sony_track">Track control</string>
+    <string name="setting_sony_google_assistant">Google Assistant</string>
+    <string name="setting_sony_alexa">Amazon Alexa</string>
+    <string name="setting_sony_quick_access">Quick Access</string>
+    <string name="setting_sony_no_function">Nothing</string>
+    <string name="setting_sony_other_function">Set in Sony\'s app</string>
 </resources>

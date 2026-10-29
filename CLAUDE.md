@@ -107,6 +107,9 @@ Beats on Apple's chips).
   through `generateSonyTables`. `SonySession` reads only the functions the earbuds list; noise
   control (`SonyNoise`) writes back in the layout of the earbuds' own last reply; the EQ goes
   through the Sound tab via `SonyEqTarget`, whose "frames" are message payloads for that queue.
+  Automatic power-off and the keys' functions (`SonyAutoOff`, `SonyKeys`) offer only what the earbuds'
+  capability lists (the keys only presets that need no assistant or app set up); set 2's voice guidance
+  comes from its table 2 function list, which set 2 sends on its own.
   Set 2 writes on as 0 and off as 1 for its switches. After a change to `devices.json` run
   `python tools/gen_sony_table.py`. Never send `SonyCommand.*.NEVER_SEND` (firmware update, test,
   logs).

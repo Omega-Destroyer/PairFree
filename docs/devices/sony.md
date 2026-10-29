@@ -14,10 +14,13 @@ What it shows, where the model has it:
   reduction and speak-to-chat.
 - **Sound:** the equalizer, with the model's presets and, where it takes one, a curve of your
   own over the bands it reports; Clear Bass; and DSEE upscaling.
-- **Device:** pause when taken off and voice guidance.
+- **Controls:** what each touch sensor or button does (noise control, volume, playback, track
+  control, the voice assistant, or nothing), from the choices the model lists. A key set to Google
+  Assistant, Alexa or Quick Access in Sony's app shows it and keeps it.
+- **Device:** the Bluetooth connection mode (sound quality or a stable connection), automatic power
+  off, pause when taken off and voice guidance.
 
-Not yet: touch controls, automatic power off, multipoint, 360 Reality Audio and the noise
-cancelling optimizer, among others. A recording of Sony's app adds them
+Not yet: multipoint, 360 Reality Audio and the noise cancelling optimizer, among others. A recording of Sony's app adds them
 ([Help wanted](#help-wanted)).
 
 Sony support is written from Sony's own app (Sony | Sound Connect 13.3.0), read for its

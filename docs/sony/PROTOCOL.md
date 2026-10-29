@@ -73,12 +73,15 @@ PairFree sends, in order, waiting for each acknowledgement:
    type, a length and that many bytes of UTF-8 text. PairFree shows them as `model_version`.
 3. `06 00`, the support functions. The answer is `07 00`, a count, then the functions: one byte
    each in set 1, two in set 2 (the function and its version). `functions.json` names them.
+   Set 2 sends `06 00` on table 2 as well, for the functions of its second table (voice guidance
+   among them), and answers the same way there.
 
 Then PairFree reads each function it offers (the sections below), and the earbuds send each
 change as a notification (`..NTFY..`), whether PairFree, a button or Sony's app made it. The
 battery is read again every 30 s.
 
-Sony's app also asks each function's capability; PairFree asks only the EQ's (section 6).
+Sony's app also asks each function's capability; PairFree asks the EQ's (section 6), and those
+of automatic power-off and the keys (section 7), whose choices it offers.
 
 ## 4. Battery
 
@@ -173,14 +176,36 @@ sound effects.
 | DSEE upscaling | function `E2`; `E6 02`, reply `E7 02 00 value`, change `E8 02 00 value`; 1 auto, 0 off | function `E2`; `E6 01`, reply `E7 01 value`, change `E8 01 value`; 1 auto, 0 off |
 | Pause when taken off | function `F3`; `F6 03`, reply `F7 03 00 value`, change `F8 03 00 value`; 1 on | function `F1`; `F6 01`, reply `F7 01 value`, change `F8 01 value`; **0 on**, 1 off |
 | Speak-to-chat | function `F5`; `F6 05`, reply `F7 05 01 value`, change `F8 05 01 value`; 1 on | function `FC` (type `0C`) or `F2` (type `02`); reply `F7 type mode preview`, change the same; **0 on**, 1 off |
-| Voice guidance | function `39`; table 2: `46 01 01`, reply `47 01 01 value`, change `48 01 01 value`; 1 on | not offered yet |
+| Voice guidance | function `39`; table 2: `46 01 01`, reply `47 01 01 value`, change `48 01 01 value`; 1 on | table 2 functions `40` to `45`; table 2: `46 type`, reply `47 type value` (types 1 and 2 add the language), change `48 type value`, and type 2 sends the language back; **0 on** |
+| Connection mode | function `E1`; `E6 01`, reply `E7 01 00 value`, change `E8 01 00 value`; 0 sound quality, 1 stable connection | function `E1` (type `00`) or `E3` (type `02`, which Sony's app uses with the LDAC status); `E6 type`, reply `E7 type value`, change `E8 type value`; 0 sound quality, 1 stable, 2 low latency on some |
+| Automatic power-off | function `F4`; capability `F0 04`, reply `F1 04 count ids`; `F6 04`, reply `F7 04 01 active time`, change `F8 04 01 active time` | function `24` (POWER type `04`) or `25` (type `05`, with when taken off); capability `20 type`, reply `21 type count ids`; `26 type`, reply `27 type active time`, change `28 type active time` |
+| Keys | function `F6`; capability `F0 06`; `F6 06`, reply `F7 06 count presets`, change `F8 06 count presets` | function `F3` (type `03`) or `FE` (type `0E`); capability `F0 type`; `F6 type`, reply `F7 type count presets`, change the same with `F8` |
 
 In set 2 on is 0 and off is 1 for these switches (Sony's `OnOffSettingValue` and
 `ProtocolOnOff`), which Gadgetbridge marks as reversed. The speak-to-chat change keeps the
 preview byte as the earbuds last reported it.
 
-Set 2's voice guidance has several layouts by model (functions `40` to `45` of table 2), so
-PairFree waits for a report before offering it.
+Set 2's voice guidance has a type per function of table 2: `40` type 0, `41` and `42` type 1,
+`44` type 2, `45` type 3 (Sony's `VoiceGuidanceInquiredType`). Types 1 and 2 reply with the
+language after the switch; only type 2 sends it back in a change (Sony's app). `42` and `43` add a
+volume, which PairFree does not offer. Gadgetbridge writes type 1 the same way.
+
+**Automatic power-off.** The ids are times (0 five minutes, 4 fifteen, 1 thirty, 2 sixty, 3 180),
+`10` when taken off and `11` never; set 1 has no fifteen minutes. The capability lists the ids the
+model offers. The setting holds the active id and a time: a time is sent as both, and when taken
+off or never keeps the time the earbuds last gave, as Sony's app does (Gadgetbridge writes never as
+`11 00`).
+
+**Keys.** The capability lists each key (0 left, 1 right, 2 custom, 3 C, 4 and 5 the NC/AMB
+button), whether it is a touch sensor or a button, its default and the presets it can take, each
+with the actions it then has: set 1 a count and action and function pairs; set 2 a count of pairs,
+a count of actions with functions to switch between, the pairs, then each of those as action,
+function, count and functions. Type `0E` has one more byte before the keys. The setting holds one
+preset per key, in the capability's order. Presets: `00` noise control, `10` volume, `20` playback,
+`21` track, `22` playback without the assistant, `30` the phone's voice assistant, `31` Google
+Assistant, `32` Alexa, `36` Quick Access, `45` noise control and mic, `47` noise control and
+listening mode, `FF` nothing (and more in Sony's `Preset`). PairFree offers those that need nothing
+set up elsewhere; Gadgetbridge writes `FF`, `00`, `20` and `10` the same way.
 
 ## 8. Never sent
 
@@ -192,5 +217,6 @@ Firmware update (`UPDT_*`), the test command and the logs are marked `never_send
 - Everything here, on real earbuds: no Sony model has been tried with PairFree.
 - The ambient level's real range per model; Sony's app reads it from each type's capability.
 - Set 2's noise control types PairFree does not read (section 5).
-- Set 2's voice guidance, automatic power off (`POWER`, types `04` and `05`), touch controls
-  and multipoint.
+- Multipoint, and the voice guidance volume.
+- Whether every model takes a key, power-off or connection change as Sony's app writes it: no
+  recording of the app confirms them yet.

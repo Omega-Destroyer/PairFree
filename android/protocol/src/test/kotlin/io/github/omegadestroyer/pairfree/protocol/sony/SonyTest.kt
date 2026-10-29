@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.sony
 
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -92,7 +93,9 @@ class SonyProtocolTest {
             val s = SonySession(3 - expected)
             s.receive(SonyMessage(SonyWire.TABLE1, 0, hex(case.str("payload"))))
             assertEquals(expected, s.tableSet, case.str("model"))
-            assertEquals(listOf(out(0x04, 0x01), out(0x04, 0x02), out(0x06, 0x00)), s.takeOutbox())
+            // Set 2 also asks for the functions of its second table.
+            val table2 = if (expected == 2) listOf(out(0x06, 0x00, table = 2)) else emptyList()
+            assertEquals(listOf(out(0x04, 0x01), out(0x04, 0x02), out(0x06, 0x00)) + table2, s.takeOutbox())
         }
     }
 
@@ -377,6 +380,117 @@ class SonySessionTest {
         assertEquals(listOf(out(0xF8, 0x03, 0x00, 0x00)), o.change(SettingChange.Toggle("pause_taken_off", false)))
         assertEquals(listOf(out(0xF8, 0x05, 0x01, 0x01)), o.change(SettingChange.Toggle("speak_to_chat", true)))
         assertEquals(listOf(out(0x48, 0x01, 0x01, 0x00, table = 2)), o.change(SettingChange.Toggle("voice_guidance", false)))
+    }
+
+    @Test
+    fun automaticPowerOffBySet() {
+        // Set 1: SYSTEM type 4. The earbuds list their choices, then hold the active one and a time (Gadgetbridge
+        // writes off as 11 00 and 30 minutes as 01 01).
+        val o = set1(SonyFunction.Set1.AUTO_POWER_OFF)
+        assertEquals(listOf(out(0xF0, 0x04), out(0xF6, 0x04)), o.takeOutbox())
+        assertNull(setting(o, "auto_off"), "nothing until the earbuds answer")
+        o.receive(message(0xF1, 0x04, 0x04, 0x00, 0x01, 0x10, 0x11))
+        o.receive(message(0xF7, 0x04, 0x01, 0x01, 0x01))
+        assertEquals(Setting.Choice("auto_off", "30", listOf("5", "30", "when_taken_off", "never")), setting(o, "auto_off"))
+        assertEquals(listOf(out(0xF8, 0x04, 0x01, 0x11, 0x01)), o.change(SettingChange.Choice("auto_off", "never")), "the time stays")
+        assertEquals(listOf(out(0xF8, 0x04, 0x01, 0x00, 0x00)), o.change(SettingChange.Choice("auto_off", "5")))
+        assertNull(o.change(SettingChange.Choice("auto_off", "60")), "not one of the earbuds' choices")
+
+        // Set 2: POWER type 5, with when taken off; the two ids alone.
+        val s = set2(SonyFunction.Set2.AUTO_POWER_OFF, SonyFunction.Set2.AUTO_POWER_OFF_WITH_WEARING_DETECTION)
+        assertEquals(listOf(out(0x20, 0x05), out(0x26, 0x05)), s.takeOutbox())
+        s.receive(message(0x21, 0x05, 0x04, 0x00, 0x04, 0x10, 0x11))
+        s.receive(message(0x27, 0x05, 0x10, 0x00))
+        assertEquals(Setting.Choice("auto_off", "when_taken_off", listOf("5", "15", "when_taken_off", "never")), setting(s, "auto_off"))
+        assertEquals(listOf(out(0x28, 0x05, 0x04, 0x04)), s.change(SettingChange.Choice("auto_off", "15")))
+        s.receive(message(0x29, 0x05, 0x11, 0x04))
+        assertEquals("never", (setting(s, "auto_off") as Setting.Choice).value, "a notification updates it")
+    }
+
+    @Test
+    fun touchKeysBySet() {
+        // Set 1: SYSTEM type 6. Each key: id, sensor or button, default, then its presets with their actions.
+        val o = set1(SonyFunction.Set1.ASSIGNABLE_SETTINGS)
+        assertEquals(listOf(out(0xF0, 0x06), out(0xF6, 0x06)), o.takeOutbox())
+        o.receive(
+            message(
+                0xF1, 0x06, 0x02,
+                0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00, 0x01, 0x20, 0x01, 0x00, 0x20, 0x10, 0x01, 0x00, 0x00,
+                0x01, 0x00, 0x20, 0x03, 0x00, 0x01, 0x00, 0x01, 0x20, 0x01, 0x00, 0x20, 0x31, 0x01, 0x00, 0x32,
+            ),
+        )
+        o.receive(message(0xF7, 0x06, 0x02, 0x00, 0x31))
+        assertEquals(Setting.Choice("assign_left", "noise_control", listOf("noise_control", "playback", "volume")), setting(o, "assign_left"))
+        assertEquals(
+            Setting.Choice("assign_right", "google_assistant", listOf("noise_control", "playback", "google_assistant")),
+            setting(o, "assign_right"),
+            "an assistant is shown but not offered",
+        )
+        assertEquals(SettingTab.CONTROLS, o.groups.single { g -> g.settings.any { it.key == "assign_left" } }.tab)
+        // As Gadgetbridge writes it: the type, the count, then every key's preset.
+        assertEquals(listOf(out(0xF8, 0x06, 0x02, 0x00, 0x20)), o.change(SettingChange.Choice("assign_right", "playback")))
+        assertEquals(listOf(out(0xF8, 0x06, 0x02, 0x10, 0x20)), o.change(SettingChange.Choice("assign_left", "volume")))
+
+        // Set 2: type 3, whose presets carry a list of actions and a list of actions with functions to switch between.
+        val s = set2(SonyFunction.Set2.ASSIGNABLE_SETTING)
+        assertEquals(listOf(out(0xF0, 0x03), out(0xF6, 0x03)), s.takeOutbox())
+        s.receive(message(0xF1, 0x03, 0x01, 0x01, 0x00, 0x20, 0x02, 0x20, 0x01, 0x00, 0x00, 0x20, 0x21, 0x00, 0x01, 0x00, 0x21, 0x02, 0x21, 0x22))
+        s.receive(message(0xF7, 0x03, 0x01, 0x21))
+        assertEquals(Setting.Choice("assign_right", "track", listOf("playback", "track")), setting(s, "assign_right"))
+        assertEquals(listOf(out(0xF8, 0x03, 0x01, 0x20)), s.change(SettingChange.Choice("assign_right", "playback")))
+
+        // Type 14 (with limitations): one more byte before the keys.
+        val l = set2(SonyFunction.Set2.ASSIGNABLE_SETTING_WITH_LIMITATION)
+        assertEquals(listOf(out(0xF0, 0x0E), out(0xF6, 0x0E)), l.takeOutbox())
+        l.receive(message(0xF1, 0x0E, 0x00, 0x01, 0x02, 0x01, 0x00, 0x02, 0x00, 0x01, 0x00, 0x00, 0x01, 0xFF, 0x01, 0x00, 0x00, 0x00))
+        l.receive(message(0xF7, 0x0E, 0x01, 0x00))
+        assertEquals(Setting.Choice("assign_custom", "noise_control", listOf("noise_control", "none")), setting(l, "assign_custom"))
+        assertEquals(listOf(out(0xF8, 0x0E, 0x01, 0xFF)), l.change(SettingChange.Choice("assign_custom", "none")))
+    }
+
+    @Test
+    fun set2VoiceGuidanceByType() {
+        // Set 2 lists its second table's functions on their own; voice guidance is one of them.
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x01, 0x45, 0x00, table = 2))
+        assertEquals(setOf(0x45), s.functions2)
+        assertEquals(listOf(out(0x46, 0x03, table = 2)), s.takeOutbox())
+        s.receive(message(0x47, 0x03, 0x00, table = 2))
+        assertEquals(true, (setting(s, "voice_guidance") as Setting.Toggle).on, "0 is on")
+        assertEquals(listOf(out(0x48, 0x03, 0x01, table = 2)), s.change(SettingChange.Toggle("voice_guidance", false)))
+
+        // The language-switch type sends the language back with the switch.
+        val l = set2()
+        l.receive(message(0x07, 0x00, 0x01, 0x44, 0x00, table = 2))
+        assertEquals(listOf(out(0x46, 0x02, table = 2)), l.takeOutbox())
+        l.receive(message(0x47, 0x02, 0x00, 0x05, table = 2))
+        assertEquals(listOf(out(0x48, 0x02, 0x01, 0x05, table = 2)), l.change(SettingChange.Toggle("voice_guidance", false)))
+
+        // The MTK types: on and off alone, though the reply of type 1 also holds the language.
+        val m = set2()
+        m.receive(message(0x07, 0x00, 0x02, 0x42, 0x00, 0x43, 0x00, table = 2))
+        assertEquals(listOf(out(0x46, 0x01, table = 2)), m.takeOutbox())
+        m.receive(message(0x47, 0x01, 0x01, 0x02, table = 2))
+        assertEquals(false, (setting(m, "voice_guidance") as Setting.Toggle).on)
+        assertEquals(listOf(out(0x48, 0x01, 0x00, table = 2)), m.change(SettingChange.Toggle("voice_guidance", true)))
+    }
+
+    @Test
+    fun connectionModeBySet() {
+        // Set 1: AUDIO type 1, its setting type, then sound quality (0) or a stable connection (1).
+        val o = set1(SonyFunction.Set1.CONNECTION_MODE)
+        assertEquals(listOf(out(0xE6, 0x01)), o.takeOutbox())
+        o.receive(message(0xE7, 0x01, 0x00, 0x01))
+        assertEquals(Setting.Choice("connection_priority", "stable", listOf("sound_quality", "stable")), setting(o, "connection_priority"))
+        assertEquals(listOf(out(0xE8, 0x01, 0x00, 0x00)), o.change(SettingChange.Choice("connection_priority", "sound_quality")))
+
+        // Set 2: type 2 where the earbuds also report LDAC, else 0; low latency only shows when they report it.
+        val s = set2(SonyFunction.Set2.CONNECTION_MODE_SOUND_QUALITY_CONNECTION_QUALITY, SonyFunction.Set2.CONNECTION_MODE_SOUND_QUALITY_SOUND_WITH_LDAC_STATUS_QUALITY_CONNECTION_QUALITY)
+        assertEquals(listOf(out(0xE6, 0x02)), s.takeOutbox())
+        s.receive(message(0xE7, 0x02, 0x02))
+        assertEquals(listOf("sound_quality", "stable", "low_latency"), (setting(s, "connection_priority") as Setting.Choice).options)
+        assertEquals(listOf(out(0xE8, 0x02, 0x01)), s.change(SettingChange.Choice("connection_priority", "stable")))
+        assertEquals("stable", (setting(s, "connection_priority") as Setting.Choice).value)
     }
 
     @Test

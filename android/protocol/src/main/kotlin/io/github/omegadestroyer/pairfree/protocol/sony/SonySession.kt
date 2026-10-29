@@ -37,6 +37,10 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     public var functions: Set<Int> = emptySet()
         private set
 
+    /** The functions set 2 earbuds listed in table 2 (voice guidance among them); set 1 has no such list. */
+    public var functions2: Set<Int> = emptySet()
+        private set
+
     public var noise: SonyNoise? = null
         private set
 
@@ -51,6 +55,12 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     private var speakToChatPreview = OFF_V2
     private var speakToChatType: Int? = null
     private var voiceGuidance: Boolean? = null
+    private var voiceGuidanceType: Int? = null
+    private var voiceGuidanceLanguage: Int? = null
+    private var autoOff: SonyAutoOff? = null
+    private var keys: SonyKeys? = null
+    private var connectionType: Int? = null
+    private var connectionMode: Int? = null
     private val outbox = mutableListOf<SonyOut>()
 
     /** The last payload of each kind the earbuds sent, for the device report: by table, command and type. */
@@ -79,6 +89,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
             ) {
                 voiceGuidance = p.u8(3) == 1
             }
+            if (tableSet == 2) receiveSet2Table2(p)
         } else {
             receiveTable1(p)
         }
@@ -98,6 +109,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                 outbox += SonyOut.table1(CONNECT_GET_DEVICE_INFO, MODEL_NAME)
                 outbox += SonyOut.table1(CONNECT_GET_DEVICE_INFO, FW_VERSION)
                 outbox += SonyOut.table1(CONNECT_GET_SUPPORT_FUNCTION, FIXED)
+                // Set 2 lists the functions of its second table on their own (voice guidance among them).
+                if (tableSet == 2) outbox += SonyOut.table2(S2T2.CONNECT_GET_SUPPORT_FUNCTION, FIXED)
             }
             CONNECT_RET_DEVICE_INFO -> if (p.size >= 3 && p.size >= 3 + p.u8(2)) {
                 val text = p.copyOfRange(3, 3 + p.u8(2)).decodeToString().trim()
@@ -161,16 +174,74 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
             }
             speakToChatType?.let { outbox += SonyOut.table1(SYSTEM_GET_PARAM, it) }
         }
+        SonyAutoOff.of(tableSet, f)?.let { a ->
+            autoOff = a
+            outbox += a.requests
+        }
+        SonyKeys.of(tableSet, f)?.let { k ->
+            keys = k
+            outbox += k.requests
+        }
+        connectionType = when {
+            tableSet == 1 -> S1_CONNECTION_MODE.takeIf { SonyFunction.Set1.CONNECTION_MODE in f }
+            SonyFunction.Set2.CONNECTION_MODE_SOUND_QUALITY_SOUND_WITH_LDAC_STATUS_QUALITY_CONNECTION_QUALITY in f -> S2_CONNECTION_MODE_LDAC
+            SonyFunction.Set2.CONNECTION_MODE_SOUND_QUALITY_CONNECTION_QUALITY in f -> S2_CONNECTION_MODE
+            else -> null
+        }
+        connectionType?.let { outbox += SonyOut.table1(AUDIO_GET_PARAM, it) }
+    }
+
+    /** Set 2's second table: the functions it lists, and voice guidance. */
+    private fun receiveSet2Table2(p: ByteArray) {
+        when (p.u8(0)) {
+            S2T2.CONNECT_RET_SUPPORT_FUNCTION -> {
+                // A function and its version each, as in table 1.
+                if (p.size < 3 || p.size < 3 + p.u8(2) * 2) return
+                functions2 = (0 until p.u8(2)).map { p.u8(3 + it * 2) }.toSet()
+                val f = SonyFunction.Set2Table2
+                voiceGuidanceType = when {
+                    f.VOICE_GUIDANCE_SETTING_ONLY_ON_OFF_SWITCH in functions2 -> S2_GUIDANCE_ON_OFF
+                    f.VOICE_GUIDANCE_SETTING_SUPPORT_LANGUAGE_SWITCH in functions2 -> S2_GUIDANCE_LANGUAGE
+                    f.VOICE_GUIDANCE_SETTING_MTK_TRANSFER_WITHOUT_DISCONNECTION_SUPPORT_LANGUAGE_SWITCH_AND_VOLUME_ADJUSTMENT in functions2 ||
+                        f.VOICE_GUIDANCE_SETTING_MTK_TRANSFER_WITHOUT_DISCONNECTION_SUPPORT_LANGUAGE_SWITCH in functions2 -> S2_GUIDANCE_MTK_LANGUAGE
+                    f.VOICE_GUIDANCE_SETTING_MTK_TRANSFER_WITHOUT_DISCONNECTION_NOT_SUPPORT_LANGUAGE_SWITCH in functions2 -> S2_GUIDANCE_MTK
+                    else -> null
+                }
+                voiceGuidanceType?.let { outbox += SonyOut.table2(S2T2.VOICE_GUIDANCE_GET_PARAM, it) }
+            }
+            // The type, on (0) or off (1), and on two types the language, which a change to type 2 sends back.
+            S2T2.VOICE_GUIDANCE_RET_PARAM, S2T2.VOICE_GUIDANCE_NTFY_PARAM -> if (p.size >= 3 && p.u8(1) == voiceGuidanceType) {
+                voiceGuidance = p.u8(2) == ON_V2
+                if (p.size >= 4) voiceGuidanceLanguage = p.u8(3)
+            }
+        }
+    }
+
+    /** Automatic power-off and the keys' functions, from any reply about them; false when [p] is about neither. */
+    private fun readControls(p: ByteArray): Boolean {
+        autoOff?.read(p)?.let {
+            autoOff = it
+            return true
+        }
+        keys?.read(p)?.let {
+            keys = it
+            return true
+        }
+        return false
     }
 
     private fun receiveSet1(p: ByteArray) {
         when (p.u8(0)) {
             S1.COMMON_RET_BATTERY_LEVEL, S1.COMMON_NTFY_BATTERY_LEVEL -> battery(p)
             NCASM_RET_PARAM, NCASM_NTFY_PARAM -> SonyNoise.of(1, p)?.let { noise = it }
-            AUDIO_RET_PARAM, AUDIO_NTFY_PARAM ->
+            AUDIO_RET_PARAM, AUDIO_NTFY_PARAM -> when {
                 // Upscaling: its setting type, then off (0) or auto (1).
-                if (p.size == 4 && p.u8(1) == S1_UPSCALING) dsee = p.u8(3) == 1
-            SYSTEM_RET_PARAM, SYSTEM_NTFY_PARAM -> if (p.size == 4) when (p.u8(1)) {
+                p.size == 4 && p.u8(1) == S1_UPSCALING -> dsee = p.u8(3) == 1
+                // Connection mode: its setting type, then sound quality (0) or a stable connection (1).
+                p.size == 4 && p.u8(1) == S1_CONNECTION_MODE && connectionType != null -> connectionMode = p.u8(3)
+            }
+            SYSTEM_RET_CAPABILITY -> readControls(p)
+            SYSTEM_RET_PARAM, SYSTEM_NTFY_PARAM -> if (!readControls(p) && p.size == 4) when (p.u8(1)) {
                 // Control by wearing: its setting type, then 1 for on. Speak-to-chat: its parameter, then 1 for on.
                 S1_CONTROL_BY_WEARING -> pauseWhenOff = p.u8(3) == 1
                 S1_SMART_TALKING -> if (p.u8(2) == S1_MODE_ON_OFF) speakToChat = p.u8(3) == 1
@@ -182,10 +253,16 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     private fun receiveSet2(p: ByteArray) {
         when (p.u8(0)) {
             S2.POWER_RET_STATUS, S2.POWER_NTFY_STATUS -> battery(p)
+            S2.POWER_RET_CAPABILITY, S2.POWER_RET_PARAM, S2.POWER_NTFY_PARAM -> readControls(p)
             NCASM_RET_PARAM, NCASM_NTFY_PARAM -> SonyNoise.of(2, p)?.let { noise = it }
-            // Upscaling: off (0) or auto (1).
-            AUDIO_RET_PARAM, AUDIO_NTFY_PARAM -> if (p.size == 3 && p.u8(1) == S2_UPSCALING) dsee = p.u8(2) == 1
-            SYSTEM_RET_PARAM, SYSTEM_NTFY_PARAM -> when {
+            AUDIO_RET_PARAM, AUDIO_NTFY_PARAM -> when {
+                // Upscaling: off (0) or auto (1).
+                p.size == 3 && p.u8(1) == S2_UPSCALING -> dsee = p.u8(2) == 1
+                // Connection mode: sound quality (0), a stable connection (1) or, on some, low latency (2).
+                p.size == 3 && p.u8(1) == connectionType -> connectionMode = p.u8(2)
+            }
+            SYSTEM_RET_CAPABILITY -> readControls(p)
+            SYSTEM_RET_PARAM, SYSTEM_NTFY_PARAM -> if (!readControls(p)) when {
                 // Set 2's on and off are 0 and 1 (Sony's app: OnOffSettingValue, ProtocolOnOff).
                 p.size == 3 && p.u8(1) == S2_CONTROL_BY_WEARING -> pauseWhenOff = p.u8(2) == ON_V2
                 p.size == 4 && p.u8(1) == speakToChatType -> {
@@ -236,9 +313,14 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     dsee?.let { Setting.Toggle("dsee", it) },
                 ),
             ),
+            group("touch", SettingTab.CONTROLS, keys?.settings.orEmpty()),
             group(
                 "connection", SettingTab.DEVICE,
                 listOfNotNull(
+                    connectionMode?.let { m ->
+                        Setting.Choice(CONNECTION_KEY, CONNECTION_OPTIONS[m], (listOf(SOUND_QUALITY, STABLE) + m).distinct().mapNotNull { CONNECTION_OPTIONS[it] })
+                    },
+                    autoOff?.setting,
                     pauseWhenOff?.let { Setting.Toggle("pause_taken_off", it) },
                     voiceGuidance?.let { Setting.Toggle("voice_guidance", it) },
                 ),
@@ -281,7 +363,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     else SonyOut.table1(AUDIO_SET_PARAM, S2_UPSCALING, if (on) 1 else 0)
                     "pause_taken_off" -> if (tableSet == 1) SonyOut.table1(SYSTEM_SET_PARAM, S1_CONTROL_BY_WEARING, S1_ON_OFF, if (on) 1 else 0)
                     else SonyOut.table1(SYSTEM_SET_PARAM, S2_CONTROL_BY_WEARING, if (on) ON_V2 else OFF_V2)
-                    "voice_guidance" -> SonyOut.table2(S1T2.VOICE_GUIDANCE_SET_PARAM, VOICE_GUIDANCE_SETTING, ON_OFF_DETAIL, if (on) 1 else 0)
+                    "voice_guidance" -> voiceGuidanceSet(on)
                     else -> return null
                 }?.also {
                     when (change.key) {
@@ -301,7 +383,21 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     else -> return null
                 } ?: return null
             }
-            is SettingChange.Choice, is SettingChange.Press -> return null
+            is SettingChange.Choice -> {
+                if (setting !is Setting.Choice || change.option !in setting.options) return null
+                when {
+                    change.key == SonyAutoOff.KEY -> autoOff?.set(change.option)?.let { (out, next) ->
+                        autoOff = next
+                        out
+                    }
+                    change.key == CONNECTION_KEY -> connectionSet(change.option)
+                    else -> keys?.set(change.key, change.option)?.let { (out, next) ->
+                        keys = next
+                        out
+                    }
+                } ?: return null
+            }
+            is SettingChange.Press -> return null
         }
         refresh()
         return listOf(out)
@@ -319,6 +415,26 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     } else {
         // Mode, then preview, as Sony's app writes them; the preview stays as the earbuds last said, else off.
         SonyOut.table1(SYSTEM_SET_PARAM, speakToChatType ?: return null, if (on) ON_V2 else OFF_V2, speakToChatPreview)
+    }
+
+    private fun voiceGuidanceSet(on: Boolean): SonyOut? = if (tableSet == 1) {
+        SonyOut.table2(S1T2.VOICE_GUIDANCE_SET_PARAM, VOICE_GUIDANCE_SETTING, ON_OFF_DETAIL, if (on) 1 else 0)
+    } else {
+        // Set 2: the type and on (0) or off (1); the language-switch type also sends the language the earbuds use.
+        val type = voiceGuidanceType
+        val value = if (on) ON_V2 else OFF_V2
+        when (type) {
+            null -> null
+            S2_GUIDANCE_LANGUAGE -> voiceGuidanceLanguage?.let { SonyOut.table2(S2T2.VOICE_GUIDANCE_SET_PARAM, type, value, it) }
+            else -> SonyOut.table2(S2T2.VOICE_GUIDANCE_SET_PARAM, type, value)
+        }
+    }
+
+    private fun connectionSet(option: String): SonyOut? {
+        val type = connectionType ?: return null
+        val mode = CONNECTION_OPTIONS.entries.firstOrNull { it.value == option }?.key ?: return null
+        connectionMode = mode
+        return if (tableSet == 1) SonyOut.table1(AUDIO_SET_PARAM, type, S1_SOUND_CONNECTION, mode) else SonyOut.table1(AUDIO_SET_PARAM, type, mode)
     }
 
     private fun eqSet(out: SonyOut?): SonyOut? {
@@ -368,6 +484,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         private val S1 = SonyCommand.Set1
         private val S1T2 = SonyCommand.Set1Table2
         private val S2 = SonyCommand.Set2
+        private val S2T2 = SonyCommand.Set2Table2
 
         // The commands both table sets number alike (data/sony/commands.json).
         private const val CONNECT_GET_PROTOCOL_INFO = SonyCommand.Set1.CONNECT_GET_PROTOCOL_INFO
@@ -386,6 +503,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         private const val AUDIO_RET_PARAM = SonyCommand.Set1.AUDIO_RET_PARAM
         private const val AUDIO_SET_PARAM = SonyCommand.Set1.AUDIO_SET_PARAM
         private const val AUDIO_NTFY_PARAM = SonyCommand.Set1.AUDIO_NTFY_PARAM
+        private const val SYSTEM_RET_CAPABILITY = SonyCommand.Set1.SYSTEM_RET_CAPABILITY
         private const val SYSTEM_GET_PARAM = SonyCommand.Set1.SYSTEM_GET_PARAM
         private const val SYSTEM_RET_PARAM = SonyCommand.Set1.SYSTEM_RET_PARAM
         private const val SYSTEM_SET_PARAM = SonyCommand.Set1.SYSTEM_SET_PARAM
@@ -407,6 +525,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         private const val S1_MODE_ON_OFF = 1
         private const val VOICE_GUIDANCE_SETTING = 1
         private const val ON_OFF_DETAIL = 1
+        private const val S1_CONNECTION_MODE = 1
+        private const val S1_SOUND_CONNECTION = 0
 
         // Set 2's types; on is 0 and off 1 there.
         private const val S2_UPSCALING = 1
@@ -415,6 +535,20 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         private const val S2_SMART_TALKING_TYPE2 = 0x0C
         private const val ON_V2 = 0
         private const val OFF_V2 = 1
+
+        // Set 2's connection mode types (AudioInquiredType), and its voice guidance types (VoiceGuidanceInquiredType).
+        private const val S2_CONNECTION_MODE = 0
+        private const val S2_CONNECTION_MODE_LDAC = 2
+        private const val S2_GUIDANCE_MTK = 0
+        private const val S2_GUIDANCE_MTK_LANGUAGE = 1
+        private const val S2_GUIDANCE_LANGUAGE = 2
+        private const val S2_GUIDANCE_ON_OFF = 3
+
+        // Sony's connection modes (ConnectionModeSettingValue, PriorMode) by the option the row shows.
+        private const val CONNECTION_KEY = "connection_priority"
+        private const val SOUND_QUALITY = 0
+        private const val STABLE = 1
+        private val CONNECTION_OPTIONS = mapOf(SOUND_QUALITY to "sound_quality", STABLE to "stable", 2 to "low_latency")
 
         /** The highest ambient sound level Gadgetbridge reads from Sony's earbuds. */
         private const val AMBIENT_MAX = 20

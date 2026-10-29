@@ -41,15 +41,17 @@ public object SoundcoreModels {
     public data class Match(val model: String, val service: String?)
 
     /**
-     * The model of a paired device and the service to open, or null when PairFree has no layout for it.
-     * The service is chosen as OpenSCQ30 chooses it: the vendor service when the device has one, else the
-     * standard serial port, unless the model fixes its own. The model is the one the vendor service names,
-     * else the one the Bluetooth name belongs to.
+     * The model of a paired device and the service to open, or null when it is not Soundcore earbuds PairFree
+     * can talk to. The service is chosen as OpenSCQ30 chooses it: the vendor service when the device has one, else
+     * the standard serial port, unless the model fixes its own. The model is the one the vendor service names,
+     * else the one the Bluetooth name belongs to. A vendor service naming a model PairFree does not know at all
+     * still matches, for a device report only ([SoundcoreLayout.orReportOnly]).
      */
     public fun identify(name: String, serviceUuids: List<String>): Match? {
         val vendor = serviceUuids.firstOrNull(::isVendorService)
-        val model = vendor?.let(::fromServiceUuid)?.takeIf { SoundcoreLayout.of(it) != null } ?: fromName(name)
-        val layout = SoundcoreLayout.of(model) ?: return null
+        val named = vendor?.let(::fromServiceUuid)
+        val model = named?.takeIf { SoundcoreLayout.of(it) != null } ?: fromName(name) ?: named ?: return null
+        val layout = SoundcoreLayout.of(model) ?: return vendor?.let { Match(model, it) }
         return Match(layout.model, layout.serviceUuid ?: vendor)
     }
 }

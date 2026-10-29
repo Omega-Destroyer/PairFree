@@ -58,7 +58,11 @@ Beats on Apple's chips).
 - Every Soundcore model comes from OpenSCQ30 (github.com/Oppzippy/OpenSCQ30, Kyle Scheuing,
   GPL-3.0-or-later). The Sleep A20 (A6611), which its library does not support, comes from its device
   faker's captured state (`tools/soundcore-device-faker/devices/a6611.toml`): `module` null, read-only
-  (battery and firmware) until a report confirms more, and kept by the importer. `python tools/import_openscq30.py PATH` refreshes the model list and features
+  (battery and firmware) until a report confirms more, and kept by the importer. Earbuds and headphones only the
+  Soundcore app's strings name (6.4.0, which is ijiami-packed: only its resources are readable) are `report_only`:
+  PairFree finds them, asks for their state and offers a device report (serial-like text masked), and shows no
+  settings until their layout is known; a vendor service naming an unknown number is treated the same. The
+  app's other names for a model (its European names and the like) are among `names`. `python tools/import_openscq30.py PATH` refreshes the model list and features
   in `data/soundcore/devices.json` from a local checkout and records the commit; everything else
   in an entry (state, battery, checksum, service_uuid, commands, min_firmware, kind, eq, buttons,
   reports, ldac_excludes, extra_features, notes) is kept. The state layouts, EQs and touch controls

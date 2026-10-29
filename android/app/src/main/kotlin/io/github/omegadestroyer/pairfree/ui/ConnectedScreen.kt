@@ -200,6 +200,14 @@ private fun HomeScreen(
             StudioButton(stringResource(R.string.switch_earbuds), actions::switchEarbuds)
         }
 
+        // Soundcore earbuds PairFree knows by name and number only: ask for a report rather than show a guess.
+        if (model?.reportOnly == true || device.brand == Brand.SOUNDCORE && model == null) {
+            Panel {
+                Text(stringResource(R.string.report_only_title), style = Studio.type.heading)
+                Text(stringResource(R.string.report_only_note), style = Studio.type.small, color = Studio.colors.secondaryText)
+            }
+        }
+
         // Battery for left, case and right: drawing, then a percentage and a bar, or one bar per step
         // for earbuds that report steps. Only what the earbuds report. Headphones and speakers
         // report one battery, shown as the whole product.
@@ -217,8 +225,9 @@ private fun HomeScreen(
                     .takeIf { state.supports(Command.BATTERY_LEFT) },
             )
         }
+        val reportOnly = model?.reportOnly == true || device.brand == Brand.SOUNDCORE && model == null
         if (batteries.isEmpty()) {
-            Label(stringResource(R.string.reading))
+            if (!reportOnly) Label(stringResource(R.string.reading))
         } else {
             Panel {
                 Label(stringResource(R.string.battery))

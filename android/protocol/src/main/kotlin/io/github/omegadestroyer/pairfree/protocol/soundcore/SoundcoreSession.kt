@@ -15,7 +15,7 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * from [touch].
  */
 public class SoundcoreSession(public val model: String) {
-    public val layout: SoundcoreLayout? = SoundcoreLayout.of(model)
+    public val layout: SoundcoreLayout? = SoundcoreLayout.orReportOnly(model)
     private val checksum: Boolean = layout?.checksum ?: true
 
     /** What the screens show. */

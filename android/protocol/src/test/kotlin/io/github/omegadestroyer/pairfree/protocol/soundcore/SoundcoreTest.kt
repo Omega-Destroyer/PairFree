@@ -670,6 +670,30 @@ class SoundcoreModelsTest {
     }
 
     @Test
+    fun reportOnlyModels() {
+        // Models only the Soundcore app's strings name: found by their service or name, with nothing to read but a report.
+        val liberty4 = "0cf12d31-fac3-4553-bd80-d6832e7b3953"
+        assertEquals(SoundcoreModels.Match("A3953", liberty4), SoundcoreModels.identify("soundcore Liberty 4", listOf(liberty4)))
+        assertEquals(SoundcoreModels.Match("A3953", null), SoundcoreModels.identify("Soundcore Liberty 4", emptyList()))
+        assertTrue(SoundcoreModels.model("A3953")!!.reportOnly)
+        assertTrue(SoundcoreLayout.of("A3953")!!.fields.isEmpty())
+        assertTrue(!SoundcoreModels.model("A3936")!!.reportOnly)
+        // A Soundcore vendor service naming a number PairFree does not know at all: report only too.
+        val unknown = "0cf12d31-fac3-4553-bd80-d6832e7b9999"
+        assertEquals(SoundcoreModels.Match("A9999", unknown), SoundcoreModels.identify("Some new earbuds", listOf(unknown)))
+        assertTrue(SoundcoreLayout.orReportOnly("A9999").fields.isEmpty())
+        // The session keeps the reply for the report, with anything that looks like a serial number masked.
+        val session = SoundcoreSession("A9999")
+        val serial = "9999A1B2C3D4E5F6".encodeToByteArray()
+        val body = byteArrayOf(1, 1, 5, 5) + "01.23".encodeToByteArray() + serial + byteArrayOf(0x10, 0x20)
+        session.receive(SoundcorePacket(SoundcoreCommand.STATE, body))
+        val hex = session.lastState!!.reportHex().split(" ")
+        assertEquals(body.size, hex.size)
+        assertEquals(List(serial.size) { "XX" }, hex.subList(9, 9 + serial.size))
+        assertEquals(listOf("01", "01", "05", "05"), hex.subList(0, 4))
+    }
+
+    @Test
     fun everyNameNamesOneModel() {
         val names = SoundcoreModels.ALL.flatMap { m -> m.names.map { it.lowercase() } }
         assertEquals(names.size, names.toSet().size)
@@ -679,6 +703,7 @@ class SoundcoreModelsTest {
     @Test
     fun oneBatteryMeansHeadphonesOrASpeaker() {
         for (m in SoundcoreModels.ALL) {
+            if (m.reportOnly) continue // no layout yet: their form comes from the Soundcore app's product names
             val layout = SoundcoreLayout.of(m.code)!!
             val twoEarbuds = layout.has("dual_battery") || layout.has("dual_battery_level")
             assertEquals(twoEarbuds, m.form == Form.EARBUDS, m.code)

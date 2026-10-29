@@ -91,6 +91,8 @@ def rows(devices, checked=frozenset()):
         if reports:
             code = f'<a href="{escape(TO_ROOT + reports[0])}">{code}</a>'
             status = "Tested"
+        elif m.get("report_only"):
+            status = "Report only"
         elif m["model"] in checked:
             status = "Checked"
         else:
@@ -117,8 +119,9 @@ def table():
         f"<b>Tested</b> ({tested}): tried on the earbuds with PairFree. "
         f"<b>Checked</b> ({len(checked - {m['model'] for m in devices if m.get('reports')})}): PairFree reads "
         "every reply from the model that OpenSCQ30's tests hold, most of them from its users' bug reports. "
-        "<b>Not tested</b>: read from OpenSCQ30's code alone. A device report from one of these helps "
-        f'(<a href="{HELP}">Help add your model</a>).',
+        "<b>Not tested</b>: read from OpenSCQ30's code alone. <b>Report only</b>: the Soundcore app lists it, but "
+        "nothing gives its layout yet; PairFree finds it and offers a device report, and shows no settings. A device "
+        f'report from any of these helps (<a href="{HELP}">Help add your model</a>).',
         "",
         f"{YES} the model has it. {NO} it does not, as far as OpenSCQ30 knows. PairFree shows battery, noise "
         "control, two devices, LDAC, game mode, touch controls and touch tone on every model that has them, "

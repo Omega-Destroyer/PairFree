@@ -62,7 +62,7 @@ class SoundcoreTable(unittest.TestCase):
         self.assertGreaterEqual(len(self.devices), 39)
         for code, m in self.devices.items():
             self.assertTrue(m["names"], code)
-            self.assertTrue(m["openscq30"]["features"], code)
+            self.assertTrue(m["openscq30"]["features"] or m.get("report_only"), code)
             self.assertRegex(code, r"^[AD]\d{4}C?$")
 
 

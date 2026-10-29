@@ -121,7 +121,9 @@ OpenSCQ30 fixes it (the A3116 always uses its vendor service, the A3930 the seri
 `data/soundcore/devices.json` holds each model's reply to the state request (`01 01`) as
 `[field, bytes]` in order, read from the model's parser in OpenSCQ30. `skip` marks bytes
 PairFree does not use; `optional:` marks fields only some firmware sends. Each model also has
-the scale of its battery levels: percent = (value - offset) * 100 / max, so most report fifths
+the scale of its battery levels: percent = (value + offset) * 100 / max, as OpenSCQ30 reads its
+`level_offset` ("if 1, 0 will represent 1": an offset of 1 makes 0 the first of ten steps and 9 the
+last; PairFree 0.2.0 subtracted it, and an AeroClip's report showed full earbuds as 8 of 10), so most report fifths
 (max 5), some tenths or percent, and a level outside 0 to max (`FF`) means that earbud is away.
 PairFree shows a scale of steps as bars, one per step, as the Soundcore app does (3 of 5 bars, not
 60%), and a scale of 100 as a percentage; the A40's earbuds report fifths and its case percent.

@@ -6,12 +6,13 @@ import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 public data class SoundcoreField(val name: String, val size: Int, val optional: Boolean = false)
 
 /**
- * A battery level's scale: the model reports [max] steps, from [offset] (empty) to offset + max
- * (full), so percent = (value - offset) * 100 / max. A max of 100 is a percentage.
+ * A battery level's scale, as OpenSCQ30 gives it: out of [max] steps, where the model reports each level
+ * as level - [offset] (OpenSCQ30's level_offset: "if 1, 0 will represent 1"), so it sends 0 to max - offset
+ * and percent = (value + offset) * 100 / max. A max of 100 is a percentage.
  */
 public data class BatteryScale(val max: Int, val offset: Int = 0) {
-    /** The level in steps, 0 to [max], or null when [value] is outside the scale (an earbud away). */
-    public fun level(value: Int): Int? = (value - offset).takeIf { it in 0..max }
+    /** The level in steps, up to [max], or null when [value] is outside the scale (an earbud away). */
+    public fun level(value: Int): Int? = value.takeIf { it in 0..max - offset }?.plus(offset)
 
     public fun percent(value: Int): Int? = level(value)?.let { it * 100 / max }
 

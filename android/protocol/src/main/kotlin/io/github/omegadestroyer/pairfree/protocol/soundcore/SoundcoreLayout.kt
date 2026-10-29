@@ -38,8 +38,13 @@ public class SoundcoreLayout(
     public val gamingModeCommand: Int = SoundcoreCommand.GAMING_MODE,
     /** Fields the earbuds send but only use from a firmware version on, such as `01.60`; both earbuds must have it. */
     public val minFirmware: Map<String, String> = emptyMap(),
-    /** What OpenSCQ30 offers on the model (its module names, such as `touch_tone`), and what PairFree confirmed on it. */
+    /**
+     * What OpenSCQ30 offers on the model (its module names, such as `touch_tone`), or for a model OpenSCQ30 lacks what
+     * the Soundcore app's code shows, and what PairFree confirmed on it.
+     */
     public val features: Set<String> = emptySet(),
+    /** Other ids the model's vendor service may end in, such as `392B` for a variant of the A3926 (devices.json vendor_ids). */
+    public val vendorIds: Set<String> = emptySet(),
 ) {
     /** The bytes every reply has; optional fields come after them. */
     public val minSize: Int = fields.filterNot { it.optional }.sumOf { it.size }

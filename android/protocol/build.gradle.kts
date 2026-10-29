@@ -290,10 +290,16 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
             @Suppress("UNCHECKED_CAST")
             val minFirmware = (d["min_firmware"] as Map<String, Any?>? ?: emptyMap())
                 .entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${str(k)} to ${str(v)}" }
+            // What OpenSCQ30 offers, what the Soundcore app's own code shows on a model OpenSCQ30 lacks, and what PairFree
+            // confirmed, less what the Soundcore app shows the model does not have.
             @Suppress("UNCHECKED_CAST")
-            val features = (((d["openscq30"] as Map<String, Any?>?)?.get("features") as List<*>? ?: emptyList<Any>()) +
-                (d["extra_features"] as List<*>? ?: emptyList<Any>())).distinct().joinToString(", ", "setOf(", ")") { str(it) }
-            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features),")
+            val app = d["soundcore_app"] as Map<String, Any?>? ?: emptyMap()
+            @Suppress("UNCHECKED_CAST")
+            val features = ((((d["openscq30"] as Map<String, Any?>?)?.get("features") as List<*>? ?: emptyList<Any>()) +
+                (app["features"] as List<*>? ?: emptyList<Any>()) + (d["extra_features"] as List<*>? ?: emptyList<Any>())) -
+                (app["lacks"] as List<*>? ?: emptyList<Any>()).toSet()).distinct().joinToString(", ", "setOf(", ")") { str(it) }
+            val vendorIds = (d["vendor_ids"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
+            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds),")
         }
         out.appendLine(")")
 

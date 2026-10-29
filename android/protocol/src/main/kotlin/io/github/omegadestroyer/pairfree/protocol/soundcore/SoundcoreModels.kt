@@ -12,15 +12,17 @@ public object SoundcoreModels {
 
     /**
      * The model the earbuds' vendor service UUID names: `A3936` from
-     * `0cf12d31-fac3-4553-bd80-d6832e7b3936`. Null for any other UUID. Both models seen so far
-     * (A3116, A3936) end their UUID in `b` and the model number; other forms are not known yet.
+     * `0cf12d31-fac3-4553-bd80-d6832e7b3936`. Null for any other UUID. The UUID ends in `b` and four hex digits:
+     * the model number on the A3116 and A3936, and in the Soundcore app (2.9.9) also ids such as `392B` for a variant
+     * of the A3926, which a model lists in [SoundcoreLayout.vendorIds]. An id no model lists names itself (`A392B`).
      */
     public fun fromServiceUuid(uuid: String): String? {
         val u = uuid.lowercase()
         if (u.length != 36 || !u.startsWith(SoundcoreWire.VENDOR_SERVICE_PREFIX)) return null
         val suffix = u.substring(SoundcoreWire.VENDOR_SERVICE_PREFIX.length)
-        if (suffix.length != 5 || suffix[0] != 'b' || !suffix.drop(1).all { it in '0'..'9' }) return null
-        return "A" + suffix.drop(1)
+        if (suffix.length != 5 || suffix[0] != 'b' || !suffix.drop(1).all { it in '0'..'9' || it in 'a'..'f' }) return null
+        val id = suffix.drop(1).uppercase()
+        return SoundcoreLayout.ALL.firstOrNull { id in it.vendorIds }?.model ?: "A$id"
     }
 
     /**

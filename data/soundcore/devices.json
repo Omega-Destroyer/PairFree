@@ -120,10 +120,48 @@
         "source": "Soundcore app 6.4.0, its label_ strings",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
-      "kind": "headphones"
+      "state": [
+        ["single_battery", 2],
+        ["equalizer", 10],
+        ["gender", 1],
+        ["age_range", 1],
+        ["basic_hear_id", 21],
+        ["sound_modes", 4],
+        ["firmware", 5],
+        ["serial", 16],
+        ["optional:skip", 7]
+      ],
+      "notes": "Not in OpenSCQ30. The Soundcore app (2.9.9) reads it with the same code as the Life Tune (A3029) and shows the same equalizer and auto power-off; its noise cancelling has no sub-modes there. Not tried on the headphones.",
+      "kind": "headphones",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "eq": {
+        "write": "plain",
+        "channels": 1,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951",
+        "same_as": "A3029",
+        "features": [
+          "sound_modes",
+          "equalizer",
+          "auto_power_off",
+          "single_battery",
+          "serial_number_and_firmware_version"
+        ]
+      }
     },
     {
       "model": "A3027",
@@ -170,6 +208,10 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -216,6 +258,10 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -263,6 +309,10 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -309,6 +359,10 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -395,6 +449,10 @@
         ],
         "digits": 1,
         "presets": "common"
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -593,7 +651,7 @@
       },
       "report_only": true,
       "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
+      "notes": "The Soundcore app lists it, but neither OpenSCQ30 nor the app's last readable version (2.9.9, which has no code for it) gives its state layout, so PairFree finds it, asks for its state and offers a device report with the reply.",
       "kind": "headphones"
     },
     {
@@ -746,7 +804,7 @@
       },
       "report_only": true,
       "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
+      "notes": "The Soundcore app (2.9.9) asks the Life NC for each setting with a message of its own, an older protocol than the one state reply PairFree reads, so PairFree offers a device report only.",
       "kind": "headphones"
     },
     {
@@ -1145,6 +1203,10 @@
             }
           }
         ]
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3909"
       }
     },
     {
@@ -1158,9 +1220,67 @@
         "source": "Soundcore app 6.4.0, its label_ strings",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["eq_preset_id", 2],
+        ["gender", 1],
+        ["age_range", 1],
+        ["hear_id", 21],
+        ["buttons", 8],
+        ["skip", 1],
+        ["optional:skip", 1],
+        ["optional:single_buttons", 4]
+      ],
+      "notes": "Not in OpenSCQ30. The Soundcore app (2.9.9) reads it with the A3909's code up to the HearID, then with its own: a switch and an action for each touch (each turned off by its own switch, 04 83, and set with 04 81 as on the A3909), a switch the app calls transparency, and on newer firmware wear detection and single taps. The app offers every action but noise control, and opens the standard serial port. PairFree leaves the transparency switch and wear detection out. Not tried on the earbuds.",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "service_uuid": "00001101-0000-1000-8000-00805f9b34fb",
+      "eq": {
+        "write": "a3909",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -12,
+          12
+        ],
+        "digits": 0,
+        "state": "preset_only",
+        "presets": "a3909"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long"],
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "single", "off": "each_side", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "single", "action": "single", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          },
+          {
+            "fields": ["single_buttons"],
+            "order": ["left_single", "right_single"],
+            "presses": {
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          }
+        ]
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3909",
+        "features": [
+          "a3909_equalizer",
+          "button_configuration",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
     },
     {
       "model": "A3913",
@@ -1172,9 +1292,58 @@
         "source": "Soundcore app 6.4.0, its label_ strings",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["eq_preset_id", 2],
+        ["gender", 1],
+        ["age_range", 1],
+        ["hear_id", 21],
+        ["buttons", 4]
+      ],
+      "notes": "Not in OpenSCQ30. The Soundcore app (2.9.9) reads it with the same code as the Liberty 2 Pro (A3909), offers the same touch actions and opens the standard serial port for it. Not tried on the earbuds.",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "eq": {
+        "write": "a3909",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -12,
+          12
+        ],
+        "digits": 0,
+        "state": "preset_only",
+        "presets": "a3909"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long"],
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "single", "off": "never", "actions": "a3909"},
+              "long": {"id": 1, "enabled": "none", "action": "single", "off": "never", "actions": "a3909"}
+            }
+          }
+        ]
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3909",
+        "same_as": "A3909",
+        "features": [
+          "a3909_equalizer",
+          "button_configuration",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      },
+      "service_uuid": "00001101-0000-1000-8000-00805f9b34fb"
     },
     {
       "model": "A3926",
@@ -1196,7 +1365,7 @@
       },
       "battery": {
         "earbuds": {
-          "max": 5,
+          "max": 4,
           "offset": 0
         }
       },
@@ -1237,15 +1406,26 @@
             "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
             "set_all": true,
             "presses": {
-              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
-              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
-              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "without_sound_modes"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "without_sound_modes"}
             }
           }
         ],
         "reset": true,
         "checked": "openscq30_tests"
-      }
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951",
+        "lacks": [
+          "sound_modes"
+        ],
+        "note": "The app reads its battery levels from 0 to 4, where OpenSCQ30 reads them out of 5, and offers no noise control and no noise-mode touch action on it. The variant whose vendor service ends in 392B (A3926Z11 in the app) is read with the same code."
+      },
+      "vendor_ids": [
+        "392B"
+      ]
     },
     {
       "model": "A3927",
@@ -1258,9 +1438,71 @@
         "source": "Soundcore app 6.4.0, its label_ strings",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["equalizer", 18],
+        ["gender", 1],
+        ["age_range", 1],
+        ["basic_hear_id", 21],
+        ["buttons", 12]
+      ],
+      "notes": "Not in OpenSCQ30. The Soundcore app (2.9.9) reads it, shows it and sets its touch controls with the same code as the A3926's, so it has the A3926's layout, equalizer and touch controls. Not tried on the earbuds.",
+      "battery": {
+        "earbuds": {
+          "max": 4,
+          "offset": 0
+        }
+      },
+      "eq": {
+        "write": "hear_id",
+        "channels": 2,
+        "bands": 8,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common",
+        "hear_id": {
+          "field": "basic_hear_id",
+          "channels": 2,
+          "bands": 8,
+          "parts": [
+            "enabled",
+            "curve",
+            "time"
+          ]
+        }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "without_sound_modes"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "without_sound_modes"}
+            }
+          }
+        ],
+        "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951",
+        "same_as": "A3926",
+        "features": [
+          "equalizer_with_basic_hear_id_tws",
+          "button_configuration",
+          "reset_button_configuration",
+          "tws_status",
+          "dual_battery",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
     },
     {
       "model": "A3930",
@@ -1335,6 +1577,10 @@
           }
         ],
         "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -1397,6 +1643,10 @@
           }
         ],
         "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -1477,6 +1727,10 @@
           }
         ],
         "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3933"
       }
     },
     {
@@ -1539,6 +1793,10 @@
           }
         ],
         "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -1748,6 +2006,10 @@
           }
         ],
         "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3933"
       }
     },
     {
@@ -1892,6 +2154,10 @@
           }
         ],
         "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3933"
       }
     },
     {
@@ -2216,6 +2482,10 @@
           }
         ],
         "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3951"
       }
     },
     {
@@ -2313,6 +2583,11 @@
           }
         ],
         "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3952",
+        "note": "The app finds the noise-mode bytes after the touch controls by the length in byte 103. When it is 18, as in OpenSCQ30's test reply, the app's offsets are the ones in state."
       }
     },
     {
@@ -2888,9 +3163,83 @@
         "source": "Soundcore app 6.4.0, its label_ strings",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["buttons", 12],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 4],
+        ["skip", 2],
+        ["optional:touch_tone", 1],
+        ["optional:wearing_detection", 1],
+        ["optional:gaming_mode", 1],
+        ["optional:case_battery", 1],
+        ["optional:skip", 1],
+        ["optional:color", 1],
+        ["optional:wind_noise_detection", 1],
+        ["optional:skip", 3]
+      ],
+      "notes": "Not in OpenSCQ30. The Soundcore app (2.9.9) reads it with the same code as the Life Note 3 (A3933) and shows it on the same screens, so it has the A3933's layout, equalizer and touch controls; fields only some firmware sends show once the earbuds send them. Not tried on the earbuds.",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3933",
+        "same_as": "A3933",
+        "features": [
+          "sound_modes",
+          "equalizer_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "touch_tone",
+          "gaming_mode",
+          "wearing_detection",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
     },
     {
       "model": "A3983",
@@ -2903,9 +3252,83 @@
         "source": "Soundcore app 6.4.0, its label_ strings",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["buttons", 12],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 4],
+        ["skip", 2],
+        ["optional:touch_tone", 1],
+        ["optional:wearing_detection", 1],
+        ["optional:gaming_mode", 1],
+        ["optional:case_battery", 1],
+        ["optional:skip", 1],
+        ["optional:color", 1],
+        ["optional:wind_noise_detection", 1],
+        ["optional:skip", 3]
+      ],
+      "notes": "Not in OpenSCQ30. The Soundcore app (2.9.9) reads it with the same code as the Life Note 3 (A3933) and shows it on the same screens, so it has the A3933's layout, equalizer and touch controls; fields only some firmware sends show once the earbuds send them. Not tried on the earbuds.",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3933",
+        "same_as": "A3933",
+        "features": [
+          "sound_modes",
+          "equalizer_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "touch_tone",
+          "gaming_mode",
+          "wearing_detection",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
     },
     {
       "model": "A3992",
@@ -2918,9 +3341,83 @@
         "source": "Soundcore app 6.4.0, its label_ strings",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["buttons", 12],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 4],
+        ["skip", 2],
+        ["optional:touch_tone", 1],
+        ["optional:wearing_detection", 1],
+        ["optional:gaming_mode", 1],
+        ["optional:case_battery", 1],
+        ["optional:skip", 1],
+        ["optional:color", 1],
+        ["optional:wind_noise_detection", 1],
+        ["optional:skip", 3]
+      ],
+      "notes": "Not in OpenSCQ30. The Soundcore app (2.9.9) reads it with the same code as the Life Note 3 (A3933) and shows it on the same screens, so it has the A3933's layout, equalizer and touch controls; fields only some firmware sends show once the earbuds send them. Not tried on the earbuds.",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3933",
+        "same_as": "A3933",
+        "features": [
+          "sound_modes",
+          "equalizer_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "touch_tone",
+          "gaming_mode",
+          "wearing_detection",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
     },
     {
       "model": "A3993",
@@ -2933,9 +3430,83 @@
         "source": "Soundcore app 6.4.0, its label_ strings",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["age_range", 1],
+        ["custom_hear_id", 48],
+        ["buttons", 12],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 4],
+        ["skip", 2],
+        ["optional:touch_tone", 1],
+        ["optional:wearing_detection", 1],
+        ["optional:gaming_mode", 1],
+        ["optional:case_battery", 1],
+        ["optional:skip", 1],
+        ["optional:color", 1],
+        ["optional:wind_noise_detection", 1],
+        ["optional:skip", 3]
+      ],
+      "notes": "Not in OpenSCQ30. The Soundcore app (2.9.9) reads it with the same code as the Life Note 3 (A3933) and shows it on the same screens, so it has the A3933's layout, equalizer and touch controls; fields only some firmware sends show once the earbuds send them. Not tried on the earbuds.",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "common"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "left_long", "right_double", "right_long", "left_single", "right_single"],
+            "set_all": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "long": {"id": 1, "enabled": "single", "action": "tws", "off": "never", "actions": "common"},
+              "single": {"id": 2, "enabled": "single", "action": "single", "off": "both_sides", "actions": "common"}
+            }
+          }
+        ],
+        "reset": true
+      },
+      "soundcore_app": {
+        "version": "2.9.9",
+        "parser": "A3933",
+        "same_as": "A3933",
+        "features": [
+          "sound_modes",
+          "equalizer_tws",
+          "button_configuration",
+          "ambient_sound_mode_cycle",
+          "reset_button_configuration",
+          "touch_tone",
+          "gaming_mode",
+          "wearing_detection",
+          "tws_status",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
+      }
     },
     {
       "model": "A3994",

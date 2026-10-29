@@ -286,20 +286,23 @@ public class NothingSession(private val hint: NothingModel? = null) {
     /**
      * The touch controls, one group per side (or the whole product, or the CMF Buds Pro 2's case dial), with the
      * actions Nothing X offers for each gesture, and for what a gesture does during a call where Nothing X lets
-     * the user set that too (button 9). Only once the earbuds reported their key table, and only for gestures the
-     * user can set.
+     * the user set that too (button 9). On headphones also the control button (10), the roller (1) and the CMF
+     * Headphone Pro's slider (5), whose rows name the button. Only once the earbuds reported their key table, and
+     * only for gestures the user can set.
      */
     private fun touchGroups(c: NothingConfig?): List<SettingGroup> {
         if (!keysRead || c == null) return emptyList()
         val sides = mutableMapOf<String, MutableList<Setting>>()
+        // The CMF Buds Pro 2's case has a dial, which turns; the Ear (3)'s a button.
+        val caseSide = if (c.gestures.any { it.device == PART_CASE && it.gesture == GESTURE_TURN }) "dial" else "case"
         for (g in c.gestures) {
-            if (!g.custom || g.button != BUTTON_TOUCH && g.button != BUTTON_CALL) continue
-            val name = (GESTURES[g.gesture] ?: continue) + if (g.button == BUTTON_CALL) CALL_SUFFIX else ""
+            if (!g.custom) continue
+            val name = (GESTURES[g.gesture] ?: continue) + (buttonSuffix(g.button) ?: continue)
             val options = g.operations.mapNotNull { ACTIONS[it] }.distinct()
             if (options.size < 2) continue
             val targets = when (g.device) {
                 DEVICE_EARBUD -> listOf(PART_LEFT to "left", PART_RIGHT to "right")
-                PART_CASE -> listOf(PART_CASE to "case")
+                PART_CASE -> listOf(PART_CASE to caseSide)
                 PART_WHOLE -> listOf(PART_WHOLE to "whole")
                 else -> emptyList()
             }
@@ -434,12 +437,13 @@ public class NothingSession(private val hint: NothingModel? = null) {
         val c = config ?: return null
         val side = key.substringAfterLast('_')
         val name = key.removePrefix("touch_").removeSuffix("_$side")
-        val button = if (name.endsWith(CALL_SUFFIX)) BUTTON_CALL else BUTTON_TOUCH
-        val gesture = GESTURES.entries.firstOrNull { it.value == name.removeSuffix(CALL_SUFFIX) }?.key ?: return null
+        val button = listOf(BUTTON_CALL, BUTTON_CONTROL, BUTTON_SLIDER, BUTTON_TOUCH)
+            .firstOrNull { b -> buttonSuffix(b)?.let { it.isNotEmpty() && name.endsWith(it) } == true } ?: BUTTON_TOUCH
+        val gesture = GESTURES.entries.firstOrNull { it.value == name.removeSuffix(buttonSuffix(button).orEmpty()) }?.key ?: return null
         val device = when (side) {
             "left" -> PART_LEFT
             "right" -> PART_RIGHT
-            "case" -> PART_CASE
+            "case", "dial" -> PART_CASE
             "whole" -> PART_WHOLE
             else -> return null
         }
@@ -451,6 +455,19 @@ public class NothingSession(private val hint: NothingModel? = null) {
         keys = keys + (Triple(device, g.button, gesture) to action)
         readBacks += frame(NothingCommand.GET_KEY_CONFIGURATION)
         return frame(NothingCommand.SET_KEY_CONFIGURATION, 1, device, g.button, gesture, action)
+    }
+
+    /**
+     * How a row's key names the button behind a gesture: nothing for the touch surface, `_call` for what it does during
+     * a call, `_button` for the headphones' control button, `_slider` for the CMF Headphone Pro's slider, and on
+     * headphones `_roller` for the roller (Nothing X's scroll wheel, button 1 there). Null for buttons PairFree leaves out.
+     */
+    private fun buttonSuffix(button: Int): String? = when (button) {
+        BUTTON_TOUCH -> if (model?.form == Form.HEADPHONES) ROLLER_SUFFIX else ""
+        BUTTON_CALL -> CALL_SUFFIX
+        BUTTON_CONTROL -> "_button"
+        BUTTON_SLIDER -> "_slider"
+        else -> null
     }
 
     private fun key(command: Int): String = command.toString(16).uppercase().padStart(4, '0')
@@ -511,8 +528,14 @@ public class NothingSession(private val hint: NothingModel? = null) {
         private const val BUTTON_CALL = 9
         private const val CALL_SUFFIX = "_call"
 
+        /** The headphones' control button and the CMF Headphone Pro's slider (Nothing X's control groups). */
+        private const val BUTTON_CONTROL = 10
+        private const val BUTTON_SLIDER = 5
+        private const val ROLLER_SUFFIX = "_roller"
+
         /** 10 is turning the CMF Buds Pro 2's case dial. */
-        private val GESTURES = mapOf(1 to "single", 2 to "double", 3 to "triple", 7 to "hold", 9 to "double_hold", 10 to "turn")
+        private const val GESTURE_TURN = 10
+        private val GESTURES = mapOf(1 to "single", 2 to "double", 3 to "triple", 7 to "hold", 9 to "double_hold", GESTURE_TURN to "turn")
 
         /**
          * The actions PairFree offers on a gesture, by Nothing X's operation number (its control_* and case_* labels).

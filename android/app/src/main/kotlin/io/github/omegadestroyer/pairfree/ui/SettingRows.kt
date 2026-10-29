@@ -111,7 +111,7 @@ private fun levelOrigin(setting: Setting.Level): Int =
 
 private const val SEND_AFTER_MS = 300L
 
-private val TOUCH_SIDES = setOf("left", "right", "whole", "case")
+private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 @Composable
 private fun groupTitle(key: String): String = stringResource(
@@ -127,6 +127,7 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_left" -> R.string.setting_group_touch_left
         "touch_right" -> R.string.setting_group_touch_right
         "touch_case" -> R.string.setting_group_touch_case
+        "touch_dial" -> R.string.setting_group_touch_dial
         else -> R.string.setting_group_other
     },
 )
@@ -134,7 +135,7 @@ private fun groupTitle(key: String): String = stringResource(
 @Composable
 private fun groupNote(key: String): String? = when (key) {
     "find" -> stringResource(R.string.setting_find_note)
-    "touch_case" -> stringResource(R.string.setting_group_touch_case_note)
+    "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     else -> null
 }
 
@@ -221,15 +222,16 @@ private fun settingTitle(key: String): String = when (key) {
 }
 
 /**
- * A gesture row of the form touch_<gesture>[_call]_<side> (Nothing's: left, right, whole, or case for the
- * CMF Buds Pro 2's case dial, which is pressed and turned rather than tapped), by its gesture.
+ * A gesture row of the form touch_<gesture>[_call]_<side> (Nothing's: left, right, whole, dial for the CMF Buds
+ * Pro 2's case dial, which is pressed and turned rather than tapped, or case for the Ear (3)'s case button), by its
+ * gesture; on headphones the gesture also names the button, roller or slider.
  */
 @Composable
 private fun touchTitle(key: String): String? {
     val side = key.substringAfterLast('_')
     if (!key.startsWith("touch_") || side !in TOUCH_SIDES) return null
     val gesture = key.removePrefix("touch_").removeSuffix("_$side")
-    if (side == "case") return when (gesture) {
+    if (side == "case" || side == "dial") return when (gesture) {
         "single" -> stringResource(R.string.setting_dial_press)
         "double" -> stringResource(R.string.setting_dial_double)
         "triple" -> stringResource(R.string.setting_dial_triple)
@@ -248,6 +250,12 @@ private fun touchTitle(key: String): String? {
         "double_call" -> stringResource(R.string.setting_touch_double_call)
         "triple_call" -> stringResource(R.string.setting_touch_triple_call)
         "hold_call" -> stringResource(R.string.setting_touch_hold_call)
+        // The headphones' control button, roller and slider (Nothing's).
+        "single_button" -> stringResource(R.string.setting_button_press)
+        "hold_button" -> stringResource(R.string.setting_button_hold)
+        "single_roller" -> stringResource(R.string.setting_roller_press)
+        "hold_roller" -> stringResource(R.string.setting_roller_hold)
+        "single_slider" -> stringResource(R.string.setting_slider)
         else -> null
     }
 }

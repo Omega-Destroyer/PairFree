@@ -15,13 +15,14 @@ What it shows, where the model has it:
   The Ear (stick) has a noise cancelling switch from firmware x.x.2 on.
 - **Sound:** the equalizer presets (balanced, more bass, more treble, voice), bass boost and its
   level, spatial audio, and head tracking on the headphones.
-- **Controls:** what each tap, double tap, triple tap and hold does, for each earbud.
+- **Controls:** what each tap, double tap, triple tap and hold does, for each earbud; on the CMF Buds
+  Pro 2 the case dial and on the Ear (3) the case button; on the headphones the control button, the
+  roller's press and hold, and the CMF Headphone Pro's slider.
 - **Device:** low lag mode, in-ear detection, the codec the earbuds offer (LDAC or LHDC on the
   models that have them), and making each earbud beep to find it.
 
 Not yet: Nothing's custom and advanced equalizers and the Dirac presets on CMF models, dual
-connection, the ear tip fit test, personalised noise cancelling and sound, the headphones'
-extra buttons and the CMF Buds Pro 2's case dial.
+connection, the ear tip fit test, and personalised noise cancelling and sound.
 
 Nothing and CMF support is written from Nothing's own app (Nothing X 3.4.15), read for its
 messages and its per-model feature table, and checked against

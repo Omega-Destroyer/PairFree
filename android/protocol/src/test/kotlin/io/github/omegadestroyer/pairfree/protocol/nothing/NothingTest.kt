@@ -293,26 +293,54 @@ class NothingTest {
     }
 
     @Test
+    fun theHeadphonesButtonsRollerAndSlider() {
+        // The Headphone (1)'s default key table from Nothing X: the roller's hold (the noise cycle), the control
+        // button's press (voice assistant) and its hold (nothing).
+        val s = session("B170")
+        s.receive(reply(NothingCommand.GET_KEY_CONFIGURATION, "0306010716060a010b060a0701"))
+        val touch = s.groups.first { it.key == "touch" }
+        assertEquals(listOf("touch_single_button_whole", "touch_hold_button_whole", "touch_hold_roller_whole"), touch.settings.map { it.key })
+        // Nothing's radio, news and platform-only actions (32, 31, 33) are left out.
+        assertEquals(
+            Setting.Choice("touch_single_button_whole", "voice_assistant", listOf("voice_assistant", "noise_control", "spatial_audio", "mic_mute", "eq_preset", "none")),
+            setting(s, "touch_single_button_whole"),
+        )
+        assertEquals(Setting.Choice("touch_hold_roller_whole", "noise_control", listOf("noise_control", "none")), setting(s, "touch_hold_roller_whole"))
+        assertEquals("01060a071b", hex(s.change(SettingChange.Choice("touch_hold_button_whole", "spatial_audio"))!!.single().payload))
+        assertEquals("0106010701", hex(s.change(SettingChange.Choice("touch_hold_roller_whole", "none"))!!.single().payload))
+
+        // The CMF Headphone Pro's slider: bass or treble.
+        val cmf = session("B175")
+        cmf.receive(reply(NothingCommand.GET_KEY_CONFIGURATION, "04060a0701060a010b0605012306010716"))
+        assertEquals(Setting.Choice("touch_single_slider_whole", "bass_boost", listOf("bass_boost", "treble_boost")), setting(cmf, "touch_single_slider_whole"))
+        assertEquals("0106050124", hex(cmf.change(SettingChange.Choice("touch_single_slider_whole", "treble_boost"))!!.single().payload))
+    }
+
+    @Test
     fun caseDial() {
         // The CMF Buds Pro 2's default key table from Nothing X: the earbuds, then the case dial (device 4), whose
         // double and triple press also have an entry for calls (button 9).
         val s = session("B172")
         s.receive(reply(NothingCommand.GET_KEY_CONFIGURATION,
             "0f03010209030103080301071603010901020102090201030802010716020109010401010104010201040103010401070104010a010409020104090301"))
-        val dial = s.groups.first { it.key == "touch_case" }
+        val dial = s.groups.first { it.key == "touch_dial" }
         assertEquals(SettingTab.CONTROLS, dial.tab)
-        assertEquals(listOf("touch_single_case", "touch_double_case", "touch_double_call_case", "touch_triple_case", "touch_triple_call_case", "touch_hold_case", "touch_turn_case"),
+        assertEquals(listOf("touch_single_dial", "touch_double_dial", "touch_double_call_dial", "touch_triple_dial", "touch_triple_call_dial", "touch_hold_dial", "touch_turn_dial"),
             dial.settings.map { it.key })
         // Nothing's news summary (31) is left out.
-        assertEquals(Setting.Choice("touch_single_case", "none", listOf("play_pause", "next", "previous", "voice_assistant", "game_mode", "none")),
-            dial.settings.first { it.key == "touch_single_case" })
-        assertEquals(listOf("answer_call", "answer_mute", "none"), (dial.settings.first { it.key == "touch_double_call_case" } as Setting.Choice).options)
-        assertEquals(listOf("volume_control", "none"), (dial.settings.first { it.key == "touch_turn_case" } as Setting.Choice).options)
-        assertEquals("0104010a17", hex(s.change(SettingChange.Choice("touch_turn_case", "volume_control"))!!.single().payload))
-        assertEquals("0104090203", hex(s.change(SettingChange.Choice("touch_double_call_case", "answer_call"))!!.single().payload))
-        assertEquals("answer_call", (s.groups.first { it.key == "touch_case" }.settings.first { it.key == "touch_double_call_case" } as Setting.Choice).value)
+        assertEquals(Setting.Choice("touch_single_dial", "none", listOf("play_pause", "next", "previous", "voice_assistant", "game_mode", "none")),
+            dial.settings.first { it.key == "touch_single_dial" })
+        assertEquals(listOf("answer_call", "answer_mute", "none"), (dial.settings.first { it.key == "touch_double_call_dial" } as Setting.Choice).options)
+        assertEquals(listOf("volume_control", "none"), (dial.settings.first { it.key == "touch_turn_dial" } as Setting.Choice).options)
+        assertEquals("0104010a17", hex(s.change(SettingChange.Choice("touch_turn_dial", "volume_control"))!!.single().payload))
+        assertEquals("0104090203", hex(s.change(SettingChange.Choice("touch_double_call_dial", "answer_call"))!!.single().payload))
+        assertEquals("answer_call", (s.groups.first { it.key == "touch_dial" }.settings.first { it.key == "touch_double_call_dial" } as Setting.Choice).value)
         // The earbuds' own rows are unchanged.
         assertTrue(s.groups.any { it.key == "touch_left" } && s.groups.any { it.key == "touch_right" })
+        // The Ear (3)'s case has a button, not a dial: its press and hold (double press has one action only).
+        val ear3 = session("B173")
+        ear3.receive(reply(NothingCommand.GET_KEY_CONFIGURATION, "010401070b"))
+        assertEquals(listOf("touch_hold_case"), ear3.groups.first { it.key == "touch_case" }.settings.map { it.key })
     }
 
     @Test

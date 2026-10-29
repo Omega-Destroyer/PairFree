@@ -420,8 +420,9 @@
     <string name="setting_group_touch_right">Right earbud</string>
     <string name="setting_touch_double_hold">Double tap and hold</string>
     <string name="setting_touch_triple_call">Triple tap during calls</string>
-    <string name="setting_group_touch_case">Case dial</string>
-    <string name="setting_group_touch_case_note">Double press and hold the dial to lock or unlock it.</string>
+    <string name="setting_group_touch_dial">Case dial</string>
+    <string name="setting_group_touch_dial_note">Double press and hold the dial to lock or unlock it.</string>
+    <string name="setting_group_touch_case">Case button</string>
     <string name="setting_dial_press">Press</string>
     <string name="setting_dial_double">Double press</string>
     <string name="setting_dial_triple">Triple press</string>
@@ -474,4 +475,9 @@
     <string name="factory_reset">Factory reset</string>
     <string name="factory_reset_title">Factory reset the earbuds?</string>
     <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this phone; then pair them again in the Bluetooth settings.</string>
+    <string name="setting_button_press">Button: press</string>
+    <string name="setting_button_hold">Button: press and hold</string>
+    <string name="setting_roller_press">Roller: press</string>
+    <string name="setting_roller_hold">Roller: press and hold</string>
+    <string name="setting_slider">Slider</string>
 </resources>

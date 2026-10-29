@@ -143,9 +143,12 @@ Every number of two bytes is low byte first.
 - **Touch controls (`C018`, `F003`):** the reply is a count, then device, button, gesture and
   action for each. A write is `F003 01 <device> <button> <gesture> <action>`, as Nothing X
   writes it (`DeviceProtocol.setGestureData`).
-  - **Devices:** 2 left, 3 right, 4 the CMF Buds Pro 2's case dial (Nothing X's Smart Dial),
-    6 the whole product.
-  - **Buttons:** 1 the gesture itself, 9 what the same gesture does during a call. Nothing X lists
+  - **Devices:** 2 left, 3 right, 4 the case (the CMF Buds Pro 2's dial, Nothing X's Smart Dial,
+    or the Ear (3)'s case button), 6 the whole product.
+  - **Buttons:** 1 the gesture itself (the roller on the headphones, Nothing X's scroll wheel), 5 the
+    CMF Headphone Pro's slider (bass or treble), 10 the headphones' control button, 9 what the same
+    gesture does during a call. PairFree names the button in each row's key (`_roller`, `_slider`,
+    `_button`, `_call`), so the roller's hold and the button's hold are separate rows. Nothing X lists
     the call actions as a gesture's second operation group (`default_call_controls`, with
     `callControlsButton` 9); the CMF Buds Pro 2's dial has them for double press (answer, or answer
     and mute during a call) and triple press (hang up or decline). Its default key table holds
@@ -192,10 +195,16 @@ for.
 - **Custom EQ:** the simple three-band custom EQ (`F041`/`C044`: a count, the total gain as a
   little-endian float, then type, gain, frequency and Q as floats for each band). Each model's
   frequencies and Qs are in the feature table (`customEQ`).
-- **Advanced EQ:** `F04F`/`C04C` for the mode, `F050`/`C04D` for eight bands with a profile
-  index. nada uses `C06C`/`C06D`, which are not in 3.4.15.
+- **Advanced EQ:** `F04F`/`C04C` the mode (0 off, 1 on: Nothing X's advanced tab). `F050`/`C04D`
+  the curve (`EQEntity`): the profile index, a count, the total gain (a little-endian float), then
+  for each band its filter type and its gain, frequency and Q as floats; `C04D` asks with a profile
+  index, 255 for the current one. Nothing X's default is eight bands at 55, 110, 220, 440, 1320,
+  3300, 6600 and 13200 Hz, Q 1, type 1. When it sends a profile the total gain is minus the peak of
+  the whole curve's response (`EQAlgorithm`, rounded up to the next whole dB), not of the highest
+  band. Left out until a report shows what the profile index means on the earbuds (Nothing X keeps
+  its profiles on the phone, and writing one index may replace what it stored there) and how the
+  mode and the presets interact. nada uses `C06C`/`C06D`, which are not in 3.4.15.
 - **Dual connection** (`F01A`/`C027`): what its value means is in Dart, so it is left out. Some
   models restart after a change (`dualConnectionReboot`).
 - **Ear tip fit test:** the result arrives as `E00D`; how to start it is in Dart.
-- **Other features:** personalised noise cancelling and sound (Mimi), the headphones' extra
-  buttons.
+- **Other features:** personalised noise cancelling and sound (Mimi).

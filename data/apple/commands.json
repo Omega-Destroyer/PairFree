@@ -26,7 +26,14 @@
     {"name": "personalized_volume", "id": "26", "kind": "switch"},
     {"name": "conversation_awareness", "id": "28", "kind": "switch"},
     {"name": "adaptive_level", "id": "2e", "kind": "level", "min": 0, "max": 100},
-    {"name": "allow_off", "id": "34", "kind": "switch"}
+    {"name": "allow_off", "id": "34", "kind": "switch"},
+    {"name": "mic_mode", "id": "01", "values": {"0": "automatic", "1": "right", "2": "left"}, "note": "Which AirPod's microphone is used (LibrePods' MicrophoneSettingsScreen)."},
+    {"name": "listening_mode_configs", "id": "1a", "kind": "bits", "note": "The modes press and hold cycles through: 01 off, 02 noise cancelling, 04 transparency, 08 adaptive. LibrePods keeps at least two."},
+    {"name": "chime_volume", "id": "1f", "kind": "level", "min": 0, "max": 100, "note": "The tone volume, then 50 hex as LibrePods writes it (AccessibilitySettingsScreen)."},
+    {"name": "call_management", "id": "24", "note": "00, then 03 (press once to mute, twice to hang up) or 02 (the other way round), LibrePods' CallControlScreen."},
+    {"name": "sleep_detection", "id": "35", "kind": "switch"},
+    {"name": "crown_reversed", "id": "1c", "kind": "switch", "note": "AirPods Max: 01 turns the Digital Crown the other way, 02 the default."},
+    {"name": "in_case_tone", "id": "31", "kind": "switch", "note": "The tone the case plays."}
   ],
   "never_send": {
     "opcodes": {

@@ -163,13 +163,19 @@ public class AppleSession {
                     choiceRow("hold_duration", AppleControl.HOLD_DURATION),
                     switch(AppleControl.VOLUME_SWIPE)?.let { Setting.Toggle("volume_swipe", it) },
                     choiceRow("volume_swipe_length", AppleControl.VOLUME_SWIPE_LENGTH),
-                ),
+                    callRow(),
+                ) + cycleRows(),
             ),
             group(
                 "other", SettingTab.DEVICE,
                 listOfNotNull(
                     switch(AppleControl.EAR_DETECTION)?.let { Setting.Toggle("ear_detection", it) },
                     switch(AppleControl.ALLOW_OFF)?.let { Setting.Toggle("allow_off", it) },
+                    choiceRow("microphone", AppleControl.MIC_MODE),
+                    switch(AppleControl.SLEEP_DETECTION)?.let { Setting.Toggle("sleep_detection", it) },
+                    switch(AppleControl.IN_CASE_TONE)?.let { Setting.Toggle("in_case_tone", it) },
+                    switch(AppleControl.CROWN_REVERSED)?.let { Setting.Toggle("crown_reversed", it) },
+                    _controls[AppleControl.CHIME_VOLUME]?.let { Setting.Level("chime_volume", it.u8(0).coerceIn(CHIME_MIN, CHIME_MAX), CHIME_MIN, CHIME_MAX) },
                 ),
             ),
         )
@@ -188,6 +194,46 @@ public class AppleSession {
     private fun eqWrite(eq: ByteArray): AapPacket {
         customEq = eq
         return AapPacket.of(byteArrayOf(AppleOpcode.CUSTOM_EQ.toByte(), 0, EQ_LENGTH.toByte(), 0, 1) + eq)
+    }
+
+    /**
+     * The modes press and hold cycles through (control 1A, a bit per mode), as LibrePods' press-and-hold screen shows
+     * them: off only while off is allowed, adaptive only on models that have it.
+     */
+    private fun cycleRows(): List<Setting> {
+        val bits = _controls[AppleControl.LISTENING_MODE_CONFIGS]?.u8(0) ?: return emptyList()
+        return CYCLE.filter { (key, _) ->
+            when (key) {
+                "cycle_off" -> switch(AppleControl.ALLOW_OFF) == true
+                "cycle_adaptive" -> hasAdaptive
+                else -> true
+            }
+        }.map { (key, bit) -> Setting.Toggle(key, bits and bit != 0) }
+    }
+
+    /**
+     * Call control (24): what pressing once does, muting or hanging up; pressing twice does the other. AirPods report it
+     * in one of two layouts: 00 or 20 and then 03 or 02 (LibrePods, MagicPodsCore), or 21, the mute press and the
+     * end-call press (MagicPodsCore's AapMuteMicrophoneEndCall).
+     */
+    private fun callRow(): Setting? {
+        val v = _controls[AppleControl.CALL_MANAGEMENT] ?: return null
+        if (v.size < 2) return null
+        val hangUpFirst = if (v.u8(0) == CALL_TWO_PRESSES) v.size >= 3 && v.u8(2) == CALL_END_SINGLE else v.u8(1) == CALL_HANG_UP_FIRST
+        return Setting.Choice("call_press_once", if (hangUpFirst) "hang_up" else "mute", listOf("mute", "hang_up"))
+    }
+
+    /** The call control write, in the layout the AirPods reported. */
+    private fun callWrite(hangUpFirst: Boolean): AapPacket {
+        val layout = _controls[AppleControl.CALL_MANAGEMENT]?.u8(0) ?: 0
+        val value = if (layout == CALL_TWO_PRESSES) {
+            if (hangUpFirst) intArrayOf(layout, CALL_MUTE_DOUBLE, CALL_END_SINGLE) else intArrayOf(layout, CALL_MUTE_SINGLE, CALL_END_DOUBLE)
+        } else {
+            intArrayOf(layout, if (hangUpFirst) CALL_HANG_UP_FIRST else CALL_MUTE_FIRST)
+        }
+        _controls[AppleControl.CALL_MANAGEMENT] = ByteArray(value.size) { value[it].toByte() }
+        refresh()
+        return AapPacket.control(AppleControl.CALL_MANAGEMENT, *value)
     }
 
     private fun choiceRow(key: String, id: Int): Setting? {
@@ -211,6 +257,13 @@ public class AppleSession {
                     eq[0] = (if (change.on) EQ_ON else EQ_OFF).toByte()
                     return listOf(eqWrite(eq))
                 }
+                CYCLE[change.key]?.let { bit ->
+                    val bits = _controls[AppleControl.LISTENING_MODE_CONFIGS]?.u8(0) ?: return null
+                    val next = if (change.on) bits or bit else bits and bit.inv()
+                    // LibrePods keeps at least two modes in the cycle.
+                    if ((next and CYCLE_BITS).countOneBits() < 2) return null
+                    return listOf(write(AppleControl.LISTENING_MODE_CONFIGS, next))
+                }
                 if (change.key == "adaptive") {
                     val current = listeningMode ?: return null
                     if (change.on && current != MODE_ADAPTIVE) beforeAdaptive = current
@@ -221,6 +274,7 @@ public class AppleSession {
             }
             is SettingChange.Choice -> {
                 if (setting !is Setting.Choice) return null
+                if (change.key == "call_press_once") return listOf(callWrite(change.option == "hang_up"))
                 val id = CHOICES[change.key] ?: return null
                 val value = AppleControl.VALUES.getValue(id).entries.firstOrNull { it.value == change.option }?.key ?: return null
                 listOf(write(id, value))
@@ -232,6 +286,14 @@ public class AppleSession {
                     val eq = customEq?.copyOf() ?: return null
                     eq[1 + band] = (change.value.coerceIn(-EQ_MIDDLE, EQ_MIDDLE) + EQ_MIDDLE).toByte()
                     return listOf(eqWrite(eq))
+                }
+                if (change.key == "chime_volume") {
+                    // The second byte as the AirPods reported it (LibrePods writes 50 hex, MagicPodsCore 00).
+                    val second = _controls[AppleControl.CHIME_VOLUME]?.takeIf { it.size >= 2 }?.u8(1) ?: CHIME_SECOND
+                    val v = change.value.coerceIn(CHIME_MIN, CHIME_MAX)
+                    _controls[AppleControl.CHIME_VOLUME] = byteArrayOf(v.toByte(), second.toByte())
+                    refresh()
+                    return listOf(AapPacket.control(AppleControl.CHIME_VOLUME, v, second))
                 }
                 if (change.key != "adaptive_level") return null
                 listOf(write(AppleControl.ADAPTIVE_LEVEL, change.value.coerceIn(0, ADAPTIVE_MAX)))
@@ -299,12 +361,35 @@ public class AppleSession {
             "volume_swipe" to AppleControl.VOLUME_SWIPE,
             "ear_detection" to AppleControl.EAR_DETECTION,
             "allow_off" to AppleControl.ALLOW_OFF,
+            "sleep_detection" to AppleControl.SLEEP_DETECTION,
+            "in_case_tone" to AppleControl.IN_CASE_TONE,
+            "crown_reversed" to AppleControl.CROWN_REVERSED,
         )
         val CHOICES = mapOf(
             "press_speed" to AppleControl.PRESS_SPEED,
             "hold_duration" to AppleControl.HOLD_DURATION,
             "volume_swipe_length" to AppleControl.VOLUME_SWIPE_LENGTH,
+            "microphone" to AppleControl.MIC_MODE,
         )
+
+        // Press and hold's cycle (control 1A): a bit per mode (LibrePods' control_commands.md).
+        val CYCLE = linkedMapOf("cycle_off" to 0x01, "cycle_anc" to 0x02, "cycle_transparency" to 0x04, "cycle_adaptive" to 0x08)
+        const val CYCLE_BITS = 0x0F
+
+        // Tone volume (1F): 15 to 100 as MagicPodsCore keeps it (AapSetToneVolume), then a second byte.
+        const val CHIME_MIN = 15
+        const val CHIME_MAX = 100
+        const val CHIME_SECOND = 0x50
+
+        // Call control (24): 00 or 20, then 03 (press once to mute) or 02 (press once to hang up); or 21, then the mute
+        // press (23 single, 22 double) and the end-call press (03 single, 02 double).
+        const val CALL_MUTE_FIRST = 0x03
+        const val CALL_HANG_UP_FIRST = 0x02
+        const val CALL_TWO_PRESSES = 0x21
+        const val CALL_MUTE_SINGLE = 0x23
+        const val CALL_MUTE_DOUBLE = 0x22
+        const val CALL_END_SINGLE = 0x03
+        const val CALL_END_DOUBLE = 0x02
 
         // The noise modes by their names in data/soundpeats/commands.json, so no number is retyped.
         fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key

@@ -328,6 +328,27 @@ curves) and 167 (the time). PairFree sends the manager info, 104 and 105.
 (108), adaptive volume (217), siren detection (222), each 1 on; and conversation boost, inside
 message 130. Their acknowledgements (66) carry the value as set.
 
+Also, from the plugin's per-model lists (`SUPPORT_HEAD_TRACKING`, `ADJUST_SOUND_FIT`, `BOOST_DIALOGUE`,
+`NECK_STRETCH_REMINDER`, `AUTO_POWER_OFF_TIMER`) and its writes (`kk/f`):
+
+| Setting | State byte | Write | Models |
+|---|---|---|---|
+| 360 Audio and head tracking | 35, 42 | 124: 360 audio, head tracking | Buds4, Buds4 Pro, H1 |
+| Adjust sound to fit | 49 (on when not 0) | 218: 1 on, 0 off | Buds4, Buds4 Pro |
+| Voice boost and volume normalisation | 57, 58 | 106: voice boost, volume normalisation | Buds4, Buds4 Pro, H1 |
+| Neck stretch reminder | 38 | 201: 1 on | Buds4, Buds4 Pro |
+| Loud noise reduction | the tail's first byte | 73: the adaptive response level as reported, loud noise reduction, 0 | Buds4 Pro |
+| Auto power-off timer | the tail's byte, minutes | 107: 30, 60 or 120 | H1 |
+
+Byte 38 is the reminder's switch (the plugin's neck stretch field), not a calibration. The T1's state
+has a timer byte too, but its feature list has no timer, so PairFree does not offer it. Head
+tracking shows only while 360 Audio is on. The plugin also changes the phone's own volume
+normalisation (SoundAlive) on Samsung phones; PairFree sets only the earbuds'.
+
+Left out: the voice command language and set-up (100, 153), Bixby's wake word (102), the adapt sound
+and hearing aid settings (a hearing test, 184), the Buds On's gestures and its left/right switch (no
+write found), and game mode (135), which reports the phone's state rather than setting anything.
+
 **Features.** The plugin keeps a feature list per model. It gives the Buds4 no fit test,
 ambient volume, noise cancelling level, voice detect or ambient sound per earbud, which
 GalaxyBudsClient's list has. PairFree follows the plugin's lists, mapped to its own feature names.

@@ -463,6 +463,17 @@
     <string name="setting_spatial_audio">Spatial audio</string>
     <string name="setting_spatial_audio_note">Spatial audio turns bass boost and the equalizer presets off while it is on.</string>
     <string name="setting_head_tracking">Head tracking</string>
+    <string name="setting_audio_360">360 Audio</string>
+    <string name="setting_adjust_sound_fit">Adjust sound to fit</string>
+    <string name="setting_adjust_sound_fit_note">The earbuds tune their sound to how they sit in your ears.</string>
+    <string name="setting_voice_boost">Voice boost</string>
+    <string name="setting_voice_boost_note">Makes voices in videos and podcasts clearer.</string>
+    <string name="setting_volume_normalization">Volume normalisation</string>
+    <string name="setting_volume_normalization_note">Keeps loud and quiet parts closer in volume.</string>
+    <string name="setting_loud_noise_reduction">Loud noise reduction</string>
+    <string name="setting_loud_noise_reduction_note">Turns sudden loud sounds around you down.</string>
+    <string name="setting_neck_stretch">Neck stretch reminder</string>
+    <string name="setting_neck_stretch_note">The earbuds remind you to stretch when you have kept your head down for a while.</string>
     <string name="setting_codec">Codec</string>
     <string name="setting_codec_note">Your phone picks the codec when the earbuds connect. Reconnect them for a change to take effect.</string>
     <string name="setting_codec_standard">Standard (SBC, AAC)</string>

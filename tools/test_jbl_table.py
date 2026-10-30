@@ -39,7 +39,7 @@ class JblTable(unittest.TestCase):
         self.assertEqual("Earbuds", flex2["Type"])
         self.assertEqual("Bluetooth LE", flex2["Connection"])
         self.assertEqual(
-            "noise cancelling, Ambient Aware, TalkThru, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, "
+            "noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, "
             "3D spatial sound, sound effect, audio limiter, Find My Buds, touch controls",
             flex2["Settings"],
         )
@@ -50,7 +50,7 @@ class JblTable(unittest.TestCase):
         self.assertNotIn("noise cancelling", tune720, "the Tune 720BT has no noise control")
         self.assertTrue(self.row("21B6")["Settings"].startswith("noise cancelling, Ambient Aware, TalkThru, "), "the Tune Flex 3, on protocol 4")
         self.assertTrue(self.row("2133")["Settings"].startswith("auto power-off, "), "the Sense Lite")
-        self.assertEqual("Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound", self.row("2135")["Settings"], "the Tune 135BT")
+        self.assertEqual("auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound", self.row("2135")["Settings"], "the Tune 135BT")
         self.assertTrue(self.row("2160")["Settings"].startswith("noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, "), "the Live 680NC, security mode 1")
 
 

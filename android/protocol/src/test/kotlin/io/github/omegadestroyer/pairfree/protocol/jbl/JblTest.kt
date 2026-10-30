@@ -498,6 +498,18 @@ class JblTest {
         assertEquals("aa770900" + "090c" + "0a04" + "0b00" + "0ea1", peak.change(SettingChange.Choice("jbl_touch_right", "ambient"))!!.single().hex())
     }
 
+    @Test
+    fun thePowerSavingPageGivesAutoPowerOff() {
+        // The Tune Flex 2 has auto power-off on JBL's power saving page alone: 30, 60 or 120 minutes, as a feature record.
+        val s = JblSession(model("JBL Tune Flex 2"))
+        assertEquals(JblModel.AutoOff.FEATURE, s.model.autoOff)
+        s.receive(packet("aa060700" + "02" + "000b03011e00"))
+        assertEquals(Setting.Choice("auto_off", "30", listOf("never", "30", "60", "120")), setting(s, "auto_off"))
+        assertEquals(JblPacket.featureSet(JblFeature.AUTO_OFF, 1, 120, 0), s.change(SettingChange.Choice("auto_off", "120"))!!.single())
+        // The Tune Flex (direct) writes the three-byte command.
+        assertEquals(JblModel.AutoOff.V2, model("JBL TUNE FLEX").autoOff)
+    }
+
     private fun anc(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
     private companion object {

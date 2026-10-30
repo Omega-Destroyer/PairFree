@@ -246,8 +246,11 @@ The noise cycle is `0B` (noise cancelling and ambient sound) or the one the tap 
 default (`AppUtils.isDefaultMultiAi`); with Google Assistant or Alexa chosen in JBL's app, the
 playback set holds for that assistant instead. PairFree does not read that choice and always writes
 `A1`. The read names a side's set by its tap action, else its hold (`CustomGesture.generateName`).
-The p4 models and those with `GestureUi4Card` or a headphone gesture card use other pages
-(`customizedGesture` in the product list, `setP5GestureStatus`) and are not covered yet.
+The other gesture pages are not covered: `GestureUi4Card` (11 models) builds its sets from
+`customizedGesture`, which the bundled product list has for none of them (they use JBL's server
+resources, `usingSeverRes`, which PairFree never fetches), and the headphone cards
+(`HeadLive670GestureCard` and the like) open pages of their own. The 29 other p4 models have no
+gesture card in JBL's app.
 
 ## 5. How each model sends its settings
 
@@ -271,6 +274,9 @@ The p4 models and those with `GestureUi4Card` or a headphone gesture card use ot
 - **auto_off:** `v1`, `v2` or `feature`, by the class's `setAutoPowerOffStatus`, where the
   dashboard has `AutoPowerOffCard` (never, 30 or 60 minutes) or `AutoOffCard` (on or off; JBL's
   app writes 10 minutes).
+  Models with `PowerSavingCard` instead have it on JBL's power saving page (`gq.g`): 30, 60 or
+  120 minutes, with 15 too on the product ids `gq.a.isSupport15Min` lists, or never. Their
+  classes write it as v2 (`AutoOff` with `VERSION_NEW`), as the feature record or on protocol 4.
 - **auto_play_pause:** where the dashboard has `AutoPlayPauseCard` and the class sends it.
 
 PairFree shows noise cancelling and Ambient Aware on the shared noise control (as its off,

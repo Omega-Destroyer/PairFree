@@ -195,6 +195,7 @@ feature family the sound effect, the audio limiter and Hi-Res are feature record
 | Sound effect | `SoundEffectCard` | feature `20` | | on, the effect (0 standard, 1 treble boost, 2 bass boost) |
 | Audio limiter | `AudioLimiterCard` | feature `35` | | 1 on |
 | Hi-Res audio | `HiResAudioCard` | feature `59` | | 1 on |
+| Low volume EQ | `LowVolumeEq`, `LowEQCompensationCard` | `9E` (direct), feature `24` | `01` | `02` (write `00`), on |
 | Find My Buds | `FindMyBudCard` | `36` | | one value per earbud: `11` start the left, `10` the right, `01` stop the left, `00` the right |
 
 Smart Audio & Video's numbers come from the product list (`smartAudioVideo`: `normal`, `audio`,
@@ -212,7 +213,7 @@ bits 0 to 6 unless said: `4111` Smart Audio & Video (the four numbers, two bytes
 `3136` voice prompts (status spoken, level the volume), `21` balance (50 lower than the
 Harman level: 34 left to 66 right, `gn.l0` and `General4Control.setLRBalanceStatus`), `35` sidetone (VoiceAware),
 `37` max volume limit (SafeSound), `34` spatial scene (level 1 movie, 2 music, 3 game: not the
-Harman order, `General4Control.set3DSpatialStatus`), `43` smart talk (speak to chat, level the
+Harman order, `General4Control.set3DSpatialStatus`), `36` low volume EQ (level 127), `43` smart talk (speak to chat, level the
 seconds), `41` sound effect, `39` audio limiter and `40` Hi-Res (level 127), and `4106` Find My
 Buds, written only: bit 7 the case, 6 the right earbud, 5 the left, bits 0 to 4 set.
 
@@ -250,7 +251,8 @@ The other gesture pages are not covered: `GestureUi4Card` (11 models) builds its
 `customizedGesture`, which the bundled product list has for none of them (they use JBL's server
 resources, `usingSeverRes`, which PairFree never fetches), and the headphone cards
 (`HeadLive670GestureCard` and the like) open pages of their own. The 29 other p4 models have no
-gesture card in JBL's app.
+gesture card in JBL's app. Touch sensitivity (protocol 4 features `4033` and `4034`) sits on the
+customized-button page, whose levels come from the same server resources, so it is left out too.
 
 ### 4.10 Adaptive noise cancelling and auto compensation: `91`
 

@@ -529,6 +529,23 @@ class JblTest {
         assertEquals(JblP4Packet.set(JblP4.FEATURE_ADAPTIVE_ANC to byteArrayOf(0x7F)), p4.change(SettingChange.Toggle("jbl_adaptive_anc", false))!!.single())
     }
 
+    @Test
+    fun lowVolumeEqGoesEachFamilysWay() {
+        val direct = JblSession(model("JBL Live 670NC"))
+        assertTrue("aa9e0101" in direct.start().map { it.hex() })
+        direct.receive(packet("aa9e020201"))
+        assertEquals(Setting.Toggle("jbl_low_volume_eq", true), setting(direct, "jbl_low_volume_eq"))
+        assertEquals("aa9e020000", direct.change(SettingChange.Toggle("jbl_low_volume_eq", false))!!.single().hex())
+
+        val feature = JblSession(model("JBL Live Beam 3"))
+        feature.receive(packet("aa060500" + "02" + "00180100"))
+        assertEquals(JblPacket.featureSet(JblFeature.LOW_VOLUME_EQ, 1), feature.change(SettingChange.Toggle("jbl_low_volume_eq", true))!!.single())
+
+        val p4 = JblSession(model("JBL Live 780NC"))
+        p4.receive(JblReader().feed(p4Reply(JblP4.GET, "2400010080")).single())
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_LOW_VOLUME_EQ to byteArrayOf(0x7F)), p4.change(SettingChange.Toggle("jbl_low_volume_eq", false))!!.single())
+    }
+
     private fun anc(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
     private companion object {

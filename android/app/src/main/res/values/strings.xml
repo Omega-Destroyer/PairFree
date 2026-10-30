@@ -424,6 +424,8 @@
     <string name="setting_jbl_touch_playback">Playback: tap to play or pause, double tap for the next track, triple for the last, hold for the voice assistant</string>
     <string name="setting_jbl_touch_ambient">Noise control: tap to change the noise mode, double tap for TalkThru, hold for the voice assistant</string>
     <string name="setting_jbl_touch_volume">Volume: tap for louder, double tap for quieter, hold for the voice assistant</string>
+    <string name="setting_jbl_low_volume_eq">Low volume EQ</string>
+    <string name="setting_jbl_low_volume_eq_note">Keeps the bass and treble full when you listen quietly.</string>
     <string name="setting_jbl_adaptive_anc">Adaptive noise cancelling</string>
     <string name="setting_jbl_adaptive_anc_note">Noise cancelling adjusts itself to the noise around you.</string>
     <string name="setting_jbl_auto_compensation">Auto compensation</string>

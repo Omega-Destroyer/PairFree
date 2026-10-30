@@ -38,6 +38,7 @@ EXTRAS = {
     "gestures": "touch controls",
     "adaptive_anc": "adaptive noise cancelling",
     "auto_compensation": "auto compensation",
+    "low_volume_eq": "low volume EQ",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",

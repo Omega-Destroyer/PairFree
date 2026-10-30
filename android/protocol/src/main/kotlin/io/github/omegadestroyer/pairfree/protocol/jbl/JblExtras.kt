@@ -34,6 +34,7 @@ internal class JblExtras(private val model: JblModel) {
     private var talkSeconds: Int? = null
     private var hiRes: Boolean? = null
     private var adaptiveAnc: Boolean? = null
+    private var lowVolumeEq: Boolean? = null
     private var autoCompensation: Boolean? = null
     private var finding = false
     // Each gesture's action, by JBL's gesture id (1 left tap, 2 right tap and so on).
@@ -50,12 +51,14 @@ internal class JblExtras(private val model: JblModel) {
         if (has(SAFE_SOUND)) add(JblPacket.of(JblCommand.SAFE_SOUND, READ))
         if (has(SPATIAL)) add(JblPacket.of(JblCommand.SPATIAL, READ))
         if (has(SPEAK_TO_CHAT)) add(JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ))
+        if (has(LOW_VOLUME_EQ) && model.family == JblModel.Family.DIRECT) add(JblPacket.of(JblCommand.LOW_VOLUME_EQ, READ))
         if (has(GESTURES)) add(gestureRead())
         if (has(ADAPTIVE_ANC) || has(AUTO_COMPENSATION)) add(JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ))
         val features = listOfNotNull(
             JblFeature.SOUND_EFFECT.takeIf { has(SOUND_EFFECT) },
             JblFeature.AUDIO_LIMITER.takeIf { has(AUDIO_LIMITER) },
             JblFeature.HI_RES.takeIf { has(HI_RES) },
+            JblFeature.LOW_VOLUME_EQ.takeIf { has(LOW_VOLUME_EQ) && model.family == JblModel.Family.FEATURE },
         )
         if (features.isNotEmpty()) add(JblPacket.featureGet(features))
     }
@@ -73,6 +76,7 @@ internal class JblExtras(private val model: JblModel) {
         JblP4.FEATURE_SMART_TALK.takeIf { has(SPEAK_TO_CHAT) },
         JblP4.FEATURE_HI_RES.takeIf { has(HI_RES) },
         JblP4.FEATURE_ADAPTIVE_ANC.takeIf { has(ADAPTIVE_ANC) },
+        JblP4.FEATURE_LOW_VOLUME_EQ.takeIf { has(LOW_VOLUME_EQ) },
         JblP4.FEATURE_AUTO_COMPENSATION.takeIf { has(AUTO_COMPENSATION) },
     )
 
@@ -95,6 +99,7 @@ internal class JblExtras(private val model: JblModel) {
                 voiceAwareOn = if (p.size >= 3) p.u8(2) != 0 else p.u8(1) != 0
             }
             JblCommand.SAFE_SOUND -> if (p.u8(0) == RET && p.size >= 3) safeSound = p.u8(2) == 1
+            JblCommand.LOW_VOLUME_EQ -> if (p.u8(0) == RET && p.size >= 2) lowVolumeEq = p.u8(1) == 1
             JblCommand.SPATIAL -> if (p.u8(0) == RET && p.size >= 3) {
                 spatialOn = p.u8(1) == 1
                 spatialType = p.u8(2)
@@ -135,6 +140,7 @@ internal class JblExtras(private val model: JblModel) {
             }
             JblFeature.AUDIO_LIMITER -> limiter = v.u8(0) == 1
             JblFeature.HI_RES -> hiRes = v.u8(0) == 1
+            JblFeature.LOW_VOLUME_EQ -> lowVolumeEq = v.u8(0) == 1
         }
     }
 
@@ -177,6 +183,7 @@ internal class JblExtras(private val model: JblModel) {
             }
             JblP4.FEATURE_HI_RES -> hiRes = on
             JblP4.FEATURE_ADAPTIVE_ANC -> adaptiveAnc = on
+            JblP4.FEATURE_LOW_VOLUME_EQ -> lowVolumeEq = on
             JblP4.FEATURE_AUTO_COMPENSATION -> autoCompensation = on
         }
     }
@@ -199,6 +206,7 @@ internal class JblExtras(private val model: JblModel) {
         },
         safeSound?.takeIf { has(SAFE_SOUND) }?.let { Setting.Toggle(SAFE_SOUND_KEY, it) },
         hiRes?.takeIf { has(HI_RES) }?.let { Setting.Toggle(HI_RES_KEY, it) },
+        lowVolumeEq?.takeIf { has(LOW_VOLUME_EQ) }?.let { Setting.Toggle(LOW_EQ_KEY, it) },
     )
 
     fun callRows(): List<Setting> = listOfNotNull(
@@ -268,6 +276,7 @@ internal class JblExtras(private val model: JblModel) {
             SAFE_SOUND_KEY -> listOf(safe(change.on))
             LIMITER_KEY -> listOf(limit(change.on))
             HI_RES_KEY -> listOf(hiResSet(change.on))
+            LOW_EQ_KEY -> listOf(lowEq(change.on))
             ADAPTIVE_KEY -> listOf(advanced(ADVANCED_ADAPTIVE, JblP4.FEATURE_ADAPTIVE_ANC, change.on).also { adaptiveAnc = change.on })
             COMPENSATION_KEY -> listOf(advanced(ADVANCED_AUTO_COMPENSATION, JblP4.FEATURE_AUTO_COMPENSATION, change.on).also { autoCompensation = change.on })
             MUTE_LEFT, MUTE_RIGHT -> mute(change.key == MUTE_LEFT, change.on)
@@ -302,6 +311,7 @@ internal class JblExtras(private val model: JblModel) {
                 TALK_KEY -> JblP4.FEATURE_SMART_TALK
                 HI_RES_KEY -> JblP4.FEATURE_HI_RES
                 ADAPTIVE_KEY -> JblP4.FEATURE_ADAPTIVE_ANC
+                LOW_EQ_KEY -> JblP4.FEATURE_LOW_VOLUME_EQ
                 COMPENSATION_KEY -> JblP4.FEATURE_AUTO_COMPENSATION
                 else -> return null
             }
@@ -317,6 +327,11 @@ internal class JblExtras(private val model: JblModel) {
             TALK_KEY -> JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ)
             TOUCH_LEFT, TOUCH_RIGHT -> gestureRead()
             ADAPTIVE_KEY, COMPENSATION_KEY -> JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ)
+            LOW_EQ_KEY -> if (model.family == JblModel.Family.DIRECT) {
+                JblPacket.of(JblCommand.LOW_VOLUME_EQ, READ)
+            } else {
+                JblPacket.featureGet(listOf(JblFeature.LOW_VOLUME_EQ))
+            }
             EFFECT_KEY -> JblPacket.featureGet(listOf(JblFeature.SOUND_EFFECT))
             LIMITER_KEY -> JblPacket.featureGet(listOf(JblFeature.AUDIO_LIMITER))
             HI_RES_KEY -> JblPacket.featureGet(listOf(JblFeature.HI_RES))
@@ -458,6 +473,17 @@ internal class JblExtras(private val model: JblModel) {
         }
     }
 
+    /** Low volume EQ: command 9E on the direct family (LowEQCompensationCmd), a feature record or protocol 4 feature on the others. */
+    private fun lowEq(on: Boolean): JblFrame {
+        lowVolumeEq = on
+        val v = if (on) 1 else 0
+        return when (model.family) {
+            JblModel.Family.DIRECT -> JblPacket.of(JblCommand.LOW_VOLUME_EQ, SET, v)
+            JblModel.Family.FEATURE -> JblPacket.featureSet(JblFeature.LOW_VOLUME_EQ, v)
+            JblModel.Family.P4 -> JblP4Packet.set(JblP4.FEATURE_LOW_VOLUME_EQ to JblP4Packet.statusLevel(on, JblP4.IGNORE_LEVEL))
+        }
+    }
+
     private fun talk(option: String): JblFrame {
         val seconds = option.toIntOrNull()
         val on = seconds != null
@@ -520,6 +546,8 @@ internal class JblExtras(private val model: JblModel) {
         const val FIND_BUDS = "find_buds"
         const val GESTURES = "gestures"
         const val ADAPTIVE_ANC = "adaptive_anc"
+        const val LOW_VOLUME_EQ = "low_volume_eq"
+        const val LOW_EQ_KEY = "jbl_low_volume_eq"
         const val AUTO_COMPENSATION = "auto_compensation"
         const val ADAPTIVE_KEY = "jbl_adaptive_anc"
         const val COMPENSATION_KEY = "jbl_auto_compensation"
@@ -580,16 +608,17 @@ internal class JblExtras(private val model: JblModel) {
         private val ASSISTANTS = setOf(160, 164, 166, 168)
 
         /** The feature records and protocol 4 features these settings are read from. */
-        val FEATURE_IDS = setOf(JblFeature.SOUND_EFFECT, JblFeature.AUDIO_LIMITER, JblFeature.HI_RES)
+        val FEATURE_IDS = setOf(JblFeature.SOUND_EFFECT, JblFeature.AUDIO_LIMITER, JblFeature.HI_RES, JblFeature.LOW_VOLUME_EQ)
         val P4_IDS = setOf(
             JblP4.FEATURE_SMART_SWITCH, JblP4.FEATURE_VOICE_PROMPT, JblP4.FEATURE_BALANCE, JblP4.FEATURE_SIDETONE,
             JblP4.FEATURE_MAX_VOLUME_LIMIT, JblP4.FEATURE_SPATIAL_SCENE, JblP4.FEATURE_SOUND_EFFECT, JblP4.FEATURE_AUDIO_LIMITER,
             JblP4.FEATURE_SMART_TALK, JblP4.FEATURE_HI_RES, JblP4.FEATURE_ADAPTIVE_ANC, JblP4.FEATURE_AUTO_COMPENSATION,
+            JblP4.FEATURE_LOW_VOLUME_EQ,
         )
 
         private val AA_COMMANDS = setOf(
             JblCommand.SMART_SWITCH, JblCommand.VOICE_PROMPTS, JblCommand.BALANCE, JblCommand.VOICE_AWARE,
-            JblCommand.SAFE_SOUND, JblCommand.SPATIAL, JblCommand.SPEAK_TO_CHAT, JblCommand.GESTURES,
+            JblCommand.SAFE_SOUND, JblCommand.SPATIAL, JblCommand.SPEAK_TO_CHAT, JblCommand.GESTURES, JblCommand.LOW_VOLUME_EQ,
         )
 
         // The sub-commands of these Harman commands (CmdBase): 00 set, 01 read, 02 reply; voice prompts 03, 04 and 05.

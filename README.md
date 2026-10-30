@@ -84,7 +84,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | Brand | Models | Tried on real earbuds |
 |-------|--------|-----------------------|
 | [SOUNDPEATS](docs/devices/soundpeats.md) | 45 | Air5 Pro+, H3 |
-| [Soundcore (Anker)](docs/devices/soundcore.md) | 66 | AeroClip, Space A40 |
+| [Soundcore (Anker)](docs/devices/soundcore.md) | 66 | AeroClip, Sleep A20, Space A40 |
 | [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
 | [Sony](docs/devices/sony.md) | 24 | — |
 | [Bose](docs/devices/bose.md) | 22 | — |
@@ -165,7 +165,9 @@ PairFree reads the bug report only on your phone and keeps nothing but the messa
 exchanged with your earbuds. The report you send has no names or addresses: it shows only
 the messages PairFree knows, with the earbuds' address and serial number masked, and of the
 others little more than their number and size. Afterwards, turn the snoop log off and
-delete the bug report.
+delete the bug report. **Do not attach the bug report itself to the issue:** issues are public,
+and a bug report holds far more than Bluetooth messages (your accounts, apps, places and the like).
+If the project needs more than PairFree's report, it will ask in the issue.
 
 ### Copy device report
 

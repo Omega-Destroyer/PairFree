@@ -3556,7 +3556,12 @@
         ["dual_battery_level", 2],
         ["dual_firmware", 10],
         ["serial", 16],
-        ["skip", 96],
+        ["equalizer", 22],
+        ["skip", 1],
+        ["buttons", 4],
+        ["skip", 10],
+        ["sleep_timer", 4],
+        ["skip", 55],
         ["case_battery", 1],
         ["optional:skip", 0]
       ],
@@ -3570,7 +3575,33 @@
           "offset": 1
         }
       },
-      "notes": "OpenSCQ30's library does not support the Sleep A20; its device faker holds a Sleep A20's state reply (131 bytes) with what each byte is, as far as OpenSCQ30 knows. PairFree reads the battery of each earbud and the case and the firmware from it, and sends nothing else until a user's device report or a recording of the Soundcore app confirms the rest: the EQ (bytes 30-51), touch controls (53-56), the alarm (58-61), sleep mode and its timer (65-70), touch tone (75), low battery prompt (76) and the auto power-off and mode switch prompts (124-125)."
+      "eq": {
+        "write": "a3876",
+        "checked": "recording",
+        "channels": 2,
+        "bands": 10,
+        "range": [-120, 134],
+        "digits": 1,
+        "presets": "type_2",
+        "note": "Recorded from the Soundcore app (data/soundcore/reports/A6611_03.22.txt): 02 83 with the preset, one curve and its correction, as the V20i (A3876) takes it; five presets and a custom curve, every byte as PairFree builds it. Rock ends 40, 50, so the presets are OpenSCQ30's second common set (type_2), not the first (30, 30, 30). The state holds the left curve and FF for the right."
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "right_double", "left_triple", "right_triple"],
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a6611"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a6611"}
+            }
+          }
+        ],
+        "checked": "recording",
+        "note": "Recorded from the Soundcore app (data/soundcore/reports/A6611_03.22.txt): 04 81 with the side, the press (0 double, 5 triple) and the action byte, the state's high four bits kept and the new action in the low four; the earbuds then store the low four bits in both halves. F turns a tap off. The order is the one OpenSCQ30's device faker gives. A reset to the defaults (04 82) was not recorded, so PairFree does not offer it."
+      },
+      "extra_features": ["sleep_timer"],
+      "reports": ["data/soundcore/reports/A6611_03.22.txt"],
+      "notes": "OpenSCQ30's library does not support the Sleep A20; its device faker holds a Sleep A20's state reply (131 bytes) with what each byte is, as far as OpenSCQ30 knows, and a user's recording of the Soundcore app (GitHub issue #8) confirmed the EQ (bytes 30-51), the touch controls (53-56) and the sleep timer (67-70: 1 on or 2 off, the minutes as two bytes, little-endian, then a byte the app sends back as it is; 15 85 writes it, 15 03 reads it). Not yet confirmed, so not offered: the alarm (58-61), sleep mode (65), touch tone (75), the low battery prompt (76) and the auto power-off and mode switch prompts (124-125)."
     },
     {
       "model": "D1101",

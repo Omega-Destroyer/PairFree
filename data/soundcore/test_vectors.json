@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body. openscq30_buttons: OpenSCQ30's touch-control tests: a state reply with its serial numbers zeroed, what it reads as (reads: a button's action, null when off), and changes (steps, each from the state the one before left) with every packet they must send, in any order. a3936_buttons: the A40's recorded touch-control changes and the frames the Soundcore app sent for them. report_states: state replies from users' PairFree device reports (data/soundcore/reports), and the Sleep A20's from OpenSCQ30's device faker, serials zeroed, with what PairFree must read from them.",
+  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body. openscq30_buttons: OpenSCQ30's touch-control tests: a state reply with its serial numbers zeroed, what it reads as (reads: a button's action, null when off), and changes (steps, each from the state the one before left) with every packet they must send, in any order. a3936_buttons: the A40's recorded touch-control changes and the frames the Soundcore app sent for them. a6611_recording: a user's Sleep A20 with the Soundcore app (see its about). report_states: state replies from users' PairFree device reports (data/soundcore/reports), and the Sleep A20's from OpenSCQ30's device faker, serials zeroed, with what PairFree must read from them.",
   "frames": [
     {
       "direction": "to_earbuds",
@@ -1658,6 +1658,216 @@
       "case_battery": 90,
       "firmware": "01.50",
       "flags": {}
+    },
+    {
+      "model": "A6611",
+      "report": "data/soundcore/reports/A6611_03.22.txt",
+      "body": "0101090930332e323230332e323200000000000000000000000000000000fefe939c869285837d787878ffffffffffffffffffff06dd661100ffffffffffffffff0000021e0001ffffff0101003117000004000100000000000000010102000000000000000102f9423c0000000000020303433c000000000002010000010800000000",
+      "battery_left": 100,
+      "battery_right": 100,
+      "case_battery": 90,
+      "firmware": "03.22",
+      "flags": {}
     }
-  ]
+  ],
+  "a6611_recording": {
+    "about": "A user's Sleep A20 (A6611, firmware 03.22) with the Soundcore app (data/soundcore/reports/A6611_03.22.txt, GitHub issue #8), serial zeroed: the first state reply, the EQ writes in order (a preset by OpenSCQ30's key, or the custom curve's eight bands in tenths of a dB, and the 02 83 body), the touch changes with the buttons field (bytes 53-56) as the earbuds reported it just before each and the frame the app sent, and the sleep timer writes with the choice each stands for, starting from the state's 02 78 00 01.",
+    "state": "0101090930332e323230332e323200000000000000000000000000000000000078787878787878787878ffffffffffffffffffff06dd661100ffffffffffffffff000002780001ffffff0101003117000004000100000000000000010102000000000000000102f9423c0000000000020303433c000000000002010000010800000000",
+    "eq": [
+      {
+        "preset": "Acoustic",
+        "body": "0100a0828c8ca0a0a08c78007d767b787c7a7c797800"
+      },
+      {
+        "preset": "Pop",
+        "body": "0f006e829696826e645a780077797a7a797777757800"
+      },
+      {
+        "preset": "Classical",
+        "body": "040096966464788c96a078007a7c7477787a797d7800"
+      },
+      {
+        "preset": "Rock",
+        "body": "1100968c6e6e8296a0aa78007a7a7677797a7a7e7800"
+      },
+      {
+        "preset": "BassBooster",
+        "body": "0200a09682787878787878007b7a7878787878787800"
+      },
+      {
+        "bands": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "body": "fefe7878787878787878787878787878787878787800"
+      },
+      {
+        "bands": [
+          27,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "body": "fefe937878787878787878787b767878787878787800"
+      },
+      {
+        "bands": [
+          27,
+          36,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "body": "fefe939c7878787878787878797c7679787878787800"
+      },
+      {
+        "bands": [
+          27,
+          36,
+          14,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "body": "fefe939c8678787878787878797b7878787878787800"
+      },
+      {
+        "bands": [
+          27,
+          36,
+          14,
+          26,
+          0,
+          0,
+          0,
+          0
+        ],
+        "body": "fefe939c8692787878787878797c777c767978787800"
+      },
+      {
+        "bands": [
+          27,
+          36,
+          14,
+          26,
+          13,
+          0,
+          0,
+          0
+        ],
+        "body": "fefe939c8692857878787878797c777b787878787800"
+      },
+      {
+        "bands": [
+          27,
+          36,
+          14,
+          26,
+          13,
+          11,
+          0,
+          0
+        ],
+        "body": "fefe939c8692858378787878797c777b787977787800"
+      },
+      {
+        "bands": [
+          27,
+          36,
+          14,
+          26,
+          13,
+          11,
+          5,
+          0
+        ],
+        "body": "fefe939c869285837d787878797c777b787978787800"
+      }
+    ],
+    "buttons": [
+      {
+        "before": "dd661100",
+        "button": "left_double",
+        "action": null,
+        "frames": [
+          "08ee00000004810d000000df67"
+        ]
+      },
+      {
+        "before": "ff661100",
+        "button": "left_double",
+        "action": "change_mode",
+        "frames": [
+          "08ee00000004810d000000fd85"
+        ]
+      },
+      {
+        "before": "dd661100",
+        "button": "right_double",
+        "action": "previous_song",
+        "frames": [
+          "08ee00000004810d00010062eb"
+        ]
+      },
+      {
+        "before": "dd221100",
+        "button": "right_double",
+        "action": "play_pause",
+        "frames": [
+          "08ee00000004810d00010026af"
+        ]
+      },
+      {
+        "before": "dd661100",
+        "button": "right_triple",
+        "action": "change_mode",
+        "frames": [
+          "08ee00000004810d0001050d9b"
+        ]
+      },
+      {
+        "before": "dd6611dd",
+        "button": "right_triple",
+        "action": "volume_up",
+        "frames": [
+          "08ee00000004810d000105d05e"
+        ]
+      }
+    ],
+    "sleep_timer": [
+      {
+        "option": "120",
+        "frames": [
+          "08ee00000015850e000178000118"
+        ]
+      },
+      {
+        "option": "30",
+        "frames": [
+          "08ee00000015850e00011e0001be"
+        ]
+      },
+      {
+        "option": "off",
+        "frames": [
+          "08ee00000015850e00021e0001bf"
+        ]
+      }
+    ]
+  }
 }

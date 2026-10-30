@@ -325,7 +325,7 @@
     <string name="capture_step_report_wait">It takes several minutes, and Android shows nothing while it works. Wait for the notification that says it is ready.</string>
     <string name="capture_step_share">When the notification says the bug report is ready, tap it and share it to PairFree. If you miss the notification, tap Choose a bug report below, open the menu and pick Bug reports to find it.</string>
     <string name="capture_step_name">PairFree shows what it found. On SOUNDPEATS earbuds, name the EQ curves in the order you tapped them. Then send the report, and write in it what you changed in the official app. If PairFree is connected to the same earbuds, its own device report goes in too.</string>
-    <string name="capture_step_cleanup">Afterwards, set Bluetooth HCI snoop log back to Disabled and delete the bug report. It holds a lot of personal data.</string>
+    <string name="capture_step_cleanup">Afterwards, set Bluetooth HCI snoop log back to Disabled and delete the bug report. It holds a lot of personal data: send PairFree\'s report, never the bug report itself, since GitHub issues are public.</string>
     <string name="capture_choose">Choose a bug report</string>
     <string name="capture_reading">Reading the bug report. This can take a minute.</string>
     <string name="capture_privacy_title">What PairFree reads</string>
@@ -482,6 +482,9 @@
     <string name="setting_touch_double_hold">Double tap and hold</string>
     <string name="setting_touch_triple_call">Triple tap during calls</string>
     <string name="setting_group_touch_dial">Case dial</string>
+    <string name="setting_group_sleep">Sleep</string>
+    <string name="setting_sleep_timer">Sleep timer</string>
+    <string name="setting_sleep_timer_note">The earbuds stop the audio after the time chosen.</string>
     <string name="setting_group_touch_dial_note">Double press and hold the dial to lock or unlock it.</string>
     <string name="setting_group_touch_case">Case button</string>
     <string name="setting_dial_press">Press</string>

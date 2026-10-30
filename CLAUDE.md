@@ -80,6 +80,9 @@ Beats on Apple's chips) and `nothing` (Nothing and CMF).
   `button_actions.json`) show on the Controls tab for every model that has them, tested or not
   (owner, 2026-10-14); `buttons.checked` only says how far the writes are confirmed. Where the A40's
   recordings and OpenSCQ30 differ, the recordings win (`docs/soundcore/PROTOCOL.md` sections 8 and 9).
+  Settings no shared screen holds are brand rows from `SoundcoreSession.groups` (so far the Sleep A20's
+  sleep timer). A user's recording can add what OpenSCQ30 lacks (`checked: "recording"`, the Sleep A20,
+  section 11); its writes go into `test_vectors.json` and the Kotlin tests rebuild them.
 - Every Soundcore model comes from OpenSCQ30 (github.com/Oppzippy/OpenSCQ30, Kyle Scheuing,
   GPL-3.0-or-later). The Sleep A20 (A6611), which its library does not support, comes from its device
   faker's captured state (`tools/soundcore-device-faker/devices/a6611.toml`): `module` null, read-only

@@ -409,7 +409,10 @@ class EarbudsConnection(
                 for (packet in parser.feed(bytes)) guardPacket {
                     log?.invoke("recv $packet")
                     if (session.receive(packet)) _state.value = session.state
-                    if (session.lastState !== _soundcoreState.value) _soundcoreState.value = session.lastState
+                    if (session.lastState !== _soundcoreState.value) {
+                        _soundcoreState.value = session.lastState
+                        _settings.value = session.groups
+                    }
                 }
             }
         } catch (_: IOException) {
@@ -810,6 +813,15 @@ class EarbudsConnection(
         sony?.let { session ->
             val outs = session.change(change) ?: return
             if (sendSony(outs)) publish(session)
+            return
+        }
+        // Soundcore: the packets, then the whole state read back, which confirms the change.
+        soundcore?.let { session ->
+            val packets = session.change(change) ?: return
+            if (send(session.frames(packets), then = session.requestState())) {
+                _soundcoreState.value = session.lastState
+                _settings.value = session.groups
+            }
             return
         }
         val session = samsung ?: return

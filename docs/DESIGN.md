@@ -375,6 +375,24 @@ Proposed, not yet reviewed by the owner.
   included, cannot connect meanwhile; choosing Fast Pair or None in the Device tab frees the
   earbuds, and then the app holds the connection only while it is on screen.
 
+### Finding the earbuds
+
+Owner, 2026-10-30, after several detection bugs (Pixel Buds taken for Galaxy Buds, CMF Buds Pro 2, JBL names).
+PairFree decides the **brand** of each paired audio device first, then lets that brand's code pick the model
+(`Identify` in the protocol module, from `data/identify.json`):
+
+1. A name in `not_ours` is left out.
+2. A service only one brand's devices list decides (Soundcore's vendor service, the Galaxy Buds' own services,
+   Sony's, Bose's, Apple's, Nothing's). The standard serial service and Airoha's decide nothing: many brands
+   offer them.
+3. Else a whole word of the name that names one brand (`brand_words`: "JBL", "Galaxy", "soundcore", ...).
+4. Else the name is exactly one brand's model name (Sony's, whose names hold no brand word, as Sony matches them).
+
+Two brands claiming a device leave it out rather than guess. The **model** comes from the earbuds once
+connected wherever their protocol reports one (product ids, model ids, firmware codes); the name only gives the
+first guess. `names` in `data/identify.json` is the test corpus, and every detection bug gets an entry there;
+`IdentifyTest` also checks that every model name in each brand's table comes out as that brand.
+
 ## Outside the app
 
 ### Notification (owner, 2026-10-13; the choice with Fast Pair, 2026-10-14)

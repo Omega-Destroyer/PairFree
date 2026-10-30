@@ -24,9 +24,11 @@ public object BoseModels {
      * `isBoseDevice`: a 16-bit UUID `FEBE` or `FDD2`, or its "Bragi" UUID), else "Bose" in its
      * Bluetooth name. The model is known only once the device reports its product id.
      */
-    public fun isBose(name: String, uuids: List<String>): Boolean =
-        uuids.any { u -> val l = u.lowercase(); l.startsWith(BOSE_SHORT_1) || l.startsWith(BOSE_SHORT_2) || l.startsWith(BRAGI) } ||
-            name.contains(BRAND, ignoreCase = true)
+    public fun isBose(name: String, uuids: List<String>): Boolean = hasService(uuids) || name.contains(BRAND, ignoreCase = true)
+
+    /** Whether the device lists one of the services Bose's app looks for. */
+    public fun hasService(uuids: List<String>): Boolean =
+        uuids.any { u -> val l = u.lowercase(); l.startsWith(BOSE_SHORT_1) || l.startsWith(BOSE_SHORT_2) || l.startsWith(BRAGI) }
 
     /**
      * The screens' [Model] for a model name as PairFree shows it ([BoseModel.name], or the name the

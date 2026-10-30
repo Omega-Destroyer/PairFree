@@ -148,4 +148,14 @@ travel over Bluetooth LE, which PairFree's recorder does not read.
 <tr><td>Tune Flex 3</td><td><code>21B6</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, balance, VoiceAware, SafeSound, 3D spatial sound, sound effect, audio limiter, speak to chat, Find My Buds</td><td>Not tested</td></tr>
 <tr><td>Soundgear Frames</td><td><code>20E6</code></td><td>Glasses</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, touch controls</td><td>Not tested</td></tr>
 </table>
+
+<b>Not covered yet</b> (39): PairFree does not list these among your earbuds.
+
+They use Airoha's own protocol, which PairFree does not speak yet: CLUB PRO+ TWS, Endurance Race 2, Live Buds 3, LIVE FREE 2 TWS, LIVE FREE NC+ TWS, Quantum TWS, Quantum TWS Air, Quantum910, Quantum910P, Quantum910X, Reflect Aero, REFLECT MINI NC, Tune 775NC, Tune 777NC, Vibe Beam 2, Wave Beam 2.
+
+JBL's app controls them over LE Audio, which PairFree does not do yet: Tour Pro 3, Tune 670NC, Tune 770NC.
+
+JBL's app has an older control class for them with no description of their settings, so what they have is not known: CLUB700BT, CLUB950NC, LIVE PRO+ TWS, LIVE220BT, LIVE300TWS, LIVE400BT, LIVE500BT, LIVE650BTNC, TOUR PRO+ TWS, UA PROJECT ROCK.
+
+JBL's app itself has no controls for them: EVEREST ELITE 100, EVEREST ELITE 150NC, EVEREST ELITE 300, EVEREST ELITE 700, EVEREST ELITE 750NC, REFLECT AWARE, Smart Tx, Tour One M4, Tour Pro 4, QUANTUM STREAM WIRELESS.
 <!-- jbl-table:end -->

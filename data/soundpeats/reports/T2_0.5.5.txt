@@ -1,0 +1,66 @@
+TRUEFREE Clip C10: firmware T2 0.5.5
+Bluetooth name: TRUEFREE Clip C10
+Date:           2026-10-30
+Phone:          a user's phone, Android 16 (API 36), PairFree 0.3.0
+Source:         GitHub issue #6, PairFree's device report, unedited. PairFree 0.3.0 showed the firmware as
+                unknown and mislabelled the touch controls: this model sends the firmware text and the
+                custom keys without a status byte (fixed after 0.3.1). The keys are pairs from the first byte.
+
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help add support
+for this model. It holds no account, address or other personal data.
+
+Bluetooth name:  TRUEFREE Clip C10
+Firmware:        unknown
+Firmware code:   unknown
+App:             PairFree 0.3.0 (SPP)
+OS:              Android 16 (API 36)
+Captured:        2026-10-30 00:23 UTC
+
+The app asked the earbuds every read it knows. Each line is the feature,
+its command, the decoded reply and the raw bytes. "no reply" means the
+firmware does not support that read.
+
+firmware_version     0309  'T2_20250506_V0.5.5'                     raw=54 32 5f 32 30 32 35 30 35 30 36 5f 56 30 2e 35 2e 35
+battery_left         0306  100                                      raw=00 64
+battery_right        0307  100                                      raw=00 64
+battery_case         0323  96                                       raw=00 60
+anc_mode             0310  no reply
+anc_level            0324  no reply
+transparency_level   034C  no reply
+anc_env_adaptive     0364  no reply
+game_mode            030E  0                                        raw=00 00
+multipoint           0314  1                                        raw=00 01
+ldac                 0338  no reply
+le_audio             0335  no reply
+in_ear_detection     030C  no reply
+touch_disabled       0312  0                                        raw=00 00
+custom_keys          03AA  tap R -> vol-, tap L -> play/pause, double L -> game mode, double L -> prev, double R -> next, hold R -> ANC, triple L -> assistant raw=01 02 02 01 03 03 04 03 05 04 06 08 07 05 08 06
+prompt_volume        0319  43                                       raw=00 2b
+auto_shutdown        036E  no reply
+voice_language       0321  0                                        raw=00 00
+dynamic_eq           0331  1                                        raw=00 01
+dynamic_bass         033C  no reply
+movie_mode           0327  0                                        raw=00 00
+spatial_audio        0357  no reply
+panoramic_sound      0329  no reply
+dolby                0348  no reply
+adaptive_volume      0346  no reply
+personal_volume      0340  00 00 38 00 38                           raw=00 00 00 38 00 38
+ear_volume_left      0342  no reply
+ear_volume_right     0343  no reply
+light_effect         030A  no reply
+privacy_mode         036B  no reply
+fall_detection       0355  no reply
+water_drain          0350  0                                        raw=00 00
+reset_state          0367  no reply
+find_left            034A  0                                        raw=00 00
+find_right           034B  0                                        raw=00 00
+earbud_color         0326  0                                        raw=00 00
+hearing_protection   034E  no reply
+volume_balance       0375  no reply
+phone_codec          0377  no reply
+
+This is enough to add this model's controls. For its equalizer too, use
+"Record from the official app" on PairFree's Device tab instead.

@@ -186,6 +186,8 @@ def describe(name, payload):
     if status != 0 and len(payload) <= 2:
         return f"status {status} (not supported or error)"
     if name == "custom_keys":
+        # a leading status byte only when the length is odd: the C30 and Clip C10 send pairs alone
+        body = body if (len(payload) % 2 == 1 and status == 0) else payload
         pairs = [(body[i], body[i + 1]) for i in range(0, len(body) - 1, 2)]
         return ", ".join(f"{GESTURES.get(g, g)} -> {ACTIONS.get(a, a)}" for g, a in pairs)
     if name in ("anc_level", "transparency_level"):

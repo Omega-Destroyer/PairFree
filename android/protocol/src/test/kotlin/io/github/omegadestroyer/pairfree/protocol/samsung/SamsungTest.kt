@@ -129,6 +129,14 @@ class SamsungProtocolTest {
         assertEquals("SM-R510", SamsungModels.identify("Renamed", listOf(sppNew, handsFree, leAudio))?.model)
         assertEquals("SM-R177", SamsungModels.identify("Renamed", listOf(sppNew, handsFree))?.model)
         assertNull(SamsungModels.identify("Soundcore Space A40", listOf(spp, handsFree)))
+        // The standard serial service and a name holding "Buds Pro" are not enough: Google's Pixel Buds (issue #4).
+        for (pixel in listOf("Pixel Buds Pro", "Pixel Buds Pro 2", "Pixel Buds A-Series", "Pixel Buds Live")) {
+            assertNull(SamsungModels.identify(pixel, listOf(spp, handsFree)), pixel)
+            assertNull(SamsungModels.identify(pixel, emptyList()), "$pixel, no service list yet")
+        }
+        // A Galaxy Buds Live or Buds+ with its default name still is one.
+        assertEquals("SM-R180", SamsungModels.identify("Galaxy Buds Live (A1B2)", listOf(spp, handsFree))?.model)
+        assertEquals("SM-R175", SamsungModels.identify("Galaxy Buds+ (A1B2)", emptyList())?.model)
     }
 
     @Test

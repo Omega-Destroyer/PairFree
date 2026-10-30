@@ -53,7 +53,10 @@ public object DeviceReport {
         }
         if (status != 0 && u.size <= 2) return "status $status (not supported or error)"
         if (command == Command.CUSTOM_KEYS) {
-            return pairs(body).joinToString(", ") { (g, a) -> "${GESTURES[g] ?: g} -> ${ACTIONS[a] ?: a}" }
+            // A leading status byte only when the length is odd, as Replies reads it: the C30 and Clip C10 send
+            // the pairs alone (GitHub issues #5 and #6), and dropping their first byte shifted every pair.
+            val keys = if (u.size % 2 == 1 && status == 0) body else u
+            return pairs(keys).joinToString(", ") { (g, a) -> "${GESTURES[g] ?: g} -> ${ACTIONS[a] ?: a}" }
         }
         if (command == Command.ANC_LEVEL || command == Command.TRANSPARENCY_LEVEL) {
             // a leading status byte is dropped only when the length is odd, as the official app does

@@ -106,8 +106,32 @@ def table():
         f"<tr>{header}</tr>",
         *rows(devices),
         "</table>",
+        "",
+        *not_covered(load().get("not_covered", [])),
         END,
     ])
+
+
+# Why a model in JBL's product list is not covered (devices.json not_covered).
+WHY = {
+    "airoha": "They use Airoha's own protocol, which PairFree does not speak yet",
+    "le_audio": "JBL's app controls them over LE Audio, which PairFree does not do yet",
+    "no_dashboard": "JBL's app has an older control class for them with no description of their settings, so what "
+                    "they have is not known",
+    "unsupported": "JBL's app itself has no controls for them",
+}
+
+
+def not_covered(models):
+    """The models JBL's app lists that PairFree does not cover, by reason, so their owners know why they are missing."""
+    if not models:
+        return []
+    out = [f"<b>Not covered yet</b> ({len(models)}): PairFree does not list these among your earbuds."]
+    for why, text in WHY.items():
+        names = [escape(short(m["name"])) for m in models if m["why"] == why]
+        if names:
+            out += ["", f"{text}: {', '.join(names)}."]
+    return out
 
 
 def summary():

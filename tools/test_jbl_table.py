@@ -55,6 +55,17 @@ class JblTable(unittest.TestCase):
 
 
 class JblData(unittest.TestCase):
+    def test_not_covered(self):
+        # GitHub issues #1 and #4: owners of these could not tell why their model was missing.
+        data = load("devices.json")
+        covered = {p for d in data["devices"] for p in d["pids"]}
+        missing = {m["name"]: m["why"] for m in data["not_covered"]}
+        self.assertEqual("airoha", missing["JBL Live Buds 3"])
+        self.assertEqual("le_audio", missing["JBL Tour Pro 3"])
+        for m in data["not_covered"]:
+            self.assertIn(m["why"], gen.WHY, m["name"])
+            self.assertFalse(set(m["pids"]) & covered, f"{m['name']} is covered")
+
     def test_devices(self):
         devices = load("devices.json")["devices"]
         pids = [p for d in devices for p in d["pids"]]

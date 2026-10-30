@@ -70,15 +70,22 @@ public object SamsungModels {
      * The model of a paired device from its [uuids], the service list Android keeps for it, and its Bluetooth [name]
      * (docs/samsung/PROTOCOL.md section 4), or null when it is not Galaxy Buds:
      * 1. The model id a Buds2 or later publishes in its service list ([deviceIdIn]), as Samsung's plugin reads it.
-     * 2. Else the name ([fromName]), but while the service list is known only for a model whose own service is on
-     *    it: PairFree talks to the earbuds on that service, and another brand's "Buds Pro" has none.
+     * 2. Else the name ([fromName]), when the device has a service only Samsung's earbuds have, or the name says
+     *    Galaxy or Samsung. The Buds+, Buds Live and Buds Pro talk on the standard serial service, which many
+     *    earbuds offer, and their names are matched by part ("Buds Pro"), so a "Pixel Buds Pro" with that service,
+     *    or with no service list cached yet, passed for Galaxy Buds (GitHub issue #4).
      * 3. Else, for a pair with the Buds2-and-later service, what Samsung's plugin falls back to: a Buds2 Pro when
      *    it also has hands-free and LE Audio, otherwise a Buds2.
      */
     public fun identify(name: String, uuids: List<String>): SamsungModel? {
         val list = uuids.map { it.lowercase() }
         deviceIdIn(list)?.let { id -> fromDeviceId(id)?.let { return it } }
-        fromName(name)?.let { m -> if (list.isEmpty() || m.serviceUuid.lowercase() in list) return m }
+        fromName(name)?.let { m ->
+            val service = m.serviceUuid.lowercase()
+            val ownService = service != STANDARD_SERIAL && service in list
+            val samsungName = SAMSUNG_WORDS.any { name.contains(it, ignoreCase = true) }
+            if (ownService || (samsungName && (list.isEmpty() || service in list))) return m
+        }
         if (SERVICE_NEW !in list) return null
         return of(if (HANDS_FREE in list && LE_AUDIO in list) "SM-R510" else "SM-R177")
     }
@@ -106,6 +113,8 @@ public object SamsungModels {
             .firstOrNull { name.contains(it.first, ignoreCase = true) }?.second
 
     private const val DEVICE_ID_PREFIX = "d908aab5-7a90-4cbe-8641-86a553db"
+    private const val STANDARD_SERIAL = "00001101-0000-1000-8000-00805f9b34fb"
+    private val SAMSUNG_WORDS = listOf("Galaxy", "Samsung")
     private const val SERVICE_NEW = "2e73a4ad-332d-41fc-90e2-16bef06523f2"
     private const val HANDS_FREE = "0000111e-0000-1000-8000-00805f9b34fb"
     private const val LE_AUDIO = "0000184e-0000-1000-8000-00805f9b34fb"

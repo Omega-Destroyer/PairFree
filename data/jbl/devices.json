@@ -1,6 +1,203 @@
 {
-  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06) or p4 (JBL's protocol 4, frames starting 00 DD); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode) or mode4 (protocol 4: the mode feature alone); auto_off is v1 (one byte), v2 (three bytes), feature or p4. security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. Models on Airoha's SDK or LE Audio, and models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports.",
+  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06) or p4 (JBL's protocol 4, frames starting 00 DD); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode) or mode4 (protocol 4: the mode feature alone); auto_off is v1 (one byte), v2 (three bytes), feature or p4. security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. Models on Airoha's SDK or LE Audio, and models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: airoha (Airoha's SDK, a protocol of its own), le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) or unsupported (JBL's app has no control class for it).",
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
+  "not_covered": [
+    {
+      "name": "JBL CLUB PRO+ TWS",
+      "pids": ["1F65", "202B"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL CLUB700BT",
+      "pids": ["1F40", "2013"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL CLUB950NC",
+      "pids": ["1F41", "2014"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL Endurance Race 2",
+      "pids": ["2110"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL EVEREST ELITE 100",
+      "pids": ["1002"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL EVEREST ELITE 150NC",
+      "pids": ["1003"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL EVEREST ELITE 300",
+      "pids": ["1004"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL EVEREST ELITE 700",
+      "pids": ["1005"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL EVEREST ELITE 750NC",
+      "pids": ["1006"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL Live Buds 3",
+      "pids": ["20F1"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL LIVE FREE 2 TWS",
+      "pids": ["2067", "2068"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL LIVE FREE NC+ TWS",
+      "pids": ["201F", "2024"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL LIVE PRO+ TWS",
+      "pids": ["203B", "2043", "2060"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL LIVE220BT",
+      "pids": ["1F32"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL LIVE300TWS",
+      "pids": ["1F37", "201D"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL LIVE400BT",
+      "pids": ["1F11"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL LIVE500BT",
+      "pids": ["1F12"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL LIVE650BTNC",
+      "pids": ["1F15"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL Quantum TWS",
+      "pids": ["207D", "207E"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Quantum TWS Air",
+      "pids": ["20BD"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Quantum910",
+      "pids": ["2089"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Quantum910P",
+      "pids": ["20A3"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Quantum910X",
+      "pids": ["209E"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Reflect Aero",
+      "pids": ["207B"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL REFLECT AWARE",
+      "pids": ["1001"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL REFLECT MINI NC",
+      "pids": ["201C", "2027"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Smart Tx",
+      "pids": ["21BE"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL Tour One M4",
+      "pids": ["2193"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL Tour Pro 3",
+      "pids": ["20F2"],
+      "why": "le_audio"
+    },
+    {
+      "name": "JBL Tour Pro 4",
+      "pids": ["21AE"],
+      "why": "unsupported"
+    },
+    {
+      "name": "JBL TOUR PRO+ TWS",
+      "pids": ["2020", "202C"],
+      "why": "no_dashboard"
+    },
+    {
+      "name": "JBL Tune 670NC",
+      "pids": ["20B5", "20B6"],
+      "why": "le_audio"
+    },
+    {
+      "name": "JBL Tune 770NC",
+      "pids": ["20B7", "20B8"],
+      "why": "le_audio"
+    },
+    {
+      "name": "JBL Tune 775NC",
+      "pids": ["2123"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Tune 777NC",
+      "pids": ["215D"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Vibe Beam 2",
+      "pids": ["2102"],
+      "why": "airoha"
+    },
+    {
+      "name": "JBL Wave Beam 2",
+      "pids": ["20FE"],
+      "why": "airoha"
+    },
+    {
+      "name": "QUANTUM STREAM WIRELESS",
+      "pids": ["20ED"],
+      "why": "unsupported"
+    },
+    {
+      "name": "UA PROJECT ROCK",
+      "pids": ["1F60", "2044"],
+      "why": "no_dashboard"
+    }
+  ],
   "devices": [
     {
       "name": "JBL CLUB ONE",

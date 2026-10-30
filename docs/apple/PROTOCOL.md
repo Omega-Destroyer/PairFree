@@ -92,7 +92,26 @@ Control command ids and values (`commands.json`; LibrePods' `control_commands.md
 | `26` | Personalized Volume | switch |
 | `28` | Conversation Awareness | switch |
 | `2E` | Adaptive noise reduction | 0 to 100 |
+| `01` | Microphone | `00` automatic, `01` always the right, `02` always the left |
+| `1A` | Press and hold's cycle | a bit per mode: `01` off, `02` noise cancelling, `04` transparency, `08` adaptive |
+| `1C` | Digital Crown direction (AirPods Max) | `01` reversed, `02` default |
+| `1F` | Tone volume | 15 to 100, then a second byte |
+| `24` | Call control | see below |
 | `34` | Off as a listening mode for the stem | switch |
+| `31` | Charging case sounds | switch |
+| `35` | Sleep detection | switch |
+
+The cycle keeps at least two modes, as LibrePods' press-and-hold screen does, and offers off only
+while off is allowed (`34`) and adaptive only where the model has it. Tone volume's second byte is
+50 hex in LibrePods' writes and 00 in MagicPodsCore's; PairFree writes back the one the AirPods
+reported, and keeps the volume at 15 or more as MagicPodsCore does. Call control says what one
+press does on a call (two presses do the other) in one of two layouts: `00` or `20`, then `03`
+(one press mutes) or `02` (one press hangs up), as LibrePods writes and MagicPodsCore reads; or
+`21`, the mute press (`23` once, `22` twice) and the end-call press (`03` once, `02` twice), as
+MagicPodsCore writes. PairFree writes the layout the AirPods reported.
+
+Not offered: `12` "Hey Siri", `16` the press-and-hold action per AirPod (noise control or Siri), and
+the hearing features (`2C` hearing aid, `33` hearing assist, `2F`), which need Apple's hearing test.
 
 PairFree shows a setting once the AirPods have reported it. Off, noise cancelling and
 transparency go on the shared noise control; Adaptive is a switch beside it on models that have

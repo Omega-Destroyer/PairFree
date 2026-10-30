@@ -131,6 +131,51 @@ class AppleTest {
     }
 
     @Test
+    fun librePodsOtherControlsBecomeRows() {
+        val s = AppleSession()
+        s.receive(AapPacket.control(AppleControl.ALLOW_OFF, AppleWire.ON).bytes())
+        // Press and hold cycles through noise cancelling and transparency.
+        s.receive(AapPacket.control(AppleControl.LISTENING_MODE_CONFIGS, 0x06).bytes())
+        s.receive(AapPacket.control(AppleControl.MIC_MODE, 2).bytes())
+        s.receive(AapPacket.control(AppleControl.CALL_MANAGEMENT, 0, 3).bytes())
+        s.receive(AapPacket.control(AppleControl.CHIME_VOLUME, 0x46, 0x50).bytes())
+        s.receive(AapPacket.control(AppleControl.SLEEP_DETECTION, AppleWire.ON).bytes())
+
+        assertEquals(Setting.Toggle("cycle_off", false), setting(s, "cycle_off"), "off is allowed")
+        assertEquals(Setting.Toggle("cycle_anc", true), setting(s, "cycle_anc"))
+        assertNull(setting(s, "cycle_adaptive"), "no Adaptive on an unknown model")
+        assertNull(s.change(SettingChange.Toggle("cycle_anc", false)), "the cycle keeps two modes")
+        assertEquals("0400040009001a07000000", hex(s.change(SettingChange.Toggle("cycle_off", true))!!.single().bytes()))
+
+        assertEquals(Setting.Choice("microphone", "left", listOf("automatic", "right", "left")), setting(s, "microphone"))
+        assertEquals("0400040009000100000000", hex(s.change(SettingChange.Choice("microphone", "automatic"))!!.single().bytes()))
+        assertEquals(Setting.Choice("call_press_once", "mute", listOf("mute", "hang_up")), setting(s, "call_press_once"))
+        assertEquals("0400040009002400020000", hex(s.change(SettingChange.Choice("call_press_once", "hang_up"))!!.single().bytes()))
+        assertEquals(Setting.Level("chime_volume", 70, 15, 100), setting(s, "chime_volume"))
+        assertEquals("0400040009001f28500000", hex(s.change(SettingChange.Level("chime_volume", 40))!!.single().bytes()))
+        assertEquals("0400040009001f0f500000", hex(s.change(SettingChange.Level("chime_volume", 3))!!.single().bytes()), "no lower than 15")
+        assertEquals("0400040009003502000000", hex(s.change(SettingChange.Toggle("sleep_detection", false))!!.single().bytes()))
+        s.receive(AapPacket.control(AppleControl.CROWN_REVERSED, AppleWire.OFF).bytes())
+        assertEquals("0400040009001c01000000", hex(s.change(SettingChange.Toggle("crown_reversed", true))!!.single().bytes()))
+        assertNull(setting(s, "in_case_tone"), "not reported")
+    }
+
+    @Test
+    fun callControlIsWrittenInTheLayoutTheAirPodsReported() {
+        // MagicPodsCore's layout: 21, mute on a single press (23), end call on a double press (02).
+        val s = AppleSession()
+        s.receive(AapPacket.control(AppleControl.CALL_MANAGEMENT, 0x21, 0x23, 0x02).bytes())
+        assertEquals(Setting.Choice("call_press_once", "mute", listOf("mute", "hang_up")), setting(s, "call_press_once"))
+        assertEquals("0400040009002421220300", hex(s.change(SettingChange.Choice("call_press_once", "hang_up"))!!.single().bytes()))
+        assertEquals("hang_up", (setting(s, "call_press_once") as Setting.Choice).value)
+        // The other: 20, then 02 (press once to hang up).
+        val t = AppleSession()
+        t.receive(AapPacket.control(AppleControl.CALL_MANAGEMENT, 0x20, 0x02).bytes())
+        assertEquals("hang_up", (setting(t, "call_press_once") as Setting.Choice).value)
+        assertEquals("0400040009002420030000", hex(t.change(SettingChange.Choice("call_press_once", "mute"))!!.single().bytes()))
+    }
+
+    @Test
     fun theTablesMatchTheData() {
         val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
         assertEquals(devices.size, AppleModels.ALL.size)

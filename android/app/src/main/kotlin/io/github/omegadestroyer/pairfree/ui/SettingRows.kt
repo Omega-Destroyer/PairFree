@@ -157,6 +157,16 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_swipe_length" -> stringResource(R.string.setting_volume_swipe_length)
     "ear_detection" -> stringResource(R.string.setting_ear_detection)
     "allow_off" -> stringResource(R.string.setting_allow_off)
+    "microphone" -> stringResource(R.string.setting_microphone)
+    "sleep_detection" -> stringResource(R.string.setting_sleep_detection)
+    "in_case_tone" -> stringResource(R.string.setting_in_case_tone)
+    "crown_reversed" -> stringResource(R.string.setting_crown_reversed)
+    "chime_volume" -> stringResource(R.string.setting_chime_volume)
+    "call_press_once" -> stringResource(R.string.setting_call_press_once)
+    "cycle_off" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.action_off))
+    "cycle_anc" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.setting_anc))
+    "cycle_transparency" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.anc_transparency))
+    "cycle_adaptive" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.scene_adaptive))
     "auto_off" -> stringResource(R.string.auto_shutdown)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure)
     "ambient_volume" -> stringResource(R.string.setting_ambient_volume)
@@ -314,6 +324,8 @@ private fun settingNote(key: String): String? = when (key) {
     "personalized_volume" -> stringResource(R.string.setting_personalized_volume_note)
     "allow_off" -> stringResource(R.string.setting_allow_off_note)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
+    "sleep_detection" -> stringResource(R.string.setting_sleep_detection_note)
+    "call_press_once" -> stringResource(R.string.setting_call_press_once_note)
     "codec" -> stringResource(R.string.setting_codec_note)
     "custom_eq" -> stringResource(R.string.setting_custom_eq_note)
     else -> null
@@ -376,6 +388,14 @@ private fun optionName(key: String, option: String): String = when {
         },
     )
     key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
+    key == "microphone" -> stringResource(
+        when (option) {
+            "right" -> R.string.setting_microphone_right
+            "left" -> R.string.setting_microphone_left
+            else -> R.string.setting_microphone_automatic
+        },
+    )
+    key == "call_press_once" -> stringResource(if (option == "hang_up") R.string.setting_call_hang_up else R.string.setting_call_mute)
     key == "press_speed" || key == "hold_duration" || key == "volume_swipe_length" -> stringResource(
         when (option) {
             "slower" -> R.string.setting_option_slower

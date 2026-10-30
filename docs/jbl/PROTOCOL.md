@@ -175,6 +175,46 @@ and `1B` left and right earbud, `1C` case (each: charging, level).
 `AA 33 01 <bit 7 on, bits 0–6 minutes>` (v1) or `AA 33 03 <on> <minutes, 2 bytes low first>`
 (v2, `generateSetAutoOffCmdV2`); `AA 35 01 <00 off, 01 on>`.
 
+### 4.8 The other settings
+
+JBL's dashboard shows a card per setting, and the model's control class sends it; `settings` in
+`devices.json` lists those a model has both of (the card in its dashboard config, and a method
+that the class implements rather than leaving as JBL's "not support" default). Most are a Harman
+command whose first byte is a sub-command: `00` write, `01` read, `02` reply (`CmdBase`). On the
+feature family the sound effect, the audio limiter and Hi-Res are feature records instead.
+
+| Setting | Card | Command or feature | Read | Reply or write |
+|---|---|---|---|---|
+| Smart Audio & Video | `SmartAudioVideoCard` | `80` | `01` | `02` (write `00`), then AAC, SBC and two latencies, two bytes each, low first |
+| Voice prompts | `VoicePromptCard` | `93` | `04` | reply `05`, write `03`, then 0 tones or 1 spoken |
+| Balance | `LeftRightBalanceCard` | `A8` | `01` | `02` (write `00`) `01` on `02` level: 84 left to 116 right, 100 the middle |
+| VoiceAware | `VoiceAwareCard` | `98` | `01` | `02` (write `00`), the level (1 low, 2 mid, 3 high), on |
+| SafeSound | `SafeSoundCard` | `A5` | `01` | `02` (write `00`) `01` status, 1 on |
+| 3D spatial sound | `Spatial3DCard` | `9D` | `01` | `02` (write `00`), on, the type (1 music, 2 movie, 3 game) |
+| Speak to chat | `SpeakToChatCard` | `9F` | `01` | `02` (write `00`), on, the seconds before the music comes back (5, 15, 20) |
+| Sound effect | `SoundEffectCard` | feature `20` | | on, the effect (0 standard, 1 treble boost, 2 bass boost) |
+| Audio limiter | `AudioLimiterCard` | feature `35` | | 1 on |
+| Hi-Res audio | `HiResAudioCard` | feature `59` | | 1 on |
+| Find My Buds | `FindMyBudCard` | `36` | | one value per earbud: `11` start the left, `10` the right, `01` stop the left, `00` the right |
+
+Smart Audio & Video's numbers come from the product list (`smartAudioVideo`: `normal`, `audio`,
+`video`, in `devices.json` as `smart_audio_video`). JBL's card is a switch (off is `normal`) with
+Audio or Video under it; a model with three numbers writes 65535 as the fourth, and the reply is
+matched on as many numbers as the model gives. The sound effect's names come from the product
+list's `mEffectList` (`effects`); every model so far has Natural, more treble and more bass. JBL's
+configs put the sound effect and audio limiter with the call settings (`CallModeItems`), so
+PairFree shows them there; whether they act on calls alone has not been checked. The balance's
+middle is no balance at all, which PairFree writes as off. Find My Buds has no read; PairFree
+starts both earbuds and lets the user mute either, as on Galaxy Buds.
+
+Protocol 4 (section 6) has each as a feature, one byte with the status in bit 7 and the level in
+bits 0 to 6 unless said: `4111` Smart Audio & Video (the four numbers, two bytes each, low first),
+`3136` voice prompts (status spoken, level the volume), `21` balance, `35` sidetone (VoiceAware),
+`37` max volume limit (SafeSound), `34` spatial scene (level 1 movie, 2 music, 3 game: not the
+Harman order, `General4Control.set3DSpatialStatus`), `43` smart talk (speak to chat, level the
+seconds), `41` sound effect, `39` audio limiter and `40` Hi-Res (level 127), and `4106` Find My
+Buds, written only: bit 7 the case, 6 the right earbud, 5 the left, bits 0 to 4 set.
+
 ## 5. How each model sends its settings
 
 `devices.json` gives each model's:
@@ -290,6 +330,8 @@ services PairFree never opens.
 - Which models' LE side answers on the classic address, as the Tune Flex 2's does.
 - Whether the feature-family headphones (Junior, Quantum 360) answer the battery read `25`.
 - Protocol 4 has no recorded frame yet: sections 6 and 7 are from JBL's app alone.
+- Section 4.8's settings have no recorded frame: they are from JBL's app alone. Whether the sound
+  effect and audio limiter act on calls alone, as JBL's configs group them.
 - Whether a security-mode model answers commands before its step (mode 2's pairing report, mode
   3's host checksum) is unknown; PairFree runs the step but does not block on it.
 - What the acknowledgement's status values mean; PairFree reads a setting back rather than

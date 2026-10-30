@@ -23,6 +23,19 @@ END = "<!-- jbl-table:end -->"
 KINDS = {"headphones": "Headphones", "earbuds": "Earbuds", "glasses": "Glasses"}
 CONNECT = {"BLE": "Bluetooth LE", "BT": "Serial"}
 MODES = {"anc": "noise cancelling", "ambient_aware": "Ambient Aware", "talk_thru": "TalkThru"}
+EXTRAS = {
+    "smart_audio_video": "Smart Audio & Video",
+    "voice_prompts": "voice prompts",
+    "balance": "balance",
+    "voice_aware": "VoiceAware",
+    "safe_sound": "SafeSound",
+    "spatial": "3D spatial sound",
+    "sound_effect": "sound effect",
+    "audio_limiter": "audio limiter",
+    "speak_to_chat": "speak to chat",
+    "hi_res": "Hi-Res audio",
+    "find_buds": "Find My Buds",
+}
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",
     "FajkPes": "https://github.com/FajkPes/JBL-Headphones-App",
@@ -48,6 +61,7 @@ def settings(m):
         out.append("auto power-off")
     if m.get("auto_play_pause"):
         out.append("pause when taken off")
+    out += [EXTRAS[x] for x in m.get("settings", [])]
     return ", ".join(out) or "battery only"
 
 

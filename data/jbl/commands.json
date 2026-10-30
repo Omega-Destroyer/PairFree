@@ -12,7 +12,15 @@
     {"name": "set_auto_off", "command": "33", "note": "v1: one byte, bit 7 on and bits 0 to 6 the minutes; v2: on, then the minutes in two bytes."},
     {"name": "set_auto_play_pause", "command": "35", "note": "00 off, 01 on."},
     {"name": "feature", "command": "06", "wide": true, "note": "Harman's feature records: a type (00 set, 01 get, 02 reply), then per feature its id in two bytes (high first), and for a set or reply a length and the value."},
-    {"name": "noise_modes", "command": "91", "note": "A sub-command first (noise_sub), then pairs of mode and value."}
+    {"name": "noise_modes", "command": "91", "note": "A sub-command first (noise_sub), then pairs of mode and value."},
+    {"name": "beeping", "command": "36", "note": "Find My Buds (CmdGen.generateSetEarBeepingCmd): 11 start the left earbud, 10 the right, 01 stop the left, 00 the right."},
+    {"name": "smart_switch", "command": "80", "note": "Smart Audio & Video (SmartSwitchCmd): 01 to read; the reply 02, then AAC, SBC and two latencies, two bytes each, low first; a write 00 and the same."},
+    {"name": "voice_prompts", "command": "93", "note": "Voice prompts (CmdGen, HandleParse): 04 to read, reply 05 and 0 tones or 1 spoken prompts; a write 03 and 0 or 1."},
+    {"name": "voice_aware", "command": "98", "note": "VoiceAware, your own voice in calls (VoiceAwareCmd): 01 to read; reply 02, the level (1 low, 2 mid, 3 high) and on; a write 00, the level and on."},
+    {"name": "spatial", "command": "9D", "note": "3D spatial sound (SpatialStatus3DCmd): 01 to read; reply 02, on and the type (1 music, 2 movie, 3 game); a write 00, on and the type."},
+    {"name": "speak_to_chat", "command": "9F", "note": "Speak to chat (SpeakToChatCmd): 01 to read; reply 02, on and the seconds before the music comes back; a write 00, on and the seconds."},
+    {"name": "safe_sound", "command": "A5", "note": "SafeSound volume limit (SafeSoundCmd): 01 to read; reply 02, 01 and the status; a write 00, 01 and the status (1 on)."},
+    {"name": "balance", "command": "A8", "note": "Left and right balance (LeftRightSoundBalanceCmd): 01 to read; reply 02, 01, on, 02 and the level (84 to 116, 100 in the middle); a write 00 and the same."}
   ],
   "status_types": {"all": "30", "anc": "31", "ambient": "32", "auto_off": "33", "auto_play_pause": "38"},
   "noise_sub": {"set": "10", "get": "11", "reply": "12", "off": "13"},
@@ -27,7 +35,11 @@
     "battery_headband": 25,
     "battery_left": 26,
     "battery_right": 27,
-    "battery_case": 28
+    "battery_case": 28,
+    "speak_to_chat": 8,
+    "sound_effect": 20,
+    "audio_limiter": 35,
+    "hi_res": 59
   },
   "protocol4": {
     "_about": "JBL's protocol 4 (com.harman.protocol4): an identifier (DD00 from the headphones, DD01 for the case), a command, a packet count and index, a length (all two bytes, low first, but count and index one byte each) and the payload: feature ids to read, or per feature its id, a length and the value. A reply's first packet starts with a status code (0 is fine).",
@@ -48,7 +60,18 @@
       "pairing_status": 46,
       "host_type": 47,
       "ambient_sound_control": 73,
-      "battery_case": 7939
+      "battery_case": 7939,
+      "balance": 21,
+      "spatial_scene": 34,
+      "sidetone": 35,
+      "max_volume_limit": 37,
+      "audio_limiter": 39,
+      "hi_res": 40,
+      "sound_effect": 41,
+      "smart_talk": 43,
+      "voice_prompt": 3136,
+      "find_my_buds": 4106,
+      "smart_switch": 4111
     },
     "ignore_level": 127,
     "never_send": {

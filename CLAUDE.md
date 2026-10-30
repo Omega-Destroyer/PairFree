@@ -176,7 +176,9 @@ Beats on Apple's chips) and `nothing` (Nothing and CMF).
   family, noise commands and auto power-off encoding, section 5) become `JblCommand`,
   `JblStatus`, `JblNoise`, `JblAmbient`, `JblFeature` and `JblModels` through
   `generateJblTables`; `JblSession` maps replies to the screens and reads each change back 3 s
-  later. `JblReader` splits both Harman's `AA` frames and protocol 4's `00 DD` frames (`JblP4Packet`). `EarbudsConnection.serveJbl` sends one command at a time, waiting up to 1 s, as JBL's
+  later. Each model's `settings` (the dashboard cards its control class sends: Smart Audio & Video,
+  balance, VoiceAware, SafeSound, 3D spatial, Find My Buds and more, section 4.8) go through
+  `JblExtras`; the list was read from JBL's app 5.37.10 outside the repo. `JblReader` splits both Harman's `AA` frames and protocol 4's `00 DD` frames (`JblP4Packet`). `EarbudsConnection.serveJbl` sends one command at a time, waiting up to 1 s, as JBL's
   app does. Protocol 4 (section 6) is covered, including the models with a BLE security mode 1 to 3,
   which add a transport step `GattLink` runs itself (the raw characteristic, the host-name checksum,
   section 7): no key is needed. JBL's genuine-product check needs a key from a native library, so it

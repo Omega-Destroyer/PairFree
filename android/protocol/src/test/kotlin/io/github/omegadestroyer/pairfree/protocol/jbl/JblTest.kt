@@ -371,6 +371,106 @@ class JblTest {
         assertEquals(1, JblAdvert.score(withNames, m, mac, "Pixel 9"))
     }
 
+    @Test
+    fun theTuneFlex2sOtherSettingsGoOverHarmansCommands() {
+        val s = JblSession(model("JBL Tune Flex 2"))
+        val reads = s.start().map { it.hex() }
+        for (read in listOf("aa800101", "aa930104", "aaa80101", "aa980101", "aaa50101", "aa9d0101")) assertTrue(read in reads, read)
+        assertTrue(JblPacket.featureGet(listOf(JblFeature.SOUND_EFFECT, JblFeature.AUDIO_LIMITER)).hex() in reads, "no Hi-Res on the Tune Flex 2")
+
+        // Smart Audio & Video: AAC 256, SBC 46, latency 280 and the empty fourth number is the model's Audio.
+        s.receive(packet("aa800902" + "0001" + "2e00" + "1801" + "ffff"))
+        assertEquals(Setting.Choice("jbl_smart_audio_video", "audio", listOf("standard", "audio", "video")), setting(s, "jbl_smart_audio_video"))
+        assertEquals("aa800900" + "c500" + "2e00" + "7800" + "ffff", s.change(SettingChange.Choice("jbl_smart_audio_video", "video"))!!.single().hex())
+
+        // Balance 90 is 6 steps from the left end; the middle turns it off.
+        s.receive(packet("aaa805020101025a"))
+        assertEquals(Setting.Level("balance", 6, 0, 32), setting(s, "balance"))
+        assertEquals("aaa8050001000264", s.change(SettingChange.Level("balance", 16))!!.single().hex())
+
+        s.receive(packet("aa9803020301"))
+        assertEquals(Setting.Choice("jbl_voice_aware", "high", listOf("off", "low", "mid", "high")), setting(s, "jbl_voice_aware"))
+        assertEquals("aa9803000300", s.change(SettingChange.Choice("jbl_voice_aware", "off"))!!.single().hex())
+
+        s.receive(packet("aa93020500"))
+        assertEquals(Setting.Toggle("voice_prompts", false), setting(s, "voice_prompts"))
+        assertEquals("aa93020301", s.change(SettingChange.Toggle("voice_prompts", true))!!.single().hex())
+
+        s.receive(packet("aa9d03020101"))
+        assertEquals(Setting.Choice("jbl_spatial", "music", listOf("off", "music", "movie", "game")), setting(s, "jbl_spatial"))
+        assertEquals("aa9d03000103", s.change(SettingChange.Choice("jbl_spatial", "game"))!!.single().hex())
+
+        s.receive(packet("aaa503020101"))
+        assertEquals(Setting.Toggle("jbl_safe_sound", true), setting(s, "jbl_safe_sound"))
+        assertEquals("aaa503000100", s.change(SettingChange.Toggle("jbl_safe_sound", false))!!.single().hex())
+
+        // The sound effect (on, increased bass) and the audio limiter (on) come as feature records.
+        s.receive(packet("aa060a00" + "02" + "0014020102" + "00230101"))
+        assertEquals(Setting.Choice("jbl_call_effect", "bass", listOf("off", "standard", "treble", "bass")), setting(s, "jbl_call_effect"))
+        assertEquals(Setting.Toggle("jbl_audio_limiter", true), setting(s, "jbl_audio_limiter"))
+        assertEquals(JblPacket.featureSet(JblFeature.SOUND_EFFECT, 0, 2), s.change(SettingChange.Choice("jbl_call_effect", "off"))!!.single())
+        assertEquals(JblPacket.featureSet(JblFeature.AUDIO_LIMITER, 0), s.change(SettingChange.Toggle("jbl_audio_limiter", false))!!.single())
+        assertNull(s.change(SettingChange.Choice("jbl_call_effect", "studio")), "not one of the model's effects")
+
+        assertEquals(
+            listOf("aa800101", "aaa80101", "aa980101", "aa930104", "aa9d0101", "aaa50101") +
+                listOf(JblPacket.featureGet(listOf(JblFeature.SOUND_EFFECT)), JblPacket.featureGet(listOf(JblFeature.AUDIO_LIMITER))).map { it.hex() },
+            s.takeReadBacks().map { it.hex() },
+        )
+    }
+
+    @Test
+    fun findMyBudsStartsBothEarbudsAndMutesEach() {
+        val s = JblSession(model("JBL Tune Flex 2"))
+        assertEquals(listOf(Setting.Action("find")), s.groups.single { it.key == "find" }.settings)
+        assertEquals(listOf("aa360111", "aa360110"), s.change(SettingChange.Press("find"))!!.map { it.hex() })
+        assertEquals(Setting.Toggle("find_mute_left", false), setting(s, "find_mute_left"))
+        assertEquals(listOf("aa360101"), s.change(SettingChange.Toggle("find_mute_left", true))!!.map { it.hex() })
+        assertEquals(listOf("aa360111"), s.change(SettingChange.Toggle("find_mute_left", false))!!.map { it.hex() })
+        assertEquals(listOf("aa360101", "aa360100"), s.change(SettingChange.Press("find"))!!.map { it.hex() })
+        assertNull(setting(s, "find_mute_left"))
+        assertTrue(s.takeReadBacks().isEmpty())
+
+        val p4 = JblSession(model("JBL Tune Flex 3"))
+        // Bit 6 the right, 5 the left, the bits below set.
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_FIND_MY_BUDS to byteArrayOf(0x7F)), p4.change(SettingChange.Press("find"))!!.single())
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_FIND_MY_BUDS to byteArrayOf(0x3F)), p4.change(SettingChange.Toggle("find_mute_right", true))!!.single())
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_FIND_MY_BUDS to byteArrayOf(0x1F)), p4.change(SettingChange.Press("find"))!!.single())
+    }
+
+    @Test
+    fun theTuneFlex3sOtherSettingsAreProtocol4Features() {
+        val s = JblSession(model("JBL Tune Flex 3"))
+        val read = s.start()[1] as JblP4Packet
+        val ids = read.payload.toList().chunked(2).map { (it[0].toInt() and 0xFF) or ((it[1].toInt() and 0xFF) shl 8) }
+        for (id in listOf(JblP4.FEATURE_SMART_SWITCH, JblP4.FEATURE_BALANCE, JblP4.FEATURE_SPATIAL_SCENE, JblP4.FEATURE_SMART_TALK, JblP4.FEATURE_SOUND_EFFECT)) {
+            assertTrue(id in ids, id.toString())
+        }
+        assertFalse(JblP4.FEATURE_VOICE_PROMPT in ids, "no voice prompts on the Tune Flex 3")
+        assertFalse(JblP4.FEATURE_FIND_MY_BUDS in ids, "Find My Buds is only written")
+
+        // Smart switch 197, 46, 280, 270 (normal); balance off at 84; spatial on, protocol 4's 1 (movie); speak to chat on, 15 s.
+        val records = "0f100800" + "c5002e0018010e01" + "1500010054" + "2200010081" + "2b0001008f"
+        s.receive(JblReader().feed(p4Reply(JblP4.GET, records)).single())
+        assertEquals("standard", (setting(s, "jbl_smart_audio_video") as Setting.Choice).value)
+        assertEquals(Setting.Level("balance", 16, 0, 32), setting(s, "balance"), "off shows the middle")
+        assertEquals(Setting.Choice("jbl_spatial", "movie", listOf("off", "music", "movie", "game")), setting(s, "jbl_spatial"))
+        assertEquals(Setting.Choice("jbl_speak_to_chat", "15", listOf("off", "5", "15", "20")), setting(s, "jbl_speak_to_chat"))
+
+        // Music is protocol 4's 2; the right end of the balance is 116; Audio is four numbers, low byte first.
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_SPATIAL_SCENE to byteArrayOf(0x82.toByte())), s.change(SettingChange.Choice("jbl_spatial", "music"))!!.single())
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_BALANCE to byteArrayOf(0xF4.toByte())), s.change(SettingChange.Level("balance", 32))!!.single())
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_SMART_TALK to byteArrayOf(0x0F)), s.change(SettingChange.Choice("jbl_speak_to_chat", "off"))!!.single())
+        assertEquals(
+            JblP4Packet.set(JblP4.FEATURE_SMART_SWITCH to "00012e001801ae01".hexBytes()),
+            s.change(SettingChange.Choice("jbl_smart_audio_video", "audio"))!!.single(),
+        )
+        assertEquals(
+            listOf(JblP4.FEATURE_SPATIAL_SCENE, JblP4.FEATURE_BALANCE, JblP4.FEATURE_SMART_TALK, JblP4.FEATURE_SMART_SWITCH).map { JblP4Packet.get(listOf(it)) },
+            s.takeReadBacks(),
+        )
+    }
+
     private fun anc(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
     private companion object {

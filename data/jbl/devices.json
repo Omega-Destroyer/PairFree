@@ -592,7 +592,7 @@
         "video": [197, 46, 80]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "gestures"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "gestures", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120]
     },
@@ -613,7 +613,7 @@
         "video": [197, 46, 100]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "gestures"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "gestures", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120]
     },
@@ -721,7 +721,7 @@
         "video": [197, 46, 80]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120]
     },
@@ -743,7 +743,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120]
     },
@@ -764,7 +764,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120]
     },
@@ -880,7 +880,7 @@
         "video": [197, 46, 100, 200]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "adaptive_anc", "auto_compensation"]
     },
     {
       "name": "JBL Live 775NC",
@@ -1150,7 +1150,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120]
     },
@@ -1286,7 +1286,7 @@
         "video": [197, 46, 100, 200]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "adaptive_anc", "auto_compensation"]
     },
     {
       "name": "JBL Live 780NC",
@@ -1309,7 +1309,7 @@
         "video": [197, 46, 100, 200]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "adaptive_anc", "auto_compensation"]
     },
     {
       "name": "JBL Live Beam 4",
@@ -1329,7 +1329,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "adaptive_anc", "auto_compensation"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120]
     },
@@ -1351,7 +1351,7 @@
         "video": [197, 46, 120, 270]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "find_buds"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "find_buds", "adaptive_anc", "auto_compensation"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120]
     },
@@ -1373,7 +1373,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "adaptive_anc", "auto_compensation"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120]
     },

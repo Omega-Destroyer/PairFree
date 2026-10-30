@@ -232,6 +232,8 @@ private fun settingTitle(key: String): String = when (key) {
     "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat)
     "jbl_hi_res" -> stringResource(R.string.setting_jbl_hi_res)
     "jbl_touch_left", "jbl_touch_right" -> stringResource(R.string.touch_controls)
+    "jbl_adaptive_anc" -> stringResource(R.string.setting_jbl_adaptive_anc)
+    "jbl_auto_compensation" -> stringResource(R.string.setting_jbl_auto_compensation)
     "sidetone_level" -> stringResource(R.string.setting_sidetone)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
@@ -328,6 +330,8 @@ private fun settingNote(key: String): String? = when (key) {
     "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound_note)
     "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat_note)
     "jbl_touch_left", "jbl_touch_right" -> stringResource(R.string.setting_jbl_touch_note)
+    "jbl_adaptive_anc" -> stringResource(R.string.setting_jbl_adaptive_anc_note)
+    "jbl_auto_compensation" -> stringResource(R.string.setting_jbl_auto_compensation_note)
     "codec" -> stringResource(R.string.setting_codec_note)
     "custom_eq" -> stringResource(R.string.setting_custom_eq_note)
     else -> null

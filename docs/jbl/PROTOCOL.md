@@ -252,6 +252,28 @@ resources, `usingSeverRes`, which PairFree never fetches), and the headphone car
 (`HeadLive670GestureCard` and the like) open pages of their own. The 29 other p4 models have no
 gesture card in JBL's app.
 
+### 4.10 Adaptive noise cancelling and auto compensation: `91`
+
+Two of the noise card's "customize" entries (`AdaptiveAncCard`, `AutoCompensationCard`), each a
+switch. On the feature family they share noise control's command (`AdvancedAncCmd`):
+
+```
+AA 91 01 21                    read
+AA 91 <length> 22 (<type> <value>)...    reply
+AA 91 03 20 <type> <0 or 1>    write one
+```
+
+Types: `01` adaptive noise cancelling, `08` auto compensation (and, not offered by PairFree, `04`
+the manual level, `05` leakage and `06` ear canal compensation, `A1` the Ambient Aware level). JBL's
+app writes one type at a time. Protocol 4 has them as features `27` (AdaptiveANC) and `32`
+(AutoCompensation), the status bit and level 127.
+
+The voice assistant choice (`VoiceAssistantCard`, `AA 34`; status type `35`: 00 off, 01 Google
+Assistant, 02 Alexa, `DF` the phone's own) is left out. JBL's app changes the touch controls and
+the hot-word mode with it, and Alexa and Google Assistant need an account linked through JBL's app.
+PairFree's touch sets hold for the phone's own assistant (`A1`), which is what the earbuds use with
+00 or `DF`.
+
 ## 5. How each model sends its settings
 
 `devices.json` gives each model's:

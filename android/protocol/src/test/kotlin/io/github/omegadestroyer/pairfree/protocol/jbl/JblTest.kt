@@ -510,6 +510,25 @@ class JblTest {
         assertEquals(JblModel.AutoOff.V2, model("JBL TUNE FLEX").autoOff)
     }
 
+    @Test
+    fun adaptiveNoiseCancellingSharesTheNoiseCommand() {
+        val s = JblSession(model("JBL Tune Flex 2"))
+        assertTrue("aa910121" in s.start().map { it.hex() })
+        // 22, then adaptive noise cancelling on and auto compensation off; the noise modes stay unread.
+        s.receive(packet("aa9105" + "22" + "0101" + "0800"))
+        assertEquals(listOf(Setting.Toggle("jbl_adaptive_anc", true), Setting.Toggle("jbl_auto_compensation", false)), s.groups.single { it.key == "noise_adaptive" }.settings)
+        assertFalse(s.state.supports(Command.ANC_MODE))
+        assertEquals("aa9103200100", s.change(SettingChange.Toggle("jbl_adaptive_anc", false))!!.single().hex())
+        assertEquals("aa9103200801", s.change(SettingChange.Toggle("jbl_auto_compensation", true))!!.single().hex())
+        assertEquals(listOf("aa910121"), s.takeReadBacks().map { it.hex() })
+
+        val p4 = JblSession(model("JBL Live 680NC"))
+        p4.receive(JblReader().feed(p4Reply(JblP4.GET, "1b00010080" + "2000010000")).single())
+        assertEquals(Setting.Toggle("jbl_auto_compensation", false), setting(p4, "jbl_auto_compensation"))
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_AUTO_COMPENSATION to byteArrayOf(0xFF.toByte())), p4.change(SettingChange.Toggle("jbl_auto_compensation", true))!!.single())
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_ADAPTIVE_ANC to byteArrayOf(0x7F)), p4.change(SettingChange.Toggle("jbl_adaptive_anc", false))!!.single())
+    }
+
     private fun anc(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
     private companion object {

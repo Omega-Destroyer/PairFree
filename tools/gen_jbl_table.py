@@ -36,6 +36,8 @@ EXTRAS = {
     "hi_res": "Hi-Res audio",
     "find_buds": "Find My Buds",
     "gestures": "touch controls",
+    "adaptive_anc": "adaptive noise cancelling",
+    "auto_compensation": "auto compensation",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",

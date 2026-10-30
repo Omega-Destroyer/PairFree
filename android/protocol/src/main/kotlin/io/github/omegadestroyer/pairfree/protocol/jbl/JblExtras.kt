@@ -33,6 +33,8 @@ internal class JblExtras(private val model: JblModel) {
     private var talkOn: Boolean? = null
     private var talkSeconds: Int? = null
     private var hiRes: Boolean? = null
+    private var adaptiveAnc: Boolean? = null
+    private var autoCompensation: Boolean? = null
     private var finding = false
     // Each gesture's action, by JBL's gesture id (1 left tap, 2 right tap and so on).
     private val gestures = mutableMapOf<Int, Int>()
@@ -49,6 +51,7 @@ internal class JblExtras(private val model: JblModel) {
         if (has(SPATIAL)) add(JblPacket.of(JblCommand.SPATIAL, READ))
         if (has(SPEAK_TO_CHAT)) add(JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ))
         if (has(GESTURES)) add(gestureRead())
+        if (has(ADAPTIVE_ANC) || has(AUTO_COMPENSATION)) add(JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ))
         val features = listOfNotNull(
             JblFeature.SOUND_EFFECT.takeIf { has(SOUND_EFFECT) },
             JblFeature.AUDIO_LIMITER.takeIf { has(AUDIO_LIMITER) },
@@ -69,6 +72,8 @@ internal class JblExtras(private val model: JblModel) {
         JblP4.FEATURE_AUDIO_LIMITER.takeIf { has(AUDIO_LIMITER) },
         JblP4.FEATURE_SMART_TALK.takeIf { has(SPEAK_TO_CHAT) },
         JblP4.FEATURE_HI_RES.takeIf { has(HI_RES) },
+        JblP4.FEATURE_ADAPTIVE_ANC.takeIf { has(ADAPTIVE_ANC) },
+        JblP4.FEATURE_AUTO_COMPENSATION.takeIf { has(AUTO_COMPENSATION) },
     )
 
     /** The commands whose answers [aa] reads. */
@@ -97,6 +102,17 @@ internal class JblExtras(private val model: JblModel) {
             JblCommand.SPEAK_TO_CHAT -> if (p.u8(0) == RET && p.size >= 3) {
                 talkOn = p.u8(1) == 1
                 talkSeconds = p.u8(2)
+            }
+            // Advanced noise cancelling (AdvancedAncCmd.parse): 22, then pairs of type and value. Noise control reads the other sub-commands.
+            JblCommand.NOISE_MODES -> if (p.u8(0) == ADVANCED_RET) {
+                var at = 1
+                while (at + 1 < p.size) {
+                    when (p.u8(at)) {
+                        ADVANCED_ADAPTIVE -> adaptiveAnc = p.u8(at + 1) == 1
+                        ADVANCED_AUTO_COMPENSATION -> autoCompensation = p.u8(at + 1) == 1
+                    }
+                    at += 2
+                }
             }
             // 01 or 02, then pairs of gesture and action (HandleParse.parseGestureData).
             JblCommand.GESTURES -> if (p.u8(0) == 1 || p.u8(0) == 2) {
@@ -160,8 +176,16 @@ internal class JblExtras(private val model: JblModel) {
                 talkSeconds = level
             }
             JblP4.FEATURE_HI_RES -> hiRes = on
+            JblP4.FEATURE_ADAPTIVE_ANC -> adaptiveAnc = on
+            JblP4.FEATURE_AUTO_COMPENSATION -> autoCompensation = on
         }
     }
+
+    /** Adaptive noise cancelling and auto compensation, the noise card's "customize" entries in JBL's app. */
+    fun adaptiveRows(): List<Setting> = listOfNotNull(
+        adaptiveAnc?.takeIf { has(ADAPTIVE_ANC) }?.let { Setting.Toggle(ADAPTIVE_KEY, it) },
+        autoCompensation?.takeIf { has(AUTO_COMPENSATION) }?.let { Setting.Toggle(COMPENSATION_KEY, it) },
+    )
 
     /** The rows for the sound tab, the call settings and the rest. */
     fun soundRows(): List<Setting> = listOfNotNull(
@@ -244,6 +268,8 @@ internal class JblExtras(private val model: JblModel) {
             SAFE_SOUND_KEY -> listOf(safe(change.on))
             LIMITER_KEY -> listOf(limit(change.on))
             HI_RES_KEY -> listOf(hiResSet(change.on))
+            ADAPTIVE_KEY -> listOf(advanced(ADVANCED_ADAPTIVE, JblP4.FEATURE_ADAPTIVE_ANC, change.on).also { adaptiveAnc = change.on })
+            COMPENSATION_KEY -> listOf(advanced(ADVANCED_AUTO_COMPENSATION, JblP4.FEATURE_AUTO_COMPENSATION, change.on).also { autoCompensation = change.on })
             MUTE_LEFT, MUTE_RIGHT -> mute(change.key == MUTE_LEFT, change.on)
             else -> null
         }
@@ -275,6 +301,8 @@ internal class JblExtras(private val model: JblModel) {
                 LIMITER_KEY -> JblP4.FEATURE_AUDIO_LIMITER
                 TALK_KEY -> JblP4.FEATURE_SMART_TALK
                 HI_RES_KEY -> JblP4.FEATURE_HI_RES
+                ADAPTIVE_KEY -> JblP4.FEATURE_ADAPTIVE_ANC
+                COMPENSATION_KEY -> JblP4.FEATURE_AUTO_COMPENSATION
                 else -> return null
             }
             return JblP4Packet.get(listOf(f))
@@ -288,11 +316,19 @@ internal class JblExtras(private val model: JblModel) {
             SPATIAL_KEY -> JblPacket.of(JblCommand.SPATIAL, READ)
             TALK_KEY -> JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ)
             TOUCH_LEFT, TOUCH_RIGHT -> gestureRead()
+            ADAPTIVE_KEY, COMPENSATION_KEY -> JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ)
             EFFECT_KEY -> JblPacket.featureGet(listOf(JblFeature.SOUND_EFFECT))
             LIMITER_KEY -> JblPacket.featureGet(listOf(JblFeature.AUDIO_LIMITER))
             HI_RES_KEY -> JblPacket.featureGet(listOf(JblFeature.HI_RES))
             else -> null
         }
+    }
+
+    /** One advanced noise cancelling switch: a type and its value on command 91, or its protocol 4 feature (General4Control.setAdvanceAnc). */
+    private fun advanced(type: Int, feature: Int, on: Boolean): JblFrame = if (p4) {
+        JblP4Packet.set(feature to JblP4Packet.statusLevel(on, JblP4.IGNORE_LEVEL))
+    } else {
+        JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_SET, type, if (on) 1 else 0)
     }
 
     private fun gestureRead(): JblFrame = JblPacket.of(JblCommand.GESTURES, 1, ALL_GESTURES)
@@ -483,6 +519,17 @@ internal class JblExtras(private val model: JblModel) {
         const val HI_RES = "hi_res"
         const val FIND_BUDS = "find_buds"
         const val GESTURES = "gestures"
+        const val ADAPTIVE_ANC = "adaptive_anc"
+        const val AUTO_COMPENSATION = "auto_compensation"
+        const val ADAPTIVE_KEY = "jbl_adaptive_anc"
+        const val COMPENSATION_KEY = "jbl_auto_compensation"
+
+        // Advanced noise cancelling on command 91 (AdvancedAncCmd): its sub-commands and the two types PairFree sets.
+        private const val ADVANCED_SET = 0x20
+        private const val ADVANCED_READ = 0x21
+        private const val ADVANCED_RET = 0x22
+        private const val ADVANCED_ADAPTIVE = 0x01
+        private const val ADVANCED_AUTO_COMPENSATION = 0x08
 
         // The rows' keys.
         const val SMART_KEY = "jbl_smart_audio_video"
@@ -537,7 +584,7 @@ internal class JblExtras(private val model: JblModel) {
         val P4_IDS = setOf(
             JblP4.FEATURE_SMART_SWITCH, JblP4.FEATURE_VOICE_PROMPT, JblP4.FEATURE_BALANCE, JblP4.FEATURE_SIDETONE,
             JblP4.FEATURE_MAX_VOLUME_LIMIT, JblP4.FEATURE_SPATIAL_SCENE, JblP4.FEATURE_SOUND_EFFECT, JblP4.FEATURE_AUDIO_LIMITER,
-            JblP4.FEATURE_SMART_TALK, JblP4.FEATURE_HI_RES,
+            JblP4.FEATURE_SMART_TALK, JblP4.FEATURE_HI_RES, JblP4.FEATURE_ADAPTIVE_ANC, JblP4.FEATURE_AUTO_COMPENSATION,
         )
 
         private val AA_COMMANDS = setOf(

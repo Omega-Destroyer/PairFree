@@ -424,6 +424,10 @@
     <string name="setting_jbl_touch_playback">Playback: tap to play or pause, double tap for the next track, triple for the last, hold for the voice assistant</string>
     <string name="setting_jbl_touch_ambient">Noise control: tap to change the noise mode, double tap for TalkThru, hold for the voice assistant</string>
     <string name="setting_jbl_touch_volume">Volume: tap for louder, double tap for quieter, hold for the voice assistant</string>
+    <string name="setting_jbl_adaptive_anc">Adaptive noise cancelling</string>
+    <string name="setting_jbl_adaptive_anc_note">Noise cancelling adjusts itself to the noise around you.</string>
+    <string name="setting_jbl_auto_compensation">Auto compensation</string>
+    <string name="setting_jbl_auto_compensation_note">Adjusts the sound to how the earbuds sit in your ears.</string>
     <string name="setting_jbl_touch_note">What tapping and holding this earbud does.</string>
     <string name="eq_apple">AirPods have an equalizer only on Apple\'s newest beta firmware. Where they report one, it is below.</string>
     <string name="eq_jbl">PairFree cannot set the equalizer of JBL headphones and earbuds yet. JBL\'s app sends a whole curve of filters, and PairFree does not send what it has not checked.</string>

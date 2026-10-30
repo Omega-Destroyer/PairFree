@@ -123,7 +123,10 @@ public class JblSession(initial: JblModel) {
             JblCommand.DEVICE_INFO_REPLY -> deviceInfo(p)
             JblCommand.STATUS_REPLY -> status(p)
             JblCommand.BATTERY -> battery(p)
-            JblCommand.NOISE_MODES -> noiseModes(p)
+            JblCommand.NOISE_MODES -> {
+                noiseModes(p)
+                extras.aa(packet.command, p)
+            }
             JblCommand.FEATURE -> for ((id, v) in packet.features()) feature(id, v)
             else -> if (extras.reportsAa(packet.command)) {
                 _replies[key(packet.command)] = p.copyOf()
@@ -345,6 +348,7 @@ public class JblSession(initial: JblModel) {
     public val groups: List<SettingGroup>
         get() = listOfNotNull(
             group("noise", SettingTab.HOME, noiseRows()),
+            group("noise_adaptive", SettingTab.HOME, extras.adaptiveRows()),
             group("sound", SettingTab.SOUND, extras.soundRows()),
             group("calls", SettingTab.DEVICE, extras.callRows()),
             group("other", SettingTab.DEVICE, otherRows()),

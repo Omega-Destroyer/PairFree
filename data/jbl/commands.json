@@ -12,7 +12,7 @@
     {"name": "set_auto_off", "command": "33", "note": "v1: one byte, bit 7 on and bits 0 to 6 the minutes; v2: on, then the minutes in two bytes."},
     {"name": "set_auto_play_pause", "command": "35", "note": "00 off, 01 on."},
     {"name": "feature", "command": "06", "wide": true, "note": "Harman's feature records: a type (00 set, 01 get, 02 reply), then per feature its id in two bytes (high first), and for a set or reply a length and the value."},
-    {"name": "noise_modes", "command": "91", "note": "A sub-command first (noise_sub), then pairs of mode and value."},
+    {"name": "noise_modes", "command": "91", "note": "A sub-command first (noise_sub), then pairs of mode and value. Advanced noise cancelling shares it (AdvancedAncCmd): 21 to read, the reply 22 and a write 20, then pairs of type and value (01 adaptive noise cancelling, 08 auto compensation, 04 the manual level, 05 leakage and 06 ear canal compensation, A1 the Ambient Aware level)."},
     {"name": "beeping", "command": "36", "note": "Find My Buds (CmdGen.generateSetEarBeepingCmd): 11 start the left earbud, 10 the right, 01 stop the left, 00 the right."},
     {"name": "smart_switch", "command": "80", "note": "Smart Audio & Video (SmartSwitchCmd): 01 to read; the reply 02, then AAC, SBC and two latencies, two bytes each, low first; a write 00 and the same."},
     {"name": "voice_prompts", "command": "93", "note": "Voice prompts (CmdGen, HandleParse): 04 to read, reply 05 and 0 tones or 1 spoken prompts; a write 03 and 0 or 1."},
@@ -72,7 +72,9 @@
       "smart_talk": 43,
       "voice_prompt": 3136,
       "find_my_buds": 4106,
-      "smart_switch": 4111
+      "smart_switch": 4111,
+      "adaptive_anc": 27,
+      "auto_compensation": 32
     },
     "ignore_level": 127,
     "never_send": {

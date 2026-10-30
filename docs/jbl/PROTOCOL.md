@@ -276,6 +276,11 @@ the hot-word mode with it, and Alexa and Google Assistant need an account linked
 PairFree's touch sets hold for the phone's own assistant (`A1`), which is what the earbuds use with
 00 or `DF`.
 
+Also left out: the LE Audio switch (`LeAudioCard`, 23 models), which restarts the earbuds and
+needs the phone to reconnect over LE Audio while JBL's app waits on dialogs; PersoniFi
+(`PersoniFiCard`), a hearing test that plays tones through JBL's app; relax sounds, which the phone
+plays; and the equalizer (section 9).
+
 ## 5. How each model sends its settings
 
 `devices.json` gives each model's:

@@ -209,7 +209,8 @@ starts both earbuds and lets the user mute either, as on Galaxy Buds.
 
 Protocol 4 (section 6) has each as a feature, one byte with the status in bit 7 and the level in
 bits 0 to 6 unless said: `4111` Smart Audio & Video (the four numbers, two bytes each, low first),
-`3136` voice prompts (status spoken, level the volume), `21` balance, `35` sidetone (VoiceAware),
+`3136` voice prompts (status spoken, level the volume), `21` balance (50 lower than the
+Harman level: 34 left to 66 right, `gn.l0` and `General4Control.setLRBalanceStatus`), `35` sidetone (VoiceAware),
 `37` max volume limit (SafeSound), `34` spatial scene (level 1 movie, 2 music, 3 game: not the
 Harman order, `General4Control.set3DSpatialStatus`), `43` smart talk (speak to chat, level the
 seconds), `41` sound effect, `39` audio limiter and `40` Hi-Res (level 127), and `4106` Find My

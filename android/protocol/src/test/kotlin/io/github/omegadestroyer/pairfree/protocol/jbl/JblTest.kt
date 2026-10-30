@@ -449,17 +449,20 @@ class JblTest {
         assertFalse(JblP4.FEATURE_VOICE_PROMPT in ids, "no voice prompts on the Tune Flex 3")
         assertFalse(JblP4.FEATURE_FIND_MY_BUDS in ids, "Find My Buds is only written")
 
-        // Smart switch 197, 46, 280, 270 (normal); balance off at 84; spatial on, protocol 4's 1 (movie); speak to chat on, 15 s.
-        val records = "0f100800" + "c5002e0018010e01" + "1500010054" + "2200010081" + "2b0001008f"
+        // Smart switch 197, 46, 280, 270 (normal); balance off at 84 (34 on the wire, 50 lower); spatial on, protocol 4's 1 (movie); speak to chat on, 15 s.
+        val records = "0f100800" + "c5002e0018010e01" + "1500010022" + "2200010081" + "2b0001008f"
         s.receive(JblReader().feed(p4Reply(JblP4.GET, records)).single())
         assertEquals("standard", (setting(s, "jbl_smart_audio_video") as Setting.Choice).value)
         assertEquals(Setting.Level("balance", 16, 0, 32), setting(s, "balance"), "off shows the middle")
+        // On at 40 on the wire is 90 in JBL's app, 6 steps from the left end.
+        s.receive(JblReader().feed(p4Reply(JblP4.NOTIFICATION, "15000100a8")).single())
+        assertEquals(Setting.Level("balance", 6, 0, 32), setting(s, "balance"))
         assertEquals(Setting.Choice("jbl_spatial", "movie", listOf("off", "music", "movie", "game")), setting(s, "jbl_spatial"))
         assertEquals(Setting.Choice("jbl_speak_to_chat", "15", listOf("off", "5", "15", "20")), setting(s, "jbl_speak_to_chat"))
 
-        // Music is protocol 4's 2; the right end of the balance is 116; Audio is four numbers, low byte first.
+        // Music is protocol 4's 2; the right end of the balance is 116, 66 on the wire; Audio is four numbers, low byte first.
         assertEquals(JblP4Packet.set(JblP4.FEATURE_SPATIAL_SCENE to byteArrayOf(0x82.toByte())), s.change(SettingChange.Choice("jbl_spatial", "music"))!!.single())
-        assertEquals(JblP4Packet.set(JblP4.FEATURE_BALANCE to byteArrayOf(0xF4.toByte())), s.change(SettingChange.Level("balance", 32))!!.single())
+        assertEquals(JblP4Packet.set(JblP4.FEATURE_BALANCE to byteArrayOf(0xC2.toByte())), s.change(SettingChange.Level("balance", 32))!!.single())
         assertEquals(JblP4Packet.set(JblP4.FEATURE_SMART_TALK to byteArrayOf(0x0F)), s.change(SettingChange.Choice("jbl_speak_to_chat", "off"))!!.single())
         assertEquals(
             JblP4Packet.set(JblP4.FEATURE_SMART_SWITCH to "00012e001801ae01".hexBytes()),

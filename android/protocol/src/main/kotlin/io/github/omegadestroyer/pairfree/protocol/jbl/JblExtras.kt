@@ -133,9 +133,10 @@ internal class JblExtras(private val model: JblModel) {
                 voicePrompts = on
                 voicePromptLevel = level
             }
+            // Protocol 4 sends the balance 50 lower: 34 to 66 (gn.l0, General4Control.setLRBalanceStatus).
             JblP4.FEATURE_BALANCE -> {
                 balanceOn = on
-                balanceLevel = level
+                balanceLevel = level + P4_BALANCE_OFFSET
             }
             JblP4.FEATURE_SIDETONE -> {
                 voiceAwareOn = on
@@ -346,7 +347,7 @@ internal class JblExtras(private val model: JblModel) {
         balanceOn = on
         balanceLevel = l
         return if (p4) {
-            JblP4Packet.set(JblP4.FEATURE_BALANCE to JblP4Packet.statusLevel(on, l))
+            JblP4Packet.set(JblP4.FEATURE_BALANCE to JblP4Packet.statusLevel(on, l - P4_BALANCE_OFFSET))
         } else {
             JblPacket.of(JblCommand.BALANCE, SET, BALANCE_STATUS, if (on) 1 else 0, BALANCE_VALUE, l)
         }
@@ -561,6 +562,7 @@ internal class JblExtras(private val model: JblModel) {
         private const val BALANCE_MIN = 84
         private const val BALANCE_MAX = 116
         private const val BALANCE_MIDDLE = 100
+        private const val P4_BALANCE_OFFSET = 50
         private const val BALANCE_STATUS = 1
         private const val BALANCE_VALUE = 2
         private const val SAFE_SOUND_STATUS = 1

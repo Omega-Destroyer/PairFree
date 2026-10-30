@@ -128,6 +128,7 @@
       "anc": "0E06",
       "key_event": "1101",
       "firmware": "1C07",
+      "ae_info": "1C09",
       "find_me": "2C01",
       "config_set": "2C82",
       "config_get": "2C83"
@@ -135,7 +136,8 @@
     "mmi_modules": {"anc": 5},
     "config_modules": {"auto_off": 1, "in_ear": 2, "sidetone_level": 6, "sidetone": 7, "prompt_language": 9, "voice_eq": 19},
     "notify_modules": {"anc": 5, "agent_battery": 101, "partner_battery": 102, "case_battery": 103},
-    "nv_keys": {"chip_name": "1002", "power_control": "F2F1", "in_ear_old": "F2F0"},
+    "nv_keys": {"chip_name": "1002", "power_control": "F2F1", "in_ear_old": "F2F0", "model_name": "1003", "model_name_old": "F500"},
+    "_model_name_about": "The model name the SDK reads at connect (CommonStageGetModelName), which on JBL's models is the product id (\"20F1\"): NV key F500 on the AB155x and AB1568, 1003 on the AB1568 v3 and AB158x, 20 bytes after 20 others; the AB1562 answers it to ae_info 01 FF (CommonStageGetModelName1562).",
     "anc": {"on": "0A", "off": "0B", "mode_anc": 0, "mode_passthrough": 4, "filter_anc": 1, "filter_anc_sports": 2, "filter_ambient_aware": 9, "filter_talk_thru": 10, "filter_ambient_aware_ab155x": 5, "filter_talk_thru_ab155x": 6},
     "key_events": {"smart_switch_set": "00A8", "smart_switch_get": "00A9"},
     "prompt_language": {"spoken": 0, "tones": 255},
@@ -157,7 +159,7 @@
       "0A09": "NV key reload",
       "0D01": "relays a command to the other earbud"
     },
-    "_never_send_about": "Also never sent: key events (key_event) other than key_events (factory reset 0096, power off 0095, pairing 0002 and the rest), and the firmware update commands (1C00 to 1CFF) other than the firmware version read."
+    "_never_send_about": "Also never sent: key events (key_event) other than key_events (factory reset 0096, power off 0095, pairing 0002 and the rest), and the firmware update commands (1C00 to 1CFF) other than the firmware version and AE information reads."
   },
   "never_send": {
     "13": "analytics read",

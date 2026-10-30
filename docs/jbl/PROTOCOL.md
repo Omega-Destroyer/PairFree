@@ -473,6 +473,11 @@ for a 517-byte MTU (`GattLinkParam`). The LE side is found as in section 3.
 | Battery | `0CD6` `00` agent, `01` the other earbud | status, role, level (indication) |
 | Case battery | `000B` | status, level; 0 or less unknown (indication) |
 | Noise control | `0901` module `0005` | module, status, filter, gain (two bytes) |
+| Model name, once the chip is known | NV key `F500` (AB155x, AB1568) or `1003` (AB1568 v3, AB158x), 100 bytes; the AB1562 `1C09` `01 FF` | 20 bytes, then the model name: on JBL's models the product id ("20F1"); the AB1562's answer holds it at byte 29 of its data, after the address |
+
+The product id names the model, as on JBL's other families: earbuds found by a name another model shares, or by
+an older name, get that model's settings (`JblSession.productIdIs`). PairFree keeps the names as text in the
+device report, not the keys' bytes, and never the AB1562's answer, which holds the address.
 
 JBL's app skips the push and the agent read on the Quantum 910 headsets (`push_status` false in `devices.json`).
 Unasked, the earbuds send module `0005` (the noise filter, after a change on the earbuds), `0065` and `0066` (the

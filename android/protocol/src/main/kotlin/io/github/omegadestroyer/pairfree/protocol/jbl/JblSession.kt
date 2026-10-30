@@ -39,6 +39,10 @@ public class JblSession(initial: JblModel) {
     public var chipName: String? = null
         private set
 
+    /** The model name an Airoha model reports (on JBL's, its product id), for the device report. */
+    public var modelName: String? = null
+        private set
+
     /**
      * The last answer to each of PairFree's reads, for the device report, by command (and status type
      * or feature id): the device info with its name and address blanked, and no feature but the ones
@@ -349,6 +353,11 @@ public class JblSession(initial: JblModel) {
             outbox += start()
         } else if (more) {
             outbox += extras.reads()
+            outbox += extras.raceReads()
+            if (known.family == JblModel.Family.AIROHA) {
+                if (known.autoOff != null) outbox += raceAutoOffRead()
+                if (known.autoPlayPause) outbox += raceAutoPlayRead()
+            }
             extras.p4Features().takeIf { it.isNotEmpty() }?.let { outbox += JblP4Packet.get(it) }
         }
     }
@@ -632,7 +641,7 @@ public class JblSession(initial: JblModel) {
     private fun raceAllowed(p: RacePacket): Boolean = when {
         p.id in JblRace.NEVER_SEND -> false
         p.id == JblRace.KEY_EVENT -> p.payload.size >= 2 && ((p.payload[0].toInt() and 0xFF) or ((p.payload[1].toInt() and 0xFF) shl 8)) in JblRace.KEY_EVENTS
-        p.id in RACE_FIRMWARE_UPDATE -> p.id == JblRace.FIRMWARE
+        p.id in RACE_FIRMWARE_UPDATE -> p.id == JblRace.FIRMWARE || p.id == JblRace.AE_INFO
         else -> true
     }
 
@@ -656,6 +665,15 @@ public class JblSession(initial: JblModel) {
             JblRace.AGENT_CHANNEL -> if (p.status == 0 && d.isNotEmpty()) agentRight = d.u8(0) == 1
             JblRace.BATTERY -> if (p.status == 0 && d.size >= 2) raceBattery(d.u8(0), d.u8(1))
             JblRace.CASE_BATTERY -> if (p.status == 0 && d.isNotEmpty()) raceCase(d.u8(0))
+            // The AB1562's AE information: two bytes, the length, then the data; past 20 bytes the model name is at
+            // 29 (after the address and other fields, which PairFree does not keep).
+            JblRace.AE_INFO -> if (p.status == 0 && d.size >= 3) {
+                val n = d.u8(2).coerceAtMost(d.size - 3)
+                val info = d.copyOfRange(3, 3 + n)
+                val name = if (n > AE_MODEL_AT) info.copyOfRange(AE_MODEL_AT, minOf(n, AE_MODEL_AT + 20)) else info
+                raceModelName(name.decodeToString().trimEnd('\u0000'))
+                return
+            }
             // The role, the text's length and the text (ASCII); the agent's is the one JBL's app shows.
             JblRace.FIRMWARE -> if (p.status == 0 && d.size >= 2 && d.u8(0) == RACE_AGENT) {
                 val n = d.u8(1).coerceAtMost(d.size - 2)
@@ -674,7 +692,9 @@ public class JblSession(initial: JblModel) {
             }
             else -> extras.race(p)
         }
-        if (p.status == 0 || p.id == JblRace.NV_READ) _replies[raceKey(p)] = p.payload.copyOf()
+        // NV keys only when short (the settings): the chip and model names are kept as text, and what else a long key
+        // holds is not known.
+        if (p.status == 0 || (p.id == JblRace.NV_READ && p.payload.size <= RACE_SHORT_NV)) _replies[raceKey(p)] = p.payload.copyOf()
     }
 
     /**
@@ -688,6 +708,8 @@ public class JblSession(initial: JblModel) {
                 chipName = text
                 raceChip(RaceChip.of(text))
             }
+            // The model name key: 20 bytes, then the model name in the next 20.
+            chip != null && d.size >= RACE_MODEL_NAME_END -> raceModelName(d.copyOfRange(RACE_MODEL_NAME_START, RACE_MODEL_NAME_END).decodeToString().trimEnd('\u0000'))
             d.size == 4 && model.autoOff != null -> {
                 autoOffOn = d.u16(0) != 0
                 d.u16(2).takeIf { autoOffOn == true }?.let { autoOffMinutes = it }
@@ -696,11 +718,27 @@ public class JblSession(initial: JblModel) {
         }
     }
 
-    /** The chip family is known: read what depends on it. */
+    /**
+     * The chip family is known: read what depends on it, and the model name, which on JBL's models is the product id
+     * (the key differs by chip, CommonStageGetModelName; an AB1568 may be either generation, so both of its keys).
+     */
     private fun raceChip(c: RaceChip) {
         chip = c
         if (model.autoOff != null) outbox += raceAutoOffRead()
         if (model.autoPlayPause) outbox += raceAutoPlayRead()
+        outbox += when (c) {
+            RaceChip.AB1562 -> listOf(RacePacket.of(JblRace.AE_INFO, 1, 0xFF))
+            RaceChip.AB155X -> listOf(RacePacket.nvRead(JblRace.NV_MODEL_NAME_OLD, RACE_MODEL_NAME_LENGTH))
+            RaceChip.AB1568 -> listOf(RacePacket.nvRead(JblRace.NV_MODEL_NAME_OLD, RACE_MODEL_NAME_LENGTH), RacePacket.nvRead(JblRace.NV_MODEL_NAME, RACE_MODEL_NAME_LENGTH))
+            RaceChip.AB158X -> listOf(RacePacket.nvRead(JblRace.NV_MODEL_NAME, RACE_MODEL_NAME_LENGTH))
+        }
+    }
+
+    /** A model name the earbuds report: four hex digits name the product, and so the model where two share a name. */
+    private fun raceModelName(text: String) {
+        val t = text.trim { it <= ' ' }
+        modelName = t
+        if (Regex("[0-9A-Fa-f]{4}").matches(t)) productIdIs(t.toInt(16))
     }
 
     /** A noise filter: off, noise cancelling (with or without sports mode), Ambient Aware or TalkThru; others are left alone. */
@@ -796,6 +834,14 @@ public class JblSession(initial: JblModel) {
         // Airoha models: how much of an NV key Airoha's SDK asks for, and the power control key's length.
         const val RACE_NV_LENGTH = 1000
         const val RACE_POWER_CONTROL_LENGTH = 3
+
+        // The model name key: 100 bytes asked for, the name in bytes 20 to 39 (CommonStageGetModelName); in the
+        // AB1562's AE information it starts at 29. NV answers up to this long are settings PairFree shows as they are.
+        const val RACE_MODEL_NAME_LENGTH = 100
+        const val RACE_MODEL_NAME_START = 20
+        const val RACE_MODEL_NAME_END = 40
+        const val AE_MODEL_AT = 29
+        const val RACE_SHORT_NV = 8
 
         /** The agent (the earbud the phone talks to) and the other one, as RACE numbers them. */
         const val RACE_AGENT = 0

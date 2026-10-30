@@ -64,7 +64,9 @@
       {"name": "voice_aware_level_high", "hex": "055a0600822c06000300"},
       {"name": "sound_effect_bass", "hex": "055a0500822c130007"},
       {"name": "find_left", "hex": "055a0500012c000100"},
-      {"name": "find_right_stop", "hex": "055a0500012c000001"}
+      {"name": "find_right_stop", "hex": "055a0500012c000001"},
+      {"name": "model_name_ab158x", "hex": "055a0600000a03106400"},
+      {"name": "ae_info", "hex": "055a0400091c01ff"}
     ],
     "replies": [
       {"name": "chip_name_ab158x", "hex": "055b0a00000a0600414231353835"},
@@ -78,7 +80,8 @@
       {"name": "auto_off_on_30_ab1568", "hex": "055b0900832c00010001000807"},
       {"name": "smart_switch_audio", "hex": "055b1100011100a900e4002e001801000090010000"},
       {"name": "prompts_spoken", "hex": "055b0600832c00090000"},
-      {"name": "balance_off", "hex": "055b05003700000064"}
+      {"name": "balance_off", "hex": "055b05003700000064"},
+      {"name": "model_name_20f1", "hex": "055b2c00000a280000000000000000000000000000000000000000003230463100000000000000000000000000000000"}
     ]
   }
 }

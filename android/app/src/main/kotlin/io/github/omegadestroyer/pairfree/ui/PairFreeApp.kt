@@ -186,12 +186,28 @@ private fun PairedRow(device: Paired, connecting: Boolean, onConnect: () -> Unit
     }
 }
 
+/** The brand's own app, which holds the earbuds' control channel while it is open. Names, so not translated. */
+private fun officialApp(brand: Brand): String = when (brand) {
+    Brand.SOUNDPEATS -> "PeatsAudio or SOUNDPEATS"
+    Brand.SOUNDCORE -> "Soundcore"
+    Brand.SAMSUNG -> "Galaxy Wearable"
+    Brand.SONY -> "Sony | Sound Connect"
+    Brand.BOSE -> "Bose"
+    Brand.JBL -> "JBL Headphones"
+    Brand.NOTHING -> "Nothing X"
+    Brand.APPLE -> ""
+}
+
 @Composable
 private fun failure(status: LinkStatus): String? {
     if (status !is LinkStatus.Failed) return null
     val name = status.device.name
     return when (status.reason) {
-        LinkStatus.Reason.COULD_NOT_OPEN -> stringResource(R.string.failed_could_not_open, name)
+        LinkStatus.Reason.COULD_NOT_OPEN -> when (status.device.brand) {
+            // AirPods have no official app on Android to close (issue #3).
+            Brand.APPLE -> stringResource(R.string.failed_could_not_open_airpods, name)
+            else -> stringResource(R.string.failed_could_not_open, name, officialApp(status.device.brand))
+        }
         LinkStatus.Reason.LOST -> stringResource(R.string.failed_lost, name)
         LinkStatus.Reason.BLUETOOTH_OFF -> stringResource(R.string.failed_bluetooth_off)
         LinkStatus.Reason.NO_PERMISSION -> stringResource(R.string.failed_no_permission)

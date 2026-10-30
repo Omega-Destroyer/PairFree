@@ -165,7 +165,9 @@ PairFree reads the bug report only on your phone and keeps nothing but the messa
 exchanged with your earbuds. The report you send has no names or addresses: it shows only
 the messages PairFree knows, with the earbuds' address and serial number masked, and of the
 others little more than their number and size. Afterwards, turn the snoop log off and
-delete the bug report.
+delete the bug report. **Do not attach the bug report itself to the issue:** issues are public,
+and a bug report holds far more than Bluetooth messages (your accounts, apps, places and the like).
+If the project needs more than PairFree's report, it will ask in the issue.
 
 ### Copy device report
 

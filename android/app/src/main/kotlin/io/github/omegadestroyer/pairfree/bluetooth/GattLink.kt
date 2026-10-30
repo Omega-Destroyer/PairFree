@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothStatusCodes
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresPermission
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -23,8 +24,9 @@ import java.util.UUID
 
 /**
  * JBL's control channel: Harman's command service over Bluetooth LE GATT (docs/jbl/PROTOCOL.md section
- * 3). As JBL's app does, it asks for a 512-byte MTU, subscribes to the notify characteristic and writes
- * each frame, with a response, to the write characteristic. Each notification is one frame.
+ * 3), or on JBL's Airoha models Airoha's ([AIROHA], section 10). As JBL's app does, it asks for a large
+ * MTU, subscribes to the notify characteristic and writes each frame, with a response, to the write
+ * characteristic. Each notification is one frame.
  *
  * The earbuds must be paired for audio; PairFree does not bond over LE. [device] is the earbuds' LE
  * side: the classic address itself where they share it, else the device an LE scan found ([JblFinder]).
@@ -37,7 +39,12 @@ class GattLink(
     private val rawNotify: Boolean = false,
     /** Mode 3 writes this frame (the host name's checksum) to the raw characteristic before the main subscription. */
     private val rawPreamble: ByteArray? = null,
+    /** The service and its characteristics: Harman's, or [AIROHA]'s. */
+    private val uuids: Uuids = HARMAN,
 ) : ControlLink {
+    /** A command service: its UUID, the characteristic the device notifies on, the one PairFree writes to, and the MTU asked for. */
+    class Uuids(val service: UUID, val notify: UUID, val write: UUID, val mtu: Int)
+
     private var gatt: BluetoothGatt? = null
     private var write: BluetoothGattCharacteristic? = null
     private var raw: BluetoothGattCharacteristic? = null
@@ -56,7 +63,7 @@ class GattLink(
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             when {
                 newState == BluetoothProfile.STATE_CONNECTED && status == BluetoothGatt.GATT_SUCCESS -> {
-                    if (!gatt.requestMtu(MTU)) gatt.discoverServices()
+                    if (!gatt.requestMtu(uuids.mtu)) gatt.discoverServices()
                 }
                 newState == BluetoothProfile.STATE_DISCONNECTED || status != BluetoothGatt.GATT_SUCCESS -> fail("disconnected (status $status)")
             }
@@ -70,11 +77,11 @@ class GattLink(
 
         @Suppress("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            val service = gatt.getService(SERVICE)
-            val notify = service?.getCharacteristic(NOTIFY)
-            val w = service?.getCharacteristic(WRITE)
+            val service = gatt.getService(uuids.service)
+            val notify = service?.getCharacteristic(uuids.notify)
+            val w = service?.getCharacteristic(uuids.write)
             if (status != BluetoothGatt.GATT_SUCCESS || notify == null || w == null) {
-                fail("no Harman command service (status $status)")
+                fail("no command service (status $status)")
                 return
             }
             write = w
@@ -91,7 +98,7 @@ class GattLink(
         @Suppress("MissingPermission")
         private fun subscribeNotify(gatt: BluetoothGatt) {
             phase = Phase.NOTIFY_SUBSCRIBE
-            val notify = gatt.getService(SERVICE)?.getCharacteristic(NOTIFY)
+            val notify = gatt.getService(uuids.service)?.getCharacteristic(uuids.notify)
             if (notify == null || !subscribe(gatt, notify)) fail("could not subscribe")
         }
 
@@ -123,13 +130,13 @@ class GattLink(
         }
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray) {
-            if (characteristic.uuid == NOTIFY || characteristic.uuid == RAW) incoming.trySend(value.copyOf())
+            if (characteristic.uuid == uuids.notify || characteristic.uuid == RAW) incoming.trySend(value.copyOf())
         }
 
         // Android 13 and later call both forms; before 13 only this one.
         @Deprecated("Deprecated in Java")
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || (characteristic.uuid != NOTIFY && characteristic.uuid != RAW)) return
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || (characteristic.uuid != uuids.notify && characteristic.uuid != RAW)) return
             @Suppress("DEPRECATION")
             characteristic.value?.let { incoming.trySend(it.copyOf()) }
         }
@@ -210,17 +217,20 @@ class GattLink(
     }
 
     companion object {
-        /** Harman's command service ("excelpoint.com" in ASCII) and its characteristics, from JBL's app (Constants). */
-        val SERVICE: UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0000")
-        val NOTIFY: UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0001")
-        val WRITE: UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0002")
+        /** Harman's command service ("excelpoint.com" in ASCII) and its characteristics, from JBL's app (Constants), with the MTU it asks for. */
+        val HARMAN = Uuids(
+            UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0000"),
+            UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0001"),
+            UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0002"),
+            512,
+        )
+
+        /** Airoha's service on JBL's Airoha models (data/jbl/commands.json), with the MTU Airoha's SDK asks for (GattLinkParam). */
+        val AIROHA = Uuids(UUID.fromString(JblRace.GATT_SERVICE), UUID.fromString(JblRace.GATT_NOTIFY), UUID.fromString(JblRace.GATT_WRITE), 517)
 
         /** The raw characteristic JBL's security modes 1 and 3 use for their extra handshake steps. */
         val RAW: UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0003")
         private val CCCD: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
-
-        /** The MTU JBL's app asks for. */
-        private const val MTU = 512
 
         /** How long an LE connection may take before PairFree gives up on it. */
         const val CONNECT_MS = 10_000L

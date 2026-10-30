@@ -1,12 +1,7 @@
 {
-  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06) or p4 (JBL's protocol 4, frames starting 00 DD); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode) or mode4 (protocol 4: the mode feature alone); auto_off is v1 (one byte), v2 (three bytes), feature or p4. security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. Models on Airoha's SDK or LE Audio, and models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: airoha (Airoha's SDK, a protocol of its own), le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) or unsupported (JBL's app has no control class for it).",
+  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) or unsupported (JBL's app has no control class for it).",
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "not_covered": [
-    {
-      "name": "JBL CLUB PRO+ TWS",
-      "pids": ["1F65", "202B"],
-      "why": "airoha"
-    },
     {
       "name": "JBL CLUB700BT",
       "pids": ["1F40", "2013"],
@@ -16,11 +11,6 @@
       "name": "JBL CLUB950NC",
       "pids": ["1F41", "2014"],
       "why": "no_dashboard"
-    },
-    {
-      "name": "JBL Endurance Race 2",
-      "pids": ["2110"],
-      "why": "airoha"
     },
     {
       "name": "JBL EVEREST ELITE 100",
@@ -46,21 +36,6 @@
       "name": "JBL EVEREST ELITE 750NC",
       "pids": ["1006"],
       "why": "unsupported"
-    },
-    {
-      "name": "JBL Live Buds 3",
-      "pids": ["20F1"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL LIVE FREE 2 TWS",
-      "pids": ["2067", "2068"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL LIVE FREE NC+ TWS",
-      "pids": ["201F", "2024"],
-      "why": "airoha"
     },
     {
       "name": "JBL LIVE PRO+ TWS",
@@ -93,44 +68,9 @@
       "why": "no_dashboard"
     },
     {
-      "name": "JBL Quantum TWS",
-      "pids": ["207D", "207E"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL Quantum TWS Air",
-      "pids": ["20BD"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL Quantum910",
-      "pids": ["2089"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL Quantum910P",
-      "pids": ["20A3"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL Quantum910X",
-      "pids": ["209E"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL Reflect Aero",
-      "pids": ["207B"],
-      "why": "airoha"
-    },
-    {
       "name": "JBL REFLECT AWARE",
       "pids": ["1001"],
       "why": "unsupported"
-    },
-    {
-      "name": "JBL REFLECT MINI NC",
-      "pids": ["201C", "2027"],
-      "why": "airoha"
     },
     {
       "name": "JBL Smart Tx",
@@ -166,26 +106,6 @@
       "name": "JBL Tune 770NC",
       "pids": ["20B7", "20B8"],
       "why": "le_audio"
-    },
-    {
-      "name": "JBL Tune 775NC",
-      "pids": ["2123"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL Tune 777NC",
-      "pids": ["215D"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL Vibe Beam 2",
-      "pids": ["2102"],
-      "why": "airoha"
-    },
-    {
-      "name": "JBL Wave Beam 2",
-      "pids": ["20FE"],
-      "why": "airoha"
     },
     {
       "name": "QUANTUM STREAM WIRELESS",
@@ -1840,6 +1760,309 @@
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "find_buds"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120]
+    },
+    {
+      "name": "JBL CLUB PRO+ TWS",
+      "pids": ["1F65", "202B"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "ClubProControl",
+      "family": "airoha",
+      "noise": "race",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [197, 53, 250, 600],
+        "audio": [256, 53, 150, 400],
+        "video": [197, 41, 100, 250]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"]
+    },
+    {
+      "name": "JBL REFLECT MINI NC",
+      "pids": ["201C", "2027"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "ReflectMiniNCControl",
+      "family": "airoha",
+      "noise": "race",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [197, 53, 250, 600],
+        "audio": [256, 53, 150, 400],
+        "video": [197, 41, 100, 250]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"]
+    },
+    {
+      "name": "JBL LIVE FREE NC+ TWS",
+      "pids": ["201F", "2024"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "LiveFreeNCPlusControl",
+      "family": "airoha",
+      "noise": "race",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [197, 53, 250, 600],
+        "audio": [256, 53, 150, 400],
+        "video": [197, 41, 100, 250]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"]
+    },
+    {
+      "name": "JBL LIVE FREE 2 TWS",
+      "pids": ["2067", "2068"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "LiveFree2Control",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_live_free_2_tws.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "auto_play_pause": true,
+      "smart_audio_video": {
+        "normal": [197, 46, 280, 400],
+        "audio": [228, 46, 280, 400],
+        "video": [197, 46, 120, 400]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds"]
+    },
+    {
+      "name": "JBL Reflect Aero",
+      "pids": ["207B"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "ReflectAeroControl",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_reflect_aero.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "auto_play_pause": true,
+      "smart_audio_video": {
+        "normal": [197, 46, 280, 400],
+        "audio": [226, 46, 280, 400],
+        "video": [197, 46, 120, 250]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds"]
+    },
+    {
+      "name": "JBL Quantum TWS",
+      "pids": ["207D", "207E"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "QuantumTwsControl",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_quantum_tws.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "auto_play_pause": true,
+      "settings": ["voice_prompts", "balance", "voice_aware", "find_buds"]
+    },
+    {
+      "name": "JBL Quantum TWS Air",
+      "pids": ["20BD"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "QuantumAirTwsControl",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_quantum_tws_air.json",
+      "modes": ["ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "settings": ["voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+    },
+    {
+      "name": "JBL Live Buds 3",
+      "pids": ["20F1"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "LiveBuds3Control",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_live_buds_3.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "auto_play_pause": true,
+      "smart_audio_video": {
+        "normal": [197, 46, 280, 400],
+        "audio": [228, 46, 280, 400],
+        "video": [197, 46, 120, 400]
+      },
+      "effects": ["standard", "treble", "bass"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "find_buds"]
+    },
+    {
+      "name": "JBL Quantum910X",
+      "pids": ["209E"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "Quantum910Control",
+      "family": "airoha",
+      "noise": "race",
+      "names": ["JBL Quantum910X Wireless"],
+      "config": "jbl_quantum_910x.json",
+      "modes": ["anc", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "settings": ["voice_aware"],
+      "push_status": false
+    },
+    {
+      "name": "JBL Quantum910P",
+      "pids": ["20A3"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "Quantum910Control",
+      "family": "airoha",
+      "noise": "race",
+      "names": ["JBL Quantum910P Wireless"],
+      "config": "jbl_quantum_910p.json",
+      "modes": ["anc", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "settings": ["voice_aware"],
+      "push_status": false
+    },
+    {
+      "name": "JBL Quantum910",
+      "pids": ["2089"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "Quantum910Control",
+      "family": "airoha",
+      "noise": "race",
+      "names": ["JBL Quantum910 Wireless"],
+      "config": "jbl_quantum_910.json",
+      "modes": ["anc", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "settings": ["voice_aware"],
+      "push_status": false
+    },
+    {
+      "name": "JBL Endurance Race 2",
+      "pids": ["2110"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "EnduranceRace2Control",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_endurance_race_2.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [197, 46, 280, 400],
+        "audio": [226, 46, 280, 400],
+        "video": [197, 46, 120, 200]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+    },
+    {
+      "name": "JBL Wave Beam 2",
+      "pids": ["20FE"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "WaveBeam2Control",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_wave_beam_2.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [197, 46, 280, 400],
+        "audio": [226, 46, 280, 400],
+        "video": [197, 46, 120, 400]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+    },
+    {
+      "name": "JBL Vibe Beam 2",
+      "pids": ["2102"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "VibeBeam2Control",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_vibe_beam_2.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [197, 46, 280, 400],
+        "audio": [226, 46, 280, 400],
+        "video": [197, 46, 120, 400]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+    },
+    {
+      "name": "JBL Tune 775NC",
+      "pids": ["2123"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "Tune770ncControl",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_tune_775nc.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [256, 46, 150, 250],
+        "audio": [256, 53, 150, 250],
+        "video": [197, 46, 100, 250]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+    },
+    {
+      "name": "JBL Tune 777NC",
+      "pids": ["215D"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "Tune770ncControl",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_tune_777nc.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [256, 46, 150, 250],
+        "audio": [256, 53, 150, 250],
+        "video": [197, 46, 100, 250]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
     }
   ]
 }

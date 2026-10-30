@@ -33,5 +33,52 @@
       "name": "voice_prompt_language", "source": "fajkpes", "model": "JBL Tune 720BT",
       "hex": "aa93050201000005"
     }
-  ]
+  ],
+  "race": {
+    "_about": "Airoha's RACE frames for JBL's Airoha models (docs/jbl/PROTOCOL.md section 10), built the way JBL Headphones 5.37.10 and Airoha's SDK in it build and read them; none seen on a device yet. The replies are made up in the layout the SDK reads.",
+    "requests": [
+      {"name": "chip_name", "hex": "055a0600000a0210e803"},
+      {"name": "push_status_on", "hex": "055a0300060001"},
+      {"name": "agent_channel", "hex": "055a0200d40c"},
+      {"name": "firmware", "hex": "055a0300071c00"},
+      {"name": "battery_agent", "hex": "055a0300d60c00"},
+      {"name": "battery_partner", "hex": "055a0300d60c01"},
+      {"name": "case_battery", "hex": "055a02000b00"},
+      {"name": "anc_read", "hex": "055a040001090500"},
+      {"name": "anc_off", "hex": "055a0400060e000b"},
+      {"name": "anc_on_ab1568", "hex": "055a0600060e000a0100"},
+      {"name": "ambient_aware_ab1568", "hex": "055a0600060e000a0904"},
+      {"name": "talk_thru_ab155x", "hex": "055a0500060e000a06"},
+      {"name": "anc_on_ab1562", "hex": "055a0700060e000a010001"},
+      {"name": "anc_off_ab1562", "hex": "055a0500060e000b01"},
+      {"name": "auto_off_read_ab1568", "hex": "055a0400832c0100"},
+      {"name": "auto_off_on_30_ab1568", "hex": "055a0800822c010001000807"},
+      {"name": "auto_off_read_old", "hex": "055a0600000af1f20300"},
+      {"name": "auto_off_on_30_old", "hex": "055a0600070001001e00"},
+      {"name": "in_ear_on_ab1568", "hex": "055a0500822c020001"},
+      {"name": "smart_switch_read", "hex": "055a04000111a900"},
+      {"name": "smart_switch_audio_live_buds_3", "hex": "055a10000111a800e4002e001801000090010000"},
+      {"name": "prompts_tones", "hex": "055a0500822c0900ff"},
+      {"name": "balance_left", "hex": "055a040036000154"},
+      {"name": "voice_aware_on", "hex": "055a0500822c070001"},
+      {"name": "voice_aware_level_high", "hex": "055a0600822c06000300"},
+      {"name": "sound_effect_bass", "hex": "055a0500822c130007"},
+      {"name": "find_left", "hex": "055a0500012c000100"},
+      {"name": "find_right_stop", "hex": "055a0500012c000001"}
+    ],
+    "replies": [
+      {"name": "chip_name_ab158x", "hex": "055b0a00000a0600414231353835"},
+      {"name": "agent_right", "hex": "055b0400d40c0001"},
+      {"name": "battery_agent", "hex": "055d0500d60c000050"},
+      {"name": "battery_partner", "hex": "055d0500d60c000146"},
+      {"name": "case_battery", "hex": "055d04000b00003c"},
+      {"name": "firmware", "hex": "055d0a00071c000005312e322e33"},
+      {"name": "anc_ambient_aware", "hex": "055b08000109050000096400"},
+      {"name": "anc_changed_to_anc", "hex": "055d0600010905000001"},
+      {"name": "auto_off_on_30_ab1568", "hex": "055b0900832c00010001000807"},
+      {"name": "smart_switch_audio", "hex": "055b1100011100a900e4002e001801000090010000"},
+      {"name": "prompts_spoken", "hex": "055b0600832c00090000"},
+      {"name": "balance_off", "hex": "055b05003700000064"}
+    ]
+  }
 }

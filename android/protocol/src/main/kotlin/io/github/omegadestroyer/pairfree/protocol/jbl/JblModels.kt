@@ -33,25 +33,35 @@ public data class JblModel(
     val effects: List<String> = emptyList(),
     /** The noise cycle the ambient touch set starts with: 11 noise cancelling and ambient sound, 13 Ambient Aware and off. */
     val gestureNoise: Int = 11,
+    /**
+     * Airoha models: whether JBL's app turns on the push of changes and reads which earbud it talks to on connecting
+     * (devices.json push_status; not on the Quantum 910 headsets).
+     */
+    val racePush: Boolean = true,
+    /** Other names the device may carry, such as the "Wireless" JBL's app adds to the Quantum 910 headsets (devices.json names). */
+    val names: List<String> = emptyList(),
 ) {
     /**
      * How the model's settings go: one command each ([DIRECT]), Harman's feature records, command 06
-     * ([FEATURE]), or JBL's protocol 4 ([P4]).
+     * ([FEATURE]), JBL's protocol 4 ([P4]), or Airoha's RACE commands ([AIROHA], docs/jbl/PROTOCOL.md section 10).
      */
-    public enum class Family { DIRECT, FEATURE, P4 }
+    public enum class Family { DIRECT, FEATURE, P4, AIROHA }
 
     /**
      * How noise control goes: command 91's modes, commands 31 and 32 ([OLD]; [CLUB] turns it off with 31
      * alone), protocol 4's ambient sound control and mode features ([ASC]), or protocol 4's mode feature
-     * alone ([MODE4], the base General4Control write).
+     * alone ([MODE4], the base General4Control write), or RACE's noise filters ([RACE]).
      */
-    public enum class Noise { MODES, OLD, CLUB, ASC, MODE4 }
+    public enum class Noise { MODES, OLD, CLUB, ASC, MODE4, RACE }
 
     /** The noise modes JBL's app offers on the model, besides off. */
     public enum class Mode { ANC, AMBIENT_AWARE, TALK_THRU }
 
-    /** How auto power-off is written: one byte ([V1]), three bytes ([V2]), a command-06 feature record ([FEATURE]), or a protocol 4 feature ([P4]). */
-    public enum class AutoOff { V1, V2, FEATURE, P4 }
+    /**
+     * How auto power-off is written: one byte ([V1]), three bytes ([V2]), a command-06 feature record ([FEATURE]), a
+     * protocol 4 feature ([P4]), or RACE's, which depends on the chip family the earbuds report ([RACE]).
+     */
+    public enum class AutoOff { V1, V2, FEATURE, P4, RACE }
 
     /** The name without "JBL ", as the screens show it beside the brand. */
     public val shortName: String get() = name.removePrefix("JBL ")
@@ -71,7 +81,7 @@ public object JblModels {
      */
     public fun fromName(name: String): JblModel? {
         val key = normal(name)
-        return JBL_MODELS.firstOrNull { normal(it.name) == key }
+        return JBL_MODELS.firstOrNull { normal(it.name) == key } ?: JBL_MODELS.firstOrNull { m -> m.names.any { normal(it) == key } }
     }
 
     /** The screens' [Model] for a model name as PairFree shows it, with [form] for one PairFree does not know. */

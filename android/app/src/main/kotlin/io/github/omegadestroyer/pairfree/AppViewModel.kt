@@ -33,6 +33,7 @@ import io.github.omegadestroyer.pairfree.protocol.RecordedBrand
 import io.github.omegadestroyer.pairfree.protocol.RecordingReport
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
@@ -544,6 +545,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
                 appendLine("Model:           ${session.model.name} (product $id, ${if (session.model.gatt) "Bluetooth LE" else "serial channel"})")
                 appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                if (session.model.family == JblModel.Family.AIROHA) appendLine("Airoha chip:     ${session.chipName ?: "unknown"}")
                 appendLine("App:             PairFree $version")
                 appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
                 appendLine("Captured:        $date")

@@ -23,8 +23,10 @@ import io.github.omegadestroyer.pairfree.protocol.apple.AapPacket
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleOpcode
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblAdvert
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblFrame
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblP4
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblP4Packet
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblReader
@@ -309,12 +311,18 @@ class EarbudsConnection(
         if (device.brand == Brand.APPLE) return openApple(remote)
         val model = if (device.brand == Brand.JBL) JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } else null
         val ctx = context
-        if (model?.gatt != true || ctx == null) return SppLink(remote, log, device.service ?: Wire.SPP_UUID).also { link = it }.apply { connect() }
+        // JBL's Airoha models have Airoha's own serial channel and LE service (docs/jbl/PROTOCOL.md section 10).
+        val airoha = model?.family == JblModel.Family.AIROHA
+        if (model?.gatt != true || ctx == null) {
+            val uuid = if (airoha) JblRace.SPP_UUID else device.service ?: Wire.SPP_UUID
+            return SppLink(remote, log, uuid).also { link = it }.apply { connect() }
+        }
         // JBL's protocol 4 security modes add connection steps (docs/jbl/PROTOCOL.md section 7); modes 1 and 3 use
         // the raw characteristic, and mode 3 writes the phone's name checksum to it first.
         val rawNotify = model.security == 1 || model.security == 3
         val preamble = if (model.security == 3) jblHostNameCrc() else null
-        fun gatt(d: BluetoothDevice) = GattLink(ctx, d, log, rawNotify = rawNotify, rawPreamble = preamble).also { link = it }
+        val uuids = if (airoha) GattLink.AIROHA else GattLink.HARMAN
+        fun gatt(d: BluetoothDevice) = GattLink(ctx, d, log, rawNotify = rawNotify, rawPreamble = preamble, uuids = uuids).also { link = it }
         try {
             return gatt(remote).apply { connect() }
         } catch (e: IOException) {
@@ -596,7 +604,7 @@ class EarbudsConnection(
             }
         }
         try {
-            val parser = JblReader()
+            val parser = JblReader(race = model.family == JblModel.Family.AIROHA)
             val notifications = opened is GattLink
             opened.reads().collect { bytes ->
                 for (packet in parser.feed(bytes, newMessage = notifications)) guardPacket {

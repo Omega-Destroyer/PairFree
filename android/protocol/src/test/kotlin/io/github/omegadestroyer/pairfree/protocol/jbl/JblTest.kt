@@ -218,7 +218,7 @@ class JblTest {
         assertEquals("JBL LIVE460NC", JblModels.fromName("JBL Live 460NC")?.name)
         assertEquals("JBL Tune Flex 2", JblModels.fromName("JBL TUNE FLEX 2")?.name)
         assertEquals("JBL TUNE FLEX", JblModels.fromName("JBL Tune Flex")?.name)
-        assertNull(JblModels.fromName("JBL Tune 770NC"))
+        assertEquals("JBL Tune 770NC", JblModels.fromName("JBL Tune 770NC")?.name, "not the Live 770NC")
         assertEquals(Form.HEADPHONES, JblModels.model("JBL Live 770NC")?.form)
         assertNotNull(JblModels.of(0x210E))
     }

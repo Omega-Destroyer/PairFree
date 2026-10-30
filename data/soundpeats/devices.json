@@ -2169,6 +2169,42 @@
       "eq_command": "0E02",
       "eq_merge": "append_after_classic",
       "custom_eq_bands": 10
+    },
+    {
+      "firmware_code": "S22",
+      "names": [
+        "SOUNDPEATS C30"
+      ],
+      "family": "UNKNOWN",
+      "family_sources": {},
+      "old_eq_protocol": null,
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "onto_classic_bands",
+      "custom_eq_bands": 10,
+      "reports": [
+        "data/soundpeats/reports/S22_0.7.5.txt"
+      ],
+      "notes": "Not in the official app's model lists; known from a user's device report (GitHub issue #5). Its chip family is not known, so no EQ is offered."
+    },
+    {
+      "firmware_code": "T2",
+      "names": [
+        "TRUEFREE Clip C10"
+      ],
+      "family": "UNKNOWN",
+      "family_sources": {},
+      "old_eq_protocol": null,
+      "family_conflict": false,
+      "transport": "spp",
+      "eq_command": "0E02",
+      "eq_merge": "append_after_classic",
+      "custom_eq_bands": 10,
+      "reports": [
+        "data/soundpeats/reports/T2_0.5.5.txt"
+      ],
+      "notes": "Not in the official app's model lists; known from a user's device report (GitHub issue #6). Its chip family is not known, so no EQ is offered."
     }
   ],
   "codes_seen_only_in_branches": {

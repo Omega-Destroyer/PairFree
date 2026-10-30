@@ -442,6 +442,34 @@ reports from other people.
    captures (`docs/soundpeats/PROTOCOL.md` section 11).
 7. Firmware update last, and only on the rules above.
 
+## Before every push to GitHub
+
+Go through this list each time, not only for releases; the owner found several pushes that left the
+README or a device page behind the code or the reports (2026-10-30).
+
+1. **Checks** (below) pass: the Python tests, and in the E: mirror `:protocol:test :app:assembleDebug
+   :app:lintDebug`.
+2. **Device reports received** since the last push: each saved under `data/<brand>/reports/`, listed in its
+   model's `reports` in `data/<brand>/devices.json` (add the model first if the table lacks it), so the
+   brand's page and the README count it as tried.
+3. **Generated pages:** run every `tools/gen_*_table.py` that touches a changed brand (each rewrites all
+   device pages and the README summary); commit `README.md` and `docs/devices/*.md` with the change.
+4. **Hand-written text the generators do not touch**, checked against what changed:
+   - `README.md`: the status table (the released version, "Tried on real earbuds"), the brand list.
+   - `docs/devices/<brand>.md` above the generated table: what PairFree shows, which models were tried, the
+     "Not yet" and not-covered lists, Help wanted.
+   - `docs/<brand>/PROTOCOL.md`: the sections the change touches, its open questions and never-sent list.
+   - This file's paragraph for the brand: model counts, what is and is not covered, what is never sent.
+   - The `_about` text in each changed `data/<brand>/*.json`.
+   - The GitHub repository's description, when brands or coverage change.
+5. **Issues** the change settles: reply naming the exact version it ships in ("in PairFree 0.3.3"), never
+   "the next version"; after a release, follow up on any reply that named a version still to come.
+
+For a release, also: bump `versionCode` and `versionName` (Versions, above) and the README's "Released
+(vX.Y.Z)"; tag; build from a fresh clone of the tag; check the signature and an upgrade over the previous
+release; write the notes ("Changes since", issue numbers, the tried models as the README lists them, the
+APK's SHA-256); upload `PairFree-X.Y.Z.apk`.
+
 ## Checks
 
 ```

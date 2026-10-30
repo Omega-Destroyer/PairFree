@@ -23,8 +23,8 @@ class ModelsTable(unittest.TestCase):
 
     def test_summary(self):
         s = gen.summary()
-        self.assertEqual(45, s["models"], "every model in the official app's table but the Capsule3 Pro")
-        self.assertEqual(["Air5 Pro+", "H3"], s["tested"])
+        self.assertEqual(47, s["models"], "every model in the official app's table but the Capsule3 Pro, and two from reports")
+        self.assertEqual(["Air5 Pro+", "C30", "H3", "TRUEFREE Clip C10"], s["tested"])
 
     def test_h3_report_reads(self):
         answered, silent, gaia = gen.read_reports(self.devices["S5"]["reports"], self.commands)

@@ -1073,3 +1073,26 @@ class SoundcoreSleepA20Test {
         assertTrue(hex.subList(14, 30).all { it == "XX" })
     }
 }
+
+/** Whatever state a model's earbuds send, reading it must not throw: a crash there closes the app on connecting (issue #7). */
+class SoundcoreRobustnessTest {
+    @Test
+    fun randomStatesReadWithoutThrowing() {
+        val random = kotlin.random.Random(7)
+        for (layout in SoundcoreLayout.ALL) {
+            repeat(50) { round ->
+                val size = layout.minSize + if (round % 2 == 0) 0 else random.nextInt(0, 64)
+                val body = random.nextBytes(size)
+                val session = SoundcoreSession(layout.model)
+                session.receive(SoundcorePacket(SoundcoreCommand.STATE, body))
+                session.receive(SoundcorePacket(SoundcoreCommand.BATTERY, random.nextBytes(3)))
+                session.groups
+                val state = session.lastState ?: return@repeat
+                state.reportHex()
+                SoundcoreEqSpec.of(layout.model)?.let { SoundcoreEqualizer.read(it, state) }
+                val touch = SoundcoreTouch.of(state)
+                for ((group, buttons) in touch.groups) for (b in buttons) touch.setButton(group, b.side, b.press, b.choices.firstOrNull()?.id)
+            }
+        }
+    }
+}

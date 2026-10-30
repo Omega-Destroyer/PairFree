@@ -91,6 +91,9 @@ data class EqState(
         get() {
             if (!known) return null
             profiles.firstOrNull { it.id == setting.profileId && (it.preset != null || it.gains == setting.gains) }?.let { return it }
+            // Only SoundPEATS layouts can be encoded as band frames: the other brands' bands carry no Q, and their
+            // presets are numbers the earbuds apply. There the same gains are the same EQ (issue #2: a Sony crashed here).
+            if (target !== SoundpeatsEqTarget) return profiles.firstOrNull { it.preset == null && it.gains == setting.gains }
             val sent = layout.payloads(setting.gains)
             // Earbuds that report their EQ name the preset they hold, so a custom curve is never a preset.
             return profiles.filter { it.preset == null || !target.reportsEq }

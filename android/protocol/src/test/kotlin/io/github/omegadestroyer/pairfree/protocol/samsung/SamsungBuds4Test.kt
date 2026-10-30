@@ -135,6 +135,39 @@ class SamsungBuds4Test {
     }
 
     @Test
+    fun thePluginsOtherSettingsAreOfferedWhereItsListsHaveThem() {
+        val s = connected(pro)
+        // 360 audio off (byte 35), head tracking on (42): head tracking waits for 360 audio.
+        assertEquals(Setting.Toggle("audio_360", false), setting(s, "audio_360"))
+        assertEquals(Setting.Toggle("head_tracking", true, enabled = false), setting(s, "head_tracking"))
+        assertNull(s.change(SettingChange.Toggle("head_tracking", false)))
+        assertEquals(listOf(packet(SamsungMessage.SET_SPATIAL_AUDIO, 1, 1)), s.change(SettingChange.Toggle("audio_360", true)))
+        assertEquals(listOf(packet(SamsungMessage.SET_SPATIAL_AUDIO, 1, 0)), s.change(SettingChange.Toggle("head_tracking", false)))
+
+        assertEquals(listOf(packet(SamsungMessage.ADAPTIVE_EQ_CONTROL, 1)), s.change(SettingChange.Toggle("adjust_sound_fit", true)))
+        // Voice boost and volume normalisation go together in message 106.
+        assertEquals(listOf(packet(SamsungMessage.SET_BOOST_LOUDNESS, 1, 0)), s.change(SettingChange.Toggle("voice_boost", true)))
+        assertEquals(listOf(packet(SamsungMessage.SET_BOOST_LOUDNESS, 1, 1)), s.change(SettingChange.Toggle("volume_normalization", true)))
+        // Loud noise reduction keeps the adaptive response level the earbuds reported (2).
+        assertEquals(Setting.Toggle("loud_noise_reduction", true), setting(s, "loud_noise_reduction"))
+        assertEquals(listOf(packet(SamsungMessage.ADAPTIVE_RESPONSE_LEVEL, 2, 0, 0)), s.change(SettingChange.Toggle("loud_noise_reduction", false)))
+        assertEquals(listOf(packet(SamsungMessage.NECK_STRETCH, 1)), s.change(SettingChange.Toggle("neck_stretch", true)))
+        assertNull(setting(s, "auto_off"), "no timer on the Buds4 Pro")
+
+        assertNull(setting(connected(buds4), "loud_noise_reduction"), "the Buds4 Pro's alone")
+    }
+
+    @Test
+    fun theH1HasAnAutoPowerOffTimer() {
+        val b = state()
+        b[60] = 60  // the H1's tail: the timer, in minutes
+        val s = SamsungSession(SamsungModels.of("SM-U700")!!).also { it.receive(SamsungPacket(SamsungMessage.EXTENDED_STATUS_UPDATED, b)) }
+        assertEquals(Setting.Choice("auto_off", "60", listOf("30", "60", "120")), setting(s, "auto_off"))
+        assertEquals(listOf(packet(SamsungMessage.AUTO_POWER_OFF_TIMER, 120)), s.change(SettingChange.Choice("auto_off", "120")))
+        assertNull(setting(s, "neck_stretch"), "the H1 has no neck stretch reminder")
+    }
+
+    @Test
     fun theBuds4OffersWhatSamsungsListsGiveIt() {
         val s = connected(buds4)
         assertNull(setting(s, "ambient_custom"), "no ambient sound per earbud on the Buds4")

@@ -322,7 +322,8 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
             f["spatial_audio"] = bool(35)
             f["customize_conversation_boost"] = bool(36)
             f["customize_noise_reduction_level"] = u8(37)
-            f["neck_stretch_calibration"] = bool(38)
+            // The neck stretch reminder's switch (Samsung's plugin sends it back with message 201).
+            f["neck_stretch"] = bool(38)
             f["bixby_keyword"] = u8(39)
             f["noise_reduction_amplify"] = bool(40)
             f["auto_adjust_sound"] = bool(41)

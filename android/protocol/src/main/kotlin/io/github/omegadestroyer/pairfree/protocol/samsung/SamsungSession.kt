@@ -175,7 +175,7 @@ public class SamsungSession(
                     listOfNotNull(
                         level(s, "balance", "hearing_enhancements", 0, BALANCE_MAX, "stereo_pan"),
                         toggle(s, "adaptive_volume", "adaptive_volume_enabled", "adaptive_volume"),
-                    ),
+                    ) + buds4SoundRows(s),
                 ),
                 touchGroup(s),
                 ambientCustomGroup(s),
@@ -193,6 +193,8 @@ public class SamsungSession(
                         toggle(s, "seamless_connection", "seamless_connection_enabled", "seamless_connection"),
                         toggle(s, "voice_wakeup", "voice_wake_up", "bixby_wakeup"),
                         toggle(s, "auto_pause", "auto_pause_resume", "auto_pause"),
+                        toggle(s, "neck_stretch", "neck_stretch", "neck_stretch"),
+                        autoOffRow(s),
                     ),
                 ),
                 group(
@@ -209,6 +211,32 @@ public class SamsungSession(
         }
 
     private fun group(key: String, tab: SettingTab, settings: List<Setting>) = settings.takeIf { it.isNotEmpty() }?.let { SettingGroup(key, tab, it) }
+
+    /**
+     * The Buds4 family's sound settings from Samsung's plugin (docs/samsung/PROTOCOL.md section 12): 360 audio and
+     * head tracking (message 124 sends both), adjust sound to fit (218), and voice boost and volume normalisation
+     * (106 sends both). Head tracking needs 360 audio on.
+     */
+    private fun buds4SoundRows(s: SamsungStatus): List<Setting> = buildList {
+        if (!model.buds4Layout) return@buildList
+        if (supports(s, "spatial_audio")) {
+            val spatial = s.flag("spatial_audio")
+            spatial?.let { add(Setting.Toggle("audio_360", it)) }
+            s.flag("spatial_audio_head_tracking")?.let { add(Setting.Toggle("head_tracking", it, enabled = spatial == true)) }
+        }
+        if (supports(s, "adaptive_eq")) s.int("adjust_sound_fit")?.let { add(Setting.Toggle("adjust_sound_fit", it != 0)) }
+        if (supports(s, "voice_boost")) {
+            s.flag("voice_boost")?.let { add(Setting.Toggle("voice_boost", it)) }
+            s.flag("volume_normalization")?.let { add(Setting.Toggle("volume_normalization", it)) }
+        }
+    }
+
+    /** The H1's auto power-off timer: the minutes Samsung's plugin offers (30, 60, 120). */
+    private fun autoOffRow(s: SamsungStatus): Setting? {
+        if (!model.buds4Layout || !supports(s, "auto_power_off_timer")) return null
+        val minutes = s.int("auto_power_off_timer") ?: return null
+        return Setting.Choice("auto_off", minutes.takeIf { it > 0 }?.toString(), AUTO_OFF_MINUTES.map { it.toString() })
+    }
 
     private fun toggle(s: SamsungStatus, key: String, field: String, feature: String): Setting.Toggle? =
         if (supports(s, feature)) s.flag(field)?.let { Setting.Toggle(key, it) } else null
@@ -235,6 +263,7 @@ public class SamsungSession(
             toggle(s, "noise_one_earbud", "noise_controls_with_one_earbud", "noise_controls_with_one_earbud")?.let(::add)
             toggle(s, "voice_detect", "detect_conversations", "detect_conversations")?.let { add(it) }
             toggle(s, "siren_detect", "siren_detect", "siren_detect")?.let(::add)
+            toggle(s, "loud_noise_reduction", "loud_noise_reduction", "loud_noise_reduction")?.let(::add)
             if (supports(s, "detect_conversations")) {
                 s.int("detect_conversations_duration")?.let { add(Setting.Choice("voice_detect_wait", VOICE_DETECT_WAITS.getOrElse(it) { "10" }, VOICE_DETECT_WAITS)) }
             }
@@ -353,6 +382,27 @@ public class SamsungSession(
                     }
                     "auto_pause" -> listOf(SamsungPacket(SamsungMessage.SET_PAUSE_MEDIA_ONE_BUD_REMOVED, flag(on))).also { update("auto_pause_resume", on) }
                     "siren_detect" -> listOf(SamsungPacket(SamsungMessage.SET_SIREN_DETECT, flag(on))).also { update("siren_detect", on) }
+                    "audio_360", "head_tracking" -> {
+                        val spatial = if (change.key == "audio_360") on else s.flag("spatial_audio") == true
+                        val tracking = if (change.key == "head_tracking") on else s.flag("spatial_audio_head_tracking") == true
+                        update("spatial_audio", spatial)
+                        update("spatial_audio_head_tracking", tracking)
+                        listOf(send(SamsungMessage.SET_SPATIAL_AUDIO, if (spatial) 1 else 0, if (tracking) 1 else 0))
+                    }
+                    "adjust_sound_fit" -> listOf(send(SamsungMessage.ADAPTIVE_EQ_CONTROL, if (on) 1 else 0)).also { update("adjust_sound_fit", if (on) 1 else 0) }
+                    "voice_boost", "volume_normalization" -> {
+                        val boost = if (change.key == "voice_boost") on else s.flag("voice_boost") == true
+                        val normal = if (change.key == "volume_normalization") on else s.flag("volume_normalization") == true
+                        update("voice_boost", boost)
+                        update("volume_normalization", normal)
+                        listOf(send(SamsungMessage.SET_BOOST_LOUDNESS, if (boost) 1 else 0, if (normal) 1 else 0))
+                    }
+                    // Message 73 carries the adaptive response level too, sent back as the earbuds reported it.
+                    "loud_noise_reduction" -> {
+                        update("loud_noise_reduction", on)
+                        listOf(send(SamsungMessage.ADAPTIVE_RESPONSE_LEVEL, s.int("adaptive_response_level") ?: 0, if (on) 1 else 0, 0))
+                    }
+                    "neck_stretch" -> listOf(SamsungPacket(SamsungMessage.NECK_STRETCH, flag(on))).also { update("neck_stretch", on) }
                     "adaptive_volume" -> listOf(SamsungPacket(SamsungMessage.SET_ADAPTIVE_VOLUME, flag(on))).also { update("adaptive_volume_enabled", on) }
                     "conversation_boost" -> ambientCustom(s, boost = on)
                     "voice_wakeup" -> listOf(SamsungPacket(SamsungMessage.SET_VOICE_WAKE_UP, flag(on))).also { update("voice_wake_up", on) }
@@ -385,6 +435,9 @@ public class SamsungSession(
                     }
                     "hold_left", "hold_right" -> holdOptions(s, change.key == "hold_left", change.option) ?: return null
                     "hold_cycle", "hold_cycle_left", "hold_cycle_right" -> cycleChange(s, change.key, change.option) ?: return null
+                    "auto_off" -> (change.option.toIntOrNull() ?: return null).let {
+                        listOf(send(SamsungMessage.AUTO_POWER_OFF_TIMER, it)).also { _ -> update("auto_power_off_timer", it) }
+                    }
                     else -> return null
                 }
             }
@@ -620,7 +673,13 @@ public class SamsungSession(
             SamsungMessage.SET_PAUSE_MEDIA_ONE_BUD_REMOVED to ("auto_pause_resume" to { v: Int -> v == 1 }),
             SamsungMessage.SET_SIREN_DETECT to ("siren_detect" to { v: Int -> v == 1 }),
             SamsungMessage.SET_ADAPTIVE_VOLUME to ("adaptive_volume_enabled" to { v: Int -> v == 1 }),
+            SamsungMessage.NECK_STRETCH to ("neck_stretch" to { v: Int -> v == 1 }),
+            SamsungMessage.ADAPTIVE_EQ_CONTROL to ("adjust_sound_fit" to { v: Int -> v }),
+            SamsungMessage.AUTO_POWER_OFF_TIMER to ("auto_power_off_timer" to { v: Int -> v }),
         )
+
+        // The H1's auto power-off timer, in minutes (Samsung's plugin, wl.j).
+        private val AUTO_OFF_MINUTES: List<Int> = listOf(30, 60, 120)
 
         private fun fit(v: Int): FitResult.Fit = when (v) {
             1 -> FitResult.Fit.GOOD

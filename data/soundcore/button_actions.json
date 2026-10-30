@@ -89,6 +89,14 @@
       [8, "noise_canceling"],
       [13, "change_mode"]
     ],
+    "a6611": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [6, "play_pause"],
+      [13, "change_mode"]
+    ],
     "bass_up": [
       [7, "bass_up"]
     ]

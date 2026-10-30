@@ -3,6 +3,8 @@ package io.github.omegadestroyer.pairfree.protocol.soundcore
 import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
+import io.github.omegadestroyer.pairfree.protocol.Setting
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import io.github.omegadestroyer.pairfree.protocol.repoFile
 import kotlinx.serialization.json.Json
@@ -508,7 +510,7 @@ class SoundcoreEqualizerTest {
     fun specsMatchTheData() {
         val withEq = devices.filter { "eq" in it }
         assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
-        assertEquals(46, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip")
+        assertEquals(47, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip")
         for (d in withEq) {
             val eq = d.getValue("eq").jsonObject
             val spec = SoundcoreEqSpec.of(d.str("model"))!!
@@ -612,12 +614,14 @@ class SoundcoreEqualizerTest {
         for (spec in SoundcoreEqSpec.ALL) {
             val expected = when {
                 spec.model == "A3936" -> "hardware"
+                // A user's recording of the Soundcore app, rebuilt in SoundcoreSleepA20Test.
+                spec.model == "A6611" -> "recording"
                 spec.model in tested -> "openscq30_tests"
                 else -> null
             }
             assertEquals(expected, spec.checked, spec.model)
         }
-        assertEquals(12, SoundcoreEqSpec.ALL.count { it.checked != null })
+        assertEquals(13, SoundcoreEqSpec.ALL.count { it.checked != null })
     }
 
     @Test
@@ -813,13 +817,14 @@ class SoundcoreButtonsTest {
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(37, withButtons.size)
+        assertEquals(38, withButtons.size)
         for (d in devices) {
             // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
-            // A3031's state holds them, but OpenSCQ30 does not offer them).
+            // A3031's state holds them, but OpenSCQ30 does not offer them), and a recording adds the Sleep A20's.
             val app = d["soundcore_app"]?.jsonObject?.get("features")?.jsonArray.orEmpty()
             val features = (d.getValue("openscq30").jsonObject.getValue("features").jsonArray + app).map { it.jsonPrimitive.content }
-            assertEquals(features.any { it.endsWith("button_configuration") && !it.startsWith("reset") }, "buttons" in d, d.str("model"))
+            val recorded = d["buttons"]?.jsonObject?.get("checked")?.jsonPrimitive?.content == "recording"
+            assertEquals(features.any { it.endsWith("button_configuration") && !it.startsWith("reset") } || recorded, "buttons" in d, d.str("model"))
         }
         for (d in withButtons) {
             val spec = SoundcoreButtonSpec.of(d.str("model"))!!
@@ -980,5 +985,91 @@ class SoundcoreButtonsTest {
             assertEquals(spec.groups.size, touch.groups.size, c.str("openscq30_test"))
             for ((group, buttons) in touch.groups) assertEquals(group.order.size, buttons.size)
         }
+    }
+}
+
+/** The Sleep A20 (A6611): a user's recording of the Soundcore app (GitHub issue #8), rebuilt byte for byte. */
+class SoundcoreSleepA20Test {
+    private val rec = vectors.getValue("a6611_recording").jsonObject
+    private val state = SoundcoreState.parse(SoundcoreLayout.of("A6611")!!, rec.str("state").hexBytes())!!
+
+    private fun JsonObject.frames() = getValue("frames").jsonArray.map { it.jsonPrimitive.content }
+
+    @Test
+    fun readsTheRecordedState() {
+        assertEquals(131, state.size)
+        assertEquals("03.22", state.firmware)
+        assertEquals(listOf(100, 100, 90), listOf(state.batteryLeft, state.batteryRight, state.batteryCase))
+        val eq = SoundcoreEqualizer.read(SoundcoreEqSpec.of("A6611")!!, state)!!
+        assertEquals(0, eq.preset)
+        assertEquals(List(10) { 0 }, eq.channels[0]!!.toList())
+        assertNull(eq.channels[1], "FF for the right curve")
+        val touch = SoundcoreTouch.of(state)
+        fun action(side: TouchSide, press: TouchPress) =
+            touch.groups.single().second.first { it.side == side && it.press == press }.action?.name
+        assertEquals("change_mode", action(TouchSide.LEFT, TouchPress.DOUBLE))
+        assertEquals("play_pause", action(TouchSide.RIGHT, TouchPress.DOUBLE))
+        assertEquals("volume_down", action(TouchSide.LEFT, TouchPress.TRIPLE))
+        assertEquals("volume_up", action(TouchSide.RIGHT, TouchPress.TRIPLE))
+        assertNull(touch.touchTone, "not confirmed on the A20, so not offered")
+        assertTrue(!touch.canReset)
+    }
+
+    @Test
+    fun rebuildsTheRecordedEqWrites() {
+        val spec = SoundcoreEqSpec.of("A6611")!!
+        val steps = rec.getValue("eq").jsonArray.map { it.jsonObject }
+        assertEquals(13, steps.size)
+        for (step in steps) {
+            val target = step["preset"]?.let { SoundcoreEqualizer.forPreset(spec, spec.preset(it.jsonPrimitive.content)!!) }
+                ?: SoundcoreEqualizer.forCustom(spec, ints(step, "bands"))!!
+            val packets = SoundcoreEqualizer.write(spec, state, target).map { "%04x".format(it.command) to it.body.hex() }
+            assertEquals(listOf("0283" to step.str("body")), packets, step.toString())
+        }
+    }
+
+    @Test
+    fun rebuildsTheRecordedTouchWrites() {
+        val steps = rec.getValue("buttons").jsonArray.map { it.jsonObject }
+        assertEquals(6, steps.size)
+        for (step in steps) {
+            // Each from the buttons the earbuds reported just before: they keep the low four bits in both halves.
+            val touch = SoundcoreTouch.of(state.with("buttons", step.str("before").hexBytes()))
+            val (group, buttons) = touch.groups.single()
+            val name = step.str("button")
+            val side = TouchSide.valueOf(name.substringBefore('_').uppercase())
+            val press = TouchPress.valueOf(name.substringAfter('_').uppercase())
+            val id = step["action"]?.jsonPrimitive?.contentOrNull?.let { a ->
+                buttons.first { it.side == side && it.press == press }.choices.first { it.name == a }.id
+            }
+            val change = touch.setButton(group, side, press, id)!!
+            assertEquals(step.frames(), change.packets.map { SoundcorePacket.build(it.command, it.body).hex() }, step.toString())
+        }
+    }
+
+    @Test
+    fun theSleepTimerIsABrandRow() {
+        val session = SoundcoreSession("A6611")
+        session.receive(SoundcorePacket(SoundcoreCommand.STATE, rec.str("state").hexBytes()))
+        val row = session.groups.single().settings.single() as Setting.Choice
+        assertEquals("sleep_timer", row.key)
+        assertEquals("off", row.value, "02 78 00 01: off, 120 minutes kept")
+        assertEquals("30", row.options[1])
+        assertEquals("480", row.options.last())
+        for (step in rec.getValue("sleep_timer").jsonArray.map { it.jsonObject }) {
+            val packets = session.change(SettingChange.Choice("sleep_timer", step.str("option")))!!
+            assertEquals(step.frames(), packets.map { SoundcorePacket.build(it.command, it.body).hex() }, step.toString())
+        }
+        assertEquals("off", (session.groups.single().settings.single() as Setting.Choice).value)
+        assertNull(SoundcoreSession("A3936").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())) }.groups.singleOrNull(), "the A40 has no sleep timer")
+    }
+
+    @Test
+    fun theReportShowsTheFirmwareBesideTheSerial() {
+        // The right firmware ends in digits right before the serial; only the located serial is hidden.
+        val withSerial = rec.str("state").hexBytes().also { "6611F49D00000000".encodeToByteArray().copyInto(it, 14) }
+        val hex = SoundcoreState.parse(SoundcoreLayout.of("A6611")!!, withSerial)!!.reportHex().split(" ")
+        assertEquals(listOf("30", "33", "2e", "32", "32"), hex.subList(9, 14), "the right firmware, 03.22")
+        assertTrue(hex.subList(14, 30).all { it == "XX" })
     }
 }

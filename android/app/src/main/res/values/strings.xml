@@ -482,6 +482,9 @@
     <string name="setting_touch_double_hold">Double tap and hold</string>
     <string name="setting_touch_triple_call">Triple tap during calls</string>
     <string name="setting_group_touch_dial">Case dial</string>
+    <string name="setting_group_sleep">Sleep</string>
+    <string name="setting_sleep_timer">Sleep timer</string>
+    <string name="setting_sleep_timer_note">The earbuds stop the audio after the time chosen.</string>
     <string name="setting_group_touch_dial_note">Double press and hold the dial to lock or unlock it.</string>
     <string name="setting_group_touch_case">Case button</string>
     <string name="setting_dial_press">Press</string>

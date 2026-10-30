@@ -3,6 +3,10 @@ package io.github.omegadestroyer.pairfree.protocol.soundcore
 import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.Setting
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.SettingGroup
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Value
 
 /**
@@ -124,6 +128,42 @@ public class SoundcoreSession(public val model: String) {
         return packet
     }
 
+    /**
+     * Settings the shared screens and the Controls tab have no place for, as brand rows: the Sleep A20's sleep timer
+     * (docs/soundcore/PROTOCOL.md section 11). Each shows only where the model has it and the last state holds it.
+     */
+    public val groups: List<SettingGroup>
+        get() {
+            val s = lastState ?: return emptyList()
+            val rows = listOfNotNull(sleepTimerRow(s))
+            return if (rows.isEmpty()) emptyList() else listOf(SettingGroup("sleep", SettingTab.DEVICE, rows))
+        }
+
+    /** The sleep timer: off, or the minutes after which the earbuds stop the audio. */
+    private fun sleepTimerRow(s: SoundcoreState): Setting? {
+        if (SLEEP_TIMER !in s.layout.features) return null
+        val b = s.field(SLEEP_TIMER) ?: return null
+        val value = if (b.u8(0) == SLEEP_TIMER_ON) b.u16(1).toString() else OFF
+        return Setting.Choice(SLEEP_TIMER, value, listOf(OFF) + SLEEP_TIMER_MINUTES.map { it.toString() })
+    }
+
+    /**
+     * The packets for a change to one of [groups], or null when it is not one of them. The change shows at once;
+     * the next state the earbuds send confirms it.
+     */
+    public fun change(change: SettingChange): List<SoundcorePacket>? {
+        val s = lastState ?: return null
+        if (change !is SettingChange.Choice || change.key != SLEEP_TIMER || SLEEP_TIMER !in s.layout.features) return null
+        val b = s.field(SLEEP_TIMER) ?: return null
+        val minutes = change.option.toIntOrNull()
+        if (minutes == null && change.option != OFF) return null
+        // Off keeps the minutes, and the last byte goes back as the earbuds sent it, as the Soundcore app does.
+        val m = minutes ?: b.u16(1)
+        val body = byteArrayOf((if (minutes != null) SLEEP_TIMER_ON else SLEEP_TIMER_OFF).toByte(), m.toByte(), (m shr 8).toByte(), b[3])
+        lastState = s.with(SLEEP_TIMER, body)
+        return listOf(SoundcorePacket(SoundcoreCommand.SET_SLEEP_TIMER, body))
+    }
+
     /** The request for the full state, sent on connecting and now and then after. */
     public fun requestState(): ByteArray = SoundcorePacket.build(SoundcoreCommand.STATE, checksum = checksum)
 
@@ -136,6 +176,8 @@ public class SoundcoreSession(public val model: String) {
 
     private fun ByteArray.u8(at: Int): Int = this[at].toInt() and 0xFF
 
+    private fun ByteArray.u16(at: Int): Int = u8(at) or (u8(at + 1) shl 8)
+
     // A battery in the model's own steps (fifths on most), so the screens can show bars as the Soundcore app does.
     private fun steps(reading: BatteryLevel?): Value = Value.Steps(reading?.level, reading?.levels ?: BatteryLevel.PERCENT)
 
@@ -144,6 +186,14 @@ public class SoundcoreSession(public val model: String) {
 
         /** Models whose state PairFree can read: every model with a layout in data/soundcore/devices.json. */
         public val SUPPORTED_MODELS: Set<String> get() = SoundcoreLayout.ALL.map { it.model }.toSet()
+
+        // The Sleep A20's sleep timer (state bytes 67-70, 15 85): 1 on or 2 off, the minutes, a byte kept as it is.
+        // The choices: the 30 minutes a recording shows, then OpenSCQ30's note of 1 to 8 hours in half hours.
+        private const val SLEEP_TIMER = "sleep_timer"
+        private const val SLEEP_TIMER_ON = 1
+        private const val SLEEP_TIMER_OFF = 2
+        private const val OFF = "off"
+        private val SLEEP_TIMER_MINUTES = (30..480 step 30).toList()
 
         private val EARBUD_BATTERIES = listOf("dual_battery", "dual_battery_level", "single_battery", "single_battery_charging_first", "battery_level")
 

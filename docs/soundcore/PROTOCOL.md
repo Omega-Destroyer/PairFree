@@ -90,7 +90,10 @@ has not confirmed it.
 
 Seen on the A40 but not in OpenSCQ30: the Soundcore app reads usage statistics with `05 01`
 right after the state (little-endian counters), then clears them with `05 81`, which has no
-body; the next `05 01` reads all zero. PairFree has no use for either and sends neither.
+body; the next `05 01` reads all zero. PairFree has no use for either and sends neither. On the
+Sleep A20 the reply starts with the model number, the serial number and the Bluetooth address, so
+`05 01` is marked private and a recording leaves its body out. The Sleep A20 adds its own commands
+(section 11).
 
 On the A40 every setting is acknowledged with the same command and no body, and after `06 81`
 the earbuds also send the new sound modes as `06 01`. They send the battery (`01 03`) and the
@@ -269,6 +272,8 @@ hold them), and a state read with 3D sound on and with a custom EQ.
 8. Whether the models where OpenSCQ30 turns both sides off together (section 9) really need it,
    or treat each side alone as the A40 does.
 9. What touch lock (`04 86`, the Liberty 4 NC) does on the earbuds.
+10. The Sleep A20's touch tone, low battery prompt, prompts, alarms and sleep mode, and what its
+    `01 A9` does (section 11).
 
 ## 8. Equalizer
 
@@ -295,7 +300,7 @@ custom curve, and the C30i (A3330) has a custom curve and one preset.
 | drc | `02 83` | preset, each curve, each curve after correction | 9 |
 | hear_id | `03 87` (`03 86` when the age range is `FF`) | preset, music genre, curves, gender, age, `00`, HearID curve, time, type, custom HearID curve, corrected curves | 6 |
 | a3035, a3040, a3062, a3947, a3955, interleaved | `03 87` | variations of hear_id; see `SoundcoreEqualizer` | 9 |
-| a3388, a3876 | `02 83` | the A3388: preset and both curves, no correction; the A3876: preset, one curve and its correction | 2 |
+| a3388, a3876 | `02 83` | the A3388: preset and both curves, no correction; the A3876 and the Sleep A20 (A6611): preset, one curve and its correction | 3 |
 | a3116 | `02 81` preset, `02 83` curve | the Motion+ sends only what changed | 1 |
 
 "Correction" is OpenSCQ30's `apply_drc()`, a fixed 8 by 8 mix of the bands (`SoundcoreEq.drc`).
@@ -320,7 +325,8 @@ SoundPEATS earbuds.
 
 Every model's touch controls are in `data/soundcore/devices.json` (`buttons`) and their action
 sets in `data/soundcore/button_actions.json`, read from OpenSCQ30's button configuration module
-and each model's settings (commit `bc77a29`). 30 models have them. `SoundcoreButtons` reads and
+and each model's settings (commit `bc77a29`), and for the Sleep A20 from a recording of the Soundcore
+app (section 11). 38 models have them. `SoundcoreButtons` reads and
 writes them, and `SoundcoreTouch` adds the switches below.
 
 **In the state.** The `buttons` field holds one entry per button (a side and a press: single,
@@ -396,3 +402,40 @@ with `same_as` names the model whose layout they share), and are no longer repor
 covered: the Life NC (A3201), which the app asks for each setting with a message of its own, an older
 protocol than the one state reply PairFree reads, and the Life Q20+ (A3045), for which 2.9.9 has no
 code. Both stay report only, with the models newer than 2.9.9.
+
+## 11. Sleep A20 (A6611)
+
+OpenSCQ30's library does not support the Sleep A20. Its device faker holds one state reply (131 bytes)
+with what each byte is, as far as OpenSCQ30 knows, and a user's recording of the Soundcore app (GitHub
+issue #8, firmware 03.22; `data/soundcore/reports/A6611_03.22.txt`) confirms these parts of it, every
+write rebuilt byte for byte in `data/soundcore/test_vectors.json` (`a6611_recording`):
+
+| Bytes | What | Write |
+|---|---|---|
+| 0-29 | host, both in, each earbud's battery (tenths, offset 1), firmware, serial | |
+| 30-51 | EQ: preset (2 bytes), the left curve (10), `FF` for the right | `02 83`: preset, one curve and its correction, as the V20i (section 8) |
+| 53-56 | taps: left double, right double, left triple, right triple | `04 81`: side, press (0 double, 5 triple), action (section 9) |
+| 67-70 | sleep timer: 1 on or 2 off, the minutes (2 bytes, little-endian), a byte sent back as it is | `15 85`, the same 4 bytes; `15 03` reads them |
+| 126 | the case's battery (tenths, offset 1) | |
+
+- **EQ.** The presets are OpenSCQ30's second common set (`type_2`): its Rock ends +4 and +5 dB, which the
+  recording shows, where the first set's ends +3 and +3. A preset sends bands 9 and 10 as `78 00`, the
+  custom curve as `78 78`, as on the other models.
+- **Taps.** No enabled byte; `F` turns a tap off. The app writes the action byte's high four bits as the
+  state had them and the new action in the low four, as PairFree does with both earbuds in, and the earbuds
+  then store the low four bits in both halves. Actions: 0 volume up, 1 volume down, 2 previous, 3 next,
+  6 play or pause, 13 change mode (Bluetooth or sleep sounds), the Sleep A30's set without noise cancelling.
+  The recording used 0, 2, 6, 13 and `F`; 1 is the left triple tap's default, and 3 is taken from the
+  Sleep A30. A reset to the defaults (`04 82`) was not recorded, so PairFree does not offer one.
+- **Sleep timer.** Off keeps the minutes. The recording set 120 and 30 minutes; PairFree offers 30
+  minutes to 8 hours in half hours, from OpenSCQ30's note that the app goes up to 8 hours.
+
+Also in the recording, and not used by PairFree: `01 A6`, ten bytes the app sends now and then, which
+start with the phone's time (seconds since 1970, little-endian); `14 01`, the alarm list (empty here;
+the faker gives five alarms of seven bytes); `05 03`, `05 83`, `15 01`, `15 88`, `15 06` and `15 07`,
+the sleep logs and their transfer, which hold the user's sleep times; and `01 A9` with 1 and then 0,
+which the earbuds answer with `01 14` and `13 03`, and which the user's list of changes would explain.
+
+Not yet confirmed, so not offered: the alarm (58-61), sleep mode (65), touch tone (75), the low
+battery prompt (76), and the prompts for auto power-off and for switching modes (124-125). Each needs
+a recording in which the user changes it, with the change written down.

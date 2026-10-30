@@ -1,0 +1,281 @@
+Soundcore Sleep A20 (A6611): firmware 03.22
+===========================================
+
+Date:      2026-10-30
+Firmware:  03.22 on both earbuds (from the full Bluetooth log; the report below hides the right one's last two
+           digits, which PairFree 0.3.0's masker took for part of the serial number)
+Phone:     a user's motorola moto g57 power, Android 16 (API 36)
+App:       Soundcore (version not given), recorded by PairFree 0.3.0
+Method:    PairFree's Record from the official app, posted as GitHub issue #8, with the Android bug report it
+           came from. The bug report's Bluetooth log was decoded outside the repo for the bodies the recording
+           leaves out; the serial number, the usage statistics (05 01) and the sleep logs (15 01, 15 88), which
+           hold the user's sleep times, stay out of this file. The user did not list what they changed; the
+           order below is read from the writes.
+
+---- What the full log adds ----
+Writes the recording names, with what each did (the next state reply shows it):
+  0481 00 00 dd   left double tap: D (change mode), unchanged      state byte 53: dd
+  0481 00 00 df   left double tap: off (F)                         state byte 53: ff
+  0481 00 00 fd   left double tap: back to change mode             state byte 53: dd
+  0481 01 00 62   right double tap: previous (2)                   state byte 54: 22
+  0481 01 00 26   right double tap: back to play/pause (6)         state byte 54: 66
+  0481 01 05 0d   right triple tap: change mode                    state byte 56: dd
+  0481 01 05 d0   right triple tap: back to volume up (0)          state byte 56: 00
+  The app writes the byte's high four bits as the state had them and the new action in the low four; the
+  earbuds store the low four bits in both halves.
+  1503            reads the sleep timer: 02 78 00 01 (state bytes 67-70)
+  1585 01 78 00 01   sleep timer on, 120 minutes
+  1585 01 1e 00 01   30 minutes
+  1585 02 1e 00 01   off, keeping 30 minutes
+  0283            13 EQ writes: Acoustic (1), Pop (15), Classical (4), Rock (17), Bass Booster (2), then a custom
+                  curve band by band (FE FE). Each sends the preset, one curve of 10 bytes (bands 9 and 10:
+                  78 00 for a preset, 78 78 for the custom curve) and that curve after OpenSCQ30's correction;
+                  every correction matches PairFree's (SoundcoreEq.drc).
+  0103            09 09 08: left, right, case, in tenths (offset 1)
+  01A6            10 bytes the app sends now and then: the phone's time (seconds since 1970, little-endian,
+                  then six more bytes)
+  1401            the alarm list, empty here; 1503/1507/1506 sleep settings and logs; 0503/0583 log transfer
+  01A9 01 / 00    unknown: the earbuds answer 0114 01 / 00 and 1303 (11 bytes, the tenth 01 / 00)
+
+---- The recording as posted ----
+PairFree recording from the official app
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues so this model's controls and
+equalizer can be added. It holds no names, addresses or other personal data.
+
+Model:     Soundcore Sleep A20 (A6611)
+App:       PairFree 0.3.0
+Phone:     Android 16 (API 36), motorola moto g57 power
+
+---- What the official app and Soundcore Sleep A20 (A6611) sent each other (from the Bluetooth log) ----
+Seconds from the first message; app: sent by the official app, buds: sent by the earbuds.
+    0.000 app  0101 state
+    0.008 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 78 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   23.775 app  0101 state
+   23.813 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 78 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   24.322 app  0503 ?
+   24.362 buds 0503 ?                          (16 bytes left out) (x2)
+   24.686 app  0101 state
+   24.713 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 78 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   25.220 app  0503 ?
+   25.251 buds 0503 ?                          (16 bytes left out) (x2)
+   25.758 app  01A6 ?                          (10 bytes left out)
+   25.793 buds 01A6 ?
+   25.952 buds 0103 battery                    09 09 08
+   26.262 app  1501 ?
+   26.293 buds 1501 ?                          (154 bytes left out)
+   26.295 buds 1501 ?                          (82 bytes left out)
+   26.413 buds 1501 ?                          (154 bytes left out) (x3)
+   26.452 buds 1501 ?                          (70 bytes left out)
+   26.769 app  0583 ?                          (7 bytes left out)
+   26.800 buds 0583 ?
+   27.276 app  0583 ?                          (7 bytes left out)
+   27.318 buds 0583 ?
+   27.777 app  0501 usage_statistics           01
+   27.812 buds 0501 usage_statistics           01 XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 30 33 2e 32 32 02 00 00 00 00 00 00 00 01 00 02 00 00 00 00 00 00 00 02 00 00 00 10 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 03 00 00 00 80 00 7a 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   28.278 app  0583 ?                          (7 bytes left out)
+   28.311 buds 0583 ?
+   28.780 app  0583 ?                          (7 bytes left out)
+   28.825 buds 0583 ?
+   29.283 app  1588 ?
+   29.323 buds 1588 ?                          (144 bytes left out) (x3)
+   29.331 buds 1588 ?                          (74 bytes left out)
+   29.450 buds 1588 ?                          (144 bytes left out) (x2)
+   29.491 buds 1588 ?                          (116 bytes left out)
+   29.786 app  0581 clear_usage_statistics
+   29.814 buds 0581 clear_usage_statistics
+   30.932 app  01A9 ?                          01
+   30.969 buds 0114 ?                          01
+   30.970 buds 1303 ?                          (11 bytes left out)
+   30.971 buds 01A9 ?
+   33.009 app  01A9 ?                          00
+   33.036 buds 0114 ?                          00
+   33.038 buds 1303 ?                          (11 bytes left out)
+   33.040 buds 01A9 ?
+   35.378 app  1401 ?
+   35.425 buds 1401 ?
+   42.612 app  1507 ?
+   42.654 buds 1507 ?                          00
+   42.669 app  1503 ?
+   42.708 buds 1503 ?                          02 78 00 01
+   44.231 app  1585 ?                          01 78 00 01
+   44.317 buds 1585 ?
+   45.230 app  1585 ?                          01 1e 00 01
+   45.260 buds 1585 ?
+   47.812 app  1585 ?                          02 1e 00 01
+   47.856 buds 1585 ?
+   48.769 app  01A6 ?                          (10 bytes left out)
+   48.808 buds 01A6 ?
+   50.788 app  1401 ?
+   50.826 buds 1401 ?
+   61.411 app  0481 button_action              00 00 dd
+   61.603 buds 0481 button_action
+   61.642 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 1e 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   61.647 app  0503 ?
+   61.662 app  01A6 ?                          (10 bytes left out)
+   61.671 buds 0503 ?                          (16 bytes left out)
+   61.701 buds 01A6 ?
+   61.804 buds 0503 ?                          (16 bytes left out)
+   62.179 app  1501 ?
+   62.216 buds 1501 ?                          (154 bytes left out)
+   62.219 buds 1501 ?                          (82 bytes left out)
+   62.350 buds 1501 ?                          (154 bytes left out) (x3)
+   62.398 buds 1501 ?                          (70 bytes left out)
+   62.734 app  0583 ?                          (7 bytes left out)
+   62.764 buds 0583 ?
+   62.835 app  0583 ?                          (7 bytes left out)
+   62.870 buds 0583 ?
+   62.924 app  0481 button_action              00 00 df
+   62.953 buds 0481 button_action
+   62.957 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 ff 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 1e 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   62.961 app  0503 ?
+   62.987 buds 0503 ?                          (16 bytes left out)
+   62.990 app  01A6 ?                          (10 bytes left out)
+   63.025 buds 01A6 ?
+   63.118 buds 0503 ?                          (16 bytes left out)
+   63.150 app  1588 ?
+   63.194 buds 1588 ?                          (144 bytes left out) (x3)
+   63.201 buds 1588 ?                          (74 bytes left out)
+   63.334 buds 1588 ?                          (144 bytes left out) (x2)
+   63.340 buds 1588 ?                          (116 bytes left out)
+   63.961 app  0583 ?                          (7 bytes left out)
+   63.989 buds 0583 ?
+   64.033 app  0481 button_action              00 00 fd
+   64.061 buds 0481 button_action
+   64.066 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 1e 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   64.072 app  0503 ?
+   64.089 buds 0503 ?                          (16 bytes left out)
+   64.109 app  01A6 ?                          (10 bytes left out)
+   64.143 buds 01A6 ?
+   64.220 buds 0503 ?                          (16 bytes left out)
+   64.647 app  1501 ?
+   64.688 buds 1501 ?                          (154 bytes left out)
+   64.691 buds 1501 ?                          (82 bytes left out)
+   64.828 buds 1501 ?                          (154 bytes left out) (x3)
+   64.865 buds 1501 ?                          (70 bytes left out)
+   65.148 app  0583 ?                          (7 bytes left out)
+   65.182 buds 0583 ?
+   65.293 app  0583 ?                          (7 bytes left out)
+   65.321 buds 0583 ?
+   65.519 app  0583 ?                          (7 bytes left out)
+   65.551 buds 0583 ?
+   70.650 app  0481 button_action              01 00 62
+   70.680 buds 0481 button_action
+   70.684 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 22 11 00 ff ff ff ff ff ff ff ff 00 00 02 1e 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   70.687 app  0503 ?
+   70.720 buds 0503 ?                          (16 bytes left out)
+   70.723 app  01A6 ?                          (10 bytes left out)
+   70.759 buds 01A6 ?
+   70.773 buds 0503 ?                          (16 bytes left out)
+   71.261 app  1501 ?
+   71.270 app  0481 button_action              01 00 26
+   71.298 buds 1501 ?                          (154 bytes left out)
+   71.300 buds 1501 ?                          (82 bytes left out)
+   71.305 buds 0481 button_action
+   71.322 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 1e 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   71.326 app  0503 ?
+   71.336 buds 0503 ?                          (16 bytes left out)
+   71.367 app  01A6 ?                          (10 bytes left out)
+   71.397 buds 01A6 ?
+   71.457 buds 1501 ?                          (154 bytes left out) (x3)
+   71.501 buds 1501 ?                          (70 bytes left out)
+   71.502 buds 0503 ?                          (16 bytes left out)
+   71.638 app  0583 ?                          (7 bytes left out)
+   71.669 buds 0583 ?
+   71.742 app  0583 ?                          (7 bytes left out)
+   71.774 buds 0583 ?
+   71.844 app  1588 ?
+   71.904 buds 1588 ?                          (144 bytes left out) (x3)
+   71.918 buds 1588 ?                          (74 bytes left out)
+   72.032 buds 1588 ?                          (144 bytes left out) (x2)
+   72.048 buds 1588 ?                          (116 bytes left out)
+   72.463 app  0583 ?                          (7 bytes left out)
+   72.495 buds 0583 ?
+   72.993 app  0583 ?                          (7 bytes left out)
+   73.025 buds 0583 ?
+   73.284 app  1506 ?
+   83.796 app  0481 button_action              01 05 0d
+   84.162 buds 0481 button_action
+   84.206 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 dd ff ff ff ff ff ff ff ff 00 00 02 1e 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   84.210 app  0503 ?
+   84.219 app  01A6 ?                          (10 bytes left out)
+   84.226 buds 0503 ?                          (16 bytes left out)
+   84.256 buds 01A6 ?
+   84.358 buds 0503 ?                          (16 bytes left out)
+   84.730 app  1501 ?
+   84.738 app  0481 button_action              01 05 d0
+   84.774 buds 1501 ?                          (154 bytes left out)
+   84.776 buds 1501 ?                          (82 bytes left out)
+   84.779 buds 0481 button_action
+   84.793 buds 0101 state                      01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00 00 78 78 78 78 78 78 78 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 1e 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+   84.796 app  0503 ?
+   84.829 buds 0503 ?                          (16 bytes left out)
+   84.837 app  01A6 ?                          (10 bytes left out)
+   84.865 buds 01A6 ?
+   84.896 buds 1501 ?                          (154 bytes left out) (x3)
+   84.952 buds 1501 ?                          (70 bytes left out)
+   84.955 buds 0503 ?                          (16 bytes left out)
+   85.078 app  0583 ?                          (7 bytes left out)
+   85.105 buds 0583 ?
+   85.361 app  1588 ?
+   85.415 buds 1588 ?                          (144 bytes left out) (x3)
+   85.422 buds 1588 ?                          (74 bytes left out)
+   85.463 app  0583 ?                          (7 bytes left out)
+   85.490 buds 0583 ?
+   85.552 buds 1588 ?                          (144 bytes left out) (x2)
+   85.569 buds 1588 ?                          (116 bytes left out)
+   86.083 app  0583 ?                          (7 bytes left out)
+   86.141 buds 0583 ?
+   86.494 app  0583 ?                          (7 bytes left out)
+   86.529 buds 0583 ?
+   86.799 app  1506 ?
+   97.307 app  01A6 ?                          (10 bytes left out)
+   97.600 buds 01A6 ?
+   97.807 app  0283 equalizer_with_drc         01 00 a0 82 8c 8c a0 a0 a0 8c 78 00 7d 76 7b 78 7c 7a 7c 79 78 00
+   97.840 buds 0283 equalizer_with_drc
+   98.637 app  0283 equalizer_with_drc         0f 00 6e 82 96 96 82 6e 64 5a 78 00 77 79 7a 7a 79 77 77 75 78 00
+   98.670 buds 0283 equalizer_with_drc
+   99.886 app  0283 equalizer_with_drc         04 00 96 96 64 64 78 8c 96 a0 78 00 7a 7c 74 77 78 7a 79 7d 78 00
+   99.925 buds 0283 equalizer_with_drc
+  100.635 app  0283 equalizer_with_drc         11 00 96 8c 6e 6e 82 96 a0 aa 78 00 7a 7a 76 77 79 7a 7a 7e 78 00
+  100.682 buds 0283 equalizer_with_drc
+  101.776 app  0283 equalizer_with_drc         02 00 a0 96 82 78 78 78 78 78 78 00 7b 7a 78 78 78 78 78 78 78 00
+  101.816 buds 0283 equalizer_with_drc
+  102.956 app  0283 equalizer_with_drc         fe fe 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 00
+  102.987 buds 0283 equalizer_with_drc
+  105.017 app  0283 equalizer_with_drc         fe fe 93 78 78 78 78 78 78 78 78 78 7b 76 78 78 78 78 78 78 78 00
+  105.052 buds 0283 equalizer_with_drc
+  105.918 app  0283 equalizer_with_drc         fe fe 93 9c 78 78 78 78 78 78 78 78 79 7c 76 79 78 78 78 78 78 00
+  105.949 buds 0283 equalizer_with_drc
+  106.636 app  0283 equalizer_with_drc         fe fe 93 9c 86 78 78 78 78 78 78 78 79 7b 78 78 78 78 78 78 78 00
+  106.665 buds 0283 equalizer_with_drc
+  107.726 app  0283 equalizer_with_drc         fe fe 93 9c 86 92 78 78 78 78 78 78 79 7c 77 7c 76 79 78 78 78 00
+  107.765 buds 0283 equalizer_with_drc
+  108.448 app  0283 equalizer_with_drc         fe fe 93 9c 86 92 85 78 78 78 78 78 79 7c 77 7b 78 78 78 78 78 00
+  108.484 buds 0283 equalizer_with_drc
+  109.224 app  0283 equalizer_with_drc         fe fe 93 9c 86 92 85 83 78 78 78 78 79 7c 77 7b 78 79 77 78 78 00
+  109.251 buds 0283 equalizer_with_drc
+  110.034 app  0283 equalizer_with_drc         fe fe 93 9c 86 92 85 83 7d 78 78 78 79 7c 77 7b 78 79 78 78 78 00
+  110.066 buds 0283 equalizer_with_drc
+  114.630 app  01A6 ?                          (10 bytes left out)
+  114.663 buds 01A6 ?
+  126.037 app  01A6 ?                          (10 bytes left out)
+  126.399 buds 01A6 ?
+
+---- PairFree's own device report for Soundcore Sleep A20 (A6611) ----
+Bluetooth name:  soundcore Sleep A20
+Brand:           Soundcore
+Model:           A6611
+Service:         0cf12d31-fac3-4553-bd80-d6832e7b6611
+Firmware:        03.22
+App:             PairFree 0.3.0
+OS:              Android 16 (API 36)
+Captured:        2026-10-30 06:42 UTC
+
+The earbuds' reply to the state request (01 01) (131 bytes, at least 127 bytes expected), as hex:
+01 01 09 09 30 33 2e 32 32 30 33 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe 93 9c 86 92 85 83 7d 78 78 78 ff ff ff ff ff ff ff ff ff ff 06 dd 66 11 00 ff ff ff ff ff ff ff ff 00 00 02 1e 00 01 ff ff ff 01 01 00 31 17 00 00 04 00 01 00 00 00 00 00 00 00 01 01 02 00 00 00 00 00 00 00 01 02 f9 42 3c 00 00 00 00 00 02 03 03 43 3c 00 00 00 00 00 02 01 00 00 01 08 00 00 00 00
+
+---- What I changed in the official app, in order ----
+(Write it here.)
+
+

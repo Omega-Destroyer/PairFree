@@ -156,6 +156,21 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
         // Also anything that looks like a serial number (12 or more hex digits as text, which holds the earbuds'
         // address), for models whose layout does not locate it: a report goes into a public issue.
         val serialLike = VendorRecording.masked(body, null, serials = true)
+        // A run that reaches into a located serial is that serial: where the firmware before it ends in digits (the
+        // A6611's "03.22"), the run starts early, so only its located bytes stay hidden and the firmware stays readable.
+        var start = 0
+        while (start < body.size) {
+            if (!serialLike[start]) {
+                start++
+                continue
+            }
+            var end = start
+            while (end < body.size && serialLike[end]) end++
+            if (hidden.any { it.first < end && start <= it.last }) {
+                for (j in start until end) if (hidden.none { j in it }) serialLike[j] = false
+            }
+            start = end
+        }
         return body.indices.joinToString(" ") { i ->
             if (serialLike[i] || hidden.any { i in it }) "XX" else (body[i].toInt() and 0xFF).toString(16).padStart(2, '0')
         }

@@ -22,7 +22,12 @@ class SoundcoreTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.devices), s["models"])
-        self.assertEqual(["AeroClip", "Space A40"], s["tested"], "the models with a recording or a user's report")
+        self.assertEqual(["AeroClip", "Sleep A20", "Space A40"], s["tested"], "the models with a recording or a user's report")
+
+    def test_a_recording_adds_what_openscq30_lacks(self):
+        cells = self.cells("A6611")
+        self.assertEqual("✅ Recorded", cells[5], "the Sleep A20's equalizer, from a user's recording")
+        self.assertEqual("✅ Recorded", cells[7], "its touch controls")
 
     def test_source_is_credited(self):
         src = self.data["source"]

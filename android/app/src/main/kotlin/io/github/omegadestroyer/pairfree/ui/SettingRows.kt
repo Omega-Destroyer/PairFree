@@ -130,6 +130,7 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_right" -> R.string.setting_group_touch_right
         "touch_case" -> R.string.setting_group_touch_case
         "touch_dial" -> R.string.setting_group_touch_dial
+        "sleep" -> R.string.setting_group_sleep
         else -> R.string.setting_group_other
     },
 )
@@ -168,6 +169,7 @@ private fun settingTitle(key: String): String = when (key) {
     "cycle_transparency" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.anc_transparency))
     "cycle_adaptive" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.scene_adaptive))
     "auto_off" -> stringResource(R.string.auto_shutdown)
+    "sleep_timer" -> stringResource(R.string.setting_sleep_timer)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure)
     "ambient_volume" -> stringResource(R.string.setting_ambient_volume)
     "voice_focus" -> stringResource(R.string.setting_voice_focus)
@@ -342,6 +344,7 @@ private fun settingNote(key: String): String? = when (key) {
     "personalized_volume" -> stringResource(R.string.setting_personalized_volume_note)
     "allow_off" -> stringResource(R.string.setting_allow_off_note)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
+    "sleep_timer" -> stringResource(R.string.setting_sleep_timer_note)
     "jbl_smart_audio_video" -> stringResource(R.string.setting_jbl_smart_audio_video_note)
     "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware_note)
     "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound_note)
@@ -476,6 +479,7 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_option_default
         },
     )
+    key == "sleep_timer" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.action_off)
     key == "auto_off" && option == "when_taken_off" -> stringResource(R.string.shutdown_when_taken_off)
     key == "auto_off" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.shutdown_never)
     key == "connection_priority" -> stringResource(

@@ -20,10 +20,10 @@ import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.protocol.Identify
+import io.github.omegadestroyer.pairfree.protocol.Maker
 import io.github.omegadestroyer.pairfree.protocol.Models
-import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
-import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
@@ -105,15 +105,11 @@ class Hub(private val app: Application) {
         ContextCompat.checkSelfPermission(app, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
 
     /**
-     * Paired earbuds PairFree can control, of every brand, by name. Only earbuds the app can
-     * control, not every bonded audio device. The AUDIO_VIDEO class also drops SoundPEATS watches,
-     * which share the brand name. Soundcore earbuds are known by their vendor service, which can
-     * name the model, or else by their name (docs/soundcore/PROTOCOL.md); Galaxy Buds by their name
-     * (docs/samsung/PROTOCOL.md); Sony's by their services or name (docs/sony/PROTOCOL.md); Bose's
-     * by Bose's services or "Bose" in the name (docs/bose/PROTOCOL.md); JBL's by the model's name
-     * (docs/jbl/PROTOCOL.md); AirPods and Apple-chip Beats by Apple's accessory service, else "AirPods"
-     * in the name (docs/apple/PROTOCOL.md); Nothing's and CMF's by Nothing's control service, else the name
-     * (docs/nothing/PROTOCOL.md). Empty without the permission or with Bluetooth off.
+     * Paired earbuds PairFree can control, of every brand. Only earbuds the app can control, not every
+     * bonded audio device; the AUDIO_VIDEO class also drops watches. The brand comes from [Identify]
+     * (a brand's own service, else a brand word in the name, else an exact model name; data/identify.json),
+     * then that brand's code picks the model and service (each brand's PROTOCOL.md). Empty without the
+     * permission or with Bluetooth off.
      */
     @SuppressLint("MissingPermission") // checked first
     fun pairedEarbuds(): List<Paired> {
@@ -123,24 +119,20 @@ class Hub(private val app: Application) {
             .mapNotNull { d ->
                 val name = d.name ?: d.address
                 val uuids = d.uuids.orEmpty().map { it.uuid.toString() }
-                val soundcore = SoundcoreModels.identify(name, uuids)
-                // Samsung's models are matched by part of the name ("Buds Pro", as GalaxyBudsClient does), which
-                // other brands' names hold too (CMF Buds Pro 2): a brand that knows the whole name comes first.
-                val samsung = SamsungModels.identify(name, uuids)?.takeUnless { SamsungModels.deviceIdIn(uuids) == null && NothingModels.identify(name, uuids) }
-                val sony = SonyModels.identify(name, uuids)
-                val jbl = JblModels.fromName(name)
-                when {
-                    soundcore != null -> Paired(d.address, name, Brand.SOUNDCORE, soundcore.service, soundcore.model)
-                    samsung != null ->
-                        Paired(d.address, name, Brand.SAMSUNG, samsung.serviceUuid, samsung.model, SamsungModels.deviceIdIn(uuids))
-                    sony != null -> Paired(d.address, name, Brand.SONY, sony.service, sony.model?.name)
-                    BoseModels.isBose(name, uuids) -> Paired(d.address, name, Brand.BOSE)
-                    jbl != null -> Paired(d.address, name, Brand.JBL, model = jbl.name)
-                    AppleModels.identify(name, uuids) -> Paired(d.address, name, Brand.APPLE)
-                    NothingModels.identify(name, uuids) ->
-                        Paired(d.address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)
-                    Models.isSupported(d.name ?: "") -> Paired(d.address, name)
-                    else -> null
+                // The brand first (Identify, data/identify.json), then that brand's own code picks the model and the
+                // service to open; a brand's earbuds it cannot control (a Capsule3 Pro, Sony's LE side) drop out there.
+                when (Identify.maker(name, uuids)) {
+                    Maker.SOUNDCORE -> SoundcoreModels.identify(name, uuids)?.let { Paired(d.address, name, Brand.SOUNDCORE, it.service, it.model) }
+                    Maker.SAMSUNG -> SamsungModels.identify(name, uuids)?.let {
+                        Paired(d.address, name, Brand.SAMSUNG, it.serviceUuid, it.model, SamsungModels.deviceIdIn(uuids))
+                    }
+                    Maker.SONY -> SonyModels.identify(name, uuids)?.let { Paired(d.address, name, Brand.SONY, it.service, it.model?.name) }
+                    Maker.BOSE -> Paired(d.address, name, Brand.BOSE)
+                    Maker.JBL -> JblModels.fromName(name)?.let { Paired(d.address, name, Brand.JBL, model = it.name) }
+                    Maker.APPLE -> Paired(d.address, name, Brand.APPLE)
+                    Maker.NOTHING -> Paired(d.address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)
+                    Maker.SOUNDPEATS -> if (Models.isSupported(name)) Paired(d.address, name) else null
+                    null -> null
                 }
             }
             .sortedBy { it.name }

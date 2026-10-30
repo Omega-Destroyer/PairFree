@@ -98,6 +98,16 @@ public object SamsungModels {
         u.lowercase().takeIf { it.startsWith(DEVICE_ID_PREFIX) }?.removePrefix(DEVICE_ID_PREFIX)?.toIntOrNull(16)
     }
 
+    /**
+     * Whether the device lists a service only Galaxy Buds have: a model id, the Buds2-and-later service, or a model's own
+     * settings service (not the standard serial one, which many earbuds offer).
+     */
+    public fun hasOwnService(uuids: List<String>): Boolean {
+        val list = uuids.map { it.lowercase() }
+        if (deviceIdIn(list) != null || SERVICE_NEW in list) return true
+        return SAMSUNG_MODELS.any { m -> m.serviceUuid.lowercase().let { it != STANDARD_SERIAL && it in list } }
+    }
+
     /** The model with the colour code [id], the model id a pair publishes and its state repeats. */
     public fun fromDeviceId(id: Int): SamsungModel? = SAMSUNG_MODELS.firstOrNull { id in it.colors }
 

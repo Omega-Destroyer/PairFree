@@ -545,7 +545,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
                 appendLine("Model:           ${session.model.name} (product $id, ${if (session.model.gatt) "Bluetooth LE" else "serial channel"})")
                 appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                if (session.model.family == JblModel.Family.AIROHA) appendLine("Airoha chip:     ${session.chipName ?: "unknown"}")
+                if (session.model.family == JblModel.Family.AIROHA) {
+                    appendLine("Airoha chip:     ${session.chipName ?: "unknown"}")
+                    appendLine("Model name:      ${session.modelName ?: "unknown"}")
+                }
                 appendLine("App:             PairFree $version")
                 appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
                 appendLine("Captured:        $date")

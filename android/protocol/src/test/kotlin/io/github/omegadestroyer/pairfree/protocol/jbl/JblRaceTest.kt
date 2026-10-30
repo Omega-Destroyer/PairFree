@@ -76,7 +76,10 @@ class JblRaceTest {
         val s = JblSession(model("JBL Live Buds 3"))
         s.start()
         s.reply("chip_name_ab158x")
-        assertEquals(listOf(requests.getValue("auto_off_read_ab1568"), RacePacket.configGet(JblRace.CONFIG_IN_EAR).hex()), s.takeOutbox().map { it.hex() })
+        assertEquals(
+            listOf(requests.getValue("auto_off_read_ab1568"), RacePacket.configGet(JblRace.CONFIG_IN_EAR).hex(), requests.getValue("model_name_ab158x")),
+            s.takeOutbox().map { it.hex() },
+        )
         assertEquals("AB1585", s.chipName, "for the device report")
         assertEquals(RaceChip.AB158X, RaceChip.of("AB1585"))
         assertEquals(RaceChip.AB1562, RaceChip.of("AB1562E"))
@@ -111,6 +114,23 @@ class JblRaceTest {
     }
 
     @Test
+    fun theProductIdNamesTheModel() {
+        // Found by the name "JBL LIVE FREE 2 TWS"; the earbuds say they are 20F1, the Live Buds 3.
+        val s = session("JBL LIVE FREE 2 TWS", "AB1585")
+        s.takeOutbox()
+        s.reply("model_name_20f1")
+        assertEquals("20F1", s.modelName)
+        assertEquals(0x20F1, s.productId)
+        assertEquals("JBL Live Buds 3", s.model.name)
+        assertTrue(s.takeOutbox().any { it.hex() == RacePacket.of(JblRace.HI_RES_GET).hex() }, "the Live Buds 3's own settings are read")
+        assertFalse(s.replies.values.any { it.size > 8 && it.decodeToString().contains("20F1") }, "the model name key is kept as text, not as bytes")
+        // The AB1562 reads it with the AE information read, which is in the firmware commands' range.
+        val old = session("JBL REFLECT MINI NC", "AB1562")
+        assertTrue(old.takeOutbox().any { it.hex() == requests.getValue("ae_info") })
+        assertTrue(old.allowed(RacePacket.of(JblRace.AE_INFO, 1, 0xFF)))
+    }
+
+    @Test
     fun noiseWaitsForTheChip() {
         val s = JblSession(model("JBL Live Buds 3"))
         s.start()
@@ -121,7 +141,10 @@ class JblRaceTest {
     @Test
     fun olderChips() {
         val old = session("JBL CLUB PRO+ TWS", "AB1552")
-        assertEquals(listOf(requests.getValue("auto_off_read_old")), old.takeOutbox().map { it.hex() })
+        assertEquals(
+            listOf(requests.getValue("auto_off_read_old"), RacePacket.nvRead(JblRace.NV_MODEL_NAME_OLD, 100).hex()),
+            old.takeOutbox().map { it.hex() },
+        )
         old.reply("anc_changed_to_anc")
         assertEquals(requests.getValue("talk_thru_ab155x"), old.change(SettingChange.Toggle("talk_thru", true))!!.single().hex())
         // The power control NV key: its length (4), then on and 30 minutes, two bytes each.

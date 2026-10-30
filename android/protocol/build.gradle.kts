@@ -1102,7 +1102,52 @@ val generateNothingTables = tasks.register<GenerateNothingTables>("generateNothi
     outputDir = layout.buildDirectory.dir("generated/nothing")
 }
 
+/** Writes the brand words and the not-ours names from data/identify.json, for [Identify]. */
+abstract class GenerateIdentifyTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val identifyJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val data = JsonSlurper().parse(identifyJson.get().asFile) as Map<String, Any?>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"") + "\""
+        @Suppress("UNCHECKED_CAST")
+        val words = data.getValue("brand_words") as Map<String, List<String>>
+        @Suppress("UNCHECKED_CAST")
+        val notOurs = data.getValue("not_ours") as List<String>
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/identify.json by the generateIdentifyTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        out.appendLine("/** The words that name each brand, and the names of devices that are not ours (data/identify.json). */")
+        out.appendLine("internal object IdentifyTables {")
+        out.appendLine("    val BRAND_WORDS: Map<String, List<String>> = mapOf(")
+        for ((k, v) in words) out.appendLine("        ${str(k)} to listOf(${v.joinToString(", ") { str(it) }}),")
+        out.appendLine("    )")
+        out.appendLine("    val NOT_OURS: List<String> = listOf(${notOurs.joinToString(", ") { str(it) }})")
+        out.appendLine("}")
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("IdentifyTables.kt").writeText(out.toString())
+    }
+}
+
+val generateIdentifyTables = tasks.register<GenerateIdentifyTables>("generateIdentifyTables") {
+    identifyJson = rootProject.layout.projectDirectory.file("../data/identify.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol"
+    outputDir = layout.buildDirectory.dir("generated/identify")
+}
+
 kotlin.sourceSets.main {
+    kotlin.srcDir(generateIdentifyTables)
     kotlin.srcDir(generateTables)
     kotlin.srcDir(generateNothingTables)
     kotlin.srcDir(generateAppleTables)

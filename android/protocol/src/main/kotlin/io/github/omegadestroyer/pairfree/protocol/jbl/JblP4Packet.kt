@@ -112,13 +112,20 @@ public class JblP4Parser {
     }
 }
 
-/** Reads what JBL earbuds send: protocol 4 frames by their identifier, Harman's AA commands otherwise. */
-public class JblReader {
+/**
+ * Reads what JBL earbuds send: protocol 4 frames by their identifier, Harman's AA commands otherwise, or on the
+ * Airoha models ([race]) RACE frames alone, whose data can hold an AA.
+ */
+public class JblReader(private val race: Boolean = false) {
     private val aa = JblParser()
     private val p4 = JblP4Parser()
+    private val raceParser = RaceParser()
 
-    public fun feed(bytes: ByteArray, newMessage: Boolean = false): List<JblFrame> =
-        if (bytes.size >= 2 && (bytes[1].toInt() and 0xFF) == P4_HIGH && (bytes[0].toInt() and 0xFF) <= 1) p4.feed(bytes) else aa.feed(bytes, newMessage)
+    public fun feed(bytes: ByteArray, newMessage: Boolean = false): List<JblFrame> = when {
+        race -> raceParser.feed(bytes)
+        bytes.size >= 2 && (bytes[1].toInt() and 0xFF) == P4_HIGH && (bytes[0].toInt() and 0xFF) <= 1 -> p4.feed(bytes)
+        else -> aa.feed(bytes, newMessage)
+    }
 
     private companion object {
         /** The high byte of DD00 and DD01. */

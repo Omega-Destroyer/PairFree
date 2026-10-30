@@ -795,6 +795,32 @@ abstract class GenerateJblTables : DefaultTask() {
         out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${p4Never.keys.joinToString(", ") { hex(it.toInt(16)) }})")
         out.appendLine("}")
         out.appendLine()
+        val race = map("airoha")
+        @Suppress("UNCHECKED_CAST")
+        fun raceMap(key: String) = race.getValue(key) as Map<String, Any?>
+        out.appendLine("/** Airoha's RACE commands as JBL's app sends them to its Airoha models (data/jbl/commands.json, airoha). */")
+        out.appendLine("public object JblRace {")
+        out.appendLine("    public const val START: Int = ${hex(byte(race["start"]))}")
+        for ((k, v) in raceMap("types")) out.appendLine("    public const val TYPE_${k.uppercase()}: Int = ${hex(byte(v))}")
+        out.appendLine("    public const val SPP_UUID: String = ${str(race["spp_uuid"])}")
+        for ((k, v) in raceMap("gatt")) out.appendLine("    public const val GATT_${k.uppercase()}: String = ${str(v)}")
+        for ((k, v) in raceMap("commands")) out.appendLine("    public const val ${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
+        for ((k, v) in raceMap("mmi_modules")) out.appendLine("    public const val MMI_${k.uppercase()}: Int = ${int(v)}")
+        for ((k, v) in raceMap("config_modules")) out.appendLine("    public const val CONFIG_${k.uppercase()}: Int = ${int(v)}")
+        for ((k, v) in raceMap("notify_modules")) out.appendLine("    public const val NOTIFY_${k.uppercase()}: Int = ${int(v)}")
+        for ((k, v) in raceMap("nv_keys")) out.appendLine("    public const val NV_${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
+        for ((k, v) in raceMap("anc")) out.appendLine("    public const val ANC_${k.uppercase()}: Int = ${if (v is String) hex(byte(v)) else int(v).toString()}")
+        for ((k, v) in raceMap("key_events")) out.appendLine("    public const val KEY_${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
+        for ((k, v) in raceMap("prompt_language")) out.appendLine("    public const val PROMPT_${k.uppercase()}: Int = ${int(v)}")
+        out.appendLine("    /** The sound effects' numbers in the voice EQ setting, by the names devices.json gives them. */")
+        out.appendLine("    public val SOUND_EFFECTS: Map<String, Int> = mapOf(${raceMap("sound_effects").entries.joinToString(", ") { "${str(it.key)} to ${int(it.value)}" }})")
+        val raceNever = raceMap("never_send")
+        out.appendLine("    /** Commands PairFree never sends: ${raceNever.values.joinToString(", ")}. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${raceNever.keys.joinToString(", ") { "0x" + it.uppercase() }})")
+        out.appendLine("    /** The only key events PairFree sends; the others include factory reset, power off and pairing. */")
+        out.appendLine("    public val KEY_EVENTS: Set<Int> = setOf(${raceMap("key_events").values.joinToString(", ") { "0x" + (it as String).uppercase() }})")
+        out.appendLine("}")
+        out.appendLine()
 
         out.appendLine("/** Every model in data/jbl/devices.json. */")
         out.appendLine("internal val JBL_MODELS: List<JblModel> = listOf(")
@@ -810,6 +836,7 @@ abstract class GenerateJblTables : DefaultTask() {
                 "direct" -> "DIRECT"
                 "feature" -> "FEATURE"
                 "p4" -> "P4"
+                "airoha" -> "AIROHA"
                 else -> error("unknown family ${d["family"]}")
             }
             val noise = d["noise"]?.let { "JblModel.Noise." + (it as String).uppercase() } ?: "null"
@@ -834,7 +861,8 @@ abstract class GenerateJblTables : DefaultTask() {
                 "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +
                     "family = JblModel.Family.$family, noise = $noise, modes = listOf($modes), autoOff = $autoOff, " +
                     "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}, security = $security, " +
-                    "extras = $extras, smartAudioVideo = $sav, effects = $effects, gestureNoise = ${(d["gesture_noise"] as Number?)?.toInt() ?: 11}),",
+                    "extras = $extras, smartAudioVideo = $sav, effects = $effects, gestureNoise = ${(d["gesture_noise"] as Number?)?.toInt() ?: 11}, " +
+                    "racePush = ${d["push_status"] != false}, names = ${(d["names"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "listOf(", ")") { str(it) }}),",
             )
         }
         out.appendLine(")")

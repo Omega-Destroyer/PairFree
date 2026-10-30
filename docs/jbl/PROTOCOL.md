@@ -1,9 +1,9 @@
 # JBL protocol (Harman commands)
 
 How PairFree talks to JBL headphones and earbuds. The commands come from JBL's own app, JBL
-Headphones (`jbl.stc.com`) 5.37.10, read on 2026-10-15 outside the repo; none of its code is in
-it. Class names below say where in that app to look. Two open-source projects checked it on
-real devices:
+Headphones (`jbl.stc.com`) 5.37.10, read on 2026-10-15 outside the repo (its Airoha side, section
+10, on 2026-10-30); none of its code is in it. Class names below say where in that app to look. Two
+open-source projects checked it on real devices:
 
 - [JblTray](https://github.com/emperorbug46/JblTray) by emperorbug46 (MIT, commit `5ccf929`)
   controls a Tune Flex 2 from Windows. Its notes and code give the noise control frames it
@@ -34,11 +34,12 @@ shows. The control classes fall into families (`com.harman.cmdctrl.imp.control.u
 | `bes` (31 classes) | Harman commands (section 2) | Yes, the classes with a dash4 config |
 | `protocol3` (7) | Harman commands, settings as feature records | Yes |
 | `protocol4` (22) | JBL's newer protocol (section 6) | Yes, with each model's BLE security step (section 7) |
-| `airoha`, `lea`, `hid` | Airoha's SDK, LE Audio, USB | No |
+| `airoha` (10), and the older `com.harman.cmdctrl.imp.airoha` (3) | Airoha's RACE commands (section 10) | Yes |
+| `lea`, `hid` | LE Audio, USB | No |
 
 The older `com.harman.cmdctrl.imp.bes` classes (Live 220BT to Tour Pro+) have no dash4 config,
 so what each model has is not in the app; they are left out until reports say. `devices.json`
-lists the 61 models PairFree covers; section 5 says how each model's class sends its settings.
+lists the models PairFree covers; section 5 says how each model's class sends its settings.
 
 ## 2. Frames
 
@@ -68,6 +69,8 @@ commands go over LE unencrypted, with no handshake needed.
 
 **Serial** (connection `BT`: the Quantum 360, 360X and 360P): the standard SPP UUID
 `00001101-0000-1000-8000-00805F9B34FB`, the same frames.
+
+The Airoha models have a serial UUID and an LE service of their own (section 10).
 
 **Finding the LE side.** The earbuds are paired for sound over classic Bluetooth. JBL's app
 finds their LE side by scanning (`qi.n`), with two filters: manufacturer data under Harman's
@@ -290,7 +293,8 @@ plays; and the equalizer (section 9).
   `feature` models (`protocol3`, and the Junior 320BT and 470NC, Live Beam 3, Live Flex 3 and
   Quantum 360 classes) read and write auto power-off and auto play/pause, and read the product
   id, firmware and battery, as feature records. All read the battery with `25` too, as JblTray
-  does on the Tune Flex 2. `p4` models speak protocol 4 (section 6).
+  does on the Tune Flex 2. `p4` models speak protocol 4 (section 6), `airoha` models Airoha's RACE
+  (section 10, with noise `race` and auto_off `race`).
 - **noise:** `modes` (command `91`, every class whose `setAncSetting` uses `VERSION_NEW`),
   `old` (`31` and `32`: Live 460NC and 660NC, Reflect Flow Pro, Endurance Race; off sends both),
   `club` (the Club One: off sends `31` alone, `VERSION_OLD_CLUB_950_ONE`) or `asc` (protocol 4,
@@ -390,7 +394,8 @@ JBL's embedded key, which the project's rules forbid. PairFree leaves it out.
 `commands.json`'s `never_send`: `95` factory reset, `97` power off, `F0` firmware update, `AA`
 preserve settings, `13` and `15` analytics. In protocol 4: `00FF` factory reset, `0101` to
 `0104` firmware update, `0201` and `02FF` analytics. JBL's firmware updates go over separate
-services PairFree never opens.
+services PairFree never opens. The Airoha models' list is in section 10; PairFree checks every
+RACE frame against it before sending.
 
 ## 9. Open questions
 
@@ -414,3 +419,108 @@ services PairFree never opens.
   JBL's app sends it only on its BES models' older path (on protocol 3 `setEQPreset` is not implemented), its
   index list differs per family, and nothing of it has been checked on a device. So PairFree does not send
   the EQ yet.
+- Section 10 (the Airoha models) has no recorded frame: it is from JBL's app and Airoha's SDK in it. Which chip
+  each model has, and whether the older three (Club Pro+, Reflect Mini NC, Live Free NC+) have the settings
+  their class sends, needs device reports; the report names the chip.
+
+## 10. Airoha models
+
+The models whose control class is in `u3.airoha` or the older `com.harman.cmdctrl.imp.airoha` (`devices.json`
+family `airoha`): the Club Pro+, Reflect Mini NC, Live Free NC+, Live Free 2, Reflect Aero, Quantum TWS, Quantum
+TWS Air, Live Buds 3, Endurance Race 2, Wave Beam 2, Vibe Beam 2, Tune 775NC and 777NC, and the Quantum 910,
+910P and 910X headsets. JBL's app drives them through Airoha's SDK (`com.airoha`) and its own adapter for it
+(`com.airoha.adapter.harman`: `AirohaDeviceStatusControl` and its stages), reached from the control classes
+through `gi.c`. Their commands are Airoha's RACE, not Harman's.
+
+**Frames** (`RacePacket`):
+
+```
+05  type  length(2)  id(2)  payload        two-byte fields low byte first; no checksum
+```
+
+The type is `5A` a command, `5B` a response, `5C` a command needing no response, `5D` an indication (some
+reads answer with one too, and the earbuds send changes with them). A response's payload starts with a status
+byte, 0 for success. Module reads and writes (`0901`, `0900`) put the module id (two bytes) first, then the
+status; config reads and writes (`2C83`, `2C82`) answer the status, then the setting's id (two bytes), then its
+data; NV key reads (`0A00`) answer the data's length (two bytes) and the data. The SDK sends one command at a
+time and waits for its answer; PairFree waits up to 1 s, as for JBL's other models. `RaceParser` splits frames by
+their length, skipping bytes before a start byte.
+
+**Transport.** Connection `BT`: RFCOMM on `00000000-0000-0000-0099-AABBCCDDEEFF` (`UuidTable.AIROHA_SPP_UUID`).
+Connection `BLE`: service `5052494D-2DAB-0341-6972-6F6861424C45`; PairFree writes each frame, with a response, to
+`43484152-2DAB-3241-6972-6F6861424C45` and takes notifications from `43484152-2DAB-3141-6972-6F6861424C45`, asking
+for a 517-byte MTU (`GattLinkParam`). The LE side is found as in section 3.
+
+**Opening** (`AirohaConnector`, `AirohaDeviceConnector`, the control classes' `getAllCommands`):
+
+| Read | Frame | Answer |
+|---|---|---|
+| Chip name | `0A00` NV key `1002`, 1000 bytes | the name in ASCII |
+| Push of changes on | `0006` `01` | status |
+| Which earbud PairFree talks to (the agent) | `0CD4` | status, 1 when it is the right one |
+| Firmware | `1C07` `00` | status, role, length, the version in ASCII |
+| Battery | `0CD6` `00` agent, `01` the other earbud | status, role, level (indication) |
+| Case battery | `000B` | status, level; 0 or less unknown (indication) |
+| Noise control | `0901` module `0005` | module, status, filter, gain (two bytes) |
+
+JBL's app skips the push and the agent read on the Quantum 910 headsets (`push_status` false in `devices.json`).
+Unasked, the earbuds send module `0005` (the noise filter, after a change on the earbuds), `0065` and `0066` (the
+agent's and the other earbud's battery; the agent's may add 1 when it is the right one) and `0067` (the case's)
+as `0901` indications.
+
+**The chip.** Airoha's SDK reads the chip's name first and picks its code by it: `AB1562`, `AB1562E` or `AB1563`
+the AB1562; `AB1565_DUAL_CHIP`, `AB1568_DUAL_CHIP`, `AB1565`, `AB1568` or `MT…` the AB1568; `AB158…`, `AB157…`
+or `MT283…` the AB158x; anything else the AB155x. What differs:
+
+| | AB155x | AB1562 | AB1568, AB158x |
+|---|---|---|---|
+| Noise on | `0E06` `00 0A` filter | `00 0A` filter, mode, `01` | `00 0A` filter, mode |
+| Noise off | `0E06` `00 0B` | `00 0B 01` | `00 0B` |
+| Ambient Aware, TalkThru filters | 5, 6 | 9, 10 | 9, 10 |
+| Auto power-off | NV key `F2F1` (on, minutes); write `0007` on, `00`, minutes (two bytes) | as AB155x | config `0001`: on (two bytes), seconds (two bytes) |
+| Pause when taken off | NV key `F2F0`; write `000A` on | as AB155x | config `0002`: on |
+| The other earbud's battery | `0CD6` `01` | relayed (`0D01`), so PairFree shows the agent's alone | `0CD6` `01` |
+
+Filters: 0 off, 1 noise cancelling (2 with the sports mode some cards offer), then the passthroughs (Ambient
+Aware, TalkThru). The mode is 0 for noise cancelling and 4 for a passthrough (`SDKAncSettings`,
+`AirohaDeviceStatusControl.convertToAirohaAncIndex`). Until the chip is known PairFree sends no noise,
+auto power-off or pause write.
+
+**Other settings.** Each a JBL command id of its own unless said, read with no payload; the values are the
+ones Harman's commands carry (section 4.8), which JBL's adapter passes through:
+
+| Setting | Read | Answer after the status | Write |
+|---|---|---|---|
+| Smart Audio & Video | key event `1101` `A9 00` | key (2), AAC (2), SBC (2), latency (4), second latency (4) | `1101` `A8 00` and the four numbers |
+| Voice prompts | config `0009` | the prompt language: 255 tones, else spoken | config `0009`: 0 spoken, 255 tones |
+| Balance | `0037` | on, level | `0036` on, level |
+| VoiceAware | config `0007` and `0006` | on; level (two bytes) | config `0007` on, then `0006` level |
+| SafeSound | `0014` | status (1 on) | `0015` status |
+| 3D spatial sound | `0013` (indication) | on, type | `0012` on, type |
+| Sound effect | config `0013` | microphone effect, sound effect, audio setting | config `0013` 5 standard, 6 more treble, 7 more bass |
+| Audio limiter | `0051` | on | `0050` on |
+| Hi-Res audio | `0075` | type (1 on) | `0076` type |
+| Low volume EQ | `0058` | on | `0059` on |
+| Speak to chat | `0060` | on, seconds | `0061` on, seconds |
+| Find My Buds | | | `2C01` blink, ring, earbud (0 left, 1 right): `00 01` to ring, `00 00` to stop |
+
+JBL's voice prompt switch picks spoken prompts or tones (`MmiStage_SetVpLanguageIndex`); it never turns prompts
+off (`0900` module `0001`), so PairFree does not either. The sound effect has no off on these models. The
+models without a dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) get noise control from the
+product list's ANC flag and Smart Audio & Video, voice prompts, VoiceAware and auto power-off from their class;
+PairFree shows each only once the earbuds answer its read.
+
+**Not covered yet:** the touch controls (an NV key per chip generation, rewritten and relayed to the other
+earbud, then reloaded: `MmiStage_SetGesture_1568_v3` and its kin), the noise cancelling and Ambient Aware level
+(`0E06` `00 1E` and the level, which JBL's app sends only with the mode on, and reads back only from
+indications), adaptive noise cancelling and auto compensation (separate flows per product id through Airoha's
+ANC manager), PSAP, PersoniFi, the Live Buds 3's smart case settings, Auracast, the voice assistant and the EQ
+(section 9). The LE Audio models (`LeaAhBaseControl`: the Tour Pro 3, Tune 670NC and 770NC, and the Live Buds 3
+over LE Audio) use the same RACE over LE to each earbud, and come next.
+
+**Never sent** (`commands.json` `airoha.never_send`): analytics `0010`, `0011`, `0016`; dongle pairing and
+switching `0030`, `0031`; connecting, deleting and listing paired devices `0056`, `0057`, `0067`; the charging
+case action `0083`; the clock `0090`; Harman commands passed through `0093`; device information `0094`; NV key
+writes `0A01` and reloads `0A09`; relays to the other earbud `0D01`; key events on `1101` other than Smart Audio
+& Video's (`0096` factory reset, `0095` power off, `0002` pairing among them); and the firmware update commands
+`1C00` to `1CFF` other than the version read.

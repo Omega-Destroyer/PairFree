@@ -114,7 +114,6 @@ def table():
 
 # Why a model in JBL's product list is not covered (devices.json not_covered).
 WHY = {
-    "airoha": "They use Airoha's own protocol, which PairFree does not speak yet",
     "le_audio": "JBL's app controls them over LE Audio, which PairFree does not do yet",
     "no_dashboard": "JBL's app has an older control class for them with no description of their settings, so what "
                     "they have is not known",

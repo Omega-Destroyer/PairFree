@@ -10,10 +10,11 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
  * and audio limiter for calls, speak to chat, Hi-Res audio and Find My Buds. A model has those its JBL dashboard
  * shows and its control class sends ([JblModel.extras]); each goes the way its family's class sends it: Harman
  * commands for the direct and feature families (with feature records for the effect, the limiter and Hi-Res on the
- * feature family), protocol 4's features for the others.
+ * feature family), protocol 4's features for the p4 family, Airoha's RACE commands for the Airoha models.
  */
 internal class JblExtras(private val model: JblModel) {
     private val p4 get() = model.family == JblModel.Family.P4
+    private val race get() = model.family == JblModel.Family.AIROHA
     private fun has(id: String) = id in model.extras
 
     private var smartSwitch: List<Int>? = null
@@ -43,7 +44,7 @@ internal class JblExtras(private val model: JblModel) {
     private var mutedRight = false
 
     /** The reads of a direct or feature model, after its own. */
-    fun reads(): List<JblFrame> = if (p4) emptyList() else buildList {
+    fun reads(): List<JblFrame> = if (p4 || race) emptyList() else buildList {
         if (has(SMART_AV)) add(JblPacket.of(JblCommand.SMART_SWITCH, READ))
         if (has(VOICE_PROMPTS)) add(JblPacket.of(JblCommand.VOICE_PROMPTS, PROMPT_READ))
         if (has(BALANCE)) add(JblPacket.of(JblCommand.BALANCE, READ))
@@ -79,6 +80,70 @@ internal class JblExtras(private val model: JblModel) {
         JblP4.FEATURE_LOW_VOLUME_EQ.takeIf { has(LOW_VOLUME_EQ) },
         JblP4.FEATURE_AUTO_COMPENSATION.takeIf { has(AUTO_COMPENSATION) },
     )
+
+    /** The reads of an Airoha model, after its own: each setting's read as JBL's app sends it over RACE (docs/jbl/PROTOCOL.md section 10). */
+    fun raceReads(): List<JblFrame> = if (!race) emptyList() else buildList {
+        if (has(SMART_AV)) add(RacePacket.of(JblRace.KEY_EVENT, JblRace.KEY_SMART_SWITCH_GET and 0xFF, JblRace.KEY_SMART_SWITCH_GET shr 8))
+        if (has(VOICE_PROMPTS)) add(RacePacket.configGet(JblRace.CONFIG_PROMPT_LANGUAGE))
+        if (has(BALANCE)) add(RacePacket.of(JblRace.BALANCE_GET))
+        if (has(VOICE_AWARE)) {
+            add(RacePacket.configGet(JblRace.CONFIG_SIDETONE))
+            add(RacePacket.configGet(JblRace.CONFIG_SIDETONE_LEVEL))
+        }
+        if (has(SAFE_SOUND)) add(RacePacket.of(JblRace.SAFE_SOUND_GET))
+        if (has(SPATIAL)) add(RacePacket.of(JblRace.SPATIAL_GET))
+        if (has(SOUND_EFFECT)) add(RacePacket.configGet(JblRace.CONFIG_VOICE_EQ))
+        if (has(AUDIO_LIMITER)) add(RacePacket.of(JblRace.LIMITER_GET))
+        if (has(SPEAK_TO_CHAT)) add(RacePacket.of(JblRace.SMART_TALK_GET))
+        if (has(HI_RES)) add(RacePacket.of(JblRace.HI_RES_GET))
+        if (has(LOW_VOLUME_EQ)) add(RacePacket.of(JblRace.LOW_VOLUME_EQ_GET))
+    }
+
+    /**
+     * A RACE answer: the status, then the values, the same numbers as Harman's commands carry (JBL's adapter passes
+     * them through). Writes answer with the status alone; their read-backs bring the values.
+     */
+    fun race(p: RacePacket) {
+        if (p.status != 0) return
+        val d = p.data
+        if (d.isEmpty()) return
+        when (p.id) {
+            // The key code, AAC and SBC (two bytes each), then the two latencies (four bytes each); a write's answer is shorter.
+            JblRace.KEY_EVENT -> if (d.size >= 14) {
+                smartSwitch = listOf(d.u16(2), d.u16(4), d.u32(6), d.u32(10))
+            }
+            JblRace.CONFIG_GET -> when (p.module) {
+                // 255 is tones, any other number a spoken language (JBL's switch: on for spoken prompts).
+                JblRace.CONFIG_PROMPT_LANGUAGE -> voicePrompts = d.u8(0) != JblRace.PROMPT_TONES
+                JblRace.CONFIG_SIDETONE -> voiceAwareOn = d.u8(0) != 0
+                JblRace.CONFIG_SIDETONE_LEVEL -> if (d.size >= 2) voiceAwareLevel = d.u16(0)
+                // The microphone effect, the sound effect and the audio setting; the sound effect has no off.
+                JblRace.CONFIG_VOICE_EQ -> if (d.size >= 2) {
+                    JblRace.SOUND_EFFECTS.entries.firstOrNull { it.value == d.u8(1) }?.let { e ->
+                        val names = model.effects.ifEmpty { DEFAULT_EFFECTS }
+                        effectOn = true
+                        effect = names.indexOf(e.key).takeIf { it >= 0 } ?: effect
+                    }
+                }
+            }
+            JblRace.BALANCE_GET -> if (d.size >= 2) {
+                balanceOn = d.u8(0) == 1
+                balanceLevel = d.u8(1)
+            }
+            JblRace.SAFE_SOUND_GET -> safeSound = d.u8(0) == 1
+            JblRace.SPATIAL_GET -> if (d.size >= 2) {
+                spatialOn = d.u8(0) == 1
+                spatialType = d.u8(1)
+            }
+            JblRace.LIMITER_GET -> limiter = d.u8(0) == 1
+            JblRace.SMART_TALK_GET -> if (d.size >= 2) {
+                talkOn = d.u8(0) == 1
+                talkSeconds = d.u8(1)
+            }
+            JblRace.HI_RES_GET -> hiRes = d.u8(0) == 1
+            JblRace.LOW_VOLUME_EQ_GET -> lowVolumeEq = d.u8(0) == 1
+        }
+    }
 
     /** The commands whose answers [aa] reads. */
     fun reportsAa(command: Int): Boolean = command in AA_COMMANDS
@@ -215,7 +280,8 @@ internal class JblExtras(private val model: JblModel) {
         },
         effectOn?.takeIf { has(SOUND_EFFECT) }?.let { on ->
             val names = model.effects.ifEmpty { DEFAULT_EFFECTS }
-            Setting.Choice(EFFECT_KEY, if (on) names.getOrNull(effect ?: 0) else OFF, listOf(OFF) + names)
+            // Airoha models always have one of the effects; JBL's adapter has no off for them.
+            Setting.Choice(EFFECT_KEY, if (on) names.getOrNull(effect ?: 0) else OFF, if (race) names else listOf(OFF) + names)
         },
         limiter?.takeIf { has(AUDIO_LIMITER) }?.let { Setting.Toggle(LIMITER_KEY, it) },
     )
@@ -287,7 +353,7 @@ internal class JblExtras(private val model: JblModel) {
             TOUCH_RIGHT -> touch("right", change.option)?.let(::listOf)
             SMART_KEY -> smart(change.option)?.let(::listOf)
             SPATIAL_KEY -> listOf(spatial(change.option))
-            VOICE_AWARE_KEY -> listOf(voiceAware(change.option))
+            VOICE_AWARE_KEY -> voiceAware(change.option)
             EFFECT_KEY -> effectSet(change.option)?.let(::listOf)
             TALK_KEY -> listOf(talk(change.option))
             else -> null
@@ -298,6 +364,22 @@ internal class JblExtras(private val model: JblModel) {
 
     /** The read that confirms a change to [key]. */
     fun readBack(key: String): JblFrame? {
+        if (race) {
+            return when (key) {
+                SMART_KEY -> RacePacket.of(JblRace.KEY_EVENT, JblRace.KEY_SMART_SWITCH_GET and 0xFF, JblRace.KEY_SMART_SWITCH_GET shr 8)
+                PROMPTS_KEY -> RacePacket.configGet(JblRace.CONFIG_PROMPT_LANGUAGE)
+                BALANCE_KEY -> RacePacket.of(JblRace.BALANCE_GET)
+                VOICE_AWARE_KEY -> RacePacket.configGet(JblRace.CONFIG_SIDETONE)
+                SAFE_SOUND_KEY -> RacePacket.of(JblRace.SAFE_SOUND_GET)
+                SPATIAL_KEY -> RacePacket.of(JblRace.SPATIAL_GET)
+                EFFECT_KEY -> RacePacket.configGet(JblRace.CONFIG_VOICE_EQ)
+                LIMITER_KEY -> RacePacket.of(JblRace.LIMITER_GET)
+                TALK_KEY -> RacePacket.of(JblRace.SMART_TALK_GET)
+                HI_RES_KEY -> RacePacket.of(JblRace.HI_RES_GET)
+                LOW_EQ_KEY -> RacePacket.of(JblRace.LOW_VOLUME_EQ_GET)
+                else -> null
+            }
+        }
         if (p4) {
             val f = when (key) {
                 SMART_KEY -> JblP4.FEATURE_SMART_SWITCH
@@ -375,6 +457,13 @@ internal class JblExtras(private val model: JblModel) {
         // Three numbers leave the fourth at 65535, as JBL's app writes them.
         val all = (v + List(4) { NO_LATENCY }).take(4)
         smartSwitch = all
+        if (race) {
+            // The key code, AAC and SBC (two bytes each) and the latencies (four bytes each), low first (MmiStage_SmartSwitchStatus_Set_param).
+            val key = JblRace.KEY_SMART_SWITCH_SET
+            val bytes = listOf(key and 0xFF, key shr 8) + all.take(2).flatMap { listOf(it and 0xFF, (it shr 8) and 0xFF) } +
+                all.drop(2).flatMap { n -> (0 until 4).map { (n shr (8 * it)) and 0xFF } }
+            return RacePacket.of(JblRace.KEY_EVENT, *bytes.toIntArray())
+        }
         return if (p4) {
             JblP4Packet.set(JblP4.FEATURE_SMART_SWITCH to all.flatMap { listOf(it and 0xFF, it shr 8) }.map { it.toByte() }.toByteArray())
         } else {
@@ -384,6 +473,8 @@ internal class JblExtras(private val model: JblModel) {
 
     private fun prompts(on: Boolean): JblFrame {
         voicePrompts = on
+        // Airoha: JBL's switch picks spoken prompts (language 0) or tones (255), never no prompts (MmiStage_SetVpLanguageIndex).
+        if (race) return RacePacket.configSet(JblRace.CONFIG_PROMPT_LANGUAGE, if (on) JblRace.PROMPT_SPOKEN else JblRace.PROMPT_TONES)
         return if (p4) {
             JblP4Packet.set(JblP4.FEATURE_VOICE_PROMPT to JblP4Packet.statusLevel(on, voicePromptLevel))
         } else {
@@ -397,6 +488,7 @@ internal class JblExtras(private val model: JblModel) {
         val on = l != BALANCE_MIDDLE
         balanceOn = on
         balanceLevel = l
+        if (race) return RacePacket.of(JblRace.BALANCE_SET, if (on) 1 else 0, l)
         return if (p4) {
             JblP4Packet.set(JblP4.FEATURE_BALANCE to JblP4Packet.statusLevel(on, l - P4_BALANCE_OFFSET))
         } else {
@@ -404,21 +496,26 @@ internal class JblExtras(private val model: JblModel) {
         }
     }
 
-    private fun voiceAware(option: String): JblFrame {
+    private fun voiceAware(option: String): List<JblFrame> {
         val level = LEVELS.entries.firstOrNull { it.value == option }?.key
         val on = level != null
         val l = level ?: voiceAwareLevel?.takeIf { it in LEVELS } ?: LEVEL_MID
         voiceAwareOn = on
         voiceAwareLevel = l
-        return if (p4) {
-            JblP4Packet.set(JblP4.FEATURE_SIDETONE to JblP4Packet.statusLevel(on, l))
-        } else {
-            JblPacket.of(JblCommand.VOICE_AWARE, SET, l, if (on) 1 else 0)
-        }
+        // Airoha: the sidetone's switch, then its level (two bytes), as the SDK's setVoiceAwareStatus writes them.
+        if (race) return listOf(RacePacket.configSet(JblRace.CONFIG_SIDETONE, if (on) 1 else 0), RacePacket.configSet(JblRace.CONFIG_SIDETONE_LEVEL, l and 0xFF, l shr 8))
+        return listOf(
+            if (p4) {
+                JblP4Packet.set(JblP4.FEATURE_SIDETONE to JblP4Packet.statusLevel(on, l))
+            } else {
+                JblPacket.of(JblCommand.VOICE_AWARE, SET, l, if (on) 1 else 0)
+            },
+        )
     }
 
     private fun safe(on: Boolean): JblFrame {
         safeSound = on
+        if (race) return RacePacket.of(JblRace.SAFE_SOUND_SET, if (on) 1 else 0)
         return if (p4) {
             JblP4Packet.set(JblP4.FEATURE_MAX_VOLUME_LIMIT to JblP4Packet.statusLevel(on, safeSoundLevel))
         } else {
@@ -432,6 +529,7 @@ internal class JblExtras(private val model: JblModel) {
         val t = type ?: spatialType?.takeIf { it in SPATIAL_TYPES } ?: MOVIE
         spatialOn = on
         spatialType = t
+        if (race) return RacePacket.of(JblRace.SPATIAL_SET, if (on) 1 else 0, t)
         return if (p4) {
             // Protocol 4 numbers movie 1 and music 2 (General4Control.set3DSpatialStatus).
             JblP4Packet.set(JblP4.FEATURE_SPATIAL_SCENE to JblP4Packet.statusLevel(on, P4_SPATIAL.getValue(t)))
@@ -446,6 +544,13 @@ internal class JblExtras(private val model: JblModel) {
         if (index < 0 && option != OFF) return null
         val on = index >= 0
         val e = if (on) index else effect ?: 0
+        if (race) {
+            // The voice EQ setting's sound effect numbers (5 standard, 6 treble, 7 bass); there is no off.
+            val number = JblRace.SOUND_EFFECTS[option] ?: return null
+            effectOn = true
+            effect = e
+            return RacePacket.configSet(JblRace.CONFIG_VOICE_EQ, number)
+        }
         effectOn = on
         effect = e
         return if (p4) {
@@ -457,6 +562,7 @@ internal class JblExtras(private val model: JblModel) {
 
     private fun limit(on: Boolean): JblFrame {
         limiter = on
+        if (race) return RacePacket.of(JblRace.LIMITER_SET, if (on) 1 else 0)
         return if (p4) {
             JblP4Packet.set(JblP4.FEATURE_AUDIO_LIMITER to JblP4Packet.statusLevel(on, JblP4.IGNORE_LEVEL))
         } else {
@@ -466,6 +572,7 @@ internal class JblExtras(private val model: JblModel) {
 
     private fun hiResSet(on: Boolean): JblFrame {
         hiRes = on
+        if (race) return RacePacket.of(JblRace.HI_RES_SET, if (on) 1 else 0)
         return if (p4) {
             JblP4Packet.set(JblP4.FEATURE_HI_RES to JblP4Packet.statusLevel(on, JblP4.IGNORE_LEVEL))
         } else {
@@ -481,6 +588,7 @@ internal class JblExtras(private val model: JblModel) {
             JblModel.Family.DIRECT -> JblPacket.of(JblCommand.LOW_VOLUME_EQ, SET, v)
             JblModel.Family.FEATURE -> JblPacket.featureSet(JblFeature.LOW_VOLUME_EQ, v)
             JblModel.Family.P4 -> JblP4Packet.set(JblP4.FEATURE_LOW_VOLUME_EQ to JblP4Packet.statusLevel(on, JblP4.IGNORE_LEVEL))
+            JblModel.Family.AIROHA -> RacePacket.of(JblRace.LOW_VOLUME_EQ_SET, v)
         }
     }
 
@@ -490,6 +598,7 @@ internal class JblExtras(private val model: JblModel) {
         val s = seconds ?: talkSeconds?.takeIf { it in TALK_SECONDS } ?: TALK_SECONDS.first()
         talkOn = on
         talkSeconds = s
+        if (race) return RacePacket.of(JblRace.SMART_TALK_SET, if (on) 1 else 0, s)
         return if (p4) {
             JblP4Packet.set(JblP4.FEATURE_SMART_TALK to JblP4Packet.statusLevel(on, s))
         } else {
@@ -508,11 +617,22 @@ internal class JblExtras(private val model: JblModel) {
     private fun mute(left: Boolean, muted: Boolean): List<JblFrame>? {
         if (!finding) return null
         if (left) mutedLeft = muted else mutedRight = muted
-        return if (p4) beep(!mutedLeft, !mutedRight) else listOf(JblPacket.of(JblCommand.BEEPING, beepValue(left, !muted)))
+        return when {
+            p4 -> beep(!mutedLeft, !mutedRight)
+            race -> listOf(findMe(left, !muted))
+            else -> listOf(JblPacket.of(JblCommand.BEEPING, beepValue(left, !muted)))
+        }
     }
+
+    /**
+     * Airoha's find me (MmiStageFindMe): whether to blink (PairFree never asks), whether to ring, and the earbud, 0 the
+     * left and 1 the right as JBL's adapter numbers them.
+     */
+    private fun findMe(left: Boolean, on: Boolean): JblFrame = RacePacket.of(JblRace.FIND_ME, 0, if (on) 1 else 0, if (left) 0 else 1)
 
     /** The frames that leave the left and right earbuds beeping or not. */
     private fun beep(left: Boolean, right: Boolean): List<JblFrame> {
+        if (race) return listOf(findMe(true, left), findMe(false, right))
         if (p4) {
             // One byte: bit 7 the case, 6 the right, 5 the left, and the bits below set (BitListFeature).
             val value = ((if (right) 1 else 0) shl 6) or ((if (left) 1 else 0) shl 5) or 0x1F
@@ -531,6 +651,7 @@ internal class JblExtras(private val model: JblModel) {
 
     private fun ByteArray.u8(at: Int): Int = this[at].toInt() and 0xFF
     private fun ByteArray.u16(at: Int): Int = u8(at) or (u8(at + 1) shl 8)
+    private fun ByteArray.u32(at: Int): Int = u16(at) or (u16(at + 2) shl 16)
 
     companion object {
         const val SMART_AV = "smart_audio_video"

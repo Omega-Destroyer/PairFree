@@ -35,6 +35,10 @@ public class JblSession(initial: JblModel) {
     public var firmware: String? = null
         private set
 
+    /** The Airoha chip's name an Airoha model reports, for the device report. */
+    public var chipName: String? = null
+        private set
+
     /**
      * The last answer to each of PairFree's reads, for the device report, by command (and status type
      * or feature id): the device info with its name and address blanked, and no feature but the ones
@@ -61,8 +65,16 @@ public class JblSession(initial: JblModel) {
     // The settings beyond noise control, auto power-off and auto play/pause.
     private var extras = JblExtras(initial)
 
+    // Airoha models: the chip family they report, and whether the earbud PairFree talks to (the agent) is the right one.
+    private var chip: RaceChip? = null
+    private var agentRight = false
+
     /** The reads on opening the channel. */
     public fun start(): List<JblFrame> = buildList {
+        if (model.family == JblModel.Family.AIROHA) {
+            addAll(raceStart())
+            return@buildList
+        }
         if (model.family == JblModel.Family.P4) {
             // JBL's app tells the earbuds the host is a phone (host type 1) before it reads them.
             add(JblP4Packet.set(JblP4.FEATURE_HOST_TYPE to byteArrayOf(1)))
@@ -76,7 +88,7 @@ public class JblSession(initial: JblModel) {
                 add(JblPacket.of(JblCommand.STATUS, JblStatus.ALL))
             }
             JblModel.Family.FEATURE -> add(JblPacket.featureGet(featureIds()))
-            JblModel.Family.P4 -> Unit
+            JblModel.Family.P4, JblModel.Family.AIROHA -> Unit
         }
         add(batteryRead())
         addAll(noiseReads())
@@ -85,6 +97,10 @@ public class JblSession(initial: JblModel) {
 
     /** The battery read, to send again now and then. */
     public fun batteryRequests(): List<JblFrame> = buildList {
+        if (model.family == JblModel.Family.AIROHA) {
+            addAll(raceBatteries())
+            return@buildList
+        }
         if (model.family == JblModel.Family.P4) {
             add(JblP4Packet.get(p4Batteries()))
             return@buildList
@@ -99,10 +115,14 @@ public class JblSession(initial: JblModel) {
     /** The reads that confirm the last changes, to send once the earbuds have had time to apply them. */
     public fun takeReadBacks(): List<JblFrame> = readBacks.distinct().also { readBacks.clear() }
 
-    /** False for what PairFree never sends: factory reset, power off, firmware update, analytics. */
+    /**
+     * False for what PairFree never sends: factory reset, power off, firmware update, analytics, and on Airoha models
+     * pairing, relays to the other earbud, NV key writes and every key event but Smart Audio & Video's.
+     */
     public fun allowed(frame: JblFrame): Boolean = when (frame) {
         is JblPacket -> frame.command !in JblCommand.NEVER_SEND
         is JblP4Packet -> frame.command !in JblP4.NEVER_SEND
+        is RacePacket -> raceAllowed(frame)
         else -> false
     }
 
@@ -112,6 +132,7 @@ public class JblSession(initial: JblModel) {
         when (frame) {
             is JblP4Packet -> p4(frame)
             is JblPacket -> aa(frame)
+            is RacePacket -> race(frame)
         }
         refresh()
         return (state to groups) != before
@@ -465,6 +486,10 @@ public class JblSession(initial: JblModel) {
                     listOf(JblPacket.of(JblCommand.NOISE_MODES, JblNoise.SET, *pairs.toIntArray()))
                 }
             }
+            JblModel.Noise.RACE -> {
+                readBacks += RacePacket.mmiGet(JblRace.MMI_ANC)
+                listOf(raceNoise(m) ?: return null)
+            }
             JblModel.Noise.OLD, JblModel.Noise.CLUB -> {
                 readBacks += JblPacket.of(JblCommand.STATUS, JblStatus.ANC)
                 readBacks += JblPacket.of(JblCommand.STATUS, JblStatus.AMBIENT)
@@ -504,6 +529,7 @@ public class JblSession(initial: JblModel) {
                 val word = (if (on) P4_STATUS16 else 0) or ((minutes * SECONDS_PER_MINUTE) and P4_LEVEL16)
                 JblP4Packet.set(JblP4.FEATURE_AUTO_OFF to byteArrayOf(word.toByte(), (word shr 8).toByte()))
             }
+            JblModel.AutoOff.RACE -> raceAutoOff(on, minutes) ?: return null
         }
         readBacks += settingsRead(JblFeature.AUTO_OFF, JblP4.FEATURE_AUTO_OFF)
         autoOffOn = on
@@ -518,17 +544,22 @@ public class JblSession(initial: JblModel) {
             JblModel.Family.FEATURE -> JblPacket.featureSet(JblFeature.AUTO_PLAY_PAUSE, if (on) 1 else 0)
             // Protocol 4 (StatusLevelSize1): status at bit 7, the level left as it is.
             JblModel.Family.P4 -> JblP4Packet.set(JblP4.FEATURE_AUTO_PLAY_PAUSE to JblP4Packet.statusLevel(on, JblP4.IGNORE_LEVEL))
+            JblModel.Family.AIROHA -> raceAutoPlay(on) ?: return null
         }
         readBacks += settingsRead(JblFeature.AUTO_PLAY_PAUSE, JblP4.FEATURE_AUTO_PLAY_PAUSE)
         autoPlayPause = on
         return listOf(out)
     }
 
-    /** The read that reports a setting: the whole status on direct models, the command-06 feature on feature models, the protocol 4 feature on p4 ones. */
+    /**
+     * The read that reports a setting: the whole status on direct models, the command-06 feature on feature models, the
+     * protocol 4 feature on p4 ones, and on Airoha models the config setting or NV key their chip keeps it in.
+     */
     private fun settingsRead(feature: Int, p4Feature: Int): JblFrame = when (model.family) {
         JblModel.Family.DIRECT -> JblPacket.of(JblCommand.STATUS, JblStatus.ALL)
         JblModel.Family.FEATURE -> JblPacket.featureGet(listOf(feature))
         JblModel.Family.P4 -> JblP4Packet.get(listOf(p4Feature))
+        JblModel.Family.AIROHA -> if (feature == JblFeature.AUTO_OFF) raceAutoOffRead() else raceAutoPlayRead()
     }
 
     /** Protocol 4: the product id, firmware, batteries, its noise features and the settings PairFree offers. */
@@ -552,7 +583,7 @@ public class JblSession(initial: JblModel) {
         JblModel.Noise.MODES -> listOf(JblPacket.of(JblCommand.NOISE_MODES, JblNoise.GET))
         JblModel.Noise.OLD -> listOf(JblPacket.of(JblCommand.STATUS, JblStatus.ANC), JblPacket.of(JblCommand.STATUS, JblStatus.AMBIENT))
         JblModel.Noise.CLUB -> listOf(JblPacket.of(JblCommand.STATUS, JblStatus.ANC))
-        null -> emptyList()
+        JblModel.Noise.RACE, null -> emptyList()
     }
 
     private fun batteryRead(): JblPacket = JblPacket.of(JblCommand.BATTERY, 0)
@@ -569,12 +600,210 @@ public class JblSession(initial: JblModel) {
     private fun batteryFeatures(): List<Int> =
         if (model.form == Form.HEADPHONES) listOf(JblFeature.BATTERY_HEADBAND) else listOf(JblFeature.BATTERY_LEFT, JblFeature.BATTERY_RIGHT, JblFeature.BATTERY_CASE)
 
+    // Airoha models: Airoha's RACE commands, as JBL's app sends them through Airoha's SDK (docs/jbl/PROTOCOL.md section 10).
+
+    /**
+     * The reads on opening an Airoha model's channel, in the order JBL's app sends them: the chip family (an NV key
+     * Airoha's SDK reads before anything else), the push of changes made on the earbuds and which earbud PairFree
+     * talks to (neither where JBL's app leaves them out, [JblModel.racePush]), the firmware, the batteries, noise
+     * control and the other settings. The reads that depend on the chip follow its answer ([raceChip]).
+     */
+    private fun raceStart(): List<JblFrame> = buildList {
+        add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, RACE_NV_LENGTH))
+        if (model.racePush) {
+            add(RacePacket.of(JblRace.PUSH_STATUS, 1))
+            add(RacePacket.of(JblRace.AGENT_CHANNEL))
+        }
+        add(RacePacket.of(JblRace.FIRMWARE, RACE_AGENT))
+        addAll(raceBatteries())
+        if (model.modes.isNotEmpty()) add(RacePacket.mmiGet(JblRace.MMI_ANC))
+        addAll(extras.raceReads())
+    }
+
+    /** The agent's battery, and on earbuds the other one's (not on the AB1562, which relays that read) and the case's. */
+    private fun raceBatteries(): List<JblFrame> = buildList {
+        add(RacePacket.of(JblRace.BATTERY, RACE_AGENT))
+        if (model.form == Form.HEADPHONES) return@buildList
+        if (chip != RaceChip.AB1562) add(RacePacket.of(JblRace.BATTERY, RACE_PARTNER))
+        add(RacePacket.of(JblRace.CASE_BATTERY))
+    }
+
+    /** No firmware update, pairing, relay, NV key write or key event other than Smart Audio & Video's. */
+    private fun raceAllowed(p: RacePacket): Boolean = when {
+        p.id in JblRace.NEVER_SEND -> false
+        p.id == JblRace.KEY_EVENT -> p.payload.size >= 2 && ((p.payload[0].toInt() and 0xFF) or ((p.payload[1].toInt() and 0xFF) shl 8)) in JblRace.KEY_EVENTS
+        p.id in RACE_FIRMWARE_UPDATE -> p.id == JblRace.FIRMWARE
+        else -> true
+    }
+
+    /** One RACE response or indication. The earbuds also send noise control and the batteries unasked, as indications. */
+    private fun race(p: RacePacket) {
+        if (p.type == JblRace.TYPE_COMMAND || p.type == JblRace.TYPE_COMMAND_NO_RESPONSE) return
+        val d = p.data
+        when (p.id) {
+            JblRace.NV_READ -> raceNv(d)
+            JblRace.MMI_GET -> if (p.status == 0 && d.isNotEmpty()) {
+                when (p.module) {
+                    JblRace.MMI_ANC -> raceAnc(d.u8(0))
+                    JblRace.NOTIFY_AGENT_BATTERY -> {
+                        if (d.size >= 2) agentRight = d.u8(1) == 1
+                        raceBattery(RACE_AGENT, d.u8(0))
+                    }
+                    JblRace.NOTIFY_PARTNER_BATTERY -> raceBattery(RACE_PARTNER, d.u8(0))
+                    JblRace.NOTIFY_CASE_BATTERY -> raceCase(d.u8(0))
+                }
+            }
+            JblRace.AGENT_CHANNEL -> if (p.status == 0 && d.isNotEmpty()) agentRight = d.u8(0) == 1
+            JblRace.BATTERY -> if (p.status == 0 && d.size >= 2) raceBattery(d.u8(0), d.u8(1))
+            JblRace.CASE_BATTERY -> if (p.status == 0 && d.isNotEmpty()) raceCase(d.u8(0))
+            // The role, the text's length and the text (ASCII); the agent's is the one JBL's app shows.
+            JblRace.FIRMWARE -> if (p.status == 0 && d.size >= 2 && d.u8(0) == RACE_AGENT) {
+                val n = d.u8(1).coerceAtMost(d.size - 2)
+                firmware = d.copyOfRange(2, 2 + n).decodeToString().trim { it <= ' ' }
+            }
+            JblRace.CONFIG_GET -> if (p.status == 0) {
+                when (p.module) {
+                    // On and off (two bytes), then the time in seconds (two bytes), low first.
+                    JblRace.CONFIG_AUTO_OFF -> if (d.size >= 4) {
+                        autoOffOn = d.u16(0) != 0
+                        autoOffMinutes = d.u16(2) / SECONDS_PER_MINUTE
+                    }
+                    JblRace.CONFIG_IN_EAR -> if (d.isNotEmpty()) autoPlayPause = d.u8(0) != 0
+                    else -> extras.race(p)
+                }
+            }
+            else -> extras.race(p)
+        }
+        if (p.status == 0 || p.id == JblRace.NV_READ) _replies[raceKey(p)] = p.payload.copyOf()
+    }
+
+    /**
+     * An NV key's data, which does not name the key: the chip name (text) first, then on older chips auto power-off
+     * (on and the minutes, two bytes each) or in-ear detection (one byte).
+     */
+    private fun raceNv(d: ByteArray) {
+        val text = d.decodeToString().trimEnd('\u0000')
+        when {
+            chip == null && text.length >= 4 && text.all { it in ' '..'~' } -> {
+                chipName = text
+                raceChip(RaceChip.of(text))
+            }
+            d.size == 4 && model.autoOff != null -> {
+                autoOffOn = d.u16(0) != 0
+                d.u16(2).takeIf { autoOffOn == true }?.let { autoOffMinutes = it }
+            }
+            d.size == 1 && model.autoPlayPause -> autoPlayPause = d.u8(0) != 0
+        }
+    }
+
+    /** The chip family is known: read what depends on it. */
+    private fun raceChip(c: RaceChip) {
+        chip = c
+        if (model.autoOff != null) outbox += raceAutoOffRead()
+        if (model.autoPlayPause) outbox += raceAutoPlayRead()
+    }
+
+    /** A noise filter: off, noise cancelling (with or without sports mode), Ambient Aware or TalkThru; others are left alone. */
+    private fun raceAnc(filter: Int) {
+        if (model.modes.isEmpty()) return
+        mode = when (filter) {
+            0 -> null
+            JblRace.ANC_FILTER_ANC, JblRace.ANC_FILTER_ANC_SPORTS -> Mode.ANC
+            raceFilter(Mode.AMBIENT_AWARE) -> Mode.AMBIENT_AWARE
+            raceFilter(Mode.TALK_THRU) -> Mode.TALK_THRU
+            else -> return
+        }
+        noiseKnown = true
+    }
+
+    /** The filter of noise cancelling or a passthrough mode: the AB155x numbers its passthroughs from 5, the others from 9. */
+    private fun raceFilter(m: Mode): Int {
+        val old = chip == RaceChip.AB155X
+        return when (m) {
+            Mode.ANC -> JblRace.ANC_FILTER_ANC
+            Mode.AMBIENT_AWARE -> if (old) JblRace.ANC_FILTER_AMBIENT_AWARE_AB155X else JblRace.ANC_FILTER_AMBIENT_AWARE
+            Mode.TALK_THRU -> if (old) JblRace.ANC_FILTER_TALK_THRU_AB155X else JblRace.ANC_FILTER_TALK_THRU
+        }
+    }
+
+    /** A battery by role (0 the agent, 1 the other earbud), shown left or right by which one the agent is. */
+    private fun raceBattery(role: Int, level: Int) {
+        val command = when {
+            model.form == Form.HEADPHONES -> if (role == RACE_AGENT) Command.BATTERY_LEFT else return
+            (role == RACE_AGENT) == agentRight -> Command.BATTERY_RIGHT
+            else -> Command.BATTERY_LEFT
+        }
+        state = state.copy(values = state.values + (command to Value.Number(level(level))))
+    }
+
+    /** The case's battery; 0 or less is unknown, as JBL's app reads it. */
+    private fun raceCase(level: Int) {
+        if (model.form == Form.HEADPHONES) return
+        state = state.copy(values = state.values + (Command.BATTERY_CASE to Value.Number(level.takeIf { it in 1..100 })))
+    }
+
+    /**
+     * Noise control as the chip takes it: off; or on with a filter, the AB1568 and later adding the mode (0 noise
+     * cancelling, 4 passthrough) and the AB1562 the mode and a sync byte (1). Null until the chip is known.
+     */
+    private fun raceNoise(m: Mode?): RacePacket? {
+        val c = chip ?: return null
+        if (m == null) return if (c == RaceChip.AB1562) RacePacket.of(JblRace.ANC, 0, JblRace.ANC_OFF, 1) else RacePacket.of(JblRace.ANC, 0, JblRace.ANC_OFF)
+        val filter = raceFilter(m)
+        val mode = if (m == Mode.ANC) JblRace.ANC_MODE_ANC else JblRace.ANC_MODE_PASSTHROUGH
+        return when (c) {
+            RaceChip.AB155X -> RacePacket.of(JblRace.ANC, 0, JblRace.ANC_ON, filter)
+            RaceChip.AB1562 -> RacePacket.of(JblRace.ANC, 0, JblRace.ANC_ON, filter, mode, 1)
+            RaceChip.AB1568, RaceChip.AB158X -> RacePacket.of(JblRace.ANC, 0, JblRace.ANC_ON, filter, mode)
+        }
+    }
+
+    /** Auto power-off: the AB1568 and later keep it in config setting 1 (seconds), older chips in an NV key written by command 0007 (minutes). */
+    private fun raceAutoOff(on: Boolean, minutes: Int): RacePacket? {
+        val c = chip ?: return null
+        val flag = if (on) 1 else 0
+        return if (c.config) {
+            val seconds = minutes * SECONDS_PER_MINUTE
+            RacePacket.configSet(JblRace.CONFIG_AUTO_OFF, flag, 0, seconds and 0xFF, (seconds shr 8) and 0xFF)
+        } else {
+            RacePacket.of(JblRace.AUTO_OFF_OLD, flag, 0, minutes and 0xFF, (minutes shr 8) and 0xFF)
+        }
+    }
+
+    private fun raceAutoOffRead(): RacePacket =
+        if (chip?.config != false) RacePacket.configGet(JblRace.CONFIG_AUTO_OFF) else RacePacket.nvRead(JblRace.NV_POWER_CONTROL, RACE_POWER_CONTROL_LENGTH)
+
+    /** Pause when taken off (in-ear detection): config setting 2 on the AB1568 and later, command 000A and an NV key on older chips. */
+    private fun raceAutoPlay(on: Boolean): RacePacket? {
+        val c = chip ?: return null
+        return if (c.config) RacePacket.configSet(JblRace.CONFIG_IN_EAR, if (on) 1 else 0) else RacePacket.of(JblRace.IN_EAR_OLD, if (on) 1 else 0)
+    }
+
+    private fun raceAutoPlayRead(): RacePacket =
+        if (chip?.config != false) RacePacket.configGet(JblRace.CONFIG_IN_EAR) else RacePacket.nvRead(JblRace.NV_IN_EAR_OLD, 1)
+
+    private fun raceKey(p: RacePacket): String =
+        "race." + p.id.toString(16).padStart(4, '0') + (p.module.takeIf { it >= 0 }?.let { "." + it.toString(16).padStart(2, '0') } ?: "") +
+            (if (p.id == JblRace.BATTERY || p.id == JblRace.FIRMWARE) p.data.takeIf { it.isNotEmpty() }?.let { ".role" + it.u8(0) } ?: "" else "")
+
     private fun key(command: Int, part: Int? = null): String =
         command.toString(16).padStart(2, '0') + (part?.let { "." + it.toString(16).padStart(2, '0') } ?: "")
 
     private fun ByteArray.u8(at: Int): Int = this[at].toInt() and 0xFF
+    private fun ByteArray.u16(at: Int): Int = u8(at) or (u8(at + 1) shl 8)
 
     private companion object {
+        // Airoha models: how much of an NV key Airoha's SDK asks for, and the power control key's length.
+        const val RACE_NV_LENGTH = 1000
+        const val RACE_POWER_CONTROL_LENGTH = 3
+
+        /** The agent (the earbud the phone talks to) and the other one, as RACE numbers them. */
+        const val RACE_AGENT = 0
+        const val RACE_PARTNER = 1
+
+        /** Airoha's firmware update commands, of which PairFree sends only the version read. */
+        val RACE_FIRMWARE_UPDATE = 0x1C00..0x1CFF
+
         // Device info (payload offsets): name 0 to 15, product id 16 and 17, address 20 to 25, firmware 26 to 28.
         const val INFO_NAME_END = 16
         const val INFO_PID = 16

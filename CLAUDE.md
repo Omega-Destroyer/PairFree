@@ -175,19 +175,25 @@ Beats on Apple's chips) and `nothing` (Nothing and CMF).
   first and scans only when that fails (`JblFinder`); the scan needs `BLUETOOTH_SCAN`
   (`neverForLocation`), which the owner allowed for JBL alone on 2026-10-15, asked only when the
   user opens a JBL model (`docs/DESIGN.md`, Permissions). `data/jbl/commands.json` and
-  `devices.json` (83 models from JBL's product list and dashboard configs, with each model's
+  `devices.json` (99 models from JBL's product list and dashboard configs, with each model's
   family, noise commands and auto power-off encoding, section 5) become `JblCommand`,
   `JblStatus`, `JblNoise`, `JblAmbient`, `JblFeature` and `JblModels` through
   `generateJblTables`; `JblSession` maps replies to the screens and reads each change back 3 s
   later. Each model's `settings` (the dashboard cards its control class sends: Smart Audio & Video,
   balance, VoiceAware, SafeSound, 3D spatial, Find My Buds and more, section 4.8) go through
-  `JblExtras`; the list was read from JBL's app 5.37.10 outside the repo. `JblReader` splits both Harman's `AA` frames and protocol 4's `00 DD` frames (`JblP4Packet`). `EarbudsConnection.serveJbl` sends one command at a time, waiting up to 1 s, as JBL's
+  `JblExtras`; the list was read from JBL's app 5.37.10 outside the repo. `JblReader` splits both Harman's `AA` frames and protocol 4's `00 DD` frames (`JblP4Packet`), or on the Airoha models RACE frames alone. `EarbudsConnection.serveJbl` sends one command at a time, waiting up to 1 s, as JBL's
   app does. Protocol 4 (section 6) is covered, including the models with a BLE security mode 1 to 3,
   which add a transport step `GattLink` runs itself (the raw characteristic, the host-name checksum,
   section 7): no key is needed. JBL's genuine-product check needs a key from a native library, so it
-  is left out (hard rules); Airoha and LE Audio models and the EQ are not covered. After a
-  change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
-  `JblCommand.NEVER_SEND` (factory reset, power off, firmware update, analytics).
+  is left out (hard rules); LE Audio models and the EQ are not covered. The Airoha models (family
+  `airoha`, section 10) speak Airoha's RACE commands (`RacePacket`, `RaceParser`, `JblRace` from
+  `commands.json`'s `airoha`) on Airoha's own serial UUID or LE service, through the same `JblSession`
+  and `JblExtras`; the session reads the chip name first, and noise control, auto power-off and pause
+  when taken off are written the way that chip takes them (`RaceChip`). Their touch controls and noise
+  level are not covered. After a change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
+  `JblCommand.NEVER_SEND` (factory reset, power off, firmware update, analytics) or `JblRace.NEVER_SEND`,
+  and on RACE no key event but Smart Audio & Video's (`JblRace.KEY_EVENTS`; the others include factory
+  reset and power off) and no firmware update command (`JblSession.allowed` checks every frame).
 - `docs/apple/PROTOCOL.md` is Apple's accessory protocol for AirPods and Apple-chip Beats, ported from
   LibrePods (github.com/kavishdevar/librepods, GPL-3.0-or-later) and checked against MagicPodsCore
   (github.com/steam3d/MagicPodsCore, GPL-3.0: facts only, the Beats and AirPods Max models). No

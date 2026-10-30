@@ -60,7 +60,7 @@ class JblData(unittest.TestCase):
         data = load("devices.json")
         covered = {p for d in data["devices"] for p in d["pids"]}
         missing = {m["name"]: m["why"] for m in data["not_covered"]}
-        self.assertEqual("airoha", missing["JBL Live Buds 3"])
+        self.assertNotIn("JBL Live Buds 3", missing, "covered over Airoha's RACE commands since issue #4")
         self.assertEqual("le_audio", missing["JBL Tour Pro 3"])
         for m in data["not_covered"]:
             self.assertIn(m["why"], gen.WHY, m["name"])
@@ -73,7 +73,13 @@ class JblData(unittest.TestCase):
         for d in devices:
             self.assertIn(d["kind"], gen.KINDS, d["name"])
             self.assertIn(d["connect"], gen.CONNECT, d["name"])
-            self.assertIn(d["family"], ("direct", "feature", "p4"), d["name"])
+            self.assertIn(d["family"], ("direct", "feature", "p4", "airoha"), d["name"])
+            # The Airoha models' noise control and auto power-off go over RACE, and only theirs.
+            if d.get("modes"):
+                self.assertEqual(d["family"] == "airoha", d["noise"] == "race", d["name"])
+            if d.get("auto_off"):
+                self.assertEqual(d["family"] == "airoha", d["auto_off"] == "race", d["name"])
+            self.assertTrue(all(isinstance(n, str) and n.startswith("JBL ") for n in d.get("names", [])), d["name"])
             self.assertTrue(d["name"].startswith("JBL "), d["name"])
             for p in d["pids"]:
                 self.assertEqual(4, len(p))
@@ -81,7 +87,7 @@ class JblData(unittest.TestCase):
                 int(p, 16)
             self.assertEqual(bool(d.get("modes")), "noise" in d, d["name"])
             self.assertTrue(set(d.get("modes", [])) <= set(gen.MODES), d["name"])
-            self.assertIn(d.get("auto_off"), (None, "v1", "v2", "feature", "p4"), d["name"])
+            self.assertIn(d.get("auto_off"), (None, "v1", "v2", "feature", "p4", "race"), d["name"])
             self.assertIn(d.get("security", 0), (0, 1, 2, 3), d["name"])
             if d.get("tried"):
                 self.assertIn(d["tried"], gen.TRIED)
@@ -97,6 +103,11 @@ class JblData(unittest.TestCase):
             self.assertIn(number, data["protocol4"]["never_send"], "protocol 4's factory reset and firmware update")
         used = {c["command"] for c in data["commands"]}
         self.assertFalse(used & set(data["never_send"]))
+        race = data["airoha"]
+        for number in ("0A01", "0D01", "0010"):
+            self.assertIn(number, race["never_send"], "NV key writes, relays to the other earbud and analytics are never sent")
+        self.assertFalse(set(race["commands"].values()) & set(race["never_send"]))
+        self.assertEqual({"00A8", "00A9"}, set(race["key_events"].values()), "the only key events: Smart Audio & Video's")
 
     def test_vectors(self):
         vectors = load("test_vectors.json")
@@ -110,6 +121,14 @@ class JblData(unittest.TestCase):
             length = frame[2] | (frame[3] << 8) if wide else frame[2]
             self.assertEqual(len(frame), (4 if wide else 3) + length, r["name"])
             self.assertIn(r["source"], ("jbltray", "fajkpes", "app"), r["name"])
+        # RACE: 05, the type (5A a command, 5B a response, 5D an indication), the length of the id and payload, the id.
+        race = vectors["race"]
+        for r in race["requests"] + race["replies"]:
+            frame = bytes.fromhex(r["hex"])
+            self.assertEqual(0x05, frame[0], r["name"])
+            self.assertIn(frame[1], (0x5A, 0x5B, 0x5D), r["name"])
+            self.assertEqual(len(frame), 4 + (frame[2] | (frame[3] << 8)), r["name"])
+        self.assertTrue(all(bytes.fromhex(r["hex"])[1] == 0x5A for r in race["requests"]))
 
 
 if __name__ == "__main__":

@@ -175,7 +175,7 @@ Beats on Apple's chips) and `nothing` (Nothing and CMF).
   first and scans only when that fails (`JblFinder`); the scan needs `BLUETOOTH_SCAN`
   (`neverForLocation`), which the owner allowed for JBL alone on 2026-10-15, asked only when the
   user opens a JBL model (`docs/DESIGN.md`, Permissions). `data/jbl/commands.json` and
-  `devices.json` (99 models from JBL's product list and dashboard configs, with each model's
+  `devices.json` (102 models from JBL's product list and dashboard configs, with each model's
   family, noise commands and auto power-off encoding, section 5) become `JblCommand`,
   `JblStatus`, `JblNoise`, `JblAmbient`, `JblFeature` and `JblModels` through
   `generateJblTables`; `JblSession` maps replies to the screens and reads each change back 3 s
@@ -185,8 +185,9 @@ Beats on Apple's chips) and `nothing` (Nothing and CMF).
   app does. Protocol 4 (section 6) is covered, including the models with a BLE security mode 1 to 3,
   which add a transport step `GattLink` runs itself (the raw characteristic, the host-name checksum,
   section 7): no key is needed. JBL's genuine-product check needs a key from a native library, so it
-  is left out (hard rules); LE Audio models and the EQ are not covered. The Airoha models (family
-  `airoha`, section 10) speak Airoha's RACE commands (`RacePacket`, `RaceParser`, `JblRace` from
+  is left out (hard rules); the BES LE Audio models and the EQ are not covered. The Airoha models (family
+  `airoha`, section 10, including the LE Audio Tour Pro 3, Tune 670NC and 770NC, opened over Airoha's LE
+  service when paired as an LE-only device) speak Airoha's RACE commands (`RacePacket`, `RaceParser`, `JblRace` from
   `commands.json`'s `airoha`) on Airoha's own serial UUID or LE service, through the same `JblSession`
   and `JblExtras`; the session reads the chip name first, and noise control, auto power-off and pause
   when taken off are written the way that chip takes them (`RaceChip`). Their touch controls and noise

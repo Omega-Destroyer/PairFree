@@ -61,7 +61,9 @@ class JblData(unittest.TestCase):
         covered = {p for d in data["devices"] for p in d["pids"]}
         missing = {m["name"]: m["why"] for m in data["not_covered"]}
         self.assertNotIn("JBL Live Buds 3", missing, "covered over Airoha's RACE commands since issue #4")
-        self.assertEqual("le_audio", missing["JBL Tour Pro 3"])
+        self.assertNotIn("JBL Tour Pro 3", missing, "LE Audio, on the same Airoha layer (issue #1)")
+        tour = next(d for d in data["devices"] if d["name"] == "JBL Tour Pro 3")
+        self.assertEqual(("airoha", "TourPro3LeControl"), (tour["family"], tour["control"]))
         for m in data["not_covered"]:
             self.assertIn(m["why"], gen.WHY, m["name"])
             self.assertFalse(set(m["pids"]) & covered, f"{m['name']} is covered")

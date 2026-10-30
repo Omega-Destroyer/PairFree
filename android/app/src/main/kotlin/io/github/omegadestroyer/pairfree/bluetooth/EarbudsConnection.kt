@@ -313,6 +313,11 @@ class EarbudsConnection(
         val ctx = context
         // JBL's Airoha models have Airoha's own serial channel and LE service (docs/jbl/PROTOCOL.md section 10).
         val airoha = model?.family == JblModel.Family.AIROHA
+        // Airoha earbuds paired over LE Audio are an LE device: JBL's app reaches them over Airoha's LE service at that
+        // address, whatever the model's usual connection (docs/jbl/PROTOCOL.md section 10).
+        if (airoha && ctx != null && remote.type == BluetoothDevice.DEVICE_TYPE_LE) {
+            return GattLink(ctx, remote, log, uuids = GattLink.AIROHA).also { link = it }.apply { connect() }
+        }
         if (model?.gatt != true || ctx == null) {
             val uuid = if (airoha) JblRace.SPP_UUID else device.service ?: Wire.SPP_UUID
             return SppLink(remote, log, uuid).also { link = it }.apply { connect() }

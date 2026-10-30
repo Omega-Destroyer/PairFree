@@ -52,6 +52,10 @@ class JblRaceTest {
         assertEquals(model("JBL Quantum910"), JblModels.fromName("JBL Quantum910 Wireless"), "the name JBL's app shows")
         assertFalse(model("JBL Quantum910").racePush)
         assertEquals(Form.HEADPHONES, model("JBL Tune 775NC").form)
+        // The LE Audio models, on the same Airoha layer.
+        assertEquals(JblModel.Family.AIROHA, model("JBL Tour Pro 3").family)
+        assertTrue(model("JBL Tune 670NC").gatt)
+        assertEquals(model("JBL Tune 770NC"), JblModels.of(0x20B8))
     }
 
     @Test

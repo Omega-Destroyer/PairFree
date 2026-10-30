@@ -35,7 +35,8 @@ shows. The control classes fall into families (`com.harman.cmdctrl.imp.control.u
 | `protocol3` (7) | Harman commands, settings as feature records | Yes |
 | `protocol4` (22) | JBL's newer protocol (section 6) | Yes, with each model's BLE security step (section 7) |
 | `airoha` (10), and the older `com.harman.cmdctrl.imp.airoha` (3) | Airoha's RACE commands (section 10) | Yes |
-| `lea`, `hid` | LE Audio, USB | No |
+| `lea`: the 3 on `LeaAhBaseControl` | Airoha's RACE, over LE Audio or serial (section 10) | Yes |
+| `lea`: the BES ones, `hid` | LE Audio for BES models, USB | No |
 
 The older `com.harman.cmdctrl.imp.bes` classes (Live 220BT to Tour Pro+) have no dash4 config,
 so what each model has is not in the app; they are left out until reports say. `devices.json`
@@ -422,15 +423,25 @@ RACE frame against it before sending.
 - Section 10 (the Airoha models) has no recorded frame: it is from JBL's app and Airoha's SDK in it. Which chip
   each model has, and whether the older three (Club Pro+, Reflect Mini NC, Live Free NC+) have the settings
   their class sends, needs device reports; the report names the chip.
+- Over LE Audio, whether the earbud that is not the leader answers PairFree's commands, or only the leader does
+  as JBL's app assumes; and how Android lists LE Audio earbuds among the paired devices.
 
 ## 10. Airoha models
 
 The models whose control class is in `u3.airoha` or the older `com.harman.cmdctrl.imp.airoha` (`devices.json`
 family `airoha`): the Club Pro+, Reflect Mini NC, Live Free NC+, Live Free 2, Reflect Aero, Quantum TWS, Quantum
 TWS Air, Live Buds 3, Endurance Race 2, Wave Beam 2, Vibe Beam 2, Tune 775NC and 777NC, and the Quantum 910,
-910P and 910X headsets. JBL's app drives them through Airoha's SDK (`com.airoha`) and its own adapter for it
+910P and 910X headsets; and the LE Audio models whose class extends `u3.lea.LeaAhBaseControl`: the Tour Pro 3,
+Tune 670NC and Tune 770NC. JBL's app drives them through Airoha's SDK (`com.airoha`) and its own adapter for it
 (`com.airoha.adapter.harman`: `AirohaDeviceStatusControl` and its stages), reached from the control classes
-through `gi.c`. Their commands are Airoha's RACE, not Harman's.
+through `gi.c` (`gi.a` for the LE Audio classes, the same SDK). Their commands are Airoha's RACE, not Harman's.
+
+**LE Audio.** For the LE Audio models JBL's app picks the link by how the phone is connected (`gi.a.w`,
+`hh.g`): with the earbuds on the phone's LE Audio profile it opens Airoha's LE service on the LE Audio device's
+address (`PROTOCOL_LEA`, the same `GattLinkParam` as `BLE`), and on earbuds first asks the role (`0CC4`), moving
+to the other earbud when that one is not the leader; otherwise it opens the serial channel as for the other Airoha
+models. PairFree opens the LE service on any Airoha model paired as an LE-only device, and otherwise does as the
+model's connection says; it does not ask the role or move to the other earbud.
 
 **Frames** (`RacePacket`):
 
@@ -515,8 +526,7 @@ earbud, then reloaded: `MmiStage_SetGesture_1568_v3` and its kin), the noise can
 (`0E06` `00 1E` and the level, which JBL's app sends only with the mode on, and reads back only from
 indications), adaptive noise cancelling and auto compensation (separate flows per product id through Airoha's
 ANC manager), PSAP, PersoniFi, the Live Buds 3's smart case settings, Auracast, the voice assistant and the EQ
-(section 9). The LE Audio models (`LeaAhBaseControl`: the Tour Pro 3, Tune 670NC and 770NC, and the Live Buds 3
-over LE Audio) use the same RACE over LE to each earbud, and come next.
+(section 9), and the Tour Pro 3's smart case (its own firmware and settings, `CaseOtaControl`).
 
 **Never sent** (`commands.json` `airoha.never_send`): analytics `0010`, `0011`, `0016`; dongle pairing and
 switching `0030`, `0031`; connecting, deleting and listing paired devices `0056`, `0057`, `0067`; the charging

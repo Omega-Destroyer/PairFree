@@ -83,11 +83,6 @@
       "why": "unsupported"
     },
     {
-      "name": "JBL Tour Pro 3",
-      "pids": ["20F2"],
-      "why": "le_audio"
-    },
-    {
       "name": "JBL Tour Pro 4",
       "pids": ["21AE"],
       "why": "unsupported"
@@ -96,16 +91,6 @@
       "name": "JBL TOUR PRO+ TWS",
       "pids": ["2020", "202C"],
       "why": "no_dashboard"
-    },
-    {
-      "name": "JBL Tune 670NC",
-      "pids": ["20B5", "20B6"],
-      "why": "le_audio"
-    },
-    {
-      "name": "JBL Tune 770NC",
-      "pids": ["20B7", "20B8"],
-      "why": "le_audio"
     },
     {
       "name": "QUANTUM STREAM WIRELESS",
@@ -1892,6 +1877,46 @@
       "settings": ["voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
     },
     {
+      "name": "JBL Tune 670NC",
+      "pids": ["20B5", "20B6"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "Tune670ncControl",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_tune_670nc.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [256, 46, 150, 250],
+        "audio": [256, 53, 150, 250],
+        "video": [197, 46, 100, 250]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+    },
+    {
+      "name": "JBL Tune 770NC",
+      "pids": ["20B7", "20B8"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Airoha",
+      "control": "Tune770ncControl",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_tune_770nc.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "smart_audio_video": {
+        "normal": [256, 46, 150, 250],
+        "audio": [256, 53, 150, 250],
+        "video": [197, 46, 100, 250]
+      },
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+    },
+    {
       "name": "JBL Live Buds 3",
       "pids": ["20F1"],
       "kind": "earbuds",
@@ -1963,6 +1988,28 @@
       "auto_off_minutes": [30, 60, 120],
       "settings": ["voice_aware"],
       "push_status": false
+    },
+    {
+      "name": "JBL Tour Pro 3",
+      "pids": ["20F2"],
+      "kind": "earbuds",
+      "connect": "BT",
+      "platform": "Airoha",
+      "control": "TourPro3LeControl",
+      "family": "airoha",
+      "noise": "race",
+      "config": "jbl_tour_pro_3.json",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_off": "race",
+      "auto_off_minutes": [30, 60, 120],
+      "auto_play_pause": true,
+      "smart_audio_video": {
+        "normal": [197, 46, 280, 400],
+        "audio": [256, 46, 280, 400],
+        "video": [197, 46, 120, 400]
+      },
+      "effects": ["standard", "treble", "bass"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "hi_res"]
     },
     {
       "name": "JBL Endurance Race 2",

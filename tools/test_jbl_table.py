@@ -38,14 +38,20 @@ class JblTable(unittest.TestCase):
         self.assertEqual("Tune Flex 2", flex2["Model"])
         self.assertEqual("Earbuds", flex2["Type"])
         self.assertEqual("Bluetooth LE", flex2["Connection"])
-        self.assertEqual("noise cancelling, Ambient Aware, TalkThru", flex2["Settings"])
+        self.assertEqual(
+            "noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, "
+            "3D spatial sound, sound effect, audio limiter, Find My Buds, touch controls, adaptive noise cancelling, auto compensation",
+            flex2["Settings"],
+        )
         self.assertIn("JblTray", flex2["Status"])
         self.assertEqual("Serial", self.row("2113")["Connection"], "the Quantum 360")
-        self.assertEqual("auto power-off", self.row("20B4")["Settings"], "the Tune 720BT has no noise control")
-        self.assertEqual("noise cancelling, Ambient Aware, TalkThru", self.row("21B6")["Settings"], "the Tune Flex 3, on protocol 4")
-        self.assertEqual("auto power-off", self.row("2133")["Settings"], "the Sense Lite")
-        self.assertEqual("battery only", self.row("2135")["Settings"], "the Tune 135BT")
-        self.assertEqual("noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off", self.row("2160")["Settings"], "the Live 680NC, security mode 1")
+        tune720 = self.row("20B4")["Settings"]
+        self.assertTrue(tune720.startswith("auto power-off, "), tune720)
+        self.assertNotIn("noise cancelling", tune720, "the Tune 720BT has no noise control")
+        self.assertTrue(self.row("21B6")["Settings"].startswith("noise cancelling, Ambient Aware, TalkThru, "), "the Tune Flex 3, on protocol 4")
+        self.assertTrue(self.row("2133")["Settings"].startswith("auto power-off, "), "the Sense Lite")
+        self.assertEqual("auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound", self.row("2135")["Settings"], "the Tune 135BT")
+        self.assertTrue(self.row("2160")["Settings"].startswith("noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, "), "the Live 680NC, security mode 1")
 
 
 class JblData(unittest.TestCase):

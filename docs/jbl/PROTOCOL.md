@@ -175,6 +175,112 @@ and `1B` left and right earbud, `1C` case (each: charging, level).
 `AA 33 01 <bit 7 on, bits 0–6 minutes>` (v1) or `AA 33 03 <on> <minutes, 2 bytes low first>`
 (v2, `generateSetAutoOffCmdV2`); `AA 35 01 <00 off, 01 on>`.
 
+### 4.8 The other settings
+
+JBL's dashboard shows a card per setting, and the model's control class sends it; `settings` in
+`devices.json` lists those a model has both of (the card in its dashboard config, and a method
+that the class implements rather than leaving as JBL's "not support" default). Most are a Harman
+command whose first byte is a sub-command: `00` write, `01` read, `02` reply (`CmdBase`). On the
+feature family the sound effect, the audio limiter and Hi-Res are feature records instead.
+
+| Setting | Card | Command or feature | Read | Reply or write |
+|---|---|---|---|---|
+| Smart Audio & Video | `SmartAudioVideoCard` | `80` | `01` | `02` (write `00`), then AAC, SBC and two latencies, two bytes each, low first |
+| Voice prompts | `VoicePromptCard` | `93` | `04` | reply `05`, write `03`, then 0 tones or 1 spoken |
+| Balance | `LeftRightBalanceCard` | `A8` | `01` | `02` (write `00`) `01` on `02` level: 84 left to 116 right, 100 the middle |
+| VoiceAware | `VoiceAwareCard` | `98` | `01` | `02` (write `00`), the level (1 low, 2 mid, 3 high), on |
+| SafeSound | `SafeSoundCard` | `A5` | `01` | `02` (write `00`) `01` status, 1 on |
+| 3D spatial sound | `Spatial3DCard` | `9D` | `01` | `02` (write `00`), on, the type (1 music, 2 movie, 3 game) |
+| Speak to chat | `SpeakToChatCard` | `9F` | `01` | `02` (write `00`), on, the seconds before the music comes back (5, 15, 20) |
+| Sound effect | `SoundEffectCard` | feature `20` | | on, the effect (0 standard, 1 treble boost, 2 bass boost) |
+| Audio limiter | `AudioLimiterCard` | feature `35` | | 1 on |
+| Hi-Res audio | `HiResAudioCard` | feature `59` | | 1 on |
+| Low volume EQ | `LowVolumeEq`, `LowEQCompensationCard` | `9E` (direct), feature `24` | `01` | `02` (write `00`), on |
+| Find My Buds | `FindMyBudCard` | `36` | | one value per earbud: `11` start the left, `10` the right, `01` stop the left, `00` the right |
+
+Smart Audio & Video's numbers come from the product list (`smartAudioVideo`: `normal`, `audio`,
+`video`, in `devices.json` as `smart_audio_video`). JBL's card is a switch (off is `normal`) with
+Audio or Video under it; a model with three numbers writes 65535 as the fourth, and the reply is
+matched on as many numbers as the model gives. The sound effect's names come from the product
+list's `mEffectList` (`effects`); every model so far has Natural, more treble and more bass. JBL's
+configs put the sound effect and audio limiter with the call settings (`CallModeItems`), so
+PairFree shows them there; whether they act on calls alone has not been checked. The balance's
+middle is no balance at all, which PairFree writes as off. Find My Buds has no read; PairFree
+starts both earbuds and lets the user mute either, as on Galaxy Buds.
+
+Protocol 4 (section 6) has each as a feature, one byte with the status in bit 7 and the level in
+bits 0 to 6 unless said: `4111` Smart Audio & Video (the four numbers, two bytes each, low first),
+`3136` voice prompts (status spoken, level the volume), `21` balance (50 lower than the
+Harman level: 34 left to 66 right, `gn.l0` and `General4Control.setLRBalanceStatus`), `35` sidetone (VoiceAware),
+`37` max volume limit (SafeSound), `34` spatial scene (level 1 movie, 2 music, 3 game: not the
+Harman order, `General4Control.set3DSpatialStatus`), `36` low volume EQ (level 127), `43` smart talk (speak to chat, level the
+seconds), `41` sound effect, `39` audio limiter and `40` Hi-Res (level 127), and `4106` Find My
+Buds, written only: bit 7 the case, 6 the right earbud, 5 the left, bits 0 to 4 set.
+
+### 4.9 Touch controls: `77`
+
+The models whose dashboard has `GestureCard` or `GestureLeAudioCard` (the second only greys it out
+while LE Audio is on) choose a set of actions per earbud on one page (`sp.e`, `sp.j`, `CustomGesture`),
+and their class writes all of a side's gestures in one command (`genSetGestureInBach77`):
+
+```
+AA 77 <length> 00 (<gesture> <action>)...     write
+AA 77 02 01 FF                                 read every gesture
+AA 77 <length> <01 or 02> (<gesture> <action>)...   reply
+```
+
+A gesture's byte is its `GestureType` through `CmdBase.values`: `06` left tap, `07` double tap, `08`
+triple tap, `0C` hold; `09`, `0A`, `0B` and `0E` the same on the right. JBL's app numbers them 1, 3,
+7 and 49 on the left and 2, 4, 8 and 50 on the right. An action's byte is JBL's own id
+(`GestureActionType` through `CmdBase.values_Action`). The sets, as tap, double tap, triple tap and hold:
+
+| Set | Actions |
+|---|---|
+| Playback and voice assistant | `0A` play/pause, `05` next, `06` previous, `A1` the phone's assistant |
+| Ambient sound | the noise cycle, `04` TalkThru, `00`, `A1` |
+| Volume | `01` up, `02` down, `00`, `A1` |
+| None | `00` on all four |
+
+The noise cycle is `0B` (noise cancelling and ambient sound) or the one the tap already has (`09`,
+`0B`, `0C`, `0D`); headphones and the Endurance Peak 3 start with `0D` (Ambient Aware and off),
+`gesture_noise` in `devices.json`. The hold is `A1` while the earbuds' voice assistant is the phone's
+default (`AppUtils.isDefaultMultiAi`); with Google Assistant or Alexa chosen in JBL's app, the
+playback set holds for that assistant instead. PairFree does not read that choice and always writes
+`A1`. The read names a side's set by its tap action, else its hold (`CustomGesture.generateName`).
+The other gesture pages are not covered: `GestureUi4Card` (11 models) builds its sets from
+`customizedGesture`, which the bundled product list has for none of them (they use JBL's server
+resources, `usingSeverRes`, which PairFree never fetches), and the headphone cards
+(`HeadLive670GestureCard` and the like) open pages of their own. The 29 other p4 models have no
+gesture card in JBL's app. Touch sensitivity (protocol 4 features `4033` and `4034`) sits on the
+customized-button page, whose levels come from the same server resources, so it is left out too.
+
+### 4.10 Adaptive noise cancelling and auto compensation: `91`
+
+Two of the noise card's "customize" entries (`AdaptiveAncCard`, `AutoCompensationCard`), each a
+switch. On the feature family they share noise control's command (`AdvancedAncCmd`):
+
+```
+AA 91 01 21                    read
+AA 91 <length> 22 (<type> <value>)...    reply
+AA 91 03 20 <type> <0 or 1>    write one
+```
+
+Types: `01` adaptive noise cancelling, `08` auto compensation (and, not offered by PairFree, `04`
+the manual level, `05` leakage and `06` ear canal compensation, `A1` the Ambient Aware level). JBL's
+app writes one type at a time. Protocol 4 has them as features `27` (AdaptiveANC) and `32`
+(AutoCompensation), the status bit and level 127.
+
+The voice assistant choice (`VoiceAssistantCard`, `AA 34`; status type `35`: 00 off, 01 Google
+Assistant, 02 Alexa, `DF` the phone's own) is left out. JBL's app changes the touch controls and
+the hot-word mode with it, and Alexa and Google Assistant need an account linked through JBL's app.
+PairFree's touch sets hold for the phone's own assistant (`A1`), which is what the earbuds use with
+00 or `DF`.
+
+Also left out: the LE Audio switch (`LeAudioCard`, 23 models), which restarts the earbuds and
+needs the phone to reconnect over LE Audio while JBL's app waits on dialogs; PersoniFi
+(`PersoniFiCard`), a hearing test that plays tones through JBL's app; relax sounds, which the phone
+plays; and the equalizer (section 9).
+
 ## 5. How each model sends its settings
 
 `devices.json` gives each model's:
@@ -197,6 +303,9 @@ and `1B` left and right earbud, `1C` case (each: charging, level).
 - **auto_off:** `v1`, `v2` or `feature`, by the class's `setAutoPowerOffStatus`, where the
   dashboard has `AutoPowerOffCard` (never, 30 or 60 minutes) or `AutoOffCard` (on or off; JBL's
   app writes 10 minutes).
+  Models with `PowerSavingCard` instead have it on JBL's power saving page (`gq.g`): 30, 60 or
+  120 minutes, with 15 too on the product ids `gq.a.isSupport15Min` lists, or never. Their
+  classes write it as v2 (`AutoOff` with `VERSION_NEW`), as the feature record or on protocol 4.
 - **auto_play_pause:** where the dashboard has `AutoPlayPauseCard` and the class sends it.
 
 PairFree shows noise cancelling and Ambient Aware on the shared noise control (as its off,
@@ -290,6 +399,8 @@ services PairFree never opens.
 - Which models' LE side answers on the classic address, as the Tune Flex 2's does.
 - Whether the feature-family headphones (Junior, Quantum 360) answer the battery read `25`.
 - Protocol 4 has no recorded frame yet: sections 6 and 7 are from JBL's app alone.
+- Section 4.8's settings have no recorded frame: they are from JBL's app alone. Whether the sound
+  effect and audio limiter act on calls alone, as JBL's configs group them.
 - Whether a security-mode model answers commands before its step (mode 2's pairing report, mode
   3's host checksum) is unknown; PairFree runs the step but does not block on it.
 - What the acknowledgement's status values mean; PairFree reads a setting back rather than

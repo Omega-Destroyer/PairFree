@@ -58,6 +58,9 @@ public class JblSession(initial: JblModel) {
     private val modeLevel = mutableMapOf<Mode, Int>()
     private var ascOn: Boolean? = null
 
+    // The settings beyond noise control, auto power-off and auto play/pause.
+    private var extras = JblExtras(initial)
+
     /** The reads on opening the channel. */
     public fun start(): List<JblFrame> = buildList {
         if (model.family == JblModel.Family.P4) {
@@ -77,6 +80,7 @@ public class JblSession(initial: JblModel) {
         }
         add(batteryRead())
         addAll(noiseReads())
+        addAll(extras.reads())
     }
 
     /** The battery read, to send again now and then. */
@@ -119,8 +123,15 @@ public class JblSession(initial: JblModel) {
             JblCommand.DEVICE_INFO_REPLY -> deviceInfo(p)
             JblCommand.STATUS_REPLY -> status(p)
             JblCommand.BATTERY -> battery(p)
-            JblCommand.NOISE_MODES -> noiseModes(p)
+            JblCommand.NOISE_MODES -> {
+                noiseModes(p)
+                extras.aa(packet.command, p)
+            }
             JblCommand.FEATURE -> for ((id, v) in packet.features()) feature(id, v)
+            else -> if (extras.reportsAa(packet.command)) {
+                _replies[key(packet.command)] = p.copyOf()
+                extras.aa(packet.command, p)
+            }
         }
     }
 
@@ -151,6 +162,7 @@ public class JblSession(initial: JblModel) {
                     (word and P4_LEVEL16).takeIf { it != P4_LEVEL16 }?.let { autoOffMinutes = it / SECONDS_PER_MINUTE }
                 }
                 JblP4.FEATURE_AUTO_PLAY_PAUSE -> autoPlayPause = v.u8(0) and STATUS_BIT != 0
+                in JblExtras.P4_IDS -> extras.p4(id, v)
                 else -> P4_MODES[id]?.let { m ->
                     modeOn[m] = v.u8(0) and STATUS_BIT != 0
                     modeLevel[m] = v.u8(0) and LEVEL_BITS
@@ -293,6 +305,7 @@ public class JblSession(initial: JblModel) {
             JblFeature.BATTERY_LEFT -> unitBattery(Command.BATTERY_LEFT, v)
             JblFeature.BATTERY_RIGHT -> unitBattery(Command.BATTERY_RIGHT, v)
             JblFeature.BATTERY_CASE -> unitBattery(Command.BATTERY_CASE, v)
+            else -> extras.feature(id, v)
         }
     }
 
@@ -308,8 +321,15 @@ public class JblSession(initial: JblModel) {
         val known = JblModels.of(pid) ?: return
         if (known == model) return
         val reread = known.family != model.family || known.noise != model.noise
+        val more = known.extras != model.extras || known.smartAudioVideo != model.smartAudioVideo || known.effects != model.effects
         model = known
-        if (reread) outbox += start()
+        if (more) extras = JblExtras(known)
+        if (reread) {
+            outbox += start()
+        } else if (more) {
+            outbox += extras.reads()
+            extras.p4Features().takeIf { it.isNotEmpty() }?.let { outbox += JblP4Packet.get(it) }
+        }
     }
 
     /** Puts the firmware and, where the model has both noise cancelling and Ambient Aware, the noise mode where the shared screens read them. */
@@ -328,7 +348,13 @@ public class JblSession(initial: JblModel) {
     public val groups: List<SettingGroup>
         get() = listOfNotNull(
             group("noise", SettingTab.HOME, noiseRows()),
+            group("noise_adaptive", SettingTab.HOME, extras.adaptiveRows()),
+            group("sound", SettingTab.SOUND, extras.soundRows()),
+            group("calls", SettingTab.DEVICE, extras.callRows()),
             group("other", SettingTab.DEVICE, otherRows()),
+            group("find", SettingTab.DEVICE, extras.findRows()),
+            group("touch_left", SettingTab.CONTROLS, extras.touchRows("left")),
+            group("touch_right", SettingTab.CONTROLS, extras.touchRows("right")),
         )
 
     private fun noiseRows(): List<Setting> {
@@ -341,7 +367,7 @@ public class JblSession(initial: JblModel) {
     private fun otherRows(): List<Setting> = listOfNotNull(
         model.autoOff?.let { autoOffRow() },
         autoPlayPause?.takeIf { model.autoPlayPause }?.let { Setting.Toggle("pause_taken_off", it) },
-    )
+    ) + extras.otherRows()
 
     /** Auto power-off: never or after the minutes JBL's app offers, or on and off alone where it offers no times. */
     private fun autoOffRow(): Setting? {
@@ -360,6 +386,11 @@ public class JblSession(initial: JblModel) {
      */
     public fun change(change: SettingChange): List<JblFrame>? {
         val setting = groups.flatMap { it.settings }.firstOrNull { it.key == change.key } ?: return null
+        if (change is SettingChange.Choice && setting is Setting.Choice && change.option !in setting.options) return null
+        extras.change(change)?.let { out ->
+            extras.readBack(change.key)?.let { readBacks += it }
+            return out
+        }
         return when (change) {
             is SettingChange.Toggle -> {
                 if (setting !is Setting.Toggle) return null
@@ -508,6 +539,7 @@ public class JblSession(initial: JblModel) {
         if (model.noise == JblModel.Noise.ASC || model.noise == JblModel.Noise.MODE4) addAll(p4NoiseFeatures())
         if (model.autoOff != null) add(JblP4.FEATURE_AUTO_OFF)
         if (model.autoPlayPause) add(JblP4.FEATURE_AUTO_PLAY_PAUSE)
+        addAll(extras.p4Features())
     }
 
     private fun p4Batteries(): List<Int> =
@@ -573,7 +605,7 @@ public class JblSession(initial: JblModel) {
         val REPORTED_FEATURES = setOf(
             JblFeature.PRODUCT_ID, JblFeature.FIRMWARE, JblFeature.AUTO_OFF, JblFeature.AUTO_PLAY_PAUSE,
             JblFeature.BATTERY_HEADBAND, JblFeature.BATTERY_LEFT, JblFeature.BATTERY_RIGHT, JblFeature.BATTERY_CASE,
-        )
+        ) + JblExtras.FEATURE_IDS
 
         fun modeOf(number: Int): Mode? = MODE_NUMBERS.entries.firstOrNull { it.value == number }?.key
 
@@ -588,7 +620,7 @@ public class JblSession(initial: JblModel) {
         val REPORTED_P4 = setOf(
             JblP4.FEATURE_PRODUCT_ID, JblP4.FEATURE_FIRMWARE, JblP4.FEATURE_BATTERY_LEFT, JblP4.FEATURE_BATTERY_RIGHT,
             JblP4.FEATURE_BATTERY_CASE, JblP4.FEATURE_AMBIENT_SOUND_CONTROL, JblP4.FEATURE_AUTO_OFF, JblP4.FEATURE_AUTO_PLAY_PAUSE,
-        ) + P4_MODES.keys
+        ) + P4_MODES.keys + JblExtras.P4_IDS
 
         fun level(v: Int): Int? = v.takeIf { it <= 100 }
 

@@ -824,10 +824,17 @@ abstract class GenerateJblTables : DefaultTask() {
                 else -> error("unknown connect ${d["connect"]}")
             }
             val security = (d["security"] as Number?)?.toInt() ?: 0
+            val extras = (d["settings"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
+            @Suppress("UNCHECKED_CAST")
+            val sav = (d["smart_audio_video"] as Map<String, List<Number>>?)?.let { m ->
+                m.entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${str(k)} to listOf(${v.joinToString(", ") { it.toInt().toString() }})" }
+            } ?: "emptyMap()"
+            val effects = (d["effects"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "listOf(", ")") { str(it) }
             out.appendLine(
                 "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +
                     "family = JblModel.Family.$family, noise = $noise, modes = listOf($modes), autoOff = $autoOff, " +
-                    "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}, security = $security),",
+                    "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}, security = $security, " +
+                    "extras = $extras, smartAudioVideo = $sav, effects = $effects, gestureNoise = ${(d["gesture_noise"] as Number?)?.toInt() ?: 11}),",
             )
         }
         out.appendLine(")")

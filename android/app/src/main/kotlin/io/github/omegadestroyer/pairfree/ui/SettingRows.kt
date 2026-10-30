@@ -223,6 +223,18 @@ private fun settingTitle(key: String): String = when (key) {
     "multipoint" -> stringResource(R.string.setting_multipoint)
     "auto_answer" -> stringResource(R.string.setting_auto_answer)
     "voice_prompts" -> stringResource(R.string.setting_voice_prompts)
+    "jbl_smart_audio_video" -> stringResource(R.string.setting_jbl_smart_audio_video)
+    "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware)
+    "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound)
+    "jbl_spatial" -> stringResource(R.string.setting_jbl_spatial)
+    "jbl_call_effect" -> stringResource(R.string.setting_jbl_call_effect)
+    "jbl_audio_limiter" -> stringResource(R.string.setting_jbl_audio_limiter)
+    "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat)
+    "jbl_hi_res" -> stringResource(R.string.setting_jbl_hi_res)
+    "jbl_touch_left", "jbl_touch_right" -> stringResource(R.string.touch_controls)
+    "jbl_adaptive_anc" -> stringResource(R.string.setting_jbl_adaptive_anc)
+    "jbl_low_volume_eq" -> stringResource(R.string.setting_jbl_low_volume_eq)
+    "jbl_auto_compensation" -> stringResource(R.string.setting_jbl_auto_compensation)
     "sidetone_level" -> stringResource(R.string.setting_sidetone)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
@@ -314,6 +326,14 @@ private fun settingNote(key: String): String? = when (key) {
     "personalized_volume" -> stringResource(R.string.setting_personalized_volume_note)
     "allow_off" -> stringResource(R.string.setting_allow_off_note)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
+    "jbl_smart_audio_video" -> stringResource(R.string.setting_jbl_smart_audio_video_note)
+    "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware_note)
+    "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound_note)
+    "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat_note)
+    "jbl_touch_left", "jbl_touch_right" -> stringResource(R.string.setting_jbl_touch_note)
+    "jbl_adaptive_anc" -> stringResource(R.string.setting_jbl_adaptive_anc_note)
+    "jbl_low_volume_eq" -> stringResource(R.string.setting_jbl_low_volume_eq_note)
+    "jbl_auto_compensation" -> stringResource(R.string.setting_jbl_auto_compensation_note)
     "codec" -> stringResource(R.string.setting_codec_note)
     "custom_eq" -> stringResource(R.string.setting_custom_eq_note)
     else -> null
@@ -376,6 +396,44 @@ private fun optionName(key: String, option: String): String = when {
         },
     )
     key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
+    option == "off" && key.startsWith("jbl_") -> stringResource(R.string.action_off)
+    key == "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_after_seconds, option.toIntOrNull() ?: 0)
+    key == "jbl_voice_aware" -> stringResource(
+        when (option) {
+            "low" -> R.string.setting_level_low
+            "mid" -> R.string.setting_level_mid
+            else -> R.string.setting_level_high
+        },
+    )
+    key == "jbl_smart_audio_video" -> stringResource(
+        when (option) {
+            "audio" -> R.string.setting_jbl_audio
+            "video" -> R.string.setting_jbl_video
+            else -> R.string.action_off
+        },
+    )
+    key == "jbl_spatial" -> stringResource(
+        when (option) {
+            "music" -> R.string.setting_jbl_music
+            "game" -> R.string.setting_jbl_game
+            else -> R.string.setting_jbl_movie
+        },
+    )
+    key == "jbl_touch_left" || key == "jbl_touch_right" -> stringResource(
+        when (option) {
+            "playback" -> R.string.setting_jbl_touch_playback
+            "ambient" -> R.string.setting_jbl_touch_ambient
+            "volume" -> R.string.setting_jbl_touch_volume
+            "none" -> R.string.action_none
+            else -> R.string.action_other
+        },
+    )
+    key == "jbl_call_effect" -> when (option) {
+        "standard" -> stringResource(R.string.setting_jbl_natural)
+        "treble" -> stringResource(R.string.setting_eq_more_treble)
+        "bass" -> stringResource(R.string.setting_eq_more_bass)
+        else -> option
+    }
     key == "press_speed" || key == "hold_duration" || key == "volume_swipe_length" -> stringResource(
         when (option) {
             "slower" -> R.string.setting_option_slower

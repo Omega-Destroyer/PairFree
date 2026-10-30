@@ -49,4 +49,28 @@ class DeviceReportTest {
         assertEquals("battery_left         0306  100                                      raw=00 64", lines[1])
         assertEquals("phone_codec          0377  no reply", lines.last())
     }
+
+    @Test
+    fun repliesWithoutAStatusByteDecode() {
+        // GitHub issues #5 and #6: the C30 and Clip C10 send the firmware and the custom keys with no status byte.
+        val c30Firmware = "53 32 32 5f 32 30 32 35 31 32 30 39 5f 76 30 2e 37 2e 35".hexBytes(" ")
+        val text = Replies.decode(Command.FIRMWARE_VERSION, c30Firmware) as Value.Text
+        assertEquals("S22", FirmwareVersion(text.text).code)
+        assertEquals("0.7.5", FirmwareVersion(text.text).version)
+        assertEquals("T2", FirmwareVersion("T2_20250506_V0.5.5").code)
+        assertEquals("0.5.5", FirmwareVersion("T2_20250506_V0.5.5").version)
+
+        val c30Keys = "01 02 02 01 03 07 04 03 05 04 06 08 07 05 08 06".hexBytes(" ")
+        assertEquals(
+            "tap L -> vol-, tap R -> vol+, double L -> ANC, double R -> play/pause, triple L -> game mode, " +
+                "triple R -> assistant, hold L -> prev, hold R -> next",
+            DeviceReport.describe(Command.CUSTOM_KEYS, c30Keys),
+        )
+        val keys = (Replies.decode(Command.CUSTOM_KEYS, c30Keys) as Value.Keys).keys
+        assertEquals(KeyBinding(1, 2), keys.first(), "the app reads the same pairs")
+        // The H3's reply, with its status byte, still reads as before.
+        assertEquals("tap L -> vol+", DeviceReport.describe(Command.CUSTOM_KEYS, "00 01 01".hexBytes(" ")))
+    }
 }
+
+private fun String.hexBytes(separator: String): ByteArray = split(separator).map { it.toInt(16).toByte() }.toByteArray()

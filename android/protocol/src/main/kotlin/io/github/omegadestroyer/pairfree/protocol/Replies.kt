@@ -11,8 +11,8 @@ public data class FirmwareVersion(val text: String) {
     /** The first field. It identifies the model; see data/soundpeats/devices.json. */
     public val code: String get() = text.substringBefore('_')
 
-    /** The last field, without a leading `V`. */
-    public val version: String get() = text.substringAfterLast('_').removePrefix("V")
+    /** The last field, without a leading `V` (`v` on the C30). */
+    public val version: String get() = text.substringAfterLast('_').removePrefix("V").removePrefix("v")
 }
 
 /**
@@ -57,6 +57,7 @@ public sealed interface Value {
 /** Decodes reply payloads (docs/soundpeats/PROTOCOL.md sections 2 and 3). */
 public object Replies {
     private const val UNKNOWN = 0xFF
+    private val PRINTABLE = 0x20..0x7E
 
     private val BY_GET: Map<Int, Command> = Command.entries.mapNotNull { c -> c.get?.let { it to c } }.toMap()
 
@@ -71,7 +72,13 @@ public object Replies {
     public fun decode(command: Command, payload: ByteArray): Value? {
         val u = IntArray(payload.size) { payload[it].toInt() and 0xFF }
         return when (command.kind) {
-            Kind.TEXT -> if (u.isNotEmpty() && u[0] == 0) Value.Text(payload.copyOfRange(1, payload.size).decodeToString()) else null
+            Kind.TEXT -> when {
+                u.isEmpty() -> null
+                u[0] == 0 -> Value.Text(payload.copyOfRange(1, payload.size).decodeToString())
+                // The C30 and Clip C10 send the text with no status byte (GitHub issues #5 and #6).
+                u.all { it in PRINTABLE } -> Value.Text(payload.decodeToString())
+                else -> null
+            }
             Kind.PERCENT -> single(u)?.let { Value.Number(if (it == UNKNOWN || it > 100) null else it) }
             Kind.ENUM, Kind.MINUTES -> single(u)?.let { Value.Number(if (it == UNKNOWN) null else it) }
             Kind.SWITCH -> single(u)?.let { Value.Switch(it == 1) }

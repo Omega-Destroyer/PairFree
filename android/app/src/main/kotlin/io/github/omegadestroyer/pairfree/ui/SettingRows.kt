@@ -231,6 +231,7 @@ private fun settingTitle(key: String): String = when (key) {
     "jbl_audio_limiter" -> stringResource(R.string.setting_jbl_audio_limiter)
     "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat)
     "jbl_hi_res" -> stringResource(R.string.setting_jbl_hi_res)
+    "jbl_touch_left", "jbl_touch_right" -> stringResource(R.string.touch_controls)
     "sidetone_level" -> stringResource(R.string.setting_sidetone)
     "find_mute_left" -> stringResource(R.string.setting_find_mute, stringResource(R.string.left))
     "find_mute_right" -> stringResource(R.string.setting_find_mute, stringResource(R.string.right))
@@ -326,6 +327,7 @@ private fun settingNote(key: String): String? = when (key) {
     "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware_note)
     "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound_note)
     "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat_note)
+    "jbl_touch_left", "jbl_touch_right" -> stringResource(R.string.setting_jbl_touch_note)
     "codec" -> stringResource(R.string.setting_codec_note)
     "custom_eq" -> stringResource(R.string.setting_custom_eq_note)
     else -> null
@@ -409,6 +411,15 @@ private fun optionName(key: String, option: String): String = when {
             "music" -> R.string.setting_jbl_music
             "game" -> R.string.setting_jbl_game
             else -> R.string.setting_jbl_movie
+        },
+    )
+    key == "jbl_touch_left" || key == "jbl_touch_right" -> stringResource(
+        when (option) {
+            "playback" -> R.string.setting_jbl_touch_playback
+            "ambient" -> R.string.setting_jbl_touch_ambient
+            "volume" -> R.string.setting_jbl_touch_volume
+            "none" -> R.string.action_none
+            else -> R.string.action_other
         },
     )
     key == "jbl_call_effect" -> when (option) {

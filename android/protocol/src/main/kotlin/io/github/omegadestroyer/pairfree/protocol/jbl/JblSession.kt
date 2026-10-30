@@ -349,6 +349,8 @@ public class JblSession(initial: JblModel) {
             group("calls", SettingTab.DEVICE, extras.callRows()),
             group("other", SettingTab.DEVICE, otherRows()),
             group("find", SettingTab.DEVICE, extras.findRows()),
+            group("touch_left", SettingTab.CONTROLS, extras.touchRows("left")),
+            group("touch_right", SettingTab.CONTROLS, extras.touchRows("right")),
         )
 
     private fun noiseRows(): List<Setting> {

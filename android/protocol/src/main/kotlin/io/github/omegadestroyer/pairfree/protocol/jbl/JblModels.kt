@@ -31,6 +31,8 @@ public data class JblModel(
     val smartAudioVideo: Map<String, List<Int>> = emptyMap(),
     /** The sound effects the model lists, by name (standard, treble, bass). */
     val effects: List<String> = emptyList(),
+    /** The noise cycle the ambient touch set starts with: 11 noise cancelling and ambient sound, 13 Ambient Aware and off. */
+    val gestureNoise: Int = 11,
 ) {
     /**
      * How the model's settings go: one command each ([DIRECT]), Harman's feature records, command 06

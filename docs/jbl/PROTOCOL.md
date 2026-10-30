@@ -215,6 +215,39 @@ Harman order, `General4Control.set3DSpatialStatus`), `43` smart talk (speak to c
 seconds), `41` sound effect, `39` audio limiter and `40` Hi-Res (level 127), and `4106` Find My
 Buds, written only: bit 7 the case, 6 the right earbud, 5 the left, bits 0 to 4 set.
 
+### 4.9 Touch controls: `77`
+
+The models whose dashboard has `GestureCard` or `GestureLeAudioCard` (the second only greys it out
+while LE Audio is on) choose a set of actions per earbud on one page (`sp.e`, `sp.j`, `CustomGesture`),
+and their class writes all of a side's gestures in one command (`genSetGestureInBach77`):
+
+```
+AA 77 <length> 00 (<gesture> <action>)...     write
+AA 77 02 01 FF                                 read every gesture
+AA 77 <length> <01 or 02> (<gesture> <action>)...   reply
+```
+
+A gesture's byte is its `GestureType` through `CmdBase.values`: `06` left tap, `07` double tap, `08`
+triple tap, `0C` hold; `09`, `0A`, `0B` and `0E` the same on the right. JBL's app numbers them 1, 3,
+7 and 49 on the left and 2, 4, 8 and 50 on the right. An action's byte is JBL's own id
+(`GestureActionType` through `CmdBase.values_Action`). The sets, as tap, double tap, triple tap and hold:
+
+| Set | Actions |
+|---|---|
+| Playback and voice assistant | `0A` play/pause, `05` next, `06` previous, `A1` the phone's assistant |
+| Ambient sound | the noise cycle, `04` TalkThru, `00`, `A1` |
+| Volume | `01` up, `02` down, `00`, `A1` |
+| None | `00` on all four |
+
+The noise cycle is `0B` (noise cancelling and ambient sound) or the one the tap already has (`09`,
+`0B`, `0C`, `0D`); headphones and the Endurance Peak 3 start with `0D` (Ambient Aware and off),
+`gesture_noise` in `devices.json`. The hold is `A1` while the earbuds' voice assistant is the phone's
+default (`AppUtils.isDefaultMultiAi`); with Google Assistant or Alexa chosen in JBL's app, the
+playback set holds for that assistant instead. PairFree does not read that choice and always writes
+`A1`. The read names a side's set by its tap action, else its hold (`CustomGesture.generateName`).
+The p4 models and those with `GestureUi4Card` or a headphone gesture card use other pages
+(`customizedGesture` in the product list, `setP5GestureStatus`) and are not covered yet.
+
 ## 5. How each model sends its settings
 
 `devices.json` gives each model's:

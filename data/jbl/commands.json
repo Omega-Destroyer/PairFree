@@ -20,6 +20,7 @@
     {"name": "spatial", "command": "9D", "note": "3D spatial sound (SpatialStatus3DCmd): 01 to read; reply 02, on and the type (1 music, 2 movie, 3 game); a write 00, on and the type."},
     {"name": "speak_to_chat", "command": "9F", "note": "Speak to chat (SpeakToChatCmd): 01 to read; reply 02, on and the seconds before the music comes back; a write 00, on and the seconds."},
     {"name": "safe_sound", "command": "A5", "note": "SafeSound volume limit (SafeSoundCmd): 01 to read; reply 02, 01 and the status; a write 00, 01 and the status (1 on)."},
+    {"name": "gestures", "command": "77", "note": "Touch controls in a batch (CmdGen.genSetGestureInBach77, HandleParse): 01 FF to read every gesture; the reply 01 or 02, then pairs of gesture and action; a write 00 and the pairs. Gestures: 06 left tap, 07 double, 08 triple, 0C hold; 09 right tap, 0A, 0B, 0E. Actions: JBL's ids (00 none, 01 volume up, 02 down, 04 TalkThru, 05 next, 06 previous, 0A play/pause, 0B noise cancelling and ambient sound, 0D Ambient Aware and off, A1 voice assistant)."},
     {"name": "balance", "command": "A8", "note": "Left and right balance (LeftRightSoundBalanceCmd): 01 to read; reply 02, 01, on, 02 and the level (84 to 116, 100 in the middle); a write 00 and the same."}
   ],
   "status_types": {"all": "30", "anc": "31", "ambient": "32", "auto_off": "33", "auto_play_pause": "38"},

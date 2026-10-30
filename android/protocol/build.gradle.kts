@@ -834,7 +834,7 @@ abstract class GenerateJblTables : DefaultTask() {
                 "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +
                     "family = JblModel.Family.$family, noise = $noise, modes = listOf($modes), autoOff = $autoOff, " +
                     "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}, security = $security, " +
-                    "extras = $extras, smartAudioVideo = $sav, effects = $effects),",
+                    "extras = $extras, smartAudioVideo = $sav, effects = $effects, gestureNoise = ${(d["gesture_noise"] as Number?)?.toInt() ?: 11}),",
             )
         }
         out.appendLine(")")

@@ -40,7 +40,7 @@ class JblTable(unittest.TestCase):
         self.assertEqual("Bluetooth LE", flex2["Connection"])
         self.assertEqual(
             "noise cancelling, Ambient Aware, TalkThru, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, "
-            "3D spatial sound, sound effect, audio limiter, Find My Buds",
+            "3D spatial sound, sound effect, audio limiter, Find My Buds, touch controls",
             flex2["Settings"],
         )
         self.assertIn("JblTray", flex2["Status"])

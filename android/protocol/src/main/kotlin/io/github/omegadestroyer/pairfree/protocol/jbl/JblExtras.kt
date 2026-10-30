@@ -34,6 +34,8 @@ internal class JblExtras(private val model: JblModel) {
     private var talkSeconds: Int? = null
     private var hiRes: Boolean? = null
     private var finding = false
+    // Each gesture's action, by JBL's gesture id (1 left tap, 2 right tap and so on).
+    private val gestures = mutableMapOf<Int, Int>()
     private var mutedLeft = false
     private var mutedRight = false
 
@@ -46,6 +48,7 @@ internal class JblExtras(private val model: JblModel) {
         if (has(SAFE_SOUND)) add(JblPacket.of(JblCommand.SAFE_SOUND, READ))
         if (has(SPATIAL)) add(JblPacket.of(JblCommand.SPATIAL, READ))
         if (has(SPEAK_TO_CHAT)) add(JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ))
+        if (has(GESTURES)) add(gestureRead())
         val features = listOfNotNull(
             JblFeature.SOUND_EFFECT.takeIf { has(SOUND_EFFECT) },
             JblFeature.AUDIO_LIMITER.takeIf { has(AUDIO_LIMITER) },
@@ -94,6 +97,14 @@ internal class JblExtras(private val model: JblModel) {
             JblCommand.SPEAK_TO_CHAT -> if (p.u8(0) == RET && p.size >= 3) {
                 talkOn = p.u8(1) == 1
                 talkSeconds = p.u8(2)
+            }
+            // 01 or 02, then pairs of gesture and action (HandleParse.parseGestureData).
+            JblCommand.GESTURES -> if (p.u8(0) == 1 || p.u8(0) == 2) {
+                var at = 1
+                while (at + 1 < p.size) {
+                    WIRE_GESTURES[p.u8(at)]?.let { gestures[it] = p.u8(at + 1) }
+                    at += 2
+                }
             }
         }
     }
@@ -193,6 +204,29 @@ internal class JblExtras(private val model: JblModel) {
         }
     }
 
+    /** The touch set of one earbud ("left" or "right"), as JBL's gesture page offers them. */
+    fun touchRows(side: String): List<Setting> {
+        if (!has(GESTURES)) return emptyList()
+        val ids = SIDE_GESTURES.getValue(side)
+        if (ids.none { it in gestures }) return emptyList()
+        return listOf(Setting.Choice(TOUCH_KEYS.getValue(side), touchSet(ids), TOUCH_SETS))
+    }
+
+    /** The set a side's actions make, named by its tap as JBL's app names it (CustomGesture.generateName), else by its hold. */
+    private fun touchSet(ids: List<Int>): String {
+        return setName(gestures[ids[0]] ?: 0).takeUnless { it == NONE } ?: setName(gestures[ids[3]] ?: 0)
+    }
+
+    private fun setName(action: Int): String = when (action) {
+        0 -> NONE
+        ACTION_VOLUME_UP -> VOLUME
+        ACTION_PLAY_PAUSE_VA -> PLAYBACK
+        in NOISE_CYCLES -> AMBIENT
+        // Play/pause alone, a voice assistant set or the sports set: from JBL's other gesture pages.
+        ACTION_PLAY_PAUSE, ACTION_SPORTS, in ASSISTANTS -> OTHER
+        else -> NONE
+    }
+
     private fun smartRow(): Setting.Choice? {
         if (!has(SMART_AV)) return null
         val now = smartSwitch ?: return null
@@ -213,6 +247,8 @@ internal class JblExtras(private val model: JblModel) {
             else -> null
         }
         is SettingChange.Choice -> when (change.key) {
+            TOUCH_LEFT -> touch("left", change.option)?.let(::listOf)
+            TOUCH_RIGHT -> touch("right", change.option)?.let(::listOf)
             SMART_KEY -> smart(change.option)?.let(::listOf)
             SPATIAL_KEY -> listOf(spatial(change.option))
             VOICE_AWARE_KEY -> listOf(voiceAware(change.option))
@@ -250,11 +286,35 @@ internal class JblExtras(private val model: JblModel) {
             SAFE_SOUND_KEY -> JblPacket.of(JblCommand.SAFE_SOUND, READ)
             SPATIAL_KEY -> JblPacket.of(JblCommand.SPATIAL, READ)
             TALK_KEY -> JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ)
+            TOUCH_LEFT, TOUCH_RIGHT -> gestureRead()
             EFFECT_KEY -> JblPacket.featureGet(listOf(JblFeature.SOUND_EFFECT))
             LIMITER_KEY -> JblPacket.featureGet(listOf(JblFeature.AUDIO_LIMITER))
             HI_RES_KEY -> JblPacket.featureGet(listOf(JblFeature.HI_RES))
             else -> null
         }
+    }
+
+    private fun gestureRead(): JblFrame = JblPacket.of(JblCommand.GESTURES, 1, ALL_GESTURES)
+
+    /**
+     * One earbud's four gestures set to [option]'s actions (CustomGesture's sets, with the voice assistant JBL's
+     * app uses by default). The noise set keeps the cycle the earbud's tap already has.
+     */
+    private fun touch(side: String, option: String): JblFrame? {
+        val ids = SIDE_GESTURES.getValue(side)
+        val noise = gestures[ids[0]]?.takeIf { it in NOISE_CYCLES } ?: model.gestureNoise
+        val actions = when (option) {
+            PLAYBACK -> listOf(ACTION_PLAY_PAUSE_VA, ACTION_NEXT, ACTION_PREVIOUS, ACTION_ASSISTANT)
+            AMBIENT -> listOf(noise, ACTION_TALK_THRU, 0, ACTION_ASSISTANT)
+            VOLUME -> listOf(ACTION_VOLUME_UP, ACTION_VOLUME_DOWN, 0, ACTION_ASSISTANT)
+            NONE -> listOf(0, 0, 0, 0)
+            else -> return null
+        }
+        val pairs = ids.zip(actions).flatMap { (id, action) ->
+            gestures[id] = action
+            listOf(ID_WIRE.getValue(id), action)
+        }
+        return JblPacket.of(JblCommand.GESTURES, SET, *pairs.toIntArray())
     }
 
     private fun smart(option: String): JblFrame? {
@@ -421,6 +481,7 @@ internal class JblExtras(private val model: JblModel) {
         const val SPEAK_TO_CHAT = "speak_to_chat"
         const val HI_RES = "hi_res"
         const val FIND_BUDS = "find_buds"
+        const val GESTURES = "gestures"
 
         // The rows' keys.
         const val SMART_KEY = "jbl_smart_audio_video"
@@ -437,6 +498,38 @@ internal class JblExtras(private val model: JblModel) {
         const val MUTE_LEFT = "find_mute_left"
         const val MUTE_RIGHT = "find_mute_right"
         const val OFF = "off"
+        const val TOUCH_LEFT = "jbl_touch_left"
+        const val TOUCH_RIGHT = "jbl_touch_right"
+        private val TOUCH_KEYS = mapOf("left" to TOUCH_LEFT, "right" to TOUCH_RIGHT)
+
+        // The touch sets (CustomGesture), the ones JBL's gesture page offers first.
+        const val PLAYBACK = "playback"
+        const val AMBIENT = "ambient"
+        const val VOLUME = "volume"
+        const val NONE = "none"
+        const val OTHER = "other"
+        private val TOUCH_SETS = listOf(PLAYBACK, AMBIENT, VOLUME, NONE)
+
+        // JBL's gesture ids for each side's tap, double tap, triple tap and hold, and their bytes on the wire
+        // (GestureType's order through CmdBase.values).
+        private val SIDE_GESTURES = mapOf("left" to listOf(1, 3, 7, 49), "right" to listOf(2, 4, 8, 50))
+        private val ID_WIRE = mapOf(1 to 0x06, 3 to 0x07, 7 to 0x08, 49 to 0x0C, 2 to 0x09, 4 to 0x0A, 8 to 0x0B, 50 to 0x0E)
+        private val WIRE_GESTURES = ID_WIRE.entries.associate { it.value to it.key }
+        private const val ALL_GESTURES = 0xFF
+
+        // Actions (GestureActionType by JBL's ids).
+        private const val ACTION_VOLUME_UP = 1
+        private const val ACTION_VOLUME_DOWN = 2
+        private const val ACTION_TALK_THRU = 4
+        private const val ACTION_NEXT = 5
+        private const val ACTION_PREVIOUS = 6
+        private const val ACTION_PLAY_PAUSE = 8
+        private const val ACTION_PLAY_PAUSE_VA = 10
+        private const val ACTION_SPORTS = 15
+        private const val ACTION_ASSISTANT = 161
+        // Noise cancelling and Ambient Aware, noise cancelling and ambient sound, noise cancelling and off, Ambient Aware and off.
+        private val NOISE_CYCLES = setOf(9, 11, 12, 13)
+        private val ASSISTANTS = setOf(160, 164, 166, 168)
 
         /** The feature records and protocol 4 features these settings are read from. */
         val FEATURE_IDS = setOf(JblFeature.SOUND_EFFECT, JblFeature.AUDIO_LIMITER, JblFeature.HI_RES)
@@ -448,7 +541,7 @@ internal class JblExtras(private val model: JblModel) {
 
         private val AA_COMMANDS = setOf(
             JblCommand.SMART_SWITCH, JblCommand.VOICE_PROMPTS, JblCommand.BALANCE, JblCommand.VOICE_AWARE,
-            JblCommand.SAFE_SOUND, JblCommand.SPATIAL, JblCommand.SPEAK_TO_CHAT,
+            JblCommand.SAFE_SOUND, JblCommand.SPATIAL, JblCommand.SPEAK_TO_CHAT, JblCommand.GESTURES,
         )
 
         // The sub-commands of these Harman commands (CmdBase): 00 set, 01 read, 02 reply; voice prompts 03, 04 and 05.

@@ -35,6 +35,7 @@ EXTRAS = {
     "speak_to_chat": "speak to chat",
     "hi_res": "Hi-Res audio",
     "find_buds": "Find My Buds",
+    "gestures": "touch controls",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",

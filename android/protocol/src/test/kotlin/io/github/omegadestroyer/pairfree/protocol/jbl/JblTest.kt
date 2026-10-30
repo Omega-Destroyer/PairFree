@@ -471,6 +471,30 @@ class JblTest {
         )
     }
 
+    @Test
+    fun touchSetsAreReadAndWrittenAsJblsGesturePageDoes() {
+        val s = JblSession(model("JBL Tune Flex 2"))
+        assertTrue("aa770201ff" in s.start().map { it.hex() })
+        assertNull(setting(s, "jbl_touch_left"), "nothing before the read")
+        // Left: noise cycle, TalkThru, nothing, assistant; right: play/pause, next, previous, assistant.
+        s.receive(packet("aa7711" + "01" + "060b" + "0704" + "0800" + "0ca1" + "090a" + "0a05" + "0b06" + "0ea1"))
+        val sets = listOf("playback", "ambient", "volume", "none")
+        assertEquals(Setting.Choice("jbl_touch_left", "ambient", sets), setting(s, "jbl_touch_left"))
+        assertEquals(Setting.Choice("jbl_touch_right", "playback", sets), setting(s, "jbl_touch_right"))
+        assertEquals("aa770900" + "0601" + "0702" + "0800" + "0ca1", s.change(SettingChange.Choice("jbl_touch_left", "volume"))!!.single().hex())
+        // The right tap had play/pause, so the noise set starts with the model's cycle (11).
+        assertEquals("aa770900" + "090b" + "0a04" + "0b00" + "0ea1", s.change(SettingChange.Choice("jbl_touch_right", "ambient"))!!.single().hex())
+        assertEquals("aa770900" + "0600" + "0700" + "0800" + "0c00", s.change(SettingChange.Choice("jbl_touch_left", "none"))!!.single().hex())
+        assertEquals(Setting.Choice("jbl_touch_left", "none", sets), setting(s, "jbl_touch_left"))
+        assertEquals(listOf("aa770201ff"), s.takeReadBacks().map { it.hex() })
+
+        // The Endurance Peak 3 cycles Ambient Aware and off (13); a cycle the earbud already has is kept.
+        val peak = JblSession(model("JBL Endurance Peak 3"))
+        peak.receive(packet("aa7711" + "01" + "060a" + "0705" + "0806" + "0ca1" + "090c" + "0a04" + "0b00" + "0ea1"))
+        assertEquals("aa770900" + "060d" + "0704" + "0800" + "0ca1", peak.change(SettingChange.Choice("jbl_touch_left", "ambient"))!!.single().hex())
+        assertEquals("aa770900" + "090c" + "0a04" + "0b00" + "0ea1", peak.change(SettingChange.Choice("jbl_touch_right", "ambient"))!!.single().hex())
+    }
+
     private fun anc(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
     private companion object {

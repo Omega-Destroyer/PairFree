@@ -90,7 +90,7 @@
         "audio": [256, 53, 280],
         "video": [197, 41, 120]
       },
-      "settings": ["smart_audio_video", "voice_aware", "find_buds"]
+      "settings": ["smart_audio_video", "voice_aware", "find_buds", "gestures"]
     },
     {
       "name": "JBL TUNE130NC TWS",
@@ -108,7 +108,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_aware", "find_buds"]
+      "settings": ["smart_audio_video", "voice_aware", "find_buds", "gestures"]
     },
     {
       "name": "JBL TUNE230NC TWS",
@@ -126,7 +126,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_aware", "find_buds"]
+      "settings": ["smart_audio_video", "voice_aware", "find_buds", "gestures"]
     },
     {
       "name": "JBL TUNE235NC TWS",
@@ -144,7 +144,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_aware", "find_buds"]
+      "settings": ["smart_audio_video", "voice_aware", "find_buds", "gestures"]
     },
     {
       "name": "JBL ENDURANCE RACE TWS",
@@ -162,7 +162,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "balance", "voice_aware", "find_buds"]
+      "settings": ["smart_audio_video", "balance", "voice_aware", "find_buds", "gestures"]
     },
     {
       "name": "JBL LIVE PRO 2 TWS",
@@ -181,7 +181,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds", "gestures"]
     },
     {
       "name": "JBL Endurance Peak 3",
@@ -199,7 +199,8 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "gestures"],
+      "gesture_noise": 13
     },
     {
       "name": "JBL TUNE FLEX",
@@ -217,7 +218,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL WAVE FLEX",
@@ -235,7 +236,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL WAVE BUDS",
@@ -253,7 +254,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL WAVE BEAM",
@@ -271,7 +272,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL TOUR ONE M2",
@@ -292,7 +293,8 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "speak_to_chat"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "speak_to_chat", "gestures"],
+      "gesture_noise": 13
     },
     {
       "name": "JBL LIVE FLEX",
@@ -311,7 +313,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "find_buds", "gestures"]
     },
     {
       "name": "JBL TOUR PRO 2",
@@ -330,7 +332,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL Tune 520BT",
@@ -403,7 +405,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL TUNE BEAM",
@@ -421,7 +423,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL TUNE BUDS",
@@ -439,7 +441,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL Tune 525BT",
@@ -517,7 +519,7 @@
         "audio": [256, 46, 220],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "find_buds", "gestures"]
     },
     {
       "name": "JBL Soundgear Frames",
@@ -533,7 +535,7 @@
         "audio": [256, 46, 200],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "gestures"]
     },
     {
       "name": "JBL Live Beam 3",
@@ -552,7 +554,7 @@
         "video": [197, 46, 80]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "gestures"]
     },
     {
       "name": "JBL Live Flex 3",
@@ -571,7 +573,7 @@
         "video": [197, 46, 100]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "gestures"]
     },
     {
       "name": "JBL Quantum 360X",
@@ -673,7 +675,7 @@
         "video": [197, 46, 80]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures"]
     },
     {
       "name": "JBL Tune Flex 2",
@@ -693,7 +695,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures"]
     },
     {
       "name": "JBL Tune Beam 2",
@@ -712,7 +714,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures"]
     },
     {
       "name": "JBL Junior 320BT",
@@ -879,7 +881,8 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "gestures"],
+      "gesture_noise": 13
     },
     {
       "name": "JBL Sense Lite",

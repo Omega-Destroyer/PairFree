@@ -383,7 +383,7 @@ PairFree decides the **brand** of each paired audio device first, then lets that
 
 1. A name in `not_ours` is left out.
 2. A service only one brand's devices list decides (Soundcore's vendor service, the Galaxy Buds' own services,
-   Sony's, Bose's, Apple's, Nothing's). The standard serial service and Airoha's decide nothing: many brands
+   Sony's, Bose's, Apple's, Nothing's, the Pixel Buds' two). The standard serial service and Airoha's decide nothing: many brands
    offer them.
 3. Else a whole word of the name that names one brand (`brand_words`: "JBL", "Galaxy", "soundcore", ...).
 4. Else the name is exactly one brand's model name (Sony's, whose names hold no brand word, as Sony matches them).

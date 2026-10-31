@@ -17,6 +17,7 @@ import io.github.omegadestroyer.pairfree.capture.Capture
 import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
+import io.github.omegadestroyer.pairfree.eq.PixelEqTarget
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
@@ -95,6 +96,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
      * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
      */
     fun openEqualizer(device: Paired, model: Model?) {
+        if (device.brand != Brand.PIXEL) pixelEq = null
+        if (device.brand == Brand.PIXEL) {
+            nothingEq = null
+            soundcoreEq = null
+            samsungEq = null
+            sonyEq = null
+            openPixelEq(device, model)
+            return
+        }
         if (device.brand != Brand.NOTHING) nothingEq = null
         if (device.brand == Brand.NOTHING) {
             soundcoreEq = null
@@ -130,6 +140,37 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         soundcoreEq = target
         equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
         connection.soundcoreState.value?.let(::reportEq)
+    }
+
+    /** The Pixel Buds' EQ while the Sound tab shows a Pixel Buds Pro, Pro 2 or 2a whose EQ read answered. */
+    private var pixelEq: PixelEqTarget? = null
+
+    /**
+     * Pixel Buds report their EQ once read; the Sound tab's EQ opens then, with Google's presets and the earbuds'
+     * saved curve where they hold one, and follows what they report from then on. The 2020 model and the A-Series
+     * have bass boost alone, which is a row on the Sound tab.
+     */
+    private fun openPixelEq(device: Paired, model: Model?) {
+        val session = connection.pixelSession
+        if (session == null || !session.hasEq) {
+            pixelEq = null
+            equalizer.open(device.address, null)
+            return
+        }
+        val open = pixelEq
+        if (open != null && open.session === session && open.hasSaved == (session.savedEq != null) && equalizer.state.value != null) return
+        // Open again when the saved curve arrived after the EQ: Last saved joins the presets.
+        if (open?.session === session) equalizer.open(device.address, null)
+        val target = PixelEqTarget(session)
+        pixelEq = target
+        equalizer.open(device.address, model, target.layout, target)
+        connection.pixelEq.value?.let(::reportPixelEq)
+    }
+
+    private fun reportPixelEq(gains: List<Float>) {
+        val target = pixelEq ?: return
+        val (profile, whole) = target.reported(gains)
+        equalizer.reported(profile, whole)
     }
 
     /** The Nothing EQ while the Sound tab shows Nothing or CMF earbuds whose model PairFree knows. */
@@ -233,6 +274,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             }
         }
         viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
+        // Pixel Buds report their EQ once read: open it then, and follow what they hold.
+        viewModelScope.launch {
+            connection.pixelEq.collect { eq ->
+                val device = connectedDevice() ?: return@collect
+                if (device.brand != Brand.PIXEL || eq == null) return@collect
+                openPixelEq(device, modelOf(device, connection.state.value))
+                reportPixelEq(eq)
+            }
+        }
         // Nothing earbuds name their model, then report their EQ: open it once they have, then follow what they hold.
         viewModelScope.launch {
             connection.nothingEq.collect { eq ->
@@ -487,6 +537,30 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 session.replies.forEach { (key, payload) ->
                     appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
                 }
+            }
+        }
+        connection.pixelSession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Brand:           Google Pixel Buds")
+                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (device type ${session.deviceType ?: "unknown"})")
+                appendLine("Transport:       ${session.transport.name.lowercase()}${session.channel?.let { " (channel $it)" }.orEmpty()}")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine()
+                appendLine("The last answer to each read PairFree sent (setting N: the field as protobuf, or the error")
+                appendLine("status the earbuds gave; the battery and firmware as protobuf):")
+                session.replies.forEach { (key, payload) ->
+                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
+                }
+                if (session.refused.isNotEmpty()) appendLine("Settings the earbuds do not have: ${session.refused.joinToString(", ")}")
             }
         }
         connection.nothingSession?.let { session ->

@@ -1,0 +1,27 @@
+{
+  "_about": "Test cases for the Pixel Buds protocol. hdlc and crc32 are pbpctrl's own tests (github.com/qzed/pbpctrl, libmaestro/src/hdlc, Maximilian Luz, MIT). ids are the service and method ids OpenControl for Pixel Buds Pro 2 saw a Pixel Buds Pro 2 receive (github.com/tedsluis/opencontrolpixelbudspro2, PROTOCOL.md section 4.5: 1d ea71de7e 25 1d9a8c9e; AGPL, used as facts), which pw_rpc's 65599 hash of the names gives. requests were built by hand with an independent implementation (Python, outside the repo) from the layout in docs/pixel/PROTOCOL.md and Google's Pixel Buds app 1.0.990706425; they are not captures.",
+  "crc32": [
+    {"ascii": "test test test", "crc": "235b6a02"},
+    {"ascii": "1234321", "crc": "d981751c"}
+  ],
+  "hdlc": [
+    {"address": 66051, "control": 3, "data": "", "bytes": "7e060809038b3bf7427e"},
+    {"address": 66051, "control": 3, "data": "0506077d7e7fff", "bytes": "7e060809030506077d5d7d5e7fffe62d17c67e"}
+  ],
+  "ids": [
+    {"name": "maestro_pw.Maestro", "id": "7ede71ea"},
+    {"name": "WriteSetting", "id": "9e8c9a1d"}
+  ],
+  "requests": [
+    {"what": "probe channel 18 with GetSoftwareInfo, call id FFFFFFFF", "transport": "maestro", "bytes": "7e002b0310121dea71de7d5e2544fa997138ffffffff0fc85e0d127e"},
+    {"what": "read Allegro setting 13 (noise control) on channel 18", "transport": "maestro", "bytes": "7e002b0310121dea71de7d5e2551aed0ae2a02200dd44561d07e"},
+    {"what": "write noise control adaptive (13 = 4) on channel 18", "transport": "maestro", "bytes": "7e002b0310121dea71de7d5e251d9a8c9e2a0422026804111dd67b7e"},
+    {"what": "write the Heavy bass preset (16 = 5, 3, 0, 0, 0) on channel 18", "transport": "maestro", "bytes": "7e002b0310121dea71de7d5e251d9a8c9e2a1e221c8201190d0000a04015000040401d0000000025000000002d00000000b44d82687e"},
+    {"what": "press and hold on the right earbud: digital assistant (7 = {2: {4: {1: 6}}})", "transport": "maestro", "bytes": "7e002b0310121dea71de7d5e251d9a8c9e2a0a22083a06120422020806e69ffc6e7e"},
+    {"what": "the plain frames' start", "transport": "tlv", "bytes": "87040000"},
+    {"what": "read Pixel Buds (2020) setting 1 (in-ear detection)", "transport": "tlv", "bytes": "870800021001"},
+    {"what": "write Pixel Buds (2020) in-ear detection off", "transport": "tlv", "bytes": "8709000412020800"},
+    {"what": "write the A-Series bass level 2 (sent as 3)", "transport": "tlv", "bytes": "870900041a027003"},
+    {"what": "write Pixel Buds (2020) attention alerts: on, a dog barking on", "transport": "tlv", "bytes": "8709000812064a0408011801"}
+  ]
+}

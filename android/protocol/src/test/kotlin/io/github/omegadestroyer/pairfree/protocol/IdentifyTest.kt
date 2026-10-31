@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol
 
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
+import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonNull
@@ -29,6 +30,7 @@ class IdentifyTest {
             (e["model"] as? JsonPrimitive)?.content?.let { model ->
                 when (want) {
                     Maker.JBL -> assertEquals(model, JblModels.fromName(name)?.name, name)
+                    Maker.PIXEL -> assertEquals(model, PixelModels.fromName(name)?.name, name)
                     else -> error("no model check for $want")
                 }
             }
@@ -46,6 +48,7 @@ class IdentifyTest {
             Maker.BOSE to "data/bose/devices.json",
             Maker.JBL to "data/jbl/devices.json",
             Maker.NOTHING to "data/nothing/devices.json",
+            Maker.PIXEL to "data/pixel/devices.json",
         )
         val wrong = mutableListOf<String>()
         for ((maker, path) in tables) {

@@ -131,6 +131,7 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_case" -> R.string.setting_group_touch_case
         "touch_dial" -> R.string.setting_group_touch_dial
         "sleep" -> R.string.setting_group_sleep
+        "attention" -> R.string.setting_group_attention
         else -> R.string.setting_group_other
     },
 )
@@ -278,6 +279,24 @@ private fun settingTitle(key: String): String = when (key) {
     "neck_stretch" -> stringResource(R.string.setting_neck_stretch)
     "codec" -> stringResource(R.string.setting_codec)
     "custom_eq" -> stringResource(R.string.setting_custom_eq)
+    // Google Pixel Buds (PixelSession)
+    "adaptive_noise" -> stringResource(R.string.setting_adaptive_noise)
+    "volume_eq" -> stringResource(R.string.setting_volume_eq)
+    "conversation_detection" -> stringResource(R.string.setting_conversation_detection)
+    "mono" -> stringResource(R.string.setting_mono)
+    "volume_notifications" -> stringResource(R.string.setting_volume_notifications)
+    "case_sounds" -> stringResource(R.string.setting_case_sounds)
+    "bud_return_sound" -> stringResource(R.string.setting_bud_return_sound)
+    "head_gestures" -> stringResource(R.string.setting_head_gestures)
+    "call_mute" -> stringResource(R.string.setting_tap_mute)
+    "translate_anc" -> stringResource(R.string.setting_translate_anc)
+    "adaptive_sound" -> stringResource(R.string.setting_adaptive_sound)
+    "shared_mode" -> stringResource(R.string.setting_shared_mode)
+    "loudness_compensation" -> stringResource(R.string.setting_loudness_compensation)
+    "attention_alerts" -> stringResource(R.string.setting_attention_alerts)
+    "baby_cry" -> stringResource(R.string.setting_baby_cry)
+    "dog_bark" -> stringResource(R.string.setting_dog_bark)
+    "siren" -> stringResource(R.string.setting_siren)
     else -> touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
@@ -362,6 +381,18 @@ private fun settingNote(key: String): String? = when (key) {
     "neck_stretch" -> stringResource(R.string.setting_neck_stretch_note)
     "codec" -> stringResource(R.string.setting_codec_note)
     "custom_eq" -> stringResource(R.string.setting_custom_eq_note)
+    "adaptive_noise" -> stringResource(R.string.setting_adaptive_noise_note)
+    "volume_eq" -> stringResource(R.string.setting_volume_eq_note)
+    "conversation_detection" -> stringResource(R.string.setting_conversation_detection_note)
+    "volume_notifications" -> stringResource(R.string.setting_volume_notifications_note)
+    "case_sounds" -> stringResource(R.string.setting_case_sounds_note)
+    "bud_return_sound" -> stringResource(R.string.setting_bud_return_sound_note)
+    "head_gestures" -> stringResource(R.string.setting_head_gestures_note)
+    "translate_anc" -> stringResource(R.string.setting_translate_anc_note)
+    "adaptive_sound" -> stringResource(R.string.setting_adaptive_sound_note)
+    "shared_mode" -> stringResource(R.string.setting_shared_mode_note)
+    "loudness_compensation" -> stringResource(R.string.setting_loudness_compensation_note)
+    "attention_alerts" -> stringResource(R.string.setting_attention_alerts_note)
     else -> null
 }
 
@@ -559,6 +590,13 @@ private fun optionName(key: String, option: String): String = when {
             "ambient_sound" -> R.string.setting_ambient_sound
             "anc" -> R.string.setting_anc
             "quick_ambient_sound" -> R.string.setting_hold_quick_ambient
+            // Google Pixel Buds' press and hold.
+            "live_translate" -> R.string.setting_hold_live_translate
+            "check_notifications" -> R.string.setting_hold_check_notifications
+            "previous" -> R.string.action_previous
+            "next" -> R.string.action_next
+            "play_pause" -> R.string.action_play_pause
+            "set_in_google_app" -> R.string.setting_hold_google_app
             else -> R.string.setting_hold_custom
         },
     )

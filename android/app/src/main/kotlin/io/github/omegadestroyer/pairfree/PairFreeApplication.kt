@@ -27,6 +27,8 @@ import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
+import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
+import io.github.omegadestroyer.pairfree.protocol.pixel.PixelTransport
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
@@ -131,6 +133,12 @@ class Hub(private val app: Application) {
                     Maker.JBL -> JblModels.fromName(name)?.let { Paired(d.address, name, Brand.JBL, model = it.name) }
                     Maker.APPLE -> Paired(d.address, name, Brand.APPLE)
                     Maker.NOTHING -> Paired(d.address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)
+                    // The service the earbuds list picks the transport, else the model their name gives (docs/pixel/PROTOCOL.md section 1).
+                    Maker.PIXEL -> {
+                        val known = PixelModels.fromName(name)
+                        val transport = PixelModels.transportOf(uuids) ?: known?.transport ?: PixelTransport.MAESTRO
+                        Paired(d.address, name, Brand.PIXEL, PixelModels.serviceFor(transport), known?.deviceType?.toString())
+                    }
                     Maker.SOUNDPEATS -> if (Models.isSupported(name)) Paired(d.address, name) else null
                     null -> null
                 }

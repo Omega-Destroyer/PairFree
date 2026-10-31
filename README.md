@@ -70,7 +70,7 @@ and from reports their owners send in. Each brand's page shows which models have
 
 | Piece                 | State |
 |-----------------------|-------|
-| Android app           | Released (v0.3.3) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats, Nothing and CMF. |
+| Android app           | Released (v0.4.0) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats, Nothing and CMF, Google Pixel Buds. |
 | Tried on real earbuds | By the project's owner: SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40. From users' device reports: SOUNDPEATS C30 and TRUEFREE Clip C10, Soundcore AeroClip and Sleep A20, JBL Live Buds 3. The table below is kept up to date from each brand's page. |
 | Protocols             | One document, data set and test suite per brand, in `docs/<brand>/` and `data/<brand>/` |
 | iOS and Windows apps  | Planned, after Android |

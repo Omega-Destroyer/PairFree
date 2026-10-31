@@ -13,13 +13,15 @@ Why PairFree:
 
 Supported brands:
 
-• SOUNDPEATS: tried on the H3 and Air5 Pro+. Other models use the same protocol and should work
-• Soundcore (Anker): 39 models, tried on the Space A40. Built on the open-source OpenSCQ30
+• SOUNDPEATS: 47 models, tried on the H3, Air5 Pro+, C30 and TRUEFREE Clip C10. Other models use the same protocol and should work
+• Soundcore (Anker): 66 models, tried on the Space A40, AeroClip and Sleep A20. Built on the open-source OpenSCQ30
 • Samsung Galaxy Buds: 16 models, from the 2019 Buds to the Buds4 Pro, not yet tried on real earbuds. Built on the open-source GalaxyBudsClient and Samsung's own plugin
 • Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6, WF-1000XM5 and LinkBuds, not yet tried on real headphones. Written from Sony's own app and checked against the open-source Gadgetbridge
 • Bose: 22 models, from the QC35 to the QC Ultra 2 headphones and earbuds, not yet tried with PairFree. Written from Bose's own app and the open-source bosectl. PairFree never signs in to Bose's cloud, so anything that needs it stays out of reach
 • AirPods and Beats on Apple's chips: 30 models, not yet tried with PairFree. Ported from the open-source LibrePods. Android 17 is needed, or a Pixel on Android 16 QPR3, or a OnePlus, OPPO or realme phone on Android 16
-• JBL: 83 models, from the Tune 520BT to the Live Buds 4, not yet tried with PairFree. Written from JBL's own app and checked against the open-source JblTray
+• JBL: 102 models, from the Tune 520BT to the Tour Pro 3, tried on the Live Buds 3. Written from JBL's own app and checked against the open-source JblTray
+• Nothing and CMF: 19 models, from the Ear (1) to the Headphone (1), not yet tried with PairFree. Written from Nothing X and checked against the open-source nada and nadamas
+• Google Pixel Buds: the Pixel Buds, A-Series, Pro, Pro 2 and 2a, not yet tried with PairFree. Written from Google's Pixel Buds app and checked against the open-source pbpctrl
 
 What it controls, on the models that have each:
 

@@ -14,8 +14,8 @@ android {
         minSdk = 31
         targetSdk = 37
         // x.y.z, and the code is x * 1,000,000 + y * 1,000 + z (CLAUDE.md, Versions; tools/test_version.py checks it).
-        versionCode = 3003
-        versionName = "0.3.3"
+        versionCode = 4000
+        versionName = "0.4.0"
     }
 
     // The release key lives outside the repo. Its file and passwords come from

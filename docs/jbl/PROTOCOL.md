@@ -14,8 +14,8 @@ open-source projects checked it on real devices:
   writes a Tune 720BT over Web Bluetooth. Its notes give that headphone's replies to the
   status, battery and voice prompt reads.
 
-Nothing here has been tried with PairFree yet; a device report from any model helps
-([device page](../devices/jbl.md)).
+Only the Airoha models' RACE commands have been tried with PairFree: a user's Live Buds 3 (section 10). The
+Harman commands have not; a device report from any model helps ([device page](../devices/jbl.md)).
 
 The data is in `data/jbl/`: `commands.json` (the commands PairFree uses, their values and what
 is never sent), `devices.json` (the models PairFree knows, with how each is reached and what
@@ -435,6 +435,12 @@ TWS Air, Live Buds 3, Endurance Race 2, Wave Beam 2, Vibe Beam 2, Tune 775NC and
 Tune 670NC and Tune 770NC. JBL's app drives them through Airoha's SDK (`com.airoha`) and its own adapter for it
 (`com.airoha.adapter.harman`: `AirohaDeviceStatusControl` and its stages), reached from the control classes
 through `gi.c` (`gi.a` for the LE Audio classes, the same SDK). Their commands are Airoha's RACE, not Harman's.
+
+**Tried.** A user's Live Buds 3 (firmware v8.1.5, chip `AB1577S_Earbuds`, so the AB158x rules) connected over
+Airoha's serial UUID in PairFree 0.3.2 and, by the user, worked throughout (`data/jbl/reports/20F1_v8.1.5.txt`,
+GitHub issue #4). Every read PairFree sends on connecting answered with status 0: the chip, both earbuds' battery
+and the case's, the firmware, noise control, Smart Audio & Video, balance, the config keys and JBL's extras. 0.3.2
+did not yet read the model name (NV `1003`); whether it answers is still to see.
 
 **LE Audio.** For the LE Audio models JBL's app picks the link by how the phone is connected (`gi.a.w`,
 `hh.g`): with the earbuds on the phone's LE Audio profile it opens Airoha's LE service on the LE Audio device's

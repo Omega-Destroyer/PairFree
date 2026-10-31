@@ -169,8 +169,9 @@ Beats on Apple's chips) and `nothing` (Nothing and CMF).
 - `docs/jbl/PROTOCOL.md` is JBL's Harman command set, read from JBL's own app (JBL Headphones
   5.37.10, decompiled outside the repo on 2026-10-15) and checked against JblTray
   (github.com/emperorbug46/JblTray, MIT), which recorded a Tune Flex 2, and FajkPes's
-  JBL-Headphones-App (no licence: facts only), which recorded a Tune 720BT. No JBL model has
-  been tried with PairFree. Most models are controlled over Bluetooth LE GATT (`GattLink`), the
+  JBL-Headphones-App (no licence: facts only), which recorded a Tune 720BT. Of JBL's models only a
+  user's Live Buds 3 (Airoha, AB1577S) has been tried with PairFree, and worked (0.3.2, issue #4; its report in
+  `data/jbl/reports/`). Most models are controlled over Bluetooth LE GATT (`GattLink`), the
   Quantum 360 family over the serial channel. PairFree connects over LE to the classic address
   first and scans only when that fails (`JblFinder`); the scan needs `BLUETOOTH_SCAN`
   (`neverForLocation`), which the owner allowed for JBL alone on 2026-10-15, asked only when the

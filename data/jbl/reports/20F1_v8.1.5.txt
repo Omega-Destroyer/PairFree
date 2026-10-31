@@ -1,0 +1,66 @@
+JBL Live Buds 3: firmware v8.1.5, Airoha AB1577S
+=================================================
+
+Date:      2026-10-30
+Firmware:  v8.1.5 (RACE 1C07, the agent earbud)
+Chip:      AB1577S_Earbuds (RACE 0A00), which PairFree takes as the AB158x family (docs/jbl/PROTOCOL.md section 10)
+Phone:     a user's phone, Android 17 (API 37)
+App:       PairFree 0.3.2, Copy device report
+Method:    PairFree's device report, posted in GitHub issue #4. The user wrote that the earbuds "connected perfectly
+           this time and it looks like I have full functionality". 0.3.2 did not yet read the model the earbuds name
+           (NV 1003, added in 0.3.3), hence "product unknown"; the name gave the Live Buds 3.
+
+---- Read from it ----
+
+  0CD6   battery          both earbuds 100 % (role 0 and role 1)
+  000B   case battery     5 %
+  1C07   firmware         v8.1.5
+  0901   noise control    the module's state (05 00), answered
+  1101   Smart Audio & Video  a9 00, the "audio" timings (228, 46, 280, 400)
+  0037   balance          100, the middle
+  2C83   config reads     voice prompts (09), VoiceAware (07) and its level (06), sound effect (13), auto power-off
+                          (01), pause when taken off (02): each answered with status 0
+  0013, 0014, 0051, 0075, 0094: SafeSound, the audio limiter, Hi-Res, 3D spatial sound and the rest of JBL's extras,
+                          each answered
+
+---- As received ----
+
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help check
+this model. It holds no serial number, address or other personal data.
+
+Bluetooth name:  JBL Live Buds 3
+Brand:           JBL
+Model:           JBL Live Buds 3 (product unknown, serial channel)
+Firmware:        v8.1.5
+Airoha chip:     AB1577S_Earbuds
+App:             PairFree 0.3.2
+OS:              Android 17 (API 37)
+Captured:        2026-10-30 23:18 UTC
+
+The last answer to each of PairFree's reads (command, with the status type or feature id:
+payload as hex; the device info's name and address are blanked):
+  race.0a00: 0f 00 41 42 31 35 37 37 53 5f 45 61 72 62 75 64 73
+  race.0006: 00
+  race.0cd4: 00 00
+  race.1c07: 00
+  race.1c07.role0: 00 00 06 76 38 2e 31 2e 35
+  race.0cd6: 00
+  race.0cd6.role0: 00 00 64
+  race.000b: 00 05
+  race.0cd6.role1: 00 01 64
+  race.0901.05: 05 00 00 01 07 00
+  race.1101: 00 a9 00 e4 00 2e 00 18 01 00 00 90 01 00 00
+  race.2c83.09: 00 09 00 00
+  race.0037: 00 00 64
+  race.2c83.07: 00 07 00 00
+  race.2c83.06: 00 06 00 02 00
+  race.0014: 00 00
+  race.0013: 00 00 02
+  race.2c83.13: 00 13 00 00 07 08
+  race.0051: 00 01
+  race.0075: 00 01
+  race.2c83.01: 00 01 00 00 00 08 07 00 00 b0 04
+  race.2c83.02: 00 02 00 01
+  race.0094: 00 00 3f 30 00 00 80 51 00 00 ff

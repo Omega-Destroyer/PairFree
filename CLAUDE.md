@@ -21,7 +21,7 @@ long-lived branch per brand, and do not mix brands on one branch. Push only when
 An open replacement for the official apps of earbud brands, starting with PeatsAudio for
 SoundPEATS earbuds. Android first. iOS and Windows later. The long-term aim is one app for
 every brand whose protocol can be worked out (`docs/DESIGN.md`, Requirements); Soundcore
-(Anker), Samsung Galaxy Buds, Sony, Bose, JBL, AirPods and Nothing (with CMF) are being added. The owner wants agents to do as much of the
+(Anker), Samsung Galaxy Buds, Sony, Bose, JBL, AirPods, Nothing (with CMF) and Google's Pixel Buds are being added. The owner wants agents to do as much of the
 work as possible and to ask before guessing.
 
 ## Versions
@@ -55,7 +55,7 @@ company: `docs/<brand>/`, `data/<brand>/` (with `reports/`), `assets/devices/<br
 for users, `docs/devices/<brand>.md`, listing its models; its table and the README's one-row-per-brand
 summary are generated (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers
 from one brand to another. So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose`, `jbl`, `apple` (AirPods and the
-Beats on Apple's chips) and `nothing` (Nothing and CMF).
+Beats on Apple's chips), `nothing` (Nothing and CMF) and `pixel` (Google's Pixel Buds).
 
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol. Read it before writing any
   Bluetooth code.
@@ -227,6 +227,27 @@ Beats on Apple's chips) and `nothing` (Nothing and CMF).
   `python tools/gen_nothing_table.py`. Never send `NothingCommand.NEVER_SEND` (factory reset, firmware
   update, calibration, debug) or `NothingCommand.PRIVATE` (reads that return the serial number or other
   devices' addresses).
+- `docs/pixel/PROTOCOL.md` is the Pixel Buds' protocol, read from Google's Pixel Buds app 1.0.990706425
+  (decompiled outside the repo on 2026-10-30; obfuscated protobuf-lite, whose schemas were read from each class's
+  message info with `E:\Builds\research\pixel-tools\rawinfo.py`) and checked against pbpctrl
+  (github.com/qzed/pbpctrl, MIT or Apache-2.0, used with a Pixel Buds Pro; PairFree's HDLC framing follows its code)
+  and OpenControl for Pixel Buds Pro 2 (AGPL-3.0: facts only, from its recordings). The vendor app is the source and
+  wins where they differ (owner, 2026-10-30: the APK first, open-source projects only as a reference). No Pixel Buds
+  have been tried with PairFree; every model relies on device reports. Two transports carry the same protobuf
+  messages: Maestro (Pigweed RPC in HDLC frames, serial service `25e97ff7-…`) on the Pro, Pro 2 and 2a, and plain
+  group/code/length frames (`3a046f6d-…`) on the Pixel Buds (2020) and A-Series, which no other project describes and
+  no recording shows. `data/pixel/commands.json` (transports, each family's settings fields, values, Google's EQ
+  presets) and `devices.json` (6 device types, 5 models, with the per-model feature list the app bundles) become
+  `PixelWire`, `PixelValues`, the settings table and `PixelModels` through `generatePixelTables`; `PixelSession`
+  reads each setting the family has and shows it once the earbuds answer, `EarbudsConnection.servePixel` sends one
+  message at a time, and `PixelEqTarget` puts the five-band EQ on the Sound tab (whole-dB steps; Google's are half
+  steps). Touch controls offer what Google's app offers for press and hold (noise control, digital assistant, Live
+  Translate), Google apps or not; the 2020 model's two touch slots, which the app no longer sets, are left alone.
+  Spatial audio and head tracking are Android's settings, not the earbuds'. After a change to `devices.json` run
+  `python tools/gen_pixel_table.py`. Never send the plain transport's groups 2, 5, 130 and 136 (firmware update,
+  crash reports, update debug, statistics), firmware update on Maestro, or writes of the fields marked `never_send`
+  (automatic updates, setup, diagnostics, the seal and automatic tests); `PixelSession.allowed` checks every message.
+  The hardware info holds serial numbers: keep them out of logs, reports and test vectors.
 - `data/soundpeats/commands.json` is the command table. Do not retype command numbers from
   memory. Load the file or generate code from it.
 - `data/soundpeats/test_vectors.json` holds frames that every implementation must reproduce

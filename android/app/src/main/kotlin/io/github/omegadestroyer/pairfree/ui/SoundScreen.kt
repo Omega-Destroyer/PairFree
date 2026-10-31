@@ -58,6 +58,7 @@ import io.github.omegadestroyer.pairfree.eq.EqProfile
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
+import io.github.omegadestroyer.pairfree.protocol.EqBand
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
@@ -161,18 +162,18 @@ internal fun SoundScreen(
                 Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                eq.layout.bands.forEachIndexed { i, b -> BandButton(shortHz(b.hz), gains[i], i == selected) { band = i } }
+                eq.layout.bands.forEachIndexed { i, b -> BandButton(bandShort(b), gains[i], i == selected) { band = i } }
             }
 
             Panel {
                 val gain = gains[selected]
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(bandName(eq.layout.bands[selected].hz), Modifier.weight(1f), style = Studio.type.heading)
+                    Text(bandName(eq.layout.bands[selected]), Modifier.weight(1f), style = Studio.type.heading)
                     Text(dbText(gain), style = Studio.type.number, color = Studio.colors.accent)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     StepButton(plus = false, { actions.setGain(selected, gain - 1) }, enabled = gain > -r)
-                    StudioSlider(gain, -r..r, { actions.setGain(selected, it) }, Modifier.weight(1f), bandName(eq.layout.bands[selected].hz), origin = 0)
+                    StudioSlider(gain, -r..r, { actions.setGain(selected, it) }, Modifier.weight(1f), bandName(eq.layout.bands[selected]), origin = 0)
                     StepButton(plus = true, { actions.setGain(selected, gain + 1) }, enabled = gain < r)
                 }
             }
@@ -257,8 +258,28 @@ internal fun shortHz(hz: Int): String = when {
 }
 
 @Composable
-private fun bandName(hz: Int): String =
-    if (hz < 1000) stringResource(R.string.hz, "$hz") else stringResource(R.string.khz, shortHz(hz).removeSuffix("k"))
+private fun bandName(band: EqBand): String {
+    band.label?.let { return bandLabel(it, short = false) }
+    val hz = band.hz
+    return if (hz < 1000) stringResource(R.string.hz, "$hz") else stringResource(R.string.khz, shortHz(hz).removeSuffix("k"))
+}
+
+/** A band's label under the curve and on its button: its frequency, or its name where the brand names its bands. */
+@Composable
+private fun bandShort(band: EqBand): String = band.label?.let { bandLabel(it, short = true) } ?: shortHz(band.hz)
+
+/** The Pixel Buds' band names (data/pixel/commands.json, eq). */
+@Composable
+private fun bandLabel(key: String, short: Boolean): String = stringResource(
+    when (key) {
+        "low_bass" -> if (short) R.string.eq_band_low_bass_short else R.string.eq_band_low_bass
+        "bass" -> R.string.eq_band_bass
+        "mid" -> R.string.eq_band_mid
+        "treble" -> R.string.eq_band_treble
+        "upper_treble" -> if (short) R.string.eq_band_upper_treble_short else R.string.eq_band_upper_treble
+        else -> R.string.unknown
+    },
+)
 
 /** `+2 dB`, `0 dB`, `−3 dB`, with a true minus sign. */
 @Composable
@@ -285,7 +306,7 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
     val r = scaleFor(eq)
     val user = eq.layout.userRangeDb
     val n = gains.size
-    val labels = eq.curveHz.map { shortHz(it) }
+    val labels = (eq.preset?.bands ?: eq.layout.bands).map { bandShort(it) }
     val select by rememberUpdatedState(onSelect)
     val gain by rememberUpdatedState(onGain)
     val description = stringResource(R.string.eq_graph_description)

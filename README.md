@@ -48,7 +48,7 @@ PairFree needs Android 12 or later. AirPods need Android 17, or one of the few p
 Android 16 that already open their settings channel ([AirPods and Beats](docs/devices/apple.md)).
 
 PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS,
-Anker, Samsung, Sony, Bose, Harman (JBL), Apple or Nothing (and its CMF brand). It was called SoundPeter until version 0.1.3, when it was still an app for
+Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing (and its CMF brand) or Google. It was called SoundPeter until version 0.1.3, when it was still an app for
 SOUNDPEATS earbuds alone.
 
 <p>
@@ -91,6 +91,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [JBL](docs/devices/jbl.md) | 102 | Live Buds 3 |
 | [AirPods and Beats](docs/devices/apple.md) | 30 | — |
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | — |
+| [Google Pixel Buds](docs/devices/pixel.md) | 5 | — |
 <!-- devices-summary:end -->
 
 **LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks
@@ -120,11 +121,12 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 | `data/jbl/commands.json`  | The Harman commands PairFree uses with JBL models, from JBL's app |
 | `data/apple/commands.json` | Apple's accessory protocol as PairFree uses it with AirPods, from LibrePods |
 | `data/nothing/commands.json` | Nothing's command table, from Nothing X                      |
+| `data/pixel/commands.json` | The Pixel Buds' transports, settings and EQ presets, from Google's Pixel Buds app |
 | `tools/probe.py`          | Read-only probe for SOUNDPEATS earbuds. Asks them what they support. |
 | `tools/import_eq_capture.py` | Turns the equalizer part of a recording from PeatsAudio into a model's EQ data. |
 | `tools/import_openscq30.py` | Refreshes the Soundcore model list from a local copy of OpenSCQ30. |
 | `tools/import_galaxybudsclient.py` | Refreshes the Galaxy Buds model list from a local copy of GalaxyBudsClient. |
-| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore), `gen_samsung_table.py` (Samsung), `gen_sony_table.py` (Sony), `gen_bose_table.py` (Bose), `gen_jbl_table.py` (JBL), `gen_apple_table.py` (AirPods and Beats) and `gen_nothing_table.py` (Nothing and CMF). |
+| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore), `gen_samsung_table.py` (Samsung), `gen_sony_table.py` (Sony), `gen_bose_table.py` (Bose), `gen_jbl_table.py` (JBL), `gen_apple_table.py` (AirPods and Beats), `gen_nothing_table.py` (Nothing and CMF) and `gen_pixel_table.py` (Pixel Buds). |
 | `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
 | `tools/test_*.py`         | Tests for the tools and the data files. No hardware needed.       |
 | `assets/devices/<brand>/` | Vector drawings of each model's earbud and case, per look         |
@@ -186,7 +188,8 @@ and on JBL's the same for the [JBL table](docs/devices/jbl.md#all-models). On Ai
 the model number, firmware, battery and the settings they reported, for the
 [AirPods and Beats table](docs/devices/apple.md#all-models). On Nothing and CMF earbuds and headphones it
 lists the product, the firmware and each read's last answer, for the
-[Nothing and CMF table](docs/devices/nothing.md#all-models).
+[Nothing and CMF table](docs/devices/nothing.md#all-models), and on Pixel Buds the model, the firmware and
+each setting's last answer, for the [Pixel Buds table](docs/devices/pixel.md#all-models).
 
 ### Probe from a PC
 
@@ -262,6 +265,12 @@ cd android
   by ezvk, a fork of [something-x](https://github.com/SoaOaoS/something-x) by SoaOaoS (all MIT): the
   Nothing and CMF protocol as they read it from Nothing X and tried it on real earbuds, which PairFree's
   Nothing support checks against Nothing X itself.
+- [pbpctrl](https://github.com/qzed/pbpctrl) by Maximilian Luz (MIT or Apache-2.0): the Pixel Buds Pro's
+  Maestro service, its framing and channels, as used with a Pixel Buds Pro. PairFree's HDLC framing
+  follows its code.
+- [OpenControl for Pixel Buds Pro 2](https://github.com/tedsluis/opencontrolpixelbudspro2) by tedsluis
+  (AGPL-3.0): what recordings of a Pixel Buds Pro 2 show, such as the EQ write and the RPC ids. Facts
+  only; none of its code is in PairFree.
 - [IBM Plex](https://github.com/IBM/plex) fonts (SIL Open Font License 1.1).
 
 ## License

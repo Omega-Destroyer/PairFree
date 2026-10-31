@@ -8,12 +8,17 @@
     "BOSE": ["Bose"],
     "JBL": ["JBL"],
     "APPLE": ["AirPods"],
-    "NOTHING": ["Nothing", "CMF"]
+    "NOTHING": ["Nothing", "CMF"],
+    "PIXEL": ["Pixel"]
   },
-  "not_ours": ["Pixel Buds", "OnePlus Buds", "Redmi Buds", "Galaxy Watch", "SOUNDPEATS Watch", "Nothing Phone", "CMF Watch"],
+  "not_ours": ["Pixel Watch", "OnePlus Buds", "Redmi Buds", "Galaxy Watch", "SOUNDPEATS Watch", "Nothing Phone", "CMF Watch"],
   "names": [
-    {"name": "Pixel Buds Pro", "uuids": ["00001101-0000-1000-8000-00805f9b34fb"], "brand": null, "note": "GitHub issue #4: was taken for Galaxy Buds Pro"},
-    {"name": "Pixel Buds A-Series", "brand": null},
+    {"name": "Pixel Buds Pro", "uuids": ["00001101-0000-1000-8000-00805f9b34fb"], "brand": "PIXEL", "model": "Pixel Buds Pro", "note": "GitHub issue #4: was taken for Galaxy Buds Pro"},
+    {"name": "Pixel Buds Pro 2", "uuids": ["25e97ff7-24ce-4c4c-8951-f764a708f7b5"], "brand": "PIXEL", "model": "Pixel Buds Pro 2"},
+    {"name": "Pixel Buds A-Series", "brand": "PIXEL", "model": "Pixel Buds A-Series"},
+    {"name": "Pixel Buds", "brand": "PIXEL", "model": "Pixel Buds"},
+    {"name": "Pixel Buds 2a", "brand": "PIXEL", "model": "Pixel Buds 2a"},
+    {"name": "Pixel Watch 3", "brand": null, "note": "Google's watch, not earbuds"},
     {"name": "OnePlus Buds Pro 2", "brand": null, "note": "holds Samsung's base name Buds Pro"},
     {"name": "Redmi Buds 4 Pro", "brand": null},
     {"name": "Buds Pro", "brand": "NOTHING", "note": "the name CMF's Buds Pro carries: exact model name, no brand word"},

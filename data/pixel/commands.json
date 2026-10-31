@@ -1,0 +1,137 @@
+{
+  "_about": "Google Pixel Buds' control protocol, read from Google's Pixel Buds app 1.0.990706425 (com.google.android.apps.wearables.maestro.companion, decompiled outside the repo on 2026-10-30; docs/pixel/PROTOCOL.md). Two transports carry the same protobuf messages: Maestro (Pigweed RPC in HDLC frames) on the Pixel Buds Pro, Pro 2 and 2a, and a plain group/code/length frame on the Pixel Buds (2020) and A-Series. Field numbers are the app's message fields; names come from the app's writers, readers, log strings and preference keys, and for Maestro's service and methods from pbpctrl (github.com/qzed/pbpctrl, Maximilian Luz, MIT or Apache-2.0), whose names hash to the ids a Pixel Buds Pro 2 sent (OpenControl's captures). never_send: firmware update, setup and diagnostics; PairFree refuses them.",
+  "maestro": {
+    "uuid": "25e97ff7-24ce-4c4c-8951-f764a708f7b5",
+    "uuid_reversed": "b5f708a7-64f7-5189-4c4c-ce24f77fe925",
+    "_hdlc": "pw_hdlc UI frames: 7E, the address (a varint whose last byte has bit 0 set), control 03, the RPC packet, CRC-32 of address to packet (little-endian), 7E; 7D escapes 7D and 7E (xor 20).",
+    "hdlc_control": 3,
+    "_peers": "Address = source << 6 | target << 10 (4 bits each); pbpctrl's peers, the app's hmq.",
+    "peers": {"host": 1, "case": 2, "left_bt_core": 3, "right_bt_core": 4, "maestro_a": 10, "maestro_b": 13},
+    "_channels": "The RPC channels the phone may reach the earbuds on; pbpctrl, like the app, tries GetSoftwareInfo on each and uses the one that answers.",
+    "channels": [
+      {"id": 18, "source": "maestro_a", "target": "case"},
+      {"id": 19, "source": "maestro_a", "target": "left_bt_core"},
+      {"id": 21, "source": "maestro_a", "target": "right_bt_core"},
+      {"id": 23, "source": "maestro_b", "target": "case"},
+      {"id": 24, "source": "maestro_b", "target": "left_bt_core"},
+      {"id": 26, "source": "maestro_b", "target": "right_bt_core"}
+    ],
+    "probe_call_id": 4294967295,
+    "call_id": 0,
+    "_packet": "pw.rpc.packet.RpcPacket: 1 type, 2 channel_id, 3 service_id (fixed32), 4 method_id (fixed32), 5 payload, 6 status, 7 call_id. Ids are pw_rpc's 65599 hash of the names.",
+    "packet_types": {"request": 0, "response": 1, "server_error": 5, "server_stream": 7},
+    "service": "maestro_pw.Maestro",
+    "methods": {
+      "software_info": "GetSoftwareInfo",
+      "hardware_info": "GetHardwareInfo",
+      "runtime_info": "SubscribeRuntimeInfo",
+      "read_setting": "ReadSetting",
+      "write_setting": "WriteSetting",
+      "settings_changes": "SubscribeToSettingsChanges"
+    }
+  },
+  "tlv": {
+    "uuid": "3a046f6d-24d2-7655-6534-0d7ecb759709",
+    "uuid_reversed": "099775cb-7e0d-3465-5576-d2246d6f043a",
+    "_frame": "Group (1 byte), code (1 byte), length (2 bytes, big-endian, at most 1024 from the earbuds), payload (protobuf). No checksum (the app's grp).",
+    "max_length": 1024,
+    "group": 135,
+    "_never_send_groups": "2 firmware update, 5 crash reports (A-Series), 130 firmware-update debug (2020), 136 usage statistics.",
+    "never_send_groups": [2, 5, 130, 136],
+    "codes": {
+      "start": 4,
+      "read_setting": 8,
+      "write_setting": 9,
+      "software_info": 2,
+      "hardware_info": 5,
+      "runtime_info": 6,
+      "setting_value": 10,
+      "setup_action": 11
+    }
+  },
+  "_messages": "The same on both transports: a read names the field in the family's slot (1 common, 2 Pixel Buds 2020, 3 A-Series, 4 Allegro: Pro, Pro 2, 2a); a write and a setting value hold the family's settings message in that slot with one field set.",
+  "family_slots": {"common": 1, "presto": 2, "stretto": 3, "allegro": 4},
+  "_settings": "Each family's settings message (a oneof). type: bool, enum and int (varints; sint32 zigzag), message (bytes). read: PairFree reads it on connecting. key: the row PairFree shows, or shared: the setting the shared screens know.",
+  "settings": {
+    "common": [
+      {"field": 1, "type": "bool", "name": "setup_mode", "never_send": true}
+    ],
+    "allegro": [
+      {"field": 1, "type": "bool", "name": "auto_update", "never_send": true},
+      {"field": 2, "type": "bool", "name": "in_ear_detection", "read": true, "shared": "IN_EAR_DETECTION"},
+      {"field": 3, "type": "bool", "name": "setup_finished", "never_send": true},
+      {"field": 4, "type": "bool", "name": "gestures", "read": true, "key": "touch_controls"},
+      {"field": 5, "type": "bool", "name": "diagnostics", "never_send": true},
+      {"field": 6, "type": "bool", "name": "setup_mode", "never_send": true},
+      {"field": 7, "type": "message", "name": "hold_actions", "read": true},
+      {"field": 11, "type": "bool", "name": "multipoint", "read": true, "shared": "MULTIPOINT"},
+      {"field": 12, "type": "message", "name": "noise_cycle", "read": true},
+      {"field": 13, "type": "enum", "name": "anc_state", "read": true, "shared": "ANC_MODE"},
+      {"field": 14, "type": "bool", "name": "seal_test", "never_send": true},
+      {"field": 15, "type": "bool", "name": "volume_eq", "read": true, "key": "volume_eq"},
+      {"field": 16, "type": "message", "name": "user_eq", "read": true},
+      {"field": 17, "type": "sint32", "name": "balance", "read": true, "key": "balance"},
+      {"field": 18, "type": "message", "name": "saved_eq", "read": true},
+      {"field": 19, "type": "bool", "name": "mono", "read": true, "key": "mono"},
+      {"field": 21, "type": "bool", "name": "volume_notifications", "read": true, "key": "volume_notifications"},
+      {"field": 22, "type": "bool", "name": "conversation_detection", "read": true, "key": "conversation_detection"},
+      {"field": 27, "type": "bool", "name": "case_sounds", "read": true, "key": "case_sounds"},
+      {"field": 28, "type": "bool", "name": "bud_return_sound", "read": true, "key": "bud_return_sound"},
+      {"field": 29, "type": "enum", "name": "head_gestures", "read": true, "key": "head_gestures"},
+      {"field": 32, "type": "bool", "name": "auto_test", "never_send": true},
+      {"field": 37, "type": "message", "name": "live_translate_anc", "read": true, "key": "translate_anc"},
+      {"field": 38, "type": "bool", "name": "call_mute", "read": true, "key": "call_mute"}
+    ],
+    "presto": [
+      {"field": 1, "type": "bool", "name": "in_ear_detection", "read": true, "shared": "IN_EAR_DETECTION"},
+      {"field": 5, "type": "bool", "name": "adaptive_sound", "read": true, "key": "adaptive_sound"},
+      {"field": 6, "type": "bool", "name": "shared_mode", "read": true, "key": "shared_mode"},
+      {"field": 8, "type": "bool", "name": "setup_finished", "never_send": true},
+      {"field": 9, "type": "message", "name": "attention_alerts", "read": true},
+      {"field": 10, "type": "bool", "name": "diagnostics", "never_send": true},
+      {"field": 11, "type": "bool", "name": "gestures", "read": true, "key": "touch_controls"},
+      {"field": 12, "type": "enum", "name": "eq", "read": true, "key": "bass_boost"}
+    ],
+    "stretto": [
+      {"field": 1, "type": "bool", "name": "in_ear_detection", "read": true, "shared": "IN_EAR_DETECTION"},
+      {"field": 5, "type": "bool", "name": "adaptive_sound", "read": true, "key": "adaptive_sound"},
+      {"field": 8, "type": "bool", "name": "setup_finished", "never_send": true},
+      {"field": 10, "type": "bool", "name": "diagnostics", "never_send": true},
+      {"field": 11, "type": "bool", "name": "gestures", "read": true, "key": "touch_controls"},
+      {"field": 12, "type": "enum", "name": "eq", "read": true, "key": "bass_boost"},
+      {"field": 13, "type": "bool", "name": "loudness_compensation", "read": true, "key": "loudness_compensation"},
+      {"field": 14, "type": "int", "name": "bass_level", "read": true, "key": "bass_level"}
+    ]
+  },
+  "_values": "Values the settings take (the app's enums and writers).",
+  "anc_states": {"off": 1, "anc": 2, "transparency": 3, "adaptive": 4},
+  "_noise_cycle": "Allegro field 12: which modes press and hold steps through, a bool each; the app asks for at least two.",
+  "noise_cycle": {"anc": 1, "off": 2, "transparency": 3, "adaptive": 4},
+  "head_gestures": {"off": 1, "on": 2},
+  "_eq_mode": "Field 12 on the 2020 and A-Series: 0 the default sound, 1 bass boost.",
+  "eq_mode": {"default": 0, "bass_boost": 1},
+  "_bass_level": "A-Series field 14: the app's slider runs from -1 to 4 and sends its value plus 1.",
+  "bass_level": {"min": -1, "max": 4, "offset": 1},
+  "_balance": "Allegro field 17: -100 (left) to 100 (right), 0 in the middle.",
+  "balance": {"min": -100, "max": 100},
+  "_hold_actions": "Allegro field 7: field 1 the left earbud, 2 the right, each {4: {1: action}}. The app writes one side at a time and offers these actions for press and hold.",
+  "hold_sides": {"left": 1, "right": 2},
+  "touch_actions": {"check_notifications": 1, "previous": 2, "next": 3, "play_pause": 4, "noise_control": 5, "digital_assistant": 6, "live_translate": 7},
+  "hold_options": ["noise_control", "digital_assistant", "live_translate"],
+  "_attention_alerts": "2020 field 9: 1 on, 2 a baby crying, 3 a dog barking, 4 sirens.",
+  "attention_alerts": {"on": 1, "baby_cry": 2, "dog_bark": 3, "siren": 4},
+  "_eq": "Allegro fields 16 (the EQ in use) and 18 (the user's saved curve): five floats, low bass to upper treble, -6 to 6 dB; the app's sliders move in 0.5 dB steps. The presets are the app's own (gol.java, and its EQ function's description).",
+  "eq": {
+    "bands": ["low_bass", "bass", "mid", "treble", "upper_treble"],
+    "range_db": 6,
+    "step_db": 0.5,
+    "presets": [
+      {"name": "Default", "gains": [0, 0, 0, 0, 0]},
+      {"name": "Heavy bass", "gains": [5, 3, 0, 0, 0]},
+      {"name": "Light bass", "gains": [-5, -1.5, 0, 0, 0]},
+      {"name": "Balanced", "gains": [-3.5, 0.5, 1, -1, 2.5]},
+      {"name": "Vocal boost", "gains": [-1, 0, 4, 2, 0]},
+      {"name": "Clarity", "gains": [-2, 0, 2, 3, 5]}
+    ]
+  }
+}

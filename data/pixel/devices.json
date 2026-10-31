@@ -1,0 +1,42 @@
+{
+  "_about": "Google's Pixel Buds by the device type they report (hardware info field 1), with the name Google's Pixel Buds app 1.0.990706425 gives each (its model-name strings and bud types) and its code name. family: the settings message the model takes (commands.json settings); transport: maestro or tlv. adaptive: the app offers adaptive noise control (Pro 2; any model that reports the adaptive state gets it too). features: the feature ids and minimum firmware the app bundles for the device type (the MaestroDeviceConfig flag's default), kept as Google numbers them; only some are named (docs/pixel/PROTOCOL.md section 7). names: the Bluetooth names the models use. reports: device reports under data/pixel/reports.",
+  "devices": [
+    {
+      "device_type": 1, "name": "Pixel Buds", "codename": "presto", "family": "presto", "transport": "tlv", "adaptive": false,
+      "names": ["Pixel Buds", "Google Pixel Buds"],
+      "features": [[1, null], [2, 487], [3, 487], [4, 472], [7, 472], [6, 487], [8, null]],
+      "reports": []
+    },
+    {
+      "device_type": 2, "name": "Pixel Buds A-Series", "codename": "stretto", "family": "stretto", "transport": "tlv", "adaptive": false,
+      "names": ["Pixel Buds A-Series", "Google Pixel Buds A-Series"],
+      "features": [[3, null], [5, null], [2, null], [1, null], [9, 300257], [10, 300257]],
+      "reports": []
+    },
+    {
+      "device_type": 4, "name": "Pixel Buds Pro", "codename": "allegro", "family": "allegro", "transport": "maestro", "adaptive": false,
+      "names": ["Pixel Buds Pro"],
+      "features": [[5, null], [11, null], [2, null], [8, null], [12, null], [13, 120], [14, 208], [15, 208], [16, 300], [17, 300], [18, 300], [19, 539], [21, 536], [20, 536], [24, null]],
+      "reports": []
+    },
+    {
+      "device_type": 5, "name": "Pixel Buds Pro", "codename": "allegro", "family": "allegro", "transport": "maestro", "adaptive": false,
+      "names": [],
+      "features": [],
+      "note": "The app names device type 5 Pixel Buds Pro too and treats it as type 4; its own feature list is not in the bundled table.",
+      "reports": []
+    },
+    {
+      "device_type": 6, "name": "Pixel Buds Pro 2", "codename": "largo", "family": "allegro", "transport": "maestro", "adaptive": true,
+      "names": ["Pixel Buds Pro 2"],
+      "features": [[5, null], [11, null], [2, null], [8, null], [12, null], [13, null], [14, null], [15, null], [16, null], [17, null], [18, null], [22, null], [19, null], [20, null], [25, null], [24, null], [28, null], [21, 1723068496], [29, 1728515707], [30, 1728514599], [31, 1754510785], [32, 1754510785], [40, 1773940180], [41, 1782902755], [42, 1782386300], [43, 1782386300], [47, 1786583974], [48, 1782386300]],
+      "reports": []
+    },
+    {
+      "device_type": 9, "name": "Pixel Buds 2a", "codename": "ag12ag22", "family": "allegro", "transport": "maestro", "adaptive": false,
+      "names": ["Pixel Buds 2a"],
+      "features": [[5, null], [11, null], [2, null], [12, null], [13, null], [14, null], [15, null], [17, null], [22, null], [19, null], [20, null], [25, null], [24, null], [18, null], [41, 1782902755], [42, 1782386300], [43, 1782386300], [48, 1782386300]],
+      "reports": []
+    }
+  ]
+}

@@ -1102,6 +1102,156 @@ val generateNothingTables = tasks.register<GenerateNothingTables>("generateNothi
     outputDir = layout.buildDirectory.dir("generated/nothing")
 }
 
+/** Writes the Pixel Buds' transports, settings, values and models from data/pixel. */
+abstract class GeneratePixelTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val c = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
+        fun int(v: Any?) = (v as Number).toLong().toInt()
+        fun num(v: Any?) = (v as Number).toDouble().toString() + "f"
+        @Suppress("UNCHECKED_CAST")
+        fun obj(v: Any?) = v as Map<String, Any?>
+        fun intMap(v: Any?) = obj(v).entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${int(it.value)}" }
+        fun strings(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+
+        val maestro = obj(c["maestro"])
+        val tlv = obj(c["tlv"])
+        val peers = obj(maestro["peers"])
+        val codes = obj(tlv["codes"])
+        val types = obj(maestro["packet_types"])
+        val methods = obj(maestro["methods"])
+        val slots = obj(c["family_slots"])
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/pixel by the generatePixelTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        out.appendLine("/** The Pixel Buds' two transports (data/pixel/commands.json, maestro and tlv). */")
+        out.appendLine("public object PixelWire {")
+        out.appendLine("    /** Maestro's serial service, on the Pixel Buds Pro, Pro 2 and 2a, and as some phones list it, byte-reversed. */")
+        out.appendLine("    public const val MAESTRO_UUID: String = ${str(maestro["uuid"])}")
+        out.appendLine("    public const val MAESTRO_UUID_REVERSED: String = ${str(maestro["uuid_reversed"])}")
+        out.appendLine("    /** The plain frames' serial service, on the Pixel Buds (2020) and A-Series. */")
+        out.appendLine("    public const val TLV_UUID: String = ${str(tlv["uuid"])}")
+        out.appendLine("    public const val TLV_UUID_REVERSED: String = ${str(tlv["uuid_reversed"])}")
+        out.appendLine("    public const val HDLC_CONTROL: Int = ${int(maestro["hdlc_control"])}")
+        out.appendLine("    /** The RPC channels to try, each as its HDLC address: source << 6 | target << 10. */")
+        @Suppress("UNCHECKED_CAST")
+        val channels = maestro["channels"] as List<Map<String, Any?>>
+        out.appendLine("    public val CHANNELS: Map<Int, Int> = linkedMapOf(" + channels.joinToString(", ") {
+            val address = (int(peers[it["source"]]) and 0xF shl 6) or (int(peers[it["target"]]) and 0xF shl 10)
+            "${int(it["id"])} to $address"
+        } + ")")
+        out.appendLine("    public const val PROBE_CALL_ID: Int = ${(maestro["probe_call_id"] as Number).toLong().toInt()}")
+        out.appendLine("    public const val CALL_ID: Int = ${int(maestro["call_id"])}")
+        out.appendLine("    public const val PACKET_REQUEST: Int = ${int(types["request"])}")
+        out.appendLine("    public const val PACKET_RESPONSE: Int = ${int(types["response"])}")
+        out.appendLine("    public const val PACKET_SERVER_ERROR: Int = ${int(types["server_error"])}")
+        out.appendLine("    public const val PACKET_SERVER_STREAM: Int = ${int(types["server_stream"])}")
+        out.appendLine("    public const val SERVICE: String = ${str(maestro["service"])}")
+        for ((k, v) in methods) out.appendLine("    public const val METHOD_${k.uppercase()}: String = ${str(v)}")
+        out.appendLine("    public const val TLV_GROUP: Int = ${int(tlv["group"])}")
+        out.appendLine("    public const val TLV_MAX_LENGTH: Int = ${int(tlv["max_length"])}")
+        out.appendLine("    /** Firmware update, crash reports, firmware-update debug and usage statistics: never sent. */")
+        out.appendLine("    public val NEVER_SEND_GROUPS: Set<Int> = setOf(${(tlv["never_send_groups"] as List<*>).joinToString(", ") { int(it).toString() }})")
+        for ((k, v) in codes) out.appendLine("    public const val CODE_${k.uppercase()}: Int = ${int(v)}")
+        for ((k, v) in slots) out.appendLine("    public const val SLOT_${k.uppercase()}: Int = ${int(v)}")
+        out.appendLine("}")
+        out.appendLine()
+
+        val eq = obj(c["eq"])
+        val bass = obj(c["bass_level"])
+        val balance = obj(c["balance"])
+        out.appendLine("/** What the settings take (data/pixel/commands.json). */")
+        out.appendLine("public object PixelValues {")
+        out.appendLine("    public val ANC_STATES: Map<String, Int> = ${intMap(c["anc_states"])}")
+        out.appendLine("    public val NOISE_CYCLE: Map<String, Int> = ${intMap(c["noise_cycle"])}")
+        out.appendLine("    public val HEAD_GESTURES: Map<String, Int> = ${intMap(c["head_gestures"])}")
+        out.appendLine("    public val EQ_MODE: Map<String, Int> = ${intMap(c["eq_mode"])}")
+        out.appendLine("    public const val BASS_MIN: Int = ${int(bass["min"])}")
+        out.appendLine("    public const val BASS_MAX: Int = ${int(bass["max"])}")
+        out.appendLine("    public const val BASS_OFFSET: Int = ${int(bass["offset"])}")
+        out.appendLine("    public const val BALANCE_MIN: Int = ${int(balance["min"])}")
+        out.appendLine("    public const val BALANCE_MAX: Int = ${int(balance["max"])}")
+        out.appendLine("    public val HOLD_SIDES: Map<String, Int> = ${intMap(c["hold_sides"])}")
+        out.appendLine("    public val TOUCH_ACTIONS: Map<String, Int> = ${intMap(c["touch_actions"])}")
+        out.appendLine("    public val HOLD_OPTIONS: List<String> = ${strings(c["hold_options"])}")
+        out.appendLine("    public val ATTENTION_ALERTS: Map<String, Int> = ${intMap(c["attention_alerts"])}")
+        out.appendLine("    public val EQ_BANDS: List<String> = ${strings(eq["bands"])}")
+        out.appendLine("    public const val EQ_RANGE_DB: Int = ${int(eq["range_db"])}")
+        out.appendLine("    public const val EQ_STEP_DB: Float = ${num(eq["step_db"])}")
+        @Suppress("UNCHECKED_CAST")
+        val presets = eq["presets"] as List<Map<String, Any?>>
+        out.appendLine("    public val EQ_PRESETS: List<PixelEqPreset> = listOf(" + presets.joinToString(", ") { p ->
+            "PixelEqPreset(${str(p["name"])}, listOf(${(p["gains"] as List<*>).joinToString(", ") { num(it) }}))"
+        } + ")")
+        out.appendLine("}")
+        out.appendLine()
+
+        out.appendLine("/** Each family's settings fields (data/pixel/commands.json, settings). */")
+        out.appendLine("internal val PIXEL_SETTINGS: Map<PixelFamily, List<PixelField>> = mapOf(")
+        @Suppress("UNCHECKED_CAST")
+        for ((family, fields) in obj(c["settings"]) as Map<String, List<Map<String, Any?>>>) {
+            out.appendLine("    PixelFamily.${family.uppercase()} to listOf(")
+            for (f in fields) {
+                val type = when (f["type"]) {
+                    "bool" -> "BOOL"; "enum" -> "ENUM"; "int" -> "INT"; "sint32" -> "SINT32"; "message" -> "MESSAGE"
+                    else -> error("unknown type ${f["type"]}")
+                }
+                out.appendLine(
+                    "        PixelField(${int(f["field"])}, PixelFieldType.$type, ${str(f["name"])}, read = ${f["read"] == true}, " +
+                        "neverSend = ${f["never_send"] == true}, key = ${f["key"]?.let(::str) ?: "null"}, shared = ${f["shared"]?.let(::str) ?: "null"}),",
+                )
+            }
+            out.appendLine("    ),")
+        }
+        out.appendLine(")")
+        out.appendLine()
+
+        out.appendLine("/** Every device type in data/pixel/devices.json. */")
+        out.appendLine("internal val PIXEL_MODELS: List<PixelModel> = listOf(")
+        for (d in devices) {
+            @Suppress("UNCHECKED_CAST")
+            val features = (d["features"] as List<List<Any?>>).joinToString(", ", "listOf(", ")") { f ->
+                "${int(f[0])} to ${f[1]?.let { "${(it as Number).toLong()}L" } ?: "null"}"
+            }
+            out.appendLine(
+                "    PixelModel(${int(d["device_type"])}, ${str(d["name"])}, ${str(d["codename"])}, PixelFamily.${(d["family"] as String).uppercase()}, " +
+                    "PixelTransport.${(d["transport"] as String).uppercase()}, adaptive = ${d["adaptive"]}, names = ${strings(d["names"])}, features = $features),",
+            )
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("PixelTables.kt").writeText(out.toString())
+    }
+}
+
+val generatePixelTables = tasks.register<GeneratePixelTables>("generatePixelTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/pixel/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/pixel/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.pixel"
+    outputDir = layout.buildDirectory.dir("generated/pixel")
+}
+
 /** Writes the brand words and the not-ours names from data/identify.json, for [Identify]. */
 abstract class GenerateIdentifyTables : DefaultTask() {
     @get:InputFile
@@ -1150,6 +1300,7 @@ kotlin.sourceSets.main {
     kotlin.srcDir(generateIdentifyTables)
     kotlin.srcDir(generateTables)
     kotlin.srcDir(generateNothingTables)
+    kotlin.srcDir(generatePixelTables)
     kotlin.srcDir(generateAppleTables)
     kotlin.srcDir(generateSoundcoreTables)
     kotlin.srcDir(generateSamsungTables)
@@ -1175,6 +1326,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/jbl")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/apple")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/nothing")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/pixel")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

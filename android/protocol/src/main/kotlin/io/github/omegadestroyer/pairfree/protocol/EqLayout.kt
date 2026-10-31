@@ -2,8 +2,11 @@ package io.github.omegadestroyer.pairfree.protocol
 
 import kotlin.math.roundToInt
 
-/** One band as sent: centre frequency, Q and gain. */
-public data class EqBand(val hz: Int, val q: Double, val gainDb: Double)
+/**
+ * One band as sent: centre frequency, Q and gain. [label] names a band whose brand gives it a name rather than a
+ * frequency (the Pixel Buds' low bass to upper treble); the screens show the name, and [hz] then only orders the bands.
+ */
+public data class EqBand(val hz: Int, val q: Double, val gainDb: Double, val label: String? = null)
 
 /** A complete curve, sent as it is. */
 public data class EqPreset(val name: String, val bands: List<EqBand>)

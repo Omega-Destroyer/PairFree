@@ -5,13 +5,14 @@ import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
+import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyWire
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 
 /** The brands PairFree controls. */
-public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING }
+public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL }
 
 /**
  * Which brand a paired device is, from what Android keeps for it: its Bluetooth name and the services it lists
@@ -53,6 +54,7 @@ public object Identify {
             Maker.BOSE -> BoseModels.hasService(list)
             Maker.APPLE -> AppleWire.SERVICE_UUID.lowercase() in list
             Maker.NOTHING -> NothingWire.SERVICE_UUID.lowercase() in list
+            Maker.PIXEL -> PixelModels.hasService(list)
             // The standard serial service, and Airoha's, which other brands' earbuds offer too.
             Maker.SOUNDPEATS, Maker.JBL -> false
         }
@@ -64,6 +66,7 @@ public object Identify {
         Maker.SONY -> SonyModels.fromName(name) != null
         Maker.JBL -> JblModels.fromName(name) != null
         Maker.NOTHING -> NothingModels.fromName(name) != null
+        Maker.PIXEL -> PixelModels.fromName(name) != null
         // Galaxy Buds names hold "Galaxy"; Bose's "Bose"; Beats without Apple's service use another protocol.
         Maker.SAMSUNG, Maker.BOSE, Maker.APPLE -> false
     }

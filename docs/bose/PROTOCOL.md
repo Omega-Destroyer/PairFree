@@ -132,5 +132,13 @@ are marked `never_send` in `commands.json`, and PairFree's Bose session refuses 
 - Whether every model takes the button, standby timer and spatial audio writes as Bose's app sends
   them, and which standby times each model accepts.
 - Editing modes.
+- Speakers (future work, held by the owner on 2026-10-30). `devices.json` leaves Bose's speakers out,
+  but PairFree finds one by "Bose" in its name and reads it as it would headphones. A SoundLink Flex
+  (product BC59, not in Bose's app 13.3.4's list; `data/bose/reports/BC59_1.0.20.txt`) answered the
+  battery (one level), the standby timer and voice prompts, refused everything else PairFree reads,
+  and did not answer range control (1.7). Adding speakers would mean a `speaker` kind in `devices.json`,
+  the SoundLink products Bose's app lists, which standby times a speaker takes, and the speaker's own
+  controls in Bose's app: its EQ (probably AudioManagement's channel parameter, 5.8), its shortcut
+  button and stereo or party pairing.
 - A recording of Bose's app: with no start byte or checksum, Bose's packets cannot be picked out
   of a Bluetooth log with any certainty yet.

@@ -1,0 +1,56 @@
+Bose speaker, product BC59 variant 2 ("Bose Flex SoundLink"): firmware 1.0.20
+==========================================================================
+
+Date:      2026-10-30
+Firmware:  1.0.20 (BMAP 1.0.4)
+Phone:     a user's phone, Android 16 (API 36)
+App:       PairFree 0.3.1, Copy device report
+Method:    PairFree's device report, sent to the project's owner. BC59 is not in Bose's app 13.3.4 product list
+           (its neighbours there: BC58 SL Micro 2, BC61 SoundLink Flex 2, BC63 SL Flex SE 2), so which SoundLink
+           Flex this is is not known. PairFree's model table leaves Bose speakers out (docs/bose/PROTOCOL.md
+           section 9); the device was found by "Bose" in its name.
+
+---- Read from it ----
+
+  0.1  BMAP version     1.0.4
+  0.3  product          BC59, variant 2
+  0.5  firmware         1.0.20
+  2.2  battery          80 % (one level, no component byte)
+  1.3  voice prompts    e1 00 04 cf de: switchable (bit 7), on (bit 5), language 1
+  1.4  standby timer    20 minutes
+
+  Refused as not supported (error 4, FuncNotSupp): 1.5 CNC, 1.6 ANR, 1.9 buttons, 1.10 multipoint,
+  1.11 sidetone, 1.24 auto play/pause, 1.27 auto answer, 5.15 spatial audio.
+  Refused as no such block (error 3, FblockNotSupp): 31.3 and 31.10, AudioModes.
+  No answer: 1.7 range control (the EQ PairFree reads on headphones).
+
+PairFree shows the battery, the auto-off timer and voice prompts for it.
+
+---- As received ----
+
+Bluetooth name:  Bose Flex SoundLink
+Brand:           Bose
+Model:           not in PairFree's table (product BC59, variant 2)
+Firmware:        1.0.20
+App:             PairFree 0.3.1
+OS:              Android 16 (API 36)
+Captured:        2026-10-30 23:45 UTC
+
+The last message of each kind the device sent (block.function, operator: payload as hex;
+operator 3 is a value, 4 an error, whose first byte says which):
+  0.1 op 3: 31 2e 30 2e 34
+  0.3 op 3: bc 59 02
+  0.5 op 3: 31 2e 30 2e 32 30
+  2.2 op 3: 50
+  1.3 op 3: e1 00 04 cf de
+  1.5 op 4: 04
+  1.6 op 4: 04
+  1.10 op 4: 04
+  1.11 op 4: 04
+  1.24 op 4: 04
+  1.27 op 4: 04
+  1.4 op 3: 14
+  1.9 op 4: 04
+  5.15 op 4: 04
+  31.3 op 4: 03
+  31.10 op 4: 03

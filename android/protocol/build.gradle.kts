@@ -99,13 +99,16 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine("    public val probe: Boolean,")
         out.appendLine("    /** True when a model must list the command under confirmed in data/soundpeats/devices.json for the app to offer it. */")
         out.appendLine("    public val perModel: Boolean,")
+        out.appendLine("    /** True when the reply holds other people's devices or the like: never put it in a report, even from a recording. */")
+        out.appendLine("    public val private: Boolean = false,")
         out.appendLine(") {")
         for (c in commands) {
             val id = c.getValue("id") as String
             val get = c["get"]?.let(::hex) ?: "null"
             val set = c["set"]?.let(::hex) ?: "null"
             val kind = (c.getValue("kind") as String).uppercase()
-            out.appendLine("    ${id.uppercase()}(${str(id)}, $get, $set, Kind.$kind, ${intMap(c["values"])}, ${c["probe"] != false}, ${c["per_model"] == true}),")
+            val private = if (c["private"] == true) ", private = true" else ""
+            out.appendLine("    ${id.uppercase()}(${str(id)}, $get, $set, Kind.$kind, ${intMap(c["values"])}, ${c["probe"] != false}, ${c["per_model"] == true}$private),")
         }
         out.appendLine("}")
         out.appendLine()
@@ -164,8 +167,9 @@ abstract class GenerateTables : DefaultTask() {
                 val presets = (eqJson["presets"] as List<Map<String, Any?>>? ?: emptyList()).joinToString(", ", "listOf(", ")") {
                     "EqPreset(${str(it["name"])}, ${bands(it["bands"], "gain_db")})"
                 }
+                val fixed = eqJson["fixed_bands"]?.let { ", fixedBands = ${bands(it, "gain_db")}" } ?: ""
                 "EqLayout(${hex(eqJson["command"])}, ${num(eqJson["master_gain_db"])}, " +
-                    "${(eqJson.getValue("user_range_db") as Number).toInt()}, ${bands(eqJson["bands"], "base_gain_db")}, $presets)"
+                    "${(eqJson.getValue("user_range_db") as Number).toInt()}, ${bands(eqJson["bands"], "base_gain_db")}, $presets$fixed)"
             }
             out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}),")
         }

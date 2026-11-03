@@ -403,7 +403,8 @@ reports from other people.
   and the earbuds sent each other (`VendorRecording`), with the user's list of what they
   changed: the way to confirm a write before building on it. A report goes into a public
   issue, so it masks the earbuds' address and serial-like text, leaves out bodies marked
-  `private` in `data/soundcore/commands.json` and firmware-update messages, and shows at most
+  `private` in `data/soundcore/commands.json` and firmware-update messages (and on SOUNDPEATS the
+  official app's reads marked `private` in `data/soundpeats/commands.json`, which list other phones), and shows at most
   four bytes of a message PairFree does not know. Keep it that way.
 - For the controls: save the report as `data/soundpeats/reports/<code>_<version>.txt`, list it under
   the model's `reports` in `data/soundpeats/devices.json`, then run `python tools/gen_models_table.py`

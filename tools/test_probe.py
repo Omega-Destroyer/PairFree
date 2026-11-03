@@ -46,16 +46,24 @@ class Vectors(unittest.TestCase):
                                 case["q"], case["master_gain_db"])
             self.assertEqual(got.hex(), case["payload"])
 
+    @staticmethod
+    def band(eq, total, index, hz, gain, q):
+        # 0E02 numbers a band with two bytes, count then index, where 0E01 packs both in one.
+        p = probe.eq_band(total, index, hz, gain, q, eq["master_gain_db"])
+        return (p if eq["command"] == "0E01" else bytes([total, index]) + p[1:]).hex()
+
     def test_eq_layout_matches_the_official_app(self):
         models = {d["firmware_code"]: d for d in load("devices.json")["devices"]}
         for case in self.v["eq_layout"]:
             eq = models[case["model"]]["eq"]
-            bands = eq["bands"]
-            got = []
-            for i, (band, user) in enumerate(zip(bands, case["user_gains_db"])):
-                # added in tenths of a dB, as the Kotlin EqLayout does, so the sums stay exact
-                gain = (round(band["base_gain_db"] * 10) + user * 10) / 10
-                got.append(probe.eq_band(len(bands), i + 1, band["hz"], gain, band["q"], eq["master_gain_db"]).hex())
+            fixed, bands = eq.get("fixed_bands", []), eq["bands"]
+            total = len(fixed) + len(bands)
+            # Fixed bands go first, as they are; then the user's gains on the base curve,
+            # added in tenths of a dB, as the Kotlin EqLayout does, so the sums stay exact.
+            points = [(b["hz"], b["gain_db"], b["q"]) for b in fixed] + [
+                (b["hz"], (round(b["base_gain_db"] * 10) + user * 10) / 10, b["q"])
+                for b, user in zip(bands, case["user_gains_db"])]
+            got = [self.band(eq, total, i, hz, gain, q) for i, (hz, gain, q) in enumerate(points, start=1)]
             self.assertEqual(got, case["payloads"], case["name"])
 
     def test_eq_presets_match_the_official_app(self):
@@ -64,8 +72,7 @@ class Vectors(unittest.TestCase):
             eq = models[case["model"]]["eq"]
             preset = next(p for p in eq["presets"] if p["name"] == case["preset"])
             bands = preset["bands"]
-            got = [probe.eq_band(len(bands), i + 1, b["hz"], b["gain_db"], b["q"], eq["master_gain_db"]).hex()
-                   for i, b in enumerate(bands)]
+            got = [self.band(eq, len(bands), i, b["hz"], b["gain_db"], b["q"]) for i, b in enumerate(bands, start=1)]
             self.assertEqual(got, case["payloads"], case["preset"])
 
     def test_ble_packet_is_frame_without_header(self):

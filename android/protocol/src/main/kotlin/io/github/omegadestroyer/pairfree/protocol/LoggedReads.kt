@@ -50,7 +50,7 @@ public object LoggedReads {
                 }
                 continue
             }
-            Replies.commandFor(frame)?.let { answers.getOrPut(key, ::LinkedHashMap)[it] = frame.payload }
+            Replies.commandFor(frame)?.takeUnless { it.private }?.let { answers.getOrPut(key, ::LinkedHashMap)[it] = frame.payload }
             gaiaFeaturesOf(frame)?.let { gaia[key] = it }
         }
 
@@ -70,5 +70,6 @@ public object LoggedReads {
     private fun firmwareOf(frame: Frame): String? =
         if (Replies.commandFor(frame) == Command.FIRMWARE_VERSION) (Replies.decode(Command.FIRMWARE_VERSION, frame.payload) as? Value.Text)?.text else null
 
-    private val BY_GET: Map<Int, Command> = Command.entries.filter { it.get != null }.associateBy { it.get!! }
+    /** Reads of [Command.private] commands are left out with their replies: the report is posted in public. */
+    private val BY_GET: Map<Int, Command> = Command.entries.filter { it.get != null && !it.private }.associateBy { it.get!! }
 }

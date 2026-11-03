@@ -40,19 +40,40 @@ class EqLayoutTest {
         // Gains travel as dB x 60, truncated. Base curve plus whole-dB steps must never lose a unit to rounding.
         for (model in Models.ALL) {
             val layout = model.eq ?: continue
+            // 0E02 numbers a band with two bytes where 0E01 has one.
+            val at = if (layout.command == Wire.EQ_COMMAND_QUALCOMM) 1 else 2
             val range = -layout.userRangeDb..layout.userRangeDb
             for (preamp in -6..0) {
                 for (user in range) {
                     val payloads = layout.payloads(List(layout.bands.size) { user }, preamp)
+                    assertEquals(layout.bandCount, payloads.size, model.code)
                     payloads.forEachIndexed { i, p ->
-                        val master = p.u16(1).toShort().toInt()
-                        val gain = p.u16(5).toShort().toInt()
+                        val master = p.u16(at).toShort().toInt()
+                        val gain = p.u16(at + 4).toShort().toInt()
+                        val expected = layout.fixedBands.getOrNull(i)?.gainDb ?: (layout.bands[i - layout.fixedBands.size].gainDb + user)
                         assertEquals(((layout.masterGainDb + preamp) * 60).roundToInt(), master, "${model.code} master, preamp $preamp")
-                        assertEquals(((layout.bands[i].gainDb + user) * 60).roundToInt(), gain, "${model.code} band ${i + 1}, user $user")
+                        assertEquals((expected * 60).roundToInt(), gain, "${model.code} band ${i + 1}, user $user")
                     }
                 }
             }
         }
+    }
+
+    @Test
+    fun fixedBandsGoFirstAndPresetsDrawOnlyTheirOwn() {
+        // The Clip C10 (issue #9): TRUEFREE's curve, then the user's eight bands.
+        val layout = Models.find("T2", null)!!.eq!!
+        assertEquals(8, layout.fixedBands.size)
+        assertEquals(8, layout.bands.size)
+        val sent = layout.payloads(List(8) { if (it == 0) 3 else 0 })
+        assertEquals(16, sent.size)
+        assertEquals(listOf(16, 1), listOf(sent[0][0].toInt(), sent[0][1].toInt()))
+        assertEquals(listOf(16, 9), listOf(sent[8][0].toInt(), sent[8][1].toInt()))
+        assertEquals(180, sent[8].u16(6).toShort().toInt(), "the first user band at +3 dB")
+        for (preset in layout.presets) assertEquals(8, layout.ownBands(preset).size, preset.name)
+        // Models without fixed bands draw a preset whole.
+        val h3 = Models.find("S5", null)!!.eq!!
+        assertEquals(h3.presets.first().bands, h3.ownBands(h3.presets.first()))
     }
 
     @Test

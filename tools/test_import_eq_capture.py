@@ -43,6 +43,29 @@ class ImportEqCaptureTest(unittest.TestCase):
     def test_air5_pro_plus(self):
         self.check("S2", "S2_20250816_V1.2")
 
+    def check_recording(self, code, report_name):
+        # A user's recording, saved as posted: the eq entry and test vectors come from it unchanged.
+        model = next(m for m in self.devices if m.get("firmware_code") == code)
+        out = imp.build((DATA / "reports" / report_name).read_text(encoding="utf-8"))
+        self.assertEqual(out["missing"], [])
+        self.assertEqual(out["eq"], model["eq"])
+        self.assertEqual([c["payloads"] for c in out["eq_preset"]],
+                         [c["payloads"] for c in self.vectors["eq_preset"] if c["model"] == code])
+        self.assertEqual([c["payloads"] for c in out["eq_layout"]],
+                         [c["payloads"] for c in self.vectors["eq_layout"] if c["model"] == code])
+        return out
+
+    def test_c30_recording(self):
+        out = self.check_recording("S22", "S22_0.7.5_recording.txt")
+        self.assertNotIn("fixed_bands", out["eq"])
+        self.assertEqual(len(out["eq"]["bands"]), 9)
+
+    def test_clip_c10_recording_keeps_truefrees_curve_fixed(self):
+        # append_after_classic: TRUEFREE's eight bands go first in every curve, then the user's eight.
+        out = self.check_recording("T2", "T2_0.5.5_recording.txt")
+        self.assertEqual(len(out["eq"]["fixed_bands"]), 8)
+        self.assertEqual(len(out["eq"]["bands"]), 8)
+
     def test_report_pasted_without_indents_in_a_code_block(self):
         text = report("S5", self.vectors, "S5_20250605_V0.4.9")
         flat = "```\n" + "\n".join(line.strip() for line in text.splitlines()) + "\n```\n"

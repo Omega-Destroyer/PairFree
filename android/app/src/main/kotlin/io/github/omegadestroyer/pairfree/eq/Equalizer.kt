@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.eq
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import io.github.omegadestroyer.pairfree.protocol.EqBand
 import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.EqPreset
 import io.github.omegadestroyer.pairfree.protocol.Model
@@ -113,12 +114,15 @@ data class EqState(
      * for a preset, its gain minus the base curve's at the same band.
      */
     val curve: List<Double>
-        get() = preset?.takeIf { it.bands.size == layout.bands.size }
-            ?.bands?.mapIndexed { i, b -> b.gainDb - layout.bands[i].gainDb }
+        get() = preset?.let(layout::ownBands)?.takeIf { it.size == layout.bands.size }
+            ?.mapIndexed { i, b -> b.gainDb - layout.bands[i].gainDb }
             ?: setting.gains.map { it.toDouble() }
 
-    /** The band frequencies of [curve]. A preset may move some bands. */
-    val curveHz: List<Int> get() = (preset?.bands ?: layout.bands).map { it.hz }
+    /** The bands of [curve], leaving out the layout's fixed bands. A preset may move some bands. */
+    val curveBands: List<EqBand> get() = preset?.let(layout::ownBands)?.takeIf { it.size == layout.bands.size } ?: layout.bands
+
+    /** The band frequencies of [curve]. */
+    val curveHz: List<Int> get() = curveBands.map { it.hz }
 }
 
 /** What the Sound tab can do. [Equalizer] does it; previews pass a stand-in. */

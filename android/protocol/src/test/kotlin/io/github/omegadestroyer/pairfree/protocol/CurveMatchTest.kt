@@ -14,7 +14,12 @@ class CurveMatchTest {
     private val vectors = loadData("test_vectors.json")
 
     private fun write(case: JsonObject, firmware: String?): EqCapture.Write =
-        EqCapture.Write(0, Wire.EQ_COMMAND_QUALCOMM, case.getValue("payloads").jsonArray.map { it.jsonPrimitive.content.hexBytes() }, firmware?.let(::FirmwareVersion))
+        EqCapture.Write(
+            0,
+            Models.find(case.str("model"), null)!!.eq!!.command,
+            case.getValue("payloads").jsonArray.map { it.jsonPrimitive.content.hexBytes() },
+            firmware?.let(::FirmwareVersion),
+        )
 
     @Test
     fun everyKnownPresetIsNamed() {

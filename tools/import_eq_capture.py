@@ -8,7 +8,10 @@ only the equalizer section, where each named curve lists the exact payload of ev
 
   - "firmware": the firmware version in the report, if any
   - "eq": the model's eq entry for data/soundpeats/devices.json. The base curve is the write named
-    SOUNDPEATS Classic, which on every model checked so far is also what Reset sends.
+    SOUNDPEATS Classic (TRUEFREE Classic on TRUEFREE models), which on every model checked so far is
+    also what Reset sends. On a model whose eq_merge is append_after_classic the official app sends
+    the classic curve's own bands first, then the user's: the leading bands every curve shares become
+    "fixed_bands", sent as they are, and the rest are the user's bands.
   - "eq_layout" and "eq_preset": cases for data/soundpeats/test_vectors.json
 
 It writes nothing. Review the output, then add it to the model's entry by hand. The user
@@ -22,7 +25,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from probe import eq_band  # noqa: E402
 
-CLASSIC = "soundpeats classic"
+CLASSIC = ("soundpeats classic", "truefree classic")
+DEVICES = Path(__file__).resolve().parent.parent / "data" / "soundpeats" / "devices.json"
 USER_RANGE_DB = 6
 
 SECTION = re.compile(r"^\s*(\d+)\.\s+(.+?)\s*$")
@@ -124,16 +128,19 @@ def build(text):
     master = masters.pop()
     code = firmware.split("_")[0] if firmware else None
 
-    base = next((d for d in decoded if d[0].strip().lower() == CLASSIC), None)
+    base = next((d for d in decoded if d[0].strip().lower() in CLASSIC), None)
     eq = {"command": command, "master_gain_db": master, "user_range_db": USER_RANGE_DB}
     eq_layout = []
     if base is not None:
-        eq["bands"] = [{"hz": b["hz"], "q": b["q"], "base_gain_db": b["gain_db"]} for b in base[2]]
+        fixed = fixed_count(code, [bands for _, _, bands, _ in decoded])
+        if fixed:
+            eq["fixed_bands"] = base[2][:fixed]
+        eq["bands"] = [{"hz": b["hz"], "q": b["q"], "base_gain_db": b["gain_db"]} for b in base[2][fixed:]]
         eq_layout.append({"name": "Reset: the base curve alone", "model": code,
-                          "user_gains_db": [0] * len(base[2]), "payloads": [p.hex() for p in base[3]]})
+                          "user_gains_db": [0] * (len(base[2]) - fixed), "payloads": [p.hex() for p in base[3]]})
     presets, eq_preset, seen = [], [], set()
     for name, _, bands, payloads in decoded:
-        if name.strip().lower() == CLASSIC or name in seen:
+        if name.strip().lower() in CLASSIC or name in seen:
             continue
         seen.add(name)
         presets.append({"name": name, "bands": bands})
@@ -141,6 +148,19 @@ def build(text):
     eq["presets"] = presets
     return {"firmware": firmware, "eq": eq, "eq_layout": eq_layout, "eq_preset": eq_preset,
             "missing": [] if base is not None else ["SOUNDPEATS Classic (the base curve)"]}
+
+
+def fixed_count(code, curves):
+    """How many leading bands the official app sends as they are: on an append_after_classic model in
+    data/soundpeats/devices.json, the leading bands every curve shares; else none."""
+    devices = json.loads(DEVICES.read_text(encoding="utf-8"))["devices"]
+    model = next((m for m in devices if m.get("firmware_code") == code), None)
+    if model is None or model.get("eq_merge") != "append_after_classic" or len(curves) < 2:
+        return 0
+    n = 0
+    while all(len(c) > n + 1 and c[n] == curves[0][n] for c in curves):
+        n += 1
+    return n
 
 
 def main():

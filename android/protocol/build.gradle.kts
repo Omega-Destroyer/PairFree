@@ -1530,8 +1530,176 @@ val generateOneMoreTables = tasks.register<GenerateOneMoreTables>("generateOneMo
     outputDir = layout.buildDirectory.dir("generated/onemore")
 }
 
+/** Writes EarFun's two command sets, its value tables, preset EQ curves and models from data/earfun. */
+abstract class GenerateEarfunTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val presetsJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        @Suppress("UNCHECKED_CAST")
+        val presets = JsonSlurper().parse(presetsJson.get().asFile) as Map<String, Any?>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\$") + "\""
+        fun strings(v: Any?) = (v as List<*>?).orEmpty().joinToString(", ", "listOf(", ")") { str(it) }
+        fun dbl(v: Any?) = (v as Number).toDouble().toString()
+        fun doubles(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { dbl(it) }
+        fun ints(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { (it as Number).toInt().toString() }
+        fun intMap(v: Any?) = (v as Map<*, *>).entries.filter { !(it.key as String).startsWith("_") }
+            .joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${(it.value as Number).toInt()}" }
+        fun tables(v: Any?) = (v as Map<*, *>).entries.filter { !(it.key as String).startsWith("_") }
+            .joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${intMap(it.value)}" }
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/earfun by the generateEarfunTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val qcc = commands.getValue("qualcomm") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val qccList = qcc.getValue("commands") as List<Map<String, Any?>>
+        out.appendLine("/** The Qualcomm models' commands (data/earfun/commands.json, qualcomm): GAIA vendor 000A, command 03 and this number. */")
+        out.appendLine("public object EarfunQcc {")
+        out.appendLine("    public const val SERVICE_UUID: String = ${str(qcc["service_uuid"])}")
+        out.appendLine("    public const val VENDOR: Int = 0x${qcc["vendor"]}")
+        out.appendLine("    public const val COMMAND_PREFIX: Int = 0x${qcc["command_prefix"]}")
+        out.appendLine("    public val REPLY_PREFIXES: Set<Int> = setOf(${(qcc["reply_prefixes"] as List<*>).joinToString(", ") { "0x$it" }})")
+        out.appendLine("    public const val EQ_VENDOR: Int = 0x${qcc["eq_vendor"]}")
+        out.appendLine("    public const val EQ_COMMAND: Int = 0x${qcc["eq_command"]}")
+        val seen = mutableSetOf<String>()
+        for (c in qccList) {
+            val name = c.getValue("name") as String
+            check(seen.add(name)) { "two qualcomm commands named $name" }
+            out.appendLine("    public const val $name: Int = ${(c["code"] as Number).toInt()}")
+        }
+        out.appendLine("    /** Restarting, resetting, renaming, powering off and device management: never sent. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${qccList.filter { it["never_send"] == true }.joinToString(", ") { (it["code"] as Number).toInt().toString() }})")
+        out.appendLine("    /** Reads that return phones' names and addresses or a serial number: never sent. */")
+        out.appendLine("    public val PRIVATE: Set<Int> = setOf(${qccList.filter { it["private"] == true }.joinToString(", ") { (it["code"] as Number).toInt().toString() }})")
+        out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${qccList.joinToString(", ") { "${(it["code"] as Number).toInt()} to ${str(it["name"])}" }})")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val ef = commands.getValue("earfun") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val efList = ef.getValue("commands") as List<Map<String, Any?>>
+        out.appendLine("/** EarFun's own commands (data/earfun/commands.json, earfun), two bytes each. */")
+        out.appendLine("public object EarfunCommand {")
+        out.appendLine("    public const val SERVICE_UUID: String = ${str(ef["service_uuid"])}")
+        out.appendLine("    public const val START: Int = 0x${ef["start"]}")
+        out.appendLine("    public const val END: Int = 0x${ef["end"]}")
+        seen.clear()
+        for (c in efList) {
+            val name = c.getValue("name") as String
+            check(seen.add(name)) { "two earfun commands named $name" }
+            out.appendLine("    public const val $name: Int = 0x${c["code"]}")
+        }
+        out.appendLine("    /** Resetting, renaming, powering off and device management: never sent. */")
+        out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${efList.filter { it["never_send"] == true }.joinToString(", ") { "0x${it["code"]}" }})")
+        out.appendLine("    /** Reads that return phones' names and addresses: never sent. */")
+        out.appendLine("    public val PRIVATE: Set<Int> = setOf(${efList.filter { it["private"] == true }.joinToString(", ") { "0x${it["code"]}" }})")
+        out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${efList.joinToString(", ") { "0x${it["code"]} to ${str(it["name"])}" }})")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val values = commands.getValue("values") as Map<String, Any?>
+        out.appendLine("/** What EarFun's app writes and reads for each setting (data/earfun/commands.json, values), by table name. */")
+        out.appendLine("public object EarfunValues {")
+        out.appendLine("    public val AUTO_OFF: Map<String, Map<String, Int>> = ${tables(values["auto_off"])}")
+        out.appendLine("    public val VOICE_VOLUME: Map<String, Map<String, Int>> = ${tables(values["voice_volume"])}")
+        out.appendLine("    public val VOICE_PROTECT: Map<String, Int> = ${intMap(values["voice_protect"])}")
+        out.appendLine("    public val NOISE_CANCEL_MODE: Map<String, Map<String, Int>> = ${tables(values["noise_cancel_mode"])}")
+        out.appendLine("    public val AMBIENT_MODE: Map<String, Map<String, Int>> = ${tables(values["ambient_mode"])}")
+        out.appendLine("    public val KEY_ACTIONS: Map<String, Map<String, Int>> = ${tables(values["key_actions"])}")
+        out.appendLine("    public val KEY_GESTURES: Map<String, Map<String, Int>> = ${tables(values["key_gestures"])}")
+        out.appendLine("    /** A slider position (-10 to 10) as a gain on the 10-band models (data/earfun/eq_presets.json, gain_db). */")
+        out.appendLine("    public val GAIN_DB: List<Double> = ${doubles(presets["gain_db"])}")
+        out.appendLine("    /** EarFun's preset curves as slider positions, by list (10 or 6 bands). */")
+        val lists = presets.entries.filter { it.value is List<*> && it.key != "gain_db" }
+        out.appendLine("    public val PRESETS: Map<String, List<Pair<String, List<Int>>>> = mapOf(")
+        for ((key, list) in lists) {
+            out.appendLine("        ${str(key)} to listOf(")
+            @Suppress("UNCHECKED_CAST")
+            for (p in list as List<Map<String, Any?>>) out.appendLine("            ${str(p["name"])} to ${ints(p["positions"])},")
+            out.appendLine("        ),")
+        }
+        out.appendLine("    )")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/earfun/devices.json. */")
+        out.appendLine("internal val EARFUN_MODELS: List<EarfunModel> = listOf(")
+        for (d in devices) {
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headphones" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            fun sub(v: Any?) = (v as Map<*, *>?)?.let { "EarfunSubMode(${str(it["table"])}, ${strings(it["options"])})" } ?: "null"
+            val noise = (d["noise"] as Map<*, *>?)?.let { n -> "EarfunNoise(${intMap(n["values"])}, ${sub(n["cancelling"])}, ${sub(n["ambient"])})" } ?: "null"
+            val touch = (d["touch"] as Map<*, *>?)?.let { t ->
+                val gestures = (t["gestures"] as Map<*, *>).entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${strings(it.value)}" }
+                "EarfunTouch(${str(t["map"])}, $gestures, ${t["disable"]?.let(::str) ?: "null"})"
+            } ?: "null"
+            val eq = (d["eq"] as Map<*, *>?)?.let { e ->
+                val m = e["master"] as Map<*, *>
+                val master = "EarfunMaster(db = ${m["db"]?.let(::dbl) ?: "null"}, base = ${m["base"]?.let(::dbl) ?: "null"}, whole = ${m["whole"] == true}, " +
+                    "byPeak = ${m["by_peak"]?.let(::doubles) ?: "null"})"
+                val fixed = (e["fixed_after"] as List<*>?).orEmpty().joinToString(", ", "listOf(", ")") { b ->
+                    val f = b as Map<*, *>
+                    "EarfunFixedBand(${dbl(f["hz"])}, ${dbl(f["q"])}, ${dbl(f["db"])})"
+                }
+                "EarfunEqSpec(${doubles(e["hz"])}, ${doubles(e["q"])}, ${str(e["frame"])}, positionGain = ${e["gain"] == "position"}, master = $master, " +
+                    "presets = ${str(e["presets"])}, fixedAfter = $fixed)"
+            } ?: "null"
+            out.appendLine("    EarfunModel(")
+            out.appendLine("        ${strings(d["codes"])}, ${str(d["name"])}, ${strings(d["names"])}, ${str(d["protocol"])}, ${str(d["chip"])},")
+            out.appendLine("        io.github.omegadestroyer.pairfree.protocol.Form.$form, case = ${d["case"]}, covered = ${d["covered"]},")
+            out.appendLine("        noise = $noise,")
+            out.appendLine("        game = ${d["game"]}, multipoint = ${d["multipoint"]}, mic = ${d["mic"]}, promptVolume = ${d["prompt_volume"]}, find = ${d["find"]},")
+            out.appendLine("        hearingProtection = ${d["hearing_protection"]}, spatial = ${d["spatial"]}, inEar = ${d["in_ear"]}, caseChargeBit = ${d["case_charge_bit"]},")
+            out.appendLine("        autoOff = ${strings(d["auto_off"])}, autoOffTable = ${d["auto_off_table"]?.let(::str) ?: "null"},")
+            out.appendLine("        touch = $touch,")
+            out.appendLine("        eq = $eq,")
+            out.appendLine("        versionText = ${d["version"] == "text"}, gaiaInit = ${d["gaia_init"]},")
+            out.appendLine("    ),")
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("EarfunTables.kt").writeText(out.toString())
+    }
+}
+
+val generateEarfunTables = tasks.register<GenerateEarfunTables>("generateEarfunTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/earfun/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/earfun/devices.json")
+    presetsJson = rootProject.layout.projectDirectory.file("../data/earfun/eq_presets.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.earfun"
+    outputDir = layout.buildDirectory.dir("generated/earfun")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateIdentifyTables)
+    kotlin.srcDir(generateEarfunTables)
     kotlin.srcDir(generateTables)
     kotlin.srcDir(generateNothingTables)
     kotlin.srcDir(generatePixelTables)
@@ -1565,6 +1733,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/pixel")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/qcy")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/1more")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/earfun")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.layout.projectDirectory.file("../tools/probe.py")).withPathSensitivity(PathSensitivity.RELATIVE)
     systemProperty("pairfree.data", dataDir.asFile.absolutePath)
 }

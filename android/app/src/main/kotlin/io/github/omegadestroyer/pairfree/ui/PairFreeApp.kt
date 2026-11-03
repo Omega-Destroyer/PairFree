@@ -217,6 +217,7 @@ private fun officialApp(brand: Brand): String = when (brand) {
     Brand.PIXEL -> "Pixel Buds"
     Brand.QCY -> "QCY"
     Brand.ONEMORE -> "1MORE"
+    Brand.EARFUN -> "EarFun Audio"
     Brand.APPLE -> ""
 }
 

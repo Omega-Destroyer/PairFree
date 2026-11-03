@@ -63,6 +63,7 @@ import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
+import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
@@ -142,6 +143,7 @@ internal fun ConnectedScreen(
                         Brand.PIXEL -> R.string.eq_pixel
                         Brand.QCY -> R.string.eq_qcy
                         Brand.ONEMORE -> R.string.eq_onemore
+                        Brand.EARFUN -> R.string.eq_earfun
                         else -> R.string.eq_unavailable
                     },
                 )
@@ -177,6 +179,8 @@ internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.
     Brand.QCY -> QcyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
     // 1MORE's by the model the Bluetooth name matched.
     Brand.ONEMORE -> OneMoreModels.model(device.model ?: device.name)
+    // EarFun's by the model the Bluetooth name matched.
+    Brand.EARFUN -> EarfunModels.model(device.model ?: device.name)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

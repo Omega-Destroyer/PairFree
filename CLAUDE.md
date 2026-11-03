@@ -4,8 +4,8 @@
 
 An open replacement for the official apps of earbud brands. Android first; iOS and Windows later. It
 started as a replacement for PeatsAudio (SoundPEATS) and now covers SoundPEATS, Soundcore (Anker), Samsung
-Galaxy Buds, Sony, Bose, JBL, AirPods and Apple-chip Beats, Nothing (with CMF), Google's Pixel Buds, QCY and
-1MORE. The long-term aim is one app for every brand whose protocol can be worked out (`docs/DESIGN.md`,
+Galaxy Buds, Sony, Bose, JBL, AirPods and Apple-chip Beats, Nothing (with CMF), Google's Pixel Buds, QCY,
+1MORE and EarFun. The long-term aim is one app for every brand whose protocol can be worked out (`docs/DESIGN.md`,
 Requirements). The owner wants agents to do as much of the work as possible and to ask before guessing.
 
 The app was called SoundPeter until 0.1.3 (renamed 2026-10-14). Some internal names keep the old one on
@@ -81,8 +81,8 @@ App-wide documents stay at the top level. Each brand also has a page for users, 
 listing its models; its table and the README's one-row-per-brand summary are generated
 (`tools/device_pages.py`), so keep model lists out of the README. Never copy numbers from one brand to another.
 So far: `soundpeats`, `soundcore`, `samsung`, `sony`, `bose`, `jbl`, `apple` (AirPods and the Beats on Apple's
-chips), `nothing` (Nothing and CMF), `pixel` (Google's Pixel Buds), `qcy` and `1more` (the Kotlin package is
-`onemore`).
+chips), `nothing` (Nothing and CMF), `pixel` (Google's Pixel Buds), `qcy`, `1more` (the Kotlin package is
+`onemore`) and `earfun`.
 
 Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony speakers are saved under
 `data/<brand>/reports/`, and each brand's protocol doc says what adding them would take.
@@ -306,6 +306,24 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   S22Ultra are Tuya devices (`tuya`) and are not listed. `data/1more/test_vectors.json` holds the frames 1MORE's
   app writes out in full. After a change to `devices.json` run `python tools/gen_1more_table.py`. Never send
   `OneMoreCommand.NEVER_SEND` (handshake, AI licence, music delete and upload).
+- `docs/earfun/PROTOCOL.md` is EarFun's protocol, read from EarFun's app (EarFun Audio 20.1.61, decompiled outside
+  the repo on 2026-11-03) and checked against Gadgetbridge's EarFun support (AGPL-3.0: facts only; Air S, Air Pro 4,
+  Free Pro 3), whose EQ master gain and gain steps differ from EarFun's app (`docs/UPSTREAM.md`). No EarFun model has
+  been tried with PairFree. Everything runs over the standard serial port, in two protocols by chip: the Qualcomm
+  models speak GAIA with vendor 000A (`03` and the command, answered `83`), as SOUNDPEATS' do, with GAIA v3's opening
+  on vendor 001D; the others EarFun's own `EF` frame. `data/earfun/commands.json` (both command sets and every
+  setting's values), `devices.json` (26 entries by Bluetooth name for EarFun's 33 earbuds and headphones, with what
+  EarFun's app offers each; 8 on other chips, `covered` false, are not listed among the paired earbuds) and
+  `eq_presets.json` become `EarfunQcc`, `EarfunCommand`, `EarfunValues` and the model list through
+  `generateEarfunTables`. `EarfunSession` reads only what the model has, shows a setting once its read answered, and
+  speaks either protocol; `EarbudsConnection.serveEarfun` sends one command at a time, a read waiting up to 1 s. The
+  EQ cannot be read: `EarfunEqTarget` writes EarFun's band frames (per-model master gain, 21 slider positions) and,
+  as EarFun's app does, does not send it again on connecting (`EqTarget.restoresOnConnect`). Not covered yet: sound
+  quality (the earbuds restart after it), the voice prompt language, the call gestures, the headphones' buttons and
+  the other chips' protocols (`docs/earfun/PROTOCOL.md` sections 8 and 9). After a change to `devices.json` run
+  `python tools/gen_earfun_table.py`. Never send `EarfunQcc.NEVER_SEND` or `PRIVATE`, `EarfunCommand.NEVER_SEND` or
+  `PRIVATE` (factory reset, restart, power off and the play controls that share its command, renaming, device
+  management, the paired phones' list, the serial number); `EarfunSession.allowed` checks every frame.
 - `docs/UPSTREAM.md` lists where the vendor apps or recordings differ from the open-source projects (Sources).
 - `docs/DESIGN.md` is the app design: requirements, the Studio look and its colour values, every screen, and
   what is still open. Build the UI from it. The owner's requirements at the top of that file are fixed.

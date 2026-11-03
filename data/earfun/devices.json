@@ -1,0 +1,1157 @@
+{
+ "_about": "EarFun's models (docs/earfun/PROTOCOL.md section 5), from EarFun's app (EarFun Audio 20.1.61: DeviceType, each model's HeadsetConfig, parser and equalizer). One entry per Bluetooth name, which PairFree matches whole (EarFun's app matches the product id in the earbuds' LE advert instead); codes are EarFun's own model codes. protocol: qualcomm (GAIA, vendor 000A) or earfun (EarFun's own frame); the others are other chips' protocols PairFree does not cover yet (covered false: PairFree finds them and offers a device report, but no settings). noise.values are the noise mode's bytes; noise.cancelling is the cancelling sub-mode the model offers, by commands.json's values.noise_cancel_mode table; noise.ambient its transparency sub-mode (values.ambient_mode). touch: the key byte map (commands.json's values.key_actions), the actions EarFun's app offers per gesture (power off left out), and whether the touch controls can be turned off for both earbuds at once (both) or each on its own (each). eq: the bands, the band frame (index: 0E01's count-and-index byte, index_cr: the same with 0D after each band, count: count and index bytes), how a slider position becomes a gain (table: eq_presets.json's gain_db; position: the position in dB), the master gain (db: fixed; base: base minus the highest gain when it is above 0, in whole dB when whole; by_peak: by the highest position), fixed_after: bands sent after the user's, and the preset list. version: how the firmware version reads (numbers: three bytes; text). gaia_init: the GAIA v3 opening EarFun's app sends (not on the Air Pro 4). case_charge_bit: the case's battery has charging in bit 7. reports lists device reports under data/earfun/reports.",
+ "devices": [
+  {
+   "codes": ["TW400"],
+   "name": "EarFun Free Pro 3",
+   "names": [],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 0,
+     "anc": 1,
+     "ambient": 2
+    },
+    "cancelling": {
+     "table": "qualcomm",
+     "options": ["default", "wind"]
+    },
+    "ambient": {
+     "table": "qualcomm",
+     "options": ["default", "total"]
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "mic": true,
+   "prompt_volume": true,
+   "find": true,
+   "touch": {
+    "map": "qualcomm",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"]
+    },
+    "disable": "both"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "index",
+    "gain": "table",
+    "master": {
+     "db": -6.0
+    },
+    "presets": "10"
+   },
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "auto_off": [],
+   "auto_off_table": null,
+   "version": "numbers",
+   "gaia_init": true,
+   "reports": []
+  },
+  {
+   "codes": ["TW500", "TW500_3072"],
+   "name": "EarFun Air Pro 3",
+   "names": [],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 0,
+     "anc": 1,
+     "ambient": 2
+    },
+    "cancelling": {
+     "table": "qualcomm",
+     "options": ["default", "wind"]
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "mic": true,
+   "prompt_volume": true,
+   "find": true,
+   "touch": {
+    "map": "qualcomm",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"]
+    },
+    "disable": "both"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "index",
+    "gain": "table",
+    "master": {
+     "db": -6.0
+    },
+    "presets": "10"
+   },
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "auto_off": [],
+   "auto_off_table": null,
+   "version": "numbers",
+   "gaia_init": true,
+   "reports": []
+  },
+  {
+   "codes": ["TW600"],
+   "name": "EarFun Air Pro 4",
+   "names": [],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 0,
+     "anc": 1,
+     "ambient": 2
+    },
+    "cancelling": {
+     "table": "air_pro_4",
+     "options": ["default", "balance", "adaptive", "ear_adaptive", "wind"]
+    },
+    "ambient": {
+     "table": "qualcomm",
+     "options": ["default", "total"]
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "mic": true,
+   "prompt_volume": true,
+   "find": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "qualcomm",
+   "gaia_init": false,
+   "touch": {
+    "map": "qualcomm",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"]
+    },
+    "disable": "each"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "index",
+    "gain": "table",
+    "master": {
+     "db": -6.0
+    },
+    "presets": "10"
+   },
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "version": "numbers",
+   "reports": []
+  },
+  {
+   "codes": ["TW700", "TW700AI"],
+   "name": "EarFun Air Pro 4+",
+   "names": ["EarFun Air Pro 4+AI"],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 0,
+     "anc": 1,
+     "ambient": 2
+    },
+    "cancelling": {
+     "table": "air_pro_4_plus",
+     "options": ["ear_adaptive", "adaptive", "level4", "level3", "level2", "level1", "wind"]
+    },
+    "ambient": {
+     "table": "qualcomm",
+     "options": ["default", "total"]
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "mic": true,
+   "prompt_volume": true,
+   "find": true,
+   "hearing_protection": true,
+   "in_ear": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "qualcomm",
+   "case_charge_bit": true,
+   "touch": {
+    "map": "qualcomm",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"]
+    },
+    "disable": "each"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "index_cr",
+    "gain": "table",
+    "master": {
+     "db": -6.0
+    },
+    "presets": "10"
+   },
+   "spatial": false,
+   "version": "numbers",
+   "gaia_init": true,
+   "reports": []
+  },
+  {
+   "codes": ["TW800"],
+   "name": "EarFun Air Pro 5",
+   "names": [],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 0,
+     "anc": 1,
+     "ambient": 2
+    },
+    "cancelling": {
+     "table": "air_pro_4_plus",
+     "options": ["ear_adaptive", "adaptive", "level4", "level3", "level2", "level1", "wind"]
+    },
+    "ambient": {
+     "table": "qualcomm",
+     "options": ["default", "total"]
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "mic": true,
+   "prompt_volume": true,
+   "find": true,
+   "hearing_protection": true,
+   "in_ear": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "qualcomm",
+   "case_charge_bit": true,
+   "touch": {
+    "map": "qualcomm",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"]
+    },
+    "disable": "each"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "index_cr",
+    "gain": "table",
+    "master": {
+     "db": -6.0
+    },
+    "presets": "10"
+   },
+   "spatial": false,
+   "version": "numbers",
+   "gaia_init": true,
+   "reports": []
+  },
+  {
+   "codes": ["TWA01", "TW201"],
+   "name": "EarFun Air S",
+   "names": [],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm",
+   "kind": "earbuds",
+   "case": false,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 0,
+     "anc": 1,
+     "ambient": 2
+    }
+   },
+   "game": true,
+   "touch": {
+    "map": "qualcomm",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"]
+    },
+    "disable": null
+   },
+   "eq": {
+    "hz": [63, 180, 500, 1000, 8000, 15000],
+    "q": [0.7, 0.6, 0.6, 0.6, 0.6, 0.6],
+    "frame": "index",
+    "gain": "position",
+    "fixed_after": [
+     {"hz": 33, "q": 0.5, "db": 4.5},
+     {"hz": 200, "q": 0.6, "db": -4.5},
+     {"hz": 2000, "q": 0.9, "db": 1.5},
+     {"hz": 15000, "q": 0.6, "db": 3.5}
+    ],
+    "master": {
+     "db": -6.0
+    },
+    "presets": "6"
+   },
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "auto_off": [],
+   "auto_off_table": null,
+   "version": "numbers",
+   "gaia_init": true,
+   "reports": []
+  },
+  {
+   "codes": ["ATVEL_TW201"],
+   "name": "ATVEL Tune S5 ProX",
+   "names": [],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm",
+   "kind": "earbuds",
+   "case": false,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 0,
+     "anc": 1,
+     "ambient": 2
+    }
+   },
+   "game": true,
+   "touch": {
+    "map": "qualcomm",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"]
+    },
+    "disable": null
+   },
+   "eq": {
+    "hz": [63, 180, 500, 1000, 8000, 15000],
+    "q": [0.7, 0.6, 0.6, 0.6, 0.6, 0.6],
+    "frame": "index",
+    "gain": "position",
+    "fixed_after": [
+     {"hz": 33, "q": 0.5, "db": 4.5},
+     {"hz": 200, "q": 0.6, "db": -4.5},
+     {"hz": 2000, "q": 0.9, "db": 1.5},
+     {"hz": 15000, "q": 0.6, "db": 3.5}
+    ],
+    "master": {
+     "db": -6.0
+    },
+    "presets": "6"
+   },
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "auto_off": [],
+   "auto_off_table": null,
+   "version": "numbers",
+   "gaia_init": true,
+   "reports": []
+  },
+  {
+   "codes": ["TW101S"],
+   "name": "EarFun Free 2S",
+   "names": [],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm (some are ZhongKe: TW101C)",
+   "kind": "earbuds",
+   "case": false,
+   "covered": true,
+   "game": true,
+   "touch": {
+    "map": "qualcomm",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "double": ["previous", "next", "play_pause", "voice_assistant"],
+     "triple": ["previous", "next", "play_pause", "voice_assistant", "game_mode"],
+     "hold": ["previous", "next", "play_pause", "voice_assistant", "game_mode"]
+    },
+    "disable": null
+   },
+   "eq": {
+    "hz": [63, 180, 500, 1000, 8000, 15000],
+    "q": [0.7, 0.6, 0.6, 0.6, 0.6, 0.6],
+    "frame": "index",
+    "gain": "position",
+    "fixed_after": [
+     {"hz": 33, "q": 0.5, "db": 4.5},
+     {"hz": 200, "q": 0.6, "db": -4.5},
+     {"hz": 2000, "q": 0.9, "db": 1.5},
+     {"hz": 15000, "q": 0.6, "db": 3.5}
+    ],
+    "master": {
+     "db": -6.0
+    },
+    "presets": "6"
+   },
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "version": "numbers",
+   "gaia_init": true,
+   "reports": []
+  },
+  {
+   "codes": ["HP1000"],
+   "name": "EarFun Wave Pro X",
+   "names": [],
+   "protocol": "qualcomm",
+   "chip": "Qualcomm",
+   "kind": "headphones",
+   "case": false,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 0,
+     "anc": 1,
+     "ambient": 2
+    },
+    "cancelling": {
+     "table": "wave_pro_x",
+     "options": ["ear_adaptive", "adaptive", "level4", "level3", "level2", "level1", "wind"]
+    },
+    "ambient": {
+     "table": "qualcomm",
+     "options": ["default", "total"]
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "hearing_protection": true,
+   "auto_off": ["30", "60", "90", "120", "never"],
+   "auto_off_table": "wave_pro_x",
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "index_cr",
+    "gain": "table",
+    "master": {
+     "db": -6.0
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "find": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "touch": null,
+   "version": "numbers",
+   "gaia_init": true,
+   "reports": []
+  },
+  {
+   "codes": ["TW220", "TW220_VDL"],
+   "name": "EarFun Air 2 NC",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "noise": {
+    "values": {
+     "off": 1,
+     "ambient": 2,
+     "anc": 4,
+     "adaptive": 5,
+     "wind": 3
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "find": true,
+   "spatial": true,
+   "auto_off": ["5", "10", "30", "60", "90", "120", "never"],
+   "auto_off_table": "earfun",
+   "touch": {
+    "map": "earfun",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"]
+    },
+    "disable": "each"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "db": -6.0
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "hearing_protection": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["TW205"],
+   "name": "EarFun Air Life",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "earbuds",
+   "case": false,
+   "covered": true,
+   "game": true,
+   "find": true,
+   "auto_off": ["5", "10", "30", "60", "90", "120", "never"],
+   "auto_off_table": "earfun",
+   "touch": {
+    "map": "earfun",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"]
+    },
+    "disable": null
+   },
+   "eq": {
+    "hz": [32, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "db": -6.0
+    },
+    "presets": "10"
+   },
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["OW100", "OW100_NEW"],
+   "name": "EarFun OpenJump",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "find": true,
+   "spatial": true,
+   "auto_off": ["5", "10", "30", "60", "90", "120", "never"],
+   "auto_off_table": "earfun",
+   "touch": {
+    "map": "earfun",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"]
+    },
+    "disable": "each"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "by_peak": [-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -1.0, -1.5, -2.0, -2.5, -3.0, -3.5, -4.0, -4.5, -5.5, -6.5]
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "hearing_protection": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["CW100"],
+   "name": "EarFun Clip",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "find": true,
+   "hearing_protection": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "earfun",
+   "touch": {
+    "map": "clip",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"]
+    },
+    "disable": "each"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "base": -5.0,
+     "peak": true
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["CW200"],
+   "name": "EarFun Clip 2",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "find": true,
+   "hearing_protection": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "earfun",
+   "touch": {
+    "map": "clip_2",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"]
+    },
+    "disable": "each"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "base": 0.0,
+     "peak": true
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["TW230"],
+   "name": "EarFun Air Pro 4i",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "earbuds",
+   "case": true,
+   "covered": true,
+   "version": "text",
+   "noise": {
+    "values": {
+     "off": 1,
+     "ambient": 2,
+     "anc": 3
+    },
+    "cancelling": {
+     "table": "air_pro_4i",
+     "options": ["default", "balance", "adaptive", "wind"]
+    },
+    "ambient": {
+     "table": "earfun",
+     "options": ["default", "natural"]
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "find": true,
+   "hearing_protection": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "earfun",
+   "touch": {
+    "map": "air_pro_4i",
+    "gestures": {
+     "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "spatial_audio", "call_repeat", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "spatial_audio", "call_repeat", "none"]
+    },
+    "disable": "each"
+   },
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "by_peak": [-11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.0, -11.5, -12.0, -13.0, -14.0]
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["HP201"],
+   "name": "EarFun Wave Life",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "headphones",
+   "case": false,
+   "covered": true,
+   "version": "text",
+   "noise": {
+    "values": {
+     "off": 1,
+     "ambient": 2,
+     "anc2": 4,
+     "wind": 3
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "earfun",
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "base": -2.0,
+     "peak": true
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "touch": null,
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["HP220"],
+   "name": "EarFun Tune Pro",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "headphones",
+   "case": false,
+   "covered": true,
+   "version": "text",
+   "noise": {
+    "values": {
+     "off": 1,
+     "ambient": 2,
+     "anc1": 5,
+     "anc2": 4,
+     "wind": 3
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "spatial": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "earfun",
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "base": -8.0,
+     "peak": true,
+     "whole": true
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "find": false,
+   "hearing_protection": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "touch": null,
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["HP300"],
+   "name": "EarFun Wave Pro 2",
+   "names": [],
+   "protocol": "earfun",
+   "chip": "EarFun's own",
+   "kind": "headphones",
+   "case": false,
+   "covered": true,
+   "version": "text",
+   "noise": {
+    "values": {
+     "off": 1,
+     "ambient": 2,
+     "anc1": 5,
+     "anc2": 4,
+     "wind": 3
+    }
+   },
+   "game": true,
+   "multipoint": true,
+   "prompt_volume": true,
+   "spatial": true,
+   "auto_off": ["5", "10", "30", "60", "120", "never"],
+   "auto_off_table": "earfun",
+   "eq": {
+    "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
+    "q": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+    "frame": "count",
+    "gain": "table",
+    "master": {
+     "base": -8.0,
+     "peak": true,
+     "whole": true
+    },
+    "presets": "10"
+   },
+   "mic": false,
+   "find": false,
+   "hearing_protection": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "touch": null,
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["TW200S"],
+   "name": "EarFun Air",
+   "names": [],
+   "protocol": "airoha",
+   "chip": "Airoha",
+   "kind": "earbuds",
+   "case": true,
+   "covered": false,
+   "game": false,
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "touch": null,
+   "eq": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["TW210"],
+   "name": "EarFun Air 2",
+   "names": [],
+   "protocol": "wuqi",
+   "chip": "WUQI",
+   "kind": "earbuds",
+   "case": true,
+   "covered": false,
+   "game": false,
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "touch": null,
+   "eq": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["TW300"],
+   "name": "EarFun Air Pro 2",
+   "names": [],
+   "protocol": "wuqi",
+   "chip": "WUQI",
+   "kind": "earbuds",
+   "case": false,
+   "covered": false,
+   "game": false,
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "touch": null,
+   "eq": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["ATVEL_TW300"],
+   "name": "ATVEL Tune S5 Pro",
+   "names": [],
+   "protocol": "wuqi",
+   "chip": "WUQI",
+   "kind": "earbuds",
+   "case": false,
+   "covered": false,
+   "game": false,
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "touch": null,
+   "eq": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["TW306"],
+   "name": "EarFun Air Pro SV",
+   "names": [],
+   "protocol": "tw306",
+   "chip": "Airoha (its own commands)",
+   "kind": "earbuds",
+   "case": false,
+   "covered": false,
+   "game": false,
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "touch": null,
+   "eq": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["TW100"],
+   "name": "EarFun Free 1S",
+   "names": [],
+   "protocol": "zhongke",
+   "chip": "ZhongKe",
+   "kind": "earbuds",
+   "case": true,
+   "covered": false,
+   "game": false,
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "touch": null,
+   "eq": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["HP200", "HP200_BT8931H"],
+   "name": "EarFun Wave Pro",
+   "names": [],
+   "protocol": "bes",
+   "chip": "BES (or BT8931H)",
+   "kind": "headphones",
+   "case": false,
+   "covered": false,
+   "game": false,
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "touch": null,
+   "eq": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  },
+  {
+   "codes": ["ATVEL_HP200"],
+   "name": "ATVEL Tune Pro Q7",
+   "names": [],
+   "protocol": "bes",
+   "chip": "BES",
+   "kind": "headphones",
+   "case": false,
+   "covered": false,
+   "game": false,
+   "multipoint": false,
+   "mic": false,
+   "prompt_volume": false,
+   "find": false,
+   "hearing_protection": false,
+   "spatial": false,
+   "in_ear": false,
+   "case_charge_bit": false,
+   "noise": null,
+   "auto_off": [],
+   "auto_off_table": null,
+   "touch": null,
+   "eq": null,
+   "version": "numbers",
+   "gaia_init": false,
+   "reports": []
+  }
+ ]
+}

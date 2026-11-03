@@ -1,0 +1,140 @@
+{
+ "_about": "EarFun's preset EQ curves (docs/earfun/PROTOCOL.md section 6), from EarFun's app (BaseConfig presets_10 and presets_6, as each model's equalizer list holds them). Each is a slider position per band, -10 to 10: on the 10-band models a position stands for a gain in gain_db (BaseEquailzerProtocol.gainQcc), on the 6-band models it is the gain in dB. Default (every position 0) is PairFree's Stock. The partners' curves (OLUV, Fernanda) and the server's curves are left out.",
+ "gain_db": [-6.0, -5.0, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.0],
+ "10": [
+  {
+   "name": "Rock",
+   "positions": [4, 5, 2, 0, 0, 1, 2, 3, 3, 2]
+  },
+  {
+   "name": "Pop",
+   "positions": [3, 4, 0, 0, 0, 0, 2, 3, 3, 3]
+  },
+  {
+   "name": "Country",
+   "positions": [0, 1, 0, 0, 1, 0, 0, 2, 1, 2]
+  },
+  {
+   "name": "R&B",
+   "positions": [2, 3, 1, 0, 0, 0, 1, 2, 0, 1]
+  },
+  {
+   "name": "Classical",
+   "positions": [-3, -2, -1, 1, 1, 0, 1, 1, 2, 3]
+  },
+  {
+   "name": "Jazz",
+   "positions": [0, 0, 0, 1, 1, 0, 1, 2, 1, 2]
+  },
+  {
+   "name": "Electronic",
+   "positions": [1, 2, 0, 0, 2, 0, 2, 4, 6, 4]
+  },
+  {
+   "name": "Dance",
+   "positions": [0, 4, 0, 0, 2, 0, 2, 4, 1, 0]
+  },
+  {
+   "name": "Hip-Hop",
+   "positions": [2, 4, 0, 0, 3, 2, 1, 7, 0, 0]
+  },
+  {
+   "name": "Metal",
+   "positions": [0, 2, 0, 2, 3, 0, 2, 4, 6, 7]
+  },
+  {
+   "name": "Blues",
+   "positions": [0, 0, 0, 1, 2, 0, 1, 3, 1, 2]
+  },
+  {
+   "name": "Soul",
+   "positions": [3, 3, 1, 0, 0, 0, 1, 2, 2, 2]
+  },
+  {
+   "name": "Hits",
+   "positions": [2, 4, 1, -1, 0, 3, 1, 3, 0, 0]
+  },
+  {
+   "name": "Latin",
+   "positions": [3, 3, 0, 0, 0, 3, 0, 2, 0, 2]
+  },
+  {
+   "name": "Natural",
+   "positions": [-5, -4, -2, 0, -1, -1, 0, -1, 0, 0]
+  },
+  {
+   "name": "Vocal Enhancement",
+   "positions": [0, 0, 0, 1, 4, 5, 4, 2, 0, 0]
+  },
+  {
+   "name": "Vocal Attenuation",
+   "positions": [0, 0, 0, -1, -4, -5, -4, -2, 0, 0]
+  },
+  {
+   "name": "Bass Boost 1",
+   "positions": [2, 3, 0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  {
+   "name": "Bass Boost 2",
+   "positions": [3, 6, 0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  {
+   "name": "Bass Boost 3",
+   "positions": [4, 9, 0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  {
+   "name": "Bass Reducer 1",
+   "positions": [-4, -3, -2, 0, 0, 0, 0, 0, 0, 0]
+  },
+  {
+   "name": "Bass Reducer 2",
+   "positions": [-8, -6, -3, 0, 0, 0, 0, 0, 0, 0]
+  },
+  {
+   "name": "Bass Reducer 3",
+   "positions": [-10, -10, -6, 0, 0, 0, 0, 0, 0, 0]
+  },
+  {
+   "name": "Treble Boost 1",
+   "positions": [0, 0, 0, 0, 0, 0, 0, 2, 3, 3]
+  },
+  {
+   "name": "Treble Boost 2",
+   "positions": [0, 0, 0, 0, 0, 0, 0, 3, 6, 6]
+  },
+  {
+   "name": "Treble Boost 3",
+   "positions": [0, 0, 0, 0, 0, 0, 0, 6, 10, 10]
+  },
+  {
+   "name": "Treble Reducer 1",
+   "positions": [0, 0, 0, 0, 0, 0, 0, -2, -3, -3]
+  },
+  {
+   "name": "Treble Reducer 2",
+   "positions": [0, 0, 0, 0, 0, 0, 0, -3, -6, -6]
+  },
+  {
+   "name": "Treble Reducer 3",
+   "positions": [0, 0, 0, 0, 0, 0, 0, -6, -10, -10]
+  }
+ ],
+ "6": [
+  {
+   "name": "Bass Boost 1",
+   "positions": [8, 0, 0, 0, 0, 0]
+  },
+  {
+   "name": "Treble Boost 1",
+   "positions": [0, 0, 0, 0, 0, 6]
+  },
+  {
+   "name": "Bass Reducer 1",
+   "positions": [-6, -3, 2, 0, 0, 0]
+  },
+  {
+   "name": "Treble Reducer 1",
+   "positions": [0, 0, 0, -2, -6, -6]
+  }
+ ]
+}

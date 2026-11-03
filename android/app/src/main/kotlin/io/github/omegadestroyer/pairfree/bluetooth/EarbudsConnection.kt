@@ -343,6 +343,7 @@ class EarbudsConnection(
                     fail(token, device, LinkStatus.Reason.NO_SCAN_PERMISSION)
                     return@launch
                 } catch (_: NotFound) {
+                    note("stopped: the scan did not find its advert")
                     fail(token, device, LinkStatus.Reason.NOT_FOUND)
                     return@launch
                 } catch (e: IOException) {

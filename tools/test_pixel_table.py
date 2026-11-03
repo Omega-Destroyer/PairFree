@@ -19,7 +19,8 @@ class PixelTable(unittest.TestCase):
         cls.headers = ["Model", "Device type", "Connection", "Noise control", "Also", "Status"]
 
     def row(self, name):
-        row = next(r for r in gen.rows(self.data["devices"]) if f"<td>{name}</td>" in r)
+        # A tested model's name links to its report.
+        row = next(r for r in gen.rows(self.data["devices"]) if f"<td>{name}</td>" in r or f">{name}</a></td>" in r)
         cells = [c.split(">", 1)[1] for c in row.removeprefix("<tr>").removesuffix("</tr>").split("</td>")[:-1]]
         return dict(zip(self.headers, cells))
 
@@ -31,7 +32,7 @@ class PixelTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(5, s["models"], "the Pro's two device types are one model")
-        self.assertEqual([], s["tested"], "no Pixel Buds tried with PairFree yet")
+        self.assertEqual(["Pixel Buds Pro"], s["tested"], "a user's report in GitHub issue #4")
 
     def test_rows(self):
         pro = self.row("Pixel Buds Pro")

@@ -17,7 +17,7 @@
       "device_type": 4, "name": "Pixel Buds Pro", "codename": "allegro", "family": "allegro", "transport": "maestro", "adaptive": false,
       "names": ["Pixel Buds Pro"],
       "features": [[5, null], [11, null], [2, null], [8, null], [12, null], [13, 120], [14, 208], [15, 208], [16, 300], [17, 300], [18, 300], [19, 539], [21, 536], [20, 536], [24, null]],
-      "reports": []
+      "reports": ["data/pixel/reports/allegro_release_5.9.txt"]
     },
     {
       "device_type": 5, "name": "Pixel Buds Pro", "codename": "allegro", "family": "allegro", "transport": "maestro", "adaptive": false,

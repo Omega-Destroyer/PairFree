@@ -1,0 +1,42 @@
+Google Pixel Buds Pro (device type 4): firmware release_5.9_signed
+Source:  GitHub issue #4, a user's comment of 2026-10-31, PairFree 0.4.0 on Android 17 (API 37).
+         Unedited except the owner's first name in the Bluetooth name, replaced with XXX.
+
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help check
+this model. It holds no serial number, address or other personal data.
+
+Bluetooth name:  XXX's Pixel Buds Pro
+Brand:           Google Pixel Buds
+Model:           Pixel Buds Pro (device type 4)
+Transport:       maestro (channel 21)
+Firmware:        release_5.9_signed
+App:             PairFree 0.4.0
+OS:              Android 17 (API 37)
+Captured:        2026-10-31 04:44 UTC
+
+The last answer to each read PairFree sent (setting N: the field as protobuf, or the error
+status the earbuds gave; the battery and firmware as protobuf):
+  software info: 22 36 12 19 0a 03 35 37 32 12 12 72 65 6c 65 61 73 65 5f 35 2e 39 5f 73 69 67 6e 65 64 1a 19 0a 03 35 37 32 12 12 72 65 6c 65 61 73 65 5f 35 2e 39 5f 73 69 67 6e 65 64 29 3c 94 38 52 04 4c 3e 2f 30 00
+  device type: 04
+  battery: 12 04 08 5f 10 01 1a 04 08 64 10 01
+  setting 2: 10 01
+  setting 4: 20 01
+  setting 7: 0a 04 22 02 08 05 12 04 22 02 08 06
+  setting 11: 58 01
+  setting 12: 08 01 10 01 18 01
+  setting 13: 68 03
+  setting 15: 78 01
+  setting 16: 0d 00 00 a0 40 15 00 00 40 40 1d 00 00 00 00 25 00 00 00 00 2d 00 00 00 00
+  setting 17: 88 01 00
+  setting 18: 0d 00 00 00 00 15 00 00 00 00 1d 00 00 00 00 25 00 00 00 00 2d 00 00 00 00
+  setting 19: 98 01 00
+  setting 21: a8 01 01
+  setting 22: b0 01 00
+  setting 27: 02
+  setting 28: 02
+  setting 29: 02
+  setting 37: 02
+  setting 38: 02
+Settings the earbuds do not have: 27, 28, 29, 37, 38

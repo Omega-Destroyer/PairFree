@@ -232,8 +232,8 @@ Beats on Apple's chips), `nothing` (Nothing and CMF) and `pixel` (Google's Pixel
   message info with `E:\Builds\research\pixel-tools\rawinfo.py`) and checked against pbpctrl
   (github.com/qzed/pbpctrl, MIT or Apache-2.0, used with a Pixel Buds Pro; PairFree's HDLC framing follows its code)
   and OpenControl for Pixel Buds Pro 2 (AGPL-3.0: facts only, from its recordings). The vendor app is the source and
-  wins where they differ (owner, 2026-10-30: the APK first, open-source projects only as a reference). No Pixel Buds
-  have been tried with PairFree; every model relies on device reports. Two transports carry the same protobuf
+  wins where they differ (owner, 2026-10-30: the APK first, open-source projects only as a reference). A user's Pixel
+  Buds Pro answered every read in 0.4.0 (issue #4, `data/pixel/reports/`); the other models rely on device reports. Two transports carry the same protobuf
   messages: Maestro (Pigweed RPC in HDLC frames, serial service `25e97ff7-…`) on the Pro, Pro 2 and 2a, and plain
   group/code/length frames (`3a046f6d-…`) on the Pixel Buds (2020) and A-Series, which no other project describes and
   no recording shows. `data/pixel/commands.json` (transports, each family's settings fields, values, Google's EQ

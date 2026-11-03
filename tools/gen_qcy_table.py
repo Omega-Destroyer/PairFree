@@ -58,6 +58,8 @@ def features(model):
     out = [NAMES[s["setting"]] for s in model.get("settings", [])]
     if model.get("balance"):
         out.append("balance")
+    if model.get("sleep_timer"):
+        out.append("timed power off")
     if model.get("touch") and model["protocol"] == "qcy":
         out.append("touch controls")
     return ", ".join(out) or "—"

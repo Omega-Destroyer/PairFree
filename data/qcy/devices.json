@@ -1,5 +1,5 @@
 {
- "_about": "QCY's earbuds and headphones by the vendor id they advertise (manufacturer data under company 0x521C, bytes 0-1), from Quicky (github.com/hui1601/Quicky, commit below, internal/product/products.json): its dump of QCY's own product list and control panels, which QCY's app downloads from its server. Quicky has no licence, so these are facts only. Only category earphones is kept (the owner's choice, 2026-10-18); watches, speakers and accessories are left out. family is the chip, from bits 4-7 of the vendor id as QCY's app reads them (Devicebind); protocol is how PairFree talks to it: qcy for QCY's own items over Bluetooth LE service A001, jieli for JieLi's RCSP, jieli_custom for QCY's items inside JieLi's custom command. kind headphones marks vendor ids QCY's app treats as not true wireless. anc lists the noise modes as QCY packs them (three bytes: mode, scene, value; one byte on older models), eq and touch what the model's control panel offers, settings the switches it has by item. docs/qcy/PROTOCOL.md explains them.",
+ "_about": "QCY's earbuds and headphones by the vendor id they advertise (manufacturer data under company 0x521C, bytes 0-1), from Quicky (github.com/hui1601/Quicky, commit below, internal/product/products.json): its dump of QCY's own product list and control panels, which QCY's app downloads from its server. Quicky has no licence, so these are facts only. Only category earphones is kept (the owner's choice, 2026-10-18); watches, speakers and accessories are left out. family is the chip, from bits 4-7 of the vendor id as QCY's app reads them (Devicebind); protocol is how PairFree talks to it: qcy for QCY's own items over Bluetooth LE service A001, jieli for JieLi's RCSP, jieli_custom for QCY's items inside JieLi's custom command. kind headphones marks vendor ids QCY's app treats as not true wireless. anc lists the noise modes as QCY packs them (three bytes: mode, scene, value; one byte on older models), eq and touch what the model's control panel offers, settings the switches it has by item, sleep_timer whether its panel has the timed power off (item 14). docs/qcy/PROTOCOL.md explains them.",
  "quicky_commit": "d13c68f08a6c8b031083eede968fb443824c7af0",
  "devices": [
   {
@@ -43,7 +43,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 4578,
@@ -86,7 +87,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 4579,
@@ -127,7 +129,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 4580,
@@ -168,7 +171,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 4581,
@@ -209,7 +213,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 4583,
@@ -271,7 +276,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6513,
@@ -316,7 +322,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6514,
@@ -361,7 +368,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6515,
@@ -407,7 +415,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6516,
@@ -453,7 +462,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6517,
@@ -498,7 +508,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6518,
@@ -543,7 +554,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6519,
@@ -588,7 +600,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6520,
@@ -633,7 +646,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 6577,
@@ -683,7 +697,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16738,
@@ -723,7 +738,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16753,
@@ -810,7 +826,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16755,
@@ -898,7 +915,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16756,
@@ -940,7 +958,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16757,
@@ -1028,7 +1047,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16758,
@@ -1089,7 +1109,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16759,
@@ -1186,7 +1207,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16760,
@@ -1274,7 +1296,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16761,
@@ -1315,7 +1338,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16762,
@@ -1376,7 +1400,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16763,
@@ -1473,7 +1498,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16764,
@@ -1566,7 +1592,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16818,
@@ -1600,7 +1627,8 @@
      "Countryside",
      "Jazz"
     ]
-   }
+   },
+   "sleep_timer": true
   },
   {
    "vendor_id": 16849,
@@ -1683,7 +1711,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 16850,
@@ -1766,7 +1795,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18289,
@@ -1905,7 +1935,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18294,
@@ -1950,7 +1981,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18295,
@@ -1995,7 +2027,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18296,
@@ -2048,7 +2081,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18297,
@@ -2112,7 +2146,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18298,
@@ -2208,7 +2243,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18299,
@@ -2257,7 +2293,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18300,
@@ -2353,7 +2390,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18301,
@@ -2402,7 +2440,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18302,
@@ -2466,7 +2505,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18303,
@@ -2519,7 +2559,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18801,
@@ -3064,7 +3105,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 18863,
@@ -3638,7 +3680,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19218,
@@ -5413,7 +5456,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19780,
@@ -5454,7 +5498,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19782,
@@ -5500,7 +5545,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19783,
@@ -5605,7 +5651,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19784,
@@ -5686,7 +5733,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19785,
@@ -5809,7 +5857,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19786,
@@ -5928,7 +5977,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19787,
@@ -6017,7 +6067,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19788,
@@ -6098,7 +6149,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19789,
@@ -6187,7 +6239,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19790,
@@ -6306,7 +6359,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19791,
@@ -6377,7 +6431,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19794,
@@ -6443,7 +6498,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19795,
@@ -6509,7 +6565,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19796,
@@ -6579,7 +6636,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19797,
@@ -6654,7 +6712,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19798,
@@ -6725,7 +6784,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19799,
@@ -6800,7 +6860,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19801,
@@ -6875,7 +6936,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19802,
@@ -6942,7 +7004,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 19825,
@@ -7909,7 +7972,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23153,
@@ -7954,7 +8018,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23154,
@@ -8000,7 +8065,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23155,
@@ -8045,7 +8111,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23156,
@@ -8091,7 +8158,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23157,
@@ -8180,7 +8248,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23159,
@@ -8226,7 +8295,8 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23160,
@@ -8271,7 +8341,8 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23872,
@@ -8396,7 +8467,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23873,
@@ -8497,7 +8569,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23874,
@@ -8622,7 +8695,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23875,
@@ -8758,7 +8832,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23878,
@@ -8859,7 +8934,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 23879,
@@ -8984,7 +9060,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 32881,
@@ -9081,7 +9158,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 32882,
@@ -9177,7 +9255,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 32883,
@@ -9274,7 +9353,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 32884,
@@ -9371,7 +9451,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   },
   {
    "vendor_id": 32885,
@@ -9468,7 +9549,8 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "sleep_timer": true
   }
  ]
 }

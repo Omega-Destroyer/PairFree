@@ -115,7 +115,7 @@ class QcyTest {
         val reads = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.READ }.map { it.short }
         assertEquals(listOf(QcyWire.VERSION_SHORT, QcyWire.BATTERY_SHORT, QcyWire.SETTINGS_SHORT, QcyWire.KEYS_SHORT), reads)
         val asked = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.WRITE }.map { QcyPacket.parse(it.value).single().u8(0) }
-        assertEquals(listOf(QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE), asked)
+        assertEquals(listOf(QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE, QcyItem.POWER_MANAGER), asked)
         val s = n70()
         assertTrue(start.all(s::allowed))
         assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.FACTORY_RESET))))
@@ -169,6 +169,28 @@ class QcyTest {
         assertEquals("5D45_3.0.13", (s.state.values[Command.FIRMWARE_VERSION] as Value.Text).text)
         s.receive(GattEnvelope.received(QcyWire.VERSION_SHORT, "QCYTS04_20240101_V1.2".encodeToByteArray()))
         assertEquals("QCYTS04_20240101_V1.2", s.firmware)
+    }
+
+    @Test
+    fun timedPowerOff() {
+        // The QCY C1's control panel has the timed power off: read with the switches, then two bytes each of the
+        // minutes set and the minutes left, low first, as QCY's app reads them (PowerManagerDataBean).
+        val s = QcySession(QcyModels.of(4577))
+        assertTrue(s.start().any { GattEnvelope.out(it)?.value?.let(::hex) == hex(QcyPacket.request(QcyItem.POWER_MANAGER)) })
+        s.receive(settings("ff0614041e001400"))
+        assertEquals(Setting.Choice("power_off_timer", "30", listOf("off", "15", "30", "60", "90")), setting(s, "power_off_timer"))
+        // As QCY's app writes it: the minutes, low first, then two zeros.
+        assertNull(s.change(SettingChange.Choice("power_off_timer", "120")), "not one of the choices")
+        assertEquals("ff0614045a000000", packet(s.change(SettingChange.Choice("power_off_timer", "90"))))
+        // 65535 is off, and so is nothing left.
+        s.receive(settings("ff061404ffff0000"))
+        assertEquals("off", (setting(s, "power_off_timer") as Setting.Choice).value)
+        assertEquals("ff061404ffff0000", packet(s.change(SettingChange.Choice("power_off_timer", "off"))))
+        // 0 minutes turns the earbuds off at once (QCY's power-off button): never sent.
+        assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.POWER_MANAGER, 0, 0, 0, 0))))
+        assertTrue(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.POWER_MANAGER, 15, 0, 0, 0))))
+        // A model whose panel lacks it shows nothing.
+        assertNull(setting(QcySession(QcyModels.ALL.first { !it.sleepTimer && it.protocol == QcyProtocol.QCY }).also { it.receive(settings("ff0614041e001400")) }, "power_off_timer"))
     }
 
     @Test

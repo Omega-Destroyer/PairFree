@@ -66,6 +66,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
             if (m.anc.isNotEmpty()) add(if (m.anc.all { it.legacy }) QcyItem.NOISE_MODE else QcyItem.ANC_SETTING)
             addAll(m.settings.map { it.item })
             if (m.balance) add(QcyItem.BALANCE)
+            if (m.sleepTimer) add(QcyItem.POWER_MANAGER)
         }.distinct()
     }
 
@@ -79,12 +80,17 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     /** The requests that confirm the last changes, for the connection to send a little later. */
     override fun takeReadBacks(): List<ByteArray> = readBacks.distinctBy { it.toList() }.also { readBacks.clear() }
 
-    /** False for what PairFree never sends: resets, pairing, test and firmware traffic, renaming, clock and alarm. */
+    /**
+     * False for what PairFree never sends: resets, pairing, test and firmware traffic, renaming, clock and alarm, and a
+     * timed power off of 0 minutes, which turns the earbuds off at once.
+     */
     override fun allowed(envelope: ByteArray): Boolean {
         val out = GattEnvelope.out(envelope) ?: return false
         if (out.operation == GattEnvelope.READ) return out.short in READABLE
         return when (out.short) {
-            QcyWire.COMMAND_SHORT -> QcyPacket.parse(out.value).none { it.item in QcyItem.NEVER_SEND }
+            QcyWire.COMMAND_SHORT -> QcyPacket.parse(out.value).none {
+                it.item in QcyItem.NEVER_SEND || it.item == QcyItem.POWER_MANAGER && it.value.size >= 2 && it.u8(0) == 0 && it.u8(1) == 0
+            }
             QcyWire.KEYS_SHORT -> true
             else -> false
         }
@@ -219,11 +225,34 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
                     toggle(QcyItem.SLEEP_MODE, "sleep_mode"),
                     toggle(QcyItem.WIND_DETECTION, "wind_detection"),
                     toggle(QcyItem.LED_MODE, "led"),
+                    timerRow(),
                 ),
             ),
         ) + touchGroups()
 
     private fun toggle(item: Int, key: String): Setting.Toggle? = on(item)?.let { Setting.Toggle(key, it) }
+
+    /**
+     * The timed power off (item 14, QCY's PowerManagerDataBean): the minutes set and the minutes left, two bytes each,
+     * low first. 65535 set, or nothing left, is off. QCY's app offers 15, 30, 60 and 90 minutes or a time of the
+     * user's own; PairFree offers the four and shows any other as it is.
+     */
+    private fun timerRow(): Setting.Choice? {
+        if (model?.sleepTimer != true) return null
+        val v = values[QcyItem.POWER_MANAGER]?.takeIf { it.size >= 4 } ?: return null
+        val set = (v[0].toInt() and 0xFF) or ((v[1].toInt() and 0xFF) shl 8)
+        val left = (v[2].toInt() and 0xFF) or ((v[3].toInt() and 0xFF) shl 8)
+        val current = if (set == TIMER_OFF || left <= 0) OFF else set.toString()
+        return Setting.Choice(TIMER_KEY, current, (listOf(OFF) + TIMER_MINUTES.map { it.toString() } + current).distinct())
+    }
+
+    /** Sets the timed power off: minutes, or 65535 for off. Never 0, which QCY's app sends to turn the earbuds off now. */
+    private fun timer(option: String): ByteArray? {
+        val minutes = if (option == OFF) TIMER_OFF else option.toIntOrNull()?.takeIf { it > 0 } ?: return null
+        values[QcyItem.POWER_MANAGER] = byteArrayOf(minutes.toByte(), (minutes shr 8).toByte(), minutes.toByte(), (minutes shr 8).toByte())
+        readBacks += request(QcyItem.POWER_MANAGER)
+        return command(QcyItem.POWER_MANAGER, minutes and 0xFF, minutes shr 8, 0, 0)
+    }
 
     private fun noiseRows(): List<Setting> = buildList {
         val v = noise ?: return@buildList
@@ -373,6 +402,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
                         noiseTo(CANCELLING, (scene.from + step).coerceAtMost(scene.to)) ?: return null
                     }
                     change.key.startsWith("touch_") -> touch(change.key, change.option) ?: return null
+                    change.key == TIMER_KEY -> timer(change.option) ?: return null
                     else -> return null
                 }
             }
@@ -402,6 +432,11 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         private const val ON: Byte = 1
         private const val OFF_VALUE: Byte = 2
         private const val BALANCE_MAX = 100
+
+        // The timed power off: its row, QCY's off, and the minutes QCY's app lists (EarphonePowerManagerActivity).
+        private const val TIMER_KEY = "power_off_timer"
+        private const val TIMER_OFF = 0xFFFF
+        private val TIMER_MINUTES = listOf(15, 30, 60, 90)
 
         // The older one-byte noise values (PeatsAudio's copy of QCY's library and QCY's control panels).
         private const val LEGACY_OFF = 0x02

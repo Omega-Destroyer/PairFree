@@ -1407,7 +1407,7 @@ abstract class GenerateQcyTables : DefaultTask() {
             out.appendLine("    QcyModel(")
             out.appendLine("        ${int(d["vendor_id"])}, ${str(d["name"])}, ${strings(d["names"])}, ${str(d["family"])}, QcyProtocol.$protocol,")
             out.appendLine("        io.github.omegadestroyer.pairfree.protocol.Form.$form, anc = $anc,")
-            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings,")
+            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true},")
             out.appendLine("    ),")
         }
         out.appendLine(")")

@@ -93,6 +93,7 @@ that item, and the earbuds then report it on `1002`. They also report changes ma
 | `0C` | Noise mode, older models | one byte (section 5) |
 | `10` | Sleep mode (touch controls off) | 01 on, 02 off |
 | `12` | Status light | 01 on, 02 off |
+| `14` | Timed power off | the minutes set and the minutes left, two bytes each, low first; 65535 set, or none left, is off. A write is the minutes and two zeros (`PowerManagerDataBean`). QCY's app lists 15, 30, 60 and 90 minutes or the user's own time; **0 turns the earbuds off at once** (its power-off button), so PairFree never sends it. The models whose control panel has `auto_off_timer` (`sleep_timer` in `devices.json`); the panel's `repeat` is how often QCY's app reads the time left, in ms |
 | `16` | Balance | 0 left to 100 right, 50 centre |
 | `17` | Noise setting | mode, scene, value (section 5) |
 | `23` | LDAC | 01 on, 02 off |
@@ -219,4 +220,8 @@ older models take through JieLi's own EQ setting and the newer ones as items `20
 - **EQ:** the presets' values came from QCY's server, so PairFree leaves the EQ out. The custom EQ is
   `0000000B` with the preset id and a signed gain per band, or parametric items `20` and `22`, which
   OpenQCY writes on the N70.
-- **Other:** the fit test (`11`), auto power-off (`14`) and prompt volume (`1D`).
+- **Fit test (`11`):** no model's control panel in Quicky's dump gives it a command (one lists "Fit
+  detection" with none).
+- **Prompt volume (`1D`):** the reply is the volume and its maximum (100 when absent). The steps QCY's
+  app offers come from each model's panel on QCY's server, which Quicky's dump does not hold, and the
+  write is `1D 01 v` on vendor id 16737 and `1D 02 v 00` on the others (`ToneVolumeManagerActivity`).

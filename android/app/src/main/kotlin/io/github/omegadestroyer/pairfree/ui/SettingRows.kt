@@ -172,6 +172,7 @@ private fun settingTitle(key: String): String = when (key) {
     "cycle_adaptive" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.scene_adaptive))
     "auto_off" -> stringResource(R.string.auto_shutdown)
     "sleep_timer" -> stringResource(R.string.setting_sleep_timer)
+    "power_off_timer" -> stringResource(R.string.setting_power_off_timer)
     "light_mode" -> stringResource(R.string.setting_light_mode)
     "light_colour" -> stringResource(R.string.setting_light_colour)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure)
@@ -413,6 +414,7 @@ private fun settingNote(key: String): String? = when (key) {
     "sleep_mode" -> stringResource(R.string.setting_sleep_mode_note)
     "connection_mode" -> stringResource(R.string.setting_connection_mode_note)
     "ear_return" -> stringResource(R.string.setting_ear_return_note)
+    "power_off_timer" -> stringResource(R.string.setting_power_off_timer_note)
     else -> null
 }
 
@@ -635,6 +637,7 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.action_off
         },
     )
+    key == "power_off_timer" -> option.toIntOrNull()?.let { stringResource(R.string.setting_power_off_timer_minutes, it) } ?: stringResource(R.string.action_off)
     key == "anr" || key == "sidetone_level" -> stringResource(
         when (option) {
             "off" -> R.string.setting_level_off

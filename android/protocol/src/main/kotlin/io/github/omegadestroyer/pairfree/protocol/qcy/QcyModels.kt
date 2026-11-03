@@ -47,6 +47,8 @@ public data class QcyModel(
     val touch: QcyTouch?,
     val balance: Boolean,
     val settings: List<QcySetting>,
+    /** The control panel has the timed power off (item 14): the earbuds turn off once the minutes are up. */
+    val sleepTimer: Boolean = false,
 ) {
     /** The vendor id as four hex digits, as PairFree's tables and reports name the model. */
     val code: String get() = vendorId.toString(16).uppercase().padStart(4, '0')

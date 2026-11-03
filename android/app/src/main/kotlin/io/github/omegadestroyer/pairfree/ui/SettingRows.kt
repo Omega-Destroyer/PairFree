@@ -301,7 +301,6 @@ private fun settingTitle(key: String): String = when (key) {
     "baby_cry" -> stringResource(R.string.setting_baby_cry)
     "dog_bark" -> stringResource(R.string.setting_dog_bark)
     "siren" -> stringResource(R.string.setting_siren)
-    else -> touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
     "anc_scene" -> stringResource(R.string.setting_anc_scene)
     "anc_scene_level" -> stringResource(R.string.setting_anc_scene_level)
     "transparency_strength" -> stringResource(R.string.setting_transparency_strength)
@@ -315,7 +314,7 @@ private fun settingTitle(key: String): String = when (key) {
     "voice_command" -> stringResource(R.string.setting_voice_command)
     "ear_return" -> stringResource(R.string.setting_ear_return)
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
-    else -> touchTitle(key) ?: key
+    else -> touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 /**

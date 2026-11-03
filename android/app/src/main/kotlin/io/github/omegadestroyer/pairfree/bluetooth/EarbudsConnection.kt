@@ -1145,6 +1145,8 @@ class EarbudsConnection(
         pixel?.let { session ->
             val messages = session.change(change) ?: return
             if (sendPixel(session, messages)) publish(session)
+            return
+        }
         oneMore?.let { session ->
             val frames = session.change(change) ?: return
             if (sendOneMore(session, frames)) publish(session)
@@ -1210,6 +1212,8 @@ class EarbudsConnection(
         pixel?.let { session ->
             val messages = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (sendPixel(session, messages)) publish(session)
+            return
+        }
         oneMore?.let { session ->
             val frames = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (sendOneMore(session, frames)) publish(session)

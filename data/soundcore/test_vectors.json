@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body. openscq30_buttons: OpenSCQ30's touch-control tests: a state reply with its serial numbers zeroed, what it reads as (reads: a button's action, null when off), and changes (steps, each from the state the one before left) with every packet they must send, in any order. a3936_buttons: the A40's recorded touch-control changes and the frames the Soundcore app sent for them. a6611_recording: a user's Sleep A20 with the Soundcore app (see its about). report_states: state replies from users' PairFree device reports (data/soundcore/reports), and the Sleep A20's from OpenSCQ30's device faker, serials zeroed, with what PairFree must read from them.",
+  "_about": "Soundcore test vectors from the owner's Space A40 (A3936), recorded with the Soundcore app (data/soundcore/reports/A3936_06.43.txt). Every implementation should reproduce them byte for byte. Frames: the full frame for each recorded command and body. a3936_state: the recorded state body and what it decodes to (sizes in docs/soundcore/PROTOCOL.md section 6). eq_smoothing: a curve in tenths of a dB and the smoothed bytes the app sends with it. eq_writes: 0387 bodies to rebuild from the state's HearID data and the curve. openscq30_states: state replies from OpenSCQ30's tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later), many from its users' bug reports, with serial numbers replaced by zeros; each must fit its model's state layout. openscq30_eq: OpenSCQ30's EQ tests (github.com/Oppzippy/OpenSCQ30, GPL-3.0-or-later): a state reply with its serial numbers zeroed, a preset by OpenSCQ30's key or eight custom bands in tenths of a dB, and the packets it must send. openscq30_eq_formats: its tests of the shared EQ packets, with the inputs written out and the expected frame or body. openscq30_buttons: OpenSCQ30's touch-control tests: a state reply with its serial numbers zeroed, what it reads as (reads: a button's action, null when off), and changes (steps, each from the state the one before left) with every packet they must send, in any order. a3936_buttons: the A40's recorded touch-control changes and the frames the Soundcore app sent for them. a6611_recording: a user's Sleep A20 with the Soundcore app (see its about). report_states: state replies from users' PairFree device reports (data/soundcore/reports), and the Sleep A20's from OpenSCQ30's device faker, serials zeroed, with what PairFree must read from them. a3004_recording: the same from a user's Q20i (GitHub issue #11): its state, every EQ write the Soundcore app sent, and its noise mode writes.",
   "frames": [
     {
       "direction": "to_earbuds",
@@ -1868,6 +1868,126 @@
           "08ee00000015850e00021e0001bf"
         ]
       }
+    ]
+  },
+  "a3004_recording": {
+    "about": "A user's Q20i (A3004, firmware 05.08) with the Soundcore app (data/soundcore/reports/A3004_05.08.txt, GitHub issue #11), serial zeroed: PairFree's own state reply, taken after the recording, the EQ writes in order (a preset by OpenSCQ30's key in the A3005 set, or the custom curve's eight bands in tenths of a dB, and the 02 83 body) and the Soundcore app's noise mode writes (06 81 bodies), which PairFree does not send as they are yet.",
+    "state": "020030352e3038000000000000000000000000000000001100968c6e6e8296a0aa78780100000001fc0100010003040700000000000000000000000000",
+    "eq": [
+      {
+        "bands": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "body": "fefe7878787878787878787878787878787878787800"
+      },
+      {
+        "preset": "SoundcoreSignature",
+        "body": "00007878787878787878780078787878787878787800"
+      },
+      {
+        "preset": "Acoustic",
+        "body": "0100a0828c8ca0a0a08c78007d767b787c7a7c797800"
+      },
+      {
+        "preset": "BassBooster",
+        "body": "7e7ea09682787878787878007b7a7878787878787800"
+      },
+      {
+        "preset": "BassReducer",
+        "body": "0300505a6e7878787878780075767878787878787800"
+      },
+      {
+        "preset": "Classical",
+        "body": "040096966464788c96a078007a7c7477787a797d7800"
+      },
+      {
+        "preset": "Podcast",
+        "body": "05005a8ca0a0968c78647800747b7a7b797a78757800"
+      },
+      {
+        "preset": "Deep",
+        "body": "07008c8296968c64504678007a777b797b7676737800"
+      },
+      {
+        "preset": "Dance",
+        "body": "06008c5a6e828c8c825a78007c7378787a797b737800"
+      },
+      {
+        "preset": "Electronic",
+        "body": "0800968c648c828c969678007a7b737d777a7a7b7800"
+      },
+      {
+        "preset": "Flat",
+        "body": "090064646e7878786464780076777778787976767800"
+      },
+      {
+        "preset": "HipHop",
+        "body": "0a008c966e6e8c6e8c967800797c76767d747b7b7800"
+      },
+      {
+        "preset": "Jazz",
+        "body": "0b008c8c6464788c96a07800797b7577787a797d7800"
+      },
+      {
+        "preset": "Latin",
+        "body": "0c0078786464647896aa78007879767776787a7e7800"
+      },
+      {
+        "preset": "Lounge",
+        "body": "0d006e8ca09678648c827800767a7b7a78747c787800"
+      },
+      {
+        "preset": "Piano",
+        "body": "0e007896968ca0aa96a07800777b7a787b7c787d7800"
+      },
+      {
+        "preset": "Pop",
+        "body": "0f006e829696826e645a780077797a7a797777757800"
+      },
+      {
+        "preset": "Rock",
+        "body": "1100968c6e6e8296a0aa78007a7a7677797a7a7e7800"
+      },
+      {
+        "preset": "RnB",
+        "body": "1000b48c64648c9696a078007e7976757b7a797d7800"
+      },
+      {
+        "preset": "SmallSpeakers",
+        "body": "1200a0968278645a505078007b7a7879767675747800"
+      },
+      {
+        "preset": "SpokenWord",
+        "body": "13005a64828c8c82785a780076767a797a7879747800"
+      },
+      {
+        "preset": "TrebleReducer",
+        "body": "1500787878645a50503c780078787976777577717800"
+      },
+      {
+        "preset": "TrebleBooster",
+        "body": "14006464646e828c8ca0780076777777797a787d7800"
+      },
+      {
+        "preset": "SpokenWord",
+        "body": "13005a64828c8c82785a780076767a797a7879747800"
+      },
+      {
+        "preset": "Rock",
+        "body": "1100968c6e6e8296a0aa78007a7a7677797a7a7e7800"
+      }
+    ],
+    "sound_mode_writes": [
+      "0000000001fc",
+      "0200000001fc",
+      "0100000001fc"
     ]
   }
 }

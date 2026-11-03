@@ -47,8 +47,14 @@
           134
         ],
         "digits": 1,
-        "presets": "common"
-      }
+        "presets": "a3005",
+        "checked": "recording",
+        "note": "Recorded from the Soundcore app (data/soundcore/reports/A3004_05.08.txt, GitHub issue #11): 02 83 with the preset, the curve and its correction, every byte as PairFree builds it. Every preset is the A3005's set (Bass Booster as 7E 7E), not OpenSCQ30's common set, whose Rock differs."
+      },
+      "reports": [
+        "data/soundcore/reports/A3004_05.08.txt"
+      ],
+      "notes": "The Soundcore app writes the noise mode as six bytes: the four sound mode bytes, then 01 FC (the state holds two bytes there, 8D FC before the app's first write). PairFree sends OpenSCQ30's four; whether the Q20i takes them is not known yet."
     },
     {
       "model": "A3005",

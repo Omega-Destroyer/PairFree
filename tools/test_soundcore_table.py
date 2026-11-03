@@ -22,7 +22,7 @@ class SoundcoreTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.devices), s["models"])
-        self.assertEqual(["AeroClip", "Sleep A20", "Space A40"], s["tested"], "the models with a recording or a user's report")
+        self.assertEqual(["AeroClip", "Q20I", "Sleep A20", "Space A40"], s["tested"], "the models with a recording or a user's report")
 
     def test_a_recording_adds_what_openscq30_lacks(self):
         cells = self.cells("A6611")

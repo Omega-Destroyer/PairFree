@@ -614,14 +614,14 @@ class SoundcoreEqualizerTest {
         for (spec in SoundcoreEqSpec.ALL) {
             val expected = when {
                 spec.model == "A3936" -> "hardware"
-                // A user's recording of the Soundcore app, rebuilt in SoundcoreSleepA20Test.
-                spec.model == "A6611" -> "recording"
+                // Users' recordings of the Soundcore app, rebuilt in SoundcoreSleepA20Test.
+                spec.model == "A6611" || spec.model == "A3004" -> "recording"
                 spec.model in tested -> "openscq30_tests"
                 else -> null
             }
             assertEquals(expected, spec.checked, spec.model)
         }
-        assertEquals(13, SoundcoreEqSpec.ALL.count { it.checked != null })
+        assertEquals(14, SoundcoreEqSpec.ALL.count { it.checked != null })
     }
 
     @Test
@@ -1020,6 +1020,24 @@ class SoundcoreSleepA20Test {
         val spec = SoundcoreEqSpec.of("A6611")!!
         val steps = rec.getValue("eq").jsonArray.map { it.jsonObject }
         assertEquals(13, steps.size)
+        for (step in steps) {
+            val target = step["preset"]?.let { SoundcoreEqualizer.forPreset(spec, spec.preset(it.jsonPrimitive.content)!!) }
+                ?: SoundcoreEqualizer.forCustom(spec, ints(step, "bands"))!!
+            val packets = SoundcoreEqualizer.write(spec, state, target).map { "%04x".format(it.command) to it.body.hex() }
+            assertEquals(listOf("0283" to step.str("body")), packets, step.toString())
+        }
+    }
+
+    /** GitHub issue #11: a Q20i's every EQ write from the Soundcore app, Bass Booster as preset 7E 7E. */
+    @Test
+    fun rebuildsTheQ20isRecordedEqWrites() {
+        val q20i = vectors.getValue("a3004_recording").jsonObject
+        val spec = SoundcoreEqSpec.of("A3004")!!
+        val state = SoundcoreState.parse(SoundcoreLayout.of("A3004")!!, q20i.str("state").hexBytes())!!
+        assertEquals("05.08", state.firmware)
+        assertEquals(0x11, SoundcoreEqualizer.read(spec, state)!!.preset, "Rock, the last preset the user picked")
+        val steps = q20i.getValue("eq").jsonArray.map { it.jsonObject }
+        assertEquals(25, steps.size)
         for (step in steps) {
             val target = step["preset"]?.let { SoundcoreEqualizer.forPreset(spec, spec.preset(it.jsonPrimitive.content)!!) }
                 ?: SoundcoreEqualizer.forCustom(spec, ints(step, "bands"))!!

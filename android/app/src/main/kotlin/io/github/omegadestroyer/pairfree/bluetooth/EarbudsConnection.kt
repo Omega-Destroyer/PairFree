@@ -11,6 +11,7 @@ import android.os.SystemClock
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FrameParser
 import io.github.omegadestroyer.pairfree.protocol.Models
@@ -22,6 +23,7 @@ import io.github.omegadestroyer.pairfree.protocol.Wire
 import io.github.omegadestroyer.pairfree.protocol.apple.AapPacket
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleOpcode
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
+import io.github.omegadestroyer.pairfree.protocol.apple.AppleWire
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblAdvert
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
@@ -110,7 +112,8 @@ sealed interface LinkStatus {
 
     /** The channel closed after being open; trying again, with the last state kept. */
     data class Reconnecting(val device: Paired) : LinkStatus
-    data class Failed(val device: Paired, val reason: Reason) : LinkStatus
+    /** [attempt] is what PairFree tried, for the connection report the user can copy (issue #3). */
+    data class Failed(val device: Paired, val reason: Reason, val attempt: ConnectionReport.Attempt? = null) : LinkStatus
 
     /**
      * [NO_SCAN_PERMISSION]: JBL earbuds that did not answer on their classic address, which PairFree may not
@@ -150,6 +153,23 @@ class EarbudsConnection(
     private var session: CoroutineScope? = null   // everything one connection runs; cancelled on disconnect
     private var link: ControlLink? = null
     private var attempt: Any? = null      // the current connection attempt; null after disconnect()
+
+    // What the current attempt tried, for the connection report: the steps from [note], timed from [startedAt],
+    // and the device it is for. The links' own lines count only while a channel is opening ([opening]).
+    private val steps = mutableListOf<String>()
+    private var startedAt = 0L
+    private var opening = false
+    private var reportDevice: BluetoothDevice? = null
+
+    /** [log], and while a channel opens, the links' lines as steps of the report too. */
+    private val linkLog: (String) -> Unit = { line ->
+        log?.invoke(line)
+        if (opening) note(line)
+    }
+
+    private fun note(step: String) {
+        synchronized(steps) { steps += "+${SystemClock.elapsedRealtime() - startedAt} $step" }
+    }
     private var replies: Map<Command, ByteArray> = emptyMap()
     private var soundcore: SoundcoreSession? = null   // set while connected to Soundcore earbuds
 
@@ -260,6 +280,9 @@ class EarbudsConnection(
         }
         val token = Any()
         attempt = token
+        synchronized(steps) { steps.clear() }
+        startedAt = SystemClock.elapsedRealtime()
+        reportDevice = remote
         _status.value = LinkStatus.Connecting(device)
         val s = CoroutineScope(scope.coroutineContext + Job(scope.coroutineContext[Job]))
         session = s
@@ -270,13 +293,16 @@ class EarbudsConnection(
             var everOpen = false
             var retries = 0
             while (true) {
+                opening = true
                 val opened = try {
                     open(remote, device)
                 } catch (_: ScanNotAllowed) {
+                    note("stopped: no permission to scan for it")
                     fail(token, device, LinkStatus.Reason.NO_SCAN_PERMISSION)
                     return@launch
                 } catch (e: IOException) {
                     log?.invoke("could not open: ${e.message}")
+                    note("failed: ${ConnectionReport.describe(e)}")
                     if (e is NeedsNewerAndroid && !everOpen) {
                         fail(token, device, LinkStatus.Reason.NEEDS_NEWER_ANDROID)
                         return@launch
@@ -288,12 +314,16 @@ class EarbudsConnection(
                     fail(token, device, if (everOpen) LinkStatus.Reason.LOST else LinkStatus.Reason.COULD_NOT_OPEN)
                     return@launch
                 } catch (e: SecurityException) {
+                    note("failed: ${ConnectionReport.describe(e)}")
                     fail(token, device, LinkStatus.Reason.NO_PERMISSION)
                     return@launch
+                } finally {
+                    opening = false
                 }
                 everOpen = true
                 _status.value = LinkStatus.Connected(device)
                 log?.invoke("open")
+                note("open")
                 val openedAt = SystemClock.elapsedRealtime()
                 when (device.brand) {
                     Brand.SOUNDCORE -> serveSoundcore(opened, device)
@@ -307,6 +337,7 @@ class EarbudsConnection(
                     Brand.SOUNDPEATS -> serve(opened, device)
                 }
                 log?.invoke("closed")
+                note("closed after ${(SystemClock.elapsedRealtime() - openedAt) / 1000} s")
                 opened.close()
                 // A channel that keeps closing straight away does not earn fresh retries.
                 if (SystemClock.elapsedRealtime() - openedAt >= STABLE_MS) retries = 0
@@ -336,26 +367,31 @@ class EarbudsConnection(
         // Airoha earbuds paired over LE Audio are an LE device: JBL's app reaches them over Airoha's LE service at that
         // address, whatever the model's usual connection (docs/jbl/PROTOCOL.md section 10).
         if (airoha && ctx != null && remote.type == BluetoothDevice.DEVICE_TYPE_LE) {
-            return GattLink(ctx, remote, log, uuids = GattLink.AIROHA).also { link = it }.apply { connect() }
+            note("Airoha's LE service on the LE address")
+            return GattLink(ctx, remote, linkLog, uuids = GattLink.AIROHA).also { link = it }.apply { connect() }
         }
         if (model?.gatt != true || ctx == null) {
             val uuid = if (airoha) JblRace.SPP_UUID else device.service ?: Wire.SPP_UUID
-            return SppLink(remote, log, uuid).also { link = it }.apply { connect() }
+            note("serial channel $uuid")
+            return SppLink(remote, linkLog, uuid).also { link = it }.apply { connect() }
         }
         // JBL's protocol 4 security modes add connection steps (docs/jbl/PROTOCOL.md section 7); modes 1 and 3 use
         // the raw characteristic, and mode 3 writes the phone's name checksum to it first.
         val rawNotify = model.security == 1 || model.security == 3
         val preamble = if (model.security == 3) jblHostNameCrc() else null
         val uuids = if (airoha) GattLink.AIROHA else GattLink.HARMAN
-        fun gatt(d: BluetoothDevice) = GattLink(ctx, d, log, rawNotify = rawNotify, rawPreamble = preamble, uuids = uuids).also { link = it }
+        fun gatt(d: BluetoothDevice) = GattLink(ctx, d, linkLog, rawNotify = rawNotify, rawPreamble = preamble, uuids = uuids).also { link = it }
         try {
+            note("LE (GATT) on the classic address, security mode ${model.security}")
             return gatt(remote).apply { connect() }
         } catch (e: IOException) {
             log?.invoke("LE on the classic address: ${e.message}")
+            note("failed: ${ConnectionReport.describe(e)}")
         }
         currentCoroutineContext().ensureActive()   // not after a disconnect closed the first try
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
-        val found = adapter?.let { JblFinder(it, log).find(model, device.address) } ?: throw IOException("not found over LE")
+        val found = adapter?.let { JblFinder(it, linkLog).find(model, device.address) } ?: throw IOException("not found over LE")
+        note("LE (GATT) on the address the scan found")
         return gatt(found).apply { connect() }
     }
 
@@ -381,9 +417,13 @@ class EarbudsConnection(
      */
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private suspend fun openApple(remote: BluetoothDevice): ControlLink {
-        if (!AppleSupport.opensChannel()) throw NeedsNewerAndroid()
+        if (!AppleSupport.opensChannel()) {
+            note("not tried: this phone's Bluetooth stack is not on LibrePods' list")
+            throw NeedsNewerAndroid()
+        }
         val a = adapter ?: throw IOException("no Bluetooth adapter")
-        return AppleLink(a, remote, log).also { link = it }.apply { connect() }
+        note("L2CAP PSM 0x%04x".format(AppleWire.PSM))
+        return AppleLink(a, remote, linkLog).also { link = it }.apply { connect() }
     }
 
     /** AirPods on a phone whose Bluetooth stack LibrePods' list does not include. */
@@ -1155,7 +1195,44 @@ class EarbudsConnection(
         attempt = null
         link?.close()
         link = null
-        _status.value = LinkStatus.Failed(device, reason)
+        _status.value = LinkStatus.Failed(device, reason, attemptReport(device, reason))
+    }
+
+    /** What the failed attempt tried, with the facts that tell one phone and device from another (no serial, no full address). */
+    @SuppressLint("MissingPermission") // only after connecting, which needs the permission; a refusal is caught
+    private fun attemptReport(device: Paired, reason: LinkStatus.Reason): ConnectionReport.Attempt {
+        val remote = reportDevice
+        fun known(read: () -> String): String = try { read() } catch (e: SecurityException) { "not allowed to read" }
+        val type = remote?.let { r ->
+            known {
+                when (r.type) {
+                    BluetoothDevice.DEVICE_TYPE_CLASSIC -> "classic"
+                    BluetoothDevice.DEVICE_TYPE_LE -> "LE only"
+                    BluetoothDevice.DEVICE_TYPE_DUAL -> "classic and LE"
+                    else -> "unknown"
+                }
+            }
+        } ?: "unknown"
+        val bond = remote?.let { r ->
+            known {
+                when (r.bondState) {
+                    BluetoothDevice.BOND_BONDED -> "paired"
+                    BluetoothDevice.BOND_BONDING -> "pairing"
+                    else -> "not paired"
+                }
+            }
+        } ?: "unknown"
+        val services = remote?.let { r -> known { r.uuids?.joinToString(", ") { it.toString() } ?: "none cached" } } ?: "unknown"
+        val facts = listOf(
+            "Brand" to device.brand.name.lowercase(),
+            "Model" to (device.model ?: "not known before the channel opens"),
+            "Service" to (device.service ?: "the brand's default"),
+            "Failure" to reason.name.lowercase().replace('_', ' '),
+            "Device" to "$type, $bond",
+            "Its services" to services,
+            "Phone" to "${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}), build ${Build.ID}",
+        )
+        return ConnectionReport.Attempt(device.name, facts, synchronized(steps) { steps.toList() })
     }
 
     companion object {

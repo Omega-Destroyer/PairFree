@@ -537,6 +537,8 @@
     <string name="status_battery_one">Battery %1$s</string>
     <string name="copy_report">Copy device report</string>
     <string name="report_copied">Copied. Paste it into a device report issue on the project page to help support these earbuds.</string>
+    <string name="copy_connection_report">Copy connection report</string>
+    <string name="connection_report_copied">Copied. Paste it into a new issue on the project page, so we can see why the connection failed.</string>
     <string name="factory_reset">Factory reset</string>
     <string name="factory_reset_title">Factory reset the earbuds?</string>
     <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this phone; then pair them again in the Bluetooth settings.</string>

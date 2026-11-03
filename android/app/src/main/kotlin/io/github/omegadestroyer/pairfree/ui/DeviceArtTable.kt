@@ -945,7 +945,6 @@ internal val ART_BY_CODE: Map<String, DeviceArt> = mapOf(
     "S20Ultra" to DeviceArt(R.drawable.device_1more_s20_nova_bud, R.drawable.device_generic_case),
     "S21" to DeviceArt(R.drawable.device_1more_s21_bud, R.drawable.device_generic_case),
     "S21Air" to DeviceArt(R.drawable.device_1more_s20_nova_bud, R.drawable.device_generic_case),
-    "S22" to DeviceArt(R.drawable.device_1more_s22_bud, R.drawable.device_generic_case),
     "S25" to DeviceArt(R.drawable.device_1more_s25_bud, R.drawable.device_generic_case),
     "S27" to DeviceArt(R.drawable.device_generic_bud, R.drawable.device_air6_pro_case),
     "S32" to DeviceArt(R.drawable.device_generic_bud, R.drawable.device_air6_pro_case),

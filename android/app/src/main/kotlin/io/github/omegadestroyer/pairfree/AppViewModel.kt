@@ -694,7 +694,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
                 appendLine("Brand:           QCY")
                 val model = session.model
                 appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (vendor id ${model?.code ?: "unknown"})")
@@ -884,7 +884,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         appendLine("$ISSUES to help check")
         appendLine("this model. It holds no serial number, address or other personal data.")
         appendLine()
-        appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+        appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
         appendLine("Brand:           1MORE")
         val model = session.model
         appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (${model?.model ?: "model unknown"})")

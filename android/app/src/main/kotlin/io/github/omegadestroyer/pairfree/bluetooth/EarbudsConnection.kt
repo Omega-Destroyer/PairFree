@@ -468,12 +468,14 @@ class EarbudsConnection(
         val ctx = context ?: throw IOException("no context for Bluetooth LE")
         val found = qcyFound ?: run {
             if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
-            adapter?.let { QcyFinder(it, log).find(device.address) } ?: throw NotFound()
+            note("scanning for QCY's advert")
+            adapter?.let { QcyFinder(it, linkLog).find(device.address) } ?: throw NotFound()
         }
         qcyFound = found
         val jieli = QcyModels.of(found.advert.vendorId)?.protocol.let { it == QcyProtocol.JIELI || it == QcyProtocol.JIELI_CUSTOM }
         val service = if (jieli) JieliWire.SERVICE else QcyWire.SERVICE
-        return EnvelopeGattLink(ctx, found.device, java.util.UUID.fromString(service), log).also { link = it }.apply { connect() }
+        note("LE (GATT) service $service")
+        return EnvelopeGattLink(ctx, found.device, java.util.UUID.fromString(service), linkLog).also { link = it }.apply { connect() }
     }
 
     /** QCY earbuds whose advert a scan did not find. */

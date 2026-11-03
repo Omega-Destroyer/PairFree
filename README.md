@@ -94,6 +94,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
 | [QCY](docs/devices/qcy.md) | 171 | — |
 | [1MORE](docs/devices/1more.md) | 39 | — |
+| **Total: 11 brands** | **541** | **10 tried** |
 <!-- devices-summary:end -->
 
 **LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks

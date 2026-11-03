@@ -31,6 +31,11 @@ class DevicePages(unittest.TestCase):
         for brand in device_pages.brands():
             self.assertTrue(brand.PAGE.exists(), brand.PAGE)
             self.assertIn(f"]({brand.PAGE.relative_to(ROOT).as_posix()})", summary)
+        # The last row adds the brands up (owner, 2026-11-03).
+        total = summary.split("\n")[-2]
+        brands = device_pages.brands()
+        self.assertEqual(f"| **Total: {len(brands)} brands** | **{sum(b.summary()['models'] for b in brands)}** | "
+                         f"**{sum(len(b.summary()['tested']) for b in brands)} tried** |", total)
         self.assertEqual(sorted(p.name for p in device_pages.PAGES.glob("*.md")),
                          sorted(b.PAGE.name for b in device_pages.brands()), "a page for every brand, and no other")
 

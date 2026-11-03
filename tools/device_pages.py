@@ -42,16 +42,19 @@ def brands():
 
 def summary():
     """One row per brand: its page, how many models PairFree knows, and which were tried on real earbuds."""
-    rows = []
+    rows, models, tried = [], 0, 0
     for brand in brands():
         s = brand.summary()
         page = brand.PAGE.relative_to(ROOT).as_posix()
         rows.append(f"| [{s['brand']}]({page}) | {s['models']} | {', '.join(s['tested']) or '—'} |")
+        models += s["models"]
+        tried += len(s["tested"])
     return "\n".join([
         START,
         "| Brand | Models | Tried on real earbuds |",
         "|-------|--------|-----------------------|",
         *rows,
+        f"| **Total: {len(rows)} brands** | **{models}** | **{tried} tried** |",
         END,
     ])
 

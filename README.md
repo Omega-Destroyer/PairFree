@@ -91,7 +91,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [JBL](docs/devices/jbl.md) | 102 | Live Buds 3 |
 | [AirPods and Beats](docs/devices/apple.md) | 30 | — |
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | — |
-| [Google Pixel Buds](docs/devices/pixel.md) | 5 | — |
+| [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
 <!-- devices-summary:end -->
 
 **LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks

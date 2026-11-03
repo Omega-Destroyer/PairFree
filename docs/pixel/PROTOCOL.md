@@ -15,7 +15,9 @@ Sources:
   29ca74d): recordings of a Pixel Buds Pro 2 (firmware release_5.203) and a reading of an older build of the same app.
   AGPL, so facts only: the service and method ids it saw on the wire, the EQ write, field names it confirmed.
 
-No Pixel Buds have been tried with PairFree. The Pixel Buds Pro family's messages have been seen on real earbuds by
+One model has been tried with PairFree: a user's Pixel Buds Pro (firmware release_5.9_signed, GitHub issue #4,
+`data/pixel/reports/allegro_release_5.9.txt`) answered every setting the app's table gives it and status 2 for the
+five it lacks (27, 28, 29, 37, 38), as PairFree expects. The Pixel Buds Pro family's messages have been seen on real earbuds by
 both projects above; the Pixel Buds (2020) and A-Series' transport by nobody.
 
 ## 1. Transports and finding Pixel Buds

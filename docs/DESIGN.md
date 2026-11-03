@@ -247,7 +247,14 @@ cycles through (at least one stays on), and Reset gestures, each only where the 
 
 Copy device report puts the same information as `tools/probe.py` on the clipboard,
 so anyone can contribute a new model from their phone. Factory reset asks for
-confirmation every time.
+confirmation every time. A device report's Bluetooth name keeps the model's part and masks the owner's
+(`ReportPrivacy`): "Tyler's Pixel Buds Pro" becomes "XXX's Pixel Buds Pro".
+
+When the controls cannot be reached, for any brand, the message on the connect screen has a Copy
+connection report button (GitHub issue #3): which channel PairFree tried and how each try ended
+(the exception and how long it took), the device's type, pairing state and cached services, and the
+phone's make, Android version and build. Release builds log nothing, so this is the only way to see why
+a connection failed. Addresses keep only their first three bytes, and no serial number is read.
 
 ### Settings only one brand has
 

@@ -1,6 +1,8 @@
 package io.github.omegadestroyer.pairfree.ui
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -139,7 +141,23 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
         Text(stringResource(R.string.connect_title), style = Studio.type.title)
         Text(stringResource(R.string.connect_hint), style = Studio.type.small, color = Studio.colors.secondaryText)
         failure(status)?.let { message ->
-            Panel { Text(message, color = Studio.colors.destructive) }
+            Panel {
+                Text(message, color = Studio.colors.destructive)
+                // What PairFree tried, for any brand, so a failure can be looked into (issue #3).
+                vm.connectionReport()?.let { report ->
+                    var copied by remember(status) { mutableStateOf(false) }
+                    val label = stringResource(R.string.copy_connection_report)
+                    StudioButton(
+                        label,
+                        {
+                            context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText(label, report))
+                            copied = true
+                        },
+                        Modifier.fillMaxWidth(),
+                    )
+                    if (copied) Text(stringResource(R.string.connection_report_copied), style = Studio.type.small, color = Studio.colors.secondaryText)
+                }
+            }
         }
         when {
             !bluetoothOn -> Text(stringResource(R.string.bluetooth_off))

@@ -33,7 +33,7 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
     device: BluetoothDevice,
     private val log: ((String) -> Unit)? = null,
 ) : ControlLink {
-    private val socket: BluetoothSocket = l2capSocket(adapter, device)
+    private val socket: BluetoothSocket = l2capSocket(adapter, device, log)
     private val writeLock = Mutex()
 
     /** Opens the channel, or gives up after [CONNECT_MS] as LibrePods does. */
@@ -41,6 +41,7 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
     override suspend fun connect() = coroutineScope {
         val watchdog = launch {
             delay(CONNECT_MS)
+            log?.invoke("no channel after $CONNECT_MS ms: closing the socket")
             close()
         }
         try {
@@ -88,7 +89,7 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
          * An L2CAP socket on [AppleWire.PSM], authenticated and encrypted, through the first of
          * BluetoothSocket's hidden constructors that this Android version has (LibrePods' list, newest first).
          */
-        private fun l2capSocket(adapter: BluetoothAdapter, device: BluetoothDevice): BluetoothSocket {
+        private fun l2capSocket(adapter: BluetoothAdapter, device: BluetoothDevice, log: ((String) -> Unit)?): BluetoothSocket {
             val uuid = ParcelUuid.fromString(AppleWire.SERVICE_UUID)
             val psm = AppleWire.PSM
             val signatures = listOf(
@@ -99,12 +100,13 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
                 arrayOf(TYPE_L2CAP, true, true, device, psm, uuid),
             )
             var last: Exception? = null
-            for (args in signatures) {
+            for ((i, args) in signatures.withIndex()) {
                 try {
                     val types = args.map { it::class.javaPrimitiveType ?: it::class.java }.toTypedArray()
                     val constructor = BluetoothSocket::class.java.getDeclaredConstructor(*types)
                     constructor.isAccessible = true
-                    return constructor.newInstance(*args) as BluetoothSocket
+                    return (constructor.newInstance(*args) as BluetoothSocket)
+                        .also { log?.invoke("socket from BluetoothSocket's hidden constructor ${i + 1} of ${signatures.size}") }
                 } catch (e: ReflectiveOperationException) {
                     last = e
                 } catch (e: SecurityException) {

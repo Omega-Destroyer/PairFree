@@ -24,6 +24,7 @@ import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
 import io.github.omegadestroyer.pairfree.protocol.SoundpeatsSettings
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.protocol.CurveMatch
 import io.github.omegadestroyer.pairfree.protocol.DeviceReport
 import io.github.omegadestroyer.pairfree.protocol.EqCapture
@@ -32,6 +33,7 @@ import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.RecordedBrand
 import io.github.omegadestroyer.pairfree.protocol.RecordingReport
+import io.github.omegadestroyer.pairfree.protocol.ReportPrivacy
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
@@ -481,6 +483,17 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     }
 
     /**
+     * The connection report for the last failed attempt, any brand (issue #3), or null when nothing failed: what PairFree
+     * tried and how each try ended, which release builds keep nowhere else.
+     */
+    fun connectionReport(): String? {
+        val attempt = (connection.status.value as? LinkStatus.Failed)?.attempt ?: return null
+        val app = getApplication<Application>()
+        val version = app.packageManager.getPackageInfo(app.packageName, 0).versionName
+        return ConnectionReport.text(ConnectionReport.Attempt(attempt.name, listOf("App" to "PairFree $version") + attempt.facts, attempt.steps), ISSUES)
+    }
+
+    /**
      * A complete, pasteable capture of what the earbuds answered, so a model can be added
      * from a user's phone with no developer mode and no Bluetooth snooping. On connect the
      * app sends every read it knows (Requests.ON_CONNECT); this formats the replies the same
@@ -499,7 +512,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Bluetooth name:  ${SamsungModels.maskedName(device?.name.orEmpty())}")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
                 appendLine("Brand:           Samsung")
                 appendLine("Model:           ${session.model.model} (${session.model.name})")
                 appendLine("Found by:        ${device?.modelId?.let { "model id $it in the service list" } ?: "Bluetooth name"}")
@@ -523,7 +536,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
                 appendLine("Brand:           Bose")
                 val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
                 appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product $id, variant ${session.variant ?: "?"})")
@@ -546,7 +559,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
                 appendLine("Brand:           Google Pixel Buds")
                 appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (device type ${session.deviceType ?: "unknown"})")
                 appendLine("Transport:       ${session.transport.name.lowercase()}${session.channel?.let { " (channel $it)" }.orEmpty()}")
@@ -570,7 +583,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
                 appendLine("Brand:           Nothing")
                 appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product ${session.productId ?: "unknown"})")
                 appendLine("Firmware:        ${session.firmware ?: "unknown"}")
@@ -614,7 +627,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
                 appendLine("Brand:           JBL")
                 val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
                 appendLine("Model:           ${session.model.name} (product $id, ${if (session.model.gatt) "Bluetooth LE" else "serial channel"})")
@@ -641,7 +654,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
                 appendLine("Brand:           Sony")
                 appendLine("Model:           ${session.modelName ?: session.model?.name ?: "unknown"}")
                 appendLine("Firmware:        ${session.firmware ?: "unknown"}")
@@ -667,7 +680,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help add support")
                 appendLine("for this model. The serial number's Bluetooth address is masked.")
                 appendLine()
-                appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
                 appendLine("Brand:           Soundcore")
                 appendLine("Model:           ${session.model}")
                 appendLine("Service:         ${device?.service ?: "serial port"}")
@@ -688,7 +701,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             appendLine("$ISSUES to help add support")
             appendLine("for this model. It holds no account, address or other personal data.")
             appendLine()
-            appendLine("Bluetooth name:  ${device?.name.orEmpty()}")
+            appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
             appendLine("Firmware:        ${firmware?.text ?: "unknown"}")
             appendLine("Firmware code:   ${firmware?.code ?: "unknown"}")
             appendLine("App:             PairFree $version (SPP)")

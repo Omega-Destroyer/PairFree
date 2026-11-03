@@ -951,6 +951,7 @@ class EarbudsConnection(
     private fun publish(session: QcyControl) {
         _state.value = session.state
         _settings.value = session.groups
+        _qcyEq.value = session.eq
     }
 
     /** Queues QCY messages on the open channel, then [READ_BACK_MS] later the requests that confirm them. False when there is none. */

@@ -220,3 +220,12 @@ Firmware update (`UPDT_*`), the test command and the logs are marked `never_send
 - Multipoint, and the voice guidance volume.
 - Whether every model takes a key, power-off or connection change as Sony's app writes it: no
   recording of the app confirms them yet.
+- Speakers (future work, as for Bose: owner, 2026-10-30). `devices.json` names no Sony speaker, but
+  PairFree finds one by its RFCOMM service and reads it as it would headphones. A user's ULT FIELD 5
+  (firmware 5600) and ULT FIELD 3 (4100) (`data/sony/reports/`, GitHub issues #14 and #15, PairFree
+  0.3.0) answered on table set 2 with one battery (`23 00 5A 03`: 90 %) and the connection mode
+  (`E7 00 00`), and listed the speaker functions PairFree does not read: sound effect (`54`), custom EQ
+  (`55`), sound field optimisation (`83`), stamina (`2E`), caring charge (`2C`), Bluetooth standby
+  (`2D`) and the playback controller (`A1`, `A4`). Power off (`23`) and the MTK firmware update (`36`)
+  are listed too and stay never sent. Adding speakers would mean a `speaker` kind in `devices.json`,
+  the ULT FIELD and SRS names Sony's app lists, and those functions' layouts from Sony's app.

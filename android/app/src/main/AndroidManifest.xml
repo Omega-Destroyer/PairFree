@@ -4,9 +4,10 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
-    <!-- JBL only (docs/DESIGN.md, Permissions): most JBL models are controlled over Bluetooth LE,
-         and when their LE side does not answer on the paired address, PairFree looks for its
-         advert. Asked for only when the user opens a JBL model; never used for location. -->
+    <!-- JBL and QCY only (docs/DESIGN.md, Permissions): most JBL models are controlled over
+         Bluetooth LE, and when their LE side does not answer on the paired address, PairFree looks
+         for its advert; QCY's always need their advert, which names the model and the LE side.
+         Asked for only when the user opens one of them; never used for location. -->
     <uses-permission
         android:name="android.permission.BLUETOOTH_SCAN"
         android:usesPermissionFlags="neverForLocation" />

@@ -46,7 +46,11 @@ These came from the owner and are not up for trade.
   their settings over Bluetooth LE, and when their LE side does not answer on the paired
   address, the only way to find it is its advert (`docs/jbl/PROTOCOL.md` section 3). It is
   asked for only when the user opens a JBL model, the scan lasts at most 10 s and keeps
-  nothing, and connecting goes ahead without it where the direct way works. Nothing else.
+  nothing, and connecting goes ahead without it where the direct way works. The owner allowed the
+  same for QCY on 2026-10-18 ("still related to a Bluetooth permission"): QCY's earbuds are
+  controlled over Bluetooth LE, and their advert names both the model and the LE side to connect to
+  (`docs/qcy/PROTOCOL.md` section 2). Asked for only when the user opens QCY earbuds, under the same
+  terms. Nothing else.
 
 ## Looks
 
@@ -470,7 +474,9 @@ Planned, not yet designed:
   `tools/device_art/soundpeats/<model>.json`; the H3 and Air5 Pro+ are in the script itself.
 - Other brands' drawings are traced the same way from each brand's own renders and kept in
   `tools/device_art/<brand>/<drawing>.json`, with the Bluetooth names and model codes each one
-  covers; models that look alike share one.
+  covers; models that look alike share one. 1MORE's earbuds are traced from the line drawings
+  1MORE's app shows for each model, filled in, with the touch area as the accent. A model code
+  that is also a SoundPEATS firmware code (1MORE's S32) is left to the Bluetooth name.
 - Headphones are drawn whole; ear hooks and clips as one earbud.
 - Models without art of their own, or a part no photo shows clearly, use a generic
   earbud or case. The app picks drawings by Bluetooth name, then firmware code.

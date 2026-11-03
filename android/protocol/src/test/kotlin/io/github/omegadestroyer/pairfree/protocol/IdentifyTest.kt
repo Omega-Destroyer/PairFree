@@ -49,6 +49,8 @@ class IdentifyTest {
             Maker.JBL to "data/jbl/devices.json",
             Maker.NOTHING to "data/nothing/devices.json",
             Maker.PIXEL to "data/pixel/devices.json",
+            Maker.QCY to "data/qcy/devices.json",
+            Maker.ONEMORE to "data/1more/devices.json",
         )
         val wrong = mutableListOf<String>()
         for ((maker, path) in tables) {

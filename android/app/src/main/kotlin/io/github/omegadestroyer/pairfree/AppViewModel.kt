@@ -18,6 +18,8 @@ import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
 import io.github.omegadestroyer.pairfree.eq.PixelEqTarget
+import io.github.omegadestroyer.pairfree.eq.OneMoreEqTarget
+import io.github.omegadestroyer.pairfree.eq.QcyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
@@ -38,7 +40,10 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreEq
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
+import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyEq
@@ -108,6 +113,22 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             return
         }
         if (device.brand != Brand.NOTHING) nothingEq = null
+        if (device.brand != Brand.QCY) qcyEq = null
+        if (device.brand != Brand.ONEMORE) oneMoreEq = null
+        if (device.brand == Brand.ONEMORE) {
+            soundcoreEq = null
+            samsungEq = null
+            sonyEq = null
+            openOneMoreEq(device, model)
+            return
+        }
+        if (device.brand == Brand.QCY) {
+            soundcoreEq = null
+            samsungEq = null
+            sonyEq = null
+            openQcyEq(device, model)
+            return
+        }
         if (device.brand == Brand.NOTHING) {
             soundcoreEq = null
             samsungEq = null
@@ -173,6 +194,56 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val target = pixelEq ?: return
         val (profile, whole) = target.reported(gains)
         equalizer.reported(profile, whole)
+    }
+
+    /** The 1MORE EQ while the Sound tab shows 1MORE earbuds whose model has presets or a custom EQ. */
+    private var oneMoreEq: OneMoreEqTarget? = null
+
+    /** 1MORE models' EQ is in their table; the Sound tab opens it at once and follows what the earbuds report. */
+    private fun openOneMoreEq(device: Paired, model: Model?) {
+        val session = connection.oneMoreSession
+        val m = session?.model
+        if (session == null || m == null || (m.eqPresets.isEmpty() && m.eqBands == null)) {
+            oneMoreEq = null
+            equalizer.open(device.address, null)
+            return
+        }
+        if (oneMoreEq?.session === session && equalizer.state.value != null) return
+        val target = OneMoreEqTarget(session)
+        oneMoreEq = target
+        equalizer.open(device.address, model, target.layout, target)
+        connection.oneMoreEq.value?.let(::reportOneMoreEq)
+    }
+
+    private fun reportOneMoreEq(eq: OneMoreEq) {
+        val target = oneMoreEq ?: return
+        val current = equalizer.state.value?.setting?.gains ?: return
+        val (profile, gains) = target.reported(eq, current) ?: return
+        equalizer.reported(profile, gains)
+    }
+
+    /** The QCY EQ while the Sound tab shows QCY earbuds that reported an EQ PairFree can set. */
+    private var qcyEq: QcyEqTarget? = null
+
+    /** QCY earbuds report their EQ after they connect; the Sound tab's EQ opens once they have, over the bands they report. */
+    private fun openQcyEq(device: Paired, model: Model?) {
+        val session = connection.qcySession
+        val eq = connection.qcyEq.value
+        if (session == null || eq == null) {
+            qcyEq = null
+            equalizer.open(device.address, null)
+            return
+        }
+        qcyEq?.let { if (it.session === session && it.freqs == eq.freqs && equalizer.state.value != null) return }
+        val target = QcyEqTarget(session, eq)
+        qcyEq = target
+        equalizer.open(device.address, model, target.layout, target)
+        reportQcyEq(eq)
+    }
+
+    private fun reportQcyEq(eq: QcyEq) {
+        val gains = qcyEq?.reported(eq) ?: return
+        equalizer.reported(null, gains)
     }
 
     /** The Nothing EQ while the Sound tab shows Nothing or CMF earbuds whose model PairFree knows. */
@@ -283,6 +354,24 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 if (device.brand != Brand.PIXEL || eq == null) return@collect
                 openPixelEq(device, modelOf(device, connection.state.value))
                 reportPixelEq(eq)
+            }
+        }
+        // 1MORE earbuds report their preset and curve after connecting: follow what they hold.
+        viewModelScope.launch {
+            connection.oneMoreEq.collect { eq ->
+                val device = connectedDevice() ?: return@collect
+                if (device.brand != Brand.ONEMORE || eq == null) return@collect
+                openOneMoreEq(device, modelOf(device, connection.state.value))
+                reportOneMoreEq(eq)
+            }
+        }
+        // QCY earbuds report their EQ after connecting: open it once they have, then follow what they hold.
+        viewModelScope.launch {
+            connection.qcyEq.collect { eq ->
+                val device = connectedDevice() ?: return@collect
+                if (device.brand != Brand.QCY || eq == null) return@collect
+                openQcyEq(device, modelOf(device, connection.state.value))
+                reportQcyEq(eq)
             }
         }
         // Nothing earbuds name their model, then report their EQ: open it once they have, then follow what they hold.
@@ -598,6 +687,29 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 }
             }
         }
+        connection.qcySession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
+                appendLine("Brand:           QCY")
+                val model = session.model
+                appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (vendor id ${model?.code ?: "unknown"})")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine()
+                appendLine("The last value of each item and characteristic PairFree read (item or name: value as hex):")
+                session.replies.forEach { (key, payload) ->
+                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
+                }
+            }
+        }
+        connection.oneMoreSession?.let { session -> return oneMoreReport(session, device, version, date) }
         connection.appleSession?.let { session ->
             return buildString {
                 appendLine("PairFree device report")
@@ -763,6 +875,28 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val names = matches.map { (it as? CurveMatch.Preset)?.name }
         val vendor = VendorRecording.of(packets, since)
         return Capture.Done(result, since, wholeLog, writes, matches, LoggedReads.of(frames, since), names, vendor, vendor.map(::vendorName))
+    }
+
+    /** The device report for 1MORE earbuds or headphones: the model, the firmware and each read's last answer. */
+    private fun oneMoreReport(session: OneMoreSession, device: Paired?, version: String?, date: String): String = buildString {
+        appendLine("PairFree device report")
+        appendLine("Paste this whole report into a new issue at")
+        appendLine("$ISSUES to help check")
+        appendLine("this model. It holds no serial number, address or other personal data.")
+        appendLine()
+        appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
+        appendLine("Brand:           1MORE")
+        val model = session.model
+        appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (${model?.model ?: "model unknown"})")
+        appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+        appendLine("App:             PairFree $version")
+        appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+        appendLine("Captured:        $date")
+        appendLine()
+        appendLine("The last answer to each read PairFree sent (command: payload as hex):")
+        session.replies.forEach { (key, payload) ->
+            appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
+        }
     }
 
     /** The paired device at the address of [earbuds] in a recording; the address itself goes into no report. */

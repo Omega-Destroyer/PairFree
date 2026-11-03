@@ -1,0 +1,22 @@
+{
+ "name": "1MORE Aero",
+ "names": [
+  "1MORE Aero"
+ ],
+ "codes": [
+  "ES903"
+ ],
+ "source": "Traced from 1MORE's own drawing of the left earbud in its app (ES903), filled in; the touch area, where drawn, is the accent. Not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "333,211 364,214 391,229 407,249 414,277 413,295 407,314 401,326 382,349 370,448 365,539 358,554 343,560 328,555 320,540 312,422 305,365 300,363 276,365 262,362 250,355 234,334 225,301 229,276 241,259 259,247 281,241 309,219",
+  "accent": [
+   "377,342 379,344 368,415 362,521 360,524 351,526 326,526 323,523 312,375 306,343 351,345"
+  ],
+  "axis": [
+   342.5,
+   305.6
+  ]
+ },
+ "case": "generic"
+}

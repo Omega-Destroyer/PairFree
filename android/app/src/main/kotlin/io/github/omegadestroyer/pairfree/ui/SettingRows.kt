@@ -126,6 +126,7 @@ private fun groupTitle(key: String): String = stringResource(
         "sound_effects" -> R.string.setting_group_sound_effects
         "noise_adaptive" -> R.string.setting_group_noise_adaptive
         "find" -> R.string.find_earbuds
+        "light" -> R.string.setting_group_light
         "touch_left" -> R.string.setting_group_touch_left
         "touch_right" -> R.string.setting_group_touch_right
         "touch_case" -> R.string.setting_group_touch_case
@@ -171,6 +172,9 @@ private fun settingTitle(key: String): String = when (key) {
     "cycle_adaptive" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.scene_adaptive))
     "auto_off" -> stringResource(R.string.auto_shutdown)
     "sleep_timer" -> stringResource(R.string.setting_sleep_timer)
+    "power_off_timer" -> stringResource(R.string.setting_power_off_timer)
+    "light_mode" -> stringResource(R.string.setting_light_mode)
+    "light_colour" -> stringResource(R.string.setting_light_colour)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure)
     "ambient_volume" -> stringResource(R.string.setting_ambient_volume)
     "voice_focus" -> stringResource(R.string.setting_voice_focus)
@@ -297,6 +301,19 @@ private fun settingTitle(key: String): String = when (key) {
     "baby_cry" -> stringResource(R.string.setting_baby_cry)
     "dog_bark" -> stringResource(R.string.setting_dog_bark)
     "siren" -> stringResource(R.string.setting_siren)
+    "anc_scene" -> stringResource(R.string.setting_anc_scene)
+    "anc_scene_level" -> stringResource(R.string.setting_anc_scene_level)
+    "transparency_strength" -> stringResource(R.string.setting_transparency_strength)
+    "dynamic_eq" -> stringResource(R.string.setting_dynamic_eq)
+    "sleep_mode" -> stringResource(R.string.setting_sleep_mode)
+    "wind_detection" -> stringResource(R.string.setting_wind_detection)
+    "led" -> stringResource(R.string.setting_led)
+    "transparency_mode" -> stringResource(R.string.setting_transparency_mode)
+    "connection_mode" -> stringResource(R.string.setting_connection_mode)
+    "smart_playback" -> stringResource(R.string.setting_smart_playback)
+    "voice_command" -> stringResource(R.string.setting_voice_command)
+    "ear_return" -> stringResource(R.string.setting_ear_return)
+    "volume_limit" -> stringResource(R.string.setting_volume_limit)
     else -> touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
@@ -393,6 +410,10 @@ private fun settingNote(key: String): String? = when (key) {
     "shared_mode" -> stringResource(R.string.setting_shared_mode_note)
     "loudness_compensation" -> stringResource(R.string.setting_loudness_compensation_note)
     "attention_alerts" -> stringResource(R.string.setting_attention_alerts_note)
+    "sleep_mode" -> stringResource(R.string.setting_sleep_mode_note)
+    "connection_mode" -> stringResource(R.string.setting_connection_mode_note)
+    "ear_return" -> stringResource(R.string.setting_ear_return_note)
+    "power_off_timer" -> stringResource(R.string.setting_power_off_timer_note)
     else -> null
 }
 
@@ -411,6 +432,7 @@ private fun optionName(key: String, option: String): String = when {
             "adaptive" -> R.string.scene_adaptive
             "high" -> R.string.setting_level_high
             "mid" -> R.string.setting_level_mid
+            "wind" -> R.string.scene_wind
             else -> R.string.setting_level_low
         },
     )
@@ -422,6 +444,42 @@ private fun optionName(key: String, option: String): String = when {
             "custom" -> R.string.setting_eq_custom
             "dirac" -> R.string.setting_eq_dirac
             else -> R.string.setting_eq_balanced
+        },
+    )
+    key == "anc_scene" -> stringResource(
+        when (option) {
+            "adaptive" -> R.string.scene_adaptive
+            "indoor" -> R.string.scene_indoor
+            "commuting" -> R.string.setting_scene_commuting
+            "noisy" -> R.string.setting_scene_noisy
+            else -> R.string.scene_wind
+        },
+    )
+    key == "transparency_mode" -> stringResource(
+        when (option) {
+            "pass_through" -> R.string.setting_transparency_pass_through
+            "voice" -> R.string.setting_transparency_voice
+            else -> R.string.setting_transparency_normal
+        },
+    )
+    key == "connection_mode" -> when (option) {
+        "ldac" -> "LDAC"
+        "game" -> stringResource(R.string.action_game_mode)
+        else -> stringResource(R.string.setting_connection_standard)
+    }
+    key == "smart_playback" -> stringResource(
+        when (option) {
+            "pause_play" -> R.string.setting_playback_pause_play
+            "pause" -> R.string.setting_playback_pause
+            else -> R.string.setting_level_off
+        },
+    )
+    key == "ear_return" || key == "volume_limit" -> stringResource(
+        when (option) {
+            "off" -> R.string.setting_level_off
+            "low" -> R.string.setting_level_low
+            "medium" -> R.string.setting_level_medium
+            else -> R.string.setting_level_high
         },
     )
     key == "codec" -> when (option) {
@@ -449,6 +507,8 @@ private fun optionName(key: String, option: String): String = when {
             "eq_preset" -> R.string.action_eq_preset
             "bass_boost" -> R.string.action_bass_boost
             "treble_boost" -> R.string.action_treble_boost
+            "previous_next" -> R.string.action_previous_next
+            "volume" -> R.string.action_volume
             else -> R.string.action_other
         },
     )
@@ -563,6 +623,20 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_bose_action_other
         },
     )
+    key == "light_mode" || key == "light_colour" -> stringResource(
+        when (option) {
+            "monochrome" -> R.string.setting_light_monochrome
+            "breathe" -> R.string.setting_light_breathe
+            "rgb" -> R.string.setting_light_rgb
+            "ice_blue" -> R.string.setting_light_ice_blue
+            "white" -> R.string.setting_light_white
+            "green" -> R.string.setting_light_green
+            "red" -> R.string.setting_light_red
+            "yellow" -> R.string.setting_light_yellow
+            else -> R.string.action_off
+        },
+    )
+    key == "power_off_timer" -> option.toIntOrNull()?.let { stringResource(R.string.setting_power_off_timer_minutes, it) } ?: stringResource(R.string.action_off)
     key == "anr" || key == "sidetone_level" -> stringResource(
         when (option) {
             "off" -> R.string.setting_level_off

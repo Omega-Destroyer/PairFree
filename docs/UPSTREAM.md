@@ -43,6 +43,16 @@ brand's protocol doc. When it is reported, add the link; when the project fixes 
 |---|---|---|
 | Table set 2's noise control reply `17`: 7 bytes in Sony's app; Gadgetbridge reads 8 from the WF-1000XM4, laid out like `15`. Possibly both are right for different firmware; PairFree goes by the length. | Sony / Sound Connect 13.3.0; `docs/sony/PROTOCOL.md` section 5 | No |
 
+## Gadgetbridge (EarFun)
+
+[codeberg.org/Freeyourgadget/Gadgetbridge](https://codeberg.org/Freeyourgadget/Gadgetbridge), AGPL-3.0 (facts only). Read at commit 562ae7700189.
+
+| What | PairFree's evidence | Reported |
+|---|---|---|
+| EQ master gain: EarFun's app writes `FE 98` (-6 dB) on the Qualcomm models (`Qualcomm10Equailzer`, `Qualcomm6Equailzer`); Gadgetbridge writes `FF 98` (-1.7 dB). | EarFun Audio 20.1.61; `docs/earfun/PROTOCOL.md` section 6 | No |
+| EQ gain steps: EarFun's app maps its 21 slider positions on the 10-band models to -6, -5, -4, -3.5 .. 3.5, 4, 5, 6 dB (half-dB steps near 0), and on the 6-band models (Air S) sends the position itself in dB, up to 10 dB; Gadgetbridge sends 0.6 dB a step on both. | Same; `gainQcc` and `Qualcomm6Equailzer.getSendGain` | No |
+| The Air Pro 4+ and 5 (not in Gadgetbridge) end each EQ band with `0D` (`TW700Equailzer`). | Same | No |
+
 ## bosectl (Bose)
 
 [github.com/aaronsb/bosectl](https://github.com/aaronsb/bosectl), MIT.

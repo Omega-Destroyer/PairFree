@@ -314,6 +314,12 @@ private fun settingTitle(key: String): String = when (key) {
     "voice_command" -> stringResource(R.string.setting_voice_command)
     "ear_return" -> stringResource(R.string.setting_ear_return)
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
+    // EarFun (EarfunSession)
+    "ef_anc_mode" -> stringResource(R.string.setting_ef_anc_mode)
+    "ef_ambient_mode" -> stringResource(R.string.setting_transparency_mode)
+    "ef_prompt_volume" -> stringResource(R.string.setting_ef_prompt_volume)
+    "ef_hearing_protection" -> stringResource(R.string.setting_hearing_protection)
+    "ef_touch_lock", "ef_touch_lock_left", "ef_touch_lock_right" -> stringResource(R.string.setting_ef_touch_lock)
     else -> touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
@@ -414,6 +420,8 @@ private fun settingNote(key: String): String? = when (key) {
     "connection_mode" -> stringResource(R.string.setting_connection_mode_note)
     "ear_return" -> stringResource(R.string.setting_ear_return_note)
     "power_off_timer" -> stringResource(R.string.setting_power_off_timer_note)
+    "ef_hearing_protection" -> stringResource(R.string.setting_ef_hearing_protection_note)
+    "ef_touch_lock", "ef_touch_lock_left", "ef_touch_lock_right" -> stringResource(R.string.setting_ef_touch_lock_note)
     else -> null
 }
 
@@ -509,10 +517,36 @@ private fun optionName(key: String, option: String): String = when {
             "treble_boost" -> R.string.action_treble_boost
             "previous_next" -> R.string.action_previous_next
             "volume" -> R.string.action_volume
+            // EarFun's
+            "anc_off" -> R.string.setting_cycle_anc_off
+            "call_repeat" -> R.string.action_call_repeat
             else -> R.string.action_other
         },
     )
     key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
+    key == "ef_anc_mode" -> when (option) {
+        "level1", "level2", "level3", "level4" -> stringResource(R.string.scene_level, option.last().digitToInt())
+        "anc1" -> stringResource(R.string.setting_ef_anc_number, 1)
+        "anc2" -> stringResource(R.string.setting_ef_anc_number, 2)
+        else -> stringResource(
+            when (option) {
+                "adaptive" -> R.string.scene_adaptive
+                "ear_adaptive" -> R.string.setting_ef_ear_adaptive
+                "wind" -> R.string.scene_wind
+                "balance" -> R.string.setting_ef_balanced
+                else -> R.string.setting_ef_standard
+            },
+        )
+    }
+    key == "ef_ambient_mode" -> stringResource(
+        when (option) {
+            "total" -> R.string.setting_ef_ambient_full
+            "natural" -> R.string.setting_ef_ambient_natural
+            else -> R.string.setting_transparency_normal
+        },
+    )
+    key == "ef_prompt_volume" -> stringResource(R.string.setting_percent, option.toIntOrNull() ?: 0)
+    key == "ef_hearing_protection" -> option.toIntOrNull()?.let { stringResource(R.string.setting_ef_db, it) } ?: stringResource(R.string.action_off)
     option == "off" && key.startsWith("jbl_") -> stringResource(R.string.action_off)
     key == "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_after_seconds, option.toIntOrNull() ?: 0)
     key == "jbl_voice_aware" -> stringResource(

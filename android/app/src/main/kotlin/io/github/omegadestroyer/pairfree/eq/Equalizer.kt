@@ -54,6 +54,9 @@ interface EqTarget {
     /** False when the earbuds apply their presets themselves and their curves are not known, so none is drawn. */
     val presetCurves: Boolean get() = true
 
+    /** False when the brand's own app does not put the EQ back each time the channel opens, so PairFree does not either. */
+    val restoresOnConnect: Boolean get() = true
+
     /** False when nothing has confirmed the frames for this model yet: the screen says so. */
     val confirmed: Boolean get() = true
 
@@ -234,7 +237,7 @@ class Equalizer(
         val s = _state.value ?: return
         if (reopened == null || reopened != address) return
         reopened = null
-        if (!s.known || s.target.reportsEq) return
+        if (!s.known || s.target.reportsEq || !s.target.restoresOnConnect) return
         pending?.cancel()
         pending = scope.launch {
             delay(RESTORE_AFTER_MS)

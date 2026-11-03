@@ -11,7 +11,8 @@
     "NOTHING": ["Nothing", "CMF"],
     "PIXEL": ["Pixel"],
     "QCY": ["QCY"],
-    "ONEMORE": ["1MORE"]
+    "ONEMORE": ["1MORE"],
+    "EARFUN": ["EarFun", "ATVEL"]
   },
   "not_ours": ["Pixel Watch", "OnePlus Buds", "Redmi Buds", "Galaxy Watch", "SOUNDPEATS Watch", "Nothing Phone", "CMF Watch"],
   "names": [
@@ -55,6 +56,11 @@
     {"name": "QCY T13", "brand": "QCY"},
     {"name": "1MORE PistonBuds PRO Q30", "brand": "ONEMORE", "note": "holds Samsung's base name Buds Pro"},
     {"name": "1MORE Aero", "brand": "ONEMORE"},
+    {"name": "EarFun Air Pro 4", "brand": "EARFUN", "model": "EarFun Air Pro 4"},
+    {"name": "EarFun Free Pro 3", "brand": "EARFUN", "model": "EarFun Free Pro 3"},
+    {"name": "EarFun Air Pro 4+", "brand": "EARFUN", "model": "EarFun Air Pro 4+"},
+    {"name": "EarFun Wave Pro", "brand": "EARFUN", "model": "EarFun Wave Pro", "note": "a BES model PairFree finds but does not cover yet"},
+    {"name": "ATVEL Tune S5 ProX", "brand": "EARFUN", "model": "ATVEL Tune S5 ProX", "note": "made by EarFun, set up in EarFun's app"},
     {"name": "SOUNDPEATS Watch 4", "brand": null}
   ]
 }

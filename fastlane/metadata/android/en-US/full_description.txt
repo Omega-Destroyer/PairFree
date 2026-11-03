@@ -24,6 +24,7 @@ Supported brands:
 • Google Pixel Buds: 5 models, tried on the Pro. From Google's app, checked against pbpctrl
 • QCY: 171 models. From QCY's app, checked against OpenQCY-Desktop
 • 1MORE: 37 models. From 1MORE's app
+• EarFun: 26 models. From EarFun's app, checked against Gadgetbridge
 
 What it controls, on the models that have each:
 
@@ -40,4 +41,4 @@ PairFree shows only what your earbuds support. Models not marked as tried rely o
 
 Close the brand's own app before using PairFree: only one app can control the earbuds at a time.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY or 1MORE.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE or EarFun.

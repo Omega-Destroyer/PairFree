@@ -109,6 +109,7 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 | Path                      | What it is                                                        |
 |---------------------------|-------------------------------------------------------------------|
 | `docs/DESIGN.md`          | The app design: requirements, the Studio look, screens            |
+| `docs/UPSTREAM.md`        | Where the brands' own apps or recordings differ from other open-source projects |
 | `docs/devices/`           | One page per brand: every model PairFree knows and what works on each |
 | `docs/<brand>/PROTOCOL.md` | The brand's protocol: transport, frames, commands, EQ and more  |
 | `data/<brand>/commands.json` | The brand's command table in machine-readable form. Apps load or mirror this. |

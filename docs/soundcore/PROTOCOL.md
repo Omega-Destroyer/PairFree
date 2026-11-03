@@ -274,6 +274,8 @@ hold them), and a state read with 3D sound on and with a custom EQ.
 9. What touch lock (`04 86`, the Liberty 4 NC) does on the earbuds.
 10. The Sleep A20's touch tone, low battery prompt, prompts, alarms and sleep mode, and what its
     `01 A9` does (section 11).
+11. Whether the Q20i takes OpenSCQ30's four-byte noise mode write, or needs the Soundcore app's six,
+    and what the two bytes after the sound modes are (section 12).
 
 ## 8. Equalizer
 
@@ -439,3 +441,21 @@ which the earbuds answer with `01 14` and `13 03`, and which the user's list of 
 Not yet confirmed, so not offered: the alarm (58-61), sleep mode (65), touch tone (75), the low
 battery prompt (76), and the prompts for auto power-off and for switching modes (124-125). Each needs
 a recording in which the user changes it, with the change written down.
+
+## 12. Q20i (A3004)
+
+A user's recording of the Soundcore app (GitHub issue #11, firmware 05.08;
+`data/soundcore/reports/A3004_05.08.txt`) has every EQ preset and the custom curve, and three noise mode
+changes. The state matches OpenSCQ30's layout for its 39 bytes; 22 more follow, which neither OpenSCQ30
+nor PairFree reads.
+
+- **EQ.** `02 83` with the preset, the curve and its correction, every byte as PairFree builds it
+  (`a3004_recording` in `data/soundcore/test_vectors.json`). The presets are the A3005's set, not
+  OpenSCQ30's common set for this model: Bass Booster goes as preset `7E 7E`, as OpenSCQ30 has it for the
+  A3005, A3035 and A3062, and Rock is the set's +4 and +5 dB ending, not the common set's +3 and +3.
+- **Noise mode.** The app sends `06 81` with six bytes: the mode (0 noise cancelling, 2 normal,
+  1 transparency, OpenSCQ30's numbers), three zero bytes, then `01 FC` each time. The state holds two
+  bytes after the four sound mode bytes, `8D FC` before the app's first write and `01 FC` after it.
+  OpenSCQ30, and so PairFree, sends the four sound mode bytes alone. Not changed until a user says
+  whether PairFree's noise mode works on the Q20i: what the two bytes are is not known.
+- The earbuds answered each mode change with `0B 02` (seven bytes, left out of the recording).

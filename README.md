@@ -84,7 +84,7 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | Brand | Models | Tried on real earbuds |
 |-------|--------|-----------------------|
 | [SOUNDPEATS](docs/devices/soundpeats.md) | 47 | Air5 Pro+, C30, H3, TRUEFREE Clip C10 |
-| [Soundcore (Anker)](docs/devices/soundcore.md) | 66 | AeroClip, Sleep A20, Space A40 |
+| [Soundcore (Anker)](docs/devices/soundcore.md) | 66 | AeroClip, Q20I, Sleep A20, Space A40 |
 | [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
 | [Sony](docs/devices/sony.md) | 24 | — |
 | [Bose](docs/devices/bose.md) | 22 | — |

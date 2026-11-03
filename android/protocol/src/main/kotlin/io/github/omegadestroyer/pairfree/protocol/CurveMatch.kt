@@ -27,12 +27,12 @@ public sealed interface CurveMatch {
         }
 
         private fun match(model: Model, layout: EqLayout, write: EqCapture.Write): CurveMatch? {
-            if (write.command != layout.command || write.payloads.size != layout.bands.size) return null
+            if (write.command != layout.command || write.payloads.size != layout.bandCount) return null
             val zeros = List(layout.bands.size) { 0 }
             if (same(layout.payloads(zeros), write.payloads)) return Preset(model, EqCapture.CLASSIC)
             layout.presets.firstOrNull { same(layout.payloads(it), write.payloads) }?.let { return Preset(model, it.name) }
             // A slider curve: each band's gain is the base gain plus whole dB.
-            val gains = write.bands.mapIndexed { i, b -> kotlin.math.round(b.gainDb - layout.bands[i].gainDb).toInt() }
+            val gains = write.bands.drop(layout.fixedBands.size).mapIndexed { i, b -> kotlin.math.round(b.gainDb - layout.bands[i].gainDb).toInt() }
             if (gains.any { it !in -layout.userRangeDb..layout.userRangeDb }) return null
             return if (same(layout.payloads(gains), write.payloads)) Custom(model, gains) else null
         }

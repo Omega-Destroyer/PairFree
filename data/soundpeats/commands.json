@@ -538,7 +538,8 @@
       "get": "0352",
       "kind": "raw",
       "probe": false,
-      "note": "From SOUNDPEATS 2.5.3: the phones these earbuds have connected to. Reply: an entry number, 1 if that phone is connected now, its Bluetooth address (6 bytes), then its name ending in a 0 byte. On S13 a 41-byte reply has one extra leading byte. It holds other people's device names and addresses: never read it unasked and never put it in a report."
+      "private": true,
+      "note": "From SOUNDPEATS 2.5.3: the phones these earbuds have connected to. Reply: an entry number, 1 if that phone is connected now, its Bluetooth address (6 bytes), then its name ending in a 0 byte. On S13 a 41-byte reply has one extra leading byte. It holds other people's device names and addresses: never read it unasked and never put it in a report, even from a recording of the official app."
     },
     {
       "id": "device_connection",

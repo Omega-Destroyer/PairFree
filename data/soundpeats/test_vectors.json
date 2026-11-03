@@ -697,6 +697,64 @@
         "a9fd305dc0ff4c3800",
         "aafd308ca001e01800"
       ]
+    },
+    {
+      "name": "C30: Reset: the base curve alone (SOUNDPEATS Classic in the recording, issue #10)",
+      "model": "S22",
+      "user_gains_db": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "payloads": [
+        "0901fef2003cfda81800",
+        "0902fef201e0fe201666",
+        "0903fef20384fed40ccc",
+        "0904fef20960ff4c1000",
+        "0905fef2151800ba1800",
+        "0906fef220d000b41800",
+        "0907fef23a98ff101000",
+        "0908fef25dc000f01333",
+        "0909fef2bb8000f00800"
+      ]
+    },
+    {
+      "name": "Clip C10: Reset: the base curve alone (TRUEFREE Classic in the recording, issue #9)",
+      "model": "T2",
+      "user_gains_db": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800ba00001ccc",
+        "100aff88017700001ccc",
+        "100bff8802ee00001ccc",
+        "100cff8805dc00001ccc",
+        "100dff88012c00001ccc",
+        "100eff88177000001ccc",
+        "100fff882ee000001ccc",
+        "1010ff885dc000001ccc"
+      ]
     }
   ],
   "eq_preset": [
@@ -1050,6 +1108,347 @@
         "a8fd304074ff102000",
         "a9fd305dc0ff883800",
         "aafd308ca0021c1800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Bass Boost",
+      "payloads": [
+        "0901fef2009600781000",
+        "0902fef201e0fe981666",
+        "0903fef20384ff100ccc",
+        "0904fef20960ff881000",
+        "0905fef2151800ba1800",
+        "0906fef220d000b41800",
+        "0907fef23a98ff101000",
+        "0908fef25dc000f01333",
+        "0909fef2bb8000f00800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Bass Reduce",
+      "payloads": [
+        "0901fef2003cfcf40e66",
+        "0902fef201e0fd6c1666",
+        "0903fef20384fe980ccc",
+        "0904fef20960ff101000",
+        "0905fef2151800ba1800",
+        "0906fef220d000b41800",
+        "0907fef23a98ff101000",
+        "0908fef25dc000f01333",
+        "0909fef2bb8000f00800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Treble enhancement",
+      "payloads": [
+        "0901fef2003cfda81800",
+        "0902fef201e0fe201666",
+        "0903fef20384fed40ccc",
+        "0904fef20960ff4c1000",
+        "0905fef2151800ba1800",
+        "0906fef220d000f01800",
+        "0907fef23a98ffc41000",
+        "0908fef25dc001681333",
+        "0909fef2bb80012c0800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Electronic",
+      "payloads": [
+        "0901fef20096003c1000",
+        "0902fef201e0fe7a1666",
+        "0903fef20384ff100ccc",
+        "0904fef20960ff4c1000",
+        "0905fef2151800f01800",
+        "0906fef220d0012c1800",
+        "0907fef23a98ff4c1000",
+        "0908fef25dc0012c1333",
+        "0909fef2bb8000f00800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Popular",
+      "payloads": [
+        "0901fef2003cfd301000",
+        "0902fef201e0fe981666",
+        "0903fef20384ff4c0ccc",
+        "0904fef20960ff881000",
+        "0905fef2151800b41800",
+        "0906fef220d000b41800",
+        "0907fef23a98ff881000",
+        "0908fef25dc000f01333",
+        "0909fef2bb8000f00800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Classical Music",
+      "payloads": [
+        "0901fef2009600b40e66",
+        "0902fef201e0fe981666",
+        "0903fef20384ff4c0ccc",
+        "0904fef20960ff4c1000",
+        "0905fef21518003c1800",
+        "0906fef220d000781800",
+        "0907fef23a98fed41000",
+        "0908fef25dc000b41333",
+        "0909fef2bb8000b40800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Rock&Roll",
+      "payloads": [
+        "0901fef2009600781000",
+        "0902fef201e0fed41666",
+        "0903fef20384ff4c0ccc",
+        "0904fef20960ff101000",
+        "0905fef2151800d21800",
+        "0906fef220d000b41800",
+        "0907fef23a98ffc41000",
+        "0908fef25dc0012c1333",
+        "0909fef2bb8001680800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Folk",
+      "payloads": [
+        "0901fef2003cfc7c1800",
+        "0902fef201e0fe981666",
+        "0903fef20384fed40ccc",
+        "0904fef20960ff881000",
+        "0905fef2151800d21800",
+        "0906fef220d0012c1800",
+        "0907fef23a98ff101000",
+        "0908fef25dc0003c1333",
+        "0909fef2bb8000780800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "Book Whisper",
+      "payloads": [
+        "0901fef2003cfbc80800",
+        "0902fef201e0fbc81000",
+        "0903fef20384ff880ccc",
+        "0904fef2096000781000",
+        "0905fef21518003c1800",
+        "0906fef220d000781800",
+        "0907fef23a9800b41000",
+        "0908fef25dc000781333",
+        "0909fef2bb80fcb80ccc"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "HIFI",
+      "payloads": [
+        "0901fef2003cfed42000",
+        "0902fef201e0fe201666",
+        "0903fef20384fe5c0ccc",
+        "0904fef20960ffc41000",
+        "0905fef21518010e1800",
+        "0906fef220d000f01800",
+        "0907fef23a98ff4c1000",
+        "0908fef25dc000f01333",
+        "0909fef2bb80014a0800"
+      ]
+    },
+    {
+      "model": "S22",
+      "preset": "ACG",
+      "payloads": [
+        "0901fef2009600780e66",
+        "0902fef201e0ff101666",
+        "0903fef20384fed40ccc",
+        "0904fef20960fed41000",
+        "0905fef2151800f01800",
+        "0906fef220d0012c1800",
+        "0907fef23a98ff881000",
+        "0908fef25dc000f01333",
+        "0909fef2bb8000b40800"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Hightone enhancement",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800ba00000ccc",
+        "100aff88017700000ccc",
+        "100bff8802ee00000ccc",
+        "100cff8805dc00000ccc",
+        "100dff880bb800000ccc",
+        "100eff881770003c0ccc",
+        "100fff882ee000780ccc",
+        "1010ff885dc000780ccc"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Bass enhance",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800baff880ccc",
+        "100aff880177ff880ccc",
+        "100bff8802eeff880ccc",
+        "100cff8805dcffc40ccc",
+        "100dff880bb800000ccc",
+        "100eff88177000000ccc",
+        "100fff882ee000000ccc",
+        "1010ff885dc000000ccc"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Bass weakening",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800ba003c0ccc",
+        "100aff88017700780ccc",
+        "100bff8802ee00780ccc",
+        "100cff8805dc00780ccc",
+        "100dff880bb8ff100ccc",
+        "100eff881770003c0ccc",
+        "100fff882ee000780ccc",
+        "1010ff885dc000780ccc"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Rock",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800baff880ccc",
+        "100aff880177003c0ccc",
+        "100bff8802ee00780ccc",
+        "100cff8805dc00780ccc",
+        "100dff880bb8003c0ccc",
+        "100eff881770ff880ccc",
+        "100fff882ee0ffc40ccc",
+        "1010ff885dc0ff880ccc"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Popularity",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800ba00780ccc",
+        "100aff88017700780ccc",
+        "100bff8802ee003c0ccc",
+        "100cff8805dcffc40ccc",
+        "100dff880bb8003c0ccc",
+        "100eff88177000000ccc",
+        "100fff882ee0003c0ccc",
+        "1010ff885dc000b40ccc"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Electronic",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800baff100ccc",
+        "100aff88017700f00ccc",
+        "100bff8802eeff880ccc",
+        "100cff8805dcffc40ccc",
+        "100dff880bb8003c0ccc",
+        "100eff88177000780ccc",
+        "100fff882ee000780ccc",
+        "1010ff885dc0ffc40ccc"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Ballad",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800ba00780ccc",
+        "100aff88017700780ccc",
+        "100bff8802ee003c0ccc",
+        "100cff8805dc003c0ccc",
+        "100dff880bb8ffc40ccc",
+        "100eff881770ffc40ccc",
+        "100fff882ee0ff880ccc",
+        "1010ff885dc0ff4c0ccc"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Classical",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff880177ff101800",
+        "100aff8802eeff101800",
+        "100bff8805dcff101800",
+        "100cff880960ff101800",
+        "100dff880e10ff4c1800",
+        "100eff881770ff4c1800",
+        "100fff882ee0ff4c1800",
+        "1010ff884650ff4c1800"
       ]
     }
   ],

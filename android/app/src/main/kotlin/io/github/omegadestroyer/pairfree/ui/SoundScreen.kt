@@ -306,7 +306,7 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
     val r = scaleFor(eq)
     val user = eq.layout.userRangeDb
     val n = gains.size
-    val labels = (eq.preset?.bands ?: eq.layout.bands).map { bandShort(it) }
+    val labels = eq.curveBands.map { bandShort(it) }
     val select by rememberUpdatedState(onSelect)
     val gain by rememberUpdatedState(onGain)
     val description = stringResource(R.string.eq_graph_description)

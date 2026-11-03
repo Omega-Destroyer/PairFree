@@ -24,6 +24,7 @@ class CommandTableTest {
             assertEquals(labels ?: emptyMap<Int, String>(), command.labels, command.id)
             assertEquals(json["probe"]?.jsonPrimitive?.booleanOrNull ?: true, command.probe, command.id)
             assertEquals(json["per_model"]?.jsonPrimitive?.booleanOrNull ?: false, command.perModel, command.id)
+            assertEquals(json["private"]?.jsonPrimitive?.booleanOrNull ?: false, command.private, command.id)
         }
     }
 

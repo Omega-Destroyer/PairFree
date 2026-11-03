@@ -239,7 +239,8 @@ What gets sent depends on the model:
   model's "classic" curve and their gains added to it. The band count stays that of
   the classic curve.
 - Everything else: the classic curve's bands are sent first, then the user's bands
-  appended.
+  appended. Seen on the TRUEFREE Clip C10 (section 11): its classic bands are `eq.fixed_bands`
+  in `data/soundpeats/devices.json`, sent as they are before the user's.
 
 ## 5. Chip families
 
@@ -809,6 +810,69 @@ method as the H3's EQ). Report: `data/soundpeats/reports/S2_1.2.txt`.
     PeatsAudio's control channel dropped and reopened about 12 s later over the same
     classic serial channel, and `03 35` then read `01`. LDAC still read on. `03 34 00`
     turns it off the same way.
+
+### SOUNDPEATS C30: firmware code `S22`, version 0.7.5
+
+From a user's recording of the official app (GitHub issue #10, 2026-10-31; report
+`data/soundpeats/reports/S22_0.7.5_recording.txt`), not the owner's hardware.
+
+- The official app's reads and PairFree's got the same replies. The C30 answers ANC mode,
+  the ANC levels (`11` to `14`, `11` active), environment adaptive `03 64`, LDAC, game mode,
+  multipoint, touch disable, custom keys, prompt volume, voice language, movie mode, drainage
+  and find my earbuds; it does not answer transparency level, LE Audio or in-ear detection.
+- The official app also read `03 52` (the phones the earbuds have paired with). Its reply holds
+  another phone's address and name; PairFree never reads it, and leaves it out of recordings
+  (`private` in `data/soundpeats/commands.json`).
+- EQ: command `0E 02`, nine bands in every write, master gain -4.5 dB. `S22` is in the app's
+  list of codes whose user points are merged onto the classic bands (section 4), and every
+  curve has nine bands. Base curve, sent as SOUNDPEATS Classic:
+
+  | Band | Hz    | Q   | Base gain dB |
+  |------|-------|-----|--------------|
+  | 1    | 20    | 1.5 | -10.0        |
+  | 2    | 160   | 1.4 | -8.0         |
+  | 3    | 300   | 0.8 | -5.0         |
+  | 4    | 800   | 1.0 | -3.0         |
+  | 5    | 1800  | 1.5 | +3.1         |
+  | 6    | 2800  | 1.5 | +3.0         |
+  | 7    | 5000  | 1.0 | -4.0         |
+  | 8    | 8000  | 1.2 | +4.0         |
+  | 9    | 16000 | 0.5 | +4.0         |
+
+  Eleven presets, some moving bands. The recording has no slider curve, so the -6 to +6 dB
+  user range is the other models'. All are in `data/soundpeats/devices.json` (`S22`) and the
+  test vectors.
+
+### TRUEFREE Clip C10: firmware code `T2`, version 0.5.5
+
+From a user's recording (GitHub issue #9, 2026-10-31; report
+`data/soundpeats/reports/T2_0.5.5_recording.txt`), most likely of TRUEFREE's own app.
+
+- The Clip C10 answers no ANC or transparency read, but does answer dynamic EQ `03 31`,
+  personal volume `03 40` (`00 00 00 38 00 38`), movie mode and earbud colour.
+- EQ: command `0E 02`, sixteen bands in every write, master gain -2.0 dB. This is the
+  append rule of section 4, the first model seen with it: every curve starts with the same
+  eight bands (TRUEFREE's tuning, sent as they are), then eight of its own.
+
+  | Band | Hz   | Q   | Gain dB | |
+  |------|------|-----|---------|-|
+  | 1    | 50   | 0.9 | 0.0     | fixed |
+  | 2    | 90   | 0.7 | +0.1    | fixed |
+  | 3    | 310  | 1.0 | -4.0    | fixed |
+  | 4    | 600  | 1.0 | -1.0    | fixed |
+  | 5    | 1550 | 1.5 | +3.0    | fixed |
+  | 6    | 2580 | 0.8 | -10.0   | fixed |
+  | 7    | 6200 | 2.5 | -7.0    | fixed |
+  | 8    | 7830 | 2.8 | -8.0    | fixed |
+  | 9-16 | 62, 125, 250, 500, 100, 2000, 4000, 8000 | 1.8 | 0.0 | user |
+
+  TRUEFREE Classic sends the user's eight at 0 dB and Q 1.8, as PeatsAudio 1.9.45's custom
+  screen would, except that its fifth band is at 100 Hz where that screen (and 2.5.3's) has
+  1 kHz. Seven presets send their own eight at Q 0.8 on the same frequencies with 1 kHz in
+  fifth place; Classical moves all eight (125 Hz to 6 kHz, Q 1.5). PairFree follows the
+  recording: the fixed bands are `eq.fixed_bands`, the user's sliders the eight after them,
+  fifth at 100 Hz. Open: a recording of a custom curve, which would show where the fifth
+  band really goes.
 
 ## 12. Codecs (A2DP), and LDAC on Samsung phones
 

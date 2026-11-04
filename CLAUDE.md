@@ -33,6 +33,27 @@ Owner, 2026-10-30 and 2026-11-03. For every brand:
 
 If the sources are silent on something, say so and ask. Do not invent protocol details.
 
+### Before saying something cannot be done
+
+Owner, 2026-11-04, after JBL's EQ calibration was called impossible for weeks because it sat in a native library that
+nobody had opened. "Native code", "server data", "complex" or "needs a recording" are not blockers. Before writing that a
+feature cannot be built, or leaving it on a "Not yet" list, do all of these and say what each found:
+
+1. **Open the whole app**: every split APK of the bundle in `X:\Coding\PairFree\PairFree Reference APKs\` (not only
+   `base.apk`: native libraries live in `split_config.arm64_v8a.apk`), its assets, and every class the feature's screen
+   calls.
+2. **Read native libraries**: list their exported symbols and disassemble the function
+   (`E:\Builds\research\jbl-native\armdis.py`, capstone in `E:\Tools\pylibs`). Port the behaviour into PairFree's own
+   code; that is allowed (Hard rules).
+3. **Server data**: check whether the request needs authentication. If it does not, write a fetch script outside the
+   repo and run it (Hard rules, research fetches), as with QCY.
+4. **Open-source projects and recordings** for the brand (Sources, above).
+
+Only these are real blockers: a hard rule (keys or credentials, firmware, factory reset, server authentication), an
+Android permission the owner has not allowed, or a decision the owner has reserved. Everything else is "to do". Every
+blocker written in a doc or a report says what was checked: "blocked: <reason>; checked: <what was opened and what it
+showed>". A blocker without that line is not one.
+
 Tools for reading apps, all outside the repo (`E:\Builds\research`): jadx for Java/Kotlin; for React Native
 apps compiled to Hermes bytecode, hermes-dec (owner, 2026-11-03). Data an app bundles encrypted with a key the
 app holds may be decrypted there for its facts (owner, 2026-11-03, HeyMelody's model list); the key and the
@@ -277,8 +298,9 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   2026-10-18) and checked against OpenQCY-Desktop (github.com/GiorgioRafael/OpenQCY-Desktop, MIT), which recorded
   a MeloBuds N70. No QCY model has been tried with PairFree. QCY's app takes each model's control panel from
   QCY's server, so the model list is QCY's own product list as Quicky (github.com/hui1601/Quicky, no licence:
-  facts only) dumped it, keeping the 171 earphones (owner, 2026-10-18); refresh `data/qcy/devices.json` from a
-  newer Quicky only with the owner's OK, and never fetch QCY's server from this repo. QCY's earbuds are
+  facts only) dumped it, keeping the 171 earphones (owner, 2026-10-18); QCY's own product list and every
+  earphone's control panel (EQ presets, key functions, the settings each panel lists) were fetched on 2026-11-04 into
+  `server_dump/qcy/` by a research script (Hard rules); never from code in this repo. QCY's earbuds are
   controlled over Bluetooth LE: PairFree scans for their advert (company 0x521C), which names the model (vendor
   id) and the LE side to connect to, with `BLUETOOTH_SCAN`, which the owner allowed for QCY on 2026-10-18
   (`docs/DESIGN.md`, Permissions). The service spreads over several characteristics, so `EnvelopeGattLink`
@@ -301,7 +323,7 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   1MORE's product list (`system/headphone/list`), which the owner let PairFree fetch once by hand on 2026-10-18
   (raw reply in `server_dump/1more/`, git-ignored); `data/1more/devices.json` keeps only what the owner approved:
   the Bluetooth name, the product model, the control flags, the EQ's presets and bands, and the pictures' paths
-  (no burn-in code, Sound ID, OTA data or ids). Fetch the list again only with the owner's OK, by hand, never from
+  (no burn-in code, Sound ID, OTA data or ids). Fetch the list again with a research script (Hard rules), never from
   code in this repo; `python tools/import_1more_list.py` then rewrites `devices.json` from the saved reply.
   `data/1more/commands.json` and `devices.json` become `OneMoreWire`, `OneMoreCommand` and the model list through
   `generateOneMoreTables`; `OneMoreSession` reads only what the model's entry lists and shows each setting once
@@ -344,18 +366,23 @@ Space A40. Everything else relies on reports and recordings from users (each bra
 - Never commit decompiled code, vendor SDK code, firmware images or APKs, from any brand, or any key or
   credential an official app uses (for its server API, such as PeatsAudio's AES key, or for data it bundles).
   `.gitignore` blocks the obvious ones. Decompile official apps outside the repo. An app's `secrets` files are
-  not read.
+  not read. Reading or disassembling an app's code, native libraries included, outside the repo and writing
+  PairFree's own code from what it does is allowed (owner, 2026-11-04); only its keys and credentials stay out.
 - Never send factory reset, reboot, power off or any firmware-update traffic, on any brand, without an explicit
   confirmation from the user in that moment; each brand's `NEVER_SEND` list holds them. Restart and power off are
   benign enough to offer as actions the user confirms on screen (owner, 2026-11-03; EarFun's `CONFIRM`); factory
   reset and firmware stay as they are. The probe is read-only
   by default and must stay that way.
-- No code in this repo calls any brand's servers, and the app never requests the internet permission. The owner
-  has allowed two research exceptions, both run by hand: `tools/fetch_server_data.py` (SoundPEATS: GET requests
-  only, at most one per 30 seconds, no account or device identifiers; since 2026-10-10 the server refuses every
-  request without the official app's authentication, and the tool stops at the first refusal) and the one-time
-  1MORE product list (2026-10-18). Do not make either authenticate: no app keys, certificates or signing, in or
-  outside the repo.
+- No code in this repo calls any brand's servers, and the app never requests the internet permission. Research
+  fetches of a brand's public server data are done by a script outside the repo (`E:\Builds\research\<brand>-tools\`),
+  which the agent writes and runs itself as a Python script (owner, 2026-11-04; querying a server directly from the
+  agent's tools is blocked, running the script is not). Each such script: only the requests the vendor's app makes
+  without signing in, no account, key, certificate, signing or device identifier, a pause of at least 3 s between
+  requests, raw replies saved under `server_dump/<brand>/` and nowhere else. If the server asks for authentication,
+  stop there: do not make it authenticate. So far: QCY's product list and control panels
+  (`E:\Builds\research\qcy-tools\fetch_panels.py`, 2026-11-04), the one-time 1MORE product list (2026-10-18), and
+  `tools/fetch_server_data.py` (SoundPEATS, in the repo from before this rule: GET only, one per 30 s; since 2026-10-10
+  the server refuses every request without the official app's authentication, and the tool stops at the first refusal).
 - Raw server replies go in `server_dump/`, which git ignores. They are vendor data. Do not commit them. Derived
   facts (feature codes, chip families, EQ numbers) go into `data/` only after the owner has agreed to what is
   included.

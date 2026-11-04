@@ -266,6 +266,9 @@
     <string name="setting_voice_wakeup">Wake the voice assistant by voice</string>
     <string name="setting_find_note">The earbuds beep loudly: take them out of your ears first. Mute one to hear the other.</string>
     <string name="setting_find_start">Make the earbuds beep</string>
+    <string name="setting_find_hub_open">Open Find Hub</string>
+    <string name="setting_find_hub_note">Google\'s Find Hub rings and finds Pixel Buds. It uses a key the earbuds share with your Google account, which only Google Play services holds, so PairFree opens Find Hub, as the Pixel Buds app leaves it to Play services.</string>
+    <string name="setting_group_find_hub">Find my earbuds</string>
     <string name="setting_find_stop">Stop beeping</string>
     <string name="setting_find_mute">Mute %1$s</string>
     <string name="setting_action_start">Start</string>

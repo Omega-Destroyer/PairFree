@@ -238,6 +238,11 @@ and the automatic test. `PixelSession.allowed` checks every message.
 
 - **Finding the earbuds** goes through Fast Pair's message stream, a second channel PairFree does not open.
 - **The ear tip seal test** (Allegro 14, and the EartipFitTest service): how its result comes back was not traced.
+- **Find my device** is Google Play services': the app's `FmdWorker` binds Play services' Find My Device proxy
+  (`com.google.android.gms.nearby.discovery.fastpair.ACTION_BIND_FMD_PROXY`, open only to Google's apps) to pass on
+  the user's consent, and ringing goes over the Fast Pair message stream with the account key Play services holds. No
+  new permission would reach it, so PairFree offers a row that opens Google's Find Hub
+  (`https://www.google.com/android/find`) and sends nothing to the earbuds (owner, 2026-11-04).
 - **Spatial audio and head tracking** are Android's own settings (the app calls `Spatializer`), which only system
   apps may change.
 - **Sleep mode** (36) follows a Pixel Watch's sleep state, which the app syncs from the watch.

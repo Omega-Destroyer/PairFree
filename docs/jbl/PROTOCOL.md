@@ -550,9 +550,8 @@ class reads the design EQ, and whether JBL's app works out the calibration (`cal
 **Paths.** `a2` and `a2_q10` (33 models) send command `A2`, below; `a2_q10` are the classes JBL's app marks
 `QMultiply10EQ`, which send Q in tenths. `p4` (35 models) sends protocol 4's EQ info, below; on the seven whose EQ library
 is Airoha's (`lib`), JBL's app sends the curve as Airoha's PEQ as well (`EQCurveFeature`, coefficients from Airoha's
-native `libnative-peq-serialize`), so PairFree does not write those yet. Not written yet either: `41` and `club` (the
-older BES classes: a transfer of a header, 79-byte parts and a closing frame, `EqCmdData`; the Club One picks presets
-with `40`), `segment` (the Tune 520BT family, Realtek's segments) and `airoha` (Airoha's PEQ over RACE).
+native `libnative-peq-serialize`), so PairFree does not write those yet. `41` (10 models) and `club` (the Club One) are the older BES classes' transfer,
+below. Not written yet: `segment` (the Tune 520BT family, Realtek's segments) and `airoha` (Airoha's PEQ over RACE).
 
 **Command A2** (floats four bytes, low byte first):
 
@@ -580,6 +579,19 @@ gain and Q (13 bytes); numbers four bytes, low first. JBL's app reads the design
 calibration is always -1; PairFree sends the same. `TourOneM3Control` (the Tour One M3, Sense Lite, Endurance Zone, Tune
 135BT and 235BT) writes a curve of the user's own at half its gains on firmware up to 4.2.0, and doubles what the
 earbuds report (`halve_custom_until`); unknown firmware counts as old.
+
+**The older BES classes** (`BesEQControl`, `CmdGen`, `EqCmdData`, `HandleParse`; all over Bluetooth LE). A write is
+`AA 41`, the payload's length (one byte) and the part count, sent as four bytes; then the payload in parts of 79 bytes,
+each led by its index; then `AA 05 41`. The payload: the preset index (4, the user's, for every curve), the category (1
+for a curve of the user's own; 0 for a preset, as `BesEQControl` maps preset categories), the calibration, the sample
+rate (48), the left and right gain, the band count (four bytes), then per band its type (four bytes), gain, frequency
+and Q, numbers four bytes, low first. A read is `AA 42 01` and the category (0 the design EQ, 1 the user's curve); the
+earbuds answer `AA 43` with the part count, JBL's app acknowledges with `AA 01 02 43 00` (as many times as there are
+parts, plus two), the parts follow as notifications of their own led by their index, and `AA 04 43` ends it. The reply's
+payload is the write's without the calibration; it names no preset, so JBL's app keeps the choice on the phone, and so
+does PairFree. JBL's app reads the design EQ (and the user's curve) on connecting; PairFree reads the design EQ alone,
+for the calibration. The Club One picks a preset with `AA 40 01` and its category, and before a curve of the user's own
+selects the user's slot (`40` with 4).
 
 **Curves.** JBL's presets are ten bands at 32, 64, 125, 250, 500, 1k, 2k, 4k, 8k and 16k Hz, mostly peak filters
 (type 1) at Q 1, with the gains in the file; a model's file may add a left and right gain. A curve of the user's own is

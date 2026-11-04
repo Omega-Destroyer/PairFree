@@ -18,8 +18,9 @@ What it shows, where JBL's app shows it for the model:
   noise cancelling, Ambient Aware and TalkThru, as JBL's app offers them on the model, with
   adaptive noise cancelling and auto compensation where it has them.
 - **Sound:** Smart Audio & Video, 3D spatial sound, left/right balance, SafeSound, Hi-Res audio
-  and low volume EQ; and on 61 models the equalizer, with JBL's presets for the model and a curve
-  of your own on its ten bands, once the headphones or earbuds report theirs.
+  and low volume EQ; and on 72 models the equalizer, with JBL's presets for the model and a curve
+  of your own on its ten bands: once the headphones or earbuds report theirs, or on the older models
+  (Live 460NC to Tune Flex, which do not report it), as this phone last set it.
 - **Controls:** a set of touch controls for each earbud, on the models with JBL's gesture page.
 - **Device:** auto power-off (never, after 30, 60 or 120 minutes), pause when taken off,
   VoiceAware, the call sound effect and audio limiter, speak to chat, voice prompts and Find My
@@ -40,8 +41,8 @@ that step itself, so these are in the table: the Live 4 generation, Tune 530BT, 
 3 and Peak 4, Soundgear Clips, Junior Free and the Smart Tx. None has been tried, and the step
 is read from JBL's app without a recording, so a report from any of them is especially useful.
 
-Not yet: the equalizer on the models JBL's app sets it on another way (the older BES models'
-transfer, the Tune 520BT family, and the models on Airoha's chips, protocol 4's among them), the noise cancelling level, and the touch controls JBL's app sets on
+Not yet: the equalizer on the Tune 520BT family and the models on Airoha's chips (protocol 4's
+among them), which JBL's app sets another way, the noise cancelling level, and the touch controls JBL's app sets on
 pages of their own (on headphones, and on models whose gestures come from JBL's servers). Nor
 these models, which JBL's app drives another way:
 - Tour Pro 4, Tour One M4 and the newer Smart Tx, which JBL's app marks unsupported.
@@ -78,10 +79,10 @@ recorder does not read JBL's commands.
 
 <table>
 <tr><th>Model</th><th>Product</th><th>Type</th><th>Connection</th><th>Settings</th><th>Status</th></tr>
-<tr><td>CLUB ONE</td><td><code>1F42</code> <code>2015</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, auto power-off</td><td>Not tested</td></tr>
-<tr><td>LIVE460NC</td><td><code>2031</code> <code>2032</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware</td><td>Not tested</td></tr>
-<tr><td>LIVE660NC</td><td><code>2033</code> <code>2034</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware</td><td>Not tested</td></tr>
-<tr><td>TOUR ONE</td><td><code>2021</code> <code>2028</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware</td><td>Not tested</td></tr>
+<tr><td>CLUB ONE</td><td><code>1F42</code> <code>2015</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, auto power-off, equalizer</td><td>Not tested</td></tr>
+<tr><td>LIVE460NC</td><td><code>2031</code> <code>2032</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware, equalizer</td><td>Not tested</td></tr>
+<tr><td>LIVE660NC</td><td><code>2033</code> <code>2034</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware, equalizer</td><td>Not tested</td></tr>
+<tr><td>TOUR ONE</td><td><code>2021</code> <code>2028</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware, equalizer</td><td>Not tested</td></tr>
 <tr><td>TOUR ONE M2</td><td><code>2085</code> <code>2086</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, speak to chat, touch controls, low volume EQ, equalizer</td><td>Not tested</td></tr>
 <tr><td>Tune 520BT</td><td><code>20B3</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound</td><td>Not tested</td></tr>
 <tr><td>Tune 520BT</td><td><code>20F7</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound</td><td>Not tested</td></tr>
@@ -121,14 +122,14 @@ recorder does not read JBL's commands.
 <tr><td>Quantum910</td><td><code>2089</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, TalkThru, auto power-off, VoiceAware</td><td>Not tested</td></tr>
 <tr><td>Tune 775NC</td><td><code>2123</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound</td><td>Not tested</td></tr>
 <tr><td>Tune 777NC</td><td><code>215D</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound</td><td>Not tested</td></tr>
-<tr><td>RFL FLOW PRO</td><td><code>202D</code> <code>202E</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware, Find My Buds, touch controls</td><td>Not tested</td></tr>
-<tr><td>TUNE130NC TWS</td><td><code>2049</code> <code>204A</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, Find My Buds, touch controls</td><td>Not tested</td></tr>
-<tr><td>TUNE230NC TWS</td><td><code>204B</code> <code>204C</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, Find My Buds, touch controls</td><td>Not tested</td></tr>
-<tr><td>TUNE235NC TWS</td><td><code>20E5</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, Find My Buds, touch controls</td><td>Not tested</td></tr>
-<tr><td>ENDURANCE RACE TWS</td><td><code>204D</code> <code>204E</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, balance, VoiceAware, Find My Buds, touch controls</td><td>Not tested</td></tr>
-<tr><td>LIVE PRO 2 TWS</td><td><code>2058</code> <code>2059</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, Find My Buds, touch controls</td><td>Not tested</td></tr>
+<tr><td>RFL FLOW PRO</td><td><code>202D</code> <code>202E</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
+<tr><td>TUNE130NC TWS</td><td><code>2049</code> <code>204A</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
+<tr><td>TUNE230NC TWS</td><td><code>204B</code> <code>204C</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
+<tr><td>TUNE235NC TWS</td><td><code>20E5</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
+<tr><td>ENDURANCE RACE TWS</td><td><code>204D</code> <code>204E</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, balance, VoiceAware, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
+<tr><td>LIVE PRO 2 TWS</td><td><code>2058</code> <code>2059</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
 <tr><td>Endurance Peak 3</td><td><code>2083</code> <code>2084</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>Ambient Aware, TalkThru, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, touch controls, equalizer</td><td>Not tested</td></tr>
-<tr><td>TUNE FLEX</td><td><code>207F</code> <code>2080</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, Find My Buds, touch controls</td><td>Not tested</td></tr>
+<tr><td>TUNE FLEX</td><td><code>207F</code> <code>2080</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
 <tr><td>WAVE FLEX</td><td><code>2092</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, SafeSound, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
 <tr><td>WAVE BUDS</td><td><code>2090</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, SafeSound, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>
 <tr><td>WAVE BEAM</td><td><code>2091</code></td><td>Earbuds</td><td>Bluetooth LE</td><td>Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, VoiceAware, SafeSound, Find My Buds, touch controls, equalizer</td><td>Not tested</td></tr>

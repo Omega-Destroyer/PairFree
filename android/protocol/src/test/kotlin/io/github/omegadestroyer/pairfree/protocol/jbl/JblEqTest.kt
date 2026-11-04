@@ -20,7 +20,7 @@ class JblEqTest {
     private fun reply(curve: JblEqCurve, q10: Boolean): JblPacket {
         val p = JblEq.write(curve, q10).payload.copyOf()
         p[0] = (if (q10) JblEqWire.REPLY_Q10 else JblEqWire.REPLY).toByte()
-        return JblParser().feed(JblPacket(JblCommand.EQ, p).bytes()).single()
+        return JblParser().feed(JblPacket(JblCommand.EQ, p).bytes()).single() as JblPacket
     }
 
     @Test
@@ -149,8 +149,49 @@ class JblEqTest {
     }
 
     @Test
-    fun modelsPairFreeDoesNotWriteYet() {
+    fun olderBesTransfer() {
         val s = JblSession(model("JBL LIVE PRO 2 TWS"))
+        // The design EQ alone is read, with 42 and category 0.
+        assertTrue("aa420100" in s.start().map { it.hex() })
+        // It comes back as a header with the part count, which is acknowledged twice more than there are parts.
+        val design = JblEq.write41(flat().copy(calibration = 0f), graphic = false)
+        val payload = design.drop(1).dropLast(1).joinToString("") { it.hex().substring(2) }.hexBytes()
+        // The reply has no calibration: drop it from the write's payload to make one.
+        val reply = payload.copyOfRange(0, 2) + payload.copyOfRange(6, payload.size)
+        val partsOut = reply.toList().chunked(79)
+        s.receive(JblPacket.of(JblEq41.REPLY, partsOut.size))
+        assertEquals(List(partsOut.size + 2) { "aa01024300" }, s.takeOutbox().map { it.hex() })
+        val reader = JblReader(p4 = false)
+        partsOut.forEachIndexed { i, part -> reader.feed(byteArrayOf(i.toByte()) + part.toByteArray(), newMessage = true).forEach { s.receive(it) } }
+        reader.feed("aa0443".hexBytes(), newMessage = true).forEach { s.receive(it) }
+        // A curve of the user's own: header, parts, the app's closing frame; calibrated against the design EQ just read.
+        val out = s.eqWrite(null, listOf(0f, 0f, 0f, 0f, 0f, 6f, 0f, 0f, 0f, 0f))!!
+        assertEquals(out, s.takeEqWrite())
+        assertTrue(out.all { it is JblRaw && s.allowed(it) })
+        val sent = out.drop(1).dropLast(1).joinToString("") { it.hex().substring(2) }.hexBytes()
+        assertEquals("aa41b303", out.first().hex())
+        assertEquals("aa0541", out.last().hex())
+        assertEquals(4, sent[0].toInt())
+        assertEquals(JblEq41.GRAPHIC, sent[1].toInt())
+        val calibration = Float.fromBits((sent[2].toInt() and 0xFF) or ((sent[3].toInt() and 0xFF) shl 8) or ((sent[4].toInt() and 0xFF) shl 16) or ((sent[5].toInt() and 0xFF) shl 24))
+        assertTrue(abs(calibration - 7f) < 0.05f, "calibration $calibration")
+        // Raw bytes PairFree did not build are never sent.
+        assertTrue(!s.allowed(JblRaw(byteArrayOf(1, 2, 3))))
+    }
+
+    @Test
+    fun clubOnePresets() {
+        val s = JblSession(model("JBL CLUB ONE"))
+        val preset = s.model.eq!!.presets.first { it.category != 0 }
+        assertEquals(listOf("aa4001" + "%02x".format(preset.category)), s.eqWrite(preset, emptyList())!!.map { it.hex() })
+        val custom = s.eqWrite(null, List(10) { 0f })!!
+        assertEquals("aa400104", custom.first().hex())
+        assertEquals("aa0541", custom.last().hex())
+    }
+
+    @Test
+    fun modelsPairFreeDoesNotWriteYet() {
+        val s = JblSession(model("JBL Tune 520BT"))
         assertTrue(s.start().none { it.hex().startsWith("aaa2") })
         assertNull(s.eqWrite(null, List(10) { 0f }))
     }

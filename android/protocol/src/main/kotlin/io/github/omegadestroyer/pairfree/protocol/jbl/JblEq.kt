@@ -41,8 +41,15 @@ public data class JblEqSpec(
      */
     public enum class Path { A2, A2_Q10, CMD41, CLUB, SEGMENT, P4, AIROHA }
 
-    /** True for the paths PairFree writes so far: A2, and protocol 4 where the curve needs no Airoha PEQ. */
-    public val written: Boolean get() = path == Path.A2 || path == Path.A2_Q10 || (path == Path.P4 && !airohaLib)
+    /** True for the paths PairFree writes so far: A2, 41 and the Club One's, and protocol 4 where the curve needs no Airoha PEQ. */
+    public val written: Boolean
+        get() = path == Path.A2 || path == Path.A2_Q10 || path == Path.CMD41 || path == Path.CLUB || (path == Path.P4 && !airohaLib)
+
+    /**
+     * True when the earbuds report the EQ they hold. The older BES classes' reply names no preset (every write goes as the
+     * user's preset index), so JBL's app keeps the choice on the phone, and so does PairFree.
+     */
+    public val reports: Boolean get() = path != Path.CMD41 && path != Path.CLUB
 }
 
 /**
@@ -106,6 +113,61 @@ public object JblEq {
         return JblEqCurve(category, float(p, 2), p[6].toInt() and 0xFF, float(p, 7), float(p, 11), bands)
     }
 
+    /**
+     * The older BES classes' write (command 41, CmdGen.generateSetCustomEqCmd): a header, the payload in parts of 79 bytes
+     * each led by its index, and the app's closing frame, all sent as they are. The payload: the preset index (4, the user's),
+     * the category ([graphic] for a curve of the user's own, else 0, as BesEQControl maps a preset's), the calibration, the
+     * sample rate, the two gains, the band count (four bytes), then per band its type (four bytes), gain, frequency and Q.
+     */
+    public fun write41(curve: JblEqCurve, graphic: Boolean): List<JblRaw> {
+        val out = ArrayList<Byte>(HEADER_41 + curve.bands.size * BAND_41)
+        out += JblEq41.USER_INDEX.toByte()
+        out += (if (graphic) JblEq41.GRAPHIC else JblEq41.DESIGN).toByte()
+        out += float(curve.calibration)
+        out += curve.sampleRate.toByte()
+        out += float(curve.leftGain)
+        out += float(curve.rightGain)
+        out += int(curve.bands.size)
+        for (b in curve.bands) {
+            out += int(b.type)
+            out += float(b.gainDb)
+            out += float(b.hz)
+            out += float(b.q)
+        }
+        val payload = out.toByteArray()
+        val parts = payload.toList().chunked(JblEq41.PART)
+        return buildList {
+            add(JblRaw(byteArrayOf(JblCommand.START.toByte(), JblEq41.WRITE.toByte(), payload.size.toByte(), parts.size.toByte())))
+            parts.forEachIndexed { i, part -> add(JblRaw(byteArrayOf(i.toByte()) + part.toByteArray())) }
+            add(JblRaw(byteArrayOf(JblCommand.START.toByte(), JblEq41.APP_FIN.toByte(), JblEq41.WRITE.toByte())))
+        }
+    }
+
+    /** The older BES classes' read of [category] (0 the design EQ, 1 the user's curve): command 42 and the category. */
+    public fun read41(category: Int): JblPacket = JblPacket.of(JblEq41.READ, category)
+
+    /** The app's acknowledgement while the earbuds send an EQ in parts: AA 01, then 43 and 00 (success). */
+    public fun ack41(): JblPacket = JblPacket.of(JblEq41.APP_ACK, JblEq41.REPLY, 0)
+
+    /** Club One: pick [category]'s preset (command 40). */
+    public fun preset40(category: Int): JblPacket = JblPacket.of(JblEq41.SET_PRESET, category)
+
+    /**
+     * The EQ the older BES classes send in parts, joined without the parts' index bytes (HandleParse.parseCustomEQ): the
+     * preset index, the category (0 design, 1 the user's, 2 total, 3 PersoniFi), the sample rate, the two gains, the band
+     * count (four bytes), then 16 bytes a band; no calibration. Null when cut short.
+     */
+    public fun parse41(data: ByteArray): Pair<Int, JblEqCurve>? {
+        if (data.size < READ_HEADER_41) return null
+        val count = int(data, 11)
+        if (count > MAX_BANDS_41 || data.size < READ_HEADER_41 + count * BAND_41) return null
+        val bands = List(count) { i ->
+            val at = READ_HEADER_41 + i * BAND_41
+            JblEqBand(int(data, at), float(data, at + 8), float(data, at + 4), float(data, at + 12))
+        }
+        return (data[1].toInt() and 0xFF) to JblEqCurve(JblEqWire.CUSTOM, 0f, data[2].toInt() and 0xFF, float(data, 3), float(data, 7), bands)
+    }
+
     /** Protocol 4's EQ query: which EQ to report (255 the one in use), one byte each. */
     public fun p4Query(category: Int): JblP4Packet = JblP4Packet.set(JblP4.FEATURE_EQ_INFO_QUERY to byteArrayOf(category.toByte()))
 
@@ -166,6 +228,12 @@ public object JblEq {
     private const val HEADER = 16
     private const val BAND = 10
     private const val Q_TENTHS = 10f
+
+    /** The 41 payload before the bands, and a band; the reply has no calibration, and JBL's app drops one of more than 15 bands. */
+    private const val HEADER_41 = 19
+    private const val READ_HEADER_41 = 15
+    private const val BAND_41 = 16
+    private const val MAX_BANDS_41 = 15
 
     /** Protocol 4: the category, kept, band count, calibration, sample rate and two gains; then 13 bytes a band. */
     private const val P4_HEADER = 19

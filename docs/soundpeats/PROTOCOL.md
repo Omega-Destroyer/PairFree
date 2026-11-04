@@ -864,15 +864,14 @@ From a user's recording (GitHub issue #9, 2026-10-31; report
   | 6    | 2580 | 0.8 | -10.0   | fixed |
   | 7    | 6200 | 2.5 | -7.0    | fixed |
   | 8    | 7830 | 2.8 | -8.0    | fixed |
-  | 9-16 | 62, 125, 250, 500, 100, 2000, 4000, 8000 | 1.8 | 0.0 | user |
+  | 9-16 | 62, 125, 250, 500, 1000, 2000, 4000, 8000 | 1.8 | 0.0 | user |
 
-  TRUEFREE Classic sends the user's eight at 0 dB and Q 1.8, as PeatsAudio 1.9.45's custom
-  screen would, except that its fifth band is at 100 Hz where that screen (and 2.5.3's) has
-  1 kHz. Seven presets send their own eight at Q 0.8 on the same frequencies with 1 kHz in
-  fifth place; Classical moves all eight (125 Hz to 6 kHz, Q 1.5). PairFree follows the
-  recording: the fixed bands are `eq.fixed_bands`, the user's sliders the eight after them,
-  fifth at 100 Hz. Open: a recording of a custom curve, which would show where the fifth
-  band really goes.
+  TRUEFREE Classic sends the user's eight at 0 dB and Q 1.8, except that its fifth band is at
+  100 Hz. The user's second recording (issue #9, `T2_0.5.5_recording_custom.txt`) settles the
+  custom screen: +6 dB on its 1 kHz slider went out as band 13 at 1 kHz, Q 1.8. So the sliders
+  are 62 Hz to 8 kHz with 1 kHz fifth, and PairFree offers TRUEFREE Classic as a preset, sent
+  as recorded. Seven presets send their own eight at Q 0.8 on the slider frequencies;
+  Classical moves all eight (125 Hz to 6 kHz, Q 1.5).
 
 ## 12. Codecs (A2DP), and LDAC on Samsung phones
 
@@ -939,8 +938,13 @@ same (owner, 2026-11-04). Nothing new goes to the earbuds: the result is an EQ s
   it steps quieter until a tone is missed (the result is the last one heard) or the quietest is heard; missed there, it
   steps louder until one is heard, or the loudest stands. A tone not answered before it ends counts as missed.
 - **Result** (`EqConversionUtils`): an EQ of the eight frequencies with those gains at Q 1.5 and the model's classic
-  master gain, sent through the usual EQ write, which on Qualcomm models merges it onto the classic curve's bands. PairFree
-  adds each gain to the model's band nearest in frequency (whole dB, within the model's range), saves it as a profile
-  ("Hearing test") and applies it; on the models whose custom bands are appended after the classic ones (the TRUEFREE Clip
-  C10), the result goes onto those bands the same way rather than as eight bands of its own.
+  master gain. 2.5.3 sends it as it is. PeatsAudio 1.9.45 (`EqUtilKt.getIntactCustomEqByRelatively`) puts it on the
+  classic curve with `mergeQualcommEQ` on Qualcomm models and S13, S15, S22, S29 and the other codes in section 4. That
+  merge has quirks: each frequency's band is found by a binary search that only weighs the band it stops on against the
+  next one up (500 Hz lands on 800 Hz, not 300), and where several land on one band only the first one's gain is added.
+  The user's PeatsAudio recording of the C30 (issue #10, `S22_0.7.5_recording_peatsaudio.txt`) matches it exactly, so
+  `HearingEq.onBands` ports it as it is. On other models PeatsAudio sends the classic bands followed by the eight test
+  bands: the TRUEFREE Clip C10 recording (issue #9) shows its eight fixed bands, then 125 Hz to 6 kHz at Q 1.5. PairFree
+  keeps a profile as gains on the model's own bands, so on the C10 it puts the result on the eight sliders with the same
+  merge instead; sending the test's own frequencies there is open.
 

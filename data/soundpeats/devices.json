@@ -2185,7 +2185,8 @@
       "custom_eq_bands": 10,
       "reports": [
         "data/soundpeats/reports/S22_0.7.5.txt",
-        "data/soundpeats/reports/S22_0.7.5_recording.txt"
+        "data/soundpeats/reports/S22_0.7.5_recording.txt",
+        "data/soundpeats/reports/S22_0.7.5_recording_peatsaudio.txt"
       ],
       "notes": "Not in the official app's model lists; known from a user's device report (GitHub issue #5). Its chip family is not known. The EQ (9 bands, merged onto the classic bands as PeatsAudio does for S22) is from the user's recording of the official app (issue #10).",
       "eq": {
@@ -2808,7 +2809,8 @@
       "custom_eq_bands": 10,
       "reports": [
         "data/soundpeats/reports/T2_0.5.5.txt",
-        "data/soundpeats/reports/T2_0.5.5_recording.txt"
+        "data/soundpeats/reports/T2_0.5.5_recording.txt",
+        "data/soundpeats/reports/T2_0.5.5_recording_custom.txt"
       ],
       "notes": "Not in the official app's model lists; known from a user's device report (GitHub issue #6). Its chip family is not known. The EQ is from the user's recording of the official app (issue #9): TRUEFREE's 8-band curve sent first as it is, then 8 bands of the user's (append_after_classic). The official app's reset puts the fifth user band at 100 Hz where PeatsAudio's custom screen has 1 kHz; PairFree follows the recording until a recording of a custom curve says otherwise.",
       "eq": {
@@ -2879,7 +2881,7 @@
             "base_gain_db": 0.0
           },
           {
-            "hz": 100,
+            "hz": 1000,
             "q": 1.8,
             "base_gain_db": 0.0
           },
@@ -2900,6 +2902,91 @@
           }
         ],
         "presets": [
+          {
+            "name": "SOUNDPEATS Classic",
+            "bands": [
+              {
+                "hz": 50,
+                "q": 0.9,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 90,
+                "q": 0.7,
+                "gain_db": 0.1
+              },
+              {
+                "hz": 310,
+                "q": 1.0,
+                "gain_db": -4.0
+              },
+              {
+                "hz": 600,
+                "q": 1.0,
+                "gain_db": -1.0
+              },
+              {
+                "hz": 1550,
+                "q": 1.5,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 2580,
+                "q": 0.8,
+                "gain_db": -10.0
+              },
+              {
+                "hz": 6200,
+                "q": 2.5,
+                "gain_db": -7.0
+              },
+              {
+                "hz": 7830,
+                "q": 2.8,
+                "gain_db": -8.0
+              },
+              {
+                "hz": 62,
+                "q": 1.8,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 125,
+                "q": 1.8,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 250,
+                "q": 1.8,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 500,
+                "q": 1.8,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 100,
+                "q": 1.8,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 2000,
+                "q": 1.8,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 4000,
+                "q": 1.8,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 8000,
+                "q": 1.8,
+                "gain_db": 0.0
+              }
+            ]
+          },
           {
             "name": "Hightone enhancement",
             "bands": [

@@ -75,17 +75,44 @@ public class StaircaseTest(public val table: HearingTable) {
 /** A hearing test's result as an EQ on a model's own bands. */
 public object HearingEq {
     /**
-     * SOUNDPEATS' merge onto a model's bands, as its app puts a curve of other bands on a Qualcomm model's classic curve
-     * (docs/soundpeats/PROTOCOL.md section 4): each result's gain added to the band nearest its frequency, in whole dB within
-     * [rangeDb].
+     * SOUNDPEATS' merge onto a model's bands, a port of PeatsAudio's `mergeQualcommEQ` (docs/soundpeats/PROTOCOL.md section
+     * 13), quirks kept because users' recordings of the C30 match them: each result finds its band by a binary search
+     * that only weighs the band it stops on against the next one up (so 500 Hz can land on 800 Hz rather than 300); where
+     * several results land on one band, only the first one's gain is added, and the average of their gains is written
+     * into the result at that band's index. Whole dB within [rangeDb].
      */
     public fun onBands(results: List<HearingTone>, bandsHz: List<Int>, rangeDb: Int): List<Int> {
-        val gains = DoubleArray(bandsHz.size)
         if (bandsHz.isEmpty()) return emptyList()
-        for (r in results) {
-            val nearest = bandsHz.indices.minBy { abs(bandsHz[it] - r.hz) }
-            gains[nearest] += r.gainDb.toDouble()
+        val order = bandsHz.indices.sortedBy { bandsHz[it] }
+        val a = order.map { bandsHz[it].toFloat() }
+        val hz = results.map { it.hz.toInt() }
+        val gain = results.map { it.gainDb.toDouble() }.toMutableList()
+        val at = hz.map { f -> closest(a, f) }
+        for ((band, points) in at.indices.groupBy { at[it] }) {
+            if (points.size > 1 && band < gain.size) gain[band] = points.map { gain[it] }.average()
+        }
+        val gains = DoubleArray(bandsHz.size)
+        var last = -1
+        for (i in at.indices) {
+            if (at[i] != last) gains[order[at[i]]] += gain[i]
+            last = at[i]
         }
         return gains.map { it.roundToInt().coerceIn(-rangeDb, rangeDb) }
+    }
+
+    /** PeatsAudio's `findClosestElements` for one frequency: an index into the sorted band frequencies [a]. */
+    private fun closest(a: List<Float>, f: Int): Int {
+        var lo = 0
+        var hi = a.size - 1
+        var i = -1
+        while (lo <= hi) {
+            i = (lo + hi) / 2
+            if (a[i] == f.toFloat()) break
+            if (a[i] < f) lo = i + 1 else hi = i - 1
+        }
+        if (i == -1) i = 0
+        i = i.coerceIn(0, a.size - 1)
+        if (i < a.size - 1 && abs(f - a[i + 1]) < abs(f - a[i])) i++
+        return i
     }
 }

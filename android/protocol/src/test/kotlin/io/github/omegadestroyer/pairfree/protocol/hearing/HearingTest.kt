@@ -73,8 +73,17 @@ class HearingTest {
     @Test
     fun mergedOntoTheModelsBands() {
         val results = listOf(HearingTone(125f, 0f, 6f), HearingTone(250f, 0f, 2f), HearingTone(6000f, 0f, -3f))
-        // 125 and 250 Hz both land on the 160 Hz band, 6 kHz on 5 kHz; within the model's range.
-        assertEquals(listOf(0, 8, 0, -3), HearingEq.onBands(results, listOf(40, 160, 1000, 5000), 10))
-        assertEquals(listOf(0, 6, 0, -3), HearingEq.onBands(results, listOf(40, 160, 1000, 5000), 6))
+        // PeatsAudio's search stops 250 Hz on 1 kHz, not the nearer 160 Hz; within the model's range.
+        assertEquals(listOf(0, 6, 2, -3), HearingEq.onBands(results, listOf(40, 160, 1000, 5000), 10))
+        assertEquals(listOf(0, 6, 2, -3), HearingEq.onBands(results, listOf(160, 40, 1000, 5000).sorted(), 6))
+    }
+
+    @Test
+    fun matchesPeatsAudioOnTheC30() {
+        // Issue #10: PeatsAudio's "Adaptive EQ" on the C30 (S22 0.7.5), sent as the classic curve plus these changes.
+        val gains = listOf(-4f, -4f, -4f, -4f, -3f, -3f, -3f, -3f)
+        val results = listOf(125f, 250f, 500f, 800f, 1200f, 2000f, 4000f, 6000f).zip(gains) { hz, g -> HearingTone(hz, 0f, g) }
+        val classic = listOf(20, 160, 300, 800, 1800, 2800, 5000, 8000, 16000)
+        assertEquals(listOf(0, -4, -4, -4, 0, -3, -3, -3, 0), HearingEq.onBands(results, classic, 6))
     }
 }

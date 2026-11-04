@@ -30,6 +30,7 @@ import kotlinx.coroutines.delay
 @Composable
 internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange: (SettingChange) -> Unit) {
     var picking by remember { mutableStateOf<Setting.Choice?>(null) }
+    var confirming by remember { mutableStateOf<String?>(null) }
     for (group in groups.filter { it.tab == tab }) {
         Panel {
             Label(groupTitle(group.key))
@@ -51,14 +52,25 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                     is Setting.Level -> LevelRow(setting, onChange)
                     is Setting.Action -> StudioButton(
                         stringResource(if (setting.active) actionStop(setting.key) else actionStart(setting.key)),
-                        { onChange(SettingChange.Press(setting.key)) },
+                        { if (setting.key in CONFIRM_KEYS) confirming = setting.key else onChange(SettingChange.Press(setting.key)) },
                         Modifier.fillMaxWidth(),
                         primary = setting.active,
+                        destructive = setting.key in CONFIRM_KEYS,
                     )
                 }
             }
             groupNote(group.key)?.let { Text(it, style = Studio.type.small, color = Studio.colors.secondaryText) }
         }
+    }
+    confirming?.let { key ->
+        ConfirmDialog(
+            title = stringResource(actionStart(key)),
+            body = stringResource(if (key == "ef_power_off") R.string.setting_ef_power_off_body else R.string.setting_ef_restart_body),
+            confirm = stringResource(actionStart(key)),
+            onConfirm = { onChange(SettingChange.Press(key)) },
+            onDismiss = { confirming = null },
+            destructive = true,
+        )
     }
     picking?.let { choice ->
         PickerDialog(
@@ -113,6 +125,9 @@ private const val SEND_AFTER_MS = 300L
 
 private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
+/** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
+private val CONFIRM_KEYS = setOf("ef_restart", "ef_power_off")
+
 @Composable
 private fun groupTitle(key: String): String = stringResource(
     when (key) {
@@ -133,6 +148,9 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_dial" -> R.string.setting_group_touch_dial
         "sleep" -> R.string.setting_group_sleep
         "attention" -> R.string.setting_group_attention
+        "ef_quality" -> R.string.setting_group_sound_quality
+        "ef_power" -> R.string.setting_group_power
+        "ef_buttons" -> R.string.setting_group_buttons
         else -> R.string.setting_group_other
     },
 )
@@ -141,6 +159,7 @@ private fun groupTitle(key: String): String = stringResource(
 private fun groupNote(key: String): String? = when (key) {
     "find" -> stringResource(R.string.setting_find_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
+    "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
     else -> null
 }
 
@@ -320,7 +339,14 @@ private fun settingTitle(key: String): String = when (key) {
     "ef_prompt_volume" -> stringResource(R.string.setting_ef_prompt_volume)
     "ef_hearing_protection" -> stringResource(R.string.setting_hearing_protection)
     "ef_touch_lock", "ef_touch_lock_left", "ef_touch_lock_right" -> stringResource(R.string.setting_ef_touch_lock)
-    else -> touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
+    "ef_ldac" -> "LDAC"
+    "ef_aptx" -> "aptX"
+    "ef_aptx_adaptive" -> "aptX Adaptive"
+    "ef_aptx_lossless" -> "aptX Lossless"
+    "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language)
+    "ef_restart" -> stringResource(R.string.setting_ef_restart)
+    "ef_power_off" -> stringResource(R.string.setting_ef_power_off)
+    else -> buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 /**
@@ -360,6 +386,26 @@ private fun touchTitle(key: String): String? {
         "single_slider" -> stringResource(R.string.setting_slider)
         else -> null
     }
+}
+
+/** One of the headphones' buttons and a gesture on it, from a key such as `ef_button_nc_hold_call` (EarFun's). */
+@Composable
+private fun buttonTitle(key: String): String? {
+    if (!key.startsWith("ef_button_")) return null
+    val rest = key.removePrefix("ef_button_")
+    val button = when (rest.substringBefore('_')) {
+        "plus" -> R.string.setting_ef_button_plus
+        "minus" -> R.string.setting_ef_button_minus
+        else -> R.string.setting_ef_button_nc
+    }
+    val gesture = when (rest.substringAfter('_')) {
+        "double" -> R.string.setting_ef_press_double
+        "hold" -> R.string.setting_ef_press_hold
+        "single_call" -> R.string.setting_ef_press_call
+        "hold_call" -> R.string.setting_ef_hold_call
+        else -> R.string.setting_ef_press
+    }
+    return stringResource(R.string.setting_ef_button, stringResource(button), stringResource(gesture))
 }
 
 @Composable
@@ -422,6 +468,8 @@ private fun settingNote(key: String): String? = when (key) {
     "power_off_timer" -> stringResource(R.string.setting_power_off_timer_note)
     "ef_hearing_protection" -> stringResource(R.string.setting_ef_hearing_protection_note)
     "ef_touch_lock", "ef_touch_lock_left", "ef_touch_lock_right" -> stringResource(R.string.setting_ef_touch_lock_note)
+    "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language_note)
+    "ef_power_off" -> stringResource(R.string.setting_ef_power_off_note)
     else -> null
 }
 
@@ -495,7 +543,15 @@ private fun optionName(key: String, option: String): String = when {
         "lhdc" -> "LHDC"
         else -> stringResource(R.string.setting_codec_standard)
     }
-    key.startsWith("touch_") && touchTitle(key) != null -> stringResource(
+    key == "ef_voice_language" -> stringResource(
+        when (option) {
+            "japanese" -> R.string.language_ja
+            "chinese" -> R.string.language_zh
+            "german" -> R.string.language_de
+            else -> R.string.language_en
+        },
+    )
+    (key.startsWith("touch_") && touchTitle(key) != null) || key.startsWith("ef_button_") -> stringResource(
         when (option) {
             "none" -> R.string.action_none
             "play_pause" -> R.string.action_play_pause
@@ -520,6 +576,12 @@ private fun optionName(key: String, option: String): String = when {
             // EarFun's
             "anc_off" -> R.string.setting_cycle_anc_off
             "call_repeat" -> R.string.action_call_repeat
+            "power_off" -> R.string.setting_ef_power_off
+            "privacy_mode" -> R.string.action_privacy_mode
+            "multipoint" -> R.string.setting_multipoint
+            "answer_hang_up" -> R.string.action_answer_hang_up
+            "decline_call" -> R.string.action_decline_call
+            "switch_calls" -> R.string.action_switch_calls
             else -> R.string.action_other
         },
     )
@@ -736,6 +798,8 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
 
 private fun actionStart(key: String): Int = when (key) {
     "find" -> R.string.setting_find_start
+    "ef_restart" -> R.string.setting_ef_restart
+    "ef_power_off" -> R.string.setting_ef_power_off
     else -> R.string.setting_action_start
 }
 

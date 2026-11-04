@@ -1590,8 +1590,10 @@ abstract class GenerateEarfunTables : DefaultTask() {
             check(seen.add(name)) { "two qualcomm commands named $name" }
             out.appendLine("    public const val $name: Int = ${(c["code"] as Number).toInt()}")
         }
-        out.appendLine("    /** Restarting, resetting, renaming, powering off and device management: never sent. */")
+        out.appendLine("    /** Factory reset, renaming, firmware update and device management: never sent. */")
         out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${qccList.filter { it["never_send"] == true }.joinToString(", ") { (it["code"] as Number).toInt().toString() }})")
+        out.appendLine("    /** Restarting and powering off: sent only from an action the user confirms on screen. */")
+        out.appendLine("    public val CONFIRM: Set<Int> = setOf(${qccList.filter { it["confirm"] == true }.joinToString(", ") { (it["code"] as Number).toInt().toString() }})")
         out.appendLine("    /** Reads that return phones' names and addresses or a serial number: never sent. */")
         out.appendLine("    public val PRIVATE: Set<Int> = setOf(${qccList.filter { it["private"] == true }.joinToString(", ") { (it["code"] as Number).toInt().toString() }})")
         out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${qccList.joinToString(", ") { "${(it["code"] as Number).toInt()} to ${str(it["name"])}" }})")
@@ -1612,8 +1614,10 @@ abstract class GenerateEarfunTables : DefaultTask() {
             check(seen.add(name)) { "two earfun commands named $name" }
             out.appendLine("    public const val $name: Int = 0x${c["code"]}")
         }
-        out.appendLine("    /** Resetting, renaming, powering off and device management: never sent. */")
+        out.appendLine("    /** Factory reset, renaming and device management: never sent. */")
         out.appendLine("    public val NEVER_SEND: Set<Int> = setOf(${efList.filter { it["never_send"] == true }.joinToString(", ") { "0x${it["code"]}" }})")
+        out.appendLine("    /** Powering off: sent only from an action the user confirms on screen. */")
+        out.appendLine("    public val CONFIRM: Set<Int> = setOf(${efList.filter { it["confirm"] == true }.joinToString(", ") { "0x${it["code"]}" }})")
         out.appendLine("    /** Reads that return phones' names and addresses: never sent. */")
         out.appendLine("    public val PRIVATE: Set<Int> = setOf(${efList.filter { it["private"] == true }.joinToString(", ") { "0x${it["code"]}" }})")
         out.appendLine("    public val NAMES: Map<Int, String> = mapOf(${efList.joinToString(", ") { "0x${it["code"]} to ${str(it["name"])}" }})")
@@ -1630,6 +1634,9 @@ abstract class GenerateEarfunTables : DefaultTask() {
         out.appendLine("    public val AMBIENT_MODE: Map<String, Map<String, Int>> = ${tables(values["ambient_mode"])}")
         out.appendLine("    public val KEY_ACTIONS: Map<String, Map<String, Int>> = ${tables(values["key_actions"])}")
         out.appendLine("    public val KEY_GESTURES: Map<String, Map<String, Int>> = ${tables(values["key_gestures"])}")
+        out.appendLine("    public val KEY_BUTTONS: Map<String, Map<String, Int>> = ${tables(values["key_buttons"])}")
+        out.appendLine("    public val QUALITY_BITS: Map<String, Map<String, Int>> = ${tables(values["quality_bits"])}")
+        out.appendLine("    public val VOICE_LANGUAGE: Map<String, Map<String, Int>> = ${tables(values["voice_language"])}")
         out.appendLine("    /** A slider position (-10 to 10) as a gain on the 10-band models (data/earfun/eq_presets.json, gain_db). */")
         out.appendLine("    public val GAIN_DB: List<Double> = ${doubles(presets["gain_db"])}")
         out.appendLine("    /** EarFun's preset curves as slider positions, by list (10 or 6 bands). */")
@@ -1656,7 +1663,7 @@ abstract class GenerateEarfunTables : DefaultTask() {
             val noise = (d["noise"] as Map<*, *>?)?.let { n -> "EarfunNoise(${intMap(n["values"])}, ${sub(n["cancelling"])}, ${sub(n["ambient"])})" } ?: "null"
             val touch = (d["touch"] as Map<*, *>?)?.let { t ->
                 val gestures = (t["gestures"] as Map<*, *>).entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${strings(it.value)}" }
-                "EarfunTouch(${str(t["map"])}, $gestures, ${t["disable"]?.let(::str) ?: "null"})"
+                "EarfunTouch(${str(t["map"])}, $gestures, ${t["disable"]?.let(::str) ?: "null"}, callMap = ${t["call_map"]?.let(::str) ?: "null"})"
             } ?: "null"
             val eq = (d["eq"] as Map<*, *>?)?.let { e ->
                 val m = e["master"] as Map<*, *>
@@ -1669,6 +1676,10 @@ abstract class GenerateEarfunTables : DefaultTask() {
                 "EarfunEqSpec(${doubles(e["hz"])}, ${doubles(e["q"])}, ${str(e["frame"])}, positionGain = ${e["gain"] == "position"}, master = $master, " +
                     "presets = ${str(e["presets"])}, fixedAfter = $fixed)"
             } ?: "null"
+            val buttons = (d["buttons"] as Map<*, *>?)?.let { b ->
+                val gestures = (b["gestures"] as Map<*, *>).entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${strings(it.value)}" }
+                "EarfunButtons(${str(b["layout"])}, ${str(b["map"])}, $gestures)"
+            } ?: "null"
             out.appendLine("    EarfunModel(")
             out.appendLine("        ${strings(d["codes"])}, ${str(d["name"])}, ${strings(d["names"])}, ${str(d["protocol"])}, ${str(d["chip"])},")
             out.appendLine("        io.github.omegadestroyer.pairfree.protocol.Form.$form, case = ${d["case"]}, covered = ${d["covered"]},")
@@ -1679,6 +1690,9 @@ abstract class GenerateEarfunTables : DefaultTask() {
             out.appendLine("        touch = $touch,")
             out.appendLine("        eq = $eq,")
             out.appendLine("        versionText = ${d["version"] == "text"}, gaiaInit = ${d["gaia_init"]},")
+            out.appendLine("        quality = ${strings(d["quality"])}, ldacAptxConflict = ${d["ldac_aptx_conflict"]}, ldacMultipointConflict = ${d["ldac_multipoint_conflict"]},")
+            out.appendLine("        ldacGameConflict = ${d["ldac_game_conflict"]}, multipointRestart = ${d["multipoint_restart"]}, restart = ${d["restart"]}, powerOff = ${d["power_off"]},")
+            out.appendLine("        voiceLanguages = ${strings(d["voice_languages"])}, promptVolumes = ${strings(d["prompt_volumes"])}, buttons = $buttons,")
             out.appendLine("    ),")
         }
         out.appendLine(")")

@@ -1,5 +1,5 @@
 {
- "_about": "EarFun's control protocols (docs/earfun/PROTOCOL.md), read from EarFun's own app (EarFun Audio 20.1.61, com.corelink.earfun, decompiled outside the repo on 2026-11-03; none of its code is here): device/protocol/headset (QualcommProtocolParser and its TW600, TW700 and HP1000 subclasses, EarfunProtocolParser and its CW100 subclass, and the inline subclasses in device/base/DeviceType). Both run over the standard serial port. 'qualcomm' is GAIA v2 with vendor 000A, as SOUNDPEATS' Qualcomm models speak it: a command is 03xx and its answer 83xx or 03xx, the value at the answer's fourth byte. 'earfun' is EarFun's own frame: EF, the command (two bytes), the payload's length, the payload, (length + sum of the payload) & FF, FE. never_send marks resets, restarts, powering off, renaming, firmware update and device management; private marks reads that return phones' names and addresses or a serial number, which PairFree never sends.",
+ "_about": "EarFun's control protocols (docs/earfun/PROTOCOL.md), read from EarFun's own app (EarFun Audio 20.1.61, com.corelink.earfun, decompiled outside the repo on 2026-11-03; none of its code is here): device/protocol/headset (QualcommProtocolParser and its TW600, TW700 and HP1000 subclasses, EarfunProtocolParser and its CW100 subclass, and the inline subclasses in device/base/DeviceType). Both run over the standard serial port. 'qualcomm' is GAIA v2 with vendor 000A, as SOUNDPEATS' Qualcomm models speak it: a command is 03xx and its answer 83xx or 03xx, the value at the answer's fourth byte. 'earfun' is EarFun's own frame: EF, the command (two bytes), the payload's length, the payload, (length + sum of the payload) & FF, FE. never_send marks factory reset, renaming, firmware update and device management; confirm marks restarting and powering off, which PairFree sends only from an action the user confirms on screen (owner, 2026-11-03); private marks reads that return phones' names and addresses or a serial number, which PairFree never sends.",
  "qualcomm": {
   "service_uuid": "00001101-0000-1000-8000-00805F9B34FB",
   "vendor": "000A",
@@ -11,7 +11,7 @@
    {"code": 4, "name": "GET_API_LEVEL"},
    {"code": 6, "name": "GET_LEFT_BATTERY", "note": "the headphones' battery on the Wave Pro X"},
    {"code": 7, "name": "GET_RIGHT_BATTERY"},
-   {"code": 8, "name": "RESTART", "never_send": true},
+   {"code": 8, "name": "RESTART", "confirm": true, "note": "offered as an action the user confirms (owner, 2026-11-03)"},
    {"code": 9, "name": "GET_FW_VERSION", "note": "text from the fourth byte"},
    {"code": 10, "name": "SET_KEY", "note": "[gesture, action, 0, 0] for the left, [0, 0, gesture, action] for the right"},
    {"code": 11, "name": "GET_KEY", "note": "the action bytes at 4, 6, .. 18: left and right one, double, triple tap and long press; then the call gestures"},
@@ -53,7 +53,7 @@
    {"code": 76, "name": "GET_FAST_PAIR"},
    {"code": 77, "name": "GET_AUDIO_MODE", "note": "the codec playing: 1 SBC, 2 AAC, 3 aptX, 4 aptX HD, 5 aptX Adaptive, 6 aptX Lossless, 7 LDAC"},
    {"code": 80, "name": "GET_PLAY_STATE"},
-   {"code": 81, "name": "SET_CONTROL_PLAY", "never_send": true, "note": "1 is power off; the others are play controls"},
+   {"code": 81, "name": "SET_CONTROL_PLAY", "confirm": true, "note": "1 is power off, offered as an action the user confirms (owner, 2026-11-03); the others are play controls"},
    {"code": 82, "name": "WAKE_UP_STATE"},
    {"code": 83, "name": "SET_VOICE_PROTECT"},
    {"code": 84, "name": "GET_VOICE_PROTECT", "note": "1 90 dB .. 5 50 dB, else off"},
@@ -96,7 +96,7 @@
    {"code": "1022", "name": "GET_PLAY_STATE"},
    {"code": "1024", "name": "GET_AUDIO_MODE", "note": "2 AAC, 3 aptX, 4 aptX HD, 5 aptX Adaptive, 6 aptX Lossless, 7 LDAC, else SBC"},
    {"code": "2015", "name": "SET_NAME", "never_send": true},
-   {"code": "2025", "name": "SET_CONTROL_PLAY", "never_send": true, "note": "1 is power off; the others are play controls"},
+   {"code": "2025", "name": "SET_CONTROL_PLAY", "confirm": true, "note": "1 is power off, offered as an action the user confirms (owner, 2026-11-03); the others are play controls"},
    {"code": "2030", "name": "GET_GAME_MODE"},
    {"code": "2035", "name": "SET_GAME_MODE"},
    {"code": "2050", "name": "GET_FIND", "note": "left, right: 1 ringing"},
@@ -179,11 +179,22 @@
   "key_actions": {
    "_about": "The action bytes: qualcomm (KeyOperateEnum's byte; not set is 16), and the EarFun frame's per key map (EarfunProtocolParser.keyMap, CW100ProtocolParser, the Air Pro 4i's and the Clip 2's in DeviceType).",
    "qualcomm": {"none": 16, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "call_repeat": 13},
-   "earfun": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "call_repeat": 11, "multipoint": 12},
-   "clip": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "call_repeat": 11, "bass": 12, "quiet_mode": 13},
-   "air_pro_4i": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "call_repeat": 11, "spatial_audio": 12, "ambient_off": 14, "anc_ambient": 15},
-   "clip_2": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "call_repeat": 11, "bass": 12, "quiet_mode": 13}
+   "earfun": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "power_off": 10, "call_repeat": 11, "multipoint": 12},
+   "clip": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "power_off": 10, "call_repeat": 11, "bass": 12, "privacy_mode": 13},
+   "air_pro_4i": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "power_off": 10, "call_repeat": 11, "spatial_audio": 12, "ambient_off": 14, "anc_ambient": 15},
+   "clip_2": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "power_off": 10, "call_repeat": 11, "bass": 12, "privacy_mode": 13, "switch_calls": 17, "mic_mute": 18, "answer_hang_up": 19, "decline_call": 20},
+   "qualcomm_call": {"none": 16, "answer_hang_up": 1, "decline_call": 4, "mic_mute": 5, "switch_calls": 6, "anc_off": 8},
+   "wave_pro_x": {"none": 0, "play_pause": 1, "volume_up": 2, "volume_down": 3, "previous": 4, "next": 5, "voice_assistant": 6, "game_mode": 7, "noise_control": 8, "anc_off": 9, "call_repeat": 12, "multipoint": 13, "mic_mute": 80}
   },
-  "key_gestures": {"qualcomm": {"single": 1, "double": 2, "triple": 3, "hold": 17}}
+  "key_gestures": {
+   "qualcomm": {"single": 1, "double": 2, "triple": 3, "hold": 17, "triple_call": 6, "hold_call": 19},
+   "wave_pro_x": {"single": 1, "double": 2, "hold": 3, "single_call": 80, "hold_call": 82}
+  },
+  "key_buttons": {"wave_pro_x": {"plus": 1, "minus": 2, "nc": 3, "nc_call": 81}},
+  "quality_bits": {
+   "qualcomm": {"aptx": 1, "aptx_adaptive": 2, "ldac": 8, "aptx_lossless": 16},
+   "earfun": {"aptx": 1, "aptx_adaptive": 2, "ldac": 4}
+  },
+  "voice_language": {"earfun": {"english": 1, "japanese": 2, "chinese": 3, "german": 4}}
  }
 }

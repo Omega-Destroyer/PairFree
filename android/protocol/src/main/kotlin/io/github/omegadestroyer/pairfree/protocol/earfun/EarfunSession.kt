@@ -52,7 +52,9 @@ public class EarfunSession(public val model: EarfunModel) {
     private var autoOff: String? = null
     private var spatial: Boolean? = null
     private var checkEar: Int? = null
-    private var keys: IntArray? = null              // the action byte per gesture: single, double, triple, hold left, then right
+    private var keys: Map<String, Int>? = null       // the action byte per touch gesture and side ("hold_left") or button and gesture ("nc_hold")
+    private var quality: Int? = null                 // the codec bits the earbuds reported
+    private var language: String? = null
     private var lockLeft: Boolean? = null
     private var lockRight: Boolean? = null
     private var findLeft: Boolean? = null
@@ -91,10 +93,13 @@ public class EarfunSession(public val model: EarfunModel) {
         if (m.spatial && !qualcomm) add(ef(EarfunCommand.GET_SPATIAL_AUDIO))
         if (m.inEar && qualcomm) add(qcc(EarfunQcc.GET_CHECK_EAR))
         if (m.find && m.form == Form.EARBUDS) add(read(EarfunQcc.GET_FIND, EarfunCommand.GET_FIND))
+        if (m.quality.isNotEmpty()) add(read(EarfunQcc.GET_QUALITY, EarfunCommand.GET_QUALITY))
+        if (m.voiceLanguages.isNotEmpty() && !qualcomm) add(ef(EarfunCommand.GET_VOICE_WIZARD))
         m.touch?.let { t ->
             add(read(EarfunQcc.GET_KEY, EarfunCommand.GET_KEY))
             if (t.disable != null) add(read(EarfunQcc.GET_DISABLE_KEY, EarfunCommand.GET_DISABLE_KEY))
         }
+        if (m.buttons != null) add(read(EarfunQcc.GET_KEY, EarfunCommand.GET_KEY))
     }
 
     /**
@@ -140,8 +145,9 @@ public class EarfunSession(public val model: EarfunModel) {
     }
 
     /**
-     * False for what PairFree never sends: on either protocol resets, restarts, renaming, powering off, device
-     * management and the private reads; on GAIA v3 anything but the opening and the EQ.
+     * False for what PairFree never sends: on either protocol factory reset, renaming, device management, firmware
+     * update and the private reads; on GAIA v3 anything but the opening and the EQ. Restarting and powering off pass:
+     * they come only from an action the user confirms on screen ([change]).
      */
     public fun allowed(bytes: ByteArray): Boolean {
         if (!qualcomm) {
@@ -215,14 +221,8 @@ public class EarfunSession(public val model: EarfunModel) {
                 lockLeft = v == 1 || v == 2
                 lockRight = v == 1 || v == 3
             }
-            // The action bytes at every other byte from the third: one, double, triple tap and long press, left then right in turn.
-            EarfunQcc.GET_KEY -> if (p.size > QCC_KEY_FIRST + 2 * (GESTURES.size * 2 - 1)) {
-                keys = IntArray(GESTURES.size * 2) { i ->
-                    val gesture = i % GESTURES.size
-                    val right = i / GESTURES.size
-                    p.u8(QCC_KEY_FIRST + 2 * (gesture * 2 + right))
-                }
-            }
+            EarfunQcc.GET_KEY -> keys = if (model.buttons != null) waveProXButtons(p) else qccTouch(p)
+            EarfunQcc.GET_QUALITY -> quality = v
         }
     }
 
@@ -254,9 +254,37 @@ public class EarfunSession(public val model: EarfunModel) {
                 lockLeft = v == 1
                 if (p.size > 1) lockRight = p.u8(1) == 1
             }
-            EarfunCommand.GET_KEY -> if (p.size >= GESTURES.size * 2) keys = IntArray(GESTURES.size * 2) { p.u8(it) }
+            EarfunCommand.GET_KEY -> keys = (if (model.buttons != null) HEAD_BUTTONS else efTouchOrder()).takeIf { p.size >= it.size }
+                ?.let { order -> order.mapIndexed { i, key -> key to p.u8(i) }.toMap() }
+            EarfunCommand.GET_QUALITY -> quality = v
+            // 1 English, 2 Japanese, 3 Chinese, 4 German (EarfunProtocolParser.setData); the Clip 2's 5 is a voice of the user's own.
+            EarfunCommand.GET_VOICE_WIZARD -> language = nameOf(EarfunValues.VOICE_LANGUAGE.getValue(EARFUN), v)
         }
     }
+
+    /**
+     * The Qualcomm touch read: the action bytes at every other byte from the third (after the status), left and right in
+     * turn for one, double, triple tap and press and hold, then the call gestures (QualcommProtocolParser.positionKeyMap).
+     */
+    private fun qccTouch(p: ByteArray): Map<String, Int>? {
+        val out = mutableMapOf<String, Int>()
+        for ((gesture, index) in QCC_TOUCH_INDEX) {
+            for (side in 0..1) {
+                val at = QCC_KEY_FIRST + 2 * (index + side)
+                if (at < p.size) out["${gesture}_${SIDES[side]}"] = p.u8(at)
+            }
+        }
+        return out.takeIf { it.isNotEmpty() }
+    }
+
+    /** The Wave Pro X's buttons (HP1000ProtocolParser.resetData), by their bytes in its key read. */
+    private fun waveProXButtons(p: ByteArray): Map<String, Int>? =
+        WAVE_PRO_X_BUTTONS.filterValues { it < p.size }.mapValues { (_, at) -> p.u8(at) }.takeIf { it.isNotEmpty() }
+
+    /** EarFun's frame holds the four gestures of the left earbud, then the right's, then on the Clip 2 the call gestures. */
+    private fun efTouchOrder(): List<String> =
+        SIDES.flatMap { side -> GESTURES.map { "${it}_$side" } } +
+            if (model.touch?.callMap != null) listOf("triple_call_left", "hold_call_left", "triple_call_right", "hold_call_right") else emptyList()
 
     private fun battery(command: Command, level: Int) {
         state = state.copy(values = state.values + (command to Value.Number(level.takeIf { it in 1..PERCENT })))
@@ -323,13 +351,46 @@ public class EarfunSession(public val model: EarfunModel) {
                         checkEar?.takeIf { m.inEar }?.let { Setting.Toggle("auto_pause", it and CHECK_EAR_PAUSE_OFF == 0) },
                         checkEar?.takeIf { m.inEar }?.let { Setting.Toggle("auto_answer", it and CHECK_EAR_ANSWER_OFF == 0) },
                         mic?.takeIf { m.mic }?.let { Setting.Choice("microphone", MICS[it], MICS.values.toList()) },
-                        promptVolume?.takeIf { m.promptVolume }?.let { Setting.Choice("ef_prompt_volume", it, PROMPT_VOLUMES) },
+                        promptVolume?.takeIf { m.promptVolume }?.let { Setting.Choice("ef_prompt_volume", it, m.promptVolumes.ifEmpty { PROMPT_VOLUMES }) },
+                        language?.takeIf { m.voiceLanguages.isNotEmpty() }?.let { Setting.Choice("ef_voice_language", it, m.voiceLanguages) },
                         hearing?.takeIf { m.hearingProtection }?.let { Setting.Choice("ef_hearing_protection", it, HEARING) },
                         autoOff?.takeIf { m.autoOff.isNotEmpty() }?.let { Setting.Choice("auto_off", it, m.autoOff) },
                     ),
                 ),
-            ) + touchGroups(gestures)
+                group("ef_quality", SettingTab.DEVICE, qualityRows()),
+                group(
+                    "ef_power", SettingTab.DEVICE,
+                    listOfNotNull(Setting.Action(RESTART_KEY).takeIf { m.restart && qualcomm }, Setting.Action(POWER_OFF_KEY).takeIf { m.powerOff }),
+                ),
+            ) + touchGroups(gestures) + buttonGroups()
         }
+
+    /** The codecs as switches, as EarFun's sound quality screen shows them (HeadsetQualityFragment). */
+    private fun qualityRows(): List<Setting> {
+        val q = quality ?: return emptyList()
+        val bits = EarfunValues.QUALITY_BITS.getValue(if (qualcomm) QUALCOMM else EARFUN)
+        return model.quality.mapNotNull { codec -> bits[codec]?.let { Setting.Toggle("ef_$codec", q and it != 0) } }
+    }
+
+    /** The codecs on, by name. */
+    private fun codecs(): MutableSet<String> {
+        val q = quality ?: 0
+        val bits = EarfunValues.QUALITY_BITS.getValue(if (qualcomm) QUALCOMM else EARFUN)
+        return model.quality.filter { bits[it]?.let { b -> q and b != 0 } == true }.toMutableSet()
+    }
+
+    /** The headphones' buttons: per button and gesture, the actions EarFun's app offers. */
+    private fun buttonGroups(): List<SettingGroup> {
+        val b = model.buttons ?: return emptyList()
+        val k = keys ?: return emptyList()
+        val actions = EarfunValues.KEY_ACTIONS[b.map].orEmpty()
+        val rows = b.gestures.mapNotNull { (key, options) ->
+            val byte = k[key] ?: return@mapNotNull null
+            val name = actions.entries.firstOrNull { it.value == byte && it.key in options }?.key ?: actions.entries.firstOrNull { it.value == byte }?.key ?: OTHER
+            Setting.Choice("ef_button_$key", name, options)
+        }
+        return listOfNotNull(group("ef_buttons", SettingTab.CONTROLS, rows))
+    }
 
     private fun noiseRows(): List<Setting> = buildList {
         val n = model.noise ?: return@buildList
@@ -358,20 +419,22 @@ public class EarfunSession(public val model: EarfunModel) {
                 lockRight?.let { lock += Setting.Toggle(LOCK_RIGHT_KEY, it) }
             }
         }
-        fun side(right: Int, suffix: String): List<Setting> {
+        val callActions = t.callMap?.let { EarfunValues.KEY_ACTIONS[it] }.orEmpty()
+        fun side(suffix: String): List<Setting> {
             if (k == null || gestures == null) return emptyList()
-            return GESTURES.mapIndexedNotNull { g, gesture ->
-                val options = gestures[gesture]?.takeIf { it.isNotEmpty() } ?: return@mapIndexedNotNull null
-                val byte = k[right * GESTURES.size + g]
-                val name = actions.entries.firstOrNull { it.value == byte && it.key in options }?.key
-                    ?: actions.entries.firstOrNull { it.value == byte }?.key ?: OTHER
+            return (GESTURES + CALL_GESTURES).mapNotNull { gesture ->
+                val options = gestures[gesture]?.takeIf { it.isNotEmpty() } ?: return@mapNotNull null
+                val byte = k["${gesture}_$suffix"] ?: return@mapNotNull null
+                val table = if (gesture in CALL_GESTURES) callActions else actions
+                val name = table.entries.firstOrNull { it.value == byte && it.key in options }?.key
+                    ?: table.entries.firstOrNull { it.value == byte }?.key ?: OTHER
                 Setting.Choice("touch_${gesture}_$suffix", name, options)
             }
         }
         return listOfNotNull(
             group("touch", SettingTab.CONTROLS, lock.filter { it.key == LOCK_KEY }),
-            group("touch_left", SettingTab.CONTROLS, lock.filter { it.key == LOCK_LEFT_KEY } + side(0, "left")),
-            group("touch_right", SettingTab.CONTROLS, lock.filter { it.key == LOCK_RIGHT_KEY } + side(1, "right")),
+            group("touch_left", SettingTab.CONTROLS, lock.filter { it.key == LOCK_LEFT_KEY } + side("left")),
+            group("touch_right", SettingTab.CONTROLS, lock.filter { it.key == LOCK_RIGHT_KEY } + side("right")),
         )
     }
 
@@ -394,13 +457,19 @@ public class EarfunSession(public val model: EarfunModel) {
                 listOf(noiseWrite(name))
             }
             Command.GAME_MODE -> {
+                // Game mode cannot go on while LDAC is, on the models whose app says so (HeadsetGameModeViewHolder).
+                if (value == 1 && model.ldacGameConflict && "ldac" in codecs()) return null
                 game = value == 1
                 readBacks += read(EarfunQcc.GET_GAME_MODE, EarfunCommand.GET_GAME_MODE)
                 listOf(if (qualcomm) qcc(EarfunQcc.SET_GAME_MODE, value) else ef(EarfunCommand.SET_GAME_MODE, efSwitch(value == 1)))
             }
             Command.MULTIPOINT -> {
+                // Two devices cannot go on while LDAC is, on the models whose app says so (HeadsetDoubleConnectFragment).
+                if (value == 1 && model.ldacMultipointConflict && "ldac" in codecs()) return null
                 multipoint = value == 1
                 readBacks += read(EarfunQcc.GET_MULTIPOINT, EarfunCommand.GET_MULTIPOINT)
+                // EarFun's app restarts these earbuds 3 s after turning two devices on: the read-back's time.
+                if (value == 1 && model.multipointRestart && qualcomm) readBacks += qcc(EarfunQcc.RESTART)
                 listOf(if (qualcomm) qcc(EarfunQcc.SET_MULTIPOINT, value) else ef(EarfunCommand.SET_MULTIPOINT, efSwitch(value == 1)))
             }
             Command.FIND_LEFT, Command.FIND_RIGHT -> {
@@ -436,6 +505,12 @@ public class EarfunSession(public val model: EarfunModel) {
                 if (setting !is Setting.Choice || change.option !in setting.options) return null
                 choice(change.key, change.option) ?: return null
             }
+            // The screen asks the user to confirm both first.
+            is SettingChange.Press -> when (change.key) {
+                RESTART_KEY -> listOf(qcc(EarfunQcc.RESTART))
+                POWER_OFF_KEY -> listOf(if (qualcomm) qcc(EarfunQcc.SET_CONTROL_PLAY, POWER_OFF) else ef(EarfunCommand.SET_CONTROL_PLAY, POWER_OFF))
+                else -> return null
+            }
             else -> return null
         }
         refresh()
@@ -456,6 +531,7 @@ public class EarfunSession(public val model: EarfunModel) {
             readBacks += qcc(EarfunQcc.GET_CHECK_EAR)
             listOf(qcc(EarfunQcc.SET_CHECK_EAR, v))
         }
+        "ef_ldac", "ef_aptx", "ef_aptx_adaptive", "ef_aptx_lossless" -> qualityWrite(key.removePrefix("ef_"), on)
         LOCK_KEY, LOCK_LEFT_KEY, LOCK_RIGHT_KEY -> {
             when (key) {
                 LOCK_KEY -> { lockLeft = on; lockRight = on }
@@ -472,6 +548,45 @@ public class EarfunSession(public val model: EarfunModel) {
             )
         }
         else -> null
+    }
+
+    /**
+     * A codec switched, with the others as EarFun's sound quality screen moves them (HeadsetQualityFragment): aptX
+     * Adaptive and Lossless need aptX, Lossless needs Adaptive, and on most models LDAC and aptX exclude each other. LDAC
+     * stays off while two devices are on where they conflict. The earbuds restart after the write.
+     */
+    private fun qualityWrite(codec: String, on: Boolean): List<ByteArray>? {
+        val c = codecs()
+        val conflict = model.ldacAptxConflict
+        if (on) {
+            when (codec) {
+                "ldac" -> {
+                    if (model.ldacMultipointConflict && multipoint == true) return null
+                    if (conflict) c -= setOf("aptx", "aptx_adaptive", "aptx_lossless")
+                }
+                "aptx" -> if (conflict) c -= "ldac"
+                "aptx_adaptive" -> {
+                    c += "aptx"
+                    if (conflict) c -= "ldac"
+                }
+                "aptx_lossless" -> {
+                    c += setOf("aptx", "aptx_adaptive")
+                    if (conflict) c -= "ldac"
+                }
+            }
+            c += codec
+        } else {
+            c -= codec
+            when (codec) {
+                "aptx" -> c -= setOf("aptx_adaptive", "aptx_lossless")
+                "aptx_adaptive" -> c -= "aptx_lossless"
+            }
+        }
+        val bits = EarfunValues.QUALITY_BITS.getValue(if (qualcomm) QUALCOMM else EARFUN)
+        val v = c.filter { it in model.quality }.sumOf { bits[it] ?: 0 }
+        quality = v
+        readBacks += read(EarfunQcc.GET_QUALITY, EarfunCommand.GET_QUALITY)
+        return listOf(if (qualcomm) qcc(EarfunQcc.SET_QUALITY, v) else ef(EarfunCommand.SET_QUALITY, v))
     }
 
     private fun choice(key: String, option: String): List<ByteArray>? = when (key) {
@@ -506,6 +621,13 @@ public class EarfunSession(public val model: EarfunModel) {
             readBacks += read(EarfunQcc.GET_VOICE_VOLUME, EarfunCommand.GET_VOICE_VOLUME)
             listOf(if (qualcomm) qcc(EarfunQcc.SET_VOICE_VOLUME, v) else ef(EarfunCommand.SET_VOICE_VOLUME, v))
         }
+        // Some models restart after a change (changeVoiceNeedReset).
+        "ef_voice_language" -> {
+            val v = EarfunValues.VOICE_LANGUAGE.getValue(EARFUN)[option] ?: return null
+            language = option
+            readBacks += ef(EarfunCommand.GET_VOICE_WIZARD)
+            listOf(ef(EarfunCommand.SET_VOICE_WIZARD, v))
+        }
         "ef_hearing_protection" -> {
             val v = EarfunValues.VOICE_PROTECT[option] ?: return null
             hearing = option
@@ -518,7 +640,27 @@ public class EarfunSession(public val model: EarfunModel) {
             readBacks += read(EarfunQcc.GET_AUTO_OFF, EarfunCommand.GET_AUTO_OFF)
             listOf(if (qualcomm) qcc(EarfunQcc.SET_AUTO_OFF, v) else ef(EarfunCommand.SET_AUTO_OFF, v))
         }
-        else -> touchChoice(key, option)
+        else -> if (key.startsWith(BUTTON_PREFIX)) buttonChoice(key.removePrefix(BUTTON_PREFIX), option) else touchChoice(key, option)
+    }
+
+    /**
+     * A button's action: on the Wave Pro X the button, the gesture and the action (HP1000ProtocolParser.setKeyMode; the
+     * noise button's call gestures as button 81); on the other headphones all six bytes, one changed.
+     */
+    private fun buttonChoice(key: String, option: String): List<ByteArray>? {
+        val b = model.buttons ?: return null
+        val action = EarfunValues.KEY_ACTIONS[b.map]?.get(option) ?: return null
+        val k = keys?.toMutableMap() ?: return null
+        k[key] = action
+        keys = k
+        readBacks += read(EarfunQcc.GET_KEY, EarfunCommand.GET_KEY)
+        if (b.layout != WAVE_PRO_X) return listOf(ef(EarfunCommand.SET_KEY, *HEAD_BUTTONS.map { k[it] ?: 0 }.toIntArray()))
+        val button = key.substringBefore('_')
+        val gesture = key.substringAfter('_')
+        val buttons = EarfunValues.KEY_BUTTONS.getValue(WAVE_PRO_X)
+        val buttonByte = if (gesture.endsWith("_call")) buttons.getValue("nc_call") else buttons[button] ?: return null
+        val gestureByte = EarfunValues.KEY_GESTURES.getValue(WAVE_PRO_X)[gesture] ?: return null
+        return listOf(qcc(EarfunQcc.SET_KEY, buttonByte, gestureByte, action))
     }
 
     /**
@@ -527,22 +669,19 @@ public class EarfunSession(public val model: EarfunModel) {
      */
     private fun touchChoice(key: String, option: String): List<ByteArray>? {
         val t = model.touch ?: return null
-        val parts = key.removePrefix("touch_").split('_')
-        if (!key.startsWith("touch_") || parts.size != 2) return null
-        val g = GESTURES.indexOf(parts[0]).takeIf { it >= 0 } ?: return null
-        val right = when (parts[1]) {
-            "left" -> 0
-            "right" -> 1
-            else -> return null
-        }
-        val action = EarfunValues.KEY_ACTIONS[t.map]?.get(option) ?: return null
-        val k = keys?.copyOf() ?: return null
-        k[right * GESTURES.size + g] = action
+        if (!key.startsWith("touch_")) return null
+        val side = key.substringAfterLast('_')
+        val gesture = key.removePrefix("touch_").removeSuffix("_$side")
+        if (side !in SIDES || gesture !in GESTURES + CALL_GESTURES) return null
+        val map = if (gesture in CALL_GESTURES) t.callMap ?: return null else t.map
+        val action = EarfunValues.KEY_ACTIONS[map]?.get(option) ?: return null
+        val k = keys?.toMutableMap() ?: return null
+        k["${gesture}_$side"] = action
         keys = k
         readBacks += read(EarfunQcc.GET_KEY, EarfunCommand.GET_KEY)
-        if (!qualcomm) return listOf(ef(EarfunCommand.SET_KEY, *k))
-        val gesture = EarfunValues.KEY_GESTURES.getValue(QUALCOMM).getValue(GESTURES[g])
-        return listOf(if (right == 0) qcc(EarfunQcc.SET_KEY, gesture, action, 0, 0) else qcc(EarfunQcc.SET_KEY, 0, 0, gesture, action))
+        if (!qualcomm) return listOf(ef(EarfunCommand.SET_KEY, *efTouchOrder().map { k[it] ?: 0 }.toIntArray()))
+        val g = EarfunValues.KEY_GESTURES.getValue(QUALCOMM).getValue(gesture)
+        return listOf(if (side == SIDES[0]) qcc(EarfunQcc.SET_KEY, g, action, 0, 0) else qcc(EarfunQcc.SET_KEY, 0, 0, g, action))
     }
 
     // --- EQ ---
@@ -622,8 +761,30 @@ public class EarfunSession(public val model: EarfunModel) {
         private const val LOCK_LEFT_KEY = "ef_touch_lock_left"
         private const val LOCK_RIGHT_KEY = "ef_touch_lock_right"
 
-        /** The gestures in the order both protocols hold them, and the screens' words for them. */
+        /** The gestures in the order both protocols hold them, and the screens' words for them; then the call gestures. */
         private val GESTURES = listOf("single", "double", "triple", "hold")
+        private val CALL_GESTURES = listOf("triple_call", "hold_call")
+        private val SIDES = listOf("left", "right")
+
+        /** Each Qualcomm touch gesture's place in the key read, the left earbud's; the right's follows (positionKeyMap). */
+        private val QCC_TOUCH_INDEX = mapOf("single" to 0, "double" to 2, "triple" to 4, "hold" to 6, "triple_call" to 12, "hold_call" to 14)
+
+        /** The headphones' buttons in EarFun's frame (EarfunHeadProtocolParser): volume up, volume down and noise control, press then hold. */
+        private val HEAD_BUTTONS = listOf("plus_single", "plus_hold", "minus_single", "minus_hold", "nc_single", "nc_hold")
+
+        /** The Wave Pro X's buttons by their byte in its key read, after the command (HP1000ProtocolParser.resetData). */
+        private val WAVE_PRO_X_BUTTONS = mapOf(
+            "plus_single" to 1, "plus_hold" to 3, "minus_single" to 4, "minus_hold" to 6,
+            "nc_single" to 7, "nc_double" to 8, "nc_hold" to 9, "nc_single_call" to 10, "nc_hold_call" to 12,
+        )
+        private const val WAVE_PRO_X = "wave_pro_x"
+        private const val BUTTON_PREFIX = "ef_button_"
+
+        public const val RESTART_KEY: String = "ef_restart"
+        public const val POWER_OFF_KEY: String = "ef_power_off"
+
+        /** SET_CONTROL_PLAY's value for powering off. */
+        private const val POWER_OFF = 1
 
         /** A Qualcomm key read's first action byte, after the status: the left earbud's one tap. */
         private const val QCC_KEY_FIRST = 2

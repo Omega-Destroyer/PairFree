@@ -38,6 +38,25 @@ public data class EarfunModel(
     val versionText: Boolean,
     /** EarFun's app opens GAIA v3 on connecting (QualcommProtocolParser.initCommand); not on the Air Pro 4. */
     val gaiaInit: Boolean,
+    /** The codecs the sound quality screen offers: ldac, aptx, aptx_adaptive, aptx_lossless. The earbuds restart after a change. */
+    val quality: List<String> = emptyList(),
+    /** Turning LDAC on turns aptX off, and the other way (isLdacAptxConfict). */
+    val ldacAptxConflict: Boolean = true,
+    /** LDAC and two devices cannot both be on (isLdacDoubleConnectConflictDialog). */
+    val ldacMultipointConflict: Boolean = false,
+    /** Game mode cannot go on while LDAC is (isLdacGameModeConfict). */
+    val ldacGameConflict: Boolean = false,
+    /** EarFun's app restarts the earbuds 3 s after turning two devices on (isOpenDoubleConnectNeedReset). */
+    val multipointRestart: Boolean = false,
+    /** The actions EarFun's app has: restarting (the Qualcomm models) and powering off (isSupportTurnOff). */
+    val restart: Boolean = false,
+    val powerOff: Boolean = false,
+    /** The voice prompt languages built into the earbuds (getInnerVoiceList). */
+    val voiceLanguages: List<String> = emptyList(),
+    /** The voice prompt volume steps (getVoiceLevelList), in percent. */
+    val promptVolumes: List<String> = emptyList(),
+    /** The headphones' buttons. */
+    val buttons: EarfunButtons? = null,
 ) {
     val qualcomm: Boolean get() = protocol == QUALCOMM
 
@@ -56,8 +75,17 @@ public data class EarfunNoise(val values: Map<String, Int>, val cancelling: Earf
 /** A sub-mode's [options], whose bytes [table] names in [EarfunValues]. */
 public data class EarfunSubMode(val table: String, val options: List<String>)
 
-/** Touch controls: the key byte [map], the actions per gesture (single, double, triple, hold), and how they turn off ([disable]: both or each). */
-public data class EarfunTouch(val map: String, val gestures: Map<String, List<String>>, val disable: String?)
+/**
+ * Touch controls: the key byte [map], the actions per gesture (single, double, triple, hold, and the call gestures triple_call
+ * and hold_call, whose bytes [callMap] names), and how they turn off ([disable]: both or each).
+ */
+public data class EarfunTouch(val map: String, val gestures: Map<String, List<String>>, val disable: String?, val callMap: String? = null)
+
+/**
+ * The headphones' buttons: the read and write [layout] (head: EarFun's frame, six bytes; wave_pro_x: the Wave Pro X's own),
+ * the key byte [map], and the actions per button and gesture (plus_single, nc_hold_call, ...).
+ */
+public data class EarfunButtons(val layout: String, val map: String, val gestures: Map<String, List<String>>)
 
 /**
  * A model's EQ as EarFun's app writes it (docs/earfun/PROTOCOL.md section 6): the bands, the band [frame] (index,

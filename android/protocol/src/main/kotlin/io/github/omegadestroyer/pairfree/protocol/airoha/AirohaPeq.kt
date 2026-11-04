@@ -12,8 +12,11 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-/** One PEQ band as Airoha's SDK takes it (PeqBandInfo): its frequency, gain in dB and bandwidth in Hz (frequency / Q). */
-public data class AirohaPeqBand(val hz: Double, val gainDb: Double, val bandwidth: Double)
+/**
+ * One PEQ band as Airoha's SDK takes it: its frequency, gain in dB and width: the bandwidth in Hz (frequency / Q) for
+ * [AirohaPeq.Library.PEQ], Q itself for [AirohaPeq.Library.SERIALIZE].
+ */
+public data class AirohaPeqBand(val hz: Double, val gainDb: Double, val width: Double)
 
 /**
  * A port of Airoha's PEQ library (libnative-peq.so in JBL Headphones 5.37.10, the same in EarFun's and QCY's apps):
@@ -22,6 +25,14 @@ public data class AirohaPeqBand(val hz: Double, val gainDb: Double, val bandwidt
  * 11.2). The band order follows Android 17's qsort, which the library sorts the bands with.
  */
 public object AirohaPeq {
+    /**
+     * Which of Airoha's two libraries: libnative-peq.so (AirohaPeqMgr, bandwidths, a comparator that sorts by whole
+     * decibels) or libnative-peq-serialize.so (AirohaEQSerialize on protocol 4's models, Q, a strict comparator, and the
+     * response's peak taken in single precision). With JBL's settings the two are otherwise the same, as checked against
+     * both libraries.
+     */
+    public enum class Library { PEQ, SERIALIZE }
+
     private const val TWO_PI = 6.283185307179586
     private const val Q23 = 8388608.0
     private const val Q22 = 4194304.0
@@ -51,14 +62,14 @@ public object AirohaPeq {
      * [fs]: the band count, each stage's b0, b1, b2, a1 and a2 as 32-bit numbers in two shorts each (high first), then
      * the master gain (Q26) the same way.
      */
-    public fun coefficients(fs: Double, bands: List<AirohaPeqBand>, masterDb: Double): Result {
+    public fun coefficients(fs: Double, bands: List<AirohaPeqBand>, masterDb: Double, library: Library = Library.PEQ): Result {
         if (fs !in RATES || bands.isEmpty()) return Result(-1, null, null)
         val n = bands.size
         val coef = ArrayList<DoubleArray>(n)
         val resp = ArrayList<Array<DoubleArray>>(n)
         val recs = ArrayList<Pair<Int, Double>>(n)
         for ((i, band) in bands.withIndex()) {
-            val q = band.hz / band.bandwidth
+            val q = if (library == Library.SERIALIZE) band.width else band.hz / band.width
             val w0 = band.hz * TWO_PI / fs
             val a = sqrt(10.0.pow(band.gainDb / 20.0))
             val s = sin(w0)
@@ -80,7 +91,7 @@ public object AirohaPeq {
         val peak = peak(prod, fs)
         val peakDb = log10(peak) * 20.0
         val scale = if (peak < 4.0) 1.0 else peak * 0.25
-        val order = sortedOrder(recs)
+        val order = sortedOrder(recs, library)
         val sresp = order.map { resp[it] }
         val scoef = order.map { coef[it] }
 
@@ -136,9 +147,15 @@ public object AirohaPeq {
      * AirohaPeqMgr.getPeakValue's figure: the highest point of the library's response (generate_freq_resp's 4096
      * points, in dB) for these bands at 44.1 kHz; 0 when the library refuses the curve.
      */
-    public fun peakDb(bands: List<AirohaPeqBand>, masterDb: Double): Double {
-        val st = coefficients(44100.0, bands, masterDb).state ?: return 0.0
+    public fun peakDb(bands: List<AirohaPeqBand>, masterDb: Double, library: Library = Library.PEQ): Double {
+        val st = coefficients(44100.0, bands, masterDb, library).state ?: return 0.0
         val y = responseDb(st)
+        if (library == Library.SERIALIZE) {
+            // AirohaEQSerialize keeps each point as a float and takes the last of equal highs.
+            var best = y[0].toFloat()
+            for (v in y) if (v.toFloat() >= best) best = v.toFloat()
+            return best.toDouble()
+        }
         var best = y[0]
         for (v in y) if (best < v) best = v
         return best
@@ -200,10 +217,14 @@ public object AirohaPeq {
         out[at + 1] = v.toShort()
     }
 
-    /** The band order: by gain, highest first, as qsort leaves them with the library's comparators; equal gains by index. */
-    private fun sortedOrder(recs: List<Pair<Int, Double>>): List<Int> {
+    /** The band order: by gain, highest first, as qsort leaves them with the library's comparator; equal gains by index. */
+    private fun sortedOrder(recs: List<Pair<Int, Double>>, library: Library): List<Int> {
         val a = recs.toMutableList()
-        BionicSort.sort(a) { x, y -> (y.second - x.second).toInt() }
+        if (library == Library.SERIALIZE) {
+            BionicSort.sort(a) { x, y -> if (x.second > y.second) -1 else if (x.second < y.second) 1 else 0 }
+        } else {
+            BionicSort.sort(a) { x, y -> (y.second - x.second).toInt() }
+        }
         val n = a.size
         val groups = IntArray(16)
         var g = 0

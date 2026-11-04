@@ -1,5 +1,13 @@
 package io.github.omegadestroyer.pairfree.protocol.jbl
 
+import io.github.omegadestroyer.pairfree.protocol.repoFile
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.double
+import kotlinx.serialization.json.float
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -143,5 +151,40 @@ class JblAirohaEqTest {
         val s = session("JBL Live Buds 3", "AB1577S_Earbuds")
         assertFalse(s.allowed(RacePacket(JblRace.NV_WRITE, bytes(0x00, 0xEF, 1))))
         assertFalse(s.allowed(RacePacket(JblRace.RELAY, bytes(5, 1))))
+    }
+
+    @Test
+    fun protocol4CurveMatchesTheLibrary() {
+        val cases = Json.parseToJsonElement(repoFile("data/jbl/test_vectors.json").readText()).jsonObject
+            .getValue("airoha_peq").jsonObject.getValue("serialize").jsonArray.map { it.jsonObject }
+        for (c in cases) {
+            val gains = c.getValue("gains").jsonArray.map { it.jsonPrimitive.float }
+            val q = c.getValue("q").jsonArray.map { it.jsonPrimitive.float }
+            val bands = JblEq.BANDS_HZ.mapIndexed { i, hz -> JblEqBand(2, hz.toFloat(), gains[i], q[i]) }
+            val master = c.getValue("master").jsonPrimitive.double.toFloat()
+            val curve = JblEqCurve(JblEqWire.CUSTOM, -1f, 48, master, master, bands)
+            val hex = JblEq.airohaCurve(curve, c.getValue("rates").jsonArray.map { it.jsonPrimitive.int })!!.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
+            assertEquals(c.getValue("hex").jsonPrimitive.content, hex, c.toString())
+        }
+    }
+
+    @Test
+    fun protocol4SendsTheCurveInParts() {
+        val s = JblSession(JblModels.ALL.first { it.name == "JBL Tune 680NC" })
+        val frames = s.eqWrite(null, listOf(3f, 2f, 0f, -1f, 0f, 0f, 1f, 2f, 3f, 4f))!!
+        // EQ info and the curve at four rates do not fit one packet: parts of 497 bytes, each with the count and its index.
+        assertTrue(frames.size >= 2)
+        val payload = frames.flatMapIndexed { i, f ->
+            val b = f.bytes()
+            assertEquals(frames.size, b[4].toInt())
+            assertEquals(i, b[5].toInt())
+            assertTrue(s.allowed(f))
+            b.copyOfRange(8, b.size).toList()
+        }.toByteArray()
+        // Feature 0E02 (EQ info) with every band as type 2, then 0E7F (the curve).
+        assertEquals(JblP4.FEATURE_EQ_INFO, u16(payload, 0))
+        val infoLength = u16(payload, 2)
+        assertTrue((0 until 10).all { payload[4 + 19 + 13 * it].toInt() == 2 })
+        assertEquals(JblP4.FEATURE_EQ_CURVE, u16(payload, 4 + infoLength))
     }
 }

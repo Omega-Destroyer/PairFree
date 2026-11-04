@@ -551,9 +551,7 @@ class reads the design EQ, and whether JBL's app works out the calibration (`cal
 
 **Paths.** `a2` and `a2_q10` (33 models) send command `A2`, below; `a2_q10` are the classes JBL's app marks
 `QMultiply10EQ`, which send Q in tenths. `p4` (35 models) sends protocol 4's EQ info, below; on the seven whose EQ library
-is Airoha's (`lib`), JBL's app sends the curve as Airoha's PEQ as well (`EQCurveFeature`, coefficients from Airoha's
-native `libnative-peq-serialize`, a newer relative of the library in section 11.2), so PairFree does not write those
-yet. `41` (10 models) and `club` (the Club One) are the older BES classes' transfer,
+is Airoha's (`lib`), JBL's app sends the curve as Airoha's PEQ as well (section 11.3). `41` (10 models) and `club` (the Club One) are the older BES classes' transfer,
 below. `segment` (the Tune 520BT, 525BT and 527BT) is Realtek's segment EQ (section 11.1) and `airoha` (19 models)
 Airoha's PEQ over RACE (section 11.2).
 
@@ -704,4 +702,20 @@ that fails ends it:
 Headphones (Airoha's `HEADSET`) skip the relays and step 3. Airoha's SDK also has an NV reclaim stage for the AB1562;
 its manager never queues it, and PairFree does not send it. PairFree does not read the curve back yet (the SDK reads
 the group and the UI data), so it keeps the choice on the phone, as for the older BES classes.
+
+### 11.3 Airoha's PEQ on protocol 4
+
+The seven protocol 4 models whose product entry names Airoha's EQ library (`eqLibInfo`, platform airoha: the Tour One
+M3, Endurance Zone, Tune 680NC, 780NC and 785NC, Live Buds 4 and Tune Buds 3) get, in the same set as the EQ info,
+feature `0E7F` (`EQCurveFeature`): a two-byte length, then `AirohaEQSerialize.serializePEQ` (type 0) over Airoha's
+second library, `libnative-peq-serialize.so`. JBL's app sends every band of these models as type 2 (Airoha's peak),
+in the EQ info too. The serialized curve is the coefficients (type `00`, a two-byte length, the model's rate count
+and three zero bytes, then per rate in the order 44.1, 48, 88.2, 96 kHz its id (1, 2, 5, 6), a zero, the short count
+and the shorts, low byte first) and the peak (type `03`, length 8, the response's peak in hundredths of a dB, four
+bytes, twice). The rates are the model's `eqLibInfo.sampleRates` (`rates` in `devices.json`). With JBL's settings
+(`setParam` with calibration -1, so mode 1, and a last argument of 1) this library gives what the one in section 11.2
+gives, but it takes Q directly, sorts the bands with a strict comparator (higher gain first), and keeps the peak in
+single precision; `AirohaPeq.Library.SERIALIZE` does the same (150 random curves byte for byte against the library;
+three whole curves in `test_vectors.json`). The set is longer than one packet, so it goes in parts of the MTU less 15
+bytes, each with the part count and its index (`AssembleCmd4`, `JblP4Packet.frames`).
 

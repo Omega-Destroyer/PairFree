@@ -84,7 +84,8 @@
       "auto_compensation": 32,
       "low_volume_eq": 36,
       "eq_info_query": 3585,
-      "eq_info": 3586
+      "eq_info": 3586,
+      "eq_curve": 3711
     },
     "eq_custom": 193,
     "ignore_level": 127,

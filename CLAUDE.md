@@ -229,7 +229,7 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   time, waiting up to 1 s, as JBL's app does. Protocol 4 (section 6) is covered, including the models with a BLE
   security mode 1 to 3, which add a transport step `GattLink` runs itself (section 7): no key is needed. JBL's
   genuine-product check needs a key from a native library, so it is left out (hard rules); the BES LE Audio
-  models are not covered. The EQ (section 11) goes through the Sound tab via `JblEqTarget` on 95 of the 102 models: as
+  models are not covered. The EQ (section 11) goes through the Sound tab via `JblEqTarget` on all 102 models: as
   command `A2`, protocol 4's EQ info or the older BES classes' `41` transfer, with JBL's presets
   (`data/jbl/eq_presets.json`) and the calibration JBL's app works out on its BES models, ported from its calibration
   library (`JblCalibration`); on the Tune 520BT family as Realtek's segments (`A6`, `JblRealtekEq`, coefficients from
@@ -237,7 +237,8 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   coefficients from a port of Airoha's `libnative-peq.so`, `protocol.airoha.AirohaPeq`, which follows Android 17's
   `qsort`). Each port was checked byte for byte against its library run in an emulator outside the repo
   (`E:\Buildsesearch\jbl-native`), and `test_vectors.json` keeps the cases. The 7 protocol 4 models whose curve also
-  goes as Airoha's PEQ (`lib` airoha) need Airoha's second library, `libnative-peq-serialize.so`, still to come. The Airoha models (family `airoha`, section 10, including the LE Audio Tour
+  goes as Airoha's PEQ (`lib` airoha) send it as feature `0E7F` from Airoha's second library (`AirohaPeq.Library.SERIALIZE`),
+  in parts when longer than one packet (`JblP4Packet.frames`). The Airoha models (family `airoha`, section 10, including the LE Audio Tour
   Pro 3, Tune 670NC and 770NC, opened over Airoha's LE service when paired as an LE-only device) speak Airoha's
   RACE commands (`RacePacket`, `RaceParser`, `JblRace` from `commands.json`'s `airoha`) through the same
   `JblSession` and `JblExtras`; the session reads the chip name first, and noise control, auto power-off and

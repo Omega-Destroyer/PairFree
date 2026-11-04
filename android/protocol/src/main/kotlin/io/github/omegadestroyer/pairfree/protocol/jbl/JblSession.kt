@@ -187,6 +187,7 @@ public class JblSession(initial: JblModel) {
         }
         if (spec.path == JblEqSpec.Path.P4) {
             readBacks += JblEq.p4Query(JblEqWire.CURRENT)
+            if (spec.airohaLib) return JblEq.p4WriteAiroha(curve, spec.airohaRates)?.frames(mtu)
             return listOf(JblEq.p4Write(curve))
         }
         readBacks += JblEq.read(JblEqWire.CURRENT)
@@ -294,6 +295,7 @@ public class JblSession(initial: JblModel) {
     public fun allowed(frame: JblFrame): Boolean = when (frame) {
         is JblPacket -> frame.command !in JblCommand.NEVER_SEND
         is JblP4Packet -> frame.command !in JblP4.NEVER_SEND
+        is JblP4Part -> frame.command !in JblP4.NEVER_SEND
         is RacePacket -> raceAllowed(frame) || airohaEq?.sent?.contains(frame) == true
         // Raw bytes only as the parts of PairFree's own last EQ write.
         is JblRaw -> frame in rawOut

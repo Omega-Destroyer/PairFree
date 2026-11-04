@@ -129,8 +129,8 @@ class JblEqTest {
         val sent = JblEq.p4Parse(value)!!
         assertEquals(JblEqWire.CUSTOM, sent.category)
         assertEquals(-1f, sent.calibration)
-        // The Airoha-library models wait for Airoha's PEQ.
-        assertNull(JblSession(model("JBL Tune 680NC")).eqWrite(null, List(10) { 0f }))
+        // The Airoha-library models also send the curve as Airoha's PEQ, in parts (JblAirohaEqTest).
+        assertTrue(JblSession(model("JBL Tune 680NC")).eqWrite(null, List(10) { 0f })!!.all { it is JblP4Part })
     }
 
     @Test
@@ -191,11 +191,9 @@ class JblEqTest {
 
     @Test
     fun modelsPairFreeDoesNotWriteYet() {
-        // Airoha's PEQ, on the Airoha models and protocol 4's models with Airoha's EQ library.
-        for (name in listOf("JBL Live Buds 3", "JBL Tune 680NC")) {
-            val s = JblSession(model(name))
-            assertTrue(s.start().none { it.hex().startsWith("aaa2") || it.hex().endsWith("0e0100ff") }, name)
-            assertNull(s.eqWrite(null, List(10) { 0f }), name)
-        }
+        // Every model now: Airoha's PEQ needs the chip's answer first, so a write before it sends nothing.
+        val s = JblSession(model("JBL Live Buds 3"))
+        assertNull(s.eqWrite(null, List(10) { 0f }))
+        assertTrue(JblModels.ALL.all { it.eq!!.written })
     }
 }

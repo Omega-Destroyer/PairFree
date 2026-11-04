@@ -1,5 +1,8 @@
 package io.github.omegadestroyer.pairfree.protocol.jbl
 
+import io.github.omegadestroyer.pairfree.protocol.airoha.AirohaPeq
+import io.github.omegadestroyer.pairfree.protocol.airoha.AirohaPeqBand
+
 /** One band of a JBL EQ: its filter type (1 peak, 0 low shelf, 2 high shelf; docs/jbl/PROTOCOL.md section 11), frequency, gain and Q. */
 public data class JblEqBand(val type: Int, val hz: Float, val gainDb: Float, val q: Float)
 
@@ -33,6 +36,8 @@ public data class JblEqSpec(
      * earbuds report (TourOneM3Control's workaround); null on the other models.
      */
     val halveCustomUntil: String? = null,
+    /** The sample rates Airoha's PEQ is worked out for on protocol 4's Airoha-library models (eqLibInfo.sampleRates). */
+    val airohaRates: List<Int> = emptyList(),
 ) {
     /**
      * The command each model's control class sends (docs/jbl/PROTOCOL.md section 11): A2 ([A2], or [A2_Q10] with Q in
@@ -41,9 +46,9 @@ public data class JblEqSpec(
      */
     public enum class Path { A2, A2_Q10, CMD41, CLUB, SEGMENT, P4, AIROHA }
 
-    /** True for the paths PairFree writes so far: all but protocol 4's models whose curve also goes as Airoha's PEQ. */
+    /** True for the paths PairFree writes: every one JBL's app has (docs/jbl/PROTOCOL.md section 11). */
     public val written: Boolean
-        get() = path != Path.P4 || !airohaLib
+        get() = true
 
     /**
      * True when PairFree reads back the EQ the earbuds hold. The older BES classes' reply names no preset (every write goes
@@ -177,7 +182,48 @@ public object JblEq {
      * JBL's EQ card sends it), the band count, the calibration, the sample rate (four bytes), the left and right gain,
      * then per band its type, frequency, gain and Q, every number four bytes, low first.
      */
-    public fun p4Write(curve: JblEqCurve): JblP4Packet {
+    public fun p4Write(curve: JblEqCurve): JblP4Packet = JblP4Packet.set(JblP4.FEATURE_EQ_INFO to p4Info(curve))
+
+    /**
+     * Protocol 4's write on the models whose EQ library is Airoha's (General4Control with eqLibInfo platform airoha):
+     * the EQ info and, in the same set, the curve as Airoha's PEQ worked out for [rates] (feature 0E7F,
+     * AirohaEQSerialize.serializePEQ). JBL's app sends every band of these as type 2 (Airoha's peak). Null when
+     * Airoha's library refuses the curve.
+     */
+    public fun p4WriteAiroha(curve: JblEqCurve, rates: List<Int>): JblP4Packet? {
+        val peaks = curve.copy(bands = curve.bands.map { it.copy(type = AIROHA_PEAK) })
+        val serialized = airohaCurve(peaks, rates) ?: return null
+        val n = serialized.size
+        return JblP4Packet.set(
+            JblP4.FEATURE_EQ_INFO to p4Info(peaks),
+            JblP4.FEATURE_EQ_CURVE to byteArrayOf(n.toByte(), (n shr 8).toByte()) + serialized,
+        )
+    }
+
+    /**
+     * AirohaEQSerialize.serializePEQ, type 0: the coefficients (type 0, a two-byte length, the rate count and three
+     * zero bytes, then per rate its id, a zero, the short count and the shorts, all low byte first) and the peak (type 3,
+     * length 8, the response's peak in hundredths of a dB twice). Rates go in the order 44.1, 48, 88.2, 96 kHz.
+     */
+    internal fun airohaCurve(curve: JblEqCurve, rates: List<Int>): ByteArray? {
+        if (curve.bands.isEmpty()) return null
+        val bands = curve.bands.map { AirohaPeqBand(it.hz.toDouble(), it.gainDb.toDouble(), it.q.toDouble()) }
+        val master = curve.leftGain.toDouble()
+        val coef = ArrayList<Byte>()
+        coef += listOf(rates.size.toByte(), 0, 0, 0)
+        for ((hz, id) in AIROHA_RATES) {
+            if (hz !in rates) continue
+            val shorts = AirohaPeq.coefficients(hz.toDouble(), bands, master, AirohaPeq.Library.SERIALIZE).shorts ?: return null
+            coef += listOf(id.toByte(), 0, shorts.size.toByte(), (shorts.size shr 8).toByte())
+            for (v in shorts) coef += listOf(v.toByte(), (v.toInt() shr 8).toByte())
+        }
+        val peak = (AirohaPeq.peakDb(bands, master, AirohaPeq.Library.SERIALIZE) * 100.0).toInt()
+        return byteArrayOf(0, coef.size.toByte(), (coef.size shr 8).toByte()) + coef.toByteArray() +
+            byteArrayOf(3, 8, 0) + int(peak).toByteArray() + int(peak).toByteArray()
+    }
+
+    /** Protocol 4's EQ info value, as [p4Write] lays it out. */
+    private fun p4Info(curve: JblEqCurve): ByteArray {
         val out = ArrayList<Byte>(P4_HEADER + curve.bands.size * P4_BAND)
         out += (if (curve.category == JblEqWire.CUSTOM) JblP4.EQ_CUSTOM else curve.category).toByte()
         out += 1
@@ -192,7 +238,7 @@ public object JblEq {
             out += float(b.gainDb)
             out += float(b.q)
         }
-        return JblP4Packet.set(JblP4.FEATURE_EQ_INFO to out.toByteArray())
+        return out.toByteArray()
     }
 
     /** Protocol 4's EQ info as [p4Write] lays it out; 193 reads as 230, as JBL's app reads it. Null when cut short. */
@@ -241,4 +287,7 @@ public object JblEq {
     private const val P4_BAND = 13
     internal const val PEAK = 1
     private const val AIROHA_PEAK = 2
+
+    /** Airoha's rate ids (libpeq Rate) by sample rate. */
+    private val AIROHA_RATES = listOf(44100 to 1, 48000 to 2, 88200 to 5, 96000 to 6)
 }

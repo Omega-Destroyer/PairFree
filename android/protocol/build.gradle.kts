@@ -914,7 +914,8 @@ abstract class GenerateJblTables : DefaultTask() {
                 val presets = ((e["presets"] as String?)?.let { ident(it) } ?: ident("series_" + (e["series"] as String))) + "()"
                 val range = (e.getValue("range") as List<Number>).maxOf { Math.abs(it.toInt()) }
                 "JblEqSpec(JblEqSpec.Path.$path, $presets, $range, readsDesign = ${e["design"] == true}, calibrate = ${e["calibrate"] == true}, airohaLib = ${e["lib"] == "airoha"}, " +
-                    "halveCustomUntil = ${(e["halve_custom_until"] as String?)?.let { str(it) }})"
+                    "halveCustomUntil = ${(e["halve_custom_until"] as String?)?.let { str(it) }}, " +
+                    "airohaRates = listOf(${(e["rates"] as List<*>?).orEmpty().joinToString(", ") { int(it).toString() }}))"
             } ?: "null"
             out.appendLine(
                 "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +

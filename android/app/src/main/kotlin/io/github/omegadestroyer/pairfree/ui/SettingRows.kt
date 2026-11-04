@@ -356,7 +356,7 @@ private fun settingTitle(key: String): String = when (key) {
     "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language)
     "restart" -> stringResource(R.string.setting_restart)
     "power_off" -> stringResource(R.string.setting_power_off)
-    else -> buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
+    else -> sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 /**
@@ -395,6 +395,23 @@ private fun touchTitle(key: String): String? {
         "hold_roller" -> stringResource(R.string.setting_roller_hold)
         "single_slider" -> stringResource(R.string.setting_slider)
         else -> null
+    }
+}
+
+/** A Sony general setting's row, by the title the earbuds gave: one of Sony's names, or their own text (SonySession). */
+@Composable
+private fun sonyGeneralTitle(key: String): String? {
+    if (!key.startsWith("sony_gs_")) return null
+    val title = key.removePrefix("sony_gs_")
+    if (title.startsWith("raw:")) return title.removePrefix("raw:")
+    return when (title) {
+        "TOUCH_PANEL_SETTING" -> stringResource(R.string.setting_touch_panel)
+        "FACETAP_SETTING", "SELECTABLE_FACETAP_SETTING" -> stringResource(R.string.setting_wide_area_tap)
+        "SIDETONE_SETTING" -> stringResource(R.string.setting_sidetone)
+        "TWS_ONE_SIDE_USE_NCASM_SETTING" -> stringResource(R.string.setting_noise_one_earbud)
+        "TAP_SENSITIVITY_SETTING" -> stringResource(R.string.setting_tap_sensitivity)
+        "VOICE_GUIDANCE_SETTING" -> stringResource(R.string.setting_voice_guidance)
+        else -> title.lowercase().removeSuffix("_setting").replace('_', ' ').replaceFirstChar { it.uppercase() }
     }
 }
 

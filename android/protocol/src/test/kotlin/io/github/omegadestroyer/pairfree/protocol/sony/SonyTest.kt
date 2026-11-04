@@ -6,6 +6,7 @@ import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.Value
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import io.github.omegadestroyer.pairfree.protocol.repoFile
 import kotlinx.serialization.json.Json
@@ -500,6 +501,28 @@ class SonySessionTest {
         assertTrue(out(0x46, 0x30, table = 2) in s.takeOutbox(), "battery voice's read")
         s.receive(message(0x47, 0x30, 0x01, table = 2))
         assertEquals(listOf(out(0x48, 0x30, 0x00, table = 2)), s.change(SettingChange.Toggle("battery_voice", true)))
+    }
+
+    @Test
+    fun generalSettings() {
+        val s = set2()
+        // General setting 1 (function 0xD1): its description asked in English, then its value.
+        s.receive(message(0x07, 0x00, 0x02, 0xD1, 0x00, 0xD2, 0x00))
+        val reads = s.takeOutbox()
+        assertTrue(out(0xD0, 0xD1, 0x01) in reads && out(0xD0, 0xD2, 0x01) in reads)
+        val title = "MULTIPOINT_SETTING".encodeToByteArray().map { it.toInt() }
+        s.receive(message(0xD1, 0xD1, 0x00, 0x01, title.size, *title.toIntArray(), 0x00))
+        assertEquals(listOf(out(0xD6, 0xD1)), s.takeOutbox())
+        s.receive(message(0xD7, 0xD1, 0x00, 0x00))
+        assertEquals(Value.Switch(true), s.state.values[Command.MULTIPOINT], "0 is on; multipoint goes on the shared switch")
+        assertEquals(listOf(out(0xD8, 0xD1, 0x00, 0x01)), s.set(Command.MULTIPOINT, 0))
+        // Another, with text of its own: a row titled by it.
+        val raw = "Touch".encodeToByteArray().map { it.toInt() }
+        s.receive(message(0xD1, 0xD2, 0x00, 0x00, raw.size, *raw.toIntArray(), 0x00))
+        s.takeOutbox()
+        s.receive(message(0xD7, 0xD2, 0x00, 0x01))
+        assertEquals(false, (setting(s, "sony_gs_raw:Touch") as Setting.Toggle).on)
+        assertEquals(listOf(out(0xD8, 0xD2, 0x00, 0x00)), s.change(SettingChange.Toggle("sony_gs_raw:Touch", true)))
     }
 
     @Test

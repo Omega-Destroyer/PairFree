@@ -689,6 +689,9 @@
     <string name="setting_bgm_medium">Living room</string>
     <string name="setting_bgm_large">Café</string>
     <string name="setting_voice_guidance_volume">Voice guidance volume</string>
+    <string name="setting_touch_panel">Touch sensor control panel</string>
+    <string name="setting_wide_area_tap">Wide area tap</string>
+    <string name="setting_tap_sensitivity">Lower tap sensitivity</string>
     <string name="eq_earfun">This EarFun model has no equalizer in EarFun\'s app.</string>
     <string name="setting_ef_anc_mode">Noise cancelling mode</string>
     <string name="setting_ef_standard">Standard</string>

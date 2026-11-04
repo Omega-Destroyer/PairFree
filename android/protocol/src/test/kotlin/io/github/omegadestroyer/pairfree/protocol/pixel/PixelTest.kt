@@ -261,6 +261,17 @@ class PixelTest {
     }
 
     @Test
+    fun findHubOnEveryModel() {
+        // Find my earbuds goes through Google's Find Hub: a row that sends nothing to the earbuds.
+        for (s in listOf(maestro(), PixelSession(PixelTransport.TLV, PixelModels.fromName("Pixel Buds")))) {
+            val group = s.groups.first { it.key == PixelSession.FIND_HUB }
+            assertEquals(SettingTab.DEVICE, group.tab)
+            assertEquals(listOf(PixelSession.FIND_HUB), group.settings.map { it.key })
+        }
+        assertNull(maestro().change(SettingChange.Press(PixelSession.FIND_HUB)))
+    }
+
+    @Test
     fun theASeriesBassLevel() {
         val s = PixelSession(PixelTransport.TLV, PixelModels.fromName("Pixel Buds A-Series"))
         s.start()

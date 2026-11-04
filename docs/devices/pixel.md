@@ -22,13 +22,18 @@ What it shows, where the model has it:
   earbud (noise control, the digital assistant or Live Translate, as Google's app offers), the
   noise modes it steps through, tap to mute during calls and head gestures.
 - **Device:** in-ear detection, and on the Pro, Pro 2 and 2a multipoint, the case sounds, volume
-  level notifications and noise control during Live Translate; on the 2020 model sharing detection.
+  level notifications and noise control during Live Translate; on the 2020 model sharing detection;
+  and on every model Find my earbuds, which opens Google's Find Hub.
 
 Google's app sets the equalizer in half steps; PairFree's in whole ones, so a curve set in Google's
 app shows rounded until you change it here. Live Translate and the digital assistant need Google's
 own apps on the phone.
 
-Not yet: finding the earbuds (it goes through Google's Fast Pair service), the ear tip seal check,
+Finding the earbuds is Google's Find Hub's: it rings and locates them with a key the earbuds share
+with your Google account, which only Google Play services holds. Google's own Pixel Buds app hands
+it to Play services too, so PairFree opens Find Hub; it does not ring the earbuds itself.
+
+Not yet: the ear tip seal check,
 spatial audio and head tracking (Android's own settings, which only system apps may change), sleep
 mode (it follows a Pixel Watch) and the experimental features. The 2020 model keeps two more touch
 actions that Google's app no longer lets you set; PairFree leaves them as they are.

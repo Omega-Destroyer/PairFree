@@ -12,8 +12,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import androidx.compose.ui.unit.dp
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -31,6 +35,7 @@ import kotlinx.coroutines.delay
 internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange: (SettingChange) -> Unit) {
     var picking by remember { mutableStateOf<Setting.Choice?>(null) }
     var confirming by remember { mutableStateOf<String?>(null) }
+    val context = LocalContext.current
     for (group in groups.filter { it.tab == tab }) {
         Panel {
             Label(groupTitle(group.key))
@@ -52,7 +57,18 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                     is Setting.Level -> LevelRow(setting, onChange)
                     is Setting.Action -> StudioButton(
                         stringResource(if (setting.active) actionStop(setting.key) else actionStart(setting.key)),
-                        { if (setting.key in CONFIRM_KEYS) confirming = setting.key else onChange(SettingChange.Press(setting.key)) },
+                        {
+                            val link = LINKS[setting.key]
+                            when {
+                                link != null -> try {
+                                    context.startActivity(Intent(Intent.ACTION_VIEW, link.toUri()))
+                                } catch (_: ActivityNotFoundException) {
+                                    // no browser and no Find Hub: nothing to open
+                                }
+                                setting.key in CONFIRM_KEYS -> confirming = setting.key
+                                else -> onChange(SettingChange.Press(setting.key))
+                            }
+                        },
                         Modifier.fillMaxWidth(),
                         primary = setting.active,
                         destructive = setting.key in CONFIRM_KEYS,
@@ -128,6 +144,9 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
 private val CONFIRM_KEYS = setOf("restart", "power_off")
 
+/** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
+private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find")
+
 @Composable
 private fun groupTitle(key: String): String = stringResource(
     when (key) {
@@ -141,6 +160,7 @@ private fun groupTitle(key: String): String = stringResource(
         "sound_effects" -> R.string.setting_group_sound_effects
         "noise_adaptive" -> R.string.setting_group_noise_adaptive
         "find" -> R.string.find_earbuds
+        "find_hub" -> R.string.setting_group_find_hub
         "light" -> R.string.setting_group_light
         "touch_left" -> R.string.setting_group_touch_left
         "touch_right" -> R.string.setting_group_touch_right
@@ -158,6 +178,7 @@ private fun groupTitle(key: String): String = stringResource(
 @Composable
 private fun groupNote(key: String): String? = when (key) {
     "find" -> stringResource(R.string.setting_find_note)
+    "find_hub" -> stringResource(R.string.setting_find_hub_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
     else -> null
@@ -833,6 +854,7 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
 
 private fun actionStart(key: String): Int = when (key) {
     "find" -> R.string.setting_find_start
+    "find_hub" -> R.string.setting_find_hub_open
     "nc_optimizer" -> R.string.setting_nc_optimizer_start
     "restart" -> R.string.setting_restart
     "power_off" -> R.string.setting_power_off

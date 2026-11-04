@@ -311,7 +311,15 @@ public class PixelSession(public val transport: PixelTransport, private val hint
             "other", SettingTab.DEVICE,
             listOfNotNull(toggle("case_sounds"), toggle("bud_return_sound"), toggle("volume_notifications"), translateAnc()),
         ),
+        findHub(),
     )
+
+    /**
+     * Find my earbuds: Google's Find Hub rings and locates them, with the Fast Pair account key that Google Play services
+     * holds; the Pixel Buds app hands it over to Play services too (its FmdWorker binds Play services' proxy, open only to
+     * Google's apps). The row opens Find Hub; nothing goes to the earbuds.
+     */
+    private fun findHub(): SettingGroup = SettingGroup(FIND_HUB, SettingTab.DEVICE, listOf(Setting.Action(FIND_HUB)))
 
     private fun olderGroups(): List<SettingGroup> = listOfNotNull(
         group(
@@ -327,6 +335,7 @@ public class PixelSession(public val transport: PixelTransport, private val hint
         group("touch", SettingTab.CONTROLS, listOfNotNull(toggle("gestures"))),
         // Sharing detection needs in-ear detection on, as the app says.
         group("other", SettingTab.DEVICE, listOfNotNull(toggle("shared_mode")?.let { it.copy(enabled = bool("in_ear_detection") != false) })),
+        findHub(),
     )
 
     /** A switch row for the field named [name], under its key, once read. */
@@ -561,6 +570,9 @@ public class PixelSession(public val transport: PixelTransport, private val hint
     }
 
     public companion object {
+        /** The find my earbuds row's key: it opens Google's Find Hub. */
+        public const val FIND_HUB: String = "find_hub"
+
         private const val BRAND = "Pixel"
         private const val PERCENT = 100
         private const val MIN_CYCLE = 2

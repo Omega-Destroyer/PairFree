@@ -267,7 +267,8 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   the five-band EQ on the Sound tab (whole-dB steps; Google's are half steps). Touch controls offer what Google's
   app offers for press and hold (noise control, digital assistant, Live Translate), Google apps or not; the 2020
   model's two touch slots, which the app no longer sets, are left alone. Spatial audio and head tracking are
-  Android's settings, not the earbuds'. After a change to `devices.json` run `python tools/gen_pixel_table.py`.
+  Android's settings, not the earbuds'. Find my earbuds is Play services' (the Fast Pair account key): a Device row
+  opens Google's Find Hub, as the Pixel Buds app leaves it to Play services. After a change to `devices.json` run `python tools/gen_pixel_table.py`.
   Never send the plain transport's groups 2, 5, 130 and 136 (firmware update, crash reports, update debug,
   statistics), firmware update on Maestro, or writes of the fields marked `never_send` (automatic updates, setup,
   diagnostics, the seal and automatic tests); `PixelSession.allowed` checks every message. The hardware info holds

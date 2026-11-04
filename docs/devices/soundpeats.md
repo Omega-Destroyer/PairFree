@@ -68,7 +68,7 @@ From users' recordings of the official app, not yet tried with PairFree:
 
 |          | SOUNDPEATS C30                                    | TRUEFREE Clip C10                                 |
 |----------|---------------------------------------------------|---------------------------------------------------|
-| Bands, Hz | 20, 160, 300, 800, 1.8k, 2.8k, 5k, 8k, 16k       | 62, 125, 250, 500, 100, 2k, 4k, 8k, after TRUEFREE's own eight-band tuning, which stays as it is |
+| Bands, Hz | 20, 160, 300, 800, 1.8k, 2.8k, 5k, 8k, 16k       | 62, 125, 250, 500, 1k, 2k, 4k, 8k, after TRUEFREE's own eight-band tuning, which stays as it is |
 | Presets  | SOUNDPEATS Classic, Bass Boost, Bass Reduce, Treble enhancement, Electronic, Popular, Classical Music, Rock&Roll, Folk, Book Whisper, HIFI, ACG | TRUEFREE Classic, Hightone enhancement, Bass enhance, Bass weakening, Rock, Popularity, Electronic, Ballad, Classical |
 
 The Clip C10's sliders run from 62 Hz to 8 kHz with 1 kHz fifth, as a user's recording of a custom

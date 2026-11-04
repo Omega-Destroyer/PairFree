@@ -46,7 +46,8 @@ class EarfunTest {
             if (m.autoOff.isNotEmpty()) assertTrue(m.autoOff.all { it in EarfunValues.AUTO_OFF.getValue(m.autoOffTable!!) }, m.name)
             m.touch?.let { t ->
                 val actions = EarfunValues.KEY_ACTIONS.getValue(t.map)
-                for ((gesture, options) in t.gestures) assertTrue(options.all { it in actions }, "${m.name} $gesture")
+                val calls = t.callMap?.let { EarfunValues.KEY_ACTIONS.getValue(it) }.orEmpty()
+                for ((gesture, options) in t.gestures) assertTrue(options.all { it in (if (gesture.endsWith("_call")) calls else actions) }, "${m.name} $gesture")
                 if (m.qualcomm) assertEquals(EarfunModel.QUALCOMM, t.map, m.name)
             }
             m.eq?.let { e ->
@@ -56,9 +57,11 @@ class EarfunTest {
                 assertTrue(e.master.byPeak == null || e.master.byPeak!!.size == 2 * EarfunSession.POSITIONS + 1, m.name)
             }
         }
-        // EarFun's power off, factory reset, restart and renaming are never sent; nor are the reads of phones' names and addresses.
-        assertTrue(EarfunQcc.RESET in EarfunQcc.NEVER_SEND && EarfunQcc.RESTART in EarfunQcc.NEVER_SEND && EarfunQcc.SET_CONTROL_PLAY in EarfunQcc.NEVER_SEND)
-        assertTrue(EarfunCommand.RESET in EarfunCommand.NEVER_SEND && EarfunCommand.SET_CONTROL_PLAY in EarfunCommand.NEVER_SEND)
+        // Factory reset and renaming are never sent, nor the reads of phones' names and addresses.
+        assertTrue(EarfunQcc.RESET in EarfunQcc.NEVER_SEND && EarfunQcc.SET_NAME in EarfunQcc.NEVER_SEND && EarfunCommand.RESET in EarfunCommand.NEVER_SEND)
+        // Restarting and powering off go only from an action the user confirms (owner, 2026-11-03).
+        assertEquals(setOf(EarfunQcc.RESTART, EarfunQcc.SET_CONTROL_PLAY), EarfunQcc.CONFIRM)
+        assertEquals(setOf(EarfunCommand.SET_CONTROL_PLAY), EarfunCommand.CONFIRM)
         assertTrue(EarfunQcc.GET_DEVICE_LIST in EarfunQcc.PRIVATE && EarfunQcc.GET_SN in EarfunQcc.PRIVATE && EarfunCommand.GET_DEVICE_LIST in EarfunCommand.PRIVATE)
     }
 
@@ -103,13 +106,11 @@ class EarfunTest {
     fun neverSent() {
         val s = EarfunSession(model("EarFun Free Pro 3"))
         assertFalse(s.allowed("ff040000000a0336".hexBytes()), "reset")
-        assertFalse(s.allowed("ff040001000a035101".hexBytes()), "power off")
         assertFalse(s.allowed("ff040000000a032c".hexBytes()), "the phones' names and addresses")
         assertFalse(s.allowed("ff040001001d000706".hexBytes()), "firmware update's notifications")
         assertFalse(s.allowed("ff040000001d0600".hexBytes()), "another GAIA v3 command")
         val e = EarfunSession(model("EarFun Air 2 NC"))
         assertFalse(e.allowed("ef100002afa556fe".hexBytes()), "reset")
-        assertFalse(e.allowed(EarfunFrame(EarfunCommand.SET_CONTROL_PLAY, byteArrayOf(1)).bytes()), "power off")
         assertFalse(e.allowed(EarfunFrame(EarfunCommand.GET_DEVICE_LIST).bytes()))
         assertTrue(e.allowed(EarfunFrame(EarfunCommand.GET_NOISE).bytes()))
     }
@@ -211,5 +212,92 @@ class EarfunTest {
         // A gain in dB lands on its slider position.
         assertEquals(listOf(-10, -4, 0, 2, 10, 0, 0, 0, 0, 0), tune.positions(listOf(-6.0, -2.0, 0.0, 1.0, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0)))
         assertNotNull(EarfunSession(model("EarFun OpenJump")).eqFrames(List(10) { 10 }))
+    }
+
+    @Test
+    fun restartAndPowerOff() {
+        val pro5 = EarfunSession(model("EarFun Air Pro 5"))
+        assertEquals(listOf("ff040000000a0308"), pro5.change(SettingChange.Press(EarfunSession.RESTART_KEY))!!.map(::hex))
+        assertEquals(listOf("ff040001000a035101"), pro5.change(SettingChange.Press(EarfunSession.POWER_OFF_KEY))!!.map(::hex))
+        assertTrue(pro5.allowed("ff040000000a0308".hexBytes()) && pro5.allowed("ff040001000a035101".hexBytes()))
+        val clip = EarfunSession(model("EarFun Clip"))
+        assertEquals(listOf("ef2025010102fe"), clip.change(SettingChange.Press(EarfunSession.POWER_OFF_KEY))!!.map(::hex))
+        assertNull(clip.change(SettingChange.Press(EarfunSession.RESTART_KEY)), "EarFun's own frame has no restart")
+        assertNull(EarfunSession(model("EarFun Air Pro 4")).change(SettingChange.Press(EarfunSession.POWER_OFF_KEY)), "EarFun's app offers none on the Air Pro 4")
+    }
+
+    @Test
+    fun soundQuality() {
+        val s = EarfunSession(model("EarFun Air Pro 4"))
+        s.feed(qccReply(EarfunQcc.GET_QUALITY, "08") + qccReply(EarfunQcc.GET_MULTIPOINT, "00") + qccReply(EarfunQcc.GET_GAME_MODE, "00"))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Toggle>().filter { it.key.startsWith("ef_") }.associate { it.key to it.on }
+        assertEquals(mapOf("ef_ldac" to true, "ef_aptx" to false, "ef_aptx_adaptive" to false, "ef_aptx_lossless" to false), rows)
+        // aptX Lossless brings aptX and Adaptive with it and turns LDAC off: 1 + 2 + 16.
+        assertEquals(listOf("ff040001000a032e13"), s.change(SettingChange.Toggle("ef_aptx_lossless", true))!!.map(::hex))
+        // aptX off takes Adaptive and Lossless with it.
+        assertEquals(listOf("ff040001000a032e00"), s.change(SettingChange.Toggle("ef_aptx", false))!!.map(::hex))
+        // With LDAC on, two devices and game mode cannot go on (the Air Pro 4's flags).
+        assertEquals(listOf("ff040001000a032e08"), s.change(SettingChange.Toggle("ef_ldac", true))!!.map(::hex))
+        assertNull(s.set(Command.MULTIPOINT, 1))
+        assertNull(s.set(Command.GAME_MODE, 1))
+        val nc = EarfunSession(model("EarFun Air 2 NC"))
+        nc.feed(efReply(EarfunCommand.GET_QUALITY, "00"))
+        assertEquals(listOf("ef2105010405fe"), nc.change(SettingChange.Toggle("ef_ldac", true))!!.map(::hex))
+    }
+
+    @Test
+    fun twoDevicesRestartsTheAirPro4Plus() {
+        val s = EarfunSession(model("EarFun Air Pro 4+"))
+        s.feed(qccReply(EarfunQcc.GET_MULTIPOINT, "00") + qccReply(EarfunQcc.GET_QUALITY, "01"))
+        assertEquals(listOf("ff040001000a032701"), s.set(Command.MULTIPOINT, 1)!!.map(::hex))
+        assertEquals(listOf("ff040000000a0326", "ff040000000a0308"), s.takeReadBacks().map(::hex), "the read, then the restart, 3 s later")
+    }
+
+    @Test
+    fun voiceLanguage() {
+        val s = EarfunSession(model("EarFun Clip"))
+        s.feed(efReply(EarfunCommand.GET_VOICE_WIZARD, "03"))
+        val row = s.groups.flatMap { it.settings }.first { it.key == "ef_voice_language" } as Setting.Choice
+        assertEquals("chinese", row.value)
+        assertEquals(listOf("english", "japanese", "chinese", "german"), row.options)
+        assertEquals(listOf("ef2115010405fe"), s.change(SettingChange.Choice("ef_voice_language", "german"))!!.map(::hex))
+        assertTrue(EarfunSession(model("EarFun Air Pro 4")).start().none { hex(it) == "ff040000000a0371" }, "the Qualcomm models' languages are voice packs")
+    }
+
+    @Test
+    fun callGestures() {
+        val s = EarfunSession(model("EarFun Air Pro 5"))
+        // The music gestures, the call one and double taps (zero here), then the call triple tap and press and hold, left and right in turn.
+        s.feed(qccReply(EarfunQcc.GET_KEY, "01050104020102020306031011071109" + "000000000000000000060005000400 05".replace(" ", "")))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
+        assertEquals("switch_calls", rows["touch_triple_call_left"])
+        assertEquals("mic_mute", rows["touch_triple_call_right"])
+        assertEquals("decline_call", rows["touch_hold_call_left"])
+        assertEquals("mic_mute", rows["touch_hold_call_right"])
+        assertEquals(listOf("ff040004000a030a13010000"), s.change(SettingChange.Choice("touch_hold_call_left", "answer_hang_up"))!!.map(::hex))
+        // The Clip 2: twelve bytes, the call gestures after the music ones.
+        val clip2 = EarfunSession(model("EarFun Clip 2"))
+        clip2.feed(efReply(EarfunCommand.GET_KEY, "010203040506070811131214"))
+        assertEquals("answer_hang_up", clip2.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().first { it.key == "touch_hold_call_left" }.value)
+        assertEquals(listOf("ef20750c01020304050607081113121278fe"), clip2.change(SettingChange.Choice("touch_hold_call_right", "mic_mute"))!!.map(::hex))
+    }
+
+    @Test
+    fun headphoneButtons() {
+        val life = EarfunSession(model("EarFun Wave Life"))
+        life.feed(efReply(EarfunCommand.GET_KEY, "020504030800"))
+        val rows = life.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
+        assertEquals("volume_up", rows["ef_button_plus_single"])
+        assertEquals("noise_control", rows["ef_button_nc_single"])
+        assertEquals("none", rows["ef_button_nc_hold"])
+        assertEquals(listOf("ef20750602050403080723fe"), life.change(SettingChange.Choice("ef_button_nc_hold", "game_mode"))!!.map(::hex))
+        val x = EarfunSession(model("EarFun Wave Pro X"))
+        x.feed(qccReply(EarfunQcc.GET_KEY, "020005030004090d0d500050"))
+        val xRows = x.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
+        assertEquals("multipoint", xRows["ef_button_nc_hold"])
+        assertEquals("mic_mute", xRows["ef_button_nc_hold_call"])
+        // The noise button's call gestures go as button 81 (HP1000ProtocolParser.setKeyMode).
+        assertEquals(listOf("ff040003000a030a515209"), x.change(SettingChange.Choice("ef_button_nc_hold_call", "anc_off"))!!.map(::hex))
+        assertEquals(listOf("ff040003000a030a010304"), x.change(SettingChange.Choice("ef_button_plus_hold", "previous"))!!.map(::hex))
     }
 }

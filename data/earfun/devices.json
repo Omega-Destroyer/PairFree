@@ -1,5 +1,5 @@
 {
- "_about": "EarFun's models (docs/earfun/PROTOCOL.md section 5), from EarFun's app (EarFun Audio 20.1.61: DeviceType, each model's HeadsetConfig, parser and equalizer). One entry per Bluetooth name, which PairFree matches whole (EarFun's app matches the product id in the earbuds' LE advert instead); codes are EarFun's own model codes. protocol: qualcomm (GAIA, vendor 000A) or earfun (EarFun's own frame); the others are other chips' protocols PairFree does not cover yet (covered false: PairFree finds them and offers a device report, but no settings). noise.values are the noise mode's bytes; noise.cancelling is the cancelling sub-mode the model offers, by commands.json's values.noise_cancel_mode table; noise.ambient its transparency sub-mode (values.ambient_mode). touch: the key byte map (commands.json's values.key_actions), the actions EarFun's app offers per gesture (power off left out), and whether the touch controls can be turned off for both earbuds at once (both) or each on its own (each). eq: the bands, the band frame (index: 0E01's count-and-index byte, index_cr: the same with 0D after each band, count: count and index bytes), how a slider position becomes a gain (table: eq_presets.json's gain_db; position: the position in dB), the master gain (db: fixed; base: base minus the highest gain when it is above 0, in whole dB when whole; by_peak: by the highest position), fixed_after: bands sent after the user's, and the preset list. version: how the firmware version reads (numbers: three bytes; text). gaia_init: the GAIA v3 opening EarFun's app sends (not on the Air Pro 4). case_charge_bit: the case's battery has charging in bit 7. reports lists device reports under data/earfun/reports.",
+ "_about": "EarFun's models (docs/earfun/PROTOCOL.md section 5), from EarFun's app (EarFun Audio 20.1.61: DeviceType, each model's HeadsetConfig, parser and equalizer). One entry per Bluetooth name, which PairFree matches whole (EarFun's app matches the product id in the earbuds' LE advert instead); codes are EarFun's own model codes. protocol: qualcomm (GAIA, vendor 000A) or earfun (EarFun's own frame); the others are other chips' protocols PairFree does not cover yet (covered false: PairFree finds them and offers a device report, but no settings). noise.values are the noise mode's bytes; noise.cancelling is the cancelling sub-mode the model offers, by commands.json's values.noise_cancel_mode table; noise.ambient its transparency sub-mode (values.ambient_mode). touch: the key byte map (commands.json's values.key_actions), the actions EarFun's app offers per gesture (power off left out), and whether the touch controls can be turned off for both earbuds at once (both) or each on its own (each). eq: the bands, the band frame (index: 0E01's count-and-index byte, index_cr: the same with 0D after each band, count: count and index bytes), how a slider position becomes a gain (table: eq_presets.json's gain_db; position: the position in dB), the master gain (db: fixed; base: base minus the highest gain when it is above 0, in whole dB when whole; by_peak: by the highest position), fixed_after: bands sent after the user's, and the preset list. version: how the firmware version reads (numbers: three bytes; text). gaia_init: the GAIA v3 opening EarFun's app sends (not on the Air Pro 4). case_charge_bit: the case's battery has charging in bit 7. quality: the codecs the sound quality screen offers (the earbuds restart after a change); ldac_aptx_conflict: LDAC and aptX exclude each other; ldac_multipoint_conflict: LDAC and two devices cannot both be on; ldac_game_conflict: game mode cannot go on while LDAC is; multipoint_restart: EarFun's app restarts the earbuds 3 s after turning two devices on. restart and power_off: the actions EarFun's app has for the model. voice_languages: the prompt languages built into the earbuds (the Qualcomm models download theirs as voice packs, which PairFree does not do); prompt_volumes: the voice prompt volume steps. touch.call_map: the key byte map of the call gestures (triple_call, hold_call). buttons: the headphones' buttons (plus, minus, nc) and their gestures, by layout (head: EarFun's frame, six bytes; wave_pro_x: the Wave Pro X's own read and write). reports lists device reports under data/earfun/reports.",
  "devices": [
   {
    "codes": ["TW400"],
@@ -38,7 +38,8 @@
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"],
      "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"]
     },
-    "disable": "both"
+    "disable": "both",
+    "call_map": null
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -50,6 +51,16 @@
     },
     "presets": "10"
    },
+   "quality": ["aptx", "aptx_adaptive"],
+   "restart": true,
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "hearing_protection": false,
    "spatial": false,
    "in_ear": false,
@@ -93,7 +104,8 @@
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"],
      "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"]
     },
-    "disable": "both"
+    "disable": "both",
+    "call_map": null
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -105,6 +117,16 @@
     },
     "presets": "10"
    },
+   "quality": ["aptx", "aptx_adaptive"],
+   "restart": true,
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "hearing_protection": false,
    "spatial": false,
    "in_ear": false,
@@ -155,7 +177,8 @@
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"],
      "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "none"]
     },
-    "disable": "each"
+    "disable": "each",
+    "call_map": null
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -167,6 +190,16 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac", "aptx", "aptx_adaptive", "aptx_lossless"],
+   "ldac_multipoint_conflict": true,
+   "ldac_game_conflict": true,
+   "multipoint_restart": true,
+   "restart": true,
+   "ldac_aptx_conflict": true,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "hearing_protection": false,
    "spatial": false,
    "in_ear": false,
@@ -214,9 +247,12 @@
      "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
      "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"],
-     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"]
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"],
+     "triple_call": ["switch_calls", "mic_mute", "anc_off", "none"],
+     "hold_call": ["answer_hang_up", "decline_call", "mic_mute", "anc_off", "none"]
     },
-    "disable": "each"
+    "disable": "each",
+    "call_map": "qualcomm_call"
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -228,6 +264,16 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac", "aptx", "aptx_adaptive", "aptx_lossless"],
+   "ldac_multipoint_conflict": true,
+   "multipoint_restart": true,
+   "restart": true,
+   "power_off": true,
+   "ldac_aptx_conflict": true,
+   "ldac_game_conflict": false,
+   "voice_languages": [],
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "spatial": false,
    "version": "numbers",
    "gaia_init": true,
@@ -273,9 +319,12 @@
      "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
      "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "noise_control", "none"],
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"],
-     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"]
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"],
+     "triple_call": ["switch_calls", "mic_mute", "anc_off", "none"],
+     "hold_call": ["answer_hang_up", "decline_call", "mic_mute", "anc_off", "none"]
     },
-    "disable": "each"
+    "disable": "each",
+    "call_map": "qualcomm_call"
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -287,6 +336,16 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac", "aptx", "aptx_adaptive", "aptx_lossless"],
+   "ldac_multipoint_conflict": true,
+   "multipoint_restart": true,
+   "restart": true,
+   "power_off": true,
+   "ldac_aptx_conflict": true,
+   "ldac_game_conflict": false,
+   "voice_languages": [],
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "spatial": false,
    "version": "numbers",
    "gaia_init": true,
@@ -317,7 +376,8 @@
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"],
      "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"]
     },
-    "disable": null
+    "disable": null,
+    "call_map": null
    },
    "eq": {
     "hz": [63, 180, 500, 1000, 8000, 15000],
@@ -335,6 +395,16 @@
     },
     "presets": "6"
    },
+   "restart": true,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "multipoint": false,
    "mic": false,
    "prompt_volume": false,
@@ -374,7 +444,8 @@
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"],
      "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "noise_control", "none"]
     },
-    "disable": null
+    "disable": null,
+    "call_map": null
    },
    "eq": {
     "hz": [63, 180, 500, 1000, 8000, 15000],
@@ -392,6 +463,16 @@
     },
     "presets": "6"
    },
+   "restart": true,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "multipoint": false,
    "mic": false,
    "prompt_volume": false,
@@ -421,10 +502,11 @@
     "gestures": {
      "single": ["volume_up", "volume_down", "previous", "next", "none"],
      "double": ["previous", "next", "play_pause", "voice_assistant"],
-     "triple": ["previous", "next", "play_pause", "voice_assistant", "game_mode"],
-     "hold": ["previous", "next", "play_pause", "voice_assistant", "game_mode"]
+     "triple": ["previous", "next", "play_pause", "voice_assistant", "game_mode", "none"],
+     "hold": ["previous", "next", "play_pause", "voice_assistant", "game_mode", "none"]
     },
-    "disable": null
+    "disable": null,
+    "call_map": null
    },
    "eq": {
     "hz": [63, 180, 500, 1000, 8000, 15000],
@@ -442,6 +524,16 @@
     },
     "presets": "6"
    },
+   "restart": true,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "multipoint": false,
    "mic": false,
    "prompt_volume": false,
@@ -497,6 +589,30 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac", "aptx", "aptx_adaptive", "aptx_lossless"],
+   "ldac_aptx_conflict": false,
+   "ldac_multipoint_conflict": true,
+   "multipoint_restart": true,
+   "restart": true,
+   "power_off": true,
+   "buttons": {
+    "layout": "wave_pro_x",
+    "map": "wave_pro_x",
+    "gestures": {
+     "plus_single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "plus_hold": ["volume_up", "volume_down", "previous", "next", "none"],
+     "minus_single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "minus_hold": ["volume_up", "volume_down", "previous", "next", "none"],
+     "nc_single": ["play_pause", "voice_assistant", "anc_off", "game_mode", "none"],
+     "nc_double": ["play_pause", "voice_assistant", "anc_off", "game_mode", "call_repeat", "multipoint", "none"],
+     "nc_hold": ["play_pause", "voice_assistant", "anc_off", "game_mode", "call_repeat", "multipoint", "none"],
+     "nc_single_call": ["anc_off", "mic_mute", "none"],
+     "nc_hold_call": ["anc_off", "mic_mute", "none"]
+    }
+   },
+   "ldac_game_conflict": false,
+   "voice_languages": [],
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
    "mic": false,
    "find": false,
    "spatial": false,
@@ -537,10 +653,11 @@
     "gestures": {
      "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
      "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
-     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"],
-     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "none"]
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "power_off", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "call_repeat", "power_off", "none"]
     },
-    "disable": "each"
+    "disable": "each",
+    "call_map": null
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -552,6 +669,16 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac"],
+   "ldac_multipoint_conflict": true,
+   "voice_languages": ["english", "japanese", "chinese"],
+   "prompt_volumes": ["50", "75", "100"],
+   "ldac_aptx_conflict": true,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "buttons": null,
    "mic": false,
    "hearing_protection": false,
    "in_ear": false,
@@ -578,10 +705,11 @@
     "gestures": {
      "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
      "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
-     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"],
-     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"]
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "power_off", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "power_off", "none"]
     },
-    "disable": null
+    "disable": null,
+    "call_map": null
    },
    "eq": {
     "hz": [32, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -593,6 +721,16 @@
     },
     "presets": "10"
    },
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "multipoint": false,
    "mic": false,
    "prompt_volume": false,
@@ -629,7 +767,8 @@
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"],
      "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"]
     },
-    "disable": "each"
+    "disable": "each",
+    "call_map": null
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -641,6 +780,16 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac"],
+   "ldac_multipoint_conflict": true,
+   "power_off": true,
+   "voice_languages": ["english", "japanese", "chinese"],
+   "ldac_aptx_conflict": true,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "mic": false,
    "hearing_protection": false,
    "in_ear": false,
@@ -674,7 +823,8 @@
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"],
      "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"]
     },
-    "disable": "each"
+    "disable": "each",
+    "call_map": null
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -687,6 +837,16 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac"],
+   "ldac_multipoint_conflict": true,
+   "power_off": true,
+   "voice_languages": ["english", "japanese", "chinese", "german"],
+   "ldac_aptx_conflict": true,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "mic": false,
    "spatial": false,
    "in_ear": false,
@@ -717,10 +877,13 @@
     "gestures": {
      "single": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
      "double": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "none"],
-     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"],
-     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "none"]
+     "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "privacy_mode", "none"],
+     "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "call_repeat", "privacy_mode", "none"],
+     "triple_call": ["switch_calls", "mic_mute", "none"],
+     "hold_call": ["answer_hang_up", "decline_call", "mic_mute", "none"]
     },
-    "disable": "each"
+    "disable": "each",
+    "call_map": "clip_2"
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -733,6 +896,16 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac"],
+   "ldac_multipoint_conflict": true,
+   "ldac_game_conflict": true,
+   "power_off": true,
+   "voice_languages": ["english", "japanese", "german", "chinese"],
+   "ldac_aptx_conflict": true,
+   "multipoint_restart": false,
+   "restart": false,
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "mic": false,
    "spatial": false,
    "in_ear": false,
@@ -782,7 +955,8 @@
      "triple": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "spatial_audio", "call_repeat", "none"],
      "hold": ["volume_up", "volume_down", "previous", "next", "play_pause", "voice_assistant", "game_mode", "anc_off", "spatial_audio", "call_repeat", "none"]
     },
-    "disable": "each"
+    "disable": "each",
+    "call_map": null
    },
    "eq": {
     "hz": [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000],
@@ -794,6 +968,16 @@
     },
     "presets": "10"
    },
+   "quality": ["ldac"],
+   "ldac_multipoint_conflict": true,
+   "ldac_game_conflict": true,
+   "power_off": true,
+   "ldac_aptx_conflict": true,
+   "multipoint_restart": false,
+   "restart": false,
+   "voice_languages": [],
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
+   "buttons": null,
    "mic": false,
    "spatial": false,
    "in_ear": false,
@@ -835,6 +1019,27 @@
     },
     "presets": "10"
    },
+   "buttons": {
+    "layout": "head",
+    "map": "earfun",
+    "gestures": {
+     "plus_single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "plus_hold": ["volume_up", "volume_down", "previous", "next", "none"],
+     "minus_single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "minus_hold": ["volume_up", "volume_down", "previous", "next", "none"],
+     "nc_single": ["play_pause", "voice_assistant", "noise_control", "game_mode", "none"],
+     "nc_hold": ["play_pause", "voice_assistant", "noise_control", "game_mode", "none"]
+    }
+   },
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
    "mic": false,
    "find": false,
    "hearing_protection": false,
@@ -882,6 +1087,27 @@
     },
     "presets": "10"
    },
+   "buttons": {
+    "layout": "head",
+    "map": "earfun",
+    "gestures": {
+     "plus_single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "plus_hold": ["volume_up", "volume_down", "previous", "next", "none"],
+     "minus_single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "minus_hold": ["volume_up", "volume_down", "previous", "next", "none"],
+     "nc_single": ["play_pause", "voice_assistant", "noise_control", "game_mode", "none"],
+     "nc_hold": ["play_pause", "voice_assistant", "noise_control", "game_mode", "none"]
+    }
+   },
+   "voice_languages": ["english", "japanese", "chinese", "german"],
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
    "mic": false,
    "find": false,
    "hearing_protection": false,
@@ -928,6 +1154,27 @@
     },
     "presets": "10"
    },
+   "buttons": {
+    "layout": "head",
+    "map": "earfun",
+    "gestures": {
+     "plus_single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "plus_hold": ["volume_up", "volume_down", "previous", "next", "none"],
+     "minus_single": ["volume_up", "volume_down", "previous", "next", "none"],
+     "minus_hold": ["volume_up", "volume_down", "previous", "next", "none"],
+     "nc_single": ["play_pause", "voice_assistant", "noise_control", "game_mode", "none"],
+     "nc_hold": ["play_pause", "voice_assistant", "noise_control", "game_mode", "none"]
+    }
+   },
+   "voice_languages": ["english", "japanese", "chinese", "german"],
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "prompt_volumes": ["0", "25", "50", "75", "100"],
    "mic": false,
    "find": false,
    "hearing_protection": false,
@@ -946,6 +1193,16 @@
    "kind": "earbuds",
    "case": true,
    "covered": false,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "game": false,
    "multipoint": false,
    "mic": false,
@@ -973,6 +1230,16 @@
    "kind": "earbuds",
    "case": true,
    "covered": false,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "game": false,
    "multipoint": false,
    "mic": false,
@@ -1000,6 +1267,16 @@
    "kind": "earbuds",
    "case": false,
    "covered": false,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "game": false,
    "multipoint": false,
    "mic": false,
@@ -1027,6 +1304,16 @@
    "kind": "earbuds",
    "case": false,
    "covered": false,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "game": false,
    "multipoint": false,
    "mic": false,
@@ -1054,6 +1341,16 @@
    "kind": "earbuds",
    "case": false,
    "covered": false,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "game": false,
    "multipoint": false,
    "mic": false,
@@ -1081,6 +1378,16 @@
    "kind": "earbuds",
    "case": true,
    "covered": false,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "game": false,
    "multipoint": false,
    "mic": false,
@@ -1108,6 +1415,16 @@
    "kind": "headphones",
    "case": false,
    "covered": false,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "game": false,
    "multipoint": false,
    "mic": false,
@@ -1135,6 +1452,16 @@
    "kind": "headphones",
    "case": false,
    "covered": false,
+   "quality": [],
+   "ldac_aptx_conflict": true,
+   "ldac_multipoint_conflict": false,
+   "ldac_game_conflict": false,
+   "multipoint_restart": false,
+   "restart": false,
+   "power_off": false,
+   "voice_languages": [],
+   "prompt_volumes": [],
+   "buttons": null,
    "game": false,
    "multipoint": false,
    "mic": false,

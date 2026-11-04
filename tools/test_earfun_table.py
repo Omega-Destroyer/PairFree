@@ -63,8 +63,23 @@ class EarfunData(unittest.TestCase):
             if d["touch"]:
                 actions = values["key_actions"][d["touch"]["map"]]
                 for gesture, options in d["touch"]["gestures"].items():
+                    if gesture.endswith("_call"):
+                        continue
                     self.assertLessEqual(set(options), set(actions), (d["name"], gesture))
-                    self.assertNotIn("power_off", options, "power off is never offered")
+            if d["touch"] and d["touch"]["call_map"]:
+                calls = values["key_actions"][d["touch"]["call_map"]]
+                for gesture in ("triple_call", "hold_call"):
+                    self.assertLessEqual(set(d["touch"]["gestures"][gesture]), set(calls), (d["name"], gesture))
+            if d["buttons"]:
+                actions = values["key_actions"][d["buttons"]["map"]]
+                for key, options in d["buttons"]["gestures"].items():
+                    self.assertLessEqual(set(options), set(actions), (d["name"], key))
+            self.assertLessEqual(set(d["quality"]), set(values["quality_bits"][d["protocol"]]), d["name"])
+            if d["voice_languages"]:
+                self.assertEqual("earfun", d["protocol"], "the Qualcomm models download their languages")
+                self.assertLessEqual(set(d["voice_languages"]), set(values["voice_language"]["earfun"]), d["name"])
+            if d["restart"]:
+                self.assertEqual("qualcomm", d["protocol"], "only the Qualcomm parser restarts")
             if d["eq"]:
                 self.assertEqual(len(d["eq"]["hz"]), len(d["eq"]["q"]), d["name"])
                 for p in presets[d["eq"]["presets"]]:

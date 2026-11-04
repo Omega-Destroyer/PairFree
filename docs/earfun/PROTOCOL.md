@@ -90,23 +90,59 @@ and shows a setting once its read has answered.
 | Find the earbuds | `33` / `32` | `20 50` / `20 55` | Qualcomm bit 0 left, bit 1 right; EarFun a byte each |
 | Touch controls | `0B` / `0A` | `20 70` / `20 75` | below |
 | Touch off | `35` / `34` | `20 60` / `20 65` | Qualcomm 1 both, 2 left, 3 right, 0 none; EarFun a byte each, 1 off |
+| Sound quality | `2F` / `2E` | `21 00` / `21 05` | bits: Qualcomm 1 aptX, 2 aptX Adaptive, 8 LDAC, 16 aptX Lossless; EarFun 1, 2, 4 LDAC |
+| Voice prompt language | | `21 10` / `21 15` | 1 English, 2 Japanese, 3 Chinese, 4 German (the Clip 2's 5 is a recorded voice) |
+| Restart | `08` | | no data |
+| Power off | `51` 1 | `20 25` 1 | `SET_CONTROL_PLAY` 1 |
 | EQ | GAIA `001D` `0E 01` | `20 95` | section 6 |
 
 **Touch controls.** The Qualcomm read holds the action bytes at every other byte from the third (after the
-status): left then right for one tap, double tap, triple tap and press and hold, then the call gestures; a
-write is `[gesture, action, 0, 0]` for the left earbud or `[0, 0, gesture, action]` for the right, the
-gesture 1, 2, 3 or 17 (`KeyTypeEnum`). The EarFun frame holds eight action bytes, the left's four gestures
-then the right's, and a write sends all eight. The action bytes differ by model (`values.key_actions`):
-Qualcomm's `KeyOperateEnum`, and the EarFun frame's key maps (`EarfunProtocolParser`, `CW100ProtocolParser`, the
-Air Pro 4i's and the Clip 2's). PairFree offers per gesture what EarFun's app offers, leaving out powering
-off; the call gestures and two actions that need a firmware version PairFree does not check (call back on the
-Air Pro 4 before version 28, quiet mode on the Clip before 20007) are left out.
+status): left then right for one tap, double tap, triple tap and press and hold, then the call gestures (one,
+double, triple tap, press and hold); a write is `[gesture, action, 0, 0]` for the left earbud or
+`[0, 0, gesture, action]` for the right, the gesture 1, 2, 3, 17, or for calls 4, 5, 6, 19 (`KeyTypeEnum`), a
+call gesture's action from its own byte set (`KeyOperateEnum`'s call actions: 1 answer or hang up, 4 decline, 5
+mute, 6 answer or switch between two calls, 8 noise control; 16 none). The Air Pro 4+ and 5 offer the call triple
+tap and press and hold. The EarFun frame holds eight action bytes, the left's four gestures then the right's; the
+Clip 2 adds its call gestures (left triple, left hold, right triple, right hold; 17 switch calls, 18 mute, 19
+answer or hang up, 20 decline), twelve bytes; a write sends them all. The action bytes differ by model
+(`values.key_actions`): Qualcomm's `KeyOperateEnum`, and the EarFun frame's key maps (`EarfunProtocolParser`,
+`CW100ProtocolParser`, the Air Pro 4i's and the Clip 2's). PairFree offers per gesture what EarFun's app offers,
+powering off ("Shutdown") and privacy mode included; two actions that need a firmware version PairFree does not
+check (call back on the Air Pro 4 before version 28, privacy mode on the Clip before 20007) are left out.
 
-**Never sent** (`NEVER_SEND`, `PRIVATE`): factory reset (Qualcomm `36`, EarFun `10 00 AF A5`), restart (`08`),
-powering off (`SET_CONTROL_PLAY` 1: Qualcomm `51`, EarFun `20 25`, so no play controls either), renaming,
-connecting, disconnecting and pairing other devices, the paired phones' list (names and addresses), the
-serial number and any firmware update. `EarfunSession.allowed` checks every frame; on vendor `001D` only the
-opening and the EQ pass.
+**Buttons.** The Wave Life, Tune Pro and Wave Pro 2 (`EarfunHeadProtocolParser`) read and write their buttons in
+`20 70` / `20 75` as six bytes: volume up press, hold, volume down press, hold, noise control press, hold, with
+EarFun's usual key bytes. The Wave Pro X (`HP1000ProtocolParser`) reads them in `0B`, at bytes 1, 3, 4, 6 (volume
+up and down, press and hold) and 7 to 10 and 12 (noise control press, press twice, hold, and press and hold during
+a call) after the command; a write is `0A` with the button (1 up, 2 down, 3 noise control, 81 its call gestures),
+the gesture (1 press, 2 twice, 3 hold, 80 press during a call, 82 hold) and the action from its own byte set (13
+two devices, 80 mute, 12 call back). The actions are those `getButtonKeyFunction` lists.
+
+**Sound quality** (`HeadsetQualityFragment`). Each codec the model offers (`BleAudioQualityFunction`) is a
+switch; stable is all of them off. aptX Adaptive and Lossless turn aptX on, Lossless turns Adaptive on, and aptX
+off turns both off. Where `isLdacAptxConfict` (all but the Wave Pro X), LDAC on turns the aptX switches off and
+any aptX on turns LDAC off. Where `isLdacDoubleConnectConflictDialog`, LDAC cannot go on while two devices are on,
+nor two devices while LDAC is (EarFun's app shows a message; PairFree leaves the switch as it is), and where
+`isLdacGameModeConfict` game mode cannot go on while LDAC is. The earbuds restart after a change, about 20 s.
+
+**Two devices.** On the Air Pro 4, 4+, 5 and the Wave Pro X (`isOpenDoubleConnectNeedReset`), EarFun's app
+restarts the earbuds 3 s after turning two devices on; PairFree sends the restart then, with the read-back.
+
+**Voice prompt language.** The models with languages built in (`getInnerVoiceList`: Air 2 NC, OpenJump, Clip,
+Clip 2, Tune Pro, Wave Pro 2) take the language in `21 15`; several restart after a change
+(`changeVoiceNeedReset`). The Qualcomm models get theirs as voice packs EarFun's server sends and the app writes
+like a firmware update, which PairFree does not do. The voice prompt volume offers the model's steps
+(`getVoiceLevelList`: 50, 75 and 100 % on the Air 2 NC, else 0, 25, 50, 75 and 100 %).
+
+**Restart and power off.** Offered as actions the user confirms on screen (owner, 2026-11-03): restart (`08`) on
+the Qualcomm models, whose parser has it, and power off (`SET_CONTROL_PLAY` 1) where EarFun's app offers it
+(`isSupportTurnOff`: Air Pro 4+, 5, Wave Pro X, OpenJump, Clip, Clip 2, Air Pro 4i). `CONFIRM` in the tables marks
+them.
+
+**Never sent** (`NEVER_SEND`, `PRIVATE`): factory reset (Qualcomm `36`, EarFun `10 00 AF A5`), renaming,
+connecting, disconnecting and pairing other devices, the paired phones' list (names and addresses), the serial
+number and any firmware update or voice pack. `EarfunSession.allowed` checks every frame; on vendor `001D` only
+the opening and the EQ pass.
 
 ## 5. Models
 
@@ -165,22 +201,19 @@ EarFun's app writes `FE 98` and the steps above. PairFree follows EarFun's app (
   noise cancelling (standard, adaptive, wind, ANC 1 and 2, or the sub-modes: balanced, adapts to your ears,
   levels 1 to 4) and the kind of ambient sound (full or natural).
 - **Sound:** the EQ (section 6); spatial audio.
-- **Controls:** the four gestures on each earbud, and turning the touch controls off.
-- **Device:** two devices, game mode, the microphone, the voice prompt volume, the volume limit, auto
-  power-off, pausing and answering calls in the ear, and finding the earbuds.
+- **Controls:** the four gestures on each earbud and, where the model has them, the call gestures; turning the
+  touch controls off; on headphones, the buttons.
+- **Device:** two devices, game mode, the microphone, the voice prompt volume and language, the volume limit,
+  auto power-off, pausing and answering calls in the ear, finding the earbuds, sound quality, restart and power
+  off.
 
 ## 8. Not yet
 
-- **Sound quality** (aptX, aptX Adaptive, aptX Lossless, LDAC; Qualcomm `2F` / `2E` bits 1, 2, 8 and 16, EarFun
-  `21 00` / `21 05` bits 1, 2 and 4): EarFun's app turns these on and off as switches whose rules between them
-  are on its screen, and the earbuds restart after a change (`HeadsetQualityFragment`, 20 s). Gadgetbridge
-  writes single values (0 stable, 1 aptX, 3 aptX Adaptive, `13` aptX Lossless, 8 LDAC). Left for a recording.
-- **Voice prompt language** (Qualcomm `71` / `70`, EarFun `21 10` / `21 15`): each model has its own list, and
-  some reset after a change (`changeVoiceNeedReset`).
-- The call gestures, the Wave Pro X's and the headphones' buttons (other read layouts), USB charging on the
-  headphones, the Wave Pro X's spatial audio and second power-off timer, the left-right balance, bass boost,
-  quiet mode, the DAC switch and game EQ (no screen of EarFun's app shows them for the models above, or their
-  read is not known), LE Audio and Fast Pair (lab), Auracast, AI translation, and the codec in use (`4D`).
+- The Qualcomm models' voice prompt languages (voice packs, written like a firmware update).
+- The Clip 2's recorded voice prompt, USB charging on the headphones, the Wave Pro X's spatial audio and second
+  power-off timer, the left-right balance, bass boost, the DAC switch and game EQ (no screen of EarFun's app shows
+  them for the models above, or their read is not known), LE Audio and Fast Pair (lab), Auracast, AI translation,
+  and the codec in use (`4D`).
 - The Qualcomm voice prompt language read: EarFun's app reads it from the frame's length byte
   (`getNormalData(src)` instead of the payload), a slip that does not matter to PairFree, which does not read it.
 

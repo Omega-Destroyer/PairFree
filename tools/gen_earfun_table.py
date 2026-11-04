@@ -24,6 +24,7 @@ CANCELLING = {"anc": "standard", "anc1": "ANC 1", "anc2": "ANC 2", "adaptive": "
               "default": "standard", "balance": "balanced", "ear_adaptive": "adapts to your ears",
               "level4": "levels 1 to 4", "level3": None, "level2": None, "level1": None}
 AMBIENT = {"total": "full", "natural": "natural"}
+CODECS = {"ldac": "LDAC", "aptx": "aptX", "aptx_adaptive": "aptX Adaptive", "aptx_lossless": "aptX Lossless"}
 
 
 def load():
@@ -60,7 +61,16 @@ def features(model):
     if model["eq"]:
         out.append(f"{len(model['eq']['hz'])}-band EQ with presets")
     if model["touch"]:
-        out.append("touch controls" + (" (can be turned off)" if model["touch"]["disable"] else ""))
+        out.append("touch controls" + (" with call gestures" if model["touch"]["call_map"] else "") + (" (can be turned off)" if model["touch"]["disable"] else ""))
+    if model["buttons"]:
+        out.append("button controls")
+    if model["quality"]:
+        out.append("sound quality (" + ", ".join(CODECS[c] for c in model["quality"]) + ")")
+    if model["voice_languages"]:
+        out.append("voice prompt language")
+    power = [name for key, name in [("restart", "restart"), ("power_off", "power off")] if model[key]]
+    if power:
+        out.append(" and ".join(power))
     return ", ".join(out) or "—"
 
 

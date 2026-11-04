@@ -318,12 +318,14 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   `generateEarfunTables`. `EarfunSession` reads only what the model has, shows a setting once its read answered, and
   speaks either protocol; `EarbudsConnection.serveEarfun` sends one command at a time, a read waiting up to 1 s. The
   EQ cannot be read: `EarfunEqTarget` writes EarFun's band frames (per-model master gain, 21 slider positions) and,
-  as EarFun's app does, does not send it again on connecting (`EqTarget.restoresOnConnect`). Not covered yet: sound
-  quality (the earbuds restart after it), the voice prompt language, the call gestures, the headphones' buttons and
-  the other chips' protocols (`docs/earfun/PROTOCOL.md` sections 8 and 9). After a change to `devices.json` run
+  as EarFun's app does, does not send it again on connecting (`EqTarget.restoresOnConnect`). Sound quality follows
+  the rules of EarFun's quality screen (the earbuds restart after a change), the voice prompt language is offered
+  where the earbuds have it built in, and the call gestures and headphone buttons are covered; restart and power off
+  are actions the user confirms (owner, 2026-11-03). Not covered yet: the Qualcomm models' voice packs and the other
+  chips' protocols (`docs/earfun/PROTOCOL.md` sections 8 and 9). After a change to `devices.json` run
   `python tools/gen_earfun_table.py`. Never send `EarfunQcc.NEVER_SEND` or `PRIVATE`, `EarfunCommand.NEVER_SEND` or
-  `PRIVATE` (factory reset, restart, power off and the play controls that share its command, renaming, device
-  management, the paired phones' list, the serial number); `EarfunSession.allowed` checks every frame.
+  `PRIVATE` (factory reset, renaming, device management, the paired phones' list, the serial number); `CONFIRM`
+  (restart, power off) only from the confirmed action; `EarfunSession.allowed` checks every frame.
 - `docs/UPSTREAM.md` lists where the vendor apps or recordings differ from the open-source projects (Sources).
 - `docs/DESIGN.md` is the app design: requirements, the Studio look and its colour values, every screen, and
   what is still open. Build the UI from it. The owner's requirements at the top of that file are fixed.
@@ -340,7 +342,9 @@ Space A40. Everything else relies on reports and recordings from users (each bra
   `.gitignore` blocks the obvious ones. Decompile official apps outside the repo. An app's `secrets` files are
   not read.
 - Never send factory reset, reboot, power off or any firmware-update traffic, on any brand, without an explicit
-  confirmation from the user in that moment; each brand's `NEVER_SEND` list holds them. The probe is read-only
+  confirmation from the user in that moment; each brand's `NEVER_SEND` list holds them. Restart and power off are
+  benign enough to offer as actions the user confirms on screen (owner, 2026-11-03; EarFun's `CONFIRM`); factory
+  reset and firmware stay as they are. The probe is read-only
   by default and must stay that way.
 - No code in this repo calls any brand's servers, and the app never requests the internet permission. The owner
   has allowed two research exceptions, both run by hand: `tools/fetch_server_data.py` (SoundPEATS: GET requests

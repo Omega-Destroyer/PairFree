@@ -82,6 +82,9 @@ public class JblSession(initial: JblModel) {
     private var rawOut: Set<JblRaw> = emptySet()
     private var eqOut: List<JblFrame> = emptyList()
 
+    // Airoha's PEQ: the write under way, if any.
+    private var airohaEq: JblAirohaEq? = null
+
     // Realtek's segment EQ: the reply parts in so far.
     private var segments = ByteArray(0)
 
@@ -127,6 +130,7 @@ public class JblSession(initial: JblModel) {
     private fun eqReads(): List<JblFrame> {
         val spec = model.eq?.takeIf { it.written } ?: return emptyList()
         if (spec.path == JblEqSpec.Path.P4) return listOf(JblEq.p4Query(JblEqWire.CURRENT))
+        if (spec.path == JblEqSpec.Path.AIROHA) return emptyList()
         if (spec.path == JblEqSpec.Path.SEGMENT) {
             return listOfNotNull(JblRealtekEq.read(JblEqWire.DESIGN).takeIf { spec.readsDesign }, JblRealtekEq.read(JblEqWire.CURRENT))
         }
@@ -155,6 +159,15 @@ public class JblSession(initial: JblModel) {
             else -> designEq?.let { JblCalibration.of(it, bands) } ?: NO_DESIGN_EQ
         }
         val curve = JblEqCurve(preset?.category ?: JblEqWire.CUSTOM, calibration, JblEq.SAMPLE_RATE, preset?.leftGain ?: 0f, preset?.rightGain ?: 0f, bands)
+        if (spec.path == JblEqSpec.Path.AIROHA) {
+            // A curve of the user's own goes as Harman's custom EQ (103), as JBL's app writes it to Airoha's SDK.
+            val write = JblAirohaEq.of(
+                chip ?: return null, model.form != Form.HEADPHONES, null, preset?.category ?: JblAirohaEq.CUSTOM, bands, curve.leftGain,
+            ) ?: return null
+            airohaEq = write
+            eq = curve
+            return write.start()
+        }
         if (spec.path == JblEqSpec.Path.SEGMENT) {
             val frames = JblRealtekEq.write(curve, designEq ?: return null, mtu) ?: return null
             eq = curve
@@ -275,12 +288,13 @@ public class JblSession(initial: JblModel) {
 
     /**
      * False for what PairFree never sends: factory reset, power off, firmware update, analytics, and on Airoha models
-     * pairing, relays to the other earbud, NV key writes and every key event but Smart Audio & Video's.
+     * pairing, relays to the other earbud, NV key writes (but those of PairFree's own Airoha PEQ write) and every key event
+     * but Smart Audio & Video's.
      */
     public fun allowed(frame: JblFrame): Boolean = when (frame) {
         is JblPacket -> frame.command !in JblCommand.NEVER_SEND
         is JblP4Packet -> frame.command !in JblP4.NEVER_SEND
-        is RacePacket -> raceAllowed(frame)
+        is RacePacket -> raceAllowed(frame) || airohaEq?.sent?.contains(frame) == true
         // Raw bytes only as the parts of PairFree's own last EQ write.
         is JblRaw -> frame in rawOut
         else -> false
@@ -801,7 +815,10 @@ public class JblSession(initial: JblModel) {
         add(RacePacket.of(JblRace.CASE_BATTERY))
     }
 
-    /** No firmware update, pairing, relay, NV key write or key event other than Smart Audio & Video's. */
+    /**
+     * No firmware update, pairing, relay, NV key write or key event other than Smart Audio & Video's; the NV key writes
+     * and relays of an Airoha PEQ write PairFree built itself are let through by [allowed].
+     */
     private fun raceAllowed(p: RacePacket): Boolean = when {
         p.id in JblRace.NEVER_SEND -> false
         p.id == JblRace.KEY_EVENT -> p.payload.size >= 2 && ((p.payload[0].toInt() and 0xFF) or ((p.payload[1].toInt() and 0xFF) shl 8)) in JblRace.KEY_EVENTS
@@ -812,6 +829,7 @@ public class JblSession(initial: JblModel) {
     /** One RACE response or indication. The earbuds also send noise control and the batteries unasked, as indications. */
     private fun race(p: RacePacket) {
         if (p.type == JblRace.TYPE_COMMAND || p.type == JblRace.TYPE_COMMAND_NO_RESPONSE) return
+        if (airohaEq?.receive(p) { outbox += it } == true) return
         val d = p.data
         when (p.id) {
             JblRace.NV_READ -> raceNv(d)

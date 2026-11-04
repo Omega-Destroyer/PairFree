@@ -826,6 +826,7 @@ abstract class GenerateJblTables : DefaultTask() {
         for ((k, v) in raceMap("config_modules")) out.appendLine("    public const val CONFIG_${k.uppercase()}: Int = ${int(v)}")
         for ((k, v) in raceMap("notify_modules")) out.appendLine("    public const val NOTIFY_${k.uppercase()}: Int = ${int(v)}")
         for ((k, v) in raceMap("nv_keys")) out.appendLine("    public const val NV_${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
+        for ((k, v) in raceMap("peq")) if (!k.startsWith("_")) out.appendLine("    public const val PEQ_${k.uppercase()}: Int = ${if (v is String) "0x" + v.uppercase() else int(v).toString()}")
         for ((k, v) in raceMap("anc")) out.appendLine("    public const val ANC_${k.uppercase()}: Int = ${if (v is String) hex(byte(v)) else int(v).toString()}")
         for ((k, v) in raceMap("key_events")) out.appendLine("    public const val KEY_${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
         for ((k, v) in raceMap("prompt_language")) out.appendLine("    public const val PROMPT_${k.uppercase()}: Int = ${int(v)}")

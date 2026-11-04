@@ -41,15 +41,16 @@ public data class JblEqSpec(
      */
     public enum class Path { A2, A2_Q10, CMD41, CLUB, SEGMENT, P4, AIROHA }
 
-    /** True for the paths PairFree writes so far: A2, 41, the Club One's and Realtek's segments, and protocol 4 where the curve needs no Airoha PEQ. */
+    /** True for the paths PairFree writes so far: all but protocol 4's models whose curve also goes as Airoha's PEQ. */
     public val written: Boolean
-        get() = path == Path.A2 || path == Path.A2_Q10 || path == Path.CMD41 || path == Path.CLUB || path == Path.SEGMENT || (path == Path.P4 && !airohaLib)
+        get() = path != Path.P4 || !airohaLib
 
     /**
-     * True when the earbuds report the EQ they hold. The older BES classes' reply names no preset (every write goes as the
-     * user's preset index), so JBL's app keeps the choice on the phone, and so does PairFree.
+     * True when PairFree reads back the EQ the earbuds hold. The older BES classes' reply names no preset (every write goes
+     * as the user's preset index), so JBL's app keeps the choice on the phone, and so does PairFree; on Airoha's PEQ
+     * PairFree does not read the curve back yet and keeps the choice on the phone too.
      */
-    public val reports: Boolean get() = path != Path.CMD41 && path != Path.CLUB
+    public val reports: Boolean get() = path != Path.CMD41 && path != Path.CLUB && path != Path.AIROHA
 }
 
 /**

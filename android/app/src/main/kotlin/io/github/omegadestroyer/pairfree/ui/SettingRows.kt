@@ -833,6 +833,7 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
 
 private fun actionStart(key: String): Int = when (key) {
     "find" -> R.string.setting_find_start
+    "nc_optimizer" -> R.string.setting_nc_optimizer_start
     "restart" -> R.string.setting_restart
     "power_off" -> R.string.setting_power_off
     else -> R.string.setting_action_start
@@ -840,5 +841,6 @@ private fun actionStart(key: String): Int = when (key) {
 
 private fun actionStop(key: String): Int = when (key) {
     "find" -> R.string.setting_find_stop
+    "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     else -> R.string.setting_action_stop
 }

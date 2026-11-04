@@ -66,6 +66,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     private var bgm: Pair<Boolean, Int>? = null             // the background music effect: on, and the room size
     private var guidanceVolume: Int? = null
     private var guidanceVolumeType: Int? = null
+    private var optimizerType: Int? = null      // the optimizer the earbuds have, by its type; null without one
+    private var optimizing = false
     private val generalTitles = linkedMapOf<Int, String>()     // each general setting the earbuds described as a switch: its title
     private val generalValues = linkedMapOf<Int, Boolean>()
     private val outbox = mutableListOf<SonyOut>()
@@ -198,6 +200,14 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
             else -> null
         }
         connectionType?.let { outbox += SonyOut.table1(AUDIO_GET_PARAM, it) }
+        // The noise cancelling optimizer: set 1's one type, set 2's by which variant the earbuds list (OptInquiredType).
+        optimizerType = when {
+            tableSet == 1 -> S1_OPTIMIZER.takeIf { SonyFunction.Set1.NC_OPTIMIZER in f }
+            SonyFunction.Set2.NC_OPTIMIZER_PERSONAL_BAROMETRIC in f -> 0
+            SonyFunction.Set2.NC_OPTIMIZER_PERSONAL in f -> 1
+            SonyFunction.Set2.NC_OPTIMIZER_BAROMETRIC in f -> 2
+            else -> null
+        }
         // The general settings: what each is (its title, in English), then its value (Sony's app: GENERAL_SETTING1 to 4).
         val general = if (tableSet == 1) {
             listOf(SonyFunction.Set1.GENERAL_SETTING1, SonyFunction.Set1.GENERAL_SETTING2, SonyFunction.Set1.GENERAL_SETTING3)
@@ -238,6 +248,11 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     private fun readGeneralParam(p: ByteArray) {
         if (p.size != 4 || p.u8(1) !in generalTitles) return
         generalValues[p.u8(1)] = p.u8(3) == if (tableSet == 1) 1 else ON_V2
+    }
+
+    /** The optimizer's status: its type, enabled, then idle (0) or measuring (1 personal, 2 air pressure). */
+    private fun readOptimizer(p: ByteArray) {
+        if (p.size == 4 && p.u8(1) == optimizerType) optimizing = p.u8(3) != OPT_IDLE
     }
 
     /** The general setting that is multipoint, which goes on the shared screens' two devices switch. */
@@ -298,6 +313,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         when (p.u8(0)) {
             GS_RET_CAPABILITY -> readGeneralCapability(p)
             GS_RET_PARAM, GS_NTFY_PARAM -> readGeneralParam(p)
+            OPT_RET_STATUS, OPT_NTFY_STATUS -> readOptimizer(p)
             S1.COMMON_RET_BATTERY_LEVEL, S1.COMMON_NTFY_BATTERY_LEVEL -> battery(p)
             NCASM_RET_PARAM, NCASM_NTFY_PARAM -> SonyNoise.of(1, p)?.let { noise = it }
             AUDIO_RET_PARAM, AUDIO_NTFY_PARAM -> when {
@@ -320,6 +336,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         when (p.u8(0)) {
             GS_RET_CAPABILITY -> readGeneralCapability(p)
             GS_RET_PARAM, GS_NTFY_PARAM -> readGeneralParam(p)
+            OPT_RET_STATUS, OPT_NTFY_STATUS -> readOptimizer(p)
             S2.POWER_RET_STATUS, S2.POWER_NTFY_STATUS -> battery(p)
             S2.POWER_RET_CAPABILITY -> readControls(p)
             S2.POWER_RET_PARAM, S2.POWER_NTFY_PARAM -> if (!readControls(p)) readSwitch(1, p)
@@ -435,6 +452,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
             }
         }
         speakToChat?.let { add(Setting.Toggle("speak_to_chat", it)) }
+        if (optimizerType != null) add(Setting.Action(OPTIMIZER_KEY, active = optimizing))
     }
 
     private fun group(key: String, tab: SettingTab, settings: List<Setting>) = settings.takeIf { it.isNotEmpty() }?.let { SettingGroup(key, tab, it) }
@@ -511,6 +529,12 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
             // The screen asks the user to confirm first. Set 1: the fixed value, then user power off (tm0 m3); set 2:
             // power status type 3, power off, then user power off (yn0 b1).
             is SettingChange.Press -> when (change.key) {
+                // Start, or cancel one under way: the type, enabled (0), then start (1) or cancel (0) (Sony's OPT_SET_STATUS).
+                OPTIMIZER_KEY -> optimizerType?.let { type ->
+                    val start = !optimizing
+                    optimizing = start
+                    SonyOut.table1(OPT_SET_STATUS, type, 0, if (start) 1 else 0)
+                } ?: return null
                 PowerActions.POWER_OFF -> if (tableSet == 1) SonyOut.table1(S1.COMMON_SET_POWER_OFF, FIXED, USER_POWER_OFF)
                 else SonyOut.table1(S2.POWER_SET_STATUS, S2_POWER_OFF, USER_POWER_OFF)
                 else -> return null
@@ -666,6 +690,14 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         /** Power off: set 2's power status type for it, and the value both sets write (PowerOffSettingValue.USER_POWER_OFF). */
         private const val S2_POWER_OFF = 3
         private const val USER_POWER_OFF = 1
+        /** The noise cancelling optimizer's commands, the same in both sets; set 1's type (NC_OPTIMIZER) and idle status. */
+        private const val OPT_RET_STATUS = 0x83
+        private const val OPT_SET_STATUS = 0x84
+        private const val OPT_NTFY_STATUS = 0x85
+        private const val S1_OPTIMIZER = 1
+        private const val OPT_IDLE = 0
+        private const val OPTIMIZER_KEY = "nc_optimizer"
+
         /** The general settings' commands, the same in both sets, and their types (GENERAL_SETTING1 is D1). */
         private const val GS_GET_CAPABILITY = 0xD0
         private const val GS_RET_CAPABILITY = 0xD1

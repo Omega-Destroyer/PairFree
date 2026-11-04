@@ -526,6 +526,17 @@ class SonySessionTest {
     }
 
     @Test
+    fun ncOptimizer() {
+        val s = set2()
+        // The personal optimizer (0x81): a start, then the earbuds report it idle again.
+        s.receive(message(0x07, 0x00, 0x01, 0x81, 0x00))
+        s.takeOutbox()
+        assertEquals(listOf(out(0x84, 0x01, 0x00, 0x01)), s.change(SettingChange.Press("nc_optimizer")))
+        s.receive(message(0x85, 0x01, 0x00, 0x00))
+        assertEquals(false, (setting(s, "nc_optimizer") as Setting.Action).active, "idle again")
+    }
+
+    @Test
     fun powerOff() {
         val s = set2()
         s.receive(message(0x07, 0x00, 0x01, 0x23, 0x00))

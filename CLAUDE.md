@@ -175,7 +175,7 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   only what the earbuds' capability lists (the keys only presets that need no assistant or app set up); set 2's
   voice guidance comes from its table 2 function list, which set 2 sends on its own. Set 2 writes on as 0 and off
   as 1 for its switches. After a change to `devices.json` run `python tools/gen_sony_table.py`. Never send
-  `SonyCommand.*.NEVER_SEND` (firmware update, test, logs).
+  `SonyCommand.*.NEVER_SEND` (firmware update, test, logs); power off only from the confirmed action.
 - `docs/bose/PROTOCOL.md` is Bose's BMAP, read from Bose's own app (13.3.4, decompiled outside the repo on
   2026-10-14) and checked against bosectl (github.com/aaronsb/bosectl, aaronsb, MIT), which was tried on seven
   Bose models; where they differ, Bose's app wins (multipoint's bits, the button's masks: `docs/UPSTREAM.md`).
@@ -188,7 +188,7 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   `BoseFunction`, `BoseOperator` and `BoseModels` through `generateBoseTables`; `BoseSession` maps replies to the
   screens. The device report keeps only PairFree's own reads: unasked messages can hold other devices'
   addresses. After a change to `devices.json` run `python tools/gen_bose_table.py`. Never send
-  `BoseFunction.NEVER_SEND` (firmware update, factory default, power, authentication). The standby timer's
+  `BoseFunction.NEVER_SEND` (firmware update, factory default, authentication); power off only from the confirmed action. The standby timer's
   choices come from based-connect (GPL-3.0, facts only).
 - `docs/jbl/PROTOCOL.md` is JBL's Harman command set, read from JBL's own app (JBL Headphones 5.37.10,
   decompiled outside the repo on 2026-10-15) and checked against JblTray (github.com/emperorbug46/JblTray, MIT),

@@ -246,6 +246,12 @@ None of this has been tried with PairFree; the N70's parametric EQ is OpenQCY's.
 - **EQ:** QCY's presets, and the older JieLi models' EQ (section 7).
 - **Fit test (`11`):** no model's control panel in Quicky's dump gives it a command (one lists "Fit
   detection" with none).
-- **Prompt volume (`1D`):** the reply is the volume and its maximum (100 when absent). The steps QCY's
-  app offers come from each model's panel on QCY's server, which Quicky's dump does not hold, and the
-  write is `1D 01 v` on vendor id 16737 and `1D 02 v 00` on the others (`ToneVolumeManagerActivity`).
+- **Voice language (`19`):** named in QCY's tables, but QCY's app never writes it.
+
+**Prompt volume (`1D`, since the 2026-11-03 audit):** read on every model, since which have it is on QCY's
+server; the reply is the volume and its maximum (100 when absent), and PairFree offers the whole range, where
+QCY's app offers the steps its server lists. The write is `1D 01 v` on vendor id 16737 and `1D 02 v 00` on the
+others (`ToneVolumeManagerActivity`).
+
+**Power off:** QCY's app turns the earbuds off with a timed power off of 0 minutes; PairFree offers it behind a
+confirmation on the models with the timer (owner, 2026-11-03).

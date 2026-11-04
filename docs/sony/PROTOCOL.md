@@ -207,10 +207,35 @@ Assistant, `32` Alexa, `36` Quick Access, `45` noise control and mic, `47` noise
 listening mode, `FF` nothing (and more in Sony's `Preset`). PairFree offers those that need nothing
 set up elsewhere; Gadgetbridge writes `FF`, `00`, `20` and `10` the same way.
 
+### 7.1 More of set 2's settings (2026-11-03 audit)
+
+Read from Sony's app, each shown only where the earbuds list its function:
+
+- **Switches** (a type byte, then 0 on or 1 off, in the feature's `GET_PARAM` / `SET_PARAM` / `RET_PARAM` /
+  `NTFY_PARAM`): power saving (power, type 6, function `POWER_SAVING_MODE_ON_OFF`), sound leakage reduction
+  (audio 7), voice content mode (audio 6), cinema upmix (audio 4), adaptive volume (system 10, `AUTO_VOLUME`),
+  and on table 2's voice guidance messages battery level voice (48), power on and off sound (49) and the ULT
+  beep (50).
+- **Background music effect** (audio 3): on or off, then the room size (0 small, 1 middle, 2 large).
+- **Voice guidance volume** (table 2's voice guidance, type 32, or 33 for the five-step models): a signed byte
+  from -2 to 2; a write adds 0 so the earbuds play a sample, as Sony's app's feedback sound does.
+- **General settings** (`D0` to `D9` in both sets, types `D1` to `D4`): the earbuds describe each (asked in
+  English, `DisplayLanguage` 1): set 1 the title's format, length and text, the summary, then the setting
+  type (1 a switch); set 2 the setting type (0 a switch) first. A title is one of Sony's names
+  (`MULTIPOINT_SETTING`, `TOUCH_PANEL_SETTING`, `SIDETONE_SETTING`, `TWS_ONE_SIDE_USE_NCASM_SETTING`,
+  `TAP_SENSITIVITY_SETTING` and others, `GsTitleTitle`) or text of the earbuds' own. A value is the type, the
+  setting type, then on (set 1: 1, set 2: 0). Multipoint goes on the shared two devices switch.
+- **Noise cancelling optimizer** (`OPT_*`, `80` to `89` in both sets): `OPT_SET_STATUS` with the type (set 1:
+  1; set 2: 0, 1 or 2 by which optimizer function the earbuds list), 0 (enabled), then 1 start or 0 cancel; the
+  status notification says idle (0) or measuring.
+- **Power off**: set 1 `COMMON_SET_POWER_OFF` 00 01, set 2 `POWER_SET_STATUS` 03 01, where the earbuds list
+  power off; offered behind a confirmation (owner, 2026-11-03).
+
 ## 8. Never sent
 
 Firmware update (`UPDT_*`), the test command and the logs are marked `never_send` in
-`commands.json`, and PairFree's Sony session refuses them. Nor does PairFree send a reset.
+`commands.json`, and PairFree's Sony session refuses them. Nor does PairFree send a reset. Power off goes
+only from the action the user confirms.
 
 ## 9. Open questions
 

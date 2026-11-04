@@ -18,10 +18,17 @@ What it shows, where the model has it:
   control, the voice assistant, or nothing), from the choices the model lists. A key set to Google
   Assistant, Alexa or Quick Access in Sony's app shows it and keeps it.
 - **Device:** the Bluetooth connection mode (sound quality or a stable connection), automatic power
-  off, pause when taken off and voice guidance.
+  off, pause when taken off, voice guidance and its volume, two devices at once (multipoint), the
+  settings the earbuds describe themselves (the touch panel, wide area tap, sidetone, noise cancelling
+  with one earbud and others), power saving, announcing the battery level, the power on and off
+  sound, and turning them off.
+- Also, where the model has them: the noise cancelling optimizer on Home, and on the Sound tab sound
+  leakage reduction, voice content mode, cinema upmix, adaptive volume and the background music
+  effect.
 
-Not yet: multipoint, 360 Reality Audio and the noise cancelling optimizer, among others. A recording of Sony's app adds them
-([Help wanted](#help-wanted)).
+Not yet: 360 Reality Audio, head gestures, the voice assistant's wake word, caring charge, the touch
+panel's backlight, the LE Audio connection mode, the call settings and the earpiece fitting test;
+each is in Sony's app and still to be read.
 
 Sony support is written from Sony's own app (Sony | Sound Connect 13.3.0), read for its
 messages, and checked against [Gadgetbridge](https://codeberg.org/Freeyourgadget/Gadgetbridge),

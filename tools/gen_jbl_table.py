@@ -122,6 +122,7 @@ WHY = {
     "no_dashboard": "JBL's app has an older control class for them with no description of their settings, so what "
                     "they have is not known",
     "unsupported": "JBL's app itself has no controls for them",
+    "microphone": "a microphone, not headphones or earbuds",
 }
 
 

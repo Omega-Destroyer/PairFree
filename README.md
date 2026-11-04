@@ -88,14 +88,14 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
 | [Sony](docs/devices/sony.md) | 24 | — |
 | [Bose](docs/devices/bose.md) | 22 | — |
-| [JBL](docs/devices/jbl.md) | 102 | Live Buds 3 |
+| [JBL](docs/devices/jbl.md) | 112 | Live Buds 3 |
 | [AirPods and Beats](docs/devices/apple.md) | 30 | — |
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | — |
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
 | [QCY](docs/devices/qcy.md) | 171 | — |
 | [1MORE](docs/devices/1more.md) | 39 | — |
 | [EarFun](docs/devices/earfun.md) | 26 | — |
-| **Total: 12 brands** | **567** | **10 tried** |
+| **Total: 12 brands** | **577** | **10 tried** |
 <!-- devices-summary:end -->
 
 **LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks

@@ -220,7 +220,8 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   serial channel. PairFree connects over LE to the classic address first and scans only when that fails
   (`JblFinder`); the scan needs `BLUETOOTH_SCAN` (`neverForLocation`), which the owner allowed for JBL on
   2026-10-15, asked only when the user opens a JBL model (`docs/DESIGN.md`, Permissions). `data/jbl/commands.json`
-  and `devices.json` (102 models from JBL's product list and dashboard configs, with each model's family, noise
+  and `devices.json` (112 models from JBL's product list, its dashboard configs and, for 10 older BES models with none, their control
+  classes and old screens (`old_bes.py`), with each model's family, noise
   commands and auto power-off encoding, section 5) become `JblCommand`, `JblStatus`, `JblNoise`, `JblAmbient`,
   `JblFeature` and `JblModels` through `generateJblTables`; `JblSession` maps replies to the screens and reads
   each change back 3 s later. Each model's `settings` (the dashboard cards its control class sends, section 4.8)
@@ -229,7 +230,7 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   time, waiting up to 1 s, as JBL's app does. Protocol 4 (section 6) is covered, including the models with a BLE
   security mode 1 to 3, which add a transport step `GattLink` runs itself (section 7): no key is needed. JBL's
   genuine-product check needs a key from a native library, so it is left out (hard rules); the BES LE Audio
-  models are not covered. The EQ (section 11) goes through the Sound tab via `JblEqTarget` on all 102 models: as
+  models are not covered. The EQ (section 11) goes through the Sound tab via `JblEqTarget` on all 112 models: as
   command `A2`, protocol 4's EQ info or the older BES classes' `41` transfer, with JBL's presets
   (`data/jbl/eq_presets.json`) and the calibration JBL's app works out on its BES models, ported from its calibration
   library (`JblCalibration`); on the Tune 520BT family as Realtek's segments (`A6`, `JblRealtekEq`, coefficients from

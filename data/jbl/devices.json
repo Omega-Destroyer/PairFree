@@ -1,17 +1,7 @@
 {
-  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) or unsupported (JBL's app has no control class for it). eq: how the model's control class writes its EQ (path: a2, a2_q10, 41, club, segment, p4 or airoha; docs/jbl/PROTOCOL.md section 11), its presets (a file in eq_presets.json, or the standard presets of its series), the custom curve's range in dB (eqGainRange), whether the class reads the design EQ on connecting (design), the dashboard's EQ card, whether JBL's app works out the calibration (calibrate), and on protocol 4's models whose EQ library is Airoha's (lib) the sample rates Airoha's PEQ is worked out for (rates).",
+  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) unsupported (JBL's app has no control class for it) or microphone (not headphones or earbuds). The older BES models with no dashboard (the Live 220BT to Tour Pro+ and UA Project Rock, control classes com.harman.cmdctrl.imp.bes.*SdkControl) take their noise control, auto power-off and settings from their control class, the product list and the name checks of JBL's old screens; each setting shows once the device answers its read. eq: how the model's control class writes its EQ (path: a2, a2_q10, 41, club, segment, p4 or airoha; docs/jbl/PROTOCOL.md section 11), its presets (a file in eq_presets.json, or the standard presets of its series), the custom curve's range in dB (eqGainRange), whether the class reads the design EQ on connecting (design), the dashboard's EQ card, whether JBL's app works out the calibration (calibrate), and on protocol 4's models whose EQ library is Airoha's (lib) the sample rates Airoha's PEQ is worked out for (rates).",
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "not_covered": [
-    {
-      "name": "JBL CLUB700BT",
-      "pids": ["1F40", "2013"],
-      "why": "no_dashboard"
-    },
-    {
-      "name": "JBL CLUB950NC",
-      "pids": ["1F41", "2014"],
-      "why": "no_dashboard"
-    },
     {
       "name": "JBL EVEREST ELITE 100",
       "pids": ["1002"],
@@ -38,36 +28,6 @@
       "why": "unsupported"
     },
     {
-      "name": "JBL LIVE PRO+ TWS",
-      "pids": ["203B", "2043", "2060"],
-      "why": "no_dashboard"
-    },
-    {
-      "name": "JBL LIVE220BT",
-      "pids": ["1F32"],
-      "why": "no_dashboard"
-    },
-    {
-      "name": "JBL LIVE300TWS",
-      "pids": ["1F37", "201D"],
-      "why": "no_dashboard"
-    },
-    {
-      "name": "JBL LIVE400BT",
-      "pids": ["1F11"],
-      "why": "no_dashboard"
-    },
-    {
-      "name": "JBL LIVE500BT",
-      "pids": ["1F12"],
-      "why": "no_dashboard"
-    },
-    {
-      "name": "JBL LIVE650BTNC",
-      "pids": ["1F15"],
-      "why": "no_dashboard"
-    },
-    {
       "name": "JBL REFLECT AWARE",
       "pids": ["1001"],
       "why": "unsupported"
@@ -88,19 +48,9 @@
       "why": "unsupported"
     },
     {
-      "name": "JBL TOUR PRO+ TWS",
-      "pids": ["2020", "202C"],
-      "why": "no_dashboard"
-    },
-    {
       "name": "QUANTUM STREAM WIRELESS",
       "pids": ["20ED"],
-      "why": "unsupported"
-    },
-    {
-      "name": "UA PROJECT ROCK",
-      "pids": ["1F60", "2044"],
-      "why": "no_dashboard"
+      "why": "microphone"
     }
   ],
   "devices": [
@@ -2941,6 +2891,227 @@
         "design": true,
         "card": "EQCard",
         "calibrate": false
+      }
+    },
+    {
+      "name": "JBL LIVE220BT",
+      "pids": ["1F32"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Live220SdkControl",
+      "family": "direct",
+      "noise": "old",
+      "modes": ["ambient_aware", "talk_thru"],
+      "settings": [],
+      "auto_off": "v1",
+      "eq": {
+        "path": "club",
+        "presets": "jbl_live220bt",
+        "range": [-6, 6],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "JBL LIVE300TWS",
+      "pids": ["1F37", "201D"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Live300TwsSdkControl",
+      "family": "direct",
+      "noise": "old",
+      "modes": ["ambient_aware", "talk_thru"],
+      "auto_play_pause": true,
+      "settings": ["find_buds"],
+      "auto_off": "v1",
+      "eq": {
+        "path": "club",
+        "presets": "jbl_live300tws",
+        "range": [-6, 6],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "JBL LIVE400BT",
+      "pids": ["1F11"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Live220SdkControl",
+      "family": "direct",
+      "noise": "old",
+      "modes": ["ambient_aware", "talk_thru"],
+      "settings": [],
+      "auto_off": "v1",
+      "eq": {
+        "path": "club",
+        "presets": "jbl_live400bt",
+        "range": [-6, 6],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "JBL LIVE500BT",
+      "pids": ["1F12"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Live220SdkControl",
+      "family": "direct",
+      "noise": "old",
+      "modes": ["ambient_aware", "talk_thru"],
+      "settings": [],
+      "auto_off": "v1",
+      "eq": {
+        "path": "club",
+        "presets": "jbl_live500bt",
+        "range": [-6, 6],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "JBL LIVE650BTNC",
+      "pids": ["1F15"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Live220SdkControl",
+      "family": "direct",
+      "noise": "old",
+      "modes": ["anc"],
+      "settings": [],
+      "eq": {
+        "path": "club",
+        "presets": "jbl_live650btnc",
+        "range": [-6, 6],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "JBL CLUB700BT",
+      "pids": ["1F40", "2013"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Club700SdkControl",
+      "family": "direct",
+      "noise": "old",
+      "modes": ["ambient_aware", "talk_thru"],
+      "settings": [],
+      "auto_off": "v1",
+      "eq": {
+        "path": "club",
+        "presets": "jbl_club700bt",
+        "range": [-6, 6],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "JBL CLUB950NC",
+      "pids": ["1F41", "2014"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "Club950SdkControl",
+      "family": "direct",
+      "noise": "old",
+      "modes": ["ambient_aware", "talk_thru"],
+      "settings": [],
+      "auto_off": "v1",
+      "eq": {
+        "path": "club",
+        "presets": "jbl_club950bt",
+        "range": [-6, 6],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "JBL LIVE PRO+ TWS",
+      "pids": ["203B", "2043", "2060"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "LiveProPlusSdkControl",
+      "family": "direct",
+      "noise": "old",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_play_pause": true,
+      "smart_audio_video": {
+        "normal": [197, 41, 279],
+        "audio": [256, 53, 200],
+        "video": [197, 41, 150]
+      },
+      "settings": ["smart_audio_video"],
+      "auto_off": "v2",
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "club",
+        "presets": "jbl_live_pro+_tws",
+        "range": [-6, 6],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "JBL TOUR PRO+ TWS",
+      "pids": ["2020", "202C"],
+      "kind": "earbuds",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "BesSdkControl",
+      "family": "direct",
+      "noise": "modes",
+      "modes": ["ambient_aware", "talk_thru"],
+      "auto_play_pause": true,
+      "smart_audio_video": {
+        "normal": [197, 41, 300],
+        "audio": [256, 53, 280],
+        "video": [197, 41, 120]
+      },
+      "settings": ["smart_audio_video", "find_buds"],
+      "auto_off": "v2",
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "club",
+        "presets": "jbl_tour_pro+_tws",
+        "range": [-7, 7],
+        "design": false,
+        "calibrate": true
+      }
+    },
+    {
+      "name": "UA PROJECT ROCK",
+      "pids": ["1F60", "2044"],
+      "kind": "headphones",
+      "connect": "BLE",
+      "platform": "Bes",
+      "control": "UAProjectSdkControl",
+      "family": "direct",
+      "noise": "modes",
+      "modes": ["anc", "ambient_aware", "talk_thru"],
+      "auto_play_pause": true,
+      "smart_audio_video": {
+        "normal": [197, 53, 200],
+        "audio": [256, 53, 150],
+        "video": [197, 53, 80]
+      },
+      "settings": ["smart_audio_video"],
+      "auto_off": "v2",
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "club",
+        "presets": "ua_project_rock",
+        "range": [-10, 10],
+        "design": false,
+        "calibrate": true
       }
     }
   ]

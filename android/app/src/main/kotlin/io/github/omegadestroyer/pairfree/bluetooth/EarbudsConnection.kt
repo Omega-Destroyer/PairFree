@@ -734,6 +734,7 @@ class EarbudsConnection(
     private suspend fun serveJbl(opened: ControlLink, device: Paired) = coroutineScope {
         val model = JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } ?: return@coroutineScope
         val session = JblSession(model)
+        if (opened is GattLink) session.mtu = opened.mtu
         jbl = session
         val queue = Channel<JblFrame>(Channel.UNLIMITED)
         val heard = Channel<Unit>(Channel.CONFLATED)

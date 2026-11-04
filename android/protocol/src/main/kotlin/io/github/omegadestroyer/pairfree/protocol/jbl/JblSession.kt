@@ -82,6 +82,12 @@ public class JblSession(initial: JblModel) {
     private var rawOut: Set<JblRaw> = emptySet()
     private var eqOut: List<JblFrame> = emptyList()
 
+    // Realtek's segment EQ: the reply parts in so far.
+    private var segments = ByteArray(0)
+
+    /** The MTU the LE link agreed on; Realtek's segment EQ is cut to fit it, as JBL's app does. */
+    public var mtu: Int = DEFAULT_MTU
+
     // Airoha models: the chip family they report, and whether the earbud PairFree talks to (the agent) is the right one.
     private var chip: RaceChip? = null
     private var agentRight = false
@@ -121,6 +127,9 @@ public class JblSession(initial: JblModel) {
     private fun eqReads(): List<JblFrame> {
         val spec = model.eq?.takeIf { it.written } ?: return emptyList()
         if (spec.path == JblEqSpec.Path.P4) return listOf(JblEq.p4Query(JblEqWire.CURRENT))
+        if (spec.path == JblEqSpec.Path.SEGMENT) {
+            return listOfNotNull(JblRealtekEq.read(JblEqWire.DESIGN).takeIf { spec.readsDesign }, JblRealtekEq.read(JblEqWire.CURRENT))
+        }
         // The older BES classes: the design EQ alone, for the calibration (their reply names no preset).
         if (!spec.reports) return listOfNotNull(JblEq.read41(JblEq41.DESIGN).takeIf { spec.readsDesign })
         return listOfNotNull(JblEq.read(JblEqWire.DESIGN).takeIf { spec.readsDesign }, JblEq.read(JblEqWire.CURRENT))
@@ -130,7 +139,8 @@ public class JblSession(initial: JblModel) {
      * The write that puts [preset] on the earbuds, or with none a curve of the user's own from [gains] (JBL's ten bands,
      * in dB). The calibration is worked out from the design EQ as JBL's app does on its BES models ([JblCalibration]);
      * -1 when the earbuds have not reported their design EQ, as JBL's app sends then (always on protocol 4, where none is
-     * reported in a form it keeps). Null on a model whose EQ PairFree does not write.
+     * reported in a form it keeps). Realtek's segment EQ is worked out on top of the design EQ, so without it nothing is
+     * sent, as in JBL's app. Null on a model whose EQ PairFree does not write, or when there is nothing to send.
      */
     public fun eqWrite(preset: JblEqPreset?, gains: List<Float>): List<JblFrame>? = eqFrames(preset, gains)?.also { eqOut = it }
 
@@ -145,6 +155,12 @@ public class JblSession(initial: JblModel) {
             else -> designEq?.let { JblCalibration.of(it, bands) } ?: NO_DESIGN_EQ
         }
         val curve = JblEqCurve(preset?.category ?: JblEqWire.CUSTOM, calibration, JblEq.SAMPLE_RATE, preset?.leftGain ?: 0f, preset?.rightGain ?: 0f, bands)
+        if (spec.path == JblEqSpec.Path.SEGMENT) {
+            val frames = JblRealtekEq.write(curve, designEq ?: return null, mtu) ?: return null
+            eq = curve
+            readBacks += JblRealtekEq.read(JblEqWire.CURRENT)
+            return frames
+        }
         eq = curve
         when (spec.path) {
             // Every curve goes as the user's preset index, a preset's under category 0, as BesEQControl maps it.
@@ -204,10 +220,32 @@ public class JblSession(initial: JblModel) {
         if (category == JblEq41.DESIGN) designEq = curve.copy(category = JblEqWire.DESIGN)
     }
 
+    /**
+     * A part of a Realtek segment EQ reply (SegmentEQCmd.assembleEqPackage): the first starts the EQ afresh, each but the
+     * last is acknowledged, and the last completes it.
+     */
+    private fun segmentPart(p: ByteArray) {
+        val (index, count, data) = JblRealtekEq.part(p) ?: return
+        if (index == 0) segments = ByteArray(0)
+        segments += data
+        if (index != count - 1) {
+            outbox += JblRealtekEq.ack()
+            return
+        }
+        val curve = JblRealtekEq.parse(segments) ?: return
+        _replies[key(JblCommand.SEGMENT_EQ, curve.category)] = segments.copyOf()
+        segments = ByteArray(0)
+        eqIs(curve)
+    }
+
     /** An EQ reply: the design EQ is kept for the calibration, PersoniFi's left alone, anything else is the EQ in use. */
     private fun eqReply(p: ByteArray) {
         val curve = JblEq.parse(p) ?: return
         _replies[key(JblCommand.EQ, curve.category)] = p.copyOf()
+        eqIs(curve)
+    }
+
+    private fun eqIs(curve: JblEqCurve) {
         when (curve.category) {
             JblEqWire.DESIGN -> designEq = curve
             JblEqWire.PERSONIFI -> Unit
@@ -273,6 +311,7 @@ public class JblSession(initial: JblModel) {
             }
             JblCommand.FEATURE -> for ((id, v) in packet.features()) feature(id, v)
             JblCommand.EQ -> eqReply(p)
+            JblCommand.SEGMENT_EQ -> segmentPart(p)
             JblEq41.REPLY -> eqParts(p)
             JblEq41.DEVICE_FIN -> if (p.isNotEmpty() && p.u8(0) == JblEq41.REPLY) eqPartsDone()
             else -> if (extras.reportsAa(packet.command)) {
@@ -958,6 +997,9 @@ public class JblSession(initial: JblModel) {
     private companion object {
         /** The calibration JBL's app sends when it holds no design EQ (AppUtils.getCalib). */
         const val NO_DESIGN_EQ = -1f
+
+        /** The MTU PairFree asks for on Harman's service, until the link reports the one agreed. */
+        const val DEFAULT_MTU = 512
         const val HALF = 0.5f
 
         // Airoha models: how much of an NV key Airoha's SDK asks for, and the power control key's length.

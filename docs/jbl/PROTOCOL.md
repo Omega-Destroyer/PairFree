@@ -551,7 +551,8 @@ class reads the design EQ, and whether JBL's app works out the calibration (`cal
 `QMultiply10EQ`, which send Q in tenths. `p4` (35 models) sends protocol 4's EQ info, below; on the seven whose EQ library
 is Airoha's (`lib`), JBL's app sends the curve as Airoha's PEQ as well (`EQCurveFeature`, coefficients from Airoha's
 native `libnative-peq-serialize`), so PairFree does not write those yet. `41` (10 models) and `club` (the Club One) are the older BES classes' transfer,
-below. Not written yet: `segment` (the Tune 520BT family, Realtek's segments) and `airoha` (Airoha's PEQ over RACE).
+below. `segment` (the Tune 520BT, 525BT and 527BT) is Realtek's segment EQ, below. Not written yet: `airoha` (Airoha's
+PEQ over RACE; section 11.2).
 
 **Command A2** (floats four bytes, low byte first):
 
@@ -607,4 +608,42 @@ magnitude at 4096 points from 0 to 24 kHz for the design EQ alone and for both t
 higher, returns that peak in dB plus 1 dB, or 0 when the design EQ's own left gain is already at least that much.
 PairFree's `JblCalibration` is a port of it. A curve that only cuts meets the design EQ at 0 Hz, where every peak
 filter is exactly 1, so the library gives 0 or 1 dB there by rounding.
+
+### 11.1 Realtek's segment EQ: `A6`
+
+The Tune 520BT family (`Tune520BTControl`, platform Rtk, over Bluetooth LE) sends its EQ as `A6` (`SegmentEQCmd`,
+`RtkEqUtils`, `RtkEqParameterConverter`, `RtkSrEntity`) with coefficients from Realtek's native `libDspConfig.so`
+(`DspConfig.calculateEq`). Its functions keep their names (`PeakFilter`, `ShelvingLPFilter`, `FilterCoefFix`,
+`SignedQuant`, `FreqResponse`, `calculateDiffMaxAndMinDb`, `AssembleModuleData`); PairFree's `RealtekDsp` is a port of
+them, read from the arm64 code and checked against the library itself, run in an emulator outside the repo (1000
+random curves' coefficients, and five whole outputs, byte for byte; `test_vectors.json` `segment_eq` keeps the cases).
+
+**Reads.** `AA A6 02 01 <category>` (one-byte length): `202` the design EQ, `255` the EQ in use; JBL's app sends both
+on connecting, and so does PairFree. The answer comes in parts, `AA A6 <length, two bytes, low first>`, then `04`, the
+provider (`01`), the part count, the part's index and a slice of the data; JBL's app acknowledges each part but the
+last with `AA 01 02 A6 00`. Joined, the data is the Harman curve: the category, the band count (low nibble) and the
+sample-rate code (high: 3 44.1 kHz, 4 48, 6 96), a spare byte, the master gain in hundredths of a dB (two bytes,
+signed), then five bytes a band, low bits first: the type (3 bits; Realtek's 0 is a peak, 1 a low shelf, 2 to 6 as
+Harman's), Q in hundredths (10 bits), the gain in hundredths (12 bits, signed) and the frequency (15 bits). One byte
+or none is JBL's default curve.
+
+**Writes.** Without the design EQ JBL's app sends nothing; PairFree the same. The content is the category, the block
+count (2), a coefficient block at 44.1 kHz (rate code 3) and one at 48 kHz (4), then the Harman curve as above. A block
+is the rate code, the design EQ's band count, the largest gain the curve adds over the design EQ in 1/128 dB (two bytes,
+low first), the data's length plus 4 (two bytes), `00 00 00 01`, then the library's stage data: a word with the stage
+count (bits 0 to 4), `010` (bits 5 to 7) and the master gain in Q12 (bits 8 up), then per stage `b0`, `b1`, `b2`,
+`a1` and `a2` as Q30 integers, four bytes each, low first. The stages are the curve's bands followed by the design EQ's
+(at most 20); the master gain is the two curves' gains added (the library gives up beyond 12 dB, and PairFree then
+sends nothing). The content goes in parts of the negotiated MTU less 18 bytes, each `AA A6`, a two-byte length, `03`,
+the provider, the part count and the index. PairFree reads `255` again after a write.
+
+**The library's filters** (all second order): peak (`PeakFilter`, `w0/(2Q)` and, for cuts, `w0/(2QA)` as its
+bandwidth term), low and high shelf (`Shelving*Filter`, the Cookbook's with Q as the shelf slope and the square root of
+the linear gain as its A), low and high pass (Butterworth, the frequency held to 20 Hz to 20 kHz, the low pass's gain
+to -12 to 6), band pass, band reject, all pass (whose last denominator term the library leaves at 1). When a
+numerator term reaches 2 the numerator is divided by its largest term, which goes into the master gain. `b1`, `b2`,
+`a1` and `a2` are rounded to the Q30 grid before the response is taken; the largest gain is the highest ratio of
+the whole response (master gain, curve and design EQ) to the design EQ's alone over 65536 points from 0 to the
+Nyquist frequency. One quirk is kept: the library designs the design EQ's bands with the types of the curve's
+first bands.
 

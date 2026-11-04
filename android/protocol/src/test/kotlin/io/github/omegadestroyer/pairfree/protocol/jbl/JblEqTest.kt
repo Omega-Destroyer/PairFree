@@ -191,8 +191,11 @@ class JblEqTest {
 
     @Test
     fun modelsPairFreeDoesNotWriteYet() {
-        val s = JblSession(model("JBL Tune 520BT"))
-        assertTrue(s.start().none { it.hex().startsWith("aaa2") })
-        assertNull(s.eqWrite(null, List(10) { 0f }))
+        // Airoha's PEQ, on the Airoha models and protocol 4's models with Airoha's EQ library.
+        for (name in listOf("JBL Live Buds 3", "JBL Tune 680NC")) {
+            val s = JblSession(model(name))
+            assertTrue(s.start().none { it.hex().startsWith("aaa2") || it.hex().endsWith("0e0100ff") }, name)
+            assertNull(s.eqWrite(null, List(10) { 0f }), name)
+        }
     }
 }

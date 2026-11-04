@@ -41,9 +41,9 @@ public data class JblEqSpec(
      */
     public enum class Path { A2, A2_Q10, CMD41, CLUB, SEGMENT, P4, AIROHA }
 
-    /** True for the paths PairFree writes so far: A2, 41 and the Club One's, and protocol 4 where the curve needs no Airoha PEQ. */
+    /** True for the paths PairFree writes so far: A2, 41, the Club One's and Realtek's segments, and protocol 4 where the curve needs no Airoha PEQ. */
     public val written: Boolean
-        get() = path == Path.A2 || path == Path.A2_Q10 || path == Path.CMD41 || path == Path.CLUB || (path == Path.P4 && !airohaLib)
+        get() = path == Path.A2 || path == Path.A2_Q10 || path == Path.CMD41 || path == Path.CLUB || path == Path.SEGMENT || (path == Path.P4 && !airohaLib)
 
     /**
      * True when the earbuds report the EQ they hold. The older BES classes' reply names no preset (every write goes as the
@@ -238,6 +238,6 @@ public object JblEq {
     /** Protocol 4: the category, kept, band count, calibration, sample rate and two gains; then 13 bytes a band. */
     private const val P4_HEADER = 19
     private const val P4_BAND = 13
-    private const val PEAK = 1
+    internal const val PEAK = 1
     private const val AIROHA_PEAK = 2
 }

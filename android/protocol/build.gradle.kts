@@ -787,6 +787,8 @@ abstract class GenerateJblTables : DefaultTask() {
             map("noise_sub").mapValues { byte(it.value) } + map("noise_modes").mapKeys { "mode_" + it.key }.mapValues { int(it.value) }, out)
         constants("JblAmbient", "Command 32's values (data/jbl/commands.json).", map("ambient_values").mapValues { int(it.value) }, out)
         constants("JblEqWire", "The EQ command's sub-commands and categories (data/jbl/commands.json eq).", map("eq").mapValues { int(it.value) }, out)
+        constants("JblSegmentEq", "Realtek's segment EQ's sub-commands, provider, part spacing and rate codes (data/jbl/commands.json segment_eq).",
+            map("segment_eq").filterKeys { !it.startsWith("_") }.mapValues { int(it.value) }, out)
         constants("JblEq41", "The older BES classes' EQ commands, sizes and categories (data/jbl/commands.json eq41).",
             map("eq41").filterKeys { !it.startsWith("_") }.mapValues { (_, v) -> if (v is String) byte(v) else int(v) }, out)
         constants("JblFeature", "Harman's feature record types and the feature ids PairFree reads or writes (data/jbl/commands.json).",

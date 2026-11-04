@@ -1,5 +1,5 @@
 {
-  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) or unsupported (JBL's app has no control class for it). eq: how the model's control class writes its EQ (path: a2, a2_q10, 41, club, segment, p4 or airoha; docs/jbl/PROTOCOL.md section 11), its presets (a file in eq_presets.json, or the standard presets of its series), the custom curve's range in dB (eqGainRange), whether the class reads the design EQ on connecting (design), the dashboard's EQ card, and whether JBL's app works out the calibration (calibrate).",
+  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) or unsupported (JBL's app has no control class for it). eq: how the model's control class writes its EQ (path: a2, a2_q10, 41, club, segment, p4 or airoha; docs/jbl/PROTOCOL.md section 11), its presets (a file in eq_presets.json, or the standard presets of its series), the custom curve's range in dB (eqGainRange), whether the class reads the design EQ on connecting (design), the dashboard's EQ card, whether JBL's app works out the calibration (calibrate), and on protocol 4's models whose EQ library is Airoha's (lib) the sample rates Airoha's PEQ is worked out for (rates).",
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "not_covered": [
     {
@@ -1343,7 +1343,8 @@
         "card": "EQCard",
         "calibrate": true,
         "halve_custom_until": "4.2.0",
-        "lib": "airoha"
+        "lib": "airoha",
+        "rates": [44100, 48000, 88200, 96000]
       }
     },
     {
@@ -1482,7 +1483,8 @@
         "card": "EQCard",
         "calibrate": true,
         "halve_custom_until": "4.2.0",
-        "lib": "airoha"
+        "lib": "airoha",
+        "rates": [44100, 48000]
       }
     },
     {
@@ -1843,7 +1845,8 @@
         "design": true,
         "card": "EQCard",
         "calibrate": true,
-        "lib": "airoha"
+        "lib": "airoha",
+        "rates": [44100, 48000, 88200, 96000]
       }
     },
     {
@@ -1873,7 +1876,8 @@
         "design": true,
         "card": "EQCard",
         "calibrate": true,
-        "lib": "airoha"
+        "lib": "airoha",
+        "rates": [44100, 48000, 88200, 96000]
       }
     },
     {
@@ -2015,7 +2019,8 @@
         "design": true,
         "card": "EQCard",
         "calibrate": true,
-        "lib": "airoha"
+        "lib": "airoha",
+        "rates": [44100, 48000, 88200, 96000]
       }
     },
     {
@@ -2075,7 +2080,8 @@
         "design": true,
         "card": "EQCard",
         "calibrate": true,
-        "lib": "airoha"
+        "lib": "airoha",
+        "rates": [44100, 48000, 88200, 96000]
       }
     },
     {
@@ -2360,7 +2366,8 @@
         "design": true,
         "card": "ClassifiedEQCard",
         "calibrate": true,
-        "lib": "airoha"
+        "lib": "airoha",
+        "rates": [44100, 48000, 88200, 96000]
       }
     },
     {

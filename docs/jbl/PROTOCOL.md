@@ -396,7 +396,9 @@ JBL's embedded key, which the project's rules forbid. PairFree leaves it out.
 preserve settings, `13` and `15` analytics. In protocol 4: `00FF` factory reset, `0101` to
 `0104` firmware update, `0201` and `02FF` analytics. JBL's firmware updates go over separate
 services PairFree never opens. The Airoha models' list is in section 10; PairFree checks every
-RACE frame against it before sending.
+RACE frame against it before sending. The one exception is an Airoha PEQ write PairFree builds itself
+(section 11.2): its NV key writes (`0A01`) and relays to the other earbud (`0D01`) go out as Airoha's SDK
+sends them in JBL's app (owner, 2026-11-04), and no other.
 
 ## 9. Open questions
 
@@ -549,9 +551,9 @@ class reads the design EQ, and whether JBL's app works out the calibration (`cal
 
 **Paths.** `a2` and `a2_q10` (33 models) send command `A2`, below; `a2_q10` are the classes JBL's app marks
 `QMultiply10EQ`, which send Q in tenths. `p4` (35 models) sends protocol 4's EQ info, below; on the seven whose EQ library
-is Airoha's (`lib`), JBL's app sends the curve as Airoha's PEQ as well (`EQCurveFeature`, coefficients from Airoha's
-native `libnative-peq-serialize`), so PairFree does not write those yet. `41` (10 models) and `club` (the Club One) are the older BES classes' transfer,
-below. Not written yet: `segment` (the Tune 520BT family, Realtek's segments) and `airoha` (Airoha's PEQ over RACE).
+is Airoha's (`lib`), JBL's app sends the curve as Airoha's PEQ as well (section 11.3). `41` (10 models) and `club` (the Club One) are the older BES classes' transfer,
+below. `segment` (the Tune 520BT, 525BT and 527BT) is Realtek's segment EQ (section 11.1) and `airoha` (19 models)
+Airoha's PEQ over RACE (section 11.2).
 
 **Command A2** (floats four bytes, low byte first):
 
@@ -607,4 +609,113 @@ magnitude at 4096 points from 0 to 24 kHz for the design EQ alone and for both t
 higher, returns that peak in dB plus 1 dB, or 0 when the design EQ's own left gain is already at least that much.
 PairFree's `JblCalibration` is a port of it. A curve that only cuts meets the design EQ at 0 Hz, where every peak
 filter is exactly 1, so the library gives 0 or 1 dB there by rounding.
+
+### 11.1 Realtek's segment EQ: `A6`
+
+The Tune 520BT family (`Tune520BTControl`, platform Rtk, over Bluetooth LE) sends its EQ as `A6` (`SegmentEQCmd`,
+`RtkEqUtils`, `RtkEqParameterConverter`, `RtkSrEntity`) with coefficients from Realtek's native `libDspConfig.so`
+(`DspConfig.calculateEq`). Its functions keep their names (`PeakFilter`, `ShelvingLPFilter`, `FilterCoefFix`,
+`SignedQuant`, `FreqResponse`, `calculateDiffMaxAndMinDb`, `AssembleModuleData`); PairFree's `RealtekDsp` is a port of
+them, read from the arm64 code and checked against the library itself, run in an emulator outside the repo (1000
+random curves' coefficients, and five whole outputs, byte for byte; `test_vectors.json` `segment_eq` keeps the cases).
+
+**Reads.** `AA A6 02 01 <category>` (one-byte length): `202` the design EQ, `255` the EQ in use; JBL's app sends both
+on connecting, and so does PairFree. The answer comes in parts, `AA A6 <length, two bytes, low first>`, then `04`, the
+provider (`01`), the part count, the part's index and a slice of the data; JBL's app acknowledges each part but the
+last with `AA 01 02 A6 00`. Joined, the data is the Harman curve: the category, the band count (low nibble) and the
+sample-rate code (high: 3 44.1 kHz, 4 48, 6 96), a spare byte, the master gain in hundredths of a dB (two bytes,
+signed), then five bytes a band, low bits first: the type (3 bits; Realtek's 0 is a peak, 1 a low shelf, 2 to 6 as
+Harman's), Q in hundredths (10 bits), the gain in hundredths (12 bits, signed) and the frequency (15 bits). One byte
+or none is JBL's default curve.
+
+**Writes.** Without the design EQ JBL's app sends nothing; PairFree the same. The content is the category, the block
+count (2), a coefficient block at 44.1 kHz (rate code 3) and one at 48 kHz (4), then the Harman curve as above. A block
+is the rate code, the design EQ's band count, the largest gain the curve adds over the design EQ in 1/128 dB (two bytes,
+low first), the data's length plus 4 (two bytes), `00 00 00 01`, then the library's stage data: a word with the stage
+count (bits 0 to 4), `010` (bits 5 to 7) and the master gain in Q12 (bits 8 up), then per stage `b0`, `b1`, `b2`,
+`a1` and `a2` as Q30 integers, four bytes each, low first. The stages are the curve's bands followed by the design EQ's
+(at most 20); the master gain is the two curves' gains added (the library gives up beyond 12 dB, and PairFree then
+sends nothing). The content goes in parts of the negotiated MTU less 18 bytes, each `AA A6`, a two-byte length, `03`,
+the provider, the part count and the index. PairFree reads `255` again after a write.
+
+**The library's filters** (all second order): peak (`PeakFilter`, `w0/(2Q)` and, for cuts, `w0/(2QA)` as its
+bandwidth term), low and high shelf (`Shelving*Filter`, the Cookbook's with Q as the shelf slope and the square root of
+the linear gain as its A), low and high pass (Butterworth, the frequency held to 20 Hz to 20 kHz, the low pass's gain
+to -12 to 6), band pass, band reject, all pass (whose last denominator term the library leaves at 1). When a
+numerator term reaches 2 the numerator is divided by its largest term, which goes into the master gain. `b1`, `b2`,
+`a1` and `a2` are rounded to the Q30 grid before the response is taken; the largest gain is the highest ratio of
+the whole response (master gain, curve and design EQ) to the design EQ's alone over 65536 points from 0 to the
+Nyquist frequency. One quirk is kept: the library designs the design EQ's bands with the types of the curve's
+first bands.
+
+### 11.2 Airoha's PEQ: RACE
+
+The Airoha models (`AirohaEQControl` in Harman's adapter, then Airoha's SDK: `AirohaPEQControl` on the AB155x,
+`AirohaPEQControl1568` on every other chip, both through `AirohaPeqMgr` and its stages) write a curve as Airoha's
+PEQ, with coefficients from Airoha's native `libnative-peq.so`. Its functions keep their names (`generate_cofe`,
+`change_rescale_cofe`, `generate_freq_resp`, `calc_z`, `rpoly_ak1` and the rest); PairFree's `AirohaPeq` is a port of
+the ones the SDK calls, read from the arm64 code and checked against the library itself, run in an emulator outside
+the repo with Android 17's own libc and libm (300 random curves byte for byte; `test_vectors.json` `airoha_peq` keeps
+30). The library sorts the bands by gain with a comparator that only looks at whole decibels, so the order of gains
+less than 1 dB apart is whatever the phone's `qsort` makes of it; PairFree follows Android 17's (bionic's
+unstable sort: median-of-three pivots, branchless partitions, heapsort past a depth limit). Another Android
+version's `qsort` may order such bands differently, as JBL's app on it would too.
+
+**The curve.** JBL's app sets the sample rate to 48 kHz and passes the category through Harman's adapter, which moves
+JBL's preset numbers 0 to 99 up by one; a curve of the user's own goes as Harman's custom EQ, 103. Each band becomes
+`PeqBandInfo`: its frequency, gain and bandwidth (frequency over Q, in single precision), each printed and read
+back as a double (`Converter.getFloatAsDouble`); the master gain is the curve's left gain. The library makes, per
+sample rate (44.1 and 48 kHz, and on the AB158x also 88.2 and 96), the band count, each stage's `b0`, `b1`, `b2`, `a1`
+and `a2` as 32-bit numbers in two shorts (high first; Q23 and Q22 values scaled to 2^31 and 2^30) and the master
+gain in Q26, after scaling each stage so the running response stays within range (a headroom of 1.19, and 18.0618 dB
+of room for the master gain).
+
+**Which slot.** The AB155x keeps JBL's presets on the earbuds: a preset is picked by its group (`0900` module 0 and
+the group's position in the PEQ subset), and a curve of the user's own goes to custom slot 2 (103 less 101). The other
+chips take every curve, presets included, into custom slot 0, and on category 1 (JBL's Off) only the first band is
+enabled.
+
+**The write** (`UpdateAndSavePeqData` with save on), each step waiting for the answer to the one before; any step
+that fails ends it:
+1. `0E2B` (sync of the UI data with the firmware): the UI data, then the peak in hundredths of a dB (four bytes). No
+   answer awaited.
+2. `0E03` (real-time PEQ): `00`, the block count (two bytes), `00 00`, then per rate its id (1 44.1 kHz, 2 48, 5 88.2,
+   6 96; two bytes), the short count (two bytes) and the shorts, low byte first.
+3. On earbuds `0D00` (available destinations): the answer's pairs of type and id; type 5 is the other earbud.
+4. NV key writes (`0A01`, the key then the data), each relayed to the other earbud first on earbuds (`0D01`: the
+   destination, then the whole frame; the answer comes as an indication of `0D01` holding the other earbud's frame):
+   the UI data at `EF00` plus the slot (keep-rescale 1, four zero bytes, then ten bands of 18 bytes: enabled, type 2,
+   then frequency, gain, bandwidth and Q in hundredths, four bytes each), the extra data at `EF10` plus the slot
+   (category, payload id 0, sample rate 48000, four bytes each; the band count, two; the master gain in hundredths,
+   four) and the peak at `EF20` plus the slot (hundredths of a dB, four bytes).
+5. NV key reads (`0A00`, the key and 1000): the audio path (`F233`, or `E401` on the AB158x and on an AB1568 or
+   AB1565 whose NVDM version, NV key `1001`, is above 1), whose first entry with a zero second field names the PEQ
+   subset's key (else the group base, `F234` or `E402`); then the subset: a count, then per group its entries (a count,
+   then four bytes each, the last two the coefficients' NV key). A key between the coefficient base (`F260`, or `E410`)
+   plus 28 and plus 31 is custom slot 0 to 3.
+6. The coefficients at the coefficient base plus 28 plus the slot (the blocks of step 2 without the leading `00`);
+   the subset with one more group for that key unless its hex already appears in it (count up by one, then
+   `01 00 00 00` and the key); `09FD` (save status): `00` and the key. Each relayed first on earbuds.
+7. The audio path and subset read again, then `0900` module 0 with the group (the custom slot's position in the
+   subset, or one past the end), and `0901` module 0 to read it back.
+
+Headphones (Airoha's `HEADSET`) skip the relays and step 3. Airoha's SDK also has an NV reclaim stage for the AB1562;
+its manager never queues it, and PairFree does not send it. PairFree does not read the curve back yet (the SDK reads
+the group and the UI data), so it keeps the choice on the phone, as for the older BES classes.
+
+### 11.3 Airoha's PEQ on protocol 4
+
+The seven protocol 4 models whose product entry names Airoha's EQ library (`eqLibInfo`, platform airoha: the Tour One
+M3, Endurance Zone, Tune 680NC, 780NC and 785NC, Live Buds 4 and Tune Buds 3) get, in the same set as the EQ info,
+feature `0E7F` (`EQCurveFeature`): a two-byte length, then `AirohaEQSerialize.serializePEQ` (type 0) over Airoha's
+second library, `libnative-peq-serialize.so`. JBL's app sends every band of these models as type 2 (Airoha's peak),
+in the EQ info too. The serialized curve is the coefficients (type `00`, a two-byte length, the model's rate count
+and three zero bytes, then per rate in the order 44.1, 48, 88.2, 96 kHz its id (1, 2, 5, 6), a zero, the short count
+and the shorts, low byte first) and the peak (type `03`, length 8, the response's peak in hundredths of a dB, four
+bytes, twice). The rates are the model's `eqLibInfo.sampleRates` (`rates` in `devices.json`). With JBL's settings
+(`setParam` with calibration -1, so mode 1, and a last argument of 1) this library gives what the one in section 11.2
+gives, but it takes Q directly, sorts the bands with a strict comparator (higher gain first), and keeps the peak in
+single precision; `AirohaPeq.Library.SERIALIZE` does the same (150 random curves byte for byte against the library;
+three whole curves in `test_vectors.json`). The set is longer than one packet, so it goes in parts of the MTU less 15
+bytes, each with the part count and its index (`AssembleCmd4`, `JblP4Packet.frames`).
 

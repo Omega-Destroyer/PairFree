@@ -108,7 +108,8 @@ class JblData(unittest.TestCase):
         race = data["airoha"]
         for number in ("0A01", "0D01", "0010"):
             self.assertIn(number, race["never_send"], "NV key writes, relays to the other earbud and analytics are never sent")
-        self.assertFalse(set(race["commands"].values()) & set(race["never_send"]))
+        # NV key writes and relays are named for Airoha's PEQ write alone, which PairFree builds itself (owner, 2026-11-04).
+        self.assertEqual({"0A01", "0D01"}, set(race["commands"].values()) & set(race["never_send"]))
         self.assertEqual({"00A8", "00A9"}, set(race["key_events"].values()), "the only key events: Smart Audio & Video's")
 
     def test_vectors(self):

@@ -23,9 +23,11 @@
     {"name": "low_volume_eq", "command": "9E", "note": "Low volume EQ (LowEQCompensationCmd): 01 to read; reply 02 and on; a write 00 and on."},
     {"name": "gestures", "command": "77", "note": "Touch controls in a batch (CmdGen.genSetGestureInBach77, HandleParse): 01 FF to read every gesture; the reply 01 or 02, then pairs of gesture and action; a write 00 and the pairs. Gestures: 06 left tap, 07 double, 08 triple, 0C hold; 09 right tap, 0A, 0B, 0E. Actions: JBL's ids (00 none, 01 volume up, 02 down, 04 TalkThru, 05 next, 06 previous, 0A play/pause, 0B noise cancelling and ambient sound, 0D Ambient Aware and off, A1 voice assistant)."},
     {"name": "balance", "command": "A8", "note": "Left and right balance (LeftRightSoundBalanceCmd): 01 to read; reply 02, 01, on, 02 and the level (84 to 116, 100 in the middle); a write 00 and the same."},
+    {"name": "segment_eq", "command": "A6", "wide": true, "note": "Realtek's segment EQ on the Tune 520BT family (SegmentEQCmd, RtkEqUtils; docs/jbl/PROTOCOL.md section 11.1): a read is 01 and the category with a one-byte length; the reply and a write come in parts, each 04 (reply) or 03 (write), the provider (01), the part count and the part's index, then a slice of the data. The app acknowledges each reply part but the last with AA 01 02 A6 00."},
     {"name": "eq", "command": "A2", "wide": true, "note": "The EQ (EQCmd, docs/jbl/PROTOCOL.md section 11): a read is 01 and the category with a one-byte length (202 the design EQ, 255 the EQ in use); the reply 02 (04: Q in tenths), the category, the calibration, the sample rate, the left and right gain, the band count and per band its type, gain, frequency and Q; a write 00 (03: Q in tenths) and the same. Floats are four bytes, low first."}
   ],
   "eq": {"read": 1, "reply": 2, "write": 0, "write_q10": 3, "reply_q10": 4, "design": 202, "current": 255, "custom": 230, "personifi": 201},
+  "segment_eq": {"_about": "Realtek's segment EQ (SegmentEQCmd, RtkEqUtils, DspConfig; docs/jbl/PROTOCOL.md section 11.1): the sub-commands, the provider byte, the space JBL's app leaves in each part below the negotiated MTU, the sample-rate codes of the Harman curve and of each coefficient block, and the device's acknowledgement status.", "read": 1, "write": 3, "reply": 4, "provider": 1, "mtu_less": 18, "rate_44": 3, "rate_48": 4, "rate_96": 6, "ack_ok": 0},
   "eq41": {"_about": "The older BES classes' EQ (BesEQControl, CmdGen, HandleParse; docs/jbl/PROTOCOL.md section 11): 41 writes a curve as a header (AA 41, the length's low byte, the part count), parts of 79 bytes each led by their index, and AA 05 41; 42 asks for one (the category, one byte), which comes back as AA 43 and the part count, parts the app acknowledges with AA 01 02 43 00, then AA 04 43; 40 picks a preset on the Club One.", "set_preset": "40", "write": "41", "read": "42", "reply": "43", "app_ack": "01", "app_fin": "05", "device_fin": "04", "part": 79, "user_index": 4, "design": 0, "graphic": 1},
   "status_types": {"all": "30", "anc": "31", "ambient": "32", "auto_off": "33", "auto_play_pause": "38"},
   "noise_sub": {"set": "10", "get": "11", "reply": "12", "off": "13"},
@@ -82,7 +84,8 @@
       "auto_compensation": 32,
       "low_volume_eq": 36,
       "eq_info_query": 3585,
-      "eq_info": 3586
+      "eq_info": 3586,
+      "eq_curve": 3711
     },
     "eq_custom": 193,
     "ignore_level": 127,
@@ -129,6 +132,12 @@
       "mmi_set": "0900",
       "mmi_get": "0901",
       "nv_read": "0A00",
+      "nv_write": "0A01",
+      "peq_save_status": "09FD",
+      "relay_dst": "0D00",
+      "relay": "0D01",
+      "peq_realtime": "0E03",
+      "peq_sync_ui": "0E2B",
       "agent_channel": "0CD4",
       "battery": "0CD6",
       "anc": "0E06",
@@ -142,8 +151,9 @@
     "mmi_modules": {"anc": 5},
     "config_modules": {"auto_off": 1, "in_ear": 2, "sidetone_level": 6, "sidetone": 7, "prompt_language": 9, "voice_eq": 19},
     "notify_modules": {"anc": 5, "agent_battery": 101, "partner_battery": 102, "case_battery": 103},
-    "nv_keys": {"chip_name": "1002", "power_control": "F2F1", "in_ear_old": "F2F0", "model_name": "1003", "model_name_old": "F500"},
+    "nv_keys": {"chip_name": "1002", "nvdm_version": "1001", "power_control": "F2F1", "in_ear_old": "F2F0", "model_name": "1003", "model_name_old": "F500"},
     "_model_name_about": "The model name the SDK reads at connect (CommonStageGetModelName), which on JBL's models is the product id (\"20F1\"): NV key F500 on the AB155x and AB1568, 1003 on the AB1568 v3 and AB158x, 20 bytes after 20 others; the AB1562 answers it to ae_info 01 FF (CommonStageGetModelName1562).",
+    "peq": {"_about": "Airoha's PEQ (AirohaPeqMgr, MgrPeqData, libpeq/stage; docs/jbl/PROTOCOL.md section 11.2): the NV keys of the audio path, the PEQ group base and the coefficient base on the AB155x, AB1562 and AB1568 (and the same with _v3 on the AB158x and the AB1568 and AB1565 whose NVDM version is above 1), the custom coefficient keys' offset from the coefficient base, the UI data, UI extra data and peak data keys (plus the slot), the length the SDK reads NV keys with, and the destination type of the other earbud in a relay.", "audio_path": "F233", "group_base": "F234", "coef_base": "F260", "audio_path_v3": "E401", "group_base_v3": "E402", "coef_base_v3": "E410", "custom_offset": 28, "ui_data": "EF00", "ui_ext": "EF10", "ui_peak": "EF20", "read_length": 1000, "partner_dst": 5},
     "anc": {"on": "0A", "off": "0B", "mode_anc": 0, "mode_passthrough": 4, "filter_anc": 1, "filter_anc_sports": 2, "filter_ambient_aware": 9, "filter_talk_thru": 10, "filter_ambient_aware_ab155x": 5, "filter_talk_thru_ab155x": 6},
     "key_events": {"smart_switch_set": "00A8", "smart_switch_get": "00A9"},
     "prompt_language": {"spoken": 0, "tones": 255},
@@ -165,7 +175,7 @@
       "0A09": "NV key reload",
       "0D01": "relays a command to the other earbud"
     },
-    "_never_send_about": "Also never sent: key events (key_event) other than key_events (factory reset 0096, power off 0095, pairing 0002 and the rest), and the firmware update commands (1C00 to 1CFF) other than the firmware version and AE information reads."
+    "_never_send_about": "Also never sent: key events (key_event) other than key_events (factory reset 0096, power off 0095, pairing 0002 and the rest), and the firmware update commands (1C00 to 1CFF) other than the firmware version and AE information reads. The NV key writes and relays (0A01, 0D01) go out only within an Airoha PEQ write PairFree builds itself (docs/jbl/PROTOCOL.md section 11.2; owner, 2026-11-04)."
   },
   "never_send": {
     "13": "analytics read",

@@ -787,6 +787,8 @@ abstract class GenerateJblTables : DefaultTask() {
             map("noise_sub").mapValues { byte(it.value) } + map("noise_modes").mapKeys { "mode_" + it.key }.mapValues { int(it.value) }, out)
         constants("JblAmbient", "Command 32's values (data/jbl/commands.json).", map("ambient_values").mapValues { int(it.value) }, out)
         constants("JblEqWire", "The EQ command's sub-commands and categories (data/jbl/commands.json eq).", map("eq").mapValues { int(it.value) }, out)
+        constants("JblSegmentEq", "Realtek's segment EQ's sub-commands, provider, part spacing and rate codes (data/jbl/commands.json segment_eq).",
+            map("segment_eq").filterKeys { !it.startsWith("_") }.mapValues { int(it.value) }, out)
         constants("JblEq41", "The older BES classes' EQ commands, sizes and categories (data/jbl/commands.json eq41).",
             map("eq41").filterKeys { !it.startsWith("_") }.mapValues { (_, v) -> if (v is String) byte(v) else int(v) }, out)
         constants("JblFeature", "Harman's feature record types and the feature ids PairFree reads or writes (data/jbl/commands.json).",
@@ -824,6 +826,7 @@ abstract class GenerateJblTables : DefaultTask() {
         for ((k, v) in raceMap("config_modules")) out.appendLine("    public const val CONFIG_${k.uppercase()}: Int = ${int(v)}")
         for ((k, v) in raceMap("notify_modules")) out.appendLine("    public const val NOTIFY_${k.uppercase()}: Int = ${int(v)}")
         for ((k, v) in raceMap("nv_keys")) out.appendLine("    public const val NV_${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
+        for ((k, v) in raceMap("peq")) if (!k.startsWith("_")) out.appendLine("    public const val PEQ_${k.uppercase()}: Int = ${if (v is String) "0x" + v.uppercase() else int(v).toString()}")
         for ((k, v) in raceMap("anc")) out.appendLine("    public const val ANC_${k.uppercase()}: Int = ${if (v is String) hex(byte(v)) else int(v).toString()}")
         for ((k, v) in raceMap("key_events")) out.appendLine("    public const val KEY_${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
         for ((k, v) in raceMap("prompt_language")) out.appendLine("    public const val PROMPT_${k.uppercase()}: Int = ${int(v)}")
@@ -911,7 +914,8 @@ abstract class GenerateJblTables : DefaultTask() {
                 val presets = ((e["presets"] as String?)?.let { ident(it) } ?: ident("series_" + (e["series"] as String))) + "()"
                 val range = (e.getValue("range") as List<Number>).maxOf { Math.abs(it.toInt()) }
                 "JblEqSpec(JblEqSpec.Path.$path, $presets, $range, readsDesign = ${e["design"] == true}, calibrate = ${e["calibrate"] == true}, airohaLib = ${e["lib"] == "airoha"}, " +
-                    "halveCustomUntil = ${(e["halve_custom_until"] as String?)?.let { str(it) }})"
+                    "halveCustomUntil = ${(e["halve_custom_until"] as String?)?.let { str(it) }}, " +
+                    "airohaRates = listOf(${(e["rates"] as List<*>?).orEmpty().joinToString(", ") { int(it).toString() }}))"
             } ?: "null"
             out.appendLine(
                 "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +

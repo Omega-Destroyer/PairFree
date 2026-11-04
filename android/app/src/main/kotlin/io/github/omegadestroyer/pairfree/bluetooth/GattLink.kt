@@ -54,6 +54,10 @@ class GattLink(
     private val writeLock = Mutex()
     @Volatile private var closed = false
 
+    /** The MTU the phone and device agreed on; 23 (the least) until they do. */
+    @Volatile var mtu: Int = MIN_MTU
+        private set
+
     /** Where the opening sequence is: through the raw characteristic's extra steps, or the main subscription. */
     private enum class Phase { RAW_SUBSCRIBE, RAW_WRITE, NOTIFY_SUBSCRIBE }
     private var phase = Phase.NOTIFY_SUBSCRIBE
@@ -72,6 +76,7 @@ class GattLink(
         @Suppress("MissingPermission")
         override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
             log?.invoke("mtu $mtu (status $status)")
+            if (status == BluetoothGatt.GATT_SUCCESS) this@GattLink.mtu = mtu
             if (!gatt.discoverServices()) fail("could not discover services")
         }
 
@@ -236,5 +241,6 @@ class GattLink(
         const val CONNECT_MS = 10_000L
 
         private const val WRITE_MS = 3_000L
+        private const val MIN_MTU = 23
     }
 }

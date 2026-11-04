@@ -47,6 +47,24 @@ public class JblP4Packet(
         return out
     }
 
+    /**
+     * The frames this packet goes out in: itself when its payload fits, else parts of [mtu] less 15 bytes, each with the
+     * part count and its index, as JBL's app splits them (AssembleCmd4).
+     */
+    public fun frames(mtu: Int = DEFAULT_MTU): List<JblFrame> {
+        val size = mtu - MTU_LESS
+        if (payload.size <= minOf(size, MAX_PAYLOAD)) return listOf(this)
+        val count = (payload.size + size - 1) / size
+        return List(count) { i ->
+            val part = payload.copyOfRange(i * size, minOf(payload.size, (i + 1) * size))
+            val n = part.size
+            JblP4Part(
+                command,
+                byteArrayOf(identifier.toByte(), (identifier shr 8).toByte(), command.toByte(), (command shr 8).toByte(), count.toByte(), i.toByte(), n.toByte(), (n shr 8).toByte()) + part,
+            )
+        }
+    }
+
     override fun equals(other: Any?): Boolean =
         other is JblP4Packet && command == other.command && identifier == other.identifier && payload.contentEquals(other.payload)
 
@@ -57,6 +75,8 @@ public class JblP4Packet(
     public companion object {
         /** JBL's app splits payloads at its MTU of 512 less 15. */
         private const val MAX_PAYLOAD = 497
+        private const val DEFAULT_MTU = 512
+        private const val MTU_LESS = 15
 
         /** A read of [features], each id two bytes, low first. */
         public fun get(features: List<Int>): JblP4Packet =
@@ -131,4 +151,15 @@ public class JblReader(private val race: Boolean = false, private val p4: Boolea
         /** The high byte of DD00 and DD01. */
         const val P4_HIGH = 0xDD
     }
+}
+
+/** One part of a protocol 4 packet too long for one frame ([JblP4Packet.frames]): its command, and the frame as sent. */
+public class JblP4Part(public val command: Int, private val raw: ByteArray) : JblFrame {
+    override fun bytes(): ByteArray = raw.copyOf()
+
+    override fun equals(other: Any?): Boolean = other is JblP4Part && command == other.command && raw.contentEquals(other.raw)
+
+    override fun hashCode(): Int = command * 31 + raw.contentHashCode()
+
+    override fun toString(): String = "JblP4Part(${command.toString(16).padStart(4, '0')}, ${raw.size} bytes)"
 }

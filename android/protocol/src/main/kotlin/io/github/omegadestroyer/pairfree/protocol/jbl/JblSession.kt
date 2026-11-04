@@ -76,6 +76,12 @@ public class JblSession(initial: JblModel) {
     // The design EQ the earbuds report, which the calibration is worked out from.
     private var designEq: JblEqCurve? = null
 
+    // The older BES classes' EQ transfer: the parts still to come and those in, and the raw frames of the last write.
+    private var partsDue = 0
+    private var parts = ByteArray(0)
+    private var rawOut: Set<JblRaw> = emptySet()
+    private var eqOut: List<JblFrame> = emptyList()
+
     // Airoha models: the chip family they report, and whether the earbud PairFree talks to (the agent) is the right one.
     private var chip: RaceChip? = null
     private var agentRight = false
@@ -115,6 +121,8 @@ public class JblSession(initial: JblModel) {
     private fun eqReads(): List<JblFrame> {
         val spec = model.eq?.takeIf { it.written } ?: return emptyList()
         if (spec.path == JblEqSpec.Path.P4) return listOf(JblEq.p4Query(JblEqWire.CURRENT))
+        // The older BES classes: the design EQ alone, for the calibration (their reply names no preset).
+        if (!spec.reports) return listOfNotNull(JblEq.read41(JblEq41.DESIGN).takeIf { spec.readsDesign })
         return listOfNotNull(JblEq.read(JblEqWire.DESIGN).takeIf { spec.readsDesign }, JblEq.read(JblEqWire.CURRENT))
     }
 
@@ -124,7 +132,12 @@ public class JblSession(initial: JblModel) {
      * -1 when the earbuds have not reported their design EQ, as JBL's app sends then (always on protocol 4, where none is
      * reported in a form it keeps). Null on a model whose EQ PairFree does not write.
      */
-    public fun eqWrite(preset: JblEqPreset?, gains: List<Float>): List<JblFrame>? {
+    public fun eqWrite(preset: JblEqPreset?, gains: List<Float>): List<JblFrame>? = eqFrames(preset, gains)?.also { eqOut = it }
+
+    /** The frames of the last [eqWrite], once: the connection sends them as they are, since the 41 transfer's are not all frames. */
+    public fun takeEqWrite(): List<JblFrame> = eqOut.also { eqOut = emptyList() }
+
+    private fun eqFrames(preset: JblEqPreset?, gains: List<Float>): List<JblFrame>? {
         val spec = model.eq?.takeIf { it.written } ?: return null
         val bands = preset?.bands ?: JblEq.custom(if (halvesCustom()) gains.map { it * HALF } else gains)
         val calibration = when {
@@ -133,6 +146,16 @@ public class JblSession(initial: JblModel) {
         }
         val curve = JblEqCurve(preset?.category ?: JblEqWire.CUSTOM, calibration, JblEq.SAMPLE_RATE, preset?.leftGain ?: 0f, preset?.rightGain ?: 0f, bands)
         eq = curve
+        when (spec.path) {
+            // Every curve goes as the user's preset index, a preset's under category 0, as BesEQControl maps it.
+            JblEqSpec.Path.CMD41 -> return JblEq.write41(curve, graphic = preset == null).also { rawOut = it.toSet() }
+            // The Club One picks a preset by number (40); a curve of the user's own selects the user's slot, then goes as 41.
+            JblEqSpec.Path.CLUB -> {
+                if (preset != null) return listOf(JblEq.preset40(preset.category))
+                return listOf(JblEq.preset40(JblEq41.USER_INDEX)) + JblEq.write41(curve, graphic = true).also { rawOut = it.toSet() }
+            }
+            else -> Unit
+        }
         if (spec.path == JblEqSpec.Path.P4) {
             readBacks += JblEq.p4Query(JblEqWire.CURRENT)
             return listOf(JblEq.p4Write(curve))
@@ -153,6 +176,32 @@ public class JblSession(initial: JblModel) {
         val b = than.split('.').map { it.toInt() }
         for (i in 0..2) if (a[i] != b[i]) return a[i] > b[i]
         return false
+    }
+
+    /**
+     * The older BES classes' EQ header: how many parts follow. JBL's app reads the count as decimal digits of its hex form,
+     * and acknowledges it once more than there are parts, and once more again (HandleParse, BleDevice.sendEqData).
+     */
+    private fun eqParts(p: ByteArray) {
+        if (p.isEmpty()) return
+        partsDue = p.u8(0).toString(16).toIntOrNull() ?: 0
+        parts = ByteArray(0)
+        repeat(partsDue + 2) { outbox += JblEq.ack41() }
+    }
+
+    /** A part of an EQ the older BES classes send: its index, then data. */
+    private fun eqPart(data: ByteArray) {
+        if (partsDue <= 0 || data.isEmpty()) return
+        partsDue--
+        parts += data.copyOfRange(1, data.size)
+    }
+
+    /** The earbuds' closing frame: the parts make the EQ; the design EQ (category 0) is kept for the calibration. */
+    private fun eqPartsDone() {
+        val (category, curve) = JblEq.parse41(parts) ?: return
+        parts = ByteArray(0)
+        _replies[key(JblEq41.REPLY, category)] = curve.toString().encodeToByteArray()
+        if (category == JblEq41.DESIGN) designEq = curve.copy(category = JblEqWire.DESIGN)
     }
 
     /** An EQ reply: the design EQ is kept for the calibration, PersoniFi's left alone, anything else is the EQ in use. */
@@ -194,6 +243,8 @@ public class JblSession(initial: JblModel) {
         is JblPacket -> frame.command !in JblCommand.NEVER_SEND
         is JblP4Packet -> frame.command !in JblP4.NEVER_SEND
         is RacePacket -> raceAllowed(frame)
+        // Raw bytes only as the parts of PairFree's own last EQ write.
+        is JblRaw -> frame in rawOut
         else -> false
     }
 
@@ -204,6 +255,7 @@ public class JblSession(initial: JblModel) {
             is JblP4Packet -> p4(frame)
             is JblPacket -> aa(frame)
             is RacePacket -> race(frame)
+            is JblRaw -> eqPart(frame.data)
         }
         refresh()
         return Triple(state, groups, eq) != before
@@ -221,6 +273,8 @@ public class JblSession(initial: JblModel) {
             }
             JblCommand.FEATURE -> for ((id, v) in packet.features()) feature(id, v)
             JblCommand.EQ -> eqReply(p)
+            JblEq41.REPLY -> eqParts(p)
+            JblEq41.DEVICE_FIN -> if (p.isNotEmpty() && p.u8(0) == JblEq41.REPLY) eqPartsDone()
             else -> if (extras.reportsAa(packet.command)) {
                 _replies[key(packet.command)] = p.copyOf()
                 extras.aa(packet.command, p)

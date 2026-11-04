@@ -26,6 +26,7 @@
     {"name": "eq", "command": "A2", "wide": true, "note": "The EQ (EQCmd, docs/jbl/PROTOCOL.md section 11): a read is 01 and the category with a one-byte length (202 the design EQ, 255 the EQ in use); the reply 02 (04: Q in tenths), the category, the calibration, the sample rate, the left and right gain, the band count and per band its type, gain, frequency and Q; a write 00 (03: Q in tenths) and the same. Floats are four bytes, low first."}
   ],
   "eq": {"read": 1, "reply": 2, "write": 0, "write_q10": 3, "reply_q10": 4, "design": 202, "current": 255, "custom": 230, "personifi": 201},
+  "eq41": {"_about": "The older BES classes' EQ (BesEQControl, CmdGen, HandleParse; docs/jbl/PROTOCOL.md section 11): 41 writes a curve as a header (AA 41, the length's low byte, the part count), parts of 79 bytes each led by their index, and AA 05 41; 42 asks for one (the category, one byte), which comes back as AA 43 and the part count, parts the app acknowledges with AA 01 02 43 00, then AA 04 43; 40 picks a preset on the Club One.", "set_preset": "40", "write": "41", "read": "42", "reply": "43", "app_ack": "01", "app_fin": "05", "device_fin": "04", "part": 79, "user_index": 4, "design": 0, "graphic": 1},
   "status_types": {"all": "30", "anc": "31", "ambient": "32", "auto_off": "33", "auto_play_pause": "38"},
   "noise_sub": {"set": "10", "get": "11", "reply": "12", "off": "13"},
   "noise_modes": {"anc": 1, "ambient_aware": 2, "talk_thru": 3},

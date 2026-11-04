@@ -65,10 +65,26 @@ public class JblPacket(
 }
 
 /**
+ * Bytes sent or received as they are, outside Harman's frames: the parts of the older BES classes' EQ transfer and its
+ * header and closing frames (docs/jbl/PROTOCOL.md section 11).
+ */
+public class JblRaw(public val data: ByteArray) : JblFrame {
+    override fun bytes(): ByteArray = data.copyOf()
+
+    override fun equals(other: Any?): Boolean = other is JblRaw && data.contentEquals(other.data)
+
+    override fun hashCode(): Int = data.contentHashCode()
+
+    override fun toString(): String = "JblRaw(${data.hex()})"
+}
+
+/**
  * Splits what the earbuds send into [JblPacket]s by each one's length. Over GATT every notification
  * starts a new frame, as JBL's app reads them; pass [newMessage] then, and a frame left incomplete is
  * dropped. Over the serial channel reads come in any size and bytes are kept until a frame is whole.
- * Bytes before an AA are skipped.
+ * Bytes before an AA are skipped, except that a notification of its own that does not start with AA is passed on as
+ * [JblRaw] (a part of an EQ the older BES classes send), and the earbuds' closing frame of such a transfer (AA 04 and
+ * the command) is three bytes whatever its third byte.
  */
 public class JblParser {
     private var buf = ByteArray(0)
@@ -76,10 +92,14 @@ public class JblParser {
     /** Bytes kept for a frame not yet complete. */
     public val pending: Int get() = buf.size
 
-    public fun feed(bytes: ByteArray, newMessage: Boolean = false): List<JblPacket> {
+    public fun feed(bytes: ByteArray, newMessage: Boolean = false): List<JblFrame> {
+        if (newMessage && bytes.isNotEmpty() && bytes[0] != START) {
+            buf = ByteArray(0)
+            return listOf(JblRaw(bytes.copyOf()))
+        }
         if (newMessage && bytes.isNotEmpty() && bytes[0] == START) buf = ByteArray(0)
         buf += bytes
-        val out = mutableListOf<JblPacket>()
+        val out = mutableListOf<JblFrame>()
         while (true) {
             val start = buf.indexOf(START)
             if (start < 0) {
@@ -89,6 +109,11 @@ public class JblParser {
             if (start > 0) buf = buf.copyOfRange(start, buf.size)
             if (buf.size < 3) break
             val command = buf[1].toInt() and 0xFF
+            if (command == JblEq41.DEVICE_FIN) {
+                out += JblPacket(command, byteArrayOf(buf[2]))
+                buf = buf.copyOfRange(3, buf.size)
+                continue
+            }
             val wide = command in JblCommand.WIDE
             val header = if (wide) 4 else 3
             if (buf.size < header) break

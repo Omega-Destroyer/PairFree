@@ -11,17 +11,21 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
 import kotlin.math.roundToInt
 
 /**
- * JBL headphones and earbuds whose EQ goes with command A2 (docs/jbl/PROTOCOL.md section 11): JBL's presets for the
- * model, with their curves, and a curve of the user's own on JBL's ten bands, in the model's range. The earbuds report
- * the EQ they hold, so the screen follows them. Each write carries the calibration JBL's app works out on its BES models.
+ * JBL headphones and earbuds whose EQ PairFree writes (docs/jbl/PROTOCOL.md section 11): JBL's presets for the model,
+ * with their curves, and a curve of the user's own on JBL's ten bands, in the model's range. Most models report the EQ
+ * they hold, so the screen follows them; on the older BES models the screen shows what this phone last set, as JBL's app
+ * does. Each write carries the calibration JBL's app works out on its BES models.
  *
  * [frames] are the session's frames as bytes; the connection queues them on the JBL link.
  */
 class JblEqTarget(val session: JblSession) : EqTarget {
     private val spec = requireNotNull(session.model.eq)
 
-    override val reportsEq: Boolean = true
+    override val reportsEq: Boolean = spec.reports
     override val hasPreamp: Boolean = false
+
+    /** JBL's app does not put the EQ back when it connects. */
+    override val restoresOnConnect: Boolean = false
     override val hasStock: Boolean = false
 
     /** Nothing has confirmed JBL's EQ writes on a device yet. */

@@ -223,7 +223,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     /** JBL models report their EQ once read; the Sound tab opens it then, with JBL's presets, and follows what they hold. */
     private fun openJblEq(device: Paired, model: Model?) {
         val session = connection.jblSession
-        if (session == null || session.model.eq?.written != true || session.eq == null) {
+        val spec = session?.model?.eq
+        if (session == null || spec?.written != true || (spec.reports && session.eq == null)) {
             jblEq = null
             equalizer.open(device.address, null)
             return

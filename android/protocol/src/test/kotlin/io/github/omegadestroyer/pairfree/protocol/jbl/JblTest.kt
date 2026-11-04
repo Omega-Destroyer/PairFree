@@ -33,7 +33,7 @@ class JblTest {
     private val requests = vectors.getValue("requests").jsonArray.associate { it.jsonObject.str("name") to it.jsonObject.str("hex") }
     private val replies = vectors.getValue("replies").jsonArray.associate { it.jsonObject.str("name") to it.jsonObject }
 
-    private fun packet(hex: String): JblPacket = JblParser().feed(hex.hexBytes()).single()
+    private fun packet(hex: String): JblPacket = JblParser().feed(hex.hexBytes()).single() as JblPacket
 
     private fun model(name: String, pid: Int? = null) = JblModels.ALL.first { it.name == name && (pid == null || pid in it.pids) }
 

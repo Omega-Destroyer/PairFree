@@ -758,7 +758,7 @@ class EarbudsConnection(
             }
         }
         try {
-            val parser = JblReader(race = model.family == JblModel.Family.AIROHA)
+            val parser = JblReader(race = model.family == JblModel.Family.AIROHA, p4 = model.family == JblModel.Family.P4)
             val notifications = opened is GattLink
             opened.reads().collect { bytes ->
                 for (packet in parser.feed(bytes, newMessage = notifications)) guardPacket {
@@ -1395,10 +1395,10 @@ class EarbudsConnection(
             if (sendOneMore(session, frames.mapNotNull(::oneMoreFrame))) publish(session)
             return
         }
-        // JBL's EQ target hands over its session's frames as bytes; they go through the JBL link's queue.
+        // JBL's EQ target has its session build the write; its frames go through the JBL link's queue as the session built
+        // them (the 41 transfer's header and parts are not frames the reader could rebuild from the bytes).
         jbl?.let { session ->
-            val parsed = frames.flatMap { JblReader().feed(it) }
-            if (sendJbl(session, parsed)) publish(session)
+            if (sendJbl(session, session.takeEqWrite())) publish(session)
             return
         }
         if (bose != null || apple != null) return

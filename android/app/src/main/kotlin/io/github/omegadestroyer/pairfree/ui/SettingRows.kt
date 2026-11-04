@@ -346,7 +346,7 @@ private fun settingTitle(key: String): String = when (key) {
     // EarFun (EarfunSession)
     "ef_anc_mode" -> stringResource(R.string.setting_ef_anc_mode)
     "ef_ambient_mode" -> stringResource(R.string.setting_transparency_mode)
-    "ef_prompt_volume" -> stringResource(R.string.setting_ef_prompt_volume)
+    "ef_prompt_volume", "prompt_volume" -> stringResource(R.string.setting_ef_prompt_volume)
     "ef_hearing_protection" -> stringResource(R.string.setting_hearing_protection)
     "ef_touch_lock", "ef_touch_lock_left", "ef_touch_lock_right" -> stringResource(R.string.setting_ef_touch_lock)
     "ef_ldac" -> "LDAC"

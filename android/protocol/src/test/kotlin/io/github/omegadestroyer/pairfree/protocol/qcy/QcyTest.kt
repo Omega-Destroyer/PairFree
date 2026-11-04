@@ -3,6 +3,7 @@ package io.github.omegadestroyer.pairfree.protocol.qcy
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.GattEnvelope
+import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
@@ -115,7 +116,7 @@ class QcyTest {
         val reads = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.READ }.map { it.short }
         assertEquals(listOf(QcyWire.VERSION_SHORT, QcyWire.BATTERY_SHORT, QcyWire.SETTINGS_SHORT, QcyWire.KEYS_SHORT, QcyWire.EQ_SHORT), reads)
         val asked = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.WRITE }.map { QcyPacket.parse(it.value).single().u8(0) }
-        assertEquals(listOf(QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE, QcyItem.POWER_MANAGER, QcyItem.MULTI_EQ_2), asked)
+        assertEquals(listOf(QcyItem.TONE_VOLUME, QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE, QcyItem.POWER_MANAGER, QcyItem.MULTI_EQ_2), asked)
         val s = n70()
         assertTrue(start.all(s::allowed))
         assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.FACTORY_RESET))))
@@ -186,8 +187,13 @@ class QcyTest {
         s.receive(settings("ff061404ffff0000"))
         assertEquals("off", (setting(s, "power_off_timer") as Setting.Choice).value)
         assertEquals("ff061404ffff0000", packet(s.change(SettingChange.Choice("power_off_timer", "off"))))
-        // 0 minutes turns the earbuds off at once (QCY's power-off button): never sent.
-        assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.POWER_MANAGER, 0, 0, 0, 0))))
+        // 0 minutes turns the earbuds off at once (QCY's power-off button): the power off action, which the user confirms.
+        assertEquals("ff06140400000000", packet(s.change(SettingChange.Press(PowerActions.POWER_OFF))))
+        assertTrue(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.POWER_MANAGER, 0, 0, 0, 0))))
+        // The prompt volume: the volume and its highest; one byte on vendor 16737, else the volume and 0.
+        s.receive(settings("ff041d02050f"))
+        assertEquals(Setting.Level("prompt_volume", 5, 0, 15), setting(s, "prompt_volume"))
+        assertEquals("ff041d020a00", packet(s.change(SettingChange.Level("prompt_volume", 10))))
         assertTrue(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.POWER_MANAGER, 15, 0, 0, 0))))
         // A model whose panel lacks it shows nothing.
         assertNull(setting(QcySession(QcyModels.ALL.first { !it.sleepTimer && it.protocol == QcyProtocol.QCY }).also { it.receive(settings("ff0614041e001400")) }, "power_off_timer"))

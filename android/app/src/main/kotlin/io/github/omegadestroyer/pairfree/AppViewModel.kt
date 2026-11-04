@@ -17,6 +17,7 @@ import io.github.omegadestroyer.pairfree.capture.Capture
 import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
+import io.github.omegadestroyer.pairfree.eq.JblEqTarget
 import io.github.omegadestroyer.pairfree.eq.PixelEqTarget
 import io.github.omegadestroyer.pairfree.eq.EarfunEqTarget
 import io.github.omegadestroyer.pairfree.eq.OneMoreEqTarget
@@ -40,6 +41,7 @@ import io.github.omegadestroyer.pairfree.protocol.RecordingReport
 import io.github.omegadestroyer.pairfree.protocol.ReportPrivacy
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblEqCurve
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
 import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunSession
@@ -119,6 +121,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         if (device.brand != Brand.QCY) qcyEq = null
         if (device.brand != Brand.ONEMORE) oneMoreEq = null
         if (device.brand != Brand.EARFUN) earfunEq = null
+        if (device.brand != Brand.JBL) jblEq = null
+        if (device.brand == Brand.JBL) {
+            soundcoreEq = null
+            samsungEq = null
+            sonyEq = null
+            openJblEq(device, model)
+            return
+        }
         if (device.brand == Brand.EARFUN) {
             soundcoreEq = null
             samsungEq = null
@@ -205,6 +215,31 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val target = pixelEq ?: return
         val (profile, whole) = target.reported(gains)
         equalizer.reported(profile, whole)
+    }
+
+    /** The JBL EQ while the Sound tab shows JBL earbuds whose EQ PairFree writes and which have reported theirs. */
+    private var jblEq: JblEqTarget? = null
+
+    /** JBL models report their EQ once read; the Sound tab opens it then, with JBL's presets, and follows what they hold. */
+    private fun openJblEq(device: Paired, model: Model?) {
+        val session = connection.jblSession
+        if (session == null || session.model.eq?.written != true || session.eq == null) {
+            jblEq = null
+            equalizer.open(device.address, null)
+            return
+        }
+        if (jblEq?.session === session && equalizer.state.value != null) return
+        val target = JblEqTarget(session)
+        jblEq = target
+        equalizer.open(device.address, model, target.layout, target)
+        connection.jblEq.value?.let(::reportJblEq)
+    }
+
+    private fun reportJblEq(eq: JblEqCurve) {
+        val target = jblEq ?: return
+        val current = equalizer.state.value?.setting?.gains ?: return
+        val (profile, gains) = target.reported(eq, current) ?: return
+        equalizer.reported(profile, gains)
     }
 
     /** The 1MORE EQ while the Sound tab shows 1MORE earbuds whose model has presets or a custom EQ. */
@@ -383,6 +418,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 if (device.brand != Brand.PIXEL || eq == null) return@collect
                 openPixelEq(device, modelOf(device, connection.state.value))
                 reportPixelEq(eq)
+            }
+        }
+        // JBL earbuds report their EQ once read: open it then, and follow what they hold.
+        viewModelScope.launch {
+            connection.jblEq.collect { eq ->
+                val device = connectedDevice() ?: return@collect
+                if (device.brand != Brand.JBL || eq == null) return@collect
+                openJblEq(device, modelOf(device, connection.state.value))
+                reportJblEq(eq)
             }
         }
         // 1MORE earbuds report their preset and curve after connecting: follow what they hold.

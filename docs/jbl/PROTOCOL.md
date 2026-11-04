@@ -411,15 +411,8 @@ RACE frame against it before sending.
   3's host checksum) is unknown; PairFree runs the step but does not block on it.
 - What the acknowledgement's status values mean; PairFree reads a setting back rather than
   trusting them.
-- The equalizer: JBL's app writes a whole curve of filters as floating-point numbers with a
-  calibration (`41` on older models, `A2` `EQCmd` on others, as FajkPes's notes lay them out), and its
-  presets are curves the app holds (`assets/eq`). The calibration comes from a native library
-  (`EqCalibration.calculateCalib` in `libcalibrationLib`), which works it out from the model's design EQ and
-  the new curve; PairFree cannot port it (hard rules) and does not guess it, since a wrong value can make the
-  sound much louder. Picking a preset by its index (`AA 40`, `MessageID.PRESET_EQ`) needs no calibration, but
-  JBL's app sends it only on its BES models' older path (on protocol 3 `setEQPreset` is not implemented), its
-  index list differs per family, and nothing of it has been checked on a device. So PairFree does not send
-  the EQ yet.
+- The equalizer (section 11) has no recorded frame: whether the earbuds answer the reads as JBL's app expects,
+  and whether a curve that only cuts gets the 1 dB calibration (below), needs a device report.
 - Section 10 (the Airoha models) has no recorded frame: it is from JBL's app and Airoha's SDK in it. Which chip
   each model has, and whether the older three (Club Pro+, Reflect Mini NC, Live Free NC+) have the settings
   their class sends, needs device reports; the report names the chip.
@@ -545,3 +538,61 @@ case action `0083`; the clock `0090`; Harman commands passed through `0093`; dev
 writes `0A01` and reloads `0A09`; relays to the other earbud `0D01`; key events on `1101` other than Smart Audio
 & Video's (`0096` factory reset, `0095` power off, `0002` pairing among them); and the firmware update commands
 `1C00` to `1CFF` other than the version read.
+
+## 11. Equalizer
+
+Read from JBL's app (`EQCmd`, `BesEQControl`, `CmdGen`, each model's control class, `AppUtils.getCalib`) and its
+calibration library (`libcalibrationLib.so`, whose functions keep their names: BES's `app_audio_eq_*`, `freqz`,
+`iirfilt_design`); no recording yet. `devices.json` gives each model's `eq`: how its class writes it (`path`), its
+presets (a file of `assets/eq` or its series' standard ones), the custom curve's range (`eqGainRange`), whether the
+class reads the design EQ, and whether JBL's app works out the calibration (`calibrate`).
+
+**Paths.** `a2` and `a2_q10` (33 models) send command `A2`, below; `a2_q10` are the classes JBL's app marks
+`QMultiply10EQ`, which send Q in tenths. `p4` (35 models) sends protocol 4's EQ info, below; on the seven whose EQ library
+is Airoha's (`lib`), JBL's app sends the curve as Airoha's PEQ as well (`EQCurveFeature`, coefficients from Airoha's
+native `libnative-peq-serialize`), so PairFree does not write those yet. Not written yet either: `41` and `club` (the
+older BES classes: a transfer of a header, 79-byte parts and a closing frame, `EqCmdData`; the Club One picks presets
+with `40`), `segment` (the Tune 520BT family, Realtek's segments) and `airoha` (Airoha's PEQ over RACE).
+
+**Command A2** (floats four bytes, low byte first):
+
+| Bytes | Read | Reply / write |
+|---|---|---|
+| | `AA A2 02 01 <category>` (one-byte length) | `AA A2 <length, two bytes, low first>` |
+| 0 | | `02` reply (`04` Q in tenths); `00` write (`03` Q in tenths) |
+| 1 | | category |
+| 2-5 | | calibration |
+| 6 | | sample rate in kHz (48) |
+| 7-10, 11-14 | | left and right gain in dB |
+| 15 | | band count |
+| then 10 a band | | type, gain (dB), frequency (Hz), Q (one byte) |
+
+Categories: a preset's number (its `category` in `eq_presets.json`), `230` a curve of the user's own, `202` the design
+EQ (read only), `201` PersoniFi, `255` to ask for the EQ in use. JBL's app reads `202` (where the class does) and `255`
+on connecting; PairFree does the same and reads `255` again after a write.
+
+**Protocol 4** (`General4Control`): the EQ in use is asked for by writing feature `0E01` (`EQInfoQuery`) with the
+category, one byte (`FF`); the earbuds answer with feature `0E02` (`EQInfo`). A write is `0E02` too: the category (`C1`,
+193, for a curve of the user's own, read back as 230), 1 to keep it (as the EQ card sends; live edits send 0), the band
+count, the calibration, the sample rate (four bytes, 48), the left and right gain, then per band its type, frequency,
+gain and Q (13 bytes); numbers four bytes, low first. JBL's app reads the design EQ as feature `0E7E`
+(`GetDesignEQRawData`) but only stores the raw bytes, so on protocol 4 it never holds a design EQ and its BES models'
+calibration is always -1; PairFree sends the same. `TourOneM3Control` (the Tour One M3, Sense Lite, Endurance Zone, Tune
+135BT and 235BT) writes a curve of the user's own at half its gains on firmware up to 4.2.0, and doubles what the
+earbuds report (`halve_custom_until`); unknown firmware counts as old.
+
+**Curves.** JBL's presets are ten bands at 32, 64, 125, 250, 500, 1k, 2k, 4k, 8k and 16k Hz, mostly peak filters
+(type 1) at Q 1, with the gains in the file; a model's file may add a left and right gain. A curve of the user's own is
+the same ten peak bands at Q 1 (type 2 on Airoha's chips) with whole-dB gains in the model's range, and gains 0. Band
+types follow the Audio EQ Cookbook: 0 low shelf, 1 peak, 2 high shelf, 3 low pass, 4 high pass, 6 band pass, 7 band
+pass at 0 dB, 8 notch, 9 all pass.
+
+**Calibration.** On the models whose platform is BES (`calibrate`), JBL's app sends a calibration with every EQ
+(`AppUtils.getCalib` in `gn.y.f`, which both dashboard EQ cards and the EQ pages write through); the other platforms
+send 0, and with no design EQ stored it sends -1. The library (`calculateCalib`) designs each band of the design EQ and of the new curve as a biquad at 48 kHz
+(the Cookbook's formulas, with sine and cosine in single precision; its band pass at 0 dB has `b2` positive), takes the
+magnitude at 4096 points from 0 to 24 kHz for the design EQ alone and for both together, and when the combined peak is
+higher, returns that peak in dB plus 1 dB, or 0 when the design EQ's own left gain is already at least that much.
+PairFree's `JblCalibration` is a port of it. A curve that only cuts meets the design EQ at 0 Hz, where every peak
+filter is exactly 1, so the library gives 0 or 1 dB there by rounding.
+

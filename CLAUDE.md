@@ -208,7 +208,10 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   time, waiting up to 1 s, as JBL's app does. Protocol 4 (section 6) is covered, including the models with a BLE
   security mode 1 to 3, which add a transport step `GattLink` runs itself (section 7): no key is needed. JBL's
   genuine-product check needs a key from a native library, so it is left out (hard rules); the BES LE Audio
-  models and the EQ are not covered. The Airoha models (family `airoha`, section 10, including the LE Audio Tour
+  models are not covered. The EQ (section 11) goes through the Sound tab via `JblEqTarget` on the 61 models whose
+  class sends command `A2` or protocol 4's EQ info, with JBL's presets (`data/jbl/eq_presets.json`) and the calibration JBL's app works out on
+  its BES models, ported from its calibration library (`JblCalibration`); the other paths (`41`, segments, Airoha's PEQ, which
+  protocol 4's Airoha-library models also need) are still to come. The Airoha models (family `airoha`, section 10, including the LE Audio Tour
   Pro 3, Tune 670NC and 770NC, opened over Airoha's LE service when paired as an LE-only device) speak Airoha's
   RACE commands (`RacePacket`, `RaceParser`, `JblRace` from `commands.json`'s `airoha`) through the same
   `JblSession` and `JblExtras`; the session reads the chip name first, and noise control, auto power-off and

@@ -728,6 +728,10 @@ abstract class GenerateJblTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val devicesJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val eqPresetsJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -740,6 +744,8 @@ abstract class GenerateJblTables : DefaultTask() {
         val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
         @Suppress("UNCHECKED_CAST")
         val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        @Suppress("UNCHECKED_CAST")
+        val eqPresets = JsonSlurper().parse(eqPresetsJson.get().asFile) as Map<String, Any?>
         fun str(v: Any?) = "\"" + (v as String) + "\""
         fun hex(v: Int) = "0x" + v.toString(16).uppercase().padStart(2, '0')
         fun byte(v: Any?) = (v as String).toInt(16)
@@ -780,6 +786,7 @@ abstract class GenerateJblTables : DefaultTask() {
         constants("JblNoise", "Command 91's sub-commands, and its modes (data/jbl/commands.json).",
             map("noise_sub").mapValues { byte(it.value) } + map("noise_modes").mapKeys { "mode_" + it.key }.mapValues { int(it.value) }, out)
         constants("JblAmbient", "Command 32's values (data/jbl/commands.json).", map("ambient_values").mapValues { int(it.value) }, out)
+        constants("JblEqWire", "The EQ command's sub-commands and categories (data/jbl/commands.json eq).", map("eq").mapValues { int(it.value) }, out)
         constants("JblFeature", "Harman's feature record types and the feature ids PairFree reads or writes (data/jbl/commands.json).",
             map("feature_types").mapKeys { "type_" + it.key }.mapValues { int(it.value) } + map("features").mapValues { int(it.value) }, out)
         val p4 = map("protocol4")
@@ -793,6 +800,8 @@ abstract class GenerateJblTables : DefaultTask() {
         for ((k, v) in p4.getValue("commands") as Map<String, Any?>) out.appendLine("    public const val ${k.uppercase()}: Int = ${hex((v as String).toInt(16))}")
         @Suppress("UNCHECKED_CAST")
         for ((k, v) in p4.getValue("features") as Map<String, Any?>) out.appendLine("    public const val FEATURE_${k.uppercase()}: Int = ${hex(int(v))}")
+        out.appendLine("    /** The EQ info's category for a curve of the user's own, which JBL's app calls 230 elsewhere. */")
+        out.appendLine("    public const val EQ_CUSTOM: Int = ${int(p4["eq_custom"])}")
         out.appendLine("    /** A level of 127 leaves the mode's level as it is. */")
         out.appendLine("    public const val IGNORE_LEVEL: Int = ${int(p4["ignore_level"])}")
         out.appendLine("    /** Commands PairFree never sends: ${p4Never.values.joinToString(", ")}. */")
@@ -826,6 +835,30 @@ abstract class GenerateJblTables : DefaultTask() {
         out.appendLine("}")
         out.appendLine()
 
+        // JBL's presets (data/jbl/eq_presets.json): one list per preset file, and per series the standard ones its group names
+        // after an Off of flat bands, as JBL's app adds it (pp.a.f).
+        fun f(v: Any?) = (v as Number).toFloat().toString() + "f"
+        @Suppress("UNCHECKED_CAST")
+        fun preset(p: Map<String, Any?>): String {
+            val gains = (p["gains"] as List<Number>?) ?: listOf(0, 0)
+            val bands = (p.getValue("bands") as List<List<Number>>).joinToString(", ") { b -> "JblEqBand(${b[0].toInt()}, ${f(b[1])}, ${f(b[2])}, ${f(b[3])})" }
+            return "JblEqPreset(${str(p["name"])}, ${int(p["category"])}, ${(p["index"] as Number?)?.toInt()}, ${f(gains[0])}, ${f(gains[1])}, listOf($bands))"
+        }
+        @Suppress("UNCHECKED_CAST")
+        val presetFiles = eqPresets.getValue("files") as Map<String, List<Map<String, Any?>>>
+        @Suppress("UNCHECKED_CAST")
+        val standard = (eqPresets.getValue("standard") as List<Map<String, Any?>>)
+        @Suppress("UNCHECKED_CAST")
+        val groups = eqPresets.getValue("groups") as Map<String, List<Number>>
+        fun ident(key: String) = "EQ_" + key.uppercase().replace(Regex("[^A-Z0-9]"), "_")
+        val off = "JblEqPreset(\"Off\", 0, null, 0f, 0f, listOf(" + listOf(32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000).joinToString(", ") { "JblEqBand(1, $it.0f, 0f, 1f)" } + "))"
+        // One function per list: as values they would all be built in one class initialiser, which grows past the JVM's limit.
+        for ((key, list) in presetFiles) out.appendLine("private fun ${ident(key)}(): List<JblEqPreset> = listOf(${list.joinToString(", ") { preset(it) }})")
+        for ((series, categories) in groups) {
+            val picked = categories.map { c -> standard.first { int(it["category"]) == c.toInt() } }
+            out.appendLine("private fun ${ident("series_" + series)}(): List<JblEqPreset> = listOf($off, ${picked.joinToString(", ") { preset(it) }})")
+        }
+        out.appendLine()
         out.appendLine("/** Every model in data/jbl/devices.json. */")
         out.appendLine("internal val JBL_MODELS: List<JblModel> = listOf(")
         for (d in devices) {
@@ -861,12 +894,29 @@ abstract class GenerateJblTables : DefaultTask() {
                 m.entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${str(k)} to listOf(${v.joinToString(", ") { it.toInt().toString() }})" }
             } ?: "emptyMap()"
             val effects = (d["effects"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "listOf(", ")") { str(it) }
+            @Suppress("UNCHECKED_CAST")
+            val eq = (d["eq"] as Map<String, Any?>?)?.let { e ->
+                val path = when (e["path"]) {
+                    "a2" -> "A2"
+                    "a2_q10" -> "A2_Q10"
+                    "41" -> "CMD41"
+                    "club" -> "CLUB"
+                    "segment" -> "SEGMENT"
+                    "p4" -> "P4"
+                    "airoha" -> "AIROHA"
+                    else -> error("unknown eq path ${e["path"]}")
+                }
+                val presets = ((e["presets"] as String?)?.let { ident(it) } ?: ident("series_" + (e["series"] as String))) + "()"
+                val range = (e.getValue("range") as List<Number>).maxOf { Math.abs(it.toInt()) }
+                "JblEqSpec(JblEqSpec.Path.$path, $presets, $range, readsDesign = ${e["design"] == true}, calibrate = ${e["calibrate"] == true}, airohaLib = ${e["lib"] == "airoha"}, " +
+                    "halveCustomUntil = ${(e["halve_custom_until"] as String?)?.let { str(it) }})"
+            } ?: "null"
             out.appendLine(
                 "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +
                     "family = JblModel.Family.$family, noise = $noise, modes = listOf($modes), autoOff = $autoOff, " +
                     "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}, security = $security, " +
                     "extras = $extras, smartAudioVideo = $sav, effects = $effects, gestureNoise = ${(d["gesture_noise"] as Number?)?.toInt() ?: 11}, " +
-                    "racePush = ${d["push_status"] != false}, names = ${(d["names"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "listOf(", ")") { str(it) }}),",
+                    "racePush = ${d["push_status"] != false}, names = ${(d["names"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "listOf(", ")") { str(it) }}, eq = $eq),",
             )
         }
         out.appendLine(")")
@@ -880,6 +930,7 @@ abstract class GenerateJblTables : DefaultTask() {
 val generateJblTables = tasks.register<GenerateJblTables>("generateJblTables") {
     commandsJson = rootProject.layout.projectDirectory.file("../data/jbl/commands.json")
     devicesJson = rootProject.layout.projectDirectory.file("../data/jbl/devices.json")
+    eqPresetsJson = rootProject.layout.projectDirectory.file("../data/jbl/eq_presets.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.jbl"
     outputDir = layout.buildDirectory.dir("generated/jbl")
 }

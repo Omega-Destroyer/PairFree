@@ -25,6 +25,7 @@ import io.github.omegadestroyer.pairfree.protocol.apple.AppleOpcode
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleWire
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblAdvert
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblEqCurve
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblFrame
@@ -280,6 +281,11 @@ class EarbudsConnection(
 
     private val _oneMoreEq = MutableStateFlow<OneMoreEq?>(null)
 
+    private val _jblEq = MutableStateFlow<JblEqCurve?>(null)
+
+    /** The JBL EQ as the earbuds last reported it (or PairFree last wrote it); the Sound tab follows it. */
+    val jblEq: StateFlow<JblEqCurve?> = _jblEq.asStateFlow()
+
     /** The 1MORE EQ as the earbuds last reported it; the Sound tab follows it. */
     val oneMoreEq: StateFlow<OneMoreEq?> = _oneMoreEq.asStateFlow()
 
@@ -320,6 +326,7 @@ class EarbudsConnection(
         _qcyEq.value = null
         oneMore = null
         _oneMoreEq.value = null
+        _jblEq.value = null
         earfun = null
         _sonyEq.value = null
         _settings.value = emptyList()
@@ -1183,6 +1190,7 @@ class EarbudsConnection(
     private fun publish(session: JblSession) {
         _state.value = session.state
         _settings.value = session.groups
+        _jblEq.value = session.eq
     }
 
     /** Queues JBL commands on the open channel, then [READ_BACK_MS] later the reads that confirm them. False when there is none. */
@@ -1387,7 +1395,13 @@ class EarbudsConnection(
             if (sendOneMore(session, frames.mapNotNull(::oneMoreFrame))) publish(session)
             return
         }
-        if (bose != null || jbl != null || apple != null) return
+        // JBL's EQ target hands over its session's frames as bytes; they go through the JBL link's queue.
+        jbl?.let { session ->
+            val parsed = frames.flatMap { JblReader().feed(it) }
+            if (sendJbl(session, parsed)) publish(session)
+            return
+        }
+        if (bose != null || apple != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq

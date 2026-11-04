@@ -40,6 +40,8 @@ public data class JblModel(
     val racePush: Boolean = true,
     /** Other names the device may carry, such as the "Wireless" JBL's app adds to the Quantum 910 headsets (devices.json names). */
     val names: List<String> = emptyList(),
+    /** The model's EQ as JBL's app writes it, its presets and range (devices.json eq; docs/jbl/PROTOCOL.md section 11). */
+    val eq: JblEqSpec? = null,
 ) {
     /**
      * How the model's settings go: one command each ([DIRECT]), Harman's feature records, command 06

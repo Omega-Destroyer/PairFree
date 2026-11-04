@@ -69,6 +69,13 @@ public class JblSession(initial: JblModel) {
     // The settings beyond noise control, auto power-off and auto play/pause.
     private var extras = JblExtras(initial)
 
+    /** The EQ the earbuds hold, once they report it (docs/jbl/PROTOCOL.md section 11); a write shows here at once. */
+    public var eq: JblEqCurve? = null
+        private set
+
+    // The design EQ the earbuds report, which the calibration is worked out from.
+    private var designEq: JblEqCurve? = null
+
     // Airoha models: the chip family they report, and whether the earbud PairFree talks to (the agent) is the right one.
     private var chip: RaceChip? = null
     private var agentRight = false
@@ -97,6 +104,43 @@ public class JblSession(initial: JblModel) {
         add(batteryRead())
         addAll(noiseReads())
         addAll(extras.reads())
+        addAll(eqReads())
+    }
+
+    /** The EQ reads JBL's app sends on connecting: the design EQ where the class reads it, then the EQ in use. */
+    private fun eqReads(): List<JblFrame> {
+        val spec = model.eq?.takeIf { it.written } ?: return emptyList()
+        return listOfNotNull(JblEq.read(JblEqWire.DESIGN).takeIf { spec.readsDesign }, JblEq.read(JblEqWire.CURRENT))
+    }
+
+    /**
+     * The write that puts [preset] on the earbuds, or with none a curve of the user's own from [gains] (JBL's ten bands,
+     * in dB). The calibration is worked out from the design EQ as JBL's app does on its BES models ([JblCalibration]);
+     * -1 when the earbuds have not reported their design EQ, as JBL's app sends then. Null on a model whose EQ PairFree
+     * does not write.
+     */
+    public fun eqWrite(preset: JblEqPreset?, gains: List<Float>): List<JblFrame>? {
+        val spec = model.eq?.takeIf { it.written } ?: return null
+        val bands = preset?.bands ?: JblEq.custom(gains)
+        val calibration = when {
+            !spec.calibrate -> 0f
+            else -> designEq?.let { JblCalibration.of(it, bands) } ?: NO_DESIGN_EQ
+        }
+        val curve = JblEqCurve(preset?.category ?: JblEqWire.CUSTOM, calibration, JblEq.SAMPLE_RATE, preset?.leftGain ?: 0f, preset?.rightGain ?: 0f, bands)
+        eq = curve
+        readBacks += JblEq.read(JblEqWire.CURRENT)
+        return listOf(JblEq.write(curve, spec.path == JblEqSpec.Path.A2_Q10))
+    }
+
+    /** An EQ reply: the design EQ is kept for the calibration, PersoniFi's left alone, anything else is the EQ in use. */
+    private fun eqReply(p: ByteArray) {
+        val curve = JblEq.parse(p) ?: return
+        _replies[key(JblCommand.EQ, curve.category)] = p.copyOf()
+        when (curve.category) {
+            JblEqWire.DESIGN -> designEq = curve
+            JblEqWire.PERSONIFI -> Unit
+            else -> eq = curve
+        }
     }
 
     /** The battery read, to send again now and then. */
@@ -132,14 +176,14 @@ public class JblSession(initial: JblModel) {
 
     /** Applies one frame from the device. Returns true when [state] or [groups] changed. */
     public fun receive(frame: JblFrame): Boolean {
-        val before = state to groups
+        val before = Triple(state, groups, eq)
         when (frame) {
             is JblP4Packet -> p4(frame)
             is JblPacket -> aa(frame)
             is RacePacket -> race(frame)
         }
         refresh()
-        return (state to groups) != before
+        return Triple(state, groups, eq) != before
     }
 
     private fun aa(packet: JblPacket) {
@@ -153,6 +197,7 @@ public class JblSession(initial: JblModel) {
                 extras.aa(packet.command, p)
             }
             JblCommand.FEATURE -> for ((id, v) in packet.features()) feature(id, v)
+            JblCommand.EQ -> eqReply(p)
             else -> if (extras.reportsAa(packet.command)) {
                 _replies[key(packet.command)] = p.copyOf()
                 extras.aa(packet.command, p)
@@ -831,6 +876,9 @@ public class JblSession(initial: JblModel) {
     private fun ByteArray.u16(at: Int): Int = u8(at) or (u8(at + 1) shl 8)
 
     private companion object {
+        /** The calibration JBL's app sends when it holds no design EQ (AppUtils.getCalib). */
+        const val NO_DESIGN_EQ = -1f
+
         // Airoha models: how much of an NV key Airoha's SDK asks for, and the power control key's length.
         const val RACE_NV_LENGTH = 1000
         const val RACE_POWER_CONTROL_LENGTH = 3

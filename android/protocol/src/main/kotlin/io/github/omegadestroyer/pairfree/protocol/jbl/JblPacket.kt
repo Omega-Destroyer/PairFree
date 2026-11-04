@@ -2,11 +2,14 @@ package io.github.omegadestroyer.pairfree.protocol.jbl
 
 /**
  * One Harman command frame (docs/jbl/PROTOCOL.md section 2): AA, the command, the payload's length
- * and the payload. The commands in [JblCommand.WIDE] have a two-byte length, low byte first. There is
- * no checksum.
+ * and the payload. The commands in [JblCommand.WIDE] have a two-byte length, low byte first, except where
+ * [wide] says otherwise (the EQ read, section 11). There is no checksum.
  */
-public class JblPacket(public val command: Int, public val payload: ByteArray = ByteArray(0)) : JblFrame {
-    public val wide: Boolean get() = command in JblCommand.WIDE
+public class JblPacket(
+    public val command: Int,
+    public val payload: ByteArray = ByteArray(0),
+    public val wide: Boolean = command in JblCommand.WIDE,
+) : JblFrame {
 
     override fun bytes(): ByteArray {
         val n = payload.size

@@ -1,5 +1,5 @@
 {
-  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) or unsupported (JBL's app has no control class for it).",
+  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) or unsupported (JBL's app has no control class for it). eq: how the model's control class writes its EQ (path: a2, a2_q10, 41, club, segment, p4 or airoha; docs/jbl/PROTOCOL.md section 11), its presets (a file in eq_presets.json, or the standard presets of its series), the custom curve's range in dB (eqGainRange), whether the class reads the design EQ on connecting (design), the dashboard's EQ card, and whether JBL's app works out the calibration (calibrate).",
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "not_covered": [
     {
@@ -116,7 +116,15 @@
       "modes": ["anc"],
       "auto_off": "v1",
       "config": "jbl_club_one.json",
-      "settings": []
+      "settings": [],
+      "eq": {
+        "path": "club",
+        "presets": "jbl_club_one",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL LIVE460NC",
@@ -137,7 +145,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware"],
       "auto_off": "v2",
-      "auto_off_minutes": [15, 30, 60, 120]
+      "auto_off_minutes": [15, 30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_live460nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL LIVE660NC",
@@ -158,7 +174,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware"],
       "auto_off": "v2",
-      "auto_off_minutes": [15, 30, 60, 120]
+      "auto_off_minutes": [15, 30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_live660nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TOUR ONE",
@@ -179,7 +203,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware"],
       "auto_off": "v2",
-      "auto_off_minutes": [15, 30, 60, 120]
+      "auto_off_minutes": [15, 30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_tour_one",
+        "range": [-7, 7],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL RFL FLOW PRO",
@@ -200,7 +232,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [15, 30, 60, 120]
+      "auto_off_minutes": [15, 30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_rfl_flow_pro",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TUNE130NC TWS",
@@ -220,7 +260,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [15, 30, 60, 120]
+      "auto_off_minutes": [15, 30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_tune130nc_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TUNE230NC TWS",
@@ -240,7 +288,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [15, 30, 60, 120]
+      "auto_off_minutes": [15, 30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_tune230nc_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TUNE235NC TWS",
@@ -260,7 +316,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [15, 30, 60, 120]
+      "auto_off_minutes": [15, 30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_tune230nc_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL ENDURANCE RACE TWS",
@@ -280,7 +344,15 @@
       },
       "settings": ["smart_audio_video", "balance", "voice_aware", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [15, 30, 60, 120]
+      "auto_off_minutes": [15, 30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_endurance_race_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL LIVE PRO 2 TWS",
@@ -301,7 +373,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_live_pro_2_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Endurance Peak 3",
@@ -320,7 +400,15 @@
         "video": [197, 46, 120]
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "gestures"],
-      "gesture_noise": 13
+      "gesture_noise": 13,
+      "eq": {
+        "path": "a2",
+        "presets": "jbl_endurance_peak_3_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TUNE FLEX",
@@ -340,7 +428,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "41",
+        "presets": "jbl_tune_flex",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL WAVE FLEX",
@@ -360,7 +456,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2",
+        "presets": "jbl_wave_flex",
+        "range": [-11, 11],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL WAVE BUDS",
@@ -380,7 +484,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2",
+        "presets": "jbl_wave_buds",
+        "range": [-8, 8],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL WAVE BEAM",
@@ -400,7 +512,15 @@
       },
       "settings": ["smart_audio_video", "voice_aware", "safe_sound", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2",
+        "presets": "jbl_wave_beam",
+        "range": [-8, 8],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TOUR ONE M2",
@@ -422,7 +542,15 @@
         "video": [197, 46, 80]
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "speak_to_chat", "gestures", "low_volume_eq"],
-      "gesture_noise": 13
+      "gesture_noise": 13,
+      "eq": {
+        "path": "a2",
+        "presets": "jbl_tour_one_m2",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL LIVE FLEX",
@@ -443,7 +571,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_live_flex_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TOUR PRO 2",
@@ -464,7 +600,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_tour_pro2_tws",
+        "range": [-7, 7],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tune 520BT",
@@ -482,7 +626,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "segment",
+        "presets": "jbl_tune_520bt",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 520BT",
@@ -500,7 +652,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "segment",
+        "presets": "jbl_tune_520bt",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 720BT",
@@ -519,7 +679,15 @@
         "audio": [256, 46, 120],
         "video": [197, 46, 90]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_tune_720bt",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tune 245NC TWS",
@@ -539,7 +707,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_tune_beam_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TUNE BEAM",
@@ -559,7 +735,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_tune_beam_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL TUNE BUDS",
@@ -579,7 +763,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_tune_buds_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tune 525BT",
@@ -597,7 +789,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "segment",
+        "presets": "jbl_tune_525bt",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Live 670NC",
@@ -618,7 +818,15 @@
         "audio": [256, 53, 125],
         "video": [197, 46, 50]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"],
+      "eq": {
+        "path": "a2_q10",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Live 770NC",
@@ -639,7 +847,15 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"],
+      "eq": {
+        "path": "a2_q10",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Soundgear Sense",
@@ -657,7 +873,15 @@
         "audio": [256, 46, 220],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "find_buds", "gestures"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "find_buds", "gestures"],
+      "eq": {
+        "path": "a2",
+        "series": "soundgear",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Soundgear Frames",
@@ -675,7 +899,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "gestures"],
       "auto_off": "v2",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2",
+        "series": "soundgear",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Live Beam 3",
@@ -696,7 +928,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "gestures", "adaptive_anc", "auto_compensation", "low_volume_eq"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Live Flex 3",
@@ -717,7 +957,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "gestures", "adaptive_anc", "auto_compensation", "low_volume_eq"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Quantum 360X",
@@ -730,7 +978,15 @@
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360x.json",
-      "settings": []
+      "settings": [],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_quantum_360",
+        "range": [-6, 6],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Quantum 360P",
@@ -743,7 +999,15 @@
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360p.json",
-      "settings": []
+      "settings": [],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_quantum_360",
+        "range": [-6, 6],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Live 675NC",
@@ -764,7 +1028,15 @@
         "audio": [256, 53, 125],
         "video": [197, 46, 50]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"],
+      "eq": {
+        "path": "a2_q10",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Wave Buds 2",
@@ -784,7 +1056,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "wave",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Wave Flex 2",
@@ -804,7 +1084,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "wave",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tune Buds 2",
@@ -825,7 +1113,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tune Flex 2",
@@ -847,7 +1143,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tune Beam 2",
@@ -868,7 +1172,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "gestures", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Junior 320BT",
@@ -886,7 +1198,15 @@
         "audio": [256, 53, 140],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts"]
+      "settings": ["smart_audio_video", "voice_prompts"],
+      "eq": {
+        "path": "a2_q10",
+        "series": "junior",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Junior 470NC",
@@ -906,7 +1226,15 @@
         "audio": [256, 53, 120],
         "video": [197, 46, 85]
       },
-      "settings": ["smart_audio_video", "voice_prompts"]
+      "settings": ["smart_audio_video", "voice_prompts"],
+      "eq": {
+        "path": "a2_q10",
+        "series": "junior",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Quantum 360",
@@ -919,7 +1247,15 @@
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360.json",
-      "settings": []
+      "settings": [],
+      "eq": {
+        "path": "a2_q10",
+        "presets": "jbl_quantum_360",
+        "range": [-6, 6],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Vibe Flex 2",
@@ -939,7 +1275,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "vibe",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Vibe Buds 2",
@@ -959,7 +1303,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "vibe",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tour One M3",
@@ -982,7 +1334,15 @@
         "video": [197, 46, 100, 200]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "adaptive_anc", "auto_compensation", "low_volume_eq"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "adaptive_anc", "auto_compensation", "low_volume_eq"],
+      "eq": {
+        "path": "p4",
+        "series": "tour",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Live 775NC",
@@ -1003,7 +1363,15 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"],
+      "eq": {
+        "path": "a2_q10",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tune 527BT",
@@ -1021,7 +1389,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "segment",
+        "presets": "jbl_tune_527bt",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Endurance Peak 3",
@@ -1040,7 +1416,15 @@
         "video": [197, 46, 120]
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "gestures"],
-      "gesture_noise": 13
+      "gesture_noise": 13,
+      "eq": {
+        "path": "a2",
+        "presets": "jbl_endurance_peak_3_tws",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Sense Lite",
@@ -1059,7 +1443,15 @@
         "video": [197, 46, 120, 200]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "sound_effect", "audio_limiter", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
+      "eq": {
+        "path": "p4",
+        "series": "soundgear",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Endurance Zone",
@@ -1078,7 +1470,15 @@
         "video": [197, 46, 120, 400]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "sound_effect", "audio_limiter", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
+      "eq": {
+        "path": "p4",
+        "series": "endurance",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 135BT",
@@ -1096,7 +1496,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 235BT",
@@ -1114,7 +1522,15 @@
       },
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Soundgear Clips",
@@ -1134,7 +1550,15 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "sound_effect", "audio_limiter", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
+      "eq": {
+        "path": "p4",
+        "series": "soundgear",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Junior Free",
@@ -1153,7 +1577,15 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance"],
+      "eq": {
+        "path": "p4",
+        "series": "junior",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Endurance Run 3 Wireless",
@@ -1172,7 +1604,15 @@
         "audio": [256, 53, 150, 230],
         "video": [197, 53, 120, 230]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "p4",
+        "series": "endurance",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Endurance Pace",
@@ -1191,7 +1631,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance"],
+      "eq": {
+        "path": "p4",
+        "series": "endurance",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Endurance Peak 4",
@@ -1213,7 +1661,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "endurance",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQSportsModelCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Sense Pro",
@@ -1233,7 +1689,15 @@
         "video": [197, 46, 120, 200]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "find_buds"],
+      "eq": {
+        "path": "p4",
+        "series": "soundgear",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 255NC",
@@ -1254,7 +1718,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "adaptive_anc", "auto_compensation"],
       "auto_off": "feature",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "a2_q10",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": true
+      }
     },
     {
       "name": "JBL Tune 530BT",
@@ -1273,7 +1745,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 530BT",
@@ -1292,7 +1772,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 730BT",
@@ -1311,7 +1799,15 @@
         "audio": [256, 46, 120],
         "video": [197, 46, 90]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 680NC",
@@ -1332,7 +1828,15 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "spatial"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "spatial"],
+      "eq": {
+        "path": "p4",
+        "presets": "jbl_tune_670nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 780NC",
@@ -1353,7 +1857,15 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "spatial"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "spatial"],
+      "eq": {
+        "path": "p4",
+        "presets": "jbl_tune_670nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Smart Tx",
@@ -1365,7 +1877,14 @@
       "family": "p4",
       "security": 1,
       "config": "jbl_smart_tx.json",
-      "settings": []
+      "settings": [],
+      "eq": {
+        "path": "p4",
+        "series": "tour",
+        "range": [-6, 6],
+        "design": true,
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Live 680NC",
@@ -1388,7 +1907,15 @@
         "video": [197, 46, 100, 200]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "adaptive_anc", "auto_compensation"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "adaptive_anc", "auto_compensation"],
+      "eq": {
+        "path": "p4",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Live 780NC",
@@ -1411,7 +1938,15 @@
         "video": [197, 46, 100, 200]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "adaptive_anc", "auto_compensation", "low_volume_eq"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "adaptive_anc", "auto_compensation", "low_volume_eq"],
+      "eq": {
+        "path": "p4",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Live Beam 4",
@@ -1433,7 +1968,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "adaptive_anc", "auto_compensation", "low_volume_eq"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Live Buds 4",
@@ -1455,7 +1998,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "find_buds", "adaptive_anc", "auto_compensation", "low_volume_eq"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Live Flex 4",
@@ -1477,7 +2028,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "hi_res", "find_buds", "adaptive_anc", "auto_compensation", "low_volume_eq"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "live",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 785NC",
@@ -1498,7 +2057,15 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "spatial"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "spatial"],
+      "eq": {
+        "path": "p4",
+        "presets": "jbl_tune_670nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 520BT2",
@@ -1517,7 +2084,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 535BT",
@@ -1536,7 +2111,15 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 735BT",
@@ -1555,7 +2138,15 @@
         "audio": [256, 46, 120],
         "video": [197, 46, 90]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Vibe Buds 3",
@@ -1576,7 +2167,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "vibe",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Vibe Beam 3",
@@ -1597,7 +2196,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "vibe",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Vibe Flex 3",
@@ -1618,7 +2225,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "vibe",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Wave Buds 3",
@@ -1639,7 +2254,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "wave",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Wave Beam 3",
@@ -1660,7 +2283,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "wave",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Wave Flex 3",
@@ -1681,7 +2312,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "wave",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune Buds 3",
@@ -1702,7 +2341,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune Beam 3",
@@ -1723,7 +2370,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune Flex 3",
@@ -1744,7 +2399,15 @@
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "find_buds"],
       "auto_off": "p4",
-      "auto_off_minutes": [30, 60, 120]
+      "auto_off_minutes": [30, 60, 120],
+      "eq": {
+        "path": "p4",
+        "series": "tune",
+        "range": [-6, 6],
+        "design": true,
+        "card": "ClassifiedEQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL CLUB PRO+ TWS",
@@ -1763,7 +2426,14 @@
         "audio": [256, 53, 150, 400],
         "video": [197, 41, 100, 250]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"]
+      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_club_pro+_tws",
+        "range": [-12, 12],
+        "design": false,
+        "calibrate": false
+      }
     },
     {
       "name": "JBL REFLECT MINI NC",
@@ -1782,7 +2452,14 @@
         "audio": [256, 53, 150, 400],
         "video": [197, 41, 100, 250]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"]
+      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_reflect_mini_nc",
+        "range": [-12, 12],
+        "design": false,
+        "calibrate": false
+      }
     },
     {
       "name": "JBL LIVE FREE NC+ TWS",
@@ -1801,7 +2478,14 @@
         "audio": [256, 53, 150, 400],
         "video": [197, 41, 100, 250]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"]
+      "settings": ["smart_audio_video", "voice_prompts", "voice_aware"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_live_free_nc+_tws",
+        "range": [-12, 12],
+        "design": false,
+        "calibrate": false
+      }
     },
     {
       "name": "JBL LIVE FREE 2 TWS",
@@ -1822,7 +2506,15 @@
         "audio": [228, 46, 280, 400],
         "video": [197, 46, 120, 400]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_live_free_2_tws",
+        "range": [-12, 12],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Reflect Aero",
@@ -1843,7 +2535,15 @@
         "audio": [226, 46, 280, 400],
         "video": [197, 46, 120, 250]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "find_buds"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_reflect_aero",
+        "range": [-12, 12],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Quantum TWS",
@@ -1859,7 +2559,15 @@
       "auto_off": "race",
       "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
-      "settings": ["voice_prompts", "balance", "voice_aware", "find_buds"]
+      "settings": ["voice_prompts", "balance", "voice_aware", "find_buds"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_quantum_tws",
+        "range": [-12, 12],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Quantum TWS Air",
@@ -1874,7 +2582,15 @@
       "modes": ["ambient_aware", "talk_thru"],
       "auto_off": "race",
       "auto_off_minutes": [30, 60, 120],
-      "settings": ["voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_quantum_tws_air",
+        "range": [-12, 12],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 670NC",
@@ -1894,7 +2610,15 @@
         "audio": [256, 53, 150, 250],
         "video": [197, 46, 100, 250]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_tune_670nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 770NC",
@@ -1914,7 +2638,15 @@
         "audio": [256, 53, 150, 250],
         "video": [197, 46, 100, 250]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_tune_670nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Live Buds 3",
@@ -1937,7 +2669,15 @@
       },
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "find_buds"],
-      "reports": ["data/jbl/reports/20F1_v8.1.5.txt"]
+      "reports": ["data/jbl/reports/20F1_v8.1.5.txt"],
+      "eq": {
+        "path": "airoha",
+        "series": "live",
+        "range": [-6, 6],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Quantum910X",
@@ -1954,7 +2694,15 @@
       "auto_off": "race",
       "auto_off_minutes": [30, 60, 120],
       "settings": ["voice_aware"],
-      "push_status": false
+      "push_status": false,
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_quantum_910",
+        "range": [-12, 12],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Quantum910P",
@@ -1971,7 +2719,15 @@
       "auto_off": "race",
       "auto_off_minutes": [30, 60, 120],
       "settings": ["voice_aware"],
-      "push_status": false
+      "push_status": false,
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_quantum_910",
+        "range": [-12, 12],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Quantum910",
@@ -1988,7 +2744,15 @@
       "auto_off": "race",
       "auto_off_minutes": [30, 60, 120],
       "settings": ["voice_aware"],
-      "push_status": false
+      "push_status": false,
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_quantum_910",
+        "range": [-12, 12],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tour Pro 3",
@@ -2010,7 +2774,15 @@
         "video": [197, 46, 120, 400]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "hi_res"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "hi_res"],
+      "eq": {
+        "path": "airoha",
+        "series": "tour",
+        "range": [-6, 6],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Endurance Race 2",
@@ -2030,7 +2802,15 @@
         "audio": [226, 46, 280, 400],
         "video": [197, 46, 120, 200]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_endurance_race2",
+        "range": [-6, 6],
+        "design": false,
+        "card": "EQSportsModelCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Wave Beam 2",
@@ -2050,7 +2830,15 @@
         "audio": [226, 46, 280, 400],
         "video": [197, 46, 120, 400]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"],
+      "eq": {
+        "path": "airoha",
+        "series": "wave",
+        "range": [-6, 6],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Vibe Beam 2",
@@ -2070,7 +2858,15 @@
         "audio": [226, 46, 280, 400],
         "video": [197, 46, 120, 400]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds"],
+      "eq": {
+        "path": "airoha",
+        "series": "vibe",
+        "range": [-6, 6],
+        "design": false,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 775NC",
@@ -2090,7 +2886,15 @@
         "audio": [256, 53, 150, 250],
         "video": [197, 46, 100, 250]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_tune_775nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     },
     {
       "name": "JBL Tune 777NC",
@@ -2110,7 +2914,15 @@
         "audio": [256, 53, 150, 250],
         "video": [197, 46, 100, 250]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"]
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "eq": {
+        "path": "airoha",
+        "presets": "jbl_tune_775nc",
+        "range": [-6, 6],
+        "design": true,
+        "card": "EQCard",
+        "calibrate": false
+      }
     }
   ]
 }

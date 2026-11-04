@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.protocol.bose
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -214,6 +215,8 @@ public class BoseSession {
                     },
                 ),
             ),
+            // Bose's library powers off with Control's Power, START 00 (ControlPowerStartPacket), as bosectl does.
+            group(PowerActions.GROUP, SettingTab.DEVICE, listOf(Setting.Action(PowerActions.POWER_OFF))),
         )
 
     private fun noiseRows(): List<Setting> = buildList {
@@ -336,7 +339,11 @@ public class BoseSession {
                     }
                 }
             }
-            is SettingChange.Press -> return null
+            // The screen asks the user to confirm first.
+            is SettingChange.Press -> when (change.key) {
+                PowerActions.POWER_OFF -> BosePacket.start(BoseFunction.CONTROL_POWER, POWER_OFF)
+                else -> return null
+            }
         }
         return listOf(out)
     }
@@ -357,12 +364,15 @@ public class BoseSession {
         return BosePacket.setGet(BoseFunction.SETTINGS_CNC, v, c.u8(2) and CNC_ENABLED)
     }
 
-    /** False for what PairFree never sends: firmware update, factory default, power, authentication. */
+    /** False for what PairFree never sends: firmware update, factory default, ship mode, reset, authentication. Power off passes: it comes only from an action the user confirms. */
     public fun allowed(packet: BosePacket): Boolean = packet.function !in BoseFunction.NEVER_SEND
 
     private fun ByteArray.u8(at: Int): Int = this[at].toInt() and 0xFF
 
     public companion object {
+        /** Control's Power state for off (Bose's PowerState.Off). */
+        private const val POWER_OFF = 0
+
         /** The settings read on connecting. */
         private val SETTINGS = listOf(
             BoseFunction.SETTINGS_VOICE_PROMPTS, BoseFunction.SETTINGS_CNC, BoseFunction.SETTINGS_ANR,

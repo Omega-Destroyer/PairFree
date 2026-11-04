@@ -68,4 +68,11 @@ public object Requests {
      */
     public fun factoryResetConfirmedByUser(): ByteArray =
         Frame.build(requireNotNull(Command.FACTORY_RESET.set))
+
+    /**
+     * Reboot (`03 16`, no payload): the earbuds restart and reconnect. Build this only from a confirmation the user has
+     * just accepted on screen (owner, 2026-11-03: restarting is benign enough to offer that way).
+     */
+    public fun rebootConfirmedByUser(): ByteArray =
+        Frame.build(requireNotNull(Command.REBOOT.set))
 }

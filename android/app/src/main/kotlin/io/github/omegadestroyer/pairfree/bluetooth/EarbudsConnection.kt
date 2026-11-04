@@ -1447,6 +1447,12 @@ class EarbudsConnection(
         }
     }
 
+    /** SOUNDPEATS' reboot. Call only from a confirmation the user has just accepted on screen. */
+    fun rebootConfirmedByUser() {
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null) return
+        send(Requests.rebootConfirmedByUser(), then = null)
+    }
+
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
         if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null) return

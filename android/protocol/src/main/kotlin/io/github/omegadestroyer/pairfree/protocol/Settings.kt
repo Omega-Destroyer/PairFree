@@ -42,3 +42,13 @@ public sealed interface SettingChange {
 
     public data class Press(override val key: String) : SettingChange
 }
+
+/**
+ * Restarting and powering off the earbuds: actions in the [GROUP] group on the Device tab, which the screen sends only after
+ * the user confirms (owner, 2026-11-03). Each brand's session offers the ones its vendor's app has.
+ */
+public object PowerActions {
+    public const val GROUP: String = "power"
+    public const val RESTART: String = "restart"
+    public const val POWER_OFF: String = "power_off"
+}

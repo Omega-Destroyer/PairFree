@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.protocol.sony
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -325,7 +326,12 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     voiceGuidance?.let { Setting.Toggle("voice_guidance", it) },
                 ),
             ),
+            group(PowerActions.GROUP, SettingTab.DEVICE, listOfNotNull(Setting.Action(PowerActions.POWER_OFF).takeIf { hasPowerOff })),
         )
+
+    /** The earbuds list power off (set 1's function 33, set 2's 35), which Sony's app offers as a button. */
+    private val hasPowerOff: Boolean
+        get() = if (tableSet == 1) SonyFunction.Set1.POWER_OFF in functions else SonyFunction.Set2.POWER_OFF in functions
 
     private fun noiseRows(): List<Setting> = buildList {
         val n = noise
@@ -397,7 +403,13 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     }
                 } ?: return null
             }
-            is SettingChange.Press -> return null
+            // The screen asks the user to confirm first. Set 1: the fixed value, then user power off (tm0 m3); set 2:
+            // power status type 3, power off, then user power off (yn0 b1).
+            is SettingChange.Press -> when (change.key) {
+                PowerActions.POWER_OFF -> if (tableSet == 1) SonyOut.table1(S1.COMMON_SET_POWER_OFF, FIXED, USER_POWER_OFF)
+                else SonyOut.table1(S2.POWER_SET_STATUS, S2_POWER_OFF, USER_POWER_OFF)
+                else -> return null
+            }
         }
         refresh()
         return listOf(out)
@@ -533,6 +545,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         private const val S2_CONTROL_BY_WEARING = 1
         private const val S2_SMART_TALKING_TYPE1 = 2
         private const val S2_SMART_TALKING_TYPE2 = 0x0C
+        /** Power off: set 2's power status type for it, and the value both sets write (PowerOffSettingValue.USER_POWER_OFF). */
+        private const val S2_POWER_OFF = 3
+        private const val USER_POWER_OFF = 1
         private const val ON_V2 = 0
         private const val OFF_V2 = 1
 

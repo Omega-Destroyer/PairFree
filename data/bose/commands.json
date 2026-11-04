@@ -1,5 +1,5 @@
 {
-  "_about": "Bose's BMAP function table, read from com.bose.bosemusic 13.3.4 (Bose) on 2026-10-14 outside the repo (none of its code is in it): each function block and its functions, by the names Bose's library gives them. A packet is the block, the function, a flags byte whose low four bits are the operator, the payload's length and the payload. never_send marks firmware update, factory default, ship mode, reset, power, authentication and debug functions. docs/bose/PROTOCOL.md explains them.",
+  "_about": "Bose's BMAP function table, read from com.bose.bosemusic 13.3.4 (Bose) on 2026-10-14 outside the repo (none of its code is in it): each function block and its functions, by the names Bose's library gives them. A packet is the block, the function, a flags byte whose low four bits are the operator, the payload's length and the payload. never_send marks firmware update, factory default, ship mode, reset, authentication and debug functions; confirm marks power, sent only from an action the user confirms. docs/bose/PROTOCOL.md explains them.",
   "operators": {"set": 0, "get": 1, "setget": 2, "status": 3, "error": 4, "start": 5, "result": 6, "processing": 7},
   "errors": {"0": "Unknown", "1": "Length", "2": "Chksum", "3": "FblockNotSupp", "4": "FuncNotSupp", "5": "OpNotSupp", "6": "InvalidData", "7": "DataUnavailable", "8": "Runtime", "9": "Timeout", "10": "InvalidState", "11": "DeviceNotFound", "12": "Busy", "13": "NoconnTimeout", "14": "NoconnKey", "15": "OtaUpdate", "16": "OtaLowBatt", "17": "OtaNoCharger", "18": "OtaUpdateNotAllowed", "19": "UnknownPortNumber", "20": "InsecureTransport", "21": "InvalidOtpKey", "255": "FblockSpecific"},
   "blocks": [
@@ -153,7 +153,7 @@
       {"function": 1, "name": "ControlGetAll"},
       {"function": 2, "name": "ControlChirp"},
       {"function": 3, "name": "ControlBmapRole"},
-      {"function": 4, "name": "ControlPower", "never_send": true},
+      {"function": 4, "name": "ControlPower", "confirm": true, "note": "START 00 powers off, as bosectl does; offered as an action the user confirms (owner, 2026-11-03)"},
       {"function": 5, "name": "ControlFactoryDefault", "never_send": true},
       {"function": 6, "name": "ControlShipMode", "never_send": true},
       {"function": 7, "name": "ControlANROnly"},

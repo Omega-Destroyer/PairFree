@@ -25,6 +25,7 @@ import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
+import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.SoundpeatsSettings
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
@@ -587,6 +588,11 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     override fun changeSetting(change: SettingChange) {
         // SOUNDPEATS earbuds' extra settings are commands of their own table, sent as any SET is.
         if (connectedDevice()?.brand == Brand.SOUNDPEATS) {
+            // Restart comes only from its row, after the user confirmed it on screen.
+            if (change is SettingChange.Press && change.key == PowerActions.RESTART) {
+                connection.rebootConfirmedByUser()
+                return
+            }
             SoundpeatsSettings.change(change)?.let { (command, value) -> connection.set(command, value) }
             return
         }

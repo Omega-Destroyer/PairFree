@@ -434,6 +434,8 @@ Space A40. Everything else relies on reports and recordings from users (each bra
   as PeatsAudio does (owner, 2026-10-11). For earbuds this phone has never set, it sends nothing and shows the EQ
   as not known. A new model's EQ: `python tools/import_eq_capture.py report.txt`, check the output, then add its
   `eq` entry and its test vectors. Never copy one model's EQ to another.
+- SOUNDPEATS 2.5.3's hearing test ("Adaptive EQ", section 13) runs on the Sound tab of every model whose EQ PairFree
+  knows (`StaircaseTest`, `data/soundpeats/hearing_test.json`, `HearingTestScreen`); its result is a profile like any other.
 - The official app's other settings (dynamic EQ and bass, movie mode, spatial audio, Dolby, adaptive and personal
   volume, panoramic sound, volume balance and limit, adaptive noise cancelling, privacy mode, fall detection and
   the light) show as brand rows (`SoundpeatsSettings`, keys `sp_<id>`) once their GET answers.

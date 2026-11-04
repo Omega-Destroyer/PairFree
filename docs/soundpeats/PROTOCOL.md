@@ -922,3 +922,25 @@ Android's public API does not let an app read the codec in use (`BluetoothA2dp.g
 the codec-changed broadcast are system APIs), so PairFree cannot tell whether the phone followed
 the earbuds. When the user turns LDAC on, it explains the phone's switch and offers a button to the
 phone's Bluetooth settings, and while LDAC is on the Device tab says so under the switch.
+
+## 13. Hearing test (Adaptive EQ, 2.5.3)
+
+SOUNDPEATS 2.5.3 has a hearing test that ends in an EQ (`com.xingkeqi.peats.v2.feature.adaptiveeq`); PairFree runs the
+same (owner, 2026-11-04). Nothing new goes to the earbuds: the result is an EQ sent like any other (section 4).
+
+- **Tones** (`AdaptiveEqRepository`, `data/soundpeats/hearing_test.json`): 125, 250, 500, 800, 1200, 2000, 4000 and
+  6000 Hz, ten levels each from loud to quiet (-40 to -85 dB below full scale at the lowest three, down to -95 at 4000
+  Hz), and per level the gain its EQ band gets when that is the quietest level heard (+6 to -4 dB). The app plays files
+  of a steady 3 s sine in both ears (the measured 125 Hz files peak at their level, except "40" at -35 dB and "70" and
+  "75", which are the same file); PairFree plays the sine itself. The 125 Hz list's fifth entry plays the -50 dB file
+  again; kept. The app turns media volume to the top for the test and back after, and will not start while other audio
+  plays; PairFree does the same.
+- **Procedure** (`AdaptiveEqTestViewModel.processTestResult`): each frequency starts at its eighth level. Heard there,
+  it steps quieter until a tone is missed (the result is the last one heard) or the quietest is heard; missed there, it
+  steps louder until one is heard, or the loudest stands. A tone not answered before it ends counts as missed.
+- **Result** (`EqConversionUtils`): an EQ of the eight frequencies with those gains at Q 1.5 and the model's classic
+  master gain, sent through the usual EQ write, which on Qualcomm models merges it onto the classic curve's bands. PairFree
+  adds each gain to the model's band nearest in frequency (whole dB, within the model's range), saves it as a profile
+  ("Hearing test") and applies it; on the models whose custom bands are appended after the classic ones (the TRUEFREE Clip
+  C10), the result goes onto those bands the same way rather than as eight bands of its own.
+

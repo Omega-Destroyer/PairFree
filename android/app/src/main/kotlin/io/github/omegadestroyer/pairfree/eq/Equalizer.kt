@@ -137,6 +137,9 @@ interface EqActions {
 
     /** Saves the current gains under [name], replacing a saved profile of that name. */
     fun save(name: String)
+
+    /** Sets [gains] as a curve of the user's own, saves it under [name] and applies it: a hearing test's result. */
+    fun applyCurve(name: String, gains: List<Int>)
     fun delete(profile: EqProfile)
 
     /** The current gains as a profile file. */
@@ -280,6 +283,14 @@ class Equalizer(
         _state.value = s.copy(profiles = profiles, setting = s.setting.copy(profileId = profile.id))
         storeProfiles(s.model.code, profiles)
         storeSetting()
+    }
+
+    override fun applyCurve(name: String, gains: List<Int>) {
+        val s = _state.value ?: return
+        if (gains.size != s.layout.bands.size) return
+        val r = s.layout.userRangeDb
+        apply(s.setting.copy(profileId = null, gains = gains.map { it.coerceIn(-r, r) }))
+        save(name)
     }
 
     override fun delete(profile: EqProfile) {

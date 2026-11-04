@@ -287,6 +287,17 @@ plays; and the equalizer (section 9).
 
 ## 5. How each model sends its settings
 
+The ten older BES models with no dashboard config (`com.harman.cmdctrl.imp.bes.*SdkControl`: the Live 220BT, 300TWS,
+400BT, 500BT and 650BTNC, Club 700BT and 950NC, Live Pro+, Tour Pro+ and UA Project Rock) are described from their
+control classes and the product list instead: noise control as `31` and `32` where the class writes it with
+`ProtocolVersion.VERSION_OLD`, else `91`; the modes JBL's old screens offer (noise cancelling alone on the Live 650BTNC,
+where `HomeActivity` asks for it; noise cancelling where the product has a `dashboardModel`, as `DefaultDashConfig`
+shows it; Ambient Aware and TalkThru otherwise); auto power-off by `autoOffType` (0 one byte, 1 the timer); pause when
+taken off where `SettingActivity` shows it (Live 300TWS, Live Pro, Tour Pro TWS, UA Project Rock); Smart Audio & Video
+and Find My Buds by `smartAudioVideo` and `hasFindMyBuds`; the EQ as the Club One's (`setEQPreset` is command `40`,
+`setEQSetting` the `41` transfer). PairFree shows each setting once the device answers its read. Their gestures,
+written in the older variant of the gesture command, are not covered.
+
 `devices.json` gives each model's:
 
 - **family:** `direct` models (the `bes` classes on `BesDeviceStatusControl`) read the device

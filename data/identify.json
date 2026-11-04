@@ -39,6 +39,7 @@
     {"name": "AirPods Pro", "brand": "APPLE"},
     {"name": "Beats Fit Pro", "uuids": ["74ec2172-0bad-4d01-8f77-997b2be0722a"], "brand": "APPLE", "note": "Beats are known by Apple's service alone"},
     {"name": "Beats Flex", "brand": null, "note": "without Apple's service: Beats' own chip, another protocol"},
+    {"name": "UA PROJECT ROCK", "brand": "JBL", "model": "UA PROJECT ROCK", "note": "Under Armour's headphones by JBL, which JBL's app sets; the name JBL's product list gives"},
     {"name": "JBL Tune 770NC", "brand": "JBL", "model": "JBL Tune 770NC", "note": "not the Live 770NC"},
     {"name": "JBL LIVE770NC", "brand": "JBL", "model": "JBL Live 770NC"},
     {"name": "JBL Quantum910 Wireless", "brand": "JBL", "model": "JBL Quantum910", "note": "the name JBL's app shows"},

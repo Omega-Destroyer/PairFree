@@ -19,7 +19,7 @@ Supported brands:
 • Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6. From Sony's app, checked against Gadgetbridge
 • Bose: 22 models, from the QC35 to the QC Ultra 2. From Bose's app and bosectl, without Bose's cloud
 • AirPods and Beats on Apple's chips: 30 models, from LibrePods. Needs Android 17, or a Pixel on 16 QPR3, or a OnePlus, OPPO or realme phone on 16
-• JBL: 102 models, tried on the Live Buds 3. From JBL's app, checked against JblTray
+• JBL: 112 models, tried on the Live Buds 3. From JBL's app, checked against JblTray
 • Nothing and CMF: 19 models. From Nothing X, checked against nada and nadamas
 • Google Pixel Buds: 5 models, tried on the Pro. From Google's app, checked against pbpctrl
 • QCY: 171 models. From QCY's app, checked against OpenQCY-Desktop

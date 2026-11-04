@@ -82,7 +82,8 @@ class JblData(unittest.TestCase):
             if d.get("auto_off"):
                 self.assertEqual(d["family"] == "airoha", d["auto_off"] == "race", d["name"])
             self.assertTrue(all(isinstance(n, str) and n.startswith("JBL ") for n in d.get("names", [])), d["name"])
-            self.assertTrue(d["name"].startswith("JBL "), d["name"])
+            # JBL's own, and Under Armour's by JBL, which JBL's app sets.
+            self.assertTrue(d["name"].startswith(("JBL ", "UA ")), d["name"])
             for p in d["pids"]:
                 self.assertEqual(4, len(p))
                 self.assertEqual(p.upper(), p)

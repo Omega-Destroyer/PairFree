@@ -26,7 +26,6 @@ import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleWire
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblAdvert
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblEqCurve
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblParser
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblFrame
@@ -1398,7 +1397,7 @@ class EarbudsConnection(
         }
         // JBL's EQ target hands over its session's frames as bytes; they go through the JBL link's queue.
         jbl?.let { session ->
-            val parsed = frames.flatMap { JblParser().feed(it) }
+            val parsed = frames.flatMap { JblReader().feed(it) }
             if (sendJbl(session, parsed)) publish(session)
             return
         }

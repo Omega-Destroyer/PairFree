@@ -800,6 +800,8 @@ abstract class GenerateJblTables : DefaultTask() {
         for ((k, v) in p4.getValue("commands") as Map<String, Any?>) out.appendLine("    public const val ${k.uppercase()}: Int = ${hex((v as String).toInt(16))}")
         @Suppress("UNCHECKED_CAST")
         for ((k, v) in p4.getValue("features") as Map<String, Any?>) out.appendLine("    public const val FEATURE_${k.uppercase()}: Int = ${hex(int(v))}")
+        out.appendLine("    /** The EQ info's category for a curve of the user's own, which JBL's app calls 230 elsewhere. */")
+        out.appendLine("    public const val EQ_CUSTOM: Int = ${int(p4["eq_custom"])}")
         out.appendLine("    /** A level of 127 leaves the mode's level as it is. */")
         out.appendLine("    public const val IGNORE_LEVEL: Int = ${int(p4["ignore_level"])}")
         out.appendLine("    /** Commands PairFree never sends: ${p4Never.values.joinToString(", ")}. */")
@@ -906,7 +908,8 @@ abstract class GenerateJblTables : DefaultTask() {
                 }
                 val presets = ((e["presets"] as String?)?.let { ident(it) } ?: ident("series_" + (e["series"] as String))) + "()"
                 val range = (e.getValue("range") as List<Number>).maxOf { Math.abs(it.toInt()) }
-                "JblEqSpec(JblEqSpec.Path.$path, $presets, $range, readsDesign = ${e["design"] == true}, calibrate = ${e["calibrate"] == true})"
+                "JblEqSpec(JblEqSpec.Path.$path, $presets, $range, readsDesign = ${e["design"] == true}, calibrate = ${e["calibrate"] == true}, airohaLib = ${e["lib"] == "airoha"}, " +
+                    "halveCustomUntil = ${(e["halve_custom_until"] as String?)?.let { str(it) }})"
             } ?: "null"
             out.appendLine(
                 "    JblModel(${str(d["name"])}, listOf($pids), io.github.omegadestroyer.pairfree.protocol.Form.$form, gatt = $gatt, " +

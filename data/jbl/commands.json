@@ -79,8 +79,11 @@
       "smart_switch": 4111,
       "adaptive_anc": 27,
       "auto_compensation": 32,
-      "low_volume_eq": 36
+      "low_volume_eq": 36,
+      "eq_info_query": 3585,
+      "eq_info": 3586
     },
+    "eq_custom": 193,
     "ignore_level": 127,
     "never_send": {
       "00ff": "factory reset",

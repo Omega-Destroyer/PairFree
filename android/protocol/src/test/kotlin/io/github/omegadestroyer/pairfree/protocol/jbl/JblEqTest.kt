@@ -110,6 +110,45 @@ class JblEqTest {
     }
 
     @Test
+    fun protocol4() {
+        val s = JblSession(model("JBL Live 680NC"))
+        // The query for the EQ in use: feature 0E01, one byte, FF.
+        assertTrue("00dd020001000500010e0100ff" in s.start().map { it.hex() })
+        val jazz = s.model.eq!!.presets.first { it.name == "JAZZ" }
+        val inUse = JblEqCurve(jazz.category, 0f, 48, 0f, 0f, jazz.bands)
+        val write = JblEq.p4Write(inUse)
+        // The EQ info: id 0E02, its length, then the category, kept, ten bands, and 19 + 13 a band bytes in all.
+        assertEquals("020e" + "9500", write.payload.copyOfRange(0, 4).joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') })
+        val notification = JblP4Packet(JblP4.NOTIFICATION, byteArrayOf(0, 0) + write.payload)
+        assertTrue(s.receive(notification))
+        assertEquals(inUse, s.eq)
+        // A curve of the user's own goes as 193; no design EQ is kept on protocol 4, so the calibration is -1 as JBL's app sends.
+        val out = s.eqWrite(null, List(10) { 1f })!!.single() as JblP4Packet
+        val value = out.payload.copyOfRange(4, out.payload.size)
+        assertEquals(JblP4.EQ_CUSTOM, value[0].toInt() and 0xFF)
+        val sent = JblEq.p4Parse(value)!!
+        assertEquals(JblEqWire.CUSTOM, sent.category)
+        assertEquals(-1f, sent.calibration)
+        // The Airoha-library models wait for Airoha's PEQ.
+        assertNull(JblSession(model("JBL Tune 680NC")).eqWrite(null, List(10) { 0f }))
+    }
+
+    @Test
+    fun oldTune135FirmwareHalvesCustomCurves() {
+        val s = JblSession(model("JBL Tune 135BT"))
+        // Firmware not yet known counts as old, as in JBL's app.
+        var out = s.eqWrite(null, List(10) { 4f })!!.single() as JblP4Packet
+        assertEquals(2f, JblEq.p4Parse(out.payload.copyOfRange(4, out.payload.size))!!.bands[0].gainDb)
+        // What the earbuds report is doubled back.
+        s.receive(JblP4Packet(JblP4.NOTIFICATION, byteArrayOf(0, 0) + out.payload))
+        assertEquals(4f, s.eq!!.bands[0].gainDb)
+        // Firmware 4.2.1 and later take the gains as they are.
+        s.receive(JblP4Packet(JblP4.NOTIFICATION, "0000".hexBytes() + JblP4Packet.set(JblP4.FEATURE_FIRMWARE to byteArrayOf(4, 2, 1)).payload))
+        out = s.eqWrite(null, List(10) { 4f })!!.single() as JblP4Packet
+        assertEquals(4f, JblEq.p4Parse(out.payload.copyOfRange(4, out.payload.size))!!.bands[0].gainDb)
+    }
+
+    @Test
     fun modelsPairFreeDoesNotWriteYet() {
         val s = JblSession(model("JBL LIVE PRO 2 TWS"))
         assertTrue(s.start().none { it.hex().startsWith("aaa2") })

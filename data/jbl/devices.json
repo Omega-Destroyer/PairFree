@@ -1341,7 +1341,9 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "halve_custom_until": "4.2.0",
+        "lib": "airoha"
       }
     },
     {
@@ -1450,7 +1452,8 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "halve_custom_until": "4.2.0"
       }
     },
     {
@@ -1477,7 +1480,9 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "halve_custom_until": "4.2.0",
+        "lib": "airoha"
       }
     },
     {
@@ -1503,7 +1508,8 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "halve_custom_until": "4.2.0"
       }
     },
     {
@@ -1529,7 +1535,8 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "halve_custom_until": "4.2.0"
       }
     },
     {
@@ -1557,7 +1564,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -1584,7 +1591,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -1611,7 +1618,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -1638,7 +1645,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -1696,7 +1703,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -1835,7 +1842,8 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "lib": "airoha"
       }
     },
     {
@@ -1864,7 +1872,8 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "lib": "airoha"
       }
     },
     {
@@ -1883,7 +1892,7 @@
         "series": "tour",
         "range": [-6, 6],
         "design": true,
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -1914,7 +1923,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -1945,7 +1954,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -1975,7 +1984,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2005,7 +2014,8 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "lib": "airoha"
       }
     },
     {
@@ -2035,7 +2045,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2064,7 +2074,8 @@
         "range": [-6, 6],
         "design": true,
         "card": "EQCard",
-        "calibrate": false
+        "calibrate": true,
+        "lib": "airoha"
       }
     },
     {
@@ -2174,7 +2185,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2203,7 +2214,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2232,7 +2243,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2261,7 +2272,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2290,7 +2301,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2319,7 +2330,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2348,7 +2359,8 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true,
+        "lib": "airoha"
       }
     },
     {
@@ -2377,7 +2389,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {
@@ -2406,7 +2418,7 @@
         "range": [-6, 6],
         "design": true,
         "card": "ClassifiedEQCard",
-        "calibrate": false
+        "calibrate": true
       }
     },
     {

@@ -90,6 +90,7 @@ public class JblSession(initial: JblModel) {
             // JBL's app tells the earbuds the host is a phone (host type 1) before it reads them.
             add(JblP4Packet.set(JblP4.FEATURE_HOST_TYPE to byteArrayOf(1)))
             add(JblP4Packet.get(p4Features()))
+            addAll(eqReads())
             return@buildList
         }
         when (model.family) {
@@ -107,29 +108,51 @@ public class JblSession(initial: JblModel) {
         addAll(eqReads())
     }
 
-    /** The EQ reads JBL's app sends on connecting: the design EQ where the class reads it, then the EQ in use. */
+    /**
+     * The EQ reads JBL's app sends on connecting: the design EQ where the class reads it, then the EQ in use. On protocol
+     * 4 the query for the EQ in use alone: the design EQ JBL's app reads there is raw data it never uses.
+     */
     private fun eqReads(): List<JblFrame> {
         val spec = model.eq?.takeIf { it.written } ?: return emptyList()
+        if (spec.path == JblEqSpec.Path.P4) return listOf(JblEq.p4Query(JblEqWire.CURRENT))
         return listOfNotNull(JblEq.read(JblEqWire.DESIGN).takeIf { spec.readsDesign }, JblEq.read(JblEqWire.CURRENT))
     }
 
     /**
      * The write that puts [preset] on the earbuds, or with none a curve of the user's own from [gains] (JBL's ten bands,
      * in dB). The calibration is worked out from the design EQ as JBL's app does on its BES models ([JblCalibration]);
-     * -1 when the earbuds have not reported their design EQ, as JBL's app sends then. Null on a model whose EQ PairFree
-     * does not write.
+     * -1 when the earbuds have not reported their design EQ, as JBL's app sends then (always on protocol 4, where none is
+     * reported in a form it keeps). Null on a model whose EQ PairFree does not write.
      */
     public fun eqWrite(preset: JblEqPreset?, gains: List<Float>): List<JblFrame>? {
         val spec = model.eq?.takeIf { it.written } ?: return null
-        val bands = preset?.bands ?: JblEq.custom(gains)
+        val bands = preset?.bands ?: JblEq.custom(if (halvesCustom()) gains.map { it * HALF } else gains)
         val calibration = when {
             !spec.calibrate -> 0f
             else -> designEq?.let { JblCalibration.of(it, bands) } ?: NO_DESIGN_EQ
         }
         val curve = JblEqCurve(preset?.category ?: JblEqWire.CUSTOM, calibration, JblEq.SAMPLE_RATE, preset?.leftGain ?: 0f, preset?.rightGain ?: 0f, bands)
         eq = curve
+        if (spec.path == JblEqSpec.Path.P4) {
+            readBacks += JblEq.p4Query(JblEqWire.CURRENT)
+            return listOf(JblEq.p4Write(curve))
+        }
         readBacks += JblEq.read(JblEqWire.CURRENT)
         return listOf(JblEq.write(curve, spec.path == JblEqSpec.Path.A2_Q10))
+    }
+
+    /** True when JBL's app would halve a curve of the user's own: the model has the workaround and the firmware is not newer. */
+    private fun halvesCustom(): Boolean {
+        val until = model.eq?.halveCustomUntil ?: return false
+        return !newer(firmware, until)
+    }
+
+    /** True when [version] is newer than [than], each three numbers joined by dots; false when either is unknown, as JBL's app compares them. */
+    private fun newer(version: String?, than: String): Boolean {
+        val a = version?.split('.')?.mapNotNull { it.toIntOrNull() }?.takeIf { it.size >= 3 } ?: return false
+        val b = than.split('.').map { it.toInt() }
+        for (i in 0..2) if (a[i] != b[i]) return a[i] > b[i]
+        return false
     }
 
     /** An EQ reply: the design EQ is kept for the calibration, PersoniFi's left alone, anything else is the EQ in use. */
@@ -232,6 +255,9 @@ public class JblSession(initial: JblModel) {
                     (word and P4_LEVEL16).takeIf { it != P4_LEVEL16 }?.let { autoOffMinutes = it / SECONDS_PER_MINUTE }
                 }
                 JblP4.FEATURE_AUTO_PLAY_PAUSE -> autoPlayPause = v.u8(0) and STATUS_BIT != 0
+                JblP4.FEATURE_EQ_INFO -> JblEq.p4Parse(v)?.takeIf { it.category != JblEqWire.DESIGN && it.category != JblEqWire.PERSONIFI }?.let { curve ->
+                    eq = if (curve.category == JblEqWire.CUSTOM && halvesCustom()) curve.copy(bands = curve.bands.map { it.copy(gainDb = it.gainDb * 2) }) else curve
+                }
                 in JblExtras.P4_IDS -> extras.p4(id, v)
                 else -> P4_MODES[id]?.let { m ->
                     modeOn[m] = v.u8(0) and STATUS_BIT != 0
@@ -878,6 +904,7 @@ public class JblSession(initial: JblModel) {
     private companion object {
         /** The calibration JBL's app sends when it holds no design EQ (AppUtils.getCalib). */
         const val NO_DESIGN_EQ = -1f
+        const val HALF = 0.5f
 
         // Airoha models: how much of an NV key Airoha's SDK asks for, and the power control key's length.
         const val RACE_NV_LENGTH = 1000
@@ -943,6 +970,7 @@ public class JblSession(initial: JblModel) {
         val REPORTED_P4 = setOf(
             JblP4.FEATURE_PRODUCT_ID, JblP4.FEATURE_FIRMWARE, JblP4.FEATURE_BATTERY_LEFT, JblP4.FEATURE_BATTERY_RIGHT,
             JblP4.FEATURE_BATTERY_CASE, JblP4.FEATURE_AMBIENT_SOUND_CONTROL, JblP4.FEATURE_AUTO_OFF, JblP4.FEATURE_AUTO_PLAY_PAUSE,
+            JblP4.FEATURE_EQ_INFO,
         ) + P4_MODES.keys + JblExtras.P4_IDS
 
         fun level(v: Int): Int? = v.takeIf { it <= 100 }

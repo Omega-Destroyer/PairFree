@@ -67,7 +67,8 @@ def settings(m):
         out.append("pause when taken off")
     out += [EXTRAS[x] for x in m.get("settings", [])]
     # The EQ paths PairFree writes so far (docs/jbl/PROTOCOL.md section 11).
-    if m.get("eq", {}).get("path") in ("a2", "a2_q10"):
+    eq = m.get("eq", {})
+    if eq.get("path") in ("a2", "a2_q10") or (eq.get("path") == "p4" and eq.get("lib") != "airoha"):
         out.append("equalizer")
     return ", ".join(out) or "battery only"
 

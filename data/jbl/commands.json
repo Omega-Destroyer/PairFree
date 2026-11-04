@@ -174,7 +174,7 @@
       "0A09": "NV key reload",
       "0D01": "relays a command to the other earbud"
     },
-    "_never_send_about": "Also never sent: key events (key_event) other than key_events (factory reset 0096, power off 0095, pairing 0002 and the rest), and the firmware update commands (1C00 to 1CFF) other than the firmware version and AE information reads."
+    "_never_send_about": "Also never sent: key events (key_event) other than key_events (factory reset 0096, power off 0095, pairing 0002 and the rest), and the firmware update commands (1C00 to 1CFF) other than the firmware version and AE information reads. The NV key writes and relays (0A01, 0D01) go out only within an Airoha PEQ write PairFree builds itself (docs/jbl/PROTOCOL.md section 11.2; owner, 2026-11-04)."
   },
   "never_send": {
     "13": "analytics read",

@@ -229,10 +229,15 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   time, waiting up to 1 s, as JBL's app does. Protocol 4 (section 6) is covered, including the models with a BLE
   security mode 1 to 3, which add a transport step `GattLink` runs itself (section 7): no key is needed. JBL's
   genuine-product check needs a key from a native library, so it is left out (hard rules); the BES LE Audio
-  models are not covered. The EQ (section 11) goes through the Sound tab via `JblEqTarget` on the 72 models whose
-  class sends command `A2`, protocol 4's EQ info or the older BES classes' `41` transfer, with JBL's presets (`data/jbl/eq_presets.json`) and the calibration JBL's app works out on
-  its BES models, ported from its calibration library (`JblCalibration`); the Tune 520BT family's segments and Airoha's PEQ (which
-  protocol 4's Airoha-library models also need) are still to come. The Airoha models (family `airoha`, section 10, including the LE Audio Tour
+  models are not covered. The EQ (section 11) goes through the Sound tab via `JblEqTarget` on 95 of the 102 models: as
+  command `A2`, protocol 4's EQ info or the older BES classes' `41` transfer, with JBL's presets
+  (`data/jbl/eq_presets.json`) and the calibration JBL's app works out on its BES models, ported from its calibration
+  library (`JblCalibration`); on the Tune 520BT family as Realtek's segments (`A6`, `JblRealtekEq`, coefficients from
+  a port of Realtek's `libDspConfig.so`, `RealtekDsp`); and on the 19 Airoha models as Airoha's PEQ (`JblAirohaEq`,
+  coefficients from a port of Airoha's `libnative-peq.so`, `protocol.airoha.AirohaPeq`, which follows Android 17's
+  `qsort`). Each port was checked byte for byte against its library run in an emulator outside the repo
+  (`E:\Buildsesearch\jbl-native`), and `test_vectors.json` keeps the cases. The 7 protocol 4 models whose curve also
+  goes as Airoha's PEQ (`lib` airoha) need Airoha's second library, `libnative-peq-serialize.so`, still to come. The Airoha models (family `airoha`, section 10, including the LE Audio Tour
   Pro 3, Tune 670NC and 770NC, opened over Airoha's LE service when paired as an LE-only device) speak Airoha's
   RACE commands (`RacePacket`, `RaceParser`, `JblRace` from `commands.json`'s `airoha`) through the same
   `JblSession` and `JblExtras`; the session reads the chip name first, and noise control, auto power-off and
@@ -240,7 +245,9 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   level are not covered. After a change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
   `JblCommand.NEVER_SEND` (factory reset, power off, firmware update, analytics) or `JblRace.NEVER_SEND`, and on
   RACE no key event but Smart Audio & Video's (`JblRace.KEY_EVENTS`) and no firmware update command
-  (`JblSession.allowed` checks every frame).
+  (`JblSession.allowed` checks every frame). The one exception: the NV key writes and relays to the other earbud of an
+  Airoha PEQ write PairFree builds itself (`JblAirohaEq.sent`), exactly as Airoha's SDK sends them in JBL's app (owner,
+  2026-11-04).
 - `docs/apple/PROTOCOL.md` is Apple's accessory protocol for AirPods and Apple-chip Beats. Apple's only Android
   app, Beats 2.12, is native code and has not been read, so this one is ported from LibrePods
   (github.com/kavishdevar/librepods, GPL-3.0-or-later) and checked against MagicPodsCore

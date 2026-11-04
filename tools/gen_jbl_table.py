@@ -66,9 +66,10 @@ def settings(m):
     if m.get("auto_play_pause"):
         out.append("pause when taken off")
     out += [EXTRAS[x] for x in m.get("settings", [])]
-    # The EQ paths PairFree writes so far (docs/jbl/PROTOCOL.md section 11).
+    # The EQ paths PairFree writes so far (docs/jbl/PROTOCOL.md section 11): all but protocol 4's models whose curve also goes
+    # as Airoha's PEQ (JblEqSpec.written).
     eq = m.get("eq", {})
-    if eq.get("path") in ("a2", "a2_q10", "41", "club") or (eq.get("path") == "p4" and eq.get("lib") != "airoha"):
+    if eq.get("path") and not (eq.get("path") == "p4" and eq.get("lib") == "airoha"):
         out.append("equalizer")
     return ", ".join(out) or "battery only"
 

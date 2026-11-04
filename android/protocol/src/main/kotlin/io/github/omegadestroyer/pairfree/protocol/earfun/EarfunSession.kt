@@ -5,6 +5,7 @@ import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Frame
 import io.github.omegadestroyer.pairfree.protocol.FrameParser
+import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -359,7 +360,7 @@ public class EarfunSession(public val model: EarfunModel) {
                 ),
                 group("ef_quality", SettingTab.DEVICE, qualityRows()),
                 group(
-                    "ef_power", SettingTab.DEVICE,
+                    PowerActions.GROUP, SettingTab.DEVICE,
                     listOfNotNull(Setting.Action(RESTART_KEY).takeIf { m.restart && qualcomm }, Setting.Action(POWER_OFF_KEY).takeIf { m.powerOff }),
                 ),
             ) + touchGroups(gestures) + buttonGroups()
@@ -780,8 +781,8 @@ public class EarfunSession(public val model: EarfunModel) {
         private const val WAVE_PRO_X = "wave_pro_x"
         private const val BUTTON_PREFIX = "ef_button_"
 
-        public const val RESTART_KEY: String = "ef_restart"
-        public const val POWER_OFF_KEY: String = "ef_power_off"
+        public const val RESTART_KEY: String = PowerActions.RESTART
+        public const val POWER_OFF_KEY: String = PowerActions.POWER_OFF
 
         /** SET_CONTROL_PLAY's value for powering off. */
         private const val POWER_OFF = 1

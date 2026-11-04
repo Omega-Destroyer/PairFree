@@ -48,6 +48,8 @@ public object SoundpeatsSettings {
         }
         val device = DEVICE_SWITCHES.mapNotNull { c -> state.switch(c)?.let { Setting.Toggle(key(c), it) } }
         if (device.isNotEmpty()) add(SettingGroup("other", SettingTab.DEVICE, device))
+        // Every SOUNDPEATS model's table has the reboot (03 16); the screen asks the user to confirm first.
+        if (state.firmware != null) add(SettingGroup(PowerActions.GROUP, SettingTab.DEVICE, listOf(Setting.Action(PowerActions.RESTART))))
     }
 
     /** The command and value a change to one of [groups]' rows sends, or null when the change is not one of them. */

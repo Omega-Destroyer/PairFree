@@ -66,8 +66,11 @@ class BoseData(unittest.TestCase):
                 names.add(f["name"])
                 if block["name"] in ("FirmwareUpdate", "Authentication"):
                     self.assertTrue(f.get("never_send"), f["name"])
-        for name in ("ControlFactoryDefault", "ControlPower"):
-            self.assertTrue(next(f for b in data["blocks"] for f in b["functions"] if f["name"] == name).get("never_send"), name)
+        def function(name):
+            return next(f for b in data["blocks"] for f in b["functions"] if f["name"] == name)
+        self.assertTrue(function("ControlFactoryDefault").get("never_send"))
+        # Power off only from an action the user confirms (owner, 2026-11-03).
+        self.assertTrue(function("ControlPower").get("confirm") and not function("ControlPower").get("never_send"))
 
     def test_vectors(self):
         vectors = load("test_vectors.json")

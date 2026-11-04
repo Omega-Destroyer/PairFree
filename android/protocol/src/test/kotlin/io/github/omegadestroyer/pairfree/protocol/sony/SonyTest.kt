@@ -3,8 +3,10 @@ package io.github.omegadestroyer.pairfree.protocol.sony
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
+import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.Value
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import io.github.omegadestroyer.pairfree.protocol.repoFile
 import kotlinx.serialization.json.Json
@@ -469,10 +471,76 @@ class SonySessionTest {
         // The MTK types: on and off alone, though the reply of type 1 also holds the language.
         val m = set2()
         m.receive(message(0x07, 0x00, 0x02, 0x42, 0x00, 0x43, 0x00, table = 2))
-        assertEquals(listOf(out(0x46, 0x01, table = 2)), m.takeOutbox())
+        // Function 0x43 is the five-step volume (type 0x21), which is read too.
+        assertEquals(listOf(out(0x46, 0x01, table = 2), out(0x46, 0x21, table = 2)), m.takeOutbox())
         m.receive(message(0x47, 0x01, 0x01, 0x02, table = 2))
         assertEquals(false, (setting(m, "voice_guidance") as Setting.Toggle).on)
         assertEquals(listOf(out(0x48, 0x01, 0x00, table = 2)), m.change(SettingChange.Toggle("voice_guidance", true)))
+        // The volume: -2 to 2 as a signed byte; a write adds 0 to play a sample (Sony's app's feedback sound).
+        m.receive(message(0x47, 0x21, 0xFF, table = 2))
+        assertEquals(-1, (setting(m, "voice_guidance_volume") as Setting.Level).value)
+        assertEquals(listOf(out(0x48, 0x21, 0x02, 0x00, table = 2)), m.change(SettingChange.Level("voice_guidance_volume", 2)))
+    }
+
+    @Test
+    fun set2Switches() {
+        val s = set2()
+        // Functions: power saving (0x26), sound leakage reduction (0xE9), background music (0xE4); table 2's battery voice (0x46).
+        s.receive(message(0x07, 0x00, 0x03, 0x26, 0x00, 0xE9, 0x00, 0xE4, 0x00))
+        val reads = s.takeOutbox()
+        assertTrue(out(0x26, 0x06) in reads, "power saving's read")
+        assertTrue(out(0xE6, 0x07) in reads, "sound leakage reduction's read")
+        assertTrue(out(0xE6, 0x03) in reads, "background music's read")
+        s.receive(message(0x27, 0x06, 0x00))
+        assertEquals(true, (setting(s, "power_saving") as Setting.Toggle).on, "0 is on")
+        assertEquals(listOf(out(0x28, 0x06, 0x01)), s.change(SettingChange.Toggle("power_saving", false)))
+        s.receive(message(0xE7, 0x03, 0x00, 0x02))
+        assertEquals("large", (setting(s, "bgm_effect") as Setting.Choice).value)
+        assertEquals(listOf(out(0xE8, 0x03, 0x01, 0x02)), s.change(SettingChange.Choice("bgm_effect", "off")))
+        s.receive(message(0x07, 0x00, 0x01, 0x46, 0x00, table = 2))
+        assertTrue(out(0x46, 0x30, table = 2) in s.takeOutbox(), "battery voice's read")
+        s.receive(message(0x47, 0x30, 0x01, table = 2))
+        assertEquals(listOf(out(0x48, 0x30, 0x00, table = 2)), s.change(SettingChange.Toggle("battery_voice", true)))
+    }
+
+    @Test
+    fun generalSettings() {
+        val s = set2()
+        // General setting 1 (function 0xD1): its description asked in English, then its value.
+        s.receive(message(0x07, 0x00, 0x02, 0xD1, 0x00, 0xD2, 0x00))
+        val reads = s.takeOutbox()
+        assertTrue(out(0xD0, 0xD1, 0x01) in reads && out(0xD0, 0xD2, 0x01) in reads)
+        val title = "MULTIPOINT_SETTING".encodeToByteArray().map { it.toInt() }
+        s.receive(message(0xD1, 0xD1, 0x00, 0x01, title.size, *title.toIntArray(), 0x00))
+        assertEquals(listOf(out(0xD6, 0xD1)), s.takeOutbox())
+        s.receive(message(0xD7, 0xD1, 0x00, 0x00))
+        assertEquals(Value.Switch(true), s.state.values[Command.MULTIPOINT], "0 is on; multipoint goes on the shared switch")
+        assertEquals(listOf(out(0xD8, 0xD1, 0x00, 0x01)), s.set(Command.MULTIPOINT, 0))
+        // Another, with text of its own: a row titled by it.
+        val raw = "Touch".encodeToByteArray().map { it.toInt() }
+        s.receive(message(0xD1, 0xD2, 0x00, 0x00, raw.size, *raw.toIntArray(), 0x00))
+        s.takeOutbox()
+        s.receive(message(0xD7, 0xD2, 0x00, 0x01))
+        assertEquals(false, (setting(s, "sony_gs_raw:Touch") as Setting.Toggle).on)
+        assertEquals(listOf(out(0xD8, 0xD2, 0x00, 0x00)), s.change(SettingChange.Toggle("sony_gs_raw:Touch", true)))
+    }
+
+    @Test
+    fun ncOptimizer() {
+        val s = set2()
+        // The personal optimizer (0x81): a start, then the earbuds report it idle again.
+        s.receive(message(0x07, 0x00, 0x01, 0x81, 0x00))
+        s.takeOutbox()
+        assertEquals(listOf(out(0x84, 0x01, 0x00, 0x01)), s.change(SettingChange.Press("nc_optimizer")))
+        s.receive(message(0x85, 0x01, 0x00, 0x00))
+        assertEquals(false, (setting(s, "nc_optimizer") as Setting.Action).active, "idle again")
+    }
+
+    @Test
+    fun powerOff() {
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x01, 0x23, 0x00))
+        assertEquals(listOf(out(0x24, 0x03, 0x01)), s.change(SettingChange.Press(PowerActions.POWER_OFF)))
     }
 
     @Test

@@ -121,8 +121,9 @@ switches with START 31.3. It does not change the modes themselves.
 
 ## 8. Never sent
 
-Firmware update, factory default, ship mode, reset, power, debug and the Authentication block
-are marked `never_send` in `commands.json`, and PairFree's Bose session refuses them.
+Firmware update, factory default, ship mode, reset, debug and the Authentication block are marked
+`never_send` in `commands.json`, and PairFree's Bose session refuses them. Power off (Control's Power, START
+`00`, as Bose's library and bosectl send it) is offered behind a confirmation (owner, 2026-11-03).
 
 ## 9. Open questions
 

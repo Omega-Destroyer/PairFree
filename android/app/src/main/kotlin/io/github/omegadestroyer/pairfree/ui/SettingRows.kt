@@ -65,7 +65,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
     confirming?.let { key ->
         ConfirmDialog(
             title = stringResource(actionStart(key)),
-            body = stringResource(if (key == "ef_power_off") R.string.setting_ef_power_off_body else R.string.setting_ef_restart_body),
+            body = stringResource(if (key == "power_off") R.string.setting_power_off_body else R.string.setting_restart_body),
             confirm = stringResource(actionStart(key)),
             onConfirm = { onChange(SettingChange.Press(key)) },
             onDismiss = { confirming = null },
@@ -126,7 +126,7 @@ private const val SEND_AFTER_MS = 300L
 private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
-private val CONFIRM_KEYS = setOf("ef_restart", "ef_power_off")
+private val CONFIRM_KEYS = setOf("restart", "power_off")
 
 @Composable
 private fun groupTitle(key: String): String = stringResource(
@@ -149,7 +149,7 @@ private fun groupTitle(key: String): String = stringResource(
         "sleep" -> R.string.setting_group_sleep
         "attention" -> R.string.setting_group_attention
         "ef_quality" -> R.string.setting_group_sound_quality
-        "ef_power" -> R.string.setting_group_power
+        "power" -> R.string.setting_group_power
         "ef_buttons" -> R.string.setting_group_buttons
         else -> R.string.setting_group_other
     },
@@ -333,10 +333,20 @@ private fun settingTitle(key: String): String = when (key) {
     "voice_command" -> stringResource(R.string.setting_voice_command)
     "ear_return" -> stringResource(R.string.setting_ear_return)
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
+    // Sony (SonySession, set 2)
+    "power_saving" -> stringResource(R.string.setting_power_saving)
+    "sound_leakage_reduction" -> stringResource(R.string.setting_sound_leakage_reduction)
+    "voice_contents" -> stringResource(R.string.setting_voice_contents)
+    "upmix_cinema" -> stringResource(R.string.setting_upmix_cinema)
+    "battery_voice" -> stringResource(R.string.setting_battery_voice)
+    "power_sound" -> stringResource(R.string.setting_power_sound)
+    "ult_beep" -> stringResource(R.string.setting_ult_beep)
+    "bgm_effect" -> stringResource(R.string.setting_bgm_effect)
+    "voice_guidance_volume" -> stringResource(R.string.setting_voice_guidance_volume)
     // EarFun (EarfunSession)
     "ef_anc_mode" -> stringResource(R.string.setting_ef_anc_mode)
     "ef_ambient_mode" -> stringResource(R.string.setting_transparency_mode)
-    "ef_prompt_volume" -> stringResource(R.string.setting_ef_prompt_volume)
+    "ef_prompt_volume", "prompt_volume" -> stringResource(R.string.setting_ef_prompt_volume)
     "ef_hearing_protection" -> stringResource(R.string.setting_hearing_protection)
     "ef_touch_lock", "ef_touch_lock_left", "ef_touch_lock_right" -> stringResource(R.string.setting_ef_touch_lock)
     "ef_ldac" -> "LDAC"
@@ -344,9 +354,9 @@ private fun settingTitle(key: String): String = when (key) {
     "ef_aptx_adaptive" -> "aptX Adaptive"
     "ef_aptx_lossless" -> "aptX Lossless"
     "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language)
-    "ef_restart" -> stringResource(R.string.setting_ef_restart)
-    "ef_power_off" -> stringResource(R.string.setting_ef_power_off)
-    else -> buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
+    "restart" -> stringResource(R.string.setting_restart)
+    "power_off" -> stringResource(R.string.setting_power_off)
+    else -> sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 /**
@@ -385,6 +395,23 @@ private fun touchTitle(key: String): String? {
         "hold_roller" -> stringResource(R.string.setting_roller_hold)
         "single_slider" -> stringResource(R.string.setting_slider)
         else -> null
+    }
+}
+
+/** A Sony general setting's row, by the title the earbuds gave: one of Sony's names, or their own text (SonySession). */
+@Composable
+private fun sonyGeneralTitle(key: String): String? {
+    if (!key.startsWith("sony_gs_")) return null
+    val title = key.removePrefix("sony_gs_")
+    if (title.startsWith("raw:")) return title.removePrefix("raw:")
+    return when (title) {
+        "TOUCH_PANEL_SETTING" -> stringResource(R.string.setting_touch_panel)
+        "FACETAP_SETTING", "SELECTABLE_FACETAP_SETTING" -> stringResource(R.string.setting_wide_area_tap)
+        "SIDETONE_SETTING" -> stringResource(R.string.setting_sidetone)
+        "TWS_ONE_SIDE_USE_NCASM_SETTING" -> stringResource(R.string.setting_noise_one_earbud)
+        "TAP_SENSITIVITY_SETTING" -> stringResource(R.string.setting_tap_sensitivity)
+        "VOICE_GUIDANCE_SETTING" -> stringResource(R.string.setting_voice_guidance)
+        else -> title.lowercase().removeSuffix("_setting").replace('_', ' ').replaceFirstChar { it.uppercase() }
     }
 }
 
@@ -469,7 +496,7 @@ private fun settingNote(key: String): String? = when (key) {
     "ef_hearing_protection" -> stringResource(R.string.setting_ef_hearing_protection_note)
     "ef_touch_lock", "ef_touch_lock_left", "ef_touch_lock_right" -> stringResource(R.string.setting_ef_touch_lock_note)
     "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language_note)
-    "ef_power_off" -> stringResource(R.string.setting_ef_power_off_note)
+    "power_off" -> stringResource(R.string.setting_power_off_note)
     else -> null
 }
 
@@ -576,7 +603,7 @@ private fun optionName(key: String, option: String): String = when {
             // EarFun's
             "anc_off" -> R.string.setting_cycle_anc_off
             "call_repeat" -> R.string.action_call_repeat
-            "power_off" -> R.string.setting_ef_power_off
+            "power_off" -> R.string.setting_power_off
             "privacy_mode" -> R.string.action_privacy_mode
             "multipoint" -> R.string.setting_multipoint
             "answer_hang_up" -> R.string.action_answer_hang_up
@@ -605,6 +632,14 @@ private fun optionName(key: String, option: String): String = when {
             "total" -> R.string.setting_ef_ambient_full
             "natural" -> R.string.setting_ef_ambient_natural
             else -> R.string.setting_transparency_normal
+        },
+    )
+    key == "bgm_effect" -> stringResource(
+        when (option) {
+            "small" -> R.string.setting_bgm_small
+            "medium" -> R.string.setting_bgm_medium
+            "large" -> R.string.setting_bgm_large
+            else -> R.string.action_off
         },
     )
     key == "ef_prompt_volume" -> stringResource(R.string.setting_percent, option.toIntOrNull() ?: 0)
@@ -798,12 +833,14 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
 
 private fun actionStart(key: String): Int = when (key) {
     "find" -> R.string.setting_find_start
-    "ef_restart" -> R.string.setting_ef_restart
-    "ef_power_off" -> R.string.setting_ef_power_off
+    "nc_optimizer" -> R.string.setting_nc_optimizer_start
+    "restart" -> R.string.setting_restart
+    "power_off" -> R.string.setting_power_off
     else -> R.string.setting_action_start
 }
 
 private fun actionStop(key: String): Int = when (key) {
     "find" -> R.string.setting_find_stop
+    "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     else -> R.string.setting_action_stop
 }

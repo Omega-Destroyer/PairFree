@@ -167,6 +167,8 @@ Everything here fits without scrolling on a 390 by 844 screen.
 - Preamp with minus and plus buttons. The protocol carries a master gain with every
   band write.
 - Save profile on its own full-width line.
+- Hearing test, where the brand's app has one: tones at each frequency from loud to quiet, I hear it, then the result
+  saved as a profile and applied. The screen says it turns media volume up for the test and back after.
 - Import file and Export file side by side under it.
 
 The band count and frequencies are data, not layout. The screen must work with
@@ -497,4 +499,5 @@ Planned, not yet designed:
 - Widget and tile designs.
 - The EQ of every model other than the H3 and Air5 Pro+, until someone records it
   (Record from the official app above).
-- Whether a hearing-test profile is worth building. It can be done offline.
+- Hearing tests: SOUNDPEATS' is built (owner, 2026-11-04; docs/soundpeats/PROTOCOL.md section 13). The other brands'
+  (QCY's per-ear test, JBL's PersoniFi, Samsung's Adapt sound, Apple's audiogram, Soundcore's HearID) are still to come.

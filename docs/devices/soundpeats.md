@@ -32,6 +32,7 @@ All models table below, and their equalizers are under Equalizer bands. The repo
 | Find my earbuds (beep)            | ✅                         | ✅                         |
 | Equalizer, 10 bands               | ✅                         | ✅                         |
 | EQ presets                        | ✅ all 12                  | ✅ all 12                  |
+| Hearing test (Adaptive EQ) ⁵      | Not tried                  | Not tried                  |
 | Ear tip fit test                  | ✅                         | ✅                         |
 | Water drain                       | —                          | ✅ ⁴                       |
 | Reports                           | [S5_0.4.9](../../data/soundpeats/reports/S5_0.4.9.txt), [S5_gaia_v3](../../data/soundpeats/reports/S5_gaia_v3.txt), [fit test](../../data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt) | [S2_1.2](../../data/soundpeats/reports/S2_1.2.txt), [LDAC](../../data/soundpeats/reports/air5-pro-plus_ldac.txt), [drain, LE Audio](../../data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt) |
@@ -46,6 +47,8 @@ All models table below, and their equalizers are under Equalizer bands. The repo
 3. Switching LE Audio restarts the earbuds. PairFree reconnects by itself.
 4. Plays a series of sounds for about 30 seconds, then stops by itself. Take the earbuds
    out of your ears first.
+5. SOUNDPEATS' hearing test, on the Sound tab of every model whose equalizer PairFree knows:
+   quiet tones at eight pitches, and an equalizer from the quietest you heard at each.
 
 Neither model answers these, so PairFree does not show them: in-ear detection, auto
 power-off, dynamic EQ, dynamic bass, movie mode, spatial audio, panoramic sound, Dolby,

@@ -1764,7 +1764,46 @@ val generateEarfunTables = tasks.register<GenerateEarfunTables>("generateEarfunT
     outputDir = layout.buildDirectory.dir("generated/earfun")
 }
 
+/** Writes the hearing tests' tone tables (data/<brand>/hearing_test.json). */
+abstract class GenerateHearingTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val soundpeatsJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val sp = JsonSlurper().parse(soundpeatsJson.get().asFile) as Map<String, Any?>
+        fun f(v: Any?) = (v as Number).toFloat().toString() + "f"
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/<brand>/hearing_test.json by the generateHearingTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val tones = (sp.getValue("tones") as List<List<Number>>).joinToString(", ") { "HearingTone(${f(it[0])}, ${f(it[1])}, ${f(it[2])})" }
+        out.appendLine("/** SOUNDPEATS' hearing test (data/soundpeats/hearing_test.json). */")
+        out.appendLine("internal val SOUNDPEATS_HEARING: HearingTable = HearingTable(listOf($tones), start = ${(sp.getValue("start") as Number).toInt()}, " +
+            "q = ${f(sp["q"])}, seconds = ${(sp.getValue("seconds") as Number).toInt()})")
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("HearingTables.kt").writeText(out.toString())
+    }
+}
+
+val generateHearingTables = tasks.register<GenerateHearingTables>("generateHearingTables") {
+    soundpeatsJson = dataDir.file("hearing_test.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.hearing"
+    outputDir = layout.buildDirectory.dir("generated/hearing")
+}
+
 kotlin.sourceSets.main {
+    kotlin.srcDir(generateHearingTables)
     kotlin.srcDir(generateIdentifyTables)
     kotlin.srcDir(generateEarfunTables)
     kotlin.srcDir(generateTables)

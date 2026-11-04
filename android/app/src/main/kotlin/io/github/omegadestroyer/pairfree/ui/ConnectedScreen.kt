@@ -1,5 +1,8 @@
 package io.github.omegadestroyer.pairfree.ui
 
+import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTables
+import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
+import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -121,9 +124,15 @@ internal fun ConnectedScreen(
 ) {
     var tab by rememberSaveable { mutableStateOf(startTab) }
     var fitTest by rememberSaveable { mutableStateOf(false) }
+    var hearingTest by rememberSaveable { mutableStateOf(false) }
     val model = modelOf(device, state)
     if (fitTest) {
         FitTestScreen(device, state, actions, onClose = { fitTest = false })
+        return
+    }
+    val hearing = hearingTable(device, eq)
+    if (hearingTest && eq != null && hearing != null) {
+        HearingTestScreen(eq, hearing, stringResource(R.string.hearing_test_result), eqActions::applyCurve, onClose = { hearingTest = false })
         return
     }
     Column(Modifier.fillMaxSize()) {
@@ -146,6 +155,7 @@ internal fun ConnectedScreen(
                         Brand.EARFUN -> R.string.eq_earfun
                         else -> R.string.eq_unavailable
                     },
+                    onHearingTest = hearing?.let { { hearingTest = true } },
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status) { fitTest = true }
@@ -153,6 +163,16 @@ internal fun ConnectedScreen(
         }
         TabBar(tab) { tab = it }
     }
+}
+
+/**
+ * The hearing test PairFree runs for [device], where its brand's app has one that becomes an EQ PairFree can set: so far
+ * SOUNDPEATS' (docs/soundpeats/PROTOCOL.md section 13), on the models whose EQ PairFree knows.
+ */
+private fun hearingTable(device: Paired, eq: EqState?): HearingTable? = when {
+    eq == null -> null
+    device.brand == Brand.SOUNDPEATS && eq.target === SoundpeatsEqTarget -> HearingTables.SOUNDPEATS
+    else -> null
 }
 
 /**

@@ -296,6 +296,16 @@
     <!-- Fit test, water drain, LE Audio -->
     <string name="ear_tips">Ear tips</string>
     <string name="fit_test">Fit test</string>
+    <string name="hearing_test">Hearing test</string>
+    <string name="hearing_test_intro">The earbuds play quiet tones at eight pitches, from low to high. Tap I hear it as soon as you hear one; when you hear nothing, wait. Find a quiet place and put both earbuds in. The test turns media volume up to the top and puts it back afterwards; the tones themselves stay quiet. It takes about three minutes, and gives an equalizer that lifts what you hear less, as SOUNDPEATS\' app works it out.</string>
+    <string name="hearing_test_music">Stop the music or video playing first: it would play at full volume during the test.</string>
+    <string name="hearing_test_start">Start the test</string>
+    <string name="hearing_test_tone">%1$d Hz</string>
+    <string name="hearing_test_listen">Listen for the tone. A tone you do not hear ends on its own.</string>
+    <string name="hearing_test_heard">I hear it</string>
+    <string name="hearing_test_done">Done. Each pitch gets the gain for the quietest tone you heard.</string>
+    <string name="hearing_test_apply">Save as %1$s and use it</string>
+    <string name="hearing_test_result">Hearing test</string>
     <string name="fit_test_about">Check that each ear tip seals well. A good seal gives fuller bass and better noise cancelling.</string>
     <string name="fit_test_open">Run the fit test</string>
     <string name="fit_test_intro">Put both earbuds in your ears and stay still somewhere quiet. The earbuds play a short sound and check how well each ear tip seals. It takes about 10 seconds.</string>

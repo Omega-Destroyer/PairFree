@@ -62,6 +62,10 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     private var keys: SonyKeys? = null
     private var connectionType: Int? = null
     private var connectionMode: Int? = null
+    private val switches = linkedMapOf<String, Boolean>()   // set 2's simple switches the earbuds answered, by key
+    private var bgm: Pair<Boolean, Int>? = null             // the background music effect: on, and the room size
+    private var guidanceVolume: Int? = null
+    private var guidanceVolumeType: Int? = null
     private val outbox = mutableListOf<SonyOut>()
 
     /** The last payload of each kind the earbuds sent, for the device report: by table, command and type. */
@@ -174,6 +178,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                 else -> null
             }
             speakToChatType?.let { outbox += SonyOut.table1(SYSTEM_GET_PARAM, it) }
+            for (s in S2_SWITCHES.filter { it.table == 1 && it.function in f }) outbox += SonyOut.table1(s.get, s.type)
+            if (SonyFunction.Set2.BGM_MODE_SMALL_MIDDLE_LARGE in f) outbox += SonyOut.table1(AUDIO_GET_PARAM, S2_BGM)
         }
         SonyAutoOff.of(tableSet, f)?.let { a ->
             autoOff = a
@@ -209,11 +215,23 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     else -> null
                 }
                 voiceGuidanceType?.let { outbox += SonyOut.table2(S2T2.VOICE_GUIDANCE_GET_PARAM, it) }
+                for (s in S2_SWITCHES.filter { it.table == 2 && it.function in functions2 }) outbox += SonyOut.table2(s.get, s.type)
+                guidanceVolumeType = when {
+                    f.VOICE_GUIDANCE_VOLUME_SETTING_MTK_FIXED_TO_5_STEPS in functions2 -> S2_GUIDANCE_VOLUME_5
+                    f.VOICE_GUIDANCE_SETTING_MTK_TRANSFER_WITHOUT_DISCONNECTION_SUPPORT_LANGUAGE_SWITCH_AND_VOLUME_ADJUSTMENT in functions2 -> S2_GUIDANCE_VOLUME
+                    else -> null
+                }
+                guidanceVolumeType?.let { outbox += SonyOut.table2(S2T2.VOICE_GUIDANCE_GET_PARAM, it) }
             }
             // The type, on (0) or off (1), and on two types the language, which a change to type 2 sends back.
-            S2T2.VOICE_GUIDANCE_RET_PARAM, S2T2.VOICE_GUIDANCE_NTFY_PARAM -> if (p.size >= 3 && p.u8(1) == voiceGuidanceType) {
-                voiceGuidance = p.u8(2) == ON_V2
-                if (p.size >= 4) voiceGuidanceLanguage = p.u8(3)
+            S2T2.VOICE_GUIDANCE_RET_PARAM, S2T2.VOICE_GUIDANCE_NTFY_PARAM -> when {
+                p.size >= 3 && p.u8(1) == voiceGuidanceType -> {
+                    voiceGuidance = p.u8(2) == ON_V2
+                    if (p.size >= 4) voiceGuidanceLanguage = p.u8(3)
+                }
+                // The volume, -2 to 2, a signed byte (Sony's app: VoiceGuidanceInquiredType VOLUME and the five-step type).
+                p.size >= 3 && p.u8(1) == guidanceVolumeType -> guidanceVolume = p[2].toInt()
+                else -> readSwitch(2, p)
             }
         }
     }
@@ -254,13 +272,17 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     private fun receiveSet2(p: ByteArray) {
         when (p.u8(0)) {
             S2.POWER_RET_STATUS, S2.POWER_NTFY_STATUS -> battery(p)
-            S2.POWER_RET_CAPABILITY, S2.POWER_RET_PARAM, S2.POWER_NTFY_PARAM -> readControls(p)
+            S2.POWER_RET_CAPABILITY -> readControls(p)
+            S2.POWER_RET_PARAM, S2.POWER_NTFY_PARAM -> if (!readControls(p)) readSwitch(1, p)
             NCASM_RET_PARAM, NCASM_NTFY_PARAM -> SonyNoise.of(2, p)?.let { noise = it }
             AUDIO_RET_PARAM, AUDIO_NTFY_PARAM -> when {
                 // Upscaling: off (0) or auto (1).
                 p.size == 3 && p.u8(1) == S2_UPSCALING -> dsee = p.u8(2) == 1
                 // Connection mode: sound quality (0), a stable connection (1) or, on some, low latency (2).
                 p.size == 3 && p.u8(1) == connectionType -> connectionMode = p.u8(2)
+                // The background music effect: on or off, then the room size (0 small, 1 middle, 2 large).
+                p.size == 4 && p.u8(1) == S2_BGM -> bgm = (p.u8(2) == ON_V2) to p.u8(3)
+                else -> readSwitch(1, p)
             }
             SYSTEM_RET_CAPABILITY -> readControls(p)
             SYSTEM_RET_PARAM, SYSTEM_NTFY_PARAM -> if (!readControls(p)) when {
@@ -270,9 +292,17 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     speakToChat = p.u8(2) == ON_V2
                     speakToChatPreview = p.u8(3)
                 }
+                else -> readSwitch(1, p)
             }
             else -> readEq(p)
         }
+    }
+
+    /** One of set 2's simple switches: its type, then on (0) or off (1) (Sony's OnOffSettingValue). */
+    private fun readSwitch(table: Int, p: ByteArray) {
+        if (tableSet != 2 || p.size != 3) return
+        val s = S2_SWITCHES.firstOrNull { it.table == table && it.type == p.u8(1) && p.u8(0) in it.replies } ?: return
+        switches[s.key] = p.u8(2) == ON_V2
     }
 
     private fun readEq(p: ByteArray) {
@@ -312,7 +342,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                 listOfNotNull(
                     eq?.takeIf { it.customizable }?.clearBass?.let { Setting.Level("clear_bass", it, -eq!!.center, eq!!.center) },
                     dsee?.let { Setting.Toggle("dsee", it) },
-                ),
+                    bgm?.let { (on, room) -> Setting.Choice(BGM_KEY, if (on) BGM_ROOMS[room] ?: OFF else OFF, listOf(OFF) + BGM_ROOMS.values) },
+                ) + switchRows(SettingTab.SOUND),
             ),
             group("touch", SettingTab.CONTROLS, keys?.settings.orEmpty()),
             group(
@@ -324,7 +355,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     autoOff?.setting,
                     pauseWhenOff?.let { Setting.Toggle("pause_taken_off", it) },
                     voiceGuidance?.let { Setting.Toggle("voice_guidance", it) },
-                ),
+                    guidanceVolume?.let { Setting.Level(GUIDANCE_VOLUME_KEY, it.coerceIn(-GUIDANCE_VOLUME_MAX, GUIDANCE_VOLUME_MAX), -GUIDANCE_VOLUME_MAX, GUIDANCE_VOLUME_MAX) },
+                ) + switchRows(SettingTab.DEVICE),
             ),
             group(PowerActions.GROUP, SettingTab.DEVICE, listOfNotNull(Setting.Action(PowerActions.POWER_OFF).takeIf { hasPowerOff })),
         )
@@ -332,6 +364,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     /** The earbuds list power off (set 1's function 33, set 2's 35), which Sony's app offers as a button. */
     private val hasPowerOff: Boolean
         get() = if (tableSet == 1) SonyFunction.Set1.POWER_OFF in functions else SonyFunction.Set2.POWER_OFF in functions
+
+    private fun switchRows(tab: SettingTab): List<Setting> =
+        S2_SWITCHES.filter { it.tab == tab }.mapNotNull { s -> switches[s.key]?.let { Setting.Toggle(s.key, it) } }
 
     private fun noiseRows(): List<Setting> = buildList {
         val n = noise
@@ -370,7 +405,11 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     "pause_taken_off" -> if (tableSet == 1) SonyOut.table1(SYSTEM_SET_PARAM, S1_CONTROL_BY_WEARING, S1_ON_OFF, if (on) 1 else 0)
                     else SonyOut.table1(SYSTEM_SET_PARAM, S2_CONTROL_BY_WEARING, if (on) ON_V2 else OFF_V2)
                     "voice_guidance" -> voiceGuidanceSet(on)
-                    else -> return null
+                    else -> S2_SWITCHES.firstOrNull { it.key == change.key }?.let { s ->
+                        switches[s.key] = on
+                        val v = if (on) ON_V2 else OFF_V2
+                        if (s.table == 1) SonyOut.table1(s.set, s.type, v) else SonyOut.table2(s.set, s.type, v)
+                    }
                 }?.also {
                     when (change.key) {
                         "speak_to_chat" -> speakToChat = on
@@ -386,6 +425,11 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                 when (change.key) {
                     "ambient_volume" -> noiseSet(level = v)
                     "clear_bass" -> eqSet(eq?.setCurve(clearBass = v))
+                    // The volume, then whether to play a sample of it (Sony's app plays one: feedbackSound).
+                    GUIDANCE_VOLUME_KEY -> guidanceVolumeType?.let { type ->
+                        guidanceVolume = v
+                        SonyOut.table2(S2T2.VOICE_GUIDANCE_SET_PARAM, type, v and 0xFF, ON_V2)
+                    }
                     else -> return null
                 } ?: return null
             }
@@ -397,6 +441,12 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                         out
                     }
                     change.key == CONNECTION_KEY -> connectionSet(change.option)
+                    change.key == BGM_KEY -> {
+                        val room = BGM_ROOMS.entries.firstOrNull { it.value == change.option }?.key
+                        val previous = bgm?.second ?: 0
+                        bgm = (room != null) to (room ?: previous)
+                        SonyOut.table1(AUDIO_SET_PARAM, S2_BGM, if (room != null) ON_V2 else OFF_V2, room ?: previous)
+                    }
                     else -> keys?.set(change.key, change.option)?.let { (out, next) ->
                         keys = next
                         out
@@ -548,6 +598,49 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         /** Power off: set 2's power status type for it, and the value both sets write (PowerOffSettingValue.USER_POWER_OFF). */
         private const val S2_POWER_OFF = 3
         private const val USER_POWER_OFF = 1
+        /** Set 2's background music effect (AudioInquiredType.BGM_MODE) and its room sizes (RoomSize). */
+        private const val S2_BGM = 3
+        private const val BGM_KEY = "bgm_effect"
+        private val BGM_ROOMS = linkedMapOf(0 to "small", 1 to "medium", 2 to "large")
+        private const val OFF = "off"
+
+        /** Set 2's voice guidance volume types (VoiceGuidanceInquiredType VOLUME and VOLUME_SETTING_FIXED_TO_5_STEPS): -2 to 2. */
+        private const val S2_GUIDANCE_VOLUME = 32
+        private const val S2_GUIDANCE_VOLUME_5 = 33
+        private const val GUIDANCE_VOLUME_KEY = "voice_guidance_volume"
+        private const val GUIDANCE_VOLUME_MAX = 2
+
+        /**
+         * One of set 2's settings that is a type byte, then on (0) or off (1), in the same command family both ways
+         * (Sony's app: the param messages with OnOffSettingValue): read with [get], written with [set], answered and
+         * notified with [replies]; [function] in table [table]'s list says the earbuds have it.
+         */
+        private data class S2Switch(val key: String, val tab: SettingTab, val table: Int, val function: Int, val type: Int, val get: Int, val set: Int, val replies: Set<Int>)
+
+        private val S2_SWITCHES: List<S2Switch> by lazy {
+            val power = setOf(SonyCommand.Set2.POWER_RET_PARAM, SonyCommand.Set2.POWER_NTFY_PARAM)
+            val audio = setOf(AUDIO_RET_PARAM, AUDIO_NTFY_PARAM)
+            val system = setOf(SYSTEM_RET_PARAM, SYSTEM_NTFY_PARAM)
+            val guidance = setOf(SonyCommand.Set2Table2.VOICE_GUIDANCE_RET_PARAM, SonyCommand.Set2Table2.VOICE_GUIDANCE_NTFY_PARAM)
+            val f = SonyFunction.Set2
+            val f2 = SonyFunction.Set2Table2
+            val g = SonyCommand.Set2Table2.VOICE_GUIDANCE_GET_PARAM
+            val s = SonyCommand.Set2Table2.VOICE_GUIDANCE_SET_PARAM
+            listOf(
+                // PowerInquiredType.POWER_SAVE_MODE
+                S2Switch("power_saving", SettingTab.DEVICE, 1, f.POWER_SAVING_MODE_ON_OFF, 6, SonyCommand.Set2.POWER_GET_PARAM, SonyCommand.Set2.POWER_SET_PARAM, power),
+                // AudioInquiredType: SOUND_LEAKAGE_REDUCTION, VOICE_CONTENTS, UPMIX_CINEMA
+                S2Switch("sound_leakage_reduction", SettingTab.SOUND, 1, f.SOUND_LEAKAGE_REDUCTION, 7, AUDIO_GET_PARAM, AUDIO_SET_PARAM, audio),
+                S2Switch("voice_contents", SettingTab.SOUND, 1, f.VOICE_CONTENTS, 6, AUDIO_GET_PARAM, AUDIO_SET_PARAM, audio),
+                S2Switch("upmix_cinema", SettingTab.SOUND, 1, f.UPMIX_CINEMA, 4, AUDIO_GET_PARAM, AUDIO_SET_PARAM, audio),
+                // SystemInquiredType.AUTO_VOLUME
+                S2Switch("adaptive_volume", SettingTab.SOUND, 1, f.AUTO_VOLUME, 10, SYSTEM_GET_PARAM, SYSTEM_SET_PARAM, system),
+                // VoiceGuidanceInquiredType: BATTERY_LV_VOICE, POWER_ONOFF_SOUND, SOUNDEFFECT_ULT_BEEP_ONOFF
+                S2Switch("battery_voice", SettingTab.DEVICE, 2, f2.VOICE_GUIDANCE_BATTERY_LEVEL_VOICE, 48, g, s, guidance),
+                S2Switch("power_sound", SettingTab.DEVICE, 2, f2.VOICE_GUIDANCE_POWER_ON_OFF_SOUND, 49, g, s, guidance),
+                S2Switch("ult_beep", SettingTab.DEVICE, 2, f2.VOICE_GUIDANCE_SOUND_EFFECT_ULT_BEEP_ON_OFF, 50, g, s, guidance),
+            )
+        }
         private const val ON_V2 = 0
         private const val OFF_V2 = 1
 

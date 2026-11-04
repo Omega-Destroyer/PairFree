@@ -333,6 +333,16 @@ private fun settingTitle(key: String): String = when (key) {
     "voice_command" -> stringResource(R.string.setting_voice_command)
     "ear_return" -> stringResource(R.string.setting_ear_return)
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
+    // Sony (SonySession, set 2)
+    "power_saving" -> stringResource(R.string.setting_power_saving)
+    "sound_leakage_reduction" -> stringResource(R.string.setting_sound_leakage_reduction)
+    "voice_contents" -> stringResource(R.string.setting_voice_contents)
+    "upmix_cinema" -> stringResource(R.string.setting_upmix_cinema)
+    "battery_voice" -> stringResource(R.string.setting_battery_voice)
+    "power_sound" -> stringResource(R.string.setting_power_sound)
+    "ult_beep" -> stringResource(R.string.setting_ult_beep)
+    "bgm_effect" -> stringResource(R.string.setting_bgm_effect)
+    "voice_guidance_volume" -> stringResource(R.string.setting_voice_guidance_volume)
     // EarFun (EarfunSession)
     "ef_anc_mode" -> stringResource(R.string.setting_ef_anc_mode)
     "ef_ambient_mode" -> stringResource(R.string.setting_transparency_mode)
@@ -605,6 +615,14 @@ private fun optionName(key: String, option: String): String = when {
             "total" -> R.string.setting_ef_ambient_full
             "natural" -> R.string.setting_ef_ambient_natural
             else -> R.string.setting_transparency_normal
+        },
+    )
+    key == "bgm_effect" -> stringResource(
+        when (option) {
+            "small" -> R.string.setting_bgm_small
+            "medium" -> R.string.setting_bgm_medium
+            "large" -> R.string.setting_bgm_large
+            else -> R.string.action_off
         },
     )
     key == "ef_prompt_volume" -> stringResource(R.string.setting_percent, option.toIntOrNull() ?: 0)

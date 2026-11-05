@@ -253,8 +253,11 @@ playback set holds for that assistant instead. PairFree does not read that choic
 `A1`. The read names a side's set by its tap action, else its hold (`CustomGesture.generateName`).
 The other gesture pages: `GestureUi4Card` builds its sets from the product list's `customizedGesture`, which only
 the Endurance Race 2 among its models has (section 10.1; the others' page offers nothing); the customized button page
-of 23 protocol 4 models is section 6.1; the headphone cards (`HeadLive670GestureCard` and the like) open pages of
-their own. Touch sensitivity (protocol 4 features `4033` and `4034`) sits on the
+of 23 protocol 4 models is section 6.1. `HeadLive670GestureCard` and `HeadLive770GestureCard` (Live 670NC, 770NC,
+675NC and 775NC) open this same page for the left channel alone, so those headphones get these sets, starting the
+noise set at `0D` as headphones do. Not covered yet: `HeadTourOneGestureCard` (the Tour One's class reads gestures but
+has no write; what it sets is tap and hold on the touch panel, `AA 79 03 00 01` and the function, from the customize
+controls page) and `HeadQuantumGestureCard` (the Quantum 360 and 910 headsets' touch panel page, `wp.k`). Touch sensitivity (protocol 4 features `4033` and `4034`) sits on the
 customized-button page, whose levels come from the same server resources, so it is left out too.
 
 ### 4.10 Adaptive noise cancelling and auto compensation: `91`

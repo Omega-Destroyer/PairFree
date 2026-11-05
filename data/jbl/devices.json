@@ -751,6 +751,7 @@
     },
     {
       "name": "JBL Live 670NC",
+      "gesture_noise": 13,
       "pids": ["20CC"],
       "kind": "headphones",
       "connect": "BLE",
@@ -768,7 +769,7 @@
         "audio": [256, 53, 125],
         "video": [197, 46, 50]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures"],
       "eq": {
         "path": "a2_q10",
         "series": "live",
@@ -780,6 +781,7 @@
     },
     {
       "name": "JBL Live 770NC",
+      "gesture_noise": 13,
       "pids": ["20CE", "20CF"],
       "kind": "headphones",
       "connect": "BLE",
@@ -797,7 +799,7 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures"],
       "eq": {
         "path": "a2_q10",
         "series": "live",
@@ -961,6 +963,7 @@
     },
     {
       "name": "JBL Live 675NC",
+      "gesture_noise": 13,
       "pids": ["20CD"],
       "kind": "headphones",
       "connect": "BLE",
@@ -978,7 +981,7 @@
         "audio": [256, 53, 125],
         "video": [197, 46, 50]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures"],
       "eq": {
         "path": "a2_q10",
         "series": "live",
@@ -1299,6 +1302,7 @@
     },
     {
       "name": "JBL Live 775NC",
+      "gesture_noise": 13,
       "pids": ["2124"],
       "kind": "headphones",
       "connect": "BLE",
@@ -1316,7 +1320,7 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures"],
       "eq": {
         "path": "a2_q10",
         "series": "live",

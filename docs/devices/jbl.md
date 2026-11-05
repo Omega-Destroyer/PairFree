@@ -46,8 +46,8 @@ that step itself, so these are in the table: the Live 4 generation, Tune 530BT, 
 3 and Peak 4, Soundgear Clips, Junior Free and the Smart Tx. None has been tried, and the step
 is read from JBL's app without a recording, so a report from any of them is especially useful.
 
-Not yet: the noise cancelling level, and the touch controls JBL's app sets on the headphones'
-own gesture pages. Nor
+Not yet: the noise cancelling level, and the touch controls of the Quantum 360 and 910 headsets
+and the Tour One, which JBL's app sets on pages of their own. Nor
 these models, which JBL's app drives another way:
 - Tour Pro 4, Tour One M4 and the newer Smart Tx, which this version of JBL's app (5.37.10) has
   no controls for.
@@ -96,16 +96,16 @@ recorder does not read JBL's commands.
 <tr><td>Tune 520BT</td><td><code>20F7</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, equalizer</td><td>Not tested</td></tr>
 <tr><td>Tune 720BT</td><td><code>20B4</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, equalizer</td><td><a href="https://github.com/FajkPes/JBL-Headphones-App">FajkPes</a></td></tr>
 <tr><td>Tune 525BT</td><td><code>20E7</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, equalizer</td><td>Not tested</td></tr>
-<tr><td>Live 670NC</td><td><code>20CC</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, low volume EQ, equalizer</td><td>Not tested</td></tr>
-<tr><td>Live 770NC</td><td><code>20CE</code> <code>20CF</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, low volume EQ, equalizer</td><td>Not tested</td></tr>
+<tr><td>Live 670NC</td><td><code>20CC</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, low volume EQ, touch controls, equalizer</td><td>Not tested</td></tr>
+<tr><td>Live 770NC</td><td><code>20CE</code> <code>20CF</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, low volume EQ, touch controls, equalizer</td><td>Not tested</td></tr>
 <tr><td>Quantum 360X</td><td><code>20A6</code></td><td>Headphones</td><td>Serial</td><td>auto power-off, equalizer</td><td>Not tested</td></tr>
 <tr><td>Quantum 360P</td><td><code>20AC</code></td><td>Headphones</td><td>Serial</td><td>auto power-off, equalizer</td><td>Not tested</td></tr>
-<tr><td>Live 675NC</td><td><code>20CD</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, low volume EQ, equalizer</td><td>Not tested</td></tr>
+<tr><td>Live 675NC</td><td><code>20CD</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, low volume EQ, touch controls, equalizer</td><td>Not tested</td></tr>
 <tr><td>Junior 320BT</td><td><code>2106</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, equalizer</td><td>Not tested</td></tr>
 <tr><td>Junior 470NC</td><td><code>2105</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, auto power-off, Smart Audio &amp; Video, voice prompts, equalizer</td><td>Not tested</td></tr>
 <tr><td>Quantum 360</td><td><code>2113</code></td><td>Headphones</td><td>Serial</td><td>auto power-off, equalizer</td><td>Not tested</td></tr>
 <tr><td>Tour One M3</td><td><code>2101</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, sound effect, audio limiter, speak to chat, Hi-Res audio, adaptive noise cancelling, auto compensation, low volume EQ, equalizer</td><td>Not tested</td></tr>
-<tr><td>Live 775NC</td><td><code>2124</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, low volume EQ, equalizer</td><td>Not tested</td></tr>
+<tr><td>Live 775NC</td><td><code>2124</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, 3D spatial sound, low volume EQ, touch controls, equalizer</td><td>Not tested</td></tr>
 <tr><td>Tune 527BT</td><td><code>2122</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, equalizer</td><td>Not tested</td></tr>
 <tr><td>Tune 135BT</td><td><code>2135</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, equalizer</td><td>Not tested</td></tr>
 <tr><td>Tune 235BT</td><td><code>2136</code></td><td>Headphones</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, equalizer</td><td>Not tested</td></tr>

@@ -33,6 +33,10 @@ abstract class GenerateTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val devicesJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val qcyJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -180,6 +184,26 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine()
         out.append(eqFunctions)
 
+        // The Capsule3 Pro's QCY protocol (data/soundpeats/qcy_commands.json, docs/soundpeats/PROTOCOL.md section 10).
+        @Suppress("UNCHECKED_CAST")
+        val qcy = JsonSlurper().parse(qcyJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val qcyItems = (qcy.getValue("items") as List<Map<String, Any?>>).associateBy { it.getValue("name") as String }
+        @Suppress("UNCHECKED_CAST")
+        val noise = qcyItems.getValue("noise_mode").getValue("values") as Map<String, String>
+        @Suppress("UNCHECKED_CAST")
+        val buttons = obj(qcy, "buttons").getValue("functions") as Map<String, String>
+        out.appendLine()
+        out.appendLine("/** The SOUNDPEATS models built by QCY (data/soundpeats/qcy_commands.json). */")
+        out.appendLine("public object CapsuleWire {")
+        out.appendLine("    public const val COMPANY: Int = ${hex(obj(obj(qcy, "transport"), "advertisement")["manufacturer_id"])}")
+        for ((v, name) in noise) out.appendLine("    public const val NOISE_${name.uppercase()}: Int = ${hex(v)}")
+        for (name in listOf("noise_mode", "game_mode", "touch_disabled", "ldac", "multipoint")) {
+            out.appendLine("    public const val ${name.uppercase()}: Int = ${hex(qcyItems.getValue(name)["id"])}")
+        }
+        out.appendLine("    public const val ACTION_ANC_CYCLE: Int = ${buttons.entries.single { it.value == "ANC cycle" }.key}")
+        out.appendLine("}")
+
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()
         dir.resolve("Tables.kt").writeText(out.toString())
@@ -189,6 +213,7 @@ abstract class GenerateTables : DefaultTask() {
 val generateTables = tasks.register<GenerateTables>("generateTables") {
     commandsJson = dataDir.file("commands.json")
     devicesJson = dataDir.file("devices.json")
+    qcyJson = dataDir.file("qcy_commands.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol"
     outputDir = layout.buildDirectory.dir("generated/tables")
 }

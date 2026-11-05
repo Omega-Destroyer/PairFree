@@ -594,8 +594,17 @@ ANC levels, transparency levels, dynamic EQ, dynamic bass, movie mode, spatial a
 Dolby, prompt volume, in-ear detection, light effect, find earbud, auto shutdown,
 LE Audio and the fit test are all empty in the app's Capsule3 Pro code.
 
-The Capsule3 Pro+ is a different product. It is not in the APK and its protocol is
-unknown.
+The Capsule3 Pro+ (`SPTS04PRO`) is not in PeatsAudio's APK; SOUNDPEATS' own model list puts it in the
+same family (`QCY-WUQI`), which SOUNDPEATS' app drives with QCY's library, so PairFree runs it the same way.
+
+### 10.7 In PairFree
+
+PairFree runs these models on QCY's session (`QcySession`, docs/qcy/PROTOCOL.md) with a model of their own
+(`protocol.qcy.Capsule`): it finds them by their advert under company id `522C` (permission as for QCY,
+docs/DESIGN.md), and offers noise control, game mode, touch controls off, multipoint (LDAC sent the other way
+first, as PeatsAudio does; no separate LDAC switch), the touch controls with the noise control cycle, and the
+EQ: the model's classic curve and presets from SOUNDPEATS' data, written whole as in 10.5 (`CapsuleEqTarget`).
+Not offered: the prompt language (`19`). None of this has been tried on the earbuds.
 
 ## 11. Confirmed on hardware
 

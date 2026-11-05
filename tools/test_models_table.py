@@ -23,7 +23,7 @@ class ModelsTable(unittest.TestCase):
 
     def test_summary(self):
         s = gen.summary()
-        self.assertEqual(85, s["models"], "every model in SOUNDPEATS' own list and the official app's table but the three on QCY's protocol")
+        self.assertEqual(88, s["models"], "every model in SOUNDPEATS' own list and the official app's table")
         self.assertEqual(["Air5 Pro+", "C30", "H3", "TRUEFREE Clip C10"], s["tested"])
 
     def test_h3_report_reads(self):
@@ -54,7 +54,7 @@ class ModelsTable(unittest.TestCase):
 
     def test_every_model_has_a_row(self):
         self.assertEqual(len(gen.rows(list(self.devices.values()), self.commands)), len(self.devices))
-        self.assertIn("Not supported", self.row("QCYTS04"))
+        self.assertNotIn("Not supported", self.row("QCYTS04"))
 
     def test_feature_columns_name_real_commands(self):
         for _, ids in gen.FEATURES:

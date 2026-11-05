@@ -53,6 +53,8 @@ import io.github.omegadestroyer.pairfree.protocol.pixel.PixelReply
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelSession
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelTransport
 import io.github.omegadestroyer.pairfree.protocol.qcy.JieliWire
+import io.github.omegadestroyer.pairfree.protocol.CapsuleWire
+import io.github.omegadestroyer.pairfree.protocol.qcy.Capsule
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyControl
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyEq
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
@@ -119,6 +121,8 @@ data class Paired(
     val model: String? = null,
     /** The model id Galaxy Buds2 and later publish in their service list, when it was there (for the device report). */
     val modelId: Int? = null,
+    /** The brand the earbuds are sold as, when another brand's protocol runs them (SOUNDPEATS' QCY-built Capsule3 Pro). */
+    val soldAs: Brand? = null,
 )
 
 sealed interface LinkStatus {
@@ -396,7 +400,7 @@ class EarbudsConnection(
                     Brand.APPLE -> serveApple(opened)
                     Brand.NOTHING -> serveNothing(opened, device)
                     Brand.PIXEL -> servePixel(opened, device)
-                    Brand.QCY -> serveQcy(opened)
+                    Brand.QCY -> serveQcy(opened, device)
                     Brand.ONEMORE -> serveOneMore(opened, device)
                     Brand.EARFUN -> serveEarfun(opened, device)
                     Brand.SOUNDPEATS -> serve(opened, device)
@@ -487,7 +491,9 @@ class EarbudsConnection(
         val found = qcyFound ?: run {
             if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
             note("scanning for QCY's advert")
-            adapter?.let { QcyFinder(it, linkLog).find(device.address) } ?: throw NotFound()
+            // SOUNDPEATS' QCY-built models advertise under SOUNDPEATS' company id.
+            val company = if (device.soldAs == Brand.SOUNDPEATS) CapsuleWire.COMPANY else QcyWire.COMPANY
+            adapter?.let { QcyFinder(it, linkLog, company).find(device.address) } ?: throw NotFound()
         }
         qcyFound = found
         val jieli = QcyModels.of(found.advert.vendorId)?.protocol.let { it == QcyProtocol.JIELI || it == QcyProtocol.JIELI_CUSTOM }
@@ -936,9 +942,11 @@ class EarbudsConnection(
      * section 3). The earbuds report each setting asked for, and every change made on them, as notifications:
      * on QCY's settings characteristic, or as JieLi RCSP frames, whose own commands get an answer.
      */
-    private suspend fun serveQcy(opened: ControlLink) = coroutineScope {
+    private suspend fun serveQcy(opened: ControlLink, device: Paired) = coroutineScope {
         val found = qcyFound
-        val session = QcyControl.of(found?.let { QcyModels.of(it.advert.vendorId) }, found?.advert)
+        val capsule = Models.find(device.model, device.name)?.takeIf { device.soldAs == Brand.SOUNDPEATS && Capsule.of(it) }
+        val model = capsule?.let(Capsule::qcyModel) ?: found?.let { QcyModels.of(it.advert.vendorId) }
+        val session = QcyControl.of(model, found?.advert)
         qcy = session
         publish(session)
         val queue = Channel<ByteArray>(Channel.UNLIMITED)

@@ -452,6 +452,7 @@
     <string name="setting_jbl_hi_res">Hi-Res audio</string>
     <string name="setting_jbl_touch_playback">Playback: tap to play or pause, double tap for the next track, triple for the last, hold for the voice assistant</string>
     <string name="setting_jbl_touch_ambient">Noise control: tap to change the noise mode, double tap for TalkThru, hold for the voice assistant</string>
+    <string name="setting_jbl_touch_assistant">Voice assistant: hold to talk to your phone\'s voice assistant</string>
     <string name="setting_jbl_touch_volume">Volume: tap for louder, double tap for quieter, hold for the voice assistant</string>
     <string name="setting_jbl_low_volume_eq">Low volume EQ</string>
     <string name="setting_jbl_low_volume_eq_note">Keeps the bass and treble full when you listen quietly.</string>

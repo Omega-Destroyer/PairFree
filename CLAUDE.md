@@ -243,13 +243,14 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   Pro 3, Tune 670NC and 770NC, opened over Airoha's LE service when paired as an LE-only device) speak Airoha's
   RACE commands (`RacePacket`, `RaceParser`, `JblRace` from `commands.json`'s `airoha`) through the same
   `JblSession` and `JblExtras`; the session reads the chip name first, and noise control, auto power-off and
-  pause when taken off are written the way that chip takes them (`RaceChip`). Their touch controls and noise
-  level are not covered. After a change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
+  pause when taken off are written the way that chip takes them (`RaceChip`); so are the touch controls, to the
+  earbuds' key maps (section 10.1). Their noise level is not covered. After a change to `devices.json` run `python tools/gen_jbl_table.py`. Never send
   `JblCommand.NEVER_SEND` (factory reset, power off, firmware update, analytics) or `JblRace.NEVER_SEND`, and on
   RACE no key event but Smart Audio & Video's (`JblRace.KEY_EVENTS`) and no firmware update command
-  (`JblSession.allowed` checks every frame). The one exception: the NV key writes and relays to the other earbud of an
-  Airoha PEQ write PairFree builds itself (`JblAirohaEq.sent`), exactly as Airoha's SDK sends them in JBL's app (owner,
-  2026-11-04).
+  (`JblSession.allowed` checks every frame). The exceptions: NV key writes, reloads, key map writes and relays to the other earbud
+  that PairFree builds itself exactly as JBL's app sends them, for the Airoha PEQ (`JblAirohaEq.sent`) and the touch
+  controls (`JblAirohaGesture.sent`; owner, 2026-11-04 and 2026-11-05: NV values may be written wherever they are
+  exactly the vendor app's).
 - `docs/apple/PROTOCOL.md` is Apple's accessory protocol for AirPods and Apple-chip Beats. Apple's only Android
   app, Beats 2.12, is native code and has not been read, so this one is ported from LibrePods
   (github.com/kavishdevar/librepods, GPL-3.0-or-later) and checked against MagicPodsCore

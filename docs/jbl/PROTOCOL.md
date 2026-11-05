@@ -538,8 +538,7 @@ models without a dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+)
 product list's ANC flag and Smart Audio & Video, voice prompts, VoiceAware and auto power-off from their class;
 PairFree shows each only once the earbuds answer its read.
 
-**Not covered yet:** the touch controls (an NV key per chip generation, rewritten and relayed to the other
-earbud, then reloaded: `MmiStage_SetGesture_1568_v3` and its kin), the noise cancelling and Ambient Aware level
+**Touch controls** (section 10.1) are covered on the models whose page JBL's app has. **Not covered yet:** the noise cancelling and Ambient Aware level
 (`0E06` `00 1E` and the level, which JBL's app sends only with the mode on, and reads back only from
 indications), adaptive noise cancelling and auto compensation (separate flows per product id through Airoha's
 ANC manager), PSAP, PersoniFi, the Live Buds 3's smart case settings, Auracast, the voice assistant and the EQ
@@ -551,6 +550,41 @@ case action `0083`; the clock `0090`; Harman commands passed through `0093`; dev
 writes `0A01` and reloads `0A09`; relays to the other earbud `0D01`; key events on `1101` other than Smart Audio
 & Video's (`0096` factory reset, `0095` power off, `0002` pairing among them); and the firmware update commands
 `1C00` to `1CFF` other than the version read.
+
+### 10.1 Touch controls
+
+Airoha's SDK in JBL's app keeps each earbud's touch controls as a key map of 8-byte entries: the key type, a key
+id, the event (two bytes, low first) and a state (four bytes). JBL's gesture ids (1 and 2 tap, 3 and 4 double tap,
+5 and 6 a second long press, 7 and 8 triple tap, 49 and 50 hold; odd on the left) and action ids are the same as
+on JBL's other models (section 4.9). How they become entries depends on the chip, as `AirohaConnector` sets the
+chip type:
+
+| Variant | Chips | Key map | Key id |
+|---|---|---|---|
+| v3 | AB158x; AB1568 and AB1565 dual with an NVDM version above 1 | NV key `F2D6` | 126 at first, then the last entry read |
+| 1568 | the other AB1568 and AB1565 dual | NV key `F2E7` | 24 |
+| plain | AB155x | NV key `F2E7` | 126 |
+| ab1562 | AB1562 | key map commands `0A0B` (read) and `0A0A` (write) | 0 at first, then the last entry read |
+
+Every variant keeps a copy of the other earbud's map in `F2EF`. The read (`MmiStage_GetGesture*`) asks which earbud
+PairFree talks to (`0CD4`), on an AB1568 the NVDM version (`1001`), then reads the earbud's own map (`0A00`, length
+100) and, relayed (`0D01`), the other's; an empty map is every gesture at 0. A write (`setGestureInfo`) takes the
+page's gestures for one side plus what the read found for the rest, then writes the earbud's own map (`0A01`), the
+copy of the other's (`0A01` `F2EF`) and reloads its key (`0A09`), and on earbuds does the same relayed to the other
+earbud; the AB1562 writes its map (`0A0A`), then relayed. Which entries an action writes, and which action a map's
+entries mean, are tables in `data/jbl/commands.json` (`airoha.gesture`), derived from JBL's own methods run for every
+gesture and action outside the repo; `test_vectors.json` (`airoha_gesture`) keeps 96 of those writes and reads.
+Two quirks kept: the older chips have no entry for action 10 (play/pause that also dismisses the assistant), so it
+writes nothing there, and the plain variant's read leaves out a gesture it cannot name instead of setting it to 0.
+
+Which sets each model gets follows JBL's pages: the dashboard's gesture card (`sp.a`; Live Buds 3, Live Free 2,
+Quantum TWS and TWS Air, Reflect Aero) has the sets of section 4.9 with the second long press at 0, and on the
+Quantum TWS the low latency switch (14) on the triple tap of the noise control and volume sets; the older settings
+page (`em.o`, `AppUtils.setCommandAiRoHaGesture`; Reflect Mini NC, Live Free NC+) has playback (8, 5, 6, hold 161),
+noise control (9, 4, 0, 161), volume (1, 2, 0, 161), the phone's voice assistant on the hold (one earbud at a time;
+its tap, 160, writes nothing on these chips) and none. The Club Pro+ has no gesture page; the Tune 670NC, 770NC,
+775NC and 777NC have no gesture card; the Tour Pro 3, Wave Beam 2 and Vibe Beam 2 have the newer card but no sets in
+JBL's product list, so JBL's app offers nothing there either.
 
 ## 11. Equalizer
 

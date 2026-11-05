@@ -693,6 +693,7 @@ private fun optionName(key: String, option: String): String = when {
             "playback" -> R.string.setting_jbl_touch_playback
             "ambient" -> R.string.setting_jbl_touch_ambient
             "volume" -> R.string.setting_jbl_touch_volume
+            "voice_assistant" -> R.string.setting_jbl_touch_assistant
             "none" -> R.string.action_none
             else -> R.string.action_other
         },

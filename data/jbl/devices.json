@@ -2406,6 +2406,7 @@
     },
     {
       "name": "JBL REFLECT MINI NC",
+      "airoha_gestures": "settings",
       "pids": ["201C", "2027"],
       "kind": "earbuds",
       "connect": "BT",
@@ -2432,6 +2433,7 @@
     },
     {
       "name": "JBL LIVE FREE NC+ TWS",
+      "airoha_gestures": "settings",
       "pids": ["201F", "2024"],
       "kind": "earbuds",
       "connect": "BT",
@@ -2458,6 +2460,7 @@
     },
     {
       "name": "JBL LIVE FREE 2 TWS",
+      "airoha_gestures": "card",
       "pids": ["2067", "2068"],
       "kind": "earbuds",
       "connect": "BT",
@@ -2487,6 +2490,7 @@
     },
     {
       "name": "JBL Reflect Aero",
+      "airoha_gestures": "card",
       "pids": ["207B"],
       "kind": "earbuds",
       "connect": "BT",
@@ -2516,6 +2520,8 @@
     },
     {
       "name": "JBL Quantum TWS",
+      "airoha_gestures": "card",
+      "gesture_ull": true,
       "pids": ["207D", "207E"],
       "kind": "earbuds",
       "connect": "BT",
@@ -2540,6 +2546,8 @@
     },
     {
       "name": "JBL Quantum TWS Air",
+      "airoha_gestures": "card",
+      "gesture_ull": true,
       "pids": ["20BD"],
       "kind": "earbuds",
       "connect": "BT",
@@ -2619,6 +2627,7 @@
     },
     {
       "name": "JBL Live Buds 3",
+      "airoha_gestures": "card",
       "pids": ["20F1"],
       "kind": "earbuds",
       "connect": "BT",

@@ -42,6 +42,14 @@ public data class JblModel(
     val names: List<String> = emptyList(),
     /** The model's EQ as JBL's app writes it, its presets and range (devices.json eq; docs/jbl/PROTOCOL.md section 11). */
     val eq: JblEqSpec? = null,
+    /**
+     * Airoha models: the gesture page JBL's app gives them (devices.json airoha_gestures; docs/jbl/PROTOCOL.md section 10.1):
+     * "card" for the dashboard's gesture card (CustomGesture's sets), "settings" for the older settings page
+     * (setCommandAiRoHaGesture's sets); null where the app has none.
+     */
+    val airohaGestures: String? = null,
+    /** The ambient and volume sets put the low latency switch (14) on the triple tap, as JBL's app does on the Quantum TWS. */
+    val gestureUll: Boolean = false,
 ) {
     /**
      * How the model's settings go: one command each ([DIRECT]), Harman's feature records, command 06

@@ -77,7 +77,8 @@ class JblRaceTest {
         s.start()
         s.reply("chip_name_ab158x")
         assertEquals(
-            listOf(requests.getValue("auto_off_read_ab1568"), RacePacket.configGet(JblRace.CONFIG_IN_EAR).hex(), requests.getValue("model_name_ab158x")),
+            // Then, last, the touch controls' read begins by asking which earbud PairFree talks to (section 10.1).
+            listOf(requests.getValue("auto_off_read_ab1568"), RacePacket.configGet(JblRace.CONFIG_IN_EAR).hex(), requests.getValue("model_name_ab158x"), RacePacket.of(JblRace.AGENT_CHANNEL).hex()),
             s.takeOutbox().map { it.hex() },
         )
         assertEquals("AB1585", s.chipName, "for the device report")

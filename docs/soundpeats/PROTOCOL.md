@@ -257,6 +257,13 @@ Air5 Pro+ and C30 name only commands PairFree already reads; they give noise mod
 "environment adaptive" and `04` as "weak noise cancelling", and the H3's EQ as `0E02`, which its
 capture shows is `0E01`.
 
+Custom sliders in 2.5.3 (`CreateCustomizeEqualizerUseCase`): on ORIGIN models the classic
+curve's own bands; otherwise 8 bands (62 Hz to 8 kHz) on FOTA (Bluetrum) chips and 10 (31 Hz to
+16 kHz) on the rest, as PairFree has them. 2.5.3 gives those sliders Q 0.7 where PeatsAudio 1.9.45
+gives 1.8; the Clip C10's recording (PeatsAudio) shows 1.8, which PairFree keeps. Server gains can
+have two decimals (the Q35 HD+'s 0.05 dB): PairFree adds gains in hundredths and sends the nearest
+unit of 1/60 dB, as the recordings show the app does.
+
 ## 5. Chip families
 
 The app sorts every model into a family ("chip scheme"). The family decides the

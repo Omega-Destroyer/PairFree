@@ -42,19 +42,19 @@ public data class EqLayout(
     /**
      * One payload per band, in order, for [userGainsDb] (whole dB, one per band) on top of
      * the base curve, and a preamp of [preampDb] added to the master gain. Gains are added
-     * in tenths of a dB, so the curves' one-decimal values stay exact.
+     * in hundredths of a dB, so the curves' values stay exact.
      */
     public fun payloads(userGainsDb: List<Int>, preampDb: Int = 0): List<ByteArray> {
         require(userGainsDb.size == bands.size) { "need ${bands.size} gains, got ${userGainsDb.size}" }
         return encode(
-            fixedBands.map { it to tenths(it.gainDb) } + bands.mapIndexed { i, band -> band to tenths(band.gainDb) + userGainsDb[i] * 10 },
+            fixedBands.map { it to hundredths(it.gainDb) } + bands.mapIndexed { i, band -> band to hundredths(band.gainDb) + userGainsDb[i] * 100 },
             preampDb,
         )
     }
 
     /** One payload per band of [preset], with a preamp of [preampDb] added to the master gain. */
     public fun payloads(preset: EqPreset, preampDb: Int = 0): List<ByteArray> =
-        encode(preset.bands.map { it to tenths(it.gainDb) }, preampDb)
+        encode(preset.bands.map { it to hundredths(it.gainDb) }, preampDb)
 
     /** The frames to send, vendor [Wire.VENDOR_EQ], one per band. The official app leaves 50 ms between them. */
     public fun frames(userGainsDb: List<Int>, preampDb: Int = 0): List<ByteArray> = wrap(payloads(userGainsDb, preampDb))
@@ -62,9 +62,9 @@ public data class EqLayout(
     public fun frames(preset: EqPreset, preampDb: Int = 0): List<ByteArray> = wrap(payloads(preset, preampDb))
 
     private fun encode(points: List<Pair<EqBand, Int>>, preampDb: Int): List<ByteArray> {
-        val master = db(tenths(masterGainDb) + preampDb * 10)
-        return points.mapIndexed { i, (band, gainTenths) ->
-            val gain = db(gainTenths)
+        val master = db(hundredths(masterGainDb) + preampDb * 100)
+        return points.mapIndexed { i, (band, gainHundredths) ->
+            val gain = db(gainHundredths)
             when (command) {
                 Wire.EQ_COMMAND_QUALCOMM -> Eq.band0E01(points.size, i + 1, band.hz.toDouble(), gain, band.q, master)
                 else -> Eq.band0E02(points.size, i + 1, band.hz.toDouble(), gain, band.q, master)
@@ -74,11 +74,15 @@ public data class EqLayout(
 
     private fun wrap(payloads: List<ByteArray>): List<ByteArray> = payloads.map { Frame.build(command, it, Wire.VENDOR_EQ) }
 
-    private fun tenths(db: Double): Int = (db * 10).roundToInt()
+    private fun hundredths(db: Double): Int = (db * 100).roundToInt()
 
     /**
-     * [tenths] of a dB, as a gain [Eq] scales by 60 and truncates to exactly tenths x 6: half a unit
-     * further from zero, so 4.1 dB is sent as 246 and not as 4.1 x 60 = 245.99999 (the C30's +3.1 dB band).
+     * [hundredths] of a dB, as a gain [Eq] scales by 60 and truncates to exactly the nearest unit: half a unit further
+     * from zero, so 4.1 dB is sent as 246 and not as 4.1 x 60 = 245.99999 (the C30's +3.1 dB band), and -5.95 dB (a base
+     * gain of 0.05 dB on the Q35 HD+, less 6) as -357.
      */
-    private fun db(tenths: Int): Double = (tenths * 6 + sign(tenths.toDouble()) * 0.5) / 60.0
+    private fun db(hundredths: Int): Double {
+        val units = (hundredths * 0.6).roundToInt()
+        return (units + sign(units.toDouble()) * 0.5) / 60.0
+    }
 }

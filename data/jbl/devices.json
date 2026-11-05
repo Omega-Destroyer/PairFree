@@ -1689,6 +1689,7 @@
     },
     {
       "name": "JBL Tune 530BT",
+      "p5_gestures": "2162",
       "pids": ["2162"],
       "kind": "headphones",
       "connect": "BLE",
@@ -1716,6 +1717,7 @@
     },
     {
       "name": "JBL Tune 530BT",
+      "p5_gestures": "common",
       "pids": ["2189"],
       "kind": "headphones",
       "connect": "BLE",
@@ -1743,6 +1745,7 @@
     },
     {
       "name": "JBL Tune 730BT",
+      "p5_gestures": "2163",
       "pids": ["2163"],
       "kind": "headphones",
       "connect": "BLE",
@@ -1770,6 +1773,7 @@
     },
     {
       "name": "JBL Tune 680NC",
+      "p5_gestures": "215E",
       "pids": ["215E"],
       "kind": "headphones",
       "connect": "BLE",
@@ -1801,6 +1805,7 @@
     },
     {
       "name": "JBL Tune 780NC",
+      "p5_gestures": "215F",
       "pids": ["215F"],
       "kind": "headphones",
       "connect": "BLE",
@@ -1851,6 +1856,7 @@
     },
     {
       "name": "JBL Live 680NC",
+      "p5_gestures": "2160",
       "pids": ["2160"],
       "kind": "headphones",
       "connect": "BLE",
@@ -1882,6 +1888,7 @@
     },
     {
       "name": "JBL Live 780NC",
+      "p5_gestures": "2161",
       "pids": ["2161"],
       "kind": "headphones",
       "connect": "BLE",
@@ -1913,6 +1920,7 @@
     },
     {
       "name": "JBL Live Beam 4",
+      "p5_gestures": "2179",
       "pids": ["2179"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -1943,6 +1951,7 @@
     },
     {
       "name": "JBL Live Buds 4",
+      "p5_gestures": "217B",
       "pids": ["217B"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -1975,6 +1984,7 @@
     },
     {
       "name": "JBL Live Flex 4",
+      "p5_gestures": "217D",
       "pids": ["217D"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2005,6 +2015,7 @@
     },
     {
       "name": "JBL Tune 785NC",
+      "p5_gestures": "common",
       "pids": ["21A4"],
       "kind": "headphones",
       "connect": "BLE",
@@ -2036,6 +2047,7 @@
     },
     {
       "name": "JBL Tune 520BT2",
+      "p5_gestures": "common",
       "pids": ["2188"],
       "kind": "headphones",
       "connect": "BLE",
@@ -2063,6 +2075,7 @@
     },
     {
       "name": "JBL Tune 535BT",
+      "p5_gestures": "2194",
       "pids": ["2194"],
       "kind": "headphones",
       "connect": "BLE",
@@ -2090,6 +2103,7 @@
     },
     {
       "name": "JBL Tune 735BT",
+      "p5_gestures": "2195",
       "pids": ["2195"],
       "kind": "headphones",
       "connect": "BLE",
@@ -2117,6 +2131,7 @@
     },
     {
       "name": "JBL Vibe Buds 3",
+      "p5_gestures": "common",
       "pids": ["21B3"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2146,6 +2161,7 @@
     },
     {
       "name": "JBL Vibe Beam 3",
+      "p5_gestures": "common",
       "pids": ["21B4"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2175,6 +2191,7 @@
     },
     {
       "name": "JBL Vibe Flex 3",
+      "p5_gestures": "common",
       "pids": ["21B2"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2204,6 +2221,7 @@
     },
     {
       "name": "JBL Wave Buds 3",
+      "p5_gestures": "21AB",
       "pids": ["21AB"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2233,6 +2251,7 @@
     },
     {
       "name": "JBL Wave Beam 3",
+      "p5_gestures": "21AC",
       "pids": ["21AC"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2262,6 +2281,7 @@
     },
     {
       "name": "JBL Wave Flex 3",
+      "p5_gestures": "common",
       "pids": ["21AD"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2291,6 +2311,7 @@
     },
     {
       "name": "JBL Tune Buds 3",
+      "p5_gestures": "common",
       "pids": ["21B7"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2322,6 +2343,7 @@
     },
     {
       "name": "JBL Tune Beam 3",
+      "p5_gestures": "common",
       "pids": ["21B8"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2351,6 +2373,7 @@
     },
     {
       "name": "JBL Tune Flex 3",
+      "p5_gestures": "common",
       "pids": ["21B6"],
       "kind": "earbuds",
       "connect": "BLE",

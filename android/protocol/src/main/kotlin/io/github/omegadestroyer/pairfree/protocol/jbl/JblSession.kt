@@ -93,6 +93,9 @@ public class JblSession(initial: JblModel) {
     private var gestureVariant: String? = null
     private var gestureKeyId: Int? = null
 
+    // The customized button page (protocol 4 models): each gesture feature's value as the earbuds answered it.
+    private val p5Values = mutableMapOf<Int, Int>()
+
     // Realtek's segment EQ: the reply parts in so far.
     private var segments = ByteArray(0)
 
@@ -353,6 +356,11 @@ public class JblSession(initial: JblModel) {
         if (packet.identifier != JblP4.IDENTIFIER) return
         var noise = false
         for ((id, v) in packet.features()) {
+            // The customized button page's gestures: each a feature of one byte, the function's value.
+            if (model.p5GestureList.any { it.feature == id }) {
+                if (v.isNotEmpty()) p5Values[id] = v.u8(0)
+                continue
+            }
             if (id !in REPORTED_P4 || v.isEmpty()) continue
             _replies["p4." + id.toString(16).padStart(4, '0')] = v.copyOf()
             when (id) {
@@ -573,6 +581,7 @@ public class JblSession(initial: JblModel) {
             group("find", SettingTab.DEVICE, extras.findRows()),
             group("touch_left", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("left") else extras.touchRows("left")),
             group("touch_right", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("right") else extras.touchRows("right")),
+            group("touch_buttons", SettingTab.CONTROLS, p5Rows()),
         )
 
     private fun noiseRows(): List<Setting> {
@@ -605,6 +614,7 @@ public class JblSession(initial: JblModel) {
     public fun change(change: SettingChange): List<JblFrame>? {
         val setting = groups.flatMap { it.settings }.firstOrNull { it.key == change.key } ?: return null
         if (change is SettingChange.Choice && setting is Setting.Choice && change.option !in setting.options) return null
+        if (change is SettingChange.Choice && change.key.startsWith(P5_PREFIX)) return p5Change(change.key, change.option)
         if (change is SettingChange.Choice && model.airohaGestures != null) {
             AIROHA_TOUCH_KEYS.entries.firstOrNull { it.value == change.key }?.let { return airohaTouch(it.key, change.option) }
         }
@@ -771,6 +781,7 @@ public class JblSession(initial: JblModel) {
         if (model.autoOff != null) add(JblP4.FEATURE_AUTO_OFF)
         if (model.autoPlayPause) add(JblP4.FEATURE_AUTO_PLAY_PAUSE)
         addAll(extras.p4Features())
+        addAll(model.p5GestureList.map { it.feature })
     }
 
     private fun p4Batteries(): List<Int> =
@@ -950,6 +961,28 @@ public class JblSession(initial: JblModel) {
         startGestureRead()
     }
 
+    /** The customized button page: one row per gesture whose feature answered, with the functions JBL's page offers it. */
+    private fun p5Rows(): List<Setting> = model.p5GestureList.mapNotNull { g ->
+        val v = p5Values[g.feature] ?: return@mapNotNull null
+        val now = g.functions.entries.firstOrNull { it.value == v }?.key
+            ?: P5_AMBIENT.takeIf { it in g.functions && v in P5_AMBIENT_CYCLES }
+            ?: TOUCH_OTHER
+        Setting.Choice(P5_PREFIX + g.place + "_" + g.gesture, now, g.functions.keys.toList())
+    }
+
+    /**
+     * One gesture set to [option], as General4Control.setP5GestureStatus writes it: the feature with the function's byte. The
+     * noise control function keeps the cycle the gesture already has (its supportAscList), else JBL's page's value.
+     */
+    private fun p5Change(key: String, option: String): List<JblFrame>? {
+        val g = model.p5GestureList.firstOrNull { P5_PREFIX + it.place + "_" + it.gesture == key } ?: return null
+        var value = g.functions[option] ?: return null
+        if (option == P5_AMBIENT) p5Values[g.feature]?.takeIf { it in P5_AMBIENT_CYCLES }?.let { value = it }
+        p5Values[g.feature] = value
+        readBacks += JblP4Packet.get(listOf(g.feature))
+        return listOf(JblP4Packet.set(g.feature to byteArrayOf(value.toByte())))
+    }
+
     /** An Airoha model's touch set for one earbud ("left" or "right"), from the page JBL's app gives the model. */
     private fun airohaTouchRows(side: String): List<Setting> {
         if (gestureVariant == null) return emptyList()
@@ -1001,6 +1034,17 @@ public class JblSession(initial: JblModel) {
         val long2 = tap + 4
         val ull = if (model.gestureUll) 14 else 0
         val settings = model.airohaGestures == SETTINGS_PAGE
+        // The newer gesture card (yp, from the product list's customizedGesture): its sets in the order it builds them.
+        if (model.airohaGestures == UI4_PAGE) {
+            val cycle = airohaGestures[tap]?.takeIf { it in setOf(9, 11, 12, 13) } ?: 11
+            return when (option) {
+                TOUCH_PLAYBACK -> listOf(tap to 8, double to 5, hold to 161, triple to 6)
+                TOUCH_AMBIENT -> listOf(tap to cycle, double to 4, hold to 161, triple to 0)
+                TOUCH_VOLUME -> listOf(tap to 1, double to 2, hold to 161, triple to 0)
+                TOUCH_NONE -> listOf(tap to 0, double to 0, hold to 0, triple to 0)
+                else -> null
+            }
+        }
         return when (option) {
             TOUCH_PLAYBACK -> if (settings) listOf(tap to 8, double to 5, triple to 6, long2 to 0, hold to 161) else listOf(tap to 10, double to 5, triple to 6, hold to 161, long2 to 0)
             TOUCH_AMBIENT -> {
@@ -1151,6 +1195,12 @@ public class JblSession(initial: JblModel) {
         private val AIROHA_TOUCH_KEYS = mapOf("left" to JblExtras.TOUCH_LEFT, "right" to JblExtras.TOUCH_RIGHT)
         private val AIROHA_SIDE = mapOf("left" to listOf(1, 3, 7, 49), "right" to listOf(2, 4, 8, 50))
         private const val SETTINGS_PAGE = "settings"
+        private const val UI4_PAGE = "ui4"
+        private const val P5_PREFIX = "jbl_p5_"
+        private const val P5_AMBIENT = "ambientSound"
+        // The noise control cycles common_gesture_config.json lists (supportAscList): ANC and Ambient Aware, ANC and off,
+        // Ambient Aware and off, all three.
+        private val P5_AMBIENT_CYCLES = setOf(0x0B, 0x0C, 0x0D, 0x09)
         private const val TOUCH_PLAYBACK = JblExtras.PLAYBACK
         private const val TOUCH_AMBIENT = JblExtras.AMBIENT
         private const val TOUCH_VOLUME = JblExtras.VOLUME

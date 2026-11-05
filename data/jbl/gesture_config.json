@@ -1,0 +1,205 @@
+{
+ "_about": "The protocol 4 models' gesture page (ControlCard, the customized button page; docs/jbl/PROTOCOL.md section 6.1): per gesture its protocol 4 feature (DeviceInfoFeature5), where it is (left or right earbud, a button, the touch panel), the gesture, the function JBL's app resets it to, and the functions it offers with the one-byte value General4Control.setP5GestureStatus writes. From JBL Headphones 5.37.10's bundled assets/gesture/common_gesture_config.json (models without their own entry) and product_gesture_config.json (by product id). Left out: eQControl, which also writes the EQ presets it cycles through, and tap then tap and hold, which is pairing mode and cannot be set.",
+ "common": {
+  "gestures": [
+   {"feature": "0F04", "place": "left", "gesture": "tap", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 4, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "voiceAwareOnOff": 181, "activateNativeVoiceAssistant": 161, "none": 0}},
+   {"feature": "0F05", "place": "left", "gesture": "doubleTap", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 4, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "voiceAwareOnOff": 181, "activateNativeVoiceAssistant": 161, "none": 0}},
+   {"feature": "0F06", "place": "left", "gesture": "tripleTap", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 4, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "voiceAwareOnOff": 181, "activateNativeVoiceAssistant": 161, "none": 0}},
+   {"feature": "0F0A", "place": "left", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 4, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "voiceAwareOnOff": 181, "activateNativeVoiceAssistant": 161, "none": 0}},
+   {"feature": "0F07", "place": "right", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 4, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "voiceAwareOnOff": 181, "activateNativeVoiceAssistant": 161, "none": 0}},
+   {"feature": "0F08", "place": "right", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 4, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "voiceAwareOnOff": 181, "activateNativeVoiceAssistant": 161, "none": 0}},
+   {"feature": "0F09", "place": "right", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 4, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "voiceAwareOnOff": 181, "activateNativeVoiceAssistant": 161, "none": 0}},
+   {"feature": "0F0C", "place": "right", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 4, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "voiceAwareOnOff": 181, "activateNativeVoiceAssistant": 161, "none": 0}}
+  ]
+ },
+ "products": {
+  "2162": {
+   "name": "JBL Tune 530BT",
+   "gestures": [
+    {"feature": "0F82", "place": "multiFunctionalButton", "gesture": "press", "default": "playPause", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161}},
+    {"feature": "0F84", "place": "multiFunctionalButton", "gesture": "doublePress", "default": "eQOnOff", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "multiFunctionalButton", "gesture": "triplePress", "default": "none", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "multiFunctionalButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "2194": {
+   "name": "JBL Tune 535BT",
+   "gestures": [
+    {"feature": "0F82", "place": "multiFunctionalButton", "gesture": "press", "default": "playPause", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161}},
+    {"feature": "0F84", "place": "multiFunctionalButton", "gesture": "doublePress", "default": "eQOnOff", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "multiFunctionalButton", "gesture": "triplePress", "default": "none", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "multiFunctionalButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "2163": {
+   "name": "JBL Tune 730BT",
+   "gestures": [
+    {"feature": "0F82", "place": "multiFunctionalButton", "gesture": "press", "default": "playPause", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161}},
+    {"feature": "0F84", "place": "multiFunctionalButton", "gesture": "doublePress", "default": "eQOnOff", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "multiFunctionalButton", "gesture": "triplePress", "default": "none", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "multiFunctionalButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "2195": {
+   "name": "JBL Tune 735BT",
+   "gestures": [
+    {"feature": "0F82", "place": "multiFunctionalButton", "gesture": "press", "default": "playPause", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161}},
+    {"feature": "0F84", "place": "multiFunctionalButton", "gesture": "doublePress", "default": "eQOnOff", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "multiFunctionalButton", "gesture": "triplePress", "default": "none", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "multiFunctionalButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"playPause": 8, "eQOnOff": 200, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "215E": {
+   "name": "JBL Tune 680BT",
+   "gestures": [
+    {"feature": "0F85", "place": "ancButton", "gesture": "press", "default": "ambientSound", "functions": {"ambientSound": 11, "playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F87", "place": "ancButton", "gesture": "doublePress", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F82", "place": "multiFunctionalButton", "gesture": "press", "default": "playPause", "functions": {"playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161}},
+    {"feature": "0F84", "place": "multiFunctionalButton", "gesture": "doublePress", "default": "eQOnOff", "functions": {"playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "multiFunctionalButton", "gesture": "triplePress", "default": "spatialSoundOnOff", "functions": {"playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "multiFunctionalButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "215F": {
+   "name": "JBL Tune 780BT",
+   "gestures": [
+    {"feature": "0F85", "place": "ancButton", "gesture": "press", "default": "ambientSound", "functions": {"ambientSound": 11, "playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F87", "place": "ancButton", "gesture": "doublePress", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F82", "place": "multiFunctionalButton", "gesture": "press", "default": "playPause", "functions": {"playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161}},
+    {"feature": "0F84", "place": "multiFunctionalButton", "gesture": "doublePress", "default": "eQOnOff", "functions": {"playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "multiFunctionalButton", "gesture": "triplePress", "default": "spatialSoundOnOff", "functions": {"playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "multiFunctionalButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"playPause": 8, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "2160": {
+   "name": "JBL Live 680NC",
+   "gestures": [
+    {"feature": "0F82", "place": "ancButton", "gesture": "press", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F84", "place": "ancButton", "gesture": "doublePress", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "ancButton", "gesture": "triplePress", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "ancButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "touchPanel", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "touchPanel", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "touchPanel", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "touchPanel", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "2161": {
+   "name": "JBL Live 780NC",
+   "gestures": [
+    {"feature": "0F82", "place": "ancButton", "gesture": "press", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F84", "place": "ancButton", "gesture": "doublePress", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "ancButton", "gesture": "triplePress", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "ancButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "touchPanel", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "touchPanel", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "touchPanel", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "touchPanel", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "217D": {
+   "name": "JBL Live Flex 4",
+   "gestures": [
+    {"feature": "0F04", "place": "left", "gesture": "tap", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F05", "place": "left", "gesture": "doubleTap", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F06", "place": "left", "gesture": "tripleTap", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0A", "place": "left", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "right", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "right", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "right", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "right", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "217B": {
+   "name": "JBL Live Buds 4",
+   "gestures": [
+    {"feature": "0F04", "place": "left", "gesture": "tap", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F05", "place": "left", "gesture": "doubleTap", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F06", "place": "left", "gesture": "tripleTap", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0A", "place": "left", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "right", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "right", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "right", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "right", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "2179": {
+   "name": "JBL Live Beam 4",
+   "gestures": [
+    {"feature": "0F04", "place": "left", "gesture": "tap", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F05", "place": "left", "gesture": "doubleTap", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F06", "place": "left", "gesture": "tripleTap", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0A", "place": "left", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "right", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "right", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "right", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "right", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundOnOff": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "21AB": {
+   "name": "JBL Wave Buds 3",
+   "gestures": [
+    {"feature": "0F04", "place": "left", "gesture": "tap", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F05", "place": "left", "gesture": "doubleTap", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F06", "place": "left", "gesture": "tripleTap", "default": "eQControl", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0A", "place": "left", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "right", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "right", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "right", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "right", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "21AC": {
+   "name": "JBL Wave Beam 3",
+   "gestures": [
+    {"feature": "0F04", "place": "left", "gesture": "tap", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F05", "place": "left", "gesture": "doubleTap", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F06", "place": "left", "gesture": "tripleTap", "default": "eQControl", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0A", "place": "left", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "right", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "right", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "right", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "right", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "21AE": {
+   "name": "JBL Tour Pro 4",
+   "gestures": [
+    {"feature": "0F04", "place": "left", "gesture": "tap", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F05", "place": "left", "gesture": "doubleTap", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F06", "place": "left", "gesture": "tripleTap", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0A", "place": "left", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "right", "gesture": "tap", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "right", "gesture": "doubleTap", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "right", "gesture": "tripleTap", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "right", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "2193": {
+   "name": "JBL Tour One M4",
+   "gestures": [
+    {"feature": "0F82", "place": "ancButton", "gesture": "press", "default": "ambientSound", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F84", "place": "ancButton", "gesture": "doublePress", "default": "talkThruOnOff", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F88", "place": "ancButton", "gesture": "triplePress", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F83", "place": "ancButton", "gesture": "pressAndHold", "default": "none", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F85", "place": "multiFunctionalButton", "gesture": "press", "default": "playPause", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F87", "place": "multiFunctionalButton", "gesture": "doublePress", "default": "nextTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F89", "place": "multiFunctionalButton", "gesture": "triplePress", "default": "previousTrack", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F86", "place": "multiFunctionalButton", "gesture": "pressAndHold", "default": "activateNativeVoiceAssistant", "functions": {"ambientSound": 11, "talkThruOnOff": 15, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "eQOnOff": 200, "spatialSoundControl": 194, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  },
+  "21CF": {
+   "name": "JBL Sense Lite 2",
+   "gestures": [
+    {"feature": "0F04", "place": "left", "gesture": "tap", "default": "volumeUp", "functions": {"volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F05", "place": "left", "gesture": "doubleTap", "default": "volumeDown", "functions": {"volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F06", "place": "left", "gesture": "tripleTap", "default": "eQControl", "functions": {"volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0A", "place": "left", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F07", "place": "right", "gesture": "tap", "default": "playPause", "functions": {"volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F08", "place": "right", "gesture": "doubleTap", "default": "nextTrack", "functions": {"volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F09", "place": "right", "gesture": "tripleTap", "default": "previousTrack", "functions": {"volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}},
+    {"feature": "0F0C", "place": "right", "gesture": "tapAndHold", "default": "activateNativeVoiceAssistant", "functions": {"volumeUp": 1, "volumeDown": 2, "playPause": 8, "nextTrack": 5, "previousTrack": 6, "activateNativeVoiceAssistant": 161, "none": 0}}
+   ]
+  }
+ }
+}

@@ -251,11 +251,10 @@ The noise cycle is `0B` (noise cancelling and ambient sound) or the one the tap 
 default (`AppUtils.isDefaultMultiAi`); with Google Assistant or Alexa chosen in JBL's app, the
 playback set holds for that assistant instead. PairFree does not read that choice and always writes
 `A1`. The read names a side's set by its tap action, else its hold (`CustomGesture.generateName`).
-The other gesture pages are not covered: `GestureUi4Card` (11 models) builds its sets from
-`customizedGesture`, which the bundled product list has for none of them (they use JBL's server
-resources, `usingSeverRes`, which PairFree never fetches), and the headphone cards
-(`HeadLive670GestureCard` and the like) open pages of their own. The 29 other p4 models have no
-gesture card in JBL's app. Touch sensitivity (protocol 4 features `4033` and `4034`) sits on the
+The other gesture pages: `GestureUi4Card` builds its sets from the product list's `customizedGesture`, which only
+the Endurance Race 2 among its models has (section 10.1; the others' page offers nothing); the customized button page
+of 23 protocol 4 models is section 6.1; the headphone cards (`HeadLive670GestureCard` and the like) open pages of
+their own. Touch sensitivity (protocol 4 features `4033` and `4034`) sits on the
 customized-button page, whose levels come from the same server resources, so it is left out too.
 
 ### 4.10 Adaptive noise cancelling and auto compensation: `91`
@@ -371,6 +370,21 @@ On connecting, JBL's app writes host type 1 and then reads. There are two noise-
 Both read the mode back as the one of noise cancelling, Ambient Aware and TalkThru whose status is
 1, and off when ambient sound control is off or every mode is off (`gn.l0`). PairFree does the
 same.
+
+### 6.1 The customized button page
+
+23 protocol 4 models have JBL's newer gesture page (`ControlCard`, `ui3.fragment.gesture.customizedbutton`). Each
+gesture is a protocol 4 feature (`DeviceInfoFeature5`: `0F04` to `0F06` and `0F0A` the left earbud's tap, double tap,
+triple tap and hold, `0F07` to `0F09` and `0F0C` the right's, `0F80` and on the buttons and touch panels), read with
+the other features and written by `General4Control.setP5GestureStatus` as the feature with one byte: the function's
+value. Which gestures a model has and the functions each offers come from two files JBL's app bundles and reads
+without its server (`vm.d`): `assets/gesture/product_gesture_config.json` by product id (13 of PairFree's models),
+else `common_gesture_config.json` (10); `data/jbl/gesture_config.json` keeps their gestures, functions and values.
+Functions: noise control `0B` (or the cycle the gesture has: `09`, `0C`, `0D`), TalkThru `04` (`0F` on some), volume
+up `01` and down `02`, play or pause `08`, next `05` and previous `06` track, EQ on or off `C8`, spatial sound `C2`,
+VoiceAware `B5`, the phone's voice assistant `A1`, none `00`. PairFree shows a gesture once its feature answers.
+Left out: the EQ preset cycle (`eQControl`, `B2`), which JBL's app writes together with the presets it cycles
+through (`setP5GestureCmd`), and "tap, then tap and hold", which is pairing mode and cannot be changed.
 
 ## 7. Security modes
 
@@ -579,7 +593,10 @@ writes nothing there, and the plain variant's read leaves out a gesture it canno
 
 Which sets each model gets follows JBL's pages: the dashboard's gesture card (`sp.a`; Live Buds 3, Live Free 2,
 Quantum TWS and TWS Air, Reflect Aero) has the sets of section 4.9 with the second long press at 0, and on the
-Quantum TWS the low latency switch (14) on the triple tap of the noise control and volume sets; the older settings
+Quantum TWS the low latency switch (14) on the triple tap of the noise control and volume sets; the newer gesture card
+(`GestureUi4Card`, `yp.q`) on the Endurance Race 2 takes its sets from the product list's `customizedGesture`
+(playback 8, 5, hold 161, 6; noise control 11 or the cycle the tap has, 4, 161, 0; volume 1, 2, 161, 0; none), in that
+order of tap, double tap, hold and triple tap; the older settings
 page (`em.o`, `AppUtils.setCommandAiRoHaGesture`; Reflect Mini NC, Live Free NC+) has playback (8, 5, 6, hold 161),
 noise control (9, 4, 0, 161), volume (1, 2, 0, 161), the phone's voice assistant on the hold (one earbud at a time;
 its tap, 160, writes nothing on these chips) and none. The Club Pro+ has no gesture page; the Tune 670NC, 770NC,

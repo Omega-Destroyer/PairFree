@@ -67,7 +67,7 @@ def settings(m):
         out.append("pause when taken off")
     out += [EXTRAS[x] for x in m.get("settings", [])]
     # Airoha models' key map (docs/jbl/PROTOCOL.md section 10.1).
-    if m.get("airoha_gestures") and "touch controls" not in out:
+    if (m.get("airoha_gestures") or m.get("p5_gestures")) and "touch controls" not in out:
         out.append("touch controls")
     # Every EQ path JBL's app has (docs/jbl/PROTOCOL.md section 11; JblEqSpec.written).
     eq = m.get("eq", {})

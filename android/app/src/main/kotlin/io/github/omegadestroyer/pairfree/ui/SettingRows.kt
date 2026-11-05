@@ -166,6 +166,7 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_right" -> R.string.setting_group_touch_right
         "touch_case" -> R.string.setting_group_touch_case
         "touch_dial" -> R.string.setting_group_touch_dial
+        "touch_buttons" -> R.string.touch_controls
         "sleep" -> R.string.setting_group_sleep
         "attention" -> R.string.setting_group_attention
         "ef_quality" -> R.string.setting_group_sound_quality
@@ -377,7 +378,7 @@ private fun settingTitle(key: String): String = when (key) {
     "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language)
     "restart" -> stringResource(R.string.setting_restart)
     "power_off" -> stringResource(R.string.setting_power_off)
-    else -> sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
+    else -> jblP5Title(key) ?: sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 /**
@@ -521,8 +522,52 @@ private fun settingNote(key: String): String? = when (key) {
     else -> null
 }
 
+/** A JBL customized button page gesture ("jbl_p5_<place>_<gesture>"): where it is and the gesture. */
+@Composable
+private fun jblP5Title(key: String): String? {
+    if (!key.startsWith("jbl_p5_")) return null
+    val (place, gesture) = key.removePrefix("jbl_p5_").split("_", limit = 2).takeIf { it.size == 2 } ?: return null
+    val where = when (place) {
+        "left" -> R.string.setting_jbl_place_left
+        "right" -> R.string.setting_jbl_place_right
+        "multiFunctionalButton" -> R.string.setting_jbl_place_button
+        "ancButton" -> R.string.setting_jbl_place_anc_button
+        "touchPanel" -> R.string.setting_jbl_place_touch_panel
+        else -> return null
+    }
+    val what = when (gesture) {
+        "tap" -> R.string.setting_jbl_gesture_tap
+        "doubleTap" -> R.string.setting_jbl_gesture_double_tap
+        "tripleTap" -> R.string.setting_jbl_gesture_triple_tap
+        "tapAndHold" -> R.string.setting_jbl_gesture_tap_hold
+        "press" -> R.string.setting_jbl_gesture_press
+        "doublePress" -> R.string.setting_jbl_gesture_double_press
+        "triplePress" -> R.string.setting_jbl_gesture_triple_press
+        "pressAndHold" -> R.string.setting_jbl_gesture_press_hold
+        else -> return null
+    }
+    return stringResource(R.string.setting_jbl_place_gesture, stringResource(where), stringResource(what))
+}
+
 @Composable
 private fun optionName(key: String, option: String): String = when {
+    key.startsWith("jbl_p5_") -> stringResource(
+        when (option) {
+            "ambientSound" -> R.string.setting_jbl_fn_noise
+            "talkThruOnOff" -> R.string.setting_jbl_fn_talk_thru
+            "volumeUp" -> R.string.setting_jbl_fn_volume_up
+            "volumeDown" -> R.string.setting_jbl_fn_volume_down
+            "playPause" -> R.string.setting_jbl_fn_play_pause
+            "nextTrack" -> R.string.setting_jbl_fn_next
+            "previousTrack" -> R.string.setting_jbl_fn_previous
+            "eQOnOff" -> R.string.setting_jbl_fn_eq
+            "spatialSoundOnOff", "spatialSoundControl" -> R.string.setting_jbl_fn_spatial
+            "voiceAwareOnOff" -> R.string.setting_jbl_fn_voice_aware
+            "activateNativeVoiceAssistant" -> R.string.setting_jbl_fn_assistant
+            "none" -> R.string.action_none
+            else -> R.string.action_other
+        },
+    )
     key == "sp_panoramic_sound" -> stringResource(
         when (option) {
             "music" -> R.string.setting_panoramic_music

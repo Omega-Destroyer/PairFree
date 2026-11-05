@@ -762,6 +762,10 @@ abstract class GenerateJblTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val eqPresetsJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val gestureConfigJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -925,6 +929,22 @@ abstract class GenerateJblTables : DefaultTask() {
             out.appendLine("private fun ${ident("series_" + series)}(): List<JblEqPreset> = listOf($off, ${picked.joinToString(", ") { preset(it) }})")
         }
         out.appendLine()
+        // The protocol 4 models' gesture page (data/jbl/gesture_config.json).
+        @Suppress("UNCHECKED_CAST")
+        val gestureConfig = JsonSlurper().parse(gestureConfigJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        fun p5(entry: Any?): String = ((entry as Map<String, Any?>).getValue("gestures") as List<Map<String, Any?>>).joinToString(", ", "listOf(", ")") { g ->
+            @Suppress("UNCHECKED_CAST")
+            val functions = (g.getValue("functions") as Map<String, Any?>).entries.joinToString(", ", "linkedMapOf(", ")") { "${str(it.key)} to ${int(it.value)}" }
+            "JblP5Gesture(0x${g["feature"]}, ${str(g["place"])}, ${str(g["gesture"])}, ${g["default"]?.let { str(it) } ?: "null"}, $functions)"
+        }
+        out.appendLine("/** The protocol 4 models' gesture pages, \"common\" or by product id (data/jbl/gesture_config.json). */")
+        out.appendLine("internal val JBL_P5_GESTURES: Map<String, List<JblP5Gesture>> = mapOf(")
+        out.appendLine("    \"common\" to ${p5(gestureConfig["common"])},")
+        @Suppress("UNCHECKED_CAST")
+        for ((pid, e) in gestureConfig.getValue("products") as Map<String, Any?>) out.appendLine("    ${str(pid)} to ${p5(e)},")
+        out.appendLine(")")
+        out.appendLine()
         out.appendLine("/** Every model in data/jbl/devices.json. */")
         out.appendLine("internal val JBL_MODELS: List<JblModel> = listOf(")
         for (d in devices) {
@@ -984,7 +1004,8 @@ abstract class GenerateJblTables : DefaultTask() {
                     "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}, security = $security, " +
                     "extras = $extras, smartAudioVideo = $sav, effects = $effects, gestureNoise = ${(d["gesture_noise"] as Number?)?.toInt() ?: 11}, " +
                     "racePush = ${d["push_status"] != false}, names = ${(d["names"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "listOf(", ")") { str(it) }}, eq = $eq, " +
-                    "airohaGestures = ${d["airoha_gestures"]?.let { str(it) } ?: "null"}, gestureUll = ${d["gesture_ull"] == true}),",
+                    "airohaGestures = ${d["airoha_gestures"]?.let { str(it) } ?: "null"}, gestureUll = ${d["gesture_ull"] == true}, " +
+                    "p5Gestures = ${d["p5_gestures"]?.let { str(it) } ?: "null"}),",
             )
         }
         out.appendLine(")")
@@ -999,6 +1020,7 @@ val generateJblTables = tasks.register<GenerateJblTables>("generateJblTables") {
     commandsJson = rootProject.layout.projectDirectory.file("../data/jbl/commands.json")
     devicesJson = rootProject.layout.projectDirectory.file("../data/jbl/devices.json")
     eqPresetsJson = rootProject.layout.projectDirectory.file("../data/jbl/eq_presets.json")
+    gestureConfigJson = rootProject.layout.projectDirectory.file("../data/jbl/gesture_config.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.jbl"
     outputDir = layout.buildDirectory.dir("generated/jbl")
 }

@@ -23,7 +23,7 @@ class ModelsTable(unittest.TestCase):
 
     def test_summary(self):
         s = gen.summary()
-        self.assertEqual(47, s["models"], "every model in the official app's table but the Capsule3 Pro, and two from reports")
+        self.assertEqual(85, s["models"], "every model in SOUNDPEATS' own list and the official app's table but the three on QCY's protocol")
         self.assertEqual(["Air5 Pro+", "C30", "H3", "TRUEFREE Clip C10"], s["tested"])
 
     def test_h3_report_reads(self):
@@ -48,7 +48,7 @@ class ModelsTable(unittest.TestCase):
             self.assertEqual(model["In-ear detection"], gen.NO)
 
     def test_a_model_without_a_report_asks_for_one(self):
-        row = self.row("QCC3091AIR5")
+        row = self.row("RUNFREEHS")
         self.assertIn("Needs a device report", row)
         self.assertIn("Needs a recording", row)
 

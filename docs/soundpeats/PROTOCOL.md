@@ -242,6 +242,21 @@ What gets sent depends on the model:
   appended. Seen on the TRUEFREE Clip C10 (section 11): its classic bands are `eq.fixed_bands`
   in `data/soundpeats/devices.json`, sent as they are before the user's.
 
+SOUNDPEATS 2.5.3 decides this per model from its curves' `paramAppend` (`EqDataStyle`), which
+wins over the code list above where they differ (ATS3019DK12, ZKLXBREEZY, T57, WQT7033 and
+WUQIMINIHS are ORIGIN, TS03WINGS2 ADD): `2` ORIGIN, as onto_classic_bands, presets complete curves
+on the classic bands; `1` ADD, as append_after_classic, each preset's own bands after the classic
+ones; `3` OPERA (OPERA03, OPERA05), presets complete curves of their own band count, sent as they
+are. `tools/import_soundpeats_server.py` writes every model's `eq` from the owner's fetch of these
+curves (2026-11-04). It leaves out curves the write cannot carry as the app encodes them
+(frequency x 3 and Q x 4096 in 16 bits): ECHO7018's negative Qs, bands at 22 and 24 kHz
+(JIELILIFE3, BT5106-3040, T28), and the models whose classic curve is one of them get no EQ.
+TS03WINGS2's classic frequencies read `[]50, 120, ...` on the server; the stray bracket is
+dropped. Some models list one curve under two names. The server's feature lists for the H3,
+Air5 Pro+ and C30 name only commands PairFree already reads; they give noise mode `03` as
+"environment adaptive" and `04` as "weak noise cancelling", and the H3's EQ as `0E02`, which its
+capture shows is `0E01`.
+
 ## 5. Chip families
 
 The app sorts every model into a family ("chip scheme"). The family decides the

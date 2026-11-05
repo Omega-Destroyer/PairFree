@@ -1,0 +1,140 @@
+PairFree recording from the official app
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues so this model's controls and
+equalizer can be added. It holds no names, addresses or other personal data.
+
+Model:     SOUNDPEATS C30, firmware S22_20251209_v0.7.5
+App:       PairFree 0.6.0
+Phone:     Android 16 (API 36), motorola moto g37
+Recorded:  2026-11-04 02:22, phone's local time
+
+---- What PeatsAudio read from SOUNDPEATS C30, firmware S22_20251209_v0.7.5 (from the Bluetooth log) ----
+firmware_version 0309  raw=53 32 32 5f 32 30 32 35 31 32 30 39 5f 76 30 2e 37 2e 35
+battery_left 0306  raw=00 64
+battery_right 0307  raw=00 64
+battery_case 0323  raw=00 64
+anc_mode 0310  raw=00 00
+anc_level 0324  raw=12 00 13 00 14 00 11 01
+transparency_level 034C  no reply
+anc_env_adaptive 0364  raw=00 00
+game_mode 030E  raw=00 00
+multipoint 0314  raw=00 01
+ldac 0338  raw=00 00
+le_audio 0335  no reply
+in_ear_detection 030C  no reply
+touch_disabled 0312  raw=00 00
+custom_keys 03AA  raw=01 02 02 01 03 07 04 03 05 04 06 08 07 05 08 06
+prompt_volume 0319  raw=00 2b
+auto_shutdown 036E  no reply
+voice_language 0321  raw=00 00
+dynamic_eq 0331  no reply
+dynamic_bass 033C  no reply
+movie_mode 0327  raw=00 00
+spatial_audio 0357  no reply
+panoramic_sound 0329  no reply
+dolby 0348  no reply
+adaptive_volume 0346  no reply
+personal_volume 0340  no reply
+ear_volume_left 0342  no reply
+ear_volume_right 0343  no reply
+light_effect 030A  no reply
+privacy_mode 036B  no reply
+fall_detection 0355  no reply
+water_drain 0350  raw=00 00
+reset_state 0367  no reply
+find_left 034A  raw=00 00
+find_right 034B  raw=00 00
+earbud_color 0326  no reply
+hearing_protection 034E  no reply
+volume_balance 0375  no reply
+phone_codec 0377  no reply
+
+---- What PairFree reads on connect from SOUNDPEATS C30, firmware S22_20251209_v0.7.5 ----
+firmware_version 0309  raw=53 32 32 5f 32 30 32 35 31 32 30 39 5f 76 30 2e 37 2e 35
+battery_left 0306  raw=00 64
+battery_right 0307  raw=00 64
+battery_case 0323  raw=00 64
+anc_mode 0310  raw=00 00
+anc_level 0324  raw=12 00 13 00 14 00 11 01
+transparency_level 034C  no reply
+anc_env_adaptive 0364  raw=00 00
+game_mode 030E  raw=00 00
+multipoint 0314  raw=00 01
+ldac 0338  raw=00 00
+le_audio 0335  no reply
+in_ear_detection 030C  no reply
+touch_disabled 0312  raw=00 00
+custom_keys 03AA  raw=01 02 02 01 03 07 04 03 05 04 06 08 07 05 08 06
+prompt_volume 0319  raw=00 2b
+auto_shutdown 036E  no reply
+voice_language 0321  raw=00 00
+dynamic_eq 0331  no reply
+dynamic_bass 033C  no reply
+movie_mode 0327  raw=00 00
+spatial_audio 0357  no reply
+panoramic_sound 0329  no reply
+dolby 0348  no reply
+adaptive_volume 0346  no reply
+personal_volume 0340  no reply
+ear_volume_left 0342  no reply
+ear_volume_right 0343  no reply
+light_effect 030A  no reply
+privacy_mode 036B  no reply
+fall_detection 0355  no reply
+water_drain 0350  raw=00 00
+reset_state 0367  no reply
+find_left 034A  raw=00 00
+find_right 034B  raw=00 00
+earbud_color 0326  no reply
+hearing_protection 034E  no reply
+volume_balance 0375  no reply
+phone_codec 0377  no reply
+
+---- Equalizer: the curves PeatsAudio sent ----
+Firmware:  S22_20251209_v0.7.5
+EQ:        command 0E02, 9 bands, master gain -4.5 dB
+
+1. Book Whisper
+0901fef2003cfbc80800 0902fef201e0fbc81000 0903fef20384ff880ccc 0904fef2096000781000 0905fef21518003c1800 0906fef220d000781800 0907fef23a9800b41000 0908fef25dc000781333 0909fef2bb80fcb80ccc
+
+2. Adaptive EQ
+0901fef2003cfda81800 0902fef201e0fd301666 0903fef20384fde40ccc 0904fef20960fe5c1000 0905fef2151800ba1800 0906fef220d000001800 0907fef23a98fe5c1000 0908fef25dc0003c1333 0909fef2bb8000f00800
+
+3. SOUNDPEATS Classic
+0901fef2003cfda81800 0902fef201e0fe201666 0903fef20384fed40ccc 0904fef20960ff4c1000 0905fef2151800ba1800 0906fef220d000b41800 0907fef23a98ff101000 0908fef25dc000f01333 0909fef2bb8000f00800
+
+4. Bass Boost
+0901fef2009600781000 0902fef201e0fe981666 0903fef20384ff100ccc 0904fef20960ff881000 0905fef2151800ba1800 0906fef220d000b41800 0907fef23a98ff101000 0908fef25dc000f01333 0909fef2bb8000f00800
+
+5. Bass Reduce
+0901fef2003cfcf40e66 0902fef201e0fd6c1666 0903fef20384fe980ccc 0904fef20960ff101000 0905fef2151800ba1800 0906fef220d000b41800 0907fef23a98ff101000 0908fef25dc000f01333 0909fef2bb8000f00800
+
+6. Treble enhancement
+0901fef2003cfda81800 0902fef201e0fe201666 0903fef20384fed40ccc 0904fef20960ff4c1000 0905fef2151800ba1800 0906fef220d000f01800 0907fef23a98ffc41000 0908fef25dc001681333 0909fef2bb80012c0800
+
+7. Electronic
+0901fef20096003c1000 0902fef201e0fe7a1666 0903fef20384ff100ccc 0904fef20960ff4c1000 0905fef2151800f01800 0906fef220d0012c1800 0907fef23a98ff4c1000 0908fef25dc0012c1333 0909fef2bb8000f00800
+
+8. Pop
+0901fef200b4005a1000 0902fef201e0fed41800 0903fef20384fed40ccc 0904fef20960ff4c1000 0905fef2151800d21333 0906fef220d000f01333 0907fef23a98fed41333 0908fef25dc000781333 0909fef2bb8000780800
+
+9. Classical Music
+0901fef2009600b40e66 0902fef201e0fe981666 0903fef20384ff4c0ccc 0904fef20960ff4c1000 0905fef21518003c1800 0906fef220d000781800 0907fef23a98fed41000 0908fef25dc000b41333 0909fef2bb8000b40800
+
+10. Rock&Roll
+0901fef2009600781000 0902fef201e0fed41666 0903fef20384ff4c0ccc 0904fef20960ff101000 0905fef2151800d21800 0906fef220d000b41800 0907fef23a98ffc41000 0908fef25dc0012c1333 0909fef2bb8001680800
+
+11. Folk
+0901fef2003cfc7c1800 0902fef201e0fe981666 0903fef20384fed40ccc 0904fef20960ff881000 0905fef2151800d21800 0906fef220d0012c1800 0907fef23a98ff101000 0908fef25dc0003c1333 0909fef2bb8000780800
+
+12. Book Whisper
+0901fef2003cfbc80800 0902fef201e0fbc81000 0903fef20384ff880ccc 0904fef2096000781000 0905fef21518003c1800 0906fef220d000781800 0907fef23a9800b41000 0908fef25dc000781333 0909fef2bb80fcb80ccc
+
+13. HIFI
+0901fef2003cfed42000 0902fef201e0fe201666 0903fef20384fe5c0ccc 0904fef20960ffc41000 0905fef21518010e1800 0906fef220d000f01800 0907fef23a98ff4c1000 0908fef25dc000f01333 0909fef2bb80014a0800
+
+14. ACG
+0901fef2009600780e66 0902fef201e0ff101666 0903fef20384fed40ccc 0904fef20960fed41000 0905fef2151800f01800 0906fef220d0012c1800 0907fef23a98ff881000 0908fef25dc000f01333 0909fef2bb8000b40800
+
+15. SOUNDPEATS Classic
+0901fef2003cfda81800 0902fef201e0fe201666 0903fef20384fed40ccc 0904fef20960ff4c1000 0905fef2151800ba1800 0906fef220d000b41800 0907fef23a98ff101000 0908fef25dc000f01333 0909fef2bb8000f00800

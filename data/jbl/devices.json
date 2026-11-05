@@ -2638,7 +2638,7 @@
       },
       "effects": ["standard", "treble", "bass"],
       "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "hi_res", "find_buds"],
-      "reports": ["data/jbl/reports/20F1_v8.1.5.txt"],
+      "reports": ["data/jbl/reports/20F1_v8.1.5.txt", "data/jbl/reports/20F1_v8.1.5_0.4.1.txt"],
       "eq": {
         "path": "airoha",
         "series": "live",

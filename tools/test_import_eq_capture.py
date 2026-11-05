@@ -61,10 +61,22 @@ class ImportEqCaptureTest(unittest.TestCase):
         self.assertEqual(len(out["eq"]["bands"]), 9)
 
     def test_clip_c10_recording_keeps_truefrees_curve_fixed(self):
-        # append_after_classic: TRUEFREE's eight bands go first in every curve, then the user's eight.
-        out = self.check_recording("T2", "T2_0.5.5_recording.txt")
-        self.assertEqual(len(out["eq"]["fixed_bands"]), 8)
-        self.assertEqual(len(out["eq"]["bands"]), 8)
+        # append_after_classic: TRUEFREE's eight bands go first in every curve, then the user's eight. The first recording
+        # (issue #9) only showed the reset, with its fifth band at 100 Hz; the second, a custom curve, put the fifth slider
+        # at 1 kHz, so the entry has that and keeps the reset as the preset "TRUEFREE Classic".
+        model = next(m for m in self.devices if m.get("firmware_code") == "T2")
+        out = imp.build((DATA / "reports" / "T2_0.5.5_recording.txt").read_text(encoding="utf-8"))
+        self.assertEqual(out["missing"], [])
+        eq = out["eq"]
+        self.assertEqual(len(eq["fixed_bands"]), 8)
+        self.assertEqual([b["hz"] for b in eq["bands"]][4], 100)
+        classic = {"name": "TRUEFREE Classic", "bands": eq["fixed_bands"] + [
+            {"hz": b["hz"], "q": b["q"], "gain_db": b["base_gain_db"]} for b in eq["bands"]]}
+        eq["bands"][4]["hz"] = 1000
+        eq["presets"].insert(0, classic)
+        self.assertEqual(eq, model["eq"])
+        custom = imp.build((DATA / "reports" / "T2_0.5.5_recording_custom.txt").read_text(encoding="utf-8"))
+        self.assertEqual(custom["missing"], [])
 
     def test_report_pasted_without_indents_in_a_code_block(self):
         text = report("S5", self.vectors, "S5_20250605_V0.4.9")

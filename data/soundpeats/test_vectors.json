@@ -725,14 +725,14 @@
       ]
     },
     {
-      "name": "Clip C10: Reset: the base curve alone (TRUEFREE Classic in the recording, issue #9)",
+      "name": "Clip C10: a custom curve, +6 dB on the 1 kHz slider (the user's second recording, issue #9)",
       "model": "T2",
       "user_gains_db": [
         0,
         0,
         0,
         0,
-        0,
+        6,
         0,
         0,
         0
@@ -750,7 +750,7 @@
         "100aff88017700001ccc",
         "100bff8802ee00001ccc",
         "100cff8805dc00001ccc",
-        "100dff88012c00001ccc",
+        "100dff880bb801681ccc",
         "100eff88177000001ccc",
         "100fff882ee000001ccc",
         "1010ff885dc000001ccc"
@@ -1449,6 +1449,28 @@
         "100eff881770ff4c1800",
         "100fff882ee0ff4c1800",
         "1010ff884650ff4c1800"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "TRUEFREE Classic",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
+        "1009ff8800ba00001ccc",
+        "100aff88017700001ccc",
+        "100bff8802ee00001ccc",
+        "100cff8805dc00001ccc",
+        "100dff88012c00001ccc",
+        "100eff88177000001ccc",
+        "100fff882ee000001ccc",
+        "1010ff885dc000001ccc"
       ]
     }
   ],

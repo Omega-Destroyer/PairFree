@@ -251,11 +251,13 @@ The noise cycle is `0B` (noise cancelling and ambient sound) or the one the tap 
 default (`AppUtils.isDefaultMultiAi`); with Google Assistant or Alexa chosen in JBL's app, the
 playback set holds for that assistant instead. PairFree does not read that choice and always writes
 `A1`. The read names a side's set by its tap action, else its hold (`CustomGesture.generateName`).
-The other gesture pages are not covered: `GestureUi4Card` (11 models) builds its sets from
-`customizedGesture`, which the bundled product list has for none of them (they use JBL's server
-resources, `usingSeverRes`, which PairFree never fetches), and the headphone cards
-(`HeadLive670GestureCard` and the like) open pages of their own. The 29 other p4 models have no
-gesture card in JBL's app. Touch sensitivity (protocol 4 features `4033` and `4034`) sits on the
+The other gesture pages: `GestureUi4Card` builds its sets from the product list's `customizedGesture`, which only
+the Endurance Race 2 among its models has (section 10.1; the others' page offers nothing); the customized button page
+of 23 protocol 4 models is section 6.1. `HeadLive670GestureCard` and `HeadLive770GestureCard` (Live 670NC, 770NC,
+675NC and 775NC) open this same page for the left channel alone, so those headphones get these sets, starting the
+noise set at `0D` as headphones do. Not covered yet: `HeadTourOneGestureCard` (the Tour One's class reads gestures but
+has no write; what it sets is tap and hold on the touch panel, `AA 79 03 00 01` and the function, from the customize
+controls page) and `HeadQuantumGestureCard` (the Quantum 360 and 910 headsets' touch panel page, `wp.k`). Touch sensitivity (protocol 4 features `4033` and `4034`) sits on the
 customized-button page, whose levels come from the same server resources, so it is left out too.
 
 ### 4.10 Adaptive noise cancelling and auto compensation: `91`
@@ -371,6 +373,21 @@ On connecting, JBL's app writes host type 1 and then reads. There are two noise-
 Both read the mode back as the one of noise cancelling, Ambient Aware and TalkThru whose status is
 1, and off when ambient sound control is off or every mode is off (`gn.l0`). PairFree does the
 same.
+
+### 6.1 The customized button page
+
+23 protocol 4 models have JBL's newer gesture page (`ControlCard`, `ui3.fragment.gesture.customizedbutton`). Each
+gesture is a protocol 4 feature (`DeviceInfoFeature5`: `0F04` to `0F06` and `0F0A` the left earbud's tap, double tap,
+triple tap and hold, `0F07` to `0F09` and `0F0C` the right's, `0F80` and on the buttons and touch panels), read with
+the other features and written by `General4Control.setP5GestureStatus` as the feature with one byte: the function's
+value. Which gestures a model has and the functions each offers come from two files JBL's app bundles and reads
+without its server (`vm.d`): `assets/gesture/product_gesture_config.json` by product id (13 of PairFree's models),
+else `common_gesture_config.json` (10); `data/jbl/gesture_config.json` keeps their gestures, functions and values.
+Functions: noise control `0B` (or the cycle the gesture has: `09`, `0C`, `0D`), TalkThru `04` (`0F` on some), volume
+up `01` and down `02`, play or pause `08`, next `05` and previous `06` track, EQ on or off `C8`, spatial sound `C2`,
+VoiceAware `B5`, the phone's voice assistant `A1`, none `00`. PairFree shows a gesture once its feature answers.
+Left out: the EQ preset cycle (`eQControl`, `B2`), which JBL's app writes together with the presets it cycles
+through (`setP5GestureCmd`), and "tap, then tap and hold", which is pairing mode and cannot be changed.
 
 ## 7. Security modes
 
@@ -538,8 +555,7 @@ models without a dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+)
 product list's ANC flag and Smart Audio & Video, voice prompts, VoiceAware and auto power-off from their class;
 PairFree shows each only once the earbuds answer its read.
 
-**Not covered yet:** the touch controls (an NV key per chip generation, rewritten and relayed to the other
-earbud, then reloaded: `MmiStage_SetGesture_1568_v3` and its kin), the noise cancelling and Ambient Aware level
+**Touch controls** (section 10.1) are covered on the models whose page JBL's app has. **Not covered yet:** the noise cancelling and Ambient Aware level
 (`0E06` `00 1E` and the level, which JBL's app sends only with the mode on, and reads back only from
 indications), adaptive noise cancelling and auto compensation (separate flows per product id through Airoha's
 ANC manager), PSAP, PersoniFi, the Live Buds 3's smart case settings, Auracast, the voice assistant and the EQ
@@ -551,6 +567,44 @@ case action `0083`; the clock `0090`; Harman commands passed through `0093`; dev
 writes `0A01` and reloads `0A09`; relays to the other earbud `0D01`; key events on `1101` other than Smart Audio
 & Video's (`0096` factory reset, `0095` power off, `0002` pairing among them); and the firmware update commands
 `1C00` to `1CFF` other than the version read.
+
+### 10.1 Touch controls
+
+Airoha's SDK in JBL's app keeps each earbud's touch controls as a key map of 8-byte entries: the key type, a key
+id, the event (two bytes, low first) and a state (four bytes). JBL's gesture ids (1 and 2 tap, 3 and 4 double tap,
+5 and 6 a second long press, 7 and 8 triple tap, 49 and 50 hold; odd on the left) and action ids are the same as
+on JBL's other models (section 4.9). How they become entries depends on the chip, as `AirohaConnector` sets the
+chip type:
+
+| Variant | Chips | Key map | Key id |
+|---|---|---|---|
+| v3 | AB158x; AB1568 and AB1565 dual with an NVDM version above 1 | NV key `F2D6` | 126 at first, then the last entry read |
+| 1568 | the other AB1568 and AB1565 dual | NV key `F2E7` | 24 |
+| plain | AB155x | NV key `F2E7` | 126 |
+| ab1562 | AB1562 | key map commands `0A0B` (read) and `0A0A` (write) | 0 at first, then the last entry read |
+
+Every variant keeps a copy of the other earbud's map in `F2EF`. The read (`MmiStage_GetGesture*`) asks which earbud
+PairFree talks to (`0CD4`), on an AB1568 the NVDM version (`1001`), then reads the earbud's own map (`0A00`, length
+100) and, relayed (`0D01`), the other's; an empty map is every gesture at 0. A write (`setGestureInfo`) takes the
+page's gestures for one side plus what the read found for the rest, then writes the earbud's own map (`0A01`), the
+copy of the other's (`0A01` `F2EF`) and reloads its key (`0A09`), and on earbuds does the same relayed to the other
+earbud; the AB1562 writes its map (`0A0A`), then relayed. Which entries an action writes, and which action a map's
+entries mean, are tables in `data/jbl/commands.json` (`airoha.gesture`), derived from JBL's own methods run for every
+gesture and action outside the repo; `test_vectors.json` (`airoha_gesture`) keeps 96 of those writes and reads.
+Two quirks kept: the older chips have no entry for action 10 (play/pause that also dismisses the assistant), so it
+writes nothing there, and the plain variant's read leaves out a gesture it cannot name instead of setting it to 0.
+
+Which sets each model gets follows JBL's pages: the dashboard's gesture card (`sp.a`; Live Buds 3, Live Free 2,
+Quantum TWS and TWS Air, Reflect Aero) has the sets of section 4.9 with the second long press at 0, and on the
+Quantum TWS the low latency switch (14) on the triple tap of the noise control and volume sets; the newer gesture card
+(`GestureUi4Card`, `yp.q`) on the Endurance Race 2 takes its sets from the product list's `customizedGesture`
+(playback 8, 5, hold 161, 6; noise control 11 or the cycle the tap has, 4, 161, 0; volume 1, 2, 161, 0; none), in that
+order of tap, double tap, hold and triple tap; the older settings
+page (`em.o`, `AppUtils.setCommandAiRoHaGesture`; Reflect Mini NC, Live Free NC+) has playback (8, 5, 6, hold 161),
+noise control (9, 4, 0, 161), volume (1, 2, 0, 161), the phone's voice assistant on the hold (one earbud at a time;
+its tap, 160, writes nothing on these chips) and none. The Club Pro+ has no gesture page; the Tune 670NC, 770NC,
+775NC and 777NC have no gesture card; the Tour Pro 3, Wave Beam 2 and Vibe Beam 2 have the newer card but no sets in
+JBL's product list, so JBL's app offers nothing there either.
 
 ## 11. Equalizer
 

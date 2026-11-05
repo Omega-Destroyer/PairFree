@@ -42,7 +42,21 @@ public data class JblModel(
     val names: List<String> = emptyList(),
     /** The model's EQ as JBL's app writes it, its presets and range (devices.json eq; docs/jbl/PROTOCOL.md section 11). */
     val eq: JblEqSpec? = null,
+    /**
+     * Airoha models: the gesture page JBL's app gives them (devices.json airoha_gestures; docs/jbl/PROTOCOL.md section 10.1):
+     * "card" for the dashboard's gesture card (CustomGesture's sets), "settings" for the older settings page
+     * (setCommandAiRoHaGesture's sets), "ui4" for the newer gesture card with the product list's customizedGesture sets;
+     * null where the app has none.
+     */
+    val airohaGestures: String? = null,
+    /** The ambient and volume sets put the low latency switch (14) on the triple tap, as JBL's app does on the Quantum TWS. */
+    val gestureUll: Boolean = false,
+    /** Protocol 4 models with the customized button page: its gestures' entry, "common" or a product id (data/jbl/gesture_config.json). */
+    val p5Gestures: String? = null,
 ) {
+    /** The gestures of the customized button page, each a protocol 4 feature (docs/jbl/PROTOCOL.md section 6.1). */
+    public val p5GestureList: List<JblP5Gesture> get() = p5Gestures?.let { JBL_P5_GESTURES[it] }.orEmpty()
+
     /**
      * How the model's settings go: one command each ([DIRECT]), Harman's feature records, command 06
      * ([FEATURE]), JBL's protocol 4 ([P4]), or Airoha's RACE commands ([AIROHA], docs/jbl/PROTOCOL.md section 10).
@@ -97,3 +111,16 @@ public object JblModels {
 
     private const val FAMILY = "JBL"
 }
+
+/**
+ * One gesture of a protocol 4 model's customized button page (data/jbl/gesture_config.json): its feature, where it is
+ * (left, right, a button, the touch panel), the gesture, the function JBL's app resets it to, and the functions it
+ * offers with the one-byte value each is written as.
+ */
+public data class JblP5Gesture(
+    val feature: Int,
+    val place: String,
+    val gesture: String,
+    val default: String?,
+    val functions: Map<String, Int>,
+)

@@ -133,6 +133,9 @@
       "mmi_get": "0901",
       "nv_read": "0A00",
       "nv_write": "0A01",
+      "nv_reload": "0A09",
+      "keymap_set": "0A0A",
+      "keymap_get": "0A0B",
       "peq_save_status": "09FD",
       "relay_dst": "0D00",
       "relay": "0D01",
@@ -153,6 +156,44 @@
     "notify_modules": {"anc": 5, "agent_battery": 101, "partner_battery": 102, "case_battery": 103},
     "nv_keys": {"chip_name": "1002", "nvdm_version": "1001", "power_control": "F2F1", "in_ear_old": "F2F0", "model_name": "1003", "model_name_old": "F500"},
     "_model_name_about": "The model name the SDK reads at connect (CommonStageGetModelName), which on JBL's models is the product id (\"20F1\"): NV key F500 on the AB155x and AB1568, 1003 on the AB1568 v3 and AB158x, 20 bytes after 20 others; the AB1562 answers it to ae_info 01 FF (CommonStageGetModelName1562).",
+    "gesture": {
+      "_about": "Airoha's gesture key map as JBL's app writes and reads it (AirohaDeviceStatusControl, AirohaAB1562DeviceStatusControl and their MmiStage_*Gesture* stages, AirohaHmGestureInfo*, AirohaHmGestureParser1562; docs/jbl/PROTOCOL.md section 10). One entry is the key type, the key id, the event (two bytes, low first) and the state (four bytes, low first). write: per JBL action id, the entries it writes, K standing for the gesture's own key type (key_types, by JBL's gesture id); write_overrides replace them for one gesture and action. read: in order, the action a key type takes when every [key type, event] listed is in the key (K its own type), a later match winning; read_order the key types read. The tables are derived from JBL's own code run for every gesture and action (outside the repo) and rebuild all of it. Variants: v3 on the AB158x and the AB1568 whose NVDM version is above 1, 1568 on the other AB1568, plain on the AB155x, ab1562 on the AB1562 (key map commands 0A0B and 0A0A instead of NV keys).",
+      "nv_own_v3": "F2D6", "nv_own": "F2E7", "nv_peer": "F2EF", "read_length": 100,
+      "variants": {
+        "plain": {
+          "key_id": 126, "key_id_from_read": false, "fills_unmatched": false,
+          "key_types": {"1": 1, "2": 1, "3": 2, "4": 2, "5": 5, "6": 5, "7": 3, "8": 3, "49": 4, "50": 4},
+          "write": {"0": [], "1": [["K", 10, 16777224]], "2": [["K", 11, 16777224]], "3": [["K", -4091, 16777230]], "4": [["K", 144, 16777230]], "5": [["K", 90, 16777224]], "6": [["K", 91, 16777224]], "7": [["K", 145, 16777230]], "8": [["K", 83, 8], ["K", 85, 16777216]], "9": [["K", -4090, 50333694]], "10": [], "11": [], "12": [], "13": [], "14": [], "160": [], "162": [["K", 260, 16777230]], "163": [["K", 258, 16777230]], "164": [[9, 256, 16777230], ["K", 259, 16777230], [0, 257, 16777230]], "166": [["K", 282, 16777230], [0, 283, 16777230]], "167": [], "168": [["K", 291, 16777230], [0, 292, 16777230], [2, 290, 16777230]]},
+          "write_overrides": {"1/161": [[1, 32, 16777224]], "2/161": [[1, 32, 16777224]], "3/161": [[2, 32, 16777224]], "4/161": [[2, 32, 16777224]], "5/161": [[5, 32, 16777224]], "6/161": [[5, 32, 16777224]], "7/161": [[3, 32, 16777224]], "8/161": [[3, 32, 16777224]], "49/161": [[5, 32, 16777224]], "50/161": [[5, 32, 16777224]]},
+          "read_order": [1, 2, 4, 5, 3],
+          "read": [[1, [["K", 10]]], [2, [["K", 11]]], [7, [["K", 145]]], [3, [["K", -4091]]], [4, [["K", 144]]], [5, [["K", 90]]], [6, [["K", 91]]], [8, [["K", 83], ["K", 85]]], [9, [["K", -4090]]], [161, [["K", 32]]], [162, [["K", 260]]], [163, [["K", 258]]], [164, [[9, 256], ["K", 259], [0, 257]]], [166, [["K", 282], [0, 283]]], [168, [["K", 291], [0, 292], [2, 290]]]]
+        },
+        "1568": {
+          "key_id": 24, "key_id_from_read": false, "fills_unmatched": true,
+          "key_types": {"1": 1, "2": 1, "3": 2, "4": 2, "5": 5, "6": 5, "7": 3, "8": 3, "49": 4, "50": 4},
+          "write": {"0": [], "1": [["K", 10, 16777224]], "2": [["K", 11, 16777224]], "3": [["K", -4091, 16777230]], "4": [["K", 144, 16777230]], "5": [["K", 90, 16777224]], "6": [["K", 91, 16777224]], "7": [["K", 145, 16777230]], "8": [["K", 83, 8], ["K", 85, 16777216]], "9": [["K", -4087, 16777230]], "10": [["K", 87, 8], ["K", 89, 16777216]], "11": [["K", -4090, 16777230]], "12": [["K", -4089, 16777230]], "13": [["K", -4088, 16777230]], "14": [["K", 156, 285212686]], "160": [], "161": [["K", 32, 16777224]], "162": [["K", 260, 16777230]], "163": [["K", 258, 16777230]], "164": [[9, 256, 16777230], ["K", 259, 16777230], [0, 257, 16779262]], "166": [["K", 282, 16777230], [0, 283, 16777230]], "167": [], "168": [["K", 291, 16777230], [0, 292, 134217728], [1, 290, 16777230]]},
+          "write_overrides": {},
+          "read_order": [1, 2, 4, 5, 3],
+          "read": [[1, [["K", 10]]], [2, [["K", 11]]], [7, [["K", 145]]], [3, [["K", -4091]]], [4, [["K", 144]]], [5, [["K", 90]]], [6, [["K", 91]]], [8, [["K", 83], ["K", 85]]], [10, [["K", 87], ["K", 89]]], [9, [["K", -4087]]], [11, [["K", -4090]]], [12, [["K", -4089]]], [13, [["K", -4088]]], [14, [["K", 156]]], [161, [["K", 32]]], [162, [["K", 260]]], [163, [["K", 258]]], [164, [[9, 256], ["K", 259], [0, 257]]], [166, [["K", 282], [0, 283]]], [168, [["K", 291], [0, 292], [1, 290]]]]
+        },
+        "v3": {
+          "key_id": 126, "key_id_from_read": true, "fills_unmatched": true,
+          "key_types": {"1": 1, "2": 1, "3": 2, "4": 2, "5": 5, "6": 5, "7": 3, "8": 3, "49": 4, "50": 4},
+          "write": {"0": [], "1": [["K", 10, 0]], "2": [["K", 11, 0]], "3": [["K", -4059, 0]], "4": [["K", 144, 0]], "5": [["K", 90, 0]], "6": [["K", 91, 0]], "7": [["K", 145, 0]], "8": [["K", 83, 0], ["K", 85, 0]], "9": [["K", -4055, 0]], "10": [["K", 87, 0], ["K", 89, 0]], "11": [["K", -4058, 0]], "12": [["K", -4057, 0]], "13": [["K", -4056, 0]], "14": [["K", -4090, 0]], "160": [], "161": [["K", 32, 0], [1, 35, 0], [4, 35, 0]], "162": [["K", 260, 0]], "163": [["K", 258, 0]], "164": [[9, 256, 0], ["K", 259, 0], [0, 257, 0]], "166": [["K", 282, 0], [0, 283, 0]], "167": [], "168": [["K", 291, 0], [0, 292, 0], [1, 290, 0]]},
+          "write_overrides": {},
+          "read_order": [1, 2, 4, 5, 3],
+          "read": [[1, [["K", 10]]], [2, [["K", 11]]], [7, [["K", 145]]], [3, [["K", -4059]]], [4, [["K", 144]]], [5, [["K", 90]]], [6, [["K", 91]]], [8, [["K", 83], ["K", 85]]], [10, [["K", 87], ["K", 89]]], [9, [["K", -4055]]], [11, [["K", -4058]]], [12, [["K", -4057]]], [13, [["K", -4056]]], [14, [["K", -4090]]], [161, [["K", 32], [1, 35], [4, 35]]], [162, [["K", 260]]], [163, [["K", 258]]], [164, [[9, 256], ["K", 259], [0, 257]]], [166, [["K", 282], [0, 283]]], [168, [["K", 291], [0, 292], [1, 290]]]]
+        },
+        "ab1562": {
+          "key_id": 0, "key_id_from_read": true, "fills_unmatched": true,
+          "key_types": {"1": 0, "2": 0, "3": 5, "4": 5, "5": 255, "6": 255, "7": 6, "8": 6, "49": 7, "50": 7},
+          "write": {"0": [], "1": [["K", 10, 0]], "2": [["K", 11, 0]], "3": [["K", -4059, 0]], "4": [["K", 139, 0]], "5": [["K", 90, 0]], "6": [["K", 91, 0]], "7": [], "8": [["K", 83, 0]], "9": [["K", -4055, 0]], "10": [["K", -4048, 0]], "11": [["K", -4058, 0]], "12": [["K", -4057, 0]], "13": [["K", -4056, 0]], "14": [], "160": [], "161": [["K", 51, 0]], "162": [], "163": [], "164": [], "166": [], "167": [], "168": []},
+          "write_overrides": {},
+          "read_order": [0, 5, 6, 7],
+          "read": [[1, [["K", 10]]], [2, [["K", 11]]], [3, [["K", -4059]]], [4, [["K", 139]]], [5, [["K", 90]]], [6, [["K", 91]]], [8, [["K", 83]]], [9, [["K", -4055]]], [10, [["K", -4048]]], [11, [["K", -4058]]], [12, [["K", -4057]]], [13, [["K", -4056]]], [161, [["K", 51]]], [15, [["K", -4047]]]]
+        }
+      }
+    },
     "peq": {"_about": "Airoha's PEQ (AirohaPeqMgr, MgrPeqData, libpeq/stage; docs/jbl/PROTOCOL.md section 11.2): the NV keys of the audio path, the PEQ group base and the coefficient base on the AB155x, AB1562 and AB1568 (and the same with _v3 on the AB158x and the AB1568 and AB1565 whose NVDM version is above 1), the custom coefficient keys' offset from the coefficient base, the UI data, UI extra data and peak data keys (plus the slot), the length the SDK reads NV keys with, and the destination type of the other earbud in a relay.", "audio_path": "F233", "group_base": "F234", "coef_base": "F260", "audio_path_v3": "E401", "group_base_v3": "E402", "coef_base_v3": "E410", "custom_offset": 28, "ui_data": "EF00", "ui_ext": "EF10", "ui_peak": "EF20", "read_length": 1000, "partner_dst": 5},
     "anc": {"on": "0A", "off": "0B", "mode_anc": 0, "mode_passthrough": 4, "filter_anc": 1, "filter_anc_sports": 2, "filter_ambient_aware": 9, "filter_talk_thru": 10, "filter_ambient_aware_ab155x": 5, "filter_talk_thru_ab155x": 6},
     "key_events": {"smart_switch_set": "00A8", "smart_switch_get": "00A9"},
@@ -173,6 +214,7 @@
       "0094": "device information write",
       "0A01": "NV key write",
       "0A09": "NV key reload",
+      "0A0A": "key map write",
       "0D01": "relays a command to the other earbud"
     },
     "_never_send_about": "Also never sent: key events (key_event) other than key_events (factory reset 0096, power off 0095, pairing 0002 and the rest), and the firmware update commands (1C00 to 1CFF) other than the firmware version and AE information reads. The NV key writes and relays (0A01, 0D01) go out only within an Airoha PEQ write PairFree builds itself (docs/jbl/PROTOCOL.md section 11.2; owner, 2026-11-04)."

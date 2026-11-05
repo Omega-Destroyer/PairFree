@@ -762,6 +762,10 @@ abstract class GenerateJblTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val eqPresetsJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val gestureConfigJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -857,6 +861,8 @@ abstract class GenerateJblTables : DefaultTask() {
         for ((k, v) in raceMap("notify_modules")) out.appendLine("    public const val NOTIFY_${k.uppercase()}: Int = ${int(v)}")
         for ((k, v) in raceMap("nv_keys")) out.appendLine("    public const val NV_${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
         for ((k, v) in raceMap("peq")) if (!k.startsWith("_")) out.appendLine("    public const val PEQ_${k.uppercase()}: Int = ${if (v is String) "0x" + v.uppercase() else int(v).toString()}")
+        for ((k, v) in raceMap("gesture")) if (v is String && !k.startsWith("_")) out.appendLine("    public const val GESTURE_${k.uppercase()}: Int = 0x${v.uppercase()}")
+        out.appendLine("    public const val GESTURE_READ_LENGTH: Int = ${int(raceMap("gesture")["read_length"])}")
         for ((k, v) in raceMap("anc")) out.appendLine("    public const val ANC_${k.uppercase()}: Int = ${if (v is String) hex(byte(v)) else int(v).toString()}")
         for ((k, v) in raceMap("key_events")) out.appendLine("    public const val KEY_${k.uppercase()}: Int = 0x${(v as String).uppercase()}")
         for ((k, v) in raceMap("prompt_language")) out.appendLine("    public const val PROMPT_${k.uppercase()}: Int = ${int(v)}")
@@ -868,6 +874,35 @@ abstract class GenerateJblTables : DefaultTask() {
         out.appendLine("    /** The only key events PairFree sends; the others include factory reset, power off and pairing. */")
         out.appendLine("    public val KEY_EVENTS: Set<Int> = setOf(${raceMap("key_events").values.joinToString(", ") { "0x" + (it as String).uppercase() }})")
         out.appendLine("}")
+        out.appendLine()
+        // Airoha's gesture key map per chip variant (data/jbl/commands.json, airoha.gesture): K, the gesture's own key type, is -1.
+        @Suppress("UNCHECKED_CAST")
+        val gestureVariants = raceMap("gesture").getValue("variants") as Map<String, Map<String, Any?>>
+        fun keyType(v: Any?) = if (v == "K") "-1" else int(v).toString()
+        out.appendLine("/** Airoha's gesture key map per chip variant (data/jbl/commands.json, airoha.gesture). */")
+        out.appendLine("internal val AIROHA_GESTURE_VARIANTS: Map<String, AirohaGestureVariant> = mapOf(")
+        for ((name, v) in gestureVariants) {
+            @Suppress("UNCHECKED_CAST")
+            fun entries(list: Any?) = (list as List<List<Any?>>).joinToString(", ", "listOf(", ")") { e -> "intArrayOf(${keyType(e[0])}, ${e.drop(1).joinToString(", ") { "${(it as Number).toLong()}L.toInt()" }})" }
+            @Suppress("UNCHECKED_CAST")
+            val write = (v.getValue("write") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { "${it.key} to ${entries(it.value)}" }
+            @Suppress("UNCHECKED_CAST")
+            val overrides = (v.getValue("write_overrides") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { (k, e) ->
+                val (g, act) = k.split("/")
+                "($g to $act) to ${entries(e)}"
+            }
+            @Suppress("UNCHECKED_CAST")
+            val keyTypes = (v.getValue("key_types") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { "${it.key} to ${int(it.value)}" }
+            @Suppress("UNCHECKED_CAST")
+            val read = (v.getValue("read") as List<List<Any?>>).joinToString(", ", "listOf(", ")") { r -> "${int(r[0])} to ${entries(r[1])}" }
+            @Suppress("UNCHECKED_CAST")
+            val order = (v.getValue("read_order") as List<Any?>).joinToString(", ", "listOf(", ")") { int(it).toString() }
+            out.appendLine("    ${str(name)} to AirohaGestureVariant(${int(v["key_id"])}, ${v["key_id_from_read"]}, ${v["fills_unmatched"]}, $keyTypes,")
+            out.appendLine("        $write,")
+            out.appendLine("        $overrides,")
+            out.appendLine("        $order, $read),")
+        }
+        out.appendLine(")")
         out.appendLine()
 
         // JBL's presets (data/jbl/eq_presets.json): one list per preset file, and per series the standard ones its group names
@@ -893,6 +928,22 @@ abstract class GenerateJblTables : DefaultTask() {
             val picked = categories.map { c -> standard.first { int(it["category"]) == c.toInt() } }
             out.appendLine("private fun ${ident("series_" + series)}(): List<JblEqPreset> = listOf($off, ${picked.joinToString(", ") { preset(it) }})")
         }
+        out.appendLine()
+        // The protocol 4 models' gesture page (data/jbl/gesture_config.json).
+        @Suppress("UNCHECKED_CAST")
+        val gestureConfig = JsonSlurper().parse(gestureConfigJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        fun p5(entry: Any?): String = ((entry as Map<String, Any?>).getValue("gestures") as List<Map<String, Any?>>).joinToString(", ", "listOf(", ")") { g ->
+            @Suppress("UNCHECKED_CAST")
+            val functions = (g.getValue("functions") as Map<String, Any?>).entries.joinToString(", ", "linkedMapOf(", ")") { "${str(it.key)} to ${int(it.value)}" }
+            "JblP5Gesture(0x${g["feature"]}, ${str(g["place"])}, ${str(g["gesture"])}, ${g["default"]?.let { str(it) } ?: "null"}, $functions)"
+        }
+        out.appendLine("/** The protocol 4 models' gesture pages, \"common\" or by product id (data/jbl/gesture_config.json). */")
+        out.appendLine("internal val JBL_P5_GESTURES: Map<String, List<JblP5Gesture>> = mapOf(")
+        out.appendLine("    \"common\" to ${p5(gestureConfig["common"])},")
+        @Suppress("UNCHECKED_CAST")
+        for ((pid, e) in gestureConfig.getValue("products") as Map<String, Any?>) out.appendLine("    ${str(pid)} to ${p5(e)},")
+        out.appendLine(")")
         out.appendLine()
         out.appendLine("/** Every model in data/jbl/devices.json. */")
         out.appendLine("internal val JBL_MODELS: List<JblModel> = listOf(")
@@ -952,7 +1003,9 @@ abstract class GenerateJblTables : DefaultTask() {
                     "family = JblModel.Family.$family, noise = $noise, modes = listOf($modes), autoOff = $autoOff, " +
                     "autoOffMinutes = listOf($minutes), autoPlayPause = ${d["auto_play_pause"] == true}, security = $security, " +
                     "extras = $extras, smartAudioVideo = $sav, effects = $effects, gestureNoise = ${(d["gesture_noise"] as Number?)?.toInt() ?: 11}, " +
-                    "racePush = ${d["push_status"] != false}, names = ${(d["names"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "listOf(", ")") { str(it) }}, eq = $eq),",
+                    "racePush = ${d["push_status"] != false}, names = ${(d["names"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "listOf(", ")") { str(it) }}, eq = $eq, " +
+                    "airohaGestures = ${d["airoha_gestures"]?.let { str(it) } ?: "null"}, gestureUll = ${d["gesture_ull"] == true}, " +
+                    "p5Gestures = ${d["p5_gestures"]?.let { str(it) } ?: "null"}),",
             )
         }
         out.appendLine(")")
@@ -967,6 +1020,7 @@ val generateJblTables = tasks.register<GenerateJblTables>("generateJblTables") {
     commandsJson = rootProject.layout.projectDirectory.file("../data/jbl/commands.json")
     devicesJson = rootProject.layout.projectDirectory.file("../data/jbl/devices.json")
     eqPresetsJson = rootProject.layout.projectDirectory.file("../data/jbl/eq_presets.json")
+    gestureConfigJson = rootProject.layout.projectDirectory.file("../data/jbl/gesture_config.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.jbl"
     outputDir = layout.buildDirectory.dir("generated/jbl")
 }

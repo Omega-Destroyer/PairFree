@@ -85,6 +85,17 @@ public class JblSession(initial: JblModel) {
     // Airoha's PEQ: the write under way, if any.
     private var airohaEq: JblAirohaEq? = null
 
+    // Airoha's gesture key map (docs/jbl/PROTOCOL.md section 10.1): the read or write under way, the read still to make,
+    // and what the last read found: each gesture's action, the chip's variant and the key id a write carries.
+    private var gestureFlow: JblAirohaGesture? = null
+    private var gestureReadDue = false
+    private val airohaGestures = mutableMapOf<Int, Int>()
+    private var gestureVariant: String? = null
+    private var gestureKeyId: Int? = null
+
+    // The customized button page (protocol 4 models): each gesture feature's value as the earbuds answered it.
+    private val p5Values = mutableMapOf<Int, Int>()
+
     // Realtek's segment EQ: the reply parts in so far.
     private var segments = ByteArray(0)
 
@@ -296,7 +307,7 @@ public class JblSession(initial: JblModel) {
         is JblPacket -> frame.command !in JblCommand.NEVER_SEND
         is JblP4Packet -> frame.command !in JblP4.NEVER_SEND
         is JblP4Part -> frame.command !in JblP4.NEVER_SEND
-        is RacePacket -> raceAllowed(frame) || airohaEq?.sent?.contains(frame) == true
+        is RacePacket -> raceAllowed(frame) || airohaEq?.sent?.contains(frame) == true || gestureFlow?.sent?.contains(frame) == true
         // Raw bytes only as the parts of PairFree's own last EQ write.
         is JblRaw -> frame in rawOut
         else -> false
@@ -345,6 +356,11 @@ public class JblSession(initial: JblModel) {
         if (packet.identifier != JblP4.IDENTIFIER) return
         var noise = false
         for ((id, v) in packet.features()) {
+            // The customized button page's gestures: each a feature of one byte, the function's value.
+            if (model.p5GestureList.any { it.feature == id }) {
+                if (v.isNotEmpty()) p5Values[id] = v.u8(0)
+                continue
+            }
             if (id !in REPORTED_P4 || v.isEmpty()) continue
             _replies["p4." + id.toString(16).padStart(4, '0')] = v.copyOf()
             when (id) {
@@ -563,8 +579,9 @@ public class JblSession(initial: JblModel) {
             group("calls", SettingTab.DEVICE, extras.callRows()),
             group("other", SettingTab.DEVICE, otherRows()),
             group("find", SettingTab.DEVICE, extras.findRows()),
-            group("touch_left", SettingTab.CONTROLS, extras.touchRows("left")),
-            group("touch_right", SettingTab.CONTROLS, extras.touchRows("right")),
+            group("touch_left", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("left") else extras.touchRows("left")),
+            group("touch_right", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("right") else extras.touchRows("right")),
+            group("touch_buttons", SettingTab.CONTROLS, p5Rows()),
         )
 
     private fun noiseRows(): List<Setting> {
@@ -597,6 +614,10 @@ public class JblSession(initial: JblModel) {
     public fun change(change: SettingChange): List<JblFrame>? {
         val setting = groups.flatMap { it.settings }.firstOrNull { it.key == change.key } ?: return null
         if (change is SettingChange.Choice && setting is Setting.Choice && change.option !in setting.options) return null
+        if (change is SettingChange.Choice && change.key.startsWith(P5_PREFIX)) return p5Change(change.key, change.option)
+        if (change is SettingChange.Choice && model.airohaGestures != null) {
+            AIROHA_TOUCH_KEYS.entries.firstOrNull { it.value == change.key }?.let { return airohaTouch(it.key, change.option) }
+        }
         extras.change(change)?.let { out ->
             extras.readBack(change.key)?.let { readBacks += it }
             return out
@@ -760,6 +781,7 @@ public class JblSession(initial: JblModel) {
         if (model.autoOff != null) add(JblP4.FEATURE_AUTO_OFF)
         if (model.autoPlayPause) add(JblP4.FEATURE_AUTO_PLAY_PAUSE)
         addAll(extras.p4Features())
+        addAll(model.p5GestureList.map { it.feature })
     }
 
     private fun p4Batteries(): List<Int> =
@@ -831,7 +853,26 @@ public class JblSession(initial: JblModel) {
     /** One RACE response or indication. The earbuds also send noise control and the batteries unasked, as indications. */
     private fun race(p: RacePacket) {
         if (p.type == JblRace.TYPE_COMMAND || p.type == JblRace.TYPE_COMMAND_NO_RESPONSE) return
-        if (airohaEq?.receive(p) { outbox += it } == true) return
+        if (airohaEq?.receive(p) { outbox += it } == true) {
+            if (airohaEq?.done == true || airohaEq?.failed == true) startGestureRead()
+            return
+        }
+        gestureFlow?.let { flow ->
+            if (!flow.receive(p) { outbox += it }) return@let
+            // The read's own question of which earbud PairFree talks to answers the session's too.
+            if (p.id == JblRace.AGENT_CHANNEL) agentRight = flow.agentRight
+            if (flow.done) {
+                airohaGestures += flow.gestures
+                gestureVariant = flow.name
+                flow.keyId?.let { gestureKeyId = it }
+                agentRight = flow.agentRight
+            }
+            if (flow.done || flow.failed) {
+                gestureFlow = null
+                startGestureRead()
+            }
+            return
+        }
         val d = p.data
         when (p.id) {
             JblRace.NV_READ -> raceNv(d)
@@ -908,6 +949,7 @@ public class JblSession(initial: JblModel) {
      */
     private fun raceChip(c: RaceChip) {
         chip = c
+        gestureReadDue = model.airohaGestures != null
         if (model.autoOff != null) outbox += raceAutoOffRead()
         if (model.autoPlayPause) outbox += raceAutoPlayRead()
         outbox += when (c) {
@@ -916,6 +958,117 @@ public class JblSession(initial: JblModel) {
             RaceChip.AB1568 -> listOf(RacePacket.nvRead(JblRace.NV_MODEL_NAME_OLD, RACE_MODEL_NAME_LENGTH), RacePacket.nvRead(JblRace.NV_MODEL_NAME, RACE_MODEL_NAME_LENGTH))
             RaceChip.AB158X -> listOf(RacePacket.nvRead(JblRace.NV_MODEL_NAME, RACE_MODEL_NAME_LENGTH))
         }
+        startGestureRead()
+    }
+
+    /** The customized button page: one row per gesture whose feature answered, with the functions JBL's page offers it. */
+    private fun p5Rows(): List<Setting> = model.p5GestureList.mapNotNull { g ->
+        val v = p5Values[g.feature] ?: return@mapNotNull null
+        val now = g.functions.entries.firstOrNull { it.value == v }?.key
+            ?: P5_AMBIENT.takeIf { it in g.functions && v in P5_AMBIENT_CYCLES }
+            ?: TOUCH_OTHER
+        Setting.Choice(P5_PREFIX + g.place + "_" + g.gesture, now, g.functions.keys.toList())
+    }
+
+    /**
+     * One gesture set to [option], as General4Control.setP5GestureStatus writes it: the feature with the function's byte. The
+     * noise control function keeps the cycle the gesture already has (its supportAscList), else JBL's page's value.
+     */
+    private fun p5Change(key: String, option: String): List<JblFrame>? {
+        val g = model.p5GestureList.firstOrNull { P5_PREFIX + it.place + "_" + it.gesture == key } ?: return null
+        var value = g.functions[option] ?: return null
+        if (option == P5_AMBIENT) p5Values[g.feature]?.takeIf { it in P5_AMBIENT_CYCLES }?.let { value = it }
+        p5Values[g.feature] = value
+        readBacks += JblP4Packet.get(listOf(g.feature))
+        return listOf(JblP4Packet.set(g.feature to byteArrayOf(value.toByte())))
+    }
+
+    /** An Airoha model's touch set for one earbud ("left" or "right"), from the page JBL's app gives the model. */
+    private fun airohaTouchRows(side: String): List<Setting> {
+        if (gestureVariant == null) return emptyList()
+        val ids = AIROHA_SIDE.getValue(side)
+        if (ids.none { it in airohaGestures }) return emptyList()
+        val sets = if (model.airohaGestures == SETTINGS_PAGE) SETTINGS_SETS else CARD_SETS
+        return listOf(Setting.Choice(AIROHA_TOUCH_KEYS.getValue(side), airohaSetName(ids), sets))
+    }
+
+    /** The set a side's actions make, by its tap as JBL's pages name them, else its hold. */
+    private fun airohaSetName(ids: List<Int>): String {
+        fun name(action: Int?) = when (action) {
+            null, 0 -> TOUCH_NONE
+            1 -> TOUCH_VOLUME
+            8, 10 -> TOUCH_PLAYBACK
+            3, 9, 11, 12, 13 -> TOUCH_AMBIENT
+            160 -> TOUCH_ASSISTANT
+            else -> TOUCH_OTHER
+        }
+        val tap = name(airohaGestures[ids[0]])
+        if (tap != TOUCH_NONE) return tap
+        // The voice assistant set's tap writes nothing on Airoha's chips, so it reads back by its hold alone.
+        return if (model.airohaGestures == SETTINGS_PAGE && airohaGestures[ids[3]] == 161 && ids.take(3).all { (airohaGestures[it] ?: 0) == 0 }) TOUCH_ASSISTANT else TOUCH_NONE
+    }
+
+    /**
+     * One earbud's gestures set to [option], as JBL's page sends them (sp.a's sets on the gesture card, AppUtils.setCommandAiRoHaGesture
+     * on the settings page; the second long press at 0 on Airoha models), written to the earbuds' key maps.
+     */
+    private fun airohaTouch(side: String, option: String): List<JblFrame>? {
+        val variant = gestureVariant ?: return null
+        if (gestureFlow != null || airohaEq?.let { !it.done && !it.failed } == true) return null
+        var list = airohaSet(side, option) ?: return null
+        // The voice assistant is on one earbud at a time on the settings page (em.o): when the other side has it, that side
+        // goes to playback (the right) or noise control (the left), in the same write.
+        val other = if (side == "left") "right" else "left"
+        if (option == TOUCH_ASSISTANT && airohaSetName(AIROHA_SIDE.getValue(other)) == TOUCH_ASSISTANT) {
+            list = list + (airohaSet(other, if (other == "right") TOUCH_PLAYBACK else TOUCH_AMBIENT) ?: return null)
+        }
+        val flow = JblAirohaGesture.write(variant, model.form != Form.HEADPHONES, agentRight, airohaGestures, gestureKeyId, list)
+        gestureFlow = flow
+        list.forEach { (g, a) -> airohaGestures[g] = a }
+        return listOfNotNull(flow.start())
+    }
+
+    /** One earbud's gesture ids and actions for [option], in the order JBL's page lists them. */
+    private fun airohaSet(side: String, option: String): List<Pair<Int, Int>>? {
+        val (tap, double, triple, hold) = AIROHA_SIDE.getValue(side)
+        val long2 = tap + 4
+        val ull = if (model.gestureUll) 14 else 0
+        val settings = model.airohaGestures == SETTINGS_PAGE
+        // The newer gesture card (yp, from the product list's customizedGesture): its sets in the order it builds them.
+        if (model.airohaGestures == UI4_PAGE) {
+            val cycle = airohaGestures[tap]?.takeIf { it in setOf(9, 11, 12, 13) } ?: 11
+            return when (option) {
+                TOUCH_PLAYBACK -> listOf(tap to 8, double to 5, hold to 161, triple to 6)
+                TOUCH_AMBIENT -> listOf(tap to cycle, double to 4, hold to 161, triple to 0)
+                TOUCH_VOLUME -> listOf(tap to 1, double to 2, hold to 161, triple to 0)
+                TOUCH_NONE -> listOf(tap to 0, double to 0, hold to 0, triple to 0)
+                else -> null
+            }
+        }
+        return when (option) {
+            TOUCH_PLAYBACK -> if (settings) listOf(tap to 8, double to 5, triple to 6, long2 to 0, hold to 161) else listOf(tap to 10, double to 5, triple to 6, hold to 161, long2 to 0)
+            TOUCH_AMBIENT -> {
+                val cycle = if (settings) 9 else airohaGestures[tap]?.takeIf { it in setOf(9, 11, 12, 13) } ?: model.gestureNoise
+                listOf(tap to cycle, double to 4, triple to ull, hold to 161, long2 to 0)
+            }
+            TOUCH_VOLUME -> listOf(tap to 1, double to 2, triple to ull, hold to 161, long2 to 0)
+            TOUCH_ASSISTANT -> if (settings) listOf(tap to 160, hold to 161, double to 0, triple to 0, long2 to 0) else null
+            TOUCH_NONE -> if (settings) listOf(double to 0, triple to 0, tap to 0, hold to 0, long2 to 0) else listOf(tap to 0, double to 0, triple to 0, hold to 0, long2 to 0)
+            else -> null
+        }
+    }
+
+    /**
+     * The gesture key maps' read, once the chip is known, after the reads queued before it and while no other Airoha write
+     * or read is under way (their NV answers do not name the key they answer).
+     */
+    private fun startGestureRead() {
+        val c = chip ?: return
+        if (!gestureReadDue || gestureFlow != null || airohaEq?.let { !it.done && !it.failed } == true) return
+        gestureReadDue = false
+        val flow = JblAirohaGesture.read(c, null, model.form != Form.HEADPHONES)
+        gestureFlow = flow
+        flow.start()?.let { outbox += it }
     }
 
     /** A model name the earbuds report: four hex digits name the product, and so the model where two share a name. */
@@ -1037,6 +1190,25 @@ public class JblSession(initial: JblModel) {
         /** The agent (the earbud the phone talks to) and the other one, as RACE numbers them. */
         const val RACE_AGENT = 0
         const val RACE_PARTNER = 1
+
+        // Airoha models' touch sets (docs/jbl/PROTOCOL.md section 10.1), under JBL's touch keys and set names.
+        private val AIROHA_TOUCH_KEYS = mapOf("left" to JblExtras.TOUCH_LEFT, "right" to JblExtras.TOUCH_RIGHT)
+        private val AIROHA_SIDE = mapOf("left" to listOf(1, 3, 7, 49), "right" to listOf(2, 4, 8, 50))
+        private const val SETTINGS_PAGE = "settings"
+        private const val UI4_PAGE = "ui4"
+        private const val P5_PREFIX = "jbl_p5_"
+        private const val P5_AMBIENT = "ambientSound"
+        // The noise control cycles common_gesture_config.json lists (supportAscList): ANC and Ambient Aware, ANC and off,
+        // Ambient Aware and off, all three.
+        private val P5_AMBIENT_CYCLES = setOf(0x0B, 0x0C, 0x0D, 0x09)
+        private const val TOUCH_PLAYBACK = JblExtras.PLAYBACK
+        private const val TOUCH_AMBIENT = JblExtras.AMBIENT
+        private const val TOUCH_VOLUME = JblExtras.VOLUME
+        private const val TOUCH_NONE = JblExtras.NONE
+        private const val TOUCH_OTHER = JblExtras.OTHER
+        private const val TOUCH_ASSISTANT = "voice_assistant"
+        private val CARD_SETS = listOf(TOUCH_PLAYBACK, TOUCH_AMBIENT, TOUCH_VOLUME, TOUCH_NONE)
+        private val SETTINGS_SETS = listOf(TOUCH_PLAYBACK, TOUCH_AMBIENT, TOUCH_VOLUME, TOUCH_ASSISTANT, TOUCH_NONE)
 
         /** Airoha's firmware update commands, of which PairFree sends only the version read. */
         val RACE_FIRMWARE_UPDATE = 0x1C00..0x1CFF

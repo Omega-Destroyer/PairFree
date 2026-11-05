@@ -58,7 +58,8 @@ def eq_entry(model, presets, custom):
     if not sendable(base):
         return style, None
     others = [p for p in others if sendable(curve(p))]
-    eq = {"command": model["eq_command"], "master_gain_db": num(classic["masterGain"]), "user_range_db": RANGE_DB}
+    # The QCY-built models take the whole curve on QCY's EQ characteristic, 000B (docs/soundpeats/PROTOCOL.md section 10.5).
+    eq = {"command": model["eq_command"] or "000B", "master_gain_db": num(classic["masterGain"]), "user_range_db": RANGE_DB}
     if style == "onto_classic_bands":
         eq["bands"] = [{"hz": b["hz"], "q": b["q"], "base_gain_db": b["gain_db"]} for b in base]
         eq["presets"] = [{"name": p["name"], "bands": curve(p)} for p in others]
@@ -98,7 +99,7 @@ def main():
             model["names"].append(p["bluetoothName"].strip())
         f = DUMP / f"{code}_presets.json"
         presets = json.loads(f.read_text(encoding="utf-8")).get("data") if f.exists() else None
-        if presets and model["transport"] == "spp":  # the Capsule3 Pro's QCY protocol has an EQ of its own (section 10)
+        if presets:
             style, eq = eq_entry(model, presets, custom)
             if eq is None:
                 print(f"{code}: its classic curve cannot be sent as the app encodes it; no EQ")

@@ -25,6 +25,7 @@ import io.github.omegadestroyer.pairfree.eq.QcyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
+import io.github.omegadestroyer.pairfree.eq.CapsuleEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
 import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.SoundpeatsSettings
@@ -292,6 +293,12 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     /** QCY earbuds report their EQ after they connect; the Sound tab's EQ opens once they have, over the bands they report. */
     private fun openQcyEq(device: Paired, model: Model?) {
+        // SOUNDPEATS' QCY-built models: their curve from SOUNDPEATS' data, not QCY's EQ.
+        if (device.soldAs == Brand.SOUNDPEATS) {
+            qcyEq = null
+            equalizer.open(device.address, model, model?.eq, CapsuleEqTarget)
+            return
+        }
         val session = connection.qcySession
         val eq = connection.qcyEq.value
         if (session == null || eq == null) {

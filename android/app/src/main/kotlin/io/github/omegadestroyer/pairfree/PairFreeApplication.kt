@@ -30,6 +30,7 @@ import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelTransport
+import io.github.omegadestroyer.pairfree.protocol.qcy.Capsule
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
@@ -125,7 +126,7 @@ class Hub(private val app: Application) {
                 val name = d.name ?: d.address
                 val uuids = d.uuids.orEmpty().map { it.uuid.toString() }
                 // The brand first (Identify, data/identify.json), then that brand's own code picks the model and the
-                // service to open; a brand's earbuds it cannot control (a Capsule3 Pro, Sony's LE side, 1MORE's Tuya
+                // service to open; a brand's earbuds it cannot control (Sony's LE side, 1MORE's Tuya
                 // models, EarFun's on other chips) drop out there.
                 when (Identify.maker(name, uuids)) {
                     Maker.SOUNDCORE -> SoundcoreModels.identify(name, uuids)?.let { Paired(d.address, name, Brand.SOUNDCORE, it.service, it.model) }
@@ -148,7 +149,9 @@ class Hub(private val app: Application) {
                     Maker.ONEMORE -> OneMoreModels.identify(name)?.let { Paired(d.address, name, Brand.ONEMORE, model = it.name) }
                     // EarFun's models on chips whose protocol PairFree does not cover yet drop out (docs/earfun/PROTOCOL.md section 9).
                     Maker.EARFUN -> EarfunModels.fromName(name)?.takeIf { it.covered }?.let { Paired(d.address, name, Brand.EARFUN, model = it.name) }
-                    Maker.SOUNDPEATS -> if (Models.isSupported(name)) Paired(d.address, name) else null
+                    // The QCY-built Capsule3 Pro runs on QCY's protocol, under SOUNDPEATS' name (docs/soundpeats/PROTOCOL.md section 10).
+                    Maker.SOUNDPEATS -> Models.find(null, name)?.takeIf { Capsule.of(it) }?.let { Paired(d.address, name, Brand.QCY, model = it.code, soldAs = Brand.SOUNDPEATS) }
+                        ?: if (Models.isSupported(name)) Paired(d.address, name) else null
                     null -> null
                 }
             }

@@ -104,7 +104,8 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
             QcyWire.COMMAND_SHORT -> QcyPacket.parse(out.value).none { it.item in QcyItem.NEVER_SEND }
             QcyWire.KEYS_SHORT -> true
             // A custom curve only: the type for it, then a gain per band.
-            QcyWire.EQ_SHORT -> out.value.size > 1 && out.value[0].toInt() and 0xFF == EQ_CUSTOM
+            QcyWire.EQ_SHORT -> out.value.size > 1 && (out.value[0].toInt() and 0xFF == EQ_CUSTOM ||
+                model?.soundpeatsEq == true && out.value[0].toInt() == 0 && (out.value.size - 3) % 6 == 0)
             else -> false
         }
     }
@@ -362,13 +363,13 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     private fun touchGroups(): List<SettingGroup> {
         val table = keys ?: return emptyList()
         val touch = model?.touch ?: return emptyList()
-        val options = touch.actions.filter { a -> QcyKeys.ACTIONS.containsValue(a) }
+        val options = touch.actions.filter { a -> touch.table.containsValue(a) }
         if (options.size < 2 || form != Form.EARBUDS) return emptyList()
         return listOf("left", "right").mapNotNull { side ->
             val rows = touch.gestures.mapNotNull { g ->
                 val key = QcyKeys.KEYS.entries.firstOrNull { it.value == "${g}_$side" }?.key ?: return@mapNotNull null
                 val action = table[key] ?: return@mapNotNull null
-                Setting.Choice("touch_${g}_$side", QcyKeys.ACTIONS[action] ?: "other", options)
+                Setting.Choice("touch_${g}_$side", touch.table[action] ?: "other", options)
             }
             rows.takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_$side", SettingTab.CONTROLS, it) }
         }
@@ -379,6 +380,10 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     /** The messages for a shared setting from the screens, or null when the earbuds do not have it. */
     override fun set(command: Command, value: Int): List<ByteArray>? {
         if (command !in state.values) return null
+        if (command == Command.MULTIPOINT && model?.multipointSwapsLdac == true) {
+            val on = value == 1
+            return listOf(switch(QcyItem.LDAC, !on), switch(QcyItem.MULTIPOINT, on)).also { refresh() }
+        }
         val out: ByteArray = when (command) {
             Command.ANC_MODE -> {
                 val target = when (value) {
@@ -401,9 +406,10 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
 
     /** Turns a switch item on (01) or off (02), as QCY's toggles take them. */
     private fun switch(item: Int, on: Boolean): ByteArray {
-        values[item] = byteArrayOf(if (on) ON else OFF_VALUE)
+        val off = if (model?.zeroOff?.contains(item) == true) 0.toByte() else OFF_VALUE
+        values[item] = byteArrayOf(if (on) ON else off)
         readBacks += request(item)
-        return command(item, if (on) ON.toInt() else OFF_VALUE.toInt())
+        return command(item, if (on) ON.toInt() else off.toInt())
     }
 
     /** In-ear detection: item 06, or the wearing item 2C with its other bytes as the earbuds reported them. */
@@ -510,7 +516,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         val table = keys ?: return null
         val gestureSide = key.removePrefix("touch_")
         val id = QcyKeys.KEYS.entries.firstOrNull { it.value == gestureSide }?.key ?: return null
-        val action = QcyKeys.ACTIONS.entries.firstOrNull { it.value == option }?.key ?: return null
+        val action = (model?.touch?.table ?: QcyKeys.ACTIONS).entries.firstOrNull { it.value == option }?.key ?: return null
         val next = (table + (id to action)).toSortedMap()
         keys = next
         readBacks += GattEnvelope.read(QcyWire.KEYS_SHORT)

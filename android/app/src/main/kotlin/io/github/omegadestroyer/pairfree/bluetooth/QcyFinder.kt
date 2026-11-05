@@ -20,7 +20,7 @@ import kotlinx.coroutines.withTimeoutOrNull
  * at most [SCAN_MS] and nothing is kept. It needs BLUETOOTH_SCAN, which PairFree asks for only when the user
  * opens QCY earbuds, and declares it is never used for location.
  */
-class QcyFinder(private val adapter: BluetoothAdapter, private val log: ((String) -> Unit)? = null) {
+class QcyFinder(private val adapter: BluetoothAdapter, private val log: ((String) -> Unit)? = null, private val company: Int = QcyWire.COMPANY) {
     /** The earbuds' LE side and their advert. */
     data class Found(val device: BluetoothDevice, val advert: QcyAdvert)
 
@@ -30,7 +30,7 @@ class QcyFinder(private val adapter: BluetoothAdapter, private val log: ((String
         val result = CompletableDeferred<Found?>()
         val callback = object : ScanCallback() {
             override fun onScanResult(callbackType: Int, scan: ScanResult) {
-                val data = scan.scanRecord?.getManufacturerSpecificData(QcyWire.COMPANY) ?: return
+                val data = scan.scanRecord?.getManufacturerSpecificData(company) ?: return
                 val advert = QcyAdvert.parse(data) ?: return
                 if (advert.matches(address)) result.complete(Found(scan.device, advert))
             }
@@ -40,7 +40,7 @@ class QcyFinder(private val adapter: BluetoothAdapter, private val log: ((String
                 result.complete(null)
             }
         }
-        val filters = listOf(ScanFilter.Builder().setManufacturerData(QcyWire.COMPANY, ByteArray(0), ByteArray(0)).build())
+        val filters = listOf(ScanFilter.Builder().setManufacturerData(company, ByteArray(0), ByteArray(0)).build())
         val settings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build()
         log?.invoke("scanning for QCY earbuds")
         scanner.startScan(filters, settings, callback)

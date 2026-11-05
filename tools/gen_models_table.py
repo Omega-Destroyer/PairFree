@@ -43,7 +43,7 @@ FEATURES = [
 ]
 FAMILIES = {"QUALCOMM": "Qualcomm", "WUQI": "WUQI", "FOTA": "Bluetrum", "JIELI": "Jieli", "BES": "BES",
             "ACTIONS": "Actions", "SMARTLINK": "Smartlink", "QCY-WUQI": "QCY"}
-UNSUPPORTED_FAMILIES = {"QCY-WUQI"}
+UNSUPPORTED_FAMILIES = set()  # the QCY-built Capsule3 Pro runs on QCY's protocol since 0.7.1 (PROTOCOL.md section 10)
 GAIA_FIT_FEATURE = 0x09
 
 YES, NO = "✅", "—"

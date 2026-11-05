@@ -196,7 +196,7 @@ internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.
     // Pixel Buds by the device type they report, which the firmware line carries; before then, their name's.
     Brand.PIXEL -> PixelModels.model(state.firmware?.code ?: device.model ?: device.name)
     // QCY's by the vendor id the advert named, which the firmware line carries; before then, the name's.
-    Brand.QCY -> QcyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
+    Brand.QCY -> if (device.soldAs == Brand.SOUNDPEATS) Models.find(device.model, device.name) else QcyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
     // 1MORE's by the model the Bluetooth name matched.
     Brand.ONEMORE -> OneMoreModels.model(device.model ?: device.name)
     // EarFun's by the model the Bluetooth name matched.

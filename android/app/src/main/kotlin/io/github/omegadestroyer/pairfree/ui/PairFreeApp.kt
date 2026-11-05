@@ -229,7 +229,7 @@ private fun failure(status: LinkStatus): String? {
         LinkStatus.Reason.COULD_NOT_OPEN -> when (status.device.brand) {
             // AirPods have no official app on Android to close (issue #3).
             Brand.APPLE -> stringResource(R.string.failed_could_not_open_airpods, name)
-            else -> stringResource(R.string.failed_could_not_open, name, officialApp(status.device.brand))
+            else -> stringResource(R.string.failed_could_not_open, name, officialApp(status.device.soldAs ?: status.device.brand))
         }
         LinkStatus.Reason.LOST -> stringResource(R.string.failed_lost, name)
         LinkStatus.Reason.BLUETOOTH_OFF -> stringResource(R.string.failed_bluetooth_off)

@@ -29,8 +29,14 @@ public data class QcyNoiseMode(val mode: String, val from: Int, val to: Int, val
 /** One noise cancelling scene (adaptive, indoor, commuting, noisy, anti_wind) and its range of strengths. */
 public data class QcyScene(val scene: String, val from: Int, val to: Int)
 
-/** The gestures (single, double, triple, hold) and actions a model's control panel offers. */
-public data class QcyTouch(val gestures: List<String>, val actions: List<String>)
+/**
+ * The gestures (single, double, triple, hold) and actions a model's control panel offers; [extraActions] are action
+ * numbers of the model's own beyond QCY's table (the Capsule3 Pro's noise control cycle).
+ */
+public data class QcyTouch(val gestures: List<String>, val actions: List<String>, val extraActions: Map<Int, String> = emptyMap()) {
+    /** Every action number this model takes, and its name. */
+    val table: Map<Int, String> get() = QcyKeys.ACTIONS + extraActions
+}
 
 /** One switch a model has: its item and PairFree's name for it. */
 public data class QcySetting(val item: Int, val setting: String)
@@ -56,6 +62,12 @@ public data class QcyModel(
     /** The control panel has the timed power off (item 14): the earbuds turn off once the minutes are up. */
     val sleepTimer: Boolean = false,
     val eq: QcyEqSpec? = null,
+    /** Items whose off value is 00 rather than QCY's 02 (the Capsule3 Pro's LDAC and multipoint). */
+    val zeroOff: Set<Int> = emptySet(),
+    /** Multipoint and LDAC are one either-or setting: a multipoint write first sends LDAC the other way (the Capsule3 Pro). */
+    val multipointSwapsLdac: Boolean = false,
+    /** The EQ goes as SOUNDPEATS' full curve on the EQ characteristic, type 00 (docs/soundpeats/PROTOCOL.md section 10.5). */
+    val soundpeatsEq: Boolean = false,
 ) {
     /** The vendor id as four hex digits, as PairFree's tables and reports name the model. */
     val code: String get() = vendorId.toString(16).uppercase().padStart(4, '0')

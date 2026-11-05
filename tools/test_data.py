@@ -44,6 +44,10 @@ class ModelTable(unittest.TestCase):
         listed = set(self.eq["merge_onto_classic_codes"])
         for d in self.devices:
             onto = d["family"] == "QUALCOMM" or d["firmware_code"] in listed
+            if "eq" in d and "fixed_bands" not in d["eq"]:
+                onto = True  # the SOUNDPEATS app's own style for the model's curves (ORIGIN) wins over its code list
+            elif "eq" in d:
+                onto = False  # ADD or OPERA: the classic bands are sent first
             want = "onto_classic_bands" if onto else "append_after_classic"
             self.assertEqual(d["eq_merge"], want, d["firmware_code"])
 

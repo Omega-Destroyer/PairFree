@@ -146,7 +146,9 @@ abstract class GenerateTables : DefaultTask() {
         out.appendLine("/** Every model in data/soundpeats/devices.json. Use [Models] to look one up. */")
         out.appendLine("internal val MODEL_TABLE: List<Model> = listOf(")
         fun num(v: Any?) = (v as Number).toDouble().toString()
-        for (d in devices) {
+        // Each model's EQ is built in a function of its own: in one initializer they pass the JVM's 64 KB method limit.
+        val eqFunctions = StringBuilder()
+        for ((index, d) in devices.withIndex()) {
             val names = (d.getValue("names") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
             val excludes = (d["ldac_excludes"] as List<*>? ?: emptyList<Any>())
                 .joinToString(", ", "setOf(", ")") { "Command.${(it as String).uppercase()}" }
@@ -168,12 +170,15 @@ abstract class GenerateTables : DefaultTask() {
                     "EqPreset(${str(it["name"])}, ${bands(it["bands"], "gain_db")})"
                 }
                 val fixed = eqJson["fixed_bands"]?.let { ", fixedBands = ${bands(it, "gain_db")}" } ?: ""
-                "EqLayout(${hex(eqJson["command"])}, ${num(eqJson["master_gain_db"])}, " +
-                    "${(eqJson.getValue("user_range_db") as Number).toInt()}, ${bands(eqJson["bands"], "base_gain_db")}, $presets$fixed)"
+                eqFunctions.appendLine("private fun eq$index(): EqLayout = EqLayout(${hex(eqJson["command"])}, ${num(eqJson["master_gain_db"])}, " +
+                    "${(eqJson.getValue("user_range_db") as Number).toInt()}, ${bands(eqJson["bands"], "base_gain_db")}, $presets$fixed)")
+                "eq$index()"
             }
             out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}),")
         }
         out.appendLine(")")
+        out.appendLine()
+        out.append(eqFunctions)
 
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()

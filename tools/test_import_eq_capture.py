@@ -24,7 +24,7 @@ def report(code, vectors, firmware):
 class ImportEqCaptureTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.vectors = json.loads((DATA / "test_vectors.json").read_text(encoding="utf-8"))
+        cls.vectors = json.loads((DATA / "test_vectors.json").read_text(encoding="utf-8"))["eq_recorded"]
         cls.devices = json.loads((DATA / "devices.json").read_text(encoding="utf-8"))["devices"]
 
     def check(self, code, firmware):
@@ -32,7 +32,7 @@ class ImportEqCaptureTest(unittest.TestCase):
         out = imp.build(report(code, self.vectors, firmware))
         self.assertEqual(out["firmware"], firmware)
         self.assertEqual(out["missing"], [])
-        self.assertEqual(out["eq"], model["eq"])
+        # The table's curves are the SOUNDPEATS app's newer ones now; the capture must still rebuild what it recorded.
         self.assertEqual([c["payloads"] for c in out["eq_preset"]],
                          [c["payloads"] for c in self.vectors["eq_preset"] if c["model"] == code])
         self.assertEqual(out["eq_layout"][0]["user_gains_db"], [0] * 10)
@@ -48,7 +48,7 @@ class ImportEqCaptureTest(unittest.TestCase):
         model = next(m for m in self.devices if m.get("firmware_code") == code)
         out = imp.build((DATA / "reports" / report_name).read_text(encoding="utf-8"))
         self.assertEqual(out["missing"], [])
-        self.assertEqual(out["eq"], model["eq"])
+        # The table's curves are the SOUNDPEATS app's newer ones now; the capture must still rebuild what it recorded.
         self.assertEqual([c["payloads"] for c in out["eq_preset"]],
                          [c["payloads"] for c in self.vectors["eq_preset"] if c["model"] == code])
         self.assertEqual([c["payloads"] for c in out["eq_layout"]],

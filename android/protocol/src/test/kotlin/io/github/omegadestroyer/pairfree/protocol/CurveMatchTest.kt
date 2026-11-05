@@ -24,8 +24,17 @@ class CurveMatchTest {
     @Test
     fun everyKnownPresetIsNamed() {
         for (case in vectors.getValue("eq_preset").jsonArray.map { it.jsonObject }) {
-            val match = CurveMatch.of(write(case, null))
-            assertEquals(CurveMatch.Preset(Models.find(case.str("model"), null)!!, case.str("preset")), match, case.str("preset"))
+            // Models can share a curve; a capture carries its firmware code, which is tried first.
+            val model = Models.find(case.str("model"), null)!!
+            val match = CurveMatch.of(write(case, "${case.str("model")}_x_V1")) as CurveMatch.Preset
+            assertEquals(model, match.model, case.str("preset"))
+            // Some models list one curve under two names, or the classic curve again as a preset; any of them is right.
+            val eq = model.eq!!
+            val bytes = { name: String ->
+                (if (name == EqCapture.CLASSIC) eq.payloads(List(eq.bands.size) { 0 }) else eq.payloads(eq.presets.first { it.name == name }))
+                    .map { it.toList() }
+            }
+            assertEquals(bytes(case.str("preset")), bytes(match.name), case.str("preset"))
         }
     }
 

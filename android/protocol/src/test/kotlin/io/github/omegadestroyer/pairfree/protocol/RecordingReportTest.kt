@@ -23,7 +23,7 @@ class RecordingReportTest {
 
     /** The H3's base curve and its eleven presets, as PeatsAudio sent them. */
     private val curves: List<Pair<String, EqCapture.Write>> = run {
-        val v = loadData("test_vectors.json")
+        val v = loadData("test_vectors.json").getValue("eq_recorded").jsonObject
         val reset = v.getValue("eq_layout").jsonArray.map { it.jsonObject }.first { it.str("model") == "S5" && it.str("name").startsWith("Reset") }
         val presets = v.getValue("eq_preset").jsonArray.map { it.jsonObject }.filter { it.str("model") == "S5" }
         (listOf("SOUNDPEATS Classic" to reset) + presets.map { it.str("preset") to it }).map { (name, case) ->

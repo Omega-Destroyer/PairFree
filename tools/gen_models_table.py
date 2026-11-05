@@ -127,8 +127,8 @@ def table():
                      ["Model", "Firmware code", "Chip"] + [f for f, _ in FEATURES] + ["Fit test", "Equalizer"])
     return "\n".join([
         START,
-        f"{len(supported)} models in the official app's table, {reported} with a device report and "
-        f"{with_eq} with their equalizer recorded. Some models have more than one firmware code: "
+        f"{len(supported)} models in SOUNDPEATS' model list, {reported} with a device report and "
+        f"{with_eq} with their equalizer (untested on the models without a report). Some models have more than one firmware code: "
         "PairFree tells them apart by the code the earbuds report.",
         "",
         f"{YES} works with PairFree on this model. {NO} the model does not have it, or PairFree "

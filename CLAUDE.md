@@ -388,7 +388,8 @@ Space A40. Everything else relies on reports and recordings from users (each bra
   agent's tools is blocked, running the script is not). Each such script: only the requests the vendor's app makes
   without signing in, no account, key, certificate, signing or device identifier, a pause of at least 3 s between
   requests, raw replies saved under `server_dump/<brand>/` and nowhere else. If the server asks for authentication,
-  stop there: do not make it authenticate. So far: QCY's product list and control panels
+  stop there: do not make it authenticate, unless the owner runs the script with their own account (they type it in at
+  the script's prompt; it is never stored, logged or read by the agent), as for SOUNDPEATS' curves on 2026-11-04. So far: QCY's product list and control panels
   (`E:\Builds\research\qcy-tools\fetch_panels.py`, 2026-11-04), the one-time 1MORE product list (2026-10-18), and
   `tools/fetch_server_data.py` (SoundPEATS, in the repo from before this rule: GET only, one per 30 s; since 2026-10-10
   the server refuses every request without the official app's authentication, and the tool stops at the first refusal).

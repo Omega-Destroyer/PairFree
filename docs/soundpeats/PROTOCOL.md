@@ -242,6 +242,28 @@ What gets sent depends on the model:
   appended. Seen on the TRUEFREE Clip C10 (section 11): its classic bands are `eq.fixed_bands`
   in `data/soundpeats/devices.json`, sent as they are before the user's.
 
+SOUNDPEATS 2.5.3 decides this per model from its curves' `paramAppend` (`EqDataStyle`), which
+wins over the code list above where they differ (ATS3019DK12, ZKLXBREEZY, T57, WQT7033 and
+WUQIMINIHS are ORIGIN, TS03WINGS2 ADD): `2` ORIGIN, as onto_classic_bands, presets complete curves
+on the classic bands; `1` ADD, as append_after_classic, each preset's own bands after the classic
+ones; `3` OPERA (OPERA03, OPERA05), presets complete curves of their own band count, sent as they
+are. `tools/import_soundpeats_server.py` writes every model's `eq` from the owner's fetch of these
+curves (2026-11-04). It leaves out curves the write cannot carry as the app encodes them
+(frequency x 3 and Q x 4096 in 16 bits): ECHO7018's negative Qs, bands at 22 and 24 kHz
+(JIELILIFE3, BT5106-3040, T28), and the models whose classic curve is one of them get no EQ.
+TS03WINGS2's classic frequencies read `[]50, 120, ...` on the server; the stray bracket is
+dropped. Some models list one curve under two names. The server's feature lists for the H3,
+Air5 Pro+ and C30 name only commands PairFree already reads; they give noise mode `03` as
+"environment adaptive" and `04` as "weak noise cancelling", and the H3's EQ as `0E02`, which its
+capture shows is `0E01`.
+
+Custom sliders in 2.5.3 (`CreateCustomizeEqualizerUseCase`): on ORIGIN models the classic
+curve's own bands; otherwise 8 bands (62 Hz to 8 kHz) on FOTA (Bluetrum) chips and 10 (31 Hz to
+16 kHz) on the rest, as PairFree has them. 2.5.3 gives those sliders Q 0.7 where PeatsAudio 1.9.45
+gives 1.8; the Clip C10's recording (PeatsAudio) shows 1.8, which PairFree keeps. Server gains can
+have two decimals (the Q35 HD+'s 0.05 dB): PairFree adds gains in hundredths and sends the nearest
+unit of 1/60 dB, as the recordings show the app does.
+
 ## 5. Chip families
 
 The app sorts every model into a family ("chip scheme"). The family decides the

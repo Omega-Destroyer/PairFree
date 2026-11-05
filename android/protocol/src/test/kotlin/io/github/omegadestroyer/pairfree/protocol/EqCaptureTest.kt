@@ -13,7 +13,8 @@ import java.io.ByteArrayOutputStream
 
 /** A snoop log built here, holding the H3's real EQ writes, must give them back byte for byte. */
 class EqCaptureTest {
-    private val vectors = loadData("test_vectors.json")
+    // The H3's writes as captured (eq_recorded): its curves have since been updated to the SOUNDPEATS app's newer ones.
+    private val vectors = loadData("test_vectors.json").getValue("eq_recorded").jsonObject
     private val reset = vectors.getValue("eq_layout").jsonArray.map { it.jsonObject }
         .first { it.str("model") == "S5" && it.str("name").startsWith("Reset") }
         .getValue("payloads").jsonArray.map { it.jsonPrimitive.content }

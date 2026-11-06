@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.ui
 
+import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
+
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTables
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
@@ -141,7 +143,7 @@ internal fun ConnectedScreen(
                 Tab.HOME -> HomeScreen(device, state, model, actions, live, eq, settings) { tab = Tab.SOUND }
                 // With no equalizer to offer yet, a recording from the official app adds it.
                 Tab.SOUND -> SoundScreen(
-                    eq, eqActions, actions::openCapture, settings, actions::changeSetting,
+                    eq, eqActions, if (device.brand == Brand.CAMBRIDGE) null else actions::openCapture, settings, actions::changeSetting,
                     unavailableNote = when (device.brand) {
                         Brand.SOUNDCORE -> R.string.eq_soundcore_unchecked
                         Brand.SONY -> R.string.eq_sony_none
@@ -153,6 +155,7 @@ internal fun ConnectedScreen(
                         Brand.QCY -> R.string.eq_qcy
                         Brand.ONEMORE -> R.string.eq_onemore
                         Brand.EARFUN -> R.string.eq_earfun
+                        Brand.CAMBRIDGE -> R.string.eq_cambridge
                         else -> R.string.eq_unavailable
                     },
                     onHearingTest = hearing?.let { { hearingTest = true } },
@@ -201,6 +204,7 @@ internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.
     Brand.ONEMORE -> OneMoreModels.model(device.model ?: device.name)
     // EarFun's by the model the Bluetooth name matched.
     Brand.EARFUN -> EarfunModels.model(device.model ?: device.name)
+    Brand.CAMBRIDGE -> CambridgeModels.model(device.model ?: device.name)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

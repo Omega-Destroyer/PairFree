@@ -1,5 +1,9 @@
 package io.github.omegadestroyer.pairfree.bluetooth
 
+import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
+import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeSession
+import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeWire
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
@@ -101,7 +105,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 
 /** A brand PairFree can control. Each has its own protocol (docs/<brand>/PROTOCOL.md). */
-enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL, QCY, ONEMORE, EARFUN }
+enum class Brand { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL, QCY, ONEMORE, EARFUN, CAMBRIDGE }
 
 /**
  * A pair of earbuds the phone is paired with. [service] is the RFCOMM service UUID to open:
@@ -299,6 +303,10 @@ class EarbudsConnection(
     /** The EarFun session, while connected to EarFun earbuds or headphones; for the device report and the EQ. */
     val earfunSession: EarfunSession? get() = earfun
 
+    private var cambridge: CambridgeSession? = null
+    private var cambridgeQueue: Channel<ByteArray>? = null
+    val cambridgeSession: CambridgeSession? get() = cambridge
+
     private val _sonyEq = MutableStateFlow<SonyEq?>(null)
 
     /** The Sony equalizer as the earbuds last reported it; the Sound tab follows it. */
@@ -332,6 +340,8 @@ class EarbudsConnection(
         _oneMoreEq.value = null
         _jblEq.value = null
         earfun = null
+        cambridge = null
+        cambridgeQueue = null
         _sonyEq.value = null
         _settings.value = emptyList()
         _samsungStatus.value = null
@@ -403,6 +413,7 @@ class EarbudsConnection(
                     Brand.QCY -> serveQcy(opened, device)
                     Brand.ONEMORE -> serveOneMore(opened, device)
                     Brand.EARFUN -> serveEarfun(opened, device)
+                    Brand.CAMBRIDGE -> serveCambridge(opened, device)
                     Brand.SOUNDPEATS -> serve(opened, device)
                 }
                 log?.invoke("closed")
@@ -1137,6 +1148,58 @@ class EarbudsConnection(
         if (earfunQueue === queue) earfunQueue = null
     }
 
+    /** Legacy Melomania's GAIA v1 frames, with the app's 30-second ACK deadline. No raw state logging (addresses). */
+    private suspend fun serveCambridge(opened: ControlLink, device: Paired) = coroutineScope {
+        val model = CambridgeModels.fromName(device.model ?: device.name) ?: return@coroutineScope
+        val session = CambridgeSession(model)
+        cambridge = session
+        val queue = Channel<ByteArray>(Channel.UNLIMITED)
+        val answered = Channel<Int>(Channel.UNLIMITED)
+        cambridgeQueue = queue
+        val sender = launch {
+            try {
+                for (bytes in queue) {
+                    if (!session.allowed(bytes)) continue
+                    while (answered.tryReceive().isSuccess) Unit
+                    val key = ((bytes[6].toInt() and 0xff) shl 8) or (bytes[7].toInt() and 0xff)
+                    opened.send(bytes)
+                    withTimeoutOrNull(CambridgeWire.REPLY_MS.toLong()) {
+                        while (answered.receive() != key) Unit
+                    }
+                }
+            } catch (_: IOException) {
+                // The reader observes a closed socket as well.
+            }
+        }
+        session.start().forEach(queue::trySend)
+        val poll = launch {
+            while (true) {
+                delay(BATTERY_POLL_MS)
+                session.batteryRequests().forEach(queue::trySend)
+            }
+        }
+        try {
+            opened.reads().collect { bytes ->
+                guardPacket {
+                    session.feed(bytes).forEach(answered::trySend)
+                    publish(session)
+                }
+            }
+        } catch (_: IOException) {
+        } finally {
+            poll.cancel()
+            sender.cancel()
+            queue.close()
+            answered.close()
+            if (cambridgeQueue === queue) cambridgeQueue = null
+        }
+    }
+
+    private fun publish(session: CambridgeSession) {
+        _state.value = session.state
+        _settings.value = session.groups
+    }
+
     private fun publish(session: EarfunSession) {
         _state.value = session.state
         _settings.value = session.groups
@@ -1243,6 +1306,19 @@ class EarbudsConnection(
 
     /** Changes one of the [settings]: it shows at once, and the earbuds' acknowledgement or next state confirms it. */
     fun changeSetting(change: SettingChange) {
+        cambridge?.let { session ->
+            val frames = session.change(change) ?: return
+            val reads = session.takeReadBacks()
+            val queue = cambridgeQueue ?: return
+            if (_status.value !is LinkStatus.Connected) return
+            frames.forEach(queue::trySend)
+            this.session?.launch {
+                delay(READ_BACK_MS)
+                reads.forEach(queue::trySend)
+            }
+            publish(session)
+            return
+        }
         earfun?.let { session ->
             val frames = session.change(change) ?: return
             if (sendEarfun(session, frames)) publish(session)
@@ -1313,6 +1389,7 @@ class EarbudsConnection(
      * Buds as a Samsung message, which the earbuds acknowledge.
      */
     fun set(command: Command, vararg payload: Int) {
+        if (cambridge != null) return // all legacy Melomania settings are brand rows
         // Bose's settings are all brand rows (changeSetting); nothing of the shared commands goes to them.
         if (bose != null) return
         earfun?.let { session ->
@@ -1377,6 +1454,7 @@ class EarbudsConnection(
      * request, so the earbuds report the EQ they took. A newer write replaces one still going out.
      */
     fun sendEq(frames: List<ByteArray>) {
+        if (cambridge != null) return // Melomania uses its own gain rows, never shared SoundPEATS frames
         if (_status.value !is LinkStatus.Connected) return
         // The Pixel Buds' EQ target hands over its session's messages as bytes; they go through the Pixel link's queue.
         pixel?.let { session ->
@@ -1443,7 +1521,7 @@ class EarbudsConnection(
             if (send(session.frames(packets), then = null)) publish(session)
             return
         }
-        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -1472,13 +1550,13 @@ class EarbudsConnection(
 
     /** SOUNDPEATS' reboot. Call only from a confirmation the user has just accepted on screen. */
     fun rebootConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
         send(Requests.rebootConfirmedByUser(), then = null)
     }
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -1547,6 +1625,8 @@ class EarbudsConnection(
         oneMore = null
         oneMoreQueue = null
         earfun = null
+        cambridge = null
+        cambridgeQueue = null
         earfunQueue = null
         session?.cancel()
         session = null

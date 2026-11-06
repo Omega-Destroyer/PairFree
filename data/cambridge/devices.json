@@ -1,0 +1,7 @@
+{
+  "_source": "Melomania 2.8.12, com/cambridgeaudio/melomania/b, SearchingActivity, b3/n and a3/h. No PairFree hardware testing.",
+  "devices": [
+    {"name": "Melomania 1+", "names": [], "ambient": false, "control_count": 9, "reports": []},
+    {"name": "Melomania Touch", "names": [], "ambient": true, "control_count": 10, "reports": []}
+  ]
+}

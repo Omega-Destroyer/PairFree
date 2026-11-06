@@ -109,6 +109,11 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
      * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
      */
     fun openEqualizer(device: Paired, model: Model?) {
+        if (device.brand == Brand.CAMBRIDGE) {
+            // Legacy Melomania's five gain controls have no established frequency grid. They use Sound-tab rows.
+            equalizer.open(device.address, model, null)
+            return
+        }
         if (device.brand != Brand.PIXEL) pixelEq = null
         if (device.brand == Brand.PIXEL) {
             nothingEq = null
@@ -796,6 +801,22 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             }
         }
         connection.oneMoreSession?.let { session -> return oneMoreReport(session, device, version, date) }
+        connection.cambridgeSession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
+                appendLine("Brand:           Cambridge Audio (legacy Melomania)")
+                appendLine("Model:           ${session.model.name}")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine("Addresses redacted; only known fields from requested settings reads follow.")
+                session.replies.forEach { (key, payload) ->
+                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xff).toString(16).padStart(2, '0') }}")
+                }
+            }
+        }
         connection.earfunSession?.let { session -> return earfunReport(session, device, version, date) }
         connection.appleSession?.let { session ->
             return buildString {

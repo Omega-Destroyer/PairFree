@@ -491,6 +491,17 @@ Space A40. Everything else relies on reports and recordings from users (each bra
 
 ## Where the work stands
 
+Local review branch `brand/cambridge` adds the two legacy Melomania models from Melomania 2.8.12;
+neither is hardware tested. `data/cambridge` generates commands, offsets, presets and models through
+`generateCambridgeTables`. `CambridgeSession` offers battery, six presets and five numbered gain rows,
+per-function control toggles, built-in languages, codec preference, and Touch-only ambient controls.
+Classic GAIA v1 uses a bounded stream parser and a matching-ACK queue with the vendor's 30-second deadline.
+Reports redact both addresses and discard unknown extension bytes; do not log raw composite replies.
+This is a draft, not a release: newer Melomania Connect models, frequency-based EQ profiles and imported
+vendor custom slots are outside it. High-performance audio is a bundled firmware installation (`b3/d`),
+excluded by the firmware rule. No reset, power, upgrade, account or location traffic is allowed. See
+`docs/cambridge/PROTOCOL.md` section 8 and `docs/devices/cambridge.md` before reviewing or extending it.
+
 PairFree started from the H3 and Air5 Pro+ (probe, SETs, GAIA, the Android app, the Qualcomm EQ; released as
 0.1.0 on 2026-10-12, every feature tried on both) and has since added a brand at a time. Each brand's page under
 `docs/devices/` says what it shows, what was tried and what is not covered yet; firmware update comes last, and

@@ -1,0 +1,37 @@
+{
+  "_source": "Melomania 2.8.12: q2/b, sb/c, rb/c; docs/cambridge/PROTOCOL.md. Protocol facts, no vendor code.",
+  "wire": {
+    "START": 255, "VERSION": 1, "VENDOR": 10, "ACK": 32768,
+    "MAX_PAYLOAD": 254, "REPLY_MS": 30000,
+    "SPP_UUID": "00001101-0000-1000-8000-00805F9B34FB",
+    "GAIA_UUID": "00001107-D102-11E1-9B23-00025B00A5A5"
+  },
+  "commands": {
+    "STATE": 1920, "PRESET": 660, "CONTROLS": 1923,
+    "SET_PRESET": 532, "SET_BAND": 538, "SET_CONTROLS": 1922,
+    "SET_AMBIENT": 1944, "SET_AMBIENT_LEVEL": 1945,
+    "SET_CODEC": 1976, "SET_LANGUAGE": 523
+  },
+  "values": {
+    "AMBIENT_ON": 1, "AMBIENT_OFF": 2, "AMBIENT_MIN": 0, "AMBIENT_MAX": 100,
+    "BAND_HEADER": 6, "BAND_PARAMETER": 2, "BAND_APPLY": 1, "GAIN_SCALE": 60,
+    "GAIN_MIN": -6, "GAIN_MAX": 6, "FIRST_BAND": 1, "LAST_BAND": 5,
+    "CUSTOM_PRESET": 6, "CODEC_LOCKED": 3
+  },
+  "offsets": {
+    "AMBIENT": 2, "LANGUAGE": 3, "LEFT": 8, "RIGHT": 9, "AMBIENT_LEVEL": 10,
+    "LEFT_FIRMWARE": 11, "RIGHT_FIRMWARE": 14, "ADDRESS_START": 17, "ADDRESS_END": 29,
+    "ACTIVE_CODEC": 31, "CODEC": 32
+  },
+  "languages": ["yue", "zh", "en", "fr", "de", "it", "ja", "es"],
+  "codecs": ["sbc", "aac", "aptx", "aac_aptx"],
+  "controls": ["play_pause", "next", "previous", "volume_up", "volume_down", "accept_call", "reject_call", "end_call", "assistant", "ambient"],
+  "presets": [
+    {"name": "neutral", "gains": [0, 0, 0, 0, 0]},
+    {"name": "immersive", "gains": [0, -2, 0, 1, 0]},
+    {"name": "rnb", "gains": [3, 3, 0, 3, 0]},
+    {"name": "electronic", "gains": [0, 4, 0, 1, 5]},
+    {"name": "rock", "gains": [0, 3, 0, 1, 0]},
+    {"name": "voice", "gains": [-6, -2, 0, 6, 0]}
+  ]
+}

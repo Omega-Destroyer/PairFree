@@ -29,6 +29,9 @@ directly over Bluetooth.
 
 ## What it controls
 
+Local review draft: [Cambridge Audio Melomania 1+ and Touch](docs/devices/cambridge.md).
+This addition has not been released or tested on hardware.
+
 Each model shows only what it has:
 
 - Battery for each earbud and the case.
@@ -95,7 +98,8 @@ Each brand has a page listing every model PairFree knows and what works on each.
 | [QCY](docs/devices/qcy.md) | 171 | — |
 | [1MORE](docs/devices/1more.md) | 39 | — |
 | [EarFun](docs/devices/earfun.md) | 26 | — |
-| **Total: 12 brands** | **618** | **10 tried** |
+| [Cambridge Audio (draft)](docs/devices/cambridge.md) | 2 | — |
+| **Total: 13 brands** | **620** | **10 tried** |
 <!-- devices-summary:end -->
 
 **LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks

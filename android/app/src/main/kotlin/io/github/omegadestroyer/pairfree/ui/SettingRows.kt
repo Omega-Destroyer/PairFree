@@ -172,6 +172,8 @@ private fun groupTitle(key: String): String = stringResource(
         "ef_quality" -> R.string.setting_group_sound_quality
         "power" -> R.string.setting_group_power
         "ef_buttons" -> R.string.setting_group_buttons
+        "ca_eq" -> R.string.setting_ca_eq
+        "ca_connection" -> R.string.connection
         else -> R.string.setting_group_other
     },
 )
@@ -182,11 +184,33 @@ private fun groupNote(key: String): String? = when (key) {
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
+    "ca_eq" -> stringResource(R.string.setting_ca_eq_note)
+    "ca_connection" -> stringResource(R.string.setting_ca_codec_note)
     else -> null
 }
 
 @Composable
 private fun settingTitle(key: String): String = when (key) {
+    "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
+    "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
+    "ca_preset" -> stringResource(R.string.setting_ca_preset)
+    "ca_codec" -> stringResource(R.string.setting_ca_codec)
+    "ca_language" -> stringResource(R.string.setting_ca_language)
+    "ca_band_1" -> stringResource(R.string.setting_ca_band, 1)
+    "ca_band_2" -> stringResource(R.string.setting_ca_band, 2)
+    "ca_band_3" -> stringResource(R.string.setting_ca_band, 3)
+    "ca_band_4" -> stringResource(R.string.setting_ca_band, 4)
+    "ca_band_5" -> stringResource(R.string.setting_ca_band, 5)
+    "ca_control_play_pause" -> stringResource(R.string.setting_ca_play_pause)
+    "ca_control_next" -> stringResource(R.string.setting_ca_next)
+    "ca_control_previous" -> stringResource(R.string.setting_ca_previous)
+    "ca_control_volume_up" -> stringResource(R.string.setting_ca_volume_up)
+    "ca_control_volume_down" -> stringResource(R.string.setting_ca_volume_down)
+    "ca_control_accept_call" -> stringResource(R.string.setting_ca_accept_call)
+    "ca_control_reject_call" -> stringResource(R.string.setting_ca_reject_call)
+    "ca_control_end_call" -> stringResource(R.string.setting_ca_end_call)
+    "ca_control_assistant" -> stringResource(R.string.setting_ca_assistant)
+    "ca_control_ambient" -> stringResource(R.string.setting_ca_ambient_control)
     "ambient_sound" -> stringResource(R.string.setting_ambient_sound)
     "anc" -> stringResource(R.string.setting_anc)
     "ambient_aware" -> stringResource(R.string.setting_ambient_aware)
@@ -551,6 +575,30 @@ private fun jblP5Title(key: String): String? {
 
 @Composable
 private fun optionName(key: String, option: String): String = when {
+    key == "ca_language" -> stringResource(when (option) {
+        "yue" -> R.string.setting_ca_cantonese
+        "zh" -> R.string.language_zh
+        "fr" -> R.string.language_fr
+        "de" -> R.string.language_de
+        "it" -> R.string.language_it
+        "ja" -> R.string.language_ja
+        "es" -> R.string.language_es
+        else -> R.string.language_en
+    })
+    key == "ca_codec" -> when (option) {
+        "sbc" -> "SBC"
+        "aac" -> "AAC"
+        "aptx" -> "aptX"
+        else -> "AAC + aptX"
+    }
+    key == "ca_preset" -> stringResource(when (option) {
+        "neutral" -> R.string.setting_ca_neutral
+        "immersive" -> R.string.setting_ca_immersive
+        "rnb" -> R.string.setting_ca_rnb
+        "electronic" -> R.string.setting_ca_electronic
+        "rock" -> R.string.setting_ca_rock
+        else -> R.string.setting_ca_voice
+    })
     key.startsWith("jbl_p5_") -> stringResource(
         when (option) {
             "ambientSound" -> R.string.setting_jbl_fn_noise

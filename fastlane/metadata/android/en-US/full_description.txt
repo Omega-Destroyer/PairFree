@@ -13,6 +13,8 @@ Why PairFree:
 
 Supported brands:
 
+Local review draft (not released or hardware tested): Cambridge Audio Melomania 1+ and Melomania Touch.
+
 • SOUNDPEATS: 47 models, tried on the H3, Air5 Pro+, C30 and TRUEFREE Clip C10
 • Soundcore (Anker): 66 models, tried on the Space A40, AeroClip, Q20i and Sleep A20. With the open-source OpenSCQ30
 • Samsung Galaxy Buds: 16 models, from the 2019 Buds to the Buds4 Pro. From Samsung's plugin and the open-source GalaxyBudsClient

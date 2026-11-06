@@ -111,6 +111,11 @@ class CambridgeTest {
         assertNull(s.change(SettingChange.Level("ca_band_1", 7)))
         s.feed(ack(0x021a, byteArrayOf(1)))
         assertFalse(rows(s).any { it.key.startsWith("ca_band_") })
+        assertFalse(s.allowed(frames[2]), "failed write must stop remaining queued gains")
+        s.feed(ack(0x0294, byteArrayOf(0, 0)))
+        assertTrue(s.allowed(frames[2]))
+        s.failed(0x0214)
+        assertFalse(s.allowed(frames[2]), "missing bank ACK must stop queued gains too")
         assertEquals(listOf(0x0214), s.feed(ack(0x0214, byteArrayOf(1))))
     }
 

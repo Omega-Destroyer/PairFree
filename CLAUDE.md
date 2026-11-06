@@ -491,6 +491,10 @@ Space A40. Everything else relies on reports and recordings from users (each bra
 
 ## Where the work stands
 
+For the five local new-vendor drafts, branch/commit references, scope and validation, read
+`docs/LOCAL_REVIEW.md`. Only the Cambridge draft is connected to the Android UI; the other four branches
+are protocol foundations, not supported-device claims. The owner requested local commits only.
+
 Local review branch `brand/cambridge` adds the two legacy Melomania models from Melomania 2.8.12;
 neither is hardware tested. `data/cambridge` generates commands, offsets, presets and models through
 `generateCambridgeTables`. `CambridgeSession` offers battery, six presets and five numbered gain rows,

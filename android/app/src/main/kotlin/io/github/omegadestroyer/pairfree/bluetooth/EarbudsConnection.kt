@@ -1163,8 +1163,13 @@ class EarbudsConnection(
                     while (answered.tryReceive().isSuccess) Unit
                     val key = ((bytes[6].toInt() and 0xff) shl 8) or (bytes[7].toInt() and 0xff)
                     opened.send(bytes)
-                    withTimeoutOrNull(CambridgeWire.REPLY_MS.toLong()) {
+                    val received = withTimeoutOrNull(CambridgeWire.REPLY_MS.toLong()) {
                         while (answered.receive() != key) Unit
+                        true
+                    }
+                    if (received != true) {
+                        session.failed(key)
+                        publish(session)
                     }
                 }
             } catch (_: IOException) {

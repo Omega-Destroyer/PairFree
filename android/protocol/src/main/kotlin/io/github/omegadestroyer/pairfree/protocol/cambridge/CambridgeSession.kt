@@ -36,6 +36,11 @@ public class CambridgeSession(public val model: CambridgeModel) {
     public fun batteryRequests(): List<ByteArray> = listOf(read(CambridgeCommand.STATE))
     public fun takeReadBacks(): List<ByteArray> = readBacks.also { readBacks = emptyList() }
 
+    /** A failed bank selection/band write makes queued gains unsafe to continue until a known preset is read. */
+    public fun failed(command: Int) {
+        if (command == CambridgeCommand.SET_PRESET || command == CambridgeCommand.SET_BAND) curve = null
+    }
+
     private fun read(id: Int): ByteArray {
         requested += id
         return CambridgePacket(id).bytes()
@@ -50,7 +55,7 @@ public class CambridgeSession(public val model: CambridgeModel) {
             answered += id
             val p = packet.payload
             if (p[0].u() != 0) {
-                if (id == CambridgeCommand.SET_PRESET || id == CambridgeCommand.SET_BAND) curve = null
+                failed(id)
                 continue
             }
             if (id !in requested) continue
@@ -196,7 +201,7 @@ public class CambridgeSession(public val model: CambridgeModel) {
             CambridgeCommand.SET_AMBIENT_LEVEL -> model.ambient && p.size == 1 && p[0] in CambridgeValue.AMBIENT_MIN..CambridgeValue.AMBIENT_MAX
             CambridgeCommand.SET_LANGUAGE -> p.size == 1 && p[0] in CambridgeValues.LANGUAGES.indices
             CambridgeCommand.SET_CODEC -> p.size == 1 && p[0] in CambridgeValues.CODECS.indices
-            CambridgeCommand.SET_BAND -> p.size == 5 && p[0] == CambridgeValue.BAND_HEADER && p[1] and 15 == CambridgeValue.BAND_PARAMETER &&
+            CambridgeCommand.SET_BAND -> curve != null && p.size == 5 && p[0] == CambridgeValue.BAND_HEADER && p[1] and 15 == CambridgeValue.BAND_PARAMETER &&
                 p[1] shr 4 in CambridgeValue.FIRST_BAND..CambridgeValue.LAST_BAND && p[4] == CambridgeValue.BAND_APPLY &&
                 ((p[2] shl 8 or p[3]).toShort().toInt()) in CambridgeValue.GAIN_MIN * CambridgeValue.GAIN_SCALE..CambridgeValue.GAIN_MAX * CambridgeValue.GAIN_SCALE
             else -> false

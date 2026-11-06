@@ -222,3 +222,5 @@ privacy redaction, read-back scheduling and forbidden writes. Hardware validatio
 Validation of the local draft: all six Cambridge protocol tests, the complete protocol test suite,
 `:app:assembleDebug`, `:app:lintDebug`, and all 133 Python tests passed in the E: build mirror. Device-page
 generation and the generic artwork generator were run; the models use the existing generic earbud art.
+The queue also invalidates the editable gain state after a failed/missing bank or band ACK; the allowlist
+then refuses remaining queued band writes until a known preset has been read again.

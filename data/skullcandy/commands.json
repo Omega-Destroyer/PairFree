@@ -1,0 +1,6 @@
+{
+  "_source": "Skullcandy 5.0.6 bundled Bragi SDK reader, CRC implementations, rpc/l and BOS-RPC schemas; docs/skullcandy/PROTOCOL.md. Earshot MIT protocol facts used as an independent checksum check; no source copied.",
+  "wire": {"START": 126, "ADDRESS": 255, "FCS_FLAG": 128, "RPC": 148, "SECURE_RPC": 149, "CRC8_POLYNOMIAL": 224, "CRC8_INITIAL": 255, "CRC16_POLYNOMIAL": 33800, "CRC16_INITIAL": 65535},
+  "rpc": {"FINAL": 16, "TYPE_SHIFT": 2, "TYPE_MASK": 3, "REQUEST": 0, "RESPONSE": 1, "STATUS": 2, "ABORT": 3, "SUCCESS": 0},
+  "command": {"DEVICE_SERVICE": 2, "DEVICE_INFO": 1, "BATTERY_INFO": 3, "GENDER_FIELD": 1, "AUTH_REQUIRED_FIELD": 12}
+}

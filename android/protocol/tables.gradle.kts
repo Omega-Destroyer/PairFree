@@ -2585,3 +2585,34 @@ val generateJabraTables = tasks.register<GenerateJabraTables>("generateJabraTabl
     packageName = "io.github.omegadestroyer.pairfree.protocol.jabra"
     outputDir = layout.buildDirectory.dir("generated/jabra")
 }
+
+/** Generated wire constants for skullcandy's protocol-core review draft. */
+abstract class GenerateSkullcandyTables : DefaultTask() {
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val sourceJson: RegularFileProperty
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val sections = JsonSlurper().parse(sourceJson.get().asFile) as Map<String, Any?>
+        val text = StringBuilder("// Generated from data/skullcandy/commands.json; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.skullcandy\n\n")
+        for ((section, raw) in sections.filterKeys { !it.startsWith("_") }) {
+            check(section.matches(Regex("[a-z]+")))
+            text.appendLine("public object Skullcandy${section.replaceFirstChar { it.uppercase() }} {")
+            @Suppress("UNCHECKED_CAST")
+            for ((key, value) in raw as Map<String, Any>) {
+                check(key.matches(Regex("[A-Z_0-9]+")) && (value is String || value is Number))
+                text.appendLine("    public const val $key: ${if (value is String) "String" else "Int"} = ${groovy.json.JsonOutput.toJson(value)}")
+            }
+            text.appendLine("}")
+        }
+        val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/skullcandy/SkullcandyTables.kt")
+        target.parentFile.mkdirs()
+        target.writeText(text.toString())
+    }
+}
+val generateSkullcandyTables = tasks.register<GenerateSkullcandyTables>("generateSkullcandyTables") {
+    sourceJson = rootProject.layout.projectDirectory.file("../data/skullcandy/commands.json")
+    outputDir = layout.buildDirectory.dir("generated/skullcandy")
+}

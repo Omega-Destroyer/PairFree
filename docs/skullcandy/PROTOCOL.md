@@ -1,6 +1,7 @@
 # Skullcandy protocol research
 
-Research only, 2026-11-06. No Skullcandy implementation was added and no hardware was connected.
+Research 2026-11-06; a local protocol-core draft is described in [IMPLEMENTATION.md](IMPLEMENTATION.md).
+No Skullcandy model is enabled in the app and no hardware was connected.
 [MODELS.md](MODELS.md) preserves the 56 bundled catalog records and firmware-feature unions;
 [SERVICES.md](SERVICES.md) preserves Bragi service/method identifiers as facts. Those inventories are
 not a promise of 56 controllable products or a single protocol across them.

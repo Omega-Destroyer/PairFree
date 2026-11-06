@@ -366,6 +366,28 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
 - `docs/DESIGN.md` is the app design: requirements, the Studio look and its colour values, every screen, and
   what is still open. Build the UI from it. The owner's requirements at the top of that file are fixed.
 
+## Vendors researched, not implemented
+
+The documentation-only research pass of 2026-11-06 is indexed in `docs/RESEARCH.md`. These vendors are
+not implemented or advertised as supported; their model and command inventories are research facts,
+not runtime `data/` entries. Read the vendor protocol note before starting a brand branch:
+
+- `docs/oneplus/PROTOCOL.md`: HeyMelody 117.6.6 (OnePlus/OPPO), OPOv1, 85 bundled catalog records,
+  all 69 capability-bit mappings, local whitelist decoding and recovered response dispatcher.
+- `docs/audiotechnica/PROTOCOL.md`: Connect 2.8.0, successfully decompiled Hermes v96, 28 model definitions
+  and per-model predicate index, four distinct families (GAIA v2/v3, Airoha, Realtek), native EQ entry points.
+- `docs/skullcandy/PROTOCOL.md`: Skullcandy 5.0.6, 56 manifest records including seven speakers,
+  Bragi BOS-RPC framing/services/security, custom chip paths and native/Flutter inspection. Dart per-model
+  routes are not fully decoded; Sound by Bose products are not automatically BMAP devices.
+- `docs/cambridge/PROTOCOL.md`: Melomania 2.8.12, direct 1+/Touch GAIA control and EQ. The newer
+  A100/M100/P100 names redirect to Melomania Connect; newer A100 evidence is separately from BudsLink.
+- `docs/huawei/PROTOCOL.md`: AI Life 11.0.2.305 and its separately decompiled embedded Smart Audio plugin,
+  SPP/CRC/TLV and older settings; newer model layouts are separately attributed to OpenFreebuds.
+
+No device was connected or vendor server contacted. The notes distinguish vendor code, public checks,
+analytical examples and remaining research. No new model is marked tried. Raw artifacts, decoded vendor
+files, APKs, libraries and source decompilations stay outside the repo under `E:\Builds\research`.
+
 ## Test hardware
 
 The owner has a SoundPEATS H3 and an Air5 Pro+, both Qualcomm QCC3091 (`QUALCOMM` family), and a Soundcore

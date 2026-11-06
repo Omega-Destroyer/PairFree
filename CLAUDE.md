@@ -491,6 +491,11 @@ Space A40. Everything else relies on reports and recordings from users (each bra
 
 ## Where the work stands
 
+Local branch `brand/oneplus` is an OPOv1 protocol-core draft (`docs/oneplus/IMPLEMENTATION.md`): generated
+constants, bounded MTU/fragment reassembly, command/sequence keys, capability bits and raw battery records.
+No OnePlus/OPPO model, socket or setting is enabled. Use HeyMelody's per-model tables and remappings before
+adding sessions; neither debug commands nor upgrade capabilities belong in a startup probe. No hardware tested.
+
 PairFree started from the H3 and Air5 Pro+ (probe, SETs, GAIA, the Android app, the Qualcomm EQ; released as
 0.1.0 on 2026-10-12, every feature tried on both) and has since added a brand at a time. Each brand's page under
 `docs/devices/` says what it shows, what was tried and what is not covered yet; firmware update comes last, and

@@ -1,5 +1,8 @@
 # Huawei AI Life / FreeBuds protocol research
 
+Virtual follow-up, 2026-11-06: [model-specific scope and interventions](VIRTUAL_TESTING.md).
+No physical hardware was tested.
+
 Research 2026-11-06; a local protocol-core draft is described in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 No Huawei model is enabled in the app and no hardware was connected.
 The supplied AI Life app contains an older but readable Smart Audio plugin. Its protocol evidence and

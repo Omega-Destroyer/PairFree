@@ -20,3 +20,8 @@ legacy scalar builder. These are remaining implementation tasks, not claims that
 Tests use the analytical vendor battery frame, the independent XMODEM check value for `123456789`,
 every split boundary, coalesced frames, noise, oversized lengths, CRC errors, truncated TLVs and
 synthetic battery replies. No hardware test or device report exists.
+
+## Virtual evidence follow-up (2026-11-06)
+
+FreeBuds 3 setup was attempted offline, including an explicitly instrumented local network-availability check. It reached the guide/scan but produced no MBB traffic. No captured command vectors or hardware reports were added.
+See [VIRTUAL_TESTING.md](VIRTUAL_TESTING.md) for the exact scope, fixtures and remaining work.

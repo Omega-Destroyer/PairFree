@@ -1,5 +1,8 @@
 # Skullcandy protocol research
 
+Virtual follow-up, 2026-11-06: [model-specific scope and interventions](VIRTUAL_TESTING.md).
+No physical hardware was tested.
+
 Research 2026-11-06; a local protocol-core draft is described in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 No Skullcandy model is enabled in the app and no hardware was connected.
 [MODELS.md](MODELS.md) preserves the 56 bundled catalog records and firmware-feature unions;

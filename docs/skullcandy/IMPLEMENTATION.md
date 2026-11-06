@@ -29,3 +29,8 @@ Tests reproduce the analytical `7EFF809400062D1002010008005480` device-info fram
 split, coalescing, CRC corruption, bounds, optional FCS, opaque secure frames, strict status/correlation,
 protobuf u64 values and malformed fields, and ambiguous/missing authentication flags. No hardware
 success, product coverage or authenticated connection is claimed.
+
+## Virtual evidence follow-up (2026-11-06)
+
+The official app recognized a virtual Crusher 1080 ANC audio connection but required internet for first-time setup before opening a control channel. No RPC/setting vectors, trust exchange or hardware reports were added.
+See [VIRTUAL_TESTING.md](VIRTUAL_TESTING.md) for the exact scope, fixtures and remaining work.

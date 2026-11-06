@@ -1,0 +1,5 @@
+{
+  "_source": "AI Life 11.0.2.305 embedded Smart Audio plugin: MbbLinkerProtocol, MbbProtocol, Command; docs/huawei/PROTOCOL.md. CRC and TLV facts checked against OpenFreebuds (GPL-3.0 facts only).",
+  "wire": {"START": 90, "CONTROL": 0, "CRC_POLYNOMIAL": 4129, "CRC_INITIAL": 0},
+  "command": {"BATTERY_SERVICE": 1, "BATTERY_READ": 8, "BATTERY_NOTIFY": 39, "GLOBAL_TAG": 1, "COMPONENT_TAG": 2, "CHARGING_TAG": 3}
+}

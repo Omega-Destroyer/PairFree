@@ -1890,7 +1890,39 @@ val generateHearingTables = tasks.register<GenerateHearingTables>("generateHeari
     outputDir = layout.buildDirectory.dir("generated/hearing")
 }
 
+/** Generated wire constants for huawei's protocol-core review draft. */
+abstract class GenerateHuaweiTables : DefaultTask() {
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val sourceJson: RegularFileProperty
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val sections = JsonSlurper().parse(sourceJson.get().asFile) as Map<String, Any?>
+        val text = StringBuilder("// Generated from data/huawei/commands.json; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.huawei\n\n")
+        for ((section, raw) in sections.filterKeys { !it.startsWith("_") }) {
+            check(section.matches(Regex("[a-z]+")))
+            text.appendLine("public object Huawei${section.replaceFirstChar { it.uppercase() }} {")
+            @Suppress("UNCHECKED_CAST")
+            for ((key, value) in raw as Map<String, Any>) {
+                check(key.matches(Regex("[A-Z_0-9]+")) && (value is String || value is Number))
+                text.appendLine("    public const val $key: ${if (value is String) "String" else "Int"} = ${groovy.json.JsonOutput.toJson(value)}")
+            }
+            text.appendLine("}")
+        }
+        val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/huawei/HuaweiTables.kt")
+        target.parentFile.mkdirs()
+        target.writeText(text.toString())
+    }
+}
+val generateHuaweiTables = tasks.register<GenerateHuaweiTables>("generateHuaweiTables") {
+    sourceJson = rootProject.layout.projectDirectory.file("../data/huawei/commands.json")
+    outputDir = layout.buildDirectory.dir("generated/huawei")
+}
+
 kotlin.sourceSets.main {
+    kotlin.srcDir(generateHuaweiTables)
     kotlin.srcDir(generateHearingTables)
     kotlin.srcDir(generateIdentifyTables)
     kotlin.srcDir(generateEarfunTables)

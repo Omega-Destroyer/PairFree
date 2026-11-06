@@ -491,6 +491,11 @@ Space A40. Everything else relies on reports and recordings from users (each bra
 
 ## Where the work stands
 
+Local branch `brand/huawei` is a protocol-core draft only (`docs/huawei/IMPLEMENTATION.md`): generated
+constants, MBB/TLV framing, CRC, bounded stream parsing, and a battery read/decoder. It enables no model,
+socket or settings in the app. Model-specific sessions, EQ, controls, detection and reports remain to do.
+No Huawei hardware was tested. Do not turn the broad identity or big-data commands into startup probes.
+
 PairFree started from the H3 and Air5 Pro+ (probe, SETs, GAIA, the Android app, the Qualcomm EQ; released as
 0.1.0 on 2026-10-12, every feature tried on both) and has since added a brand at a time. Each brand's page under
 `docs/devices/` says what it shows, what was tried and what is not covered yet; firmware update comes last, and

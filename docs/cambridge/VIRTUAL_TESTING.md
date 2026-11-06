@@ -67,3 +67,13 @@ a bundled firmware image. No firmware, account or location traffic was enabled. 
 provenance and hashes of the installed APK splits. `CambridgeEmulatorTest` compares these packets with
 PairFree's setting builders and compares a complete custom-curve restore sequence byte for byte.
 Raw HCI captures, emulator state, pairing material, APKs and harness files remain outside the repository.
+
+## PairFree UI check
+
+The debug build from local commit `3317616` was installed on the same emulator and connected to the
+virtual **1+**. Home displayed the simulated 80%/85% batteries and firmware 8.1.0. Sound showed five
+gain rows; increasing band 1 twice sent Neutral, custom mode, then all five explicit gains on each
+change, with band 1 reaching +1 and +2 dB. Controls showed nine function toggles; play/pause off/on
+sent `0782 01FE` / `0782 01FF`. The Device tab showed the French language state and codec preference.
+This is a limited UI/transport check of PairFree on the 1+ fixture. PairFree's Touch UI, every setting,
+reconnection/failure behavior and physical earbuds were not exercised by that check.

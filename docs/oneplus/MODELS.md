@@ -6,93 +6,93 @@ There are 85 records: 53 oppo, 32 OnePlus. All records set `supportSpp` true and
 
 Values below retain the vendor field meaning: EQ is the app's EQ UI family, not a preset id; multipoint is a feature/UI version. A dash means absent, not a confirmed negative. Noise entries preserve protocol indices; controls preserve action and support masks without guessing their labels.
 
-| Id | Catalog name | EQ family | Custom EQ | Multipoint | Hidden |
-|---|---|---|---|---|---|
-| 06EC10 | OPPO Enco X4 | 4 | 1 | 2 | 1 |
-| 067410 | OPPO Enco X3 | 4 | 1 | 1 | - |
-| 063C10 | OPPO Enco X2 | 1 | - | 1 | - |
-| 061410 | OPPO Enco X | 1 | - | - | - |
-| 06E010 | OPPO Enco Clip2 | 4 | - | 2 | - |
-| 06B810 | OPPO Enco Clip | 4 | - | 1 | - |
-| 06BC10 | OPPO Enco X3s | 4 | 1 | 1 | - |
-| 066810 | OPPO Enco X3i | 2 | - | 1 | - |
-| 068C10 | OPPO Enco Free4 | 4 | 1 | 1 | 1 |
-| 06C010 | OPPO Enco Free4（丹拿版） | 4 | 1 | 1 | 1 |
-| 066010 | OPPO Enco Free3 | 2 | - | 1 | 1 |
-| 062010 | OPPO Enco Free2 | 1 | - | 1 | - |
-| 064010 | OPPO Enco Free2i | 1 | - | 1 | - |
-| 060410 | OPPO Enco Free | - | - | - | - |
-| 06C410 | OPPO Enco Air5 Pro | 4 | 1 | 2 | 1 |
-| 06C810 | OPPO Enco Air5s | 4 | 1 | 2 | - |
-| 06E810 | OPPO Enco Air5s（星光版） | 4 | 1 | 2 | 1 |
-| 06D810 | OPPO Enco Air5 | 4 | 1 | 2 | - |
-| 067C10 | OPPO Enco Air4 Pro | 2 | - | 1 | - |
-| 06F010 | OPPO Enco Air4s | 2 | - | 1 | 1 |
-| 06B050 | OPPO Enco Air4（新声版） | 3 | - | 1 | 1 |
-| 069010 | OPPO Enco Air4 | 2 | - | 1 | - |
-| 065C10 | OPPO Enco Air3 Pro | 2 | - | 1 | 0 |
-| 064C10 | OPPO Enco Air3 | 2 | - | 1 | - |
-| 067010 | OPPO Enco Air3i | 2 | - | - | - |
-| 067810 | OPPO Enco Air3s | 2 | - | 1 | - |
-| 063810 | OPPO Enco Air2 Pro | 2 | - | - | - |
-| 066C10 | OPPO Enco Air2（新声版） | 2 | - | - | 1 |
-| 063410 | OPPO Enco Air2 | 1 | - | - | - |
-| 069850 | OPPO Enco Air4i | 4 | 1 | 1 | 1 |
-| 068810 | OPPO Enco Air 3i | 2 | - | - | 1 |
-| 064410 | OPPO Enco Air2i | 2 | - | - | 1 |
-| 061810 | OPPO Enco Air | - | - | - | - |
-| 062810 | OPPO Enco Air Lite | - | - | - | - |
-| 06B450 | OPPO Enco R5 | 3 | - | 1 | 1 |
-| 06AC50 | OPPO Enco R4 | 4 | 1 | 1 | 1 |
-| 069C10 | OPPO Enco R3 Pro | 2 | - | 1 | 1 |
-| 068410 | OPPO Enco R3 | 2 | - | - | 1 |
-| 065010 | OPPO Enco R Pro | 2 | - | - | - |
-| 065810 | OPPO Enco R2 | 2 | - | 1 | 1 |
-| 063010 | OPPO Enco R | 1 | - | - | - |
-| 060C10 | OPPO Enco W51 | - | - | - | - |
-| 060810 | OPPO Enco W31 | - | - | - | - |
-| 061C10 | OPPO Enco Play | - | - | - | - |
-| 06F450 | OPPO Enco Buds3s | 4 | 1 | 1 | 1 |
-| 06A010 | OPPO Enco Buds3 Pro+ | 2 | - | 1 | 1 |
-| 06A850 | OPPO Enco Buds3 Pro | 4 | 1 | 1 | - |
-| 068010 | OPPO Enco Buds2 Pro | 2 | - | - | - |
-| 06A450 | OPPO Enco Buds3 | 3 | - | 1 | - |
-| 064810 | OPPO Enco Buds2 | 2 | - | - | - |
-| 062410 | OPPO Enco Buds | - | - | - | - |
-| 050C10 | OPPO Enco M33 | 2 | - | - | 1 |
-| 050410 | OPPO Enco M31 | - | - | - | - |
-| 067414 | OnePlus Flow Buds | 4 | 1 | 2 | 1 |
-| 067814 | OnePlus Buds Pro 4 | 4 | 1 | 2 | 1 |
-| 064014 | OnePlus Buds Pro 3 | 4 | 1 | 1 | - |
-| 06E410 | OnePlus Buds Clip | 4 | - | 2 | 1 |
-| 062014 | OnePlus Buds Pro 2 | 4 | 1 | 1 | - |
-| 063414 | OnePlus Buds Pro 2R | 4 | 1 | 1 | - |
-| 063014 | OnePlus Buds Pro 2（轻享版） | 4 | 1 | 1 | 1 |
-| 060C14 | OnePlus Buds Pro | - | 1 | 1 | - |
-| 065414 | OnePlus Buds 4 | 4 | 1 | 1 | - |
-| 063C14 | OnePlus Buds 3 | 4 | 1 | 1 | - |
-| 066414 | OnePlus Buds Ace 3 | 4 | 1 | 2 | 1 |
-| 064C14 | OnePlus Buds Ace 2 | 4 | 1 | 1 | 1 |
-| 061014 | OnePlus Buds Z2 | - | 1 | - | - |
-| 060814 | OnePlus Buds Z | - | - | - | - |
-| 068814 | OnePlus Buds Z | - | - | - | - |
-| 062814 | OnePlus Buds Ace | 4 | 1 | - | 1 |
-| 066814 | OnePlus Nord Buds 4 Pro | 4 | 1 | 2 | 1 |
-| 067014 | OnePlus Nord Buds 4 | 4 | 1 | 2 | 1 |
-| 064414 | OnePlus Nord Buds 3 Pro | 4 | 1 | 1 | - |
-| 065014 | OnePlus Nord Buds 3 | 4 | 1 | 1 | - |
-| 062414 | OnePlus Nord Buds 2 | 4 | 1 | - | - |
-| 066054 | OnePlus Buds 3V | 4 | 1 | 1 | 1 |
-| 064814 | OnePlus Buds V | 4 | 1 | - | 1 |
-| 061814 | OnePlus Buds N | 4 | 1 | - | 1 |
-| 061414 | OnePlus Nord Buds | 4 | 1 | - | - |
-| 065854 | OnePlus Nord Buds 3r | 4 | 1 | 1 | - |
-| 062C14 | OnePlus Nord Buds 2r | 4 | 1 | - | - |
-| 061C14 | OnePlus Nord Buds CE | 4 | - | - | - |
-| 060414 | OnePlus Buds | - | - | - | - |
-| 068414 | OnePlus Buds | - | - | - | - |
-| 051014 | OnePlus Bullets Wireless Z3 | 4 | 0 | - | - |
-| 050C14 | OnePlus BulletsWireless Z2 ANC | 4 | 1 | - | - |
+| Id | Catalog name | EQ family | Custom EQ | Multipoint | Hidden | Virtual testing |
+|---|---|---|---|---|---| --- |
+| 06EC10 | OPPO Enco X4 | 4 | 1 | 2 | 1 | Not attempted |
+| 067410 | OPPO Enco X3 | 4 | 1 | 1 | - | Not attempted |
+| 063C10 | OPPO Enco X2 | 1 | - | 1 | - | Not attempted |
+| 061410 | OPPO Enco X | 1 | - | - | - | Not attempted |
+| 06E010 | OPPO Enco Clip2 | 4 | - | 2 | - | Not attempted |
+| 06B810 | OPPO Enco Clip | 4 | - | 1 | - | Not attempted |
+| 06BC10 | OPPO Enco X3s | 4 | 1 | 1 | - | Not attempted |
+| 066810 | OPPO Enco X3i | 2 | - | 1 | - | Not attempted |
+| 068C10 | OPPO Enco Free4 | 4 | 1 | 1 | 1 | Not attempted |
+| 06C010 | OPPO Enco Free4（丹拿版） | 4 | 1 | 1 | 1 | Not attempted |
+| 066010 | OPPO Enco Free3 | 2 | - | 1 | 1 | Not attempted |
+| 062010 | OPPO Enco Free2 | 1 | - | 1 | - | Not attempted |
+| 064010 | OPPO Enco Free2i | 1 | - | 1 | - | Not attempted |
+| 060410 | OPPO Enco Free | - | - | - | - | Not attempted |
+| 06C410 | OPPO Enco Air5 Pro | 4 | 1 | 2 | 1 | Not attempted |
+| 06C810 | OPPO Enco Air5s | 4 | 1 | 2 | - | Not attempted |
+| 06E810 | OPPO Enco Air5s（星光版） | 4 | 1 | 2 | 1 | Not attempted |
+| 06D810 | OPPO Enco Air5 | 4 | 1 | 2 | - | Not attempted |
+| 067C10 | OPPO Enco Air4 Pro | 2 | - | 1 | - | Not attempted |
+| 06F010 | OPPO Enco Air4s | 2 | - | 1 | 1 | Not attempted |
+| 06B050 | OPPO Enco Air4（新声版） | 3 | - | 1 | 1 | Not attempted |
+| 069010 | OPPO Enco Air4 | 2 | - | 1 | - | Not attempted |
+| 065C10 | OPPO Enco Air3 Pro | 2 | - | 1 | 0 | Not attempted |
+| 064C10 | OPPO Enco Air3 | 2 | - | 1 | - | Not attempted |
+| 067010 | OPPO Enco Air3i | 2 | - | - | - | Not attempted |
+| 067810 | OPPO Enco Air3s | 2 | - | 1 | - | Not attempted |
+| 063810 | OPPO Enco Air2 Pro | 2 | - | - | - | Not attempted |
+| 066C10 | OPPO Enco Air2（新声版） | 2 | - | - | 1 | Not attempted |
+| 063410 | OPPO Enco Air2 | 1 | - | - | - | Not attempted |
+| 069850 | OPPO Enco Air4i | 4 | 1 | 1 | 1 | Not attempted |
+| 068810 | OPPO Enco Air 3i | 2 | - | - | 1 | Not attempted |
+| 064410 | OPPO Enco Air2i | 2 | - | - | 1 | Not attempted |
+| 061810 | OPPO Enco Air | - | - | - | - | Not attempted |
+| 062810 | OPPO Enco Air Lite | - | - | - | - | Not attempted |
+| 06B450 | OPPO Enco R5 | 3 | - | 1 | 1 | Not attempted |
+| 06AC50 | OPPO Enco R4 | 4 | 1 | 1 | 1 | Not attempted |
+| 069C10 | OPPO Enco R3 Pro | 2 | - | 1 | 1 | Not attempted |
+| 068410 | OPPO Enco R3 | 2 | - | - | 1 | Not attempted |
+| 065010 | OPPO Enco R Pro | 2 | - | - | - | Not attempted |
+| 065810 | OPPO Enco R2 | 2 | - | 1 | 1 | Not attempted |
+| 063010 | OPPO Enco R | 1 | - | - | - | Not attempted |
+| 060C10 | OPPO Enco W51 | - | - | - | - | Not attempted |
+| 060810 | OPPO Enco W31 | - | - | - | - | Not attempted |
+| 061C10 | OPPO Enco Play | - | - | - | - | Not attempted |
+| 06F450 | OPPO Enco Buds3s | 4 | 1 | 1 | 1 | Not attempted |
+| 06A010 | OPPO Enco Buds3 Pro+ | 2 | - | 1 | 1 | Not attempted |
+| 06A850 | OPPO Enco Buds3 Pro | 4 | 1 | 1 | - | Not attempted |
+| 068010 | OPPO Enco Buds2 Pro | 2 | - | - | - | Not attempted |
+| 06A450 | OPPO Enco Buds3 | 3 | - | 1 | - | Not attempted |
+| 064810 | OPPO Enco Buds2 | 2 | - | - | - | Not attempted |
+| 062410 | OPPO Enco Buds | - | - | - | - | Not attempted |
+| 050C10 | OPPO Enco M33 | 2 | - | - | 1 | Not attempted |
+| 050410 | OPPO Enco M31 | - | - | - | - | Not attempted |
+| 067414 | OnePlus Flow Buds | 4 | 1 | 2 | 1 | Not attempted |
+| 067814 | OnePlus Buds Pro 4 | 4 | 1 | 2 | 1 | Not attempted |
+| 064014 | OnePlus Buds Pro 3 | 4 | 1 | 1 | - | Not attempted |
+| 06E410 | OnePlus Buds Clip | 4 | - | 2 | 1 | Not attempted |
+| 062014 | OnePlus Buds Pro 2 | 4 | 1 | 1 | - | [Commands captured](VIRTUAL_TESTING.md) |
+| 063414 | OnePlus Buds Pro 2R | 4 | 1 | 1 | - | Not attempted |
+| 063014 | OnePlus Buds Pro 2（轻享版） | 4 | 1 | 1 | 1 | Not attempted |
+| 060C14 | OnePlus Buds Pro | - | 1 | 1 | - | Not attempted |
+| 065414 | OnePlus Buds 4 | 4 | 1 | 1 | - | Not attempted |
+| 063C14 | OnePlus Buds 3 | 4 | 1 | 1 | - | Not attempted |
+| 066414 | OnePlus Buds Ace 3 | 4 | 1 | 2 | 1 | Not attempted |
+| 064C14 | OnePlus Buds Ace 2 | 4 | 1 | 1 | 1 | Not attempted |
+| 061014 | OnePlus Buds Z2 | - | 1 | - | - | Not attempted |
+| 060814 | OnePlus Buds Z | - | - | - | - | Not attempted |
+| 068814 | OnePlus Buds Z | - | - | - | - | Not attempted |
+| 062814 | OnePlus Buds Ace | 4 | 1 | - | 1 | Not attempted |
+| 066814 | OnePlus Nord Buds 4 Pro | 4 | 1 | 2 | 1 | Not attempted |
+| 067014 | OnePlus Nord Buds 4 | 4 | 1 | 2 | 1 | Not attempted |
+| 064414 | OnePlus Nord Buds 3 Pro | 4 | 1 | 1 | - | Not attempted |
+| 065014 | OnePlus Nord Buds 3 | 4 | 1 | 1 | - | Not attempted |
+| 062414 | OnePlus Nord Buds 2 | 4 | 1 | - | - | Not attempted |
+| 066054 | OnePlus Buds 3V | 4 | 1 | 1 | 1 | Not attempted |
+| 064814 | OnePlus Buds V | 4 | 1 | - | 1 | Not attempted |
+| 061814 | OnePlus Buds N | 4 | 1 | - | 1 | Not attempted |
+| 061414 | OnePlus Nord Buds | 4 | 1 | - | - | Not attempted |
+| 065854 | OnePlus Nord Buds 3r | 4 | 1 | 1 | - | Not attempted |
+| 062C14 | OnePlus Nord Buds 2r | 4 | 1 | - | - | Not attempted |
+| 061C14 | OnePlus Nord Buds CE | 4 | - | - | - | Not attempted |
+| 060414 | OnePlus Buds | - | - | - | - | Not attempted |
+| 068414 | OnePlus Buds | - | - | - | - | Not attempted |
+| 051014 | OnePlus Bullets Wireless Z3 | 4 | 0 | - | - | Not attempted |
+| 050C14 | OnePlus BulletsWireless Z2 ANC | 4 | 1 | - | - | Not attempted |
 
 ## Model-specific settings facts
 

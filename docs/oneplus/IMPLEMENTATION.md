@@ -25,3 +25,8 @@ These are unfinished tasks, not protocol blockers. All model catalog records rem
 Tests use the analytical capability-read vector, synthetic two-byte lengths, fragmented/coalesced
 streams, reordered/missing fragments, malformed lengths, reset, sequence keys, error status, packed
 battery levels and LSB-first capability bits. No hardware success is claimed.
+
+## Virtual evidence follow-up (2026-11-06)
+
+The original HeyMelody app sent startup/feature reads, four preset choices, ANC/transparency, game-mode and two gesture writes against the virtual Buds Pro 2. Twenty-five distinct outgoing command/payload observations are retained. Custom EQ and all other models remain untested virtually; this draft still provides only its three narrow read helpers.
+See [VIRTUAL_TESTING.md](VIRTUAL_TESTING.md) for the exact scope, fixtures and remaining work.

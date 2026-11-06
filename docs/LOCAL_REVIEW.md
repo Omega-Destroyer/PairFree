@@ -55,3 +55,10 @@ For Cambridge, verify gain-bank behavior and device-side readback on hardware be
 EQ profiles, phone-local vendor custom slots and newer Melomania Connect models are outside this draft.
 High-performance/low-power audio switching is excluded because the vendor implements it as firmware
 installation, as traced in `b3/d`. No firmware operation is implemented.
+
+## Virtual-test follow-up
+
+The Cambridge branch now includes original-vendor-app tests against virtual Touch and 1+ instances,
+78 outgoing regression cases and a corrected custom-curve restore sequence. See
+[the virtual-test record](cambridge/VIRTUAL_TESTING.md). This is a new evidence category, distinct from
+hardware testing; subsequent branches must record their own actual runs rather than inherit this status.

@@ -2,7 +2,7 @@
 <resources>
     <string name="eq_cambridge">Choose a preset below to start adjusting the five gain bands. Their frequencies are not available, so no curve is drawn.</string>
     <string name="setting_ca_eq">Equalizer</string>
-    <string name="setting_ca_eq_note">Gain values start from the selected preset. A custom curve already on the earbuds is unknown until you choose a preset here. Changes replace Custom 1 on the earbuds.</string>
+    <string name="setting_ca_eq_note">Gain values start from the selected preset. A custom curve already on the earbuds is unknown until you choose a preset here. Changes use the earbuds’ custom EQ mode. The vendor app’s three saved slots are stored on that phone.</string>
     <string name="setting_ca_codec_note">Language and codec changes require both earbuds. A codec preference changes what the earbuds offer; Android chooses the active codec. Changing it may reconnect the earbuds.</string>
     <string name="setting_ca_ambient_level">Ambient sound level</string>
     <string name="setting_ca_preset">Preset</string>

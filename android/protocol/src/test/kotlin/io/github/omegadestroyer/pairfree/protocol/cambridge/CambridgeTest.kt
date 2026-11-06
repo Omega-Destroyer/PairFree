@@ -104,9 +104,10 @@ class CambridgeTest {
         assertNull(s.change(SettingChange.Level("ca_band_1", 2)))
         s.feed(ack(0x0294, byteArrayOf(0, 0)))
         val frames = s.change(SettingChange.Level("ca_band_1", 2))!!
-        assertEquals(6, frames.size)
-        assertArrayEquals("ff010001000a021406".hexBytes(), frames[0])
-        assertArrayEquals("ff010005000a021a0612007801".hexBytes(), frames[1])
+        assertEquals(7, frames.size)
+        assertArrayEquals("ff010001000a021400".hexBytes(), frames[0])
+        assertArrayEquals("ff010001000a021406".hexBytes(), frames[1])
+        assertArrayEquals("ff010005000a021a0612007801".hexBytes(), frames[2])
         assertTrue(frames.all(s::allowed))
         assertNull(s.change(SettingChange.Level("ca_band_1", 7)))
         s.feed(ack(0x021a, byteArrayOf(1)))
@@ -116,6 +117,7 @@ class CambridgeTest {
         assertTrue(s.allowed(frames[2]))
         s.failed(0x0214)
         assertFalse(s.allowed(frames[2]), "missing bank ACK must stop queued gains too")
+        assertFalse(s.allowed(frames[1]), "failed Neutral selection must stop queued custom-mode selection")
         assertEquals(listOf(0x0214), s.feed(ack(0x0214, byteArrayOf(1))))
     }
 

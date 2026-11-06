@@ -1,6 +1,7 @@
 # Cambridge Audio Melomania protocol research
 
-Research 2026-11-06; local implementation draft added subsequently. No hardware was connected.
+Research 2026-11-06; local implementation draft and [virtual tests](VIRTUAL_TESTING.md) added subsequently.
+No hardware was connected.
 The supplied Melomania app directly controls **Melomania 1+ and Melomania Touch**. It recognizes newer
 names to direct the user to another app; their protocol must be kept separate.
 
@@ -224,3 +225,20 @@ Validation of the local draft: all six Cambridge protocol tests, the complete pr
 generation and the generic artwork generator were run; the models use the existing generic earbud art.
 The queue also invalidates the editable gain state after a failed/missing bank or band ACK; the allowlist
 then refuses remaining queued band writes until a known preset has been read again.
+
+## 9. Vendor-app virtual testing
+
+The original Melomania 2.8.12 APK has now connected to virtual Touch and 1+ instances over Classic Bluetooth.
+The simulator's replies remain synthetic; outgoing app frames are runtime observations, not hardware evidence.
+See [VIRTUAL_TESTING.md](VIRTUAL_TESTING.md) for the environment, exact checks and limitations, and
+`data/cambridge/emulator_vectors.json` for 78 selected outgoing command cases and APK hashes.
+
+Custom save/recall revealed Neutral 0 -> custom mode 6 -> gains. PairFree's full-curve write now follows
+that sequence. The three named custom slots belong to the vendor app's phone-local storage; selecting
+Custom 2 does not imply device preset 7. The UI wording was corrected accordingly. Runtime tests also
+confirm that codec application can be enabled with both simulated earbuds present; the ambiguous
+decompiler conditional in b3/e should not be interpreted as requiring an absent left earbud.
+
+The complete protocol suite, debug APK build, Android lint and 133 Python checks pass after these changes.
+Neither model is counted as hardware tested. A distinct "Vendor app tested virtually" category is generated
+on the device page from each model's `virtual_tests` records, independently of hardware `reports`.

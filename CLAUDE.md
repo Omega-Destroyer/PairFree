@@ -506,6 +506,13 @@ vendor custom slots are outside it. High-performance audio is a bundled firmware
 excluded by the firmware rule. No reset, power, upgrade, account or location traffic is allowed. See
 `docs/cambridge/PROTOCOL.md` section 8 and `docs/devices/cambridge.md` before reviewing or extending it.
 
+Virtual follow-up (2026-11-06): the original Melomania APK connected to simulated Touch and 1+ devices;
+78 selected outgoing cases are in `data/cambridge/emulator_vectors.json` and checked by
+`CambridgeEmulatorTest`. Replies, firmware versions and battery values are synthetic. The device page's
+"Vendor app tested virtually" status is separate from hardware reports and must never increment hardware
+counts. Custom-curve restore now selects Neutral, then custom mode 6, then gains; the vendor's three
+named custom slots are phone-local. See `docs/cambridge/VIRTUAL_TESTING.md` for the precise scope.
+
 PairFree started from the H3 and Air5 Pro+ (probe, SETs, GAIA, the Android app, the Qualcomm EQ; released as
 0.1.0 on 2026-10-12, every feature tried on both) and has since added a brand at a time. Each brand's page under
 `docs/devices/` says what it shows, what was tried and what is not covered yet; firmware update comes last, and

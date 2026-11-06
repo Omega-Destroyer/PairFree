@@ -170,8 +170,9 @@ public class CambridgeSession(public val model: CambridgeModel) {
                     val gains = curve?.toMutableList() ?: return null
                     gains[band - CambridgeValue.FIRST_BAND] = change.value
                     curve = gains
-                    // u3/b selects Custom1 before t3/b writes bands. All five are explicit: no unknown custom bank assumed.
-                    out = listOf(write(CambridgeCommand.SET_PRESET, CambridgeValue.CUSTOM_PRESET)) + gains.mapIndexed { i, gain ->
+                    // The running vendor app restores custom curves through Neutral, then custom mode, then gains.
+                    out = listOf(write(CambridgeCommand.SET_PRESET, CambridgeValue.NEUTRAL_PRESET),
+                        write(CambridgeCommand.SET_PRESET, CambridgeValue.CUSTOM_PRESET)) + gains.mapIndexed { i, gain ->
                         val raw = gain * CambridgeValue.GAIN_SCALE
                         write(CambridgeCommand.SET_BAND, CambridgeValue.BAND_HEADER,
                             ((i + CambridgeValue.FIRST_BAND) shl 4) or CambridgeValue.BAND_PARAMETER,
@@ -195,7 +196,8 @@ public class CambridgeSession(public val model: CambridgeModel) {
         val p = packet.payload.map { it.u() }
         return when (packet.id) {
             CambridgeCommand.STATE, CambridgeCommand.PRESET, CambridgeCommand.CONTROLS -> p.isEmpty()
-            CambridgeCommand.SET_PRESET -> p.size == 1 && (p[0] in CambridgeValues.PRESETS.indices || p[0] == CambridgeValue.CUSTOM_PRESET)
+            CambridgeCommand.SET_PRESET -> p.size == 1 && (p[0] in CambridgeValues.PRESETS.indices ||
+                (p[0] == CambridgeValue.CUSTOM_PRESET && curve != null))
             CambridgeCommand.SET_CONTROLS -> p.size == 2
             CambridgeCommand.SET_AMBIENT -> model.ambient && p.size == 1 && p[0] in listOf(CambridgeValue.AMBIENT_ON, CambridgeValue.AMBIENT_OFF)
             CambridgeCommand.SET_AMBIENT_LEVEL -> model.ambient && p.size == 1 && p[0] in CambridgeValue.AMBIENT_MIN..CambridgeValue.AMBIENT_MAX

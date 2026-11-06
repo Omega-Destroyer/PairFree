@@ -23,7 +23,11 @@ def table():
         features = "Battery, presets and five gain bands, control toggles, language and codec preference"
         if model["ambient"]:
             features += ", ambient sound and level"
-        rows.append(f"<tr><td>{escape(model['name'])}</td><td>{features}</td><td>Draft; not tested</td></tr>")
+        virtual = [p for p in model.get("virtual_tests", []) if (device_pages.ROOT / p).is_file()]
+        status = "Draft; not tested"
+        if virtual:
+            status = f'<a href="{escape(device_pages.TO_ROOT + virtual[0])}">Vendor app tested virtually</a>; no hardware test'
+        rows.append(f"<tr><td>{escape(model['name'])}</td><td>{features}</td><td>{status}</td></tr>")
     return "\n".join([START, "<table>", "<tr><th>Model</th><th>Implemented</th><th>Status</th></tr>", *rows, "</table>", END])
 
 

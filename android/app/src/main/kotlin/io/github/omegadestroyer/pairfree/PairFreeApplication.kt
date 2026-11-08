@@ -19,6 +19,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.eq.EqOpener
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.Identify
 import io.github.omegadestroyer.pairfree.protocol.Maker
@@ -88,8 +89,12 @@ class Hub(private val app: Application) {
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
     val equalizer = Equalizer(prefs, scope) { frames -> connection.sendEq(frames) }
 
+    /** Opens [equalizer] for the connected earbuds of any brand; the Sound tab and the home screen widget share it. */
+    val eqOpener = EqOpener(connection, equalizer, scope)
+
     private var screensVisible = false
     private var notificationHolds = false
+    private var widgetHolds = false
 
     /** The screens are on view, or not: they need the channel only while they are. */
     fun screens(visible: Boolean) {
@@ -103,8 +108,14 @@ class Hub(private val app: Application) {
         releaseIfUnused()
     }
 
+    /** The home screen widget holds the channel while it applies a tap, or lets it go. */
+    fun widget(holds: Boolean) {
+        widgetHolds = holds
+        releaseIfUnused()
+    }
+
     private fun releaseIfUnused() {
-        if (!screensVisible && !notificationHolds) connection.disconnect()
+        if (!screensVisible && !notificationHolds && !widgetHolds) connection.disconnect()
     }
 
     fun hasPermission(): Boolean =

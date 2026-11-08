@@ -30,6 +30,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -102,6 +103,10 @@ class WidgetService : Service() {
         when (slot) {
             is WidgetSlot.Noise -> setNoise(slot.choice)
             is WidgetSlot.NoiseCycle -> {
+                // Which choice is next depends on where the earbuds are now, and they say so a moment after the channel
+                // opens: choosing before that finds no choice active and starts the cycle over every time.
+                withTimeoutOrNull(STATE_MS) { connection.state.first { it.supports(Command.ANC_MODE) } } ?: return
+                awaitSubModes(slot.choices)
                 val rows = connection.settings.value.flatMap { it.settings }
                 setNoise(WidgetCycle.nextNoise(slot.choices, connection.state.value, rows))
             }
@@ -110,6 +115,29 @@ class WidgetService : Service() {
             WidgetSlot.Empty -> Unit
         }
         PairFreeWidget.requestRefresh(this)
+    }
+
+    /**
+     * When some choice fixes a sub-mode of the mode the earbuds are in, waits for them to report it (SOUNDPEATS' scene list,
+     * or the brand's row), so a choice with a sub-mode is told from a bare mode.
+     */
+    private suspend fun awaitSubModes(choices: List<NoiseChoice>) {
+        val connection = hub.connection
+        val mode = connection.state.value.number(Command.ANC_MODE)
+        val relevant = choices.filter { it.sub != null && it.modeValue == mode }
+        if (relevant.isEmpty()) return
+        withTimeoutOrNull(SUB_MS) {
+            combine(connection.state, connection.settings) { state, groups -> state to groups }.first { (state, groups) ->
+                relevant.any { c ->
+                    when (val sub = c.sub) {
+                        is Sub.Level -> state.levels(sub.command).isNotEmpty()
+                        is Sub.Row -> groups.any { g -> g.settings.any { it.key == sub.key } }
+                        is Sub.Step -> groups.any { g -> g.settings.any { it.key == sub.key } }
+                        null -> true
+                    }
+                }
+            }
+        }
     }
 
     private suspend fun setNoise(choice: NoiseChoice) {
@@ -177,6 +205,9 @@ class WidgetService : Service() {
         private const val CONNECT_MS = 15_000L
         private const val STATE_MS = 5_000L
         private const val STEP_MS = 400L
+
+        /** How long to wait for the earbuds to report a sub-mode they are in. */
+        private const val SUB_MS = 2_500L
         private const val EQ_TRIES = 20
         private const val EQ_STEP_MS = 500L
 

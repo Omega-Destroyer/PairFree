@@ -42,6 +42,11 @@ class Site(unittest.TestCase):
         # Google Search Console proved the owner holds the site with this file (2026-11-08); removing it drops the verification.
         self.assertEqual((ROOT / "docs" / "googlefe35c1928cb1cdd6.html").read_text(encoding="utf-8").strip(), "google-site-verification: googlefe35c1928cb1cdd6.html")
 
+    def test_the_verification_file_is_left_out_of_the_sitemap(self):
+        config = (ROOT / "docs" / "_config.yml").read_text(encoding="utf-8")
+        self.assertIn('path: "googlefe35c1928cb1cdd6.html"', config)
+        self.assertIn("sitemap: false", config)
+
     def test_the_site_has_its_config_and_robots_file(self):
         config = (ROOT / "docs" / "_config.yml").read_text(encoding="utf-8")
         self.assertIn('baseurl: "/PairFree"', config)

@@ -50,6 +50,8 @@ def problems():
         for url in addresses:
             if f"<loc>{url}</loc>" not in sitemap:
                 out.append(f"sitemap.xml does not list {url}")
+    if status == 200 and "googlefe35c1928cb1cdd6.html" in sitemap:
+        out.append("sitemap.xml lists the Search Console verification file (docs/_config.yml should leave it out)")
     for path in ("robots.txt", "assets/social-preview.png", "googlefe35c1928cb1cdd6.html"):  # the last proves the site to Google Search Console
         status, _ = get(f"{gen_site.SITE}/{path}")
         if status != 200:

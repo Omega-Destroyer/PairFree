@@ -468,9 +468,7 @@ the 88 models. `tools/import_soundpeats_features.py` keeps, per model in `data/s
 version, the feature codes and noise control's modes with their scene codes. Nothing else of the reply is kept. These are
 the app's offers, not tests on earbuds; models with a `reports` entry are the exception.
 
-- **Not fetched:** the Clip C10 (`T2`; the server has no configuration for firmware 0.5.5) and six models with no
-  version known (`JULI3025Lite2`, `JL6973D8C1`, `HILISTENING`, `S32`, `T28Pro`, `WuQi7034MXF2`). They stay unknown
-  (`Model.noiseModes` is null); the earbuds' replies tell.
+- **Not fetched:** seven models of PairFree's table are not in the server's current model list (`ota/pairDataList`), so nothing was asked for them: `JULI3025Lite2`, `JL6973D8C1`, `HILISTENING`, `S32`, `T28Pro`, `WuQi7034MXF2` and the Clip C10 (`T2`; the feature list for its recorded firmware 0.5.5 answers "device firmware configuration does not exist"). They stay unknown (`Model.noiseModes` is null); the earbuds' replies tell.
 - **Noise control (`FSN08`):** 27 models list it, 54 do not (known to have none: `noiseModes` is empty). The modes are
   the `own` values of its children (0 off, 1 cancelling, 2 transparency); the scenes under cancelling are `ANC_LEVEL`
   codes and those under transparency `TRANSPARENCY_LEVEL` codes. Shapes found: off, cancelling and transparency with no

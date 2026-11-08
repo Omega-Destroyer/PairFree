@@ -10,7 +10,12 @@ plugins:
   - jekyll-sitemap
 header_pages:
   - index.md
-image: /assets/social-preview.png
+# jekyll-seo-tag reads a page's image, not a site-wide one: this gives every page the social preview picture (og:image).
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: /assets/social-preview.png
 # The protocol notes, device pages and design notes stay on GitHub; the site has the home page and one page per brand.
 exclude:
   - 1more

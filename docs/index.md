@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "PairFree: open-source app for earbuds and headphones (Android)"
+title: "PairFree: open-source earbuds and headphones app for Android"
 description: "A free, open-source Android app that controls earbuds and headphones of many brands from one app: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, 1MORE, EarFun. No account, no internet."
 permalink: /
 ---

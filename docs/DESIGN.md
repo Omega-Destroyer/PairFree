@@ -474,16 +474,18 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
 - **Setup** lists the paired earbuds PairFree can control, like the connect screen; a tap opens one pair's eight buttons. Nothing
   connects. The choices come from the tables compiled into the app (`WidgetOptions`) and the user's saved EQ curves: noise
   control for 11 of the 12 brands (Bose has none on the shared control), SOUNDPEATS' modes and scenes from the server's feature
-  lists (`data/soundpeats/devices.json`), the EQ presets of every brand that has them offline. Sub-modes are SOUNDPEATS' scenes
-  and transparency levels, Nothing's cancelling strengths and QCY's scenes; the other brands' (Samsung, 1MORE, EarFun) are
-  left out for now, and so are the QCY strength sliders (they are levels, not choices). What the tables cannot say (SOUNDPEATS models
-  with no server list, Sony's and Apple's noise control, Sony's, QCY's and Pixel's EQ) comes from what the earbuds showed while
-  connected (`WidgetCache`), and the setup says "some choices appear after these earbuds have connected once" until then.
+  lists (`data/soundpeats/devices.json`), and the EQ presets of every brand that has them offline except Sony and QCY. Sub-modes
+  a choice can fix: SOUNDPEATS' scenes and transparency levels, Samsung's cancelling level (low, high), Nothing's cancelling
+  strengths, QCY's scenes (or, with one scene, its strength steps) and transparency strength steps, 1MORE's cancelling strengths
+  and transparency kinds, EarFun's cancelling modes and sub-modes and its transparency modes. What the tables cannot say (the
+  seven SOUNDPEATS models with no server list, Sony's and Apple's noise control, Sony's and QCY's EQ) comes from what the
+  earbuds showed while connected (`WidgetCache`), and the setup says "some choices appear after these earbuds have connected
+  once" until then. Pixel's "Last saved" EQ preset appears the same way.
 - **A tap** starts `WidgetService`, a foreground service (a short notification), because the channel is closed when PairFree is
   not open: it opens the channel, sets the noise choice or selects the EQ profile (`EqOpener`, shared with the Sound tab), waits 3 s
   for the write and its read-back, and lets the channel go unless the screens or the status notification hold it
   (`Hub.widget`). Tapping earbuds other than the ones connected switches the channel to them.
-- Sub-mode words are the option's key with underscores spaced, not the Controls tab's words (those are composable only).
+- Sub-mode words are the Controls tab's (`optionLabel`); an option it has no words for shows its key, spaced.
 
 ## Device drawings
 

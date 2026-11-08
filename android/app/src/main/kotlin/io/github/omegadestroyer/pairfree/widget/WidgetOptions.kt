@@ -10,6 +10,7 @@ import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.JblEqTarget
 import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
 import io.github.omegadestroyer.pairfree.eq.OneMoreEqTarget
+import io.github.omegadestroyer.pairfree.eq.PixelEqTarget
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
@@ -29,6 +30,7 @@ import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
 import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelFamily
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
+import io.github.omegadestroyer.pairfree.protocol.pixel.PixelSession
 import io.github.omegadestroyer.pairfree.protocol.qcy.Capsule
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcySession
@@ -104,18 +106,37 @@ object WidgetOptions {
                 if (Capsule.of(Models.find(device.model, device.name))) three() else null
             } else {
                 QcyModels.fromName(device.name).singleOrNull()?.takeIf { QcySession(it).sharedNoise }?.let { m ->
-                    three(m.mode("cancelling")?.scenes.orEmpty().map { Sub.Row("anc_scene", it.scene) }.takeIf { it.size > 1 }.orEmpty())
+                    // Several scenes: the scene row. One scene with a range: its strength slider. Transparency: its strength slider.
+                    val scenes = m.mode("cancelling")?.scenes.orEmpty()
+                    val cancelling = if (scenes.size > 1) scenes.map { Sub.Row("anc_scene", it.scene) } else {
+                        scenes.singleOrNull()?.takeIf { it.to > it.from }?.let { s -> (1..s.to - s.from + 1).map { Sub.Step("anc_scene_level", it) } }.orEmpty()
+                    }
+                    val transparency = m.mode("transparency")?.takeIf { it.to > it.from }?.let { t -> (1..t.to - t.from + 1).map { Sub.Step("transparency_strength", it) } }.orEmpty()
+                    three(cancelling, transparency)
                 }
             }
             Brand.SOUNDCORE -> if (SoundcoreLayout.of(device.model)?.has("sound_modes") == true) three() else emptyList()
-            Brand.SAMSUNG -> SamsungModels.of(device.model)?.let { if (it.supports("noise_control", null)) three() else emptyList() }
+            Brand.SAMSUNG -> SamsungModels.of(device.model)?.let { m ->
+                if (!m.supports("noise_control", null)) emptyList()
+                else three(if (m.supports("anc_noise_reduction_levels", null)) listOf("low", "high").map { Sub.Row("anc_level", it) } else emptyList())
+            }
             Brand.JBL -> JblModels.fromName(device.name)?.let { if (JblSession(it).sharedNoise) three() else emptyList() }
             Brand.NOTHING -> NothingModels.of(device.model)?.let { m ->
                 NothingSession(m).let { s -> if (s.sharedNoise) three(s.levels.takeIf { it.size > 1 }.orEmpty().map { Sub.Row("noise_strength", it) }) else emptyList() }
             }
             Brand.PIXEL -> PixelModels.of(device.model?.toIntOrNull())?.let { if (it.family == PixelFamily.ALLEGRO) three() else emptyList() }
-            Brand.ONEMORE -> OneMoreModels.fromName(device.name)?.let { if (OneMoreSession(it).sharedNoise) three() else emptyList() }
-            Brand.EARFUN -> EarfunModels.fromName(device.name)?.let { if (it.noise != null) three() else emptyList() }
+            Brand.ONEMORE -> OneMoreModels.fromName(device.name)?.let { m ->
+                OneMoreSession(m).let { s ->
+                    if (!s.sharedNoise) emptyList()
+                    else three(s.strengths.map { Sub.Row("noise_strength", it) }, s.transparencyKinds.map { Sub.Row("transparency_mode", it) })
+                }
+            }
+            Brand.EARFUN -> EarfunModels.fromName(device.name)?.let { m ->
+                if (m.noise == null) emptyList()
+                else EarfunSession(m).let { s ->
+                    three(s.cancellingChoices.map { Sub.Row(EarfunSession.ANC_MODE_KEY, it) }, s.ambientChoices.map { Sub.Row(EarfunSession.AMBIENT_MODE_KEY, it) })
+                }
+            }
             // Bose has no shared noise mode; Sony and Apple say only in their replies.
             Brand.BOSE -> emptyList()
             Brand.SONY, Brand.APPLE -> null
@@ -126,7 +147,7 @@ object WidgetOptions {
 
     private fun brandMayHaveNoise(device: Paired) = device.brand == Brand.SOUNDPEATS || device.brand == Brand.SONY || device.brand == Brand.APPLE
 
-    private fun brandMayHaveEq(device: Paired) = device.brand == Brand.SONY || device.brand == Brand.PIXEL || (device.brand == Brand.QCY && device.soldAs == null)
+    private fun brandMayHaveEq(device: Paired) = device.brand == Brand.SONY || (device.brand == Brand.QCY && device.soldAs == null)
 
     /** The brand's EQ layout and target built from its tables alone, or null where it needs what the earbuds report. */
     private fun eqOffline(device: Paired): Pair<EqLayout, EqTarget>? = try {
@@ -139,6 +160,8 @@ object WidgetOptions {
             Brand.NOTHING -> NothingModels.of(device.model)?.let { NothingEqTarget(NothingSession(it)) }?.takeIf { it.hasCustom || it.layout.presets.isNotEmpty() }?.let { it.layout to it }
             Brand.ONEMORE -> OneMoreModels.fromName(device.name)?.let { OneMoreEqTarget(OneMoreSession(it)) }?.let { it.layout to it }
             Brand.EARFUN -> EarfunModels.fromName(device.name)?.let { m -> m.eq?.let { EarfunEqTarget(EarfunSession(m), it) } }?.let { it.layout to it }
+            // Google's presets and five bands; "Last saved" joins them once the earbuds have reported it.
+            Brand.PIXEL -> PixelModels.of(device.model?.toIntOrNull())?.takeIf { it.family == PixelFamily.ALLEGRO }?.let { PixelEqTarget(PixelSession(it.transport, it)) }?.let { it.layout to it }
             else -> null
         }
     } catch (_: RuntimeException) {

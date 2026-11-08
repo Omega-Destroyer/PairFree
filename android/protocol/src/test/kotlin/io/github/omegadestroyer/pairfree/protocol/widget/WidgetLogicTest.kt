@@ -69,6 +69,15 @@ class WidgetLogicTest {
     }
 
     @Test
+    fun aStrengthSliderMatchesItsValue() {
+        val strong = NoiseChoice("transparency", Sub.Step("transparency_strength", 3))
+        val rows = listOf<Setting>(Setting.Level("transparency_strength", 3, 1, 5))
+        assertTrue(strong.isActive(state("transparency"), rows))
+        assertFalse(strong.isActive(state("transparency"), listOf(Setting.Level("transparency_strength", 2, 1, 5))))
+        assertFalse(strong.isActive(state("anc"), rows))
+    }
+
+    @Test
     fun anEqToggleStepsThroughItsProfiles() {
         val ids = listOf("builtin:stock", "preset:Bass boost", "user:Mine")
         assertEquals("preset:Bass boost", WidgetCycle.nextEq(ids, "builtin:stock"))

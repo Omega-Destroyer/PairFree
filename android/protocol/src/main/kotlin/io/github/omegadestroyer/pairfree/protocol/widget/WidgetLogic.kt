@@ -13,6 +13,9 @@ public sealed interface Sub {
 
     /** Every other brand: the [option] of the brand's setting row [key], sent as the Controls tab sends it. */
     public data class Row(val key: String, val option: String) : Sub
+
+    /** A brand's strength slider (a `Setting.Level` row [key]) at [value], sent as the Controls tab sends it. */
+    public data class Step(val key: String, val value: Int) : Sub
 }
 
 /** One noise state a widget button sets: [mode] (`off`, `anc` or `transparency`, the names of `Command.ANC_MODE`) and an optional fixed [sub]. */
@@ -25,6 +28,7 @@ public data class NoiseChoice(val mode: String, val sub: Sub? = null) {
             null -> true
             is Sub.Level -> state.levels(sub.command).any { it.code == sub.code && it.active }
             is Sub.Row -> rows.any { it.key == sub.key && (it as? Setting.Choice)?.value == sub.option }
+            is Sub.Step -> rows.any { it.key == sub.key && (it as? Setting.Level)?.value == sub.value }
         }
 }
 

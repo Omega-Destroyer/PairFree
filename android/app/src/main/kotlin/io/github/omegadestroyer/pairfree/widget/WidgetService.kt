@@ -17,6 +17,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.hub
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
@@ -129,8 +130,15 @@ class WidgetService : Service() {
                 // The row shows only in its own mode, so wait for the earbuds to report it.
                 val rows = withTimeoutOrNull(STATE_MS) { connection.settings.first { groups -> groups.any { g -> g.settings.any { it.key == sub.key } } } }
                     ?: return
-                val current = rows.flatMap { it.settings }.firstOrNull { it.key == sub.key } as? io.github.omegadestroyer.pairfree.protocol.Setting.Choice
-                if (current?.value != sub.option) connection.changeSetting(SettingChange.Choice(sub.key, sub.option))
+                // A key can name several rows (EarFun's cancelling modes and their sub-modes): is the option the value of one?
+                val now = rows.flatMap { it.settings }.any { it.key == sub.key && (it as? Setting.Choice)?.value == sub.option }
+                if (!now) connection.changeSetting(SettingChange.Choice(sub.key, sub.option))
+            }
+            is Sub.Step -> {
+                val rows = withTimeoutOrNull(STATE_MS) { connection.settings.first { groups -> groups.any { g -> g.settings.any { it.key == sub.key } } } }
+                    ?: return
+                val now = rows.flatMap { it.settings }.any { it.key == sub.key && (it as? Setting.Level)?.value == sub.value }
+                if (!now) connection.changeSetting(SettingChange.Level(sub.key, sub.value))
             }
         }
     }

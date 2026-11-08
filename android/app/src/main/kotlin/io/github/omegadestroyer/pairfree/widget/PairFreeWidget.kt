@@ -17,6 +17,7 @@ import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
 import io.github.omegadestroyer.pairfree.protocol.widget.WidgetGrid
 import io.github.omegadestroyer.pairfree.protocol.widget.WidgetSlot
+import io.github.omegadestroyer.pairfree.ui.optionLabel
 import io.github.omegadestroyer.pairfree.ui.sceneLabel
 import io.github.omegadestroyer.pairfree.ui.transparencyLabel
 import kotlinx.coroutines.CoroutineScope
@@ -37,12 +38,13 @@ object WidgetLabels {
         val sub = when (val s = c.sub) {
             null -> return mode
             is Sub.Level -> if (s.command.name == "ANC_LEVEL") context.sceneLabel(s.code) else context.transparencyLabel(s.code)
-            is Sub.Row -> humanize(s.option)
+            is Sub.Row -> context.optionLabel(s.key, s.option).takeIf { it != s.option } ?: humanize(s.option)
+            is Sub.Step -> context.getString(R.string.scene_level, s.value)
         }
         return "$mode · $sub"
     }
 
-    /** `anti_wind` as "Anti wind": a brand row's option where the app's own words are only reachable from a composition. */
+    /** `anti_wind` as "Anti wind": for an option the app has no words for. */
     fun humanize(option: String): String = option.replace('_', ' ').replaceFirstChar { it.uppercase() }
 }
 

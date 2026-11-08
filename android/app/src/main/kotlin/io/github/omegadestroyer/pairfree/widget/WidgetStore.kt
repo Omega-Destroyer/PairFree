@@ -61,6 +61,7 @@ object WidgetStore {
             null -> Unit
             is Sub.Level -> o.put("sub", JSONObject().put("level", sub.command.name).put("code", sub.code))
             is Sub.Row -> o.put("sub", JSONObject().put("row", sub.key).put("option", sub.option))
+            is Sub.Step -> o.put("sub", JSONObject().put("step", sub.key).put("value", sub.value))
         }
         return o
     }
@@ -76,6 +77,7 @@ object WidgetStore {
                     Sub.Level(command, s.optInt("code"))
                 }
                 s.has("row") -> Sub.Row(s.optString("row"), s.optString("option"))
+                s.has("step") -> Sub.Step(s.optString("step"), s.optInt("value"))
                 else -> return null
             }
         }

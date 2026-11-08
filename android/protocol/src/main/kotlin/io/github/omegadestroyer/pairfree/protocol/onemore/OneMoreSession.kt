@@ -284,7 +284,7 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     private val transparencyModes: List<String> get() = TRANSPARENCY.keys.filter { it in modes }
 
     /** Off, cancelling and transparency on the shared control, where the model has all three. */
-    private val sharedNoise: Boolean get() = "off" in modes && cancellingModes.isNotEmpty() && transparencyModes.isNotEmpty()
+    public val sharedNoise: Boolean get() = "off" in modes && cancellingModes.isNotEmpty() && transparencyModes.isNotEmpty()
 
     /** Every setting the earbuds have, grouped by heading and tab. */
     public val groups: List<SettingGroup>

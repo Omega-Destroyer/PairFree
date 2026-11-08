@@ -1,0 +1,199 @@
+package io.github.omegadestroyer.pairfree.widget
+
+import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.IBinder
+import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
+import io.github.omegadestroyer.pairfree.R
+import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
+import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.hub
+import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
+import io.github.omegadestroyer.pairfree.protocol.widget.Sub
+import io.github.omegadestroyer.pairfree.protocol.widget.WidgetCycle
+import io.github.omegadestroyer.pairfree.protocol.widget.WidgetSlot
+import io.github.omegadestroyer.pairfree.ui.modelOf
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+
+/**
+ * Applies a tap on the home screen widget (docs/DESIGN.md, Widget). The channel to the earbuds is closed when PairFree is
+ * not open, so the service opens it, sets the noise choice or EQ profile, waits for the write and its read-back, and lets the
+ * channel go again unless the screens or the status notification hold it. Taps are handled one after another.
+ */
+class WidgetService : Service() {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val taps = Channel<Tap>(Channel.UNLIMITED)
+    private var worker = false
+
+    private data class Tap(val widgetId: Int, val slot: Int, val address: String)
+
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // Android wants the notification at once.
+        createChannel(this)
+        ServiceCompat.startForeground(this, NOTIFICATION_ID, notification(this), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
+        if (intent?.action == ACTION_TAP) {
+            val tap = Tap(intent.getIntExtra(EXTRA_WIDGET, -1), intent.getIntExtra(EXTRA_SLOT, -1), intent.getStringExtra(EXTRA_ADDRESS).orEmpty())
+            taps.trySend(tap)
+        }
+        if (!worker) {
+            worker = true
+            scope.launch { work() }
+        }
+        return START_NOT_STICKY
+    }
+
+    private suspend fun work() {
+        while (true) {
+            val tap = taps.tryReceive().getOrNull() ?: run {
+                // Nothing waiting: give the last write time to reach the earbuds, then let go unless another tap came.
+                delay(LET_GO_MS)
+                taps.tryReceive().getOrNull()
+            } ?: break
+            try {
+                apply(tap)
+            } catch (_: RuntimeException) {
+                // A tap that failed leaves the earbuds as they were.
+            }
+        }
+        hub.widget(holds = false)
+        worker = false
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
+
+    @SuppressLint("MissingPermission") // checked first
+    private suspend fun apply(tap: Tap) {
+        val hub = hub
+        if (!hub.hasPermission()) return
+        val device = hub.pairedEarbuds().firstOrNull { it.address == tap.address } ?: return
+        val slot = WidgetStore.load(hub.prefs, tap.widgetId)?.devices?.get(tap.address)?.let(WidgetStore::padded)?.getOrNull(tap.slot) ?: return
+        if (slot == WidgetSlot.Empty) return
+        hub.widget(holds = true)
+        val connection = hub.connection
+        val onIt = (connection.status.value as? LinkStatus.Connected)?.device?.address == tap.address
+        if (!onIt) {
+            connection.connect(device)
+            val opened = withTimeoutOrNull(CONNECT_MS) {
+                connection.status.first { it is LinkStatus.Connected && it.device.address == tap.address }
+            }
+            if (opened == null) return
+        }
+        when (slot) {
+            is WidgetSlot.Noise -> setNoise(slot.choice)
+            is WidgetSlot.NoiseCycle -> {
+                val rows = connection.settings.value.flatMap { it.settings }
+                setNoise(WidgetCycle.nextNoise(slot.choices, connection.state.value, rows))
+            }
+            is WidgetSlot.Eq -> selectEq(device, slot.profileId, null)
+            is WidgetSlot.EqCycle -> selectEq(device, null, slot.profileIds)
+            WidgetSlot.Empty -> Unit
+        }
+        PairFreeWidget.requestRefresh(this)
+    }
+
+    private suspend fun setNoise(choice: NoiseChoice) {
+        val connection = hub.connection
+        withTimeoutOrNull(STATE_MS) { connection.state.first { it.supports(Command.ANC_MODE) } } ?: return
+        if (connection.state.value.number(Command.ANC_MODE) != choice.modeValue) {
+            connection.set(Command.ANC_MODE, choice.modeValue)
+            withTimeoutOrNull(STATE_MS) { connection.state.first { it.number(Command.ANC_MODE) == choice.modeValue } }
+            delay(STEP_MS)
+        }
+        when (val sub = choice.sub) {
+            null -> Unit
+            is Sub.Level -> {
+                val active = connection.state.value.levels(sub.command).any { it.code == sub.code && it.active }
+                if (!active) connection.set(sub.command, sub.code)
+            }
+            is Sub.Row -> {
+                // The row shows only in its own mode, so wait for the earbuds to report it.
+                val rows = withTimeoutOrNull(STATE_MS) { connection.settings.first { groups -> groups.any { g -> g.settings.any { it.key == sub.key } } } }
+                    ?: return
+                val current = rows.flatMap { it.settings }.firstOrNull { it.key == sub.key } as? io.github.omegadestroyer.pairfree.protocol.Setting.Choice
+                if (current?.value != sub.option) connection.changeSetting(SettingChange.Choice(sub.key, sub.option))
+            }
+        }
+    }
+
+    /** Opens the EQ for [device] without a screen, then selects [profileId] or the profile after the selected one in [ids]. */
+    private suspend fun selectEq(device: Paired, profileId: String?, ids: List<String>?) {
+        val hub = hub
+        val wanted = profileId ?: ids?.firstOrNull() ?: return
+        var state: io.github.omegadestroyer.pairfree.eq.EqState? = null
+        for (attempt in 0 until EQ_TRIES) {
+            hub.eqOpener.open(device, modelOf(device, hub.connection.state.value))
+            state = hub.equalizer.state.value?.takeIf { hub.equalizer.openFor == device.address && it.profiles.any { p -> p.id == wanted } }
+            if (state != null) break
+            delay(EQ_STEP_MS)
+        }
+        val open = state ?: hub.equalizer.state.value?.takeIf { hub.equalizer.openFor == device.address } ?: return
+        val target = profileId ?: WidgetCycle.nextEq(ids.orEmpty(), open.selected?.id)
+        open.profiles.firstOrNull { it.id == target }?.let(hub.equalizer::select)
+    }
+
+    override fun onDestroy() {
+        scope.cancel()
+        hub.widget(holds = false)
+        super.onDestroy()
+    }
+
+    companion object {
+        private const val CHANNEL = "widget"
+        private const val NOTIFICATION_ID = 2
+        private const val ACTION_TAP = "io.github.omegadestroyer.pairfree.widget.TAP"
+        private const val EXTRA_WIDGET = "widget"
+        private const val EXTRA_SLOT = "slot"
+        private const val EXTRA_ADDRESS = "address"
+
+        /** How long to wait for the channel to open, for the earbuds' state, and between a mode and its sub-mode. */
+        private const val CONNECT_MS = 15_000L
+        private const val STATE_MS = 5_000L
+        private const val STEP_MS = 400L
+        private const val EQ_TRIES = 20
+        private const val EQ_STEP_MS = 500L
+
+        /** After the last write, the channel stays open this long: the earbuds' answer and the EQ's send both come within it. */
+        private const val LET_GO_MS = 3_000L
+
+        /** The tap on button [slot] of widget [widgetId] for the earbuds at [address]. */
+        fun tapIntent(context: Context, widgetId: Int, slot: Int, address: String): PendingIntent {
+            val intent = Intent(context, WidgetService::class.java).setAction(ACTION_TAP)
+                .putExtra(EXTRA_WIDGET, widgetId).putExtra(EXTRA_SLOT, slot).putExtra(EXTRA_ADDRESS, address)
+            return PendingIntent.getForegroundService(context, widgetId * 8 + slot, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        private fun createChannel(context: Context) {
+            val channel = NotificationChannel(CHANNEL, context.getString(R.string.widget_channel), NotificationManager.IMPORTANCE_MIN)
+            context.getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
+        }
+
+        private fun notification(context: Context): Notification =
+            NotificationCompat.Builder(context, CHANNEL)
+                .setSmallIcon(R.drawable.ic_status)
+                .setContentTitle(context.getString(R.string.widget_working, context.getString(R.string.app_name)))
+                .setOngoing(true)
+                .setSilent(true)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .build()
+    }
+}

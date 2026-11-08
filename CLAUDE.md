@@ -412,6 +412,8 @@ Space A40. Everything else relies on reports and recordings from users (each bra
   else an exact model name; `data/identify.json`), then that brand's code picks the model and service. A model
   PairFree mistook, missed or took for another brand gets an entry in `names` in `data/identify.json` before the
   fix; never a special case in one brand's matcher.
+- The home screen widget (`widget/`, docs/DESIGN.md, Widget) holds the channel through `Hub.widget` only while it applies a tap. The
+  EQ opening lives in `eq/EqOpener`, in the Hub, so the Sound tab and the widget share it.
 - The channel lives in the app process (`Hub`): the screens hold it while they are on screen, and the status
   notification (`status/`) while it shows, for earbuds whose choice is PairFree's (docs/DESIGN.md,
   Notification). It closes when neither needs it. Only one app can hold the channel, so while the notification

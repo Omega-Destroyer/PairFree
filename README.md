@@ -43,6 +43,8 @@ Each model shows only what it has:
   AirPods' Conversation Awareness.
 - A status notification with the battery and buttons for noise control and game mode, in
   place of Google's Fast Pair notification if you like.
+- A home screen widget, 1x1 to 4x2, with buttons that set or step through noise control choices and EQ profiles for
+  whichever of your earbuds is connected.
 
 PairFree needs Android 12 or later. AirPods need Android 17, or one of the few phones on
 Android 16 that already open their settings channel ([AirPods and Beats](docs/devices/apple.md)).

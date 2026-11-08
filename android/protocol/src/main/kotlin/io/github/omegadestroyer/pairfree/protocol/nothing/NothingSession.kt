@@ -312,10 +312,10 @@ public class NothingSession(private val hint: NothingModel? = null) {
     }
 
     /** The cancelling strengths the model has, in Nothing X's order. */
-    private val levels: List<String> get() = config?.anc?.let { a -> LEVELS.keys.filter { it in a } } ?: LEVELS.keys.toList()
+    public val levels: List<String> get() = config?.anc?.let { a -> LEVELS.keys.filter { it in a } } ?: LEVELS.keys.toList()
 
     /** Off, cancelling and transparency on the shared control; the Ear (stick), which has no transparency, gets a switch. */
-    private val sharedNoise: Boolean get() = config?.anc?.let { "transparency" in it && levels.isNotEmpty() } ?: true
+    public val sharedNoise: Boolean get() = config?.anc?.let { "transparency" in it && levels.isNotEmpty() } ?: true
 
     /** Every setting the earbuds have, grouped by heading and tab. */
     public val groups: List<SettingGroup>

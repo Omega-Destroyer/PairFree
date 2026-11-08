@@ -568,7 +568,7 @@ public class JblSession(initial: JblModel) {
     }
 
     /** The shared noise control (off, noise cancelling, ambient sound) fits models with noise cancelling and Ambient Aware. */
-    private val sharedNoise: Boolean get() = Mode.ANC in model.modes && Mode.AMBIENT_AWARE in model.modes
+    public val sharedNoise: Boolean get() = Mode.ANC in model.modes && Mode.AMBIENT_AWARE in model.modes
 
     /** Every setting the model has beyond the shared screens. */
     public val groups: List<SettingGroup>

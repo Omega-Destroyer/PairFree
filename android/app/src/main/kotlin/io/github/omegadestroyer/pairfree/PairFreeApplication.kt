@@ -39,6 +39,9 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import io.github.omegadestroyer.pairfree.widget.PairFreeWidget
+import io.github.omegadestroyer.pairfree.widget.WidgetCache
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
@@ -210,6 +213,20 @@ class Hub(private val app: Application) {
                     openSince?.let { start -> storeOwnSession(start, snoopClockMs()) }
                     openSince = null
                 }
+            }
+        }
+    }
+
+    init {
+        // The home screen widget follows the earbuds and their state, and remembers what connected earbuds show that the tables
+        // do not give (docs/DESIGN.md, Widget).
+        scope.launch {
+            combine(connection.status, connection.state, equalizer.state) { status, state, eq -> Triple(status, state, eq) }.collect { (status, state, eq) ->
+                if (status is LinkStatus.Connected) {
+                    val device = status.device
+                    WidgetCache.record(prefs, device, state, eq.takeIf { equalizer.openFor == device.address })
+                }
+                PairFreeWidget.requestRefresh(app, scope)
             }
         }
     }

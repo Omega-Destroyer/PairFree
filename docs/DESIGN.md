@@ -458,7 +458,32 @@ first guess. `names` in `data/identify.json` is the test corpus, and every detec
 Planned, not yet designed:
 
 - A quick settings tile that cycles the noise mode.
-- A home screen widget.
+
+### Widget (owner, 2026-11-07)
+
+A home screen widget from 1x1 to 4x2 cells. Each size shows its first buttons; the widget has eight in all, slots 1 to 4 the
+first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2: 1, 2, 5, 6; 4x2: all).
+
+- **A button** is empty, a noise choice, a noise toggle, an EQ profile or an EQ toggle. A noise choice is a mode (off,
+  cancelling, transparency) with an optional fixed sub-mode, such as Cancelling in its Adaptive scene: a tap sets the mode and
+  then that sub-mode and nothing else. A toggle steps only through the choices the user ticked, in the order ticked (Off then
+  Cancelling in Adaptive, for example); with none of its choices on, it starts at the first. An EQ profile is a preset, Stock or
+  one of the user's saved curves.
+- **Several earbuds:** one widget keeps a layout of buttons for each pair of paired earbuds and shows the layout of whichever is
+  connected: the pair the channel is open to, else one the phone has connected for sound, else the last one shown, dimmed.
+- **Setup** lists the paired earbuds PairFree can control, like the connect screen; a tap opens one pair's eight buttons. Nothing
+  connects. The choices come from the tables compiled into the app (`WidgetOptions`) and the user's saved EQ curves: noise
+  control for 11 of the 12 brands (Bose has none on the shared control), SOUNDPEATS' modes and scenes from the server's feature
+  lists (`data/soundpeats/devices.json`), the EQ presets of every brand that has them offline. Sub-modes are SOUNDPEATS' scenes
+  and transparency levels, Nothing's cancelling strengths and QCY's scenes; the other brands' (Samsung, 1MORE, EarFun) are
+  left out for now, and so are the QCY strength sliders (they are levels, not choices). What the tables cannot say (SOUNDPEATS models
+  with no server list, Sony's and Apple's noise control, Sony's, QCY's and Pixel's EQ) comes from what the earbuds showed while
+  connected (`WidgetCache`), and the setup says "some choices appear after these earbuds have connected once" until then.
+- **A tap** starts `WidgetService`, a foreground service (a short notification), because the channel is closed when PairFree is
+  not open: it opens the channel, sets the noise choice or selects the EQ profile (`EqOpener`, shared with the Sound tab), waits 3 s
+  for the write and its read-back, and lets the channel go unless the screens or the status notification hold it
+  (`Hub.widget`). Tapping earbuds other than the ones connected switches the channel to them.
+- Sub-mode words are the option's key with underscores spaced, not the Controls tab's words (those are composable only).
 
 ## Device drawings
 
@@ -497,7 +522,7 @@ Planned, not yet designed:
 - A light version of Studio.
 - Which side the Air5 Pro+ drawing shows. It has not been checked against the L/R
   marking on a real pair.
-- Widget and tile designs.
+- Tile design (the widget is in Widget above; its look is the Studio colours as RemoteViews).
 - The EQ of every model other than the H3 and Air5 Pro+, until someone records it
   (Record from the official app above).
 - Hearing tests: SOUNDPEATS' is built (owner, 2026-11-04; docs/soundpeats/PROTOCOL.md section 13). The other brands'

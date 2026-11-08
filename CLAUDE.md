@@ -516,7 +516,10 @@ device page behind the code or the reports (2026-10-30).
    and the README count it as tried.
 4. **Generated pages:** run every `tools/gen_*_table.py` that touches a changed brand (each rewrites all device
    pages and the README summary), and `tools/gen_device_art.py` when models or their codes changed; commit
-   `README.md`, `docs/devices/*.md` and `DeviceArtTable.kt` with the change.
+   `README.md`, `docs/devices/*.md` and `DeviceArtTable.kt` with the change. Then `tools/gen_site.py`, which writes the
+   GitHub Pages site (`docs/index.md`, `docs/apps/*.md`, built from `docs/_config.yml`: omega-destroyer.github.io/PairFree,
+   owner's SEO request 2026-11-08) and the README's list of its brand pages; a test fails while they are out of date. A new
+   brand gets an entry in `BRANDS` there, with its official app's name and what it controls.
 5. **Hand-written text the generators do not touch**, checked against what changed:
    - `README.md`: the status table (the released version, "Tried on real earbuds"), the brand list.
    - `docs/devices/<brand>.md` above the generated table: what PairFree shows, which models were tried, the "Not

@@ -485,8 +485,12 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
   and level, and the brand rows a button can fix), not from the channel, which is closed most of the time; so a button
   stays lit between taps, and a toggle's label names the choice the earbuds are on. A change made on the earbuds themselves while PairFree is
   closed shows once they next connect to it. Earbuds that are not connected dim their buttons and the buttons do nothing.
+- **On connect** the widget acts as the app does: when earbuds that have buttons on a widget connect (the same Bluetooth
+  broadcast as the status notification, so from the background it needs the companion link), `WidgetService` opens the channel,
+  waits for what the earbuds report, opens the EQ so the one this phone last set goes back on them (SOUNDPEATS earbuds cannot
+  say what they hold), and lets go after a few seconds. The buttons then show what was read.
 - **A tap** starts `WidgetService`, a foreground service (a short notification), because the channel is closed when PairFree is
-  not open: it opens the channel, sets the noise choice or selects the EQ profile (`EqOpener`, shared with the Sound tab), waits 3 s
+  not open: it opens the channel, sets the noise choice or selects the EQ profile (`EqOpener`, shared with the Sound tab), keeps the channel open 6.5 s, past the connection's read-back at 3 s,
   for the write and its read-back, and lets the channel go unless the screens or the status notification hold it
   (`Hub.widget`). Tapping earbuds other than the ones connected switches the channel to them.
 - Sub-mode words are the Controls tab's (`optionLabel`); an option it has no words for shows its key, spaced.

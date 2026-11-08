@@ -82,6 +82,12 @@ class PairFreeWidget : AppWidgetProvider() {
             }
         }
 
+        /** True when some widget has buttons set for the earbuds at [address]. */
+        fun hasButtonsFor(context: Context, address: String): Boolean {
+            val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, PairFreeWidget::class.java))
+            return ids.any { id -> WidgetStore.load(context.hub.prefs, id)?.devices?.get(address)?.any { it != WidgetSlot.Empty } == true }
+        }
+
         fun refreshAll(context: Context) {
             val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, PairFreeWidget::class.java))
             if (ids.isNotEmpty()) refresh(context, ids)

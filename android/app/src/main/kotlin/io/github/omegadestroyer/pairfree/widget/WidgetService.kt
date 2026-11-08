@@ -52,10 +52,11 @@ class WidgetService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // Android wants the notification at once.
         createChannel(this)
-        ServiceCompat.startForeground(this, NOTIFICATION_ID, notification(this), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
-        if (intent?.action == ACTION_TAP) {
-            val tap = Tap(intent.getIntExtra(EXTRA_WIDGET, -1), intent.getIntExtra(EXTRA_SLOT, -1), intent.getStringExtra(EXTRA_ADDRESS).orEmpty())
-            taps.trySend(tap)
+        val syncing = intent?.action == ACTION_SYNC
+        ServiceCompat.startForeground(this, NOTIFICATION_ID, notification(this, syncing), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
+        when (intent?.action) {
+            ACTION_TAP -> taps.trySend(Tap(intent.getIntExtra(EXTRA_WIDGET, -1), intent.getIntExtra(EXTRA_SLOT, -1), intent.getStringExtra(EXTRA_ADDRESS).orEmpty()))
+            ACTION_SYNC -> taps.trySend(Tap(-1, SYNC, intent.getStringExtra(EXTRA_ADDRESS).orEmpty()))
         }
         if (!worker) {
             worker = true
@@ -88,6 +89,7 @@ class WidgetService : Service() {
         val hub = hub
         if (!hub.hasPermission()) return
         val device = hub.pairedEarbuds().firstOrNull { it.address == tap.address } ?: return
+        if (tap.slot == SYNC) return sync(device)
         val slot = WidgetStore.load(hub.prefs, tap.widgetId)?.devices?.get(tap.address)?.let(WidgetStore::padded)?.getOrNull(tap.slot) ?: return
         if (slot == WidgetSlot.Empty) return
         val connection = hub.connection
@@ -142,9 +144,33 @@ class WidgetService : Service() {
         }
     }
 
+    /**
+     * The earbuds have just connected: opens the channel as the app does, so what they report (the noise mode and scene) reaches
+     * the widget, and opens the EQ so the one this phone last set goes back on them (docs/DESIGN.md, Widget). The channel
+     * then stays open for the idle wait, long enough for the earbuds to answer.
+     */
+    @SuppressLint("MissingPermission") // checked first
+    private suspend fun sync(device: Paired) {
+        val hub = hub
+        val connection = hub.connection
+        val onIt = (connection.status.value as? LinkStatus.Connected)?.device?.address == device.address
+        // Android's sound profiles come up a moment after the Bluetooth connection.
+        if (!onIt && !connectedForSound(device.address, SYNC_AUDIO_TRIES)) return
+        hub.widget(holds = true)
+        if (!onIt) {
+            connection.connect(device)
+            withTimeoutOrNull(CONNECT_MS) {
+                connection.status.first { it is LinkStatus.Connected && it.device.address == device.address }
+            } ?: return
+        }
+        withTimeoutOrNull(STATE_MS) { connection.state.first { it.supports(Command.ANC_MODE) } }
+        hub.eqOpener.open(device, modelOf(device, connection.state.value))
+        PairFreeWidget.requestRefresh(this)
+    }
+
     /** True when the phone has the earbuds at [address] connected for sound; Android's profiles may need a moment to answer. */
-    private suspend fun connectedForSound(address: String): Boolean {
-        for (attempt in 0 until AUDIO_TRIES) {
+    private suspend fun connectedForSound(address: String, tries: Int = AUDIO_TRIES): Boolean {
+        for (attempt in 0 until tries) {
             when (hub.audio.connected(address)) {
                 true -> return true
                 false -> return false
@@ -211,6 +237,7 @@ class WidgetService : Service() {
         private const val CHANNEL = "widget"
         private const val NOTIFICATION_ID = 2
         private const val ACTION_TAP = "io.github.omegadestroyer.pairfree.widget.TAP"
+        private const val ACTION_SYNC = "io.github.omegadestroyer.pairfree.widget.SYNC"
         private const val EXTRA_WIDGET = "widget"
         private const val EXTRA_SLOT = "slot"
         private const val EXTRA_ADDRESS = "address"
@@ -223,12 +250,18 @@ class WidgetService : Service() {
         /** How long to wait for the earbuds to report a sub-mode they are in. */
         private const val SUB_MS = 2_500L
         private const val AUDIO_TRIES = 8
+        private const val SYNC_AUDIO_TRIES = 36
+        private const val SYNC = -2
         private const val AUDIO_STEP_MS = 250L
         private const val EQ_TRIES = 20
         private const val EQ_STEP_MS = 500L
 
-        /** After the last write, the channel stays open this long: the earbuds' answer and the EQ's send both come within it. */
-        private const val LET_GO_MS = 3_000L
+        /**
+         * After the last write, the channel stays open this long. The connection reads a setting back 3 s after writing it
+         * (EarbudsConnection.READ_BACK_MS) and the earbuds answer after that: closing at 3 s left the widget with the state
+         * it had guessed, or with a late answer to an older question.
+         */
+        private const val LET_GO_MS = 6_500L
 
         /** The tap on button [slot] of widget [widgetId] for the earbuds at [address]. */
         fun tapIntent(context: Context, widgetId: Int, slot: Int, address: String): PendingIntent {
@@ -237,15 +270,30 @@ class WidgetService : Service() {
             return PendingIntent.getForegroundService(context, widgetId * 8 + slot, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
+        /**
+         * The earbuds at [address] connected: if a widget has buttons for them, reads their state and puts their EQ back, as the
+         * app does. From the background Android allows the service only for earbuds PairFree is linked to (the companion link the
+         * status notification asks for), so without it nothing starts.
+         */
+        fun syncIfWanted(context: Context, address: String) {
+            if (!PairFreeWidget.hasButtonsFor(context, address)) return
+            val intent = Intent(context, WidgetService::class.java).setAction(ACTION_SYNC).putExtra(EXTRA_ADDRESS, address)
+            try {
+                androidx.core.content.ContextCompat.startForegroundService(context, intent)
+            } catch (_: IllegalStateException) {
+                // Not allowed from the background: the widget shows what it last knew until the next tap or visit.
+            }
+        }
+
         private fun createChannel(context: Context) {
             val channel = NotificationChannel(CHANNEL, context.getString(R.string.widget_channel), NotificationManager.IMPORTANCE_MIN)
             context.getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
         }
 
-        private fun notification(context: Context): Notification =
+        private fun notification(context: Context, syncing: Boolean): Notification =
             NotificationCompat.Builder(context, CHANNEL)
                 .setSmallIcon(R.drawable.ic_status)
-                .setContentTitle(context.getString(R.string.widget_working, context.getString(R.string.app_name)))
+                .setContentTitle(if (syncing) context.getString(R.string.widget_syncing) else context.getString(R.string.widget_working, context.getString(R.string.app_name)))
                 .setOngoing(true)
                 .setSilent(true)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)

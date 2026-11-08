@@ -325,6 +325,7 @@ class ConnectionReceiver : BroadcastReceiver() {
         val device = IntentCompat.getParcelableExtra(intent, BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java) ?: return
         // The home screen widget shows the buttons of whichever earbuds are connected.
         io.github.omegadestroyer.pairfree.widget.PairFreeWidget.requestRefresh(context)
+        if (intent.action == BluetoothDevice.ACTION_ACL_CONNECTED) io.github.omegadestroyer.pairfree.widget.WidgetService.syncIfWanted(context, device.address)
         when (intent.action) {
             BluetoothDevice.ACTION_ACL_CONNECTED -> StatusService.startIfWanted(context, device.address, fromBackground = true)
             BluetoothDevice.ACTION_ACL_DISCONNECTED -> StatusService.stop(context, device.address)

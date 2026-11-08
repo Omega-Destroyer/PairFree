@@ -788,6 +788,7 @@
     <string name="widget_profile_missing">Removed</string>
     <string name="widget_channel">Widget actions</string>
     <string name="widget_working">Changing %1$s…</string>
+    <string name="widget_syncing">Reading your earbuds…</string>
     <string name="widget_title">Widget buttons</string>
     <string name="widget_needs_permission">PairFree needs the Bluetooth permission first. Open PairFree to allow it.</string>
     <string name="widget_open_app">Open PairFree</string>

@@ -16,6 +16,11 @@ defaults:
       path: ""
     values:
       image: /assets/social-preview.png
+  # Search Console's verification file is not a page: jekyll-sitemap would list it (its documented way to leave a file out).
+  - scope:
+      path: "googlefe35c1928cb1cdd6.html"
+    values:
+      sitemap: false
 # The protocol notes, device pages and design notes stay on GitHub; the site has the home page and one page per brand.
 exclude:
   - 1more

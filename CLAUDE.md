@@ -513,7 +513,7 @@ device page behind the code or the reports (2026-10-30).
    `data/identify.json` (docs/DESIGN.md, Finding the earbuds) before the fix. A new brand gets its words in
    `brand_words` and its services in `Identify`.
 3. **Device reports received** since the last push: each saved and listed (Android notes), so the brand's page
-   and the README count it as tried.
+   and the README count it as tried, and the sender credited in `CONTRIBUTORS.md` (GitHub handle, issue, what they sent).
 4. **Generated pages:** run every `tools/gen_*_table.py` that touches a changed brand (each rewrites all device
    pages and the README summary), and `tools/gen_device_art.py` when models or their codes changed; commit
    `README.md`, `docs/devices/*.md` and `DeviceArtTable.kt` with the change. Then `tools/gen_site.py`, which writes the
@@ -536,9 +536,19 @@ device page behind the code or the reports (2026-10-30).
    the replies from drafts.
 
 For a release, also: bump `versionCode` and `versionName` (Versions, above) and the README's "Released
-(vX.Y.Z)"; tag; build from a fresh clone of the tag; check the signature and an upgrade over the previous release;
+(vX.Y.Z)" (a test checks it); tag; build from a fresh clone of the tag; check the signature and an upgrade over the previous release;
 write the notes ("Changes since", issue numbers, the tried models as the README lists them, the APK's SHA-256);
 upload `PairFree-X.Y.Z.apk`.
+
+The web site (docs/index.md and docs/apps/, built by GitHub Pages from `main`'s `docs/` folder on every push) is checked in the same
+pass, since its model counts and tried lists come from the README's brand table:
+- `python tools/gen_site.py` ran after the last `gen_*_table.py`, and its output is committed (`tools/test_site.py` fails while it is
+  stale, and also checks the config, `robots.txt` and the social preview picture's size and brand count).
+- A new or removed brand: its entry in `BRANDS` in `tools/gen_site.py`, the picture redrawn with `tools/gen_social_preview.py` (its
+  `BRANDS` list), and the new `docs/assets/social-preview.png` uploaded by hand in the repository's Settings, Social preview (GitHub's
+  API cannot); the repository description and topics (set 2026-11-08 with `E:\Builds\releases\tools\gh_pages_setup.py`) name the brands.
+- After the push, `python tools/check_site.py --wait` confirms the live pages, their titles, the sitemap and the picture. Google Search
+  Console needs nothing per release: it reads the sitemap.
 
 ## Checks
 

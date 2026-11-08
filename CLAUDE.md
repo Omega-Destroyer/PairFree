@@ -72,7 +72,8 @@ long-lived branch per brand, and do not mix brands on one branch: QCY and 1MORE 
 ## Versions
 
 Releases are numbered x.y.z (owner, 2026-10-29). x is the major version; 1.0 has not been released. y goes up
-by one for each new vendor a release adds (a release adding two goes up by two), and z resets to 0 then. z goes
+by one for each new vendor a release adds (a release adding two goes up by two) and for a new feature of the app as
+a whole (owner, 2026-11-08: the home screen widget made 0.8.0), and z resets to 0 then. z goes
 up for everything else: more models of a vendor PairFree has, fixes, settings newly offered, device reports
 added. The schema started at 0.3.0 (Nothing and CMF); earlier releases were numbered by hand. `versionCode` is
 x * 1,000,000 + y * 1,000 + z, written out as a number so F-Droid's update check can read it;
@@ -111,7 +112,10 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
 - `docs/soundpeats/PROTOCOL.md` is the SoundPEATS protocol, read from PeatsAudio 1.9.45 and SOUNDPEATS 2.5.3
   (`com.thirtydays.headset`, PeatsAudio's successor; what it added is marked "2.5.3"). Read it before writing
   any Bluetooth code. Both apps take each model's features and EQ curves from SoundPEATS' server, so those come
-  from the owner's captures and users' recordings (the H3, Air5 Pro+, C30 and TRUEFREE Clip C10 so far).
+  from the owner's captures and users' recordings (the H3, Air5 Pro+, C30 and TRUEFREE Clip C10 so far) and, for 81 models, from
+  the owner's own-account fetch of 2026-11-04 and 2026-11-07: each model's `features` in `devices.json` (the feature codes and noise
+  control's modes and scenes, `tools/import_soundpeats_features.py`; `Model.noiseModes` is null where there is none, which the
+  home screen widget and docs/soundpeats/PROTOCOL.md section 8.2 explain).
   `data/soundpeats/commands.json` is the command table: do not retype command numbers from memory, load the
   file or generate code from it. `data/soundpeats/test_vectors.json` holds frames that every implementation
   must reproduce byte for byte; any new codec, in any language, gets a test that runs these.
@@ -390,7 +394,7 @@ Space A40. Everything else relies on reports and recordings from users (each bra
   without signing in, no account, key, certificate, signing or device identifier, a pause of at least 3 s between
   requests, raw replies saved under `server_dump/<brand>/` and nowhere else. If the server asks for authentication,
   stop there: do not make it authenticate, unless the owner runs the script with their own account (they type it in at
-  the script's prompt; it is never stored, logged or read by the agent), as for SOUNDPEATS' curves on 2026-11-04. So far: QCY's product list and control panels
+  the script's prompt; it is never stored, logged or read by the agent), as for SOUNDPEATS' curves on 2026-11-04 and its feature lists on 2026-11-07. So far: QCY's product list and control panels
   (`E:\Builds\research\qcy-tools\fetch_panels.py`, 2026-11-04), the one-time 1MORE product list (2026-10-18), and
   `tools/fetch_server_data.py` (SoundPEATS, in the repo from before this rule: GET only, one per 30 s; since 2026-10-10
   the server refuses every request without the official app's authentication, and the tool stops at the first refusal).

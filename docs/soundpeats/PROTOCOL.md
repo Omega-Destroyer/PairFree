@@ -459,6 +459,34 @@ gives firmware 0.1.8 and EQ `0E 02` at 40 Hz to 12 kHz, while the H3 uses `0E 01
 17 kHz (section 11). So neither app holds per-model features or EQ curves offline. The demo
 model list is the one used in section 5.2.
 
+### 8.2 The feature lists (fetched 2026-11-07)
+
+SOUNDPEATS 2.5.3 asks `GET devices/firmware/{otaCode}/versions/{otaVersion}/features` for the settings a model shows. The
+owner fetched it with their own account (`E:\Buildsesearch\soundpeats-toolsetch_features.py`, one request every
+3.5 s; the version asked for is the one the app's update check names as latest, else one from a device report) for 81 of
+the 88 models. `tools/import_soundpeats_features.py` keeps, per model in `data/soundpeats/devices.json`, the firmware
+version, the feature codes and noise control's modes with their scene codes. Nothing else of the reply is kept. These are
+the app's offers, not tests on earbuds; models with a `reports` entry are the exception.
+
+- **Not fetched:** the Clip C10 (`T2`; the server has no configuration for firmware 0.5.5) and six models with no
+  version known (`JULI3025Lite2`, `JL6973D8C1`, `HILISTENING`, `S32`, `T28Pro`, `WuQi7034MXF2`). They stay unknown
+  (`Model.noiseModes` is null); the earbuds' replies tell.
+- **Noise control (`FSN08`):** 27 models list it, 54 do not (known to have none: `noiseModes` is empty). The modes are
+  the `own` values of its children (0 off, 1 cancelling, 2 transparency); the scenes under cancelling are `ANC_LEVEL`
+  codes and those under transparency `TRANSPARENCY_LEVEL` codes. Shapes found: off, cancelling and transparency with no
+  scenes (19 models, the C30 among them); cancelling scenes 17, 18, 19, 20 and transparency levels 1, 2 (the H3, the
+  Air5 Pro+ and one more); the same with scene 22, anti-wind (the Air6 Pro and two more); off and cancelling only (the
+  Air4); and on the Air5 off and cancelling each with levels 1 to 5.
+- **`FSN09` Concentration mode** (the Chasers) names `03 10` and `03 11`, the ANC command, with values 0 and 1: as `FSN34`
+  in section 9, a plain switch on the ANC command. PairFree reads that reply as a noise mode.
+- **LE Audio (`FSN10`):** the Air5 Pro, Air6 Pro and Aura Nebula list it, so `le_audio` is among their `confirmed`
+  commands (section 3's `per_model` rule). The Air5 Pro+'s list has none, though its entry was confirmed on hardware;
+  the entry stays.
+- **Features the app already has a command for:** all the others (`FSN01` to `FSN07`, `FSN11` to `FSN15`, `FSN17` to
+  `FSN21`, `FSN24`, `FSN26`). `FSN24` (disable touch hit) names the same `03 12`/`03 13` as `FSN02`.
+- **No command in the reply:** `FSN27` Scheduled shutdown (two models; `auto_shutdown` `03 6E` exists), `FSN28` Smart
+  assistant (one) and `FSN05` Gesture controls (the custom-key screens).
+
 ## 9. Model-specific behaviour found in code
 
 - Right-battery smoothing: if right reads 5 or more above left and is under 99, the

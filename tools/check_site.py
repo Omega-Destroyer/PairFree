@@ -50,7 +50,7 @@ def problems():
         for url in addresses:
             if f"<loc>{url}</loc>" not in sitemap:
                 out.append(f"sitemap.xml does not list {url}")
-    for path in ("robots.txt", "assets/social-preview.png"):
+    for path in ("robots.txt", "assets/social-preview.png", "googlefe35c1928cb1cdd6.html"):  # the last proves the site to Google Search Console
         status, _ = get(f"{gen_site.SITE}/{path}")
         if status != 200:
             out.append(f"{path}: HTTP {status}")

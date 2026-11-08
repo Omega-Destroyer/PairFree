@@ -38,6 +38,10 @@ class Site(unittest.TestCase):
         self.assertLess(len(png), 1_000_000, "GitHub takes social preview pictures under 1 MB")
         self.assertEqual(len(gen_social_preview.BRANDS), len(gen_site.BRANDS), "a brand was added or removed: redraw the picture")
 
+    def test_the_search_console_verification_file_stays(self):
+        # Google Search Console proved the owner holds the site with this file (2026-11-08); removing it drops the verification.
+        self.assertEqual((ROOT / "docs" / "googlefe35c1928cb1cdd6.html").read_text(encoding="utf-8").strip(), "google-site-verification: googlefe35c1928cb1cdd6.html")
+
     def test_the_site_has_its_config_and_robots_file(self):
         config = (ROOT / "docs" / "_config.yml").read_text(encoding="utf-8")
         self.assertIn('baseurl: "/PairFree"', config)

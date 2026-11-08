@@ -25,7 +25,8 @@ directly over Bluetooth.
   for byte, apart from the signature.
 - **Your equalizer, as files.** Save your own curves, and export and share them.
 - **Grows with its users.** Anyone can help add a new model by sending in a device report
-  (see [Help add your model](#help-add-your-model)).
+  (see [Help add your model](#help-add-your-model)). The people who already have are thanked in
+  [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 ## What it controls
 

@@ -6,7 +6,6 @@ usage: python tools/gen_social_preview.py
 """
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "docs" / "assets" / "social-preview.png"
@@ -17,10 +16,14 @@ BRANDS = ["Soundcore", "Bose", "JBL", "Sony", "Galaxy Buds", "AirPods", "Nothing
 
 
 def font(name, size):
+    from PIL import ImageFont
+
     return ImageFont.truetype(str(FONTS / name), size)
 
 
 def main():
+    from PIL import Image, ImageDraw
+
     image = Image.new("RGB", (1280, 640), BACKGROUND)
     draw = ImageDraw.Draw(image)
     draw.rectangle([0, 0, 18, 640], fill=ACCENT)

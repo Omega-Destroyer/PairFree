@@ -88,6 +88,21 @@ class PairFreeWidget : AppWidgetProvider() {
             return ids.any { id -> WidgetStore.load(context.hub.prefs, id)?.devices?.get(address)?.any { it != WidgetSlot.Empty } == true }
         }
 
+        /**
+         * Draws the widgets again a few times over the next seconds. When earbuds connect, the Bluetooth link comes first and
+         * Android's sound connection (what the widget calls connected) some seconds later, with no broadcast PairFree
+         * hears; one draw at the link would leave the widget dimmed.
+         */
+        fun refreshSoon(context: Context) {
+            val app = context.applicationContext
+            for (wait in REFRESH_STEPS_MS) app.hub.scope.launch {
+                delay(wait)
+                refreshAll(app)
+            }
+        }
+
+        private val REFRESH_STEPS_MS = listOf(2_000L, 5_000L, 9_000L, 15_000L, 25_000L)
+
         fun refreshAll(context: Context) {
             val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, PairFreeWidget::class.java))
             if (ids.isNotEmpty()) refresh(context, ids)
@@ -211,8 +226,9 @@ class PairFreeWidget : AppWidgetProvider() {
                 views.setFloat(cell[0], "setAlpha", if (live || slot == WidgetSlot.Empty) 1f else DIMMED)
                 if (slot != WidgetSlot.Empty) {
                     views.setContentDescription(cell[0], context.getString(R.string.widget_slot_description, caption, label))
-                    // Earbuds that are not connected: the button is dimmed and does nothing.
-                    if (live) views.setOnClickPendingIntent(cell[0], WidgetService.tapIntent(context, id, i, address))
+                    // Earbuds that are not connected: the button is dimmed, and a tap does nothing but redraw (WidgetService checks).
+                    // It keeps its tap: a dimmed widget that cannot be tapped has no way to wake once Android says the earbuds are back.
+                    views.setOnClickPendingIntent(cell[0], WidgetService.tapIntent(context, id, i, address))
                 }
             }
             return views

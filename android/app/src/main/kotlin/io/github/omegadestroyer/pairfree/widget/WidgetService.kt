@@ -95,7 +95,7 @@ class WidgetService : Service() {
         val connection = hub.connection
         val onIt = (connection.status.value as? LinkStatus.Connected)?.device?.address == tap.address
         // Earbuds that are not connected to the phone: nothing to change, and nothing to open a channel to.
-        if (!onIt && !connectedForSound(tap.address)) return
+        if (!onIt && !connectedForSound(tap.address)) return PairFreeWidget.requestRefresh(this)
         hub.widget(holds = true)
         if (!onIt) {
             connection.connect(device)

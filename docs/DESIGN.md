@@ -484,7 +484,9 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
 - **Which button is current** is drawn from what the earbuds last showed while connected (`WidgetNoise`: their mode, scene
   and level, and the brand rows a button can fix), not from the channel, which is closed most of the time; so a button
   stays lit between taps, and a toggle's label names the choice the earbuds are on. A change made on the earbuds themselves while PairFree is
-  closed shows once they next connect to it. Earbuds that are not connected dim their buttons and the buttons do nothing.
+  closed shows once they next connect to it. Earbuds that are not connected dim their buttons, and a tap on them only redraws the widget. The buttons keep their tap, since
+  Android's sound connection (what counts as connected) follows the Bluetooth link by some seconds with no broadcast PairFree hears,
+  so after each connect or disconnect the widget redraws several times over 25 s (`PairFreeWidget.refreshSoon`).
 - **On connect** the widget acts as the app does: when earbuds that have buttons on a widget connect (the same Bluetooth
   broadcast as the status notification, so from the background it needs the companion link), `WidgetService` opens the channel,
   waits for what the earbuds report, opens the EQ so the one this phone last set goes back on them (SOUNDPEATS earbuds cannot

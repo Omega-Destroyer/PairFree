@@ -27906,9 +27906,10 @@
       "reports": [
         "data/soundpeats/reports/T2_0.5.5.txt",
         "data/soundpeats/reports/T2_0.5.5_recording.txt",
-        "data/soundpeats/reports/T2_0.5.5_recording_custom.txt"
+        "data/soundpeats/reports/T2_0.5.5_recording_custom.txt",
+        "data/soundpeats/reports/T2_0.5.5_recording_3.txt"
       ],
-      "notes": "Not in the official app's model lists; known from a user's device report (GitHub issue #6). Its chip family is not known. The EQ is from the user's recording of the official app (issue #9): TRUEFREE's 8-band curve sent first as it is, then 8 bands of the user's (append_after_classic). The official app's reset puts the fifth user band at 100 Hz where PeatsAudio's custom screen has 1 kHz; PairFree follows the recording until a recording of a custom curve says otherwise.",
+      "notes": "Not in the official app's model lists; known from a user's device report (GitHub issue #6). Its chip family is not known. The EQ is from the user's recording of the official app (issue #9): TRUEFREE's 8-band curve sent first as it is, then 8 bands of the user's (append_after_classic). The official app's reset puts the fifth user band at 100 Hz where PeatsAudio's custom screen has 1 kHz; PairFree follows the recording until a recording of a custom curve says otherwise. The nine preset curves are from the second recording (issue #9, 2026-11-05): the first recording had attached the names to the wrong curves.",
       "eq": {
         "command": "0E02",
         "master_gain_db": -2.0,
@@ -28214,22 +28215,22 @@
               {
                 "hz": 62,
                 "q": 0.8,
-                "gain_db": -2.0
+                "gain_db": 2.0
               },
               {
                 "hz": 125,
                 "q": 0.8,
-                "gain_db": -2.0
+                "gain_db": 2.0
               },
               {
                 "hz": 250,
                 "q": 0.8,
-                "gain_db": -2.0
+                "gain_db": 2.0
               },
               {
                 "hz": 500,
                 "q": 0.8,
-                "gain_db": -1.0
+                "gain_db": 1.0
               },
               {
                 "hz": 1000,
@@ -28299,42 +28300,42 @@
               {
                 "hz": 62,
                 "q": 0.8,
-                "gain_db": 1.0
+                "gain_db": -2.0
               },
               {
                 "hz": 125,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": -2.0
               },
               {
                 "hz": 250,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": -2.0
               },
               {
                 "hz": 500,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": -1.0
               },
               {
                 "hz": 1000,
                 "q": 0.8,
-                "gain_db": -4.0
+                "gain_db": 0.0
               },
               {
                 "hz": 2000,
                 "q": 0.8,
-                "gain_db": 1.0
+                "gain_db": 0.0
               },
               {
                 "hz": 4000,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": 0.0
               },
               {
                 "hz": 8000,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": 0.0
               }
             ]
           },
@@ -28384,6 +28385,91 @@
               {
                 "hz": 62,
                 "q": 0.8,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 125,
+                "q": 0.8,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 250,
+                "q": 0.8,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 500,
+                "q": 0.8,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 1000,
+                "q": 0.8,
+                "gain_db": -4.0
+              },
+              {
+                "hz": 2000,
+                "q": 0.8,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 4000,
+                "q": 0.8,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 8000,
+                "q": 0.8,
+                "gain_db": 2.0
+              }
+            ]
+          },
+          {
+            "name": "Popularity",
+            "bands": [
+              {
+                "hz": 50,
+                "q": 0.9,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 90,
+                "q": 0.7,
+                "gain_db": 0.1
+              },
+              {
+                "hz": 310,
+                "q": 1.0,
+                "gain_db": -4.0
+              },
+              {
+                "hz": 600,
+                "q": 1.0,
+                "gain_db": -1.0
+              },
+              {
+                "hz": 1550,
+                "q": 1.5,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 2580,
+                "q": 0.8,
+                "gain_db": -10.0
+              },
+              {
+                "hz": 6200,
+                "q": 2.5,
+                "gain_db": -7.0
+              },
+              {
+                "hz": 7830,
+                "q": 2.8,
+                "gain_db": -8.0
+              },
+              {
+                "hz": 62,
+                "q": 0.8,
                 "gain_db": -2.0
               },
               {
@@ -28424,7 +28510,7 @@
             ]
           },
           {
-            "name": "Popularity",
+            "name": "Electronic",
             "bands": [
               {
                 "hz": 50,
@@ -28509,7 +28595,7 @@
             ]
           },
           {
-            "name": "Electronic",
+            "name": "Ballad",
             "bands": [
               {
                 "hz": 50,
@@ -28594,7 +28680,7 @@
             ]
           },
           {
-            "name": "Ballad",
+            "name": "Classical",
             "bands": [
               {
                 "hz": 50,
@@ -28674,91 +28760,6 @@
               {
                 "hz": 8000,
                 "q": 0.8,
-                "gain_db": -3.0
-              }
-            ]
-          },
-          {
-            "name": "Classical",
-            "bands": [
-              {
-                "hz": 50,
-                "q": 0.9,
-                "gain_db": 0.0
-              },
-              {
-                "hz": 90,
-                "q": 0.7,
-                "gain_db": 0.1
-              },
-              {
-                "hz": 310,
-                "q": 1.0,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 600,
-                "q": 1.0,
-                "gain_db": -1.0
-              },
-              {
-                "hz": 1550,
-                "q": 1.5,
-                "gain_db": 3.0
-              },
-              {
-                "hz": 2580,
-                "q": 0.8,
-                "gain_db": -10.0
-              },
-              {
-                "hz": 6200,
-                "q": 2.5,
-                "gain_db": -7.0
-              },
-              {
-                "hz": 7830,
-                "q": 2.8,
-                "gain_db": -8.0
-              },
-              {
-                "hz": 125,
-                "q": 1.5,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 250,
-                "q": 1.5,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 500,
-                "q": 1.5,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 800,
-                "q": 1.5,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 1200,
-                "q": 1.5,
-                "gain_db": -3.0
-              },
-              {
-                "hz": 2000,
-                "q": 1.5,
-                "gain_db": -3.0
-              },
-              {
-                "hz": 4000,
-                "q": 1.5,
-                "gain_db": -3.0
-              },
-              {
-                "hz": 6000,
-                "q": 1.5,
                 "gain_db": -3.0
               }
             ]

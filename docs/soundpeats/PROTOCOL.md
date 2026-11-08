@@ -927,8 +927,12 @@ From a user's recording (GitHub issue #9, 2026-10-31; report
   100 Hz. The user's second recording (issue #9, `T2_0.5.5_recording_custom.txt`) settles the
   custom screen: +6 dB on its 1 kHz slider went out as band 13 at 1 kHz, Q 1.8. So the sliders
   are 62 Hz to 8 kHz with 1 kHz fifth, and PairFree offers TRUEFREE Classic as a preset, sent
-  as recorded. Seven presets send their own eight at Q 0.8 on the slider frequencies;
-  Classical moves all eight (125 Hz to 6 kHz, Q 1.5).
+  as recorded. The eight other presets send their own eight at Q 0.8 on the slider frequencies.
+  The user's third recording (2026-11-05, `T2_0.5.5_recording_3.txt`) corrected the presets: the first
+  recording had put the names on the wrong curves (its "Bass enhance" cut the bass, and its "Classical", at 125 Hz
+  to 6 kHz and Q 1.5, was a hearing-test result), and its eight presets were taken from it up to PairFree 0.7.2.
+  The recording's last curve, Adaptive EQ, is a hearing-test result of the user's own: 125, 250, 500, 800, 1200,
+  2000, 4000 and 6000 Hz at Q 1.5 after TRUEFREE's eight (section 13).
 
 ## 12. Codecs (A2DP), and LDAC on Samsung phones
 

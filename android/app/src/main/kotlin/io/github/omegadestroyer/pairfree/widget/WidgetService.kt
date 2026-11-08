@@ -90,9 +90,11 @@ class WidgetService : Service() {
         val device = hub.pairedEarbuds().firstOrNull { it.address == tap.address } ?: return
         val slot = WidgetStore.load(hub.prefs, tap.widgetId)?.devices?.get(tap.address)?.let(WidgetStore::padded)?.getOrNull(tap.slot) ?: return
         if (slot == WidgetSlot.Empty) return
-        hub.widget(holds = true)
         val connection = hub.connection
         val onIt = (connection.status.value as? LinkStatus.Connected)?.device?.address == tap.address
+        // Earbuds that are not connected to the phone: nothing to change, and nothing to open a channel to.
+        if (!onIt && !connectedForSound(tap.address)) return
+        hub.widget(holds = true)
         if (!onIt) {
             connection.connect(device)
             val opened = withTimeoutOrNull(CONNECT_MS) {
@@ -138,6 +140,18 @@ class WidgetService : Service() {
                 }
             }
         }
+    }
+
+    /** True when the phone has the earbuds at [address] connected for sound; Android's profiles may need a moment to answer. */
+    private suspend fun connectedForSound(address: String): Boolean {
+        for (attempt in 0 until AUDIO_TRIES) {
+            when (hub.audio.connected(address)) {
+                true -> return true
+                false -> return false
+                null -> delay(AUDIO_STEP_MS)
+            }
+        }
+        return false
     }
 
     private suspend fun setNoise(choice: NoiseChoice) {
@@ -208,6 +222,8 @@ class WidgetService : Service() {
 
         /** How long to wait for the earbuds to report a sub-mode they are in. */
         private const val SUB_MS = 2_500L
+        private const val AUDIO_TRIES = 8
+        private const val AUDIO_STEP_MS = 250L
         private const val EQ_TRIES = 20
         private const val EQ_STEP_MS = 500L
 

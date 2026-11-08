@@ -165,6 +165,14 @@ class Equalizer(
 
     private var address: String? = null
 
+    /** The profile the EQ of the earbuds at [address] is on: the open EQ's, else the one this phone last set (null if none). */
+    fun profileOf(address: String): String? =
+        if (this.address == address) _state.value?.selected?.id else try {
+            prefs.getString(KEY_SETTING + address, null)?.let { JSONObject(it).optString("profile").ifEmpty { null } }
+        } catch (_: JSONException) {
+            null
+        }
+
     /** The earbuds whose EQ is open, or null while none is. */
     val openFor: String? get() = address
 

@@ -481,6 +481,10 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
   seven SOUNDPEATS models with no server list, Sony's and Apple's noise control, Sony's and QCY's EQ) comes from what the
   earbuds showed while connected (`WidgetCache`), and the setup says "some choices appear after these earbuds have connected
   once" until then. Pixel's "Last saved" EQ preset appears the same way.
+- **Which button is current** is drawn from what the earbuds last showed while connected (`WidgetNoise`: their mode, scene
+  and level, and the brand rows a button can fix), not from the channel, which is closed most of the time; so a button
+  stays lit between taps, and a toggle's label names the choice the earbuds are on. A change made on the earbuds themselves while PairFree is
+  closed shows once they next connect to it. Earbuds that are not connected dim their buttons and the buttons do nothing.
 - **A tap** starts `WidgetService`, a foreground service (a short notification), because the channel is closed when PairFree is
   not open: it opens the channel, sets the noise choice or selects the EQ profile (`EqOpener`, shared with the Sound tab), waits 3 s
   for the write and its read-back, and lets the channel go unless the screens or the status notification hold it

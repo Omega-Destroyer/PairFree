@@ -6,6 +6,9 @@ import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.Level
+import io.github.omegadestroyer.pairfree.protocol.Setting
+import io.github.omegadestroyer.pairfree.protocol.Value
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
 import io.github.omegadestroyer.pairfree.protocol.widget.WidgetGrid
@@ -103,6 +106,81 @@ object WidgetStore {
         }
     } catch (_: JSONException) {
         WidgetSlot.Empty
+    }
+}
+
+/**
+ * The last noise state the earbuds showed while connected (their mode, scene and level, and the brand rows a widget button can
+ * fix), kept so the widget can show which button is current while the channel is closed, as it is most of the time.
+ * [choices] and [steps] are the brand's `Setting.Choice` and `Setting.Level` rows by key; a key can repeat (EarFun's).
+ */
+data class WidgetNoise(
+    val mode: Int?,
+    val ancLevel: Int?,
+    val transparencyLevel: Int?,
+    val choices: List<Pair<String, String>>,
+    val steps: List<Pair<String, Int>>,
+) {
+    /** The state and rows [io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice.isActive] reads. */
+    fun asState(): Pair<EarbudState, List<Setting>> {
+        val values = buildMap<Command, Value> {
+            mode?.let { put(Command.ANC_MODE, Value.Number(it)) }
+            ancLevel?.let { put(Command.ANC_LEVEL, Value.Levels(listOf(Level(it, true)))) }
+            transparencyLevel?.let { put(Command.TRANSPARENCY_LEVEL, Value.Levels(listOf(Level(it, true)))) }
+        }
+        val rows = choices.map { (k, v) -> Setting.Choice(k, v, listOf(v)) as Setting } + steps.map { (k, v) -> Setting.Level(k, v, v, v) }
+        return EarbudState(values) to rows
+    }
+
+    companion object {
+        private const val KEY = "widget_noise_"
+
+        /** The rows that carry a sub-mode a widget button can fix (see [WidgetOptions]). */
+        val KEYS = setOf(
+            "anc_scene", "anc_scene_level", "transparency_strength", "anc_level", "noise_strength", "transparency_mode",
+            "ef_anc_mode", "ef_ambient_mode",
+        )
+
+        fun load(prefs: SharedPreferences, address: String): WidgetNoise? = try {
+            prefs.getString(KEY + address, null)?.let { text ->
+                val o = JSONObject(text)
+                fun pairs(name: String) = o.optJSONArray(name)?.let { a -> List(a.length()) { a.getJSONArray(it) } }.orEmpty()
+                WidgetNoise(
+                    o.optInt("mode", -1).takeIf { it >= 0 },
+                    o.optInt("anc_level", -1).takeIf { it >= 0 },
+                    o.optInt("transparency_level", -1).takeIf { it >= 0 },
+                    pairs("choices").map { it.getString(0) to it.getString(1) },
+                    pairs("steps").map { it.getString(0) to it.getInt(1) },
+                )
+            }
+        } catch (_: JSONException) {
+            null
+        }
+
+        /**
+         * Notes what the connected earbuds [address] show now. Only what they have reported is taken: the state is empty
+         * for a moment after the channel opens, and what they did not say yet stays as it was.
+         */
+        fun record(prefs: SharedPreferences, address: String, state: EarbudState, groups: List<io.github.omegadestroyer.pairfree.protocol.SettingGroup>) {
+            val old = load(prefs, address)
+            val rows = groups.flatMap { it.settings }.filter { it.key in KEYS }
+            val choices = rows.filterIsInstance<Setting.Choice>().mapNotNull { r -> r.value?.let { r.key to it } }.distinct()
+            val steps = rows.filterIsInstance<Setting.Level>().map { it.key to it.value }.distinct()
+            val new = WidgetNoise(
+                state.number(Command.ANC_MODE) ?: old?.mode,
+                state.levels(Command.ANC_LEVEL).firstOrNull { it.active }?.code ?: old?.ancLevel,
+                state.levels(Command.TRANSPARENCY_LEVEL).firstOrNull { it.active }?.code ?: old?.transparencyLevel,
+                // A key the earbuds report now replaces its old values; one they do not show (its mode is off) keeps them.
+                (old?.choices.orEmpty().filter { (k, _) -> k !in choices.map { it.first } } + choices),
+                (old?.steps.orEmpty().filter { (k, _) -> k !in steps.map { it.first } } + steps),
+            )
+            if (new == old || (new.mode == null && old == null)) return
+            val o = JSONObject()
+                .put("mode", new.mode ?: -1).put("anc_level", new.ancLevel ?: -1).put("transparency_level", new.transparencyLevel ?: -1)
+                .put("choices", JSONArray(new.choices.map { (k, v) -> JSONArray().put(k).put(v) }))
+                .put("steps", JSONArray(new.steps.map { (k, v) -> JSONArray().put(k).put(v) }))
+            prefs.edit { putString(KEY + address, o.toString()) }
+        }
     }
 }
 

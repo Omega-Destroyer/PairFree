@@ -12,6 +12,7 @@ import android.widget.RemoteViews
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.hub
+import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
@@ -105,13 +106,13 @@ class PairFreeWidget : AppWidgetProvider() {
             val choices = device?.let { WidgetOptions.of(context, it) }
             val names = choices?.eq?.toMap().orEmpty()
             val connection = hub.connection
-            val onChannel = (connection.status.value as? LinkStatus.Connected)?.device?.address == address
-            val rows = if (onChannel) connection.settings.value.flatMap { it.settings } else emptyList()
-            val state = connection.state.value
-            val selectedEq = if (hub.equalizer.openFor == address) hub.equalizer.state.value?.selected?.id else null
+            // What the earbuds last showed, kept while connected: the channel is closed most of the time, and a live state is
+            // empty or half known for a moment after it opens.
+            val (state, rows) = WidgetNoise.load(hub.prefs, address)?.asState() ?: (EarbudState() to emptyList())
+            val selectedEq = hub.equalizer.profileOf(address)
             val views = buildMap {
                 for (c in 1..WidgetGrid.PER_ROW) for (r in 1..2) {
-                    put(SizeF(WidgetGrid.minWidthDp(c), WidgetGrid.minHeightDp(r)), sizeViews(context, id, address, slots, c, r, live, onChannel, rows, state, selectedEq, names))
+                    put(SizeF(WidgetGrid.minWidthDp(c), WidgetGrid.minHeightDp(r)), sizeViews(context, id, address, slots, c, r, live, rows, state, selectedEq, names))
                 }
             }
             return RemoteViews(views)
@@ -152,7 +153,6 @@ class PairFreeWidget : AppWidgetProvider() {
             cols: Int,
             rows: Int,
             live: Boolean,
-            onChannel: Boolean,
             settings: List<Setting>,
             state: io.github.omegadestroyer.pairfree.protocol.EarbudState,
             selectedEq: String?,
@@ -177,11 +177,11 @@ class PairFreeWidget : AppWidgetProvider() {
                     is WidgetSlot.Noise -> {
                         caption = context.getString(R.string.widget_caption_noise)
                         label = WidgetLabels.noise(context, slot.choice)
-                        active = onChannel && slot.choice.isActive(state, settings)
+                        active = slot.choice.isActive(state, settings)
                     }
                     is WidgetSlot.NoiseCycle -> {
                         caption = context.getString(R.string.widget_caption_noise)
-                        val now = if (onChannel) slot.choices.firstOrNull { it.sub != null && it.isActive(state, settings) } ?: slot.choices.firstOrNull { it.isActive(state, settings) } else null
+                        val now = slot.choices.firstOrNull { it.sub != null && it.isActive(state, settings) } ?: slot.choices.firstOrNull { it.isActive(state, settings) }
                         label = WidgetLabels.noise(context, now ?: slot.choices.first())
                         active = now != null
                     }
@@ -205,7 +205,8 @@ class PairFreeWidget : AppWidgetProvider() {
                 views.setFloat(cell[0], "setAlpha", if (live || slot == WidgetSlot.Empty) 1f else DIMMED)
                 if (slot != WidgetSlot.Empty) {
                     views.setContentDescription(cell[0], context.getString(R.string.widget_slot_description, caption, label))
-                    views.setOnClickPendingIntent(cell[0], WidgetService.tapIntent(context, id, i, address))
+                    // Earbuds that are not connected: the button is dimmed and does nothing.
+                    if (live) views.setOnClickPendingIntent(cell[0], WidgetService.tapIntent(context, id, i, address))
                 }
             }
             return views

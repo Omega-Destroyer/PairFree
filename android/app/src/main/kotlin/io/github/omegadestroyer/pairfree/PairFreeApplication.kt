@@ -19,7 +19,9 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.eq.EqOpener
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Identify
 import io.github.omegadestroyer.pairfree.protocol.Maker
 import io.github.omegadestroyer.pairfree.protocol.Models
@@ -38,6 +40,10 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import io.github.omegadestroyer.pairfree.widget.PairFreeWidget
+import io.github.omegadestroyer.pairfree.widget.WidgetCache
+import io.github.omegadestroyer.pairfree.widget.WidgetNoise
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
@@ -47,6 +53,14 @@ import java.util.TimeZone
 class PairFreeApplication : Application() {
     val hub: Hub by lazy { Hub(this) }
 }
+
+/** What the home screen widget follows: the channel, the earbuds' state and rows, and the EQ. */
+private data class WidgetInputs(
+    val status: LinkStatus,
+    val state: EarbudState,
+    val groups: List<io.github.omegadestroyer.pairfree.protocol.SettingGroup>,
+    val eq: io.github.omegadestroyer.pairfree.eq.EqState?,
+)
 
 /** The process's [Hub]. */
 val Context.hub: Hub get() = (applicationContext as PairFreeApplication).hub
@@ -88,8 +102,12 @@ class Hub(private val app: Application) {
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
     val equalizer = Equalizer(prefs, scope) { frames -> connection.sendEq(frames) }
 
+    /** Opens [equalizer] for the connected earbuds of any brand; the Sound tab and the home screen widget share it. */
+    val eqOpener = EqOpener(connection, equalizer, scope)
+
     private var screensVisible = false
     private var notificationHolds = false
+    private var widgetHolds = false
 
     /** The screens are on view, or not: they need the channel only while they are. */
     fun screens(visible: Boolean) {
@@ -103,8 +121,14 @@ class Hub(private val app: Application) {
         releaseIfUnused()
     }
 
+    /** The home screen widget holds the channel while it applies a tap, or lets it go. */
+    fun widget(holds: Boolean) {
+        widgetHolds = holds
+        releaseIfUnused()
+    }
+
     private fun releaseIfUnused() {
-        if (!screensVisible && !notificationHolds) connection.disconnect()
+        if (!screensVisible && !notificationHolds && !widgetHolds) connection.disconnect()
     }
 
     fun hasPermission(): Boolean =
@@ -199,6 +223,21 @@ class Hub(private val app: Application) {
                     openSince?.let { start -> storeOwnSession(start, snoopClockMs()) }
                     openSince = null
                 }
+            }
+        }
+    }
+
+    init {
+        // The home screen widget follows the earbuds and their state, and remembers what connected earbuds show that the tables
+        // do not give (docs/DESIGN.md, Widget).
+        scope.launch {
+            combine(connection.status, connection.state, connection.settings, equalizer.state) { status, state, groups, eq -> WidgetInputs(status, state, groups, eq) }.collect { (status, state, groups, eq) ->
+                if (status is LinkStatus.Connected) {
+                    val device = status.device
+                    WidgetCache.record(prefs, device, state, eq.takeIf { equalizer.openFor == device.address })
+                    WidgetNoise.record(prefs, device.address, state, groups)
+                }
+                PairFreeWidget.requestRefresh(app, scope)
             }
         }
     }

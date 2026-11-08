@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -550,8 +551,25 @@ private fun jblP5Title(key: String): String? {
 }
 
 @Composable
-private fun optionName(key: String, option: String): String = when {
-    key.startsWith("jbl_p5_") -> stringResource(
+private fun optionName(key: String, option: String): String = LocalContext.current.optionLabel(key, option)
+
+private val DIAL_GESTURES = setOf("single", "double", "triple", "hold", "turn", "double_call", "triple_call")
+private val TOUCH_GESTURES = setOf(
+    "single", "double", "triple", "hold", "double_hold", "double_call", "triple_call", "hold_call",
+    "single_button", "hold_button", "single_roller", "hold_roller", "single_slider",
+)
+
+/** True when [touchTitle] has words for the row: a touch row of a known side and gesture, decided without a composition. */
+private fun isTouchRow(key: String): Boolean {
+    val side = key.substringAfterLast('_')
+    if (!key.startsWith("touch_") || side !in TOUCH_SIDES) return false
+    val gesture = key.removePrefix("touch_").removeSuffix("_$side")
+    return gesture in if (side == "case" || side == "dial") DIAL_GESTURES else TOUCH_GESTURES
+}
+
+/** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
+internal fun Context.optionLabel(key: String, option: String): String = when {
+    key.startsWith("jbl_p5_") -> getString(
         when (option) {
             "ambientSound" -> R.string.setting_jbl_fn_noise
             "talkThruOnOff" -> R.string.setting_jbl_fn_talk_thru
@@ -568,15 +586,15 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.action_other
         },
     )
-    key == "sp_panoramic_sound" -> stringResource(
+    key == "sp_panoramic_sound" -> getString(
         when (option) {
             "music" -> R.string.setting_panoramic_music
             "movie" -> R.string.setting_panoramic_movie
             else -> R.string.setting_panoramic_normal
         },
     )
-    key == "anc_level" -> stringResource(if (option == "high") R.string.setting_anc_level_high else R.string.setting_anc_level_low)
-    key == "noise_strength" -> stringResource(
+    key == "anc_level" -> getString(if (option == "high") R.string.setting_anc_level_high else R.string.setting_anc_level_low)
+    key == "noise_strength" -> getString(
         when (option) {
             "adaptive" -> R.string.scene_adaptive
             "high" -> R.string.setting_level_high
@@ -585,7 +603,7 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_level_low
         },
     )
-    key == "eq_preset" -> stringResource(
+    key == "eq_preset" -> getString(
         when (option) {
             "bass" -> R.string.setting_eq_more_bass
             "treble" -> R.string.setting_eq_more_treble
@@ -595,7 +613,7 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_eq_balanced
         },
     )
-    key == "anc_scene" -> stringResource(
+    key == "anc_scene" -> getString(
         when (option) {
             "adaptive" -> R.string.scene_adaptive
             "indoor" -> R.string.scene_indoor
@@ -604,7 +622,7 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.scene_wind
         },
     )
-    key == "transparency_mode" -> stringResource(
+    key == "transparency_mode" -> getString(
         when (option) {
             "pass_through" -> R.string.setting_transparency_pass_through
             "voice" -> R.string.setting_transparency_voice
@@ -613,17 +631,17 @@ private fun optionName(key: String, option: String): String = when {
     )
     key == "connection_mode" -> when (option) {
         "ldac" -> "LDAC"
-        "game" -> stringResource(R.string.action_game_mode)
-        else -> stringResource(R.string.setting_connection_standard)
+        "game" -> getString(R.string.action_game_mode)
+        else -> getString(R.string.setting_connection_standard)
     }
-    key == "smart_playback" -> stringResource(
+    key == "smart_playback" -> getString(
         when (option) {
             "pause_play" -> R.string.setting_playback_pause_play
             "pause" -> R.string.setting_playback_pause
             else -> R.string.setting_level_off
         },
     )
-    key == "ear_return" || key == "volume_limit" -> stringResource(
+    key == "ear_return" || key == "volume_limit" -> getString(
         when (option) {
             "off" -> R.string.setting_level_off
             "low" -> R.string.setting_level_low
@@ -634,9 +652,9 @@ private fun optionName(key: String, option: String): String = when {
     key == "codec" -> when (option) {
         "ldac" -> "LDAC"
         "lhdc" -> "LHDC"
-        else -> stringResource(R.string.setting_codec_standard)
+        else -> getString(R.string.setting_codec_standard)
     }
-    key == "ef_voice_language" -> stringResource(
+    key == "ef_voice_language" -> getString(
         when (option) {
             "japanese" -> R.string.language_ja
             "chinese" -> R.string.language_zh
@@ -644,7 +662,7 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.language_en
         },
     )
-    (key.startsWith("touch_") && touchTitle(key) != null) || key.startsWith("ef_button_") -> stringResource(
+    (key.startsWith("touch_") && isTouchRow(key)) || key.startsWith("ef_button_") -> getString(
         when (option) {
             "none" -> R.string.action_none
             "play_pause" -> R.string.action_play_pause
@@ -678,12 +696,12 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.action_other
         },
     )
-    key == "voice_detect_wait" -> stringResource(R.string.setting_seconds, option.toIntOrNull() ?: 0)
+    key == "voice_detect_wait" -> getString(R.string.setting_seconds, option.toIntOrNull() ?: 0)
     key == "ef_anc_mode" -> when (option) {
-        "level1", "level2", "level3", "level4" -> stringResource(R.string.scene_level, option.last().digitToInt())
-        "anc1" -> stringResource(R.string.setting_ef_anc_number, 1)
-        "anc2" -> stringResource(R.string.setting_ef_anc_number, 2)
-        else -> stringResource(
+        "level1", "level2", "level3", "level4" -> getString(R.string.scene_level, option.last().digitToInt())
+        "anc1" -> getString(R.string.setting_ef_anc_number, 1)
+        "anc2" -> getString(R.string.setting_ef_anc_number, 2)
+        else -> getString(
             when (option) {
                 "adaptive" -> R.string.scene_adaptive
                 "ear_adaptive" -> R.string.setting_ef_ear_adaptive
@@ -693,14 +711,14 @@ private fun optionName(key: String, option: String): String = when {
             },
         )
     }
-    key == "ef_ambient_mode" -> stringResource(
+    key == "ef_ambient_mode" -> getString(
         when (option) {
             "total" -> R.string.setting_ef_ambient_full
             "natural" -> R.string.setting_ef_ambient_natural
             else -> R.string.setting_transparency_normal
         },
     )
-    key == "bgm_effect" -> stringResource(
+    key == "bgm_effect" -> getString(
         when (option) {
             "small" -> R.string.setting_bgm_small
             "medium" -> R.string.setting_bgm_medium
@@ -708,32 +726,32 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.action_off
         },
     )
-    key == "ef_prompt_volume" -> stringResource(R.string.setting_percent, option.toIntOrNull() ?: 0)
-    key == "ef_hearing_protection" -> option.toIntOrNull()?.let { stringResource(R.string.setting_ef_db, it) } ?: stringResource(R.string.action_off)
-    option == "off" && key.startsWith("jbl_") -> stringResource(R.string.action_off)
-    key == "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_after_seconds, option.toIntOrNull() ?: 0)
-    key == "jbl_voice_aware" -> stringResource(
+    key == "ef_prompt_volume" -> getString(R.string.setting_percent, option.toIntOrNull() ?: 0)
+    key == "ef_hearing_protection" -> option.toIntOrNull()?.let { getString(R.string.setting_ef_db, it) } ?: getString(R.string.action_off)
+    option == "off" && key.startsWith("jbl_") -> getString(R.string.action_off)
+    key == "jbl_speak_to_chat" -> getString(R.string.setting_jbl_after_seconds, option.toIntOrNull() ?: 0)
+    key == "jbl_voice_aware" -> getString(
         when (option) {
             "low" -> R.string.setting_level_low
             "mid" -> R.string.setting_level_mid
             else -> R.string.setting_level_high
         },
     )
-    key == "jbl_smart_audio_video" -> stringResource(
+    key == "jbl_smart_audio_video" -> getString(
         when (option) {
             "audio" -> R.string.setting_jbl_audio
             "video" -> R.string.setting_jbl_video
             else -> R.string.action_off
         },
     )
-    key == "jbl_spatial" -> stringResource(
+    key == "jbl_spatial" -> getString(
         when (option) {
             "music" -> R.string.setting_jbl_music
             "game" -> R.string.setting_jbl_game
             else -> R.string.setting_jbl_movie
         },
     )
-    key == "jbl_touch_left" || key == "jbl_touch_right" -> stringResource(
+    key == "jbl_touch_left" || key == "jbl_touch_right" -> getString(
         when (option) {
             "playback" -> R.string.setting_jbl_touch_playback
             "ambient" -> R.string.setting_jbl_touch_ambient
@@ -744,20 +762,20 @@ private fun optionName(key: String, option: String): String = when {
         },
     )
     key == "jbl_call_effect" -> when (option) {
-        "standard" -> stringResource(R.string.setting_jbl_natural)
-        "treble" -> stringResource(R.string.setting_eq_more_treble)
-        "bass" -> stringResource(R.string.setting_eq_more_bass)
+        "standard" -> getString(R.string.setting_jbl_natural)
+        "treble" -> getString(R.string.setting_eq_more_treble)
+        "bass" -> getString(R.string.setting_eq_more_bass)
         else -> option
     }
-    key == "microphone" -> stringResource(
+    key == "microphone" -> getString(
         when (option) {
             "right" -> R.string.setting_microphone_right
             "left" -> R.string.setting_microphone_left
             else -> R.string.setting_microphone_automatic
         },
     )
-    key == "call_press_once" -> stringResource(if (option == "hang_up") R.string.setting_call_hang_up else R.string.setting_call_mute)
-    key == "press_speed" || key == "hold_duration" || key == "volume_swipe_length" -> stringResource(
+    key == "call_press_once" -> getString(if (option == "hang_up") R.string.setting_call_hang_up else R.string.setting_call_mute)
+    key == "press_speed" || key == "hold_duration" || key == "volume_swipe_length" -> getString(
         when (option) {
             "slower" -> R.string.setting_option_slower
             "slowest" -> R.string.setting_option_slowest
@@ -768,17 +786,17 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_option_default
         },
     )
-    key == "sleep_timer" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.action_off)
-    key == "auto_off" && option == "when_taken_off" -> stringResource(R.string.shutdown_when_taken_off)
-    key == "auto_off" -> option.toIntOrNull()?.let { stringResource(R.string.shutdown_minutes, it) } ?: stringResource(R.string.shutdown_never)
-    key == "connection_priority" -> stringResource(
+    key == "sleep_timer" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.action_off)
+    key == "auto_off" && option == "when_taken_off" -> getString(R.string.shutdown_when_taken_off)
+    key == "auto_off" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.shutdown_never)
+    key == "connection_priority" -> getString(
         when (option) {
             "sound_quality" -> R.string.setting_sony_sound_quality
             "low_latency" -> R.string.setting_sony_low_latency
             else -> R.string.setting_sony_stable
         },
     )
-    key.startsWith("assign_") -> stringResource(
+    key.startsWith("assign_") -> getString(
         when (option) {
             "noise_control" -> R.string.action_anc_cycle
             "noise_control_mic" -> R.string.setting_sony_noise_control_mic
@@ -794,14 +812,14 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_sony_other_function
         },
     )
-    key == "spatial_audio_mode" -> stringResource(
+    key == "spatial_audio_mode" -> getString(
         when (option) {
             "room" -> R.string.setting_bose_spatial_room
             "head" -> R.string.setting_bose_spatial_head
             else -> R.string.action_off
         },
     )
-    key.startsWith("bose_button_") -> stringResource(
+    key.startsWith("bose_button_") -> getString(
         when (option) {
             "voice_assistant" -> R.string.action_voice_assistant
             "noise_cycle" -> R.string.action_anc_cycle
@@ -821,7 +839,7 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_bose_action_other
         },
     )
-    key == "light_mode" || key == "light_colour" -> stringResource(
+    key == "light_mode" || key == "light_colour" -> getString(
         when (option) {
             "monochrome" -> R.string.setting_light_monochrome
             "breathe" -> R.string.setting_light_breathe
@@ -834,8 +852,8 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.action_off
         },
     )
-    key == "power_off_timer" -> option.toIntOrNull()?.let { stringResource(R.string.setting_power_off_timer_minutes, it) } ?: stringResource(R.string.action_off)
-    key == "anr" || key == "sidetone_level" -> stringResource(
+    key == "power_off_timer" -> option.toIntOrNull()?.let { getString(R.string.setting_power_off_timer_minutes, it) } ?: getString(R.string.action_off)
+    key == "anr" || key == "sidetone_level" -> getString(
         when (option) {
             "off" -> R.string.setting_level_off
             "low" -> R.string.setting_level_low
@@ -844,14 +862,14 @@ private fun optionName(key: String, option: String): String = when {
             else -> R.string.setting_level_high
         },
     )
-    key.startsWith("hold_cycle") -> stringResource(
+    key.startsWith("hold_cycle") -> getString(
         when (option) {
             "anc_ambient" -> R.string.setting_cycle_anc_ambient
             "anc_off" -> R.string.setting_cycle_anc_off
             else -> R.string.setting_cycle_ambient_off
         },
     )
-    key.startsWith("hold_") -> stringResource(
+    key.startsWith("hold_") -> getString(
         when (option) {
             "voice_assistant" -> R.string.action_voice_assistant
             "bixby" -> R.string.setting_hold_bixby

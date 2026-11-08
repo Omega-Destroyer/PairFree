@@ -1,6 +1,8 @@
 package io.github.omegadestroyer.pairfree.ui
 
+import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.protocol.Command
@@ -15,21 +17,29 @@ fun numberOf(command: Command, name: String): Int = command.labels.entries.first
 
 /** A noise-cancelling scene. The official app shows `normal` (0x11) with its adaptive label (docs/soundpeats/PROTOCOL.md 3.1). */
 @Composable
-fun sceneName(code: Int): String = when (val name = Command.ANC_LEVEL.labels[code]) {
-    "normal", "adaptive" -> stringResource(R.string.scene_adaptive)
-    "indoor" -> stringResource(R.string.scene_indoor)
-    "outdoor" -> stringResource(R.string.scene_outdoor)
-    "traffic" -> stringResource(R.string.scene_traffic)
-    "anti_wind" -> stringResource(R.string.scene_wind)
-    else -> if (name != null && name.startsWith("level_")) stringResource(R.string.scene_level, code) else unknownCode(code)
-}
+fun sceneName(code: Int): String = LocalContext.current.sceneLabel(code)
 
 @Composable
-fun transparencyName(code: Int): String = when (Command.TRANSPARENCY_LEVEL.labels[code]) {
-    "voice_enhance" -> stringResource(R.string.transparency_voice)
-    "standard" -> stringResource(R.string.transparency_standard)
-    else -> unknownCode(code)
+fun transparencyName(code: Int): String = LocalContext.current.transparencyLabel(code)
+
+/** [sceneName] where no composition is at hand (the home screen widget). */
+fun Context.sceneLabel(code: Int): String = when (val name = Command.ANC_LEVEL.labels[code]) {
+    "normal", "adaptive" -> getString(R.string.scene_adaptive)
+    "indoor" -> getString(R.string.scene_indoor)
+    "outdoor" -> getString(R.string.scene_outdoor)
+    "traffic" -> getString(R.string.scene_traffic)
+    "anti_wind" -> getString(R.string.scene_wind)
+    else -> if (name != null && name.startsWith("level_")) getString(R.string.scene_level, code) else unknownCodeLabel(code)
 }
+
+/** [transparencyName] where no composition is at hand. */
+fun Context.transparencyLabel(code: Int): String = when (Command.TRANSPARENCY_LEVEL.labels[code]) {
+    "voice_enhance" -> getString(R.string.transparency_voice)
+    "standard" -> getString(R.string.transparency_standard)
+    else -> unknownCodeLabel(code)
+}
+
+private fun Context.unknownCodeLabel(code: Int): String = getString(R.string.code_unknown, "0x" + code.toString(16).uppercase().padStart(2, '0'))
 
 /** Tap, double tap, triple tap or press and hold, from a gesture name such as `double_left`. */
 enum class GestureKind(val prefix: String) { TAP("tap"), DOUBLE("double"), TRIPLE("triple"), HOLD("hold") }

@@ -178,7 +178,18 @@ abstract class GenerateTables : DefaultTask() {
                     "${(eqJson.getValue("user_range_db") as Number).toInt()}, ${bands(eqJson["bands"], "base_gain_db")}, $presets$fixed)")
                 "eq$index()"
             }
-            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}),")
+            // The server's noise control for the model: absent features means the list was not fetched (null).
+            @Suppress("UNCHECKED_CAST")
+            val featuresJson = d["features"] as Map<String, Any?>?
+            val noise = if (featuresJson == null) "" else {
+                @Suppress("UNCHECKED_CAST")
+                val modes = (featuresJson["noise"] as List<Map<String, Any?>>? ?: emptyList()).joinToString(";") { m ->
+                    val scenes = (m["scenes"] as List<*>).joinToString(",")
+                    "${m["mode"]}" + if (scenes.isEmpty()) "" else ":$scenes"
+                }
+                ", noiseModes = noiseModes(\"$modes\")"
+            }
+            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}$noise),")
         }
         out.appendLine(")")
         out.appendLine()

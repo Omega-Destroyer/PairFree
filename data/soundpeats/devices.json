@@ -411,6 +411,15 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.50",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN07",
+          "FSN24"
+        ]
       }
     },
     {
@@ -1711,6 +1720,13 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "056",
+        "features": [
+          "FSN04",
+          "FSN06"
+        ]
       }
     },
     {
@@ -2753,6 +2769,19 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "2.1.15",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18"
+        ]
       }
     },
     {
@@ -3313,6 +3342,22 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "2.1.25",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN11",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20"
+        ]
       }
     },
     {
@@ -3827,6 +3872,20 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.2.0",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN15",
+          "FSN18",
+          "FSN19"
         ]
       }
     },
@@ -4387,6 +4446,18 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.7.4",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN14",
+          "FSN15"
         ]
       }
     },
@@ -5430,6 +5501,22 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.4.0",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN09",
+          "FSN11",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18"
+        ]
       }
     },
     {
@@ -5945,6 +6032,31 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.0.17",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN06",
+          "FSN08",
+          "FSN12",
+          "FSN15"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -5964,7 +6076,29 @@
       "transport": "spp",
       "eq_command": "0E02",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "features": {
+        "firmware": "0.2.0",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN08"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
+      }
     },
     {
       "firmware_code": "JIELILIFE3",
@@ -5980,7 +6114,16 @@
       "transport": "spp",
       "eq_command": "0E02",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "features": {
+        "firmware": "0.3.1",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06"
+        ]
+      }
     },
     {
       "firmware_code": "JL6973Clear",
@@ -7203,6 +7346,14 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.0.24",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN06"
+        ]
       }
     },
     {
@@ -8383,6 +8534,29 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "60",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN08",
+          "FSN15"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -9546,6 +9720,14 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "50",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN06"
+        ]
       }
     },
     {
@@ -9983,6 +10165,29 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "59",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN06",
+          "FSN08"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -10418,6 +10623,29 @@
                 "gain_db": 6
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "72",
+        "features": [
+          "FSN02",
+          "FSN05",
+          "FSN06",
+          "FSN08"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -10936,6 +11164,25 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.3.1",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN06",
+          "FSN08"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -11447,6 +11694,32 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.2.1",
+        "features": [
+          "FSN02",
+          "FSN03",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN15"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -11895,6 +12168,29 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.70",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN08",
+          "FSN24"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -12181,6 +12477,15 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.2.0",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN07",
+          "FSN24"
         ]
       }
     },
@@ -12565,6 +12870,15 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.5.1",
+        "features": [
+          "FSN02",
+          "FSN03",
+          "FSN04",
+          "FSN06"
+        ]
       }
     },
     {
@@ -12647,6 +12961,15 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.8",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN07",
+          "FSN24"
         ]
       }
     },
@@ -12984,6 +13307,15 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.3.0",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN07",
+          "FSN24"
         ]
       }
     },
@@ -13381,6 +13713,31 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "2.0.8",
+        "features": [
+          "FSN03",
+          "FSN04",
+          "FSN06",
+          "FSN07",
+          "FSN08",
+          "FSN24"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -13763,6 +14120,39 @@
                 "q": 1,
                 "gain_db": -7
               }
+            ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "0.3.2",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN15"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "mode": 1,
+            "scenes": [
+              1,
+              2,
+              3,
+              4,
+              5
             ]
           }
         ]
@@ -14447,7 +14837,52 @@
             ]
           }
         ]
-      }
+      },
+      "features": {
+        "firmware": "0.2.9",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN03",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN10",
+          "FSN11",
+          "FSN15",
+          "FSN17",
+          "FSN18",
+          "FSN20",
+          "FSN21"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": [
+              17,
+              18,
+              19,
+              20,
+              22
+            ]
+          },
+          {
+            "mode": 2,
+            "scenes": [
+              1,
+              2
+            ]
+          }
+        ]
+      },
+      "confirmed": [
+        "le_audio"
+      ]
     },
     {
       "firmware_code": "S32",
@@ -15158,7 +15593,43 @@
         "data/soundpeats/reports/S2_1.2.txt",
         "data/soundpeats/reports/air5-pro-plus_ldac.txt",
         "data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt"
-      ]
+      ],
+      "features": {
+        "firmware": "1.2",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN15",
+          "FSN17",
+          "FSN18",
+          "FSN20"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": [
+              17,
+              18,
+              19,
+              20
+            ]
+          },
+          {
+            "mode": 2,
+            "scenes": [
+              1,
+              2
+            ]
+          }
+        ]
+      }
     },
     {
       "firmware_code": "S5",
@@ -15850,7 +16321,45 @@
         "data/soundpeats/reports/S5_0.4.9.txt",
         "data/soundpeats/reports/S5_gaia_v3.txt",
         "data/soundpeats/reports/S5_S2_fit_drain_leaudio.txt"
-      ]
+      ],
+      "features": {
+        "firmware": "0.4.9",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN11",
+          "FSN12",
+          "FSN15",
+          "FSN17",
+          "FSN18"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": [
+              17,
+              18,
+              19,
+              20
+            ]
+          },
+          {
+            "mode": 2,
+            "scenes": [
+              1,
+              2
+            ]
+          }
+        ]
+      }
     },
     {
       "firmware_code": "T28",
@@ -15868,7 +16377,15 @@
       "eq_command": "0E01",
       "eq_merge": "onto_classic_bands",
       "custom_eq_bands": 10,
-      "touch_disable_inverted": true
+      "touch_disable_inverted": true,
+      "features": {
+        "firmware": "0.2.5",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN07"
+        ]
+      }
     },
     {
       "firmware_code": "T28Pro",
@@ -16346,6 +16863,29 @@
                 "gain_db": 6.2
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "030",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN08",
+          "FSN24"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -17450,6 +17990,15 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "2.3",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN06"
         ]
       }
     },
@@ -18737,6 +19286,16 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.5.2",
+        "features": [
+          "FSN02",
+          "FSN03",
+          "FSN04",
+          "FSN05",
+          "FSN06"
+        ]
       }
     },
     {
@@ -19900,6 +20459,14 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "2.05",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN06"
         ]
       }
     },
@@ -21184,6 +21751,15 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "2.8",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN06"
+        ]
       }
     },
     {
@@ -21626,6 +22202,28 @@
                 "gain_db": -0.5
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "0.3.7",
+        "features": [
+          "FSN06",
+          "FSN08",
+          "FSN24"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -22107,6 +22705,28 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.1.0",
+        "features": [
+          "FSN06",
+          "FSN08",
+          "FSN24"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -22124,7 +22744,14 @@
       "transport": "spp",
       "eq_command": "0E02",
       "eq_merge": "append_after_classic",
-      "custom_eq_bands": 10
+      "custom_eq_bands": 10,
+      "features": {
+        "firmware": "0.5",
+        "features": [
+          "FSN04",
+          "FSN06"
+        ]
+      }
     },
     {
       "firmware_code": "WQ7034MXGoFree2",
@@ -23407,6 +24034,14 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.2",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN06"
+        ]
       }
     },
     {
@@ -23822,6 +24457,29 @@
                 "gain_db": -3
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "1.44",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN08",
+          "FSN24"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -24987,6 +25645,15 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.3.2",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN05",
+          "FSN06"
+        ]
       }
     },
     {
@@ -25368,6 +26035,15 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.3.8",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN06"
         ]
       }
     },
@@ -26548,6 +27224,15 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.2.0",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN06"
+        ]
       }
     },
     {
@@ -27172,6 +27857,37 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.7.5",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN11",
+          "FSN12",
+          "FSN15",
+          "FSN17",
+          "FSN18",
+          "FSN20"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
+          }
+        ]
       }
     },
     {
@@ -27190,9 +27906,10 @@
       "reports": [
         "data/soundpeats/reports/T2_0.5.5.txt",
         "data/soundpeats/reports/T2_0.5.5_recording.txt",
-        "data/soundpeats/reports/T2_0.5.5_recording_custom.txt"
+        "data/soundpeats/reports/T2_0.5.5_recording_custom.txt",
+        "data/soundpeats/reports/T2_0.5.5_recording_3.txt"
       ],
-      "notes": "Not in the official app's model lists; known from a user's device report (GitHub issue #6). Its chip family is not known. The EQ is from the user's recording of the official app (issue #9): TRUEFREE's 8-band curve sent first as it is, then 8 bands of the user's (append_after_classic). The official app's reset puts the fifth user band at 100 Hz where PeatsAudio's custom screen has 1 kHz; PairFree follows the recording until a recording of a custom curve says otherwise.",
+      "notes": "Not in the official app's model lists; known from a user's device report (GitHub issue #6). Its chip family is not known. The EQ is from the user's recording of the official app (issue #9): TRUEFREE's 8-band curve sent first as it is, then 8 bands of the user's (append_after_classic). The official app's reset puts the fifth user band at 100 Hz where PeatsAudio's custom screen has 1 kHz; PairFree follows the recording until a recording of a custom curve says otherwise. The nine preset curves are from the second recording (issue #9, 2026-11-05): the first recording had attached the names to the wrong curves.",
       "eq": {
         "command": "0E02",
         "master_gain_db": -2.0,
@@ -27498,22 +28215,22 @@
               {
                 "hz": 62,
                 "q": 0.8,
-                "gain_db": -2.0
+                "gain_db": 2.0
               },
               {
                 "hz": 125,
                 "q": 0.8,
-                "gain_db": -2.0
+                "gain_db": 2.0
               },
               {
                 "hz": 250,
                 "q": 0.8,
-                "gain_db": -2.0
+                "gain_db": 2.0
               },
               {
                 "hz": 500,
                 "q": 0.8,
-                "gain_db": -1.0
+                "gain_db": 1.0
               },
               {
                 "hz": 1000,
@@ -27583,42 +28300,42 @@
               {
                 "hz": 62,
                 "q": 0.8,
-                "gain_db": 1.0
+                "gain_db": -2.0
               },
               {
                 "hz": 125,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": -2.0
               },
               {
                 "hz": 250,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": -2.0
               },
               {
                 "hz": 500,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": -1.0
               },
               {
                 "hz": 1000,
                 "q": 0.8,
-                "gain_db": -4.0
+                "gain_db": 0.0
               },
               {
                 "hz": 2000,
                 "q": 0.8,
-                "gain_db": 1.0
+                "gain_db": 0.0
               },
               {
                 "hz": 4000,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": 0.0
               },
               {
                 "hz": 8000,
                 "q": 0.8,
-                "gain_db": 2.0
+                "gain_db": 0.0
               }
             ]
           },
@@ -27668,6 +28385,91 @@
               {
                 "hz": 62,
                 "q": 0.8,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 125,
+                "q": 0.8,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 250,
+                "q": 0.8,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 500,
+                "q": 0.8,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 1000,
+                "q": 0.8,
+                "gain_db": -4.0
+              },
+              {
+                "hz": 2000,
+                "q": 0.8,
+                "gain_db": 1.0
+              },
+              {
+                "hz": 4000,
+                "q": 0.8,
+                "gain_db": 2.0
+              },
+              {
+                "hz": 8000,
+                "q": 0.8,
+                "gain_db": 2.0
+              }
+            ]
+          },
+          {
+            "name": "Popularity",
+            "bands": [
+              {
+                "hz": 50,
+                "q": 0.9,
+                "gain_db": 0.0
+              },
+              {
+                "hz": 90,
+                "q": 0.7,
+                "gain_db": 0.1
+              },
+              {
+                "hz": 310,
+                "q": 1.0,
+                "gain_db": -4.0
+              },
+              {
+                "hz": 600,
+                "q": 1.0,
+                "gain_db": -1.0
+              },
+              {
+                "hz": 1550,
+                "q": 1.5,
+                "gain_db": 3.0
+              },
+              {
+                "hz": 2580,
+                "q": 0.8,
+                "gain_db": -10.0
+              },
+              {
+                "hz": 6200,
+                "q": 2.5,
+                "gain_db": -7.0
+              },
+              {
+                "hz": 7830,
+                "q": 2.8,
+                "gain_db": -8.0
+              },
+              {
+                "hz": 62,
+                "q": 0.8,
                 "gain_db": -2.0
               },
               {
@@ -27708,7 +28510,7 @@
             ]
           },
           {
-            "name": "Popularity",
+            "name": "Electronic",
             "bands": [
               {
                 "hz": 50,
@@ -27793,7 +28595,7 @@
             ]
           },
           {
-            "name": "Electronic",
+            "name": "Ballad",
             "bands": [
               {
                 "hz": 50,
@@ -27878,7 +28680,7 @@
             ]
           },
           {
-            "name": "Ballad",
+            "name": "Classical",
             "bands": [
               {
                 "hz": 50,
@@ -27958,91 +28760,6 @@
               {
                 "hz": 8000,
                 "q": 0.8,
-                "gain_db": -3.0
-              }
-            ]
-          },
-          {
-            "name": "Classical",
-            "bands": [
-              {
-                "hz": 50,
-                "q": 0.9,
-                "gain_db": 0.0
-              },
-              {
-                "hz": 90,
-                "q": 0.7,
-                "gain_db": 0.1
-              },
-              {
-                "hz": 310,
-                "q": 1.0,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 600,
-                "q": 1.0,
-                "gain_db": -1.0
-              },
-              {
-                "hz": 1550,
-                "q": 1.5,
-                "gain_db": 3.0
-              },
-              {
-                "hz": 2580,
-                "q": 0.8,
-                "gain_db": -10.0
-              },
-              {
-                "hz": 6200,
-                "q": 2.5,
-                "gain_db": -7.0
-              },
-              {
-                "hz": 7830,
-                "q": 2.8,
-                "gain_db": -8.0
-              },
-              {
-                "hz": 125,
-                "q": 1.5,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 250,
-                "q": 1.5,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 500,
-                "q": 1.5,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 800,
-                "q": 1.5,
-                "gain_db": -4.0
-              },
-              {
-                "hz": 1200,
-                "q": 1.5,
-                "gain_db": -3.0
-              },
-              {
-                "hz": 2000,
-                "q": 1.5,
-                "gain_db": -3.0
-              },
-              {
-                "hz": 4000,
-                "q": 1.5,
-                "gain_db": -3.0
-              },
-              {
-                "hz": 6000,
-                "q": 1.5,
                 "gain_db": -3.0
               }
             ]
@@ -29329,6 +30046,16 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.6.4",
+        "features": [
+          "FSN02",
+          "FSN03",
+          "FSN04",
+          "FSN05",
+          "FSN06"
+        ]
       }
     },
     {
@@ -29842,6 +30569,13 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.1.0",
+        "features": [
+          "FSN06",
+          "FSN15"
         ]
       }
     },
@@ -31124,6 +31858,15 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.2.3",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN06",
+          "FSN15"
+        ]
       }
     },
     {
@@ -32404,6 +33147,17 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "1.3",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN15"
         ]
       }
     },
@@ -33686,6 +34440,17 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.3",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN15"
+        ]
       }
     },
     {
@@ -34199,6 +34964,13 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.3.3",
+        "features": [
+          "FSN06",
+          "FSN15"
         ]
       }
     },
@@ -35301,6 +36073,15 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.0.28",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06"
+        ]
       }
     },
     {
@@ -36340,6 +37121,32 @@
                 "gain_db": -12
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "17",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN15"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -37563,6 +38370,16 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "43.3",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN15"
+        ]
       }
     },
     {
@@ -38604,6 +39421,18 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.1.73",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN14",
+          "FSN15"
+        ]
       }
     },
     {
@@ -39465,6 +40294,15 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "2.6",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06"
+        ]
       }
     },
     {
@@ -39978,6 +40816,13 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.8",
+        "features": [
+          "FSN06",
+          "FSN15"
         ]
       }
     },
@@ -40898,6 +41743,34 @@
                 "gain_db": -12
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.31",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -41941,6 +42814,17 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.4.0",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN14",
+          "FSN15"
+        ]
       }
     },
     {
@@ -42982,6 +43866,18 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.3.5",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN14",
+          "FSN15"
+        ]
       }
     },
     {
@@ -43490,6 +44386,13 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.7",
+        "features": [
+          "FSN06",
+          "FSN15"
         ]
       }
     },
@@ -44592,6 +45495,17 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.4",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN15"
+        ]
       }
     },
     {
@@ -45160,6 +46074,13 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.4",
+        "features": [
+          "FSN06",
+          "FSN15"
         ]
       }
     },
@@ -46202,6 +47123,19 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.8.7",
+        "features": [
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20"
+        ]
       }
     },
     {
@@ -46771,7 +47705,48 @@
             ]
           }
         ]
-      }
+      },
+      "features": {
+        "firmware": "2.2",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN10",
+          "FSN11",
+          "FSN15",
+          "FSN17",
+          "FSN18"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": [
+              17,
+              18,
+              19,
+              20
+            ]
+          },
+          {
+            "mode": 2,
+            "scenes": [
+              1,
+              2
+            ]
+          }
+        ]
+      },
+      "confirmed": [
+        "le_audio"
+      ]
     },
     {
       "firmware_code": "JLSPACELITE",
@@ -47930,6 +48905,30 @@
                 "gain_db": -12
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.25",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN08",
+          "FSN12",
+          "FSN15"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -49213,6 +50212,19 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.2.8",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN06",
+          "FSN11",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18"
+        ]
       }
     },
     {
@@ -49551,6 +50563,14 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.5",
+        "features": [
+          "FSN04",
+          "FSN06",
+          "FSN07"
         ]
       }
     },
@@ -50337,6 +51357,19 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.8",
+        "features": [
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20"
         ]
       }
     },
@@ -51509,6 +52542,23 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.0.26",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN03",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN11",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20",
+          "FSN21"
+        ]
       }
     },
     {
@@ -52126,6 +53176,37 @@
                 "gain_db": 3
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "0.3.9",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN11",
+          "FSN12",
+          "FSN15",
+          "FSN17",
+          "FSN18",
+          "FSN20"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -53169,6 +54250,22 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.4.3",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN11",
+          "FSN13",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20"
+        ]
       }
     },
     {
@@ -54208,6 +55305,35 @@
                 "gain_db": -12
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "0.0.39",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN12",
+          "FSN15",
+          "FSN18",
+          "FSN20"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -55250,6 +56376,20 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "2.6.0",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20"
         ]
       }
     },
@@ -56412,6 +57552,43 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "1.1.3",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN06",
+          "FSN08",
+          "FSN11",
+          "FSN13",
+          "FSN15",
+          "FSN18",
+          "FSN19"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": [
+              17,
+              18,
+              19,
+              20,
+              22
+            ]
+          },
+          {
+            "mode": 2,
+            "scenes": [
+              1,
+              2
+            ]
+          }
+        ]
       }
     },
     {
@@ -57451,6 +58628,34 @@
                 "gain_db": -12
               }
             ]
+          }
+        ]
+      },
+      "features": {
+        "firmware": "0.3.8",
+        "features": [
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": []
+          },
+          {
+            "mode": 2,
+            "scenes": []
           }
         ]
       }
@@ -58494,6 +59699,19 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.7.3",
+        "features": [
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20"
+        ]
       }
     },
     {
@@ -59534,6 +60752,22 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "0.2.9",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN11",
+          "FSN13",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20",
+          "FSN26"
         ]
       }
     },
@@ -60816,6 +62050,19 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "3.0.5",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN06",
+          "FSN11",
+          "FSN12",
+          "FSN14",
+          "FSN15",
+          "FSN18"
+        ]
       }
     },
     {
@@ -61857,6 +63104,22 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "5.0.0.4",
+        "features": [
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN11",
+          "FSN13",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20",
+          "FSN26",
+          "FSN28"
+        ]
       }
     },
     {
@@ -62530,6 +63793,22 @@
               }
             ]
           }
+        ]
+      },
+      "features": {
+        "firmware": "1.1.1",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN11",
+          "FSN13",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20"
         ]
       }
     },
@@ -63572,6 +64851,23 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "2.0.8",
+        "features": [
+          "FSN01",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN11",
+          "FSN13",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20",
+          "FSN26",
+          "FSN27"
+        ]
       }
     },
     {
@@ -64251,7 +65547,50 @@
             ]
           }
         ]
-      }
+      },
+      "features": {
+        "firmware": "0.4.3",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN08",
+          "FSN10",
+          "FSN11",
+          "FSN15",
+          "FSN18",
+          "FSN20",
+          "FSN27"
+        ],
+        "noise": [
+          {
+            "mode": 0,
+            "scenes": []
+          },
+          {
+            "mode": 1,
+            "scenes": [
+              17,
+              18,
+              19,
+              20,
+              22
+            ]
+          },
+          {
+            "mode": 2,
+            "scenes": [
+              1,
+              2
+            ]
+          }
+        ]
+      },
+      "confirmed": [
+        "le_audio"
+      ]
     },
     {
       "firmware_code": "S36",
@@ -65292,6 +66631,21 @@
             ]
           }
         ]
+      },
+      "features": {
+        "firmware": "0.0.6",
+        "features": [
+          "FSN01",
+          "FSN02",
+          "FSN04",
+          "FSN05",
+          "FSN06",
+          "FSN13",
+          "FSN14",
+          "FSN15",
+          "FSN18",
+          "FSN20"
+        ]
       }
     }
   ],
@@ -65472,7 +66826,8 @@
     "confirmed": "Commands marked per_model in data/soundpeats/commands.json that the official app offers on this model, as the owner saw in PeatsAudio. Without this, the app does not offer them even if the earbuds answer the read.",
     "eq": "The EQ the official app writes to this model, read from a phone capture: one band per entry with its centre frequency, Q and the base gain the user's gain is added to; the master gain sent with every band; the range of the app's sliders. eq.presets are complete curves sent as they are, with the same master gain.",
     "eq.fixed_bands": "On a model whose eq_merge is append_after_classic: the classic curve's own bands, which the official app sends first and as they are in every write, before the user's bands (eq.bands). Presets are complete curves that start with them.",
-    "touch_disable_inverted": "SOUNDPEATS 2.5.3 shows the touch-disable switch the other way round on this model: its firmware code contains one of the 17 codes in that app's list (docs/soundpeats/PROTOCOL.md section 9). Whether the earbuds' reply, the write or both are inverted was not traced, so PairFree does not act on it yet."
+    "touch_disable_inverted": "SOUNDPEATS 2.5.3 shows the touch-disable switch the other way round on this model: its firmware code contains one of the 17 codes in that app's list (docs/soundpeats/PROTOCOL.md section 9). Whether the earbuds' reply, the write or both are inverted was not traced, so PairFree does not act on it yet.",
+    "features": "From SOUNDPEATS' server, fetched with the owner's account (tools/import_soundpeats_features.py): the feature codes the SOUNDPEATS app shows for this model at that firmware, and noise control's modes (0 off, 1 cancelling, 2 transparency) with each mode's scene codes (ANC_LEVEL under 1, TRANSPARENCY_LEVEL under 2). Untested unless the model has reports."
   },
   "reported_chips": {
     "_about": "Chips named in public reviews. Not from the app and not confirmed on hardware. Use only to guess a family before a probe report exists.",

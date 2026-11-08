@@ -19,14 +19,14 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.lang.reflect.InvocationTargetException
 
 /**
  * The AirPods' control channel: Apple's accessory protocol on classic Bluetooth L2CAP, PSM 0x1001
- * (docs/apple/PROTOCOL.md section 1). Android has no public way to open a classic L2CAP channel, so the
- * socket comes from BluetoothSocket's hidden constructors, tried in turn for each Android version's
- * signature, as LibrePods does (github.com/kavishdevar/librepods, GPL-3.0-or-later,
- * BluetoothConnectionManager.kt). Android's Bluetooth stack then refuses the AirPods' channel on most
- * phones before Android 17 ([AppleSupport]). Each read is one packet.
+ * (docs/apple/PROTOCOL.md section 1). Android's public L2CAP call (API 36's createUsingSocketSettings) takes PSMs up to 255
+ * only, so the socket comes from BluetoothSocket's hidden constructors, tried in turn for each Android version's signature,
+ * as LibrePods does (github.com/kavishdevar/librepods, GPL-3.0-or-later, BluetoothConnectionManager.kt). Android's Bluetooth
+ * stack then refuses the AirPods' channel on most phones before Android 17 ([AppleSupport]). Each read is one packet.
  */
 class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constructor(
     adapter: BluetoothAdapter,
@@ -82,6 +82,13 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
 
         private const val READ_SIZE = 4096
 
+        /** The signatures of BluetoothSocket's constructors, for a connection report when none of ours fits (hidden API rules may hide them). */
+        private fun constructorsOf(): String = try {
+            BluetoothSocket::class.java.declaredConstructors.joinToString(" | ") { c -> c.parameterTypes.joinToString(",") { it.simpleName } }.ifEmpty { "none listed" }
+        } catch (e: RuntimeException) {
+            "not readable"
+        }
+
         /** BluetoothSocket's type for L2CAP. */
         private const val TYPE_L2CAP = 3
 
@@ -92,6 +99,7 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
         private fun l2capSocket(adapter: BluetoothAdapter, device: BluetoothDevice, log: ((String) -> Unit)?): BluetoothSocket {
             val uuid = ParcelUuid.fromString(AppleWire.SERVICE_UUID)
             val psm = AppleWire.PSM
+            val failures = mutableListOf<String>()
             val signatures = listOf(
                 arrayOf(adapter, device, TYPE_L2CAP, true, true, psm, uuid), // Android 16 QPR3
                 arrayOf(device, TYPE_L2CAP, true, true, psm, uuid),
@@ -99,7 +107,6 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
                 arrayOf(TYPE_L2CAP, 1, true, true, device, psm, uuid),
                 arrayOf(TYPE_L2CAP, true, true, device, psm, uuid),
             )
-            var last: Exception? = null
             for ((i, args) in signatures.withIndex()) {
                 try {
                     val types = args.map { it::class.javaPrimitiveType ?: it::class.java }.toTypedArray()
@@ -107,15 +114,20 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
                     constructor.isAccessible = true
                     return (constructor.newInstance(*args) as BluetoothSocket)
                         .also { log?.invoke("socket from BluetoothSocket's hidden constructor ${i + 1} of ${signatures.size}") }
+                } catch (e: InvocationTargetException) {
+                    // The constructor is there and refused: what it threw says why.
+                    failures += "hidden constructor ${i + 1} threw ${e.cause ?: e}"
+                } catch (e: NoSuchMethodException) {
+                    failures += "hidden constructor ${i + 1}: absent"
                 } catch (e: ReflectiveOperationException) {
-                    last = e
+                    failures += "hidden constructor ${i + 1}: ${e.javaClass.simpleName}"
                 } catch (e: SecurityException) {
-                    last = e
+                    failures += "hidden constructor ${i + 1}: ${e.javaClass.simpleName}"
                 } catch (e: IllegalArgumentException) {
-                    last = e
+                    failures += "hidden constructor ${i + 1}: ${e.javaClass.simpleName}"
                 }
             }
-            throw IOException("no L2CAP socket on Android ${Build.VERSION.SDK_INT}: ${last?.message}")
+            throw IOException("no L2CAP socket on Android ${Build.VERSION.SDK_INT}: ${failures.joinToString("; ")}; this Android's constructors: ${constructorsOf()}")
         }
     }
 }

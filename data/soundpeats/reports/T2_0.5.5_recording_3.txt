@@ -1,0 +1,103 @@
+TRUEFREE Clip C10: firmware T2 0.5.5, recording from the official app (second recording)
+Bluetooth name: TRUEFREE Clip C10
+Date:           2026-11-05
+Phone:          a user's phone, Android 16 (API 36), PairFree 0.7.2
+Source:         GitHub issue #9, PairFree's Record from the official app, unedited. The user re-recorded because the first
+                recording's preset names did not match the curves (below, "Bass enhance" now boosts the low bands and "Bass
+                weakening" cuts them); this one wins. Its tenth curve, Adaptive EQ, is a hearing-test result of the user's own.
+
+PairFree recording from the official app
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues so this model's controls and
+equalizer can be added. It holds no names, addresses or other personal data.
+
+Model:     TRUEFREE Clip C10, firmware T2_20250506_V0.5.5
+App:       PairFree 0.7.2
+Phone:     Android 16 (API 36), motorola moto g37
+Recorded:  2026-11-05 11:26, phone's local time
+
+---- What PeatsAudio read from TRUEFREE Clip C10, firmware T2_20250506_V0.5.5 (from the Bluetooth log) ----
+firmware_version 0309  raw=54 32 5f 32 30 32 35 30 35 30 36 5f 56 30 2e 35 2e 35
+battery_left 0306  raw=00 64
+battery_right 0307  raw=00 5a
+battery_case 0323  raw=00 64
+game_mode 030E  raw=00 00
+dynamic_eq 0331  raw=00 00
+movie_mode 0327  raw=00 00
+reset_state 0367  no reply
+
+---- What PairFree reads on connect from TRUEFREE Clip C10, firmware T2_20250506_V0.5.5 ----
+firmware_version 0309  raw=54 32 5f 32 30 32 35 30 35 30 36 5f 56 30 2e 35 2e 35
+battery_left 0306  raw=00 5a
+battery_right 0307  raw=00 5a
+battery_case 0323  raw=00 64
+anc_mode 0310  no reply
+anc_level 0324  no reply
+transparency_level 034C  no reply
+anc_env_adaptive 0364  no reply
+game_mode 030E  raw=00 00
+multipoint 0314  raw=00 01
+ldac 0338  no reply
+le_audio 0335  no reply
+in_ear_detection 030C  no reply
+touch_disabled 0312  raw=00 00
+custom_keys 03AA  raw=01 02 02 01 03 03 04 03 05 04 06 08 07 05 08 06
+prompt_volume 0319  raw=00 2b
+auto_shutdown 036E  no reply
+voice_language 0321  raw=00 00
+dynamic_eq 0331  raw=00 00
+dynamic_bass 033C  no reply
+movie_mode 0327  raw=00 00
+spatial_audio 0357  no reply
+panoramic_sound 0329  no reply
+dolby 0348  no reply
+adaptive_volume 0346  no reply
+personal_volume 0340  raw=00 00 00 19 00 19
+ear_volume_left 0342  no reply
+ear_volume_right 0343  no reply
+light_effect 030A  no reply
+privacy_mode 036B  no reply
+fall_detection 0355  no reply
+water_drain 0350  raw=00 00
+reset_state 0367  no reply
+find_left 034A  raw=00 00
+find_right 034B  raw=00 00
+earbud_color 0326  raw=00 00
+hearing_protection 034E  no reply
+volume_balance 0375  no reply
+phone_codec 0377  no reply
+
+---- Equalizer: the curves PeatsAudio sent ----
+Firmware:  T2_20250506_V0.5.5
+EQ:        command 0E02, 16 bands, master gain -2 dB
+
+1. TRUEFREE Classic
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800ba00001ccc 100aff88017700001ccc 100bff8802ee00001ccc 100cff8805dc00001ccc 100dff88012c00001ccc 100eff88177000001ccc 100fff882ee000001ccc 1010ff885dc000001ccc
+
+2. Hightone enhancement
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800ba00000ccc 100aff88017700000ccc 100bff8802ee00000ccc 100cff8805dc00000ccc 100dff880bb800000ccc 100eff881770003c0ccc 100fff882ee000780ccc 1010ff885dc000780ccc
+
+3. Bass enhance
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800ba00780ccc 100aff88017700780ccc 100bff8802ee00780ccc 100cff8805dc003c0ccc 100dff880bb800000ccc 100eff88177000000ccc 100fff882ee000000ccc 1010ff885dc000000ccc
+
+4. Bass weakening
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800baff880ccc 100aff880177ff880ccc 100bff8802eeff880ccc 100cff8805dcffc40ccc 100dff880bb800000ccc 100eff88177000000ccc 100fff882ee000000ccc 1010ff885dc000000ccc
+
+5. Rock
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800ba003c0ccc 100aff88017700780ccc 100bff8802ee00780ccc 100cff8805dc00780ccc 100dff880bb8ff100ccc 100eff881770003c0ccc 100fff882ee000780ccc 1010ff885dc000780ccc
+
+6. Popularity
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800baff880ccc 100aff880177003c0ccc 100bff8802ee00780ccc 100cff8805dc00780ccc 100dff880bb8003c0ccc 100eff881770ff880ccc 100fff882ee0ffc40ccc 1010ff885dc0ff880ccc
+
+7. Electronic
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800ba00780ccc 100aff88017700780ccc 100bff8802ee003c0ccc 100cff8805dcffc40ccc 100dff880bb8003c0ccc 100eff88177000000ccc 100fff882ee0003c0ccc 1010ff885dc000b40ccc
+
+8. Ballad
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800baff100ccc 100aff88017700f00ccc 100bff8802eeff880ccc 100cff8805dcffc40ccc 100dff880bb8003c0ccc 100eff88177000780ccc 100fff882ee000780ccc 1010ff885dc0ffc40ccc
+
+9. Classical
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff8800ba00780ccc 100aff88017700780ccc 100bff8802ee003c0ccc 100cff8805dc003c0ccc 100dff880bb8ffc40ccc 100eff881770ffc40ccc 100fff882ee0ff880ccc 1010ff885dc0ff4c0ccc
+
+10. Adaptive EQ (myself
+1001ff88009600000e66 1002ff88010e00060b33 1003ff8803a2ff101000 1004ff880708ffc41000 1005ff88122a00b41800 1006ff881e3cfda80ccc 1007ff8848a8fe5c2800 1008ff885bc2fe202ccc 1009ff880177ff101800 100aff8802eeff101800 100bff8805dcff101800 100cff880960ff101800 100dff880e10ff4c1800 100eff881770ff4c1800 100fff882ee0ff4c1800 1010ff884650ff4c1800
+

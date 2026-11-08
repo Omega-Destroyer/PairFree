@@ -779,4 +779,35 @@
     <string name="setting_power_off_timer">Timed power off</string>
     <string name="setting_power_off_timer_minutes">In %1$d min</string>
     <string name="setting_power_off_timer_note">The earbuds turn off once, when the time is up.</string>
+
+    <!-- Home screen widget (docs/DESIGN.md, Widget) -->
+    <string name="widget_description">Switch noise control or an equalizer setting from the home screen.</string>
+    <string name="widget_set_up">Tap to set up PairFree\'s widget</string>
+    <string name="widget_caption_noise">Noise</string>
+    <string name="widget_caption_eq">EQ</string>
+    <string name="widget_profile_missing">Removed</string>
+    <string name="widget_channel">Widget actions</string>
+    <string name="widget_working">Changing %1$s…</string>
+    <string name="widget_syncing">Reading your earbuds…</string>
+    <string name="widget_title">Widget buttons</string>
+    <string name="widget_needs_permission">PairFree needs the Bluetooth permission first. Open PairFree to allow it.</string>
+    <string name="widget_open_app">Open PairFree</string>
+    <string name="widget_no_earbuds">No supported earbuds are paired with this phone.</string>
+    <string name="widget_connect_once">Some choices appear after these earbuds have connected to PairFree once.</string>
+    <string name="widget_nothing_to_offer">PairFree has nothing to put on a widget button for these earbuds.</string>
+    <string name="widget_size_hint">A 1×1 widget shows the first button; wider widgets show more of the first row, and two rows show the second.</string>
+    <string name="widget_follows_hint">The widget shows the buttons of whichever of these earbuds is connected.</string>
+    <string name="widget_not_set_up">Not set up</string>
+    <string name="widget_buttons_set">Buttons set: %1$d</string>
+    <string name="widget_empty_slot">Empty</string>
+    <string name="widget_type_empty">Empty</string>
+    <string name="widget_type_noise">Noise control</string>
+    <string name="widget_type_noise_cycle">Noise control toggle</string>
+    <string name="widget_type_eq">Equalizer</string>
+    <string name="widget_type_eq_cycle">Equalizer toggle</string>
+    <string name="widget_cycle_hint">Tick the choices to step through, in the order you tick them. Pick at least two.</string>
+    <string name="widget_slot_description">%1$s: %2$s. Double tap to change.</string>
+    <string name="widget_save">Save</string>
+    <string name="widget_done">Done</string>
+    <string name="widget_cancel">Cancel</string>
 </resources>

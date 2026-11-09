@@ -4,6 +4,9 @@ Research date: **2026-11-09**. Target: **Soundcore Sleep A30, D1301**. This is a
 assessment; it adds no upload implementation and reports no successful upload to real earbuds.
 
 For an owner's next capture, use the [step-by-step A30 Bluetooth recording guide](SLEEP_A30_CAPTURE_GUIDE.md).
+The recorder now exports safe transfer diagnostics through PairFree's normal public text report;
+raw logs and full Android bug reports are not requested. See the recording scope in section 13
+of [PROTOCOL.md](PROTOCOL.md).
 
 ## Decision
 

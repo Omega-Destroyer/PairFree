@@ -467,3 +467,17 @@ app/native investigation and a proposed saved-file library. The A30 holds one lo
 The app's generic SBC container writer was reproduced in isolation, but its A30 use, accepted
 encoding, transfer commands and maximum clip size/duration remain unverified. No audio uploader
 is implemented or hardware-tested by that assessment; existing D1301 settings are separate.
+
+**Recording support:** PairFree's on-phone snoop filter now retains timing, sizes and at most
+four preview bytes for unknown framed Soundcore messages, plus metadata for unframed data on a
+previously identified Soundcore RFCOMM channel. Its CRC-checked `6611`-family container recognizer
+exports payload length/type/check results without the filename, 64-bit identifier or audio.
+The recognizer also covers a header split across packets of the same command and connection;
+it does not infer the A30's format or upload command IDs. Bulk packet reports retain samples
+and total counts instead of dumping audio. Known alarm, clock and sleep-history traffic remains
+private. D1301 listening/default/sleep-switch controls from OpenSCQ30 have recording names and
+bounded body sizes in `commands.json`; these entries add no probes or settings.
+
+The [capture guide](SLEEP_A30_CAPTURE_GUIDE.md) uses PairFree's filtered public report rather
+than requesting raw files. This needs a build containing these recorder changes. A separate
+unidentified transfer channel or another container format still requires further app analysis.

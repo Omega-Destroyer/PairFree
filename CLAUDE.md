@@ -145,6 +145,14 @@ Speakers are held as future work (owner, 2026-10-30): reports from Bose and Sony
   that has them, tested or not (owner, 2026-10-14); `buttons.checked` only says how far the writes are
   confirmed. Settings no shared screen holds are brand rows from `SoundcoreSession.groups` (so far the Sleep
   A20's sleep timer). A user's recording's writes go into `test_vectors.json` and the Kotlin tests rebuild them.
+- Soundcore recording research: `SoundcoreRecording` recognizes the native 6.4.0 SBC container header
+  by its CRC and exports technical fields while omitting name, identifier and audio. Unknown framed
+  messages retain four preview bytes and size/timing summaries; unframed data is counted only on an
+  identified Soundcore RFCOMM channel. Alarm/clock/sleep-history bodies stay private. The capture guide
+  `docs/soundcore/SLEEP_A30_CAPTURE_GUIDE.md` uses the on-phone filter and public text report, never a
+  request for raw logs. D1301 upload IDs, codec/limits and hardware acceptance are still unverified;
+  this recorder change does not implement uploads. The native research is under
+  `E:\Builds\research\soundcore-a30-2026-11-09`; see `docs/soundcore/SLEEP_A30_AUDIO_FEASIBILITY.md`.
 - The Soundcore model list comes from OpenSCQ30, with the Sleep A20 (A6611), which its library does not
   support, from its device faker's captured state and a user's recording (kept by the importer). Earbuds and
   headphones only the Soundcore app's strings name (6.4.0) are `report_only`: PairFree finds them, asks for

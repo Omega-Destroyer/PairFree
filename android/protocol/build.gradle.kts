@@ -292,6 +292,10 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
         val names = commands.joinToString(", ") { "0x${it.getValue("command")} to \"${it.getValue("id")}\"" }
         out.appendLine("    /** Each command's name in data/soundcore/commands.json. */")
         out.appendLine("    public val NAMES: Map<Int, String> = mapOf($names)")
+        val captureSizes = commands.filter { it["capture_max_bytes"] != null }
+            .joinToString(", ") { "0x${it.getValue("command")} to ${it.getValue("capture_max_bytes")}" }
+        out.appendLine("    /** Maximum verified recording body size; larger bodies get only a short preview. */")
+        out.appendLine("    public val CAPTURE_MAX_BYTES: Map<Int, Int> = mapOf($captureSizes)")
         out.appendLine("}")
 
         @Suppress("UNCHECKED_CAST")

@@ -1,0 +1,30 @@
+{
+ "name": "SoundPEATS Air5 Pro",
+ "names": [
+  "Hi Listening",
+  "SOUNDPEATS A8",
+  "SOUNDPEATS Air5 Pro",
+  "SOUNDPEATS AirClip",
+  "SOUNDPEATS C30",
+  "SOUNDPEATS ChatFree",
+  "SOUNDPEATS Clear",
+  "SOUNDPEATS Clear Dot",
+  "SOUNDPEATS Clear-Pods",
+  "SOUNDPEATS CyberGear",
+  "SOUNDPEATS ECHO",
+  "SOUNDPEATS Echo",
+  "SOUNDPEATS Force Pro",
+  "SOUNDPEATS HearFit",
+  "SOUNDPEATS T3 Pro"
+ ],
+ "source": "Traced from SOUNDPEATS' product picture (Air5 Pro, a bud turned upright; the other stem models (Clear, HearFit, ChatFree, Force Pro and the rest) look like it, not checked one by one), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "136,58 161,49 181,47 201,49 222,56 241,67 260,85 268,98 275,121 276,146 274,167 268,184 254,212 242,419 237,434 229,445 219,452 203,457 183,456 168,449 157,438 150,420 149,393 155,258 131,272 111,276 88,277 63,271 46,263 31,248 20,232 11,205 11,185 14,169 24,147 35,132 53,115 77,108 101,81 120,66",
+  "axis": [
+   195.2,
+   157.8
+  ]
+ },
+ "case": "generic"
+}

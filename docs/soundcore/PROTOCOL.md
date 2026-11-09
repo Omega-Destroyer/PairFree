@@ -459,3 +459,11 @@ nor PairFree reads.
   OpenSCQ30, and so PairFree, sends the four sound mode bytes alone. Not changed until a user says
   whether PairFree's noise mode works on the Q20i: what the two bytes are is not known.
 - The earbuds answered each mode change with `0B 02` (seven bytes, left out of the recording).
+
+## 13. Sleep A30 (D1301): custom local audio research
+
+The [custom-audio feasibility assessment](SLEEP_A30_AUDIO_FEASIBILITY.md) records the 2026-11-09
+app/native investigation and a proposed saved-file library. The A30 holds one local audio file.
+The app's generic SBC container writer was reproduced in isolation, but its A30 use, accepted
+encoding, transfer commands and maximum clip size/duration remain unverified. No audio uploader
+is implemented or hardware-tested by that assessment; existing D1301 settings are separate.

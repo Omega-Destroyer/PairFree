@@ -1,0 +1,26 @@
+{
+ "name": "JBL Endurance Race 2",
+ "names": [
+  "JBL Endurance Race 2",
+  "JBL Reflect Aero",
+  "JBL REFLECT MINI NC"
+ ],
+ "codes": [
+  "JBL Endurance Race 2",
+  "JBL Reflect Aero",
+  "JBL REFLECT MINI NC"
+ ],
+ "source": "Traced from the render JBL's app bundles (endurance_race_2_mono_left_black, the left bud; the Reflect models are sport buds with a wing too), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "174,100 189,102 206,108 242,136 268,138 295,148 317,166 333,193 339,217 339,241 322,311 315,326 305,339 296,348 282,356 270,360 254,360 232,356 209,343 189,323 177,320 166,322 161,336 152,343 137,348 117,347 96,337 86,326 80,314 73,283 77,265 85,252 99,241 114,235 126,235 139,243 143,240 150,205 161,180 151,139 152,120 160,106",
+  "holes": [
+   "177,125 184,124 192,127 202,134 214,145 213,149 198,163 185,165 176,158 172,133 173,128"
+  ],
+  "axis": [
+   206.3,
+   230.2
+  ]
+ },
+ "case": "generic"
+}

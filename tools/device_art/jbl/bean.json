@@ -1,0 +1,31 @@
+{
+ "name": "JBL Club Pro+ TWS",
+ "names": [
+  "JBL CLUB PRO+ TWS",
+  "JBL TOUR PRO+ TWS",
+  "JBL LIVE FREE NC+ TWS",
+  "JBL LIVE FREE 2 TWS",
+  "JBL LIVE300TWS",
+  "JBL Quantum TWS",
+  "JBL Quantum TWS Air"
+ ],
+ "codes": [
+  "JBL CLUB PRO+ TWS",
+  "JBL TOUR PRO+ TWS",
+  "JBL LIVE FREE NC+ TWS",
+  "JBL LIVE FREE 2 TWS",
+  "JBL LIVE300TWS",
+  "JBL Quantum TWS",
+  "JBL Quantum TWS Air"
+ ],
+ "source": "Traced from the render JBL's app bundles (club_pro_tws_left_black, the left bud; the other round, stemless TWS models share its form (not checked against their own renders)), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "211,99 245,100 270,107 290,122 312,153 315,163 314,174 307,204 304,235 297,262 295,288 281,320 269,336 253,345 219,354 208,379 188,393 168,401 148,402 129,395 114,383 102,366 97,348 97,330 106,311 120,292 137,280 140,275 109,216 104,193 105,179 110,165 117,151 149,120 173,109",
+  "axis": [
+   205.6,
+   250.9
+  ]
+ },
+ "case": "generic"
+}

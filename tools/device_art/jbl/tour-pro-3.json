@@ -1,0 +1,19 @@
+{
+ "name": "JBL Tour Pro 3",
+ "names": [
+  "JBL Tour Pro 3"
+ ],
+ "codes": [
+  "JBL Tour Pro 3"
+ ],
+ "source": "Traced from the render JBL's app bundles (jbl_tour_pro3_20f2_black_left, the left bud, turned 12 degrees so the stem stands upright), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "222,262 245,270 266,288 276,308 281,333 278,361 267,389 272,487 270,505 265,516 257,525 246,532 236,535 227,534 211,527 197,510 193,497 190,436 188,431 162,434 136,427 119,439 106,441 90,439 75,433 61,420 52,403 48,387 49,374 54,362 68,345 87,337 114,337 138,303 160,281 175,270 197,263",
+  "axis": [
+   232.6,
+   335.9
+  ]
+ },
+ "case": "generic"
+}

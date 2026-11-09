@@ -3,6 +3,8 @@
 Research date: **2026-11-09**. Target: **Soundcore Sleep A30, D1301**. This is a research
 assessment; it adds no upload implementation and reports no successful upload to real earbuds.
 
+For an owner's next capture, use the [step-by-step A30 Bluetooth recording guide](SLEEP_A30_CAPTURE_GUIDE.md).
+
 ## Decision
 
 The requested **phone-side library is feasible**: import an audio file once, retain an app-owned

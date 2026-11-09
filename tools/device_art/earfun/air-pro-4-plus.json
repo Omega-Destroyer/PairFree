@@ -10,7 +10,7 @@
   "TW700AI",
   "TW800"
  ],
- "source": "Traced from the render EarFun's app bundles (tw700_key_l, the left bud; the Air Pro 5 (tw800), which the app has no picture of, shares its form), not in the repo.",
+ "source": "Traced from the render EarFun's app bundles (tw700_key_l, the left bud; the Air Pro 5 (tw800), which the app has no picture of, shares its form), not in the repo. Case traced from tw700_box.",
  "bud": {
   "kind": "bud",
   "body": "344,147 367,147 389,152 408,161 428,176 440,190 452,211 457,229 460,252 453,286 439,313 419,335 383,359 378,365 375,546 372,574 365,591 355,602 339,609 321,610 305,607 292,599 283,587 278,571 273,413 268,409 250,407 232,401 203,381 192,368 180,347 175,329 172,308 175,291 181,272 189,258 202,243 231,223 255,194 280,173 310,156",
@@ -19,5 +19,13 @@
    272.3
   ]
  },
- "case": "generic"
+ "case": {
+  "outline": "189,13 440,13 469,15 494,19 516,27 534,38 549,52 568,82 578,124 579,318 576,346 568,377 557,397 542,415 529,425 511,434 491,440 465,445 197,446 164,443 135,437 110,425 89,406 78,391 69,373 61,330 59,164 61,124 65,99 71,82 80,64 92,49 107,37 123,27 142,20",
+  "seam": "60,327 231,327 403,327 579,327",
+  "led": [
+   319.6,
+   330.9,
+   8
+  ]
+ }
 }

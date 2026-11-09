@@ -1,0 +1,19 @@
+{
+ "name": "Pixel Buds 2a",
+ "names": [
+  "Pixel Buds 2a"
+ ],
+ "codes": [
+  "Pixel Buds 2a"
+ ],
+ "source": "Traced from the render the Pixel Buds app bundles (otts_both_done_dark_haze_type9, the left bud, outside), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "203,234 224,236 240,241 258,252 270,264 283,286 294,297 302,312 305,330 302,346 297,356 290,365 275,375 252,380 224,395 206,398 188,396 163,386 137,382 111,371 95,355 88,336 88,314 96,297 116,280 143,270 155,256 168,246 184,238",
+  "axis": [
+   196.3,
+   316.2
+  ]
+ },
+ "case": "generic"
+}

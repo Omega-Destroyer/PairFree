@@ -1,0 +1,19 @@
+{
+ "name": "EarFun Air Life",
+ "names": [
+  "EarFun Air Life"
+ ],
+ "codes": [
+  "TW205"
+ ],
+ "source": "Traced from the render EarFun's app bundles (tw205_detail, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "210,92 234,94 253,103 268,119 274,140 274,154 269,170 260,185 242,205 241,327 233,340 213,348 194,341 185,329 183,315 182,233 179,232 163,236 148,237 129,231 113,213 106,190 108,175 115,161 128,149 145,139 165,113 186,99",
+  "axis": [
+   211.9,
+   161.4
+  ]
+ },
+ "case": null
+}

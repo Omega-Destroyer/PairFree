@@ -1,0 +1,21 @@
+{
+ "name": "EarFun Free 2S / EarFun Free 1S",
+ "names": [
+  "EarFun Free 1S",
+  "EarFun Free 2S"
+ ],
+ "codes": [
+  "TW100",
+  "TW101S"
+ ],
+ "source": "Traced from the render EarFun's app bundles (tw101s_left_s, the left bud; the Free 1S (tw100s) has the same round form), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "200,122 247,124 287,135 320,154 347,180 368,216 379,252 381,294 373,336 360,366 334,401 297,436 261,461 232,473 197,479 171,497 142,507 106,510 80,505 63,498 49,488 34,473 23,457 12,422 12,400 16,382 32,349 66,315 64,274 67,241 76,214 94,181 114,159 139,141 167,129",
+  "axis": [
+   196.7,
+   316.2
+  ]
+ },
+ "case": null
+}

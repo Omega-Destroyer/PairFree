@@ -1,0 +1,23 @@
+{
+ "name": "Soundcore Sleep A20",
+ "names": [
+  "Soundcore Sleep A10",
+  "Soundcore Sleep A20"
+ ],
+ "codes": [
+  "Soundcore Sleep A10",
+  "Soundcore Sleep A20",
+  "A6610",
+  "A6611"
+ ],
+ "source": "Traced from soundcore.com's product picture (Sleep A20, a bud; the Sleep A10 has the same shape), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "399,293 411,294 424,301 433,311 439,326 442,329 470,329 499,339 524,337 549,341 567,348 586,361 599,379 607,395 613,415 615,430 609,463 600,479 590,490 569,506 551,512 539,512 517,506 485,515 462,518 440,515 405,502 384,485 368,465 354,437 345,404 343,375 348,347 361,320 380,301",
+  "axis": [
+   479.0,
+   405.5
+  ]
+ },
+ "case": "generic"
+}

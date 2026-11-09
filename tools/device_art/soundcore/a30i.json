@@ -1,0 +1,20 @@
+{
+ "name": "Soundcore A30i",
+ "names": [
+  "soundcore A30i"
+ ],
+ "codes": [
+  "soundcore A30i",
+  "A3958"
+ ],
+ "source": "Traced from soundcore.com's product picture (A30i, a bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "44,352 55,353 66,357 78,371 87,399 99,411 108,413 112,400 128,396 151,398 165,404 173,418 178,443 177,456 171,469 153,480 130,486 124,484 118,473 115,473 83,490 68,494 53,492 40,486 27,477 15,462 6,443 1,408 6,386 16,369 28,358",
+  "axis": [
+   89.5,
+   423.2
+  ]
+ },
+ "case": "generic"
+}

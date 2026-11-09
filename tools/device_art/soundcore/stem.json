@@ -1,0 +1,31 @@
+{
+ "name": "Soundcore Life P3i",
+ "names": [
+  "Soundcore Life P3i",
+  "Soundcore P3i",
+  "Soundcore VR P10",
+  "soundcore K20i",
+  "soundcore P41i"
+ ],
+ "codes": [
+  "Soundcore Life P3i",
+  "Soundcore P3i",
+  "Soundcore VR P10",
+  "soundcore K20i",
+  "soundcore P41i",
+  "A3850",
+  "A3937",
+  "A3993",
+  "A3994"
+ ],
+ "source": "Traced from soundcore.com's product picture (Life P3i, a bud turned upright; the K20i, P41i and VR P10 are stem buds too (not checked against their own pictures)), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "198,275 217,266 235,261 251,261 269,264 284,272 297,282 306,296 311,312 312,328 306,347 296,361 278,379 269,399 267,416 261,532 253,545 241,549 218,547 209,543 205,536 204,524 206,407 202,405 176,405 155,397 139,381 132,361 133,338 143,318 156,306 172,298",
+  "axis": [
+   232.3,
+   338.6
+  ]
+ },
+ "case": "generic"
+}

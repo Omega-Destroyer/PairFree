@@ -8,14 +8,17 @@
   "Soundcore P40i",
   "Soundcore R50i",
   "Soundcore R50i NC",
-  "Soundcore R60i NC"
+  "Soundcore R60i NC",
+  "soundcore R50i VI"
  ],
  "codes": [
   "A3949",
   "A3955",
   "A3959",
+  "A3969",
   "D1202",
-  "D1202C"
+  "D1202C",
+  "soundcore R50i VI"
  ],
  "source": "Traced from Soundcore's P20i product photo; not in the repo.",
  "bud": {

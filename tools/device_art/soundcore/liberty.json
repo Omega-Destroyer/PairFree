@@ -1,16 +1,24 @@
 {
  "name": "Soundcore Liberty 5",
  "names": [
+  "Soundcore Liberty 4",
   "Soundcore Liberty 4 NC",
   "Soundcore Liberty 4 Pro",
   "Soundcore Liberty 5",
-  "Soundcore Liberty Air 2 Pro"
+  "Soundcore Liberty Air 2",
+  "Soundcore Liberty Air 2 Pro",
+  "Soundcore Liberty Air2"
  ],
  "codes": [
+  "A3910",
   "A3947",
   "A3951",
+  "A3953",
   "A3954",
-  "A3957"
+  "A3957",
+  "Soundcore Liberty 4",
+  "Soundcore Liberty Air 2",
+  "Soundcore Liberty Air2"
  ],
  "source": "Traced from Soundcore's Liberty 5 render; not in the repo.",
  "bud": {

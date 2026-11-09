@@ -1,0 +1,27 @@
+{
+ "name": "Soundcore Life A3i",
+ "names": [
+  "Soundcore A1",
+  "Soundcore A3i",
+  "Soundcore Life A1",
+  "Soundcore Life A3i"
+ ],
+ "codes": [
+  "Soundcore A1",
+  "Soundcore A3i",
+  "Soundcore Life A1",
+  "Soundcore Life A3i",
+  "A3927",
+  "A3992"
+ ],
+ "source": "Traced from soundcore.com's product picture (Life A3i, a bud; the Life A1 is a round bud too), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "205,236 234,240 256,251 274,271 284,298 286,317 281,369 281,391 287,409 300,422 311,438 316,455 318,470 313,491 305,506 291,519 268,527 245,527 223,520 205,506 193,490 169,477 149,461 134,444 123,426 108,383 106,360 110,333 119,310 131,287 150,262 162,252 184,241",
+  "axis": [
+   211.8,
+   381.9
+  ]
+ },
+ "case": "generic"
+}

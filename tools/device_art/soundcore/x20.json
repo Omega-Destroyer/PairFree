@@ -1,10 +1,13 @@
 {
  "name": "Soundcore Sport X20",
  "names": [
+  "Soundcore Sport X10",
   "Soundcore Sport X20"
  ],
  "codes": [
-  "A3968"
+  "A3961",
+  "A3968",
+  "Soundcore Sport X10"
  ],
  "source": "Traced from Soundcore's Sport X20 product photo; not in the repo.",
  "bud": {

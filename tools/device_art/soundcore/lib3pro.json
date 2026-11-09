@@ -1,14 +1,17 @@
 {
  "name": "Soundcore Liberty 3 Pro",
  "names": [
+  "Soundcore Liberty 2",
   "Soundcore Liberty 2 Pro",
   "Soundcore Liberty 2 Pro+",
   "Soundcore Liberty 3 Pro"
  ],
  "codes": [
   "A3909",
+  "A3913",
   "A3930",
-  "A3952"
+  "A3952",
+  "Soundcore Liberty 2"
  ],
  "source": "Traced from Soundcore's Liberty 3 Pro product photo; not in the repo.",
  "bud": {

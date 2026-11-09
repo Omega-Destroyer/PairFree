@@ -3,14 +3,22 @@
  "names": [
   "Soundcore Life Note 3",
   "Soundcore Life Note 3S",
+  "Soundcore Life Note 3i",
   "Soundcore Life P2 Mini",
-  "Soundcore Life P3"
+  "Soundcore Life P3",
+  "Soundcore Note 3i",
+  "soundcore Life Note C"
  ],
  "codes": [
   "A3933",
   "A3939",
+  "A3943",
   "A3944",
-  "A3945"
+  "A3945",
+  "A3983",
+  "Soundcore Life Note 3i",
+  "Soundcore Note 3i",
+  "soundcore Life Note C"
  ],
  "source": "Traced from a Life Note 3 retail studio photo; not in the repo.",
  "bud": {

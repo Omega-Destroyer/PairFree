@@ -2,11 +2,14 @@
  "name": "Soundcore AeroClip",
  "names": [
   "Soundcore AeroClip",
-  "Soundcore C30i"
+  "Soundcore C30i",
+  "soundcore C40i"
  ],
  "codes": [
   "A3330",
-  "A3388"
+  "A3331",
+  "A3388",
+  "soundcore C40i"
  ],
  "source": "Traced from Soundcore's AeroClip render; not in the repo.",
  "bud": {

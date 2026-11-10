@@ -262,8 +262,16 @@ class SonySessionTest {
         assertEquals(listOf(out(0x68, 0x17, 0x01, 0x01, 0x00, 0x00, 12)), s.set(Command.ANC_MODE, 1))
         assertEquals(1, s.state.number(Command.ANC_MODE))
         assertEquals(listOf(out(0x68, 0x17, 0x01, 0x00, 0x00, 0x00, 12)), s.set(Command.ANC_MODE, 0))
-        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x00, 0x00, 0x01, 12)), s.change(SettingChange.Toggle("voice_focus", true)))
-        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x00, 0x00, 0x01, 20)), s.change(SettingChange.Level("ambient_volume", 25)))
+        // Outside ambient sound the level and voice pass through do nothing: they show greyed out and refuse changes (issue #26).
+        assertEquals(false, (setting(s, "ambient_volume") as Setting.Level).enabled)
+        assertEquals(false, (setting(s, "voice_focus") as Setting.Toggle).enabled)
+        assertNull(s.change(SettingChange.Toggle("voice_focus", true)))
+        assertNull(s.change(SettingChange.Level("ambient_volume", 25)))
+        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x01, 0x01, 0x00, 12)), s.set(Command.ANC_MODE, 2))
+        assertEquals(true, (setting(s, "ambient_volume") as Setting.Level).enabled)
+        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x01, 0x01, 0x01, 12)), s.change(SettingChange.Toggle("voice_focus", true)))
+        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x01, 0x01, 0x01, 20)), s.change(SettingChange.Level("ambient_volume", 25)))
+        s.set(Command.ANC_MODE, 1)
         // A notification replaces what showed.
         s.receive(message(0x69, 0x17, 0x01, 0x01, 0x00, 0x00, 5))
         assertEquals(1, s.state.number(Command.ANC_MODE))

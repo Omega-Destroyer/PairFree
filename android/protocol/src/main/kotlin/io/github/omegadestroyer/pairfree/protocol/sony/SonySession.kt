@@ -447,8 +447,10 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
             if (!n.hasNoiseCancelling) add(Setting.Toggle("ambient_sound", n.mode == SonyNoise.Mode.AMBIENT))
             n.wind?.let { add(Setting.Toggle("wind_reduction", it, enabled = n.mode == SonyNoise.Mode.NOISE_CANCELLING)) }
             if (n.hasAmbient) {
-                n.level?.let { add(Setting.Level("ambient_volume", it.coerceIn(0, AMBIENT_MAX), 0, AMBIENT_MAX)) }
-                n.voice?.let { add(Setting.Toggle("voice_focus", it)) }
+                // The ambient level and voice pass through do nothing outside ambient sound (GitHub issue #26): shown, greyed out.
+                val ambient = n.mode == SonyNoise.Mode.AMBIENT
+                n.level?.let { add(Setting.Level("ambient_volume", it.coerceIn(0, AMBIENT_MAX), 0, AMBIENT_MAX, enabled = ambient)) }
+                n.voice?.let { add(Setting.Toggle("voice_focus", it, enabled = ambient)) }
             }
         }
         speakToChat?.let { add(Setting.Toggle("speak_to_chat", it)) }
@@ -493,7 +495,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                 } ?: return null
             }
             is SettingChange.Level -> {
-                if (setting !is Setting.Level) return null
+                if (setting !is Setting.Level || !setting.enabled) return null
                 val v = change.value.coerceIn(setting.min, setting.max)
                 when (change.key) {
                     "ambient_volume" -> noiseSet(level = v)

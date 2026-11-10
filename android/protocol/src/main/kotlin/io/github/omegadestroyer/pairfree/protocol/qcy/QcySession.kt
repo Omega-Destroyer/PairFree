@@ -274,7 +274,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     }
 
     /** Off, cancelling and transparency on the shared control, where the model has all three (or is not known). */
-    private val sharedNoise: Boolean
+    public val sharedNoise: Boolean
         get() = model == null || listOf(OFF, CANCELLING, TRANSPARENCY).all { model.mode(it) != null }
 
     /** Every setting the earbuds have, grouped by heading and tab. */

@@ -53,7 +53,7 @@ class OneMoreTest {
         assertEquals(commands.size, OneMoreCommand.NAMES.size)
         val never = commands.filter { it["never_send"]?.jsonPrimitive?.boolean == true }.map { it.str("code").toInt(16) }.toSet()
         assertEquals(never, OneMoreCommand.NEVER_SEND)
-        assertTrue(OneMoreCommand.HANDSHAKE in never && OneMoreCommand.DELETE_MUSIC in never && OneMoreCommand.TRANSFER_DATA in never)
+        assertTrue(OneMoreCommand.DELETE_MUSIC in never && OneMoreCommand.TRANSFER_DATA in never && OneMoreCommand.HANDSHAKE !in never)
         val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
         assertEquals(devices.size, OneMoreModels.ALL.size)
         assertEquals(devices.map { it.str("name") }.toSet().size, devices.size, "one entry per Bluetooth name")
@@ -96,7 +96,8 @@ class OneMoreTest {
     fun noiseControlOnTheAero() {
         val s = OneMoreSession(aero)
         val start = s.start().map { it.command }
-        assertEquals(OneMoreCommand.GET_BINAURAL_INFO, start.first())
+        // 1MORE's app opens with the handshake, then reads the battery.
+        assertEquals(listOf(OneMoreCommand.HANDSHAKE, OneMoreCommand.GET_BINAURAL_INFO), start.take(2))
         assertTrue(OneMoreCommand.GET_LISTEN_MODE in start && OneMoreCommand.GET_ALL_CUSTOM in start && OneMoreCommand.FIND_DEVICE_SUPPORT in start)
         assertFalse(OneMoreCommand.GET_CONNECTION_MODE in start, "the Aero has no connection modes")
         assertTrue(s.start().all(s::allowed))
@@ -243,9 +244,39 @@ class OneMoreTest {
     }
 
     @Test
+    fun theFramesTheAppSentToAVirtualAero() {
+        // data/1more/emulator_vectors.json: 1MORE's app 2.0.0 against a synthetic Aero (docs/1more/VIRTUAL_TESTING.md).
+        val v = load("emulator_vectors.json")
+        val s = OneMoreSession(aero)
+        val first = s.start().first().bytes()
+        // The sequence number differs: the frame is the app's up to it.
+        val appHandshake = v.getValue("startup_handshake").jsonObject.str("frame").hexBytes()
+        assertEquals(appHandshake.size, first.size)
+        assertEquals(appHandshake.copyOfRange(0, 6).toList(), first.copyOfRange(0, 6).toList())
+        assertEquals(1, first.last().toInt())
+        val frames = v.getValue("ui_setting_frames").jsonArray.map { it.jsonObject }
+        // Every preset sound the app wrote (0069 and the byte), by PairFree's byte for it.
+        val byAction = frames.associate { it.str("action") to it.str("payload") }
+        assertEquals("0c", byAction.getValue("onemore-custom-open"))
+        assertEquals("0b", byAction.getValue("onemore-preset-Voice Enhancement"))
+        assertEquals("0a", hex(s.eqPreset("pop")!!.single().payload))
+        assertEquals("0b", hex(s.eqPreset("loud")!!.single().payload))
+        // Noise control on 005E: the app wrote 01 for cancelling, 05 for pass-through transparency (its remembered kind) and 00 for off.
+        assertEquals(setOf("01", "05", "00"), frames.filter { it.str("command").equals("005e", true) }.map { it.str("payload") }.toSet())
+        s.receive(reply(OneMoreCommand.GET_LISTEN_MODE, "03"))
+        assertEquals("05", hex(s.change(SettingChange.Choice("transparency_mode", "pass_through"))!!.single().payload))
+        assertEquals("00", hex(s.set(Command.ANC_MODE, anc("off"))!!.single().payload))
+        s.receive(reply(OneMoreCommand.GET_LISTEN_MODE, "07"))
+        assertEquals("01", hex(s.change(SettingChange.Choice("noise_strength", "high"))!!.single().payload), "the app's plain cancelling is strong, 01")
+        // The curve reset is one 0053 with every band at 0 dB: PairFree's flat write is the same bytes.
+        val flat = OneMoreSession(aero).eqCustom(List(10) { 0 })!!.last().payload
+        assertEquals(byAction.getValue("onemore-eq-curve-reset"), hex(flat))
+    }
+
+    @Test
     fun whatIsNeverSent() {
         val s = OneMoreSession(aero)
-        assertFalse(s.allowed(s.frame(OneMoreCommand.HANDSHAKE, 1)))
+        assertTrue(s.allowed(s.frame(OneMoreCommand.HANDSHAKE, 1)))
         assertFalse(s.allowed(s.frame(OneMoreCommand.GET_AI_LICENSE)))
         assertFalse(s.allowed(s.frame(OneMoreCommand.DELETE_MUSIC, 0, 1)))
         assertFalse(s.allowed(s.frame(OneMoreCommand.TRANSFER_START)))
@@ -263,7 +294,11 @@ class OneMoreTest {
         assertEquals("0045011a02aa04d207dd0c2312211a8a265736e5", hex(read.payload))
         assertEquals("0014", hex(read.bytes().copyOfRange(4, 6)))
         // +3 dB on the first band and -3 dB on the last: raw 900 + 5 x the app's slider (60 + 20 per dB), with each band's frequency and Q.
-        val w = s.eqCustom(listOf(3, 0, 0, 0, 0, 0, 0, 0, 0, -3))!!.single()
+        val sent = s.eqCustom(listOf(3, 0, 0, 0, 0, 0, 0, 0, 0, -3))!!
+        // The custom preset sound goes first, as the app sends it on choosing Custom (data/1more/emulator_vectors.json).
+        assertEquals(listOf(OneMoreCommand.SET_PRESET_SOUND, OneMoreCommand.SET_EQ_PARAMETERS), sent.map { it.command })
+        assertEquals("0c", hex(sent.first().payload))
+        val w = sent.last()
         assertEquals(OneMoreCommand.SET_EQ_PARAMETERS, w.command)
         assertEquals(70, w.payload.size)
         assertEquals("0105dc0045003c", hex(w.payload.copyOfRange(0, 7)))
@@ -283,12 +318,12 @@ class OneMoreTest {
     fun eqBandsThatDiffer() {
         // The HQ36 adds its own offset to some bands: band 1 at 0 dB is 1200 + 300 + 450.
         val hq36 = OneMoreSession(OneMoreModels.fromName("1MORE HQ36"))
-        val w = hq36.eqCustom(List(10) { 0 })!!.single()
+        val w = hq36.eqCustom(List(10) { 0 })!!.last()
         assertEquals("01079e004a0050", hex(w.payload.copyOfRange(0, 7)))
         assertEquals("0102bc00c800c8", hex(w.payload.copyOfRange(7, 14)))
         // The Q12 has 12 bands in whole dB: 2 dB is (2 + 15) x 100.
         val q12 = OneMoreSession(OneMoreModels.fromName("1MORE Q12"))
-        val w12 = q12.eqCustom(listOf(2) + List(11) { 0 })!!.single()
+        val w12 = q12.eqCustom(listOf(2) + List(11) { 0 })!!.last()
         assertEquals(84, w12.payload.size)
         assertEquals("0106a4005f0050", hex(w12.payload.copyOfRange(0, 7)))
         assertEquals("0014", hex(q12.start().single { it.command == OneMoreCommand.GET_EQ_PARAMETERS }.bytes().copyOfRange(4, 6)), "as 1MORE's app writes it")

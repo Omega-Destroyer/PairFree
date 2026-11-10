@@ -2,6 +2,9 @@
  "name": "JBL Live 770NC",
  "names": [
   "JBL CLUB ONE",
+  "JBL CLUB950NC",
+  "JBL LIVE500BT",
+  "JBL LIVE650BTNC",
   "JBL LIVE660NC",
   "JBL Live 770NC",
   "JBL Live 775NC",
@@ -12,8 +15,12 @@
   "JBL Tune 720BT",
   "JBL Tune 730BT",
   "JBL Tune 735BT",
+  "JBL Tune 770NC",
+  "JBL Tune 775NC",
+  "JBL Tune 777NC",
   "JBL Tune 780NC",
-  "JBL Tune 785NC"
+  "JBL Tune 785NC",
+  "UA PROJECT ROCK"
  ],
  "source": "Traced from JBL's own product render (Live 770NC, front), not in the repo.",
  "bud": {

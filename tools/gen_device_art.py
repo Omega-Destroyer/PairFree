@@ -619,7 +619,7 @@ def traced_brand(brand):
 # Apple's store renders), JBL from JBL's, Samsung from GalaxyBudsClient's (github.com/
 # timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose, Soundcore, Nothing and QCY from each brand's
 # own, and 1MORE from the drawings and photos its app shows for each model.
-TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing", "qcy", "1more"]
+TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing", "qcy", "1more", "pixel", "earfun"]
 TRACED_DEVICES = {b: traced_brand(b) for b in TRACED}
 
 # brand: (its drawings, the assets/devices/<subdir>, the drawable name prefix). SoundPEATS

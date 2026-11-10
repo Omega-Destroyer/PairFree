@@ -18,6 +18,9 @@ class AudioLinks(private val context: Context, private val adapter: BluetoothAda
     private val waiting = ConcurrentHashMap.newKeySet<Int>()
     private var requested = false
 
+    /** Profiles whose proxy Android took back (its service stopped); asked for again by [connected]. */
+    private val lost = ConcurrentHashMap.newKeySet<Int>()
+
     private val listener = object : BluetoothProfile.ServiceListener {
         override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
             proxies[profile] = proxy
@@ -26,6 +29,7 @@ class AudioLinks(private val context: Context, private val adapter: BluetoothAda
 
         override fun onServiceDisconnected(profile: Int) {
             proxies.remove(profile)
+            lost += profile
         }
     }
 
@@ -45,6 +49,10 @@ class AudioLinks(private val context: Context, private val adapter: BluetoothAda
     @SuppressLint("MissingPermission") // a missing permission is a SecurityException, answered as not known
     fun connected(address: String): Boolean? {
         start()
+        // A proxy Android took back is never given again unless asked for: without it the answer would stay unknown for good.
+        for (profile in lost.toList()) {
+            if (lost.remove(profile) && adapter?.getProfileProxy(context, listener, profile) == true) waiting += profile
+        }
         if (proxies.isEmpty() || waiting.isNotEmpty()) return null
         return try {
             proxies.values.any { proxy -> proxy.connectedDevices.any { it.address == address } }

@@ -72,7 +72,8 @@ From users' recordings of the official app, not yet tried with PairFree:
 | Presets  | Classic, Bass boost, Bass reduction, Treble enhancement, Electronic, Popular, Classical Music, Rock&roll, Folk, Book Whisper, HIFI, ACG | TRUEFREE Classic, Hightone enhancement, Bass enhance, Bass weakening, Rock, Popularity, Electronic, Ballad, Classical |
 
 The Clip C10's sliders run from 62 Hz to 8 kHz with 1 kHz fifth, as a user's recording of a custom
-curve showed (issue #9); the official app's reset, with that band at 100 Hz, is the TRUEFREE Classic preset.
+curve showed (issue #9); the official app's reset, with that band at 100 Hz, is the TRUEFREE Classic preset. Its presets are
+from the user's third recording (2026-11-05), which corrected preset names that the first had put on the wrong curves.
 
 The H3's and Air5 Pro+'s curves are SOUNDPEATS' current ones, which changed a few since they were tried: the H3's
 classic curve, and the Air5 Pro+'s Bass boost, Bass reduction and Popular.

@@ -29,6 +29,11 @@ public data class Model(
     val fastPair: Boolean? = null,
     /** PairFree knows the model's name and number but not yet how to read it: the screens ask for a device report. */
     val reportOnly: Boolean = false,
+    /**
+     * Noise control as SOUNDPEATS' server lists it for the model (data/soundpeats/devices.json `features.noise`): each mode
+     * the model offers with its scene codes. Empty: the model has none. Null: the server's list was not fetched, so only the earbuds' replies tell.
+     */
+    val noiseModes: List<NoiseModeInfo>? = null,
 ) {
     /** Qualcomm chips also answer GAIA v3 on vendor `00 1D` ([Gaia]). */
     val isQualcomm: Boolean get() = family == QUALCOMM_FAMILY
@@ -94,3 +99,12 @@ public object Models {
  */
 public fun EarbudState.blockedByLdac(command: Command, model: Model?): Boolean =
     model != null && command in model.ldacExcludes && switch(Command.LDAC) == true
+
+/** One noise mode a model offers: [mode] is a `Command.ANC_MODE` value, [scenes] the `ANC_LEVEL` codes under cancelling or the `TRANSPARENCY_LEVEL` codes under transparency. */
+public data class NoiseModeInfo(val mode: Int, val scenes: List<Int> = emptyList())
+
+/** Reads the generated form of [Model.noiseModes]: modes split by `;`, each `mode` or `mode:scene,scene`. */
+internal fun noiseModes(spec: String): List<NoiseModeInfo> = if (spec.isEmpty()) emptyList() else spec.split(';').map { part ->
+    val (mode, scenes) = part.split(':', limit = 2).let { it[0] to it.getOrElse(1) { "" } }
+    NoiseModeInfo(mode.toInt(), if (scenes.isEmpty()) emptyList() else scenes.split(',').map(String::toInt))
+}

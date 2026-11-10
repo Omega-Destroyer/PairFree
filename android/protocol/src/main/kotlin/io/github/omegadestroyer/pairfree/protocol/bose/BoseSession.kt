@@ -74,6 +74,9 @@ public class BoseSession {
     public fun start(): List<BosePacket> = buildList {
         // The BMAP version first: bosectl sends it before anything else, as the QC35 and QC45 need.
         add(BosePacket.get(BoseFunction.PRODUCT_INFO_BMAP_VERSION))
+        // Bose's app (13.3.4) opens with the version, the list of function blocks and the product ids, in that order
+        // (virtual QC Ultra 2 run, docs/bose/VIRTUAL_TESTING.md); the block list is read for the device report.
+        add(BosePacket.get(BoseFunction.PRODUCT_INFO_ALL_FBLOCKS))
         add(BosePacket.get(BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS))
         add(BosePacket.get(BoseFunction.PRODUCT_INFO_FIRMWARE_VERSION))
         add(BosePacket.get(BoseFunction.STATUS_BATTERY_LEVEL))

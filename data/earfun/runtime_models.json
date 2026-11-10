@@ -1,0 +1,228 @@
+{
+  "_about": "Read-only metadata from the original running EarFun Audio enum. Not Bluetooth device tests, settings coverage, or hardware validation. Includes two speaker definitions for inventory only. See docs/earfun/VIRTUAL_TESTING.md.",
+  "source": {
+    "date": "2026-11-07",
+    "package": "com.corelink.earfun",
+    "version": "20.1.61",
+    "apk_modified": false,
+    "hardware_tested": false,
+    "evidence": "vendor_app_runtime_metadata",
+    "installed_apk_sha256": {
+      "com.corelink.earfun.apk": "d88cacbc877f8340cce8505d506efb2467e93cfaaab5d23794f6c3cb104c6e01",
+      "config.arm64_v8a.apk": "8974047c9b34f6dea7bfed5693b48084020d369ee4ca584a64e7793bd8491d1f",
+      "config.xhdpi.apk": "d15f5952143cc3705441a9dfadcff864402c150036f8713d5742f6a393d01f22"
+    }
+  },
+  "models": [
+    {
+      "code": "TW400",
+      "name": "EarFun Free Pro 3",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.QualcommProtocolParser"
+    },
+    {
+      "code": "TW600",
+      "name": "EarFun Air Pro 4",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.TW600ProtocolParser"
+    },
+    {
+      "code": "TW700",
+      "name": "EarFun Air Pro 4+",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.TW700ProtocolParser"
+    },
+    {
+      "code": "TW500",
+      "name": "EarFun Air Pro 3",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.QualcommProtocolParser"
+    },
+    {
+      "code": "TW500_3072",
+      "name": "EarFun Air Pro 3",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.QualcommProtocolParser"
+    },
+    {
+      "code": "TW200S",
+      "name": "EarFun Air",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.AirohaProtocolParser"
+    },
+    {
+      "code": "TWA01",
+      "name": "EarFun Air S",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.QualcommProtocolParser"
+    },
+    {
+      "code": "TW201",
+      "name": "EarFun Air S",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.QualcommProtocolParser"
+    },
+    {
+      "code": "TW101S",
+      "name": "EarFun Free 2S",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.QualcommProtocolParser"
+    },
+    {
+      "code": "TW101C",
+      "name": "EarFun Free 2S",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.ZhongKeProtocolParser"
+    },
+    {
+      "code": "TW306",
+      "name": "EarFun Air Pro SV",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.TW306ProtocolParser"
+    },
+    {
+      "code": "TW210",
+      "name": "EarFun Air 2",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.WuqiProtocolParser"
+    },
+    {
+      "code": "TW220",
+      "name": "EarFun Air 2 NC",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.EarfunProtocolParser"
+    },
+    {
+      "code": "TW220_VDL",
+      "name": "EarFun Air 2 NC",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.EarfunProtocolParser"
+    },
+    {
+      "code": "HP200",
+      "name": "EarFun Wave Pro",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.BesProtocolParser"
+    },
+    {
+      "code": "TW100",
+      "name": "EarFun Free 1S",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.ZhongKeProtocolParser"
+    },
+    {
+      "code": "TW300",
+      "name": "EarFun Air Pro 2",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.WuqiProtocolParser"
+    },
+    {
+      "code": "SP500",
+      "name": "EarFun UBOOM X",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.sound.EarfunSoundProtocolParser"
+    },
+    {
+      "code": "SP300",
+      "name": "EarFun UBOOM L",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.sound.EarfunSoundProtocolParser"
+    },
+    {
+      "code": "TW205",
+      "name": "EarFun Air Life",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.TW205ProtocolParser"
+    },
+    {
+      "code": "HP201",
+      "name": "EarFun Wave Life",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.EarfunHeadProtocolParser"
+    },
+    {
+      "code": "HP220",
+      "name": "EarFun Tune Pro",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.EarfunHeadProtocolParser"
+    },
+    {
+      "code": "HP200_BT8931H",
+      "name": "EarFun Wave Pro",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.HP200BT8931HProtocolParser"
+    },
+    {
+      "code": "OW100",
+      "name": "EarFun OpenJump",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.EarfunProtocolParser"
+    },
+    {
+      "code": "OW100_NEW",
+      "name": "EarFun OpenJump",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.EarfunProtocolParser"
+    },
+    {
+      "code": "CW100",
+      "name": "EarFun Clip",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.CW100ProtocolParser"
+    },
+    {
+      "code": "TW230",
+      "name": "EarFun Air Pro 4i",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.TW230ProtocolParser"
+    },
+    {
+      "code": "ATVEL_TW201",
+      "name": "ATVEL Tune S5 ProX",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.QualcommProtocolParser"
+    },
+    {
+      "code": "ATVEL_TW300",
+      "name": "ATVEL Tune S5 Pro",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.WuqiProtocolParser"
+    },
+    {
+      "code": "ATVEL_HP200",
+      "name": "ATVEL Tune Pro Q7",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.BesProtocolParser"
+    },
+    {
+      "code": "TW700AI",
+      "name": "EarFun Air Pro 4+AI",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.TW700AIProtocolParser"
+    },
+    {
+      "code": "HP1000",
+      "name": "EarFun Wave Pro X",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.HP1000ProtocolParser"
+    },
+    {
+      "code": "CW200",
+      "name": "EarFun Clip 2",
+      "nameRequired": true,
+      "parser": "com.corelink.earfun.device.protocol.headset.CW200ProtocolParser"
+    },
+    {
+      "code": "TW800",
+      "name": "EarFun Air Pro 5",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.TW700ProtocolParser"
+    },
+    {
+      "code": "HP300",
+      "name": "EarFun Wave Pro 2",
+      "nameRequired": false,
+      "parser": "com.corelink.earfun.device.protocol.headset.EarfunHeadProtocolParser"
+    }
+  ]
+}

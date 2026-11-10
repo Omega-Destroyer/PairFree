@@ -1,0 +1,551 @@
+{
+  "_about": "JBL Headphones 5.37.10 actual outgoing BLE writes with a synthetic Tune 230NC, identity push and replies; no encoder hooks or physical hardware. See docs/jbl/VIRTUAL_TESTING.md.",
+  "source": {
+    "date": "2026-11-07",
+    "package": "jbl.stc.com",
+    "version": "5.37.10",
+    "apk_modified": false,
+    "hardware_tested": false,
+    "replies_synthetic": true,
+    "installed_apk_sha256": {
+      "base.apk": "7039249f9b11ecd7491b31591388e75462ee3ac7ebe50a833f80f50310ce4e7e",
+      "split_config.arm64_v8a.apk": "620da38610f60ec2536b9bdf6c03fb88a5e64e20aa28011167583ba5f4d85b5a",
+      "split_config.xxhdpi.apk": "664ec2866ea876c1c59b5e2898242ffa8c675c3236e45bf6da88b9df45ca1c77"
+    }
+  },
+  "settings": [
+    {
+      "action": "jbl-ambient-on",
+      "command": "91",
+      "payload": "10010102000300",
+      "frame": "aa910710010102000300",
+      "captured_at": "2026-11-07T19:02:06.394387+00:00"
+    },
+    {
+      "action": "jbl-aware",
+      "command": "91",
+      "payload": "10010002010300",
+      "frame": "aa910710010002010300",
+      "captured_at": "2026-11-07T19:02:08.291080+00:00"
+    },
+    {
+      "action": "jbl-talkthru",
+      "command": "91",
+      "payload": "10010002000301",
+      "frame": "aa910710010002000301",
+      "captured_at": "2026-11-07T19:02:09.283813+00:00"
+    },
+    {
+      "action": "jbl-ambient-off",
+      "command": "91",
+      "payload": "13",
+      "frame": "aa910113",
+      "captured_at": "2026-11-07T19:02:10.297356+00:00"
+    },
+    {
+      "action": "jbl-left-gestures",
+      "command": "77",
+      "payload": "01ff",
+      "frame": "aa770201ff",
+      "captured_at": "2026-11-07T19:02:23.653900+00:00"
+    },
+    {
+      "action": "jbl-left-volume",
+      "command": "77",
+      "payload": "00fd00",
+      "frame": "aa770300fd00",
+      "captured_at": "2026-11-07T19:02:38.049556+00:00"
+    },
+    {
+      "action": "jbl-left-volume",
+      "command": "77",
+      "payload": "000601070208000ca1",
+      "frame": "aa7709000601070208000ca1",
+      "captured_at": "2026-11-07T19:02:38.107525+00:00"
+    },
+    {
+      "action": "jbl-right-none",
+      "command": "77",
+      "payload": "00fe00",
+      "frame": "aa770300fe00",
+      "captured_at": "2026-11-07T19:03:08.414117+00:00"
+    },
+    {
+      "action": "jbl-right-none",
+      "command": "77",
+      "payload": "0009000a000b000e00",
+      "frame": "aa77090009000a000b000e00",
+      "captured_at": "2026-11-07T19:03:08.460780+00:00"
+    },
+    {
+      "action": "jbl-smart-on",
+      "command": "81",
+      "payload": "00012e001801ffff",
+      "frame": "aa810800012e001801ffff",
+      "captured_at": "2026-11-07T19:03:09.573067+00:00"
+    },
+    {
+      "action": "jbl-smart-again",
+      "command": "81",
+      "payload": "c5002e001801ffff",
+      "frame": "aa8108c5002e001801ffff",
+      "captured_at": "2026-11-07T19:03:57.291515+00:00"
+    }
+  ],
+  "startup_after_synthetic_identity": [
+    {
+      "command": "21",
+      "payload": "30",
+      "frame": "aa210130"
+    },
+    {
+      "command": "9b",
+      "payload": "0101",
+      "frame": "aa9b020101"
+    },
+    {
+      "command": "25",
+      "payload": "00",
+      "frame": "aa250100"
+    },
+    {
+      "command": "91",
+      "payload": "11",
+      "frame": "aa910111"
+    },
+    {
+      "command": "42",
+      "payload": "00",
+      "frame": "aa420100"
+    },
+    {
+      "command": "42",
+      "payload": "01",
+      "frame": "aa420101"
+    },
+    {
+      "command": "82",
+      "payload": "",
+      "frame": "aa8200"
+    },
+    {
+      "command": "77",
+      "payload": "01ff",
+      "frame": "aa770201ff"
+    },
+    {
+      "command": "98",
+      "payload": "01",
+      "frame": "aa980101"
+    },
+    {
+      "command": "21",
+      "payload": "35",
+      "frame": "aa210135"
+    },
+    {
+      "command": "93",
+      "payload": "01",
+      "frame": "aa930101"
+    },
+    {
+      "command": "94",
+      "payload": "01",
+      "frame": "aa940101"
+    },
+    {
+      "command": "13",
+      "payload": "",
+      "frame": "aa1300"
+    }
+  ],
+  "multipart_eq": [
+    {
+      "action": "jbl-next-preset",
+      "selected_ui_preset": "VOCAL",
+      "header": "aa41b303",
+      "parts": [
+        "000400000080bf3000000000000000000a000000010000000000c0bf000000420000803f01000000000040c0000080420000803f01000000000040c00000fa420000803f010000000000803f00007a43",
+        "010000803f01000000000060400000fa430000803f010000000000604000007a440000803f01000000000040400000fa440000803f010000000000c03f00007a450000803f01000000000000000000fa",
+        "02450000803f010000000000c0bf00007a460000803f"
+      ],
+      "end": "aa0541",
+      "payload_bytes": 179
+    },
+    {
+      "action": "BASS preset",
+      "header": "aa41b303",
+      "parts": [
+        "000400000080bf3000000000000000000a000000010000000000c040000000420000803f0100000000004040000080420000803f01000000000040400000fa420000803f010000000000204000007a43",
+        "010000803f010000000000003f0000fa430000803f010000000000000000007a440000803f01000000000000000000fa440000803f010000000000000000007a450000803f01000000000000000000fa",
+        "02450000803f010000000000000000007a460000803f"
+      ],
+      "end": "aa0541",
+      "payload_bytes": 179,
+      "category": 0,
+      "calibration": -1.0,
+      "bands": [
+        {
+          "type": 1,
+          "gain_db": 6.0,
+          "frequency_hz": 32.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.0,
+          "frequency_hz": 64.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.0,
+          "frequency_hz": 125.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 2.5,
+          "frequency_hz": 250.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.5,
+          "frequency_hz": 500.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 1000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 2000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 4000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 8000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 16000.0,
+          "q": 1.0
+        }
+      ]
+    },
+    {
+      "action": "My EQ custom edit",
+      "header": "aa41b303",
+      "parts": [
+        "000401000080bf3000000000000000000a0000000100000000000000000000420000803f010000006666a63f000080420000803f010000009a9919400000fa420000803f010000006666464000007a43",
+        "010000803f01000000333353400000fa430000803f010000006666464000007a440000803f01000000000020400000fa440000803f010000006666e63f00007a450000803f010000006666663f0000fa",
+        "02450000803f010000000000000000007a460000803f"
+      ],
+      "end": "aa0541",
+      "payload_bytes": 179,
+      "category": 1,
+      "calibration": -1.0,
+      "bands": [
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 32.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 1.3,
+          "frequency_hz": 64.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 2.4,
+          "frequency_hz": 125.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.1,
+          "frequency_hz": 250.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.3,
+          "frequency_hz": 500.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.1,
+          "frequency_hz": 1000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 2.5,
+          "frequency_hz": 2000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 1.8,
+          "frequency_hz": 4000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.9,
+          "frequency_hz": 8000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 16000.0,
+          "q": 1.0
+        }
+      ]
+    },
+    {
+      "action": "My EQ save",
+      "header": "aa41b303",
+      "parts": [
+        "000401000080bf3000000000000000000a0000000100000000000000000000420000803f010000006666a63f000080420000803f010000009a9919400000fa420000803f010000006666464000007a43",
+        "010000803f01000000333353400000fa430000803f010000006666464000007a440000803f01000000000020400000fa440000803f010000006666e63f00007a450000803f010000006666663f0000fa",
+        "02450000803f010000000000000000007a460000803f"
+      ],
+      "end": "aa0541",
+      "payload_bytes": 179,
+      "category": 1,
+      "calibration": -1.0,
+      "bands": [
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 32.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 1.3,
+          "frequency_hz": 64.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 2.4,
+          "frequency_hz": 125.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.1,
+          "frequency_hz": 250.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.3,
+          "frequency_hz": 500.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.1,
+          "frequency_hz": 1000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 2.5,
+          "frequency_hz": 2000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 1.8,
+          "frequency_hz": 4000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.9,
+          "frequency_hz": 8000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 16000.0,
+          "q": 1.0
+        }
+      ]
+    },
+    {
+      "action": "BASS selection",
+      "header": "aa41b303",
+      "parts": [
+        "000400000080bf3000000000000000000a000000010000000000c040000000420000803f0100000000004040000080420000803f01000000000040400000fa420000803f010000000000204000007a43",
+        "010000803f010000000000003f0000fa430000803f010000000000000000007a440000803f01000000000000000000fa440000803f010000000000000000007a450000803f01000000000000000000fa",
+        "02450000803f010000000000000000007a460000803f"
+      ],
+      "end": "aa0541",
+      "payload_bytes": 179,
+      "category": 0,
+      "calibration": -1.0,
+      "bands": [
+        {
+          "type": 1,
+          "gain_db": 6.0,
+          "frequency_hz": 32.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.0,
+          "frequency_hz": 64.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.0,
+          "frequency_hz": 125.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 2.5,
+          "frequency_hz": 250.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.5,
+          "frequency_hz": 500.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 1000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 2000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 4000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 8000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 16000.0,
+          "q": 1.0
+        }
+      ]
+    },
+    {
+      "action": "My EQ local recall",
+      "header": "aa41b303",
+      "parts": [
+        "000401000080bf3000000000000000000a0000000100000000000000000000420000803f010000006666a63f000080420000803f010000009a9919400000fa420000803f010000006666464000007a43",
+        "010000803f01000000333353400000fa430000803f010000006666464000007a440000803f01000000000020400000fa440000803f010000006666e63f00007a450000803f010000006666663f0000fa",
+        "02450000803f010000000000000000007a460000803f"
+      ],
+      "end": "aa0541",
+      "payload_bytes": 179,
+      "category": 1,
+      "calibration": -1.0,
+      "bands": [
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 32.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 1.3,
+          "frequency_hz": 64.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 2.4,
+          "frequency_hz": 125.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.1,
+          "frequency_hz": 250.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.3,
+          "frequency_hz": 500.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 3.1,
+          "frequency_hz": 1000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 2.5,
+          "frequency_hz": 2000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 1.8,
+          "frequency_hz": 4000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.9,
+          "frequency_hz": 8000.0,
+          "q": 1.0
+        },
+        {
+          "type": 1,
+          "gain_db": 0.0,
+          "frequency_hz": 16000.0,
+          "q": 1.0
+        }
+      ]
+    }
+  ]
+}

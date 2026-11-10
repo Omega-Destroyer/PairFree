@@ -69,3 +69,13 @@ brand's protocol doc. When it is reported, add the link; when the project fixes 
 | What | PairFree's evidence | Reported |
 |---|---|---|
 | EQ preset numbers (`C01F`, `F010`): Nothing X uses 0 balanced, 1 voice, 2 more treble, 3 more bass, 4 Dirac, 5 custom, consistently in three places; nada and nadamas number them in screen order (1 more bass, 3 voice). Not settled on hardware yet. | Nothing X 3.4.15; `docs/nothing/PROTOCOL.md` section 5 | No |
+
+## Earshot (Skullcandy / Bragi, research only)
+
+[github.com/HellzYeahh/earshot](https://github.com/HellzYeahh/earshot), MIT. Read at revision
+`a581f96efb5a91b0622a5be9600a02a72b4e1649` on 2026-11-06. Its Crusher 1080 ANC implementation is
+explicitly untested on hardware; this finding is also static vendor-app evidence, not a capture.
+
+| What | PairFree's evidence | Reported |
+|---|---|---|
+| BOS-RPC STATUS success: Earshot's BragiConnection accepts an absent or empty status body as success, and VirtualCrusher emits an empty STATUS. Skullcandy's SDK only recognizes a STATUS success when body byte 0 exists and equals zero; a missing byte follows its error path. Use the explicit success byte when building future PairFree support, pending contrary hardware evidence. | Skullcandy 5.0.6, `com/bragi/sdk/android/transport/rpc/l.invoke` (STATUS handling and getOrNull at payload offset 4); reference `app/src/main/kotlin/dev/earshot/bt/BragiConnection.kt` around 231-235 and `virtual/VirtualCrusher.kt` around 186-188; `docs/skullcandy/PROTOCOL.md` section 4 | No |

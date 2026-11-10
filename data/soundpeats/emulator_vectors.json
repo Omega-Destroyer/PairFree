@@ -1,0 +1,277 @@
+{
+  "_about": "Actual outgoing original vendor-app frames captured against synthetic Bluetooth peers. No physical earbud or acoustic validation. Replies and pairing material remain outside the repository. See VIRTUAL_TESTING.md for interventions and limitations.",
+  "source": {
+    "date": "2026-11-07",
+    "package": "com.thirtydays.headset",
+    "version": "package: name='com.thirtydays.headset' versionCode='14362881' versionName='2.5.3-global' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+    "apk_modified": false,
+    "device_virtual": true,
+    "replies_synthetic": true,
+    "hardware_tested": false,
+    "android": "37.0 Google APIs userdebug x86_64 with ARM64 translation",
+    "installed_apk_sha256": {
+      "com.thirtydays.headset.apk": "c15250cb1856b16b053e55b839dc4198bf205461794744f3121e44411f05de79",
+      "config.en.apk": "0ce48172774a2fae85e0827a7b97ce56bc69a04e46cab0b00b88f111ee71d34c",
+      "config.arm64_v8a.apk": "2cc54826a2a70082f1a80183b6b272650c3fe6496f7e8c80cf906a95d12fd330",
+      "config.xhdpi.apk": "3c4fc2d44f779a04727bff23f0271bf17e43c5c893c17038ccc7b2bbb56391f6"
+    }
+  },
+  "cases": [
+    {
+      "command": "0309",
+      "payload": "",
+      "frame": "ff040000000a0309",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:47.626146+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "030e",
+      "payload": "",
+      "frame": "ff040000000a030e",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:48.160844+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "036b",
+      "payload": "",
+      "frame": "ff040000000a036b",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:48.240089+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0346",
+      "payload": "",
+      "frame": "ff040000000a0346",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:48.334304+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0306",
+      "payload": "",
+      "frame": "ff040000000a0306",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:48.381697+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0307",
+      "payload": "",
+      "frame": "ff040000000a0307",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:48.908410+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0323",
+      "payload": "",
+      "frame": "ff040000000a0323",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:49.421516+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0310",
+      "payload": "",
+      "frame": "ff040000000a0310",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:49.640233+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "030a",
+      "payload": "",
+      "frame": "ff040000000a030a",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:49.703627+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0321",
+      "payload": "",
+      "frame": "ff040000000a0321",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:49.779383+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "03aa",
+      "payload": "",
+      "frame": "ff040000000a03aa",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:49.826945+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0314",
+      "payload": "",
+      "frame": "ff040000000a0314",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:49.889019+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0350",
+      "payload": "",
+      "frame": "ff040000000a0350",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:49.949151+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "033c",
+      "payload": "",
+      "frame": "ff040000000a033c",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.013127+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0331",
+      "payload": "",
+      "frame": "ff040000000a0331",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.074434+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0319",
+      "payload": "",
+      "frame": "ff040000000a0319",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.134214+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0327",
+      "payload": "",
+      "frame": "ff040000000a0327",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.197465+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "034a",
+      "payload": "",
+      "frame": "ff040000000a034a",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.260426+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "034b",
+      "payload": "",
+      "frame": "ff040000000a034b",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.306725+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0348",
+      "payload": "",
+      "frame": "ff040000000a0348",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.368001+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0357",
+      "payload": "",
+      "frame": "ff040000000a0357",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.431631+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0338",
+      "payload": "",
+      "frame": "ff040000000a0338",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.493390+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0377",
+      "payload": "",
+      "frame": "ff040000000a0377",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.554368+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "030c",
+      "payload": "",
+      "frame": "ff040000000a030c",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.633674+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0312",
+      "payload": "",
+      "frame": "ff040000000a0312",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.696606+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0324",
+      "payload": "",
+      "frame": "ff040000000a0324",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.758726+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0364",
+      "payload": "",
+      "frame": "ff040000000a0364",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.809352+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "034c",
+      "payload": "",
+      "frame": "ff040000000a034c",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.914256+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0335",
+      "payload": "",
+      "frame": "ff040000000a0335",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:50.961252+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0326",
+      "payload": "",
+      "frame": "ff040000000a0326",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:51.022467+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0355",
+      "payload": "",
+      "frame": "ff040000000a0355",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:51.076268+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0362",
+      "payload": "00",
+      "frame": "ff040001000a036200",
+      "model": "H3 / S5",
+      "captured_at": "2026-11-07T05:33:54.730260+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    }
+  ]
+}

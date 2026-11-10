@@ -14,7 +14,7 @@ feature-switch ids) and the app's English strings. `data/oneplus/devices.json` k
 | `customEqualizer` (39), `customEqFrequency` (10), `customEqUiVersion`, `customEqMax` | A custom curve exists (`0122` read, `0418` write); frequencies where listed | `eq.custom`, `eq.frequencies`, `eq.slots`; built: read `0122` (and the unasked `0506`), write `0418` with operation 1 (add) or 2 (save and use); delete (3) and rename are not offered |
 | `gameMode` (67) | Feature switch id 6 (`0403 06 01`); records with only `gameModeList` (2) count too | `features.gameMode`; built (Device tab) |
 | `batteryInfo` (82) | The app shows a battery card; PairFree reads `0106` on every model and shows what the earbuds answer | always read |
-| `control` (83), `callControl` (50), `controlList` (3) | Touch assignments: one entry per gesture with the functions its `support` mask allows | `touch` (see below); the stem taps (single, double, triple) are built, the long press, the call controls and `controlList` are not |
+| `control` (83), `callControl` (50), `controlList` (3) | Touch assignments: one entry per gesture with the functions its `support` mask allows | `touch` (see below); built for the stem taps, hold, slide, long press and the call controls (the last three from the app's layouts only); `controlList` (3) is not |
 
 ## Touch controls (`touch` in the data)
 
@@ -78,9 +78,10 @@ App-side or server-side fields that need no earbud command: guides and tutorials
 - The device types a `0108` read asks for (1, 2 and 3; the app adds 2 on some phones, `T.u`): what type 3 returns.
 - How the long-press noise cycle is stored and written.
 - The model-specific rounding of battery values (`batteryRadix`), which the virtual run showed for the right earbud.
-- The long-press noise cycle (which modes a long press steps through): the app stores it with the typed noise reads (`010C` with `02 01`, `02 03`, `02 04`,
-  `03 01`, `04 01`: an action and a type, answered as `NoiseReductionInfo`: action, type and a little-endian value of 1 to 4 bytes) and writes
-  it with `0404`; what each action and type means is in the app's custom noise screen, which was not read. Not built. Checked: `NoiseReductionInfo`,
-  `CurrentNoiseModeInfo`, the dispatcher's 810C branch, the catalog entries with no function mask (48), `PollCommandManager`'s startup list.
-- The call controls (`callControl`, device type 4, button 6): the key read PairFree sends asks for buttons 3 and 1 only, so the app must read button 6
-  some other way; not found. Not built.
+- Feature switches other than game mode: HeyMelody's generic switch call (`setSwitchFeature`, `0403` with the feature id and 0 or 1) has two callers in the
+  app's code (ids 6 and 40); the other features use their own setters and screens, so a plain `0403` for them would be a guess. Not built: dual connection (17),
+  high tone quality (24), auto volume (28), bass engine (29, a level), personalized noise (12), zen mode (15), hearing enhancement (11), spatial audio (27).
+- Per-earbud long-press cycles (the 10 models whose `longPressType` is set): the read for them is `010C 02 03` (left) and `02 04` (right), written the same way;
+  PairFree does not read them.
+- Call controls, key reads and slide or long-press rows are built from the app's layouts but only exercised against invented replies: the key read
+  PairFree sends asks for buttons 3 and 1, so whether the earbuds list device type 4 or button 6 records in it is not established.

@@ -11,12 +11,12 @@ HeyMelody first: only one app can hold the connection.
 
 What it shows, on the models whose catalog entry has each (Apple-style "show only what is reported" applies: a setting appears once the
 earbuds answer its read):
-- **Home:** the battery (left, right and case), noise control (off, noise cancelling, transparency) and, where the model has them, the level of the mode that is on (smart, strong, moderate, light; or the auto mode's range).
+- **Home:** the battery (left, right and case), noise control (off, noise cancelling, transparency) and, where the model has them, the level of the mode that is on (smart, strong, moderate, light; or the auto mode's range) and which modes a long press cycles through (at least two).
 - **Sound:** the equalizer preset the model offers (the preset names are HeyMelody's English ones), and on the models with one the custom equalizers the earbuds keep: choose one, change its bands (-6 to +6 dB) and add a new one while there is room. Deleting and renaming one are left to HeyMelody.
-- **Controls:** what a single, double and triple tap does on each earbud, among the functions the model allows (play or pause, previous, next, voice assistant, game mode, nothing and the like).
+- **Controls:** what a single, double and triple tap, a hold, a slide or a long press does on each earbud, and the call controls, among the functions the model allows (play or pause, previous, next, voice assistant, volume, switch device, game mode, nothing and the like). The slide, long press and call rows are written from the app's layouts and not yet checked against any reply.
 - **Device:** game mode.
 
-Not yet: long-press controls and the call controls, dual connection, wear detection,
+Not yet: dual connection, wear detection,
 fit and hearing tests, spatial audio, the codec choices and everything else in `docs/oneplus/CAPABILITIES.md`. Debug, firmware, find-my and
 account commands are never sent. Realme's earbuds are not covered: they need their own app and evidence.
 

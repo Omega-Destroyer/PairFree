@@ -10,7 +10,7 @@ public data class OneplusPreset(val index: Int, val name: String)
 public data class OneplusFunction(val key: String, val wire: Int)
 
 /** A stem gesture of a model: its key ("single", "double", "triple", "hold"), the button action byte and the functions it may be given. */
-public data class OneplusTouch(val gesture: String, val actionByte: Int, val functions: List<OneplusFunction>)
+public data class OneplusTouch(val gesture: String, val actionByte: Int, val functions: List<OneplusFunction>, val button: Int = 1)
 
 /**
  * One OnePlus or OPPO earbuds model from HeyMelody's bundled catalog (data/oneplus/devices.json). [id] is the product id the earbuds

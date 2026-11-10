@@ -27,7 +27,7 @@ public class OneplusSession(public val model: OneplusModel?) {
     private var gameMode: Boolean? = null
 
     /** The last key assignments read, by (device type, button action byte): the function number. */
-    private val keys = linkedMapOf<Pair<Int, Int>, Int>()
+    private val keys = linkedMapOf<Triple<Int, Int, Int>, Int>()
 
     /** A custom equalizer the earbuds keep: HeyMelody's `EqInfo` (id, whether it is the one in use, name, limits, bands in Hz and gains in dB). */
     public class CustomEq(
@@ -140,7 +140,9 @@ public class OneplusSession(public val model: OneplusModel?) {
             val at = 2 + i * 4
             val type = d[at].toInt() and 0xFF
             val button = d[at + 1].toInt() and 0xFF
-            if (button == STEM_BUTTON && (type == LEFT || type == RIGHT)) keys[type to (d[at + 2].toInt() and 0xFF)] = d[at + 3].toInt() and 0xFF
+            val stem = button == STEM_BUTTON && (type == LEFT || type == RIGHT)
+            val call = button == CALL_BUTTON && type == CALL_TYPE
+            if (stem || call) keys[Triple(type, button, d[at + 2].toInt() and 0xFF)] = d[at + 3].toInt() and 0xFF
         }
     }
 
@@ -199,12 +201,39 @@ public class OneplusSession(public val model: OneplusModel?) {
 
     private fun side(type: Int) = if (type == LEFT) "left" else "right"
 
-    /** A touch row for each earbud and each stem gesture the model lists and the earbuds reported, with the functions the model allows. */
+    /** One assignable gesture: the row's key, the earbud (device type) and button it is written for, and the model's entry for it. */
+    private class Slot(val key: String, val type: Int, val side: String, val touch: OneplusTouch)
+
+    /**
+     * The gestures the model lists with the key the screens know them by: taps, a hold, a slide and a long press for each earbud (`touch_<gesture>_<side>`),
+     * and the call controls for both earbuds (`touch_<gesture>_call_whole`). A long press (byte 6) shares the hold's row where the model has no hold of its own.
+     */
+    private fun slots(): List<Slot> = buildList {
+        val all = model?.touch.orEmpty()
+        val hasHold = all.any { it.button == STEM_BUTTON && it.gesture == "hold" }
+        for (t in all) {
+            if (t.button == STEM_BUTTON) {
+                val gesture = when (t.gesture) {
+                    "single", "double", "triple", "hold" -> t.gesture
+                    "slide" -> "single_slider"
+                    "long_press" -> if (hasHold) null else "hold"
+                    else -> null
+                } ?: continue
+                for (type in listOf(LEFT, RIGHT)) add(Slot("touch_${gesture}_${side(type)}", type, side(type), t))
+            } else if (t.button == CALL_BUTTON) {
+                val gesture = when (t.gesture) { "double" -> "double_call"; "triple" -> "triple_call"; "long_press" -> "hold_call"; else -> null } ?: continue
+                add(Slot("touch_${gesture}_whole", CALL_TYPE, "whole", t))
+            }
+        }
+    }
+
+    /** A touch row for each gesture and earbud the earbuds reported, among the functions the model allows; [side] picks "left", "right" or "whole". */
     private fun touchRows(side: String): List<Setting> = buildList {
-        for (t in model?.touch.orEmpty().filter { it.gesture in TAP_GESTURES }) for (type in listOf(if (side == "left") LEFT else RIGHT)) {
-            val current = keys[type to t.actionByte] ?: continue
+        for (slot in slots().filter { it.side == side }) {
+            val t = slot.touch
+            val current = keys[Triple(slot.type, t.button, t.actionByte)] ?: continue
             val name = t.functions.firstOrNull { it.wire == current }?.key ?: continue
-            add(Setting.Choice("touch_${t.gesture}_${side(type)}", name, t.functions.map { it.key }.distinct()))
+            add(Setting.Choice(slot.key, name, t.functions.map { it.key }.distinct()))
         }
     }
 
@@ -238,6 +267,7 @@ public class OneplusSession(public val model: OneplusModel?) {
             (listOfNotNull(strengthRow()) + cycleRows()).takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
             touchRows("left").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_left", SettingTab.CONTROLS, it) },
             touchRows("right").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_right", SettingTab.CONTROLS, it) },
+            touchRows("whole").takeIf { it.isNotEmpty() }?.let { SettingGroup("calls", SettingTab.CONTROLS, it) },
             customEqRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("oneplus_custom_eq", SettingTab.SOUND, it) },
             gameMode?.let { SettingGroup("oneplus_other", SettingTab.DEVICE, listOf(Setting.Toggle("game_mode", it))) },
         )
@@ -349,14 +379,13 @@ public class OneplusSession(public val model: OneplusModel?) {
 
     /** `touch_<gesture>_<left|right>`: `0401` with one record, then the read HeyMelody sends after every key write. */
     private fun changeKey(change: SettingChange.Choice): List<ByteArray>? {
-        val parts = change.key.removePrefix("touch_").split('_')
-        if (parts.size != 2) return null
-        val type = when (parts[1]) { "left" -> LEFT; "right" -> RIGHT; else -> return null }
-        val touch = model?.touch?.firstOrNull { it.gesture == parts[0] } ?: return null
-        if (keys[type to touch.actionByte] == null) return null
-        val function = touch.functions.firstOrNull { it.key == change.option } ?: return null
-        keys[type to touch.actionByte] = function.wire
-        return listOf(next(OneplusCommand.SET_KEYS, 1, type, STEM_BUTTON, touch.actionByte, function.wire), readKeys())
+        val slot = slots().firstOrNull { it.key == change.key } ?: return null
+        val t = slot.touch
+        val id = Triple(slot.type, t.button, t.actionByte)
+        if (keys[id] == null) return null
+        val function = t.functions.firstOrNull { it.key == change.option } ?: return null
+        keys[id] = function.wire
+        return listOf(next(OneplusCommand.SET_KEYS, 1, slot.type, t.button, t.actionByte, function.wire), readKeys())
     }
 
     private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
@@ -379,7 +408,8 @@ public class OneplusSession(public val model: OneplusModel?) {
         private const val OP_SAVE = 2
         private const val DEFAULT_MIN = -6
         private const val DEFAULT_MAX = 6
-        private val TAP_GESTURES = setOf("single", "double", "triple")
+        private const val CALL_BUTTON = 6
+        private const val CALL_TYPE = 4
         private const val LEFT = 1
         private const val RIGHT = 2
         private const val STEM_BUTTON = 1

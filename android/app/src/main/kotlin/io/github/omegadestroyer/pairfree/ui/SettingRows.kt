@@ -766,7 +766,10 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "privacy_mode" -> R.string.action_privacy_mode
             "multipoint" -> R.string.setting_multipoint
             "answer_hang_up" -> R.string.action_answer_hang_up
-            "decline_call" -> R.string.action_decline_call
+            "decline_call", "reject_call" -> R.string.action_decline_call
+            "adjust_volume" -> R.string.action_volume_control
+            "switch_device" -> R.string.setting_op_switch_device
+            "switch_song" -> R.string.action_previous_next
             "switch_calls" -> R.string.action_switch_calls
             else -> R.string.action_other
         },

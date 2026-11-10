@@ -185,6 +185,25 @@ class OneplusSessionTest {
     }
 
     @Test
+    fun callControlsAndHoldRowsFollowTheCatalog() {
+        // The Buds Pro 3's double press in a call: none or reject (key records for device type 4, button 6); read from the app's layouts, not recorded.
+        val pro3 = OneplusSession(OneplusModels.byId("064014"))
+        pro3.start()
+        pro3.receive(reply(0x0108, 0, 1, 4, 6, 2, 28))
+        val call = pro3.groups.flatMap { it.settings }.first { it.key == "touch_double_call_whole" } as Setting.Choice
+        assertEquals("reject_call", call.value)
+        val frames = pro3.change(SettingChange.Choice("touch_double_call_whole", "none"))!!
+        assertEquals("0401" to "0104060200", parsed(frames[0]).let { "%04x".format(it.command) to it.payload.joinToString("") { b -> "%02x".format(b) } })
+        // An older Enco Air's hold (byte 4): volume up on the right earbud.
+        val air = OneplusSession(OneplusModels.byId("061810"))
+        air.start()
+        air.receive(reply(0x0108, 0, 2, 1, 1, 4, 11, 2, 1, 4, 12))
+        val rows = air.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
+        assertEquals("volume_up", rows["touch_hold_left"])
+        assertEquals("volume_down", rows["touch_hold_right"])
+    }
+
+    @Test
     fun nothingIsSentThatTheModelDidNotAnswerAndDebugCommandsAreRefused() {
         val s = budsPro2()
         assertEquals(null, s.set(Command.ANC_MODE, anc("anc")))

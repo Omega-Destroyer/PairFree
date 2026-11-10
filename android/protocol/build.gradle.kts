@@ -2004,11 +2004,11 @@ abstract class GenerateOneplusModels : DefaultTask() {
         }
         fun touch(list: Any?): String {
             @Suppress("UNCHECKED_CAST")
-            val items = (list as? List<Map<String, Any?>>).orEmpty().filter { it["button"] == 1 && it["functions"] != null }
+            val items = (list as? List<Map<String, Any?>>).orEmpty().filter { (it["button"] == 1 || it["button"] == 6) && it["functions"] != null }
             return items.joinToString(", ", "listOf(", ")") { t ->
                 @Suppress("UNCHECKED_CAST")
                 val fns = (t["functions"] as List<Map<String, Any?>>).filter { it["wire"] != null }.joinToString(", ", "listOf(", ")") { "OneplusFunction(${str(it["key"])}, ${it["wire"]})" }
-                "OneplusTouch(${str(t["gesture"])}, ${t["action_byte"]}, $fns)"
+                "OneplusTouch(${str(t["gesture"])}, ${t["action_byte"]}, $fns, ${t["button"]})"
             }
         }
         val out = StringBuilder("// Generated from data/oneplus/devices.json; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.oneplus\n\n")

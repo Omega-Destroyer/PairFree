@@ -1,0 +1,4479 @@
+{
+ "_about": "Models of OnePlus and OPPO earbuds from HeyMelody 117.6.6's bundled catalog (docs/oneplus/PROTOCOL.md): per model the names, the noise modes and sub-modes with their protocol indices, the equalizer presets with their protocol indices and English names, and feature flags. Facts only, written by tools/import_heymelody_catalog.py; the catalog itself stays outside the repo. Source analysis and a virtual run of the app (Buds Pro 2) only: no model here has been tried with PairFree.",
+ "devices": [
+  {
+   "id": "050410",
+   "name": "OPPO Enco M31",
+   "names": [
+    "OPPO Enco M31"
+   ],
+   "brand": "oppo",
+   "hidden": false
+  },
+  {
+   "id": "050C10",
+   "name": "OPPO Enco M33",
+   "names": [
+    "OPPO Enco M33"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 2,
+      "name": "Bold"
+     },
+     {
+      "index": 3,
+      "name": "Clear vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     }
+    ]
+   },
+   "features": {
+    "bassEngineSupport": 1
+   }
+  },
+  {
+   "id": "050C14",
+   "name": "OnePlus BulletsWireless Z2 ANC",
+   "names": [
+    "OnePlus BulletsWireless Z2 ANC"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Bold"
+     },
+     {
+      "index": 3,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "bassEngineSupport": 1
+   }
+  },
+  {
+   "id": "051014",
+   "name": "OnePlus Bullets Wireless Z3",
+   "names": [
+    "OnePlus Bullets Wireless Z3"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "eq": {
+    "family": 4,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     },
+     {
+      "index": 2,
+      "name": "Bold"
+     }
+    ]
+   },
+   "features": {
+    "bassEngineSupport": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "060410",
+   "name": "OPPO Enco Free",
+   "names": [
+    "OPPO Enco Free"
+   ],
+   "brand": "oppo",
+   "hidden": false
+  },
+  {
+   "id": "060414",
+   "name": "OnePlus Buds",
+   "names": [
+    "OnePlus Buds"
+   ],
+   "brand": "OnePlus",
+   "hidden": false
+  },
+  {
+   "id": "060810",
+   "name": "OPPO Enco W31",
+   "names": [
+    "OPPO Enco W31"
+   ],
+   "brand": "oppo",
+   "hidden": false
+  },
+  {
+   "id": "060814",
+   "name": "OnePlus Buds Z",
+   "names": [
+    "OnePlus Buds Z"
+   ],
+   "brand": "OnePlus",
+   "hidden": false
+  },
+  {
+   "id": "060C10",
+   "name": "OPPO Enco W51",
+   "names": [
+    "OPPO Enco W51"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "features": {
+    "wearDetection": 1
+   }
+  },
+  {
+   "id": "060C14",
+   "name": "OnePlus Buds Pro",
+   "names": [
+    "OnePlus Buds Pro"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 4,
+     "type": "smart",
+     "children": []
+    },
+    {
+     "index": 3,
+     "type": "strong",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "light",
+     "children": []
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": null,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "hearingEnhancement": 1,
+    "zenMode": 1
+   }
+  },
+  {
+   "id": "061014",
+   "name": "OnePlus Buds Z2",
+   "names": [
+    "OnePlus Buds Z2"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 3,
+     "type": "strong",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "light",
+     "children": []
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": null,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "wearDetection": 1
+   }
+  },
+  {
+   "id": "061410",
+   "name": "OPPO Enco X",
+   "names": [
+    "OPPO Enco X"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 3,
+     "type": "strong",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "light",
+     "children": []
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 1,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Default"
+     },
+     {
+      "index": 1,
+      "name": "Dynaudio Simple & Clear"
+     },
+     {
+      "index": 2,
+      "name": "Dynaudio Warm & Soft"
+     }
+    ]
+   },
+   "features": {
+    "wearDetection": 1,
+    "highToneQuality": 1
+   }
+  },
+  {
+   "id": "061414",
+   "name": "OnePlus Nord Buds",
+   "names": [
+    "OnePlus Nord Buds"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   }
+  },
+  {
+   "id": "061810",
+   "name": "OPPO Enco Air",
+   "names": [
+    "OPPO Enco Air"
+   ],
+   "brand": "oppo",
+   "hidden": false
+  },
+  {
+   "id": "061814",
+   "name": "OnePlus Buds N",
+   "names": [
+    "OnePlus Buds N"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   }
+  },
+  {
+   "id": "061C10",
+   "name": "OPPO Enco Play",
+   "names": [
+    "OPPO Enco Play"
+   ],
+   "brand": "oppo",
+   "hidden": false
+  },
+  {
+   "id": "061C14",
+   "name": "OnePlus Nord Buds CE",
+   "names": [
+    "OnePlus Nord Buds CE"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "eq": {
+    "family": 4,
+    "custom": false,
+    "presets": [
+     {
+      "index": 1,
+      "name": "Bass"
+     },
+     {
+      "index": 0,
+      "name": "Balanced"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 3,
+      "name": "Gentle"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "062010",
+   "name": "OPPO Enco Free2",
+   "names": [
+    "OPPO Enco Free2"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    },
+    {
+     "index": 3,
+     "type": "voice_focus",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 1,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Classic"
+     },
+     {
+      "index": 1,
+      "name": "Dynamic bass"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     },
+     {
+      "index": 3,
+      "name": "Clear"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "hearingEnhancement": 1
+   }
+  },
+  {
+   "id": "062014",
+   "name": "OnePlus Buds Pro 2",
+   "names": [
+    "OnePlus Buds Pro 2"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "supportPinch": 1,
+    "zenMode": 1
+   }
+  },
+  {
+   "id": "062410",
+   "name": "OPPO Enco Buds",
+   "names": [
+    "OPPO Enco Buds"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "062414",
+   "name": "OnePlus Nord Buds 2",
+   "names": [
+    "OnePlus Nord Buds 2"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Bold"
+     },
+     {
+      "index": 3,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "bassEngineSupport": 1
+   }
+  },
+  {
+   "id": "062810",
+   "name": "OPPO Enco Air Lite",
+   "names": [
+    "OPPO Enco Air Lite"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "062814",
+   "name": "OnePlus Buds Ace",
+   "names": [
+    "OnePlus Buds Ace"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Bold"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "bassEngineSupport": 1
+   }
+  },
+  {
+   "id": "062C14",
+   "name": "OnePlus Nord Buds 2r",
+   "names": [
+    "OnePlus Nord Buds 2r"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Bass"
+     },
+     {
+      "index": 1,
+      "name": "Bold"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "063010",
+   "name": "OPPO Enco R",
+   "names": [
+    "OPPO Enco R"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 1,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     },
+     {
+      "index": 3,
+      "name": "Gentle"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "063014",
+   "name": "OnePlus Buds Pro 2（轻享版）",
+   "names": [
+    "OnePlus Buds Pro 2（轻享版）"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "supportPinch": 1,
+    "zenMode": 1
+   }
+  },
+  {
+   "id": "063410",
+   "name": "OPPO Enco Air2",
+   "names": [
+    "OPPO Enco Air2"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 1,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "063414",
+   "name": "OnePlus Buds Pro 2R",
+   "names": [
+    "OnePlus Buds Pro 2R"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "supportPinch": 1,
+    "zenMode": 1
+   }
+  },
+  {
+   "id": "063810",
+   "name": "OPPO Enco Air2 Pro",
+   "names": [
+    "OPPO Enco Air2 Pro"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    },
+    {
+     "index": 3,
+     "type": "voice_focus",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1
+   }
+  },
+  {
+   "id": "063C10",
+   "name": "OPPO Enco X2",
+   "names": [
+    "OPPO Enco X2"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      },
+      {
+       "index": 9,
+       "type": "voice_focus"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 1,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Dynaudio Real"
+     },
+     {
+      "index": 1,
+      "name": "Dynaudio Simple & Clear"
+     },
+     {
+      "index": 2,
+      "name": "Dynaudio Punchy"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "supportPinch": 1
+   }
+  },
+  {
+   "id": "063C14",
+   "name": "OnePlus Buds 3",
+   "names": [
+    "OnePlus Buds 3"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "064010",
+   "name": "OPPO Enco Free2i",
+   "names": [
+    "OPPO Enco Free2i"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    },
+    {
+     "index": 3,
+     "type": "voice_focus",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 1,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Classic"
+     },
+     {
+      "index": 1,
+      "name": "Dynamic bass"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     },
+     {
+      "index": 3,
+      "name": "Clear"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1
+   }
+  },
+  {
+   "id": "064014",
+   "name": "OnePlus Buds Pro 3",
+   "names": [
+    "OnePlus Buds Pro 3"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 1,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 3,
+      "name": "Bass"
+     },
+     {
+      "index": 7,
+      "name": "Dynaudio featured"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "supportPinch": 1,
+    "spatialTypes": [
+     0,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "064410",
+   "name": "OPPO Enco Air2i",
+   "names": [
+    "OPPO Enco Air2i"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "064414",
+   "name": "OnePlus Nord Buds 3 Pro",
+   "names": [
+    "OnePlus Nord Buds 3 Pro"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 3,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 4,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 5,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "064810",
+   "name": "OPPO Enco Buds2",
+   "names": [
+    "OPPO Enco Buds2"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "064814",
+   "name": "OnePlus Buds V",
+   "names": [
+    "OnePlus Buds V"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Bass"
+     },
+     {
+      "index": 1,
+      "name": "Bold"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "064C10",
+   "name": "OPPO Enco Air3",
+   "names": [
+    "OPPO Enco Air3"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "064C14",
+   "name": "OnePlus Buds Ace 2",
+   "names": [
+    "OnePlus Buds Ace 2"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 3,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 4,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 5,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "065010",
+   "name": "OPPO Enco R Pro",
+   "names": [
+    "OPPO Enco R Pro"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    },
+    {
+     "index": 3,
+     "type": "voice_focus",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Reno Featured (Dawn)"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1
+   }
+  },
+  {
+   "id": "065014",
+   "name": "OnePlus Nord Buds 3",
+   "names": [
+    "OnePlus Nord Buds 3"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 3,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 4,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 5,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "065414",
+   "name": "OnePlus Buds 4",
+   "names": [
+    "OnePlus Buds 4"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      },
+      {
+       "index": 7,
+       "type": "smart"
+      }
+     ]
+    },
+    {
+     "index": 11,
+     "type": "auto",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 1,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 2,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "065810",
+   "name": "OPPO Enco R2",
+   "names": [
+    "OPPO Enco R2"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Reno Featured (Sunrise Glow)"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "065854",
+   "name": "OnePlus Nord Buds 3r",
+   "names": [
+    "OnePlus Nord Buds 3r"
+   ],
+   "brand": "OnePlus",
+   "hidden": false,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "065C10",
+   "name": "OPPO Enco Air3 Pro",
+   "names": [
+    "OPPO Enco Air3 Pro"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Natural Inspiration"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "066010",
+   "name": "OPPO Enco Free3",
+   "names": [
+    "OPPO Enco Free3"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Natural Inspiration"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "066054",
+   "name": "OnePlus Buds 3V",
+   "names": [
+    "OnePlus Buds 3V",
+    "OnePlus Nord Curie DO"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "066414",
+   "name": "OnePlus Buds Ace 3",
+   "names": [
+    "OnePlus Buds Ace 3",
+    "OnePlus Nord Buds Einstein 1"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "066810",
+   "name": "OPPO Enco X3i",
+   "names": [
+    "OPPO Enco X3i"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "066814",
+   "name": "OnePlus Nord Buds 4 Pro",
+   "names": [
+    "OnePlus Nord Buds 4 Pro",
+    "OnePlus Nord Buds Einstein 2"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "066C10",
+   "name": "OPPO Enco Air2（新声版）",
+   "names": [
+    "OPPO Enco Air2（新声版）"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "067010",
+   "name": "OPPO Enco Air3i",
+   "names": [
+    "OPPO Enco Air3i"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "067014",
+   "name": "OnePlus Nord Buds 4",
+   "names": [
+    "OnePlus Nord Buds 4",
+    "OnePlus Nord Buds ohm EX"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 1,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 2,
+      "name": "Bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "067410",
+   "name": "OPPO Enco X3",
+   "names": [
+    "OPPO Enco X3"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      },
+      {
+       "index": 9,
+       "type": "voice_focus"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 1,
+      "name": "HD clarity"
+     },
+     {
+      "index": 2,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 3,
+      "name": "Thundering bass"
+     },
+     {
+      "index": 7,
+      "name": "Dynaudio featured"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "supportPinch": 1,
+    "spatialTypes": [
+     0,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "067414",
+   "name": "OnePlus Flow Buds",
+   "names": [
+    "OnePlus Flow Buds",
+    "OnePlus Nord Buds Laplace 4"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 1,
+      "name": "Bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "067810",
+   "name": "OPPO Enco Air3s",
+   "names": [
+    "OPPO Enco Air3s"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "067814",
+   "name": "OnePlus Buds Pro 4",
+   "names": [
+    "OnePlus Buds Pro 4",
+    "OnePlus Buds Bohr"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 11,
+     "type": "auto",
+     "children": [
+      {
+       "index": 12,
+       "type": "less_noise"
+      },
+      {
+       "index": 13,
+       "type": "standard_noise"
+      },
+      {
+       "index": 14,
+       "type": "more_noise"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 1,
+      "name": "Bold"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 3,
+      "name": "Bass"
+     },
+     {
+      "index": 7,
+      "name": "Dynaudio featured"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 2,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "supportPinch": 1,
+    "zenMode": 3,
+    "headMotion": 1,
+    "spatialTypes": [
+     0,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "067C10",
+   "name": "OPPO Enco Air4 Pro",
+   "names": [
+    "OPPO Enco Air4 Pro"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "068010",
+   "name": "OPPO Enco Buds2 Pro",
+   "names": [
+    "OPPO Enco Buds2 Pro"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 2,
+      "name": "Bass"
+     },
+     {
+      "index": 1,
+      "name": "Bold"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "068410",
+   "name": "OPPO Enco R3",
+   "names": [
+    "OPPO Enco R3"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Reno Featured (Purple Galaxy)"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "068414",
+   "name": "OnePlus Buds",
+   "names": [
+    "OnePlus Buds"
+   ],
+   "brand": "OnePlus",
+   "hidden": false
+  },
+  {
+   "id": "068810",
+   "name": "OPPO Enco Air 3i",
+   "names": [
+    "OPPO Enco Air 3i"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1
+   }
+  },
+  {
+   "id": "068814",
+   "name": "OnePlus Buds Z",
+   "names": [
+    "OnePlus Buds Z"
+   ],
+   "brand": "OnePlus",
+   "hidden": false
+  },
+  {
+   "id": "068C10",
+   "name": "OPPO Enco Free4",
+   "names": [
+    "OPPO Enco Free4"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      },
+      {
+       "index": 7,
+       "type": "smart"
+      }
+     ]
+    },
+    {
+     "index": 11,
+     "type": "auto",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 1,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 2,
+      "name": "Thundering bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "069010",
+   "name": "OPPO Enco Air4",
+   "names": [
+    "OPPO Enco Air4"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "069850",
+   "name": "OPPO Enco Air4i",
+   "names": [
+    "OPPO Enco Air4i"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 2,
+      "name": "Bass boost"
+     },
+     {
+      "index": 1,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "069C10",
+   "name": "OPPO Enco R3 Pro",
+   "names": [
+    "OPPO Enco R3 Pro"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Galactic Monologue"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06A010",
+   "name": "OPPO Enco Buds3 Pro+",
+   "names": [
+    "OPPO Enco Buds3 Pro+"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06A450",
+   "name": "OPPO Enco Buds3",
+   "names": [
+    "OPPO Enco Buds3"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 3,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 2,
+      "name": "Bass boost"
+     },
+     {
+      "index": 1,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06A850",
+   "name": "OPPO Enco Buds3 Pro",
+   "names": [
+    "OPPO Enco Buds3 Pro"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 2,
+      "name": "Bass boost"
+     },
+     {
+      "index": 1,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06AC50",
+   "name": "OPPO Enco R4",
+   "names": [
+    "OPPO Enco R4"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 2,
+      "name": "Bass boost"
+     },
+     {
+      "index": 1,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06B050",
+   "name": "OPPO Enco Air4（新声版）",
+   "names": [
+    "OPPO Enco Air4（新声版）"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 3,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 2,
+      "name": "Bass boost"
+     },
+     {
+      "index": 1,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06B450",
+   "name": "OPPO Enco R5",
+   "names": [
+    "OPPO Enco R5",
+    "OPPO Enco xiapu OF"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 3,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 2,
+      "name": "Bass boost"
+     },
+     {
+      "index": 1,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06B810",
+   "name": "OPPO Enco Clip",
+   "names": [
+    "OPPO Enco Clip"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 4,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Default"
+     },
+     {
+      "index": 1,
+      "name": "Vibrant"
+     },
+     {
+      "index": 2,
+      "name": "Pure vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06BC10",
+   "name": "OPPO Enco X3s",
+   "names": [
+    "OPPO Enco X3s"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      },
+      {
+       "index": 7,
+       "type": "smart"
+      }
+     ]
+    },
+    {
+     "index": 11,
+     "type": "auto",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 1,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 2,
+      "name": "Thundering bass"
+     },
+     {
+      "index": 3,
+      "name": "Dynaudio featured"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06C010",
+   "name": "OPPO Enco Free4（丹拿版）",
+   "names": [
+    "OPPO Enco Free4（丹拿版）"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      },
+      {
+       "index": 7,
+       "type": "smart"
+      }
+     ]
+    },
+    {
+     "index": 11,
+     "type": "auto",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 1,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 2,
+      "name": "Thundering bass"
+     },
+     {
+      "index": 3,
+      "name": "Dynaudio featured"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06C410",
+   "name": "OPPO Enco Air5 Pro",
+   "names": [
+    "OPPO Enco Air5 Pro",
+    "OPPO Enco Einstein 1",
+    "OPPO Enco Einstein 3"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 2,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 1,
+      "name": "Thundering bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06C810",
+   "name": "OPPO Enco Air5s",
+   "names": [
+    "OPPO Enco Air5s",
+    "OPPO Enco Laplace 1",
+    "OPPO Enco Laplace 2"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 2,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 1,
+      "name": "Thundering bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06D810",
+   "name": "OPPO Enco Air5",
+   "names": [
+    "OPPO Enco Air5",
+    "OPPO Enco ohm DO",
+    "OPPO Enco ohm EX",
+    "OPPO Enco ohm"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 1,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 2,
+      "name": "Thundering bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06E010",
+   "name": "OPPO Enco Clip2",
+   "names": [
+    "OPPO Enco Clip2",
+    "OPPO Enco Nobel"
+   ],
+   "brand": "oppo",
+   "hidden": false,
+   "eq": {
+    "family": 4,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 3,
+      "name": "Vibrant"
+     },
+     {
+      "index": 2,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 4,
+      "name": "Dynaudio featured"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "highToneQuality": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06E410",
+   "name": "OnePlus Buds Clip",
+   "names": [
+    "OnePlus Buds Clip",
+    "OnePlus Open Nobel"
+   ],
+   "brand": "OnePlus",
+   "hidden": true,
+   "eq": {
+    "family": 4,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Balanced (Default)"
+     },
+     {
+      "index": 3,
+      "name": "Vibrant"
+     },
+     {
+      "index": 2,
+      "name": "Clear Vocals"
+     },
+     {
+      "index": 4,
+      "name": "Dynaudio featured"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "highToneQuality": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06E810",
+   "name": "OPPO Enco Air5s（星光版）",
+   "names": [
+    "OPPO Enco Air5s（星光版）",
+    "OPPO Enco Laplace 3"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 2,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 1,
+      "name": "Thundering bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 1,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06EC10",
+   "name": "OPPO Enco X4",
+   "names": [
+    "OPPO Enco X4",
+    "OPPO Enco Bohr"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 1,
+     "type": "noise_cancelling",
+     "children": [
+      {
+       "index": 7,
+       "type": "smart"
+      },
+      {
+       "index": 4,
+       "type": "strong"
+      },
+      {
+       "index": 5,
+       "type": "moderate"
+      },
+      {
+       "index": 6,
+       "type": "light"
+      }
+     ]
+    },
+    {
+     "index": 11,
+     "type": "auto",
+     "children": [
+      {
+       "index": 12,
+       "type": "less_noise"
+      },
+      {
+       "index": 13,
+       "type": "standard_noise"
+      },
+      {
+       "index": 14,
+       "type": "more_noise"
+      }
+     ]
+    },
+    {
+     "index": 0,
+     "type": "off",
+     "children": [
+      {
+       "index": 3,
+       "type": "off"
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": [
+      {
+       "index": 8,
+       "type": "transparency"
+      }
+     ]
+    }
+   ],
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Dynaudio original sound"
+     },
+     {
+      "index": 7,
+      "name": "Dynaudio high-resolution"
+     },
+     {
+      "index": 2,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 1,
+      "name": "Crisp highs"
+     },
+     {
+      "index": 3,
+      "name": "Thundering bass"
+     }
+    ],
+    "frequencies": [
+     31,
+     62,
+     125,
+     250,
+     500,
+     1000,
+     2000,
+     4000,
+     8000,
+     16000
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "wearDetection": 2,
+    "multiDevicesConnect": 2,
+    "bassEngineSupport": 1,
+    "highToneQuality": 1,
+    "hearingEnhancement": 1,
+    "supportPinch": 1,
+    "zenMode": 3,
+    "headMotion": 1,
+    "spatialTypes": [
+     0,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "06F010",
+   "name": "OPPO Enco Air4s",
+   "names": [
+    "OPPO Enco Air4s"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "noise": [
+    {
+     "index": 0,
+     "type": "noise_cancelling",
+     "children": []
+    },
+    {
+     "index": 1,
+     "type": "off",
+     "children": []
+    },
+    {
+     "index": 2,
+     "type": "transparency",
+     "children": []
+    }
+   ],
+   "eq": {
+    "family": 2,
+    "custom": false,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Nature Balance"
+     },
+     {
+      "index": 1,
+      "name": "Bass boost"
+     },
+     {
+      "index": 2,
+      "name": "Clear vocals"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "hearingEnhancement": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "id": "06F450",
+   "name": "OPPO Enco Buds3s",
+   "names": [
+    "OPPO Enco Buds3s"
+   ],
+   "brand": "oppo",
+   "hidden": true,
+   "eq": {
+    "family": 4,
+    "custom": true,
+    "presets": [
+     {
+      "index": 0,
+      "name": "Ultimate sound"
+     },
+     {
+      "index": 2,
+      "name": "Pure vocals"
+     },
+     {
+      "index": 1,
+      "name": "Thundering bass"
+     }
+    ]
+   },
+   "features": {
+    "gameMode": 1,
+    "multiDevicesConnect": 1,
+    "spatialTypes": [
+     0,
+     1
+    ]
+   }
+  }
+ ]
+}

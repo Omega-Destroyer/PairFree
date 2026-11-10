@@ -1986,9 +1986,53 @@ val generateOneplusTables = tasks.register<GenerateOneplusTables>("generateOnepl
     outputDir = layout.buildDirectory.dir("generated/oneplus")
 }
 
+/** The OnePlus and OPPO model table from data/oneplus/devices.json (tools/import_heymelody_catalog.py). */
+abstract class GenerateOneplusModels : DefaultTask() {
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("devices") as List<Map<String, Any?>>
+        fun noise(list: Any?): String {
+            @Suppress("UNCHECKED_CAST")
+            val items = (list as? List<Map<String, Any?>>).orEmpty()
+            return items.joinToString(", ", "listOf(", ")") { "OneplusNoise(${it["index"]}, ${str(it["type"])}, ${noise(it["children"])})" }
+        }
+        val out = StringBuilder("// Generated from data/oneplus/devices.json; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.oneplus\n\n")
+        out.appendLine("internal val ONEPLUS_MODELS: List<OneplusModel> = listOf(")
+        for (d in devices) {
+            @Suppress("UNCHECKED_CAST")
+            val eq = d["eq"] as? Map<String, Any?>
+            @Suppress("UNCHECKED_CAST")
+            val presets = (eq?.get("presets") as? List<Map<String, Any?>>).orEmpty().joinToString(", ", "listOf(", ")") { "OneplusPreset(${it["index"]}, ${str(it["name"])})" }
+            @Suppress("UNCHECKED_CAST")
+            val features = d["features"] as? Map<String, Any?>
+            @Suppress("UNCHECKED_CAST")
+            val names = (d["names"] as List<String>).joinToString(", ") { str(it) }
+            out.appendLine(
+                "    OneplusModel(${str(d["id"])}, ${str(d["name"])}, listOf($names), ${str(d["brand"])}, ${d["hidden"] == true}, " +
+                    "${noise(d["noise"])}, $presets, ${eq?.get("custom") == true}, ${features?.get("gameMode") == 1}),",
+            )
+        }
+        out.appendLine(")")
+        val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/oneplus/OneplusModelTable.kt")
+        target.parentFile.mkdirs()
+        target.writeText(out.toString())
+    }
+}
+val generateOneplusModels = tasks.register<GenerateOneplusModels>("generateOneplusModels") {
+    devicesJson = rootProject.layout.projectDirectory.file("../data/oneplus/devices.json")
+    outputDir = layout.buildDirectory.dir("generated/oneplus-models")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateCambridgeTables)
     kotlin.srcDir(generateOneplusTables)
+    kotlin.srcDir(generateOneplusModels)
     kotlin.srcDir(generateHearingTables)
     kotlin.srcDir(generateIdentifyTables)
     kotlin.srcDir(generateEarfunTables)
@@ -2022,6 +2066,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/bose")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/jbl")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/apple")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/oneplus")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/nothing")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/pixel")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/qcy")).withPathSensitivity(PathSensitivity.RELATIVE)

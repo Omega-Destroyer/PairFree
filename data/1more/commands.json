@@ -15,7 +15,7 @@
   {"code": "003C", "name": "GET_EQ_MODE"},
   {"code": "0049", "name": "DELETE_MUSIC", "never_send": true},
   {"code": "004C", "name": "SET_VOLUME"},
-  {"code": "004D", "name": "HANDSHAKE", "never_send": true},
+  {"code": "004D", "name": "HANDSHAKE", "note": "sent with 01 as soon as the serial channel is up; the answer's 01 is success, and 1MORE's app starts its reads on it (HeadsetActivity, DispatcherKt). The first review took it for something the app never sends; the app sends it from five places and a virtual Aero run saw it."},
   {"code": "004E", "name": "GET_BINAURAL_INFO", "note": "left is master (0), left version (3), left battery, right version (3), right battery, case battery"},
   {"code": "004F", "name": "GET_AI_LICENSE", "never_send": true},
   {"code": "0053", "name": "SET_EQ_PARAMETERS"},

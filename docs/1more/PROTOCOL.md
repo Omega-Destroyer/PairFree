@@ -5,7 +5,7 @@ PairFree yet.
 
 ## 1. Sources
 
-- **1MORE's app**: 1MORE 2.0.0 (`com.onemore.music`), decompiled outside the repo on 2026-10-18. None of
+- **1MORE's app**: 1MORE 2.0.0 (installed as `com.onemore.connect`; its code lives in the namespace `com.onemore.music`), decompiled outside the repo on 2026-10-18. None of
   its code is in the repo. It is a Tuya ("Thing") host app with React Native parts; the earbud control is
   1MORE's own Kotlin code. These parts were read:
   - `module/ui/cmd`: `Cmd.kt` (the frames and every command it sends), `Dispatcher.kt` (how it reads each
@@ -34,7 +34,13 @@ head (2) | command (2) | length (2) | sequence (2) | xor (1) | payload
   sequence number counts up from 0 for every frame the phone sends and starts over after `FFFF`
   (`Cmd.kt`, `makeData`).
 - **XOR:** the XOR of the eight bytes before it.
-- **No handshake:** `004D` exists but 1MORE's app never sends it, and PairFree does not either.
+- **Handshake:** `004D` with payload `01` is the first frame 1MORE's app sends once the serial channel is up (five call sites,
+  among them `HeadsetListActivity`, `BluetoothManager` and `BluetoothListenerReceiver`); a reply of `01` is success, and the
+  app's headset screen starts its reads on it (`DispatcherKt`, `HeadsetActivity`: EQ mode, battery, listen mode, ear return,
+  volume limit, preset sound, find device). The first version of this document, and PairFree up to 0.8.x, took it for
+  something the app never sends. A virtual Aero run (`VIRTUAL_TESTING.md`) saw the app send `1101004D000100015D01` and carry
+  on with the battery read when it got no answer. PairFree sends it first and does not wait for the answer; whether real
+  firmware needs it is not known.
 
 1MORE's app splits what the earbuds send by a fixed length per command (`BluetoothOrderConstents.getFeedbackLength`)
 and never checks the XOR or the length field. Its lengths match the length field for every answer it
@@ -110,10 +116,13 @@ read again at once.
     `data/1more/devices.json`.
   - The read (`0054`) names every band's frequency; 1MORE's app writes its length field as 20 whatever the band
     count, which the Q12 (12 bands) overruns, and PairFree sends it the same way. The answer is the same records.
-  - 1MORE's app does not switch the preset sound before it writes a curve; PairFree reads both again after a write.
+  - Choosing Custom in 1MORE's app sends preset sound `0C` (`0069 0C`; `DefaultSoundActivity.getStyleCmd`, the list entry
+    "custom_eqs"), and the editor then writes the curve. The app's own band slider writes one band's record per move, its
+    reset writes every band at 0 dB in one `0053`. PairFree writes every band in one `0053` and, on a model that also has preset
+    sounds, sends `0069 0C` before it unless the earbuds reported that they already hold it; it reads both again after a write.
 - Only the models whose product list has the custom flag get the custom EQ; presets follow the preset flag.
 
-**Never sent:** the handshake (`004D`), the AI licence read (`004F`), deleting music (`0049`) and the music
+**Never sent:** the AI licence read (`004F`), deleting music (`0049`) and the music
 upload frames (`0071` to `0073`).
 
 ## 5. Models

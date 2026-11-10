@@ -23,4 +23,4 @@ peers whose replies were invented from the layouts in `docs/apple/B2P.md`. The p
 
 Observed: a device bonded without a Bluetooth inquiry has no device class, and PairFree's list leaves it out because it keeps only audio devices.
 That is harness-only: real earbuds report a class. On the Flex, which has neither battery nor noise control, the Home tab says "Reading the
-earbuds" for ever, and the Fit Pro's single battery level is labelled "Left". Both are to be improved.
+earbuds" for ever, and the Fit Pro's single battery level is labelled "Left". Both are fixed afterwards: the Beats' single level is labelled "Earbuds", the Flex's Home tab says PairFree reads no battery from it and points to the Device tab, and the Sound tab says Apple's app has no equalizer for Beats.

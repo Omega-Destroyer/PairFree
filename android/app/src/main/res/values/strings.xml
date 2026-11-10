@@ -487,6 +487,9 @@
     <string name="setting_jbl_fn_voice_aware">VoiceAware on or off</string>
     <string name="setting_jbl_fn_assistant">Voice assistant</string>
     <string name="setting_jbl_touch_note">What tapping and holding this earbud does.</string>
+    <string name="eq_beats">Apple\'s Beats app has no equalizer for Beats, so PairFree has none to show.</string>
+    <string name="earbuds_battery">Earbuds</string>
+    <string name="beats_bcd_home">PairFree reads no battery from this Beats; Android shows it in its Bluetooth settings where the Beats report it. Its settings are on the Device tab.</string>
     <string name="eq_apple">AirPods have an equalizer only on Apple\'s newest beta firmware. Where they report one, it is below.</string>
     <string name="eq_jbl">The equalizer shows once the headphones or earbuds report theirs. On some JBL models it goes another way in JBL\'s app, which PairFree does not send yet.</string>
     <string name="eq_bose">Bose earbuds and headphones have a tone control rather than an equalizer of bands by frequency. Where the model has one, it is below.</string>

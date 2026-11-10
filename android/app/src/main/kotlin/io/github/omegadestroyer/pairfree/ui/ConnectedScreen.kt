@@ -149,7 +149,7 @@ internal fun ConnectedScreen(
                         Brand.SONY -> R.string.eq_sony_none
                         Brand.BOSE -> R.string.eq_bose
                         Brand.JBL -> R.string.eq_jbl
-                        Brand.APPLE -> R.string.eq_apple
+                        Brand.APPLE -> if (AppleModels.b2p(device.name) != null || AppleModels.bcd(device.name) != null) R.string.eq_beats else R.string.eq_apple
                         Brand.NOTHING -> R.string.eq_nothing
                         Brand.PIXEL -> R.string.eq_pixel
                         Brand.QCY -> R.string.eq_qcy
@@ -258,8 +258,13 @@ private fun HomeScreen(
         // Battery for left, case and right: drawing, then a percentage and a bar, or one bar per step
         // for earbuds that report steps. Only what the earbuds report. Headphones and speakers
         // report one battery, shown as the whole product.
+        val wholeProduct = AppleModels.b2p(device.name) != null
         val batteries = when (form) {
-            Form.EARBUDS -> listOfNotNull(
+            // Apple's Beats report one level for the whole product (docs/apple/B2P.md): not a left bud.
+            Form.EARBUDS -> if (wholeProduct) listOfNotNull(
+                Battery(R.string.earbuds_battery, state.battery(Command.BATTERY_LEFT), art.bud, mirrored = false)
+                    .takeIf { state.supports(Command.BATTERY_LEFT) },
+            ) else listOfNotNull(
                 Battery(R.string.left, state.battery(Command.BATTERY_LEFT), art.bud, mirrored = false)
                     .takeIf { state.supports(Command.BATTERY_LEFT) },
                 Battery(R.string.case_label, state.battery(Command.BATTERY_CASE), art.case, mirrored = false)
@@ -274,7 +279,9 @@ private fun HomeScreen(
         }
         val reportOnly = model?.reportOnly == true || device.brand == Brand.SOUNDCORE && model == null
         if (batteries.isEmpty()) {
-            if (!reportOnly) Label(stringResource(R.string.reading))
+            // The older Beats (BCD) have no battery or noise control that PairFree reads: say so instead of waiting for ever.
+            if (AppleModels.bcd(device.name) != null) Label(stringResource(R.string.beats_bcd_home))
+            else if (!reportOnly) Label(stringResource(R.string.reading))
         } else {
             Panel {
                 Label(stringResource(R.string.battery))

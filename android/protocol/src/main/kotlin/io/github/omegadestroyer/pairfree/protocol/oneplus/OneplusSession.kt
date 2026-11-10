@@ -26,6 +26,9 @@ public class OneplusSession(public val model: OneplusModel?) {
     private var presetIndex: Int? = null
     private var gameMode: Boolean? = null
 
+    /** The last key assignments read, by (device type, button action byte): the function number. */
+    private val keys = linkedMapOf<Pair<Int, Int>, Int>()
+
     /** The product id the earbuds reported, as hex, for the device report. */
     public var productId: String? = null
         private set
@@ -49,7 +52,11 @@ public class OneplusSession(public val model: OneplusModel?) {
         if (model?.noise?.isNotEmpty() == true) add(next(OneplusCommand.TYPED_NOISE, 1, 1))
         if (model?.presets?.isNotEmpty() == true) add(next(OneplusCommand.EQ_PRESET))
         if (model?.gameMode == true) add(next(OneplusCommand.SWITCHES, 1, GAME_MODE_ID))
+        if (model?.touch?.isNotEmpty() == true) add(readKeys())
     }
+
+    /** The key assignment read HeyMelody sends: a count, then the buttons it asks about (3 and 1, as in the virtual run). */
+    private fun readKeys(): ByteArray = next(OneplusCommand.KEYS, 2, 3, 1)
 
     /** Applies bytes from the earbuds (any number of frames or part of one). True when [state] or [groups] changed. */
     public fun receive(bytes: ByteArray): Boolean {
@@ -70,6 +77,7 @@ public class OneplusSession(public val model: OneplusModel?) {
             OneplusCommand.TYPED_NOISE -> noise(d)
             OneplusCommand.EQ_PRESET -> if (d.size >= 2) presetIndex = d[1].toInt() and 0xFF
             OneplusCommand.SWITCHES -> switches(d)
+            OneplusCommand.KEYS -> keyRecords(d)
         }
     }
 
@@ -93,6 +101,30 @@ public class OneplusSession(public val model: OneplusModel?) {
         val bits = d.copyOfRange(3, d.size)
         val index = (0 until bits.size * 8).firstOrNull { bits[it / 8].toInt() and (1 shl (it % 8)) != 0 }
         noiseIndex = index
+    }
+
+    /** `status, count, (device type, button, button action, function)...`: only the stem button's records for the left and right earbud are kept. */
+    private fun keyRecords(d: ByteArray) {
+        if (d.size < 2) return
+        val count = d[1].toInt() and 0xFF
+        if (d.size < 2 + count * 4) return
+        for (i in 0 until count) {
+            val at = 2 + i * 4
+            val type = d[at].toInt() and 0xFF
+            val button = d[at + 1].toInt() and 0xFF
+            if (button == STEM_BUTTON && (type == LEFT || type == RIGHT)) keys[type to (d[at + 2].toInt() and 0xFF)] = d[at + 3].toInt() and 0xFF
+        }
+    }
+
+    private fun side(type: Int) = if (type == LEFT) "left" else "right"
+
+    /** A touch row for each earbud and each stem gesture the model lists and the earbuds reported, with the functions the model allows. */
+    private fun touchRows(side: String): List<Setting> = buildList {
+        for (t in model?.touch.orEmpty()) for (type in listOf(if (side == "left") LEFT else RIGHT)) {
+            val current = keys[type to t.actionByte] ?: continue
+            val name = t.functions.firstOrNull { it.wire == current }?.key ?: continue
+            add(Setting.Choice("touch_${t.gesture}_${side(type)}", name, t.functions.map { it.key }.distinct()))
+        }
     }
 
     /** `status, count, (feature id, state)...`. */
@@ -123,6 +155,8 @@ public class OneplusSession(public val model: OneplusModel?) {
                 SettingGroup("oneplus_sound", SettingTab.SOUND, listOf(Setting.Choice("op_eq_preset", presets.firstOrNull { it.index == i }?.name, presets.map { it.name })))
             },
             strengthRow()?.let { SettingGroup("noise", SettingTab.HOME, listOf(it)) },
+            touchRows("left").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_left", SettingTab.CONTROLS, it) },
+            touchRows("right").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_right", SettingTab.CONTROLS, it) },
             gameMode?.let { SettingGroup("oneplus_other", SettingTab.DEVICE, listOf(Setting.Toggle("game_mode", it))) },
         )
 
@@ -167,6 +201,7 @@ public class OneplusSession(public val model: OneplusModel?) {
     }
 
     public fun change(change: SettingChange): List<ByteArray>? {
+        if (change is SettingChange.Choice && change.key.startsWith("touch_")) return changeKey(change)
         when {
             change is SettingChange.Choice && change.key == STRENGTH_KEY && noiseIndex != null -> {
                 val index = noiseIndex
@@ -189,6 +224,18 @@ public class OneplusSession(public val model: OneplusModel?) {
         return null
     }
 
+    /** `touch_<gesture>_<left|right>`: `0401` with one record, then the read HeyMelody sends after every key write. */
+    private fun changeKey(change: SettingChange.Choice): List<ByteArray>? {
+        val parts = change.key.removePrefix("touch_").split('_')
+        if (parts.size != 2) return null
+        val type = when (parts[1]) { "left" -> LEFT; "right" -> RIGHT; else -> return null }
+        val touch = model?.touch?.firstOrNull { it.gesture == parts[0] } ?: return null
+        if (keys[type to touch.actionByte] == null) return null
+        val function = touch.functions.firstOrNull { it.key == change.option } ?: return null
+        keys[type to touch.actionByte] = function.wire
+        return listOf(next(OneplusCommand.SET_KEYS, 1, type, STEM_BUTTON, touch.actionByte, function.wire), readKeys())
+    }
+
     private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
     public companion object {
@@ -198,6 +245,9 @@ public class OneplusSession(public val model: OneplusModel?) {
         /** The key of the brand row that chooses among the on mode's sub-modes. */
         public const val STRENGTH_KEY: String = "op_noise_level"
         private const val SEQUENCE_WRAP = 256
+        private const val LEFT = 1
+        private const val RIGHT = 2
+        private const val STEM_BUTTON = 1
         private const val BITMAP_TYPE = 1
         private const val WIDE_BITMAP_TYPE = 5
         private const val NOISE_MIN = 4
@@ -206,7 +256,7 @@ public class OneplusSession(public val model: OneplusModel?) {
         public val ALLOWED: Set<Int> = setOf(
             OneplusCommand.CAPABILITIES, OneplusCommand.VENDOR, OneplusCommand.BATTERY, OneplusCommand.PRODUCT, OneplusCommand.MTU,
             OneplusCommand.TYPED_NOISE, OneplusCommand.EQ_PRESET, OneplusCommand.SWITCHES,
-            OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH,
+            OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH, OneplusCommand.KEYS, OneplusCommand.SET_KEYS,
         )
     }
 }

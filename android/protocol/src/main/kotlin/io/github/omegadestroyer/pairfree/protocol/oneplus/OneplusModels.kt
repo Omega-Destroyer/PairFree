@@ -6,6 +6,12 @@ public data class OneplusNoise(val index: Int, val type: String, val children: L
 /** One equalizer preset: the byte HeyMelody writes for it and the name its English strings give. */
 public data class OneplusPreset(val index: Int, val name: String)
 
+/** A function a touch gesture can have: a key the screens know and the number a key assignment writes for it. */
+public data class OneplusFunction(val key: String, val wire: Int)
+
+/** A stem gesture of a model: its key ("single", "double", "triple", "hold"), the button action byte and the functions it may be given. */
+public data class OneplusTouch(val gesture: String, val actionByte: Int, val functions: List<OneplusFunction>)
+
 /**
  * One OnePlus or OPPO earbuds model from HeyMelody's bundled catalog (data/oneplus/devices.json). [id] is the product id the earbuds
  * report (three bytes as hex); [names] are the Bluetooth names the catalog lists.
@@ -20,6 +26,7 @@ public data class OneplusModel(
     val presets: List<OneplusPreset>,
     val customEq: Boolean,
     val gameMode: Boolean,
+    val touch: List<OneplusTouch> = emptyList(),
 )
 
 public object OneplusModels {

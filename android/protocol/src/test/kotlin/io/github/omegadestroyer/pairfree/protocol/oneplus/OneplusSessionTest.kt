@@ -48,7 +48,7 @@ class OneplusSessionTest {
         val frames = s.start()
         assertTrue(frames.all { s.allowed(it) })
         val sent = frames.map { parsed(it) }
-        assertEquals(listOf(0x0100, 0x0102, 0x0106, 0x0103, 0x0101, 0x010C, 0x010F, 0x010D), sent.map { it.command })
+        assertEquals(listOf(0x0100, 0x0102, 0x0106, 0x0103, 0x0101, 0x010C, 0x010F, 0x010D, 0x0108), sent.map { it.command })
         // The app's own startup: 0100, 0102 FFFF, 0106, 0103, 0101 0002 (the order of the later ones differs).
         for ((command, payload) in listOf("0102" to "ffff", "0101" to "0002")) {
             val v = vector(command, payload)
@@ -110,6 +110,28 @@ class OneplusSessionTest {
         assertEquals(listOf("less_noise", "standard_noise", "more_noise"), auto.options)
         val write = parsed(x4.change(SettingChange.Choice(OneplusSession.STRENGTH_KEY, "more_noise"))!!.single())
         assertEquals("01010040", write.payload.joinToString("") { "%02x".format(it) })
+    }
+
+    @Test
+    fun touchControlsAreReadAsKeyRecordsAndWrittenAsTheAppDid() {
+        val s = budsPro2()
+        val start = s.start().map { parsed(it) }
+        assertEquals(listOf(0x0108), start.filter { it.command == 0x0108 }.map { it.command })
+        assertEquals("020301", start.first { it.command == 0x0108 }.payload.joinToString("") { "%02x".format(it) })
+        // Left double press is previous (5), right double press is next (6), as invented replies.
+        s.receive(reply(0x0108, 0, 2, 1, 1, 2, 5, 2, 1, 2, 6))
+        val rows = s.groups.flatMap { it.settings }.filter { it.key.startsWith("touch_") }.associate { it.key to it as Setting.Choice }
+        assertEquals("previous", rows.getValue("touch_double_left").value)
+        assertEquals("next", rows.getValue("touch_double_right").value)
+        assertTrue("next" in rows.getValue("touch_double_left").options)
+        fun payloadOf(frames: List<ByteArray>) = parsed(frames.first()).let { "%04x".format(it.command) to it.payload.joinToString("") { b -> "%02x".format(b) } }
+        // The two writes HeyMelody sent in the virtual run: left double press to next, right double press to previous.
+        val left = s.change(SettingChange.Choice("touch_double_left", "next"))!!
+        assertEquals("0401" to vector("0401", "0101010206").getValue("payload").jsonPrimitive.content, payloadOf(left))
+        assertEquals(0x0108, parsed(left[1]).command)
+        val right = s.change(SettingChange.Choice("touch_double_right", "previous"))!!
+        assertEquals("0401" to vector("0401", "0102010205").getValue("payload").jsonPrimitive.content, payloadOf(right))
+        assertEquals("next", (s.groups.flatMap { it.settings }.first { it.key == "touch_double_left" } as Setting.Choice).value)
     }
 
     @Test

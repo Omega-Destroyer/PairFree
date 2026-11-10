@@ -14,7 +14,7 @@ feature-switch ids) and the app's English strings. `data/oneplus/devices.json` k
 | `customEqualizer` (39), `customEqFrequency` (10), `customEqUiVersion`, `customEqMax` | A custom curve exists (`0122` read, `0418` write); frequencies where listed | `eq.custom`, `eq.frequencies`; not built |
 | `gameMode` (67) | Feature switch id 6 (`0403 06 01`); records with only `gameModeList` (2) count too | `features.gameMode`; built (Device tab) |
 | `batteryInfo` (82) | The app shows a battery card; PairFree reads `0106` on every model and shows what the earbuds answer | always read |
-| `control` (83), `callControl` (50), `controlList` (3) | Touch assignments: one entry per gesture with the functions its `support` mask allows | `touch` (see below); not built |
+| `control` (83), `callControl` (50), `controlList` (3) | Touch assignments: one entry per gesture with the functions its `support` mask allows | `touch` (see below); the stem taps (single, double, triple) are built, the long press, the call controls and `controlList` are not |
 
 ## Touch controls (`touch` in the data)
 

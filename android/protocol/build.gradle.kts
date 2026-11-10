@@ -2002,6 +2002,15 @@ abstract class GenerateOneplusModels : DefaultTask() {
             val items = (list as? List<Map<String, Any?>>).orEmpty()
             return items.joinToString(", ", "listOf(", ")") { "OneplusNoise(${it["index"]}, ${str(it["type"])}, ${noise(it["children"])})" }
         }
+        fun touch(list: Any?): String {
+            @Suppress("UNCHECKED_CAST")
+            val items = (list as? List<Map<String, Any?>>).orEmpty().filter { it["button"] == 1 && it["functions"] != null }
+            return items.joinToString(", ", "listOf(", ")") { t ->
+                @Suppress("UNCHECKED_CAST")
+                val fns = (t["functions"] as List<Map<String, Any?>>).filter { it["wire"] != null }.joinToString(", ", "listOf(", ")") { "OneplusFunction(${str(it["key"])}, ${it["wire"]})" }
+                "OneplusTouch(${str(t["gesture"])}, ${t["action_byte"]}, $fns)"
+            }
+        }
         val out = StringBuilder("// Generated from data/oneplus/devices.json; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.oneplus\n\n")
         out.appendLine("internal val ONEPLUS_MODELS: List<OneplusModel> = listOf(")
         for (d in devices) {
@@ -2015,7 +2024,7 @@ abstract class GenerateOneplusModels : DefaultTask() {
             val names = (d["names"] as List<String>).joinToString(", ") { str(it) }
             out.appendLine(
                 "    OneplusModel(${str(d["id"])}, ${str(d["name"])}, listOf($names), ${str(d["brand"])}, ${d["hidden"] == true}, " +
-                    "${noise(d["noise"])}, $presets, ${eq?.get("custom") == true}, ${features?.get("gameMode") == 1}),",
+                    "${noise(d["noise"])}, $presets, ${eq?.get("custom") == true}, ${features?.get("gameMode") == 1}, ${touch(d["touch"])}),",
             )
         }
         out.appendLine(")")

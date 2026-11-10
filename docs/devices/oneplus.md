@@ -11,11 +11,12 @@ HeyMelody first: only one app can hold the connection.
 
 What it shows, on the models whose catalog entry has each (Apple-style "show only what is reported" applies: a setting appears once the
 earbuds answer its read):
-- **Home:** the battery (left, right and case), and noise control: off, noise cancelling and transparency.
+- **Home:** the battery (left, right and case), noise control (off, noise cancelling, transparency) and, where the model has them, the level of the mode that is on (smart, strong, moderate, light; or the auto mode's range).
 - **Sound:** the equalizer preset the model offers (the preset names are HeyMelody's English ones).
+- **Controls:** what a single, double and triple tap does on each earbud, among the functions the model allows (play or pause, previous, next, voice assistant, game mode, nothing and the like).
 - **Device:** game mode.
 
-Not yet: the noise strengths (smart, strong, moderate, light), custom equalizer curves, touch controls, dual connection, wear detection,
+Not yet: long-press controls and the call controls, custom equalizer curves, dual connection, wear detection,
 fit and hearing tests, spatial audio, the codec choices and everything else in `docs/oneplus/CAPABILITIES.md`. Debug, firmware, find-my and
 account commands are never sent. Realme's earbuds are not covered: they need their own app and evidence.
 

@@ -64,11 +64,11 @@ class BeatsTest {
 
     @Test
     fun theSessionShowsWhatTheBeatsAnswered() {
-        val s = BeatsSession(AppleModels.b2p("Beats Studio Buds +"))
+        val s = BeatsSession(AppleModels.b2p("Beats Fit Pro"))
         val start = s.startFrames()
-        assertEquals(listOf(0x013A, 0x0152, 0x0158, 0x0158, 0x014C), start.map { it.opcode })
+        assertEquals(listOf(0x013A, 0x0152, 0x0158, 0x0158, 0x014C, 0x047C, 0x0150), start.map { it.opcode })
         assertEquals(listOf(1, 2), start.filter { it.opcode == 0x0158 }.map { it.payload[0].toInt() })
-        assertEquals(listOf(1, 2, 3, 4, 5), start.map { it.sequence })
+        assertEquals(listOf(1, 2, 3, 4, 5, 6, 7), start.map { it.sequence })
         assertTrue(start.all { s.allowed(it) })
         assertTrue(s.receive(B2pFrame(2, 0x0153, byteArrayOf(0, 0, 77, 0, 0))))
         assertEquals(Value.Number(77), s.state.values[Command.BATTERY_LEFT])
@@ -79,7 +79,7 @@ class BeatsTest {
         s.receive(B2pFrame(5, 0x014D, byteArrayOf(2)))
         val toggle = s.groups.flatMap { it.settings }.single() as Setting.Toggle
         assertTrue(toggle.on)
-        assertEquals(listOf(B2pFrame(6, 0x014A, byteArrayOf(1))), s.changeFrames(SettingChange.Toggle("ear_detection", false)))
+        assertEquals(listOf(B2pFrame(8, 0x014A, byteArrayOf(1))), s.changeFrames(SettingChange.Toggle("ear_detection", false)))
         val set = s.setFrames(Command.ANC_MODE, anc("anc"))
         assertNotNull(set)
         assertArrayEquals(byteArrayOf(1, 0x64), set!!.single().payload)
@@ -87,6 +87,26 @@ class BeatsTest {
         assertEquals(Value.Number(anc("anc")), s.state.values[Command.ANC_MODE])
         assertFalse(s.allowed(B2pFrame(1, 0x0154)))
         assertFalse(s.allowed(B2pFrame(1, 0x0008)))
+    }
+
+    @Test
+    fun readsOnlyWhatTheModelListsAndShowsTheOtherSettings() {
+        // Studio Buds +: ANC and a microphone, but no in-ear detection or one-bud noise cancelling in Apple's feature list.
+        val buds = BeatsSession(AppleModels.b2p("Beats Studio Buds +"))
+        assertEquals(listOf(0x013A, 0x0152, 0x0158, 0x0158, 0x0150), buds.startFrames().map { it.opcode })
+        // Solo 4 lists no setting at all.
+        assertEquals(listOf(0x013A, 0x0152), BeatsSession(AppleModels.b2p("Beats Solo 4")).startFrames().map { it.opcode })
+        val s = BeatsSession(AppleModels.b2p("Powerbeats Pro 2"))
+        assertEquals(listOf(0x013A, 0x0152, 0x0158, 0x0158, 0x014C, 0x047C, 0x0150, 0x050C), s.startFrames().map { it.opcode })
+        s.receive(B2pFrame(1, 0x047D, byteArrayOf(1)))
+        s.receive(B2pFrame(2, 0x0151, byteArrayOf(2)))
+        s.receive(B2pFrame(3, 0x050D, byteArrayOf(0)))
+        val keys = s.groups.flatMap { it.settings }
+        assertEquals(listOf("noise_one_earbud", "microphone", "in_case_tone"), keys.map { it.key })
+        assertEquals("left", (keys[1] as Setting.Choice).value)
+        assertEquals(listOf(B2pFrame(1, 0x014E, byteArrayOf(1))).map { it.opcode }, s.changeFrames(SettingChange.Choice("microphone", "right"))!!.map { it.opcode })
+        assertEquals(0x047E, s.changeFrames(SettingChange.Toggle("noise_one_earbud", false))!!.single().opcode)
+        assertEquals(0x050A, s.changeFrames(SettingChange.Toggle("in_case_tone", true))!!.single().opcode)
     }
 
     @Test

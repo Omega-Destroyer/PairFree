@@ -58,8 +58,8 @@ NOTE = (
     "Apple's own Beats app on Android does not use that channel: it talks to the Beats on Apple's chips over an ordinary "
     "Bluetooth serial connection (RFCOMM), which any Android version allows. PairFree now speaks that protocol (B2P) to the Beats "
     "that Apple's app controls that way (Powerbeats Pro and Pro 2, Powerbeats Fit, Fit Pro, Studio Buds and Buds +, Solo Buds, "
-    "Solo Pro, Solo 4, Studio Pro): they need no particular Android version. It shows the battery, the listening mode and in-ear "
-    "detection, written from Apple's app and not yet tried on any Beats. The older Beats (Powerbeats3, Solo3, BeatsX, Flex, "
+    "Solo Pro, Solo 4, Studio Pro): they need no particular Android version. It shows the battery, the listening mode, one-bud "
+    "noise cancelling, ear detection, the microphone and the in-case tones, for the models Apple's app lists each for, written from Apple's app and not yet tried on any Beats. The older Beats (Powerbeats3, Solo3, BeatsX, Flex, "
     "Studio3) use another protocol, BCD, over the same serial channel: PairFree shows their noise cancelling switch (and the Flex's auto "
     "answer), also untried; the Beats Pill+ speaker is not covered. See docs/apple/B2P.md."
 )

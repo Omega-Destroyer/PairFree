@@ -1125,7 +1125,7 @@ abstract class GenerateAppleTables : DefaultTask() {
             val numbers = (d.getValue("model_numbers") as List<String>).joinToString(", ") { str(it) }
             out.appendLine(
                 "    AppleModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, listOf($numbers), " +
-                    "0x${d["product_id"]}, adaptive = ${d["adaptive"] == true}, b2p = ${d["b2p"] == true}, bcd = ${d["bcd"] == true}),",
+                    "0x${d["product_id"]}, adaptive = ${d["adaptive"] == true}, b2p = ${d["b2p"] == true}, bcd = ${d["bcd"] == true}, features = listOf(${((d["features"] as? List<String>) ?: emptyList()).joinToString(", ") { str(it) }})),",
             )
         }
         out.appendLine(")")

@@ -82,7 +82,8 @@ class BcdTest {
     @Test
     fun theFlexAlsoReadsAutoAnswer() {
         val flex = BcdSession(AppleModels.bcd("Beats Flex"))
-        assertEquals(listOf(0x0000, 0x01A4, 0x024A), flex.start().map { BcdFrame.parse(it)!!.command })
+        assertEquals(listOf(0x0000, 0x024A), flex.start().map { BcdFrame.parse(it)!!.command })
+        assertEquals(listOf(0x0000), BcdSession(AppleModels.bcd("Beats Solo3")).start().map { BcdFrame.parse(it)!!.command })
         flex.receiveBytes(BcdFrame(1, 0x024B, byteArrayOf(1)).bytes())
         val toggle = flex.groups.flatMap { it.settings }.single() as Setting.Toggle
         assertTrue(toggle.on)

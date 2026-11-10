@@ -66,8 +66,8 @@ public class BcdFrame(public val sequence: Int, public val command: Int, public 
 }
 
 /**
- * A session with one of the older Beats over BCD. Apple's app reads the product id and the listening mode from every one, and the
- * auto answer setting from the Flex only (it checks product id 2010); whatever a Beats answers is shown. Source analysis only: no
+ * A session with one of the older Beats over BCD. Apple's app lists ANC for the Studio3 and AutoAnswer for the Flex only
+ * (products_descriptor.json), and PairFree reads just what the model lists, after the product id; whatever a Beats answers is shown. Source analysis only: no
  * Beats has answered PairFree. The battery has a command but its layout is unread, and Android shows the battery through the
  * standard Bluetooth reports for these models.
  */
@@ -91,8 +91,8 @@ public class BcdSession(override val model: AppleModel?) : BeatsControl {
 
     override fun start(): List<ByteArray> = buildList {
         add(frame(PRODUCT_ID_GET))
-        add(frame(LISTENING_MODE_GET))
-        if (model?.productId == FLEX) add(frame(AUTO_ANSWER_GET))
+        if (model?.has("ANC") == true) add(frame(LISTENING_MODE_GET))
+        if (model?.has("AutoAnswer") == true) add(frame(AUTO_ANSWER_GET))
     }.map { it.bytes() }
 
     override fun split(buffer: ByteArray): Pair<List<ByteArray>, ByteArray> = BcdFrame.split(buffer)
@@ -162,7 +162,6 @@ public class BcdSession(override val model: AppleModel?) : BeatsControl {
         public const val LISTENING_MODE_SET: Int = 0x0226
         public const val AUTO_ANSWER_GET: Int = 0x024A
         public const val AUTO_ANSWER_SET: Int = 0x0248
-        private const val FLEX = 0x2010
         private const val MAX_SEQUENCE = 255
         private const val OFF = 1
         private const val ON = 2

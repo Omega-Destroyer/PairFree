@@ -8,7 +8,10 @@ import io.github.omegadestroyer.pairfree.protocol.Model
  * (AirPods only, from LibrePods), its Bluetooth product id (from MagicPodsCore), and whether it has
  * Adaptive Audio.
  */
-public data class AppleModel(val name: String, val form: Form, val modelNumbers: List<String>, val productId: Int, val adaptive: Boolean, val b2p: Boolean = false, val bcd: Boolean = false)
+public data class AppleModel(val name: String, val form: Form, val modelNumbers: List<String>, val productId: Int, val adaptive: Boolean, val b2p: Boolean = false, val bcd: Boolean = false, val features: List<String> = emptyList()) {
+    /** True when Apple's Beats app lists [feature] for this model (products_descriptor.json). */
+    public fun has(feature: String): Boolean = feature in features
+}
 
 /** Every AirPods and Beats model PairFree knows, and how a paired device is recognised as one. */
 public object AppleModels {

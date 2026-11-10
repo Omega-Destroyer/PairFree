@@ -54,17 +54,36 @@ The rest (one-bud ANC 047C/047E, name 012C/0134, colour 0116, capabilities 0144,
 end-call control, microphone mode 014E/0150, listening mode rotation 018A/018C) have an opcode but their payload layouts are
 still to read.
 
+## Which Beats offer what
+
+Apple's app takes each product's features from `assets/products_descriptor.json` (read 2026-11-10; `features` in
+`data/apple/devices.json` is the union over its firmware versions, derived facts only), and its native getters refuse a read the
+product does not list. PairFree follows the same list: a read is sent only for a feature the model has.
+
+| Feature | Read / write | Reply payload |
+|---|---|---|
+| `ANC`, `Transparency` | 0158 (with 1, then 2) / 015A | see above |
+| `InEarDetection` | 014C / 014A | 1 byte: 1 off, 2 on |
+| `OneBudAnc` | 047C / 047E | 1 byte: 1 on; write 0 or 1 |
+| `Microphone` | 0150 / 014E | 1 byte, 0 to 2 (taken as the AirPods' automatic, right, left; the app only passes it on) |
+| `InCaseTones` | 050C / 050A | 1 byte: 1 on; write 0 or 1 |
+| `ListeningModeRotation` | 018A / 018C | 1 byte, raw (the bit meanings are not read; not offered) |
+| `ButtonMode*`, `EndCallControl*`, `ToneVolume`, `HeartRateSensor`, `Sharing` | 0468/046A, 01AE/01AC (01C8/01C6), 031C/031E, 0364/036A, 03E6 | layouts not read; not offered |
+
 ## In PairFree
 
 `BeatsSession` and `B2pFrame` (`protocol/apple/`), opened over the plain serial channel (`EarbudsConnection.serveBeats`) for the Beats
-whose `data/apple/devices.json` entry has `b2p` (known by name, `AppleModels.b2p`). On connecting it reads the product id, the
-battery (0152), the listening mode (0158 with 1, then 2) and in-ear detection (014C), 200 ms apart, and shows the battery, the
-listening mode (off, noise cancelling, transparency) and an ear detection switch. The mode is written as 015A with the mode and 64
-(hex) and read again after the Beats answer or announce it. Only these commands are sent (`BeatsSession.ALLOWED`). The reading of the
-two listening mode answers (a nonzero first answer with a zero second one means noise cancelling, the reverse transparency) is
-inferred from the app's comparison, and the battery reply is taken as one level for the whole product: both are to be confirmed by
-a Beats owner's device report. Not built: reset and factory reset as confirmed actions, the button mode, one-bud ANC, the in-case
-tones, the microphone mode and capabilities (layouts still to read), BCD and BTP.
+whose `data/apple/devices.json` entry has `b2p` (known by name, `AppleModels.b2p`). On connecting it reads the product id and the
+battery (0152), then one read for each feature in the table above that the model lists, 200 ms apart. It shows the battery, the
+listening mode (off, noise cancelling, transparency), one-bud noise cancelling, ear detection, the microphone and the in-case tones, each
+once its read was answered. The mode is written as 015A with the mode and 64 (hex) and read again after the Beats answer or announce it.
+Only these commands are sent (`BeatsSession.ALLOWED`). Inferred and to be confirmed by a Beats owner's device report: the reading of the
+two listening mode answers (a nonzero first answer with a zero second one means noise cancelling, the reverse transparency), the battery
+reply taken as one level for the whole product, and the microphone's value names.
+
+Reset and factory reset (0008, 0154) are not offered. blocked: Apple's app never sends them and no payload is known; checked: the
+app's Java (no caller of either, `b2pRequest` is only a generic passthrough), the JNI exports (no reset setter), and the opcode table.
+The owner allowed them as confirmed actions (2026-11-10), so they can be added once a source shows the payload.
 
 ## Confirmed actions
 
@@ -98,9 +117,9 @@ What Apple's app reads and writes through its Java calls:
 | Auto answer (only the Flex, product id 2010) | read 024A, write 0248 | reply 1 byte: 1 is on. Write 1 for on, 2 for off |
 | Name, colour, serial number, firmware version | 010C/010A, 0018, 000A, 0002 | not used by PairFree (the serial number stays private) |
 
-In PairFree: `BcdSession` and `BcdFrame`, opened over the same serial channel. It reads the product id and the listening mode from
-every BCD Beats (and the auto answer from the Flex) and shows what they answer: noise cancelling on or off, and the Flex's auto answer
-switch. Source analysis only. Left out: the battery (`BCD_CMD_GET_BATTERY` 014A exists but Apple's Java never calls it and its
+In PairFree: `BcdSession` and `BcdFrame`, opened over the same serial channel. Apple's feature list gives the Studio3 `ANC` and the Flex
+`AutoAnswer` (the Powerbeats3, Solo3 and BeatsX list nothing), so it reads the product id and then just those, and shows what they
+answer: noise cancelling on or off, and the Flex's auto answer switch. Source analysis only. Left out: the battery (`BCD_CMD_GET_BATTERY` 014A exists but Apple's Java never calls it and its
 layout is unread; Android shows these models' battery through the standard Bluetooth reports), and the factory reset
 (0158) which would need a confirmed action like B2P's.
 

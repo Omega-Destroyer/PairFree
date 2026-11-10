@@ -1,0 +1,704 @@
+{
+  "_about": "Outgoing frames captured from the original running Melomania 2.8.12 app against synthetic Bluetooth earbuds. Not hardware captures. Only vendor TX is retained; simulator replies and raw HCI/keys stay outside the repository.",
+  "source": {
+    "date": "2026-11-06",
+    "package": "com.cambridgeaudio.melomania",
+    "version": "2.8.12 (570)",
+    "apk_modified": false,
+    "device_virtual": true,
+    "replies_synthetic": true,
+    "hardware_tested": false,
+    "emulator": "37.2.12.0",
+    "android": "37.0 Google Play x86_64, ARM64 translation",
+    "bumble": "0.0.235",
+    "installed_apk_sha256": {
+      "com.cambridgeaudio.melomania.apk": "06f743f55f31c7cf0ca80650812e3e10b31d48946a112fb803db2e18d229a17b",
+      "config.arm64_v8a.apk": "1e3c4abeb9d799e3863dc889bb2da8a4af858667f8184d2e4892a14dac30a2a2",
+      "config.en.apk": "a48ca15cb8d4d035c57d00d62abd4cf935137251fb893a06649f0900a44f14be",
+      "config.xxhdpi.apk": "4ab9dc87df31266f0264bfac015c9730baf1c519bf059dfe10b4a5dd9d4f6f88"
+    }
+  },
+  "cases": [
+    {
+      "model": "Melomania Touch",
+      "action": "preset-immersive",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "immersive",
+      "frame": "ff010001000a021401"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "preset-rnb",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "rnb",
+      "frame": "ff010001000a021402"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "preset-electronic",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "electronic",
+      "frame": "ff010001000a021403"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "preset-rock",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "rock",
+      "frame": "ff010001000a021404"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "preset-voice",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "voice",
+      "frame": "ff010001000a021405"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "preset-neutral",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "neutral",
+      "frame": "ff010001000a021400"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "eq-band-1-position-640",
+      "kind": "level",
+      "key": "ca_band_1",
+      "value": 2,
+      "frame": "ff010005000a021a0612007801"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "eq-band-2-position-946",
+      "kind": "level",
+      "key": "ca_band_2",
+      "value": -2,
+      "frame": "ff010005000a021a0622ff8801"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "eq-band-3-position-395",
+      "kind": "level",
+      "key": "ca_band_3",
+      "value": 6,
+      "frame": "ff010005000a021a0632016801"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "eq-band-5-position-640",
+      "kind": "level",
+      "key": "ca_band_5",
+      "value": 2,
+      "frame": "ff010005000a021a0652007801"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "eq-band-4-minimum",
+      "kind": "level",
+      "key": "ca_band_4",
+      "value": -5,
+      "frame": "ff010005000a021a0642fed401"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "eq-band-4-negative-limit",
+      "kind": "level",
+      "key": "ca_band_4",
+      "value": -6,
+      "frame": "ff010005000a021a0642fe9801"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-play-pause-off",
+      "kind": "toggle",
+      "key": "ca_control_play_pause",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078203fe"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-play-pause-on",
+      "kind": "toggle",
+      "key": "ca_control_play_pause",
+      "on": true,
+      "initial_controls": 1022,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-next-off",
+      "kind": "toggle",
+      "key": "ca_control_next",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078203fd"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-next-on",
+      "kind": "toggle",
+      "key": "ca_control_next",
+      "on": true,
+      "initial_controls": 1021,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-previous-off",
+      "kind": "toggle",
+      "key": "ca_control_previous",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078203fb"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-previous-on",
+      "kind": "toggle",
+      "key": "ca_control_previous",
+      "on": true,
+      "initial_controls": 1019,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-volume-up-off",
+      "kind": "toggle",
+      "key": "ca_control_volume_up",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078203f7"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-volume-up-on",
+      "kind": "toggle",
+      "key": "ca_control_volume_up",
+      "on": true,
+      "initial_controls": 1015,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-volume-down-off",
+      "kind": "toggle",
+      "key": "ca_control_volume_down",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078203ef"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-volume-down-on",
+      "kind": "toggle",
+      "key": "ca_control_volume_down",
+      "on": true,
+      "initial_controls": 1007,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-accept-call-off",
+      "kind": "toggle",
+      "key": "ca_control_accept_call",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078203df"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-accept-call-on",
+      "kind": "toggle",
+      "key": "ca_control_accept_call",
+      "on": true,
+      "initial_controls": 991,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-reject-call-off",
+      "kind": "toggle",
+      "key": "ca_control_reject_call",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078203bf"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-reject-call-on",
+      "kind": "toggle",
+      "key": "ca_control_reject_call",
+      "on": true,
+      "initial_controls": 959,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-end-call-off",
+      "kind": "toggle",
+      "key": "ca_control_end_call",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a0782037f"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-assistant-off",
+      "kind": "toggle",
+      "key": "ca_control_assistant",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078202ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-assistant-on",
+      "kind": "toggle",
+      "key": "ca_control_assistant",
+      "on": true,
+      "initial_controls": 767,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-ambient-off",
+      "kind": "toggle",
+      "key": "ca_control_ambient",
+      "on": false,
+      "initial_controls": 1023,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "control-ambient-on",
+      "kind": "toggle",
+      "key": "ca_control_ambient",
+      "on": true,
+      "initial_controls": 511,
+      "frame": "ff010002000a078203ff"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "language-cantonese-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "yue",
+      "frame": "ff010001000a020b00"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "language-chinese-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "zh",
+      "frame": "ff010001000a020b01"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "language-french-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "fr",
+      "frame": "ff010001000a020b03"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "language-german-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "de",
+      "frame": "ff010001000a020b04"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "language-italian-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "it",
+      "frame": "ff010001000a020b05"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "language-japanese-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "ja",
+      "frame": "ff010001000a020b06"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "language-spanish-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "es",
+      "frame": "ff010001000a020b07"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "language-english-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "en",
+      "frame": "ff010001000a020b02"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "ambient-on",
+      "kind": "toggle",
+      "key": "ca_ambient",
+      "on": true,
+      "frame": "ff010001000a079801"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "ambient-level-min",
+      "kind": "level",
+      "key": "ca_ambient_level",
+      "value": 0,
+      "frame": "ff010001000a079900"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "ambient-level-middle",
+      "kind": "level",
+      "key": "ca_ambient_level",
+      "value": 36,
+      "frame": "ff010001000a079924"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "ambient-level-max",
+      "kind": "level",
+      "key": "ca_ambient_level",
+      "value": 100,
+      "frame": "ff010001000a079964"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "ambient-off",
+      "kind": "toggle",
+      "key": "ca_ambient",
+      "on": false,
+      "frame": "ff010001000a079802"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "codec-apply-aac",
+      "kind": "choice",
+      "key": "ca_codec",
+      "option": "aac",
+      "frame": "ff010001000a07b801"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "codec-apply-sbc",
+      "kind": "choice",
+      "key": "ca_codec",
+      "option": "sbc",
+      "frame": "ff010001000a07b800"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "codec-apply-aptx",
+      "kind": "choice",
+      "key": "ca_codec",
+      "option": "aptx",
+      "frame": "ff010001000a07b802"
+    },
+    {
+      "model": "Melomania Touch",
+      "action": "codec-apply-aac-aptx",
+      "kind": "choice",
+      "key": "ca_codec",
+      "option": "aac_aptx",
+      "frame": "ff010001000a07b803"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-preset-immersive",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "immersive",
+      "frame": "ff010001000a021401"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-preset-rnb",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "rnb",
+      "frame": "ff010001000a021402"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-preset-electronic",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "electronic",
+      "frame": "ff010001000a021403"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-preset-rock",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "rock",
+      "frame": "ff010001000a021404"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-preset-voice",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "voice",
+      "frame": "ff010001000a021405"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-preset-neutral",
+      "kind": "choice",
+      "key": "ca_preset",
+      "option": "neutral",
+      "frame": "ff010001000a021400"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-band1",
+      "kind": "level",
+      "key": "ca_band_1",
+      "value": 2,
+      "frame": "ff010005000a021a0612007801"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-band2",
+      "kind": "level",
+      "key": "ca_band_2",
+      "value": -2,
+      "frame": "ff010005000a021a0622ff8801"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-band3",
+      "kind": "level",
+      "key": "ca_band_3",
+      "value": 6,
+      "frame": "ff010005000a021a0632016801"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-band4",
+      "kind": "level",
+      "key": "ca_band_4",
+      "value": -5,
+      "frame": "ff010005000a021a0642fed401"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-band5",
+      "kind": "level",
+      "key": "ca_band_5",
+      "value": 2,
+      "frame": "ff010005000a021a0652007801"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-play-pause-off",
+      "kind": "toggle",
+      "key": "ca_control_play_pause",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a078201fe"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-play-pause-on",
+      "kind": "toggle",
+      "key": "ca_control_play_pause",
+      "on": true,
+      "initial_controls": 510,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-next-off",
+      "kind": "toggle",
+      "key": "ca_control_next",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a078201fd"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-next-on",
+      "kind": "toggle",
+      "key": "ca_control_next",
+      "on": true,
+      "initial_controls": 509,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-previous-off",
+      "kind": "toggle",
+      "key": "ca_control_previous",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a078201fb"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-previous-on",
+      "kind": "toggle",
+      "key": "ca_control_previous",
+      "on": true,
+      "initial_controls": 507,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-volume-up-off",
+      "kind": "toggle",
+      "key": "ca_control_volume_up",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a078201f7"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-volume-up-on",
+      "kind": "toggle",
+      "key": "ca_control_volume_up",
+      "on": true,
+      "initial_controls": 503,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-volume-down-off",
+      "kind": "toggle",
+      "key": "ca_control_volume_down",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a078201ef"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-volume-down-on",
+      "kind": "toggle",
+      "key": "ca_control_volume_down",
+      "on": true,
+      "initial_controls": 495,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-accept-call-off",
+      "kind": "toggle",
+      "key": "ca_control_accept_call",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a078201df"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-accept-call-on",
+      "kind": "toggle",
+      "key": "ca_control_accept_call",
+      "on": true,
+      "initial_controls": 479,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-reject-call-off",
+      "kind": "toggle",
+      "key": "ca_control_reject_call",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a078201bf"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-reject-call-on",
+      "kind": "toggle",
+      "key": "ca_control_reject_call",
+      "on": true,
+      "initial_controls": 447,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-end-call-off",
+      "kind": "toggle",
+      "key": "ca_control_end_call",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a0782017f"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-end-call-on",
+      "kind": "toggle",
+      "key": "ca_control_end_call",
+      "on": true,
+      "initial_controls": 383,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-assistant-off",
+      "kind": "toggle",
+      "key": "ca_control_assistant",
+      "on": false,
+      "initial_controls": 511,
+      "frame": "ff010002000a078200ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-control-assistant-on",
+      "kind": "toggle",
+      "key": "ca_control_assistant",
+      "on": true,
+      "initial_controls": 255,
+      "frame": "ff010002000a078201ff"
+    },
+    {
+      "model": "Melomania 1+",
+      "action": "1plus-language-french-apply",
+      "kind": "choice",
+      "key": "ca_language",
+      "option": "fr",
+      "frame": "ff010001000a020b03"
+    }
+  ],
+  "custom_restore": {
+    "model": "Melomania Touch",
+    "phone_slot": 2,
+    "gains": [
+      2,
+      -2,
+      6,
+      -5,
+      2
+    ],
+    "frames": [
+      "ff010001000a021400",
+      "ff010001000a021406",
+      "ff010005000a021a0612007801",
+      "ff010005000a021a0622ff8801",
+      "ff010005000a021a0632016801",
+      "ff010005000a021a0642fed401",
+      "ff010005000a021a0652007801"
+    ]
+  }
+}

@@ -148,7 +148,7 @@ def entry(r, strings):
             e["eq"]["slots"] = f.get("customEqMax") or 3
     if f.get("control") or f.get("callControl"):
         e["touch"] = touch(f, r["name"])
-    flags = {k: f[k] for k in ("gameMode", "wearDetection", "multiDevicesConnect", "bassEngineSupport", "highToneQuality", "hearingEnhancement", "supportPinch", "zenMode", "headMotion", "spatialTypes") if k in f}
+    flags = {k: f[k] for k in ("gameMode", "wearDetection", "multiDevicesConnect", "bassEngineSupport", "highToneQuality", "hearingEnhancement", "supportPinch", "zenMode", "headMotion", "spatialTypes", "longPressType") if k in f}
     if flags:
         e["features"] = flags
     return e

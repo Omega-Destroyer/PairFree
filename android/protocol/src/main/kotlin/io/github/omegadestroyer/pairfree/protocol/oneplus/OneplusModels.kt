@@ -30,6 +30,8 @@ public data class OneplusModel(
     /** The bands of a custom equalizer in Hz and how many custom equalizers the earbuds keep; empty and 0 without one. */
     val customFrequencies: List<Int> = emptyList(),
     val customSlots: Int = 0,
+    /** True when a long press steps through a choice of the noise modes that is the same for both earbuds (`longPressType` 0 in the catalog). */
+    val noiseCycle: Boolean = false,
 )
 
 public object OneplusModels {

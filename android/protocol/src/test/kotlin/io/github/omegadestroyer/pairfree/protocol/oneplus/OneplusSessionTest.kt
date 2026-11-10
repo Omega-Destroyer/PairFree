@@ -48,7 +48,7 @@ class OneplusSessionTest {
         val frames = s.start()
         assertTrue(frames.all { s.allowed(it) })
         val sent = frames.map { parsed(it) }
-        assertEquals(listOf(0x0100, 0x0102, 0x0106, 0x0103, 0x0101, 0x010C, 0x010F, 0x010D, 0x0108, 0x0122), sent.map { it.command })
+        assertEquals(listOf(0x0100, 0x0102, 0x0106, 0x0103, 0x0101, 0x010C, 0x010C, 0x010F, 0x010D, 0x0108, 0x0122), sent.map { it.command })
         // The app's own startup: 0100, 0102 FFFF, 0106, 0103, 0101 0002 (the order of the later ones differs).
         for ((command, payload) in listOf("0102" to "ffff", "0101" to "0002")) {
             val v = vector(command, payload)
@@ -162,6 +162,26 @@ class OneplusSessionTest {
         // A model without a custom equalizer asks nothing and shows nothing.
         val none = OneplusSession(OneplusModels.byId("063410"))
         assertFalse(none.start().map { parsed(it).command }.contains(0x0122))
+    }
+
+    @Test
+    fun theLongPressNoiseCycleIsABitmaskOfModeIndices() {
+        val s = budsPro2()
+        val start = s.start().map { parsed(it) }.filter { it.command == 0x010C }.map { it.payload.joinToString("") { b -> "%02x".format(b) } }
+        assertEquals(listOf("0101", "0201"), start)
+        // Noise cancelling (index 1) and transparency (index 2) are in the cycle: bits 1 and 2.
+        s.receive(reply(0x010C, 0, 2, 1, 0x06))
+        fun toggles() = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Toggle>().associate { it.key to it.on }
+        assertEquals(mapOf("cycle_off" to false, "cycle_anc" to true, "cycle_transparency" to true), toggles())
+        fun payloadOf(frames: List<ByteArray>?) = frames!!.single().let { parsed(it) }.let { "%04x".format(it.command) to it.payload.joinToString("") { b -> "%02x".format(b) } }
+        assertEquals("0404" to "020107", payloadOf(s.change(SettingChange.Toggle("cycle_off", true))))
+        assertEquals("0404" to "020105", payloadOf(s.change(SettingChange.Toggle("cycle_anc", false))))
+        // Two modes stay: turning a third one off is refused.
+        assertEquals(null, s.change(SettingChange.Toggle("cycle_transparency", false)))
+        assertEquals(mapOf("cycle_off" to true, "cycle_anc" to false, "cycle_transparency" to true), toggles())
+        // A model whose long press differs per earbud (catalog longPressType set) is not asked.
+        val perEar = OneplusModels.ALL.first { it.noise.isNotEmpty() && !it.noiseCycle }
+        assertFalse(OneplusSession(perEar).start().map { parsed(it) }.any { it.command == 0x010C && it.payload.firstOrNull()?.toInt() == 2 })
     }
 
     @Test

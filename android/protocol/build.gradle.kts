@@ -2024,7 +2024,7 @@ abstract class GenerateOneplusModels : DefaultTask() {
             val names = (d["names"] as List<String>).joinToString(", ") { str(it) }
             out.appendLine(
                 "    OneplusModel(${str(d["id"])}, ${str(d["name"])}, listOf($names), ${str(d["brand"])}, ${d["hidden"] == true}, " +
-                    "${noise(d["noise"])}, $presets, ${eq?.get("custom") == true}, ${features?.get("gameMode") == 1}, ${touch(d["touch"])}, ${((eq?.get("frequencies") as? List<*>).orEmpty()).joinToString(", ", "listOf(", ")")}, ${eq?.get("slots") ?: 0}),",
+                    "${noise(d["noise"])}, $presets, ${eq?.get("custom") == true}, ${features?.get("gameMode") == 1}, ${touch(d["touch"])}, ${((eq?.get("frequencies") as? List<*>).orEmpty()).joinToString(", ", "listOf(", ")")}, ${eq?.get("slots") ?: 0}, ${d["noise"] != null && ((features?.get("longPressType") as? Number)?.toInt() ?: 0) == 0}),",
             )
         }
         out.appendLine(")")

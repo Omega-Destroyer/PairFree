@@ -42,6 +42,9 @@ public class OneplusSession(public val model: OneplusModel?) {
 
     private var customEqs: List<CustomEq>? = null
 
+    /** The long press's noise cycle: a bit for each noise mode index that is in it (`NoiseReductionInfo` action 2, type 1). */
+    private var cycleMask: Int? = null
+
     /** The product id the earbuds reported, as hex, for the device report. */
     public var productId: String? = null
         private set
@@ -63,6 +66,7 @@ public class OneplusSession(public val model: OneplusModel?) {
         add(next(OneplusCommand.PRODUCT))
         add(next(OneplusCommand.MTU, 0x00, 0x02))
         if (model?.noise?.isNotEmpty() == true) add(next(OneplusCommand.TYPED_NOISE, 1, 1))
+        if (model?.noiseCycle == true) add(next(OneplusCommand.TYPED_NOISE, 2, CYCLE_TYPE))
         if (model?.presets?.isNotEmpty() == true) add(next(OneplusCommand.EQ_PRESET))
         if (model?.gameMode == true) add(next(OneplusCommand.SWITCHES, 1, GAME_MODE_ID))
         if (model?.touch?.isNotEmpty() == true) add(readKeys())
@@ -113,6 +117,11 @@ public class OneplusSession(public val model: OneplusModel?) {
 
     /** `status, 01, type, bitmap...`: the first set bit is the current mode's protocol index (HeyMelody's CurrentNoiseModeInfo). */
     private fun noise(d: ByteArray) {
+        if (d.size >= NOISE_MIN && d[1].toInt() == 2 && (d[2].toInt() and 0xFF) == CYCLE_TYPE) {
+            // `status, 02, type, value...`: the value is little endian, a bit for each mode index (HeyMelody's NoiseReductionInfo).
+            cycleMask = (3 until d.size).fold(0) { acc, i -> acc or ((d[i].toInt() and 0xFF) shl (8 * (i - 3))) }
+            return
+        }
         if (d.size < NOISE_MIN || d[1].toInt() != 1) return
         val type = d[2].toInt() and 0xFF
         if (type != BITMAP_TYPE && type != WIDE_BITMAP_TYPE) return
@@ -226,7 +235,7 @@ public class OneplusSession(public val model: OneplusModel?) {
                 val presets = model?.presets.orEmpty()
                 SettingGroup("oneplus_sound", SettingTab.SOUND, listOf(Setting.Choice("op_eq_preset", presets.firstOrNull { it.index == i && customEqs?.any { c -> c.selected } != true }?.name, presets.map { it.name })))
             },
-            strengthRow()?.let { SettingGroup("noise", SettingTab.HOME, listOf(it)) },
+            (listOfNotNull(strengthRow()) + cycleRows()).takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
             touchRows("left").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_left", SettingTab.CONTROLS, it) },
             touchRows("right").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_right", SettingTab.CONTROLS, it) },
             customEqRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("oneplus_custom_eq", SettingTab.SOUND, it) },
@@ -237,6 +246,14 @@ public class OneplusSession(public val model: OneplusModel?) {
      * The sub-modes of the mode that is on (noise cancelling's smart, strong, moderate and light; the auto mode's range): HeyMelody selects one by
      * writing the same noise bitmap with the sub-mode's own protocol index (`m0` calls `l0(index, 1)`), so the row is a choice among their kinds.
      */
+    /** The modes a long press cycles through, as switches (off, noise cancelling, transparency): at least two stay on. */
+    private fun cycleRows(): List<Setting> {
+        val mask = cycleMask ?: return emptyList()
+        return CYCLE_MODES.mapNotNull { (key, type) ->
+            model?.noise?.firstOrNull { it.type == type }?.let { Setting.Toggle(key, mask and (1 shl it.index) != 0) }
+        }
+    }
+
     private fun strengthRow(): Setting? {
         val index = noiseIndex ?: return null
         val top = model?.noise?.firstOrNull { it.index == index || it.children.any { c -> c.index == index } } ?: return null
@@ -274,6 +291,15 @@ public class OneplusSession(public val model: OneplusModel?) {
     }
 
     public fun change(change: SettingChange): List<ByteArray>? {
+        if (change is SettingChange.Toggle && change.key in CYCLE_MODES.map { it.first } && cycleMask != null) {
+            val mode = model?.noise?.firstOrNull { it.type == CYCLE_MODES.first { m -> m.first == change.key }.second } ?: return null
+            val next = if (change.on) cycleMask!! or (1 shl mode.index) else cycleMask!! and (1 shl mode.index).inv()
+            // HeyMelody keeps at least two modes in the cycle (a control's minSelectCount); so does PairFree.
+            if (next.countOneBits() < MIN_CYCLE) return null
+            cycleMask = next
+            val bytes = generateSequence(next) { it ushr 8 }.takeWhile { it != 0 }.map { it and 0xFF }.toList().ifEmpty { listOf(0) }
+            return listOf(next(OneplusCommand.SET_NOISE, 2, CYCLE_TYPE, *bytes.toIntArray()))
+        }
         val eqs = customEqs
         if (eqs != null) {
             if (change is SettingChange.Choice && change.key == CUSTOM_EQ_KEY) {
@@ -346,6 +372,9 @@ public class OneplusSession(public val model: OneplusModel?) {
         /** The key of the brand row that chooses among the on mode's sub-modes. */
         public const val STRENGTH_KEY: String = "op_noise_level"
         private const val SEQUENCE_WRAP = 256
+        private const val CYCLE_TYPE = 1
+        private const val MIN_CYCLE = 2
+        private val CYCLE_MODES = listOf("cycle_off" to "off", "cycle_anc" to "noise_cancelling", "cycle_transparency" to "transparency")
         private const val OP_ADD = 1
         private const val OP_SAVE = 2
         private const val DEFAULT_MIN = -6

@@ -69,7 +69,8 @@ class OneMoreData(unittest.TestCase):
         codes = [c["code"] for c in commands]
         self.assertEqual(len(codes), len(set(codes)))
         never = {c["name"] for c in commands if c.get("never_send")}
-        self.assertLessEqual({"HANDSHAKE", "DELETE_MUSIC", "TRANSFER_START", "TRANSFER_DATA", "TRANSFER_END", "GET_AI_LICENSE"}, never)
+        self.assertLessEqual({"DELETE_MUSIC", "TRANSFER_START", "TRANSFER_DATA", "TRANSFER_END", "GET_AI_LICENSE"}, never)
+        self.assertNotIn("HANDSHAKE", never)  # 1MORE's app sends it first (docs/1more/PROTOCOL.md section 2)
 
     def test_vectors(self):
         from functools import reduce

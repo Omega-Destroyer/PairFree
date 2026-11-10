@@ -169,6 +169,7 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_dial" -> R.string.setting_group_touch_dial
         "touch_buttons" -> R.string.touch_controls
         "sleep" -> R.string.setting_group_sleep
+        "sleep_sound" -> R.string.setting_group_sleep_sound
         "attention" -> R.string.setting_group_attention
         "ef_quality" -> R.string.setting_group_sound_quality
         "power" -> R.string.setting_group_power
@@ -239,6 +240,13 @@ private fun settingTitle(key: String): String = when (key) {
     "cycle_adaptive" -> stringResource(R.string.setting_cycle_mode, stringResource(R.string.scene_adaptive))
     "auto_off" -> stringResource(R.string.auto_shutdown)
     "sleep_timer" -> stringResource(R.string.setting_sleep_timer)
+    "sleep_noise_canceling" -> stringResource(R.string.setting_sleep_noise_canceling)
+    "sleep_listening_mode" -> stringResource(R.string.setting_sleep_listening_mode)
+    "sleep_default_listening_mode" -> stringResource(R.string.setting_sleep_default_listening_mode)
+    "sleep_noise_canceling_prompt" -> stringResource(R.string.setting_sleep_noise_canceling_prompt)
+    "sleep_listening_mode_prompt" -> stringResource(R.string.setting_sleep_listening_mode_prompt)
+    "sleep_auto_power_off_prompt" -> stringResource(R.string.setting_sleep_auto_power_off_prompt)
+    "sleep_calls_during_bluetooth" -> stringResource(R.string.setting_sleep_calls_during_bluetooth)
     "power_off_timer" -> stringResource(R.string.setting_power_off_timer)
     "light_mode" -> stringResource(R.string.setting_light_mode)
     "light_colour" -> stringResource(R.string.setting_light_colour)
@@ -508,6 +516,7 @@ private fun settingNote(key: String): String? = when (key) {
     "allow_off" -> stringResource(R.string.setting_allow_off_note)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio_note)
     "sleep_timer" -> stringResource(R.string.setting_sleep_timer_note)
+    "sleep_listening_mode" -> stringResource(R.string.setting_sleep_listening_mode_note)
     "jbl_smart_audio_video" -> stringResource(R.string.setting_jbl_smart_audio_video_note)
     "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware_note)
     "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound_note)
@@ -835,6 +844,8 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             else -> R.string.setting_option_default
         },
     )
+    key == "sleep_listening_mode" || key == "sleep_default_listening_mode" ->
+        getString(if (option == "local") R.string.setting_sleep_mode_local else R.string.setting_sleep_mode_bluetooth)
     key == "sleep_timer" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.action_off)
     key == "auto_off" && option == "when_taken_off" -> getString(R.string.shutdown_when_taken_off)
     key == "auto_off" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.shutdown_never)

@@ -5,6 +5,7 @@ import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import io.github.omegadestroyer.pairfree.protocol.repoFile
 import kotlinx.serialization.json.Json
@@ -1080,6 +1081,29 @@ class SoundcoreSleepA20Test {
         }
         assertEquals("off", (session.groups.single().settings.single() as Setting.Choice).value)
         assertNull(SoundcoreSession("A3936").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())) }.groups.singleOrNull(), "the A40 has no sleep timer")
+    }
+
+    @Test
+    fun theSleepA30HasNoiseCancellingAndListeningModeRows() {
+        // GitHub issue #24: the Sleep A30 (D1301) showed none of its switches. Layout and commands are OpenSCQ30's (d1301); no recording yet.
+        val layout = SoundcoreLayout.of("D1301")!!
+        val session = SoundcoreSession("D1301")
+        session.receive(SoundcorePacket(SoundcoreCommand.STATE, ByteArray(layout.minSize)))
+        val home = session.groups.single { it.key == "sleep_sound" }
+        assertEquals(SettingTab.HOME, home.tab)
+        assertEquals(listOf("sleep_noise_canceling", "sleep_listening_mode"), home.settings.map { it.key })
+        assertEquals(Setting.Toggle("sleep_noise_canceling", false), home.settings[0])
+        assertEquals(Setting.Choice("sleep_listening_mode", "bluetooth", listOf("bluetooth", "local")), home.settings[1])
+        val on = session.change(SettingChange.Toggle("sleep_noise_canceling", true))!!.single()
+        assertEquals("0687" to "01", "%04x".format(on.command) to on.body.hex())
+        assertEquals(Setting.Toggle("sleep_noise_canceling", true), session.groups.single { it.key == "sleep_sound" }.settings[0])
+        val local = session.change(SettingChange.Choice("sleep_listening_mode", "local"))!!.single()
+        assertEquals("01a9" to "01", "%04x".format(local.command) to local.body.hex())
+        val start = session.change(SettingChange.Choice("sleep_default_listening_mode", "local"))!!.single()
+        assertEquals("1095" to "01", "%04x".format(start.command) to start.body.hex())
+        assertEquals("109e", "%04x".format(session.change(SettingChange.Toggle("sleep_auto_power_off_prompt", true))!!.single().command))
+        assertNull(session.change(SettingChange.Toggle("sleep_noise_canceling_x", true)))
+        assertNull(SoundcoreSession("A6611").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, rec.str("state").hexBytes())) }.groups.singleOrNull { it.key == "sleep_sound" }, "the A20 has none of these")
     }
 
     @Test

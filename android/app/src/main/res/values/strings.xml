@@ -535,6 +535,17 @@
     <string name="setting_touch_triple_call">Triple tap during calls</string>
     <string name="setting_group_touch_dial">Case dial</string>
     <string name="setting_group_sleep">Sleep</string>
+    <string name="setting_group_sleep_sound">Sleep sound</string>
+    <string name="setting_sleep_noise_canceling">Noise cancelling</string>
+    <string name="setting_sleep_listening_mode">Listening mode</string>
+    <string name="setting_sleep_listening_mode_note">Bluetooth plays from your phone. Local plays the sounds held on the earbuds, which lasts longer on a charge.</string>
+    <string name="setting_sleep_default_listening_mode">Mode when the earbuds start</string>
+    <string name="setting_sleep_mode_bluetooth">Bluetooth</string>
+    <string name="setting_sleep_mode_local">Local</string>
+    <string name="setting_sleep_noise_canceling_prompt">Voice prompt for noise cancelling</string>
+    <string name="setting_sleep_listening_mode_prompt">Voice prompt for listening mode</string>
+    <string name="setting_sleep_auto_power_off_prompt">Voice prompt before power-off</string>
+    <string name="setting_sleep_calls_during_bluetooth">Calls ring in Bluetooth mode</string>
     <string name="setting_sleep_timer">Sleep timer</string>
     <string name="setting_sleep_timer_note">The earbuds stop the audio after the time chosen.</string>
     <string name="setting_group_touch_dial_note">Double press and hold the dial to lock or unlock it.</string>

@@ -89,6 +89,30 @@ class OneplusSessionTest {
     }
 
     @Test
+    fun noiseCancellingLevelsAreWrittenAsTheirOwnIndexBit() {
+        val s = budsPro2()
+        s.start()
+        s.receive(reply(0x010C, 0, 1, 1, 0x02))
+        val row = s.groups.flatMap { it.settings }.first { it.key == OneplusSession.STRENGTH_KEY } as Setting.Choice
+        assertEquals(listOf("smart", "strong", "moderate", "light"), row.options)
+        assertEquals(null, row.value)
+        // Strong is protocol index 4: bit 4 of the first byte; the mode reads back as noise cancelling with the level chosen.
+        val frame = parsed(s.change(SettingChange.Choice(OneplusSession.STRENGTH_KEY, "strong"))!!.single())
+        assertEquals("0404", "%04x".format(frame.command))
+        assertEquals("010110", frame.payload.joinToString("") { "%02x".format(it) })
+        assertEquals(Value.Number(anc("anc")), s.state.values[Command.ANC_MODE])
+        assertEquals("strong", (s.groups.flatMap { it.settings }.first { it.key == OneplusSession.STRENGTH_KEY } as Setting.Choice).value)
+        // The Enco X4's auto mode has sub-modes at indices 12 to 14: a two-byte bitmap.
+        val x4 = OneplusSession(OneplusModels.byId("06EC10"))
+        x4.start()
+        x4.receive(reply(0x010C, 0, 1, 1, 0x00, 0x08))
+        val auto = x4.groups.flatMap { it.settings }.first { it.key == OneplusSession.STRENGTH_KEY } as Setting.Choice
+        assertEquals(listOf("less_noise", "standard_noise", "more_noise"), auto.options)
+        val write = parsed(x4.change(SettingChange.Choice(OneplusSession.STRENGTH_KEY, "more_noise"))!!.single())
+        assertEquals("01010040", write.payload.joinToString("") { "%02x".format(it) })
+    }
+
+    @Test
     fun nothingIsSentThatTheModelDidNotAnswerAndDebugCommandsAreRefused() {
         val s = budsPro2()
         assertEquals(null, s.set(Command.ANC_MODE, anc("anc")))

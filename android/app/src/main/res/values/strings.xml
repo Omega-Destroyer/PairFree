@@ -492,6 +492,14 @@
     <string name="beats_bcd_home">PairFree reads no battery from this Beats; Android shows it in its Bluetooth settings where the Beats report it. Its settings are on the Device tab.</string>
     <string name="eq_oneplus">HeyMelody\'s equalizer preset is on this tab when the earbuds report it. Custom curves are not built yet.</string>
     <string name="setting_op_eq_preset">Equalizer preset</string>
+    <string name="setting_op_noise_level">Noise cancelling level</string>
+    <string name="op_level_smart">Smart</string>
+    <string name="op_level_light">Light</string>
+    <string name="op_level_moderate">Moderate</string>
+    <string name="op_level_strong">Strong</string>
+    <string name="op_level_less">Less noise</string>
+    <string name="op_level_standard">Standard</string>
+    <string name="op_level_more">More noise</string>
     <string name="eq_apple">AirPods have an equalizer only on Apple\'s newest beta firmware. Where they report one, it is below.</string>
     <string name="eq_jbl">The equalizer shows once the headphones or earbuds report theirs. On some JBL models it goes another way in JBL\'s app, which PairFree does not send yet.</string>
     <string name="eq_bose">Bose earbuds and headphones have a tone control rather than an equalizer of bands by frequency. Where the model has one, it is below.</string>

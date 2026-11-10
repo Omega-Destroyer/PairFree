@@ -122,8 +122,22 @@ public class OneplusSession(public val model: OneplusModel?) {
                 val presets = model?.presets.orEmpty()
                 SettingGroup("oneplus_sound", SettingTab.SOUND, listOf(Setting.Choice("op_eq_preset", presets.firstOrNull { it.index == i }?.name, presets.map { it.name })))
             },
+            strengthRow()?.let { SettingGroup("noise", SettingTab.HOME, listOf(it)) },
             gameMode?.let { SettingGroup("oneplus_other", SettingTab.DEVICE, listOf(Setting.Toggle("game_mode", it))) },
         )
+
+    /**
+     * The sub-modes of the mode that is on (noise cancelling's smart, strong, moderate and light; the auto mode's range): HeyMelody selects one by
+     * writing the same noise bitmap with the sub-mode's own protocol index (`m0` calls `l0(index, 1)`), so the row is a choice among their kinds.
+     */
+    private fun strengthRow(): Setting? {
+        val index = noiseIndex ?: return null
+        val top = model?.noise?.firstOrNull { it.index == index || it.children.any { c -> c.index == index } } ?: return null
+        val kinds = top.children.filter { it.type != top.type && it.type != "off" && it.type != "transparency" }
+        if (kinds.size < 2) return null
+        val current = kinds.firstOrNull { it.index == index }?.type
+        return Setting.Choice(STRENGTH_KEY, current, kinds.map { it.type })
+    }
 
     /** The commands PairFree sends: reads above and these writes. Nothing else, in particular none of the `0Fxx` debug commands. */
     public fun allowed(frame: ByteArray): Boolean {
@@ -143,13 +157,25 @@ public class OneplusSession(public val model: OneplusModel?) {
         val mode = model?.noise?.firstOrNull { it.type == kind } ?: return null
         noiseIndex = mode.index
         refresh()
-        val width = mode.index / 8 + 1
-        val bitmap = IntArray(width).also { it[mode.index / 8] = 1 shl (mode.index % 8) }
-        return listOf(next(OneplusCommand.SET_NOISE, 1, noiseType, *bitmap))
+        return listOf(noiseWrite(mode.index))
+    }
+
+    /** `0404`: action 01, the bitmap type, then the bitmap with only [index] set (one byte for indices below 8, else more). */
+    private fun noiseWrite(index: Int): ByteArray {
+        val bitmap = IntArray(index / 8 + 1).also { it[index / 8] = 1 shl (index % 8) }
+        return next(OneplusCommand.SET_NOISE, 1, noiseType, *bitmap)
     }
 
     public fun change(change: SettingChange): List<ByteArray>? {
         when {
+            change is SettingChange.Choice && change.key == STRENGTH_KEY && noiseIndex != null -> {
+                val index = noiseIndex
+                val top = model?.noise?.firstOrNull { it.index == index || it.children.any { c -> c.index == index } } ?: return null
+                val child = top.children.firstOrNull { it.type == change.option } ?: return null
+                noiseIndex = child.index
+                refresh()
+                return listOf(noiseWrite(child.index))
+            }
             change is SettingChange.Choice && change.key == "op_eq_preset" && presetIndex != null -> {
                 val preset = model?.presets?.firstOrNull { it.name == change.option } ?: return null
                 presetIndex = preset.index
@@ -168,6 +194,9 @@ public class OneplusSession(public val model: OneplusModel?) {
     public companion object {
         /** Feature id of the game mode switch, as the virtual run wrote it (`0403 06 01`). */
         public const val GAME_MODE_ID: Int = 6
+
+        /** The key of the brand row that chooses among the on mode's sub-modes. */
+        public const val STRENGTH_KEY: String = "op_noise_level"
         private const val SEQUENCE_WRAP = 256
         private const val BITMAP_TYPE = 1
         private const val WIDE_BITMAP_TYPE = 5

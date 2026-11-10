@@ -198,6 +198,7 @@ private fun groupNote(key: String): String? = when (key) {
 @Composable
 private fun settingTitle(key: String): String = when (key) {
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
+    "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
     "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
     "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
     "ca_preset" -> stringResource(R.string.setting_ca_preset)
@@ -608,6 +609,15 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "op_noise_level" -> getString(when (option) {
+        "smart" -> R.string.op_level_smart
+        "light" -> R.string.op_level_light
+        "moderate" -> R.string.op_level_moderate
+        "strong" -> R.string.op_level_strong
+        "less_noise" -> R.string.op_level_less
+        "standard_noise" -> R.string.op_level_standard
+        else -> R.string.op_level_more
+    })
     key == "ca_language" -> getString(when (option) {
         "yue" -> R.string.setting_ca_cantonese
         "zh" -> R.string.language_zh

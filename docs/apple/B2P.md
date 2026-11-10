@@ -72,6 +72,27 @@ tones, the microphone mode and capabilities (layouts still to read), BCD and BTP
 and power off are (owner, 2026-11-10: reset codes may be sent behind a confirmation). They are never part of a probe or a
 read-back, and nothing else on the list below is.
 
+## Checked against the library
+
+The CRC table in `libB2pAdapter.so` (`b2p_crc32tab`, 256 words) equals the table PairFree's `B2pFrame.crc32` computes
+(MSB first, polynomial 04C11DB7), and the code in `BeatsTest` pins the algorithm to POSIX cksum's check value (`123456789` gives
+765E7680). A frame built from the library's own routine (`b2p_link_send_or_queue_packet`) was read, not run: the earlier virtual run
+of Beats' app (Fit Pro, `apple/VIRTUAL_TESTING.md`) never reached an accessory channel, so the framing is not yet confirmed
+by an answer from a Beats or a virtual one.
+
+## BCD (Powerbeats3, Solo3, BeatsX, Flex, Studio3), read but not built
+
+`libBcdAdapter.so` (disassembled 2026-11-10). Frame: `AA`, a length (the command's two bytes plus the payload, so payload + 2; the
+sequence number is not counted), a sequence number (1 to 255, never 0), the command (two bytes, high first), the payload, and a CRC-8
+(SAE J1850 table, polynomial 1D, start 0, no final inversion, over every byte before it, the `AA` included). A packet with length 0
+is an acknowledgement (`AA 00 seq crc`); the sender keeps one packet outstanding until it is acknowledged. Commands the Java calls
+build: product id (command 0000, reply 2 bytes), listening mode read (01A4, reply 1 byte, 2 means on) and write (0226 with 2 on,
+1 off), plus name, colour, serial number, firmware version and auto answer. Replies are named `BCD_RSP_*` in the library, one per
+`BCD_CMD_*`; the battery command (`BCD_CMD_GET_BATTERY`) exists but its number and layout were not read. Not built in PairFree:
+blocked: the reply opcodes and the battery layout are unread; checked: the adapter's exports, the link layer (send, receive state
+machine, CRC) and the three getters above. These models also show their battery to Android through the standard Bluetooth battery
+reports. BTP (Beats Pill+) has the same shape in `libBtpAdapter.so` (not read beyond its exports).
+
 ## Never sent
 
 Firmware update and DFU (`DFU_*`, `FWUP_*`, `FLASH_*`, `uarp*`, `b2pTransferFirmware*`), `SHIPPING_ENTER`, GPIO and I2C access, `LOG_DATA_SEND`/`b2pCaptureLogs`, the certificate and challenge exchange

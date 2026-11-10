@@ -44,6 +44,21 @@ def rows(devices):
     return out
 
 
+NOTE = (
+    "<b>Why some of these need a particular Android version.</b> AirPods and AirPods Max take their settings over a classic "
+    "Bluetooth L2CAP channel (PSM 0x1001). Android has no public call for a classic L2CAP channel (its public L2CAP calls are for "
+    "Bluetooth LE, and the newest one accepts channel numbers 128 to 255 only), so an app can reach it only through "
+    "<code>BluetoothSocket</code>'s hidden constructors, and only where the phone's Bluetooth stack accepts the channel. "
+    "Until Android 17 the stack refused it except on Pixels with Android 16 QPR3 and on OnePlus, OPPO and realme phones with "
+    "Android 16. Google fixed the stack in Android 17, but Android 17 builds also hide those constructors from apps. LibrePods "
+    "gets past that with a call that switches Android's hidden-API protection off for the app; PairFree does not do this, "
+    "so the AirPods are not reachable on a phone that hides the constructors, and PairFree says so instead of trying. "
+    "Apple's own Beats app on Android does not use that channel: it talks to the Beats on Apple's chips over an ordinary "
+    "Bluetooth serial connection (RFCOMM), which any Android version allows. So the Beats models in the table do not need a "
+    "particular Android version once PairFree speaks that protocol (not built yet; see docs/apple/PROTOCOL.md)."
+)
+
+
 def table():
     devices = load()["devices"]
     tested = [m for m in devices if reports(m)]
@@ -61,6 +76,8 @@ def table():
         f"<tr>{header}</tr>",
         *rows(devices),
         "</table>",
+        "",
+        NOTE,
         END,
     ])
 

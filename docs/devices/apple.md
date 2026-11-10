@@ -7,8 +7,8 @@ owns a pair, so every model relies on reports from people who do.
 ## Which phones
 
 AirPods keep their settings on a Bluetooth channel that Android's Bluetooth refused on most
-phones until Android 17, which has Google's fix. Before that, only these open it, as LibrePods
-found:
+phones until Android 17, which has Google's fix; the note under the table says why that is not
+the whole story. Before Android 17, only these open it, as LibrePods found:
 - Pixels on Android 16 QPR3 (with the latest Google Play system update);
 - OnePlus, OPPO and realme phones on Android 16.
 
@@ -91,4 +91,6 @@ worked.
 <tr><td>Beats Studio3</td><td>—</td><td>Headphones</td><td>—</td><td>Not tested</td></tr>
 <tr><td>Beats Studio Pro</td><td>—</td><td>Headphones</td><td>—</td><td>Not tested</td></tr>
 </table>
+
+<b>Why some of these need a particular Android version.</b> AirPods and AirPods Max take their settings over a classic Bluetooth L2CAP channel (PSM 0x1001). Android has no public call for a classic L2CAP channel (its public L2CAP calls are for Bluetooth LE, and the newest one accepts channel numbers 128 to 255 only), so an app can reach it only through <code>BluetoothSocket</code>'s hidden constructors, and only where the phone's Bluetooth stack accepts the channel. Until Android 17 the stack refused it except on Pixels with Android 16 QPR3 and on OnePlus, OPPO and realme phones with Android 16. Google fixed the stack in Android 17, but Android 17 builds also hide those constructors from apps. LibrePods gets past that with a call that switches Android's hidden-API protection off for the app; PairFree does not do this, so the AirPods are not reachable on a phone that hides the constructors, and PairFree says so instead of trying. Apple's own Beats app on Android does not use that channel: it talks to the Beats on Apple's chips over an ordinary Bluetooth serial connection (RFCOMM), which any Android version allows. So the Beats models in the table do not need a particular Android version once PairFree speaks that protocol (not built yet; see docs/apple/PROTOCOL.md).
 <!-- apple-table:end -->

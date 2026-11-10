@@ -10,7 +10,7 @@
   "A6610",
   "A6611"
  ],
- "source": "Traced from soundcore.com's product picture (Sleep A20, a bud; the Sleep A10 has the same shape), not in the repo.",
+ "source": "Traced from soundcore.com's product picture (Sleep A20, a bud; the Sleep A10 has the same shape), not in the repo. Case traced from soundcore.com's charging case picture (sleepa20_1.jpg).",
  "bud": {
   "kind": "bud",
   "body": "399,293 411,294 424,301 433,311 439,326 442,329 470,329 499,339 524,337 549,341 567,348 586,361 599,379 607,395 613,415 615,430 609,463 600,479 590,490 569,506 551,512 539,512 517,506 485,515 462,518 440,515 405,502 384,485 368,465 354,437 345,404 343,375 348,347 361,320 380,301",
@@ -19,5 +19,7 @@
    405.5
   ]
  },
- "case": "generic"
+ "case": {
+  "outline": "300,105 336,106 375,115 411,132 440,153 457,170 474,192 495,232 520,262 561,325 570,345 589,410 590,440 585,479 580,499 554,537 526,572 483,594 440,602 395,594 335,575 289,550 249,521 221,495 189,452 153,412 130,369 118,324 118,281 127,237 148,195 167,170 184,154 216,131 251,115"
+ }
 }

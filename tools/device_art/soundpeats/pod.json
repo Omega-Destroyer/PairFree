@@ -5,7 +5,7 @@
   "SOUNDPEATS Engine 4",
   "SOUNDPEATS LinkFree"
  ],
- "source": "Traced from SOUNDPEATS' product picture (Engine 4, a bud; the LinkFree and Aura Nebula are round pods too), not in the repo.",
+ "source": "Traced from SOUNDPEATS' product picture (Engine 4, a bud; the LinkFree and Aura Nebula are round pods too), not in the repo. Case traced from the Engine 4 case picture (eng4_1).",
  "bud": {
   "kind": "bud",
   "body": "108,192 144,192 171,195 196,199 221,208 243,221 259,234 272,249 283,268 294,293 300,322 302,348 299,378 318,397 331,415 341,438 345,461 344,486 334,514 319,533 296,549 277,557 255,560 231,559 206,552 188,542 172,529 150,500 111,493 92,485 75,473 55,455 40,432 26,396 16,347 14,301 22,257 34,231 53,210 77,198",
@@ -14,5 +14,8 @@
    376.0
   ]
  },
- "case": "generic"
+ "case": {
+  "outline": "442,284 481,285 560,295 591,310 612,331 621,346 629,366 632,386 631,416 627,435 618,455 607,470 593,483 572,495 547,501 525,502 481,496 440,489 420,483 396,470 378,451 366,428 360,407 358,371 364,344 376,321 395,302 416,291",
+  "seam": "358,382 448,382 539,382 632,382"
+ }
 }

@@ -18,7 +18,7 @@
   "JBL Quantum TWS",
   "JBL Quantum TWS Air"
  ],
- "source": "Traced from the render JBL's app bundles (club_pro_tws_left_black, the left bud; the other round, stemless TWS models share its form (not checked against their own renders)), not in the repo.",
+ "source": "Traced from the render JBL's app bundles (club_pro_tws_left_black, the left bud; the other round, stemless TWS models share its form (not checked against their own renders)), not in the repo. Case traced from JBL's picture of the case (clubpro_3.png).",
  "bud": {
   "kind": "bud",
   "body": "211,99 245,100 270,107 290,122 312,153 315,163 314,174 307,204 304,235 297,262 295,288 281,320 269,336 253,345 219,354 208,379 188,393 168,401 148,402 129,395 114,383 102,366 97,348 97,330 106,311 120,292 137,280 140,275 109,216 104,193 105,179 110,165 117,151 149,120 173,109",
@@ -27,5 +27,8 @@
    250.9
   ]
  },
- "case": "generic"
+ "case": {
+  "outline": "314,226 413,227 493,232 543,244 563,252 577,261 587,271 593,282 598,298 599,314 588,398 580,422 567,443 541,463 503,478 467,484 410,488 229,488 170,485 141,479 110,468 88,457 74,445 61,426 52,402 42,327 42,308 46,288 53,274 62,263 75,253 93,245 146,232 223,227",
+  "seam": "44,298 227,298 410,298 598,298"
+ }
 }

@@ -10,7 +10,7 @@
   "JBL Reflect Aero",
   "JBL REFLECT MINI NC"
  ],
- "source": "Traced from the render JBL's app bundles (endurance_race_2_mono_left_black, the left bud; the Reflect models are sport buds with a wing too), not in the repo.",
+ "source": "Traced from the render JBL's app bundles (endurance_race_2_mono_left_black, the left bud; the Reflect models are sport buds with a wing too), not in the repo. Case traced from JBL's picture of the case (er2_3).",
  "bud": {
   "kind": "bud",
   "body": "174,100 189,102 206,108 242,136 268,138 295,148 317,166 333,193 339,217 339,241 322,311 315,326 305,339 296,348 282,356 270,360 254,360 232,356 209,343 189,323 177,320 166,322 161,336 152,343 137,348 117,347 96,337 86,326 80,314 73,283 77,265 85,252 99,241 114,235 126,235 139,243 143,240 150,205 161,180 151,139 152,120 160,106",
@@ -22,5 +22,8 @@
    230.2
   ]
  },
- "case": "generic"
+ "case": {
+  "outline": "258,148 389,149 469,158 500,166 523,175 543,187 561,203 575,222 584,242 588,260 589,288 580,354 572,392 558,421 534,448 515,462 495,472 473,480 444,486 402,490 260,491 200,488 156,478 121,462 93,439 79,421 68,400 62,378 55,338 49,290 50,267 55,242 64,221 75,205 92,188 110,177 131,167 184,154",
+  "seam": "55,336 229,336 403,336 583,336"
+ }
 }

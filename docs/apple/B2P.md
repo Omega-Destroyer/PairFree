@@ -37,10 +37,21 @@ Seen in the JNI wrappers (`Java_com_apple_beats_adapters_B2pAdapter_*`):
 |---|---|---|
 | Listening mode (0 off, 1 noise cancelling, 2 transparency; larger values refused) | 015A `LISTENING_MODE_LEVEL_SET` | mode, then 64 (the level, 100) |
 
-The rest (battery 0152/056E, listening mode read 0158, in-ear detection 014A/014C, button mode 0468/046A, one-bud ANC 047C/047E,
-name 012C/0134, product id 013A, colour 0116, capabilities 0144, in-case tones 050A/050C and 0570/0572, end-call control,
-microphone mode 014E/0150, listening mode rotation 018A/018C) have an opcode but their payload layouts are still to read from
-the library's response parser (`b2p_response_handler`, and the shared reader at 0x1a500 that fills the connection state).
+Payload layouts of the replies, from the JNI getters (`b2pGetBattery`, `b2pGetInEarDetection`, `b2pGetProductId`,
+`b2pGetListeningMode`). `b2p_response_handler` copies a reply's payload into the connection state and records its length;
+each getter then checks that length and reads fixed offsets (source analysis only, nothing confirmed on a Beats):
+
+| Read | Opcode | Reply payload |
+|---|---|---|
+| Battery (also V2, 056E) | 0152 (056E) | 5 bytes. Byte 2 is the level, 0 to 100. Byte 3 is the charging flag: 1 adds 0x80 to the level the app reports. Bytes 0, 1 and 4 are not read by the getter |
+| Product id | 013A | 2 bytes, a little-endian number |
+| In-ear detection | 014C | 1 byte: 0 off, 2 on. Seeing 0 the app writes 014A with 2 |
+| Listening mode | 0158 | asked twice, with a one-byte payload of 1 and then 2; each reply is 1 byte. The app compares the two (and its own table of supported modes) to decide off, noise cancelling or transparency, so the decoding of those two bytes is still open |
+| Button mode | 046A | raw bytes handed to the app unchanged; layout open |
+
+The rest (one-bud ANC 047C/047E, name 012C/0134, colour 0116, capabilities 0144, in-case tones 050A/050C and 0570/0572,
+end-call control, microphone mode 014E/0150, listening mode rotation 018A/018C) have an opcode but their payload layouts are
+still to read.
 
 ## Confirmed actions
 
@@ -56,7 +67,7 @@ Firmware update and DFU (`DFU_*`, `FWUP_*`, `FLASH_*`, `uarp*`, `b2pTransferFirm
 
 ## Next
 
-1. Payload layouts for battery, listening mode, in-ear detection, button mode and the product id, from `b2p_response_handler`.
+1. The listening mode's two reads (0158 with 1 and 2), the button mode, capabilities, and the bytes 0, 1 and 4 of the battery reply.
 2. What the app sends on connecting (`b2pInit`, `b2pRequestInfo`, `b2pGetCapabilities`) and whether a handshake or the
    `AUTH`/`GAPA` exchange gates the settings (it is the genuine-product check; if it gates them, say so).
 3. Run the Beats app against a virtual Beats that answers `FF B2` frames, as for the other brands, to confirm the framing.

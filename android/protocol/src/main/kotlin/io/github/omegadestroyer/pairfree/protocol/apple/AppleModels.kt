@@ -8,7 +8,7 @@ import io.github.omegadestroyer.pairfree.protocol.Model
  * (AirPods only, from LibrePods), its Bluetooth product id (from MagicPodsCore), and whether it has
  * Adaptive Audio.
  */
-public data class AppleModel(val name: String, val form: Form, val modelNumbers: List<String>, val productId: Int, val adaptive: Boolean)
+public data class AppleModel(val name: String, val form: Form, val modelNumbers: List<String>, val productId: Int, val adaptive: Boolean, val b2p: Boolean = false)
 
 /** Every AirPods and Beats model PairFree knows, and how a paired device is recognised as one. */
 public object AppleModels {
@@ -23,7 +23,18 @@ public object AppleModels {
      * known by the service alone: the ones on Beats' own chips use another protocol.
      */
     public fun identify(name: String, uuids: List<String>): Boolean =
-        uuids.any { it.equals(AppleWire.SERVICE_UUID, ignoreCase = true) } || name.contains(AIRPODS, ignoreCase = true)
+        uuids.any { it.equals(AppleWire.SERVICE_UUID, ignoreCase = true) } || name.contains(AIRPODS, ignoreCase = true) || b2p(name) != null
+
+    /**
+     * The Beats on Apple's chips that Apple's Beats app controls over an ordinary serial channel with the B2P protocol
+     * (docs/apple/B2P.md), by the model named in [name] (the user's own part of the name may surround it).
+     */
+    public fun b2p(name: String?): AppleModel? {
+        val n = normal(name ?: return null)
+        return APPLE_MODELS.filter { it.b2p }.sortedByDescending { it.name.length }.firstOrNull { n.contains(normal(it.name)) }
+    }
+
+    private fun normal(s: String) = s.lowercase().replace(Regex("""\s+\+"""), "+").replace(Regex("""\s+"""), " ").trim()
 
     /** The screens' [Model] for a model name as PairFree shows it, with [form] for one PairFree does not know. */
     public fun model(name: String?, form: Form? = null): Model? {

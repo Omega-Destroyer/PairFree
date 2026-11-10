@@ -182,7 +182,8 @@ class AppleTest {
         assertEquals(Form.HEADPHONES, AppleModels.ALL.first { it.name == "AirPods Max" }.form)
         assertTrue(AppleModels.identify("Kitchen", listOf("74EC2172-0BAD-4D01-8F77-997B2BE0722A")))
         assertTrue(AppleModels.identify("Sam's AirPods Pro", emptyList()))
-        assertFalse(AppleModels.identify("Beats Studio Buds", emptyList()), "Beats only by the service")
+        assertTrue(AppleModels.identify("Beats Studio Buds", emptyList()), "Beats that speak B2P are known by name")
+        assertFalse(AppleModels.identify("Beats Flex", emptyList()), "other Beats only by the service")
         assertEquals(4097, AppleWire.PSM)
     }
 

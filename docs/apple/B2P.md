@@ -54,6 +54,18 @@ The rest (one-bud ANC 047C/047E, name 012C/0134, colour 0116, capabilities 0144,
 end-call control, microphone mode 014E/0150, listening mode rotation 018A/018C) have an opcode but their payload layouts are
 still to read.
 
+## In PairFree
+
+`BeatsSession` and `B2pFrame` (`protocol/apple/`), opened over the plain serial channel (`EarbudsConnection.serveBeats`) for the Beats
+whose `data/apple/devices.json` entry has `b2p` (known by name, `AppleModels.b2p`). On connecting it reads the product id, the
+battery (0152), the listening mode (0158 with 1, then 2) and in-ear detection (014C), 200 ms apart, and shows the battery, the
+listening mode (off, noise cancelling, transparency) and an ear detection switch. The mode is written as 015A with the mode and 64
+(hex) and read again after the Beats answer or announce it. Only these commands are sent (`BeatsSession.ALLOWED`). The reading of the
+two listening mode answers (a nonzero first answer with a zero second one means noise cancelling, the reverse transparency) is
+inferred from the app's comparison, and the battery reply is taken as one level for the whole product: both are to be confirmed by
+a Beats owner's device report. Not built: reset and factory reset as confirmed actions, the button mode, one-bud ANC, the in-case
+tones, the microphone mode and capabilities (layouts still to read), BCD and BTP.
+
 ## Confirmed actions
 
 `RESET` (0008) and `FACTORY_RESET` (0154) may be offered as actions the user confirms on screen, in that moment, as EarFun's restart

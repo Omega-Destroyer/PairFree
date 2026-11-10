@@ -56,8 +56,11 @@ NOTE = (
     "connection report says whether it was tried. This is a workaround for a restriction, not a public API: it has not yet been "
     "confirmed on an Android 17 phone, and a later Android version may close it. "
     "Apple's own Beats app on Android does not use that channel: it talks to the Beats on Apple's chips over an ordinary "
-    "Bluetooth serial connection (RFCOMM), which any Android version allows. So the Beats models in the table do not need a "
-    "particular Android version once PairFree speaks that protocol (not built yet; see docs/apple/PROTOCOL.md)."
+    "Bluetooth serial connection (RFCOMM), which any Android version allows. PairFree now speaks that protocol (B2P) to the Beats "
+    "that Apple's app controls that way (Powerbeats Pro and Pro 2, Powerbeats Fit, Fit Pro, Studio Buds and Buds +, Solo Buds, "
+    "Solo Pro, Solo 4, Studio Pro): they need no particular Android version. It shows the battery, the listening mode and in-ear "
+    "detection, written from Apple's app and not yet tried on any Beats; the older Beats (BCD and BTP) are not covered. See "
+    "docs/apple/B2P.md."
 )
 
 

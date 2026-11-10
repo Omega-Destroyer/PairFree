@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.protocol
 
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
 
+import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleWire
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
@@ -76,8 +77,9 @@ public object Identify {
         Maker.ONEMORE -> OneMoreModels.fromName(name) != null
         Maker.EARFUN -> EarfunModels.fromName(name) != null
         Maker.CAMBRIDGE -> CambridgeModels.fromName(name) != null
-        // Galaxy Buds names hold "Galaxy"; Bose's "Bose"; Beats without Apple's service use another protocol.
-        Maker.SAMSUNG, Maker.BOSE, Maker.APPLE -> false
+        // Galaxy Buds names hold "Galaxy"; Bose's "Bose"; the Beats that speak B2P are known by name.
+        Maker.APPLE -> AppleModels.b2p(name) != null
+        Maker.SAMSUNG, Maker.BOSE -> false
     }
 
     /** The name's words, upper case: letters, digits and +, split at anything else. */

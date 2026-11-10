@@ -25,6 +25,9 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.Wire
 import io.github.omegadestroyer.pairfree.protocol.apple.AapPacket
+import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
+import io.github.omegadestroyer.pairfree.protocol.apple.B2pFrame
+import io.github.omegadestroyer.pairfree.protocol.apple.BeatsSession
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleOpcode
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleWire
@@ -244,9 +247,13 @@ class EarbudsConnection(
     val jblSession: JblSession? get() = jbl
 
     private var apple: AppleSession? = null   // set while connected to AirPods or Beats
+    private var beats: BeatsSession? = null   // set while connected to a Beats that speaks B2P
 
     /** The Apple session, while connected to AirPods or Beats; for the device report. */
     val appleSession: AppleSession? get() = apple
+
+    /** The B2P session, while connected to a Beats that speaks it; for the device report. */
+    val beatsSession: BeatsSession? get() = beats
 
     private var nothing: NothingSession? = null   // set while connected to Nothing or CMF earbuds or headphones
     private var nothingQueue: Channel<NothingFrame>? = null
@@ -329,6 +336,7 @@ class EarbudsConnection(
         bose = null
         jbl = null
         apple = null
+        beats = null
         nothing = null
         _nothingEq.value = null
         pixel = null
@@ -411,7 +419,7 @@ class EarbudsConnection(
                     Brand.SONY -> serveSony(opened, device)
                     Brand.BOSE -> serveBose(opened)
                     Brand.JBL -> serveJbl(opened, device)
-                    Brand.APPLE -> serveApple(opened)
+                    Brand.APPLE -> if (AppleModels.b2p(device.name) != null) serveBeats(opened, device) else serveApple(opened)
                     Brand.NOTHING -> serveNothing(opened, device)
                     Brand.PIXEL -> servePixel(opened, device)
                     Brand.QCY -> serveQcy(opened, device)
@@ -443,6 +451,11 @@ class EarbudsConnection(
      */
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private suspend fun open(remote: BluetoothDevice, device: Paired): ControlLink {
+        if (device.brand == Brand.APPLE && AppleModels.b2p(device.name) != null) {
+            // Apple's Beats app opens the plain serial channel to these Beats (docs/apple/B2P.md): no Android version matters.
+            note("serial channel ${Wire.SPP_UUID} (B2P)")
+            return SppLink(remote, linkLog, Wire.SPP_UUID).also { link = it }.apply { connect() }
+        }
         if (device.brand == Brand.APPLE) return openApple(remote)
         if (device.brand == Brand.QCY) return openQcy(device)
         val model = if (device.brand == Brand.JBL) JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model } else null
@@ -826,6 +839,40 @@ class EarbudsConnection(
                     val packet = AapPacket.parse(bytes)
                     log?.invoke(if (packet?.opcode == AppleOpcode.INFORMATION) "recv information (${bytes.size} bytes)" else "recv ${bytes.joinToString("") { "%02x".format(it) }}")
                     if (session.receive(bytes)) publish(session)
+                }
+            }
+        } catch (_: IOException) {
+        }
+        opening.cancel()
+    }
+
+    /**
+     * Beats on Apple's chips that speak B2P: the reads, 200 ms apart, then every answer and announcement as it comes
+     * (docs/apple/B2P.md). The bytes are split into frames by their length and checked by their CRC.
+     */
+    private suspend fun serveBeats(opened: ControlLink, device: Paired) = coroutineScope {
+        val session = BeatsSession(AppleModels.b2p(device.name))
+        beats = session
+        val opening = launch {
+            try {
+                for (frame in session.start()) {
+                    if (session.allowed(frame)) opened.send(frame.bytes())
+                    delay(APPLE_GAP_MS)
+                }
+            } catch (_: IOException) {
+                // the channel closed; the reader below notices too
+            }
+        }
+        var pending = ByteArray(0)
+        try {
+            opened.reads().collect { bytes ->
+                val (frames, rest) = B2pFrame.split(pending + bytes)
+                pending = rest
+                for (raw in frames) guardPacket {
+                    log?.invoke("recv ${raw.joinToString("") { "%02x".format(it) }}")
+                    val frame = B2pFrame.parse(raw) ?: return@guardPacket
+                    if (session.receive(frame)) publish(session)
+                    for (f in session.followUps) if (session.allowed(f)) opened.send(f.bytes())
                 }
             }
         } catch (_: IOException) {
@@ -1248,6 +1295,26 @@ class EarbudsConnection(
         return true
     }
 
+    private fun publish(session: BeatsSession) {
+        _state.value = session.state
+        _settings.value = session.groups
+    }
+
+    /** Sends B2P frames on the open channel. False when there is none. */
+    private fun sendBeats(session: BeatsSession, frames: List<B2pFrame>): Boolean {
+        if (_status.value !is LinkStatus.Connected) return false
+        val s = this.session ?: return false
+        val l = link ?: return false
+        s.launch {
+            try {
+                for (f in frames) if (session.allowed(f)) l.send(f.bytes())
+            } catch (_: IOException) {
+                // the channel closed; the reader notices and reports it
+            }
+        }
+        return true
+    }
+
     private fun publish(session: AppleSession) {
         _state.value = session.state
         _settings.value = session.groups
@@ -1353,6 +1420,11 @@ class EarbudsConnection(
             if (sendNothing(session, frames)) publish(session)
             return
         }
+        beats?.let { session ->
+            val frames = session.change(change) ?: return
+            if (sendBeats(session, frames)) publish(session)
+            return
+        }
         apple?.let { session ->
             val packets = session.change(change) ?: return
             if (sendApple(session, packets)) publish(session)
@@ -1426,6 +1498,11 @@ class EarbudsConnection(
             if (sendNothing(session, frames)) publish(session)
             return
         }
+        beats?.let { session ->
+            val frames = session.set(command, payload.singleOrNull() ?: return) ?: return
+            if (sendBeats(session, frames)) publish(session)
+            return
+        }
         apple?.let { session ->
             val packets = session.set(command, payload.singleOrNull() ?: return) ?: return
             if (sendApple(session, packets)) publish(session)
@@ -1497,7 +1574,7 @@ class EarbudsConnection(
             if (sendJbl(session, session.takeEqWrite())) publish(session)
             return
         }
-        if (bose != null || apple != null) return
+        if (bose != null || apple != null || beats != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
             if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
@@ -1530,7 +1607,7 @@ class EarbudsConnection(
             if (send(session.frames(packets), then = null)) publish(session)
             return
         }
-        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
+        if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || beats != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
         val s = session ?: return
         val l = link ?: return
         val mode = _state.value.number(Command.ANC_MODE)
@@ -1559,13 +1636,13 @@ class EarbudsConnection(
 
     /** SOUNDPEATS' reboot. Call only from a confirmation the user has just accepted on screen. */
     fun rebootConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || beats != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
         send(Requests.rebootConfirmedByUser(), then = null)
     }
 
     /** Factory reset. Call only from a confirmation the user has just accepted on screen. */
     fun factoryResetConfirmedByUser() {
-        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
+        if (soundcore != null || samsung != null || sony != null || bose != null || jbl != null || apple != null || beats != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null) return
         send(Requests.factoryResetConfirmedByUser(), then = null)
     }
 
@@ -1625,6 +1702,7 @@ class EarbudsConnection(
         jbl = null
         jblQueue = null
         apple = null
+        beats = null
         nothing = null
         nothingQueue = null
         pixel = null

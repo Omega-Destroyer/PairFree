@@ -103,6 +103,9 @@ class BoseTest {
         assertEquals(BosePacket.get(BoseFunction.PRODUCT_INFO_BMAP_VERSION), start.first(), "the version first, as the QC35 and QC45 need")
         assertTrue(BosePacket.start(BoseFunction.AUDIO_MODES_GET_ALL) in start)
         assertTrue(start.all { BoseSession().allowed(it) })
+        // Bose's app, run against a virtual QC Ultra 2 (data/bose/emulator_vectors.json), opened with 00.01, 00.02 and 00.03 (GET).
+        val vectors = Json.parseToJsonElement(repoFile("data/bose/emulator_vectors.json").readText()).jsonObject.getValue("cases").jsonArray.map { it.jsonObject.getValue("frame").jsonPrimitive.content }
+        assertEquals(vectors, start.take(3).map { p -> p.bytes().joinToString("") { "%02x".format(it) } })
     }
 
     @Test

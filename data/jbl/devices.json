@@ -1,5 +1,5 @@
 {
-  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) unsupported (JBL's app has no control class for it) or microphone (not headphones or earbuds). The older BES models with no dashboard (the Live 220BT to Tour Pro+ and UA Project Rock, control classes com.harman.cmdctrl.imp.bes.*SdkControl) take their noise control, auto power-off and settings from their control class, the product list and the name checks of JBL's old screens; each setting shows once the device answers its read. eq: how the model's control class writes its EQ (path: a2, a2_q10, 41, club, segment, p4 or airoha; docs/jbl/PROTOCOL.md section 11), its presets (a file in eq_presets.json, or the standard presets of its series), the custom curve's range in dB (eqGainRange), whether the class reads the design EQ on connecting (design), the dashboard's EQ card, whether JBL's app works out the calibration (calibrate), and on protocol 4's models whose EQ library is Airoha's (lib) the sample rates Airoha's PEQ is worked out for (rates).",
+  "_about": "JBL headphones and earbuds PairFree can talk to, from JBL Headphones 5.37.10 (jbl.stc.com): name, product ids (pid) and connection from its product_list.json, the settings JBL's app shows for the model from its config (dash4), and how the model's control class sends them (docs/jbl/PROTOCOL.md section 5). smart_switch bes marks the models whose Smart Audio & Video goes over commands 81, 82 and 83 (their control class sits on BesBasicControl or BesSdkControl; docs/jbl/PROTOCOL.md section 4.8). family is direct (one command per setting), feature (Harman's feature records, command 06), p4 (JBL's protocol 4, frames starting 00 DD) or airoha (Airoha's RACE commands, frames starting 05; docs/jbl/PROTOCOL.md section 10); noise is modes (command 91), old (31 and 32), club (31 and 32, off without 32), asc (protocol 4: ambient sound control and the mode), mode4 (protocol 4: the mode feature alone) or race (RACE's noise filters); auto_off is v1 (one byte), v2 (three bytes), feature, p4 or race (RACE, written the way the chip family the earbuds report takes it). security is JBL's protocol 4 BLE security mode (1 to 3; docs/jbl/PROTOCOL.md section 7), absent for 0. names: other names the device may carry (the product list's showName). push_status false: an airoha model JBL's app opens without turning on the push of changes or reading which earbud it talks to. The airoha models with no dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+) have noise control from the product list's ANC flag and the settings their control class sends, each shown only once the earbuds answer its read. Models on LE Audio, and other models JBL's app has no config for, are left out (docs/devices/jbl.md). tried names the open-source project that used the same commands on the model; reports lists device reports under data/jbl/reports. not_covered lists the models in JBL's product list that PairFree does not cover, and why: le_audio (JBL's LE Audio control), no_dashboard (an older control class with no dashboard description, so what the model has is unknown) unsupported (JBL's app has no control class for it) or microphone (not headphones or earbuds). The older BES models with no dashboard (the Live 220BT to Tour Pro+ and UA Project Rock, control classes com.harman.cmdctrl.imp.bes.*SdkControl) take their noise control, auto power-off and settings from their control class, the product list and the name checks of JBL's old screens; each setting shows once the device answers its read. eq: how the model's control class writes its EQ (path: a2, a2_q10, 41, club, segment, p4 or airoha; docs/jbl/PROTOCOL.md section 11), its presets (a file in eq_presets.json, or the standard presets of its series), the custom curve's range in dB (eqGainRange), whether the class reads the design EQ on connecting (design), the dashboard's EQ card, whether JBL's app works out the calibration (calibrate), and on protocol 4's models whose EQ library is Airoha's (lib) the sample rates Airoha's PEQ is worked out for (rates).",
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "not_covered": [
     {
@@ -88,6 +88,7 @@
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_play_pause": true,
       "config": "jbl_live_460nc.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 53, 200, 600],
         "audio": [256, 53, 150, 400],
@@ -117,6 +118,7 @@
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_play_pause": true,
       "config": "jbl_live_660nc.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 53, 200, 600],
         "audio": [256, 53, 150, 400],
@@ -146,6 +148,7 @@
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_play_pause": true,
       "config": "jbl_tour_one.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 53, 200],
         "audio": [256, 53, 150],
@@ -175,6 +178,7 @@
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_play_pause": true,
       "config": "jbl_rfl_flow_pro.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 41, 300],
         "audio": [256, 53, 280],
@@ -203,6 +207,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune130nc_tws.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -231,6 +236,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune230nc_tws.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -259,6 +265,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune235nc_tws.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -287,6 +294,7 @@
       "noise": "old",
       "modes": ["ambient_aware", "talk_thru"],
       "config": "jbl_endurance_race_tws.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -316,6 +324,7 @@
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_play_pause": true,
       "config": "jbl_live_pro_2_tws.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -344,6 +353,7 @@
       "noise": "modes",
       "modes": ["ambient_aware", "talk_thru"],
       "config": "jbl_endurance_peak_3.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -371,6 +381,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune_flex.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -399,6 +410,7 @@
       "noise": "modes",
       "modes": ["ambient_aware", "talk_thru"],
       "config": "jbl_wave_flex.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -427,6 +439,7 @@
       "noise": "modes",
       "modes": ["ambient_aware", "talk_thru"],
       "config": "jbl_wave_buds.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -455,6 +468,7 @@
       "noise": "modes",
       "modes": ["ambient_aware", "talk_thru"],
       "config": "jbl_wave_beam.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -486,6 +500,7 @@
       "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_tour_one_m2.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [256, 53, 230],
         "audio": [256, 53, 150],
@@ -514,6 +529,7 @@
       "modes": ["anc"],
       "auto_play_pause": true,
       "config": "jbl_live_flex.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -543,6 +559,7 @@
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_play_pause": true,
       "config": "jbl_tour_pro_2.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -571,6 +588,7 @@
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_520bt.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 200],
         "audio": [256, 46, 150],
@@ -597,6 +615,7 @@
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_520bt_cr.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 200],
         "audio": [256, 46, 150],
@@ -624,6 +643,7 @@
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_720bt.json",
       "tried": "FajkPes",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 120],
         "audio": [256, 46, 120],
@@ -650,6 +670,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune_245nc_tws.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -678,6 +699,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune_beam.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -706,6 +728,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_tune_buds.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -734,6 +757,7 @@
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_525bt.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 200],
         "audio": [256, 46, 150],
@@ -764,6 +788,7 @@
       "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_live_670nc.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [256, 46, 150],
         "audio": [256, 53, 125],
@@ -794,6 +819,7 @@
       "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_live_770nc.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [256, 46, 180],
         "audio": [256, 53, 150],
@@ -820,6 +846,7 @@
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_soundgear_sense.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 220],
         "audio": [256, 46, 220],
@@ -844,6 +871,7 @@
       "control": "SoundGearFramesControl",
       "family": "direct",
       "config": "jbl_soundgear_frames.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 200],
         "audio": [256, 46, 200],
@@ -872,6 +900,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "config": "jbl_live_beam_3.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -901,6 +930,7 @@
       "noise": "modes",
       "modes": ["anc"],
       "config": "jbl_live_flex_3.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -976,6 +1006,7 @@
       "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_live_675nc.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [256, 46, 150],
         "audio": [256, 53, 125],
@@ -1146,6 +1177,7 @@
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_junior_320bt.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 200],
         "audio": [256, 53, 140],
@@ -1174,6 +1206,7 @@
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_junior_470bt.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 200],
         "audio": [256, 53, 120],
@@ -1315,6 +1348,7 @@
       "auto_off_minutes": [30, 60, 120],
       "auto_play_pause": true,
       "config": "jbl_live_775nc.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [256, 46, 180],
         "audio": [256, 53, 150],
@@ -1341,6 +1375,7 @@
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_tune_527bt.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 200],
         "audio": [256, 46, 150],
@@ -1367,6 +1402,7 @@
       "noise": "modes",
       "modes": ["ambient_aware", "talk_thru"],
       "config": "jbl_endurance_peak_3_212a.json",
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 46, 280],
         "audio": [256, 46, 280],
@@ -3080,6 +3116,7 @@
       "noise": "old",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_play_pause": true,
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 41, 279],
         "audio": [256, 53, 200],
@@ -3107,6 +3144,7 @@
       "noise": "modes",
       "modes": ["ambient_aware", "talk_thru"],
       "auto_play_pause": true,
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 41, 300],
         "audio": [256, 53, 280],
@@ -3134,6 +3172,7 @@
       "noise": "modes",
       "modes": ["anc", "ambient_aware", "talk_thru"],
       "auto_play_pause": true,
+      "smart_switch": "bes",
       "smart_audio_video": {
         "normal": [197, 53, 200],
         "audio": [256, 53, 150],

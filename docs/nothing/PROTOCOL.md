@@ -140,10 +140,25 @@ Every number of two bytes is low byte first.
     `freqPeak`, `qPeak`, `freqHigh`, `qHigh`), `simple_eq` in `data/nothing/devices.json`.
   - `CustomEQ` sizes its buffer at 16 bytes a filter and fills 13, so 9 zero bytes follow the three
     filters; PairFree sends them too.
+  - **Two routes, two sets of numbers.** On an Android phone the app opens each product's own `EqualizerActivity`
+    (`IOT<codename>Action.startEqualizerActivity`; Nothing OS phones get an `OsEqualizerActivity`), whose view model
+    (`BaseEqualizerViewModel.getFreq`/`getQ`) writes constants of its own; `SimpleEqualizerViewModel` takes the numbers
+    from the feature table. A virtual Ear (2) run (`VIRTUAL_TESTING.md`) invoked the Ear (2)'s own view model by hand and
+    got the wire frame `F041 03 …` with the **high shelf at Q 0.7** (the feature table says 1.0). PairFree uses 0.7 for the
+    Ear (2) (B155). The own view models of the other products say (decompiled 3.4.15, not observed running):
+    Ear (2), Ear (a), Ear and Ear (open) (`ear.two`, `ear.color`, `ear.twos`, `ear.flaffy`): 140 Hz Q 0.8, 980 Hz Q 0.7,
+    3400 Hz Q 0.7; Ear (stick), CMF Buds Pro, Neckband Pro, CMF Buds, Headphone (1), CMF Buds Pro 2 (B172), CMF Buds 2 and
+    2 Plus, CMF Headphone Pro (`ear.stick`, `corsola`, `crobat`, `donphan`, `elekid`, `espeon`, `girafarig`, `gligar`,
+    `forretress`): 140 Hz Q 0.8, 980 Hz Q 0.66, **3500 Hz** Q 1.0. The feature table gives the CMF models 6900 Hz and Q 0.7
+    for the peak. Those models keep the table's numbers until a run shows which route the app takes (it is open whether a
+    phone that is not a Nothing phone takes the product's own screen for all of them); hoothoot, heracross, hitmontop and
+    earthree have no own view model and use the table.
   - `C044` answers in the same layout without the zeros, so PairFree reads the curve back.
 - **Extra features (`C00E`, `F004`):** a count, then a feature and its value for each. Feature 1
   is in-ear detection (`DeviceExtraFeatureStatus`). Set with `F004 01 01 <on>`.
-- **Low lag (`C041`, `F040`):** 1 on, 2 off, written as two bytes.
+- **Low lag (`C041`, `F040`):** 1 on, 2 off. Nothing X's Flutter screen writes **one byte** (`F040 01` and `F040 02`;
+  virtual Ear (2) run), as nada lists it; the Kotlin builder the first reading took it from pads a second byte, which
+  PairFree sent up to 0.8.x. The answer (`C041`) is read from its first byte.
 - **Bass boost (`C04E`, `F051`):** on, then the level 1 to 5. Nothing X's plain switch writes
   level 5. nada found that with spatial audio on, a bass write is acknowledged and ignored.
 - **Spatial audio (`C04F`, `F052`):** on, then on the models with head tracking (the

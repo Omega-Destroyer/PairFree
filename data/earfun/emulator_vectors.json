@@ -1,0 +1,2217 @@
+{
+  "_about": "Original EarFun Audio outgoing UI setting packets against a synthetic Air Pro 4. No hardware validation. No encoder hooks. EQ receives no synthetic ACK/readback; gesture table remains seeded. See docs/earfun/VIRTUAL_TESTING.md.",
+  "source": {
+    "date": "2026-11-07",
+    "package": "com.corelink.earfun",
+    "version": "20.1.61",
+    "apk_modified": false,
+    "hardware_tested": false,
+    "replies_synthetic": true,
+    "installed_apk_sha256": {
+      "com.corelink.earfun.apk": "d88cacbc877f8340cce8505d506efb2467e93cfaaab5d23794f6c3cb104c6e01",
+      "config.arm64_v8a.apk": "8974047c9b34f6dea7bfed5693b48084020d369ee4ca584a64e7793bd8491d1f",
+      "config.xhdpi.apk": "d15f5952143cc3705441a9dfadcff864402c150036f8713d5742f6a393d01f22"
+    }
+  },
+  "cases": [
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-game-on",
+      "wire_vendor": "000a",
+      "command": "0312",
+      "payload": "01",
+      "frame": "ff040001000a031201",
+      "captured_at": "2026-11-07T14:19:59.979804+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-game-off",
+      "wire_vendor": "000a",
+      "command": "0312",
+      "payload": "00",
+      "frame": "ff040001000a031200",
+      "captured_at": "2026-11-07T14:20:00.993843+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-ambient-icon",
+      "wire_vendor": "000a",
+      "command": "0314",
+      "payload": "02",
+      "frame": "ff040001000a031402",
+      "captured_at": "2026-11-07T14:24:34.462042+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-anc-icon",
+      "wire_vendor": "000a",
+      "command": "0314",
+      "payload": "01",
+      "frame": "ff040001000a031401",
+      "captured_at": "2026-11-07T14:24:40.882757+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-anc-balance",
+      "wire_vendor": "000a",
+      "command": "033a",
+      "payload": "03",
+      "frame": "ff040001000a033a03",
+      "captured_at": "2026-11-07T14:24:52.668860+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-anc-ear",
+      "wire_vendor": "000a",
+      "command": "033a",
+      "payload": "00",
+      "frame": "ff040001000a033a00",
+      "captured_at": "2026-11-07T14:24:55.799053+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-anc-strong",
+      "wire_vendor": "000a",
+      "command": "033a",
+      "payload": "02",
+      "frame": "ff040001000a033a02",
+      "captured_at": "2026-11-07T14:24:58.907737+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-wind-set",
+      "wire_vendor": "000a",
+      "command": "033a",
+      "payload": "01",
+      "frame": "ff040001000a033a01",
+      "captured_at": "2026-11-07T14:25:21.174540+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-normal-retry",
+      "wire_vendor": "000a",
+      "command": "0314",
+      "payload": "00",
+      "frame": "ff040001000a031400",
+      "captured_at": "2026-11-07T14:26:13.407534+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005e00000b33",
+      "frame": "ff040009001d0e01a1fe98005e00000b33",
+      "captured_at": "2026-11-07T14:26:44.773156+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd00000b33",
+      "frame": "ff040009001d0e01a2fe9800bd00000b33",
+      "captured_at": "2026-11-07T14:26:44.807778+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe98017700000b33",
+      "frame": "ff040009001d0e01a3fe98017700000b33",
+      "captured_at": "2026-11-07T14:26:44.835582+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a4fe9802ee001e0b33",
+      "frame": "ff040009001d0e01a4fe9802ee001e0b33",
+      "captured_at": "2026-11-07T14:26:44.866330+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dc00780b33",
+      "frame": "ff040009001d0e01a5fe9805dc00780b33",
+      "captured_at": "2026-11-07T14:26:44.898487+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb800960b33",
+      "frame": "ff040009001d0e01a6fe980bb800960b33",
+      "captured_at": "2026-11-07T14:26:44.944390+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a7fe98177000780b33",
+      "frame": "ff040009001d0e01a7fe98177000780b33",
+      "captured_at": "2026-11-07T14:26:44.976027+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee0003c0b33",
+      "frame": "ff040009001d0e01a8fe982ee0003c0b33",
+      "captured_at": "2026-11-07T14:26:45.005674+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc000000b33",
+      "frame": "ff040009001d0e01a9fe985dc000000b33",
+      "captured_at": "2026-11-07T14:26:45.037201+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-vocal-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb8000000b33",
+      "frame": "ff040009001d0e01aafe98bb8000000b33",
+      "captured_at": "2026-11-07T14:26:45.068369+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band1-max",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005e01680b33",
+      "frame": "ff040009001d0e01a1fe98005e01680b33",
+      "captured_at": "2026-11-07T14:27:14.473025+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-02-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bdff100b33",
+      "frame": "ff040009001d0e01a2fe9800bdff100b33",
+      "captured_at": "2026-11-07T14:27:53.362393+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-03-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe98017701680b33",
+      "frame": "ff040009001d0e01a3fe98017701680b33",
+      "captured_at": "2026-11-07T14:27:55.104684+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-04-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a4fe9802eeff100b33",
+      "frame": "ff040009001d0e01a4fe9802eeff100b33",
+      "captured_at": "2026-11-07T14:27:56.867636+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-05-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dc01680b33",
+      "frame": "ff040009001d0e01a5fe9805dc01680b33",
+      "captured_at": "2026-11-07T14:27:58.633107+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-06-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb8ff100b33",
+      "frame": "ff040009001d0e01a6fe980bb8ff100b33",
+      "captured_at": "2026-11-07T14:28:00.381566+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-07-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a7fe98177001680b33",
+      "frame": "ff040009001d0e01a7fe98177001680b33",
+      "captured_at": "2026-11-07T14:28:02.132988+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-08-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee0ff100b33",
+      "frame": "ff040009001d0e01a8fe982ee0ff100b33",
+      "captured_at": "2026-11-07T14:28:03.906193+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-09-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc001680b33",
+      "frame": "ff040009001d0e01a9fe985dc001680b33",
+      "captured_at": "2026-11-07T14:28:05.669065+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-10-boundary",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb80ff100b33",
+      "frame": "ff040009001d0e01aafe98bb80ff100b33",
+      "captured_at": "2026-11-07T14:28:07.423379+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-wear-toggle",
+      "wire_vendor": "000a",
+      "command": "0349",
+      "payload": "01",
+      "frame": "ff040001000a034901",
+      "captured_at": "2026-11-07T14:28:47.152739+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-disable-controls-on",
+      "wire_vendor": "000a",
+      "command": "0334",
+      "payload": "01",
+      "frame": "ff040001000a033401",
+      "captured_at": "2026-11-07T14:28:48.167278+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-wear-restore",
+      "wire_vendor": "000a",
+      "command": "0349",
+      "payload": "00",
+      "frame": "ff040001000a034900",
+      "captured_at": "2026-11-07T14:28:55.879112+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-disable-controls-off",
+      "wire_vendor": "000a",
+      "command": "0334",
+      "payload": "00",
+      "frame": "ff040001000a033400",
+      "captured_at": "2026-11-07T14:28:56.876726+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-left-single-down",
+      "wire_vendor": "000a",
+      "command": "030a",
+      "payload": "01030000",
+      "frame": "ff040004000a030a01030000",
+      "captured_at": "2026-11-07T14:29:20.882141+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-left-double-next",
+      "wire_vendor": "000a",
+      "command": "030a",
+      "payload": "02050000",
+      "frame": "ff040004000a030a02050000",
+      "captured_at": "2026-11-07T14:29:51.470283+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-left-triple-up",
+      "wire_vendor": "000a",
+      "command": "030a",
+      "payload": "03020000",
+      "frame": "ff040004000a030a03020000",
+      "captured_at": "2026-11-07T14:30:01.951195+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-left-hold-assistant",
+      "wire_vendor": "000a",
+      "command": "030a",
+      "payload": "11060000",
+      "frame": "ff040004000a030a11060000",
+      "captured_at": "2026-11-07T14:31:01.533566+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-right-0-volume-down",
+      "wire_vendor": "000a",
+      "command": "030a",
+      "payload": "00000103",
+      "frame": "ff040004000a030a00000103",
+      "captured_at": "2026-11-07T14:31:29.589605+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-right-1-volume-down",
+      "wire_vendor": "000a",
+      "command": "030a",
+      "payload": "00000203",
+      "frame": "ff040004000a030a00000203",
+      "captured_at": "2026-11-07T14:31:38.037925+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-right-2-volume-down",
+      "wire_vendor": "000a",
+      "command": "030a",
+      "payload": "00000303",
+      "frame": "ff040004000a030a00000303",
+      "captured_at": "2026-11-07T14:31:46.583335+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-right-3-volume-down",
+      "wire_vendor": "000a",
+      "command": "030a",
+      "payload": "00001103",
+      "frame": "ff040004000a030a00001103",
+      "captured_at": "2026-11-07T14:31:56.416163+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-voice-half",
+      "wire_vendor": "000a",
+      "command": "0338",
+      "payload": "02",
+      "frame": "ff040001000a033802",
+      "captured_at": "2026-11-07T14:32:51.687582+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-voice-zero",
+      "wire_vendor": "000a",
+      "command": "0338",
+      "payload": "04",
+      "frame": "ff040001000a033804",
+      "captured_at": "2026-11-07T14:32:53.052878+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-voice-max",
+      "wire_vendor": "000a",
+      "command": "0338",
+      "payload": "00",
+      "frame": "ff040001000a033800",
+      "captured_at": "2026-11-07T14:32:54.418919+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-voice-quarter",
+      "wire_vendor": "000a",
+      "command": "0338",
+      "payload": "03",
+      "frame": "ff040001000a033803",
+      "captured_at": "2026-11-07T14:33:04.825190+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-voice-three-quarter",
+      "wire_vendor": "000a",
+      "command": "0338",
+      "payload": "01",
+      "frame": "ff040001000a033801",
+      "captured_at": "2026-11-07T14:33:06.198895+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-adaptive-fw32",
+      "wire_vendor": "000a",
+      "command": "033a",
+      "payload": "04",
+      "frame": "ff040001000a033a04",
+      "captured_at": "2026-11-07T14:33:12.469197+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-natural-fw32",
+      "wire_vendor": "000a",
+      "command": "033c",
+      "payload": "01",
+      "frame": "ff040001000a033c01",
+      "captured_at": "2026-11-07T14:33:23.264873+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-default-fw32",
+      "wire_vendor": "000a",
+      "command": "033c",
+      "payload": "00",
+      "frame": "ff040001000a033c00",
+      "captured_at": "2026-11-07T14:33:26.926409+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-band2-minimum",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bdfe980b33",
+      "frame": "ff040009001d0e01a2fe9800bdfe980b33",
+      "captured_at": "2026-11-07T14:33:58.254037+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-01-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005efe980b33",
+      "frame": "ff040009001d0e01a1fe98005efe980b33",
+      "captured_at": "2026-11-07T14:34:12.006021+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-02-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd01680b33",
+      "frame": "ff040009001d0e01a2fe9800bd01680b33",
+      "captured_at": "2026-11-07T14:34:13.443467+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-03-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe980177fe980b33",
+      "frame": "ff040009001d0e01a3fe980177fe980b33",
+      "captured_at": "2026-11-07T14:34:14.876745+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-04-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a4fe9802ee01680b33",
+      "frame": "ff040009001d0e01a4fe9802ee01680b33",
+      "captured_at": "2026-11-07T14:34:16.330434+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-05-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dcfe980b33",
+      "frame": "ff040009001d0e01a5fe9805dcfe980b33",
+      "captured_at": "2026-11-07T14:34:17.787444+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-06-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb801680b33",
+      "frame": "ff040009001d0e01a6fe980bb801680b33",
+      "captured_at": "2026-11-07T14:34:19.236079+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-07-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a7fe981770fe980b33",
+      "frame": "ff040009001d0e01a7fe981770fe980b33",
+      "captured_at": "2026-11-07T14:34:20.682076+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-08-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee001680b33",
+      "frame": "ff040009001d0e01a8fe982ee001680b33",
+      "captured_at": "2026-11-07T14:34:22.137675+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-09-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc0fe980b33",
+      "frame": "ff040009001d0e01a9fe985dc0fe980b33",
+      "captured_at": "2026-11-07T14:34:23.580533+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-custom-band-10-opposite-limit",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb8001680b33",
+      "frame": "ff040009001d0e01aafe98bb8001680b33",
+      "captured_at": "2026-11-07T14:34:25.036272+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-attenuation-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a4fe9802eeffe20b33",
+      "frame": "ff040009001d0e01a4fe9802eeffe20b33",
+      "captured_at": "2026-11-07T14:35:05.441918+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-attenuation-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dcff880b33",
+      "frame": "ff040009001d0e01a5fe9805dcff880b33",
+      "captured_at": "2026-11-07T14:35:05.472386+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-attenuation-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb8ff6a0b33",
+      "frame": "ff040009001d0e01a6fe980bb8ff6a0b33",
+      "captured_at": "2026-11-07T14:35:05.497364+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-attenuation-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a7fe981770ff880b33",
+      "frame": "ff040009001d0e01a7fe981770ff880b33",
+      "captured_at": "2026-11-07T14:35:05.533518+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-attenuation-apply",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee0ffc40b33",
+      "frame": "ff040009001d0e01a8fe982ee0ffc40b33",
+      "captured_at": "2026-11-07T14:35:05.559854+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-0-Bass Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005e003c0b33",
+      "frame": "ff040009001d0e01a1fe98005e003c0b33",
+      "captured_at": "2026-11-07T14:35:57.801498+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-0-Bass Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd005a0b33",
+      "frame": "ff040009001d0e01a2fe9800bd005a0b33",
+      "captured_at": "2026-11-07T14:35:57.831324+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-0-Bass Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a4fe9802ee00000b33",
+      "frame": "ff040009001d0e01a4fe9802ee00000b33",
+      "captured_at": "2026-11-07T14:35:57.895126+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-0-Bass Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dc00000b33",
+      "frame": "ff040009001d0e01a5fe9805dc00000b33",
+      "captured_at": "2026-11-07T14:35:57.926479+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-0-Bass Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb800000b33",
+      "frame": "ff040009001d0e01a6fe980bb800000b33",
+      "captured_at": "2026-11-07T14:35:57.957802+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-0-Bass Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a7fe98177000000b33",
+      "frame": "ff040009001d0e01a7fe98177000000b33",
+      "captured_at": "2026-11-07T14:35:57.991925+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-0-Bass Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee000000b33",
+      "frame": "ff040009001d0e01a8fe982ee000000b33",
+      "captured_at": "2026-11-07T14:35:58.021983+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-1-Bass Boost 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005e005a0b33",
+      "frame": "ff040009001d0e01a1fe98005e005a0b33",
+      "captured_at": "2026-11-07T14:36:03.470971+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-1-Bass Boost 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd00b40b33",
+      "frame": "ff040009001d0e01a2fe9800bd00b40b33",
+      "captured_at": "2026-11-07T14:36:03.500638+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-2-Bass Boost 3",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005e00780b33",
+      "frame": "ff040009001d0e01a1fe98005e00780b33",
+      "captured_at": "2026-11-07T14:36:09.126951+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-2-Bass Boost 3",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd012c0b33",
+      "frame": "ff040009001d0e01a2fe9800bd012c0b33",
+      "captured_at": "2026-11-07T14:36:09.157356+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-3-Bass Reducer 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005eff880b33",
+      "frame": "ff040009001d0e01a1fe98005eff880b33",
+      "captured_at": "2026-11-07T14:36:14.815173+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-3-Bass Reducer 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bdffa60b33",
+      "frame": "ff040009001d0e01a2fe9800bdffa60b33",
+      "captured_at": "2026-11-07T14:36:14.846349+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-3-Bass Reducer 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe980177ffc40b33",
+      "frame": "ff040009001d0e01a3fe980177ffc40b33",
+      "captured_at": "2026-11-07T14:36:14.877025+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-4-Bass Reducer 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005eff100b33",
+      "frame": "ff040009001d0e01a1fe98005eff100b33",
+      "captured_at": "2026-11-07T14:36:20.468750+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-4-Bass Reducer 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bdff4c0b33",
+      "frame": "ff040009001d0e01a2fe9800bdff4c0b33",
+      "captured_at": "2026-11-07T14:36:20.500286+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-4-Bass Reducer 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe980177ffa60b33",
+      "frame": "ff040009001d0e01a3fe980177ffa60b33",
+      "captured_at": "2026-11-07T14:36:20.531091+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-5-Bass Reducer 3",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe980177ff4c0b33",
+      "frame": "ff040009001d0e01a3fe980177ff4c0b33",
+      "captured_at": "2026-11-07T14:36:26.207570+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-6-Treble Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc0005a0b33",
+      "frame": "ff040009001d0e01a9fe985dc0005a0b33",
+      "captured_at": "2026-11-07T14:36:32.087866+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-6-Treble Boost 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb80005a0b33",
+      "frame": "ff040009001d0e01aafe98bb80005a0b33",
+      "captured_at": "2026-11-07T14:36:32.118433+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-7-Treble Boost 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee0005a0b33",
+      "frame": "ff040009001d0e01a8fe982ee0005a0b33",
+      "captured_at": "2026-11-07T14:36:37.765906+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-7-Treble Boost 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc000b40b33",
+      "frame": "ff040009001d0e01a9fe985dc000b40b33",
+      "captured_at": "2026-11-07T14:36:37.798418+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-7-Treble Boost 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb8000b40b33",
+      "frame": "ff040009001d0e01aafe98bb8000b40b33",
+      "captured_at": "2026-11-07T14:36:37.844224+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-8-Treble Boost 3",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee000b40b33",
+      "frame": "ff040009001d0e01a8fe982ee000b40b33",
+      "captured_at": "2026-11-07T14:36:43.417448+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-9-Treble Reducer 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc0ffa60b33",
+      "frame": "ff040009001d0e01a9fe985dc0ffa60b33",
+      "captured_at": "2026-11-07T14:36:49.130074+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-9-Treble Reducer 1",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb80ffa60b33",
+      "frame": "ff040009001d0e01aafe98bb80ffa60b33",
+      "captured_at": "2026-11-07T14:36:49.151599+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-10-Treble Reducer 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee0ffa60b33",
+      "frame": "ff040009001d0e01a8fe982ee0ffa60b33",
+      "captured_at": "2026-11-07T14:36:54.726769+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-10-Treble Reducer 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc0ff4c0b33",
+      "frame": "ff040009001d0e01a9fe985dc0ff4c0b33",
+      "captured_at": "2026-11-07T14:36:54.773985+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-10-Treble Reducer 2",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb80ff4c0b33",
+      "frame": "ff040009001d0e01aafe98bb80ff4c0b33",
+      "captured_at": "2026-11-07T14:36:54.804701+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-11-Treble Reducer 3",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee0ff4c0b33",
+      "frame": "ff040009001d0e01a8fe982ee0ff4c0b33",
+      "captured_at": "2026-11-07T14:37:00.373655+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-apply-11-Treble Reducer 3",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb80fe980b33",
+      "frame": "ff040009001d0e01aafe98bb80fe980b33",
+      "captured_at": "2026-11-07T14:37:00.435267+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-14-Natural",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005eff6a0b33",
+      "frame": "ff040009001d0e01a1fe98005eff6a0b33",
+      "captured_at": "2026-11-07T14:38:10.613874+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-14-Natural",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bdff880b33",
+      "frame": "ff040009001d0e01a2fe9800bdff880b33",
+      "captured_at": "2026-11-07T14:38:10.628505+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-14-Natural",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dcffe20b33",
+      "frame": "ff040009001d0e01a5fe9805dcffe20b33",
+      "captured_at": "2026-11-07T14:38:10.736780+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-14-Natural",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb8ffe20b33",
+      "frame": "ff040009001d0e01a6fe980bb8ffe20b33",
+      "captured_at": "2026-11-07T14:38:10.760827+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-14-Natural",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee0ffe20b33",
+      "frame": "ff040009001d0e01a8fe982ee0ffe20b33",
+      "captured_at": "2026-11-07T14:38:10.831643+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-15-Latin",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb8005a0b33",
+      "frame": "ff040009001d0e01a6fe980bb8005a0b33",
+      "captured_at": "2026-11-07T14:38:16.595933+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-15-Latin",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb80003c0b33",
+      "frame": "ff040009001d0e01aafe98bb80003c0b33",
+      "captured_at": "2026-11-07T14:38:16.734409+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-16-Hits",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd00780b33",
+      "frame": "ff040009001d0e01a2fe9800bd00780b33",
+      "captured_at": "2026-11-07T14:38:22.315483+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-16-Hits",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe980177001e0b33",
+      "frame": "ff040009001d0e01a3fe980177001e0b33",
+      "captured_at": "2026-11-07T14:38:22.346445+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-16-Hits",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a7fe981770001e0b33",
+      "frame": "ff040009001d0e01a7fe981770001e0b33",
+      "captured_at": "2026-11-07T14:38:22.488519+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-17-Soul",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc0003c0b33",
+      "frame": "ff040009001d0e01a9fe985dc0003c0b33",
+      "captured_at": "2026-11-07T14:38:28.507534+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-18-Blues",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dc003c0b33",
+      "frame": "ff040009001d0e01a5fe9805dc003c0b33",
+      "captured_at": "2026-11-07T14:38:34.257173+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-18-Blues",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a9fe985dc0001e0b33",
+      "frame": "ff040009001d0e01a9fe985dc0001e0b33",
+      "captured_at": "2026-11-07T14:38:34.396636+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-19-Metal",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd003c0b33",
+      "frame": "ff040009001d0e01a2fe9800bd003c0b33",
+      "captured_at": "2026-11-07T14:38:40.015753+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-19-Metal",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a4fe9802ee003c0b33",
+      "frame": "ff040009001d0e01a4fe9802ee003c0b33",
+      "captured_at": "2026-11-07T14:38:40.078888+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-19-Metal",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dc005a0b33",
+      "frame": "ff040009001d0e01a5fe9805dc005a0b33",
+      "captured_at": "2026-11-07T14:38:40.110006+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-19-Metal",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a7fe981770003c0b33",
+      "frame": "ff040009001d0e01a7fe981770003c0b33",
+      "captured_at": "2026-11-07T14:38:40.187259+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-19-Metal",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee000780b33",
+      "frame": "ff040009001d0e01a8fe982ee000780b33",
+      "captured_at": "2026-11-07T14:38:40.217885+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-19-Metal",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb8000d20b33",
+      "frame": "ff040009001d0e01aafe98bb8000d20b33",
+      "captured_at": "2026-11-07T14:38:40.279279+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-20-Hip-Hop",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb8003c0b33",
+      "frame": "ff040009001d0e01a6fe980bb8003c0b33",
+      "captured_at": "2026-11-07T14:38:46.037000+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-20-Hip-Hop",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee000d20b33",
+      "frame": "ff040009001d0e01a8fe982ee000d20b33",
+      "captured_at": "2026-11-07T14:38:46.093220+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-22-Electronic",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005e001e0b33",
+      "frame": "ff040009001d0e01a1fe98005e001e0b33",
+      "captured_at": "2026-11-07T14:38:57.723280+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-22-Electronic",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb8000780b33",
+      "frame": "ff040009001d0e01aafe98bb8000780b33",
+      "captured_at": "2026-11-07T14:38:58.018440+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-23-Jazz",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a5fe9805dc001e0b33",
+      "frame": "ff040009001d0e01a5fe9805dc001e0b33",
+      "captured_at": "2026-11-07T14:39:03.663737+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-24-Classical",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a1fe98005effa60b33",
+      "frame": "ff040009001d0e01a1fe98005effa60b33",
+      "captured_at": "2026-11-07T14:39:09.367094+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-24-Classical",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bdffc40b33",
+      "frame": "ff040009001d0e01a2fe9800bdffc40b33",
+      "captured_at": "2026-11-07T14:39:09.400108+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-24-Classical",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe980177ffe20b33",
+      "frame": "ff040009001d0e01a3fe980177ffe20b33",
+      "captured_at": "2026-11-07T14:39:09.431200+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-24-Classical",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a8fe982ee0001e0b33",
+      "frame": "ff040009001d0e01a8fe982ee0001e0b33",
+      "captured_at": "2026-11-07T14:39:09.591734+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-25-R&B",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "aafe98bb80001e0b33",
+      "frame": "ff040009001d0e01aafe98bb80001e0b33",
+      "captured_at": "2026-11-07T14:39:15.499842+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-26-Country",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd001e0b33",
+      "frame": "ff040009001d0e01a2fe9800bd001e0b33",
+      "captured_at": "2026-11-07T14:39:21.042396+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-28-Rock",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a2fe9800bd00960b33",
+      "frame": "ff040009001d0e01a2fe9800bd00960b33",
+      "captured_at": "2026-11-07T14:39:32.618150+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-28-Rock",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a3fe980177003c0b33",
+      "frame": "ff040009001d0e01a3fe980177003c0b33",
+      "captured_at": "2026-11-07T14:39:32.649365+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-preset-left-apply-28-Rock",
+      "wire_vendor": "001d",
+      "command": "0e01",
+      "payload": "a6fe980bb8001e0b33",
+      "frame": "ff040009001d0e01a6fe980bb8001e0b33",
+      "captured_at": "2026-11-07T14:39:32.741688+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-disable-left-on",
+      "wire_vendor": "000a",
+      "command": "0334",
+      "payload": "02",
+      "frame": "ff040001000a033402",
+      "captured_at": "2026-11-07T14:40:51.649483+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "EarFun Air Pro 4 / TW600 synthetic profile",
+      "action": "earfun-disable-right-on",
+      "wire_vendor": "000a",
+      "command": "0334",
+      "payload": "03",
+      "frame": "ff040001000a033403",
+      "captured_at": "2026-11-07T14:40:54.631886+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    }
+  ],
+  "preset_batches": [
+    {
+      "name": "Vocal Enhancement",
+      "action": "earfun-vocal-apply",
+      "captured_at": "2026-11-07T14:26:44.714465+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        2.0,
+        2.5,
+        2.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee001e0b33",
+        "ff040009001d0e01a5fe9805dc00780b33",
+        "ff040009001d0e01a6fe980bb800960b33",
+        "ff040009001d0e01a7fe98177000780b33",
+        "ff040009001d0e01a8fe982ee0003c0b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Vocal Attenuation",
+      "action": "earfun-attenuation-apply",
+      "captured_at": "2026-11-07T14:35:05.301601+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        -0.5,
+        -2.0,
+        -2.5,
+        -2.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802eeffe20b33",
+        "ff040009001d0e01a5fe9805dcff880b33",
+        "ff040009001d0e01a6fe980bb8ff6a0b33",
+        "ff040009001d0e01a7fe981770ff880b33",
+        "ff040009001d0e01a8fe982ee0ffc40b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Bass Boost 1",
+      "action": "earfun-preset-apply-0-Bass Boost 1",
+      "captured_at": "2026-11-07T14:35:57.756539+00:00",
+      "decoded_gains_db": [
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e003c0b33",
+        "ff040009001d0e01a2fe9800bd005a0b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee000000b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Bass Boost 2",
+      "action": "earfun-preset-apply-1-Bass Boost 2",
+      "captured_at": "2026-11-07T14:36:03.421357+00:00",
+      "decoded_gains_db": [
+        1.5,
+        3.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e005a0b33",
+        "ff040009001d0e01a2fe9800bd00b40b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee000000b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Bass Boost 3",
+      "action": "earfun-preset-apply-2-Bass Boost 3",
+      "captured_at": "2026-11-07T14:36:09.085939+00:00",
+      "decoded_gains_db": [
+        2.0,
+        5.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00780b33",
+        "ff040009001d0e01a2fe9800bd012c0b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee000000b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Bass Reducer 1",
+      "action": "earfun-preset-apply-3-Bass Reducer 1",
+      "captured_at": "2026-11-07T14:36:14.784126+00:00",
+      "decoded_gains_db": [
+        -2.0,
+        -1.5,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005eff880b33",
+        "ff040009001d0e01a2fe9800bdffa60b33",
+        "ff040009001d0e01a3fe980177ffc40b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee000000b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Bass Reducer 2",
+      "action": "earfun-preset-apply-4-Bass Reducer 2",
+      "captured_at": "2026-11-07T14:36:20.426832+00:00",
+      "decoded_gains_db": [
+        -4.0,
+        -3.0,
+        -1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005eff100b33",
+        "ff040009001d0e01a2fe9800bdff4c0b33",
+        "ff040009001d0e01a3fe980177ffa60b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee000000b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Bass Reducer 3",
+      "action": "earfun-preset-apply-5-Bass Reducer 3",
+      "captured_at": "2026-11-07T14:36:26.114000+00:00",
+      "decoded_gains_db": [
+        -6.0,
+        -6.0,
+        -3.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005efe980b33",
+        "ff040009001d0e01a2fe9800bdfe980b33",
+        "ff040009001d0e01a3fe980177ff4c0b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee000000b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Treble Boost 1",
+      "action": "earfun-preset-apply-6-Treble Boost 1",
+      "captured_at": "2026-11-07T14:36:31.788106+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        1.5,
+        1.5
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee0003c0b33",
+        "ff040009001d0e01a9fe985dc0005a0b33",
+        "ff040009001d0e01aafe98bb80005a0b33"
+      ]
+    },
+    {
+      "name": "Treble Boost 2",
+      "action": "earfun-preset-apply-7-Treble Boost 2",
+      "captured_at": "2026-11-07T14:36:37.506634+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.5,
+        3.0,
+        3.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee0005a0b33",
+        "ff040009001d0e01a9fe985dc000b40b33",
+        "ff040009001d0e01aafe98bb8000b40b33"
+      ]
+    },
+    {
+      "name": "Treble Boost 3",
+      "action": "earfun-preset-apply-8-Treble Boost 3",
+      "captured_at": "2026-11-07T14:36:43.158861+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0,
+        6.0,
+        6.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee000b40b33",
+        "ff040009001d0e01a9fe985dc001680b33",
+        "ff040009001d0e01aafe98bb8001680b33"
+      ]
+    },
+    {
+      "name": "Treble Reducer 1",
+      "action": "earfun-preset-apply-9-Treble Reducer 1",
+      "captured_at": "2026-11-07T14:36:48.826972+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0,
+        -1.5,
+        -1.5
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee0ffc40b33",
+        "ff040009001d0e01a9fe985dc0ffa60b33",
+        "ff040009001d0e01aafe98bb80ffa60b33"
+      ]
+    },
+    {
+      "name": "Treble Reducer 2",
+      "action": "earfun-preset-apply-10-Treble Reducer 2",
+      "captured_at": "2026-11-07T14:36:54.464866+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.5,
+        -3.0,
+        -3.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee0ffa60b33",
+        "ff040009001d0e01a9fe985dc0ff4c0b33",
+        "ff040009001d0e01aafe98bb80ff4c0b33"
+      ]
+    },
+    {
+      "name": "Treble Reducer 3",
+      "action": "earfun-preset-apply-11-Treble Reducer 3",
+      "captured_at": "2026-11-07T14:37:00.111710+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -3.0,
+        -6.0,
+        -6.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee0ff4c0b33",
+        "ff040009001d0e01a9fe985dc0fe980b33",
+        "ff040009001d0e01aafe98bb80fe980b33"
+      ]
+    },
+    {
+      "name": "Default",
+      "action": "earfun-preset-left-apply-13-Default",
+      "captured_at": "2026-11-07T14:38:04.801327+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee000000b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Natural",
+      "action": "earfun-preset-left-apply-14-Natural",
+      "captured_at": "2026-11-07T14:38:10.561972+00:00",
+      "decoded_gains_db": [
+        -2.5,
+        -2.0,
+        -1.0,
+        0.0,
+        -0.5,
+        -0.5,
+        0.0,
+        -0.5,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005eff6a0b33",
+        "ff040009001d0e01a2fe9800bdff880b33",
+        "ff040009001d0e01a3fe980177ffc40b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dcffe20b33",
+        "ff040009001d0e01a6fe980bb8ffe20b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee0ffe20b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Latin",
+      "action": "earfun-preset-left-apply-15-Latin",
+      "captured_at": "2026-11-07T14:38:16.398555+00:00",
+      "decoded_gains_db": [
+        1.5,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        1.5,
+        0.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e005a0b33",
+        "ff040009001d0e01a2fe9800bd005a0b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb8005a0b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee0003c0b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb80003c0b33"
+      ]
+    },
+    {
+      "name": "Hits",
+      "action": "earfun-preset-left-apply-16-Hits",
+      "captured_at": "2026-11-07T14:38:22.235943+00:00",
+      "decoded_gains_db": [
+        1.0,
+        2.0,
+        0.5,
+        -0.5,
+        0.0,
+        1.5,
+        0.5,
+        1.5,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e003c0b33",
+        "ff040009001d0e01a2fe9800bd00780b33",
+        "ff040009001d0e01a3fe980177001e0b33",
+        "ff040009001d0e01a4fe9802eeffe20b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb8005a0b33",
+        "ff040009001d0e01a7fe981770001e0b33",
+        "ff040009001d0e01a8fe982ee0005a0b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Soul",
+      "action": "earfun-preset-left-apply-17-Soul",
+      "captured_at": "2026-11-07T14:38:28.205306+00:00",
+      "decoded_gains_db": [
+        1.5,
+        1.5,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e005a0b33",
+        "ff040009001d0e01a2fe9800bd005a0b33",
+        "ff040009001d0e01a3fe980177001e0b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770001e0b33",
+        "ff040009001d0e01a8fe982ee0003c0b33",
+        "ff040009001d0e01a9fe985dc0003c0b33",
+        "ff040009001d0e01aafe98bb80003c0b33"
+      ]
+    },
+    {
+      "name": "Blues",
+      "action": "earfun-preset-left-apply-18-Blues",
+      "captured_at": "2026-11-07T14:38:34.093793+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        1.0,
+        0.0,
+        0.5,
+        1.5,
+        0.5,
+        1.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee001e0b33",
+        "ff040009001d0e01a5fe9805dc003c0b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770001e0b33",
+        "ff040009001d0e01a8fe982ee0005a0b33",
+        "ff040009001d0e01a9fe985dc0001e0b33",
+        "ff040009001d0e01aafe98bb80003c0b33"
+      ]
+    },
+    {
+      "name": "Metal",
+      "action": "earfun-preset-left-apply-19-Metal",
+      "captured_at": "2026-11-07T14:38:39.941802+00:00",
+      "decoded_gains_db": [
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.5,
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        3.5
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd003c0b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee003c0b33",
+        "ff040009001d0e01a5fe9805dc005a0b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770003c0b33",
+        "ff040009001d0e01a8fe982ee000780b33",
+        "ff040009001d0e01a9fe985dc000b40b33",
+        "ff040009001d0e01aafe98bb8000d20b33"
+      ]
+    },
+    {
+      "name": "Hip-Hop",
+      "action": "earfun-preset-left-apply-20-Hip-Hop",
+      "captured_at": "2026-11-07T14:38:45.826827+00:00",
+      "decoded_gains_db": [
+        1.0,
+        2.0,
+        0.0,
+        0.0,
+        1.5,
+        1.0,
+        0.5,
+        3.5,
+        0.0,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e003c0b33",
+        "ff040009001d0e01a2fe9800bd00780b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc005a0b33",
+        "ff040009001d0e01a6fe980bb8003c0b33",
+        "ff040009001d0e01a7fe981770001e0b33",
+        "ff040009001d0e01a8fe982ee000d20b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Dance",
+      "action": "earfun-preset-left-apply-21-Dance",
+      "captured_at": "2026-11-07T14:38:51.758949+00:00",
+      "decoded_gains_db": [
+        0.0,
+        2.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        2.0,
+        0.5,
+        0.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00780b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc003c0b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770003c0b33",
+        "ff040009001d0e01a8fe982ee000780b33",
+        "ff040009001d0e01a9fe985dc0001e0b33",
+        "ff040009001d0e01aafe98bb8000000b33"
+      ]
+    },
+    {
+      "name": "Electronic",
+      "action": "earfun-preset-left-apply-22-Electronic",
+      "captured_at": "2026-11-07T14:38:57.684519+00:00",
+      "decoded_gains_db": [
+        0.5,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        2.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e001e0b33",
+        "ff040009001d0e01a2fe9800bd003c0b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc003c0b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770003c0b33",
+        "ff040009001d0e01a8fe982ee000780b33",
+        "ff040009001d0e01a9fe985dc000b40b33",
+        "ff040009001d0e01aafe98bb8000780b33"
+      ]
+    },
+    {
+      "name": "Jazz",
+      "action": "earfun-preset-left-apply-23-Jazz",
+      "captured_at": "2026-11-07T14:39:03.501530+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.5,
+        0.0,
+        0.5,
+        1.0,
+        0.5,
+        1.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd00000b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee001e0b33",
+        "ff040009001d0e01a5fe9805dc001e0b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770001e0b33",
+        "ff040009001d0e01a8fe982ee0003c0b33",
+        "ff040009001d0e01a9fe985dc0001e0b33",
+        "ff040009001d0e01aafe98bb80003c0b33"
+      ]
+    },
+    {
+      "name": "Classical",
+      "action": "earfun-preset-left-apply-24-Classical",
+      "captured_at": "2026-11-07T14:39:09.336931+00:00",
+      "decoded_gains_db": [
+        -1.5,
+        -1.0,
+        -0.5,
+        0.5,
+        0.5,
+        0.0,
+        0.5,
+        0.5,
+        1.0,
+        1.5
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005effa60b33",
+        "ff040009001d0e01a2fe9800bdffc40b33",
+        "ff040009001d0e01a3fe980177ffe20b33",
+        "ff040009001d0e01a4fe9802ee001e0b33",
+        "ff040009001d0e01a5fe9805dc001e0b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770001e0b33",
+        "ff040009001d0e01a8fe982ee0001e0b33",
+        "ff040009001d0e01a9fe985dc0003c0b33",
+        "ff040009001d0e01aafe98bb80005a0b33"
+      ]
+    },
+    {
+      "name": "R&B",
+      "action": "earfun-preset-left-apply-25-R&B",
+      "captured_at": "2026-11-07T14:39:15.158129+00:00",
+      "decoded_gains_db": [
+        1.0,
+        1.5,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        1.0,
+        0.0,
+        0.5
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e003c0b33",
+        "ff040009001d0e01a2fe9800bd005a0b33",
+        "ff040009001d0e01a3fe980177001e0b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770001e0b33",
+        "ff040009001d0e01a8fe982ee0003c0b33",
+        "ff040009001d0e01a9fe985dc000000b33",
+        "ff040009001d0e01aafe98bb80001e0b33"
+      ]
+    },
+    {
+      "name": "Country",
+      "action": "earfun-preset-left-apply-26-Country",
+      "captured_at": "2026-11-07T14:39:20.975709+00:00",
+      "decoded_gains_db": [
+        0.0,
+        0.5,
+        0.0,
+        0.0,
+        0.5,
+        0.0,
+        0.0,
+        1.0,
+        0.5,
+        1.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00000b33",
+        "ff040009001d0e01a2fe9800bd001e0b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc001e0b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe98177000000b33",
+        "ff040009001d0e01a8fe982ee0003c0b33",
+        "ff040009001d0e01a9fe985dc0001e0b33",
+        "ff040009001d0e01aafe98bb80003c0b33"
+      ]
+    },
+    {
+      "name": "Pop",
+      "action": "earfun-preset-left-apply-27-Pop",
+      "captured_at": "2026-11-07T14:39:26.800624+00:00",
+      "decoded_gains_db": [
+        1.5,
+        2.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        1.5,
+        1.5,
+        1.5
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e005a0b33",
+        "ff040009001d0e01a2fe9800bd00780b33",
+        "ff040009001d0e01a3fe98017700000b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb800000b33",
+        "ff040009001d0e01a7fe981770003c0b33",
+        "ff040009001d0e01a8fe982ee0005a0b33",
+        "ff040009001d0e01a9fe985dc0005a0b33",
+        "ff040009001d0e01aafe98bb80005a0b33"
+      ]
+    },
+    {
+      "name": "Rock",
+      "action": "earfun-preset-left-apply-28-Rock",
+      "captured_at": "2026-11-07T14:39:32.546844+00:00",
+      "decoded_gains_db": [
+        2.0,
+        2.5,
+        1.0,
+        0.0,
+        0.0,
+        0.5,
+        1.0,
+        1.5,
+        1.5,
+        1.0
+      ],
+      "frames": [
+        "ff040009001d0e01a1fe98005e00780b33",
+        "ff040009001d0e01a2fe9800bd00960b33",
+        "ff040009001d0e01a3fe980177003c0b33",
+        "ff040009001d0e01a4fe9802ee00000b33",
+        "ff040009001d0e01a5fe9805dc00000b33",
+        "ff040009001d0e01a6fe980bb8001e0b33",
+        "ff040009001d0e01a7fe981770003c0b33",
+        "ff040009001d0e01a8fe982ee0005a0b33",
+        "ff040009001d0e01a9fe985dc0005a0b33",
+        "ff040009001d0e01aafe98bb80003c0b33"
+      ]
+    }
+  ],
+  "saved_profile_recall": [
+    {
+      "action": "earfun-recall-first-saved",
+      "frames": [
+        "ff040009001d0e01a1fe98005e01680b33",
+        "ff040009001d0e01a2fe9800bdff100b33",
+        "ff040009001d0e01a3fe98017701680b33",
+        "ff040009001d0e01a4fe9802eeff100b33",
+        "ff040009001d0e01a5fe9805dc01680b33",
+        "ff040009001d0e01a6fe980bb8ff100b33",
+        "ff040009001d0e01a7fe98177001680b33",
+        "ff040009001d0e01a8fe982ee0ff100b33",
+        "ff040009001d0e01a9fe985dc001680b33",
+        "ff040009001d0e01aafe98bb80ff100b33"
+      ]
+    }
+  ]
+}

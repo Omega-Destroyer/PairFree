@@ -65,9 +65,16 @@ public class OneMoreSession(public val model: OneMoreModel?) {
 
     private fun nextSequence(): Int = sequence.also { sequence = (sequence + 1) % OneMoreFrame.SEQUENCE_WRAP }
 
-    /** The reads on opening the channel: those 1MORE's app sends, for what the model has. */
+    /**
+     * The frames on opening the channel: the handshake, then the reads 1MORE's app sends, for what the model has. The app
+     * sends `004D 01` as soon as the serial channel is up and starts its reads when the answer says success
+     * (HeadsetActivity, DispatcherKt; seen sent by the app to a virtual Aero, docs/1more/VIRTUAL_TESTING.md). PairFree
+     * does not wait for the answer: the sender gives each frame its reply time, and the reads go on if it does not come,
+     * since whether real firmware insists on the handshake is not known.
+     */
     public fun start(): List<OneMoreFrame> = buildList {
         val m = model
+        add(frame(OneMoreCommand.HANDSHAKE, 1))
         add(frame(OneMoreCommand.GET_BINAURAL_INFO))
         if (modes.isNotEmpty()) add(frame(OneMoreCommand.GET_LISTEN_MODE))
         if (m == null) return@buildList
@@ -111,7 +118,7 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     /** True when [reply] answers [sent]: the earbuds answer with the same command. */
     public fun answers(sent: OneMoreFrame, reply: OneMoreFrame): Boolean = reply.fromEarbuds && reply.command == sent.command
 
-    /** False for what PairFree never sends: the handshake, the AI licence read, and deleting or uploading music. */
+    /** False for what PairFree never sends: the AI licence read, and deleting or uploading music. */
     public fun allowed(frame: OneMoreFrame): Boolean = !frame.fromEarbuds && frame.command !in OneMoreCommand.NEVER_SEND
 
     /** Applies one frame from the earbuds. Returns true when [state] or [groups] changed. */
@@ -265,7 +272,9 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     /**
      * The frames that put the custom curve [gains] (whole dB from -3 to 3, one per band) on the earbuds, every band
      * in one write as 1MORE's app resets the curve (CustomSoundActivity.reset): per band 01, the raw gain, the
-     * frequency and the Q, two bytes each, high first.
+     * frequency and the Q, two bytes each, high first. On a model with preset sounds the custom preset sound (`0069 0C`) goes
+     * first unless the earbuds already hold it: the app sends it when its user chooses Custom, before the curve is edited
+     * (virtual Aero run, docs/1more/VIRTUAL_TESTING.md).
      */
     public fun eqCustom(gains: List<Int>): List<OneMoreFrame>? {
         val b = model?.eqBands ?: return null
@@ -276,7 +285,13 @@ public class OneMoreSession(public val model: OneMoreModel?) {
         for (i in b.hz.indices) payload += listOf(1, raws[i] shr 8, raws[i] and 0xFF, b.hz[i] shr 8, b.hz[i] and 0xFF, b.q[i] shr 8, b.q[i] and 0xFF)
         eqRead()?.let { readBacks += it }
         readBacks += frame(OneMoreCommand.GET_PRESET_SOUND)
-        return listOf(frame(OneMoreCommand.SET_EQ_PARAMETERS, *payload.toIntArray()))
+        val customByte = ONEMORE_PRESET_SOUNDS.entries.firstOrNull { it.value == CUSTOM_PRESET }?.key
+        val choose = customByte != null && model?.eqPresets.orEmpty().isNotEmpty() && presetSound != customByte
+        if (choose) presetSound = customByte
+        return listOfNotNull(
+            if (choose) frame(OneMoreCommand.SET_PRESET_SOUND, customByte!!) else null,
+            frame(OneMoreCommand.SET_EQ_PARAMETERS, *payload.toIntArray()),
+        )
     }
 
     /** The cancelling and transparency modes the model has, in 1MORE's app's order. */

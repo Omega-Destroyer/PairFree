@@ -42,10 +42,15 @@ name 012C/0134, product id 013A, colour 0116, capabilities 0144, in-case tones 0
 microphone mode 014E/0150, listening mode rotation 018A/018C) have an opcode but their payload layouts are still to read from
 the library's response parser (`b2p_response_handler`, and the shared reader at 0x1a500 that fills the connection state).
 
+## Confirmed actions
+
+`RESET` (0008) and `FACTORY_RESET` (0154) may be offered as actions the user confirms on screen, in that moment, as EarFun's restart
+and power off are (owner, 2026-11-10: reset codes may be sent behind a confirmation). They are never part of a probe or a
+read-back, and nothing else on the list below is.
+
 ## Never sent
 
-Firmware update and DFU (`DFU_*`, `FWUP_*`, `FLASH_*`, `uarp*`, `b2pTransferFirmware*`), `RESET`, `FACTORY_RESET`,
-`SHIPPING_ENTER`, GPIO and I2C access, `LOG_DATA_SEND`/`b2pCaptureLogs`, the certificate and challenge exchange
+Firmware update and DFU (`DFU_*`, `FWUP_*`, `FLASH_*`, `uarp*`, `b2pTransferFirmware*`), `SHIPPING_ENTER`, GPIO and I2C access, `LOG_DATA_SEND`/`b2pCaptureLogs`, the certificate and challenge exchange
 (`CERTIFICATE_*`, `GAPA_*`, `AUTH`, which Apple uses to check the Beats are genuine), `FACTORY`-type calls and
 `BEACON`/location. The GATT service `4715650b-5e9d-4ac2-b898-a4fc0aa5df78` is Apple's UARP firmware-update transfer.
 

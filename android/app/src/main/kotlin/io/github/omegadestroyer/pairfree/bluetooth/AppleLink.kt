@@ -28,6 +28,9 @@ import java.lang.reflect.InvocationTargetException
  * as LibrePods does (github.com/kavishdevar/librepods, GPL-3.0-or-later, BluetoothConnectionManager.kt). Android's Bluetooth
  * stack then refuses the AirPods' channel on most phones before Android 17 ([AppleSupport]). Each read is one packet.
  */
+/** Android's hidden-API rules show apps none of [BluetoothSocket]'s constructors, so the AirPods' channel cannot be opened. */
+class ConstructorsHidden(message: String) : IOException(message)
+
 class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constructor(
     adapter: BluetoothAdapter,
     device: BluetoothDevice,
@@ -127,7 +130,12 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
                     failures += "hidden constructor ${i + 1}: ${e.javaClass.simpleName}"
                 }
             }
-            throw IOException("no L2CAP socket on Android ${Build.VERSION.SDK_INT}: ${failures.joinToString("; ")}; this Android's constructors: ${constructorsOf()}")
+            val seen = constructorsOf()
+            val message = "no L2CAP socket on Android ${Build.VERSION.SDK_INT}: ${failures.joinToString("; ")}; this Android's constructors: $seen"
+            // No constructor listed at all means Android's hidden-API rules hide the class's constructors from apps. PairFree does not
+            // switch those rules off (owner, 2026-11-10), so there is nothing more to try.
+            if (seen == "none listed" || seen == "not readable") throw ConstructorsHidden(message)
+            throw IOException(message)
         }
     }
 }

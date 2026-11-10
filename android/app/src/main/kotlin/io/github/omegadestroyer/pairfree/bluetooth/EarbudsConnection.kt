@@ -144,7 +144,7 @@ sealed interface LinkStatus {
      * PairFree may not scan for. [NEEDS_NEWER_ANDROID]: AirPods whose channel this phone's Bluetooth stack
      * refuses ([AppleSupport]). [NOT_FOUND]: QCY earbuds whose advert a scan did not find.
      */
-    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION, NEEDS_NEWER_ANDROID, NOT_FOUND }
+    enum class Reason { BLUETOOTH_OFF, COULD_NOT_OPEN, LOST, NO_PERMISSION, NO_SCAN_PERMISSION, NEEDS_NEWER_ANDROID, HIDDEN_BY_ANDROID, NOT_FOUND }
 }
 
 /**
@@ -379,6 +379,10 @@ class EarbudsConnection(
                 } catch (e: IOException) {
                     log?.invoke("could not open: ${e.message}")
                     note("failed: ${ConnectionReport.describe(e)}")
+                    if (e is ConstructorsHidden && !everOpen) {
+                        fail(token, device, LinkStatus.Reason.HIDDEN_BY_ANDROID)
+                        return@launch
+                    }
                     if (e is NeedsNewerAndroid && !everOpen) {
                         fail(token, device, LinkStatus.Reason.NEEDS_NEWER_ANDROID)
                         return@launch

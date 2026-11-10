@@ -13,8 +13,6 @@ Why PairFree:
 
 Supported brands:
 
-Local review draft (not released or hardware tested): Cambridge Audio Melomania 1+ and Melomania Touch.
-
 • SOUNDPEATS: 47 models, tried on the H3, Air5 Pro+, C30 and TRUEFREE Clip C10
 • Soundcore (Anker): 66 models, tried on the Space A40, AeroClip, Q20i and Sleep A20. With the open-source OpenSCQ30
 • Samsung Galaxy Buds: 16 models, from the 2019 Buds to the Buds4 Pro. From Samsung's plugin and the open-source GalaxyBudsClient
@@ -27,6 +25,7 @@ Local review draft (not released or hardware tested): Cambridge Audio Melomania 
 • QCY: 171 models. From QCY's app, checked against OpenQCY-Desktop
 • 1MORE: 37 models. From 1MORE's app
 • EarFun: 26 models. From EarFun's app, checked against Gadgetbridge
+• Cambridge Audio: Melomania 1+ and Touch. From the Melomania app
 
 What it controls, on the models that have each:
 
@@ -46,4 +45,4 @@ Close the brand's own app before using PairFree: only one app can control the ea
 
 Thanks to everyone who sent device reports: CONTRIBUTORS.md on GitHub.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE or EarFun.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun or Cambridge Audio.

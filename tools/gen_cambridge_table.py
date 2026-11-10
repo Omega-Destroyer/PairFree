@@ -14,7 +14,7 @@ def models():
 
 
 def summary():
-    return {"brand": "Cambridge Audio (draft)", "models": len(models()), "tested": []}
+    return {"brand": "Cambridge Audio", "models": len(models()), "tested": []}
 
 
 def table():
@@ -24,7 +24,7 @@ def table():
         if model["ambient"]:
             features += ", ambient sound and level"
         virtual = [p for p in model.get("virtual_tests", []) if (device_pages.ROOT / p).is_file()]
-        status = "Draft; not tested"
+        status = "Not tested"
         if virtual:
             status = f'<a href="{escape(device_pages.TO_ROOT + virtual[0])}">Vendor app tested virtually</a>; no hardware test'
         rows.append(f"<tr><td>{escape(model['name'])}</td><td>{features}</td><td>{status}</td></tr>")

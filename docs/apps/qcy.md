@@ -52,7 +52,8 @@ PairFree controls earbuds of other brands too:
 - [Google Pixel Buds](https://omega-destroyer.github.io/PairFree/open-source-pixel-buds-app/)
 - [1MORE](https://omega-destroyer.github.io/PairFree/open-source-1more-app/)
 - [EarFun](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/)
+- [Cambridge Audio](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/)
 
 ---
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE or EarFun; the names are used to say which earbuds it works with.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun or Cambridge Audio; the names are used to say which earbuds it works with.

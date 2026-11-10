@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="eq_cambridge">Choose a preset below to start adjusting the five gain bands. Their frequencies are not available, so no curve is drawn.</string>
+    <string name="eq_cambridge">Choose a preset below to start adjusting the five gain bands. The Melomania app gives the bands no frequencies (it labels them Bass, Mid-Range and Treble), so no curve is drawn.</string>
     <string name="setting_ca_eq">Equalizer</string>
     <string name="setting_ca_eq_note">Gain values start from the selected preset. A custom curve already on the earbuds is unknown until you choose a preset here. Changes use the earbuds’ custom EQ mode. The vendor app’s three saved slots are stored on that phone.</string>
     <string name="setting_ca_codec_note">Language and codec changes require both earbuds. A codec preference changes what the earbuds offer; Android chooses the active codec. Changing it may reconnect the earbuds.</string>
@@ -9,6 +9,9 @@
     <string name="setting_ca_codec">Codec preference</string>
     <string name="setting_ca_language">Voice guidance language</string>
     <string name="setting_ca_band">Band %1$d gain (dB)</string>
+    <string name="setting_ca_band_bass">Bass, band 1 gain (dB)</string>
+    <string name="setting_ca_band_mid">Mid-range, band 3 gain (dB)</string>
+    <string name="setting_ca_band_treble">Treble, band 5 gain (dB)</string>
     <string name="setting_ca_play_pause">Play or pause control</string>
     <string name="setting_ca_next">Next track control</string>
     <string name="setting_ca_previous">Previous track control</string>

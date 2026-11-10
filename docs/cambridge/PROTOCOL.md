@@ -207,8 +207,9 @@ Additional screen tracing for this implementation established:
   The draft conservatively also requires both earbuds present before changing this preference.
 - `l3/b`, `m3/b` and `r3/h` use bands **1..5**, not 0..4. `u3/b` switches to Custom1 (6) before
   `t3/b` sends gains. The draft writes all five explicit values, not an assumed existing custom bank.
-  The UI labels are bass/mid-range/treble without numeric frequencies; numbered gain rows avoid inventing
-  a frequency grid. Custom state from another app is unknown until the user chooses a known preset.
+  The UI labels are bass/mid-range/treble without numeric frequencies (`fragment_equalizer.xml`: five vertical sliders
+  `vs_band1` to `vs_band5`, the labels under the left end, the middle and the right end, and a line chart through five equally spaced
+  points); PairFree names bands 1, 3 and 5 as the app does and numbers the rest, and draws no frequency curve. Custom state from another app is unknown until the user chooses a known preset.
 - **High performance audio is firmware installation**, not an ordinary setting: `b3/d` chooses raw
   resources `m1_d_class`, `m1_ab_class`, `touch_d_class`, `touch_ab_class`, writes a temporary file and
   enters the upgrade flow. Blocked: firmware restriction; checked: b3/d switching handlers, raw-resource

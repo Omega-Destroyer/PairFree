@@ -1,13 +1,13 @@
 ---
 layout: page
 title: "PairFree: open-source earbuds and headphones app for Android"
-description: "A free, open-source Android app that controls earbuds and headphones of many brands from one app: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, 1MORE, EarFun. No account, no internet."
+description: "A free, open-source Android app that controls earbuds and headphones of many brands from one app: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, 1MORE, EarFun, Cambridge Audio. No account, no internet."
 permalink: /
 ---
 
 PairFree is a free, open-source Android app that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
 
-It covers 618 models from 12 brands. Pick yours:
+It covers 620 models from 12 brands. Pick yours:
 
 - [Open-source SOUNDPEATS app (a PeatsAudio alternative)](https://omega-destroyer.github.io/PairFree/open-source-soundpeats-app/): 88 SOUNDPEATS models
 - [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/): 66 Soundcore models
@@ -21,6 +21,7 @@ It covers 618 models from 12 brands. Pick yours:
 - [Open-source QCY app alternative](https://omega-destroyer.github.io/PairFree/open-source-qcy-app/): 171 QCY models
 - [Open-source 1MORE app alternative](https://omega-destroyer.github.io/PairFree/open-source-1more-app/): 39 1MORE models
 - [Open-source EarFun app alternative (EarFun Audio)](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/): 26 EarFun models
+- [Open-source Cambridge Audio Melomania app alternative](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/): 2 Cambridge Audio models
 
 ## What it controls
 
@@ -42,7 +43,7 @@ PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.p
 
 ### Is there an open-source app for my earbuds?
 
-Yes, for the brands above. PairFree is one open-source app (GPL-3.0) that talks directly to the earbuds over Bluetooth, so one app can replace the Soundcore, Bose Music, JBL Headphones, Sony Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio, QCY, 1MORE and EarFun apps.
+Yes, for the brands above. PairFree is one open-source app (GPL-3.0) that talks directly to the earbuds over Bluetooth, so one app can replace the Soundcore, Bose Music, JBL Headphones, Sony Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio, QCY, 1MORE, EarFun and Melomania apps.
 
 ### Does it work without an account or internet?
 
@@ -66,4 +67,4 @@ From F-Droid or from the GitHub releases page. Both are the same APK, signed wit
 
 ---
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE or EarFun; the names are used to say which earbuds it works with.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun or Cambridge Audio; the names are used to say which earbuds it works with.

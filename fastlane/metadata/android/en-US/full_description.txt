@@ -22,7 +22,7 @@ Supported brands:
 • JBL: 112 models, tried on the Live Buds 3. From JBL's app, checked against JblTray
 • Nothing and CMF: 19 models. From Nothing X, checked against nada and nadamas
 • Google Pixel Buds: 5 models, tried on the Pro. From Google's app, checked against pbpctrl
-• QCY: 171 models. From QCY's app, checked against OpenQCY-Desktop
+• QCY: 194 models. From QCY's app, checked against OpenQCY-Desktop
 • 1MORE: 37 models. From 1MORE's app
 • EarFun: 26 models. From EarFun's app, checked against Gadgetbridge
 • Cambridge Audio: Melomania 1+ and Touch. From the Melomania app

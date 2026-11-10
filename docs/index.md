@@ -7,7 +7,7 @@ permalink: /
 
 PairFree is a free, open-source Android app that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
 
-It covers 620 models from 12 brands. Pick yours:
+It covers 643 models from 12 brands. Pick yours:
 
 - [Open-source SOUNDPEATS app (a PeatsAudio alternative)](https://omega-destroyer.github.io/PairFree/open-source-soundpeats-app/): 88 SOUNDPEATS models
 - [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/): 66 Soundcore models
@@ -18,7 +18,7 @@ It covers 620 models from 12 brands. Pick yours:
 - [Open-source AirPods app for Android (noise control and settings)](https://omega-destroyer.github.io/PairFree/open-source-airpods-beats-app/): 30 AirPods and Beats models
 - [Open-source Nothing X app alternative (Nothing Ear and CMF Buds)](https://omega-destroyer.github.io/PairFree/open-source-nothing-app/): 19 Nothing and CMF models
 - [Open-source Pixel Buds app (for Android phones that are not Pixels)](https://omega-destroyer.github.io/PairFree/open-source-pixel-buds-app/): 5 Google Pixel Buds models
-- [Open-source QCY app alternative](https://omega-destroyer.github.io/PairFree/open-source-qcy-app/): 171 QCY models
+- [Open-source QCY app alternative](https://omega-destroyer.github.io/PairFree/open-source-qcy-app/): 194 QCY models
 - [Open-source 1MORE app alternative](https://omega-destroyer.github.io/PairFree/open-source-1more-app/): 39 1MORE models
 - [Open-source EarFun app alternative (EarFun Audio)](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/): 26 EarFun models
 - [Open-source Cambridge Audio Melomania app alternative](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/): 2 Cambridge Audio models

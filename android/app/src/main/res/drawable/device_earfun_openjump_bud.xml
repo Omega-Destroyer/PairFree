@@ -18,4 +18,11 @@
         android:strokeWidth="1.5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
+    <path
+        android:pathData="M51.4 51.2C51.4 52.7 51.1 54.4 50.5 55.9C49.9 57.3 49.0 58.9 47.9 60.0C46.7 61.1 45.2 62.0 43.7 62.6C42.3 63.2 40.6 63.5 39.0 63.5C37.5 63.5 35.8 63.2 34.3 62.6C32.9 62.0 31.3 61.1 30.2 60.0C29.1 58.9 28.1 57.3 27.6 55.9C27.0 54.4 26.7 52.7 26.7 51.2C26.7 49.6 27.0 47.9 27.6 46.5C28.1 45.0 29.1 43.5 30.2 42.3C31.3 41.2 32.9 40.3 34.3 39.7C35.8 39.1 37.5 38.8 39.0 38.8C40.6 38.8 42.3 39.1 43.7 39.7C45.2 40.3 46.7 41.2 47.9 42.3C49.0 43.5 49.9 45.0 50.5 46.5C51.1 47.9 51.4 49.6 51.4 51.2Z"
+        android:fillColor="#1F2328"
+        android:strokeColor="#E6A23C"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>

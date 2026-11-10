@@ -3,16 +3,24 @@
  "names": [
   "Soundcore Life Note 3",
   "Soundcore Life Note 3S",
+  "Soundcore Life Note 3i",
   "Soundcore Life P2 Mini",
-  "Soundcore Life P3"
+  "Soundcore Life P3",
+  "Soundcore Note 3i",
+  "soundcore Life Note C"
  ],
  "codes": [
   "A3933",
   "A3939",
+  "A3943",
   "A3944",
-  "A3945"
+  "A3945",
+  "A3983",
+  "Soundcore Life Note 3i",
+  "Soundcore Note 3i",
+  "soundcore Life Note C"
  ],
- "source": "Traced from a Life Note 3 retail studio photo; not in the repo.",
+ "source": "Traced from a Life Note 3 retail studio photo; not in the repo. Case traced from soundcore.com's charging case picture (p3_2.jpg).",
  "bud": {
   "kind": "bud",
   "body": "521,157 540,159 570,168 585,169 599,172 621,187 631,205 634,228 626,251 612,267 586,278 584,281 638,397 638,405 634,412 614,425 599,428 588,421 527,306 506,286 481,277 469,270 457,257 450,243 446,225 447,214 453,196 460,185 471,174 484,166 500,160",
@@ -21,5 +29,10 @@
    292.6
   ]
  },
- "case": "generic"
+ "case": {
+  "outline": "160,297 166,267 179,240 197,218 226,199 254,189 292,184 352,184 394,190 419,198 442,212 458,227 474,250 484,276 488,301 489,345 484,374 476,400 459,426 432,450 394,472 377,479 359,482 299,482 275,479 253,470 210,445 192,430 179,411 168,390 161,365 159,334",
+  "accent": [
+   "355,324 354,331 350,337 344,341 337,342 330,341 324,337 320,331 319,324 320,317 324,311 330,308 337,306 344,308 350,311 354,317"
+  ]
+ }
 }

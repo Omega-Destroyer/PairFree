@@ -12,10 +12,17 @@
     "PIXEL": ["Pixel"],
     "QCY": ["QCY"],
     "ONEMORE": ["1MORE"],
-    "EARFUN": ["EarFun", "ATVEL"]
+    "EARFUN": ["EarFun", "ATVEL"],
+    "CAMBRIDGE": []
   },
   "not_ours": ["Pixel Watch", "OnePlus Buds", "Redmi Buds", "Galaxy Watch", "SOUNDPEATS Watch", "Nothing Phone", "CMF Watch"],
   "names": [
+    {"name": "Melomania 1+", "brand": "CAMBRIDGE", "model": "Melomania 1+"},
+    {"name": "Melomania Touch", "uuids": ["00001107-D102-11E1-9B23-00025B00A5A5"], "brand": "CAMBRIDGE", "model": "Melomania Touch"},
+    {"name": "Melomania A100", "brand": null, "note": "Melomania Connect family, a different protocol"},
+    {"name": "Melomania M100", "brand": null},
+    {"name": "Melomania P100", "brand": null},
+    {"name": "Other GAIA headset", "uuids": ["00001107-D102-11E1-9B23-00025B00A5A5"], "brand": null},
     {"name": "Pixel Buds Pro", "uuids": ["00001101-0000-1000-8000-00805f9b34fb"], "brand": "PIXEL", "model": "Pixel Buds Pro", "note": "GitHub issue #4: was taken for Galaxy Buds Pro"},
     {"name": "Pixel Buds Pro 2", "uuids": ["25e97ff7-24ce-4c4c-8951-f764a708f7b5"], "brand": "PIXEL", "model": "Pixel Buds Pro 2"},
     {"name": "Pixel Buds A-Series", "brand": "PIXEL", "model": "Pixel Buds A-Series"},

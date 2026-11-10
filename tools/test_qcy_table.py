@@ -50,7 +50,7 @@ class QcyData(unittest.TestCase):
         devices = data["devices"]
         ids = [d["vendor_id"] for d in devices]
         self.assertEqual(len(ids), len(set(ids)), "one row per vendor id")
-        self.assertEqual(171, len(devices), "Quicky's earphones, and nothing else")
+        self.assertEqual(194, len(devices), "Quicky's 171 earphones and the 23 QCY's own list added (tools/import_qcy_panels.py)")
         self.assertEqual(40, len(data["quicky_commit"]))
         for d in devices:
             self.assertTrue(d["name"].startswith("QCY"), d["name"])

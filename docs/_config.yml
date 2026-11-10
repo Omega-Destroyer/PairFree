@@ -1,0 +1,44 @@
+# GitHub Pages site for PairFree (source: the docs folder of main). The pages are written by tools/gen_site.py.
+title: PairFree
+description: A free, open-source Android app that controls earbuds and headphones of many brands from one app. No account, no internet.
+url: "https://omega-destroyer.github.io"
+baseurl: "/PairFree"
+lang: en
+theme: minima
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+header_pages:
+  - index.md
+# jekyll-seo-tag reads a page's image, not a site-wide one: this gives every page the social preview picture (og:image).
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: /assets/social-preview.png
+  # Search Console's verification file is not a page: jekyll-sitemap would list it (its documented way to leave a file out).
+  - scope:
+      path: "googlefe35c1928cb1cdd6.html"
+    values:
+      sitemap: false
+# The protocol notes, device pages and design notes stay on GitHub; the site has the home page and one page per brand.
+exclude:
+  - 1more
+  - apple
+  - bose
+  - devices
+  - earfun
+  - jbl
+  - nothing
+  - pixel
+  - qcy
+  - samsung
+  - screenshots
+  - sony
+  - soundcore
+  - soundpeats
+  - DESIGN.md
+  - UPSTREAM.md
+  - RESEARCH.md
+  - VIRTUAL_TESTING.md
+  - LOCAL_REVIEW.md

@@ -1,0 +1,346 @@
+{
+  "_about": "Original Soundcore 2.9.9 UI setting packets against a synthetic Life Q30. No APK/encoder hooks, no hardware test. Synthetic ACKs and static state do not verify device persistence. See docs/soundcore/VIRTUAL_TESTING.md.",
+  "source": {
+    "date": "2026-11-07",
+    "package": "com.oceanwing.soundcore",
+    "version": "2.9.9",
+    "apk_modified": false,
+    "hardware_tested": false,
+    "replies_synthetic": true,
+    "installed_apk_sha256": {
+      "com.oceanwing.soundcore_2.9.9-224_minAPI21(arm64-v8a,armeabi-v7a)(nodpi)_apkmirror.com.apk": "0c707dbc87ce2a58732c80ac4aa517cfe75fd15251343d196b989763423741b1"
+    }
+  },
+  "cases": [
+    {
+      "command": "0281",
+      "payload": "0100a0828c8ca0a0a08c",
+      "frame": "08ee000000028114000100a0828c8ca0a0a08c34",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:47:47.797683+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Acoustic"
+    },
+    {
+      "command": "0281",
+      "payload": "0200a096827878787878",
+      "frame": "08ee000000028114000200a0968278787878789f",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:48:34.936725+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Bass Booster"
+    },
+    {
+      "command": "0281",
+      "payload": "0300505a6e7878787878",
+      "frame": "08ee000000028114000300505a6e787878787800",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:48:38.668442+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Bass Reducer"
+    },
+    {
+      "command": "0281",
+      "payload": "040096966464788c96a0",
+      "frame": "08ee00000002811400040096966464788c96a0bf",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:48:42.412993+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Classical"
+    },
+    {
+      "command": "0281",
+      "payload": "05005a8ca0a0968c7864",
+      "frame": "08ee0000000281140005005a8ca0a0968c7864b6",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:48:46.090741+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Podcast"
+    },
+    {
+      "command": "0281",
+      "payload": "06008c5a6e828c8c825a",
+      "frame": "08ee0000000281140006008c5a6e828c8c825a5d",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:48:49.786898+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Dance"
+    },
+    {
+      "command": "0281",
+      "payload": "07008c8296968c645046",
+      "frame": "08ee0000000281140007008c8296968c64504654",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:48:53.464485+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Deep"
+    },
+    {
+      "command": "0281",
+      "payload": "0800968c648c828c9696",
+      "frame": "08ee000000028114000800968c648c828c9696e1",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:48:57.206781+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Electronic"
+    },
+    {
+      "command": "0281",
+      "payload": "090064646e7878786464",
+      "frame": "08ee00000002811400090064646e7878786464fc",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:00.926126+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Flat"
+    },
+    {
+      "command": "0281",
+      "payload": "0a008c966e6e8c6e8c96",
+      "frame": "08ee000000028114000a008c966e6e8c6e8c96b1",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:04.657865+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Hip Hop"
+    },
+    {
+      "command": "0281",
+      "payload": "0b008c8c6464788c96a0",
+      "frame": "08ee000000028114000b008c8c6464788c96a0b2",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:08.320994+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Jazz"
+    },
+    {
+      "command": "0281",
+      "payload": "0c0078786464647896aa",
+      "frame": "08ee000000028114000c0078786464647896aa6d",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:14.211045+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Latin"
+    },
+    {
+      "command": "0281",
+      "payload": "0d006e8ca09678648c82",
+      "frame": "08ee000000028114000d006e8ca09678648c82b4",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:17.950505+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Lounge"
+    },
+    {
+      "command": "0281",
+      "payload": "0e007896968ca0aa96a0",
+      "frame": "08ee000000028114000e007896968ca0aa96a04b",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:21.628060+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Piano"
+    },
+    {
+      "command": "0281",
+      "payload": "0f006e829696826e645a",
+      "frame": "08ee000000028114000f006e829696826e645a66",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:25.309202+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Pop"
+    },
+    {
+      "command": "0281",
+      "payload": "1000b48c64648c9696a0",
+      "frame": "08ee000000028114001000b48c64648c9696a0fd",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:29.068089+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "RnB"
+    },
+    {
+      "command": "0281",
+      "payload": "1100968c6e6e82969696",
+      "frame": "08ee000000028114001100968c6e6e82969696e0",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:32.787535+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Rock"
+    },
+    {
+      "command": "0281",
+      "payload": "1200a0968278645a5050",
+      "frame": "08ee000000028114001200a0968278645a50502d",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:36.487397+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Small Speakers"
+    },
+    {
+      "command": "0281",
+      "payload": "13005a64828c8c82785a",
+      "frame": "08ee0000000281140013005a64828c8c82785a4c",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:40.225008+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Spoken Word"
+    },
+    {
+      "command": "0281",
+      "payload": "14006464646e828c8ca0",
+      "frame": "08ee0000000281140014006464646e828c8ca075",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:43.914223+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Treble Booster"
+    },
+    {
+      "command": "0281",
+      "payload": "1500787878645a50503c",
+      "frame": "08ee000000028114001500787878645a50503ca4",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:49:47.633403+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Treble Reducer"
+    },
+    {
+      "command": "0281",
+      "payload": "fefe7878787878787878",
+      "frame": "08ee00000002811400fefe787878787878787849",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:19.245911+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "fefeb478787878787878",
+      "frame": "08ee00000002811400fefeb47878787878787885",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:45.378978+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "fefeb43c787878787878",
+      "frame": "08ee00000002811400fefeb43c78787878787849",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:46.762559+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "fefeb43cb47878787878",
+      "frame": "08ee00000002811400fefeb43cb4787878787885",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:48.169259+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "fefeb43cb43c78787878",
+      "frame": "08ee00000002811400fefeb43cb43c7878787849",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:49.551190+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "fefeb43cb43cb4787878",
+      "frame": "08ee00000002811400fefeb43cb43cb478787885",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:50.968382+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "fefeb43cb43cb43c7878",
+      "frame": "08ee00000002811400fefeb43cb43cb43c787849",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:52.357534+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "fefeb43cb43cb43cb478",
+      "frame": "08ee00000002811400fefeb43cb43cb43cb47885",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:53.763507+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "fefeb43cb43cb43cb43c",
+      "frame": "08ee00000002811400fefeb43cb43cb43cb43c49",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:50:55.180406+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0281",
+      "payload": "00007878787878787878",
+      "frame": "08ee00000002811400000078787878787878784d",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:52:13.018616+00:00",
+      "evidence": "vendor_app_bluetooth_tx",
+      "preset_name": "Soundcore Signature"
+    },
+    {
+      "command": "0681",
+      "payload": "00000000",
+      "frame": "08ee00000006810e00000000008b",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:52:50.295626+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0681",
+      "payload": "00020000",
+      "frame": "08ee00000006810e00000200008d",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:53:01.089287+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0681",
+      "payload": "00010000",
+      "frame": "08ee00000006810e00000100008c",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:53:04.625765+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0681",
+      "payload": "01000000",
+      "frame": "08ee00000006810e00010000008c",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:53:11.617998+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "0681",
+      "payload": "02000000",
+      "frame": "08ee00000006810e00020000008d",
+      "model": "Life Q30 / A3028",
+      "captured_at": "2026-11-07T14:53:15.192659+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    }
+  ],
+  "local_profile_recall": [
+    {
+      "action": "soundcore-recall-custom",
+      "frames": [
+        "08ee00000002811400fefeb43cb43cb43cb43c49"
+      ]
+    },
+    {
+      "action": "soundcore-recall-flat",
+      "frames": [
+        "08ee00000002811400fefe787878787878787849"
+      ]
+    },
+    {
+      "action": "soundcore-recall-custom-again",
+      "frames": [
+        "08ee00000002811400fefeb43cb43cb43cb43c49"
+      ]
+    }
+  ]
+}

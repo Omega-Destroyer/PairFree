@@ -164,6 +164,18 @@ class Equalizer(
     val state: StateFlow<EqState?> = _state.asStateFlow()
 
     private var address: String? = null
+
+    /** The profile the EQ of the earbuds at [address] is on: the open EQ's, else the one this phone last set (null if none). */
+    fun profileOf(address: String): String? =
+        if (this.address == address) _state.value?.selected?.id else try {
+            prefs.getString(KEY_SETTING + address, null)?.let { JSONObject(it).optString("profile").ifEmpty { null } }
+        } catch (_: JSONException) {
+            null
+        }
+
+    /** The earbuds whose EQ is open, or null while none is. */
+    val openFor: String? get() = address
+
     private var pending: Job? = null
     private var reopened: String? = null   // earbuds whose channel opened and whose EQ has not gone back yet
     private var sentAt = 0L                 // when this phone last sent an EQ, for [reported]
@@ -355,7 +367,7 @@ class Equalizer(
 
     // Storage: one JSON value per model for saved profiles, one per pair of earbuds for the setting.
 
-    private fun loadProfiles(code: String, layout: EqLayout): List<EqProfile> = try {
+    internal fun loadProfiles(code: String, layout: EqLayout): List<EqProfile> = try {
         val array = JSONArray(prefs.getString(KEY_PROFILES + code, "[]"))
         List(array.length()) { array.getJSONObject(it) }.mapNotNull { o ->
             val gains = o.getJSONArray("gains").let { a -> List(a.length()) { a.getInt(it) } }

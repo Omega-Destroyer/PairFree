@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol
 
+import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
+
 import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
@@ -33,6 +35,7 @@ class IdentifyTest {
                     Maker.JBL -> assertEquals(model, JblModels.fromName(name)?.name, name)
                     Maker.PIXEL -> assertEquals(model, PixelModels.fromName(name)?.name, name)
                     Maker.EARFUN -> assertEquals(model, EarfunModels.fromName(name)?.name, name)
+                    Maker.CAMBRIDGE -> assertEquals(model, CambridgeModels.fromName(name)?.name, name)
                     else -> error("no model check for $want")
                 }
             }
@@ -54,6 +57,7 @@ class IdentifyTest {
             Maker.QCY to "data/qcy/devices.json",
             Maker.ONEMORE to "data/1more/devices.json",
             Maker.EARFUN to "data/earfun/devices.json",
+            Maker.CAMBRIDGE to "data/cambridge/devices.json",
         )
         val wrong = mutableListOf<String>()
         for ((maker, path) in tables) {

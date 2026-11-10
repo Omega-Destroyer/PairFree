@@ -3,7 +3,13 @@
  "names": [
   "JBL Quantum 360",
   "JBL Quantum 360P",
-  "JBL Quantum 360X"
+  "JBL Quantum 360X",
+  "JBL Quantum910",
+  "JBL Quantum910 Wireless",
+  "JBL Quantum910P",
+  "JBL Quantum910P Wireless",
+  "JBL Quantum910X",
+  "JBL Quantum910X Wireless"
  ],
  "source": "Traced from JBL's own product render (Quantum 360 Wireless, angle), not in the repo.",
  "bud": {

@@ -1,0 +1,104 @@
+Sony WF-1000XM5: a user's device report
+Source:  GitHub issue #26, 2026-11-09, PairFree 0.4.0 on Android 17 (API 37), a Samsung Galaxy S24+, unedited below.
+Note:    the user wrote that it "works fast and flawlessly" after about a week of use; firmware 6.1.0, table set 2.
+
+Have been using it for a bit less than a week. Works fast and flawlessly, from what i can tell. Good riddance to SoundConnect. 
+
+**Model (as on the box):** Sony WF-1000XM5
+
+**Bluetooth name when pairing:** WF-1000XM5
+
+**Firmware version shown in the official app, if known:** 6.1.0
+
+**Computer and operating system:** Android 17, Samsung Galaxy S24+
+
+**How you connected (`--mac` or `--port`):** N/A
+
+**Probe output** (paste all of it):
+```
+Bluetooth name:  WF-1000XM5
+Brand:           Sony
+Model:           WF-1000XM5
+Firmware:        6.1.0
+Table set:       2 (service 956C7B26-D49A-4BA8-B03F-B17D393CB6E2)
+App:             PairFree 0.4.0
+OS:              Android 17 (API 37)
+Captured:        2026-11-09 12:39 UTC
+
+Functions the earbuds list (data/sony/functions.json):
+  10 CONCIERGE_DATA
+  11 CONNECTION_STATUS
+  12 CODEC_INDICATOR
+  13 UPSCALING_INDICATOR
+  14 BLE_SETUP
+  15 TUTORIAL_CONTENTS_SELECT_ON_CONCIERGE
+  16 CONNECTION_ESTABLISHED_TIME
+  17 UNNECESSARY_AUTO_RECONNECTION
+  19 PHONE_AND_CONNECTED_DEVICE_INFOMATION_FOR_CLASSIC
+  23 POWER_OFF
+  25 AUTO_POWER_OFF_WITH_WEARING_DETECTION
+  27 TANDEM_KEEP_ALIVE
+  29 LR_BATTERY_LEVEL_WITH_THRESHOLD
+  2a CRADLE_BATTERY_LEVEL_WITH_THRESHOLD
+  34 FW_UPDATE_MTK_TRANSFER_WITHOUT_DISCONNECTION_AUTO_UPDATE
+  40 TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD
+  42 CLASSIC_ONLY_LE_CLASSIC_SETTING
+  44 CHANGE_TANDEM_CONNECTION_PROFILE_FOR_ANDROID
+  50 PRESET_EQ
+  6b MODE_NC_ASM_NOISE_CANCELLING_DUAL_AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT
+  70 AUTO_NCASM
+  90 FIXED_MESSAGE
+  92 FIXED_MESSAGE_WITH_LR_SELECTION
+  93 VOICE_ASSISTANT_ALERT_NOTIFICATION
+  94 LE_AUDIO_ALERT_NOTIFICATION
+  a1 PLAYBACK_CONTROLLER_WITH_CALL_VOLUME_ADJUSTMENT
+  b0 SAR
+  b2 GATT_CONNECTABLE
+  b6 SAR_OPTIMIZATION_ACCEL_TYPE
+  b7 HEAD_TRACKER_ACCEL_TYPE
+  b8 INTEGRATED_AUTO_PLAY
+  c1 ACTION_LOG_NOTIFIER
+  c2 TIME_SERIES_OPERATIONLOG_NOTIFIER
+  d1 GENERAL_SETTING_1
+  d2 GENERAL_SETTING_2
+  e2 UPSCALING_AUTO_OFF
+  e7 CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO
+  f1 PLAYBACK_CONTROL_BY_WEARING_REMOVING_HEADPHONE_ON_OFF
+  f3 ASSIGNABLE_SETTING
+  f4 VOICE_ASSISTANT_SETTINGS
+  f5 VOICE_ASSISTANT_WAKE_WORD_ON_OFF
+  f6 WEARING_STATUS_DETECTOR
+  f9 RESET_SETTINGS
+  fc SMART_TALKING_MODE_TYPE2
+  fd QUICK_ACCESS
+  ff HEAD_GESTURE_ON_OFF_TRAINING
+
+The last message of each kind they sent (table, command, type: payload as hex):
+  1 01 00: 01 00 03 00 30 18 00 00
+  1 05 01: 05 01 0a 57 46 2d 31 30 30 30 58 4d 35
+  1 05 02: 05 02 05 36 2e 31 2e 30
+  1 07 00: 07 00 2e 10 ff 12 ff 13 ff 14 ff 15 ff 16 ff 17 ff 23 ff 25 36 11 ff 27 ff 29 ff 2a ff 92 ff 50 11 6b 08 70 01 90 ff a1 12 c1 ff c2 ff e2 1b f1 38 fc 0d 93 ff f6 33 f9 41 d1 3b 94 ff 40 2e 42 3a 44 ff ff 2d 19 ff f3 26 e7 1a d2 20 fd 2b b6 1d b0 42 b2 43 b8 1f b7 15 34 3f f4 23 f5 24
+  2 07 00: 07 00 0b 42 3d 53 ff 54 ff f1 ff 60 ff 61 ff f2 ff 63 ff f8 30 32 04 31 ff
+  1 23 09: 23 09 00 00 64 00 64 64
+  1 23 0a: 23 0a 28 00 1e
+  1 67 17: 67 17 01 01 01 00 14
+  1 51 00: 51 00 06 15 0c 00 00 10 00 11 00 12 00 13 00 14 00 15 00 16 00 17 00 a0 00 a1 00 a2 00
+  1 5b 00: 5b 00 06 10 00 01 01 01 90 01 03 e8 01 09 c4 01 18 9c 01 3e 80
+  1 57 00: 57 00 a2 06 0e 0a 0a 0a 0a 0a
+  1 e7 01: e7 01 00
+  1 f7 01: f7 01 01
+  1 f7 0c: f7 0c 01 01
+  1 21 05: 21 05 02 10 11
+  1 27 05: 27 05 10 00
+  1 f1 03: f1 03 02 00 00 35 03 35 04 01 01 43 02 44 22 10 03 24 00 02 04 01 02 03 04 20 04 00 00 20 01 21 02 22 03 24 ff 01 00 00 00 01 00 20 03 35 04 01 01 43 02 44 22 10 03 23 00 02 04 01 02 03 04 20 04 00 00 20 01 21 02 22 03 23 ff 01 00 00 00
+  1 f7 03: f7 03 02 35 20
+  2 47 01: 47 01 00 01
+  1 69 17: 69 17 01 01 00 01 0a
+  1 a9 20: a9 20 0a
+```
+
+**Anything you tried with `--set`, and what happened:**
+--set All 3 ANC modes
+--set ANC level and voice pass through
+--set changed EQ
+--set changed button controls

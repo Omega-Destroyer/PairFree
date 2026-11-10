@@ -22,9 +22,10 @@ Supported brands:
 • JBL: 112 models, tried on the Live Buds 3. From JBL's app, checked against JblTray
 • Nothing and CMF: 19 models. From Nothing X, checked against nada and nadamas
 • Google Pixel Buds: 5 models, tried on the Pro. From Google's app, checked against pbpctrl
-• QCY: 171 models. From QCY's app, checked against OpenQCY-Desktop
+• QCY: 194 models. From QCY's app, checked against OpenQCY-Desktop
 • 1MORE: 37 models. From 1MORE's app
 • EarFun: 26 models. From EarFun's app, checked against Gadgetbridge
+• Cambridge Audio: Melomania 1+ and Touch. From the Melomania app
 
 What it controls, on the models that have each:
 
@@ -36,9 +37,12 @@ What it controls, on the models that have each:
 • The ear tip fit test, find my earbuds, voice prompts and water drain
 • Settings only one brand has, such as each Galaxy Bud's ambient sound level, voice detect, Sony's speak-to-chat and DSEE upscaling, Bose's listening modes, JBL's TalkThru, or the AirPods' Conversation Awareness
 • A status notification with the battery and buttons for noise control and game mode, in place of Google's Fast Pair notification if you like
+• A home screen widget, 1x1 to 4x2, with buttons that set or step through noise control choices and EQ profiles for whichever of your earbuds is connected
 
 PairFree shows only what your earbuds support. Models not marked as tried rely on the brand's own app and on your reports: the Device tab copies a device report you can send. Record from the official app reads, on your phone, what the brand's app sends your earbuds when you change a setting, so PairFree can learn to do the same; it keeps only those messages and masks the earbuds' address and serial number.
 
 Close the brand's own app before using PairFree: only one app can control the earbuds at a time.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE or EarFun.
+Thanks to everyone who sent device reports: CONTRIBUTORS.md on GitHub.
+
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun or Cambridge Audio.

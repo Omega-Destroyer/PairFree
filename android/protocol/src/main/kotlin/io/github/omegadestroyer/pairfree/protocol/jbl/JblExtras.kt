@@ -45,7 +45,7 @@ internal class JblExtras(private val model: JblModel) {
 
     /** The reads of a direct or feature model, after its own. */
     fun reads(): List<JblFrame> = if (p4 || race) emptyList() else buildList {
-        if (has(SMART_AV)) add(JblPacket.of(JblCommand.SMART_SWITCH, READ))
+        if (has(SMART_AV)) add(smartRead())
         if (has(VOICE_PROMPTS)) add(JblPacket.of(JblCommand.VOICE_PROMPTS, PROMPT_READ))
         if (has(BALANCE)) add(JblPacket.of(JblCommand.BALANCE, READ))
         if (has(VOICE_AWARE)) add(JblPacket.of(JblCommand.VOICE_AWARE, READ))
@@ -153,6 +153,8 @@ internal class JblExtras(private val model: JblModel) {
         if (p.isEmpty()) return
         when (command) {
             JblCommand.SMART_SWITCH -> if (p.u8(0) == RET && p.size >= 9) smartSwitch = (0 until 4).map { p.u16(1 + it * 2) }
+            // The BES models' reply holds the four numbers with no sub-command in front.
+            JblCommand.SMART_SWITCH_BES_REPLY -> if (p.size >= 8) smartSwitch = (0 until 4).map { p.u16(it * 2) }
             // 05 and the type; 02 is the prompt language's version, which PairFree does not show.
             JblCommand.VOICE_PROMPTS -> if (p.u8(0) == PROMPT_RET && p.size >= 2) voicePrompts = p.u8(1) == 1
             JblCommand.BALANCE -> if (p.u8(0) == RET && p.size >= 5) {
@@ -400,7 +402,7 @@ internal class JblExtras(private val model: JblModel) {
             return JblP4Packet.get(listOf(f))
         }
         return when (key) {
-            SMART_KEY -> JblPacket.of(JblCommand.SMART_SWITCH, READ)
+            SMART_KEY -> smartRead()
             PROMPTS_KEY -> JblPacket.of(JblCommand.VOICE_PROMPTS, PROMPT_READ)
             BALANCE_KEY -> JblPacket.of(JblCommand.BALANCE, READ)
             VOICE_AWARE_KEY -> JblPacket.of(JblCommand.VOICE_AWARE, READ)
@@ -466,10 +468,16 @@ internal class JblExtras(private val model: JblModel) {
         }
         return if (p4) {
             JblP4Packet.set(JblP4.FEATURE_SMART_SWITCH to all.flatMap { listOf(it and 0xFF, it shr 8) }.map { it.toByte() }.toByteArray())
+        } else if (model.besSmartSwitch) {
+            JblPacket.of(JblCommand.SMART_SWITCH_BES, *all.flatMap { listOf(it and 0xFF, it shr 8) }.toIntArray())
         } else {
             JblPacket.of(JblCommand.SMART_SWITCH, SET, *all.flatMap { listOf(it and 0xFF, it shr 8) }.toIntArray())
         }
     }
+
+    /** The read of Smart Audio & Video: `82` with no payload on the BES models, `80 01` on the others. */
+    private fun smartRead(): JblFrame =
+        if (model.besSmartSwitch) JblPacket.of(JblCommand.SMART_SWITCH_BES_REQ) else JblPacket.of(JblCommand.SMART_SWITCH, READ)
 
     private fun prompts(on: Boolean): JblFrame {
         voicePrompts = on
@@ -738,7 +746,7 @@ internal class JblExtras(private val model: JblModel) {
         )
 
         private val AA_COMMANDS = setOf(
-            JblCommand.SMART_SWITCH, JblCommand.VOICE_PROMPTS, JblCommand.BALANCE, JblCommand.VOICE_AWARE,
+            JblCommand.SMART_SWITCH, JblCommand.SMART_SWITCH_BES_REPLY, JblCommand.VOICE_PROMPTS, JblCommand.BALANCE, JblCommand.VOICE_AWARE,
             JblCommand.SAFE_SOUND, JblCommand.SPATIAL, JblCommand.SPEAK_TO_CHAT, JblCommand.GESTURES, JblCommand.LOW_VOLUME_EQ,
         )
 

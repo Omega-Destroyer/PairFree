@@ -135,9 +135,27 @@ public class SoundcoreSession(public val model: String) {
     public val groups: List<SettingGroup>
         get() {
             val s = lastState ?: return emptyList()
-            val rows = listOfNotNull(sleepTimerRow(s))
-            return if (rows.isEmpty()) emptyList() else listOf(SettingGroup("sleep", SettingTab.DEVICE, rows))
+            val rows = listOfNotNull(sleepTimerRow(s)) + A30_FLAGS.filter { it.home.not() }.mapNotNull { flagRow(s, it) } +
+                listOfNotNull(listeningRow(s, A30_LISTENING_MODE), listeningRow(s, A30_DEFAULT_LISTENING_MODE))
+            val home = A30_FLAGS.filter { it.home }.mapNotNull { flagRow(s, it) } + listOfNotNull(listeningRow(s, A30_LISTENING_MODE))
+            return listOfNotNull(
+                if (home.isEmpty()) null else SettingGroup("sleep_sound", SettingTab.HOME, home),
+                if (rows.filterNot { it in home }.isEmpty()) null else SettingGroup("sleep", SettingTab.DEVICE, rows.filterNot { it in home }),
+            )
         }
+
+    /** One of the Sleep A30's switches (OpenSCQ30's d1301 flags), where the model's state holds it. */
+    private fun flagRow(s: SoundcoreState, f: A30Flag): Setting? {
+        if (f.feature !in s.layout.features) return null
+        return s.flag(f.field)?.let { Setting.Toggle(f.key, it) }
+    }
+
+    /** The Sleep A30's listening mode, or the one it starts in: Bluetooth audio, or the audio held on the earbuds. */
+    private fun listeningRow(s: SoundcoreState, c: A30Choice): Setting? {
+        if (c.feature !in s.layout.features) return null
+        val v = s.field(c.field)?.takeIf { it.isNotEmpty() }?.u8(0) ?: return null
+        return Setting.Choice(c.key, A30_MODES.getOrNull(v), A30_MODES)
+    }
 
     /** The sleep timer: off, or the minutes after which the earbuds stop the audio. */
     private fun sleepTimerRow(s: SoundcoreState): Setting? {
@@ -153,6 +171,18 @@ public class SoundcoreSession(public val model: String) {
      */
     public fun change(change: SettingChange): List<SoundcorePacket>? {
         val s = lastState ?: return null
+        if (change is SettingChange.Toggle) {
+            val f = A30_FLAGS.firstOrNull { it.key == change.key } ?: return null
+            if (flagRow(s, f) == null) return null
+            lastState = s.with(f.field, byteArrayOf(if (change.on) 1 else 0))
+            return listOf(SoundcorePacket(f.command, byteArrayOf(if (change.on) 1 else 0)))
+        }
+        if (change is SettingChange.Choice && change.key != SLEEP_TIMER) {
+            val c = listOf(A30_LISTENING_MODE, A30_DEFAULT_LISTENING_MODE).firstOrNull { it.key == change.key } ?: return null
+            val v = A30_MODES.indexOf(change.option).takeIf { it >= 0 && listeningRow(s, c) != null } ?: return null
+            lastState = s.with(c.field, byteArrayOf(v.toByte()))
+            return listOf(SoundcorePacket(c.command, byteArrayOf(v.toByte())))
+        }
         if (change !is SettingChange.Choice || change.key != SLEEP_TIMER || SLEEP_TIMER !in s.layout.features) return null
         val b = s.field(SLEEP_TIMER) ?: return null
         val minutes = change.option.toIntOrNull()
@@ -194,6 +224,21 @@ public class SoundcoreSession(public val model: String) {
         private const val SLEEP_TIMER_OFF = 2
         private const val OFF = "off"
         private val SLEEP_TIMER_MINUTES = (30..480 step 30).toList()
+
+        // The Sleep A30's switches and listening modes (OpenSCQ30 d1301; no recording of PairFree's yet): the row, the state field, the
+        // OpenSCQ30 feature that lists it for the model, the command, and whether it shows on the Home tab.
+        private class A30Flag(val key: String, val field: String, val feature: String, val command: Int, val home: Boolean)
+        private class A30Choice(val key: String, val field: String, val feature: String, val command: Int)
+        private val A30_FLAGS = listOf(
+            A30Flag("sleep_noise_canceling", "noise_canceling", "d1301_noise_canceling", SoundcoreCommand.SET_NOISE_CANCELING, true),
+            A30Flag("sleep_noise_canceling_prompt", "noise_canceling_prompt", "d1301_noise_canceling_prompt", SoundcoreCommand.SET_NOISE_CANCELING_PROMPT, false),
+            A30Flag("sleep_listening_mode_prompt", "listening_mode_prompt", "d1301_listening_mode_prompt", SoundcoreCommand.SET_LISTENING_MODE_PROMPT, false),
+            A30Flag("sleep_auto_power_off_prompt", "auto_power_off_prompt", "d1301_auto_power_off_prompt", SoundcoreCommand.SET_AUTO_POWER_OFF_PROMPT, false),
+            A30Flag("sleep_calls_during_bluetooth", "incoming_calls_during_bluetooth", "d1301_incoming_calls_during_bluetooth_mode", SoundcoreCommand.SET_INCOMING_CALLS_DURING_BLUETOOTH, false),
+        )
+        private val A30_LISTENING_MODE = A30Choice("sleep_listening_mode", "listening_mode", "d1301_listening_mode", SoundcoreCommand.SET_LISTENING_MODE)
+        private val A30_DEFAULT_LISTENING_MODE = A30Choice("sleep_default_listening_mode", "default_listening_mode", "d1301_listening_mode", SoundcoreCommand.SET_DEFAULT_LISTENING_MODE)
+        private val A30_MODES = listOf("bluetooth", "local")
 
         private val EARBUD_BATTERIES = listOf("dual_battery", "dual_battery_level", "single_battery", "single_battery_charging_first", "battery_level")
 

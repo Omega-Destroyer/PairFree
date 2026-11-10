@@ -31,12 +31,13 @@ class SonyTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.data["devices"]), s["models"])
-        self.assertEqual([], s["tested"], "no Sony model tried yet")
+        self.assertEqual(["WF-1000XM5"], s["tested"], "the one model with a user's report (GitHub issue #26)")
 
     def test_rows(self):
         self.assertEqual({"Model": "WH-1000XM3", "Type": "Headphones", "Table set": "1", "Status": "Not tested",
                           "Name from": "Gadgetbridge"}, self.row("WH-1000XM3"))
-        self.assertEqual("2", self.row("WF-1000XM5")["Table set"])
+        self.assertEqual("2", self.row("WH-1000XM5")["Table set"])
+
         self.assertEqual(gen.NO, self.row("WH-1000XM4")["Table set"], "nobody wrote it down")
         self.assertEqual("Sony's app", self.row("LinkBuds Fit")["Name from"])
         order = [r.split("</td><td>")[1] for r in gen.rows(self.data["devices"])]

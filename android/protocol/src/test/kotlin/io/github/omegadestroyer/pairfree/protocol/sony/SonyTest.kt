@@ -262,8 +262,16 @@ class SonySessionTest {
         assertEquals(listOf(out(0x68, 0x17, 0x01, 0x01, 0x00, 0x00, 12)), s.set(Command.ANC_MODE, 1))
         assertEquals(1, s.state.number(Command.ANC_MODE))
         assertEquals(listOf(out(0x68, 0x17, 0x01, 0x00, 0x00, 0x00, 12)), s.set(Command.ANC_MODE, 0))
-        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x00, 0x00, 0x01, 12)), s.change(SettingChange.Toggle("voice_focus", true)))
-        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x00, 0x00, 0x01, 20)), s.change(SettingChange.Level("ambient_volume", 25)))
+        // Outside ambient sound the level and voice pass through do nothing: they show greyed out and refuse changes (issue #26).
+        assertEquals(false, (setting(s, "ambient_volume") as Setting.Level).enabled)
+        assertEquals(false, (setting(s, "voice_focus") as Setting.Toggle).enabled)
+        assertNull(s.change(SettingChange.Toggle("voice_focus", true)))
+        assertNull(s.change(SettingChange.Level("ambient_volume", 25)))
+        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x01, 0x01, 0x00, 12)), s.set(Command.ANC_MODE, 2))
+        assertEquals(true, (setting(s, "ambient_volume") as Setting.Level).enabled)
+        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x01, 0x01, 0x01, 12)), s.change(SettingChange.Toggle("voice_focus", true)))
+        assertEquals(listOf(out(0x68, 0x17, 0x01, 0x01, 0x01, 0x01, 20)), s.change(SettingChange.Level("ambient_volume", 25)))
+        s.set(Command.ANC_MODE, 1)
         // A notification replaces what showed.
         s.receive(message(0x69, 0x17, 0x01, 0x01, 0x00, 0x00, 5))
         assertEquals(1, s.state.number(Command.ANC_MODE))
@@ -350,6 +358,28 @@ class SonySessionTest {
         assertEquals(listOf(out(0x58, 0x01, 0xFF, 6, 10, 20, 0, 10, 10, 10)), s.eqCurve(listOf(10, -10, 0, 0, 0)))
         assertNull(s.eqPreset(0x16), "the earbuds have not listed their presets")
         assertEquals(out(0x58, 0x01, 0x16, 0), eq.selectPreset(0x16))
+    }
+
+    @Test
+    fun theEqualizerMessagesSonysAppSentToAVirtualWh1000xm3() {
+        // data/sony/emulator_vectors.json: Sony Sound Connect against a synthetic WH-1000XM3, table set 1 (docs/sony/VIRTUAL_TESTING.md).
+        val cases = load("emulator_vectors.json").getValue("cases").jsonArray.map { it.jsonObject }.filter { it.str("command") == "58" }
+        assertTrue(cases.size >= 25)
+        for (c in cases) {
+            val p = hex(c.str("payload"))
+            val s = set1(SonyFunction.Set1.PRESET_EQ)
+            s.receive(message(0x57, 0x01, 0xFF, 6, 10, 10, 10, 10, 10, 10))
+            val sent = if (p[1].toInt() and 0xFF == 0xFF) {
+                // The user's curve: 0xFF, six values, Clear Bass first and the five bands after it, each the dB plus the centre (10).
+                val v = p.drop(3).map { (it.toInt() and 0xFF) - 10 }
+                s.eqCurve(v.drop(1))
+                s.change(SettingChange.Level("clear_bass", v[0]))?.last() ?: s.eqCurve(v.drop(1))!!.last()
+            } else {
+                // A preset by its number: the number and no values.
+                s.eq!!.selectPreset(p[1].toInt() and 0xFF)
+            }
+            assertEquals(out(0x58, *p.map { it.toInt() and 0xFF }.toIntArray()), sent, c.str("payload"))
+        }
     }
 
     @Test

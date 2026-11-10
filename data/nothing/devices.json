@@ -263,7 +263,7 @@
       "freqPeak": 980.0,
       "qPeak": 0.7,
       "freqHigh": 3400.0,
-      "qHigh": 1.0
+      "qHigh": 0.7
      },
      "bass_boost": false,
      "spatial_audio": false,
@@ -365,7 +365,7 @@
       "freqPeak": 980.0,
       "qPeak": 0.7,
       "freqHigh": 3400.0,
-      "qHigh": 1.0
+      "qHigh": 0.7
      },
      "advanced_eq": true,
      "bass_boost": false,

@@ -85,7 +85,7 @@ class SoundcoreTable(unittest.TestCase):
         for code, m in self.devices.items():
             self.assertTrue(m["names"], code)
             self.assertTrue(gen.features(m) or m.get("report_only"), code)
-            self.assertRegex(code, r"^[AD]\d{4}C?$")
+            self.assertRegex(code, r"^[AD][0-9A-F]{4}C?$")
 
 
 if __name__ == "__main__":

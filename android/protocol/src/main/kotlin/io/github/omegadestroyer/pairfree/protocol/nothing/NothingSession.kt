@@ -312,10 +312,10 @@ public class NothingSession(private val hint: NothingModel? = null) {
     }
 
     /** The cancelling strengths the model has, in Nothing X's order. */
-    private val levels: List<String> get() = config?.anc?.let { a -> LEVELS.keys.filter { it in a } } ?: LEVELS.keys.toList()
+    public val levels: List<String> get() = config?.anc?.let { a -> LEVELS.keys.filter { it in a } } ?: LEVELS.keys.toList()
 
     /** Off, cancelling and transparency on the shared control; the Ear (stick), which has no transparency, gets a switch. */
-    private val sharedNoise: Boolean get() = config?.anc?.let { "transparency" in it && levels.isNotEmpty() } ?: true
+    public val sharedNoise: Boolean get() = config?.anc?.let { "transparency" in it && levels.isNotEmpty() } ?: true
 
     /** Every setting the earbuds have, grouped by heading and tab. */
     public val groups: List<SettingGroup>
@@ -417,7 +417,8 @@ public class NothingSession(private val hint: NothingModel? = null) {
             Command.GAME_MODE -> {
                 lowLag = value == 1
                 readBacks += frame(NothingCommand.GET_HOST_LAG_MODE)
-                frame(NothingCommand.SET_LAG_MODE, if (value == 1) LAG_ON else LAG_OFF, 0)
+                // One byte, as Nothing X's Flutter screen writes it (virtual Ear (2) run, docs/nothing/VIRTUAL_TESTING.md; nada lists [1] and [2]).
+                frame(NothingCommand.SET_LAG_MODE, if (value == 1) LAG_ON else LAG_OFF)
             }
             Command.FIND_LEFT, Command.FIND_RIGHT -> {
                 val part = if (command == Command.FIND_LEFT) PART_LEFT else PART_RIGHT

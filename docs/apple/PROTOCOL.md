@@ -27,9 +27,13 @@ them; PairFree does the same, and takes "AirPods" in the name too. Beats are kno
 service alone, since the ones on Beats' own chips (Studio Buds, Studio Buds +, Solo Buds) speak
 another protocol with Beats' app, though MagicPodsCore lists them.
 
-Android has no public way to open a classic L2CAP channel. LibrePods makes the socket through
-`BluetoothSocket`'s hidden constructors, trying each Android version's signature, newest first;
-PairFree does the same (`AppleLink`). Android's Bluetooth stack then refuses the AirPods' channel
+Android has no public way to open this classic L2CAP channel: Android 16's `BluetoothDevice.createUsingSocketSettings`
+(`BluetoothSocketSettings`, API 36) takes a PSM of 0 to 255 only (lint's `@IntRange` on `setL2capPsm`), and the AirPods'
+is 0x1001. LibrePods makes the socket through `BluetoothSocket`'s hidden constructors, trying each Android version's
+signature, newest first; PairFree does the same (`AppleLink`). A user's AirPods Pro 3 on a Pixel 8 with Android 17 (issue
+#3, 0.7.2; build CP3A.261005.005) found none of the five: the last one's signature (int, boolean, boolean, device, int,
+uuid) was not there. When every signature fails, the connection report now lists the constructors the phone has, so the
+next report shows the one Android 17 uses. Android's Bluetooth stack then refuses the AirPods' channel
 (Google issue 371713238) except where it is fixed: Android 17 and later, Pixels on Android 16
 QPR3 (build ids starting `CP1A`), and OnePlus, OPPO and realme phones on Android 16
 (`AppleSupport`, LibrePods' `isSupported`). Elsewhere LibrePods needs root and Xposed; PairFree

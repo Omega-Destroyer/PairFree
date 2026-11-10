@@ -15,7 +15,7 @@ PairFree yet.
 - **QCY's product list and control panels**, which QCY's app downloads from QCY's server, as
   [Quicky](https://github.com/hui1601/Quicky) by hui1601 dumped them. Quicky has no licence, so it gives
   facts only. Its protocol notes, read from a QCY HT07's traffic, agree with QCY's app.
-  - `data/qcy/devices.json` keeps the 171 entries Quicky files as earphones; watches, speakers and the
+  - `data/qcy/devices.json` keeps the 171 entries Quicky files as earphones, plus the 23 earphones and headsets QCY's own product list (fetched 2026-11-04) holds and Quicky's does not, among them the newer QCY T13 Pro, vendor id 32887, `jieli_custom` (`tools/import_qcy_panels.py`, GitHub issue #28); watches, speakers and the
     one accessory are left out (the owner's choice, 2026-10-18).
   - Quicky left out the numbers QCY's control panels attach to touch actions and switch writes, and
     the EQ presets' values. So the touch actions are matched by name to Quicky's function table, and

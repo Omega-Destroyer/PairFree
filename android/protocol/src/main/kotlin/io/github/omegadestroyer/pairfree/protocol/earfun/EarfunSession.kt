@@ -338,6 +338,13 @@ public class EarfunSession(public val model: EarfunModel) {
     private val cancellingTops: List<String>
         get() = model.noise?.values?.keys?.filter { it != OFF && it != AMBIENT }.orEmpty()
 
+    /** What the [ANC_MODE_KEY] row offers while cancelling (the home screen widget fixes one): the cancelling modes, where several, and the sub-mode's options. */
+    public val cancellingChoices: List<String>
+        get() = (cancellingTops.takeIf { it.size > 1 }.orEmpty() + model.noise?.cancelling?.options.orEmpty()).distinct()
+
+    /** What the [AMBIENT_MODE_KEY] row offers while transparent. */
+    public val ambientChoices: List<String> get() = model.noise?.ambient?.options.orEmpty()
+
     /** Every setting the earbuds have, grouped by heading and tab. */
     public val groups: List<SettingGroup>
         get() {
@@ -756,8 +763,8 @@ public class EarfunSession(public val model: EarfunModel) {
         private const val EF_ON = 2
         private const val EF_OFF = 1
 
-        private const val ANC_MODE_KEY = "ef_anc_mode"
-        private const val AMBIENT_MODE_KEY = "ef_ambient_mode"
+        public const val ANC_MODE_KEY: String = "ef_anc_mode"
+        public const val AMBIENT_MODE_KEY: String = "ef_ambient_mode"
         private const val LOCK_KEY = "ef_touch_lock"
         private const val LOCK_LEFT_KEY = "ef_touch_lock_left"
         private const val LOCK_RIGHT_KEY = "ef_touch_lock_right"

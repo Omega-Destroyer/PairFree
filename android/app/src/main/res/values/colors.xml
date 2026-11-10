@@ -2,4 +2,13 @@
 <resources>
     <!-- Studio background (docs/DESIGN.md) -->
     <color name="icon_background">#101214</color>
+
+    <!-- The home screen widget, in the Studio colours (ui/theme/Studio.kt) -->
+    <color name="widget_panel">#181B1F</color>
+    <color name="widget_raised">#1F2328</color>
+    <color name="widget_hairline">#2B3037</color>
+    <color name="widget_text">#E8E6E1</color>
+    <color name="widget_secondary">#A0A5AD</color>
+    <color name="widget_accent">#E6A23C</color>
+    <color name="widget_on_accent">#101214</color>
 </resources>

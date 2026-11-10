@@ -220,10 +220,52 @@ class NothingTest {
     }
 
     @Test
+    fun theFramesNothingXSentToAVirtualEar2() {
+        // data/nothing/emulator_vectors.json: Nothing X 3.4.15 against a synthetic Ear (2) (docs/nothing/VIRTUAL_TESTING.md).
+        val cases = Json.parseToJsonElement(repoFile("data/nothing/emulator_vectors.json").readText()).jsonObject.getValue("cases").jsonArray.map { it.jsonObject }
+        fun payloads(command: String, evidence: String = "vendor_app_bluetooth_tx") =
+            cases.filter { it.getValue("command").jsonPrimitive.content == command && it.getValue("evidence").jsonPrimitive.content == evidence }
+                .map { it.getValue("payload").jsonPrimitive.content }
+        val s = session("B155")
+        s.receive(reply(NothingCommand.GET_EXTRA_FEATURE_STATUS, "010101"))
+        s.receive(reply(NothingCommand.GET_HOST_LAG_MODE, "0200"))
+        // Low lag: one byte, 01 on and 02 off.
+        assertEquals(listOf("01", "02"), payloads("f040"))
+        assertEquals("01", hex(s.set(Command.GAME_MODE, 1)!!.single().payload))
+        assertEquals("02", hex(s.set(Command.GAME_MODE, 0)!!.single().payload))
+        // In-ear detection: a count of one, the feature, on or off.
+        assertEquals(listOf("010100", "010101"), payloads("f004"))
+        assertEquals("010100", hex(s.set(Command.IN_EAR_DETECTION, 0)!!.single().payload))
+        assertEquals("010101", hex(s.set(Command.IN_EAR_DETECTION, 1)!!.single().payload))
+        // Noise (F00F): the app wrote 01 and the mode, 00: high 1, mid 2, low 3, adaptive 4, off 5, transparency 7.
+        assertEquals(setOf("010100", "010200", "010300", "010400", "010500", "010700"), payloads("f00f").toSet())
+        s.receive(reply(NothingCommand.GET_CURRENT_NOISE_REDUCTION, "010100"))
+        assertEquals(setOf("010100", "010200", "010300", "010400"), NothingModels.of("B155")!!.config("1.0.1.80").anc.filter { it in setOf("high", "mid", "low", "adaptive") }
+            .map { hex(s.change(SettingChange.Choice("noise_strength", it))!!.single().payload) }.toSet())
+        assertEquals("010500", hex(s.set(Command.ANC_MODE, ancNumber("off"))!!.single().payload))
+        assertEquals("010700", hex(s.set(Command.ANC_MODE, ancNumber("transparency"))!!.single().payload))
+        // The left double pinch (F003: a count of one, the left earbud 2, button 1, gesture 2, then the action): previous 8, next 9, assistant 11.
+        s.receive(reply(NothingCommand.GET_KEY_CONFIGURATION, "080201020903010209020103080301030802010716030107160201090103010901"))
+        val pinch = payloads("f003").toSet()
+        assertEquals(setOf("0102010208", "010201020b", "0102010209"), pinch)
+        for ((option, expected) in listOf("previous" to "0102010208", "next" to "0102010209", "voice_assistant" to "010201020b")) {
+            assertEquals(expected, hex(s.change(SettingChange.Choice("touch_double_left", option))!!.single().payload), option)
+        }
+        // The presets, two bytes: balanced 0, voice 1, more treble 2, more bass 3, custom 5.
+        assertEquals(listOf("0300", "0200", "0100", "0000", "0500"), payloads("f010"))
+        assertEquals(listOf("0300", "0200", "0100", "0000"), listOf("bass", "treble", "voice", "balanced").map { hex(s.eqPreset(it)!!.single().payload) })
+        // The custom curve the app's own view model wrote for mid +1, treble -3 and bass +6 (invoked by hand, so the evidence is
+        // "original_callback_invoked"): the same bytes as PairFree's, now that the Ear (2)'s high shelf has Q .7.
+        val vendor = payloads("f041", "original_callback_invoked").single()
+        val frames = s.eqCustom(listOf(6, 1, -3))!!
+        assertEquals(vendor, hex(frames.last().payload))
+    }
+
+    @Test
     fun theCustomEqAsNothingXWritesIt() {
         val s = session("B155")
         assertTrue(NothingCommand.GET_CUSTOM_EQ_VALUE in NothingSession(NothingModels.of("B155")).start().map { it.command })
-        assertEquals(NothingSimpleEq(140.0, 0.8, 980.0, 0.7, 3400.0, 1.0), s.simpleEqFilters)
+        assertEquals(NothingSimpleEq(140.0, 0.8, 980.0, 0.7, 3400.0, 0.7), s.simpleEqFilters)
         s.receive(reply(NothingCommand.GET_EQ_MODE, "0000"))
         // Bass +3, mid -2, treble +6: the custom mode first, then mid, treble and bass with a total gain of -6,
         // as little-endian floats, and the zeros Nothing X's buffer leaves at the end (computed in Python).
@@ -231,14 +273,14 @@ class NothingTest {
         assertEquals(listOf(NothingCommand.SET_EQ_MODE, NothingCommand.SET_CUSTOM_EQ), frames.map { it.command })
         assertEquals("0500", hex(frames[0].payload))
         assertEquals(
-            "030000c0c001000000c0000075443333333f020000c040008054450000803f000000404000000c43cdcc4c3f000000000000000000",
+            "030000c0c001000000c0000075443333333f020000c040008054453333333f000000404000000c43cdcc4c3f000000000000000000",
             hex(frames[1].payload),
         )
         assertEquals(listOf(NothingCommand.GET_EQ_MODE, NothingCommand.GET_CUSTOM_EQ_VALUE), s.takeReadBacks().map { it.command })
         // Once custom, only the curve goes.
         assertEquals(listOf(NothingCommand.SET_CUSTOM_EQ), s.eqCustom(listOf(0, 0, 0))!!.map { it.command })
         // The earbuds report the curve as they hold it, in their order.
-        s.receive(reply(NothingCommand.GET_CUSTOM_EQ_VALUE, "030000c0c001000000c0000075443333333f020000c040008054450000803f000000404000000c43cdcc4c3f"))
+        s.receive(reply(NothingCommand.GET_CUSTOM_EQ_VALUE, "030000c0c001000000c0000075443333333f020000c040008054453333333f000000404000000c43cdcc4c3f"))
         s.receive(reply(NothingCommand.GET_EQ_MODE, "0500"))
         assertEquals(NothingEq(null, true, listOf(3, -2, 6)), s.eq)
         // The Ear (1) has presets only.
@@ -254,7 +296,8 @@ class NothingTest {
         assertEquals(true, s.state.switch(Command.IN_EAR_DETECTION))
         assertEquals(false, s.state.switch(Command.GAME_MODE))
         assertEquals("010100", hex(s.set(Command.IN_EAR_DETECTION, 0)!!.single().payload))
-        assertEquals("0100", hex(s.set(Command.GAME_MODE, 1)!!.single().payload))
+        assertEquals("01", hex(s.set(Command.GAME_MODE, 1)!!.single().payload), "one byte, as Nothing X's screen writes it")
+        assertEquals("02", hex(s.set(Command.GAME_MODE, 0)!!.single().payload))
         assertEquals(Setting.Choice("codec", "standard", listOf("standard", "ldac")), setting(s, "codec"))
         assertEquals("0200", hex(s.change(SettingChange.Choice("codec", "ldac"))!!.single().payload))
         // Finding: each earbud on its own, by its battery part number.

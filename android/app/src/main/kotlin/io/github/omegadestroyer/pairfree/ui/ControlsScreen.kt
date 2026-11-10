@@ -57,7 +57,7 @@ internal fun ControlsScreen(
         SoundcoreControls(device, state, touch, actions)
         return
     }
-    if (device.brand == Brand.SAMSUNG || device.brand == Brand.SONY || device.brand == Brand.BOSE || device.brand == Brand.JBL || device.brand == Brand.APPLE || device.brand == Brand.NOTHING || device.brand == Brand.PIXEL || device.brand == Brand.QCY || device.brand == Brand.ONEMORE || device.brand == Brand.EARFUN) {
+    if (device.brand == Brand.SAMSUNG || device.brand == Brand.SONY || device.brand == Brand.BOSE || device.brand == Brand.JBL || device.brand == Brand.APPLE || device.brand == Brand.NOTHING || device.brand == Brand.PIXEL || device.brand == Brand.QCY || device.brand == Brand.ONEMORE || device.brand == Brand.EARFUN || device.brand == Brand.CAMBRIDGE) {
         // These brands' touch settings come as generic rows.
         TabContent {
             Text(stringResource(R.string.tab_controls), style = Studio.type.title)

@@ -1901,7 +1901,62 @@ val generateHearingTables = tasks.register<GenerateHearingTables>("generateHeari
     outputDir = layout.buildDirectory.dir("generated/hearing")
 }
 
+/** Cambridge's legacy GAIA commands, field offsets and two models, read from its own app. */
+abstract class GenerateCambridgeTables : DefaultTask() {
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val c = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val d = JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>
+        fun quoted(v: Any?) = groovy.json.JsonOutput.toJson(v)
+        val out = StringBuilder("// Generated from data/cambridge; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.cambridge\n\n")
+        for ((section, type) in mapOf("wire" to "CambridgeWire", "commands" to "CambridgeCommand", "values" to "CambridgeValue", "offsets" to "CambridgeOffset")) {
+            out.appendLine("public object $type {")
+            @Suppress("UNCHECKED_CAST")
+            for ((key, value) in c.getValue(section) as Map<String, Any>) {
+                check(key.matches(Regex("[A-Z_]+")))
+                out.appendLine("    public const val $key: ${if (value is String) "String" else "Int"} = ${quoted(value)}")
+            }
+            out.appendLine("}")
+        }
+        out.appendLine("public object CambridgeValues {")
+        for (key in listOf("languages", "codecs", "controls")) {
+            val values = (c.getValue(key) as List<*>).joinToString(", ") { quoted(it) }
+            out.appendLine("    public val ${key.uppercase()}: List<String> = listOf($values)")
+        }
+        @Suppress("UNCHECKED_CAST")
+        val presets = c.getValue("presets") as List<Map<String, Any?>>
+        out.appendLine("    public val PRESETS: List<Pair<String, List<Int>>> = listOf(")
+        for (p in presets) out.appendLine("        ${quoted(p.getValue("name"))} to listOf(${(p.getValue("gains") as List<*>).joinToString(", ")}),")
+        out.appendLine("    )\n}")
+        out.appendLine("internal val CAMBRIDGE_MODELS: List<CambridgeModel> = listOf(")
+        @Suppress("UNCHECKED_CAST")
+        for (m in d.getValue("devices") as List<Map<String, Any?>>) {
+            val names = (m.getValue("names") as List<*>).joinToString(", ") { quoted(it) }
+            out.appendLine("    CambridgeModel(${quoted(m.getValue("name"))}, listOf($names), ${m.getValue("ambient")}, ${m.getValue("control_count")}),")
+        }
+        out.appendLine(")")
+        val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/cambridge/CambridgeTables.kt")
+        target.parentFile.mkdirs()
+        target.writeText(out.toString())
+    }
+}
+
+val generateCambridgeTables = tasks.register<GenerateCambridgeTables>("generateCambridgeTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/cambridge/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/cambridge/devices.json")
+    outputDir = layout.buildDirectory.dir("generated/cambridge")
+}
+
 kotlin.sourceSets.main {
+    kotlin.srcDir(generateCambridgeTables)
     kotlin.srcDir(generateHearingTables)
     kotlin.srcDir(generateIdentifyTables)
     kotlin.srcDir(generateEarfunTables)
@@ -1926,6 +1981,7 @@ dependencies {
 }
 
 tasks.test {
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/cambridge")).withPathSensitivity(PathSensitivity.RELATIVE)
     useJUnitPlatform()
     inputs.dir(dataDir).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/soundcore")).withPathSensitivity(PathSensitivity.RELATIVE)

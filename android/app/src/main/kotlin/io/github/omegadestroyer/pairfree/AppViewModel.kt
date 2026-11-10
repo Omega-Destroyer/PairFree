@@ -405,6 +405,22 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             }
         }
         connection.oneMoreSession?.let { session -> return oneMoreReport(session, device, version, date) }
+        connection.cambridgeSession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
+                appendLine("Brand:           Cambridge Audio (legacy Melomania)")
+                appendLine("Model:           ${session.model.name}")
+                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                appendLine("Captured:        $date")
+                appendLine("Addresses redacted; only known fields from requested settings reads follow.")
+                session.replies.forEach { (key, payload) ->
+                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xff).toString(16).padStart(2, '0') }}")
+                }
+            }
+        }
         connection.earfunSession?.let { session -> return earfunReport(session, device, version, date) }
         connection.appleSession?.let { session ->
             return buildString {

@@ -138,7 +138,7 @@ object WidgetOptions {
                 }
             }
             // Bose has no shared noise mode; Sony and Apple say only in their replies.
-            Brand.BOSE -> emptyList()
+            Brand.BOSE, Brand.CAMBRIDGE -> emptyList()
             Brand.SONY, Brand.APPLE -> null
         }
     } catch (_: RuntimeException) {

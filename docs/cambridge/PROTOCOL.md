@@ -1,6 +1,7 @@
 # Cambridge Audio Melomania protocol research
 
-Research only, 2026-11-06. No Cambridge Audio implementation was added and no hardware was connected.
+Research 2026-11-06; local implementation draft and [virtual tests](VIRTUAL_TESTING.md) added subsequently.
+No hardware was connected.
 The supplied Melomania app directly controls **Melomania 1+ and Melomania Touch**. It recognizes newer
 names to direct the user to another app; their protocol must be kept separate.
 
@@ -179,4 +180,66 @@ Remaining analysis: full model/firmware screen-to-setting matrix, exact legacy E
 control-bit meanings, complete composite state schema, and modern Melomania Connect vendor evidence.
 Modern vendor APK absence limits the primary evidence, not the ability to make progress from the
 public A100 work. Future implementation needs byte-for-byte vectors and real recordings/hardware;
-no Cambridge product is marked supported or tried by this research.
+no Cambridge product is marked tried by this research.
+
+## 8. Local implementation draft for review
+
+`data/cambridge/commands.json` supplies all wire constants, offsets, enum tables and preset gains to
+`generateCambridgeTables`; `devices.json` restricts the implementation to 1+ and Touch.
+`CambridgeParser` handles GAIA v1 stream boundaries, optional XOR, length limits and malformed frames.
+`CambridgeSession` reads composite state, preset and control mask. Writes are allowlisted, require a
+currently offered setting and are followed by the relevant read. The Android queue waits for matching
+ACK command ids, including unsuccessful ACKs, with the vendor's 30-second deadline. It serializes requests
+conservatively; it does not claim that the vendor globally serializes different commands.
+
+Additional screen tracing for this implementation established:
+
+- Composite ACK payload: 2 ambient flag, 3 language index, 8 left battery, 9 right battery, **10 ambient
+  level**, 11..13 left firmware, 14..16 right firmware, 17..28 addresses, 31 active codec, 32 codec preference.
+  The preset is read separately with 0294; byte 10 is not an EQ preset.
+- `a3/h`, `b3/i0` and `earphone_controls_item_m1/touch` map mask bits 0..8 to play/pause, next,
+  previous, volume up/down, answer/reject/end calls and voice assistant. Touch adds bit 9 for ambient.
+  The two mask bytes are big-endian. The draft sets/clears a bit rather than blindly XORing it.
+- `b3/n` hides ambient controls on 1+. `fragment_transparency.xml` sets the level range 0..100.
+- `voice_guidance_item` maps indices 0..7 to Cantonese, Chinese, English, French, German, Italian,
+  Japanese and Spanish. The language screen requires both earbuds present (battery > 0).
+- `b3/e` maps codec preference 0 SBC, 1 AAC, 2 aptX, 3 AAC+aptX; active codec 3 locks its controls.
+  The draft conservatively also requires both earbuds present before changing this preference.
+- `l3/b`, `m3/b` and `r3/h` use bands **1..5**, not 0..4. `u3/b` switches to Custom1 (6) before
+  `t3/b` sends gains. The draft writes all five explicit values, not an assumed existing custom bank.
+  The UI labels are bass/mid-range/treble without numeric frequencies (`fragment_equalizer.xml`: five vertical sliders
+  `vs_band1` to `vs_band5`, the labels under the left end, the middle and the right end, and a line chart through five equally spaced
+  points); PairFree names bands 1, 3 and 5 as the app does and numbers the rest, and draws no frequency curve. Custom state from another app is unknown until the user chooses a known preset.
+- **High performance audio is firmware installation**, not an ordinary setting: `b3/d` chooses raw
+  resources `m1_d_class`, `m1_ab_class`, `touch_d_class`, `touch_ab_class`, writes a temporary file and
+  enters the upgrade flow. Blocked: firmware restriction; checked: b3/d switching handlers, raw-resource
+  selection and upgrade calls. No such resource or command is included in PairFree.
+
+Device reports retain only the established fields of the three requested reads and zero offsets 17..28.
+Raw composite frames are not logged. The implementation has no account, location, reset, upgrade or
+power commands. Newer models remain separate. Before merging, review the gain-bank behavior and obtain
+a hardware recording; tests exercise analytical frames, synthetic short/error replies, model boundaries,
+privacy redaction, read-back scheduling and forbidden writes. Hardware validation remains unperformed.
+
+Validation of the local draft: all six Cambridge protocol tests, the complete protocol test suite,
+`:app:assembleDebug`, `:app:lintDebug`, and all 133 Python tests passed in the E: build mirror. Device-page
+generation and the generic artwork generator were run; the models use the existing generic earbud art.
+The queue also invalidates the editable gain state after a failed/missing bank or band ACK; the allowlist
+then refuses remaining queued band writes until a known preset has been read again.
+
+## 9. Vendor-app virtual testing
+
+The original Melomania 2.8.12 APK has now connected to virtual Touch and 1+ instances over Classic Bluetooth.
+The simulator's replies remain synthetic; outgoing app frames are runtime observations, not hardware evidence.
+See [VIRTUAL_TESTING.md](VIRTUAL_TESTING.md) for the environment, exact checks and limitations, and
+`data/cambridge/emulator_vectors.json` for 78 selected outgoing command cases and APK hashes.
+
+Custom save/recall revealed Neutral 0 -> custom mode 6 -> gains. PairFree's full-curve write now follows
+that sequence. The three named custom slots belong to the vendor app's phone-local storage; selecting
+Custom 2 does not imply device preset 7. The UI wording was corrected accordingly. Runtime tests also
+confirm that codec application can be enabled with both simulated earbuds present; the ambiguous
+decompiler conditional in b3/e should not be interpreted as requiring an absent left earbud.
+
+The complete protocol suite, debug APK build, Android lint and 133 Python checks pass after these changes.
+Neither model is counted as hardware tested. A distinct "Vendor app tested virtually" category is generated
+on the device page from each model's `virtual_tests` records, independently of hardware `reports`.

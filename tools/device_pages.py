@@ -30,6 +30,7 @@ def brands():
     import gen_apple_table
     import gen_bose_table
     import gen_earfun_table
+    import gen_cambridge_table
     import gen_jbl_table
     import gen_models_table
     import gen_nothing_table
@@ -38,7 +39,7 @@ def brands():
     import gen_samsung_table
     import gen_sony_table
     import gen_soundcore_table
-    return [gen_models_table, gen_soundcore_table, gen_samsung_table, gen_sony_table, gen_bose_table, gen_jbl_table, gen_apple_table, gen_nothing_table, gen_pixel_table, gen_qcy_table, gen_1more_table, gen_earfun_table]
+    return [gen_models_table, gen_soundcore_table, gen_samsung_table, gen_sony_table, gen_bose_table, gen_jbl_table, gen_apple_table, gen_nothing_table, gen_pixel_table, gen_qcy_table, gen_1more_table, gen_earfun_table, gen_cambridge_table]
 
 
 def summary():

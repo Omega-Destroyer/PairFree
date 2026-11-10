@@ -120,7 +120,7 @@ public class OneplusSession(public val model: OneplusModel?) {
 
     /** A touch row for each earbud and each stem gesture the model lists and the earbuds reported, with the functions the model allows. */
     private fun touchRows(side: String): List<Setting> = buildList {
-        for (t in model?.touch.orEmpty()) for (type in listOf(if (side == "left") LEFT else RIGHT)) {
+        for (t in model?.touch.orEmpty().filter { it.gesture in TAP_GESTURES }) for (type in listOf(if (side == "left") LEFT else RIGHT)) {
             val current = keys[type to t.actionByte] ?: continue
             val name = t.functions.firstOrNull { it.wire == current }?.key ?: continue
             add(Setting.Choice("touch_${t.gesture}_${side(type)}", name, t.functions.map { it.key }.distinct()))
@@ -245,6 +245,7 @@ public class OneplusSession(public val model: OneplusModel?) {
         /** The key of the brand row that chooses among the on mode's sub-modes. */
         public const val STRENGTH_KEY: String = "op_noise_level"
         private const val SEQUENCE_WRAP = 256
+        private val TAP_GESTURES = setOf("single", "double", "triple")
         private const val LEFT = 1
         private const val RIGHT = 2
         private const val STEM_BUTTON = 1

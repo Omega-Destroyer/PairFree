@@ -781,7 +781,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -894,7 +894,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -928,7 +928,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -1053,7 +1053,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -1263,7 +1263,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -1609,7 +1609,7 @@
      "ear_choice": true
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -2076,7 +2076,7 @@
      "ear_choice": true
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -2106,7 +2106,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -2360,7 +2360,7 @@
      "ear_choice": true
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -2390,7 +2390,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -2515,7 +2515,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -2545,7 +2545,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -3308,7 +3308,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -3504,7 +3504,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -3725,7 +3725,7 @@
      "ear_choice": false
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -3759,7 +3759,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -3909,7 +3909,7 @@
      "ear_choice": true
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -4095,7 +4095,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -4478,7 +4478,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -4519,7 +4519,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -4784,7 +4784,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -4814,7 +4814,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -5092,7 +5092,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -5133,7 +5133,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -5270,7 +5270,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -5431,7 +5431,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -5472,7 +5472,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -5659,7 +5659,7 @@
      "ear_choice": false
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -5717,7 +5717,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -5994,7 +5994,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -6035,7 +6035,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -6215,7 +6215,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -6406,7 +6406,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -6554,7 +6554,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -6595,7 +6595,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -6788,7 +6788,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -6833,7 +6833,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -7021,7 +7021,7 @@
      "ear_choice": false
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -7055,7 +7055,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -7253,7 +7253,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -7298,7 +7298,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -7772,7 +7772,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -7817,7 +7817,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -8009,7 +8009,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -8276,7 +8276,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -8321,7 +8321,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -8698,7 +8698,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -8951,7 +8951,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -8992,7 +8992,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -9124,7 +9124,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -9154,7 +9154,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -9674,7 +9674,7 @@
      "ear_choice": false
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -9732,7 +9732,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -9888,7 +9888,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -9929,7 +9929,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -10059,7 +10059,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -10100,7 +10100,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -10280,7 +10280,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -10321,7 +10321,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -10470,7 +10470,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -10511,7 +10511,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -10641,7 +10641,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -10682,7 +10682,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -10818,7 +10818,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -10859,7 +10859,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -10995,7 +10995,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -11036,7 +11036,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -11172,7 +11172,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -11213,7 +11213,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -11350,7 +11350,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -11391,7 +11391,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -11753,7 +11753,7 @@
      "ear_choice": false
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -11811,7 +11811,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -12010,7 +12010,7 @@
      "ear_choice": false
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -12068,7 +12068,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -12273,7 +12273,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -12318,7 +12318,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -12517,7 +12517,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -12562,7 +12562,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -12766,7 +12766,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -12811,7 +12811,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -12950,7 +12950,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -13123,7 +13123,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -13345,7 +13345,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -13390,7 +13390,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -13630,7 +13630,7 @@
      ]
     },
     {
-     "gesture": "gesture_5",
+     "gesture": "slide",
      "action": 5,
      "action_byte": 5,
      "button": 1,
@@ -13856,7 +13856,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -13897,7 +13897,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,
@@ -14027,7 +14027,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 6,
      "action_byte": 6,
      "button": 1,
@@ -14068,7 +14068,7 @@
      ]
     },
     {
-     "gesture": "gesture_6",
+     "gesture": "long_press",
      "action": 31,
      "action_byte": 6,
      "button": 6,

@@ -81,9 +81,10 @@ FUNCTIONS = {
 }
 # A control's `action` -> the button action byte of a key assignment (the app's N.e, which passes other numbers through) and, for the stem
 # actions 1 to 27, button byte 1; call actions 28 to 37 use button 6 and device type 4. Bytes 1 to 4 are single, double, triple and long press
-# (the app's own UI order); the others are kept as numbers because no name was found for them.
+# (the app's own UI order). Bytes 5 (slide up or down, with adjust volume) and 6 (a long hold that switches device, or a long press for volume)
+# are named from the earbuds' manuals and reviews, not from the app (docs/oneplus/CATALOG_MAPPING.md); the others are kept as numbers.
 ACTION_BYTES = {11: 4, 16: 1, 17: 2, 18: 3, 19: 4, 20: 4, 22: 6, 26: 2, 27: 4, 28: 1, 29: 2, 30: 3, 31: 6, 32: 1, 33: 2, 34: 3, 35: 6, 36: 2}
-GESTURE_NAMES = {1: "single", 2: "double", 3: "triple", 4: "hold"}
+GESTURE_NAMES = {1: "single", 2: "double", 3: "triple", 4: "hold", 5: "slide", 6: "long_press"}
 
 
 def gesture(action):

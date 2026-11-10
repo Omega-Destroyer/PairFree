@@ -22,8 +22,8 @@ A key assignment is four bytes: device type (1 left, 2 right; 4 for call actions
 volume buttons of older models), button action and function; `0401` writes a count and these records, `0108` reads them
 (capture: `0108` with `02 03 01`). The catalog's `action` becomes the button action byte (`N.e`): 16, 17, 18 and the older 1, 2, 3 are single,
 double and triple press (byte 1 to 3); 19, 20, 11 and 4 are a long press (byte 4); call actions 28 and 32 (single), 29, 33 and 36 (double), 30
-and 34 (triple) and 31 and 35 (byte 6). Bytes 5 and 6 (older models' `action` 5 and 6, 22 records and 68) and 7, 8, 12 to 15, 25 and 37 (10
-records) have no name in the app's code that was found: kept as numbers. A `support` mask lists the allowed functions as bits; PairFree's
+and 34 (triple) and 31 and 35 (byte 6). Bytes 5 and 6 (older models' `action` 5 and 6) have no name in the app's code; they are named here from the earbuds' manuals and reviews (web search, 2026-11-10), which is evidence about the products, not about the wire: byte 5 is the slide gesture (its functions are none, adjust volume and switch song; the Enco X's, X2's and Buds 3 / Pro 3's stems are slid up or down for volume: [OPPO Enco X2 page](https://www.oppo.com/nz/accessories/oppo-enco-x2/), [GSMArena on the Buds 3](https://www.gsmarena.com/oneplus_buds_3_review-news-61480.php)), and byte 6 is a long press (its functions are none and switch device on the Buds Z2, Enco X, Nord Buds and Buds N, where a 3 second hold reconnects to the previous device: [Buds Z2 guide](https://manuals.plus/m/c4c529950e96905eb9832a1c4940532679ffdc2a4173a427e63216fc7d81ae75); volume up and down on the Enco Air series). The names are inferences: PairFree builds none of these rows. Bytes 7, 8, 12 to 15, 25 and 37 (10
+records) have no name anywhere found: kept as numbers. A `support` mask lists the allowed functions as bits; PairFree's
 importer turns each into a key and the number the app writes (`Ha.a.b`): none 0, play/pause 1, voice assistant 3, previous 5 (4 on the OnePlus
 Buds and Buds Z), next 6 (5 there), adjust volume 7, noise control switch 8, play collection 9, switch song 10, volume up 11, volume down 12,
 switch device 13, game mode 17, zen mode 18, collect music 22, AI summary 25, AI translation 26, spy tap 32, Gemini play/pause 34, trigger 35,
@@ -73,8 +73,14 @@ App-side or server-side fields that need no earbud command: guides and tutorials
 
 ## Still unresolved
 
-- The button action bytes 5 and 6 and the ones listed above; mask 2.
+- The button action bytes 7, 8, 12 to 15, 25 and 37 (and, as an inference only, 5 and 6); mask 2.
 - Which firmware version selects `equalizerModeByVersion` and `controlList`, and how the app reads a firmware version (`0105`).
 - The device types a `0108` read asks for (1, 2 and 3; the app adds 2 on some phones, `T.u`): what type 3 returns.
 - How the long-press noise cycle is stored and written.
 - The model-specific rounding of battery values (`batteryRadix`), which the virtual run showed for the right earbud.
+- The long-press noise cycle (which modes a long press steps through): the app stores it with the typed noise reads (`010C` with `02 01`, `02 03`, `02 04`,
+  `03 01`, `04 01`: an action and a type, answered as `NoiseReductionInfo`: action, type and a little-endian value of 1 to 4 bytes) and writes
+  it with `0404`; what each action and type means is in the app's custom noise screen, which was not read. Not built. Checked: `NoiseReductionInfo`,
+  `CurrentNoiseModeInfo`, the dispatcher's 810C branch, the catalog entries with no function mask (48), `PollCommandManager`'s startup list.
+- The call controls (`callControl`, device type 4, button 6): the key read PairFree sends asks for buttons 3 and 1 only, so the app must read button 6
+  some other way; not found. Not built.

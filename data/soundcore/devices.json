@@ -2942,6 +2942,20 @@
       }
     },
     {
+      "model": "A300B",
+      "names": [
+        "soundcore Q21i NC"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "a user's device report (GitHub issue #22); neither OpenSCQ30 nor the Soundcore app 2.9.9 names it",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "A user's report holds a 61-byte state reply whose first 39 bytes fit the Q20i's (A3004) layout exactly (battery, firmware 05.xx, serial, EQ preset 7E 7E with ten bands, four sound mode bytes); 22 more bytes follow that the A3004 layout has no field for. That is a lead, not a layout: PairFree finds the model, asks for its state and offers a device report, and shows no settings until a recording of the Soundcore app confirms what the Q21i NC takes. The report is data/soundcore/reports/A300B_05.xx.txt (not listed in reports: a report-only model is not counted as tried)."
+    },
+    {
       "model": "A3958",
       "names": [
         "soundcore A30i"

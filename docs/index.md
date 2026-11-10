@@ -7,10 +7,10 @@ permalink: /
 
 PairFree is a free, open-source Android app that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
 
-It covers 643 models from 12 brands. Pick yours:
+It covers 644 models from 13 brands. Pick yours:
 
 - [Open-source SOUNDPEATS app (a PeatsAudio alternative)](https://omega-destroyer.github.io/PairFree/open-source-soundpeats-app/): 88 SOUNDPEATS models
-- [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/): 66 Soundcore models
+- [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/): 67 Soundcore models
 - [Open-source Bose app (a Bose Music alternative)](https://omega-destroyer.github.io/PairFree/open-source-bose-app/): 22 Bose models
 - [Open-source JBL Headphones app alternative](https://omega-destroyer.github.io/PairFree/open-source-jbl-app/): 112 JBL models
 - [Open-source Sony headphones app (a Sound Connect alternative)](https://omega-destroyer.github.io/PairFree/open-source-sony-app/): 24 Sony models

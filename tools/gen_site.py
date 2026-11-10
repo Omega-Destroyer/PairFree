@@ -297,7 +297,7 @@ permalink: /
 
 PairFree is a free, open-source Android app that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
 
-It covers {total} models from 12 brands. Pick yours:
+It covers {total} models from {len(BRANDS)} brands. Pick yours:
 
 {brands}
 

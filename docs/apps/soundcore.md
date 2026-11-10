@@ -20,7 +20,7 @@ Each model shows only the settings it has:
 
 ## Soundcore models
 
-PairFree knows 66 Soundcore models. Models that have been tried on real earbuds: AeroClip, Q20I, Sleep A20, Space A40.
+PairFree knows 67 Soundcore models. Models that have been tried on real earbuds: AeroClip, Q20I, Sleep A20, Space A40.
 
 Soundcore support is built on OpenSCQ30, the open-source Soundcore app by Kyle Scheuing (GPL-3.0-or-later), and checked against recordings from real earbuds.
 

@@ -18,7 +18,7 @@ Supported brands:
 • Samsung Galaxy Buds: 16 models, from the 2019 Buds to the Buds4 Pro. From Samsung's plugin and the open-source GalaxyBudsClient
 • Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6. From Sony's app, checked against Gadgetbridge
 • Bose: 22 models, from the QC35 to the QC Ultra 2. From Bose's app and bosectl, without Bose's cloud
-• AirPods and Beats on Apple's chips: 30 models, from LibrePods. Needs Android 17, or a Pixel on 16 QPR3, or a OnePlus, OPPO or realme phone on 16
+• AirPods and Beats on Apple's chips: 30 models, from LibrePods and Apple's Beats app. AirPods need Android 17, or a Pixel on 16 QPR3, or a OnePlus, OPPO or realme phone on 16; the Beats need no particular version
 • JBL: 112 models, tried on the Live Buds 3. From JBL's app, checked against JblTray
 • Nothing and CMF: 19 models. From Nothing X, checked against nada and nadamas
 • Google Pixel Buds: 5 models, tried on the Pro. From Google's app, checked against pbpctrl

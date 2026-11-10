@@ -6,6 +6,9 @@ owns a pair, so every model relies on reports from people who do.
 
 ## Which phones
 
+This section is about AirPods. The Beats on Apple's chips (see the note under the table) use an ordinary serial
+connection, which every Android version allows, so they need no particular phone.
+
 AirPods keep their settings on a Bluetooth channel that Android's Bluetooth refused on most
 phones until Android 17, which has Google's fix; the note under the table says why that is not
 the whole story. Before Android 17, only these open it, as LibrePods found:
@@ -28,6 +31,16 @@ their settings when PairFree connects, and PairFree shows only the ones they rep
   beta firmware, as LibrePods found).
 - **Controls:** press speed, press and hold duration, swipe to change volume and its length.
 - **Device:** automatic ear detection, and Off as a listening mode for the stem.
+
+### Beats on Apple's chips
+
+Written from Apple's own Beats app for Android (no Beats has been tried with PairFree yet; a virtual run on an emulator only showed what
+PairFree sends and shows). Powerbeats Pro and Pro 2, Powerbeats Fit, Fit Pro, Studio Buds and Buds +, Solo Buds, Solo Pro, Solo 4 and Studio
+Pro use Apple's B2P protocol: PairFree reads the battery (one level for the whole product), and for each model what Apple's app lists for it:
+noise control (off, noise cancelling, transparency), noise control with one earbud, automatic ear detection, the microphone and the in-case
+tones. Powerbeats3, Solo3, BeatsX, Flex and Studio3 use the older BCD protocol: the Studio3's noise cancelling and the Flex's "answer calls
+automatically". There is no equalizer: Apple's app has none for Beats. Not covered: the Beats Pill and Pill+ and Beats 360 speakers, button
+modes, tone volume and the reset commands. See `docs/apple/B2P.md`.
 
 Not yet: head gestures, renaming, hearing health and hearing aid settings,
 transparency customisation, and anything that needs the phone to pose as an Apple device.

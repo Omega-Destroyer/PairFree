@@ -57,7 +57,8 @@ Each model shows only what it has:
   whichever of your earbuds is connected.
 
 PairFree needs Android 12 or later. AirPods need Android 17, or one of the few phones on
-Android 16 that already open their settings channel ([AirPods and Beats](docs/devices/apple.md)).
+Android 16 that already open their settings channel; the Beats on Apple's chips need no particular
+version ([AirPods and Beats](docs/devices/apple.md)).
 
 PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS,
 Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing (and its CMF brand), Google, QCY, 1MORE, EarFun or Cambridge Audio. It was called SoundPeter until version 0.1.3, when it was still an app for
@@ -82,7 +83,7 @@ and from reports their owners send in. Each brand's page shows which models have
 
 | Piece                 | State |
 |-----------------------|-------|
-| Android app           | Released (v0.9.0) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats, Nothing and CMF, Google Pixel Buds, QCY, 1MORE, EarFun, Cambridge Audio. |
+| Android app           | Released (v0.9.1) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats, Nothing and CMF, Google Pixel Buds, QCY, 1MORE, EarFun, Cambridge Audio. |
 | Tried on real earbuds | By the project's owner: SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40. From users' device reports: SOUNDPEATS C30 and TRUEFREE Clip C10, Soundcore AeroClip, Q20i and Sleep A20, JBL Live Buds 3, Sony WF-1000XM5, Google Pixel Buds Pro. The table below is kept up to date from each brand's page. |
 | Protocols             | One document, data set and test suite per brand, in `docs/<brand>/` and `data/<brand>/` |
 | iOS and Windows apps  | Planned, after Android |

@@ -104,7 +104,7 @@ model it has to be probed.
 | Spatial audio            | `03 57` | `03 58` | 0 off, 1 on; mode via `03 59` (1 byte)                     |
 | Panoramic sound          | `03 29` | `03 30` | 0 normal, 1 music, 2 movie                                 |
 | Dolby                    | `03 48` | `03 49` | 0 off, 1 on; mode via `03 54` (1 byte)                     |
-| Dolby support hint       |         | `03 62` | 0 if the phone supports Dolby, 1 if not. Sent only to `S7` (Clip1). |
+| Dolby support hint       |         | `03 62` | 0 if the phone supports Dolby, 1 if not. PeatsAudio 1.9.45 sends it only to `S7` (Clip1); SOUNDPEATS 2.5.3 was seen sending `03 62 00` to an H3 (`S5`) in an emulator run (`VIRTUAL_TESTING.md`), so the restriction does not hold for 2.5.3. PairFree does not send it. |
 | Adaptive volume          | `03 46` | `03 47` | 0 off, 1 on                                                |
 | Personalized volume      | `03 40` | `03 41` | reply bytes 1, 3, 5 carry the three values                 |
 | Left / right ear volume  | `03 42` / `03 43` | `03 44` / `03 45` | 0 to 100 (marked deprecated in the app)  |

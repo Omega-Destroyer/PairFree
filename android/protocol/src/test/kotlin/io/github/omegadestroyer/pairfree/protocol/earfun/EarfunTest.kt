@@ -6,6 +6,11 @@ import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.Value
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
+import io.github.omegadestroyer.pairfree.protocol.repoFile
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -182,6 +187,61 @@ class EarfunTest {
         assertEquals(listOf("ff040004000a030a00000205"), s.change(SettingChange.Choice("touch_double_right", "next"))!!.map(::hex))
         assertEquals(listOf("ff040004000a030a11070000"), s.change(SettingChange.Choice("touch_hold_left", "game_mode"))!!.map(::hex))
         assertNull(s.change(SettingChange.Choice("touch_hold_left", "noise_control")), "not offered for press and hold")
+    }
+
+    @Test
+    fun theFramesEarFunsAppSentToAVirtualAirPro4() {
+        // data/earfun/emulator_vectors.json: EarFun Audio 20.1.61 against a synthetic Air Pro 4 / TW600 (docs/earfun/VIRTUAL_TESTING.md).
+        val v = Json.parseToJsonElement(repoFile("data/earfun/emulator_vectors.json").readText()).jsonObject
+        val s = EarfunSession(model("EarFun Air Pro 4"))
+        val eq = s.model.eq!!
+        val presets = EarfunValues.PRESETS.getValue(eq.presets).toMap()
+        // Every preset batch: the ten band frames the app wrote, from the preset's slider positions.
+        val missing = mutableListOf<String>()
+        for (batch in v.getValue("preset_batches").jsonArray.map { it.jsonObject }) {
+            val name = batch.getValue("name").jsonPrimitive.content
+            // The app's Default is the flat curve, which PairFree calls Stock.
+            val positions = if (name == "Default") List(10) { 0 } else presets[name]
+            if (positions == null) { missing += name; continue }
+            val frames = batch.getValue("frames").jsonArray.map { it.jsonPrimitive.content }
+            assertEquals(frames, s.eqFrames(positions)!!.map(::hex), name)
+            assertEquals(batch.getValue("decoded_gains_db").jsonArray.map { it.jsonPrimitive.content.toDouble() }, positions.map(s::gainDb), name)
+        }
+        assertEquals(emptyList<String>(), missing, "presets the app has and the table lacks")
+        assertEquals(30, v.getValue("preset_batches").jsonArray.size)
+        // Noise cancelling's sub-modes (033a), the ambient and cancelling icons (0314) and game mode (0312).
+        val sent = v.getValue("cases").jsonArray.map { it.jsonObject }.groupBy({ it.getValue("command").jsonPrimitive.content }, { it.getValue("payload").jsonPrimitive.content })
+        val n = EarfunSession(model("EarFun Air Pro 4"))
+        n.feed(qccReply(EarfunQcc.GET_NOISE_MODE, "01") + qccReply(EarfunQcc.GET_NOISE_CANCEL_MODE, "03") + qccReply(EarfunQcc.GET_GAME_MODE, "00"))
+        val row = n.groups.flatMap { it.settings }.first { it.key == "ef_anc_mode" } as Setting.Choice
+        val modes = row.options.map { o -> hex(n.change(SettingChange.Choice("ef_anc_mode", o))!!.single()).takeLast(2) }.toSet()
+        assertEquals(sent.getValue("033a").toSet(), modes, "the cancelling sub-modes " + row.options)
+        assertEquals(sent.getValue("0314").toSet(), setOf(anc("anc"), anc("transparency")).map { hex(n.set(Command.ANC_MODE, it)!!.single()).takeLast(2) }.toSet() + setOf("00").filter { "00" in sent.getValue("0314") })
+        assertEquals(sent.getValue("0312").toSet(), listOf(1, 0).map { hex(n.set(Command.GAME_MODE, it)!!.single()).takeLast(2) }.toSet())
+        // Gestures (030a): action bytes 03 volume down, 05 next, 02 volume up and 06 the assistant, on the left earbud; the right earbud's
+        // four gestures all set to volume down. Read the key table first, so the rows show.
+        n.feed(qccReply(EarfunQcc.GET_KEY, "01050104020102020306031011071109"))
+        val touch = n.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.options }
+        fun key(k: String, o: String) = hex(n.change(SettingChange.Choice(k, o)).orEmpty().single()).takeLast(8)
+        val gestures = sent.getValue("030a").toSet()
+        assertEquals("01030000", key("touch_single_left", "volume_down").also { assertTrue(it in gestures, it) })
+        assertEquals("02050000", key("touch_double_left", "next").also { assertTrue(it in gestures, it) })
+        assertEquals("03020000", key("touch_triple_left", "volume_up").also { assertTrue(it in gestures, it) })
+        assertEquals("00000103", key("touch_single_right", "volume_down").also { assertTrue(it in gestures, it) })
+        assertEquals("00001103", key("touch_hold_right", "volume_down").also { assertTrue(it in gestures, it) })
+        assertTrue("touch_hold_left" in touch)
+        // The sliders' single-band frames (the app's limit tests; a drag can stop short of the end): each is a slider position
+        // PairFree writes for that band, the others flat.
+        val singles = v.getValue("cases").jsonArray.map { it.jsonObject }.filter { it.getValue("command").jsonPrimitive.content == "0e01" }
+        assertTrue(singles.size >= 20)
+        for (c in singles) {
+            val frame = c.getValue("frame").jsonPrimitive.content
+            val band = frame.substring(16, 18).toInt(16) - 0xa1
+            val reachable = (-EarfunSession.POSITIONS..EarfunSession.POSITIONS).any { p ->
+                s.eqFrames(List(10) { if (it == band) p else 0 })!!.map(::hex)[band] == frame
+            }
+            assertTrue(reachable, c.getValue("action").jsonPrimitive.content)
+        }
     }
 
     @Test

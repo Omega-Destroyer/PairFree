@@ -1114,3 +1114,47 @@ class SoundcoreRobustnessTest {
         }
     }
 }
+
+/** The frames the Soundcore app 2.9.9 sent to a synthetic Life Q30 (data/soundcore/emulator_vectors.json, docs/soundcore/VIRTUAL_TESTING.md). */
+class SoundcoreVirtualQ30Test {
+    private val v = load("emulator_vectors.json")
+    private val spec = SoundcoreEqSpec.of("A3028")!!
+    private val checksum = SoundcoreLayout.of("A3028")!!.checksum
+    private val cases = v.getValue("cases").jsonArray.map { it.jsonObject }
+
+    private fun sent(config: SoundcoreEqConfig): String {
+        val packet = SoundcoreEqualizer.write(spec, null, config).single()
+        return SoundcorePacket.build(packet.command, packet.body, checksum).hex()
+    }
+
+    @Test
+    fun everyPresetTheAppSentIsWhatPairFreeSends() {
+        val presets = cases.filter { it.str("command") == "0281" && it.containsKey("preset_name") }
+        assertEquals(22, presets.size)
+        val missing = mutableListOf<String>()
+        for (c in presets) {
+            val name = c.str("preset_name")
+            val preset = spec.presetSet.presets.firstOrNull { it.name.replace(" ", "").replace("&", "").equals(name.replace(" ", ""), true) }
+            if (preset == null) { missing += name; continue }
+            assertEquals(c.str("frame"), sent(SoundcoreEqualizer.forPreset(spec, preset)), name)
+        }
+        assertEquals(emptyList<String>(), missing)
+    }
+
+    @Test
+    fun theCustomCurvesAndTheRecalledProfiles() {
+        // Eight bands, each byte the tenths of a dB above -12.0 (60 is -6.0 dB, 120 flat, 180 +6.0 dB).
+        val customs = cases.filter { it.str("command") == "0281" && it.str("payload").startsWith("fefe") } +
+            v.getValue("local_profile_recall").jsonArray.map { it.jsonObject }.flatMap { r -> r.getValue("frames").jsonArray.map { f -> JsonObjectOf(f.jsonPrimitive.content) } }
+        assertTrue(customs.size >= 9)
+        for (c in customs) {
+            val frame = c.str("frame")
+            val body = frame.substring(18, frame.length - 2).hexBytes()
+            val tenths = IntArray(8) { (body[2 + it].toInt() and 0xFF) + spec.min }
+            val config = SoundcoreEqualizer.forCustom(spec, tenths)!!
+            assertEquals(frame, sent(config))
+        }
+    }
+
+    private fun JsonObjectOf(frame: String): JsonObject = Json.parseToJsonElement("""{"frame":"$frame"}""").jsonObject
+}

@@ -92,6 +92,25 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
             "not readable"
         }
 
+        /** What the hidden-API exemption did, for the connection report; null until it is tried. */
+        @Volatile private var exemption: String? = null
+
+        /**
+         * Android's hidden-API rules can hide BluetoothSocket's constructors from apps (Android 17 on a Pixel 8 listed none).
+         * This asks the app's own runtime to relax them for that one class, which needs no root (owner, 2026-11-10; LibrePods
+         * does the same with VMRuntime.setHiddenApiExemptions). It is tried only after the constructors came back hidden, only
+         * for AirPods, and says so in the connection report.
+         */
+        private fun exemptBluetoothSocket(log: ((String) -> Unit)?) {
+            exemption = try {
+                val ok = org.lsposed.hiddenapibypass.HiddenApiBypass.addHiddenApiExemptions("Landroid/bluetooth/BluetoothSocket;")
+                if (ok) "applied to BluetoothSocket" else "refused by this Android"
+            } catch (e: Throwable) {
+                "failed: ${e.javaClass.simpleName}"
+            }
+            log?.invoke("hidden-API exemption for BluetoothSocket: $exemption")
+        }
+
         /** BluetoothSocket's type for L2CAP. */
         private const val TYPE_L2CAP = 3
 
@@ -103,6 +122,8 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
             val uuid = ParcelUuid.fromString(AppleWire.SERVICE_UUID)
             val psm = AppleWire.PSM
             val failures = mutableListOf<String>()
+            val seenFirst = constructorsOf()
+            if (seenFirst == "none listed" || seenFirst == "not readable") exemptBluetoothSocket(log)
             val signatures = listOf(
                 arrayOf(adapter, device, TYPE_L2CAP, true, true, psm, uuid), // Android 16 QPR3
                 arrayOf(device, TYPE_L2CAP, true, true, psm, uuid),
@@ -131,7 +152,8 @@ class AppleLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) const
                 }
             }
             val seen = constructorsOf()
-            val message = "no L2CAP socket on Android ${Build.VERSION.SDK_INT}: ${failures.joinToString("; ")}; this Android's constructors: $seen"
+            val exempted = if (exemption == null) "no exemption tried" else exemption
+            val message = "no L2CAP socket on Android ${Build.VERSION.SDK_INT}: ${failures.joinToString("; ")}; this Android's constructors: $seen; hidden-API exemption: $exempted"
             // No constructor listed at all means Android's hidden-API rules hide the class's constructors from apps. PairFree does not
             // switch those rules off (owner, 2026-11-10), so there is nothing more to try.
             if (seen == "none listed" || seen == "not readable") throw ConstructorsHidden(message)

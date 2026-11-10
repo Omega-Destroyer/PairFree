@@ -330,3 +330,7 @@ GNU General Public License, version 3 or (at your option) any later version
 The Galaxy Buds code in `android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/samsung/`
 is ported from GalaxyBudsClient, which is licensed under version 3 of the GPL only, so those
 files are GPL-3.0-only. The app built with them is shared under version 3.
+
+The app uses one library besides AndroidX and Kotlin: [hiddenapibypass](https://github.com/LSPosed/AndroidHiddenApiBypass) by LSPosed (Apache-2.0),
+which lets it open the AirPods' Bluetooth channel on phones where Android hides the needed socket (see the note under the
+[AirPods and Beats table](docs/devices/apple.md)).

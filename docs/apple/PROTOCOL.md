@@ -154,8 +154,11 @@ Checked against LibrePods' issues, its current source and the Beats app:
   (OnePlus/OPPO/realme on 16)` (`RootlessSupport.kt`) and, in a native library, calls `VMRuntime.setHiddenApiExemptions` for
   `BluetoothSocket` and `BluetoothDevice` with obfuscated strings (`bluetooth_socket.cpp`). That is a hidden-API bypass.
 - GitHub issue #3's Pixel 8 on Android 17 (build CP3A.261005.005): `declaredConstructors` of `BluetoothSocket` comes back
-  empty, which fits the hidden-API protection hiding them. PairFree does not bypass it (owner, 2026-11-10: no hacks), so
-  AirPods are not reachable there and the Apple page says so under its table.
+  empty, which fits the hidden-API protection hiding them. Owner, 2026-11-10: PairFree applies the same exemption as LibrePods,
+  without root, for `Landroid/bluetooth/BluetoothSocket;` only (`HiddenApiBypass.addHiddenApiExemptions`, LSPosed's
+  hiddenapibypass 4.3, Apache-2.0), only after the constructors came back hidden and only on the AirPods path; the connection
+  report says what the exemption did. Untested until a user with such a phone tries it; if Android refuses it, the app says
+  so (`failed_hidden_by_android`).
 - LibrePods' Xposed route is a fix for (a) only and needs root; not an option.
 
 **Beats are different.** Apple's Beats app (`com.apple.bnd` 2.12) has no L2CAP code at all. `wm0` opens

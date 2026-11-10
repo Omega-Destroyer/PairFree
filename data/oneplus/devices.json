@@ -57,6 +57,58 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "gesture_25",
+     "action": 25,
+     "action_byte": 25,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 26,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 36,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_37",
+     "action": 37,
+     "action_byte": 37,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "bassEngineSupport": 1
    }
@@ -108,6 +160,58 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "gesture_25",
+     "action": 25,
+     "action_byte": 25,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 26,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 36,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_37",
+     "action": 37,
+     "action_byte": 37,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "bassEngineSupport": 1
    }
@@ -142,6 +246,86 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 5,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 5,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "next",
+       "wire": 6
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 5,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "previous",
+       "wire": 5
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 5,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      }
+     ]
+    },
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "bassEngineSupport": 1,
     "spatialTypes": [
@@ -157,7 +341,40 @@
     "OPPO Enco Free"
    ],
    "brand": "oppo",
-   "hidden": false
+   "hidden": false,
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_7",
+     "action": 7,
+     "action_byte": 7,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "gesture_8",
+     "action": 8,
+     "action_byte": 8,
+     "button": 1,
+     "ear_choice": false
+    }
+   ]
   },
   {
    "id": "060414",
@@ -166,7 +383,34 @@
     "OnePlus Buds"
    ],
    "brand": "OnePlus",
-   "hidden": false
+   "hidden": false,
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 4
+      },
+      {
+       "key": "next",
+       "wire": 5
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "060810",
@@ -184,7 +428,34 @@
     "OnePlus Buds Z"
    ],
    "brand": "OnePlus",
-   "hidden": false
+   "hidden": false,
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 4
+      },
+      {
+       "key": "next",
+       "wire": 5
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "060C10",
@@ -194,6 +465,58 @@
    ],
    "brand": "oppo",
    "hidden": false,
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "noise_control",
+       "wire": 8
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "wearDetection": 1
    }
@@ -255,6 +578,52 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "noise_control",
+       "wire": 8
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_14",
+     "action": 14,
+     "action_byte": 14,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "gesture_15",
+     "action": 15,
+     "action_byte": 15,
+     "button": 1,
+     "ear_choice": true
+    }
+   ],
    "features": {
     "wearDetection": 1,
     "multiDevicesConnect": 1,
@@ -314,6 +683,121 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "noise_control",
+       "wire": 8
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    }
+   ],
    "features": {
     "wearDetection": 1
    }
@@ -366,6 +850,101 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "noise_control",
+       "wire": 8
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    }
+   ],
    "features": {
     "wearDetection": 1,
     "highToneQuality": 1
@@ -400,7 +979,97 @@
       "name": "Bass"
      }
     ]
-   }
+   },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "061810",
@@ -409,7 +1078,87 @@
     "OPPO Enco Air"
    ],
    "brand": "oppo",
-   "hidden": false
+   "hidden": false,
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_13",
+     "action": 13,
+     "action_byte": 13,
+     "button": 1,
+     "ear_choice": false
+    }
+   ]
   },
   {
    "id": "061814",
@@ -440,7 +1189,97 @@
       "name": "Bass"
      }
     ]
-   }
+   },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "061C10",
@@ -449,7 +1288,87 @@
     "OPPO Enco Play"
    ],
    "brand": "oppo",
-   "hidden": false
+   "hidden": false,
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_13",
+     "action": 13,
+     "action_byte": 13,
+     "button": 1,
+     "ear_choice": false
+    }
+   ]
   },
   {
    "id": "061C14",
@@ -481,6 +1400,87 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -537,6 +1537,99 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -618,6 +1711,120 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 16,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 17,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 18,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 20,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "single",
+     "action": 32,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 33,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -637,6 +1844,99 @@
    ],
    "brand": "oppo",
    "hidden": false,
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_12",
+     "action": 12,
+     "action_byte": 12,
+     "button": 1,
+     "ear_choice": false
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -688,6 +1988,137 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "bassEngineSupport": 1
@@ -701,6 +2132,99 @@
    ],
    "brand": "oppo",
    "hidden": false,
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_12",
+     "action": 12,
+     "action_byte": 12,
+     "button": 1,
+     "ear_choice": false
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -748,6 +2272,137 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "bassEngineSupport": 1
@@ -779,6 +2434,130 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -813,6 +2592,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -891,6 +2772,120 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 16,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 17,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 18,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 20,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "single",
+     "action": 32,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 33,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -928,6 +2923,75 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -1006,6 +3070,120 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 16,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 17,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 18,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 20,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "single",
+     "action": 32,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 33,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -1065,6 +3243,103 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1
@@ -1144,6 +3419,145 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 16,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 17,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 18,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 20,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "single",
+     "action": 32,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 33,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -1223,6 +3637,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 27,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -1288,6 +3837,99 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -1372,6 +4014,172 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 16,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 17,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 18,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 20,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "single",
+     "action": 32,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 33,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 34,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -1413,6 +4221,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -1487,6 +4397,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -1526,6 +4571,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -1556,6 +4703,130 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -1586,6 +4857,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -1638,6 +5011,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -1697,6 +5205,103 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1
@@ -1745,6 +5350,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -1831,6 +5571,172 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 27,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 30,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -1870,6 +5776,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -1905,6 +5913,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -1984,6 +6134,115 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -2066,6 +6325,115 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -2105,6 +6473,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -2197,6 +6707,149 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -2280,6 +6933,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 27,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -2376,6 +7164,157 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -2415,6 +7354,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "spatialTypes": [
@@ -2449,6 +7490,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "spatialTypes": [
@@ -2540,6 +7683,157 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -2634,6 +7928,172 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 16,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 17,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 18,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 20,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "single",
+     "action": 32,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 33,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 34,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -2727,6 +8187,157 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -2766,6 +8377,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -2884,6 +8597,192 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 16,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "gmn_play_pause",
+       "wire": 34
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 17,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 18,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "zen_mode",
+       "wire": 18
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      },
+      {
+       "key": "gmn_trigger",
+       "wire": 35
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 20,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "single",
+     "action": 32,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 33,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 34,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 2,
@@ -2971,6 +8870,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -3009,6 +9043,130 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": true,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "switch_device",
+       "wire": 13
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -3039,6 +9197,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "spatialTypes": [
@@ -3054,7 +9314,34 @@
     "OnePlus Buds"
    ],
    "brand": "OnePlus",
-   "hidden": false
+   "hidden": false,
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 4
+      },
+      {
+       "key": "next",
+       "wire": 5
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "068810",
@@ -3082,6 +9369,108 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1
    }
@@ -3093,7 +9482,34 @@
     "OnePlus Buds Z"
    ],
    "brand": "OnePlus",
-   "hidden": false
+   "hidden": false,
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 4
+      },
+      {
+       "key": "next",
+       "wire": 5
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "068C10",
@@ -3170,6 +9586,172 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 27,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 30,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -3225,6 +9807,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -3261,6 +9978,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -3340,6 +10199,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -3395,6 +10389,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -3431,6 +10560,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -3466,6 +10737,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -3501,6 +10914,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -3536,6 +11091,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -3572,6 +11269,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -3607,6 +11446,136 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 4,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 30,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -3696,6 +11665,172 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 27,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 30,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -3787,6 +11922,172 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 27,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 30,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -3883,6 +12184,157 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -3976,6 +12428,157 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -4074,6 +12677,157 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -4116,6 +12870,137 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 30,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -4158,6 +13043,137 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 30,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -4248,6 +13264,149 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 1,
@@ -4370,6 +13529,192 @@
      16000
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 16,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "gmn_play_pause",
+       "wire": 34
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 17,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 18,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      },
+      {
+       "key": "zen_mode",
+       "wire": 18
+      },
+      {
+       "key": "spy_tap",
+       "wire": 32
+      },
+      {
+       "key": "gmn_trigger",
+       "wire": 35
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_5",
+     "action": 5,
+     "action_byte": 5,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "adjust_volume",
+       "wire": 7
+      },
+      {
+       "key": "switch_song",
+       "wire": 10
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 20,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": false
+    },
+    {
+     "gesture": "single",
+     "action": 32,
+     "action_byte": 1,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 33,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 34,
+     "action_byte": 3,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "ai_summary",
+       "wire": 25
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "wearDetection": 2,
@@ -4430,6 +13775,141 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "hold",
+     "action": 11,
+     "action_byte": 4,
+     "button": 1,
+     "ear_choice": true
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,
@@ -4466,6 +13946,148 @@
      }
     ]
    },
+   "touch": [
+    {
+     "gesture": "single",
+     "action": 1,
+     "action_byte": 1,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 2,
+     "action_byte": 2,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "play_pause",
+       "wire": 1
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "triple",
+     "action": 3,
+     "action_byte": 3,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "voice_assistant",
+       "wire": 3
+      },
+      {
+       "key": "previous",
+       "wire": 5
+      },
+      {
+       "key": "next",
+       "wire": 6
+      },
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "game_mode",
+       "wire": 17
+      }
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 6,
+     "action_byte": 6,
+     "button": 1,
+     "ear_choice": false,
+     "functions": [
+      {
+       "key": "volume_up",
+       "wire": 11
+      },
+      {
+       "key": "volume_down",
+       "wire": 12
+      },
+      {
+       "key": "none",
+       "wire": 0
+      }
+     ]
+    },
+    {
+     "gesture": "double",
+     "action": 29,
+     "action_byte": 2,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "answer_hang_up",
+       "wire": 29
+      }
+     ],
+     "default": [
+      "answer_hang_up"
+     ]
+    },
+    {
+     "gesture": "gesture_6",
+     "action": 31,
+     "action_byte": 6,
+     "button": 6,
+     "device_type": 4,
+     "functions": [
+      {
+       "key": "none",
+       "wire": 0
+      },
+      {
+       "key": "reject_call",
+       "wire": 28
+      }
+     ],
+     "default": [
+      "reject_call"
+     ]
+    }
+   ],
    "features": {
     "gameMode": 1,
     "multiDevicesConnect": 1,

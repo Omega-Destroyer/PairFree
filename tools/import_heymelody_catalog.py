@@ -69,6 +69,60 @@ def eq_name(strings, mode_type, family, model_name):
     return strings.get(res, key)
 
 
+# Touch control functions: the bit of a control's `support` mask (Ha.a.c names them) -> a key, and the number written in a key assignment
+# (Ha.a.b, which the app derives from the same names). None where the app's own table gives no number.
+FUNCTIONS = {
+    1: ("voice_assistant", 3), 4: ("play_pause", 1), 8: ("volume_up", 11), 16: ("volume_down", 12), 32: ("previous", 5), 64: ("next", 6),
+    128: ("noise_control", 8), 256: ("play_collection", 9), 512: ("none", 0), 1024: ("adjust_volume", 7), 2048: ("switch_song", 10),
+    4096: ("switch_device", 13), 8192: ("game_mode", 17), 16384: ("enter_pairing", None), 32768: ("collect_music", 22), 65536: ("zen_mode", 18),
+    131072: ("ai_summary", 25), 262144: ("reject_call", 28), 524288: ("answer_hang_up", 29), 1048576: ("ai_translation", 26),
+    2097152: ("ai_translation", 26), 4194304: ("clear_pairing_history", None), 8388608: ("spy_tap", 32), 16777216: ("gmn_play_pause", 34),
+    33554432: ("gmn_trigger", 35),
+}
+# A control's `action` -> the button action byte of a key assignment (the app's N.e, which passes other numbers through) and, for the stem
+# actions 1 to 27, button byte 1; call actions 28 to 37 use button 6 and device type 4. Bytes 1 to 4 are single, double, triple and long press
+# (the app's own UI order); the others are kept as numbers because no name was found for them.
+ACTION_BYTES = {11: 4, 16: 1, 17: 2, 18: 3, 19: 4, 20: 4, 22: 6, 26: 2, 27: 4, 28: 1, 29: 2, 30: 3, 31: 6, 32: 1, 33: 2, 34: 3, 35: 6, 36: 2}
+GESTURE_NAMES = {1: "single", 2: "double", 3: "triple", 4: "hold"}
+
+
+def gesture(action):
+    byte = ACTION_BYTES.get(action, action)
+    return GESTURE_NAMES.get(byte, f"gesture_{byte}"), byte
+
+
+def functions(mask, model_name):
+    old = model_name in ("OnePlus Buds", "OnePlus Buds Z")
+    out = []
+    for bit in sorted(FUNCTIONS):
+        if mask & bit:
+            key, wire = FUNCTIONS[bit]
+            if old and key in ("previous", "next"):
+                wire -= 1
+            out.append({"key": key, "wire": wire})
+    unknown = mask & ~sum(FUNCTIONS) & 0xFFFFFFFF
+    if unknown:
+        out.append({"key": f"mask_{unknown}", "wire": None})
+    return out
+
+
+def touch(f, model_name):
+    out = []
+    for c in f.get("control", []):
+        key, byte = gesture(c["action"])
+        e = {"gesture": key, "action": c["action"], "action_byte": byte, "button": c.get("button") or 1, "ear_choice": c.get("showEar", 0) == 1}
+        if "support" in c:
+            e["functions"] = functions(c["support"], model_name)
+        out.append(e)
+    for c in f.get("callControl", []):
+        key, byte = gesture(c["action"])
+        e = {"gesture": key, "action": c["action"], "action_byte": byte, "button": 6, "device_type": 4, "functions": functions(c.get("support", 0), model_name)}
+        if "defaultFunction" in c:
+            e["default"] = [x["key"] for x in functions(c["defaultFunction"], model_name)]
+        out.append(e)
+    return out
+
+
 def noise(modes):
     out = []
     for m in modes or []:
@@ -89,6 +143,8 @@ def entry(r, strings):
                    "presets": [{"index": m["protocolIndex"], "name": eq_name(strings, m["modeType"], family, r["name"])} for m in f["equalizerMode"]]}
         if f.get("customEqFrequency"):
             e["eq"]["frequencies"] = f["customEqFrequency"]
+    if f.get("control") or f.get("callControl"):
+        e["touch"] = touch(f, r["name"])
     flags = {k: f[k] for k in ("gameMode", "wearDetection", "multiDevicesConnect", "bassEngineSupport", "highToneQuality", "hearingEnhancement", "supportPinch", "zenMode", "headMotion", "spatialTypes") if k in f}
     if flags:
         e["features"] = flags

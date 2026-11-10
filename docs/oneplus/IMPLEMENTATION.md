@@ -30,3 +30,11 @@ battery levels and LSB-first capability bits. No hardware success is claimed.
 
 The original HeyMelody app sent startup/feature reads, four preset choices, ANC/transparency, game-mode and two gesture writes against the virtual Buds Pro 2. Twenty-five distinct outgoing command/payload observations are retained. Custom EQ and all other models remain untested virtually; this draft still provides only its three narrow read helpers.
 See [VIRTUAL_TESTING.md](VIRTUAL_TESTING.md) for the exact scope, fixtures and remaining work.
+
+## Status (2026-11-10)
+
+`brand/oneplus-app` adds the app side: `data/oneplus/devices.json` (85 models, written by `tools/import_heymelody_catalog.py`), `OneplusModels`,
+`OneplusSession` (battery, the current noise mode as a one-bit bitmap of the mode's protocol index, the equalizer preset, the game mode switch),
+identification by name or by the vendor service, the serial connection, a device report, the device page and the site entry. Checked only against
+HeyMelody's recorded frames and a virtual run; no earbuds. Next: the noise strengths (the sub-modes' write is unread), touch controls (`0108`,
+`0401`), custom EQ (`0122`, `0418`), the remaining switches (`010D`), and the 69 capability bits as the gate for each.

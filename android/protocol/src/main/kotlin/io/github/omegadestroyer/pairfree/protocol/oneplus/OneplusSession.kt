@@ -29,6 +29,19 @@ public class OneplusSession(public val model: OneplusModel?) {
     /** The last key assignments read, by (device type, button action byte): the function number. */
     private val keys = linkedMapOf<Pair<Int, Int>, Int>()
 
+    /** A custom equalizer the earbuds keep: HeyMelody's `EqInfo` (id, whether it is the one in use, name, limits, bands in Hz and gains in dB). */
+    public class CustomEq(
+        public val id: Int,
+        public var selected: Boolean,
+        public var name: String,
+        public val min: Int,
+        public val max: Int,
+        public val frequencies: List<Int>,
+        public val gains: MutableList<Int>,
+    )
+
+    private var customEqs: List<CustomEq>? = null
+
     /** The product id the earbuds reported, as hex, for the device report. */
     public var productId: String? = null
         private set
@@ -53,6 +66,7 @@ public class OneplusSession(public val model: OneplusModel?) {
         if (model?.presets?.isNotEmpty() == true) add(next(OneplusCommand.EQ_PRESET))
         if (model?.gameMode == true) add(next(OneplusCommand.SWITCHES, 1, GAME_MODE_ID))
         if (model?.touch?.isNotEmpty() == true) add(readKeys())
+        if (model?.customSlots?.let { it > 0 } == true) add(next(OneplusCommand.CUSTOM_EQ))
     }
 
     /** The key assignment read HeyMelody sends: a count, then the buttons it asks about (3 and 1, as in the virtual run). */
@@ -67,7 +81,11 @@ public class OneplusSession(public val model: OneplusModel?) {
     }
 
     private fun apply(p: OneplusPacket) {
-        if (!p.response) return
+        if (!p.response) {
+            // The earbuds announce a changed custom equalizer list unasked (command 0506, no status byte).
+            if (p.command == OneplusCommand.CUSTOM_EQ_NOTIFY) customEqs = parseCustomEqs(p.payload, 0) ?: customEqs
+            return
+        }
         val d = p.payload
         if (d.firstOrNull()?.toInt() != 0) return
         when (p.id) {
@@ -78,6 +96,7 @@ public class OneplusSession(public val model: OneplusModel?) {
             OneplusCommand.EQ_PRESET -> if (d.size >= 2) presetIndex = d[1].toInt() and 0xFF
             OneplusCommand.SWITCHES -> switches(d)
             OneplusCommand.KEYS -> keyRecords(d)
+            OneplusCommand.CUSTOM_EQ -> customEqs = parseCustomEqs(d, 1) ?: customEqs
         }
     }
 
@@ -116,6 +135,59 @@ public class OneplusSession(public val model: OneplusModel?) {
         }
     }
 
+    /**
+     * `count`, then per equalizer: selected (1 byte), minimum and maximum (signed), id, the name's length and UTF-8 bytes, the band count, and for
+     * each band its frequency (two bytes, low first) and its gain (signed): HeyMelody's `CommandUtil.parseAllEqData`. [offset] is 1 after a reply's status byte.
+     */
+    private fun parseCustomEqs(d: ByteArray, offset: Int): List<CustomEq>? {
+        if (d.size <= offset) return null
+        var at = offset
+        val count = d[at++].toInt() and 0xFF
+        val out = mutableListOf<CustomEq>()
+        repeat(count) {
+            if (at + 5 > d.size) return null
+            val selected = d[at].toInt() != 0
+            val min = d[at + 1].toInt()
+            val max = d[at + 2].toInt()
+            val id = d[at + 3].toInt() and 0xFF
+            val nameLength = d[at + 4].toInt() and 0xFF
+            at += 5
+            if (at + nameLength + 1 > d.size) return null
+            val name = d.copyOfRange(at, at + nameLength).decodeToString()
+            at += nameLength
+            val bands = d[at++].toInt() and 0xFF
+            if (bands < 1 || at + bands * 3 > d.size) return null
+            val freqs = mutableListOf<Int>()
+            val gains = mutableListOf<Int>()
+            repeat(bands) {
+                freqs += (d[at].toInt() and 0xFF) or ((d[at + 1].toInt() and 0xFF) shl 8)
+                gains += d[at + 2].toInt()
+                at += 3
+            }
+            out += CustomEq(id, selected, name, min, max, freqs, gains)
+        }
+        return out
+    }
+
+    /** The custom equalizers' rows: the one in use (or none, when a preset is), and its bands, with an action that adds one while there is room. */
+    private fun customEqRows(): List<Setting> {
+        val eqs = customEqs ?: return emptyList()
+        val slots = model?.customSlots ?: 0
+        return buildList {
+            if (eqs.isNotEmpty()) add(Setting.Choice(CUSTOM_EQ_KEY, eqs.firstOrNull { it.selected }?.name, eqs.map { it.name }))
+            eqs.firstOrNull { it.selected }?.let { eq -> eq.frequencies.forEachIndexed { i, hz -> add(Setting.Level("eq_$hz", eq.gains[i].coerceIn(eq.min, eq.max), eq.min, eq.max)) } }
+            if (eqs.size < slots) add(Setting.Action(NEW_EQ_KEY))
+        }
+    }
+
+    /** `0418` with an operation (1 add, 2 save and use, 3 delete) and one record: HeyMelody's `setEqInfo` layout. */
+    private fun eqWrite(operation: Int, eq: CustomEq): ByteArray {
+        val name = eq.name.encodeToByteArray()
+        val head = intArrayOf(operation, eq.min and 0xFF, eq.max and 0xFF, eq.id, name.size) + name.map { it.toInt() and 0xFF } + eq.frequencies.size
+        val bands = eq.frequencies.indices.flatMap { listOf(eq.frequencies[it] and 0xFF, (eq.frequencies[it] shr 8) and 0xFF, eq.gains[it] and 0xFF) }
+        return next(OneplusCommand.SET_CUSTOM_EQ, *(head + bands))
+    }
+
     private fun side(type: Int) = if (type == LEFT) "left" else "right"
 
     /** A touch row for each earbud and each stem gesture the model lists and the earbuds reported, with the functions the model allows. */
@@ -152,11 +224,12 @@ public class OneplusSession(public val model: OneplusModel?) {
         get() = listOfNotNull(
             presetIndex?.let { i ->
                 val presets = model?.presets.orEmpty()
-                SettingGroup("oneplus_sound", SettingTab.SOUND, listOf(Setting.Choice("op_eq_preset", presets.firstOrNull { it.index == i }?.name, presets.map { it.name })))
+                SettingGroup("oneplus_sound", SettingTab.SOUND, listOf(Setting.Choice("op_eq_preset", presets.firstOrNull { it.index == i && customEqs?.any { c -> c.selected } != true }?.name, presets.map { it.name })))
             },
             strengthRow()?.let { SettingGroup("noise", SettingTab.HOME, listOf(it)) },
             touchRows("left").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_left", SettingTab.CONTROLS, it) },
             touchRows("right").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_right", SettingTab.CONTROLS, it) },
+            customEqRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("oneplus_custom_eq", SettingTab.SOUND, it) },
             gameMode?.let { SettingGroup("oneplus_other", SettingTab.DEVICE, listOf(Setting.Toggle("game_mode", it))) },
         )
 
@@ -201,6 +274,30 @@ public class OneplusSession(public val model: OneplusModel?) {
     }
 
     public fun change(change: SettingChange): List<ByteArray>? {
+        val eqs = customEqs
+        if (eqs != null) {
+            if (change is SettingChange.Choice && change.key == CUSTOM_EQ_KEY) {
+                val eq = eqs.firstOrNull { it.name == change.option } ?: return null
+                eqs.forEach { it.selected = it === eq }
+                presetIndex = null
+                return listOf(eqWrite(OP_SAVE, eq))
+            }
+            if (change is SettingChange.Level && change.key.startsWith("eq_")) {
+                val eq = eqs.firstOrNull { it.selected } ?: return null
+                val band = eq.frequencies.indexOf(change.key.removePrefix("eq_").toIntOrNull() ?: return null)
+                if (band < 0) return null
+                eq.gains[band] = change.value.coerceIn(eq.min, eq.max)
+                return listOf(eqWrite(OP_SAVE, eq))
+            }
+            if (change is SettingChange.Press && change.key == NEW_EQ_KEY) {
+                val slots = model?.customSlots ?: 0
+                val freqs = model?.customFrequencies.orEmpty()
+                if (eqs.size >= slots || freqs.isEmpty()) return null
+                val name = "Custom ${(1..slots).first { n -> eqs.none { it.name == "Custom $n" } }}"
+                val fresh = CustomEq(0, true, name, DEFAULT_MIN, DEFAULT_MAX, freqs, MutableList(freqs.size) { 0 })
+                return listOf(eqWrite(OP_ADD, fresh), next(OneplusCommand.CUSTOM_EQ))
+            }
+        }
         if (change is SettingChange.Choice && change.key.startsWith("touch_")) return changeKey(change)
         when {
             change is SettingChange.Choice && change.key == STRENGTH_KEY && noiseIndex != null -> {
@@ -242,9 +339,17 @@ public class OneplusSession(public val model: OneplusModel?) {
         /** Feature id of the game mode switch, as the virtual run wrote it (`0403 06 01`). */
         public const val GAME_MODE_ID: Int = 6
 
+        /** The key of the brand row that chooses among the custom equalizers, and of the action that adds one. */
+        public const val CUSTOM_EQ_KEY: String = "op_custom_eq"
+        public const val NEW_EQ_KEY: String = "op_eq_new"
+
         /** The key of the brand row that chooses among the on mode's sub-modes. */
         public const val STRENGTH_KEY: String = "op_noise_level"
         private const val SEQUENCE_WRAP = 256
+        private const val OP_ADD = 1
+        private const val OP_SAVE = 2
+        private const val DEFAULT_MIN = -6
+        private const val DEFAULT_MAX = 6
         private val TAP_GESTURES = setOf("single", "double", "triple")
         private const val LEFT = 1
         private const val RIGHT = 2
@@ -257,7 +362,7 @@ public class OneplusSession(public val model: OneplusModel?) {
         public val ALLOWED: Set<Int> = setOf(
             OneplusCommand.CAPABILITIES, OneplusCommand.VENDOR, OneplusCommand.BATTERY, OneplusCommand.PRODUCT, OneplusCommand.MTU,
             OneplusCommand.TYPED_NOISE, OneplusCommand.EQ_PRESET, OneplusCommand.SWITCHES,
-            OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH, OneplusCommand.KEYS, OneplusCommand.SET_KEYS,
+            OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH, OneplusCommand.KEYS, OneplusCommand.SET_KEYS, OneplusCommand.CUSTOM_EQ, OneplusCommand.SET_CUSTOM_EQ,
         )
     }
 }

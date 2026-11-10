@@ -27,6 +27,9 @@ public data class OneplusModel(
     val customEq: Boolean,
     val gameMode: Boolean,
     val touch: List<OneplusTouch> = emptyList(),
+    /** The bands of a custom equalizer in Hz and how many custom equalizers the earbuds keep; empty and 0 without one. */
+    val customFrequencies: List<Int> = emptyList(),
+    val customSlots: Int = 0,
 )
 
 public object OneplusModels {

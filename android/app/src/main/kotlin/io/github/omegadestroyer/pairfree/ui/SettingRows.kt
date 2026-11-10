@@ -199,6 +199,8 @@ private fun groupNote(key: String): String? = when (key) {
 private fun settingTitle(key: String): String = when (key) {
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
     "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
+    "op_custom_eq" -> stringResource(R.string.setting_op_custom_eq)
+    "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
     "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
     "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
     "ca_preset" -> stringResource(R.string.setting_ca_preset)
@@ -418,7 +420,7 @@ private fun settingTitle(key: String): String = when (key) {
     "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language)
     "restart" -> stringResource(R.string.setting_restart)
     "power_off" -> stringResource(R.string.setting_power_off)
-    else -> jblP5Title(key) ?: sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
+    else -> eqBandTitle(key) ?: jblP5Title(key) ?: sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 /**
@@ -991,7 +993,14 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
     else -> value.toString()
 }
 
+/** A band of a custom equalizer, named by its frequency (key "eq_62", "eq_16000"): HeyMelody's earbuds. */
+private fun eqBandTitle(key: String): String? {
+    val hz = key.takeIf { it.startsWith("eq_") }?.removePrefix("eq_")?.toIntOrNull() ?: return null
+    return if (hz >= 1000) "${hz / 1000} kHz" else "$hz Hz"
+}
+
 private fun actionStart(key: String): Int = when (key) {
+    "op_eq_new" -> R.string.setting_op_eq_new
     "find" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open
     "nc_optimizer" -> R.string.setting_nc_optimizer_start

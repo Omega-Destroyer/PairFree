@@ -48,7 +48,7 @@ class OneplusSessionTest {
         val frames = s.start()
         assertTrue(frames.all { s.allowed(it) })
         val sent = frames.map { parsed(it) }
-        assertEquals(listOf(0x0100, 0x0102, 0x0106, 0x0103, 0x0101, 0x010C, 0x010F, 0x010D, 0x0108), sent.map { it.command })
+        assertEquals(listOf(0x0100, 0x0102, 0x0106, 0x0103, 0x0101, 0x010C, 0x010F, 0x010D, 0x0108, 0x0122), sent.map { it.command })
         // The app's own startup: 0100, 0102 FFFF, 0106, 0103, 0101 0002 (the order of the later ones differs).
         for ((command, payload) in listOf("0102" to "ffff", "0101" to "0002")) {
             val v = vector(command, payload)
@@ -132,6 +132,36 @@ class OneplusSessionTest {
         val right = s.change(SettingChange.Choice("touch_double_right", "previous"))!!
         assertEquals("0401" to vector("0401", "0102010205").getValue("payload").jsonPrimitive.content, payloadOf(right))
         assertEquals("next", (s.groups.flatMap { it.settings }.first { it.key == "touch_double_left" } as Setting.Choice).value)
+    }
+
+    @Test
+    fun customEqualizersAreReadAndWrittenInHeyMelodysLayout() {
+        val s = budsPro2()
+        s.start()
+        // One equalizer in use: id 3, "Mine", limits -6 and 6, the six default bands at 62, 250, 1000, 4000, 8000 and 16000 Hz, gains 0, 1, 2, 3, -1, -2.
+        val bands = listOf(62 to 0, 250 to 1, 1000 to 2, 4000 to 3, 8000 to -1, 16000 to -2).flatMap { (hz, g) -> listOf(hz and 0xFF, hz shr 8, g and 0xFF) }
+        val name = "Mine".map { it.code }
+        s.receive(reply(0x0122, 0, 1, 1, 0xFA, 6, 3, 4, *name.toIntArray(), 6, *bands.toIntArray()))
+        val rows = s.groups.flatMap { it.settings }
+        assertEquals("Mine", (rows.first { it.key == OneplusSession.CUSTOM_EQ_KEY } as Setting.Choice).value)
+        val levels = rows.filterIsInstance<Setting.Level>().associate { it.key to it.value }
+        assertEquals(mapOf("eq_62" to 0, "eq_250" to 1, "eq_1000" to 2, "eq_4000" to 3, "eq_8000" to -1, "eq_16000" to -2), levels)
+        assertTrue(rows.any { it is Setting.Action && it.key == OneplusSession.NEW_EQ_KEY })
+        // Raising the 250 Hz band to +3 writes the whole record again: operation 2, the limits, the id, the name and every band.
+        val write = parsed(s.change(SettingChange.Level("eq_250", 3))!!.single())
+        assertEquals(0x0418, write.command)
+        val expected = listOf(2, 0xFA, 6, 3, 4) + name + listOf(6) +
+            listOf(62 to 0, 250 to 3, 1000 to 2, 4000 to 3, 8000 to -1, 16000 to -2).flatMap { (hz, g) -> listOf(hz and 0xFF, hz shr 8, g and 0xFF) }
+        assertEquals(expected.joinToString("") { "%02x".format(it) }, write.payload.joinToString("") { "%02x".format(it) })
+        // A new one: operation 1 with the next free name, flat gains and the default limits, then the read again.
+        val frames = s.change(SettingChange.Press(OneplusSession.NEW_EQ_KEY))!!
+        val add = parsed(frames[0])
+        assertEquals(1, add.payload[0].toInt())
+        assertEquals("Custom 1", add.payload.copyOfRange(5, 13).decodeToString())
+        assertEquals(0x0122, parsed(frames[1]).command)
+        // A model without a custom equalizer asks nothing and shows nothing.
+        val none = OneplusSession(OneplusModels.byId("063410"))
+        assertFalse(none.start().map { parsed(it).command }.contains(0x0122))
     }
 
     @Test

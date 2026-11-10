@@ -142,8 +142,10 @@ def entry(r, strings):
     if f.get("equalizerMode"):
         e["eq"] = {"family": family, "custom": bool(f.get("customEqualizer")),
                    "presets": [{"index": m["protocolIndex"], "name": eq_name(strings, m["modeType"], family, r["name"])} for m in f["equalizerMode"]]}
-        if f.get("customEqFrequency"):
-            e["eq"]["frequencies"] = f["customEqFrequency"]
+        if e["eq"]["custom"]:
+            # The app's custom equalizer screen (p072eb.q): its own band list, 62 Hz to 16 kHz, unless the catalog lists others, and three slots.
+            e["eq"]["frequencies"] = f.get("customEqFrequency") or [62, 250, 1000, 4000, 8000, 16000]
+            e["eq"]["slots"] = f.get("customEqMax") or 3
     if f.get("control") or f.get("callControl"):
         e["touch"] = touch(f, r["name"])
     flags = {k: f[k] for k in ("gameMode", "wearDetection", "multiDevicesConnect", "bassEngineSupport", "highToneQuality", "hearingEnhancement", "supportPinch", "zenMode", "headMotion", "spatialTypes") if k in f}

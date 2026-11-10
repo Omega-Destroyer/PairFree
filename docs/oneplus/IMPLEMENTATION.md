@@ -37,4 +37,4 @@ See [VIRTUAL_TESTING.md](VIRTUAL_TESTING.md) for the exact scope, fixtures and r
 `OneplusSession` (battery, the current noise mode as a one-bit bitmap of the mode's protocol index, the equalizer preset, the game mode switch),
 identification by name or by the vendor service, the serial connection, a device report, the device page and the site entry. Checked only against
 HeyMelody's recorded frames and a virtual run; no earbuds. Also built: the noise levels (a sub-mode is selected by writing its own index bit) and the single, double and triple tap assignments (`0108` read,
-`0401` write). Next: the long press and call controls, custom EQ (`0122`, `0418`), the remaining switches (`010D`), and the 69 capability bits as the gate for each.
+`0401` write). Custom equalizers are built too (`0122` read, `0418` write, as HeyMelody's `parseAllEqData` and `setEqInfo`; checked against the app's code and a virtual peer, not against a recorded frame). Next: the long press and call controls (`0122`, `0418`), the remaining switches (`010D`), and the 69 capability bits as the gate for each.

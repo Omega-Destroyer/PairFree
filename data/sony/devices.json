@@ -11,7 +11,7 @@
     {"name": "ULT WEAR", "names": ["ULT WEAR", "Sony ULT"], "kind": "headphones", "table_set": null, "source": "gadgetbridge"},
     {"name": "WF-1000XM3", "names": ["WF-1000XM3"], "kind": "earbuds", "table_set": null, "source": "gadgetbridge"},
     {"name": "WF-1000XM4", "names": ["WF-1000XM4"], "kind": "earbuds", "table_set": 2, "first_reply": "01 00 01 00 00 00 00 00", "source": "gadgetbridge"},
-    {"name": "WF-1000XM5", "names": ["WF-1000XM5"], "kind": "earbuds", "table_set": 2, "first_reply": "01 00 03 00 10 04 00 00", "source": "gadgetbridge"},
+    {"name": "WF-1000XM5", "names": ["WF-1000XM5"], "kind": "earbuds", "table_set": 2, "first_reply": "01 00 03 00 10 04 00 00", "source": "gadgetbridge", "reports": ["data/sony/reports/WF-1000XM5_6.1.0.txt"]},
     {"name": "WF-1000XM6", "names": ["WF-1000XM6"], "kind": "earbuds", "table_set": null, "source": "sony_app"},
     {"name": "WF-SP800N", "names": ["WF-SP800N"], "kind": "earbuds", "table_set": 1, "first_reply": "01 00 70 00", "source": "gadgetbridge"},
     {"name": "WF-C500", "names": ["WF-C500"], "kind": "earbuds", "table_set": null, "source": "gadgetbridge"},

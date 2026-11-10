@@ -20,8 +20,10 @@ Want to be on this list? One report from your model helps: see [Help add your mo
 | [@zokibada](https://github.com/zokibada) | Soundcore Sleep A20 (A6611) | A recording of the official app, which is what the model's layout is built from ([#8](https://github.com/Omega-Destroyer/PairFree/issues/8)) |
 | [@djocqer](https://github.com/djocqer) | Soundcore Q20i (A3004) | A recording of the official app ([#11](https://github.com/Omega-Destroyer/PairFree/issues/11)) |
 | [@azmifaisal01](https://github.com/azmifaisal01) | Soundcore Life Dot 3i | A device report ([#7](https://github.com/Omega-Destroyer/PairFree/issues/7)) |
-| [@MaxTheDreaded](https://github.com/MaxTheDreaded) | Soundcore Q21i NC (A300B) | A device report ([#22](https://github.com/Omega-Destroyer/PairFree/issues/22)) |
+| [@MaxTheDreaded](https://github.com/MaxTheDreaded) | Soundcore Q21i NC (A300B) | A device report ([#22](https://github.com/Omega-Destroyer/PairFree/issues/22)); its state reply fits the Q20i's layout for the first 39 bytes |
+| [@Guigui-Guru](https://github.com/Guigui-Guru) | QCY T13 Pro | A connection report ([#28](https://github.com/Omega-Destroyer/PairFree/issues/28)) that showed the newer T13 Pro (vendor id 32887) missing from the model table |
 | [@THED4NIEL](https://github.com/THED4NIEL) | Sony ULT Field 5 and ULT Field 3 (speakers) | Device reports ([#14](https://github.com/Omega-Destroyer/PairFree/issues/14), [#15](https://github.com/Omega-Destroyer/PairFree/issues/15)), the first Sony readings PairFree has |
+| [@FryPhilip](https://github.com/FryPhilip) | Sony WF-1000XM5 | A device report from a week of use, with noise control, the equalizer and the button controls changed from PairFree ([#26](https://github.com/Omega-Destroyer/PairFree/issues/26)): the first Sony earbuds tried with PairFree, and the suggestion to grey out the settings that do nothing in the current mode |
 | [@shining-cat](https://github.com/shining-cat) | AirPods Pro 3 | Connection reports from a Pixel 8 on Android 17, which show what Android 17 does and does not allow ([#3](https://github.com/Omega-Destroyer/PairFree/issues/3)) |
 | A user who wrote to the project directly | Bose SoundLink Flex (BC59, a speaker) | A device report, 2026-10-30, the first Bose reading PairFree has |
 | A user who wrote to the project directly | Soundcore AeroClip (A3388) | A device report, 2026-10-29 |

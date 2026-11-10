@@ -37,5 +37,10 @@ public object OneplusModels {
             ?: matches.firstOrNull { n.contains(normal(it.first)) }?.second
     }
 
+    /** The screens' [Model] for [name], or null when no catalog model has it. */
+    public fun model(name: String): io.github.omegadestroyer.pairfree.protocol.Model? = fromName(name)?.let {
+        io.github.omegadestroyer.pairfree.protocol.Model(it.name, listOf(it.name), if (it.brand == "OPPO") "OPPO" else "OnePlus", fitKeepsAnc = true, form = io.github.omegadestroyer.pairfree.protocol.Form.EARBUDS)
+    }
+
     private fun normal(s: String) = s.lowercase().replace(Regex("""[^a-z0-9+]+"""), " ").trim()
 }

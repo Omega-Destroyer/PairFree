@@ -422,6 +422,22 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             }
         }
         connection.earfunSession?.let { session -> return earfunReport(session, device, version, date) }
+        connection.oneplusSession?.let { session ->
+            return buildString {
+                appendLine("PairFree device report")
+                appendLine("Paste this whole report into a new issue at")
+                appendLine("$ISSUES to help check")
+                appendLine("this model. It holds no serial number, address or other personal data.")
+                appendLine()
+                appendLine("Brand:           OnePlus / OPPO (HeyMelody protocol)")
+                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"}")
+                appendLine("Product id:      ${session.productId ?: "unknown"}")
+                appendLine("Capability bits: ${session.capabilities?.sorted()?.joinToString(" ") ?: "none yet"}")
+                appendLine("App:             PairFree $version")
+                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})")
+                appendLine("Captured:        $date")
+            }
+        }
         connection.beatsSession?.let { session ->
             return buildString {
                 appendLine("PairFree device report")

@@ -1,6 +1,8 @@
 package io.github.omegadestroyer.pairfree
 
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
+import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusModels
+import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusWire
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -175,6 +177,7 @@ class Hub(private val app: Application) {
                     Maker.ONEMORE -> OneMoreModels.identify(name)?.let { Paired(d.address, name, Brand.ONEMORE, model = it.name) }
                     // EarFun's models on chips whose protocol PairFree does not cover yet drop out (docs/earfun/PROTOCOL.md section 9).
                     Maker.EARFUN -> EarfunModels.fromName(name)?.takeIf { it.covered }?.let { Paired(d.address, name, Brand.EARFUN, model = it.name) }
+                    Maker.ONEPLUS -> OneplusModels.fromName(name)?.let { Paired(d.address, name, Brand.ONEPLUS, OneplusWire.SPP_UUID, it.id) }
                     Maker.CAMBRIDGE -> CambridgeModels.fromName(name)?.let { Paired(d.address, name, Brand.CAMBRIDGE, service = CambridgeModels.service(uuids), model = it.name) }
                     // The QCY-built Capsule3 Pro runs on QCY's protocol, under SOUNDPEATS' name (docs/soundpeats/PROTOCOL.md section 10).
                     Maker.SOUNDPEATS -> Models.find(null, name)?.takeIf { Capsule.of(it) }?.let { Paired(d.address, name, Brand.QCY, model = it.code, soldAs = Brand.SOUNDPEATS) }

@@ -197,6 +197,7 @@ private fun groupNote(key: String): String? = when (key) {
 
 @Composable
 private fun settingTitle(key: String): String = when (key) {
+    "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
     "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
     "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
     "ca_preset" -> stringResource(R.string.setting_ca_preset)

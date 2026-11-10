@@ -172,6 +172,17 @@ BRANDS = [
         ],
         notes="Cambridge Audio support is read from the Melomania app (2.8.12) and its commands were checked against the official app run on a virtual earbud. It has not been tried with PairFree on real earbuds yet. The newer Melomania Connect models (A100, M100, P100) are not covered.",
     ),
+    dict(
+        slug="oneplus", page="oneplus", name="OnePlus and OPPO", app="HeyMelody",
+        title="Open-source HeyMelody alternative for OnePlus and OPPO earbuds",
+        lead="PairFree is a free, open-source Android app that controls OnePlus and OPPO earbuds without HeyMelody: no account, no internet access.",
+        does=[
+            "Battery for each earbud and the case.",
+            "Noise control: off, noise cancelling and transparency, on the models that have them.",
+            "The equalizer preset each model offers, and game mode.",
+        ],
+        notes="OnePlus and OPPO support is read from HeyMelody (117.6.6), which controls both brands, and was checked against the official app and against PairFree run on virtual earbuds. It has not been tried on real earbuds yet; more settings are not built yet.",
+    ),
 ]
 
 QUESTIONS = [
@@ -208,7 +219,7 @@ QUESTIONS = [
 
 NOT_AFFILIATED = (
     "PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, "
-    "Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun or Cambridge Audio; the names are used to say which earbuds it works with."
+    "Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, OnePlus or OPPO; the names are used to say which earbuds it works with."
 )
 
 

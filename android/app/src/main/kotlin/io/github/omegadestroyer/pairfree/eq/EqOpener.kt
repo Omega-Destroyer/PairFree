@@ -37,7 +37,7 @@ class EqOpener(
      * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
      */
     fun open(device: Paired, model: Model?) {
-        if (device.brand == Brand.CAMBRIDGE) {
+        if (device.brand == Brand.CAMBRIDGE || device.brand == Brand.ONEPLUS) {
             // Legacy Melomania's five gain controls have no established frequency grid. They use Sound-tab rows.
             equalizer.open(device.address, model, null)
             return

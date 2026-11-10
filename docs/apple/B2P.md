@@ -47,6 +47,7 @@ each getter then checks that length and reads fixed offsets (source analysis onl
 | Product id | 013A | 2 bytes, a little-endian number |
 | In-ear detection | 014C | 1 byte: 0 off, 2 on. Seeing 0 the app writes 014A with 2 |
 | Listening mode | 0158 | asked twice, with a one-byte payload of 1 and then 2; each reply is 1 byte. The app compares the two (and its own table of supported modes) to decide off, noise cancelling or transparency, so the decoding of those two bytes is still open |
+| Information (`b2pRequestInfo`, also the battery's first read) | 0430 | exactly 20 bytes, handed to the app as one block (it may hold serial numbers: keep it out of logs and reports) |
 | Button mode | 046A | raw bytes handed to the app unchanged; layout open |
 
 The rest (one-bud ANC 047C/047E, name 012C/0134, colour 0116, capabilities 0144, in-case tones 050A/050C and 0570/0572,
@@ -68,7 +69,8 @@ Firmware update and DFU (`DFU_*`, `FWUP_*`, `FLASH_*`, `uarp*`, `b2pTransferFirm
 ## Next
 
 1. The listening mode's two reads (0158 with 1 and 2), the button mode, capabilities, and the bytes 0, 1 and 4 of the battery reply.
-2. What the app sends on connecting (`b2pInit`, `b2pRequestInfo`, `b2pGetCapabilities`) and whether a handshake or the
-   `AUTH`/`GAPA` exchange gates the settings (it is the genuine-product check; if it gates them, say so).
+2. Connecting: `b2pInit` only allocates the state and calls `b2p_init`/`b2p_enable`; the getters and setters each send their own
+   command through one shared function (0x1a500) with no visible handshake or `AUTH`/`GAPA` step before them. So nothing in the
+   library gates the settings; a virtual or real Beats must still confirm that.
 3. Run the Beats app against a virtual Beats that answers `FF B2` frames, as for the other brands, to confirm the framing.
 4. BCD and BTP (older Beats), in the same way.

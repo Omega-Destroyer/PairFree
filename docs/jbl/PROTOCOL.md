@@ -202,6 +202,18 @@ feature family the sound effect, the audio limiter and Hi-Res are feature record
 | Low volume EQ | `LowVolumeEq`, `LowEQCompensationCard` | `9E` (direct), feature `24` | `01` | `02` (write `00`), on |
 | Find My Buds | `FindMyBudCard` | `36` | | one value per earbud: `11` start the left, `10` the right, `01` stop the left, `00` the right |
 
+Smart Audio & Video goes over two sets of commands. JBL's app has two status classes with the same methods and the same
+bytes for everything but this: `HmProtocol3DeviceStatusControl` (`SmartSwitchCmd`, `80` as in the table) and
+`BesDeviceStatusControl`, the base of every control class that extends `BesBasicControl` or `BesSdkControl`
+(`CmdGen.generateReqSmartSwitch`, `generateSetSmartSwitch`): the read is `AA 82 00`, a write `AA 81 08` and the four numbers
+with **no sub-command in front**, and the reply `AA 83 08` and the same eight bytes (`HandleParse`, `RetHeader` "aa83").
+`devices.json` marks those 39 models `smart_switch: bes` (`JblModel.besSmartSwitch`); the protocol 3 models (Wave Buds 2,
+Tune Buds 2 and the like) keep `80`. The two sets were found by comparing the two classes method by method, and a Tune 230NC
+run in an emulator (JBL Headphones 5.37.10 against a synthetic peer, `docs/jbl/VIRTUAL_TESTING.md`) showed the app sending
+`AA 82 00` and `AA 81 08 00 01 2E 00 18 01 FF FF` (Audio) and `AA 81 08 C5 00 2E 00 18 01 FF FF` (Normal); PairFree's old
+`AA 80 09 00 ...` was not what that app sent. The emulator's replies are invented: whether real BES firmware also answers
+`80` is not known, and a user's report would settle it.
+
 Smart Audio & Video's numbers come from the product list (`smartAudioVideo`: `normal`, `audio`,
 `video`, in `devices.json` as `smart_audio_video`). JBL's card is a switch (off is `normal`) with
 Audio or Video under it; a model with three numbers writes 65535 as the fourth, and the reply is

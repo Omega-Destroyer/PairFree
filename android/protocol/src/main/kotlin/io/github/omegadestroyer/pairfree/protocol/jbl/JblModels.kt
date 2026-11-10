@@ -29,6 +29,11 @@ public data class JblModel(
     val extras: Set<String> = emptySet(),
     /** Smart Audio & Video's normal, audio and video settings: AAC, SBC and the latencies JBL's app writes (product_list.json). */
     val smartAudioVideo: Map<String, List<Int>> = emptyMap(),
+    /**
+     * Smart Audio & Video goes over `81`, `82` and `83` instead of `80` on the models whose control class sits on JBL's BES base
+     * (`BesDeviceStatusControl`: devices.json smart_switch bes). JBL's app was seen sending it so to a Tune 230NC (docs/jbl/VIRTUAL_TESTING.md).
+     */
+    val besSmartSwitch: Boolean = false,
     /** The sound effects the model lists, by name (standard, treble, bass). */
     val effects: List<String> = emptyList(),
     /** The noise cycle the ambient touch set starts with: 11 noise cancelling and ambient sound, 13 Ambient Aware and off. */

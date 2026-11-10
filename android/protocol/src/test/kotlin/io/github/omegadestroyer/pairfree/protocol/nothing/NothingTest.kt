@@ -237,6 +237,20 @@ class NothingTest {
         assertEquals(listOf("010100", "010101"), payloads("f004"))
         assertEquals("010100", hex(s.set(Command.IN_EAR_DETECTION, 0)!!.single().payload))
         assertEquals("010101", hex(s.set(Command.IN_EAR_DETECTION, 1)!!.single().payload))
+        // Noise (F00F): the app wrote 01 and the mode, 00: high 1, mid 2, low 3, adaptive 4, off 5, transparency 7.
+        assertEquals(setOf("010100", "010200", "010300", "010400", "010500", "010700"), payloads("f00f").toSet())
+        s.receive(reply(NothingCommand.GET_CURRENT_NOISE_REDUCTION, "010100"))
+        assertEquals(setOf("010100", "010200", "010300", "010400"), NothingModels.of("B155")!!.config("1.0.1.80").anc.filter { it in setOf("high", "mid", "low", "adaptive") }
+            .map { hex(s.change(SettingChange.Choice("noise_strength", it))!!.single().payload) }.toSet())
+        assertEquals("010500", hex(s.set(Command.ANC_MODE, ancNumber("off"))!!.single().payload))
+        assertEquals("010700", hex(s.set(Command.ANC_MODE, ancNumber("transparency"))!!.single().payload))
+        // The left double pinch (F003: a count of one, the left earbud 2, button 1, gesture 2, then the action): previous 8, next 9, assistant 11.
+        s.receive(reply(NothingCommand.GET_KEY_CONFIGURATION, "080201020903010209020103080301030802010716030107160201090103010901"))
+        val pinch = payloads("f003").toSet()
+        assertEquals(setOf("0102010208", "010201020b", "0102010209"), pinch)
+        for ((option, expected) in listOf("previous" to "0102010208", "next" to "0102010209", "voice_assistant" to "010201020b")) {
+            assertEquals(expected, hex(s.change(SettingChange.Choice("touch_double_left", option))!!.single().payload), option)
+        }
         // The presets, two bytes: balanced 0, voice 1, more treble 2, more bass 3, custom 5.
         assertEquals(listOf("0300", "0200", "0100", "0000", "0500"), payloads("f010"))
         assertEquals(listOf("0300", "0200", "0100", "0000"), listOf("bass", "treble", "voice", "balanced").map { hex(s.eqPreset(it)!!.single().payload) })

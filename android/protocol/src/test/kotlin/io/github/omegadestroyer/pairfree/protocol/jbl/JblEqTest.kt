@@ -1,6 +1,11 @@
 package io.github.omegadestroyer.pairfree.protocol.jbl
 
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
+import io.github.omegadestroyer.pairfree.protocol.repoFile
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -177,6 +182,27 @@ class JblEqTest {
         assertTrue(abs(calibration - 7f) < 0.05f, "calibration $calibration")
         // Raw bytes PairFree did not build are never sent.
         assertTrue(!s.allowed(JblRaw(byteArrayOf(1, 2, 3))))
+    }
+
+    @Test
+    fun theTune230NcEqTransfersJblsAppSentToAVirtualPeer() {
+        // data/jbl/emulator_vectors.json: JBL Headphones 5.37.10 against a synthetic Tune 230NC, whose `42 00` design read went unanswered,
+        // so every calibration was -1 (docs/jbl/VIRTUAL_TESTING.md). PairFree's multipart `41` transfer must be those bytes.
+        val vectors = Json.parseToJsonElement(repoFile("data/jbl/emulator_vectors.json").readText()).jsonObject.getValue("multipart_eq").jsonArray.map { it.jsonObject }
+        fun parts(v: kotlinx.serialization.json.JsonObject) = v.getValue("parts").jsonArray.map { it.jsonPrimitive.content }
+        val s = JblSession(model("JBL TUNE230NC TWS"))
+        // BASS preset: JBL's app sends the preset's gains as a graphic-less (0) EQ record; PairFree's preset write builds the same record.
+        val bass = vectors.first { it["action"]!!.jsonPrimitive.content == "BASS preset" }
+        val preset = s.model.eq!!.presets.first { it.name == "BASS" }
+        val out = s.eqWrite(preset, emptyList())!!
+        assertEquals("aa41b303", out.first().hex())
+        assertEquals("aa0541", out.last().hex())
+        assertEquals(parts(bass), out.drop(1).dropLast(1).map { it.hex() })
+        // My EQ: ten gains of the app's interpolated curve, written as the graphic EQ (record kind 1).
+        val custom = vectors.first { it["action"]!!.jsonPrimitive.content == "My EQ custom edit" }
+        val gains = custom.getValue("bands").jsonArray.map { it.jsonObject.getValue("gain_db").jsonPrimitive.content.toFloat() }
+        val mine = s.eqWrite(null, gains)!!
+        assertEquals(parts(custom), mine.drop(1).dropLast(1).map { it.hex() })
     }
 
     @Test

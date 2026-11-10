@@ -268,6 +268,19 @@ class OneMoreTest {
         assertEquals("00", hex(s.set(Command.ANC_MODE, anc("off"))!!.single().payload))
         s.receive(reply(OneMoreCommand.GET_LISTEN_MODE, "07"))
         assertEquals("01", hex(s.change(SettingChange.Choice("noise_strength", "high"))!!.single().payload), "the app's plain cancelling is strong, 01")
+        // The other controls the app wrote: smart playback 0062 (00 pause only, 01 pause and play, 02 off), spatial audio 0082, voice control 0080
+        // and the double/triple tap on each earbud 0084 (gesture, action): left double next 01 01, right triple volume up 04 04.
+        s.receive(reply(OneMoreCommand.GET_AUTOPLAY, "01"))
+        s.receive(reply(OneMoreCommand.GET_SPATIAL_AUDIO, "00"))
+        s.receive(reply(OneMoreCommand.GET_HOT_WORD, "00"))
+        s.receive(reply(OneMoreCommand.GET_ALL_CUSTOM, "05050606"))
+        fun sentPayloads(command: String) = frames.filter { it.str("command") == command }.map { it.str("payload") }.toSet()
+        assertEquals(sentPayloads("0062"), listOf("pause", "pause_play", "off").map { hex(s.change(SettingChange.Choice("smart_playback", it))!!.single().payload) }.toSet())
+        assertEquals(sentPayloads("0082"), listOf(true, false).map { hex(s.change(SettingChange.Toggle("spatial_audio", it))!!.single().payload) }.toSet())
+        assertEquals(sentPayloads("0080"), listOf(true, false).map { hex(s.change(SettingChange.Toggle("voice_command", it))!!.single().payload) }.toSet())
+        val gestures = sentPayloads("0084")
+        assertEquals("0101", hex(s.change(SettingChange.Choice("touch_double_left", "next"))!!.single().payload).also { assertTrue(it in gestures, it) })
+        assertEquals("0404", hex(s.change(SettingChange.Choice("touch_triple_right", "volume_up"))!!.single().payload).also { assertTrue(it in gestures, it) })
         // The curve reset is one 0053 with every band at 0 dB: PairFree's flat write is the same bytes.
         val flat = OneMoreSession(aero).eqCustom(List(10) { 0 })!!.last().payload
         assertEquals(byAction.getValue("onemore-eq-curve-reset"), hex(flat))

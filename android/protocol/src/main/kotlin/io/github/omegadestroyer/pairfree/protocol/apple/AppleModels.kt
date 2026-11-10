@@ -8,7 +8,7 @@ import io.github.omegadestroyer.pairfree.protocol.Model
  * (AirPods only, from LibrePods), its Bluetooth product id (from MagicPodsCore), and whether it has
  * Adaptive Audio.
  */
-public data class AppleModel(val name: String, val form: Form, val modelNumbers: List<String>, val productId: Int, val adaptive: Boolean, val b2p: Boolean = false)
+public data class AppleModel(val name: String, val form: Form, val modelNumbers: List<String>, val productId: Int, val adaptive: Boolean, val b2p: Boolean = false, val bcd: Boolean = false)
 
 /** Every AirPods and Beats model PairFree knows, and how a paired device is recognised as one. */
 public object AppleModels {
@@ -23,7 +23,7 @@ public object AppleModels {
      * known by the service alone: the ones on Beats' own chips use another protocol.
      */
     public fun identify(name: String, uuids: List<String>): Boolean =
-        uuids.any { it.equals(AppleWire.SERVICE_UUID, ignoreCase = true) } || name.contains(AIRPODS, ignoreCase = true) || b2p(name) != null
+        uuids.any { it.equals(AppleWire.SERVICE_UUID, ignoreCase = true) } || name.contains(AIRPODS, ignoreCase = true) || b2p(name) != null || bcd(name) != null
 
     /**
      * The Beats on Apple's chips that Apple's Beats app controls over an ordinary serial channel with the B2P protocol
@@ -33,6 +33,16 @@ public object AppleModels {
         val n = normal(name ?: return null)
         return APPLE_MODELS.filter { it.b2p }.sortedByDescending { it.name.length }.firstOrNull { n.contains(normal(it.name)) }
     }
+
+    /** The older Beats that Apple's Beats app controls with the BCD protocol (docs/apple/B2P.md). */
+    public fun bcd(name: String?): AppleModel? {
+        val n = normal(name ?: return null)
+        return APPLE_MODELS.filter { it.bcd }.sortedByDescending { it.name.length }.firstOrNull { n.contains(normal(it.name)) }
+    }
+
+    /** A session for the Beats named [name], or null when it speaks neither B2P nor BCD. */
+    public fun beatsSession(name: String?): BeatsControl? =
+        b2p(name)?.let { BeatsSession(it) } ?: bcd(name)?.let { BcdSession(it) }
 
     private fun normal(s: String) = s.lowercase().replace(Regex("""\s+\+"""), "+").replace(Regex("""\s+"""), " ").trim()
 

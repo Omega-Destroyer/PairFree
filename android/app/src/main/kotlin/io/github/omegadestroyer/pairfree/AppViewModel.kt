@@ -429,15 +429,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
                 appendLine("$ISSUES to help check")
                 appendLine("this model. It holds no serial number, address or other personal data.")
                 appendLine()
-                appendLine("Brand:           Apple (Beats, B2P protocol)")
+                appendLine("Brand:           Apple (Beats, ${if (session is io.github.omegadestroyer.pairfree.protocol.apple.BcdSession) "BCD" else "B2P"} protocol)")
                 appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"}")
-                appendLine("Product id:      ${session.productId?.let { "%04x".format(it) } ?: "unknown"}")
                 appendLine("App:             PairFree $version")
                 appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})")
                 appendLine("Captured:        $date")
                 appendLine()
-                appendLine("Battery reply (5 bytes), as hex:")
-                appendLine("  ${session.batteryData?.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') } ?: "none yet"}")
+                session.reportLines.forEach { appendLine(it) }
                 appendLine("Reads answered (value, or none):")
                 session.answers.forEach { (key, value) -> appendLine("  $key: ${value?.let { "%02x".format(it) } ?: "none"}") }
             }

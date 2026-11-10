@@ -26,8 +26,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.Wire
 import io.github.omegadestroyer.pairfree.protocol.apple.AapPacket
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
-import io.github.omegadestroyer.pairfree.protocol.apple.B2pFrame
-import io.github.omegadestroyer.pairfree.protocol.apple.BeatsSession
+import io.github.omegadestroyer.pairfree.protocol.apple.BeatsControl
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleOpcode
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleSession
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleWire
@@ -247,13 +246,13 @@ class EarbudsConnection(
     val jblSession: JblSession? get() = jbl
 
     private var apple: AppleSession? = null   // set while connected to AirPods or Beats
-    private var beats: BeatsSession? = null   // set while connected to a Beats that speaks B2P
+    private var beats: BeatsControl? = null   // set while connected to a Beats that speaks B2P or BCD
 
     /** The Apple session, while connected to AirPods or Beats; for the device report. */
     val appleSession: AppleSession? get() = apple
 
     /** The B2P session, while connected to a Beats that speaks it; for the device report. */
-    val beatsSession: BeatsSession? get() = beats
+    val beatsSession: BeatsControl? get() = beats
 
     private var nothing: NothingSession? = null   // set while connected to Nothing or CMF earbuds or headphones
     private var nothingQueue: Channel<NothingFrame>? = null
@@ -419,7 +418,7 @@ class EarbudsConnection(
                     Brand.SONY -> serveSony(opened, device)
                     Brand.BOSE -> serveBose(opened)
                     Brand.JBL -> serveJbl(opened, device)
-                    Brand.APPLE -> if (AppleModels.b2p(device.name) != null) serveBeats(opened, device) else serveApple(opened)
+                    Brand.APPLE -> if (AppleModels.beatsSession(device.name) != null) serveBeats(opened, device) else serveApple(opened)
                     Brand.NOTHING -> serveNothing(opened, device)
                     Brand.PIXEL -> servePixel(opened, device)
                     Brand.QCY -> serveQcy(opened, device)
@@ -451,9 +450,9 @@ class EarbudsConnection(
      */
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private suspend fun open(remote: BluetoothDevice, device: Paired): ControlLink {
-        if (device.brand == Brand.APPLE && AppleModels.b2p(device.name) != null) {
+        if (device.brand == Brand.APPLE && AppleModels.beatsSession(device.name) != null) {
             // Apple's Beats app opens the plain serial channel to these Beats (docs/apple/B2P.md): no Android version matters.
-            note("serial channel ${Wire.SPP_UUID} (B2P)")
+            note("serial channel ${Wire.SPP_UUID} (${if (AppleModels.b2p(device.name) != null) "B2P" else "BCD"})")
             return SppLink(remote, linkLog, Wire.SPP_UUID).also { link = it }.apply { connect() }
         }
         if (device.brand == Brand.APPLE) return openApple(remote)
@@ -851,12 +850,12 @@ class EarbudsConnection(
      * (docs/apple/B2P.md). The bytes are split into frames by their length and checked by their CRC.
      */
     private suspend fun serveBeats(opened: ControlLink, device: Paired) = coroutineScope {
-        val session = BeatsSession(AppleModels.b2p(device.name))
+        val session = AppleModels.beatsSession(device.name) ?: return@coroutineScope
         beats = session
         val opening = launch {
             try {
                 for (frame in session.start()) {
-                    if (session.allowed(frame)) opened.send(frame.bytes())
+                    opened.send(frame)
                     delay(APPLE_GAP_MS)
                 }
             } catch (_: IOException) {
@@ -866,13 +865,12 @@ class EarbudsConnection(
         var pending = ByteArray(0)
         try {
             opened.reads().collect { bytes ->
-                val (frames, rest) = B2pFrame.split(pending + bytes)
+                val (frames, rest) = session.split(pending + bytes)
                 pending = rest
                 for (raw in frames) guardPacket {
                     log?.invoke("recv ${raw.joinToString("") { "%02x".format(it) }}")
-                    val frame = B2pFrame.parse(raw) ?: return@guardPacket
-                    if (session.receive(frame)) publish(session)
-                    for (f in session.followUps) if (session.allowed(f)) opened.send(f.bytes())
+                    if (session.receiveBytes(raw)) publish(session)
+                    for (f in session.outgoing) opened.send(f)
                 }
             }
         } catch (_: IOException) {
@@ -1295,19 +1293,19 @@ class EarbudsConnection(
         return true
     }
 
-    private fun publish(session: BeatsSession) {
+    private fun publish(session: BeatsControl) {
         _state.value = session.state
         _settings.value = session.groups
     }
 
     /** Sends B2P frames on the open channel. False when there is none. */
-    private fun sendBeats(session: BeatsSession, frames: List<B2pFrame>): Boolean {
+    private fun sendBeats(session: BeatsControl, frames: List<ByteArray>): Boolean {
         if (_status.value !is LinkStatus.Connected) return false
         val s = this.session ?: return false
         val l = link ?: return false
         s.launch {
             try {
-                for (f in frames) if (session.allowed(f)) l.send(f.bytes())
+                for (f in frames) l.send(f)
             } catch (_: IOException) {
                 // the channel closed; the reader notices and reports it
             }

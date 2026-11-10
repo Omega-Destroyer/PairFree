@@ -78,7 +78,7 @@ public object Identify {
         Maker.EARFUN -> EarfunModels.fromName(name) != null
         Maker.CAMBRIDGE -> CambridgeModels.fromName(name) != null
         // Galaxy Buds names hold "Galaxy"; Bose's "Bose"; the Beats that speak B2P are known by name.
-        Maker.APPLE -> AppleModels.b2p(name) != null
+        Maker.APPLE -> AppleModels.b2p(name) != null || AppleModels.bcd(name) != null
         Maker.SAMSUNG, Maker.BOSE -> false
     }
 

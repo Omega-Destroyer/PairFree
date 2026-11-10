@@ -183,7 +183,7 @@ class AppleTest {
         assertTrue(AppleModels.identify("Kitchen", listOf("74EC2172-0BAD-4D01-8F77-997B2BE0722A")))
         assertTrue(AppleModels.identify("Sam's AirPods Pro", emptyList()))
         assertTrue(AppleModels.identify("Beats Studio Buds", emptyList()), "Beats that speak B2P are known by name")
-        assertFalse(AppleModels.identify("Beats Flex", emptyList()), "other Beats only by the service")
+        assertFalse(AppleModels.identify("Beats Pill+", emptyList()), "other Beats only by the service")
         assertEquals(4097, AppleWire.PSM)
     }
 

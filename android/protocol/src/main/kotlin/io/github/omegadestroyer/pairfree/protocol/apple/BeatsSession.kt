@@ -17,8 +17,8 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * payload of 1 and then 2; the app compares the two answers, which are taken here as "noise cancelling is on" and
  * "transparency is on" (the decoding is inferred; docs/apple/B2P.md).
  */
-public class BeatsSession(public val model: AppleModel?) {
-    public var state: EarbudState = EarbudState()
+public class BeatsSession(override val model: AppleModel?) : BeatsControl {
+    override var state: EarbudState = EarbudState()
         private set
 
     private var sequence = 0
@@ -37,7 +37,7 @@ public class BeatsSession(public val model: AppleModel?) {
         private set
 
     /** What the Beats answered, for the device report: the two listening mode reads and the in-ear detection read. */
-    public val answers: Map<String, Int?> get() = mapOf("listening_mode_1" to listeningFirst, "listening_mode_2" to listeningSecond, "in_ear_detection" to inEar)
+    override val answers: Map<String, Int?> get() = mapOf("listening_mode_1" to listeningFirst, "listening_mode_2" to listeningSecond, "in_ear_detection" to inEar)
 
     private fun frame(opcode: Int, vararg payload: Int): B2pFrame {
         sequence = sequence % MAX_SEQUENCE + 1
@@ -45,9 +45,35 @@ public class BeatsSession(public val model: AppleModel?) {
     }
 
     /** Reads sent on connecting: the product id, the battery, the listening mode (twice) and in-ear detection. */
-    public fun start(): List<B2pFrame> = listOf(
+    public fun startFrames(): List<B2pFrame> = listOf(
         frame(PRODUCT_ID_GET), frame(BATTERY_GET), frame(LISTENING_MODE_GET, 1), frame(LISTENING_MODE_GET, 2), frame(IN_EAR_GET),
     ).also { listeningReplies = 0 }
+
+    override fun start(): List<ByteArray> = startFrames().filter(::allowed).map { it.bytes() }
+
+    override fun split(buffer: ByteArray): Pair<List<ByteArray>, ByteArray> = B2pFrame.split(buffer)
+
+    override fun receiveBytes(raw: ByteArray): Boolean {
+        outgoing = emptyList()
+        val frame = B2pFrame.parse(raw) ?: return false
+        val changed = receive(frame)
+        outgoing = followUps.filter(::allowed).map { it.bytes() }
+        return changed
+    }
+
+    override var outgoing: List<ByteArray> = emptyList()
+        private set
+
+    override fun change(change: SettingChange): List<ByteArray>? = changeFrames(change)?.filter(::allowed)?.map { it.bytes() }
+
+    override fun set(command: Command, value: Int): List<ByteArray>? = setFrames(command, value)?.filter(::allowed)?.map { it.bytes() }
+
+    override val reportLines: List<String>
+        get() = listOf(
+            "Product id:      ${productId?.let { "%04x".format(it) } ?: "unknown"}",
+            "Battery reply (5 bytes), as hex:",
+            "  ${batteryData?.joinToString(" ") { "%02x".format(it) } ?: "none yet"}",
+        )
 
     /** Reads again the values the Beats announce changes of. */
     private fun rereadListening(): List<B2pFrame> = listOf(frame(LISTENING_MODE_GET, 1), frame(LISTENING_MODE_GET, 2)).also { listeningReplies = 0 }
@@ -105,13 +131,13 @@ public class BeatsSession(public val model: AppleModel?) {
         state = state.copy(values = if (mode != null) state.values + (Command.ANC_MODE to Value.Number(ancNumber(mode))) else state.values)
     }
 
-    public val groups: List<SettingGroup>
+    override val groups: List<SettingGroup>
         get() = listOfNotNull(
             inEar?.takeIf { it == IN_EAR_ON || it == IN_EAR_OFF || it == 0 }?.let { SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle("ear_detection", it == IN_EAR_ON))) },
         )
 
     /** A toggle from the screens, or null for one the Beats did not report. */
-    public fun change(change: SettingChange): List<B2pFrame>? {
+    public fun changeFrames(change: SettingChange): List<B2pFrame>? {
         if (change is SettingChange.Toggle && change.key == "ear_detection" && inEar != null) {
             inEar = if (change.on) IN_EAR_ON else IN_EAR_OFF
             return listOf(frame(IN_EAR_SET, inEar!!))
@@ -120,7 +146,7 @@ public class BeatsSession(public val model: AppleModel?) {
     }
 
     /** The listening mode from the shared screens: off, noise cancelling or transparency, with the level 100 as the app writes. */
-    public fun set(command: Command, value: Int): List<B2pFrame>? {
+    public fun setFrames(command: Command, value: Int): List<B2pFrame>? {
         if (command != Command.ANC_MODE || listening() == null && lastMode == null) return null
         val mode = when (value) {
             ancNumber(MODE_OFF) -> MODE_OFF

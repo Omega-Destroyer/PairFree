@@ -65,7 +65,7 @@ class BeatsTest {
     @Test
     fun theSessionShowsWhatTheBeatsAnswered() {
         val s = BeatsSession(AppleModels.b2p("Beats Studio Buds +"))
-        val start = s.start()
+        val start = s.startFrames()
         assertEquals(listOf(0x013A, 0x0152, 0x0158, 0x0158, 0x014C), start.map { it.opcode })
         assertEquals(listOf(1, 2), start.filter { it.opcode == 0x0158 }.map { it.payload[0].toInt() })
         assertEquals(listOf(1, 2, 3, 4, 5), start.map { it.sequence })
@@ -79,8 +79,8 @@ class BeatsTest {
         s.receive(B2pFrame(5, 0x014D, byteArrayOf(2)))
         val toggle = s.groups.flatMap { it.settings }.single() as Setting.Toggle
         assertTrue(toggle.on)
-        assertEquals(listOf(B2pFrame(6, 0x014A, byteArrayOf(1))), s.change(SettingChange.Toggle("ear_detection", false)))
-        val set = s.set(Command.ANC_MODE, anc("anc"))
+        assertEquals(listOf(B2pFrame(6, 0x014A, byteArrayOf(1))), s.changeFrames(SettingChange.Toggle("ear_detection", false)))
+        val set = s.setFrames(Command.ANC_MODE, anc("anc"))
         assertNotNull(set)
         assertArrayEquals(byteArrayOf(1, 0x64), set!!.single().payload)
         assertEquals(0x015A, set.single().opcode)

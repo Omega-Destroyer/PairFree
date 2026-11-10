@@ -80,18 +80,35 @@ The CRC table in `libB2pAdapter.so` (`b2p_crc32tab`, 256 words) equals the table
 of Beats' app (Fit Pro, `apple/VIRTUAL_TESTING.md`) never reached an accessory channel, so the framing is not yet confirmed
 by an answer from a Beats or a virtual one.
 
-## BCD (Powerbeats3, Solo3, BeatsX, Flex, Studio3), read but not built
+## BCD (Powerbeats3, Solo3, BeatsX, Flex, Studio3)
 
-`libBcdAdapter.so` (disassembled 2026-11-10). Frame: `AA`, a length (the command's two bytes plus the payload, so payload + 2; the
-sequence number is not counted), a sequence number (1 to 255, never 0), the command (two bytes, high first), the payload, and a CRC-8
-(SAE J1850 table, polynomial 1D, start 0, no final inversion, over every byte before it, the `AA` included). A packet with length 0
-is an acknowledgement (`AA 00 seq crc`); the sender keeps one packet outstanding until it is acknowledged. Commands the Java calls
-build: product id (command 0000, reply 2 bytes), listening mode read (01A4, reply 1 byte, 2 means on) and write (0226 with 2 on,
-1 off), plus name, colour, serial number, firmware version and auto answer. Replies are named `BCD_RSP_*` in the library, one per
-`BCD_CMD_*`; the battery command (`BCD_CMD_GET_BATTERY`) exists but its number and layout were not read. Not built in PairFree:
-blocked: the reply opcodes and the battery layout are unread; checked: the adapter's exports, the link layer (send, receive state
-machine, CRC) and the three getters above. These models also show their battery to Android through the standard Bluetooth battery
-reports. BTP (Beats Pill+) has the same shape in `libBtpAdapter.so` (not read beyond its exports).
+`libBcdAdapter.so` (disassembled 2026-11-10; opcode names in `data/apple/bcd_opcodes.json`, 283 of them). Frame: `AA`, a length (the
+command's two bytes plus the payload, so payload + 2; the sequence number is not counted), a sequence number (1 to 255, never 0), the
+command (two bytes, high first), the payload, and a CRC-8 (SAE J1850 table, polynomial 1D, start 0, no final inversion, over every
+byte before it, the `AA` included; the table's first entries are 00 1D 3A 27). A packet with length 0 is an acknowledgement
+(`AA 00 seq crc`): the sender keeps one packet outstanding until it is acknowledged, and acknowledges each packet it receives. A
+command is even and its response the next odd number (`BCD_CMD_GET_BATTERY` 014A, `BCD_RSP_GET_BATTERY` 014B).
+
+What Apple's app reads and writes through its Java calls:
+
+| Setting | Command | Payload / reply |
+|---|---|---|
+| Product id | 0000 | reply 2 bytes, low byte first |
+| Listening mode (Studio3's noise cancelling) | read 01A4, write 0226 | reply 1 byte: 2 is on. Write 2 for on, 1 for off |
+| Auto answer (only the Flex, product id 2010) | read 024A, write 0248 | reply 1 byte: 1 is on. Write 1 for on, 2 for off |
+| Name, colour, serial number, firmware version | 010C/010A, 0018, 000A, 0002 | not used by PairFree (the serial number stays private) |
+
+In PairFree: `BcdSession` and `BcdFrame`, opened over the same serial channel. It reads the product id and the listening mode from
+every BCD Beats (and the auto answer from the Flex) and shows what they answer: noise cancelling on or off, and the Flex's auto answer
+switch. Source analysis only. Left out: the battery (`BCD_CMD_GET_BATTERY` 014A exists but Apple's Java never calls it and its
+layout is unread; Android shows these models' battery through the standard Bluetooth reports), and the factory reset
+(0158) which would need a confirmed action like B2P's.
+
+## BTP (Beats Pill+), not built
+
+Beats Pill+ is a speaker (`libBtpAdapter.so`: sessions, partner mode, authentication, volume, cue sounds). PairFree holds speakers as
+future work (CLAUDE.md, Speakers), so BTP is not built; blocked: the owner's rule on speakers; checked: the adapter's exports show a
+session and partner layer that no earbud or headphone uses.
 
 ## Never sent
 

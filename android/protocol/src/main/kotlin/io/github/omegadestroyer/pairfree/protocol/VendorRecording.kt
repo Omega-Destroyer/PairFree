@@ -146,7 +146,7 @@ public object VendorRecording {
         val withheld = when (brand) {
             RecordedBrand.SOUNDCORE -> id in SoundcoreCommand.PRIVATE || id in SoundcoreCommand.NEVER_SEND
             RecordedBrand.SAMSUNG -> id in SamsungMessage.NEVER_SEND
-            RecordedBrand.SONY -> sonyNeverSend(id)
+            RecordedBrand.SONY -> sonyNeverSend(id) || sonyPaired(id)
             RecordedBrand.NOTHING -> nothingWithheld(id)
         }
         if (withheld) return "(${payload.size} bytes left out)"
@@ -241,6 +241,12 @@ public object VendorRecording {
             else -> one?.takeIf { it == two }
         }?.lowercase()
     }
+
+    /**
+     * The peripheral parameter messages of table 2 (commands 0x34 to 0x3D, either set) carry the earbuds' list of paired and connected devices: their
+     * Bluetooth addresses and names as text (a user's WF-1000XM6 recording, issue #33, showed a phone's and a computer's), so a report leaves them out.
+     */
+    private fun sonyPaired(id: Int): Boolean = ((id shr SONY_TABLE_SHIFT) and 0xF) == 2 && (id and 0xFF) in 0x34..0x3D
 
     /** Firmware update, test and log messages, in either set, are left out of a report. */
     private fun sonyNeverSend(id: Int): Boolean {

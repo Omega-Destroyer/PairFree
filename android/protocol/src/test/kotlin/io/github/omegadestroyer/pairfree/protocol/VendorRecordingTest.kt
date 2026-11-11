@@ -129,6 +129,16 @@ class VendorRecordingTest {
     }
 
     @Test
+    fun sonyPairedDeviceListsAreLeftOutOfAReport() {
+        // A WF-1000XM6 recording (issue #33) showed other devices' addresses and names in table 2's peripheral parameter reply.
+        val list = "0203393a39383a46423a35373a33353a4543".hexBytes()
+        for (set in 0..2) {
+            assertEquals("(${list.size} bytes left out)", VendorRecording.shown(RecordedBrand.SONY, VendorRecording.sonyId(set, 2, 0x37), list, null))
+        }
+        assertEquals("02 03", VendorRecording.shown(RecordedBrand.SONY, VendorRecording.sonyId(1, 1, 0x23), "0203".hexBytes(), null), "table 1 is something else")
+    }
+
+    @Test
     fun findsNothingFramesAndLeavesOutTheSerialNumber() {
         val log = SnoopLog()
         log.connected(t0, 0x0E, addressBytes)

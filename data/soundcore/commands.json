@@ -84,6 +84,8 @@
     {"id": "dual_connections_devices", "command": "0B01", "source": "openscq30", "confirmed": ["A3936"], "private": true,
      "note": "With two devices on, the earbuds send one entry per known device unasked, 42 bytes each on the A3936. Each holds a device's address and name: never put them in a report."},
     {"id": "dual_connections_enabled", "command": "0B84", "source": "openscq30", "confirmed": ["A3936"],
-     "note": "Two devices at once. Body: 1 on, 0 off."}
+     "note": "Two devices at once. Body: 1 on, 0 off."},
+    {"id": "wear_fit_detection", "command": "0901", "source": "soundcore_app", "confirmed": [],
+     "note": "The ear tip fit test (Soundcore 2.9.9, the A3951 family's manager: A3931, A3935, A3951). Request with no body; the reply's body is the left earbud's code, the right's, then pressure and over and under values (24 bytes or more): a code of 0 or 1 is a good fit. 2.9.9 sends it and only logs the result on these models; PairFree shows it on the shared fit test screen. Not confirmed on hardware."}
   ]
 }

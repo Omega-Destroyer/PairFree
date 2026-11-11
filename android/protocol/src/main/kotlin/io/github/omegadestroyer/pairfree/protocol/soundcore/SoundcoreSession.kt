@@ -3,6 +3,8 @@ package io.github.omegadestroyer.pairfree.protocol.soundcore
 import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -18,12 +20,12 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * has is shown. Touch controls have no SoundPEATS counterpart; the Controls tab reads them
  * from [touch].
  */
-public class SoundcoreSession(public val model: String) {
+public class SoundcoreSession(public val model: String) : FitTest {
     public val layout: SoundcoreLayout? = SoundcoreLayout.orReportOnly(model)
     private val checksum: Boolean = layout?.checksum ?: true
 
     /** What the screens show. */
-    public var state: EarbudState = EarbudState()
+    override var state: EarbudState = EarbudState(fitTest = model in WEAR_FIT_MODELS)
         private set
 
     /** The last full state the earbuds sent, for the device report. */
@@ -81,12 +83,24 @@ public class SoundcoreSession(public val model: String) {
                 soundModes = body.copyOf()
                 put(Command.ANC_MODE, Value.Number(ancValue(AmbientMode.of(body.u8(0)))))
             }
+            // The fit test's reply: a code per earbud, 0 or 1 a good fit (Soundcore 2.9.9's `analyzeWearTest`).
+            SoundcoreCommand.WEAR_FIT_DETECTION -> if (body.size >= 2) {
+                fun fit(code: Int) = if (code <= 1) FitResult.Fit.GOOD else FitResult.Fit.NOT_FIT
+                state = state.copy(fit = FitResult(fit(body.u8(0)), fit(body.u8(1))))
+            }
             SoundcoreCommand.GAMING_MODE_UPDATE -> put(Command.GAME_MODE, Value.Switch(body.u8(0) != 0))
             SoundcoreCommand.LDAC_STATE -> put(Command.LDAC, Value.Switch(body.u8(0) != 0))
             // Whether both earbuds are in decides which touch actions apply (SoundcoreButtons).
             SoundcoreCommand.TWS_STATUS -> lastState?.let { s -> lastState = s.with("tws_status", body) }
         }
         return state != before
+    }
+
+    /** Starts the ear tip fit test on the models whose manager in Soundcore 2.9.9 has it; the result arrives as a packet. */
+    override fun startFitTest(): List<ByteArray>? {
+        if (model !in WEAR_FIT_MODELS) return null
+        state = state.copy(fit = null)
+        return listOf(SoundcorePacket.build(SoundcoreCommand.WEAR_FIT_DETECTION, checksum = checksum))
     }
 
     /** The Controls tab's settings from the last state, or null before the first state. */
@@ -213,6 +227,9 @@ public class SoundcoreSession(public val model: String) {
 
     public companion object {
         public const val A3936: String = "A3936"
+
+        /** The models whose manager in Soundcore 2.9.9 sends the wear fit detection (`0901`): the A3951 family's `M0()` list that PairFree has. */
+        public val WEAR_FIT_MODELS: Set<String> = setOf("A3931", "A3935", "A3951")
 
         /** Models whose state PairFree can read: every model with a layout in data/soundcore/devices.json. */
         public val SUPPORTED_MODELS: Set<String> get() = SoundcoreLayout.ALL.map { it.model }.toSet()

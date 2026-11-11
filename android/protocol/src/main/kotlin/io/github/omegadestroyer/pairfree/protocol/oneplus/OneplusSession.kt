@@ -82,6 +82,16 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq, FitTest {
         return OneplusPacket(command, sequence, ByteArray(payload.size) { payload[it].toByte() }).bytes()
     }
 
+    /**
+     * The hearing enhancement test (docs/oneplus/PROTOCOL.md section 12) on models with the enhancement switch (feature 11 among their [OneplusModel.switches]),
+     * or null where they have none.
+     */
+    public fun hearingTest(name: String): OneplusHearingTest? {
+        if (model?.switches?.contains(OneplusHearingTest.ENHANCEMENT_FEATURE) != true) return null
+        val uid = kotlin.random.Random.nextInt(1, Int.MAX_VALUE)
+        return OneplusHearingTest({ command, payload -> next(command, *payload) }, uid, name)
+    }
+
     /** The reads that open the conversation, in order. The vendor id is FFFF as HeyMelody sends it on every profile. */
     public fun start(): List<ByteArray> = buildList {
         add(next(OneplusCommand.CAPABILITIES))
@@ -646,7 +656,7 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq, FitTest {
             OneplusCommand.TYPED_NOISE, OneplusCommand.EQ_PRESET, OneplusCommand.SWITCHES,
             OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH, OneplusCommand.KEYS, OneplusCommand.SET_KEYS, OneplusCommand.CUSTOM_EQ, OneplusCommand.SET_CUSTOM_EQ, OneplusCommand.SPATIAL, OneplusCommand.SET_SPATIAL, OneplusCommand.FIND,
             OneplusCommand.MULTI_CONNECT, OneplusCommand.VOLUME, OneplusCommand.TAP_LEVEL, OneplusCommand.HEAD_MOTION,
-            OneplusCommand.SET_EVENT, OneplusCommand.SET_EVENTS, OneplusCommand.SET_FIT, OneplusCommand.SET_MULTI_CONNECT, OneplusCommand.SET_VOLUME, OneplusCommand.SET_TAP_LEVEL, OneplusCommand.SET_HEAD_MOTION,
+            OneplusCommand.SET_EVENT, OneplusCommand.SET_EVENTS, OneplusCommand.SET_FIT, OneplusCommand.SET_HEARING_STATUS, OneplusCommand.SET_HEARING_DETECT, OneplusCommand.SET_MULTI_CONNECT, OneplusCommand.SET_VOLUME, OneplusCommand.SET_TAP_LEVEL, OneplusCommand.SET_HEAD_MOTION,
         )
     }
 }

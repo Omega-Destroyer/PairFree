@@ -43,6 +43,9 @@ interface EarbudsActions {
 
     /** Sends [frames] as they are on the open channel (the Galaxy Buds' hearing test). */
     fun sendFrames(frames: List<ByteArray>) = Unit
+
+    /** A new hearing enhancement test on OnePlus or OPPO earbuds that have it, else null. */
+    fun oneplusHearingTest(): io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusHearingTest? = null
 }
 
 /** Does nothing. For previews. */

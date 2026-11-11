@@ -139,6 +139,11 @@ internal fun ConnectedScreen(
         FitTestScreen(device, state, actions, onClose = { fitTest = false })
         return
     }
+    val oneplusTest = remember(device.address, state) { if (device.brand == Brand.ONEPLUS) actions.oneplusHearingTest() else null }
+    if (hearingTest && oneplusTest != null) {
+        OneplusHearingTestScreen(oneplusTest, actions::sendFrames, onClose = { hearingTest = false })
+        return
+    }
     val samsungHearing = device.brand == Brand.SAMSUNG && SamsungModels.of(device.model)?.buds4Layout == true
     if (hearingTest && samsungHearing) {
         SamsungHearingTestScreen(SamsungModels.of(device.model)?.legacy == true, actions::sendFrames, onClose = { hearingTest = false })
@@ -171,7 +176,7 @@ internal fun ConnectedScreen(
                         Brand.ONEPLUS -> R.string.eq_oneplus
                         else -> R.string.eq_unavailable
                     },
-                    onHearingTest = if (samsungHearing || hearing != null) ({ hearingTest = true }) else null,
+                    onHearingTest = if (samsungHearing || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status, { fitTest = true }, { sealCheck = true })

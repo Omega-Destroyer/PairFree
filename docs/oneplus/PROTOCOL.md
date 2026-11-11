@@ -186,3 +186,24 @@ review the preserved 69-bit table against each feature parser, derive analytical
 confirm behavior with recordings/hardware. The catalog's hidden entries are not release promises. No
 PairFree hardware validation, runtime model entries, scan authorization, or supported-device pages were
 added by this research.
+
+## 12. Hearing enhancement test (Golden Sound), read and built 2026-11-11
+
+From HeyMelody (`model/repository/hearingenhance`, `p189mc/k0.java` the detecting screen, `p189mc/J.java` the result screen, `HeadsetCoreService`). Models with
+feature 11 (`hearingEnhancement`) among their switches offer it on the Sound tab (`OneplusSession.hearingTest`, `OneplusHearingTest`). **The earbuds play the tones.**
+
+| Command | Payload |
+|---|---|
+| `040D` (1037) | `2, 1` detection on; `2, 0` detection off |
+| `040E` (1038) | a tone: `3, 1, device, type, dB` (device 1 left or 2 right, type 1 to 6 low to high, dB a signed byte); pause: `4`; audition on: `1, count, points, id (int, big-endian), name`; audition off: `2`; save: `3, count, points (3 bytes each), id, name` |
+| `0403` | `11, 1` the enhancement switch (HeyMelody's generic switch) |
+| `0411` (1041) | restore data: a count, then `type, length (2 bytes), data`; type 1 holds a byte for which of 20 wordings the app showed; PairFree does not send it |
+| `0415` (1045) | the ear scan: mode, then for modes 1 and 3 a little-endian length, the scan data and an int; not built |
+| `0116` (278) | request of the filter data: count, points, id; the reply is the curves the app draws; not built |
+
+The test: 12 points, the left earbud's six types then the right one's. The slider has 12 positions, `-55, -49, -41, -35, -25, -19, -11, -5, 3, 7, 13, 17` dB, starting at position 5
+(-19 dB); each move sends that point's tone; Next pauses (`040E 4`) and goes on; when all are done the app sends the audition or save form with a random id and the
+date as the name, and the switch. The earbuds work out the enhancement from the points; the app only draws the curves it asks for with `0116`. The 5-byte tone form and the
+save form share mode 3 and differ in length, as HeyMelody builds them. The ear scan that comes first on models with `earScan` (`0415`) is optional in the app (it
+saves the data only when it has it) and is left out. Unit tests (`OneplusHearingTestTest`) and invented replies only; no OnePlus earbuds, and the earbuds' replies are
+not read.

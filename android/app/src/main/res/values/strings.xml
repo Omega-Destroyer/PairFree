@@ -317,6 +317,12 @@
     <string name="seal_check_fair">Fair seal</string>
     <string name="seal_check_poor">Poor seal</string>
     <string name="seal_check_advice">For a fair or poor seal, adjust the earbud or try another ear tip size and run the check again. The levels are PairFree\'s own, so compare the two earbuds with each other.</string>
+    <string name="oneplus_hearing_intro">The earbuds play a tone for each of twelve points, six pitches in each earbud. Move the slider to the quietest level at which you still hear the tone, then tap Next. Find a quiet place and put both earbuds in. At the end the earbuds work out your hearing enhancement and it is switched on.</string>
+    <string name="oneplus_hearing_point">%1$s earbud, pitch %2$d of %3$d</string>
+    <string name="oneplus_hearing_listen">Lower the slider until the tone fades away, then raise it a little.</string>
+    <string name="oneplus_hearing_next">Next</string>
+    <string name="oneplus_hearing_finish">Finish and apply</string>
+    <string name="oneplus_hearing_done">Done. The earbuds have your hearing enhancement and it is on; the Sound tab\'s switch turns it off.</string>
     <string name="samsung_hearing_intro">Adapt Sound: the earbuds play quiet tones, one earbud and one pitch at a time, and you say whether you hear each one. Find a quiet place, put both earbuds in and stop any music or video first. The result is kept on the earbuds as your Adapt Sound profile.</string>
     <string name="samsung_hearing_tone">Tone in the %1$s earbud</string>
     <string name="samsung_hearing_left">left</string>

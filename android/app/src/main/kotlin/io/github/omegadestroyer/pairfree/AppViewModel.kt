@@ -262,6 +262,9 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     override fun sendFrames(frames: List<ByteArray>) = connection.sendEq(frames)
 
+    override fun oneplusHearingTest() =
+        connection.oneplusSession?.hearingTest(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")))
+
     override fun startFitTest() {
         val name = (connection.status.value as? LinkStatus.Connected)?.device?.name
         val model = Models.find(connection.state.value.firmware?.code, name)

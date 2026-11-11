@@ -86,4 +86,15 @@ class HearingTest {
         val classic = listOf(20, 160, 300, 800, 1800, 2800, 5000, 8000, 16000)
         assertEquals(listOf(0, -4, -4, -4, 0, -3, -3, -3, 0), HearingEq.onBands(results, classic, 6))
     }
+
+    @Test
+    fun interpolationFollowsTheResultsOnAnyBandsAndStaysInRange() {
+        val results = listOf(125f to 6f, 1000f to 0f, 8000f to -4f).map { (hz, g) -> HearingTone(hz, 0f, g) }
+        // A band at a result's frequency takes its gain; below the first and above the last the gain is held; between, a line over log frequency.
+        assertEquals(listOf(6, 6, 0, -4, -4), HearingEq.interpolated(results, listOf(60, 125, 1000, 8000, 16000), 6))
+        assertEquals(listOf(3), HearingEq.interpolated(results, listOf(354), 6)) // halfway between 125 and 1000 in log terms
+        // Three filters (Nothing's) and a range narrower than the gains.
+        assertEquals(listOf(3, 0, -3), HearingEq.interpolated(results, listOf(140, 1000, 6900), 3).let { it.map { g -> g.coerceIn(-3, 3) } })
+        assertEquals(listOf(0, 0), HearingEq.interpolated(emptyList(), listOf(100, 200), 6))
+    }
 }

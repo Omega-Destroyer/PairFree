@@ -136,7 +136,7 @@ internal fun ConnectedScreen(
     }
     val hearing = hearingTable(device, eq)
     if (hearingTest && eq != null && hearing != null) {
-        HearingTestScreen(eq, hearing, stringResource(R.string.hearing_test_result), eqActions::applyCurve, onClose = { hearingTest = false })
+        HearingTestScreen(eq, hearing, (eq.target as? BandEqTarget)?.source is SoundpeatsBandEq, stringResource(R.string.hearing_test_result), eqActions::applyCurve, onClose = { hearingTest = false })
         return
     }
     Column(Modifier.fillMaxSize()) {
@@ -178,8 +178,14 @@ internal fun ConnectedScreen(
 private fun hearingTable(device: Paired, eq: EqState?): HearingTable? = when {
     eq == null -> null
     device.brand == Brand.SOUNDPEATS && (eq.target as? BandEqTarget)?.source is SoundpeatsBandEq -> HearingTables.SOUNDPEATS
+    // Above the vendors' apps (owner, 2026-11-10): any earbuds with a custom curve of three bands or more can take the same phone-run test, with the
+    // SOUNDPEATS tone table and PairFree's own merge onto their bands (HearingEq.interpolated). Their apps' hearing tests (Samsung, Soundcore, JBL ...)
+    // are a different kind: see docs/FIT_AND_HEARING_TESTS.md.
+    eq.target.hasCustom && eq.layout.bands.size >= HEARING_MIN_BANDS -> HearingTables.SOUNDPEATS
     else -> null
 }
+
+private const val HEARING_MIN_BANDS = 3
 
 /**
  * The model's table entry: SoundPEATS by firmware code, or by name until the code is known;

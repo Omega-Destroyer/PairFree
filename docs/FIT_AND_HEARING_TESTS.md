@@ -49,3 +49,7 @@ Two different things go by the name. PairFree's SOUNDPEATS test is the first kin
 | Pixel, Sony, EarFun, QCY, Cambridge | none found | - | - |
 
 Nothing in the second kind is "not possible"; it is **not read yet** and listed so it is read next (owner, 2026-11-10: read everything first).
+
+## Added above the vendors' apps (owner, 2026-11-10)
+
+The phone-run hearing test is offered on **every brand whose earbuds take a custom curve of three bands or more** (`hearingTable` in `ConnectedScreen.kt`), with SOUNDPEATS' tone table and PairFree's own merge onto the model's bands (`HearingEq.interpolated`: straight lines over log frequency between the results, held flat beyond the ends). It is PairFree's feature, not a vendor's: no vendor app except SOUNDPEATS does this, and the result is only an EQ curve, saved as a profile like any other. The vendors' own tests (second table above) stay to be read and built as their own kind.

@@ -459,3 +459,25 @@ nor PairFree reads.
   OpenSCQ30, and so PairFree, sends the four sound mode bytes alone. Not changed until a user says
   whether PairFree's noise mode works on the Q20i: what the two bytes are is not known.
 - The earbuds answered each mode change with `0B 02` (seven bytes, left out of the recording).
+
+## 13. Sleep A30 (D1301): custom local audio research
+
+The [custom-audio feasibility assessment](SLEEP_A30_AUDIO_FEASIBILITY.md) records the 2026-11-09
+app/native investigation and a proposed saved-file library. The A30 holds one local audio file.
+The app's generic SBC container writer was reproduced in isolation, but its A30 use, accepted
+encoding, transfer commands and maximum clip size/duration remain unverified. No audio uploader
+is implemented or hardware-tested by that assessment; existing D1301 settings are separate.
+
+**Recording support:** PairFree's on-phone snoop filter now retains timing, sizes and at most
+four preview bytes for unknown framed Soundcore messages, plus metadata for unframed data on a
+previously identified Soundcore RFCOMM channel. Its CRC-checked `6611`-family container recognizer
+exports payload length/type/check results without the filename, 64-bit identifier or audio.
+The recognizer also covers a header split across packets of the same command and connection;
+it does not infer the A30's format or upload command IDs. Bulk packet reports retain samples
+and total counts instead of dumping audio. Known alarm, clock and sleep-history traffic remains
+private. D1301 listening/default/sleep-switch controls from OpenSCQ30 have recording names and
+bounded body sizes in `commands.json`; these entries add no probes or settings.
+
+The [capture guide](SLEEP_A30_CAPTURE_GUIDE.md) uses PairFree's filtered public report rather
+than requesting raw files. This needs a build containing these recorder changes. A separate
+unidentified transfer channel or another container format still requires further app analysis.

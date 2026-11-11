@@ -47,6 +47,7 @@ internal fun DeviceScreen(
     settings: List<SettingGroup> = emptyList(),
     status: StatusUi? = null,
     onFitTest: () -> Unit = {},
+    onSealCheck: () -> Unit = {},
 ) {
     var picker by remember { mutableStateOf<Picker?>(null) }
     var confirmReset by remember { mutableStateOf(false) }
@@ -95,6 +96,15 @@ internal fun DeviceScreen(
                 if (model?.ldacOrMultipoint == true) {
                     Text(stringResource(R.string.ldac_or_multipoint), style = Studio.type.small, color = c.secondaryText)
                 }
+            }
+        }
+
+        if (!state.hasFitTest) {
+            // Earbuds without a fit test of their own can still use JBL's tone check (PairFree's version, for every brand).
+            Panel {
+                Label(stringResource(R.string.ear_tips))
+                Text(stringResource(R.string.seal_check_about), style = Studio.type.small, color = c.secondaryText)
+                StudioButton(stringResource(R.string.seal_check_open), onSealCheck, Modifier.fillMaxWidth())
             }
         }
 

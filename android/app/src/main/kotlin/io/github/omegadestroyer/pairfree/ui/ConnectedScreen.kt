@@ -129,7 +129,12 @@ internal fun ConnectedScreen(
     var tab by rememberSaveable { mutableStateOf(startTab) }
     var fitTest by rememberSaveable { mutableStateOf(false) }
     var hearingTest by rememberSaveable { mutableStateOf(false) }
+    var sealCheck by rememberSaveable { mutableStateOf(false) }
     val model = modelOf(device, state)
+    if (sealCheck) {
+        SealCheckScreen(onClose = { sealCheck = false })
+        return
+    }
     if (fitTest) {
         FitTestScreen(device, state, actions, onClose = { fitTest = false })
         return
@@ -169,7 +174,7 @@ internal fun ConnectedScreen(
                     onHearingTest = if (samsungHearing || hearing != null) ({ hearingTest = true }) else null,
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
-                Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status) { fitTest = true }
+                Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status, { fitTest = true }, { sealCheck = true })
             }
         }
         TabBar(tab) { tab = it }

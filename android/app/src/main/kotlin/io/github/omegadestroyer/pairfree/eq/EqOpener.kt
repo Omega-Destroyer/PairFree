@@ -186,9 +186,12 @@ class EqOpener(
     private fun samsung(device: Paired): EqSource? {
         val model = SamsungModels.of(device.model) ?: return null
         val curves = connection.samsungEqCurves.value
-        val target = SamsungEqTarget(model, curves)
+        val band = SamsungBandEq(model, curves)
+        val target = BandEqTarget(band)
         return EqSource(model to curves.isNotEmpty(), target.layout, target) { current ->
-            connection.samsungStatus.value?.let { target.reported(it) }?.let { EqReported(it.profileId, current, resendCustom = it.custom) }
+            connection.samsungStatus.value?.let { band.report(it, current) }?.let { (report, custom) ->
+                target.reportedAs(report, current)?.let { EqReported(it.profileId, it.gains, resendCustom = custom) }
+            }
         }
     }
 

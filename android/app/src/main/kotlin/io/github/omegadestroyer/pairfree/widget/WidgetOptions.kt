@@ -12,7 +12,7 @@ import io.github.omegadestroyer.pairfree.eq.BandEqTarget
 import io.github.omegadestroyer.pairfree.eq.NothingBandEq
 import io.github.omegadestroyer.pairfree.eq.OneMoreBandEq
 import io.github.omegadestroyer.pairfree.eq.PixelBandEq
-import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
+import io.github.omegadestroyer.pairfree.eq.SamsungBandEq
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
 import io.github.omegadestroyer.pairfree.hub
@@ -156,7 +156,7 @@ object WidgetOptions {
             Brand.SOUNDPEATS -> Models.find(null, device.name)?.eq?.let { it to SoundpeatsEqTarget }
             Brand.QCY -> if (device.soldAs == Brand.SOUNDPEATS) Models.find(device.model, device.name)?.eq?.let { it to CapsuleEqTarget } else null
             Brand.SOUNDCORE -> SoundcoreEqSpec.of(device.model)?.let { SoundcoreEqTarget(it, { null }, true) }?.let { it.layout to it }
-            Brand.SAMSUNG -> SamsungModels.of(device.model)?.let { SamsungEqTarget(it) }?.let { it.layout to it }
+            Brand.SAMSUNG -> SamsungModels.of(device.model)?.let { BandEqTarget(SamsungBandEq(it)) }?.let { it.layout to it }
             Brand.JBL -> JblModels.fromName(device.name)?.takeIf { it.eq?.written == true }?.let { JblEqTarget(JblSession(it)) }?.let { it.layout to it }
             Brand.NOTHING -> NothingModels.of(device.model)?.let { BandEqTarget(NothingBandEq(NothingSession(it))) }?.takeIf { it.hasCustom || it.layout.presets.isNotEmpty() }?.let { it.layout to it }
             Brand.ONEMORE -> OneMoreModels.fromName(device.name)?.let { BandEqTarget(OneMoreBandEq(OneMoreSession(it))) }?.let { it.layout to it }

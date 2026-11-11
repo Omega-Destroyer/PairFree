@@ -12,6 +12,10 @@ import io.github.omegadestroyer.pairfree.protocol.pixel.PixelSession
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelValues
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyControl
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyEq
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungEq
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModel
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungPacket
+import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -146,5 +150,56 @@ class PixelBandEq(private val session: PixelSession) : BandEq {
         /** Google's name for the curve the user saved on the earbuds. */
         const val LAST_SAVED = "Last saved"
         const val SAME_DB = 0.01f
+    }
+}
+
+/**
+ * Galaxy Buds (docs/samsung/PROTOCOL.md section 6): Normal or one of five presets, which the earbuds apply themselves, and on models that take one a nine-band
+ * custom curve. The earbuds report which they hold, but not the custom curve, and forget the curve when they power off; so this phone keeps the curve it
+ * last sent and sends it again once per connection ([SamsungBandEq.report]'s `custom`). Where the earbuds reported every preset's curve ([curves], the
+ * Buds4 family) the presets are drawn.
+ */
+class SamsungBandEq(private val model: SamsungModel, private val curves: List<List<Int>> = emptyList()) : BandEq {
+    override val eqBandsHz: List<Int> = if (SamsungEq.hasCustom(model)) SamsungEq.CUSTOM_BANDS_HZ else emptyList()
+    override val eqRangeDb: Int = SamsungEq.CUSTOM_RANGE
+    private val keys = listOf(SamsungEq.NORMAL) + SamsungEq.PRESETS
+    override val eqPresetNames: List<String> = keys.map { NAMES.getValue(it) }
+    override val eqPresetOnlyBandsHz: List<Int> = SamsungEq.CUSTOM_BANDS_HZ
+    override val eqReport: BandEqReport? = null
+
+    /** The galaxy buds forget a custom curve, so the Sound tab says so; the earbuds say which preset or that a custom curve is held, not its values. */
+    override val eqReportsCustom: Boolean = false
+
+    private val drawn = curves.size > SamsungEq.PRESETS.size && curves.all { it.size == SamsungEq.CUSTOM_BANDS_HZ.size }
+
+    /** By equalizer number: Normal, then the presets, as the earbuds' curves come. */
+    override val eqPresetGains: Map<String, List<Double>> =
+        if (!drawn) emptyMap() else eqPresetNames.mapIndexedNotNull { i, n -> curves.getOrNull(i)?.let { n to it.map(Int::toDouble) } }.toMap()
+
+    override fun eqPresetFrames(name: String): List<ByteArray>? {
+        val key = NAMES.entries.firstOrNull { it.value == name }?.key ?: return null
+        return listOf(SamsungEq.preset(model, key)).map { SamsungPacket.build(it.id, it.payload, model.legacy) }
+    }
+
+    override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? =
+        SamsungEq.custom(model, gains)?.map { SamsungPacket.build(it.id, it.payload, model.legacy) }
+
+    /** The preset [status] says the earbuds hold, or the custom curve (whose values stay what this phone last sent, [current]); null while it does not say. */
+    fun report(status: SamsungStatus, current: List<Int>): Pair<BandEqReport, Boolean>? = when (val key = SamsungEq.reported(status)) {
+        null -> null
+        SamsungEq.CUSTOM -> BandEqReport(null, current) to true
+        else -> BandEqReport(NAMES.getValue(key), current) to false
+    }
+
+    private companion object {
+        /** The presets as Samsung's app names them. */
+        val NAMES = linkedMapOf(
+            SamsungEq.NORMAL to "Normal",
+            "bass_boost" to "Bass boost",
+            "soft" to "Soft",
+            "dynamic" to "Dynamic",
+            "clear" to "Clear",
+            "treble_boost" to "Treble boost",
+        )
     }
 }

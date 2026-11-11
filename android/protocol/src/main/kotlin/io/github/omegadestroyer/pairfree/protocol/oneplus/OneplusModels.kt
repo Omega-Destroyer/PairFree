@@ -42,6 +42,8 @@ public data class OneplusModel(
     val promptVolume: List<Int> = emptyList(),
     /** True when the model has the tap sensitivity bar (`042D` writes 1 to 5, `0133` reads it). */
     val tapLevel: Boolean = false,
+    /** True when the model has the ear tip fit test (`fitDetection` in the catalog). */
+    val fitTest: Boolean = false,
 )
 
 public object OneplusModels {

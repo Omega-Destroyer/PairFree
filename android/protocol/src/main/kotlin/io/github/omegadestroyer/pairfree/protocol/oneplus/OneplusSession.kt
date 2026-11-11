@@ -4,6 +4,7 @@ import io.github.omegadestroyer.pairfree.protocol.BandEq
 import io.github.omegadestroyer.pairfree.protocol.BandEqReport
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -18,7 +19,7 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * `0406` (preset index) and `0403` (a switch's feature id and 0 or 1).
  */
 public class OneplusSession(public val model: OneplusModel?) : BandEq {
-    public var state: EarbudState = EarbudState()
+    public var state: EarbudState = EarbudState(fitTest = model?.fitTest == true)
         private set
 
     private val parser = OneplusParser()
@@ -114,6 +115,7 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
 
     private fun apply(p: OneplusPacket) {
         if (!p.response) {
+            if (p.command == OneplusCommand.EVENT) fitEvent(p.payload)
             // The earbuds announce a changed custom equalizer list unasked (command 0506, no status byte).
             if (p.command == OneplusCommand.CUSTOM_EQ_NOTIFY) customEqs = parseCustomEqs(p.payload, 0) ?: customEqs
             return
@@ -267,6 +269,31 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
             val name = t.functions.firstOrNull { it.wire == current }?.key ?: continue
             add(Setting.Choice(slot.key, name, t.functions.map { it.key }.distinct()))
         }
+    }
+
+    /**
+     * A notification event (`0204`): event 4 is the fit test's result, `4, type, status, type, status` with device type 1 for the left earbud and 2 for the right
+     * and status 1 for a good fit (HeyMelody's `CompactnessDetectionInfo` and `FitDetectionDTO`: it calls anything but 1, 0 and 6 an error and any status but 1 a poor fit).
+     */
+    private fun fitEvent(d: ByteArray) {
+        if (d.size < 5 || d[0].toInt() != FIT_EVENT) return
+        val byType = mapOf(d[1].toInt() and 0xFF to (d[2].toInt() and 0xFF), d[3].toInt() and 0xFF to (d[4].toInt() and 0xFF))
+        fun fit(status: Int?) = when (status) {
+            null -> FitResult.Fit.UNKNOWN
+            1 -> FitResult.Fit.GOOD
+            else -> FitResult.Fit.NOT_FIT
+        }
+        state = state.copy(fit = FitResult(fit(byType[LEFT]), fit(byType[RIGHT])))
+    }
+
+    /**
+     * Starts the fit test, on models with it: HeyMelody registers for the fit event (`0201` with the event, or `0205` with a count and the events where the
+     * earbuds take it; both are sent) and starts the test with `0405 01`. The result arrives as an event; it replaces [EarbudState.fit].
+     */
+    public fun startFitTest(): List<ByteArray>? {
+        if (model?.fitTest != true) return null
+        state = state.copy(fit = null)
+        return listOf(next(OneplusCommand.SET_EVENT, FIT_EVENT), next(OneplusCommand.SET_EVENTS, 1, FIT_EVENT), next(OneplusCommand.SET_FIT, 1))
     }
 
     /** `status, count, (feature id, state)...`. */
@@ -597,6 +624,7 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
         private const val SEQUENCE_WRAP = 256
         private const val CYCLE_TYPE = 1
         private const val MIN_CYCLE = 2
+        private const val FIT_EVENT = 4
         private val CYCLE_MODES = listOf("cycle_off" to "off", "cycle_anc" to "noise_cancelling", "cycle_transparency" to "transparency")
         private const val OP_ADD = 1
         private const val OP_SAVE = 2
@@ -617,7 +645,7 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
             OneplusCommand.TYPED_NOISE, OneplusCommand.EQ_PRESET, OneplusCommand.SWITCHES,
             OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH, OneplusCommand.KEYS, OneplusCommand.SET_KEYS, OneplusCommand.CUSTOM_EQ, OneplusCommand.SET_CUSTOM_EQ, OneplusCommand.SPATIAL, OneplusCommand.SET_SPATIAL, OneplusCommand.FIND,
             OneplusCommand.MULTI_CONNECT, OneplusCommand.VOLUME, OneplusCommand.TAP_LEVEL, OneplusCommand.HEAD_MOTION,
-            OneplusCommand.SET_MULTI_CONNECT, OneplusCommand.SET_VOLUME, OneplusCommand.SET_TAP_LEVEL, OneplusCommand.SET_HEAD_MOTION,
+            OneplusCommand.SET_EVENT, OneplusCommand.SET_EVENTS, OneplusCommand.SET_FIT, OneplusCommand.SET_MULTI_CONNECT, OneplusCommand.SET_VOLUME, OneplusCommand.SET_TAP_LEVEL, OneplusCommand.SET_HEAD_MOTION,
         )
     }
 }

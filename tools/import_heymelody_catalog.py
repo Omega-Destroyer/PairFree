@@ -169,6 +169,8 @@ def entry(r, strings):
         e["prompt_volume"] = {"min": rng.get("min") if rng.get("min", -1) != -1 else 1, "max": rng.get("max") if rng.get("max", -1) != -1 else 10}
     if f.get("tapLevelSetting"):
         e["tap_level"] = True
+    if f.get("fitDetection"):
+        e["fit_test"] = True
     return e
 
 

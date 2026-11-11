@@ -295,4 +295,18 @@ class OneplusSessionTest {
         assertEquals("shake", (h.groups.flatMap { it.settings }.first { it.key == OneplusSession.HEAD_KEY } as Setting.Choice).value)
         assertEquals("0431" to "00", "%04x".format(parsed(h.change(SettingChange.Choice(OneplusSession.HEAD_KEY, "nod"))!!.single()).command) to hex(parsed(h.change(SettingChange.Choice(OneplusSession.HEAD_KEY, "nod"))!!.single()).payload))
     }
+
+    @Test
+    fun theFitTestRegistersForItsEventStartsTheTestAndReadsTheResult() {
+        val m = OneplusModels.ALL.first { it.fitTest && !it.hidden }
+        val s = OneplusSession(m)
+        assertTrue(s.state.hasFitTest)
+        val frames = s.startFitTest()!!
+        assertTrue(frames.all { s.allowed(it) })
+        assertEquals(listOf(0x0201 to "04", 0x0205 to "0104", 0x0405 to "01"), frames.map { parsed(it) }.map { it.command to hex(it.payload) })
+        // The event: 0204, not a reply: fit event 4, then (device type, status) for the left and right earbud.
+        assertTrue(s.receive(OneplusPacket(0x0204, 0, byteArrayOf(4, 1, 1, 2, 3)).bytes()))
+        assertEquals(io.github.omegadestroyer.pairfree.protocol.FitResult(io.github.omegadestroyer.pairfree.protocol.FitResult.Fit.GOOD, io.github.omegadestroyer.pairfree.protocol.FitResult.Fit.NOT_FIT), s.state.fit)
+        assertEquals(null, OneplusSession(OneplusModels.ALL.first { !it.fitTest }).startFitTest())
+    }
 }

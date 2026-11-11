@@ -1681,6 +1681,12 @@ class EarbudsConnection(
      * section 11), and back to what it was once the result is in. The official app leaves it off.
      */
     fun startFitTest(keepAnc: Boolean) {
+        oneplus?.let { session ->
+            // The earbuds run the test themselves and send the result as an event (OnePlus and OPPO).
+            val frames = session.startFitTest() ?: return
+            if (sendOneplus(session, frames)) publish(session)
+            return
+        }
         samsung?.let { session ->
             // Galaxy Buds run the test themselves; the result arrives as its own message.
             val packets = session.startFitTest() ?: return

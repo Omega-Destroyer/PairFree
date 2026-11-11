@@ -50,7 +50,7 @@ Every plain switch is written the same way, `0403` with the feature id and 0 or 
 | `wearDetection` (38) | In-ear detection: feature id 4 | built as a switch |
 | `spatialTypes` (47), `spatialDescriptionType`, `spatialHiResMutex` | Spatial audio with the allowed types: 0 off, 1 fixed, 2 head tracking (read `012A`, write `0422`) | built (Sound tab) |
 | `hearingEnhancement` (34), `earScan` (32), `hearingJudgeDb` (8) | Hearing enhancement: feature id 11 (a switch); the ear scan and its profile are phone-side tests | switch built; the scan not built |
-| `fitDetection` (31) | Ear tip fit test: `0405` starts it (`t1`, one byte) and the result arrives unasked | not built (audible; the result layout was not read) |
+| `fitDetection` (31) | Ear tip fit test: `0405 01` starts it (`t1`); the result is a notification event, command `0204` with `4, type, status, type, status` (type 1 left, 2 right; status 1 good, anything else poor). The earbuds send events once the phone registers for them: `0200` lists the events, `0201` registers one or `0205` several (HeyMelody picks by the model's command support; PairFree sends both for event 4). Whether `0201` or `0205` is the one a model takes is unconfirmed. | built (the shared fit test screen) |
 | `highToneQuality` (28), `highAudio` (3) | High-quality audio: feature id 24 | built as a switch |
 | `bassEngineSupport` (24) | Bass engine: feature id 29 (its level is written with `041B`, three bytes, which were not read) | switch built; the level not built |
 | `promptVolume` (26), `promptVolumeRange`, `promptVolumePercent` | Voice prompt volume: read `0130` (`status, value`), write `0427` with the value; the bar runs from the catalog's minimum (else 1) to its maximum (else 10). The read was found in `PollCommandManager.M`, which the decompiler skipped (re-run with `-m fallback`) | built (Device tab) |
@@ -86,4 +86,4 @@ App-side or server-side fields that need no earbud command: guides and tutorials
   PairFree does not read them.
 - Call controls, key reads and slide or long-press rows are built from the app's layouts but only exercised against invented replies: the key read
   PairFree sends asks for buttons 3 and 1, so whether the earbuds list device type 4 or button 6 records in it is not established.
-- Fit test (`0405`, audible), the bass engine's level, the ear scan and per-ear long-press cycles are not built; LE audio and the Gemini, zen and game-sound features are not user settings (see the switch list above, with what was checked).
+- The bass engine's level, the ear scan and per-ear long-press cycles are not built; LE audio and the Gemini, zen and game-sound features are not user settings (see the switch list above, with what was checked).

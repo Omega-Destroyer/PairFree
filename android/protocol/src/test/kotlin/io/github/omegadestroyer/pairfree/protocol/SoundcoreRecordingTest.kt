@@ -80,9 +80,9 @@ class SoundcoreRecordingTest {
     }
 
     @Test fun knownSleepControlsAreBoundedAndSleepHistoryIsWithheld() {
-        assertEquals("01", VendorRecording.shown(RecordedBrand.SOUNDCORE, SoundcoreCommand.LISTENING_MODE, byteArrayOf(1), null))
+        assertEquals("01", VendorRecording.shown(RecordedBrand.SOUNDCORE, SoundcoreCommand.SET_LISTENING_MODE, byteArrayOf(1), null))
         val big = ByteArray(20) { 7 }
-        assertTrue(VendorRecording.shown(RecordedBrand.SOUNDCORE, SoundcoreCommand.LISTENING_MODE, big, null).contains("remaining bytes left out"))
+        assertTrue(VendorRecording.shown(RecordedBrand.SOUNDCORE, SoundcoreCommand.SET_LISTENING_MODE, big, null).contains("remaining bytes left out"))
         for (id in listOf(SoundcoreCommand.SLEEP_CLOCK, SoundcoreCommand.SLEEP_ALARMS, SoundcoreCommand.SET_SLEEP_ALARM, SoundcoreCommand.SLEEP_LOG_PART)) {
             assertEquals("(20 bytes left out)", VendorRecording.shown(RecordedBrand.SOUNDCORE, id, big, null))
         }

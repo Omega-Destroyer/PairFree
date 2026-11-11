@@ -3,7 +3,7 @@ package io.github.omegadestroyer.pairfree.widget
 import android.content.Context
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
-import io.github.omegadestroyer.pairfree.eq.CapsuleEqTarget
+import io.github.omegadestroyer.pairfree.protocol.CapsuleBandEq
 import io.github.omegadestroyer.pairfree.eq.EarfunBandEq
 import io.github.omegadestroyer.pairfree.eq.EqTarget
 import io.github.omegadestroyer.pairfree.eq.Equalizer
@@ -14,7 +14,7 @@ import io.github.omegadestroyer.pairfree.eq.OneMoreBandEq
 import io.github.omegadestroyer.pairfree.eq.PixelBandEq
 import io.github.omegadestroyer.pairfree.eq.SamsungBandEq
 import io.github.omegadestroyer.pairfree.eq.SoundcoreBandEq
-import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
+import io.github.omegadestroyer.pairfree.protocol.SoundpeatsBandEq
 import io.github.omegadestroyer.pairfree.hub
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
@@ -153,8 +153,8 @@ object WidgetOptions {
     /** The brand's EQ layout and target built from its tables alone, or null where it needs what the earbuds report. */
     private fun eqOffline(device: Paired): Pair<EqLayout, EqTarget>? = try {
         when (device.brand) {
-            Brand.SOUNDPEATS -> Models.find(null, device.name)?.eq?.let { it to SoundpeatsEqTarget }
-            Brand.QCY -> if (device.soldAs == Brand.SOUNDPEATS) Models.find(device.model, device.name)?.eq?.let { it to CapsuleEqTarget } else null
+            Brand.SOUNDPEATS -> Models.find(null, device.name)?.eq?.let { BandEqTarget(SoundpeatsBandEq(it)) }?.let { it.layout to it }
+            Brand.QCY -> if (device.soldAs == Brand.SOUNDPEATS) Models.find(device.model, device.name)?.eq?.let { BandEqTarget(CapsuleBandEq(it)) }?.let { it.layout to it } else null
             Brand.SOUNDCORE -> SoundcoreEqSpec.of(device.model)?.let { BandEqTarget(SoundcoreBandEq(it, { null }, true)) }?.let { it.layout to it }
             Brand.SAMSUNG -> SamsungModels.of(device.model)?.let { BandEqTarget(SamsungBandEq(it)) }?.let { it.layout to it }
             Brand.JBL -> JblModels.fromName(device.name)?.takeIf { it.eq?.written == true }?.let { BandEqTarget(JblBandEq(JblSession(it))) }?.let { it.layout to it }

@@ -5,7 +5,8 @@ import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusModels
 
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTables
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
-import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
+import io.github.omegadestroyer.pairfree.protocol.SoundpeatsBandEq
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -176,7 +177,7 @@ internal fun ConnectedScreen(
  */
 private fun hearingTable(device: Paired, eq: EqState?): HearingTable? = when {
     eq == null -> null
-    device.brand == Brand.SOUNDPEATS && eq.target === SoundpeatsEqTarget -> HearingTables.SOUNDPEATS
+    device.brand == Brand.SOUNDPEATS && (eq.target as? BandEqTarget)?.source is SoundpeatsBandEq -> HearingTables.SOUNDPEATS
     else -> null
 }
 

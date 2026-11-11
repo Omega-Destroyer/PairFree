@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
 import io.github.omegadestroyer.pairfree.eq.EqProfile
+import io.github.omegadestroyer.pairfree.protocol.SoundpeatsBandEq
 import io.github.omegadestroyer.pairfree.eq.EqSetting
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.eq.Equalizer
@@ -58,7 +60,8 @@ private val H3_EQ: EqState = run {
     val model = Models.find("S5", null)!!
     val layout = model.eq!!
     val mine = EqProfile(EqProfile.USER + "Customize1", "Customize1", listOf(2, 1, 0, 0, 0, 0, 0, 1, 2, 2))
-    EqState(model, layout, Equalizer.builtIns(layout) + mine, EqSetting(mine.id, mine.gains))
+    val target = BandEqTarget(SoundpeatsBandEq(layout))
+    EqState(model, layout, Equalizer.builtIns(layout, target) + mine, EqSetting(mine.id, mine.gains), target = target)
 }
 
 @Composable

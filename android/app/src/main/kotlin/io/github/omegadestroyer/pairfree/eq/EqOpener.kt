@@ -4,8 +4,10 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.protocol.CapsuleBandEq
 import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.Model
+import io.github.omegadestroyer.pairfree.protocol.SoundpeatsBandEq
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
@@ -107,7 +109,7 @@ class EqOpener(
             // Every model with an EQ in data/soundcore/devices.json (owner, 2026-10-29); the screen says when its write is not confirmed.
             Brand.SOUNDCORE -> soundcore(device)
             // SoundPEATS, and the brands whose model has no EQ of its own: the model's table, if any.
-            else -> EqSource("plain", model?.eq, SoundpeatsEqTarget)
+            else -> model?.eq?.let { layout -> BandEqTarget(SoundpeatsBandEq(layout)).let { EqSource("plain", it.layout, it) } }
         }
     }
 
@@ -151,7 +153,7 @@ class EqOpener(
 
     /** QCY earbuds report their EQ after they connect, and it opens over the bands they report. SOUNDPEATS' QCY-built models use SOUNDPEATS' own curve. */
     private fun qcy(device: Paired, model: Model?): EqSource? {
-        if (device.soldAs == Brand.SOUNDPEATS) return EqSource("capsule", model?.eq, CapsuleEqTarget)
+        if (device.soldAs == Brand.SOUNDPEATS) return model?.eq?.let { layout -> BandEqTarget(CapsuleBandEq(layout)).let { EqSource("capsule", it.layout, it) } }
         val session = connection.qcySession ?: return null
         val eq = connection.qcyEq.value ?: return null
         val band = QcyBandEq(session, eq)

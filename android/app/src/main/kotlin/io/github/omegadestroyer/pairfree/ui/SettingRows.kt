@@ -200,6 +200,7 @@ private fun settingTitle(key: String): String = when (key) {
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
     "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
     "op_custom_eq" -> stringResource(R.string.setting_op_custom_eq)
+    "op_spatial" -> stringResource(R.string.setting_op_spatial)
     "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
     "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
     "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
@@ -611,6 +612,11 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "op_spatial" -> getString(when (option) {
+        "fixed" -> R.string.op_spatial_fixed
+        "head_tracking" -> R.string.op_spatial_head
+        else -> R.string.action_off
+    })
     key == "op_noise_level" -> getString(when (option) {
         "smart" -> R.string.op_level_smart
         "light" -> R.string.op_level_light

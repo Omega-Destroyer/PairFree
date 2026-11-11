@@ -217,7 +217,7 @@ internal fun SoundScreen(
         message?.let { Text(stringResource(it), style = Studio.type.small, color = Studio.colors.secondaryText) }
         val note = when {
             eq.target is SonyEqTarget -> R.string.eq_note_sony
-            !eq.target.presetCurves -> R.string.eq_note_samsung
+            !eq.target.presetCurves && !eq.target.reportsCustom -> R.string.eq_note_samsung
             eq.target.reportsEq -> R.string.eq_note_reported
             else -> R.string.eq_note
         }

@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.oneplus
 
+import io.github.omegadestroyer.pairfree.protocol.BandEqReport
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -70,7 +71,7 @@ class OneplusSessionTest {
         s.receive(reply(0x010F, 0, 0))
         s.receive(reply(0x010D, 0, 1, 6, 0))
         val groups = s.groups.flatMap { it.settings }
-        assertEquals("Balanced (Default)", (groups.first { it.key == "op_eq_preset" } as Setting.Choice).value)
+        assertEquals(BandEqReport("Balanced (Default)", null), s.eqReport)
 
         fun payloadOf(frame: ByteArray) = parsed(frame).let { "%04x".format(it.command) to it.payload.joinToString("") { b -> "%02x".format(b) } }
 
@@ -81,7 +82,7 @@ class OneplusSessionTest {
         // Off is not in the captured trace (the clicks wrote nothing): the bit of index 0.
         assertEquals("0404" to "010101", payloadOf(s.set(Command.ANC_MODE, anc("off"))!!.single()))
         for ((name, payload) in listOf("Bold" to "03", "Clear Vocals" to "02", "Bass" to "01", "Balanced (Default)" to "00")) {
-            assertEquals("0406" to vector("0406", payload).getValue("payload").jsonPrimitive.content, payloadOf(s.change(SettingChange.Choice("op_eq_preset", name))!!.single()))
+            assertEquals("0406" to vector("0406", payload).getValue("payload").jsonPrimitive.content, payloadOf(s.eqPresetFrames(name)!!.also { assertEquals(BandEqReport(name, null), s.eqReport) }.single()))
         }
         assertEquals("0403" to "0601", payloadOf(s.change(SettingChange.Toggle("game_mode", true))!!.single()))
         assertEquals("0403" to "0600", payloadOf(s.change(SettingChange.Toggle("game_mode", false))!!.single()))
@@ -144,11 +145,13 @@ class OneplusSessionTest {
         s.receive(reply(0x0122, 0, 1, 1, 0xFA, 6, 3, 4, *name.toIntArray(), 6, *bands.toIntArray()))
         val rows = s.groups.flatMap { it.settings }
         assertEquals("Mine", (rows.first { it.key == OneplusSession.CUSTOM_EQ_KEY } as Setting.Choice).value)
-        val levels = rows.filterIsInstance<Setting.Level>().associate { it.key to it.value }
-        assertEquals(mapOf("eq_62" to 0, "eq_250" to 1, "eq_1000" to 2, "eq_4000" to 3, "eq_8000" to -1, "eq_16000" to -2), levels)
+        // The graphic equalizer sees the bands and what the earbuds hold; the rows hold no sliders.
+        assertEquals(listOf(62, 250, 1000, 4000, 8000, 16000), s.eqBandsHz)
+        assertEquals(BandEqReport(null, listOf(0, 1, 2, 3, -1, -2)), s.eqReport)
+        assertTrue(rows.none { it is Setting.Level })
         assertTrue(rows.any { it is Setting.Action && it.key == OneplusSession.NEW_EQ_KEY })
         // Raising the 250 Hz band to +3 writes the whole record again: operation 2, the limits, the id, the name and every band.
-        val write = parsed(s.change(SettingChange.Level("eq_250", 3))!!.single())
+        val write = parsed(s.eqCustomFrames(listOf(0, 3, 2, 3, -1, -2))!!.single())
         assertEquals(0x0418, write.command)
         val expected = listOf(2, 0xFA, 6, 3, 4) + name + listOf(6) +
             listOf(62 to 0, 250 to 3, 1000 to 2, 4000 to 3, 8000 to -1, 16000 to -2).flatMap { (hz, g) -> listOf(hz and 0xFF, hz shr 8, g and 0xFF) }
@@ -201,6 +204,25 @@ class OneplusSessionTest {
         val rows = air.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
         assertEquals("volume_up", rows["touch_hold_left"])
         assertEquals("volume_down", rows["touch_hold_right"])
+    }
+
+    @Test
+    fun spatialAudioAndFindEarbuds() {
+        val m = OneplusModels.ALL.first { it.spatialTypes.size >= 2 && it.find && !it.hidden }
+        val s = OneplusSession(m)
+        val sent = s.start().map { parsed(it) }
+        assertTrue(sent.any { it.command == 0x012A })
+        s.receive(reply(0x0106, 0, 1, 1, 80))
+        s.receive(reply(0x012A, 0, 1))
+        val row = s.groups.flatMap { it.settings }.first { it.key == OneplusSession.SPATIAL_KEY } as Setting.Choice
+        assertEquals("fixed", row.value)
+        assertTrue("head_tracking" in row.options || m.spatialTypes.none { it == 2 })
+        val write = parsed(s.change(SettingChange.Choice(OneplusSession.SPATIAL_KEY, "off"))!!.single())
+        assertEquals("0422" to "00", "%04x".format(write.command) to write.payload.joinToString("") { "%02x".format(it) })
+        // The find button starts and stops the sound with 0400.
+        assertTrue(s.groups.flatMap { it.settings }.any { it is Setting.Action && it.key == OneplusSession.FIND_KEY && !it.active })
+        assertEquals("01", parsed(s.change(SettingChange.Press(OneplusSession.FIND_KEY))!!.single()).payload.joinToString("") { "%02x".format(it) })
+        assertEquals("00", parsed(s.change(SettingChange.Press(OneplusSession.FIND_KEY))!!.single()).payload.joinToString("") { "%02x".format(it) })
     }
 
     @Test

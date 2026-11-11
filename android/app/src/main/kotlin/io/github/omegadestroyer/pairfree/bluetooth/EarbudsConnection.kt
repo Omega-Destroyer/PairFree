@@ -2,6 +2,8 @@ package io.github.omegadestroyer.pairfree.bluetooth
 
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeSession
+import io.github.omegadestroyer.pairfree.protocol.BandEq
+import io.github.omegadestroyer.pairfree.protocol.BandEqReport
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeWire
 import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusModels
 import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusSession
@@ -295,6 +297,7 @@ class EarbudsConnection(
     /** The 1MORE session, while connected to 1MORE earbuds or headphones; for the device report and the EQ. */
     val oneMoreSession: OneMoreSession? get() = oneMore
 
+    private val _bandEqReport = MutableStateFlow<BandEqReport?>(null)
     private val _oneMoreEq = MutableStateFlow<OneMoreEq?>(null)
 
     private val _jblEq = MutableStateFlow<JblEqCurve?>(null)
@@ -304,6 +307,12 @@ class EarbudsConnection(
 
     /** The 1MORE EQ as the earbuds last reported it; the Sound tab follows it. */
     val oneMoreEq: StateFlow<OneMoreEq?> = _oneMoreEq.asStateFlow()
+
+    /** The connected session when it implements the brand-neutral graphic equalizer ([BandEq]); the Sound tab then needs no brand code. */
+    val bandEq: BandEq? get() = oneplus
+
+    /** What the earbuds hold of that equalizer, once they have said. */
+    val bandEqReport: StateFlow<BandEqReport?> = _bandEqReport.asStateFlow()
 
     private var earfun: EarfunSession? = null   // set while connected to EarFun earbuds or headphones
     private var earfunQueue: Channel<ByteArray>? = null
@@ -352,6 +361,7 @@ class EarbudsConnection(
         _qcyEq.value = null
         oneMore = null
         _oneMoreEq.value = null
+        _bandEqReport.value = null
         _jblEq.value = null
         earfun = null
         cambridge = null
@@ -1289,6 +1299,7 @@ class EarbudsConnection(
     private fun publish(session: OneplusSession) {
         _state.value = session.state
         _settings.value = session.groups
+        _bandEqReport.value = session.eqReport
     }
 
     /** Sends OnePlus frames on the open channel. False when there is none. */
@@ -1605,7 +1616,11 @@ class EarbudsConnection(
      * request, so the earbuds report the EQ they took. A newer write replaces one still going out.
      */
     fun sendEq(frames: List<ByteArray>) {
-        if (cambridge != null || oneplus != null) return // Melomania and HeyMelody earbuds use their own rows, never shared SoundPEATS frames
+        oneplus?.let { session ->
+            if (sendOneplus(session, frames)) publish(session)
+            return
+        }
+        if (cambridge != null) return // Melomania uses its own gain rows, never shared SoundPEATS frames
         if (_status.value !is LinkStatus.Connected) return
         // The Pixel Buds' EQ target hands over its session's messages as bytes; they go through the Pixel link's queue.
         pixel?.let { session ->

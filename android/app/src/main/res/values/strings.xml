@@ -495,6 +495,9 @@
     <string name="setting_op_custom_eq">Custom equalizer</string>
     <string name="setting_op_eq_new">Add a custom equalizer</string>
     <string name="setting_op_switch_device">Switch device</string>
+    <string name="setting_op_spatial">Spatial audio</string>
+    <string name="op_spatial_fixed">Fixed</string>
+    <string name="op_spatial_head">Head tracking</string>
     <string name="setting_op_noise_level">Noise cancelling level</string>
     <string name="op_level_smart">Smart</string>
     <string name="op_level_light">Light</string>

@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.oneplus
 
+import io.github.omegadestroyer.pairfree.protocol.BandEq
+import io.github.omegadestroyer.pairfree.protocol.BandEqReport
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -15,7 +17,7 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * `010F` equalizer preset and `010D` the game mode switch; writes are `0404` (noise mode as a bitmap of the mode's protocol index),
  * `0406` (preset index) and `0403` (a switch's feature id and 0 or 1).
  */
-public class OneplusSession(public val model: OneplusModel?) {
+public class OneplusSession(public val model: OneplusModel?) : BandEq {
     public var state: EarbudState = EarbudState()
         private set
 
@@ -45,6 +47,10 @@ public class OneplusSession(public val model: OneplusModel?) {
     /** The long press's noise cycle: a bit for each noise mode index that is in it (`NoiseReductionInfo` action 2, type 1). */
     private var cycleMask: Int? = null
 
+    /** The spatial audio type the earbuds report (`012A`: status, type) and whether the find sound is playing. */
+    private var spatial: Int? = null
+    private var finding = false
+
     /** The product id the earbuds reported, as hex, for the device report. */
     public var productId: String? = null
         private set
@@ -71,6 +77,7 @@ public class OneplusSession(public val model: OneplusModel?) {
         if (model?.gameMode == true) add(next(OneplusCommand.SWITCHES, 1, GAME_MODE_ID))
         if (model?.touch?.isNotEmpty() == true) add(readKeys())
         if (model?.customSlots?.let { it > 0 } == true) add(next(OneplusCommand.CUSTOM_EQ))
+        if (model?.spatialTypes?.isNotEmpty() == true) add(next(OneplusCommand.SPATIAL))
     }
 
     /** The key assignment read HeyMelody sends: a count, then the buttons it asks about (3 and 1, as in the virtual run). */
@@ -101,6 +108,7 @@ public class OneplusSession(public val model: OneplusModel?) {
             OneplusCommand.SWITCHES -> switches(d)
             OneplusCommand.KEYS -> keyRecords(d)
             OneplusCommand.CUSTOM_EQ -> customEqs = parseCustomEqs(d, 1) ?: customEqs
+            OneplusCommand.SPATIAL -> if (d.size >= 2) spatial = d[1].toInt() and 0xFF
         }
     }
 
@@ -186,7 +194,6 @@ public class OneplusSession(public val model: OneplusModel?) {
         val slots = model?.customSlots ?: 0
         return buildList {
             if (eqs.isNotEmpty()) add(Setting.Choice(CUSTOM_EQ_KEY, eqs.firstOrNull { it.selected }?.name, eqs.map { it.name }))
-            eqs.firstOrNull { it.selected }?.let { eq -> eq.frequencies.forEachIndexed { i, hz -> add(Setting.Level("eq_$hz", eq.gains[i].coerceIn(eq.min, eq.max), eq.min, eq.max)) } }
             if (eqs.size < slots) add(Setting.Action(NEW_EQ_KEY))
         }
     }
@@ -260,15 +267,13 @@ public class OneplusSession(public val model: OneplusModel?) {
     /** The preset and the game mode as brand rows. */
     public val groups: List<SettingGroup>
         get() = listOfNotNull(
-            presetIndex?.let { i ->
-                val presets = model?.presets.orEmpty()
-                SettingGroup("oneplus_sound", SettingTab.SOUND, listOf(Setting.Choice("op_eq_preset", presets.firstOrNull { it.index == i && customEqs?.any { c -> c.selected } != true }?.name, presets.map { it.name })))
-            },
             (listOfNotNull(strengthRow()) + cycleRows()).takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
             touchRows("left").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_left", SettingTab.CONTROLS, it) },
             touchRows("right").takeIf { it.isNotEmpty() }?.let { SettingGroup("touch_right", SettingTab.CONTROLS, it) },
             touchRows("whole").takeIf { it.isNotEmpty() }?.let { SettingGroup("calls", SettingTab.CONTROLS, it) },
             customEqRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("oneplus_custom_eq", SettingTab.SOUND, it) },
+            spatialRow()?.let { SettingGroup("oneplus_spatial", SettingTab.SOUND, listOf(it)) },
+            if (model?.find == true && state.values.isNotEmpty()) SettingGroup("find", SettingTab.DEVICE, listOf(Setting.Action(FIND_KEY, finding))) else null,
             gameMode?.let { SettingGroup("oneplus_other", SettingTab.DEVICE, listOf(Setting.Toggle("game_mode", it))) },
         )
 
@@ -276,6 +281,14 @@ public class OneplusSession(public val model: OneplusModel?) {
      * The sub-modes of the mode that is on (noise cancelling's smart, strong, moderate and light; the auto mode's range): HeyMelody selects one by
      * writing the same noise bitmap with the sub-mode's own protocol index (`m0` calls `l0(index, 1)`), so the row is a choice among their kinds.
      */
+    /** Spatial audio: off, fixed or head tracking, among the types the model lists (`012A` read, `0422` write). */
+    private fun spatialRow(): Setting? {
+        val current = spatial ?: return null
+        val kinds = model?.spatialTypes.orEmpty().mapNotNull { SPATIAL_NAMES[it] }
+        if (kinds.size < 2) return null
+        return Setting.Choice(SPATIAL_KEY, SPATIAL_NAMES[current], kinds)
+    }
+
     /** The modes a long press cycles through, as switches (off, noise cancelling, transparency): at least two stay on. */
     private fun cycleRows(): List<Setting> {
         val mask = cycleMask ?: return emptyList()
@@ -292,6 +305,42 @@ public class OneplusSession(public val model: OneplusModel?) {
         val current = kinds.firstOrNull { it.index == index }?.type
         return Setting.Choice(STRENGTH_KEY, current, kinds.map { it.type })
     }
+
+    // The graphic equalizer (the Sound tab's graph, presets and saved profiles) reads and writes through [BandEq].
+    override val eqBandsHz: List<Int> get() = model?.customFrequencies.orEmpty()
+    override val eqRangeDb: Int get() = DEFAULT_MAX
+    override val eqPresetNames: List<String> get() = model?.presets.orEmpty().map { it.name }
+
+    override fun eqPresetFrames(name: String): List<ByteArray>? {
+        val preset = model?.presets?.firstOrNull { it.name == name } ?: return null
+        presetIndex = preset.index
+        customEqs?.forEach { it.selected = false }
+        return listOf(next(OneplusCommand.SET_EQ_PRESET, preset.index))
+    }
+
+    /** Saves the curve into the custom equalizer in use (else the first), or adds one named "Custom 1" while the earbuds hold none. */
+    override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? {
+        val bands = eqBandsHz
+        if (bands.isEmpty() || gains.size != bands.size) return null
+        val eqs = customEqs ?: return null
+        val eq = eqs.firstOrNull { it.selected } ?: eqs.firstOrNull()
+        if (eq == null || eq.frequencies != bands) {
+            if (eqs.size >= (model?.customSlots ?: 0) && eq != null) return null
+            val fresh = CustomEq(0, true, "Custom 1", -DEFAULT_MAX, DEFAULT_MAX, bands, gains.map { it.coerceIn(-DEFAULT_MAX, DEFAULT_MAX) }.toMutableList())
+            return listOf(eqWrite(OP_ADD, fresh), next(OneplusCommand.CUSTOM_EQ))
+        }
+        eqs.forEach { it.selected = it === eq }
+        presetIndex = null
+        gains.forEachIndexed { i, g -> eq.gains[i] = g.coerceIn(eq.min, eq.max) }
+        return listOf(eqWrite(OP_SAVE, eq))
+    }
+
+    override val eqReport: BandEqReport?
+        get() {
+            customEqs?.firstOrNull { it.selected && it.frequencies == eqBandsHz }?.let { return BandEqReport(null, it.gains.toList()) }
+            val index = presetIndex ?: return null
+            return model?.presets?.firstOrNull { it.index == index }?.let { BandEqReport(it.name, null) }
+        }
 
     /** The commands PairFree sends: reads above and these writes. Nothing else, in particular none of the `0Fxx` debug commands. */
     public fun allowed(frame: ByteArray): Boolean {
@@ -329,6 +378,16 @@ public class OneplusSession(public val model: OneplusModel?) {
             cycleMask = next
             val bytes = generateSequence(next) { it ushr 8 }.takeWhile { it != 0 }.map { it and 0xFF }.toList().ifEmpty { listOf(0) }
             return listOf(next(OneplusCommand.SET_NOISE, 2, CYCLE_TYPE, *bytes.toIntArray()))
+        }
+        if (change is SettingChange.Choice && change.key == SPATIAL_KEY && spatial != null) {
+            val type = SPATIAL_NAMES.entries.firstOrNull { it.value == change.option && it.key in model?.spatialTypes.orEmpty() }?.key ?: return null
+            spatial = type
+            return listOf(next(OneplusCommand.SET_SPATIAL, type))
+        }
+        if (change is SettingChange.Press && change.key == FIND_KEY && model?.find == true) {
+            // The earbuds play a sound until it is stopped (`0400` with 1 or 0): the Device tab's find button toggles it.
+            finding = !finding
+            return listOf(next(OneplusCommand.FIND, if (finding) 1 else 0))
         }
         val eqs = customEqs
         if (eqs != null) {
@@ -394,6 +453,11 @@ public class OneplusSession(public val model: OneplusModel?) {
         /** Feature id of the game mode switch, as the virtual run wrote it (`0403 06 01`). */
         public const val GAME_MODE_ID: Int = 6
 
+        /** The keys of the spatial audio choice and of the find button. */
+        public const val SPATIAL_KEY: String = "op_spatial"
+        public const val FIND_KEY: String = "find"
+        private val SPATIAL_NAMES = mapOf(0 to "off", 1 to "fixed", 2 to "head_tracking")
+
         /** The key of the brand row that chooses among the custom equalizers, and of the action that adds one. */
         public const val CUSTOM_EQ_KEY: String = "op_custom_eq"
         public const val NEW_EQ_KEY: String = "op_eq_new"
@@ -421,7 +485,7 @@ public class OneplusSession(public val model: OneplusModel?) {
         public val ALLOWED: Set<Int> = setOf(
             OneplusCommand.CAPABILITIES, OneplusCommand.VENDOR, OneplusCommand.BATTERY, OneplusCommand.PRODUCT, OneplusCommand.MTU,
             OneplusCommand.TYPED_NOISE, OneplusCommand.EQ_PRESET, OneplusCommand.SWITCHES,
-            OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH, OneplusCommand.KEYS, OneplusCommand.SET_KEYS, OneplusCommand.CUSTOM_EQ, OneplusCommand.SET_CUSTOM_EQ,
+            OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH, OneplusCommand.KEYS, OneplusCommand.SET_KEYS, OneplusCommand.CUSTOM_EQ, OneplusCommand.SET_CUSTOM_EQ, OneplusCommand.SPATIAL, OneplusCommand.SET_SPATIAL, OneplusCommand.FIND,
         )
     }
 }

@@ -32,6 +32,10 @@ public data class OneplusModel(
     val customSlots: Int = 0,
     /** True when a long press steps through a choice of the noise modes that is the same for both earbuds (`longPressType` 0 in the catalog). */
     val noiseCycle: Boolean = false,
+    /** The spatial audio types the earbuds take (0 off, 1 fixed, 2 head tracking); empty without spatial audio. */
+    val spatialTypes: List<Int> = emptyList(),
+    /** True when the earbuds can be made to play a sound so they can be found. */
+    val find: Boolean = false,
 )
 
 public object OneplusModels {

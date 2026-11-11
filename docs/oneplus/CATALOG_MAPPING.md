@@ -46,20 +46,20 @@ What each other switch does when set (a plain 0 or 1, or a level) was not read: 
 
 | Field (records) | What it is | Status |
 |---|---|---|
-| `multiDevicesConnect` (50), `multiConnectFunctions` (13) | Dual connection (feature id 17), version 1 or 2 | not built |
+| `multiDevicesConnect` (50), `multiConnectFunctions` (13) | Dual connection (feature id 17), version 1 or 2 (own commands `0429` and others) | not built |
 | `wearDetection` (38) | In-ear detection (own read `0109`) | not built |
-| `spatialTypes` (47), `spatialDescriptionType`, `spatialHiResMutex` | Spatial audio with the allowed types (feature id 27; write `0422`) | not built |
+| `spatialTypes` (47), `spatialDescriptionType`, `spatialHiResMutex` | Spatial audio with the allowed types: 0 off, 1 fixed, 2 head tracking (read `012A`, write `0422`) | built (Sound tab) |
 | `hearingEnhancement` (34), `earScan` (32), `hearingJudgeDb` (8) | Hearing enhancement and the ear scan (needs phone-side tests) | not built |
 | `fitDetection` (31) | Ear tip fit test | not built |
 | `highToneQuality` (28), `highAudio` (3) | Codec/quality switch (feature id 24) | not built |
 | `bassEngineSupport` (24) | Bass engine (id 29) | not built |
-| `promptVolume` (26), `promptVolumeRange`, `promptVolumePercent` | Voice prompt volume | not built |
+| `promptVolume` (26), `promptVolumeRange`, `promptVolumePercent` | Voice prompt volume (write `0427` with one byte; the read was not found) | not built |
 | `controlAutoVolumeSupport` (16) | Automatic volume for the controls (id 28) | not built |
 | `personalNoise` (9), `personalNoiseCompat` (5) | Personalized noise cancelling (`011A` read, `0412` write, id 12) | not built |
 | `zenMode` (6), `whiteNoise` (12) | Zen mode and its sounds (id 15) | not built |
 | `strongNoiseReductionRealTime` (16), `noiseReductionUIVersion` (6) | Changes the noise level descriptions and screen, not the wire | no effect needed |
 | `headMotion` (2), `spineHealth` (2), `sleepDetection` (2), `speechPerception` (2), `vocalEnhance` (1) | Head motion (id 59), spine health, sleep and speech features | not built |
-| `heyFindDevice` (61), `findDevice` (10) | Find my earbuds (`0400`, audible: never part of a probe) | not built |
+| `heyFindDevice` (61), `findDevice` (10) | Find my earbuds (`0400` with 1 or 0, audible: never part of a probe) | built as a button on the Device tab |
 
 ## Not for PairFree
 
@@ -85,3 +85,5 @@ App-side or server-side fields that need no earbud command: guides and tutorials
   PairFree does not read them.
 - Call controls, key reads and slide or long-press rows are built from the app's layouts but only exercised against invented replies: the key read
   PairFree sends asks for buttons 3 and 1, so whether the earbuds list device type 4 or button 6 records in it is not established.
+- Tap sensitivity (`tapLevelSetting`, 1 record): write `042D` one byte, reply value and default; the read command and the range were not found. Not built.
+- Prompt volume: see the table; the read was not found. LE audio (`0424`, `0433`), head motion (`0431`, `0432`), hearing enhancement and the fit test (`0405`, an audible test): not read.

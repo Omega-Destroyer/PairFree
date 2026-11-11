@@ -70,7 +70,7 @@ public data class SonyEq(
     /**
      * The SET that puts [gains] (from flat, one per frequency band) and [clearBass] on the earbuds,
      * keeping what is not given. Set 1 names no preset with it, as Sony's app does; set 2 names
-     * Custom, as Gadgetbridge does. Null while the curve's layout is not known.
+     * the user setting the earbuds hold, or Custom as Gadgetbridge does. Null while the curve's layout is not known.
      */
     public fun setCurve(gains: List<Int>? = null, clearBass: Int? = null): SonyOut? {
         val b = bands ?: return null
@@ -86,7 +86,9 @@ public data class SonyEq(
                 g++
             }
         }
-        val id = if (tableSet == 1) SONY_EQ_UNSPECIFIED else CUSTOM
+        // Set 2 writes into the user setting the earbuds hold now (a WF-1000XM6 recording: Sony's app selected A1, then wrote its bands as A1), else Custom.
+        val held = preset?.takeIf { SonyEqs.of(it)?.custom == true }
+        val id = if (tableSet == 1) SONY_EQ_UNSPECIFIED else held ?: CUSTOM
         return SonyOut(1, (listOf(SET, type, id, next.size) + next).map { it.toByte() }.toByteArray())
     }
 

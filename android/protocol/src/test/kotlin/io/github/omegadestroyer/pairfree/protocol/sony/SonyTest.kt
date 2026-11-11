@@ -350,6 +350,16 @@ class SonySessionTest {
     }
 
     @Test
+    fun set2WritesIntoTheUserSettingTheEarbudsHold() {
+        // A WF-1000XM6 recording (issue #33): Sony's app selected User setting 1 (A1) and wrote its bands under A1.
+        val s = set2(SonyFunction.Set2.PRESET_EQ)
+        s.receive(message(0x51, 0x00, 6, 21, 3, 0x00, 0, 0xA1, 0, 0xA2, 0))
+        s.receive(message(0x5B, 0x00, 6, 0x10, 0, 1, 0x01, 0x01, 0x90, 0x02, 0, 1, 0x01, 0x09, 0xC4, 0x01, 0x18, 0x9C, 0x02, 0, 16))
+        s.receive(message(0x57, 0x00, 0xA1, 6, 10, 10, 10, 10, 10, 10))
+        assertEquals(listOf(out(0x58, 0x00, 0xA1, 6, 10, 15, 5, 10, 10, 10)), s.eqCurve(listOf(5, -5, 0, 0, 0)))
+    }
+
+    @Test
     fun set1NamesNoPresetWithItsCurveAndWorksWithoutBandInformation() {
         val s = set1(SonyFunction.Set1.PRESET_EQ)
         s.receive(message(0x57, 0x01, 0xA0, 6, 10, 10, 10, 10, 10, 10))

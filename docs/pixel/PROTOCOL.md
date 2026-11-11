@@ -237,7 +237,7 @@ and the automatic test. `PixelSession.allowed` checks every message.
 ## 9. Left out, and why
 
 - **Finding the earbuds** goes through Fast Pair's message stream, a second channel PairFree does not open.
-- **The ear tip seal test** (Allegro 14, and the EartipFitTest service): how its result comes back was not traced.
+- **The ear tip seal test** is built (2026-11-10, read from the app's `gxc`, `gxb` and the flag defaults): the RPC service `maestro_pw.EartipFitTest` on each earbud's own channel (the working channel's source to `left_bt_core`, then `right_bt_core`: channels 19 and 21 when 18 answered). `SubscribeToResults` (server stream) then `StartTest` (empty), result `{1: fit float, 2: noise float}`, `EndTest` (empty). Verdict as the app's `gxc.l`: the fit is good when 80 < fit <= 200 and the noise is 0 to the limit (20; 40 on device types 6, 9 and 12); 255 or more in either is a failed run. Allegro field 14 (`seal_test`) is a different, settings-side flag and stays never-sent. Only invented replies test it; `data/pixel/commands.json` `maestro.fit_test` holds the numbers.
 - **Find my device** is Google Play services': the app's `FmdWorker` binds Play services' Find My Device proxy
   (`com.google.android.gms.nearby.discovery.fastpair.ACTION_BIND_FMD_PROXY`, open only to Google's apps) to pass on
   the user's consent, and ringing goes over the Fast Pair message stream with the account key Play services holds. No

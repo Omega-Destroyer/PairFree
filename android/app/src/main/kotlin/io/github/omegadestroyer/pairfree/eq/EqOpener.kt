@@ -4,448 +4,229 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
-import io.github.omegadestroyer.pairfree.protocol.BandEq
-import io.github.omegadestroyer.pairfree.protocol.BandEqReport
+import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.Model
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblEqCurve
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
-import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreEq
-import io.github.omegadestroyer.pairfree.protocol.qcy.QcyEq
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
-import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyEq
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.ui.modelOf
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
+/** What earbuds that report their EQ hold now: the preset's profile id (null for a curve of the user's own) and the gains in whole dB. */
+class EqReported(val profileId: String?, val gains: List<Int>, val resendCustom: Boolean = false)
+
 /**
- * Opens the equalizer for the connected earbuds of every brand: builds the brand's [EqTarget] and layout from the model and the
- * session, hands them to the [Equalizer], and follows what earbuds that report their EQ say. It lives in the Hub, so the Sound tab
- * and the home screen widget share it (docs/DESIGN.md, Widget).
+ * One brand's equalizer, ready for the Sound tab: its [layout] and [target], a [key] that says when the screen must be opened again
+ * (the earbuds listed other bands, a saved curve arrived), and [reported], which reads what the earbuds hold now from the connection.
+ * Every brand is one of these, built in [EqOpener.source]; nothing else in the opener is specific to a brand.
+ */
+class EqSource(
+    val key: Any,
+    val layout: EqLayout?,
+    val target: EqTarget,
+    /** The gains the screen shows now, for brands that report a preset only and keep the curve as it is. */
+    val reported: (current: List<Int>) -> EqReported? = { null },
+)
+
+/**
+ * Opens the equalizer for the connected earbuds of every brand: asks [source] for the brand's [EqSource] from the model and the
+ * session, hands its layout and target to the [Equalizer], and follows what earbuds that report their EQ say. It lives in the Hub, so the
+ * Sound tab and the home screen widget share it (docs/DESIGN.md, Widget).
  */
 class EqOpener(
     private val connection: EarbudsConnection,
     private val equalizer: Equalizer,
     private val scope: CoroutineScope,
 ) {
-    /** The Soundcore EQ while the Sound tab shows Soundcore earbuds whose EQ write is confirmed. */
-    private var soundcoreEq: SoundcoreEqTarget? = null
-
-    /**
-     * Opens the Sound tab's EQ for [device]: SoundPEATS models from their table, Soundcore models
-     * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
-     */
-    fun open(device: Paired, model: Model?) {
-        // Any session that implements the brand-neutral graphic equalizer gets the Sound tab's graph, presets and profiles here.
-        connection.bandEq?.let {
-            openBandEq(device, model, it)
-            return
-        }
-        if (device.brand == Brand.CAMBRIDGE) {
-            // Legacy Melomania's five gain controls have no established frequency grid. They use Sound-tab rows.
-            equalizer.open(device.address, model, null)
-            return
-        }
-        if (device.brand != Brand.PIXEL) pixelEq = null
-        if (device.brand == Brand.PIXEL) {
-            nothingEq = null
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openPixelEq(device, model)
-            return
-        }
-        if (device.brand != Brand.NOTHING) nothingEq = null
-        if (device.brand != Brand.QCY) qcyEq = null
-        if (device.brand != Brand.ONEMORE) oneMoreEq = null
-        if (device.brand != Brand.EARFUN) earfunEq = null
-        if (device.brand != Brand.JBL) jblEq = null
-        if (device.brand == Brand.JBL) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openJblEq(device, model)
-            return
-        }
-        if (device.brand == Brand.EARFUN) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openEarfunEq(device, model)
-            return
-        }
-        if (device.brand == Brand.ONEMORE) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openOneMoreEq(device, model)
-            return
-        }
-        if (device.brand == Brand.QCY) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openQcyEq(device, model)
-            return
-        }
-        if (device.brand == Brand.NOTHING) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openNothingEq(device, model)
-            return
-        }
-        if (device.brand == Brand.SONY) {
-            soundcoreEq = null
-            samsungEq = null
-            openSonyEq(device, model)
-            return
-        }
-        sonyEq = null
-        if (device.brand == Brand.SAMSUNG) {
-            soundcoreEq = null
-            val target = SamsungModels.of(device.model)?.let { SamsungEqTarget(it, connection.samsungEqCurves.value) }
-            samsungEq = target
-            equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
-            connection.samsungStatus.value?.let(::reportSamsungEq)
-            return
-        }
-        samsungEq = null
-        if (device.brand != Brand.SOUNDCORE) {
-            soundcoreEq = null
-            equalizer.open(device.address, model)
-            return
-        }
-        // Every model with an EQ in data/soundcore/devices.json (owner, 2026-10-29); the screen says when its write is not confirmed.
-        val spec = SoundcoreEqSpec.of(device.model)
-        val target = spec?.let { SoundcoreEqTarget(it, { connection.soundcoreState.value }, SoundcoreLayout.of(it.model)?.checksum ?: true) }
-        soundcoreEq = target
-        equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
-        connection.soundcoreState.value?.let(::reportEq)
-    }
-
-    /** The Pixel Buds' EQ while the Sound tab shows a Pixel Buds Pro, Pro 2 or 2a whose EQ read answered. */
-    private var pixelEq: PixelEqTarget? = null
-
-    /**
-     * Pixel Buds report their EQ once read; the Sound tab's EQ opens then, with Google's presets and the earbuds'
-     * saved curve where they hold one, and follows what they report from then on. The 2020 model and the A-Series
-     * have bass boost alone, which is a row on the Sound tab.
-     */
-    private fun openPixelEq(device: Paired, model: Model?) {
-        val session = connection.pixelSession
-        if (session == null || !session.hasEq) {
-            pixelEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        val open = pixelEq
-        if (open != null && open.session === session && open.hasSaved == (session.savedEq != null) && equalizer.state.value != null) return
-        // Open again when the saved curve arrived after the EQ: Last saved joins the presets.
-        if (open?.session === session) equalizer.open(device.address, null)
-        val target = PixelEqTarget(session)
-        pixelEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.pixelEq.value?.let(::reportPixelEq)
-    }
-
-    private fun reportPixelEq(gains: List<Float>) {
-        val target = pixelEq ?: return
-        val (profile, whole) = target.reported(gains)
-        equalizer.reported(profile, whole)
-    }
-
-    /** The JBL EQ while the Sound tab shows JBL earbuds whose EQ PairFree writes and which have reported theirs. */
-    private var jblEq: JblEqTarget? = null
-
-    /** JBL models report their EQ once read; the Sound tab opens it then, with JBL's presets, and follows what they hold. */
-    private fun openJblEq(device: Paired, model: Model?) {
-        val session = connection.jblSession
-        val spec = session?.model?.eq
-        if (session == null || spec?.written != true || (spec.reports && session.eq == null)) {
-            jblEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (jblEq?.session === session && equalizer.state.value != null) return
-        val target = JblEqTarget(session)
-        jblEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.jblEq.value?.let(::reportJblEq)
-    }
-
-    private fun reportJblEq(eq: JblEqCurve) {
-        val target = jblEq ?: return
-        val current = equalizer.state.value?.setting?.gains ?: return
-        val (profile, gains) = target.reported(eq, current) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The brand-neutral equalizer target while the Sound tab shows earbuds whose session implements [BandEq]. */
-    private var bandEqTarget: BandEqTarget? = null
-
-    private fun openBandEq(device: Paired, model: Model?, source: BandEq) {
-        if (source.eqBandsHz.isEmpty() && source.eqPresetNames.isEmpty()) {
-            bandEqTarget = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (bandEqTarget?.source === source && equalizer.state.value != null) return
-        val target = BandEqTarget(source)
-        bandEqTarget = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.bandEqReport.value?.let(::reportBandEq)
-    }
-
-    private fun reportBandEq(report: BandEqReport) {
-        val target = bandEqTarget ?: return
-        val current = equalizer.state.value?.setting?.gains ?: return
-        val (profile, gains) = target.reported(report, current) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The 1MORE EQ while the Sound tab shows 1MORE earbuds whose model has presets or a custom EQ. */
-    private var oneMoreEq: OneMoreEqTarget? = null
-
-    /** 1MORE models' EQ is in their table; the Sound tab opens it at once and follows what the earbuds report. */
-    private fun openOneMoreEq(device: Paired, model: Model?) {
-        val session = connection.oneMoreSession
-        val m = session?.model
-        if (session == null || m == null || (m.eqPresets.isEmpty() && m.eqBands == null)) {
-            oneMoreEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (oneMoreEq?.session === session && equalizer.state.value != null) return
-        val target = OneMoreEqTarget(session)
-        oneMoreEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.oneMoreEq.value?.let(::reportOneMoreEq)
-    }
-
-    private fun reportOneMoreEq(eq: OneMoreEq) {
-        val target = oneMoreEq ?: return
-        val current = equalizer.state.value?.setting?.gains ?: return
-        val (profile, gains) = target.reported(eq, current) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The EarFun EQ while the Sound tab shows EarFun earbuds whose model has one. */
-    private var earfunEq: EarfunEqTarget? = null
-
-    /** EarFun models' EQ is in their table and cannot be read; the Sound tab opens it at once, showing what this phone last sent. */
-    private fun openEarfunEq(device: Paired, model: Model?) {
-        val session = connection.earfunSession
-        val spec = session?.model?.eq
-        if (session == null || spec == null) {
-            earfunEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (earfunEq?.session === session && equalizer.state.value != null) return
-        val target = EarfunEqTarget(session, spec)
-        earfunEq = target
-        equalizer.open(device.address, model, target.layout, target)
-    }
-
-    /** The QCY EQ while the Sound tab shows QCY earbuds that reported an EQ PairFree can set. */
-    private var qcyEq: QcyEqTarget? = null
-
-    /** QCY earbuds report their EQ after they connect; the Sound tab's EQ opens once they have, over the bands they report. */
-    private fun openQcyEq(device: Paired, model: Model?) {
-        // SOUNDPEATS' QCY-built models: their curve from SOUNDPEATS' data, not QCY's EQ.
-        if (device.soldAs == Brand.SOUNDPEATS) {
-            qcyEq = null
-            equalizer.open(device.address, model, model?.eq, CapsuleEqTarget)
-            return
-        }
-        val session = connection.qcySession
-        val eq = connection.qcyEq.value
-        if (session == null || eq == null) {
-            qcyEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        qcyEq?.let { if (it.session === session && it.freqs == eq.freqs && equalizer.state.value != null) return }
-        val target = QcyEqTarget(session, eq)
-        qcyEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        reportQcyEq(eq)
-    }
-
-    private fun reportQcyEq(eq: QcyEq) {
-        val gains = qcyEq?.reported(eq) ?: return
-        equalizer.reported(null, gains)
-    }
-
-    /** The Nothing EQ while the Sound tab shows Nothing or CMF earbuds whose model PairFree knows. */
-    private var nothingEq: NothingEqTarget? = null
-
-    /**
-     * Nothing earbuds name their model in their first answers; the Sound tab's EQ opens once they have, with the
-     * model's presets and custom curve, and follows what they report from then on.
-     */
-    private fun openNothingEq(device: Paired, model: Model?) {
-        val session = connection.nothingSession
-        if (session == null || session.model == null || (session.eqPresets.isEmpty() && session.simpleEqFilters == null)) {
-            nothingEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (nothingEq?.session === session && equalizer.state.value != null) return
-        val target = NothingEqTarget(session)
-        nothingEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.nothingEq.value?.let(::reportNothingEq)
-    }
-
-    private fun reportNothingEq(eq: NothingEq) {
-        val target = nothingEq ?: return
-        val current = equalizer.state.value?.setting?.gains ?: return
-        val (profile, gains) = target.reported(eq, current) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The Sony EQ while the Sound tab shows Sony earbuds, with the EQ and the earbuds it was opened for. */
-    private var sonyEq: Triple<SonyEqTarget, SonyEq, String>? = null
-
-    /**
-     * Sony earbuds list their presets and bands as they answer; the Sound tab opens once they have, and
-     * again if what they listed changes. Until then it shows no EQ.
-     */
-    private fun openSonyEq(device: Paired, model: Model?) {
-        val session = connection.sonySession
-        val eq = connection.sonyEq.value
-        if (session == null || eq == null || eq.steps == null || eq.bands == null) {
-            sonyEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        // The same earbuds, connection and layout: the screen stays as it is, and follows their reports.
-        sonyEq?.let { (target, shape, address) ->
-            val same = address == device.address && target.session === session &&
-                shape.presets == eq.presets && shape.bands == eq.bands && shape.steps == eq.steps
-            if (same && equalizer.state.value != null) return
-        }
-        val target = SonyEqTarget(session, eq)
-        sonyEq = Triple(target, eq, device.address)
-        // A layout of its own per band set, so profiles saved for one model's bands stay with it.
-        equalizer.open(device.address, model, target.layout, target)
-        reportSonyEq(eq)
-    }
-
-    private fun reportSonyEq(eq: SonyEq) {
-        val (profile, gains) = sonyEq?.first?.reported(eq) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    private fun reportEq(state: SoundcoreState) {
-        val (profile, gains) = soundcoreEq?.reported(state) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The Galaxy Buds EQ while the Sound tab shows Galaxy Buds. */
-    private var samsungEq: SamsungEqTarget? = null
+    /** The source whose screen is open, and the earbuds it was opened for; null while none is. */
+    private var open: Pair<String, EqSource>? = null
 
     /** Galaxy Buds whose custom curve went out again on this connection, so it goes once. */
     private var samsungCurveResent: String? = null
 
     /**
-     * Galaxy Buds report which preset they hold, or that they hold a custom curve, but not the curve;
-     * the Sound tab shows the curve this phone last sent. A custom curve goes out again once per
-     * connection, as the earbuds forget it when they power off.
+     * Opens the Sound tab's EQ for [device]: SoundPEATS models from their table, Soundcore models
+     * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8), and every other brand through
+     * its [EqSource].
      */
-    private fun reportSamsungEq(status: SamsungStatus) {
-        val reported = samsungEq?.reported(status) ?: return
-        val gains = equalizer.state.value?.setting?.gains ?: return
-        equalizer.reported(reported.profileId, gains)
-        val address = (connection.status.value as? LinkStatus.Connected)?.device?.address ?: return
-        if (reported.custom && samsungCurveResent != address) {
+    fun open(device: Paired, model: Model?) {
+        val source = source(device, model)
+        val current = open
+        if (source == null) {
+            open = null
+            equalizer.open(device.address, null)
+            return
+        }
+        if (current != null && current.first == device.address && current.second.key == source.key && equalizer.state.value != null) {
+            equalizer.open(device.address, model, source.layout, source.target)
+            return
+        }
+        // Another band set, or a curve that arrived later: the screen starts again over the new layout.
+        if (current != null && current.first == device.address) equalizer.open(device.address, null)
+        open = device.address to source
+        equalizer.open(device.address, model, source.layout, source.target)
+        report()
+    }
+
+    /** Follows what the earbuds hold, for the open screen. */
+    private fun report() {
+        val (address, source) = open ?: return
+        val state = equalizer.state.value ?: return
+        val reported = source.reported(state.setting.gains) ?: return
+        equalizer.reported(reported.profileId, reported.gains)
+        if (reported.resendCustom && samsungCurveResent != address) {
+            // The earbuds hold a custom curve but forget its values when they power off: it goes out again, once per connection.
             samsungCurveResent = address
             equalizer.resendCustom(address)
         }
     }
 
+    /** The brand's EQ for [device], or null when the model or the earbuds' answers so far give none. */
+    private fun source(device: Paired, model: Model?): EqSource? {
+        // Any session that implements the brand-neutral graphic equalizer gets the Sound tab's graph, presets and profiles here.
+        connection.bandEq?.let { band ->
+            if (band.eqBandsHz.isEmpty() && band.eqPresetNames.isEmpty()) return null
+            val target = BandEqTarget(band)
+            return EqSource(band, target.layout, target) { current -> connection.bandEqReport.value?.let { target.reportedAs(it, current) } }
+        }
+        return when (device.brand) {
+            // Legacy Melomania's five gain controls have no established frequency grid. They use Sound-tab rows.
+            Brand.CAMBRIDGE -> null
+            Brand.PIXEL -> pixel()
+            Brand.JBL -> jbl()
+            Brand.EARFUN -> earfun()
+            Brand.ONEMORE -> oneMore()
+            Brand.QCY -> qcy(device, model)
+            Brand.NOTHING -> nothing()
+            Brand.SONY -> sony(device)
+            Brand.SAMSUNG -> samsung(device)
+            // Every model with an EQ in data/soundcore/devices.json (owner, 2026-10-29); the screen says when its write is not confirmed.
+            Brand.SOUNDCORE -> soundcore(device)
+            // SoundPEATS, and the brands whose model has no EQ of its own: the model's table, if any.
+            else -> EqSource("plain", model?.eq, SoundpeatsEqTarget)
+        }
+    }
+
+    /** Pixel Buds Pro, Pro 2 and 2a once their EQ read answered; the 2020 model and the A-Series have bass boost alone, a row on the Sound tab. */
+    private fun pixel(): EqSource? {
+        val session = connection.pixelSession ?: return null
+        if (!session.hasEq) return null
+        val band = PixelBandEq(session)
+        val target = BandEqTarget(band)
+        // Open again when the saved curve arrived after the EQ: Last saved joins the presets.
+        return EqSource(session to band.hasSaved, target.layout, target) { current -> connection.pixelEq.value?.let { band.report(it) }?.let { target.reportedAs(it, current) } }
+    }
+
+    /** JBL models whose EQ PairFree writes, once the ones that report their EQ have reported it. */
+    private fun jbl(): EqSource? {
+        val session = connection.jblSession ?: return null
+        val spec = session.model.eq
+        if (spec?.written != true || (spec.reports && session.eq == null)) return null
+        val target = JblEqTarget(session)
+        return EqSource(session, target.layout, target) { current -> connection.jblEq.value?.let { target.reported(it, current) }?.let { EqReported(it.first, it.second) } }
+    }
+
+    /** EarFun models' EQ is in their table and cannot be read: the screen shows what this phone last sent. */
+    private fun earfun(): EqSource? {
+        val session = connection.earfunSession ?: return null
+        val spec = session.model?.eq ?: return null
+        val target = EarfunEqTarget(session, spec)
+        return EqSource(session, target.layout, target)
+    }
+
+    /** 1MORE models' EQ is in their table; it opens at once and follows what the earbuds report. */
+    private fun oneMore(): EqSource? {
+        val session = connection.oneMoreSession ?: return null
+        val m = session.model ?: return null
+        if (m.eqPresets.isEmpty() && m.eqBands == null) return null
+        val band = OneMoreBandEq(session)
+        val target = BandEqTarget(band)
+        return EqSource(session, target.layout, target) { current -> connection.oneMoreEq.value?.let { band.report(it) }?.let { target.reportedAs(it, current) } }
+    }
+
+    /** QCY earbuds report their EQ after they connect, and it opens over the bands they report. SOUNDPEATS' QCY-built models use SOUNDPEATS' own curve. */
+    private fun qcy(device: Paired, model: Model?): EqSource? {
+        if (device.soldAs == Brand.SOUNDPEATS) return EqSource("capsule", model?.eq, CapsuleEqTarget)
+        val session = connection.qcySession ?: return null
+        val eq = connection.qcyEq.value ?: return null
+        val band = QcyBandEq(session, eq)
+        val target = BandEqTarget(band)
+        return EqSource(session to eq.freqs, target.layout, target) { current -> connection.qcyEq.value?.let { band.report(it) }?.let { target.reportedAs(it, current) } }
+    }
+
+    /** Nothing earbuds name their model in their first answers; the EQ opens then, with the model's presets and custom curve. */
+    private fun nothing(): EqSource? {
+        val session = connection.nothingSession ?: return null
+        if (session.model == null || (session.eqPresets.isEmpty() && session.simpleEqFilters == null)) return null
+        val band = NothingBandEq(session)
+        val target = BandEqTarget(band)
+        return EqSource(session, target.layout, target) { current -> connection.nothingEq.value?.let { band.report(it) }?.let { target.reportedAs(it, current) } }
+    }
+
+    /** Sony earbuds list their presets and bands as they answer; the EQ opens once they have, and again if what they listed changes. */
+    private fun sony(device: Paired): EqSource? {
+        val session = connection.sonySession ?: return null
+        val eq = connection.sonyEq.value ?: return null
+        if (eq.steps == null || eq.bands == null) return null
+        val target = SonyEqTarget(session, eq)
+        // A layout of its own per band set, so profiles saved for one model's bands stay with it.
+        return EqSource(listOf(device.address, session, eq.presets, eq.bands, eq.steps), target.layout, target) { _ ->
+            connection.sonyEq.value?.let { target.reported(it) }?.let { EqReported(it.first, it.second) }
+        }
+    }
+
+    /**
+     * Galaxy Buds report which preset they hold, or that they hold a custom curve, but not the curve; the screen shows the curve this phone
+     * last sent. Where the earbuds reported every preset's curve (the Buds4 family) they arrive after the screen opened, so the screen opens again.
+     */
+    private fun samsung(device: Paired): EqSource? {
+        val model = SamsungModels.of(device.model) ?: return null
+        val curves = connection.samsungEqCurves.value
+        val target = SamsungEqTarget(model, curves)
+        return EqSource(model to curves.isNotEmpty(), target.layout, target) { current ->
+            connection.samsungStatus.value?.let { target.reported(it) }?.let { EqReported(it.profileId, current, resendCustom = it.custom) }
+        }
+    }
+
+    /** Soundcore earbuds report their EQ with every state; the Sound tab follows it. */
+    private fun soundcore(device: Paired): EqSource? {
+        val spec = SoundcoreEqSpec.of(device.model) ?: return null
+        val target = SoundcoreEqTarget(spec, { connection.soundcoreState.value }, SoundcoreLayout.of(spec.model)?.checksum ?: true)
+        return EqSource(spec, target.layout, target) { _ -> connection.soundcoreState.value?.let { target.reported(it) }?.let { EqReported(it.first, it.second) } }
+    }
+
     init {
-        // Soundcore earbuds report their EQ with every state; the Sound tab follows it.
-        scope.launch { connection.soundcoreState.collect { s -> s?.let(::reportEq) } }
-        scope.launch { connection.samsungStatus.collect { s -> s?.let(::reportSamsungEq) } }
-        // The Galaxy Buds' preset curves arrive after the screen opened: draw them then.
+        // Earbuds that report their EQ say so as they answer: Soundcore and Galaxy Buds only update a screen that is open,
+        // every other brand opens its EQ once its first answer is in (and again when what it listed changes).
+        val opening: List<Flow<Unit>> = listOf(
+            connection.pixelEq.map { },
+            connection.jblEq.map { },
+            connection.bandEqReport.map { },
+            connection.oneMoreEq.map { },
+            connection.qcyEq.map { },
+            connection.nothingEq.map { },
+            connection.sonyEq.map { },
+            connection.samsungEqCurves.map { },
+        )
         scope.launch {
-            connection.samsungEqCurves.collect { curves ->
-                val target = samsungEq ?: return@collect
-                val device = (connection.status.value as? LinkStatus.Connected)?.device ?: return@collect
-                if (curves.isNotEmpty()) open(device, SamsungModels.model(target.model.model))
+            merge(*opening.toTypedArray()).collect {
+                val device = connectedDevice() ?: return@collect
+                if (device.brand == Brand.SOUNDCORE || device.brand == Brand.SAMSUNG) {
+                    // The Galaxy Buds' preset curves arrive after the screen opened: draw them then.
+                    if (open != null && connection.samsungEqCurves.value.isNotEmpty()) open(device, modelOf(device, connection.state.value))
+                } else {
+                    open(device, modelOf(device, connection.state.value))
+                }
             }
+        }
+        scope.launch {
+            merge(connection.soundcoreState.map { }, connection.samsungStatus.map { }).collect { report() }
         }
         scope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
-        // Pixel Buds report their EQ once read: open it then, and follow what they hold.
-        scope.launch {
-            connection.pixelEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.PIXEL || eq == null) return@collect
-                openPixelEq(device, modelOf(device, connection.state.value))
-                reportPixelEq(eq)
-            }
-        }
-        // JBL earbuds report their EQ once read: open it then, and follow what they hold.
-        scope.launch {
-            connection.jblEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.JBL || eq == null) return@collect
-                openJblEq(device, modelOf(device, connection.state.value))
-                reportJblEq(eq)
-            }
-        }
-        // Earbuds whose session implements the graphic equalizer report what they hold after connecting: follow it.
-        scope.launch {
-            connection.bandEqReport.collect { report ->
-                val device = connectedDevice() ?: return@collect
-                val source = connection.bandEq ?: return@collect
-                if (report == null) return@collect
-                openBandEq(device, modelOf(device, connection.state.value), source)
-                reportBandEq(report)
-            }
-        }
-        // 1MORE earbuds report their preset and curve after connecting: follow what they hold.
-        scope.launch {
-            connection.oneMoreEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.ONEMORE || eq == null) return@collect
-                openOneMoreEq(device, modelOf(device, connection.state.value))
-                reportOneMoreEq(eq)
-            }
-        }
-        // QCY earbuds report their EQ after connecting: open it once they have, then follow what they hold.
-        scope.launch {
-            connection.qcyEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.QCY || eq == null) return@collect
-                openQcyEq(device, modelOf(device, connection.state.value))
-                reportQcyEq(eq)
-            }
-        }
-        // Nothing earbuds name their model, then report their EQ: open it once they have, then follow what they hold.
-        scope.launch {
-            connection.nothingEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.NOTHING || eq == null) return@collect
-                openNothingEq(device, modelOf(device, connection.state.value))
-                reportNothingEq(eq)
-            }
-        }
-        // Sony earbuds tell their EQ bit by bit: open it once they have, then follow what they hold.
-        scope.launch {
-            connection.sonyEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.SONY || eq == null) return@collect
-                openSonyEq(device, modelOf(device, connection.state.value))
-                reportSonyEq(eq)
-            }
-        }
     }
 
     private fun connectedDevice(): Paired? = (connection.status.value as? LinkStatus.Connected)?.device

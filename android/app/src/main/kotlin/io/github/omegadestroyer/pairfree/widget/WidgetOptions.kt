@@ -8,9 +8,10 @@ import io.github.omegadestroyer.pairfree.eq.EarfunEqTarget
 import io.github.omegadestroyer.pairfree.eq.EqTarget
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.eq.JblEqTarget
-import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
-import io.github.omegadestroyer.pairfree.eq.OneMoreEqTarget
-import io.github.omegadestroyer.pairfree.eq.PixelEqTarget
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
+import io.github.omegadestroyer.pairfree.eq.NothingBandEq
+import io.github.omegadestroyer.pairfree.eq.OneMoreBandEq
+import io.github.omegadestroyer.pairfree.eq.PixelBandEq
 import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
@@ -157,11 +158,11 @@ object WidgetOptions {
             Brand.SOUNDCORE -> SoundcoreEqSpec.of(device.model)?.let { SoundcoreEqTarget(it, { null }, true) }?.let { it.layout to it }
             Brand.SAMSUNG -> SamsungModels.of(device.model)?.let { SamsungEqTarget(it) }?.let { it.layout to it }
             Brand.JBL -> JblModels.fromName(device.name)?.takeIf { it.eq?.written == true }?.let { JblEqTarget(JblSession(it)) }?.let { it.layout to it }
-            Brand.NOTHING -> NothingModels.of(device.model)?.let { NothingEqTarget(NothingSession(it)) }?.takeIf { it.hasCustom || it.layout.presets.isNotEmpty() }?.let { it.layout to it }
-            Brand.ONEMORE -> OneMoreModels.fromName(device.name)?.let { OneMoreEqTarget(OneMoreSession(it)) }?.let { it.layout to it }
+            Brand.NOTHING -> NothingModels.of(device.model)?.let { BandEqTarget(NothingBandEq(NothingSession(it))) }?.takeIf { it.hasCustom || it.layout.presets.isNotEmpty() }?.let { it.layout to it }
+            Brand.ONEMORE -> OneMoreModels.fromName(device.name)?.let { BandEqTarget(OneMoreBandEq(OneMoreSession(it))) }?.let { it.layout to it }
             Brand.EARFUN -> EarfunModels.fromName(device.name)?.let { m -> m.eq?.let { EarfunEqTarget(EarfunSession(m), it) } }?.let { it.layout to it }
             // Google's presets and five bands; "Last saved" joins them once the earbuds have reported it.
-            Brand.PIXEL -> PixelModels.of(device.model?.toIntOrNull())?.takeIf { it.family == PixelFamily.ALLEGRO }?.let { PixelEqTarget(PixelSession(it.transport, it)) }?.let { it.layout to it }
+            Brand.PIXEL -> PixelModels.of(device.model?.toIntOrNull())?.takeIf { it.family == PixelFamily.ALLEGRO }?.let { BandEqTarget(PixelBandEq(PixelSession(it.transport, it))) }?.let { it.layout to it }
             else -> null
         }
     } catch (_: RuntimeException) {

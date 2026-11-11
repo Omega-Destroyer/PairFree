@@ -15,33 +15,40 @@ class BandEqTarget(val source: BandEq) : EqTarget {
     private val hz = source.eqBandsHz
 
     override val reportsEq: Boolean = true
-    override val reportsCustom: Boolean = true
+    override val reportsCustom: Boolean = source.eqReportsCustom
     override val hasPreamp: Boolean = false
-    override val hasStock: Boolean = false
+    override val hasStock: Boolean = source.eqHasStock
     override val hasCustom: Boolean = hz.isNotEmpty()
+    override val restoresOnConnect: Boolean = source.eqRestoresOnConnect
+    override val confirmed: Boolean = source.eqConfirmed
 
-    /** The earbuds apply their presets themselves and their curves are not known, so none is drawn. */
-    override val presetCurves: Boolean = false
+    /** Presets are drawn where the session gives their curves; otherwise the earbuds apply them themselves and their curves are not known. */
+    override val presetCurves: Boolean = source.eqPresetGains.isNotEmpty()
 
     /** A model with presets only still needs a band list for the screen's profile lists. */
-    private val layoutHz: List<Int> = hz.ifEmpty { PRESET_ONLY_HZ }
+    private val layoutHz: List<Int> = hz.ifEmpty { source.eqPresetOnlyBandsHz }
+
+    /** The bands as the screen draws them: by frequency, or by the name a brand gives them (then the frequency only orders them). */
+    private val bands: List<EqBand> = layoutHz.mapIndexed { i, f -> EqBand(f, 0.0, 0.0, source.eqBandLabels.getOrNull(i)) }
 
     val layout: EqLayout = EqLayout(
         command = 0,
         masterGainDb = 0.0,
         userRangeDb = source.eqRangeDb,
-        bands = layoutHz.map { EqBand(it, 0.0, 0.0) },
-        presets = source.eqPresetNames.map { name -> EqPreset(name, layoutHz.map { EqBand(it, 0.0, 0.0) }) },
+        bands = bands,
+        presets = source.eqPresetNames.map { name ->
+            val curve = source.eqPresetGains[name]?.takeIf { it.size == bands.size }
+            EqPreset(name, bands.mapIndexed { i, b -> b.copy(gainDb = curve?.get(i) ?: 0.0) })
+        },
     )
 
     override fun frames(layout: EqLayout, setting: EqSetting, preset: EqPreset?): List<ByteArray> =
         (if (preset != null) source.eqPresetFrames(preset.name) else source.eqCustomFrames(setting.gains)).orEmpty()
 
+    /** [reported] as what the opener hands the screen. */
+    fun reportedAs(report: BandEqReport, current: List<Int> = emptyList()): EqReported? = reported(report, current)?.let { EqReported(it.first, it.second) }
+
     /** What the earbuds hold, as the screen's profile (null for the custom curve) and gains; null while they have not said. */
     fun reported(report: BandEqReport, current: List<Int>): Pair<String?, List<Int>>? =
-        if (report.preset != null) EqProfile.PRESET + report.preset to current else null to (report.gains ?: return null)
-
-    private companion object {
-        val PRESET_ONLY_HZ = listOf(62, 250, 1000, 4000, 8000, 16000)
-    }
+        if (report.preset != null) EqProfile.PRESET + report.preset to (report.gains ?: current) else null to (report.gains ?: return null)
 }

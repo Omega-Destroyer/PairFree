@@ -24,7 +24,7 @@ class ModelsTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(88, s["models"], "every model in SOUNDPEATS' own list and the official app's table")
-        self.assertEqual(["Air5 Pro+", "C30", "H3", "TRUEFREE Clip C10"], s["tested"])
+        self.assertEqual(["Air5 Pro+", "C30", "H3", "T3 Pro", "TRUEFREE Clip C10"], s["tested"])
 
     def test_h3_report_reads(self):
         answered, silent, gaia = gen.read_reports(self.devices["S5"]["reports"], self.commands)

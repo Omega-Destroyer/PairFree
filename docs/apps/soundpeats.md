@@ -21,7 +21,7 @@ Each model shows only the settings it has:
 
 ## SOUNDPEATS models
 
-PairFree knows 88 SOUNDPEATS models. Models that have been tried on real earbuds: Air5 Pro+, C30, H3, TRUEFREE Clip C10.
+PairFree knows 88 SOUNDPEATS models. Models that have been tried on real earbuds: Air5 Pro+, C30, H3, T3 Pro, TRUEFREE Clip C10.
 
 SOUNDPEATS earbuds are the project's origin: the owner's H3 and Air5 Pro+ are tested in every feature, and users' reports cover the C30 and the TRUEFREE Clip C10.
 

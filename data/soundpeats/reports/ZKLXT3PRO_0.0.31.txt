@@ -1,0 +1,50 @@
+Bluetooth name:  SOUNDPEATS T3 Pro
+Firmware:        ZKLXT3PRO_20250428_v0.0.31
+Firmware code:   ZKLXT3PRO
+App:             PairFree 0.9.1 (SPP)
+OS:              Android 16 (API 36)
+Captured:        2026-11-11 12:04 UTC
+
+The app asked the earbuds every read it knows. Each line is the feature,
+its command, the decoded reply and the raw bytes. "no reply" means the
+firmware does not support that read.
+
+firmware_version     0309  'ZKLXT3PRO_20250428_v0.0.31'             raw=5a 4b 4c 58 54 33 50 52 4f 5f 32 30 32 35 30 34 32 38 5f 76 30 2e 30 2e 33 31
+battery_left         0306  80                                       raw=00 50
+battery_right        0307  255                                      raw=00 ff
+battery_case         0323  25                                       raw=00 19
+anc_mode             0310  0                                        raw=00 00
+anc_level            0324  no reply
+transparency_level   034C  no reply
+anc_env_adaptive     0364  no reply
+game_mode            030E  0                                        raw=00 00
+multipoint           0314  1                                        raw=00 01
+ldac                 0338  no reply
+le_audio             0335  no reply
+in_ear_detection     030C  no reply
+touch_disabled       0312  0                                        raw=00 00
+custom_keys          03AA  tap L -> vol-, tap R -> vol+, double L -> prev, double R -> play/pause, triple L -> play/pause, triple R -> assistant, hold L -> ANC, hold R -> next raw=01 02 02 01 03 05 04 03 05 03 06 08 07 07 08 06
+prompt_volume        0319  25                                       raw=00 19
+auto_shutdown        036E  no reply
+voice_language       0321  0                                        raw=00 00
+dynamic_eq           0331  0                                        raw=00 00
+dynamic_bass         033C  no reply
+movie_mode           0327  0                                        raw=00 00
+spatial_audio        0357  no reply
+panoramic_sound      0329  0                                        raw=00 00
+dolby                0348  no reply
+adaptive_volume      0346  no reply
+personal_volume      0340  no reply
+ear_volume_left      0342  no reply
+ear_volume_right     0343  no reply
+light_effect         030A  1                                        raw=00 01
+privacy_mode         036B  no reply
+fall_detection       0355  no reply
+water_drain          0350  no reply
+reset_state          0367  no reply
+find_left            034A  no reply
+find_right           034B  no reply
+earbud_color         0326  no reply
+hearing_protection   034E  no reply
+volume_balance       0375  no reply
+phone_codec          0377  no reply

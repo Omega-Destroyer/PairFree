@@ -41746,6 +41746,9 @@
           }
         ]
       },
+      "reports": [
+        "data/soundpeats/reports/ZKLXT3PRO_0.0.31.txt"
+      ],
       "features": {
         "firmware": "0.0.31",
         "features": [

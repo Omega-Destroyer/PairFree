@@ -13,9 +13,10 @@
     "QCY": ["QCY"],
     "ONEMORE": ["1MORE"],
     "EARFUN": ["EarFun", "ATVEL"],
-    "CAMBRIDGE": []
+    "CAMBRIDGE": [],
+    "ONEPLUS": ["OnePlus", "OPPO"]
   },
-  "not_ours": ["Pixel Watch", "OnePlus Buds", "Redmi Buds", "Galaxy Watch", "SOUNDPEATS Watch", "Nothing Phone", "CMF Watch"],
+  "not_ours": ["Pixel Watch", "OnePlus Watch", "OnePlus Nord Watch", "OPPO Watch", "Redmi Buds", "Galaxy Watch", "SOUNDPEATS Watch", "Nothing Phone", "CMF Watch"],
   "names": [
     {"name": "Melomania 1+", "brand": "CAMBRIDGE", "model": "Melomania 1+"},
     {"name": "Melomania Touch", "uuids": ["00001107-D102-11E1-9B23-00025B00A5A5"], "brand": "CAMBRIDGE", "model": "Melomania Touch"},
@@ -29,7 +30,9 @@
     {"name": "Pixel Buds", "brand": "PIXEL", "model": "Pixel Buds"},
     {"name": "Pixel Buds 2a", "brand": "PIXEL", "model": "Pixel Buds 2a"},
     {"name": "Pixel Watch 3", "brand": null, "note": "Google's watch, not earbuds"},
-    {"name": "OnePlus Buds Pro 2", "brand": null, "note": "holds Samsung's base name Buds Pro"},
+    {"name": "OnePlus Buds Pro 2", "brand": "ONEPLUS", "note": "holds Samsung's base name Buds Pro, but the HeyMelody catalog names it"},
+    {"name": "OPPO Enco X3", "brand": "ONEPLUS"},
+    {"name": "OnePlus Nord Watch", "brand": null, "note": "OnePlus word, no earbuds model in the HeyMelody catalog: listed as nothing"},
     {"name": "Redmi Buds 4 Pro", "brand": null},
     {"name": "Buds Pro", "brand": "NOTHING", "note": "the name CMF's Buds Pro carries: exact model name, no brand word"},
     {"name": "CMF Buds Pro 2", "brand": "NOTHING", "note": "holds Samsung's base name Buds Pro"},

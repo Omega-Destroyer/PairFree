@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.ui
 
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
+import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusModels
 
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTables
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
@@ -156,6 +157,7 @@ internal fun ConnectedScreen(
                         Brand.ONEMORE -> R.string.eq_onemore
                         Brand.EARFUN -> R.string.eq_earfun
                         Brand.CAMBRIDGE -> R.string.eq_cambridge
+                        Brand.ONEPLUS -> R.string.eq_oneplus
                         else -> R.string.eq_unavailable
                     },
                     onHearingTest = hearing?.let { { hearingTest = true } },
@@ -205,6 +207,7 @@ internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.
     // EarFun's by the model the Bluetooth name matched.
     Brand.EARFUN -> EarfunModels.model(device.model ?: device.name)
     Brand.CAMBRIDGE -> CambridgeModels.model(device.model ?: device.name)
+    Brand.ONEPLUS -> OneplusModels.model(device.name)
     Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
 }
 

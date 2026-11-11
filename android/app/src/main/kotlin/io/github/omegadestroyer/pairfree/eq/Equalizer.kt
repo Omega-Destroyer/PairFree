@@ -57,6 +57,9 @@ interface EqTarget {
     /** False when the brand's own app does not put the EQ back each time the channel opens, so PairFree does not either. */
     val restoresOnConnect: Boolean get() = true
 
+    /** True when the earbuds report the custom curve they hold, not only the preset: the Sound tab then needs no note about forgetting it. */
+    val reportsCustom: Boolean get() = false
+
     /** False when nothing has confirmed the frames for this model yet: the screen says so. */
     val confirmed: Boolean get() = true
 

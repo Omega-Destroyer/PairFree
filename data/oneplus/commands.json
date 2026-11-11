@@ -1,0 +1,37 @@
+{
+ "_source": "HeyMelody 117.6.6: F8/b, G8/b, p224p8/a and PollCommandManager; docs/oneplus/PROTOCOL.md. Protocol facts only.",
+ "wire": {
+  "START": 170,
+  "RESPONSE_BIT": 32768,
+  "FRAGMENT_MASK": 3,
+  "SINGLE": 0,
+  "FIRST": 1,
+  "MIDDLE": 2,
+  "LAST": 3,
+  "SPP_UUID": "0000079A-D102-11E1-9B23-00025B00A5A5",
+  "MAX_CAPABILITY_BITS": 69
+ },
+ "command": {
+  "CAPABILITIES": 256,
+  "PRODUCT": 259,
+  "PROTOCOL_VERSION": 260,
+  "BATTERY": 262,
+  "MTU": 257,
+  "VENDOR": 258,
+  "KEYS": 264,
+  "COLOR": 267,
+  "TYPED_NOISE": 268,
+  "SWITCHES": 269,
+  "EQ_PRESET": 271,
+  "SET_SWITCH": 1027,
+  "SET_NOISE": 1028,
+  "SET_EQ_PRESET": 1030,
+  "SET_KEYS": 1025,
+  "CUSTOM_EQ": 290,
+  "SET_CUSTOM_EQ": 1048,
+  "CUSTOM_EQ_NOTIFY": 1286,
+  "SPATIAL": 298,
+  "SET_SPATIAL": 1058,
+  "FIND": 1024
+ }
+}

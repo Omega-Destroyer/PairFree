@@ -59,3 +59,13 @@ observations**, including startup and unanswered reads, with provenance and time
 no invented reply masquerading as a capture. Full traces and UI actions are outside the repo under
 `E:\Builds\research\melomania-virtual` (`oneplus-traffic.jsonl`, `oneplus-actions.jsonl`).
 These facts extend [PROTOCOL.md](PROTOCOL.md); they do not establish completed PairFree support.
+
+## PairFree against a virtual Buds Pro 2 (2026-11-10)
+
+Virtual testing, not hardware. PairFree's debug build (the `brand/oneplus-app` branch) ran on an Android 17 emulator against a Bumble peer that
+offered the service `0000079A-...` and answered the reads from HeyMelody's parsers (invented replies: battery 80/85/100, the noise bitmap, preset
+0, game mode off). PairFree listed it by name, connected over the serial service and sent `0100`, `0102 FFFF`, `0106`, `0103`, `0101 0002`, `010C
+0101`, `010F` and `010D 0106`. It showed left 80%, case 100%, right 85% and noise cancelling, and wrote `0404 010104` for Transparency, `0406 03`
+for the Bold preset and `0403 0601` / `0600` for game mode: the same payloads HeyMelody sent in the earlier run (the unit test
+`OneplusSessionTest` compares them with `data/oneplus/emulator_vectors.json`). Off is written as `0404 010101`, which the earlier run did not capture.
+Not covered: the noise strengths, custom EQ, touch controls and every model but the Buds Pro 2.

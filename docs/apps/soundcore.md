@@ -53,7 +53,8 @@ PairFree controls earbuds of other brands too:
 - [1MORE](https://omega-destroyer.github.io/PairFree/open-source-1more-app/)
 - [EarFun](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/)
 - [Cambridge Audio](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/)
+- [OnePlus and OPPO](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/)
 
 ---
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun or Cambridge Audio; the names are used to say which earbuds it works with.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, OnePlus or OPPO; the names are used to say which earbuds it works with.

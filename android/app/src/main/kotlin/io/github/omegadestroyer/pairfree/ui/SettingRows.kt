@@ -197,6 +197,11 @@ private fun groupNote(key: String): String? = when (key) {
 
 @Composable
 private fun settingTitle(key: String): String = when (key) {
+    "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
+    "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
+    "op_custom_eq" -> stringResource(R.string.setting_op_custom_eq)
+    "op_spatial" -> stringResource(R.string.setting_op_spatial)
+    "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
     "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
     "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
     "ca_preset" -> stringResource(R.string.setting_ca_preset)
@@ -416,7 +421,7 @@ private fun settingTitle(key: String): String = when (key) {
     "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language)
     "restart" -> stringResource(R.string.setting_restart)
     "power_off" -> stringResource(R.string.setting_power_off)
-    else -> jblP5Title(key) ?: sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
+    else -> eqBandTitle(key) ?: jblP5Title(key) ?: sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 /**
@@ -607,6 +612,20 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "op_spatial" -> getString(when (option) {
+        "fixed" -> R.string.op_spatial_fixed
+        "head_tracking" -> R.string.op_spatial_head
+        else -> R.string.action_off
+    })
+    key == "op_noise_level" -> getString(when (option) {
+        "smart" -> R.string.op_level_smart
+        "light" -> R.string.op_level_light
+        "moderate" -> R.string.op_level_moderate
+        "strong" -> R.string.op_level_strong
+        "less_noise" -> R.string.op_level_less
+        "standard_noise" -> R.string.op_level_standard
+        else -> R.string.op_level_more
+    })
     key == "ca_language" -> getString(when (option) {
         "yue" -> R.string.setting_ca_cantonese
         "zh" -> R.string.language_zh
@@ -753,7 +772,10 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "privacy_mode" -> R.string.action_privacy_mode
             "multipoint" -> R.string.setting_multipoint
             "answer_hang_up" -> R.string.action_answer_hang_up
-            "decline_call" -> R.string.action_decline_call
+            "decline_call", "reject_call" -> R.string.action_decline_call
+            "adjust_volume" -> R.string.action_volume_control
+            "switch_device" -> R.string.setting_op_switch_device
+            "switch_song" -> R.string.action_previous_next
             "switch_calls" -> R.string.action_switch_calls
             else -> R.string.action_other
         },
@@ -980,7 +1002,14 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
     else -> value.toString()
 }
 
+/** A band of a custom equalizer, named by its frequency (key "eq_62", "eq_16000"): HeyMelody's earbuds. */
+private fun eqBandTitle(key: String): String? {
+    val hz = key.takeIf { it.startsWith("eq_") }?.removePrefix("eq_")?.toIntOrNull() ?: return null
+    return if (hz >= 1000) "${hz / 1000} kHz" else "$hz Hz"
+}
+
 private fun actionStart(key: String): Int = when (key) {
+    "op_eq_new" -> R.string.setting_op_eq_new
     "find" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open
     "nc_optimizer" -> R.string.setting_nc_optimizer_start

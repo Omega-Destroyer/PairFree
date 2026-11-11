@@ -4,6 +4,8 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.protocol.BandEq
+import io.github.omegadestroyer.pairfree.protocol.BandEqReport
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblEqCurve
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
@@ -37,6 +39,11 @@ class EqOpener(
      * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
      */
     fun open(device: Paired, model: Model?) {
+        // Any session that implements the brand-neutral graphic equalizer gets the Sound tab's graph, presets and profiles here.
+        connection.bandEq?.let {
+            openBandEq(device, model, it)
+            return
+        }
         if (device.brand == Brand.CAMBRIDGE) {
             // Legacy Melomania's five gain controls have no established frequency grid. They use Sound-tab rows.
             equalizer.open(device.address, model, null)
@@ -174,6 +181,29 @@ class EqOpener(
         val target = jblEq ?: return
         val current = equalizer.state.value?.setting?.gains ?: return
         val (profile, gains) = target.reported(eq, current) ?: return
+        equalizer.reported(profile, gains)
+    }
+
+    /** The brand-neutral equalizer target while the Sound tab shows earbuds whose session implements [BandEq]. */
+    private var bandEqTarget: BandEqTarget? = null
+
+    private fun openBandEq(device: Paired, model: Model?, source: BandEq) {
+        if (source.eqBandsHz.isEmpty() && source.eqPresetNames.isEmpty()) {
+            bandEqTarget = null
+            equalizer.open(device.address, null)
+            return
+        }
+        if (bandEqTarget?.source === source && equalizer.state.value != null) return
+        val target = BandEqTarget(source)
+        bandEqTarget = target
+        equalizer.open(device.address, model, target.layout, target)
+        connection.bandEqReport.value?.let(::reportBandEq)
+    }
+
+    private fun reportBandEq(report: BandEqReport) {
+        val target = bandEqTarget ?: return
+        val current = equalizer.state.value?.setting?.gains ?: return
+        val (profile, gains) = target.reported(report, current) ?: return
         equalizer.reported(profile, gains)
     }
 
@@ -368,6 +398,16 @@ class EqOpener(
                 if (device.brand != Brand.JBL || eq == null) return@collect
                 openJblEq(device, modelOf(device, connection.state.value))
                 reportJblEq(eq)
+            }
+        }
+        // Earbuds whose session implements the graphic equalizer report what they hold after connecting: follow it.
+        scope.launch {
+            connection.bandEqReport.collect { report ->
+                val device = connectedDevice() ?: return@collect
+                val source = connection.bandEq ?: return@collect
+                if (report == null) return@collect
+                openBandEq(device, modelOf(device, connection.state.value), source)
+                reportBandEq(report)
             }
         }
         // 1MORE earbuds report their preset and curve after connecting: follow what they hold.

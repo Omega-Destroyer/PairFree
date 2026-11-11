@@ -156,6 +156,14 @@ Everything here fits without scrolling on a 390 by 844 screen.
 
 ### Sound (equalizer)
 
+**Graphic equalizer for any brand (2026-11-10, owner's request).** The Sound tab's graph, draggable bands, preset list and saved profiles are not
+SoundPEATS-only: they are drawn from an `EqTarget`. A session that implements `BandEq` (`protocol/BandEq.kt`: its bands in Hz, its gain range, the presets
+the earbuds apply, the frames for a preset or a custom curve, and what the earbuds hold) gets all of it through one generic target and one opener path
+(`eq/BandEqTarget.kt`, `EqOpener.openBandEq`), with the bands drawn being the ones its model reports, and no brand screen code. OnePlus and OPPO use it
+first. The earlier brands (Soundcore, Samsung, Sony, JBL, QCY, 1MORE, EarFun, Nothing, Pixel) still have their own targets and openers; moving each onto
+`BandEq` is open work, brand by brand, where their frames fit its interface.
+
+
 - Profile chips: built-in presets, the user's saved profiles, and New.
 - A response graph:
   - dB scale on the left.

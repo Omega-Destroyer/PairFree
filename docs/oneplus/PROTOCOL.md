@@ -1,6 +1,10 @@
 # OnePlus / OPPO protocol (HeyMelody)
 
-Research notes, 2026-11-06. No OnePlus or OPPO implementation was added, and no device was connected.
+Virtual follow-up, 2026-11-06: [model-specific scope and interventions](VIRTUAL_TESTING.md).
+No physical hardware was tested.
+
+Research notes, 2026-11-06. A local protocol-core draft is described in [IMPLEMENTATION.md](IMPLEMENTATION.md).
+No OnePlus or OPPO model is enabled in the app, and no physical device was connected.
 The bundled catalog contains 85 records (53 OPPO, 32 OnePlus), including hidden entries and duplicate
 marketing names. [MODELS.md](MODELS.md) preserves their selected feature and control facts. These are
 research leads, not supported-device claims. Realme needs its own app/model evidence even though public

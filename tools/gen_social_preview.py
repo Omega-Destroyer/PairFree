@@ -12,7 +12,7 @@ OUT = ROOT / "docs" / "assets" / "social-preview.png"
 FONTS = Path("C:/Windows/Fonts")
 
 BACKGROUND, PANEL, TEXT, SECONDARY, ACCENT = "#101214", "#181B1F", "#E8E6E1", "#A0A5AD", "#E6A23C"
-BRANDS = ["Soundcore", "Bose", "JBL", "Sony", "Galaxy Buds", "AirPods", "Nothing", "Pixel Buds", "SOUNDPEATS", "QCY", "1MORE", "EarFun", "Cambridge"]
+BRANDS = ["Soundcore", "Bose", "JBL", "Sony", "Galaxy Buds", "AirPods", "Nothing", "Pixel Buds", "SOUNDPEATS", "QCY", "1MORE", "EarFun", "Cambridge", "OnePlus"]
 
 
 def font(name, size):

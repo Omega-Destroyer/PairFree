@@ -7,7 +7,7 @@ permalink: /
 
 PairFree is a free, open-source Android app that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
 
-It covers 644 models from 13 brands. Pick yours:
+It covers 697 models from 14 brands. Pick yours:
 
 - [Open-source SOUNDPEATS app (a PeatsAudio alternative)](https://omega-destroyer.github.io/PairFree/open-source-soundpeats-app/): 88 SOUNDPEATS models
 - [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/): 67 Soundcore models
@@ -22,6 +22,7 @@ It covers 644 models from 13 brands. Pick yours:
 - [Open-source 1MORE app alternative](https://omega-destroyer.github.io/PairFree/open-source-1more-app/): 39 1MORE models
 - [Open-source EarFun app alternative (EarFun Audio)](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/): 26 EarFun models
 - [Open-source Cambridge Audio Melomania app alternative](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/): 2 Cambridge Audio models
+- [Open-source HeyMelody alternative for OnePlus and OPPO earbuds](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/): 53 OnePlus and OPPO models
 
 ## What it controls
 
@@ -67,4 +68,4 @@ From F-Droid or from the GitHub releases page. Both are the same APK, signed wit
 
 ---
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun or Cambridge Audio; the names are used to say which earbuds it works with.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, OnePlus or OPPO; the names are used to say which earbuds it works with.

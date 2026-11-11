@@ -1,6 +1,8 @@
 package io.github.omegadestroyer.pairfree.protocol
 
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
+import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusModels
+import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusWire
 
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleWire
@@ -18,7 +20,7 @@ import io.github.omegadestroyer.pairfree.protocol.sony.SonyWire
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 
 /** The brands PairFree controls. */
-public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL, QCY, ONEMORE, EARFUN, CAMBRIDGE }
+public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL, QCY, ONEMORE, EARFUN, CAMBRIDGE, ONEPLUS }
 
 /**
  * Which brand a paired device is, from what Android keeps for it: its Bluetooth name and the services it lists
@@ -60,6 +62,7 @@ public object Identify {
             Maker.BOSE -> BoseModels.hasService(list)
             Maker.APPLE -> AppleWire.SERVICE_UUID.lowercase() in list
             Maker.NOTHING -> NothingWire.SERVICE_UUID.lowercase() in list
+            Maker.ONEPLUS -> OneplusWire.SPP_UUID.lowercase() in list
             Maker.PIXEL -> PixelModels.hasService(list)
             // The standard serial service, and Airoha's and JieLi's, which other brands' earbuds offer too.
             Maker.SOUNDPEATS, Maker.JBL, Maker.QCY, Maker.ONEMORE, Maker.EARFUN, Maker.CAMBRIDGE -> false
@@ -77,6 +80,7 @@ public object Identify {
         Maker.ONEMORE -> OneMoreModels.fromName(name) != null
         Maker.EARFUN -> EarfunModels.fromName(name) != null
         Maker.CAMBRIDGE -> CambridgeModels.fromName(name) != null
+        Maker.ONEPLUS -> OneplusModels.fromName(name) != null
         // Galaxy Buds names hold "Galaxy"; Bose's "Bose"; the Beats that speak B2P are known by name.
         Maker.APPLE -> AppleModels.b2p(name) != null || AppleModels.bcd(name) != null
         Maker.SAMSUNG, Maker.BOSE -> false

@@ -127,6 +127,11 @@ then low, mid and high from 0 to 100 (50 is flat). LibrePods found it on AirPods
 Apple device on OS 27 installs; the AirPods send it when PairFree asks for notifications, and PairFree shows it
 only then. A change writes the whole packet again, as LibrePods does. Not tried with PairFree.
 
+Off and `34` (2026-11-11, issue #3): a user's AirPods Pro 3 (Android 17, PairFree 0.9.1) answered the Off listening mode (`0D` 01) with an error beep, and
+its 21 reported controls did not include `34`. So AirPods apply Off only while "Allow Off" is on, and may never report it. PairFree's Off therefore writes
+`34` 01 first when `34` is not known to be on, then the mode (`AppleSession.set`); until a user confirms it, this is inferred from the beep and from the
+switch's name (the iOS Noise Control setting), not recorded.
+
 ## 5. Models
 
 AirPods name their model by its A number in the information packet (LibrePods' `AirPodsModels`).

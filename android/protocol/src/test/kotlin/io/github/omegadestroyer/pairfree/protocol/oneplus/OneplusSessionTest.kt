@@ -49,7 +49,7 @@ class OneplusSessionTest {
         val frames = s.start()
         assertTrue(frames.all { s.allowed(it) })
         val sent = frames.map { parsed(it) }
-        assertEquals(listOf(0x0100, 0x0102, 0x0106, 0x0103, 0x0101, 0x010C, 0x010C, 0x010F, 0x010D, 0x0108, 0x0122), sent.map { it.command })
+        assertEquals(listOf(0x0100, 0x0102, 0x0106, 0x0103, 0x0101, 0x010C, 0x010C, 0x010F, 0x010D, 0x0112, 0x0108, 0x0122), sent.map { it.command })
         // The app's own startup: 0100, 0102 FFFF, 0106, 0103, 0101 0002 (the order of the later ones differs).
         for ((command, payload) in listOf("0102" to "ffff", "0101" to "0002")) {
             val v = vector(command, payload)
@@ -232,5 +232,67 @@ class OneplusSessionTest {
         assertEquals(null, s.change(SettingChange.Toggle("game_mode", true)))
         assertFalse(s.allowed(OneplusPacket(0x0F00, 0).bytes()))
         assertFalse(s.allowed(OneplusPacket(0x0107, 0).bytes()))
+    }
+
+    private fun hex(b: ByteArray) = b.joinToString("") { "%02x".format(it) }
+
+    @Test
+    fun plainSwitchesAreReadFromTheCatalogsIdsAndWrittenAsFeatureIdAndState() {
+        val s = budsPro2()
+        val sent = s.start().map { parsed(it) }
+        // The Buds Pro 2's flags: in-ear detection 4, hearing enhancement 11, dual connection 17, high-quality audio 24, automatic volume 28, bass engine 29 (and game mode 6).
+        assertEquals("07" + "06" + "04" + "0b" + "11" + "18" + "1c" + "1d", hex(sent.first { it.command == 0x010D }.payload))
+        s.receive(reply(0x010D, 0, 3, 11, 1, 24, 0, 29, 1))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Toggle>().associate { it.key to it.on }
+        assertEquals(true, rows["op_sw_11"])
+        assertEquals(false, rows["op_sw_24"])
+        assertEquals(true, rows["op_sw_29"])
+        assertEquals(null, rows["op_sw_4"])
+        assertEquals("0403" to "1800", "%04x".format(parsed(s.change(SettingChange.Toggle("op_sw_24", false))!!.single()).command) to hex(parsed(s.change(SettingChange.Toggle("op_sw_24", false))!!.single()).payload))
+        assertEquals(null, s.change(SettingChange.Toggle("op_sw_4", true)))
+    }
+
+    @Test
+    fun dualConnectionListsOtherDevicesAndConnectsOrDisconnectsOne() {
+        val s = budsPro2()
+        s.start()
+        s.receive(reply(0x010D, 0, 1, 17, 1))
+        fun device(address: List<Int>, state: Int, flags: Int, name: String) = address + listOf(3 + name.length, state, flags, name.length) + name.encodeToByteArray().map { it.toInt() }
+        // This phone (connected), a phone that is connected and one that is not.
+        s.receive(reply(0x0112, 0, 3, *(device(listOf(1, 2, 3, 4, 5, 6), 2, 1, "Me") + device(listOf(0x11, 0x22, 0x33, 0x44, 0x55, 0x66), 2, 0, "Laptop") + device(listOf(0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6), 0, 0, "Tablet")).toIntArray()))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associateBy { it.key }
+        assertEquals(listOf("Tablet"), rows.getValue(OneplusSession.PEER_CONNECT_KEY).options)
+        assertEquals(listOf("Laptop"), rows.getValue(OneplusSession.PEER_DISCONNECT_KEY).options)
+        val connect = s.change(SettingChange.Choice(OneplusSession.PEER_CONNECT_KEY, "Tablet"))!!.map { parsed(it) }
+        // The address goes in the order HeyMelody's text shows it: the read's bytes reversed.
+        assertEquals("0429" to "01a6a5a4a3a2a1", "%04x".format(connect[0].command) to hex(connect[0].payload))
+        assertEquals(0x0112, connect[1].command)
+        assertEquals("02665544332211", hex(parsed(s.change(SettingChange.Choice(OneplusSession.PEER_DISCONNECT_KEY, "Laptop"))!![0]).payload))
+        // This phone is never offered.
+        assertEquals(null, s.change(SettingChange.Choice(OneplusSession.PEER_DISCONNECT_KEY, "Me")))
+    }
+
+    @Test
+    fun promptVolumeTapSensitivityAndHeadGesturesAreReadAndWritten() {
+        val m = OneplusModels.ALL.first { it.promptVolume.isNotEmpty() && !it.hidden }
+        val s = OneplusSession(m)
+        assertTrue(s.start().map { parsed(it).command }.contains(0x0130))
+        s.receive(reply(0x0130, 0, 6))
+        val level = s.groups.flatMap { it.settings }.first { it.key == OneplusSession.PROMPT_KEY } as Setting.Level
+        assertEquals(m.promptVolume[0] to m.promptVolume[1], level.min to level.max)
+        assertEquals("0427" to "08", "%04x".format(parsed(s.change(SettingChange.Level(OneplusSession.PROMPT_KEY, 8))!!.single()).command) to hex(parsed(s.change(SettingChange.Level(OneplusSession.PROMPT_KEY, 8))!!.single()).payload))
+        val tap = OneplusModels.ALL.first { it.tapLevel }
+        val t = OneplusSession(tap)
+        assertTrue(t.start().map { parsed(it).command }.contains(0x0133))
+        t.receive(reply(0x0133, 0, 2, 3))
+        assertEquals(2, (t.groups.flatMap { it.settings }.first { it.key == OneplusSession.TAP_KEY } as Setting.Level).value)
+        assertEquals("042d" to "05", "%04x".format(parsed(t.change(SettingChange.Level(OneplusSession.TAP_KEY, 9))!!.single()).command) to hex(parsed(t.change(SettingChange.Level(OneplusSession.TAP_KEY, 9))!!.single()).payload))
+        val head = OneplusModels.ALL.first { 59 in it.switches }
+        val h = OneplusSession(head)
+        assertTrue(h.start().map { parsed(it).command }.contains(0x0134))
+        h.receive(reply(0x010D, 0, 1, 59, 1))
+        h.receive(reply(0x0134, 0, 1))
+        assertEquals("shake", (h.groups.flatMap { it.settings }.first { it.key == OneplusSession.HEAD_KEY } as Setting.Choice).value)
+        assertEquals("0431" to "00", "%04x".format(parsed(h.change(SettingChange.Choice(OneplusSession.HEAD_KEY, "nod"))!!.single()).command) to hex(parsed(h.change(SettingChange.Choice(OneplusSession.HEAD_KEY, "nod"))!!.single()).payload))
     }
 }

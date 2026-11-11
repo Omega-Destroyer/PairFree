@@ -132,6 +132,14 @@ def noise(modes):
     return out
 
 
+# Catalog flag -> feature id of a plain switch, from HeyMelody's call sites of `setSwitchFeature` (`H0(address, id, on)`):
+# smart play / wear detection 4, vocal enhance 9, hearing enhancement 11, multi-device connection 17, headset sound recording 19, high tone quality 24,
+# automatic volume for the controls 28, bass engine 29, speech perception 50, long-press volume 53, swift pair 55, sleep detection 58, head motion 59.
+SWITCH_FLAGS = {"wearDetection": 4, "vocalEnhance": 9, "hearingEnhancement": 11, "multiDevicesConnect": 17, "headSetSoundRecord": 19,
+                "highToneQuality": 24, "controlAutoVolumeSupport": 28, "bassEngineSupport": 29, "speechPerception": 50, "longPressVolume": 53,
+                "swiftPair": 55, "sleepDetection": 58, "headMotion": 59}
+
+
 def entry(r, strings):
     f = r["function"]
     names = [r["name"]] + [c["name"] for c in r.get("children", [])]
@@ -151,6 +159,16 @@ def entry(r, strings):
     flags = {k: f[k] for k in ("gameMode", "wearDetection", "multiDevicesConnect", "bassEngineSupport", "highToneQuality", "hearingEnhancement", "supportPinch", "zenMode", "headMotion", "spatialTypes", "longPressType", "heyFindDevice", "findDevice") if k in f}
     if flags:
         e["features"] = flags
+    # The plain on/off feature switches (`0403` with the feature id and 0 or 1, HeyMelody's `setSwitchFeature`): the ids whose catalog flag is set.
+    switches = sorted(i for flag, i in SWITCH_FLAGS.items() if f.get(flag))
+    if switches:
+        e["switches"] = switches
+    if f.get("promptVolume"):
+        # The prompt volume bar (PromptVolumeItem): the catalog's range, else 1 to 10 as the bar's own defaults.
+        rng = f.get("promptVolumeRange") or {}
+        e["prompt_volume"] = {"min": rng.get("min") if rng.get("min", -1) != -1 else 1, "max": rng.get("max") if rng.get("max", -1) != -1 else 10}
+    if f.get("tapLevelSetting"):
+        e["tap_level"] = True
     return e
 
 

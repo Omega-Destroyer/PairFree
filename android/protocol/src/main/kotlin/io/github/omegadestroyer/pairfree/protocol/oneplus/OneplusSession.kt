@@ -28,6 +28,22 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
     private var presetIndex: Int? = null
     private var gameMode: Boolean? = null
 
+    /** The plain switches the earbuds listed in their `010D` reply, by feature id. */
+    private val switchStates = linkedMapOf<Int, Boolean>()
+
+    /** The prompt volume, the tap sensitivity and which head gesture answers a call, as the earbuds reported them. */
+    private var promptVolume: Int? = null
+    private var tapLevel: Int? = null
+    private var headAnswer: Int? = null
+
+    /** Another device the earbuds are paired with for dual connection (HeyMelody's `MultiConnectInformationElement`). */
+    private class Peer(val address: ByteArray, val state: Int, val flags: Int, val name: String) {
+        val current get() = flags and 1 != 0
+        val connected get() = state == PEER_CONNECTED
+    }
+
+    private var peers: List<Peer>? = null
+
     /** The last key assignments read, by (device type, button action byte): the function number. */
     private val keys = linkedMapOf<Triple<Int, Int, Int>, Int>()
 
@@ -74,7 +90,12 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
         if (model?.noise?.isNotEmpty() == true) add(next(OneplusCommand.TYPED_NOISE, 1, 1))
         if (model?.noiseCycle == true) add(next(OneplusCommand.TYPED_NOISE, 2, CYCLE_TYPE))
         if (model?.presets?.isNotEmpty() == true) add(next(OneplusCommand.EQ_PRESET))
-        if (model?.gameMode == true) add(next(OneplusCommand.SWITCHES, 1, GAME_MODE_ID))
+        val ids = listOfNotNull(GAME_MODE_ID.takeIf { model?.gameMode == true }) + model?.switches.orEmpty().filter { it != GAME_MODE_ID }
+        if (ids.isNotEmpty()) add(next(OneplusCommand.SWITCHES, ids.size, *ids.toIntArray()))
+        if (model?.promptVolume?.isNotEmpty() == true) add(next(OneplusCommand.VOLUME))
+        if (model?.tapLevel == true) add(next(OneplusCommand.TAP_LEVEL))
+        if (HEAD_MOTION_ID in model?.switches.orEmpty()) add(next(OneplusCommand.HEAD_MOTION))
+        if (MULTI_ID in model?.switches.orEmpty()) add(next(OneplusCommand.MULTI_CONNECT))
         if (model?.touch?.isNotEmpty() == true) add(readKeys())
         if (model?.customSlots?.let { it > 0 } == true) add(next(OneplusCommand.CUSTOM_EQ))
         if (model?.spatialTypes?.isNotEmpty() == true) add(next(OneplusCommand.SPATIAL))
@@ -109,6 +130,10 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
             OneplusCommand.KEYS -> keyRecords(d)
             OneplusCommand.CUSTOM_EQ -> customEqs = parseCustomEqs(d, 1) ?: customEqs
             OneplusCommand.SPATIAL -> if (d.size >= 2) spatial = d[1].toInt() and 0xFF
+            OneplusCommand.VOLUME -> if (d.size >= 2) promptVolume = d[1].toInt() and 0xFF
+            OneplusCommand.TAP_LEVEL -> if (d.size >= 2) tapLevel = d[1].toInt() and 0xFF
+            OneplusCommand.HEAD_MOTION -> if (d.size >= 2) headAnswer = d[1].toInt() and 0xFF
+            OneplusCommand.MULTI_CONNECT -> peers = parsePeers(d) ?: peers
         }
     }
 
@@ -249,7 +274,40 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
         if (d.size < 2) return
         val count = d[1].toInt() and 0xFF
         if (d.size < 2 + count * 2) return
-        for (i in 0 until count) if ((d[2 + i * 2].toInt() and 0xFF) == GAME_MODE_ID) gameMode = d[3 + i * 2].toInt() != 0
+        for (i in 0 until count) {
+            val id = d[2 + i * 2].toInt() and 0xFF
+            val on = d[3 + i * 2].toInt() != 0
+            if (id == GAME_MODE_ID) gameMode = on else if (id in model?.switches.orEmpty()) switchStates[id] = on
+        }
+    }
+
+    /**
+     * `status, count`, then per device: its address (6 bytes), a length (the bytes that follow it), the connection state, a flag byte (bit 0 this phone,
+     * bit 1 the main audio device, bit 2 audio playing), the name's length, the name and any further bytes: HeyMelody's `CommandUtil.parseMultiConnectStateInfo`.
+     */
+    private fun parsePeers(d: ByteArray): List<Peer>? {
+        if (d.size < 2) return null
+        var at = 2
+        val out = mutableListOf<Peer>()
+        repeat(d[1].toInt() and 0xFF) {
+            if (at + 10 > d.size) return null
+            val length = d[at + 6].toInt() and 0xFF
+            val nameLength = d[at + 9].toInt() and 0xFF
+            if (at + 10 + nameLength > d.size) return null
+            val address = d.copyOfRange(at, at + 6)
+            if (address.any { it.toInt() != 0 }) out += Peer(address, d[at + 7].toInt() and 0xFF, d[at + 8].toInt() and 0xFF, d.copyOfRange(at + 10, at + 10 + nameLength).decodeToString())
+            at += 7 + length
+        }
+        return out
+    }
+
+    /** The names the screens show for the devices that can be connected or disconnected, with a number added to a repeated name. */
+    private fun peerNames(list: List<Peer>): List<Pair<String, Peer>> {
+        val seen = mutableMapOf<String, Int>()
+        return list.map { p ->
+            val n = seen.merge(p.name, 1, Int::plus)!!
+            (if (n == 1) p.name else "${p.name} ($n)") to p
+        }
     }
 
     private fun refresh() {
@@ -275,12 +333,35 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
             spatialRow()?.let { SettingGroup("oneplus_spatial", SettingTab.SOUND, listOf(it)) },
             if (model?.find == true && state.values.isNotEmpty()) SettingGroup("find", SettingTab.DEVICE, listOf(Setting.Action(FIND_KEY, finding))) else null,
             gameMode?.let { SettingGroup("oneplus_other", SettingTab.DEVICE, listOf(Setting.Toggle("game_mode", it))) },
+            switchRows(SettingTab.SOUND).takeIf { it.isNotEmpty() }?.let { SettingGroup("oneplus_sound_switches", SettingTab.SOUND, it) },
+            switchRows(SettingTab.DEVICE).takeIf { it.isNotEmpty() }?.let { SettingGroup("oneplus_switches", SettingTab.DEVICE, it) },
+            promptVolume?.let { v -> model?.promptVolume?.takeIf { it.size == 2 }?.let { SettingGroup("oneplus_volume", SettingTab.DEVICE, listOf(Setting.Level(PROMPT_KEY, v.coerceIn(it[0], it[1]), it[0], it[1]))) } },
+            headMotionRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("oneplus_head_motion", SettingTab.CONTROLS, it) },
+            tapLevel?.let { SettingGroup("oneplus_tap_level", SettingTab.CONTROLS, listOf(Setting.Level(TAP_KEY, it.coerceIn(TAP_MIN, TAP_MAX), TAP_MIN, TAP_MAX))) },
+            peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("oneplus_peers", SettingTab.DEVICE, it) },
         )
 
-    /**
-     * The sub-modes of the mode that is on (noise cancelling's smart, strong, moderate and light; the auto mode's range): HeyMelody selects one by
-     * writing the same noise bitmap with the sub-mode's own protocol index (`m0` calls `l0(index, 1)`), so the row is a choice among their kinds.
-     */
+    /** The plain switches the earbuds listed, on the tab each belongs to (sound features on Sound, the rest on Device). */
+    private fun switchRows(tab: SettingTab): List<Setting> =
+        switchStates.filter { (id, _) -> (id in SOUND_SWITCHES) == (tab == SettingTab.SOUND) }.map { (id, on) -> Setting.Toggle("$SWITCH_PREFIX$id", on) }
+
+    /** Which head gesture answers a call (the other declines): shown once the switch is on and the earbuds said which. */
+    private fun headMotionRows(): List<Setting> {
+        val on = switchStates[HEAD_MOTION_ID] == true
+        val answer = headAnswer ?: return emptyList()
+        return if (on) listOf(Setting.Choice(HEAD_KEY, HEAD_NAMES.getOrNull(answer), HEAD_NAMES)) else emptyList()
+    }
+
+    /** The other devices the earbuds know: one choice connects a disconnected one, another disconnects a connected one (never this phone). */
+    private fun peerRows(): List<Setting> {
+        val list = peers?.takeIf { switchStates[MULTI_ID] == true } ?: return emptyList()
+        val others = peerNames(list).filter { !it.second.current }
+        return listOfNotNull(
+            others.filter { !it.second.connected }.map { it.first }.takeIf { it.isNotEmpty() }?.let { Setting.Choice(PEER_CONNECT_KEY, null, it) },
+            others.filter { it.second.connected }.map { it.first }.takeIf { it.isNotEmpty() }?.let { Setting.Choice(PEER_DISCONNECT_KEY, null, it) },
+        )
+    }
+
     /** Spatial audio: off, fixed or head tracking, among the types the model lists (`012A` read, `0422` write). */
     private fun spatialRow(): Setting? {
         val current = spatial ?: return null
@@ -297,6 +378,10 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
         }
     }
 
+    /**
+     * The sub-modes of the mode that is on (noise cancelling's smart, strong, moderate and light; the auto mode's range): HeyMelody selects one by
+     * writing the same noise bitmap with the sub-mode's own protocol index (`m0` calls `l0(index, 1)`), so the row is a choice among their kinds.
+     */
     private fun strengthRow(): Setting? {
         val index = noiseIndex ?: return null
         val top = model?.noise?.firstOrNull { it.index == index || it.children.any { c -> c.index == index } } ?: return null
@@ -379,6 +464,32 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
             val bytes = generateSequence(next) { it ushr 8 }.takeWhile { it != 0 }.map { it and 0xFF }.toList().ifEmpty { listOf(0) }
             return listOf(next(OneplusCommand.SET_NOISE, 2, CYCLE_TYPE, *bytes.toIntArray()))
         }
+        if (change is SettingChange.Toggle && change.key.startsWith(SWITCH_PREFIX)) {
+            val id = change.key.removePrefix(SWITCH_PREFIX).toIntOrNull() ?: return null
+            if (id !in model?.switches.orEmpty() || switchStates[id] == null) return null
+            switchStates[id] = change.on
+            return listOf(next(OneplusCommand.SET_SWITCH, id, if (change.on) 1 else 0))
+        }
+        if (change is SettingChange.Level && change.key == PROMPT_KEY && promptVolume != null) {
+            val range = model?.promptVolume?.takeIf { it.size == 2 } ?: return null
+            promptVolume = change.value.coerceIn(range[0], range[1])
+            return listOf(next(OneplusCommand.SET_VOLUME, promptVolume!!))
+        }
+        if (change is SettingChange.Level && change.key == TAP_KEY && tapLevel != null) {
+            tapLevel = change.value.coerceIn(TAP_MIN, TAP_MAX)
+            return listOf(next(OneplusCommand.SET_TAP_LEVEL, tapLevel!!))
+        }
+        if (change is SettingChange.Choice && change.key == HEAD_KEY && headAnswer != null) {
+            val type = HEAD_NAMES.indexOf(change.option).takeIf { it >= 0 } ?: return null
+            headAnswer = type
+            return listOf(next(OneplusCommand.SET_HEAD_MOTION, type))
+        }
+        if (change is SettingChange.Choice && (change.key == PEER_CONNECT_KEY || change.key == PEER_DISCONNECT_KEY)) {
+            val peer = peerNames(peers ?: return null).firstOrNull { it.first == change.option && !it.second.current }?.second ?: return null
+            // HeyMelody's `operateMultiConnectHandheldDevice`: operation 1 connects the device, 2 disconnects it, with the address as HeyMelody writes it (the bytes in the order its text shows them, the reverse of the read), then the list is read again.
+            val op = if (change.key == PEER_CONNECT_KEY) PEER_CONNECT else PEER_DISCONNECT
+            return listOf(next(OneplusCommand.SET_MULTI_CONNECT, op, *peer.address.reversed().map { it.toInt() and 0xFF }.toIntArray()), next(OneplusCommand.MULTI_CONNECT))
+        }
         if (change is SettingChange.Choice && change.key == SPATIAL_KEY && spatial != null) {
             val type = SPATIAL_NAMES.entries.firstOrNull { it.value == change.option && it.key in model?.spatialTypes.orEmpty() }?.key ?: return null
             spatial = type
@@ -456,6 +567,25 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
         /** The keys of the spatial audio choice and of the find button. */
         public const val SPATIAL_KEY: String = "op_spatial"
         public const val FIND_KEY: String = "find"
+
+        /** Plain switches are rows `op_sw_<feature id>`; the other rows of this part have their own keys. */
+        public const val SWITCH_PREFIX: String = "op_sw_"
+        public const val PROMPT_KEY: String = "op_prompt_volume"
+        public const val TAP_KEY: String = "op_tap_level"
+        public const val HEAD_KEY: String = "op_head_motion"
+        public const val PEER_CONNECT_KEY: String = "op_peer_connect"
+        public const val PEER_DISCONNECT_KEY: String = "op_peer_disconnect"
+
+        /** Feature ids that are about sound and so sit on the Sound tab: hearing enhancement, high-quality audio, automatic volume and the bass engine. */
+        public val SOUND_SWITCHES: Set<Int> = setOf(11, 24, 28, 29)
+        private const val HEAD_MOTION_ID = 59
+        private const val MULTI_ID = 17
+        private val HEAD_NAMES = listOf("nod", "shake")
+        private const val TAP_MIN = 1
+        private const val TAP_MAX = 5
+        private const val PEER_CONNECTED = 2
+        private const val PEER_CONNECT = 1
+        private const val PEER_DISCONNECT = 2
         private val SPATIAL_NAMES = mapOf(0 to "off", 1 to "fixed", 2 to "head_tracking")
 
         /** The key of the brand row that chooses among the custom equalizers, and of the action that adds one. */
@@ -486,6 +616,8 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
             OneplusCommand.CAPABILITIES, OneplusCommand.VENDOR, OneplusCommand.BATTERY, OneplusCommand.PRODUCT, OneplusCommand.MTU,
             OneplusCommand.TYPED_NOISE, OneplusCommand.EQ_PRESET, OneplusCommand.SWITCHES,
             OneplusCommand.SET_NOISE, OneplusCommand.SET_EQ_PRESET, OneplusCommand.SET_SWITCH, OneplusCommand.KEYS, OneplusCommand.SET_KEYS, OneplusCommand.CUSTOM_EQ, OneplusCommand.SET_CUSTOM_EQ, OneplusCommand.SPATIAL, OneplusCommand.SET_SPATIAL, OneplusCommand.FIND,
+            OneplusCommand.MULTI_CONNECT, OneplusCommand.VOLUME, OneplusCommand.TAP_LEVEL, OneplusCommand.HEAD_MOTION,
+            OneplusCommand.SET_MULTI_CONNECT, OneplusCommand.SET_VOLUME, OneplusCommand.SET_TAP_LEVEL, OneplusCommand.SET_HEAD_MOTION,
         )
     }
 }

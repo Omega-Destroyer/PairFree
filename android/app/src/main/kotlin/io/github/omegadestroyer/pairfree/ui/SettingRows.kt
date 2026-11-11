@@ -180,6 +180,9 @@ private fun groupTitle(key: String): String = stringResource(
         "ef_buttons" -> R.string.setting_group_buttons
         "ca_eq" -> R.string.setting_ca_eq
         "ca_connection" -> R.string.connection
+        "oneplus_sound_switches" -> R.string.setting_group_sound
+        "oneplus_head_motion" -> R.string.setting_group_head_motion
+        "oneplus_peers" -> R.string.setting_group_peers
         else -> R.string.setting_group_other
     },
 )
@@ -201,6 +204,24 @@ private fun settingTitle(key: String): String = when (key) {
     "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
     "op_custom_eq" -> stringResource(R.string.setting_op_custom_eq)
     "op_spatial" -> stringResource(R.string.setting_op_spatial)
+    "op_sw_4" -> stringResource(R.string.setting_op_sw_4)
+    "op_sw_9" -> stringResource(R.string.setting_op_sw_9)
+    "op_sw_11" -> stringResource(R.string.setting_op_sw_11)
+    "op_sw_17" -> stringResource(R.string.setting_op_sw_17)
+    "op_sw_19" -> stringResource(R.string.setting_op_sw_19)
+    "op_sw_24" -> stringResource(R.string.setting_op_sw_24)
+    "op_sw_28" -> stringResource(R.string.setting_op_sw_28)
+    "op_sw_29" -> stringResource(R.string.setting_op_sw_29)
+    "op_sw_50" -> stringResource(R.string.setting_op_sw_50)
+    "op_sw_53" -> stringResource(R.string.setting_op_sw_53)
+    "op_sw_55" -> stringResource(R.string.setting_op_sw_55)
+    "op_sw_58" -> stringResource(R.string.setting_op_sw_58)
+    "op_sw_59" -> stringResource(R.string.setting_op_sw_59)
+    "op_prompt_volume" -> stringResource(R.string.setting_op_prompt_volume)
+    "op_tap_level" -> stringResource(R.string.setting_op_tap_level)
+    "op_head_motion" -> stringResource(R.string.setting_op_head_answer)
+    "op_peer_connect" -> stringResource(R.string.setting_op_peer_connect)
+    "op_peer_disconnect" -> stringResource(R.string.setting_op_peer_disconnect)
     "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
     "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
     "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
@@ -612,6 +633,8 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "op_head_motion" -> getString(if (option == "nod") R.string.op_head_nod else R.string.op_head_shake)
+    key == "op_peer_connect" || key == "op_peer_disconnect" -> option
     key == "op_spatial" -> getString(when (option) {
         "fixed" -> R.string.op_spatial_fixed
         "head_tracking" -> R.string.op_spatial_head

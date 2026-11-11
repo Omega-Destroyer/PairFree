@@ -36,6 +36,12 @@ public data class OneplusModel(
     val spatialTypes: List<Int> = emptyList(),
     /** True when the earbuds can be made to play a sound so they can be found. */
     val find: Boolean = false,
+    /** The feature ids of the plain on/off switches the model has (`0403`, feature id and 0 or 1), from the catalog's flags. */
+    val switches: List<Int> = emptyList(),
+    /** The prompt volume bar's lowest and highest value (`0427` writes it, `0130` reads it); empty when the model has none. */
+    val promptVolume: List<Int> = emptyList(),
+    /** True when the model has the tap sensitivity bar (`042D` writes 1 to 5, `0133` reads it). */
+    val tapLevel: Boolean = false,
 )
 
 public object OneplusModels {

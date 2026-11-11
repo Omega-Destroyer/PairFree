@@ -15,11 +15,15 @@ earbuds answer its read):
 - **Sound:** the equalizer preset the model offers (the preset names are HeyMelody's English ones), and on the models with one the custom equalizers the earbuds keep: choose one, change its bands (-6 to +6 dB) and add a new one while there is room. Deleting and renaming one are left to HeyMelody.
 - **Controls:** what a single, double and triple tap, a hold, a slide or a long press does on each earbud, and the call controls, among the functions the model allows (play or pause, previous, next, voice assistant, volume, switch device, game mode, nothing and the like). The slide, long press and call rows are written from the app's layouts and not yet checked against any reply.
 - **Sound** also has spatial audio (off, fixed, head tracking) on the models that list it.
-- **Device:** game mode and a button that makes the earbuds play a sound so they can be found.
+- **Sound** also has the switches for hearing enhancement, high-quality audio, automatic volume and the bass engine, on the models whose catalog lists them.
+- **Controls** also has tap sensitivity (1 to 5) and, where the model has head gestures, a switch and which gesture answers a call (the other declines).
+- **Device:** game mode, in-ear detection, dual connection (the switch, and a choice to connect or disconnect each other device the earbuds know; this phone is never offered), voice prompt volume, Swift Pair, sleep detection and the other switches the catalog gives the model, and a button that makes the earbuds play a sound so they can be found.
 
-Not yet: dual connection, tap sensitivity, prompt volume, wear detection,
-fit and hearing tests, spatial audio, the codec choices and everything else in `docs/oneplus/CAPABILITIES.md`. Debug, firmware, find-my and
-account commands are never sent. Realme's earbuds are not covered: they need their own app and evidence.
+All of these are written from HeyMelody's code and only exercised against invented replies (no OnePlus or OPPO earbuds have been tried).
+
+Not yet: the fit test and hearing tests (audible, phone-side), the bass engine's level, per-ear long-press cycles, personalized noise, zen mode and the
+codec choices (`docs/oneplus/CATALOG_MAPPING.md` says what was checked for each). LE audio is switched by the phone's own Bluetooth stack, not by a setting.
+Debug, firmware, find-my and account commands are never sent. Realme's earbuds are not covered: they need their own app and evidence.
 
 ## Help wanted
 

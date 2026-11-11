@@ -40,25 +40,28 @@ auto volume; 30 collect logs (never offered); 33 game EQ packages; 34, 35, 36 an
 adaptive ear; 50 speech perception; 52 meeting assistant; 53 long-press volume; 55 swift pair; 56 hearing optimize; 57 incoming call control; 58
 sleep detection; 59 head motion; 61 Gemini voice assist. The reply is a count then (id, state) pairs. Checked against the virtual Buds Pro 2:
 its read asked for exactly ids 5, 4, 11, 12, 15, 17, 24, 6, 29, 28, which are the flags that record has. PairFree reads and writes id 6 only.
-What each other switch does when set (a plain 0 or 1, or a level) was not read: not built.
+Every plain switch is written the same way, `0403` with the feature id and 0 or 1 (HeyMelody's `setSwitchFeature`, repository method `H0(address, id, on)`; an earlier note here counted two callers because it looked for another method's name: `H0` has about 40 call sites, one per feature screen). PairFree reads the ids the model's catalog flags give (`SWITCH_FLAGS` in the importer) and shows a switch only for an id the earbuds answered. Built: 4 in-ear detection (`wearDetection`), 9 vocal enhancement, 11 hearing enhancement, 17 dual connection, 19 recording through the earbuds, 24 high-quality audio, 28 automatic volume, 29 bass engine, 50 speech perception, 53 volume by long press, 55 Swift Pair, 58 sleep detection, 59 head nod and shake control. Not built on purpose: 12 personalized noise (a calibration, the app only switches it off), 15 zen mode (own audio-file transfer), 13 click to take a photo and 61 Gemini (phone-side), 20, 25 and 57 (voice assistant set-up flows), 30 log collection (never offered), 31 LE audio (the phone's OPLUS Bluetooth stack writes it from a system broadcast, `LeAudioDeviceManager`; checked: it is not a user setting and the app has no screen for it), 33, 39 and 40 (game equalizer and game sound: not read), 52 meeting assistant.
 
 ## Mapped as a fact but not used yet
 
 | Field (records) | What it is | Status |
 |---|---|---|
-| `multiDevicesConnect` (50), `multiConnectFunctions` (13) | Dual connection (feature id 17), version 1 or 2 (own commands `0429` and others) | not built |
-| `wearDetection` (38) | In-ear detection (own read `0109`) | not built |
+| `multiDevicesConnect` (50), `multiConnectFunctions` (13) | Dual connection: the switch is feature id 17; the other devices are read with `0112` (`status, count`, per device the address, a length, the state, a flag byte, the name) and connected (`0429 01 address`) or disconnected (`0429 02 address`); the address is written in the order HeyMelody's text shows it, the reverse of the read. State 1 is connecting, 2 connected, 4 disconnecting; flag bit 0 is this phone. | built (Device tab: the switch, a choice to connect and one to disconnect; this phone is never offered) |
+| `wearDetection` (38) | In-ear detection: feature id 4 | built as a switch |
 | `spatialTypes` (47), `spatialDescriptionType`, `spatialHiResMutex` | Spatial audio with the allowed types: 0 off, 1 fixed, 2 head tracking (read `012A`, write `0422`) | built (Sound tab) |
-| `hearingEnhancement` (34), `earScan` (32), `hearingJudgeDb` (8) | Hearing enhancement and the ear scan (needs phone-side tests) | not built |
-| `fitDetection` (31) | Ear tip fit test | not built |
-| `highToneQuality` (28), `highAudio` (3) | Codec/quality switch (feature id 24) | not built |
-| `bassEngineSupport` (24) | Bass engine (id 29) | not built |
-| `promptVolume` (26), `promptVolumeRange`, `promptVolumePercent` | Voice prompt volume (write `0427` with one byte; the read was not found) | not built |
-| `controlAutoVolumeSupport` (16) | Automatic volume for the controls (id 28) | not built |
+| `hearingEnhancement` (34), `earScan` (32), `hearingJudgeDb` (8) | Hearing enhancement: feature id 11 (a switch); the ear scan and its profile are phone-side tests | switch built; the scan not built |
+| `fitDetection` (31) | Ear tip fit test: `0405` starts it (`t1`, one byte) and the result arrives unasked | not built (audible; the result layout was not read) |
+| `highToneQuality` (28), `highAudio` (3) | High-quality audio: feature id 24 | built as a switch |
+| `bassEngineSupport` (24) | Bass engine: feature id 29 (its level is written with `041B`, three bytes, which were not read) | switch built; the level not built |
+| `promptVolume` (26), `promptVolumeRange`, `promptVolumePercent` | Voice prompt volume: read `0130` (`status, value`), write `0427` with the value; the bar runs from the catalog's minimum (else 1) to its maximum (else 10). The read was found in `PollCommandManager.M`, which the decompiler skipped (re-run with `-m fallback`) | built (Device tab) |
+| `controlAutoVolumeSupport` (16) | Automatic volume: feature id 28 | built as a switch |
 | `personalNoise` (9), `personalNoiseCompat` (5) | Personalized noise cancelling (`011A` read, `0412` write, id 12) | not built |
 | `zenMode` (6), `whiteNoise` (12) | Zen mode and its sounds (id 15) | not built |
 | `strongNoiseReductionRealTime` (16), `noiseReductionUIVersion` (6) | Changes the noise level descriptions and screen, not the wire | no effect needed |
-| `headMotion` (2), `spineHealth` (2), `sleepDetection` (2), `speechPerception` (2), `vocalEnhance` (1) | Head motion (id 59), spine health, sleep and speech features | not built |
+| `headMotion` (2), `sleepDetection` (2), `speechPerception` (2), `vocalEnhance` (1) | Head motion (id 59, and `0431` with 0 for nod answers or 1 for shake answers, read `0134`), sleep detection (58), speech perception (50), vocal enhancement (9) | built |
+| `spineHealth` (2) | Spine health: ids 34, 35, 36 and 60 with the phone's health app | not built (phone-side) |
+| `tapLevelSetting` (1) | Tap sensitivity, 1 to 5: read `0133` (`status, value, default`), write `042D` | built (Controls tab) |
+| `longPressVolume` (1), `swiftPair` (12), `headSetSoundRecord` (5) | Feature ids 53, 55 and 19 | built as switches |
 | `heyFindDevice` (61), `findDevice` (10) | Find my earbuds (`0400` with 1 or 0, audible: never part of a probe) | built as a button on the Device tab |
 
 ## Not for PairFree
@@ -78,12 +81,9 @@ App-side or server-side fields that need no earbud command: guides and tutorials
 - The device types a `0108` read asks for (1, 2 and 3; the app adds 2 on some phones, `T.u`): what type 3 returns.
 - How the long-press noise cycle is stored and written.
 - The model-specific rounding of battery values (`batteryRadix`), which the virtual run showed for the right earbud.
-- Feature switches other than game mode: HeyMelody's generic switch call (`setSwitchFeature`, `0403` with the feature id and 0 or 1) has two callers in the
-  app's code (ids 6 and 40); the other features use their own setters and screens, so a plain `0403` for them would be a guess. Not built: dual connection (17),
-  high tone quality (24), auto volume (28), bass engine (29, a level), personalized noise (12), zen mode (15), hearing enhancement (11), spatial audio (27).
+- Feature switches: see the section above; all of them are only exercised against invented replies (virtual and unit tests), none on earbuds.
 - Per-earbud long-press cycles (the 10 models whose `longPressType` is set): the read for them is `010C 02 03` (left) and `02 04` (right), written the same way;
   PairFree does not read them.
 - Call controls, key reads and slide or long-press rows are built from the app's layouts but only exercised against invented replies: the key read
   PairFree sends asks for buttons 3 and 1, so whether the earbuds list device type 4 or button 6 records in it is not established.
-- Tap sensitivity (`tapLevelSetting`, 1 record): write `042D` one byte, reply value and default; the read command and the range were not found. Not built.
-- Prompt volume: see the table; the read was not found. LE audio (`0424`, `0433`), head motion (`0431`, `0432`), hearing enhancement and the fit test (`0405`, an audible test): not read.
+- Fit test (`0405`, audible), the bass engine's level, the ear scan and per-ear long-press cycles are not built; LE audio and the Gemini, zen and game-sound features are not user settings (see the switch list above, with what was checked).

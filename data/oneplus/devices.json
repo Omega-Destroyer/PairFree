@@ -112,7 +112,10 @@
    "features": {
     "bassEngineSupport": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    29
+   ]
   },
   {
    "id": "050C14",
@@ -225,7 +228,10 @@
    "features": {
     "bassEngineSupport": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    29
+   ]
   },
   {
    "id": "051014",
@@ -343,7 +349,10 @@
      0,
      1
     ]
-   }
+   },
+   "switches": [
+    29
+   ]
   },
   {
    "id": "060410",
@@ -540,7 +549,10 @@
    "features": {
     "wearDetection": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4
+   ]
   },
   {
    "id": "060C14",
@@ -660,7 +672,12 @@
     "hearingEnhancement": 1,
     "zenMode": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17
+   ]
   },
   {
    "id": "061014",
@@ -841,7 +858,10 @@
    "features": {
     "wearDetection": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4
+   ]
   },
   {
    "id": "061410",
@@ -990,7 +1010,11 @@
     "wearDetection": 1,
     "highToneQuality": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    24
+   ]
   },
   {
    "id": "061414",
@@ -1440,7 +1464,10 @@
    ],
    "features": {
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    9
+   ]
   },
   {
    "id": "061C14",
@@ -1708,7 +1735,12 @@
     "multiDevicesConnect": 1,
     "hearingEnhancement": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17
+   ]
   },
   {
    "id": "062014",
@@ -1917,7 +1949,15 @@
     "supportPinch": 1,
     "zenMode": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28,
+    29
+   ]
   },
   {
    "id": "062410",
@@ -2215,7 +2255,10 @@
     "gameMode": 1,
     "bassEngineSupport": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    29
+   ]
   },
   {
    "id": "062810",
@@ -2509,7 +2552,10 @@
     "gameMode": 1,
     "bassEngineSupport": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    29
+   ]
   },
   {
    "id": "062C14",
@@ -3018,7 +3064,15 @@
     "supportPinch": 1,
     "zenMode": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28,
+    29
+   ]
   },
   {
    "id": "063410",
@@ -3326,7 +3380,15 @@
     "supportPinch": 1,
     "zenMode": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28,
+    29
+   ]
   },
   {
    "id": "063810",
@@ -3477,7 +3539,10 @@
     "gameMode": 1,
     "wearDetection": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4
+   ]
   },
   {
    "id": "063C10",
@@ -3700,7 +3765,14 @@
     "hearingEnhancement": 1,
     "supportPinch": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    19,
+    24
+   ]
   },
   {
    "id": "063C14",
@@ -3928,7 +4000,15 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28,
+    29
+   ]
   },
   {
    "id": "064010",
@@ -4080,7 +4160,11 @@
     "wearDetection": 1,
     "multiDevicesConnect": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    17
+   ]
   },
   {
    "id": "064014",
@@ -4349,7 +4433,16 @@
      2
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    19,
+    24,
+    28,
+    29
+   ]
   },
   {
    "id": "064410",
@@ -4709,7 +4802,14 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    29
+   ]
   },
   {
    "id": "064810",
@@ -5143,7 +5243,10 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    17
+   ]
   },
   {
    "id": "064C14",
@@ -5342,7 +5445,12 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    11,
+    17,
+    29
+   ]
   },
   {
    "id": "065010",
@@ -5493,7 +5601,10 @@
     "gameMode": 1,
     "wearDetection": 1,
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4
+   ]
   },
   {
    "id": "065014",
@@ -5692,7 +5803,12 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    11,
+    17,
+    29
+   ]
   },
   {
    "id": "065414",
@@ -5956,6 +6072,18 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28,
+    29
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -6094,7 +6222,10 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    17
+   ]
   },
   {
    "id": "065854",
@@ -6281,6 +6412,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -6473,7 +6611,13 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24
+   ]
   },
   {
    "id": "066010",
@@ -6665,7 +6809,13 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24
+   ]
   },
   {
    "id": "066054",
@@ -6853,6 +7003,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -7095,6 +7252,18 @@
     ],
     "longPressType": 8833,
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    29,
+    55
+   ],
+   "prompt_volume": {
+    "min": 2,
+    "max": 10
    }
   },
   {
@@ -7314,7 +7483,15 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28,
+    29
+   ]
   },
   {
    "id": "066814",
@@ -7564,6 +7741,18 @@
     ],
     "longPressType": 8397441,
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    29,
+    55
+   ],
+   "prompt_volume": {
+    "min": 2,
+    "max": 10
    }
   },
   {
@@ -8085,6 +8274,17 @@
     ],
     "longPressType": 8397441,
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    29,
+    55
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -8357,7 +8557,15 @@
      2
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    19,
+    24,
+    28
+   ]
   },
   {
    "id": "067414",
@@ -8603,6 +8811,18 @@
     ],
     "longPressType": 8397441,
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    29,
+    55
+   ],
+   "prompt_volume": {
+    "min": 2,
+    "max": 10
    }
   },
   {
@@ -8741,7 +8961,10 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    17
+   ]
   },
   {
    "id": "067814",
@@ -9056,6 +9279,23 @@
     ],
     "longPressType": 8397441,
     "heyFindDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    19,
+    24,
+    28,
+    29,
+    50,
+    55,
+    58,
+    59
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -9274,7 +9514,13 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24
+   ]
   },
   {
    "id": "068010",
@@ -10038,6 +10284,17 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -10227,7 +10484,11 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    11,
+    17
+   ]
   },
   {
    "id": "069850",
@@ -10414,6 +10675,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -10632,7 +10900,13 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24
+   ]
   },
   {
    "id": "06A010",
@@ -10821,7 +11095,11 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    11,
+    17
+   ]
   },
   {
    "id": "06A450",
@@ -10999,6 +11277,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -11186,6 +11471,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -11373,6 +11665,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -11551,6 +11850,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -11730,6 +12036,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -11897,7 +12210,18 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    4,
+    17,
+    28,
+    53
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
+   },
+   "tap_level": true
   },
   {
    "id": "06BC10",
@@ -12164,6 +12488,17 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -12431,6 +12766,17 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    28
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -12682,6 +13028,18 @@
     ],
     "longPressType": 8397441,
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    29,
+    55
+   ],
+   "prompt_volume": {
+    "min": 2,
+    "max": 10
    }
   },
   {
@@ -12929,6 +13287,18 @@
     ],
     "longPressType": 8397441,
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    29,
+    55
+   ],
+   "prompt_volume": {
+    "min": 2,
+    "max": 10
    }
   },
   {
@@ -13179,6 +13549,16 @@
     ],
     "longPressType": 8397441,
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    55
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -13353,6 +13733,17 @@
      1
     ],
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    17,
+    24,
+    28,
+    55
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -13527,6 +13918,17 @@
      1
     ],
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    17,
+    24,
+    28,
+    55
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -13765,6 +14167,18 @@
     ],
     "longPressType": 8833,
     "findDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    24,
+    29,
+    55
+   ],
+   "prompt_volume": {
+    "min": 2,
+    "max": 10
    }
   },
   {
@@ -14080,6 +14494,23 @@
     ],
     "longPressType": 8397441,
     "heyFindDevice": 1
+   },
+   "switches": [
+    4,
+    11,
+    17,
+    19,
+    24,
+    28,
+    29,
+    50,
+    55,
+    58,
+    59
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   },
   {
@@ -14269,7 +14700,11 @@
      1
     ],
     "heyFindDevice": 1
-   }
+   },
+   "switches": [
+    11,
+    17
+   ]
   },
   {
    "id": "06F450",
@@ -14456,6 +14891,13 @@
      1
     ],
     "heyFindDevice": 1
+   },
+   "switches": [
+    17
+   ],
+   "prompt_volume": {
+    "min": 1,
+    "max": 10
    }
   }
  ]

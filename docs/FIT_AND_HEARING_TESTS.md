@@ -39,8 +39,8 @@ Two different things go by the name. PairFree's SOUNDPEATS test is the first kin
 |---|---|---|---|
 | SOUNDPEATS | Adaptive EQ (8 frequencies x 10 levels) | 1 | built |
 | Samsung | Adapt Sound (`hearingadjust` activities: instruction, testing, result, preview) | 2 | not read to the end: the testing activity is obfuscated; message 184 carries the result |
-| Soundcore | HearID (`A3909HearIdActivity`, `A3951HearIdActivity` ...): a tone test, then a HearID block in the EQ write | 2 | PairFree already passes the block on; the test itself is not read |
-| JBL | PersoniFi (`MmiStage_*PersoniFi*`, `PersoniFiModeHearingTextCmd`): tones played, result as `EQ`/status commands | 2 | not read |
+| Soundcore | HearID (`BaseHearIdActivity`, `HearIdTestVM`): the phone plays tones (a `MediaPlayer`; the user holds a button while hearing one), after an age range is chosen and the earbuds are told to start the test (`cmdStartOrCancelHearIdTest`); the curve goes to the earbuds in the HearID block of the EQ write | 1 in kind | PairFree already passes the block on and the generic test covers the idea; the tone files, the curve computation and the start command were seen but not extracted |
+| JBL | PersoniFi: a seal check first ("a tone is now playing on the left ear, adjust until you hear it", `check_seal_*` strings: phone-run, the user answers; it falls back to the hearing test), then a hearing test with tones the app plays; the result is an EQ the earbuds hold as category 201 (`EQ` command, docs/jbl/PROTOCOL.md section 11) | 1 in kind (phone-run tones, answers, a curve) | covered in substance by the generic test above; JBL's own tone table and its curve rule are not extracted (the table is in the app's code, not read) |
 | Nothing | Mimi hearing test (`mimi_content_hearing_test*` layouts, `com.audiodo.aspen`, Mimi SDK) and "personal sound" | 2 (Mimi's SDK) | not read |
 | 1MORE | Sound ID (`ISdkSoundIdRoute`) and Hearing Protect | 2 | not read |
 | OnePlus / OPPO | hearing enhancement analysis (`hearing_enhancement_analysis.json`), ear scan | 2 | not read |

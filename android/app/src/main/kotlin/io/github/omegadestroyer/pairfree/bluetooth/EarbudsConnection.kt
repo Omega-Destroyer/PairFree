@@ -1610,7 +1610,7 @@ class EarbudsConnection(
     }
 
     /** The connected brand's session when its earbuds have a fit test of their own ([FitTest]); the list grows with each brand that has one. */
-    private val fitTestSession: FitTest? get() = oneplus ?: samsung
+    private val fitTestSession: FitTest? get() = oneplus ?: samsung ?: nothing
 
     private var eqWrite: Job? = null
 

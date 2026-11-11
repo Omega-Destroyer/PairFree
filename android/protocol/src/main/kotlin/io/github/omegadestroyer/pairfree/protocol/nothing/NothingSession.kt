@@ -2,6 +2,8 @@ package io.github.omegadestroyer.pairfree.protocol.nothing
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -23,8 +25,8 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * @param hint the model the Bluetooth name gave, used until the earbuds report their product id: it
  *   decides whether frames carry a CRC, which the Ear (1) does without.
  */
-public class NothingSession(private val hint: NothingModel? = null) {
-    public var state: EarbudState = EarbudState()
+public class NothingSession(private val hint: NothingModel? = null) : FitTest {
+    override var state: EarbudState = EarbudState()
         private set
 
     public var productId: String? = null
@@ -129,9 +131,25 @@ public class NothingSession(private val hint: NothingModel? = null) {
                 _replies[key(frame.command)] = p.copyOf()
                 noise(p)
             }
+            // The fit test's result: one byte per earbud (left, right). 0 is a good fit, 1 a poor one and 2 the earbud not in the ear; Nothing X shows
+            // the three differently, but only open-source projects (ear-web and attune, AGPL: facts only) say which value is which, so this is inferred.
+            NothingCommand.EVENT_TIP_FIT_RESULT -> if (p.size >= 2) state = state.copy(fit = FitResult(fit(p.u8(0)), fit(p.u8(1))))
             // A change made on the earbuds: read it again.
             NothingCommand.EVENT_GAME_MODE_CHANGED -> outbox += frame(NothingCommand.GET_HOST_LAG_MODE)
         }
+    }
+
+    private fun fit(b: Int) = when (b) {
+        0 -> FitResult.Fit.GOOD
+        1 -> FitResult.Fit.NOT_FIT
+        else -> FitResult.Fit.UNKNOWN
+    }
+
+    /** Starts the ear tip fit test on the models that have it: `F014` with 1 (`SET_LEAK_DETECT`), as the open-source web and desktop clients send it. The result is an event. */
+    override fun startFitTest(): List<ByteArray>? {
+        if (config?.fitTest != true) return null
+        state = state.copy(fit = null)
+        return listOf(frame(NothingCommand.SET_LEAK_DETECT, 1).bytes())
     }
 
     private fun reply(frame: NothingFrame) {
@@ -308,7 +326,7 @@ public class NothingSession(private val hint: NothingModel? = null) {
             values[Command.FIND_LEFT] = Value.Switch(PART_LEFT in ringing)
             values[Command.FIND_RIGHT] = Value.Switch(PART_RIGHT in ringing)
         }
-        state = state.copy(values = values)
+        state = state.copy(values = values, fitTest = c?.fitTest == true)
     }
 
     /** The cancelling strengths the model has, in Nothing X's order. */

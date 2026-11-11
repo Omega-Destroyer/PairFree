@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.nothing
 
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -142,6 +143,21 @@ class NothingTest {
         // The earbuds' own change arrives as an event.
         s.receive(NothingFrame(NothingCommand.EVENT_NOISE_REDUCTION_LEVEL_CHANGED, "010700020300".hexBytes(), 0x0120))
         assertEquals(ancNumber("transparency"), s.state.number(Command.ANC_MODE))
+    }
+
+    @Test
+    fun fitTestOnTheModelsThatHaveItAndNoOther() {
+        val ear2 = session("B155")
+        assertTrue(ear2.state.hasFitTest)
+        val frame = NothingParser().feed(ear2.startFitTest()!!.single()).single()
+        assertEquals(NothingCommand.SET_LEAK_DETECT, frame.command)
+        assertEquals("01", hex(frame.payload))
+        assertTrue(ear2.allowed(frame))
+        ear2.receive(NothingFrame(NothingCommand.EVENT_TIP_FIT_RESULT, "0001".hexBytes(), 0x0120))
+        assertEquals(FitResult(FitResult.Fit.GOOD, FitResult.Fit.NOT_FIT), ear2.state.fit)
+        // The Ear (1) has none.
+        val ear1 = session("B181")
+        assertEquals(null, ear1.startFitTest())
     }
 
     @Test

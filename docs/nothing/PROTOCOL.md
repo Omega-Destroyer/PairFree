@@ -233,5 +233,5 @@ for.
   mode and the presets interact. nada uses `C06C`/`C06D`, which are not in 3.4.15.
 - **Dual connection** (`F01A`/`C027`): what its value means is in Dart, so it is left out. Some
   models restart after a change (`dualConnectionReboot`).
-- **Ear tip fit test:** the result arrives as `E00D`; how to start it is in Dart.
+- **Ear tip fit test:** started with `F014` (`SET_LEAK_DETECT`) and the byte 1; the result arrives as `E00D`, one byte per earbud (left, right). The start and the layout are from the open-source web client ear-web and desktop client attune (AGPL-3.0: facts only), which send them on the Ear (2), Ear (a), Ear, Ear (3) and the CMF Buds models; Nothing X's own start sits in its Dart code (`libapp.so`, not yet read, `isSupportEarTipFitTest` gates the screen). Which value means what (0 good, 1 poor, 2 not in the ear) is attune's reading, not Nothing X's: inferred, to be settled by a recording or the Dart code. PairFree offers the test on the models whose feature table says `fit_test` (`NothingTest.fitTestOnTheModelsThatHaveItAndNoOther`).
 - **Other features:** personalised noise cancelling and sound (Mimi).

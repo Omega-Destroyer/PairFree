@@ -43,6 +43,8 @@ public data class NothingConfig(
     val lowLatency: Boolean,
     val gestures: List<NothingGesture>,
     val simpleEq: NothingSimpleEq? = null,
+    /** The model has the ear tip fit test (`isSupportEarTipFitTest` in Nothing X). */
+    val fitTest: Boolean = false,
 ) {
     /**
      * True when [firmware] is in this range. Nothing X's ranges name the last two fields ("*.*.1.74"),

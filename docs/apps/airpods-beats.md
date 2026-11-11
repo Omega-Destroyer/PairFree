@@ -17,7 +17,7 @@ Each model shows only the settings it has:
 
 ## AirPods and Beats models
 
-PairFree knows 30 AirPods and Beats models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 30 AirPods and Beats models. Models that have been tried on real earbuds: AirPods Pro 3.
 
 AirPods keep their settings on a Bluetooth channel that Android refused on most phones until Android 17. PairFree does not try it on a phone that is not known to open it, and it has not worked on a real pair yet: see the AirPods page for which phones.
 

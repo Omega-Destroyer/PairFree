@@ -125,7 +125,7 @@ in it, and switching it off goes back to the mode before.
 **Custom EQ (opcode `63`, LibrePods' `CustomEq`):** a two-byte length (5), `01`, the state (`02` on, `01` off),
 then low, mid and high from 0 to 100 (50 is flat). LibrePods found it on AirPods' newest beta firmware, which an
 Apple device on OS 27 installs; the AirPods send it when PairFree asks for notifications, and PairFree shows it
-only then. A change writes the whole packet again, as LibrePods does. Not tried with PairFree.
+only then. A change writes the whole packet again, as LibrePods does. Tried once: a user's AirPods Pro 3 (A3064, firmware 90.3431) on a Pixel 8 with Android 17 connected through the hidden-constructor route and showed these settings (issue #3, `data/apple/reports/`).
 
 Off and `34` (2026-11-11, issue #3): a user's AirPods Pro 3 (Android 17, PairFree 0.9.1) answered the Off listening mode (`0D` 01) with an error beep, and
 its 21 reported controls did not include `34`. So AirPods apply Off only while "Allow Off" is on, and may never report it. PairFree's Off therefore writes

@@ -11,7 +11,7 @@
     {"name": "AirPods Pro", "kind": "earbuds", "model_numbers": ["A2084", "A2083"], "product_id": "200E"},
     {"name": "AirPods Pro 2 (Lightning)", "kind": "earbuds", "model_numbers": ["A2931", "A2699", "A2698"], "product_id": "2014", "adaptive": true},
     {"name": "AirPods Pro 2 (USB-C)", "kind": "earbuds", "model_numbers": ["A3047", "A3048", "A3049"], "product_id": "2024", "adaptive": true},
-    {"name": "AirPods Pro 3", "kind": "earbuds", "model_numbers": ["A3063", "A3064", "A3065"], "product_id": "2027", "adaptive": true},
+    {"name": "AirPods Pro 3", "kind": "earbuds", "model_numbers": ["A3063", "A3064", "A3065"], "product_id": "2027", "adaptive": true, "reports": ["data/apple/reports/AirPodsPro3_A3064_90.3431.txt"]},
     {"name": "AirPods Max", "kind": "headphones", "model_numbers": [], "product_id": "200A"},
     {"name": "AirPods Max (USB-C)", "kind": "headphones", "model_numbers": [], "product_id": "201F"},
     {"name": "AirPods Max 2", "kind": "headphones", "model_numbers": [], "product_id": "202D", "adaptive": true},

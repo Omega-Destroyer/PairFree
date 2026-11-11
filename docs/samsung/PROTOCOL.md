@@ -360,3 +360,30 @@ Also in the plugin, not used by PairFree: adaptive response level (0x49), the Bi
 (0x66), voice boost and volume normalisation (0x6A), the auto power-off timer (0x6B), spatial
 audio and head tracking (0x7C), the hearing aid's WDRC (0xB8), neck stretch (0xC9), adjust sound
 fit (0xDA) and self diagnostics (0xEA, never sent).
+
+## 14. Adapt Sound hearing test (read 2026-11-10, built the same day)
+
+From Samsung's plugin (budsunitemgr 9.0.10: `HearingTestManager` in `lp/f.java`, its state in `lp/e.java`, the screen's handlers in `gp/m.java` and
+`gp/o.java`, the presets in `jp/a.java`). The feature flag is `HEARING_ADJUST` in the plugin's base list, so every model with `samsung_app` has it
+(the Buds4 family, Buds On, H1, T1); PairFree offers it on the Sound tab for those (`SamsungModel.buds4Layout`). **The earbuds make the tones**: the
+phone needs no tone files, only message 204 (`0xCC`) with a 25-byte block:
+
+| Byte | Meaning |
+|---|---|
+| 0 | Adapt Sound on (1) or off |
+| 1 | command: 0 start, 1 play a tone, 2 stop the tone, 3 cancel, 4 take the profile, 5 apply (with byte 0) |
+| 2 | the earbud for a tone: 1 left, 0 right |
+| 3 | the frequency's slot: 0, 1, 3, 5, 7, 9 for 250, 500, 1000, 2000, 4000, 8000 Hz |
+| 4 | the tone's attenuation code, `13 - level / 5` (bigger is quieter) |
+| 5 to 14 | the left profile, a level at `5 + slot` |
+| 15 to 24 | the right profile, a level at `15 + slot` |
+
+The test: media and notification sound are muted and the plugin refuses to run while music plays. The order is each of the twelve (earbud, frequency)
+pairs three times, shuffled (Samsung's swap loop), then an end marker. Every frequency starts at level 20. A tone plays by sending the block with
+command 1; the same block goes again every 800 ms while it plays; Yes (heard) or No stops it (command 2) and moves that frequency's level
+(`SamsungHearingTest.next`: 5 to 5 or 10, 10 to 5 or 15, 15 to 15 or 20, 20 to 10 or 30, 25 to 25 or 30, 30 to 25 or 35, 35 to 35 or 40; Samsung's
+code writes 0 for a level after 40, PairFree keeps 40). At the end the levels go into the profile slots with command 4, then command 5 with byte 0 set
+turns Adapt Sound on. Levels read as thresholds: Samsung's presets are all 5 (no loss), `5,5,5,5,5,20,...` and `25,25,30,35,40,40,...`.
+Not traced: the earbuds' reply to 204 (PairFree does not wait for one) and how the Galaxy Wearable app then keeps the profile on the phone
+(`FittingDataProvider`, a Samsung content provider that does not exist outside Samsung's phones). Virtual and unit tests only
+(`SamsungHearingTestTest`); no Galaxy Buds have been tried.

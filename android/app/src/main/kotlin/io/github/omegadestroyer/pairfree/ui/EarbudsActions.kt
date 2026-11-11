@@ -40,6 +40,9 @@ interface EarbudsActions {
 
     /** After the user answered a notification or companion prompt from the Device tab. */
     fun statusChanged()
+
+    /** Sends [frames] as they are on the open channel (the Galaxy Buds' hearing test). */
+    fun sendFrames(frames: List<ByteArray>) = Unit
 }
 
 /** Does nothing. For previews. */

@@ -140,7 +140,7 @@ internal fun SoundScreen(
             if (eq.target.hasCustom) item { Chip(stringResource(R.string.eq_new), selected = false) { actions.startNew() } }
         }
         Label(stringResource(R.string.eq_on_earbuds, currentProfileName(eq)))
-        if (onHearingTest != null && eq.target.hasCustom) StudioButton(stringResource(R.string.hearing_test), onHearingTest, Modifier.fillMaxWidth())
+        if (onHearingTest != null) StudioButton(stringResource(R.string.hearing_test), onHearingTest, Modifier.fillMaxWidth())
         if (!eq.known) {
             val hint = if (eq.target.reportsEq) R.string.eq_reading else R.string.eq_unknown_hint
             Text(stringResource(hint), style = Studio.type.small, color = Studio.colors.secondaryText)

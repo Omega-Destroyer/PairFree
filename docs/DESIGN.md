@@ -358,6 +358,14 @@ the project" and a button), and when a bug report is shared to the app.
   serial number are masked, bodies marked private (Soundcore's list of known devices and
   its serial number) and firmware-update messages are left out, and a message PairFree
   does not know shows at most four bytes, too few for an address, a name or a key.
+- Soundcore transfer recordings also retain at most four preview bytes of unknown framed
+  messages, with packet counts, payload sizes and first/last times. Different payloads are not
+  merged merely because their previews match. Bulk data shows first/last samples and totals.
+  Bare RFCOMM data is counted only after a valid Soundcore frame identified that channel, and
+  exports no raw prefix. A CRC-checked sleep-audio container header can add technical fields,
+  omitting its filename, identifier and audio. Alarm schedules, clock synchronization and known
+  sleep-history messages are private. These diagnostics do not identify an unknown command as
+  an upload, and do not claim to reconstruct the transferred file.
 - A phone keeps one Bluetooth log for hours, through Bluetooth being turned off and on,
   so the recording starts when the user opened this screen (remembered for up to three
   hours), or else just before an official app last connected (PeatsAudio's last firmware

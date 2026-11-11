@@ -4,6 +4,7 @@ import io.github.omegadestroyer.pairfree.protocol.nothing.NothingCommand
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungMessage
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyCommand
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreCommand
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreRecording
 
 /** A brand whose official app a recording can hold, besides SOUNDPEATS (whose frames are [SnoopScanner.Found]). */
 public enum class RecordedBrand { SOUNDCORE, SAMSUNG, SONY, NOTHING }
@@ -35,7 +36,9 @@ public object VendorRecording {
 
         /** What the app sent, by message name, with how many times: what the user did in it. */
         public val sent: List<Pair<String, Int>>
-            get() = packets.filter { !it.fromEarbuds }.groupingBy { name(brand, it.id) ?: idText(brand, it.id).trim() }.eachCount().toList()
+            get() = packets.filter { !it.fromEarbuds }.groupingBy {
+                if (it.transportOnly) "unframed RFCOMM data" else name(brand, it.id) ?: idText(brand, it.id).trim()
+            }.eachCount().toList()
     }
 
     /** Each pair of earbuds in [packets], in the order they first appear, with the packets from [since] on. */
@@ -64,33 +67,81 @@ public object VendorRecording {
         val first = earbuds.packets.firstOrNull()?.timeMicros ?: return emptyList()
         val out = mutableListOf<String>()
         if (!compact) out += "Seconds from the first message; app: sent by the official app, buds: sent by the earbuds."
+        val audio = if (earbuds.brand == RecordedBrand.SOUNDCORE) SoundcoreRecording.analyse(earbuds.packets) else null
         var previous: String? = null
+        var previousPacket: SnoopScanner.Packet? = null
         var repeats = 0
+        fun bulk(p: SnoopScanner.Packet): Boolean = earbuds.brand == RecordedBrand.SOUNDCORE &&
+            !SoundcoreRecording.withheld(p.id) && p.payload.size >= 128 &&
+            (p.transportOnly || p in audio?.opaquePackets.orEmpty() || name(earbuds.brand, p.id) == null || !SoundcoreRecording.expectedSize(p.id, p.payload.size))
+        fun group(p: SnoopScanner.Packet) = Triple(p.id, p.fromEarbuds, p.channel)
+        val bulkCounts = earbuds.packets.filter(::bulk).groupingBy(::group).eachCount()
+        val bulkSeen = mutableMapOf<Triple<Int, Boolean, Int>, Int>()
         fun flush() {
             if (repeats > 1) out[out.lastIndex] = out.last() + " (x$repeats)"
         }
         for (p in earbuds.packets) {
+            if (bulk(p)) {
+                val key = group(p)
+                val index = (bulkSeen[key] ?: 0) + 1
+                bulkSeen[key] = index
+                val count = bulkCounts.getValue(key)
+                if (count > 16 && index in 9..count - 8) {
+                    if (index == 9) {
+                        flush()
+                        previous = null
+                        previousPacket = null
+                        repeats = 0
+                        out += "${idText(earbuds.brand, p.id)} channel=${p.channel}: ${count - 16} bulk packets summarized below (first/last 8 shown)"
+                    }
+                    continue
+                }
+            }
             val who = if (p.fromEarbuds) "buds" else "app"
             val id = idText(earbuds.brand, p.id)
-            val bytes = shown(earbuds.brand, p.id, p.payload, earbuds.address)
+            val bytes = if (p.transportOnly) "(${p.payload.size} unframed RFCOMM bytes; contents omitted)"
+                else if (p in audio?.opaquePackets.orEmpty()) "(${p.payload.size} audio-transfer bytes; contents omitted)"
+                else shown(earbuds.brand, p.id, p.payload, earbuds.address)
             val what = if (compact) "$who $id $bytes" else "${who.padEnd(4)} $id ${(name(earbuds.brand, p.id) ?: "?").padEnd(NAME_WIDTH)} $bytes"
-            if (what == previous) {
+            // Identical redactions/prefixes must not make different upload chunks look repeated.
+            val samePayload = previousPacket?.let { it.channel == p.channel && it.payload.contentEquals(p.payload) } == true
+            if (what == previous && samePayload) {
                 repeats++
                 continue
             }
             flush()
             previous = what
+            previousPacket = p
             repeats = 1
             val seconds = (p.timeMicros - first) / 1000 / 1000.0
             out += (if (compact) seconds.format3() else seconds.format3().padStart(9)) + " " + what.trimEnd()
         }
         flush()
+        if (earbuds.brand == RecordedBrand.SOUNDCORE) {
+            val unknown = earbuds.packets.filter {
+                !SoundcoreRecording.withheld(it.id) &&
+                    (it in audio?.opaquePackets.orEmpty() || name(earbuds.brand, it.id) == null || !SoundcoreRecording.expectedSize(it.id, it.payload.size))
+            }
+            if (unknown.isNotEmpty()) {
+                out += "Soundcore transfer/research diagnostics (unknown IDs are not identified as uploads):"
+                for ((key, packets) in unknown.groupBy { Triple(it.id, it.fromEarbuds, it.channel) }) {
+                    val sizes = packets.groupingBy { it.payload.size }.eachCount().toSortedMap()
+                    out += "${if (key.second) "buds" else "app"} ${idText(earbuds.brand, key.first)} channel=${key.third} " +
+                        "packets=${packets.size} payload_bytes=${packets.sumOf { it.payload.size.toLong() }} " +
+                        "sizes=${sizes.entries.joinToString(",") { "${it.key}x${it.value}" }} " +
+                        "first=${((packets.first().timeMicros - first) / 1_000_000.0).format3()} " +
+                        "last=${((packets.last().timeMicros - first) / 1_000_000.0).format3()}"
+                }
+            }
+            out += audio?.containers.orEmpty()
+        }
         return out
     }
 
     /** The bytes of one message as a report shows them: hex, `XX` where masked, or left out. */
     public fun shown(brand: RecordedBrand, id: Int, payload: ByteArray, address: ByteArray?): String {
         if (payload.isEmpty()) return ""
+        if (brand == RecordedBrand.SOUNDCORE && id < 0) return "(${payload.size} unframed RFCOMM bytes; contents omitted)"
         val known = name(brand, id) != null
         val withheld = when (brand) {
             RecordedBrand.SOUNDCORE -> id in SoundcoreCommand.PRIVATE || id in SoundcoreCommand.NEVER_SEND
@@ -98,7 +149,15 @@ public object VendorRecording {
             RecordedBrand.SONY -> sonyNeverSend(id)
             RecordedBrand.NOTHING -> nothingWithheld(id)
         }
-        if (withheld || (!known && payload.size > SHOWN_UNKNOWN)) return "(${payload.size} bytes left out)"
+        if (withheld) return "(${payload.size} bytes left out)"
+        val expected = brand != RecordedBrand.SOUNDCORE || SoundcoreRecording.expectedSize(id, payload.size)
+        if ((!known || !expected) && payload.size > SHOWN_UNKNOWN) {
+            if (brand != RecordedBrand.SOUNDCORE) return "(${payload.size} bytes left out)"
+            val prefix = payload.copyOfRange(0, SHOWN_UNKNOWN)
+            val hidden = masked(payload, address, serials = true)
+            val shown = prefix.indices.joinToString(" ") { if (hidden[it]) "XX" else hex(prefix[it]) }
+            return "(${payload.size} bytes; prefix=$shown; remaining bytes left out)"
+        }
         val hidden = masked(payload, address, serials = brand != RecordedBrand.SAMSUNG)
         return payload.indices.joinToString(" ") { i -> if (hidden[i]) "XX" else hex(payload[i]) }
     }
@@ -159,7 +218,7 @@ public object VendorRecording {
      * command as four hex digits.
      */
     public fun idText(brand: RecordedBrand, id: Int): String = when (brand) {
-        RecordedBrand.SOUNDCORE, RecordedBrand.NOTHING -> id.toString(16).uppercase().padStart(4, '0')
+        RecordedBrand.SOUNDCORE, RecordedBrand.NOTHING -> if (id < 0) "RFCOMM" else id.toString(16).uppercase().padStart(4, '0')
         RecordedBrand.SAMSUNG -> id.toString().padStart(3, ' ')
         RecordedBrand.SONY -> "${(id shr SONY_TABLE_SHIFT) and 0xF}.${(id and 0xFF).toString(16).uppercase().padStart(2, '0')}"
     }

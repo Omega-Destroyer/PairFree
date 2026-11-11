@@ -53,6 +53,8 @@ public class SnoopScanner {
         public val payload: ByteArray,
         public val address: ByteArray?,
         public val connectedAtMicros: Long?,
+        /** Unframed data on an already identified Soundcore RFCOMM channel; export metadata only. */
+        public val transportOnly: Boolean = false,
     )
 
     /** False until the first 16 bytes have been read; stays false if they are not a btsnoop header. */
@@ -74,6 +76,7 @@ public class SnoopScanner {
     private val l2cap = HashMap<Int, Assembly>()
     private val links = HashMap<Int, Link>()
     private val streams = HashMap<Int, Stream>()
+    private val soundcoreChannels = mutableSetOf<Int>()
 
     /** Each Sony channel's table set, once the earbuds' first reply showed it. */
     private val sonySets = HashMap<Int, Int>()
@@ -230,6 +233,7 @@ public class SnoopScanner {
     private fun dropStreams(handle: Int) {
         streams.keys.removeAll { it shr STREAM_HANDLE_SHIFT == handle }
         sonySets.keys.removeAll { it shr STREAM_HANDLE_SHIFT == handle }
+        soundcoreChannels.removeAll { it shr STREAM_HANDLE_SHIFT == handle }
     }
 
     /**
@@ -262,7 +266,19 @@ public class SnoopScanner {
         fun add(brand: RecordedBrand, id: Int, payload: ByteArray) {
             packets += Packet(recordTime, fromEarbuds, handle, dlci, brand, id, payload, link?.address?.copyOf(), link?.atMicros)
         }
-        stream.soundcore.feed(data).forEach { add(RecordedBrand.SOUNDCORE, it.command, it.body) }
+        val channelKey = key and 1.inv()
+        val soundcore = stream.soundcore.feed(data)
+        if (soundcore.isNotEmpty()) soundcoreChannels += channelKey
+        soundcore.forEach { add(RecordedBrand.SOUNDCORE, it.command, it.body) }
+        if (soundcore.isEmpty() && !stream.soundcore.pendingPacket && channelKey in soundcoreChannels) {
+            // An audio transfer may use bare data between control packets. Do not guess that an
+            // arbitrary channel is Soundcore, and do not put these unparsed contents in the report.
+            packets += Packet(recordTime, fromEarbuds, handle, dlci, RecordedBrand.SOUNDCORE,
+                SOUNDCORE_TRANSPORT, data, link?.address?.copyOf(), link?.atMicros, transportOnly = true)
+        }
+        // Encoded audio can accidentally resemble another brand's short/checksummed frames.
+        // Once a channel is positively identified, do not interpret its contents as other brands.
+        if (channelKey in soundcoreChannels) return
         stream.samsung.feed(data).forEach { add(RecordedBrand.SAMSUNG, it.id, it.payload) }
         stream.samsungLegacy.feed(data).forEach { add(RecordedBrand.SAMSUNG, it.id, it.payload) }
         stream.nothing.feed(data).forEach { add(RecordedBrand.NOTHING, it.command, it.payload) }
@@ -304,6 +320,7 @@ public class SnoopScanner {
     }
 
     private companion object {
+        const val SOUNDCORE_TRANSPORT = -1
         val MAGIC = "btsnoop".encodeToByteArray() + 0
         const val FILE_HEADER = 16
         const val RECORD_HEADER = 24

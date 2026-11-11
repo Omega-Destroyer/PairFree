@@ -45,3 +45,17 @@ This is a real limit, recorded with what was checked.
 1. Read `hearid_test_step.dart` and `hearing_result.dart` for the test's tone levels, frequencies and thresholds, and what `leftEarData` holds.
 2. Disassemble `libhid_app.so`'s three functions; run it in an emulator as the JBL ports were, to see whether its profile output is the A40's HearID curve.
 3. Read `libaudio_readscan_jni.so`'s `audio_select_eq` (70 functions, decompiled) for the Sleep A30 audio packaging.
+
+## Read afterwards (2026-11-11, second pass)
+
+- **The Flutter HearID test** (`hearing_test_vm.dart` in 6.4.0): nine tones per ear in the order 2000, 4000, 8000, 6000, 16000, 12000, 2000 (a repeat as a check), 1000 and
+  500 Hz (`testSequence`); frequencies that start from a default level: 2000, 6000 and 12000 Hz (`needDefaultDBList`); re-checks of 6000 against 8000 and 4000, and of 12000
+  against 16000 and 8000 (`recheckList`); the staircase is `canHear` / `canNotHear` with `_addStep`, `_reduceStep`, `_addResult`, `_getResult` and a prompt to retest at a level of
+  15 or more. The tones are played by the native side (`setHearIdAudio`) and the Dart `hearid` plugin only exposes the microphone's sound level for the noise check. The result goes
+  to native (`setHearIdTestResult`), where it becomes the HearID block: **protected**, so the test cannot be completed into a block from this source. `HearingLevelModel.dart`
+  (162 KB) holds level tables not yet read.
+- **`libhid_app.so`** is a dueling-bandit preference tuner: C++ class `HID::savage_dueling` (the SAVAGE algorithm: a preference matrix, Borda scores and winner, arm selection,
+  `update(i, j, won)`, a stop criterion, state saved and loaded as JSON with nlohmann), plus `dueling` and Thompson-sampling arm selection (`select_arms_dts`). In plain terms:
+  the app plays two EQ candidates, the user picks one, and the engine narrows to the one they prefer; `get_user_profile` returns the winner as parametric EQ states. Nothing in
+  the Flutter modules calls it, so its consumer is in the protected Java. It is a published algorithm, so PairFree can offer an A/B EQ finder for any brand with a custom curve
+  without porting Soundcore's tables (above the vendors' apps, owner's rule of 2026-11-10); Soundcore's own candidate sets and output format are not readable.

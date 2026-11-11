@@ -254,3 +254,7 @@ only from the action the user confirms.
   (`2D`) and the playback controller (`A1`, `A4`). Power off (`23`) and the MTK firmware update (`36`)
   are listed too and stay never sent. Adding speakers would mean a `speaker` kind in `devices.json`,
   the ULT FIELD and SRS names Sony's app lists, and those functions' layouts from Sony's app.
+
+## WF-1000XM6 recording (issue #33, 2026-11-11)
+
+A user's recording of Sony's app with a WF-1000XM6 (firmware 2.0.5, Android 17, PairFree 0.7.2's recorder) shows the earbuds on table set 2 (service 956C7B26) with 53 functions listed, including the 10-band EQ (functions 56 and 57, `eqebb` messages: command 58 set, 59 notify, 5A extended info, whose reply lists the ten bands from 31 Hz to 16 kHz as `0A 01 00 1F ...`), LE Audio (40, 42, 66 with a 16-byte value), head gestures (ff), smart talking mode (fc), SAR and head tracker (b0, b6, b7) and safe listening (table 2, 56 to 59). **Difference to check:** Sony's app wrote its custom EQ as preset `A1` (User setting 1: `58 04 A1 0A` and ten bytes, 6 being 0 dB, one step per dB), selecting `A1`/`A2` with a zero band count to switch user slots, where PairFree's set 2 writes `A0` (Custom, as Gadgetbridge does, `data/sony/eq_presets.json`). Not changed yet: one recording of one model. The recording's table 2 peripheral parameter reply (`2.37`) held other devices' Bluetooth addresses and names as text; the recorder now leaves those messages out (table 2, commands 34 to 3D).

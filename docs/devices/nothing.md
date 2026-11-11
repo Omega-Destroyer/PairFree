@@ -22,8 +22,9 @@ What it shows, where the model has it:
 - **Device:** low lag mode, in-ear detection, the codec the earbuds offer (LDAC or LHDC on the
   models that have them), and making each earbud beep to find it.
 
-Not yet: Nothing's advanced equalizer and the Dirac presets on CMF models, dual connection, the
-ear tip fit test, and personalised noise cancelling and sound.
+- **Ear tip fit test** on the models whose table has it (start and result from open-source clients; which value is a good fit is inferred).
+
+Not yet: Nothing's advanced equalizer and the Dirac presets on CMF models, dual connection, and personalised noise cancelling and Mimi's hearing test.
 
 Nothing and CMF support is written from Nothing's own app (Nothing X 3.4.15), read for its
 messages and its per-model feature table, and checked against

@@ -26,6 +26,7 @@ Supported brands:
 • 1MORE: 37 models. From 1MORE's app
 • EarFun: 26 models. From EarFun's app, checked against Gadgetbridge
 • Cambridge Audio: Melomania 1+ and Touch. From the Melomania app
+• OnePlus and OPPO: 53 models. From HeyMelody
 
 What it controls, on the models that have each:
 
@@ -34,7 +35,8 @@ What it controls, on the models that have each:
 • The equalizer: the brand's presets, your own curves and saved profiles
 • Touch controls: what each tap and hold does on each earbud, and turning touch off
 • Game mode, two devices at once, LDAC and LE Audio
-• The ear tip fit test, find my earbuds, voice prompts and water drain
+• The ear tip fit test on SOUNDPEATS, Galaxy Buds, Nothing and CMF, Pixel Buds, OnePlus and OPPO, find my earbuds, voice prompts and water drain
+• A hearing test that turns what you hear into an equalizer curve, on every brand whose earbuds take a custom curve, and Galaxy Buds' own Adapt Sound test
 • Settings only one brand has, such as each Galaxy Bud's ambient sound level, voice detect, Sony's speak-to-chat and DSEE upscaling, Bose's listening modes, JBL's TalkThru, or the AirPods' Conversation Awareness
 • A status notification with the battery and buttons for noise control and game mode, in place of Google's Fast Pair notification if you like
 • A home screen widget, 1x1 to 4x2, with buttons that set or step through noise control choices and EQ profiles for whichever of your earbuds is connected

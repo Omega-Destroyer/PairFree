@@ -18,6 +18,7 @@ Every other setting the model has appears as its own row on the tab where it fit
 - **Noise cancelling:** level, with one earbud, and voice detect.
 - **Calls and connection:** call settings, seamless connection, voice wake-up and balance.
 - **Fit test and Find my earbuds.**
+- **Adapt Sound hearing test** (the earbuds make the tones; the result is kept as their Adapt Sound profile) on the Buds4 family, Buds On, H1 and T1.
 
 Samsung's earbuds have no codec setting: the phone picks the codec.
 

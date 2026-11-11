@@ -33,8 +33,9 @@ Finding the earbuds is Google's Find Hub's: it rings and locates them with a key
 with your Google account, which only Google Play services holds. Google's own Pixel Buds app hands
 it to Play services too, so PairFree opens Find Hub; it does not ring the earbuds itself.
 
-Not yet: the ear tip seal check,
-spatial audio and head tracking (Android's own settings, which only system apps may change), sleep
+The ear tip seal test is built on the Pro, Pro 2 and 2a (read from Google's app; invented replies only).
+
+Not yet: spatial audio and head tracking (Android's own settings, which only system apps may change), sleep
 mode (it follows a Pixel Watch) and the experimental features. The 2020 model keeps two more touch
 actions that Google's app no longer lets you set; PairFree leaves them as they are.
 

@@ -165,7 +165,7 @@ EarFun's app only by AI features PairFree does not offer.
 ## 6. EQ
 
 The EQ cannot be read: EarFun's app keeps it on the phone and sends it when the user changes it, never on
-connecting, and PairFree does the same (`EarfunEqTarget`, `restoresOnConnect`).
+connecting, and PairFree does the same (`EarfunBandEq`, `restoresOnConnect`).
 
 Each band goes as one frame (`BaseEquailzerProtocol.sendEq`):
 

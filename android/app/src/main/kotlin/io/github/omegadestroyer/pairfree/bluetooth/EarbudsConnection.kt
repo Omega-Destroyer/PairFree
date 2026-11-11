@@ -75,7 +75,7 @@ import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungSession
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
-import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
+import io.github.omegadestroyer.pairfree.eq.SonyBandEq
 import io.github.omegadestroyer.pairfree.protocol.bose.BosePacket
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseParser
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseSession
@@ -1657,7 +1657,7 @@ class EarbudsConnection(
         if (bose != null || apple != null || beats != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
-            if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
+            if (sendSony(frames.mapNotNull(SonyBandEq::decode))) _sonyEq.value = session.eq
             return
         }
         val s = session ?: return

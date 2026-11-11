@@ -126,15 +126,16 @@ class EqOpener(
         val session = connection.jblSession ?: return null
         val spec = session.model.eq
         if (spec?.written != true || (spec.reports && session.eq == null)) return null
-        val target = JblEqTarget(session)
-        return EqSource(session, target.layout, target) { current -> connection.jblEq.value?.let { target.reported(it, current) }?.let { EqReported(it.first, it.second) } }
+        val band = JblBandEq(session)
+        val target = BandEqTarget(band)
+        return EqSource(session, target.layout, target) { current -> connection.jblEq.value?.let { band.report(it) }?.let { target.reportedAs(it, current) } }
     }
 
     /** EarFun models' EQ is in their table and cannot be read: the screen shows what this phone last sent. */
     private fun earfun(): EqSource? {
         val session = connection.earfunSession ?: return null
         val spec = session.model?.eq ?: return null
-        val target = EarfunEqTarget(session, spec)
+        val target = BandEqTarget(EarfunBandEq(session, spec))
         return EqSource(session, target.layout, target)
     }
 
@@ -172,10 +173,11 @@ class EqOpener(
         val session = connection.sonySession ?: return null
         val eq = connection.sonyEq.value ?: return null
         if (eq.steps == null || eq.bands == null) return null
-        val target = SonyEqTarget(session, eq)
+        val band = SonyBandEq(session, eq)
+        val target = BandEqTarget(band)
         // A layout of its own per band set, so profiles saved for one model's bands stay with it.
-        return EqSource(listOf(device.address, session, eq.presets, eq.bands, eq.steps), target.layout, target) { _ ->
-            connection.sonyEq.value?.let { target.reported(it) }?.let { EqReported(it.first, it.second) }
+        return EqSource(listOf(device.address, session, eq.presets, eq.bands, eq.steps), target.layout, target) { current ->
+            connection.sonyEq.value?.let { band.report(it) }?.let { target.reportedAs(it, current) }
         }
     }
 
@@ -198,8 +200,9 @@ class EqOpener(
     /** Soundcore earbuds report their EQ with every state; the Sound tab follows it. */
     private fun soundcore(device: Paired): EqSource? {
         val spec = SoundcoreEqSpec.of(device.model) ?: return null
-        val target = SoundcoreEqTarget(spec, { connection.soundcoreState.value }, SoundcoreLayout.of(spec.model)?.checksum ?: true)
-        return EqSource(spec, target.layout, target) { _ -> connection.soundcoreState.value?.let { target.reported(it) }?.let { EqReported(it.first, it.second) } }
+        val band = SoundcoreBandEq(spec, { connection.soundcoreState.value }, SoundcoreLayout.of(spec.model)?.checksum ?: true)
+        val target = BandEqTarget(band)
+        return EqSource(spec, target.layout, target) { current -> connection.soundcoreState.value?.let { band.report(it) }?.let { target.reportedAs(it, current) } }
     }
 
     init {

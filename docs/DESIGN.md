@@ -164,11 +164,7 @@ report (three for Nothing's filters, five named bands for the Pixel Buds, nine f
 lists, six on OnePlus and OPPO), and states only where a brand differs, each with a default: names for bands instead of frequencies
 (`eqBandLabels`), the presets' curves where they are known and so drawn (`eqPresetGains`), the bands a preset-only model's profile lists use, a Stock
 profile, whether the EQ is put back on connecting, whether the writes are confirmed, whether the earbuds report their custom curve.
-OnePlus and OPPO implement it in their session; QCY, 1MORE, Nothing, Galaxy Buds and the Pixel Buds through adapters in `eq/BrandBandEqs.kt` (2026-11-10, branch
-`feature/band-eq-brands`; checked by building and by the protocol tests only, not on a screen). Still on their own targets: SoundPEATS and its Capsule
-(master gain, preamp, the model's base curve), Soundcore (HearID blocks), Sony (messages queued with their
-table number, its own note on the Sound tab), JBL (the calibration, three write families) and EarFun (master gain and 21 slider positions). Each moves
-when its `EqTarget` can be said as a `BandEq`; `EqSource` already gives them the same opener.
+OnePlus and OPPO implement it in their session; QCY, 1MORE, Nothing, Galaxy Buds and the Pixel Buds through adapters in `eq/BrandBandEqs.kt`, and Sony, JBL, Soundcore and EarFun in `eq/VendorBandEqs.kt` (2026-11-10, branch `feature/band-eq-brands`; checked by building and by the protocol tests only, not on a screen). What those four needed was one more flag, `eqReportsState` (EarFun's earbuds cannot report their EQ); the rest was already a default: Sony's queued messages are the frames (`SonyBandEq.encode`), JBL's calibration and three write families stay in its session, Soundcore's HearID block is passed on from the latest state. Still on their own targets: SoundPEATS and its Capsule (master gain, preamp, the model's base curve, bands that differ from preset to preset), which are the table-driven origin the generic screen was modelled on.
 
 
 - Profile chips: built-in presets, the user's saved profiles, and New.

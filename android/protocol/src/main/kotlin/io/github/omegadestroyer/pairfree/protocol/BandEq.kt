@@ -55,4 +55,7 @@ public interface BandEq {
 
     /** True when the earbuds report the custom curve they hold, not only the preset. */
     public val eqReportsCustom: Boolean get() = true
+
+    /** False when the earbuds cannot report their EQ at all (EarFun's): the screen then shows what this phone last sent, and nothing is put back on connect unless [eqRestoresOnConnect]. */
+    public val eqReportsState: Boolean get() = true
 }

@@ -14,7 +14,7 @@ import io.github.omegadestroyer.pairfree.protocol.EqPreset
 class BandEqTarget(val source: BandEq) : EqTarget {
     private val hz = source.eqBandsHz
 
-    override val reportsEq: Boolean = true
+    override val reportsEq: Boolean = source.eqReportsState
     override val reportsCustom: Boolean = source.eqReportsCustom
     override val hasPreamp: Boolean = false
     override val hasStock: Boolean = source.eqHasStock

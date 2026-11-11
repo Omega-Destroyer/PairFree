@@ -5,6 +5,7 @@ import io.github.omegadestroyer.pairfree.protocol.BandEqReport
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -18,8 +19,8 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * `010F` equalizer preset and `010D` the game mode switch; writes are `0404` (noise mode as a bitmap of the mode's protocol index),
  * `0406` (preset index) and `0403` (a switch's feature id and 0 or 1).
  */
-public class OneplusSession(public val model: OneplusModel?) : BandEq {
-    public var state: EarbudState = EarbudState(fitTest = model?.fitTest == true)
+public class OneplusSession(public val model: OneplusModel?) : BandEq, FitTest {
+    override var state: EarbudState = EarbudState(fitTest = model?.fitTest == true)
         private set
 
     private val parser = OneplusParser()
@@ -290,7 +291,7 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq {
      * Starts the fit test, on models with it: HeyMelody registers for the fit event (`0201` with the event, or `0205` with a count and the events where the
      * earbuds take it; both are sent) and starts the test with `0405 01`. The result arrives as an event; it replaces [EarbudState.fit].
      */
-    public fun startFitTest(): List<ByteArray>? {
+    override fun startFitTest(): List<ByteArray>? {
         if (model?.fitTest != true) return null
         state = state.copy(fit = null)
         return listOf(next(OneplusCommand.SET_EVENT, FIT_EVENT), next(OneplusCommand.SET_EVENTS, 1, FIT_EVENT), next(OneplusCommand.SET_FIT, 1))

@@ -12,6 +12,10 @@ public data class EqBand(val hz: Int, val q: Double, val gainDb: Double, val lab
 /** A complete curve, sent as it is. */
 public data class EqPreset(val name: String, val bands: List<EqBand>)
 
+/** True when [a] and [b] are the same curve: the same frequencies and Qs, and gains equal to the hundredth of a dB. */
+public fun sameCurve(a: List<EqBand>, b: List<EqBand>): Boolean =
+    a.size == b.size && a.zip(b).all { (x, y) -> x.hz == y.hz && x.q == y.q && Math.round(x.gainDb * 100) == Math.round(y.gainDb * 100) }
+
 /**
  * The EQ a model expects, as the official app writes it (docs/soundpeats/PROTOCOL.md section 4):
  * every band in every write and the same master gain on each. A user curve is the base
@@ -34,6 +38,10 @@ public data class EqLayout(
 ) {
     /** Every write's band count: [fixedBands], then [bands]. */
     public val bandCount: Int get() = fixedBands.size + bands.size
+
+    /** The complete curve [userGainsDb] make on top of the base curve: [fixedBands], then each band's base gain plus the user's. */
+    public fun curve(userGainsDb: List<Int>): List<EqBand> =
+        fixedBands + bands.mapIndexed { i, b -> b.copy(gainDb = b.gainDb + userGainsDb.getOrElse(i) { 0 }) }
 
     /** The bands of [preset] that stand where [bands] do: those after [fixedBands], when the preset starts with them. */
     public fun ownBands(preset: EqPreset): List<EqBand> =

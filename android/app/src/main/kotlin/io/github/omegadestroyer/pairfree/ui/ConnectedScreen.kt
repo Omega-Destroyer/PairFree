@@ -5,7 +5,8 @@ import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusModels
 
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTables
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
-import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
+import io.github.omegadestroyer.pairfree.protocol.SoundpeatsBandEq
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -133,9 +134,14 @@ internal fun ConnectedScreen(
         FitTestScreen(device, state, actions, onClose = { fitTest = false })
         return
     }
+    val samsungHearing = device.brand == Brand.SAMSUNG && SamsungModels.of(device.model)?.buds4Layout == true
+    if (hearingTest && samsungHearing) {
+        SamsungHearingTestScreen(SamsungModels.of(device.model)?.legacy == true, actions::sendFrames, onClose = { hearingTest = false })
+        return
+    }
     val hearing = hearingTable(device, eq)
     if (hearingTest && eq != null && hearing != null) {
-        HearingTestScreen(eq, hearing, stringResource(R.string.hearing_test_result), eqActions::applyCurve, onClose = { hearingTest = false })
+        HearingTestScreen(eq, hearing, (eq.target as? BandEqTarget)?.source is SoundpeatsBandEq, stringResource(R.string.hearing_test_result), eqActions::applyCurve, onClose = { hearingTest = false })
         return
     }
     Column(Modifier.fillMaxSize()) {
@@ -160,7 +166,7 @@ internal fun ConnectedScreen(
                         Brand.ONEPLUS -> R.string.eq_oneplus
                         else -> R.string.eq_unavailable
                     },
-                    onHearingTest = hearing?.let { { hearingTest = true } },
+                    onHearingTest = if (samsungHearing || hearing != null) ({ hearingTest = true }) else null,
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status) { fitTest = true }
@@ -176,9 +182,15 @@ internal fun ConnectedScreen(
  */
 private fun hearingTable(device: Paired, eq: EqState?): HearingTable? = when {
     eq == null -> null
-    device.brand == Brand.SOUNDPEATS && eq.target === SoundpeatsEqTarget -> HearingTables.SOUNDPEATS
+    device.brand == Brand.SOUNDPEATS && (eq.target as? BandEqTarget)?.source is SoundpeatsBandEq -> HearingTables.SOUNDPEATS
+    // Above the vendors' apps (owner, 2026-11-10): any earbuds with a custom curve of three bands or more can take the same phone-run test, with the
+    // SOUNDPEATS tone table and PairFree's own merge onto their bands (HearingEq.interpolated). Their apps' hearing tests (Samsung, Soundcore, JBL ...)
+    // are a different kind: see docs/FIT_AND_HEARING_TESTS.md.
+    eq.target.hasCustom && eq.layout.bands.size >= HEARING_MIN_BANDS -> HearingTables.SOUNDPEATS
     else -> null
 }
+
+private const val HEARING_MIN_BANDS = 3
 
 /**
  * The model's table entry: SoundPEATS by firmware code, or by name until the code is known;

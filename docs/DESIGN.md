@@ -157,11 +157,16 @@ Everything here fits without scrolling on a 390 by 844 screen.
 ### Sound (equalizer)
 
 **Graphic equalizer for any brand (2026-11-10, owner's request).** The Sound tab's graph, draggable bands, preset list and saved profiles are not
-SoundPEATS-only: they are drawn from an `EqTarget`. A session that implements `BandEq` (`protocol/BandEq.kt`: its bands in Hz, its gain range, the presets
-the earbuds apply, the frames for a preset or a custom curve, and what the earbuds hold) gets all of it through one generic target and one opener path
-(`eq/BandEqTarget.kt`, `EqOpener.openBandEq`), with the bands drawn being the ones its model reports, and no brand screen code. OnePlus and OPPO use it
-first. The earlier brands (Soundcore, Samsung, Sony, JBL, QCY, 1MORE, EarFun, Nothing, Pixel) still have their own targets and openers; moving each onto
-`BandEq` is open work, brand by brand, where their frames fit its interface.
+SoundPEATS-only: they are drawn from an `EqTarget`. A session or adapter that implements `BandEq` (`protocol/BandEq.kt`) gets all of it through one
+generic target (`eq/BandEqTarget.kt`) and one opener (`eq/EqOpener.kt`: every brand is an `EqSource`, built in one `when`, with a key that says when the
+screen must be opened again and a function that reads what the earbuds hold). `BandEq` takes any number of bands, which is what the earbuds or the model
+report (three for Nothing's filters, five named bands for the Pixel Buds, nine for Galaxy Buds, ten for 1MORE and JBL, whatever a QCY or Sony model
+lists, six on OnePlus and OPPO), and states only where a brand differs, each with a default: names for bands instead of frequencies
+(`eqBandLabels`), the presets' curves where they are known and so drawn (`eqPresetGains`), the bands a preset-only model's profile lists use, a Stock
+profile, whether the EQ is put back on connecting, whether the writes are confirmed, whether the earbuds report their custom curve.
+OnePlus and OPPO implement it in their session; QCY, 1MORE, Nothing, Galaxy Buds and the Pixel Buds through adapters in `eq/BrandBandEqs.kt`, and Sony, JBL, Soundcore and EarFun in `eq/VendorBandEqs.kt` (2026-11-10, branch `feature/band-eq-brands`; checked by building and by the protocol tests only, not on a screen). What those four needed was one more flag, `eqReportsState` (EarFun's earbuds cannot report their EQ); the rest was already a default: Sony's queued messages are the frames (`SonyBandEq.encode`), JBL's calibration and three write families stay in its session, Soundcore's HearID block is passed on from the latest state. Still on their own targets: SoundPEATS and its Capsule (master gain, preamp, the model's base curve, bands that differ from preset to preset), which are the table-driven origin the generic screen was modelled on. **Update, same day:** SoundPEATS and the Capsule moved too, through `CurveBandEq` (`protocol/CurveBandEqs.kt`): the generic now carries a base curve (`eqBaseBands`: frequency, Q and base gain per band), fixed bands, a master gain, complete presets of their own (`eqPresetBands`) and a preamp, and the screen's "which profile is on the earbuds" test compares curves instead of one brand's payloads. A brand with a whole-curve parametric write drops in by giving a layout and a `writeCurve`. `CurveBandEqTest` checks every SoundPEATS model's layout and frames against the model table's own.
+
+**Fit test (2026-11-10).** `protocol/FitTest.kt`: a session whose earbuds run the test themselves implements `FitTest`; `EarbudsConnection.fitTestSession` lists the brands. Which brands have one, and which hearing tests exist, is in `docs/FIT_AND_HEARING_TESTS.md`.
 
 
 - Profile chips: built-in presets, the user's saved profiles, and New.

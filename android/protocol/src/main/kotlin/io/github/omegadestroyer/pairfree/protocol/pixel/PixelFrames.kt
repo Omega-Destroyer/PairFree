@@ -189,6 +189,9 @@ public object PixelRpc {
 
     public val SERVICE: Int = hash(PixelWire.SERVICE)
 
+    /** The ear tip seal test's service. */
+    public val FIT_SERVICE: Int = hash(PixelWire.FIT_SERVICE)
+
     private val METHODS: Map<Int, String> = listOf(
         PixelWire.METHOD_SOFTWARE_INFO, PixelWire.METHOD_HARDWARE_INFO, PixelWire.METHOD_RUNTIME_INFO,
         PixelWire.METHOD_READ_SETTING, PixelWire.METHOD_WRITE_SETTING, PixelWire.METHOD_SETTINGS_CHANGES,

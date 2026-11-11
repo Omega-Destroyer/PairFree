@@ -6,6 +6,7 @@ import io.github.omegadestroyer.pairfree.protocol.EqBand
 import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.EqPreset
 import io.github.omegadestroyer.pairfree.protocol.Model
+import io.github.omegadestroyer.pairfree.protocol.sameCurve
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -67,16 +68,6 @@ interface EqTarget {
     fun frames(layout: EqLayout, setting: EqSetting, preset: EqPreset?): List<ByteArray>
 }
 
-/** SoundPEATS: every band in every write, on top of the model's base curve (docs/soundpeats/PROTOCOL.md section 4). */
-object SoundpeatsEqTarget : EqTarget {
-    override val reportsEq: Boolean = false
-    override val hasPreamp: Boolean = true
-    override val hasStock: Boolean = true
-
-    override fun frames(layout: EqLayout, setting: EqSetting, preset: EqPreset?): List<ByteArray> =
-        if (preset != null) layout.frames(preset, setting.preampDb) else layout.frames(setting.gains, setting.preampDb)
-}
-
 /**
  * The EQ screen's state. [known] is false until the EQ on the earbuds is known: for earbuds
  * that cannot report it, until this phone has set it; for those that can, until they have.
@@ -87,7 +78,7 @@ data class EqState(
     val profiles: List<EqProfile>,
     val setting: EqSetting,
     val known: Boolean = true,
-    val target: EqTarget = SoundpeatsEqTarget,
+    val target: EqTarget,
 ) {
     /**
      * The profile on the earbuds: the one the setting came from while it still matches, or
@@ -98,13 +89,12 @@ data class EqState(
         get() {
             if (!known) return null
             profiles.firstOrNull { it.id == setting.profileId && (it.preset != null || it.gains == setting.gains) }?.let { return it }
-            // Only SoundPEATS layouts can be encoded as band frames: the other brands' bands carry no Q, and their
-            // presets are numbers the earbuds apply. There the same gains are the same EQ (issue #2: a Sony crashed here).
-            if (target !== SoundpeatsEqTarget) return profiles.firstOrNull { it.preset == null && it.gains == setting.gains }
-            val sent = layout.payloads(setting.gains)
+            // Presets the earbuds apply by number have no curve here: there the same gains are the same EQ (issue #2: a Sony crashed here).
+            if (!target.presetCurves) return profiles.firstOrNull { it.preset == null && it.gains == setting.gains }
+            val sent = layout.curve(setting.gains)
             // Earbuds that report their EQ name the preset they hold, so a custom curve is never a preset.
             return profiles.filter { it.preset == null || !target.reportsEq }
-                .firstOrNull { p -> payloadsOf(p).let { it.size == sent.size && it.zip(sent).all { (x, y) -> x.contentEquals(y) } } }
+                .firstOrNull { p -> sameCurve(sent, if (p.preset != null) p.preset.bands else layout.curve(p.gains)) }
         }
 
     /** The profile the setting started from, edited or not. */
@@ -112,8 +102,6 @@ data class EqState(
 
     /** The preset on the earbuds, if one is. Presets cannot be edited band by band. */
     val preset: EqPreset? get() = basis?.preset
-
-    private fun payloadsOf(p: EqProfile) = if (p.preset != null) layout.payloads(p.preset) else layout.payloads(p.gains)
 
     /**
      * What to draw: the difference from stock per band. For user gains these are the gains;
@@ -187,8 +175,8 @@ class Equalizer(
      * Loads what this phone last sent to [address], and the profiles saved for [model]. Null [model]
      * or no [layout]: no EQ. [target] says how the EQ reaches the earbuds; SoundPEATS by default.
      */
-    fun open(address: String, model: Model?, layout: EqLayout? = model?.eq, target: EqTarget = SoundpeatsEqTarget) {
-        if (model == null || layout == null) {
+    fun open(address: String, model: Model?, layout: EqLayout? = null, target: EqTarget? = null) {
+        if (model == null || layout == null || target == null) {
             this.address = null
             _state.value = null
             return
@@ -430,7 +418,7 @@ class Equalizer(
         private const val KEY_SETTING = "eq_setting_"
 
         /** Stock, the base curve alone (the earbuds' own tuning) where [target] has one, then the model's presets. */
-        fun builtIns(layout: EqLayout, target: EqTarget = SoundpeatsEqTarget): List<EqProfile> {
+        fun builtIns(layout: EqLayout, target: EqTarget): List<EqProfile> {
             val zeros = List(layout.bands.size) { 0 }
             val stock = if (target.hasStock) listOf(EqProfile(EqProfile.STOCK, "Stock", zeros)) else emptyList()
             return stock + layout.presets.map { EqProfile(EqProfile.PRESET + it.name, it.name, zeros, it) }

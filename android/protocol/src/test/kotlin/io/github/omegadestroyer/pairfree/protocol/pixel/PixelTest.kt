@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.pixel
 
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
@@ -304,5 +305,51 @@ class PixelTest {
         assertEquals(PixelTransport.TLV, PixelModels.of(2)?.transport)
         assertEquals(PixelTransport.MAESTRO, PixelModels.transportOf(listOf(PixelWire.MAESTRO_UUID.uppercase())))
         assertEquals(PixelTransport.TLV, PixelModels.transportOf(listOf(PixelWire.TLV_UUID_REVERSED)))
+    }
+
+    /** The RPC packets in [messages], decoded. */
+    private fun packets(messages: List<ByteArray>) = messages.flatMap { PixelHdlc.Decoder().feed(it) }.mapNotNull { PixelRpcPacket.parse(it.data) }
+
+    private fun fitResult(channel: Int, fit: Float, noise: Float): ByteArray = PixelHdlc.encode(
+        PixelWire.CHANNELS.getValue(channel),
+        PixelRpcPacket(PixelWire.PACKET_SERVER_STREAM, channel, PixelRpc.FIT_SERVICE, PixelRpc.hash(PixelWire.FIT_METHOD_RESULTS), ProtoWriter().float(1, fit).float(2, noise).bytes()).encode(),
+    )
+
+    @Test
+    fun theSealTestRunsOnEachEarbudsOwnChannelAndGivesGoogleVerdicts() {
+        val s = maestro(type = 6)
+        assertTrue(s.state.hasFitTest)
+        // Left earbud: subscribe, then start, on channel 19 (maestro_a to the left core).
+        val first = packets(s.startFitTest()!!)
+        assertEquals(listOf(19, 19), first.map { it.channelId })
+        assertEquals(listOf("SubscribeToResults", "StartTest").map(PixelRpc::hash), first.map { it.methodId })
+        assertTrue(first.all { it.serviceId == PixelRpc.FIT_SERVICE })
+        // A fit score inside (80, 200] with a quiet room is good; the right earbud's test then starts on channel 21, after the left's end.
+        s.feed(fitResult(19, 120f, 10f))
+        val next = packets(s.takeOutbox().map { it.bytes })
+        assertEquals(listOf(19, 21, 21), next.map { it.channelId })
+        assertEquals(listOf("EndTest", "SubscribeToResults", "StartTest").map(PixelRpc::hash), next.map { it.methodId })
+        assertNull(s.state.fit)
+        // A loose seal (score outside the window) in a quiet room needs an adjustment.
+        s.feed(fitResult(21, 50f, 10f))
+        assertEquals(FitResult(FitResult.Fit.GOOD, FitResult.Fit.NOT_FIT), s.state.fit)
+        assertEquals(listOf(PixelRpc.hash("EndTest")), packets(s.takeOutbox().map { it.bytes }).map { it.methodId })
+    }
+
+    @Test
+    fun aNoisyRoomGivesNoVerdictAndTheProHasTheLowerNoiseLimit() {
+        val pro2 = maestro(type = 6)
+        pro2.startFitTest()
+        pro2.feed(fitResult(19, 120f, 30f)) // 30 is under the 40 limit of the Pro 2: good
+        pro2.takeOutbox()
+        pro2.feed(fitResult(21, 120f, 45f)) // over it: too noisy to say
+        assertEquals(FitResult(FitResult.Fit.GOOD, FitResult.Fit.UNKNOWN), pro2.state.fit)
+        val pro = maestro(type = 4)
+        pro.startFitTest()
+        pro.feed(fitResult(19, 120f, 30f)) // 30 is over the Pro's limit of 20
+        pro.takeOutbox()
+        pro.feed(fitResult(21, 120f, 5f))
+        assertEquals(FitResult(FitResult.Fit.UNKNOWN, FitResult.Fit.GOOD), pro.state.fit)
+        assertNull(PixelSession(PixelTransport.TLV).startFitTest())
     }
 }

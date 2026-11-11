@@ -3,6 +3,7 @@ package io.github.omegadestroyer.pairfree.protocol.samsung
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -28,9 +29,9 @@ public class SamsungSession(
     private val phoneIsSamsung: Boolean = false,
     private val androidSdk: Int = 34,
     private val assistantIsGoogle: Boolean = true,
-) {
+) : FitTest {
     /** What the shared screens show. */
-    public var state: EarbudState = EarbudState(fitTest = model.supports("gear_fit_test", null))
+    override var state: EarbudState = EarbudState(fitTest = model.supports("gear_fit_test", null))
         private set
 
     /** The last full state, with the changes since applied. */
@@ -585,10 +586,10 @@ public class SamsungSession(
     }
 
     /** Starts the fit test, on models with it; the result arrives in [state]. */
-    public fun startFitTest(): List<SamsungPacket>? {
+    override fun startFitTest(): List<ByteArray>? {
         if (!state.fitTest) return null
         state = state.copy(fit = null)
-        return listOf(SamsungPacket(SamsungMessage.CHECK_THE_FIT_OF_EARBUDS, byteArrayOf(1)))
+        return frames(listOf(SamsungPacket(SamsungMessage.CHECK_THE_FIT_OF_EARBUDS, byteArrayOf(1))))
     }
 
     public fun stopFitTest(): List<SamsungPacket>? =

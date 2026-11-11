@@ -57,7 +57,8 @@ import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqProfile
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.eq.Equalizer
-import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
+import io.github.omegadestroyer.pairfree.eq.SonyBandEq
 import io.github.omegadestroyer.pairfree.protocol.EqBand
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -139,7 +140,7 @@ internal fun SoundScreen(
             if (eq.target.hasCustom) item { Chip(stringResource(R.string.eq_new), selected = false) { actions.startNew() } }
         }
         Label(stringResource(R.string.eq_on_earbuds, currentProfileName(eq)))
-        if (onHearingTest != null && eq.target.hasCustom) StudioButton(stringResource(R.string.hearing_test), onHearingTest, Modifier.fillMaxWidth())
+        if (onHearingTest != null) StudioButton(stringResource(R.string.hearing_test), onHearingTest, Modifier.fillMaxWidth())
         if (!eq.known) {
             val hint = if (eq.target.reportsEq) R.string.eq_reading else R.string.eq_unknown_hint
             Text(stringResource(hint), style = Studio.type.small, color = Studio.colors.secondaryText)
@@ -216,7 +217,7 @@ internal fun SoundScreen(
         }
         message?.let { Text(stringResource(it), style = Studio.type.small, color = Studio.colors.secondaryText) }
         val note = when {
-            eq.target is SonyEqTarget -> R.string.eq_note_sony
+            (eq.target as? BandEqTarget)?.source is SonyBandEq -> R.string.eq_note_sony
             !eq.target.presetCurves && !eq.target.reportsCustom -> R.string.eq_note_samsung
             eq.target.reportsEq -> R.string.eq_note_reported
             else -> R.string.eq_note

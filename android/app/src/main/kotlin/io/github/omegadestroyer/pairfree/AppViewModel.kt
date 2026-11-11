@@ -260,6 +260,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         connection.changeSetting(change)
     }
 
+    override fun sendFrames(frames: List<ByteArray>) = connection.sendEq(frames)
+
     override fun startFitTest() {
         val name = (connection.status.value as? LinkStatus.Connected)?.device?.name
         val model = Models.find(connection.state.value.firmware?.code, name)

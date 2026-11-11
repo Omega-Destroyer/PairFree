@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.FrameParser
 import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.Replies
@@ -75,7 +76,7 @@ import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungParser
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungSession
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
-import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
+import io.github.omegadestroyer.pairfree.eq.SonyBandEq
 import io.github.omegadestroyer.pairfree.protocol.bose.BosePacket
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseParser
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseSession
@@ -1608,6 +1609,9 @@ class EarbudsConnection(
         if (send(frame, Requests.readBack(command)?.let(Requests::get))) _state.update { it.expect(command, *payload) }
     }
 
+    /** The connected brand's session when its earbuds have a fit test of their own ([FitTest]); the list grows with each brand that has one. */
+    private val fitTestSession: FitTest? get() = oneplus ?: samsung ?: nothing ?: pixel
+
     private var eqWrite: Job? = null
 
     /**
@@ -1657,7 +1661,7 @@ class EarbudsConnection(
         if (bose != null || apple != null || beats != null) return
         // Sony's EQ target hands over message payloads; they go through the Sony link's queue.
         sony?.let { session ->
-            if (sendSony(frames.mapNotNull(SonyEqTarget::decode))) _sonyEq.value = session.eq
+            if (sendSony(frames.mapNotNull(SonyBandEq::decode))) _sonyEq.value = session.eq
             return
         }
         val s = session ?: return
@@ -1681,16 +1685,11 @@ class EarbudsConnection(
      * section 11), and back to what it was once the result is in. The official app leaves it off.
      */
     fun startFitTest(keepAnc: Boolean) {
-        oneplus?.let { session ->
-            // The earbuds run the test themselves and send the result as an event (OnePlus and OPPO).
-            val frames = session.startFitTest() ?: return
-            if (sendOneplus(session, frames)) publish(session)
-            return
-        }
-        samsung?.let { session ->
-            // Galaxy Buds run the test themselves; the result arrives as its own message.
-            val packets = session.startFitTest() ?: return
-            if (send(session.frames(packets), then = null)) publish(session)
+        // Every brand whose earbuds run the test themselves: the session starts it, the frames go out as any brand's do, and the result arrives in its state.
+        fitTestSession?.let { fit ->
+            val frames = fit.startFitTest() ?: return
+            sendEq(frames)
+            _state.value = fit.state
             return
         }
         if (_status.value !is LinkStatus.Connected || soundcore != null || sony != null || bose != null || jbl != null || apple != null || beats != null || nothing != null || pixel != null || qcy != null || oneMore != null || earfun != null || cambridge != null || oneplus != null) return

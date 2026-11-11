@@ -306,6 +306,14 @@
     <string name="hearing_test_heard">I hear it</string>
     <string name="hearing_test_done">Done. Each pitch gets the gain for the quietest tone you heard.</string>
     <string name="hearing_test_apply">Save as %1$s and use it</string>
+    <string name="samsung_hearing_intro">Adapt Sound: the earbuds play quiet tones, one earbud and one pitch at a time, and you say whether you hear each one. Find a quiet place, put both earbuds in and stop any music or video first. The result is kept on the earbuds as your Adapt Sound profile.</string>
+    <string name="samsung_hearing_tone">Tone in the %1$s earbud</string>
+    <string name="samsung_hearing_left">left</string>
+    <string name="samsung_hearing_right">right</string>
+    <string name="samsung_hearing_listen">Do you hear it? If you cannot hear a tone, answer No.</string>
+    <string name="samsung_hearing_yes">Yes</string>
+    <string name="samsung_hearing_no">No</string>
+    <string name="samsung_hearing_done">Done. Each pitch has a level from 5 (quiet tones heard) to 40 (loud tones needed), left then right. Adapt Sound is on with this profile.</string>
     <string name="hearing_test_result">Hearing test</string>
     <string name="fit_test_about">Check that each ear tip seals well. A good seal gives fuller bass and better noise cancelling.</string>
     <string name="fit_test_open">Run the fit test</string>

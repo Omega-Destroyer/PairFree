@@ -40,6 +40,8 @@ import kotlin.math.roundToInt
 internal fun HearingTestScreen(
     eq: EqState,
     table: HearingTable,
+    /** True on SOUNDPEATS, whose app's own merge onto the bands is kept; every other brand gets PairFree's interpolation. */
+    vendorMerge: Boolean,
     resultName: String,
     onApply: (name: String, gains: List<Int>) -> Unit,
     onClose: () -> Unit,
@@ -119,7 +121,7 @@ internal fun HearingTestScreen(
                 )
             }
             else -> {
-                val gains = HearingEq.onBands(test.results, eq.layout.bands.map { it.hz }, eq.layout.userRangeDb)
+                val gains = (if (vendorMerge) HearingEq::onBands else HearingEq::interpolated)(test.results, eq.layout.bands.map { it.hz }, eq.layout.userRangeDb)
                 Text(stringResource(R.string.hearing_test_done), color = c.secondaryText)
                 Panel {
                     test.results.forEach { r ->

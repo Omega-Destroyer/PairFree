@@ -130,6 +130,7 @@ internal fun ConnectedScreen(
     var fitTest by rememberSaveable { mutableStateOf(false) }
     var hearingTest by rememberSaveable { mutableStateOf(false) }
     var sealCheck by rememberSaveable { mutableStateOf(false) }
+    var finder by rememberSaveable { mutableStateOf(false) }
     val model = modelOf(device, state)
     if (sealCheck) {
         SealCheckScreen(onClose = { sealCheck = false })
@@ -147,6 +148,10 @@ internal fun ConnectedScreen(
     val samsungHearing = device.brand == Brand.SAMSUNG && SamsungModels.of(device.model)?.buds4Layout == true
     if (hearingTest && samsungHearing) {
         SamsungHearingTestScreen(SamsungModels.of(device.model)?.legacy == true, actions::sendFrames, onClose = { hearingTest = false })
+        return
+    }
+    if (finder && eq != null && eq.target.hasCustom) {
+        EqFinderScreen(eq, eqActions, stringResource(R.string.finder_result), onClose = { finder = false })
         return
     }
     val hearing = hearingTable(device, eq)
@@ -177,6 +182,7 @@ internal fun ConnectedScreen(
                         else -> R.string.eq_unavailable
                     },
                     onHearingTest = if (samsungHearing || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
+                    onFinder = if (eq != null && eq.target.hasCustom) ({ finder = true }) else null,
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
                 Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status, { fitTest = true }, { sealCheck = true })

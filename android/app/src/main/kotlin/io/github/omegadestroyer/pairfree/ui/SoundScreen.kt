@@ -85,6 +85,8 @@ internal fun SoundScreen(
     unavailableNote: Int = R.string.eq_unavailable,
     /** Opens the brand's hearing test, where PairFree has one for the model. */
     onHearingTest: (() -> Unit)? = null,
+    /** Opens the A/B sound finder (PairFree's own), for earbuds with a custom curve. */
+    onFinder: (() -> Unit)? = null,
 ) {
     if (eq == null) {
         TabContent {
@@ -141,6 +143,7 @@ internal fun SoundScreen(
         }
         Label(stringResource(R.string.eq_on_earbuds, currentProfileName(eq)))
         if (onHearingTest != null) StudioButton(stringResource(R.string.hearing_test), onHearingTest, Modifier.fillMaxWidth())
+        if (onFinder != null) StudioButton(stringResource(R.string.finder_open), onFinder, Modifier.fillMaxWidth())
         if (!eq.known) {
             val hint = if (eq.target.reportsEq) R.string.eq_reading else R.string.eq_unknown_hint
             Text(stringResource(hint), style = Studio.type.small, color = Studio.colors.secondaryText)
@@ -470,6 +473,7 @@ internal object NoEqActions : EqActions {
     override fun setPreamp(db: Int) = Unit
     override fun save(name: String) = Unit
     override fun applyCurve(name: String, gains: List<Int>) = Unit
+    override fun preview(gains: List<Int>) = Unit
     override fun delete(profile: EqProfile) = Unit
     override fun exportJson(): String = ""
     override fun importJson(text: String): Boolean = false

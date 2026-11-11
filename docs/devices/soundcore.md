@@ -9,6 +9,8 @@ model's writes are confirmed. The Space A40 has been tried with PairFree by the 
 the AeroClip and the Sleep A20 by users, the Sleep A20 with a recording of the Soundcore app; the
 other settings come next.
 
+The Sleep A30 (D1301) shows noise cancelling, the listening mode (Bluetooth or the audio held on the earbuds), the mode it starts in, its voice prompts and "calls ring in Bluetooth mode" besides its touch controls; these are single-byte writes from OpenSCQ30, not yet checked on real earbuds. Uploading your own sounds to the A30 is not built: nothing shows how the Soundcore app sends audio, so PairFree can record that transfer (Device tab, Record from the official app; `docs/soundcore/SLEEP_A30_CAPTURE_GUIDE.md`). The fit test is offered on the A3951 family (A3931, A3935, A3951).
+
 Soundcore support is built on [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) by Kyle
 Scheuing, the open-source Soundcore app, licensed GPL-3.0-or-later like PairFree. The model
 list, each model's features, the packet format, where each model puts each setting in its

@@ -47,7 +47,8 @@ Each model shows only what it has:
 - The equalizer: the brand's presets, your own curves and saved profiles.
 - Touch controls: what each tap and hold does on each earbud, and turning touch off.
 - Game mode, two devices at once, LDAC and LE Audio.
-- The ear tip fit test, find my earbuds, voice prompts and water drain.
+- The ear tip fit test (SOUNDPEATS, Galaxy Buds, Nothing and CMF, Pixel Buds, Soundcore's A3951 family, OnePlus and OPPO) and, for every other brand, a seal check with tones from the phone; find my earbuds, voice prompts and water drain.
+- Hearing tests: one that turns what you hear into an equalizer curve on every brand with a custom curve, Galaxy Buds' Adapt Sound and OnePlus and OPPO's Golden Sound; and PairFree's own A/B sound finder, which tunes a curve by asking which of two sounds you prefer.
 - Settings only one brand has, such as each Galaxy Bud's ambient sound level, voice detect,
   Sony's speak-to-chat and DSEE upscaling, Bose's listening modes, JBL's TalkThru, or the
   AirPods' Conversation Awareness.

@@ -451,7 +451,7 @@
     <string name="setting_pause_taken_off">Pause when taken off</string>
     <string name="setting_voice_guidance">Voice guidance</string>
     <string name="eq_note_sony">The earbuds report the preset or curve they hold, whichever app set it. They apply their presets themselves, so no curve is drawn for those. Clear Bass is below.</string>
-    <string name="eq_sony_none">These Sony earbuds have not listed an equalizer, or have not answered yet.</string>
+    <string name="eq_sony_none">These Sony earbuds have not listed an equalizer PairFree reads, or have not answered yet. Some Sony models list a sound-effect or ULT equalizer of another kind that PairFree cannot read yet: Record from the official app helps add it.</string>
     <string name="setting_audio_mode">Mode</string>
     <string name="setting_anr">Noise cancelling</string>
     <string name="setting_anr_wind">Wind</string>
@@ -580,6 +580,9 @@
     <string name="setting_sleep_mode_note">Turns the touch controls off, so lying on an earbud does not pause the music.</string>
     <string name="setting_wind_detection">Wind noise detection</string>
     <string name="setting_led">Status light</string>
+    <string name="setting_ult_mode">ULT mode</string>
+    <string name="setting_ult_1">ULT 1</string>
+    <string name="setting_ult_2">ULT 2</string>
     <string name="setting_noise_strength">Noise cancelling strength</string>
     <string name="setting_level_mid">Mid</string>
     <string name="setting_eq_preset">Equalizer</string>

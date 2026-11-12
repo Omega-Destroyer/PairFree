@@ -166,8 +166,18 @@ Custom, `A1` to `A5` the user settings, and others. PairFree offers the presets 
 list, except Custom and the user settings, which stand for the user's own curve. The earbuds
 do not report a preset's curve, so none is drawn. Clear Bass is a setting of its own.
 
-Not read: the EBB level (function `52` in set 1, `51` in set 2), the ULT mode and the other
-sound effects.
+**The six equalizer variants (read 2026-11-12 from Sony's app 13.3.0: `EqEbbInquiredType`, `DeviceCapabilityTableset2Builder`, the `jn0` message classes).** Which one the earbuds have follows from the function they list; the type is the one the app asks with:
+
+| Function (set 2) | Type | What PairFree does |
+|---|---|---|
+| `50` PRESET_EQ | `00` | read and written (customizable: presets and the user's curve) |
+| `52` PRESET_EQ_NON_CUSTOMIZABLE | `02` | presets only |
+| `57` PRESET_EQ_AND_ERRORCODE | `04` | as `00`, no capability request (a WF-1000XM6 recording, issue #33); the status carries an error code (calling, demo mode, listening mode) |
+| `53` PRESET_EQ_AND_ULT_MODE | `03` | as `00` with the ULT mode beside the preset: capability `51 03 bands steps ultSteps count presets`, param `57/59 03 preset ult count values`, set `58 03 preset ult count values`; the ULT mode (off, ULT 1, ULT 2) is a Sound row. **From the app's parsers only, no earbuds or recording** |
+| `54` SOUND_EFFECT, `55` CUSTOM_EQ | `30`, `31` | **not read.** The ULT FIELD speakers list these two (their reports). Sound effect is one byte (off, ULT, ULT 1, ULT 2, custom, flat, live) with a capability of the effects offered; custom EQ is a band count and steps (capability `51 31 bands steps`) and a param of a count and the steps, with no preset, which applies when the effect is Custom. Speakers are held as future work |
+| `56` TURN_KEY_EQ, `59` CUSTOMIZABLE_SOUND_EFFECT, `58` ULT_SOUND_EFFECT_ASSIGN, `51` EBB (the bass level, type `01`) | `32`, `33` to `35`, `40`, `01` | **not read** (the WF-1000XM6 lists `56` as well as `57`) |
+
+A model that lists only the unread ones shows no equalizer; the Sound tab says why and its device report lists the functions.
 
 ## 7. Other settings
 

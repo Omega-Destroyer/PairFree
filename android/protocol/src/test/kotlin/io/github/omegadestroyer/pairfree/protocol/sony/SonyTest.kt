@@ -373,6 +373,24 @@ class SonySessionTest {
     private val TEN = listOf(31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000)
 
     @Test
+    fun theUltModeEqualizerOfType3AsSonysAppReadsIt() {
+        // Function 83 (PRESET_EQ_AND_ULT_MODE): capability with the ULT steps, then params that carry the ULT mode beside the preset (Sony's parsers, not a recording).
+        val s = set2(SonyFunction.Set2.PRESET_EQ_AND_ULT_MODE)
+        s.receive(message(0x51, 0x03, 6, 21, 2, 2, 0x00, 0, 0xA0, 0))
+        s.receive(message(0x5B, 0x03, 6, 0x10, 0, 1, 0x01, 0x01, 0x90, 0x02, 0, 1, 0x01, 0x09, 0xC4, 0x01, 0x18, 0x9C, 0x02, 0, 16))
+        s.receive(message(0x57, 0x03, 0x00, 0x01, 6, 12, 10, 11, 9, 10, 13))
+        val eq = s.eq!!
+        assertEquals(listOf(0x00 to "Off", 0xA0 to "Custom"), eq.presets)
+        assertEquals(1, eq.ult)
+        assertEquals(listOf(0, 1, -1, 0, 3), eq.gains)
+        assertEquals(Setting.Choice("ult_mode", "ult_1", listOf("off", "ult_1", "ult_2")), setting(s, "ult_mode"))
+        assertEquals(listOf(out(0x58, 0x03, 0x00, 0x01, 0)), s.eqPreset(0x00), "a preset keeps the ULT mode")
+        assertEquals(listOf(out(0x58, 0x03, 0xA0, 0x01, 6, 12, 15, 5, 10, 10, 10)), s.eqCurve(listOf(5, -5, 0, 0, 0)))
+        assertEquals(listOf(out(0x58, 0x03, 0xA0, 0x02, 6, 12, 15, 5, 10, 10, 10)), s.change(SettingChange.Choice("ult_mode", "ult_2")))
+        assertEquals(2, s.eq!!.ult)
+    }
+
+    @Test
     fun set2WritesIntoTheUserSettingTheEarbudsHold() {
         // A WF-1000XM6 recording (issue #33): Sony's app selected User setting 1 (A1) and wrote its bands under A1.
         val s = set2(SonyFunction.Set2.PRESET_EQ)

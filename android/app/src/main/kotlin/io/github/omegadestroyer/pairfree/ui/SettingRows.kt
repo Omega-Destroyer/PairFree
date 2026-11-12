@@ -375,6 +375,7 @@ private fun settingTitle(key: String): String = when (key) {
     "sp_fall_detection" -> stringResource(R.string.setting_fall_detection)
     "sp_light_effect" -> stringResource(R.string.setting_light_effect)
     "noise_strength" -> stringResource(R.string.setting_noise_strength)
+    "ult_mode" -> stringResource(R.string.setting_ult_mode)
     "eq_preset" -> stringResource(R.string.setting_eq_preset)
     "bass_boost" -> stringResource(R.string.setting_bass_boost)
     "bass_level" -> stringResource(R.string.setting_bass_level)
@@ -697,6 +698,11 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             else -> R.string.setting_panoramic_normal
         },
     )
+    key == "ult_mode" -> getString(when (option) {
+        "ult_1" -> R.string.setting_ult_1
+        "ult_2" -> R.string.setting_ult_2
+        else -> R.string.action_off
+    })
     key == "anc_level" -> getString(if (option == "high") R.string.setting_anc_level_high else R.string.setting_anc_level_low)
     key == "noise_strength" -> getString(
         when (option) {

@@ -171,8 +171,18 @@ and Sony's app updates its equalizer on each one (13.3.0, its EQ state holder, r
 Sound tab does the same while it is open (`SonyDriver.followsEqReports`); a report within 2 s of PairFree's
 own write is left out, as for every brand that reports its EQ.
 
-Not read: the EBB level (function `52` in set 1, `51` in set 2), the ULT mode and the other
-sound effects.
+**The six equalizer variants (read 2026-11-12 from Sony's app 13.3.0: `EqEbbInquiredType`, `DeviceCapabilityTableset2Builder`, the `jn0` message classes).** Which one the earbuds have follows from the function they list; the type is the one the app asks with:
+
+| Function (set 2) | Type | What PairFree does |
+|---|---|---|
+| `50` PRESET_EQ | `00` | read and written (customizable: presets and the user's curve) |
+| `52` PRESET_EQ_NON_CUSTOMIZABLE | `02` | presets only |
+| `57` PRESET_EQ_AND_ERRORCODE | `04` | as `00`, no capability request (a WF-1000XM6 recording, issue #33); the status carries an error code (calling, demo mode, listening mode) |
+| `53` PRESET_EQ_AND_ULT_MODE | `03` | as `00` with the ULT mode beside the preset: capability `51 03 bands steps ultSteps count presets`, param `57/59 03 preset ult count values`, set `58 03 preset ult count values`; the ULT mode (off, ULT 1, ULT 2) is a Sound row. **From the app's parsers only, no earbuds or recording** |
+| `54` SOUND_EFFECT, `55` CUSTOM_EQ | `30`, `31` | **not read.** The ULT FIELD speakers list these two (their reports). Sound effect is one byte (off, ULT, ULT 1, ULT 2, custom, flat, live) with a capability of the effects offered; custom EQ is a band count and steps (capability `51 31 bands steps`) and a param of a count and the steps, with no preset, which applies when the effect is Custom. Speakers are held as future work |
+| `56` TURN_KEY_EQ, `59` CUSTOMIZABLE_SOUND_EFFECT, `58` ULT_SOUND_EFFECT_ASSIGN, `51` EBB (the bass level, type `01`) | `32`, `33` to `35`, `40`, `01` | **not read** (the WF-1000XM6 lists `56` as well as `57`) |
+
+A model that lists only the unread ones shows no equalizer; the Sound tab says why and its device report lists the functions.
 
 ## 7. Other settings
 
@@ -262,4 +272,4 @@ only from the action the user confirms.
 
 ## WF-1000XM6 recording (issue #33, 2026-11-11)
 
-A user's recording of Sony's app with a WF-1000XM6 (firmware 2.0.5, Android 17, PairFree 0.7.2's recorder) shows the earbuds on table set 2 (service 956C7B26) with 53 functions listed, including the 10-band EQ (functions 56 and 57, `eqebb` messages: command 58 set, 59 notify, 5A extended info, whose reply lists the ten bands from 31 Hz to 16 kHz as `0A 01 00 1F ...`), LE Audio (40, 42, 66 with a 16-byte value), head gestures (ff), smart talking mode (fc), SAR and head tracker (b0, b6, b7) and safe listening (table 2, 56 to 59). **Difference to check:** Sony's app wrote its custom EQ as preset `A1` (User setting 1: `58 04 A1 0A` and ten bytes, 6 being 0 dB, one step per dB), selecting `A1`/`A2` with a zero band count to switch user slots. PairFree (0.11.1) now writes into the user setting the earbuds hold and keeps `A0` (Custom, as Gadgetbridge does) otherwise. The recording's table 2 peripheral parameter reply (`2.37`) held other devices' Bluetooth addresses and names as text; the recorder now leaves those messages out (table 2, commands 34 to 3D).
+A user's recording of Sony's app with a WF-1000XM6 (firmware 2.0.5, Android 17, PairFree 0.7.2's recorder) shows the earbuds on table set 2 (service 956C7B26) with 53 functions listed, including the 10-band EQ (functions 56 and 57, `eqebb` messages: command 58 set, 59 notify, 5A extended info, whose reply lists the ten bands from 31 Hz to 16 kHz as `0A 01 00 1F ...`), LE Audio (40, 42, 66 with a 16-byte value), head gestures (ff), smart talking mode (fc), SAR and head tracker (b0, b6, b7) and safe listening (table 2, 56 to 59). **Difference to check:** Sony's app wrote its custom EQ as preset `A1` (User setting 1: `58 04 A1 0A` and ten bytes, 6 being 0 dB, one step per dB), selecting `A1`/`A2` with a zero band count to switch user slots. PairFree (0.11.1) now writes into the user setting the earbuds hold and keeps `A0` (Custom, as Gadgetbridge does) otherwise. PairFree 0.11.1 showed the WF-1000XM6 no equalizer (issue #33): it lists function 57, PRESET_EQ_AND_ERRORCODE (EQEBB type 4), which PairFree did not know. From 0.11.2 type 4 is read like the plain preset EQ (status, extended info and param; no capability request, which Sony's app does not send for it), ten values flat at 6 (13 steps, assumed +-6 dB from the flat value in the recording), the presets taken as the earbuds' user settings only. Not tried on a real XM6. The recording's table 2 peripheral parameter reply (`2.37`) held other devices' Bluetooth addresses and names as text; the recorder now leaves those messages out (table 2, commands 34 to 3D).

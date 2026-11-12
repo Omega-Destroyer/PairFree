@@ -25,6 +25,7 @@ that physical firmware accepts the command or that an acoustic effect occurs.
 Details and limits: [Melomania](cambridge/VIRTUAL_TESTING.md), [HeyMelody](oneplus/VIRTUAL_TESTING.md).
 The 2026-11-07 existing-vendor pass adds [Nothing's exact scope and interventions](nothing/VIRTUAL_TESTING.md).
 It also adds [Sony's restricted profile and negative fixture results](sony/VIRTUAL_TESTING.md).
+Since 0.11.2 PairFree itself is also run against virtual peers built from users' recordings: [Sony's WF-1000XM6 before and after the type 4 equalizer fix](sony/VIRTUAL_TESTING.md), and a virtual "Nothing Ear" that lists two brands' services, which 0.11.1 left out of the connect list and 0.11.2 lists (issue #30; the real device's services are not known).
 Cambridge retains 78 selected outgoing command cases; HeyMelody retains 25 distinct command/payload
 observations. Those counts are packets/cases, not devices or feature-completeness percentages.
 

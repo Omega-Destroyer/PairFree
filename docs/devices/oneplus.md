@@ -1,7 +1,7 @@
 # OnePlus and OPPO
 
 PairFree is growing into one app for earbuds of several brands, with the same screens for each. OnePlus and OPPO support is new and
-has **not been tried with PairFree on any earbuds**: nobody on the project owns a pair, so every model relies on reports from people who do.
+has been tried on one pair, a user's OnePlus Buds 4 (it connected and the user reported everything working, issue #4; no frames were recorded), and on none other: nobody on the project owns a pair, so every other model relies on reports from people who do.
 It is written from OnePlus's HeyMelody app (117.6.6, which also controls OPPO's earbuds), whose protocol and model catalog were read from the
 app (`docs/oneplus/PROTOCOL.md`). Two kinds of virtual checks exist, both separate from real earbuds: the official app was run against a
 virtual OnePlus Buds Pro 2 to record what it sends, and PairFree was run against a virtual one that answered as HeyMelody's parsers expect.
@@ -74,7 +74,7 @@ Say which phone and Android version you used and which settings worked.
 <tr><td>OPPO Enco Air3</td><td><code>064C10</code></td><td>battery; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco R Pro</td><td><code>065010</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
 <tr><td>OnePlus Nord Buds 3</td><td><code>065014</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
-<tr><td>OnePlus Buds 4</td><td><code>065414</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
+<tr><td>OnePlus Buds 4</td><td><code>065414</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td><a href="../../data/oneplus/reports/OnePlusBuds4_065414_0.11.1.txt">Tested</a> by a user report</td></tr>
 <tr><td>OnePlus Nord Buds 3r</td><td><code>065854</code></td><td>battery; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco Air3 Pro</td><td><code>065C10</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco X3i</td><td><code>066810</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>

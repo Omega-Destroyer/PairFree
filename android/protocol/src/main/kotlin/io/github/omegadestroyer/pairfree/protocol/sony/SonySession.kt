@@ -164,7 +164,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         SonyNoise.typeFor(tableSet, f)?.let { outbox += SonyOut.table1(NCASM_GET_PARAM, it) }
         SonyEq.of(tableSet, f)?.let { e ->
             eq = e
-            outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, e.type)
+            // Type 4 (preset EQ and error code) has no capability to ask for: Sony's app reads its status, extended info and param (WF-1000XM6 recording).
+            if (e.type != SonyEq.TYPE_ERRORCODE) outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, e.type)
             outbox += SonyOut.table1(EQEBB_GET_EXTENDED_INFO, e.type)
             outbox += SonyOut.table1(EQEBB_GET_PARAM, e.type)
         }
@@ -409,6 +410,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                 "sound", SettingTab.SOUND,
                 listOfNotNull(
                     eq?.takeIf { it.customizable }?.clearBass?.let { Setting.Level("clear_bass", it, -eq!!.center, eq!!.center) },
+                    eq?.ult?.let { Setting.Choice(ULT_KEY, ULT_MODES[it] ?: OFF, ULT_MODES.values.toList()) },
                     dsee?.let { Setting.Toggle("dsee", it) },
                     bgm?.let { (on, room) -> Setting.Choice(BGM_KEY, if (on) BGM_ROOMS[room] ?: OFF else OFF, listOf(OFF) + BGM_ROOMS.values) },
                 ) + switchRows(SettingTab.SOUND),
@@ -517,6 +519,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                         out
                     }
                     change.key == CONNECTION_KEY -> connectionSet(change.option)
+                    change.key == ULT_KEY -> ULT_MODES.entries.firstOrNull { it.value == change.option }?.key?.let { eqSet(eq?.setUlt(it)) }
                     change.key == BGM_KEY -> {
                         val room = BGM_ROOMS.entries.firstOrNull { it.value == change.option }?.key
                         val previous = bgm?.second ?: 0
@@ -725,6 +728,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         /** Set 2's background music effect (AudioInquiredType.BGM_MODE) and its room sizes (RoomSize). */
         private const val S2_BGM = 3
         private const val BGM_KEY = "bgm_effect"
+        private const val ULT_KEY = "ult_mode"
+        private val ULT_MODES = linkedMapOf(0 to "off", 1 to "ult_1", 2 to "ult_2")
         private val BGM_ROOMS = linkedMapOf(0 to "small", 1 to "medium", 2 to "large")
         private const val OFF = "off"
 

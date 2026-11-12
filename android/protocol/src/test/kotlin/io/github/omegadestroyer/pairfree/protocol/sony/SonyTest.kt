@@ -350,6 +350,47 @@ class SonySessionTest {
     }
 
     @Test
+    fun theWf1000xm6EqualizerOfType4FromItsRecording() {
+        // Issue #33: function 57 (PRESET_EQ_AND_ERRORCODE); Sony's app asks status, param and extended info of type 4, never the capability.
+        val s = SonySession(2)
+        s.receive(message(0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00))
+        s.takeOutbox()
+        s.receive(message(0x07, 0x00, 1, 0x57, 0))
+        val asked = s.takeOutbox().filter { it.table == 1 && it.payload.size >= 2 && it.payload[1].toInt() == 4 }
+        assertTrue(asked.any { it.command == 0x5A } && asked.any { it.command == 0x56 }, "extended info and param of type 4")
+        assertTrue(asked.none { it.command == 0x50 }, "no capability request")
+        s.receive(message(0x5B, 0x04, 0x0A, 1, 0, 31, 1, 0, 63, 1, 0, 125, 1, 0, 250, 1, 1, 244, 1, 3, 232, 1, 7, 208, 1, 15, 160, 1, 31, 64, 1, 62, 128))
+        s.receive(message(0x57, 0x04, 0xA2, 0x0A, 8, 8, 7, 6, 6, 6, 6, 6, 6, 6))
+        val eq = s.eq!!
+        assertEquals(TEN, eq.frequencies)
+        assertEquals(listOf(2, 2, 1, 0, 0, 0, 0, 0, 0, 0), eq.gains, "flat is 6 on this model")
+        assertTrue(eq.holdsCustom && eq.customizable)
+        // The app's own write: A1, ten values, flat 6 (`58 04 A1 0A 06 08 07 ...`).
+        s.receive(message(0x57, 0x04, 0xA1, 0x0A, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6))
+        assertEquals(listOf(out(0x58, 0x04, 0xA1, 10, 6, 8, 7, 6, 6, 6, 6, 6, 6, 6)), s.eqCurve(listOf(0, 2, 1, 0, 0, 0, 0, 0, 0, 0)))
+    }
+
+    private val TEN = listOf(31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000)
+
+    @Test
+    fun theUltModeEqualizerOfType3AsSonysAppReadsIt() {
+        // Function 83 (PRESET_EQ_AND_ULT_MODE): capability with the ULT steps, then params that carry the ULT mode beside the preset (Sony's parsers, not a recording).
+        val s = set2(SonyFunction.Set2.PRESET_EQ_AND_ULT_MODE)
+        s.receive(message(0x51, 0x03, 6, 21, 2, 2, 0x00, 0, 0xA0, 0))
+        s.receive(message(0x5B, 0x03, 6, 0x10, 0, 1, 0x01, 0x01, 0x90, 0x02, 0, 1, 0x01, 0x09, 0xC4, 0x01, 0x18, 0x9C, 0x02, 0, 16))
+        s.receive(message(0x57, 0x03, 0x00, 0x01, 6, 12, 10, 11, 9, 10, 13))
+        val eq = s.eq!!
+        assertEquals(listOf(0x00 to "Off", 0xA0 to "Custom"), eq.presets)
+        assertEquals(1, eq.ult)
+        assertEquals(listOf(0, 1, -1, 0, 3), eq.gains)
+        assertEquals(Setting.Choice("ult_mode", "ult_1", listOf("off", "ult_1", "ult_2")), setting(s, "ult_mode"))
+        assertEquals(listOf(out(0x58, 0x03, 0x00, 0x01, 0)), s.eqPreset(0x00), "a preset keeps the ULT mode")
+        assertEquals(listOf(out(0x58, 0x03, 0xA0, 0x01, 6, 12, 15, 5, 10, 10, 10)), s.eqCurve(listOf(5, -5, 0, 0, 0)))
+        assertEquals(listOf(out(0x58, 0x03, 0xA0, 0x02, 6, 12, 15, 5, 10, 10, 10)), s.change(SettingChange.Choice("ult_mode", "ult_2")))
+        assertEquals(2, s.eq!!.ult)
+    }
+
+    @Test
     fun set2WritesIntoTheUserSettingTheEarbudsHold() {
         // A WF-1000XM6 recording (issue #33): Sony's app selected User setting 1 (A1) and wrote its bands under A1.
         val s = set2(SonyFunction.Set2.PRESET_EQ)

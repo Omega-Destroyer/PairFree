@@ -26,6 +26,8 @@ public data class SonyEq(
     val bandInfo: List<Int>? = null,
     val preset: Int? = null,
     val values: List<Int> = emptyList(),
+    /** The ULT mode the earbuds hold (0 off, 1 ULT 1, 2 ULT 2) on type 3, which carries it beside the preset; null on the other types. */
+    val ult: Int? = null,
 ) {
     /** The flat value, the middle step. */
     public val center: Int get() = ((steps ?: DEFAULT_STEPS) - 1) / 2
@@ -65,7 +67,14 @@ public data class SonyEq(
     public val offered: List<Pair<Int, String>> get() = presets.filter { SonyEqs.of(it.first)?.custom != true }
 
     /** The SET that selects [id]. */
-    public fun selectPreset(id: Int): SonyOut = SonyOut.table1(SET, type, id, 0)
+    public fun selectPreset(id: Int): SonyOut = if (type == TYPE_ULT) SonyOut.table1(SET, type, id, ult ?: 0, 0) else SonyOut.table1(SET, type, id, 0)
+
+    /** The SET that puts the ULT mode [mode] (0, 1 or 2) on the earbuds with the preset and curve they hold (type 3, `58 03 preset ult count values`, as Sony's app reads it). */
+    public fun setUlt(mode: Int): SonyOut? {
+        if (type != TYPE_ULT) return null
+        val held = preset ?: SONY_EQ_UNSPECIFIED
+        return SonyOut(1, (listOf(SET, type, held, mode, values.size) + values).map { it.toByte() }.toByteArray())
+    }
 
     /**
      * The SET that puts [gains] (from flat, one per frequency band) and [clearBass] on the earbuds,
@@ -89,15 +98,19 @@ public data class SonyEq(
         // Set 2 writes into the user setting the earbuds hold now (a WF-1000XM6 recording: Sony's app selected A1, then wrote its bands as A1), else Custom.
         val held = preset?.takeIf { SonyEqs.of(it)?.custom == true }
         val id = if (tableSet == 1) SONY_EQ_UNSPECIFIED else held ?: CUSTOM
-        return SonyOut(1, (listOf(SET, type, id, next.size) + next).map { it.toByte() }.toByteArray())
+        val head = if (type == TYPE_ULT) listOf(SET, type, id, ult ?: 0, next.size) else listOf(SET, type, id, next.size)
+        return SonyOut(1, (head + next).map { it.toByte() }.toByteArray())
     }
 
     /** This EQ after [out], one of its SETs, so the change shows before the earbuds confirm it. */
     public fun after(out: SonyOut): SonyEq {
         val p = out.payload
-        val count = p.u8(3)
+        val o = if (type == TYPE_ULT) 1 else 0
+        val count = p.u8(3 + o)
         val id = p.u8(2)
-        return if (count == 0) copy(preset = id) else copy(preset = if (id == SONY_EQ_UNSPECIFIED) preset else id, values = (0 until count).map { p.u8(4 + it) })
+        val mode = if (type == TYPE_ULT) p.u8(3) else ult
+        return if (count == 0) copy(preset = id, ult = mode)
+        else copy(preset = if (id == SONY_EQ_UNSPECIFIED) preset else id, values = (0 until count).map { p.u8(4 + o + it) }, ult = mode)
     }
 
     /** Applies a reply or notification from the earbuds; null when it is not this EQ's. */
@@ -113,10 +126,12 @@ public data class SonyEq(
 
     /** The capability: band count, steps, then each preset as its id, a name length and the name. */
     private fun capability(p: ByteArray): SonyEq? {
-        if (p.size < 5) return null
-        val count = p.u8(4)
+        // Type 3 has the ULT steps after the steps, so its count and presets sit one byte later.
+        val o = if (type == TYPE_ULT) 1 else 0
+        if (p.size < 5 + o) return null
+        val count = p.u8(4 + o)
         val presets = mutableListOf<Pair<Int, String>>()
-        var i = 5
+        var i = 5 + o
         repeat(count) {
             if (i + 1 >= p.size) return null
             val id = p.u8(i)
@@ -149,10 +164,12 @@ public data class SonyEq(
 
     /** The setting: the preset, a count, then the values. */
     private fun param(p: ByteArray): SonyEq? {
-        if (p.size < 4) return null
-        val count = p.u8(3)
-        if (p.size != 4 + count) return null
-        return copy(preset = p.u8(2), values = if (count == 0) values else (0 until count).map { p.u8(4 + it) })
+        // Type 3: the preset, the ULT mode, a count, the values.
+        val o = if (type == TYPE_ULT) 1 else 0
+        if (p.size < 4 + o) return null
+        val count = p.u8(3 + o)
+        if (p.size != 4 + o + count) return null
+        return copy(preset = p.u8(2), ult = if (o == 1) p.u8(3) else ult, values = if (count == 0) values else (0 until count).map { p.u8(4 + o + it) })
     }
 
     public companion object {
@@ -192,10 +209,21 @@ public data class SonyEq(
         } else {
             when {
                 SonyFunction.Set2.PRESET_EQ in functions -> SonyEq(2, SET2_PRESET_EQ, customizable = true)
+                // PRESET_EQ_AND_ULT_MODE (type 3): Sony's app reads it as a customizable preset EQ with a ULT mode beside the preset (not seen on any earbuds yet).
+                SonyFunction.Set2.PRESET_EQ_AND_ULT_MODE in functions -> SonyEq(2, TYPE_ULT, customizable = true, ult = 0)
+                // The WF-1000XM6: type 4, ten bands, flat at 6 (13 steps, +-6 dB) as its recording shows, read like the plain preset EQ.
+                SonyFunction.Set2.PRESET_EQ_AND_ERRORCODE in functions -> SonyEq(2, TYPE_ERRORCODE, customizable = true, steps = ERRORCODE_STEPS)
                 SonyFunction.Set2.PRESET_EQ_NON_CUSTOMIZABLE in functions -> SonyEq(2, SET2_NONCUSTOMIZABLE, customizable = false)
                 else -> null
             }
         }
+
+        /** EQEBB type 4, PRESET_EQ_AND_ERRORCODE (Sony's EqEbbInquiredType). */
+        public const val TYPE_ERRORCODE: Int = 4
+
+        /** EQEBB type 3, PRESET_EQ_AND_ULT_MODE. */
+        public const val TYPE_ULT: Int = 3
+        private const val ERRORCODE_STEPS = 13
 
         private const val SET1_PRESET_EQ = 1
         private const val SET1_NONCUSTOMIZABLE = 3

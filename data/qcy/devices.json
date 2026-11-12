@@ -1114,6 +1114,7 @@
   },
   {
    "vendor_id": 16759,
+   "reports": ["data/qcy/reports/H3Pro_4177_0.5.3.3.txt"],
    "name": "QCY H3 Pro",
    "names": [
     "QCY H3 Pro"
@@ -2259,6 +2260,7 @@
   },
   {
    "vendor_id": 18294,
+   "reports": ["data/qcy/reports/T13ANC2_4776_0.1.0.2.txt"],
    "name": "QCY T13 ANC2",
    "names": [
     "QCY T13 ANC2"

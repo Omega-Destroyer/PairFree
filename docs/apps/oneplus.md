@@ -19,7 +19,7 @@ Each model shows only the settings it has:
 
 ## OnePlus and OPPO models
 
-PairFree knows 53 OnePlus and OPPO models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 53 OnePlus and OPPO models. Models that have been tried on real earbuds: OnePlus Buds 4.
 
 OnePlus and OPPO support is read from HeyMelody (117.6.6), which controls both brands, and was checked against the official app and against PairFree run on virtual earbuds. It has not been tried on real earbuds yet; more settings are not built yet.
 

@@ -31,7 +31,7 @@ class QcyTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.data["devices"]), s["models"])
-        self.assertEqual([], s["tested"], "no QCY model tried with PairFree yet")
+        self.assertEqual(["QCY H3 Pro", "QCY T13 ANC2"], s["tested"], "users' device reports of 2026-11-11 and 11-12 (issues #34, #35)")
 
     def test_rows(self):
         n70 = self.row("5D45")
@@ -41,7 +41,7 @@ class QcyTable(unittest.TestCase):
         self.assertIn("LDAC", n70["Also"])
         self.assertEqual("Not tested", n70["Status"])
         h3 = self.row("4177")
-        self.assertEqual(("Headphones", "JieLi", "Not tested"), (h3["Type"], h3["Chip"], h3["Status"]))
+        self.assertEqual(("Headphones", "JieLi", "Tested"), (h3["Type"], h3["Chip"], h3["Status"]))
 
 
 class QcyData(unittest.TestCase):

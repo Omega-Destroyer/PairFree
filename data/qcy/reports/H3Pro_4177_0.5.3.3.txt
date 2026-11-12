@@ -1,0 +1,24 @@
+Bluetooth name:  QCY H3 Pro
+Brand:           QCY
+Model:           QCY H3 Pro (vendor id 4177)
+Firmware:        0.5.3.3
+App:             PairFree 0.9.0
+OS:              Android 17 (API 37)
+Captured:        2026-11-11 22:00 UTC
+
+The last value of each item and characteristic PairFree read (item or name: value as hex):
+  target 5: 05 33
+  adv 12: 32
+  adv 5: 01
+  adv 0: 64 00 00
+  version: 30 2e 35 2e 33 2e 33
+  1D: 05 08
+  17: 01 05 00
+  23: 01
+  24: 00
+  14: ff ff 00 00
+  22: ff 0c fe 20 00 d4 fe 28 00 ff 40 00 44 fd 78 00 ff 7d 00 38 ff 96 00 ff fa 00 00 00 96 00 ff f4 01 00 00 78 00 ff e8 03 38 ff 50 00 ff d0 07 9c ff 78 00 ff a0 0f c8 00 78 00 ff 40 1f 90 01 78 00 ff 80 3e f4 01 78 00 ff
+  battery: 64 00 00
+  16: 32
+  09: 02
+

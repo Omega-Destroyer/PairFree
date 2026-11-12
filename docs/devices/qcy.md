@@ -1,8 +1,8 @@
 # QCY
 
 PairFree is growing into one app for earbuds of several brands, with the same screens for each.
-QCY support is new and has not been tried with PairFree on any earbuds yet: nobody on the project
-owns a pair, so every model relies on reports from people who do.
+QCY support is new. Two users have tried it (the H3 Pro and the T13 ANC2: PairFree reached both and read their settings, issues
+#34 and #35); nobody on the project owns a pair, so every other model relies on reports from people who do.
 
 PairFree lists QCY earbuds and headphones among your paired devices by their name. QCY's earbuds take
 their settings over Bluetooth LE, and each pair advertises which model it is, so when you open a pair
@@ -113,7 +113,7 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY H3 ANC HEADSET</td><td><code>417F</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY H3 Lite</td><td><code>4176</code></td><td>JieLi</td><td>Headphones</td><td>ANC, transparency</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY H3 Lite ANC APP</td><td><code>417A</code></td><td>JieLi</td><td>Headphones</td><td>ANC, transparency</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY H3 Pro</td><td><code>4177</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>game mode, LDAC, two devices, balance, timed power off</td><td>Not tested</td></tr>
+<tr><td><a href="../../data/qcy/reports/H3Pro_4177_0.5.3.3.txt">QCY H3 Pro</a></td><td><code>4177</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>game mode, LDAC, two devices, balance, timed power off</td><td>Tested</td></tr>
 <tr><td>QCY H3 PRO ANC</td><td><code>417B</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>game mode, LDAC, two devices, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY H3S</td><td><code>417C</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>LDAC, two devices, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY H3S EXTREME ANC</td><td><code>417D</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>LDAC, two devices, balance, timed power off</td><td>Not tested</td></tr>
@@ -178,7 +178,7 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY T13</td><td><code>4A7D</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
 <tr><td>QCY T13</td><td><code>4D9A</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
 <tr><td>QCY T13 ANC</td><td><code>4772</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance</td><td>Not tested</td></tr>
-<tr><td>QCY T13 ANC2</td><td><code>4776</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
+<tr><td><a href="../../data/qcy/reports/T13ANC2_4776_0.1.0.2.txt">QCY T13 ANC2</a></td><td><code>4776</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Tested</td></tr>
 <tr><td>QCY T13 ANC2 APP</td><td><code>4777</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T13 Plus</td><td><code>8075</code></td><td>JieLi</td><td>Earbuds</td><td>ANC (5 scenes), transparency</td><td>sleep mode, game mode, two devices, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T13 Pro</td><td><code>4A7C</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>

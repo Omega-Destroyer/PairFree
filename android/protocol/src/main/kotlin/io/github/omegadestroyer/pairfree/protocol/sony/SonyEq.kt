@@ -192,10 +192,16 @@ public data class SonyEq(
         } else {
             when {
                 SonyFunction.Set2.PRESET_EQ in functions -> SonyEq(2, SET2_PRESET_EQ, customizable = true)
+                // The WF-1000XM6: type 4, ten bands, flat at 6 (13 steps, +-6 dB) as its recording shows, read like the plain preset EQ.
+                SonyFunction.Set2.PRESET_EQ_AND_ERRORCODE in functions -> SonyEq(2, TYPE_ERRORCODE, customizable = true, steps = ERRORCODE_STEPS)
                 SonyFunction.Set2.PRESET_EQ_NON_CUSTOMIZABLE in functions -> SonyEq(2, SET2_NONCUSTOMIZABLE, customizable = false)
                 else -> null
             }
         }
+
+        /** EQEBB type 4, PRESET_EQ_AND_ERRORCODE (Sony's EqEbbInquiredType). */
+        public const val TYPE_ERRORCODE: Int = 4
+        private const val ERRORCODE_STEPS = 13
 
         private const val SET1_PRESET_EQ = 1
         private const val SET1_NONCUSTOMIZABLE = 3

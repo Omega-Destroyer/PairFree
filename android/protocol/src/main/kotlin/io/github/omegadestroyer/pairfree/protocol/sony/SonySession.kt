@@ -164,7 +164,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         SonyNoise.typeFor(tableSet, f)?.let { outbox += SonyOut.table1(NCASM_GET_PARAM, it) }
         SonyEq.of(tableSet, f)?.let { e ->
             eq = e
-            outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, e.type)
+            // Type 4 (preset EQ and error code) has no capability to ask for: Sony's app reads its status, extended info and param (WF-1000XM6 recording).
+            if (e.type != SonyEq.TYPE_ERRORCODE) outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, e.type)
             outbox += SonyOut.table1(EQEBB_GET_EXTENDED_INFO, e.type)
             outbox += SonyOut.table1(EQEBB_GET_PARAM, e.type)
         }

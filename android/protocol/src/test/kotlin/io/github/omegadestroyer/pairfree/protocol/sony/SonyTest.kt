@@ -350,6 +350,29 @@ class SonySessionTest {
     }
 
     @Test
+    fun theWf1000xm6EqualizerOfType4FromItsRecording() {
+        // Issue #33: function 57 (PRESET_EQ_AND_ERRORCODE); Sony's app asks status, param and extended info of type 4, never the capability.
+        val s = SonySession(2)
+        s.receive(message(0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00))
+        s.takeOutbox()
+        s.receive(message(0x07, 0x00, 1, 0x57, 0))
+        val asked = s.takeOutbox().filter { it.table == 1 && it.payload.size >= 2 && it.payload[1].toInt() == 4 }
+        assertTrue(asked.any { it.command == 0x5A } && asked.any { it.command == 0x56 }, "extended info and param of type 4")
+        assertTrue(asked.none { it.command == 0x50 }, "no capability request")
+        s.receive(message(0x5B, 0x04, 0x0A, 1, 0, 31, 1, 0, 63, 1, 0, 125, 1, 0, 250, 1, 1, 244, 1, 3, 232, 1, 7, 208, 1, 15, 160, 1, 31, 64, 1, 62, 128))
+        s.receive(message(0x57, 0x04, 0xA2, 0x0A, 8, 8, 7, 6, 6, 6, 6, 6, 6, 6))
+        val eq = s.eq!!
+        assertEquals(TEN, eq.frequencies)
+        assertEquals(listOf(2, 2, 1, 0, 0, 0, 0, 0, 0, 0), eq.gains, "flat is 6 on this model")
+        assertTrue(eq.holdsCustom && eq.customizable)
+        // The app's own write: A1, ten values, flat 6 (`58 04 A1 0A 06 08 07 ...`).
+        s.receive(message(0x57, 0x04, 0xA1, 0x0A, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6))
+        assertEquals(listOf(out(0x58, 0x04, 0xA1, 10, 6, 8, 7, 6, 6, 6, 6, 6, 6, 6)), s.eqCurve(listOf(0, 2, 1, 0, 0, 0, 0, 0, 0, 0)))
+    }
+
+    private val TEN = listOf(31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000)
+
+    @Test
     fun set2WritesIntoTheUserSettingTheEarbudsHold() {
         // A WF-1000XM6 recording (issue #33): Sony's app selected User setting 1 (A1) and wrote its bands under A1.
         val s = set2(SonyFunction.Set2.PRESET_EQ)

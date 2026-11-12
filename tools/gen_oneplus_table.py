@@ -15,8 +15,13 @@ def models():
     return [m for m in json.loads((device_pages.ROOT / "data/oneplus/devices.json").read_text(encoding="utf-8"))["devices"] if not m["hidden"]]
 
 
+def reports(model):
+    """The model's device reports from users that are saved in the repo."""
+    return [r for r in model.get("reports", []) if (device_pages.ROOT / r).exists()]
+
+
 def summary():
-    return {"brand": "OnePlus and OPPO", "models": len(models()), "tested": []}
+    return {"brand": "OnePlus and OPPO", "models": len(models()), "tested": sorted(m["name"] for m in models() if reports(m))}
 
 
 def features(m):
@@ -36,7 +41,9 @@ def table():
     rows = []
     for m in models():
         status = "Not tested"
-        if m["id"] in VIRTUAL:
+        if reports(m):
+            status = f'<a href="{escape(device_pages.TO_ROOT + reports(m)[0])}">Tested</a> by a user report'
+        elif m["id"] in VIRTUAL:
             status = f'<a href="{escape(device_pages.TO_ROOT + VIRTUAL[m["id"]])}">Vendor app and PairFree tested virtually</a>; no hardware test'
         rows.append(f"<tr><td>{escape(m['name'])}</td><td><code>{m['id']}</code></td><td>{escape(features(m))}</td><td>{status}</td></tr>")
     return "\n".join([START, "<table>", "<tr><th>Model</th><th>Product id</th><th>Implemented</th><th>Status</th></tr>", *rows, "</table>", END])

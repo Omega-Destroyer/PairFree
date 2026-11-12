@@ -20,7 +20,7 @@ Each model shows only the settings it has:
 
 ## QCY models
 
-PairFree knows 194 QCY models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 194 QCY models. Models that have been tried on real earbuds: QCY H3 Pro, QCY T13 ANC2.
 
 QCY support is read from QCY's own app. It has not been tried with PairFree yet.
 

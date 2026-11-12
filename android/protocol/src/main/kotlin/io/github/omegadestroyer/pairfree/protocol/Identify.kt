@@ -28,7 +28,7 @@ public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE
  * picks the model, and its protocol reports the model once connected.
  *
  * 1. A name in the not-ours list ([IdentifyTables.NOT_OURS]) is no brand of ours.
- * 2. A service only one brand's devices list decides; two such brands decide nothing.
+ * 2. A service only one brand's devices list decides; with two such brands the name (steps 3 and 4) decides between those two, else nothing.
  * 3. Else a whole word of the name that is one brand's ([IdentifyTables.BRAND_WORDS]).
  * 4. Else the name is exactly a model name of one brand (Sony's as Sony matches them: its names hold no brand word).
  *
@@ -39,10 +39,19 @@ public object Identify {
         val n = name.trim()
         val words = words(n)
         if (IdentifyTables.NOT_OURS.any { phrase -> containsPhrase(words, words(phrase)) }) return null
-        single(Maker.entries.filter { hasOwnService(it, uuids) })?.let { return it.value }
-        single(Maker.entries.filter { m -> IdentifyTables.BRAND_WORDS.getValue(m.name).any { w -> w.uppercase() in words } })?.let { return it.value }
-        return single(Maker.entries.filter { modelName(it, n) })?.value
+        val byService = Maker.entries.filter { hasOwnService(it, uuids) }
+        // Two brands' services on one device (a user's "Nothing Ear" listed Nothing's and another brand's, issue #30) are told apart by the name, never guessed.
+        val only = byService.singleOrNull()
+        if (only != null && only != Maker.ONEPLUS) return only
+        // OnePlus's service may sit on other makers' OPPO-based chips (a hypothesis for issue #30), so a name that is another brand's decides over it.
+        if (only == Maker.ONEPLUS) return byName(Maker.entries.filter { it != Maker.ONEPLUS }, n, words)?.value ?: Maker.ONEPLUS
+        return byName(byService.ifEmpty { Maker.entries }, n, words)?.value
     }
+
+    /** Steps 3 and 4 over [candidates]: a brand word of the name, else the name as a model name; null when neither says. */
+    private fun byName(candidates: List<Maker>, name: String, words: List<String>): Claim? =
+        single(candidates.filter { m -> IdentifyTables.BRAND_WORDS.getValue(m.name).any { w -> w.uppercase() in words } })
+            ?: single(candidates.filter { modelName(it, name) })
 
     /** The one maker in [makers]; null inside when two or more claim it (left out), and no result when none does. */
     private fun single(makers: List<Maker>): Claim? = when (makers.size) {

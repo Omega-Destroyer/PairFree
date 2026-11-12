@@ -199,6 +199,13 @@ private fun groupNote(key: String): String? = when (key) {
 }
 
 @Composable
+private fun ultButtonTitle(key: String): String? {
+    if (!key.startsWith("ult_button_")) return null
+    val effect = key.removePrefix("ult_button_")
+    return stringResource(R.string.setting_ult_button, LocalContext.current.optionLabel("sound_effect", effect))
+}
+
+@Composable
 private fun settingTitle(key: String): String = when (key) {
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
     "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
@@ -376,6 +383,8 @@ private fun settingTitle(key: String): String = when (key) {
     "sp_light_effect" -> stringResource(R.string.setting_light_effect)
     "noise_strength" -> stringResource(R.string.setting_noise_strength)
     "ult_mode" -> stringResource(R.string.setting_ult_mode)
+    "ebb" -> stringResource(R.string.setting_ebb)
+    "sound_effect" -> stringResource(R.string.setting_sound_effect)
     "eq_preset" -> stringResource(R.string.setting_eq_preset)
     "bass_boost" -> stringResource(R.string.setting_bass_boost)
     "bass_level" -> stringResource(R.string.setting_bass_level)
@@ -443,7 +452,7 @@ private fun settingTitle(key: String): String = when (key) {
     "ef_voice_language" -> stringResource(R.string.setting_ef_voice_language)
     "restart" -> stringResource(R.string.setting_restart)
     "power_off" -> stringResource(R.string.setting_power_off)
-    else -> eqBandTitle(key) ?: jblP5Title(key) ?: sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
+    else -> eqBandTitle(key) ?: jblP5Title(key) ?: sonyGeneralTitle(key) ?: buttonTitle(key) ?: touchTitle(key) ?: ultButtonTitle(key) ?: if (key.startsWith("bose_button_")) stringResource(R.string.setting_bose_button_shortcut) else key
 }
 
 /**
@@ -698,6 +707,15 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             else -> R.string.setting_panoramic_normal
         },
     )
+    key == "sound_effect" -> getString(when (option) {
+        "ult" -> R.string.setting_effect_ult
+        "ult_1" -> R.string.setting_ult_1
+        "ult_2" -> R.string.setting_ult_2
+        "custom" -> R.string.setting_effect_custom
+        "flat" -> R.string.setting_effect_flat
+        "live" -> R.string.setting_effect_live
+        else -> R.string.action_off
+    })
     key == "ult_mode" -> getString(when (option) {
         "ult_1" -> R.string.setting_ult_1
         "ult_2" -> R.string.setting_ult_2

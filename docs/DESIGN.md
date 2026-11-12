@@ -130,6 +130,10 @@ when nothing is connected.
 - Every paired device PairFree supports, of any brand (SoundPEATS, Soundcore, ...), each
   with a Connect button. The user picks a device, never a brand: PairFree works out the
   brand and model by itself (owner, 2026-10-13).
+- A Language button, when the app has more than one language built in: the language's own name on it, and a list of
+  the built-in languages to pick from, each by its own name, with "Same as the phone" first. The same button is on the
+  screen that asks for Bluetooth access, before this one, and on the Device tab (owner, 2026-11-12;
+  `docs/TRANSLATING.md`). The screens are drawn again in the chosen language at once.
 - A button that opens the system Bluetooth settings.
 - One line: "No account. No internet. Nothing leaves this phone."
 
@@ -389,6 +393,17 @@ the project" and a button), and when a bug report is shared to the app.
 - A maintainer saves it under `data/soundpeats/reports/`, where `tools/gen_models_table.py` reads
   its settings, and turns its equalizer into the model's `eq` entry and test vectors with
   `tools/import_eq_capture.py`, which checks every value against the bytes.
+
+## Languages
+
+All text is in one file, `res/values/strings.xml`; a translation is that file under `res/values-<code>/`, and an entry it
+lacks shows in English. The app lists the languages that are built in (the build makes the list from those folders) and
+follows the phone unless the user picks one. Android 13 and later keep the choice (it also shows under the phone's
+per-app language setting); on Android 12 PairFree keeps it and applies it to every context it draws text from, the
+notification and the widget included. EQ preset names are shown through the file too: the words PairFree gives and the
+vendors' own wording, in two generated sections, so a translator finds them in one place and may leave the vendors'
+wording as it is. Reports (device, connection, recording) stay in English in every language: they are read by the
+maintainers and by the project's tools. Details: `docs/TRANSLATING.md`.
 
 ## Behaviour
 

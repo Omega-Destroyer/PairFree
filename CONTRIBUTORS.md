@@ -41,6 +41,13 @@ The project's own readings come from its owner's SOUNDPEATS H3 and Air5 Pro+ and
 | [@thomas2403](https://github.com/thomas2403) | The Sony WF-1000XM5 crash on connecting ([#2](https://github.com/Omega-Destroyer/PairFree/issues/2)), fixed in 0.4.0 and confirmed |
 | [@upt8543-eng](https://github.com/upt8543-eng) | The request for a 2x1 widget ([#12](https://github.com/Omega-Destroyer/PairFree/issues/12)), which became the home screen widget in 0.8.0 |
 
+## Translations
+
+A language is one file ([docs/TRANSLATING.md](docs/TRANSLATING.md)). Translators are listed here with their language.
+
+| Who | Language |
+|-----|----------|
+
 ## And the projects PairFree learns from
 
 Open-source projects whose code or facts PairFree uses are credited where they are used, and listed in

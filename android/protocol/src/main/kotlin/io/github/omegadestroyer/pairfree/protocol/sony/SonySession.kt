@@ -47,6 +47,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
 
     /** The equalizer, once the earbuds listed one; what it holds fills in as they answer. */
     public var eq: SonyEq? = null
+    private var ebb: SonyEbb? = null
+    private var effect: SonyEffect? = null
+    private var ultAssign: SonyUltAssign? = null
         private set
 
     private var batteryTypes: List<Int> = emptyList()
@@ -164,10 +167,28 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         SonyNoise.typeFor(tableSet, f)?.let { outbox += SonyOut.table1(NCASM_GET_PARAM, it) }
         SonyEq.of(tableSet, f)?.let { e ->
             eq = e
-            // Type 4 (preset EQ and error code) has no capability to ask for: Sony's app reads its status, extended info and param (WF-1000XM6 recording).
-            if (e.type != SonyEq.TYPE_ERRORCODE) outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, e.type)
+            // Type 4 has a capability too (Sony's parser reads it as the plain preset EQ's); the WF-1000XM6 recording did not show the app asking, so the steps
+            // start at 13 (flat 6, as in the recording) and the answer, if the earbuds give one, replaces them and lists the presets.
+            outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, e.type)
             outbox += SonyOut.table1(EQEBB_GET_EXTENDED_INFO, e.type)
             outbox += SonyOut.table1(EQEBB_GET_PARAM, e.type)
+        }
+        // The extra bass level, the sound effect and the ULT button's effects share the EQEBB command (SonyEffects.kt).
+        val ebbType = if (tableSet == 1) SonyEbb.TYPE_SET1.takeIf { SonyFunction.Set1.EBB in f } else SonyEbb.TYPE_SET2.takeIf { SonyFunction.Set2.EBB in f }
+        ebbType?.let {
+            ebb = SonyEbb(it)
+            outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, it)
+            outbox += SonyOut.table1(EQEBB_GET_PARAM, it)
+        }
+        if (tableSet == 2 && SonyFunction.Set2.SOUND_EFFECT in f) {
+            effect = SonyEffect()
+            outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, SonyEffect.TYPE)
+            outbox += SonyOut.table1(EQEBB_GET_PARAM, SonyEffect.TYPE)
+        }
+        if (tableSet == 2 && SonyFunction.Set2.ULT_SOUND_EFFECT_ASSIGN in f) {
+            ultAssign = SonyUltAssign()
+            outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, SonyUltAssign.TYPE)
+            outbox += SonyOut.table1(EQEBB_GET_PARAM, SonyUltAssign.TYPE)
         }
         if (tableSet == 1) {
             if (SonyFunction.Set1.UPSCALING in f) outbox += SonyOut.table1(AUDIO_GET_PARAM, S1_UPSCALING)
@@ -373,6 +394,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     }
 
     private fun readEq(p: ByteArray) {
+        ebb?.read(p)?.let { ebb = it; return }
+        effect?.read(p)?.let { effect = it; return }
+        ultAssign?.read(p)?.let { ultAssign = it; return }
         val e = eq ?: return
         e.read(p)?.let { eq = it }
     }
@@ -410,11 +434,20 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                 listOfNotNull(
                     eq?.takeIf { it.customizable }?.clearBass?.let { Setting.Level("clear_bass", it, -eq!!.center, eq!!.center) },
                     eq?.ult?.let { Setting.Choice(ULT_KEY, ULT_MODES[it] ?: OFF, ULT_MODES.values.toList()) },
+                    ebb?.takeIf { it.known }?.let { Setting.Level(EBB_KEY, it.level!!, it.min!!, it.max!!) },
+                    effect?.takeIf { it.current != null && it.offered.isNotEmpty() }?.let { e ->
+                        Setting.Choice(EFFECT_KEY, SonyEffectNames.BY_ID[e.current] ?: OFF, e.offered.mapNotNull { SonyEffectNames.BY_ID[it] })
+                    },
                     dsee?.let { Setting.Toggle("dsee", it) },
                     bgm?.let { (on, room) -> Setting.Choice(BGM_KEY, if (on) BGM_ROOMS[room] ?: OFF else OFF, listOf(OFF) + BGM_ROOMS.values) },
                 ) + switchRows(SettingTab.SOUND),
             ),
             group("touch", SettingTab.CONTROLS, keys?.settings.orEmpty()),
+            group(
+                "ult_button", SettingTab.CONTROLS,
+                ultAssign?.takeIf { it.items.isNotEmpty() && it.min != null && it.max != null }?.items.orEmpty()
+                    .map { (id, on) -> Setting.Toggle(ULT_BUTTON_KEY + SonyEffectNames.BY_ID.getValue(id), on) },
+            ),
             group(
                 "connection", SettingTab.DEVICE,
                 listOfNotNull(
@@ -482,7 +515,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                     "pause_taken_off" -> if (tableSet == 1) SonyOut.table1(SYSTEM_SET_PARAM, S1_CONTROL_BY_WEARING, S1_ON_OFF, if (on) 1 else 0)
                     else SonyOut.table1(SYSTEM_SET_PARAM, S2_CONTROL_BY_WEARING, if (on) ON_V2 else OFF_V2)
                     "voice_guidance" -> voiceGuidanceSet(on)
-                    else -> generalSet(change.key.removePrefix(GS_KEY).takeIf { change.key.startsWith(GS_KEY) }, on) ?: S2_SWITCHES.firstOrNull { it.key == change.key }?.let { s ->
+                    else -> ultButtonSet(change.key, on) ?: generalSet(change.key.removePrefix(GS_KEY).takeIf { change.key.startsWith(GS_KEY) }, on) ?: S2_SWITCHES.firstOrNull { it.key == change.key }?.let { s ->
                         switches[s.key] = on
                         val v = if (on) ON_V2 else OFF_V2
                         if (s.table == 1) SonyOut.table1(s.set, s.type, v) else SonyOut.table2(s.set, s.type, v)
@@ -502,6 +535,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                 when (change.key) {
                     "ambient_volume" -> noiseSet(level = v)
                     "clear_bass" -> eqSet(eq?.setCurve(clearBass = v))
+                    EBB_KEY -> ebb?.set(v)?.also { ebb = ebb?.after(v) }
                     // The volume, then whether to play a sample of it (Sony's app plays one: feedbackSound).
                     GUIDANCE_VOLUME_KEY -> guidanceVolumeType?.let { type ->
                         guidanceVolume = v
@@ -518,6 +552,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
                         out
                     }
                     change.key == CONNECTION_KEY -> connectionSet(change.option)
+                    change.key == EFFECT_KEY -> SonyEffectNames.BY_ID.entries.firstOrNull { it.value == change.option }?.key?.let { id ->
+                        effect?.set(id)?.also { effect = effect?.copy(current = id) }
+                    }
                     change.key == ULT_KEY -> ULT_MODES.entries.firstOrNull { it.value == change.option }?.key?.let { eqSet(eq?.setUlt(it)) }
                     change.key == BGM_KEY -> {
                         val room = BGM_ROOMS.entries.firstOrNull { it.value == change.option }?.key
@@ -581,6 +618,15 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         val mode = CONNECTION_OPTIONS.entries.firstOrNull { it.value == option }?.key ?: return null
         connectionMode = mode
         return if (tableSet == 1) SonyOut.table1(AUDIO_SET_PARAM, type, S1_SOUND_CONNECTION, mode) else SonyOut.table1(AUDIO_SET_PARAM, type, mode)
+    }
+
+    /** One of the ULT button's effects turned on or off. */
+    private fun ultButtonSet(key: String, on: Boolean): SonyOut? {
+        if (!key.startsWith(ULT_BUTTON_KEY)) return null
+        val id = SonyEffectNames.BY_ID.entries.firstOrNull { ULT_BUTTON_KEY + it.value == key }?.key ?: return null
+        val out = ultAssign?.set(id, on) ?: return null
+        ultAssign = ultAssign?.after(id, on)
+        return out
     }
 
     private fun eqSet(out: SonyOut?): SonyOut? {
@@ -728,6 +774,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         private const val S2_BGM = 3
         private const val BGM_KEY = "bgm_effect"
         private const val ULT_KEY = "ult_mode"
+        private const val EBB_KEY = "ebb"
+        private const val EFFECT_KEY = "sound_effect"
+        private const val ULT_BUTTON_KEY = "ult_button_"
         private val ULT_MODES = linkedMapOf(0 to "off", 1 to "ult_1", 2 to "ult_2")
         private val BGM_ROOMS = linkedMapOf(0 to "small", 1 to "medium", 2 to "large")
         private const val OFF = "off"

@@ -351,14 +351,15 @@ class SonySessionTest {
 
     @Test
     fun theWf1000xm6EqualizerOfType4FromItsRecording() {
-        // Issue #33: function 57 (PRESET_EQ_AND_ERRORCODE); Sony's app asks status, param and extended info of type 4, never the capability.
+        // Issue #33: function 57 (PRESET_EQ_AND_ERRORCODE); Sony's app was seen asking status, param and extended info of type 4. PairFree also asks the capability.
         val s = SonySession(2)
         s.receive(message(0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00))
         s.takeOutbox()
         s.receive(message(0x07, 0x00, 1, 0x57, 0))
         val asked = s.takeOutbox().filter { it.table == 1 && it.payload.size >= 2 && it.payload[1].toInt() == 4 }
         assertTrue(asked.any { it.command == 0x5A } && asked.any { it.command == 0x56 }, "extended info and param of type 4")
-        assertTrue(asked.none { it.command == 0x50 }, "no capability request")
+        assertTrue(asked.any { it.command == 0x50 }, "the capability too: it gives the steps and the presets where the earbuds answer")
+        assertEquals(6, s.eq!!.center, "13 steps until the earbuds say")
         s.receive(message(0x5B, 0x04, 0x0A, 1, 0, 31, 1, 0, 63, 1, 0, 125, 1, 0, 250, 1, 1, 244, 1, 3, 232, 1, 7, 208, 1, 15, 160, 1, 31, 64, 1, 62, 128))
         s.receive(message(0x57, 0x04, 0xA2, 0x0A, 8, 8, 7, 6, 6, 6, 6, 6, 6, 6))
         val eq = s.eq!!
@@ -388,6 +389,48 @@ class SonySessionTest {
         assertEquals(listOf(out(0x58, 0x03, 0xA0, 0x01, 6, 12, 15, 5, 10, 10, 10)), s.eqCurve(listOf(5, -5, 0, 0, 0)))
         assertEquals(listOf(out(0x58, 0x03, 0xA0, 0x02, 6, 12, 15, 5, 10, 10, 10)), s.change(SettingChange.Choice("ult_mode", "ult_2")))
         assertEquals(2, s.eq!!.ult)
+    }
+
+    @Test
+    fun theExtraBassLevelSoundEffectAndUltButtonFromSonysParsers() {
+        val s = set2(SonyFunction.Set2.EBB, SonyFunction.Set2.SOUND_EFFECT, SonyFunction.Set2.ULT_SOUND_EFFECT_ASSIGN)
+        val asked = s.takeOutbox().filter { it.table == 1 }.map { it.payload[0].toInt() and 0xFF to (it.payload[1].toInt() and 0xFF) }
+        assertTrue((0x50 to 1) in asked && (0x56 to 1) in asked, "extra bass: capability and setting of type 1")
+        assertTrue((0x50 to 0x30) in asked && (0x56 to 0x30) in asked && (0x50 to 0x40) in asked && (0x56 to 0x40) in asked)
+        // Extra bass: the range -2 to 4 (signed bytes), the level 1.
+        s.receive(message(0x51, 0x01, 0xFE, 0x04))
+        s.receive(message(0x57, 0x01, 0x01))
+        assertEquals(Setting.Level("ebb", 1, -2, 4), setting(s, "ebb"))
+        assertEquals(listOf(out(0x58, 0x01, 0xFE)), s.change(SettingChange.Level("ebb", -9)), "kept within the earbuds' range, sent as a signed byte")
+        assertEquals(Setting.Level("ebb", -2, -2, 4), setting(s, "ebb"))
+        // Sound effect: off, ULT 1, ULT 2 and custom offered; the earbuds hold ULT 1.
+        s.receive(message(0x51, 0x30, 4, 0, 2, 3, 4, 0))
+        s.receive(message(0x57, 0x30, 2))
+        assertEquals(Setting.Choice("sound_effect", "ult_1", listOf("off", "ult_1", "ult_2", "custom")), setting(s, "sound_effect"))
+        assertEquals(listOf(out(0x58, 0x30, 3)), s.change(SettingChange.Choice("sound_effect", "ult_2")))
+        s.receive(message(0x59, 0x30, 4))
+        assertEquals("custom", (setting(s, "sound_effect") as Setting.Choice).value)
+        // The ULT button: one to three of the effects enabled (0 enabled, 1 disabled).
+        s.receive(message(0x51, 0x40, 1, 3))
+        s.receive(message(0x57, 0x40, 3, 1, 0, 2, 0, 3, 1))
+        assertEquals(Setting.Toggle("ult_button_ult", true), setting(s, "ult_button_ult"))
+        assertEquals(Setting.Toggle("ult_button_ult_2", false), setting(s, "ult_button_ult_2"))
+        assertEquals(listOf(out(0x58, 0x40, 3, 1, 0, 2, 0, 3, 0)), s.change(SettingChange.Toggle("ult_button_ult_2", true)))
+        assertEquals(listOf(out(0x58, 0x40, 3, 1, 1, 2, 0, 3, 0)), s.change(SettingChange.Toggle("ult_button_ult", false)))
+        assertEquals(listOf(out(0x58, 0x40, 3, 1, 1, 2, 1, 3, 0)), s.change(SettingChange.Toggle("ult_button_ult_1", false)))
+        assertNull(s.change(SettingChange.Toggle("ult_button_ult_2", false)), "none enabled is below the earbuds' least")
+    }
+
+    @Test
+    fun theCustomEqOfType31WithNoPreset() {
+        // Function 55 (CUSTOM_EQ), as the ULT FIELD speakers list it: capability `51 31 bands steps`, setting `57 31 count steps`.
+        val s = set2(SonyFunction.Set2.CUSTOM_EQ)
+        s.receive(message(0x51, 0x31, 6, 21))
+        s.receive(message(0x57, 0x31, 6, 12, 10, 11, 9, 10, 13))
+        val eq = s.eq!!
+        assertEquals(0x31, eq.type)
+        assertEquals(listOf(0, 1, -1, 0, 3), eq.gains)
+        assertEquals(listOf(out(0x58, 0x31, 6, 12, 15, 5, 10, 10, 10)), s.eqCurve(listOf(5, -5, 0, 0, 0)))
     }
 
     @Test

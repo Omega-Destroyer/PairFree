@@ -84,7 +84,7 @@ class SoundcoreDriver(host: DriverHost, private val device: Paired) : TalkDriver
     /** The model's EQ packets, then a state request, so the earbuds report the EQ they took. */
     override fun sendEq(frames: List<ByteArray>) {
         val talk = talk ?: return
-        send(talk, frames + talk.session.requestState(), emptyList())
+        send(talk, frames + talk.session.requestState(), emptyList(), replaces = EQ_WRITE)
     }
 
     /**

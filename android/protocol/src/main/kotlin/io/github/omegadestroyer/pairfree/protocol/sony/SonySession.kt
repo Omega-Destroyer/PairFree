@@ -2,7 +2,10 @@ package io.github.omegadestroyer.pairfree.protocol.sony
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.Fed
+import io.github.omegadestroyer.pairfree.protocol.Pacing
 import io.github.omegadestroyer.pairfree.protocol.PowerActions
+import io.github.omegadestroyer.pairfree.protocol.SessionTalk
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -10,7 +13,8 @@ import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Value
 
 /**
- * One connection to Sony earbuds or headphones, shown on PairFree's screens (docs/sony/PROTOCOL.md).
+ * One connection to Sony earbuds or headphones, shown on PairFree's screens (docs/sony/PROTOCOL.md): Sony's talk
+ * itself, with no adapter between it and the conversation loop.
  * It asks which table set they speak, their model name and firmware, and which functions they have;
  * then it reads each function PairFree offers, and every reply or notification updates [state] (the
  * battery, the noise mode, the firmware) and [groups] (everything else). Each change becomes the
@@ -19,13 +23,47 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * [tableSet] starts as the service the channel opened says (1 or 2) and follows the earbuds' first
  * reply, whose length says which they speak.
  */
-public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
+public class SonySession(tableSet: Int, public val model: SonyModel? = null) : SessionTalk<SonyOut>() {
     public var tableSet: Int = tableSet
         private set
 
     /** What the shared screens show. */
-    public var state: EarbudState = EarbudState()
+    override var state: EarbudState = EarbudState()
         private set
+
+    /** The frames' sequence numbers and acknowledgements, and the split of the channel's bytes into messages. */
+    private val link = SonyLink()
+    private val parser = SonyParser()
+
+    /**
+     * Each message waits 750 ms for its acknowledgement and goes again up to ten times, as Sony's app sends them
+     * (docs/sony/PROTOCOL.md section 2). A message never acknowledged leaves the two sides' sequence numbers in doubt, so
+     * the channel closes and opens again, as Sony's app does.
+     */
+    override val pacing: Pacing = Pacing(replyMs = 750, resends = 10, closeWhenUnanswered = true)
+
+    /** The battery, read again now and then; changes arrive as notifications. */
+    override fun poll(): List<SonyOut> = batteryRequests()
+
+    override fun bytes(message: SonyOut): ByteArray = link.frame(message)
+
+    /** Every message from the earbuds is acknowledged at once; an acknowledgement of theirs answers the message waiting. */
+    override fun feed(bytes: ByteArray): Fed {
+        var changed = false
+        val acks = ArrayList<Any>()
+        val now = ArrayList<ByteArray>()
+        for (message in parser.feed(bytes)) guarded {
+            log?.invoke("recv $message")
+            if (message.dataType == SonyWire.ACK) {
+                if (link.acked(message)) acks += Unit
+            } else {
+                val (ack, fresh) = link.received(message)
+                now += ack
+                if (fresh && receive(message)) changed = true
+            }
+        }
+        return Fed(changed, acks, now)
+    }
 
     /** The model name the earbuds gave, such as `WH-1000XM4`. */
     public var modelName: String? = null
@@ -46,7 +84,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
         private set
 
     /** The equalizer, once the earbuds listed one; what it holds fills in as they answer. */
-    public var eq: SonyEq? = null
+    override var eq: SonyEq? = null
     private var ebb: SonyEbb? = null
     private var effect: SonyEffect? = null
     private var ultAssign: SonyUltAssign? = null
@@ -80,10 +118,10 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     private val _replies = linkedMapOf<String, ByteArray>()
 
     /** What to send on opening the channel: the protocol request, which every table set answers the same way. */
-    public fun start(): List<SonyOut> = listOf(SonyOut.table1(CONNECT_GET_PROTOCOL_INFO, FIXED))
+    override fun start(): List<SonyOut> = listOf(SonyOut.table1(CONNECT_GET_PROTOCOL_INFO, FIXED))
 
     /** What the session wants sent next: the reads that follow the earbuds' answers. */
-    public fun takeOutbox(): List<SonyOut> = outbox.toList().also { outbox.clear() }
+    override fun takeOutbox(): List<SonyOut> = outbox.toList().also { outbox.clear() }
 
     /** The battery reads, to send again now and then. */
     public fun batteryRequests(): List<SonyOut> = batteryTypes.map { SonyOut.table1(if (tableSet == 1) S1.COMMON_GET_BATTERY_LEVEL else S2.POWER_GET_STATUS, it) }
@@ -427,7 +465,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     }
 
     /** Every setting the earbuds have beyond the shared screens. */
-    public val groups: List<SettingGroup>
+    override val groups: List<SettingGroup>
         get() = listOfNotNull(
             group("noise", SettingTab.HOME, noiseRows()),
             group(
@@ -499,7 +537,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
      * The messages for a change from the screens, or null when the earbuds do not have the setting.
      * The change shows in [groups] and [state] at once.
      */
-    public fun change(change: SettingChange): List<SonyOut>? {
+    override fun change(change: SettingChange): List<SonyOut>? {
         val setting = groups.flatMap { it.settings }.firstOrNull { it.key == change.key } ?: return null
         val out: SonyOut = when (change) {
             is SettingChange.Toggle -> {
@@ -645,7 +683,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     }
 
     /** The noise mode from the shared screens, on earbuds with both noise cancelling and ambient sound; multipoint, where it is a general setting. */
-    public fun set(command: Command, value: Int): List<SonyOut>? {
+    override fun set(command: Command, value: Int): List<SonyOut>? {
         if (command == Command.MULTIPOINT) {
             val out = generalSet(GS_MULTIPOINT.takeIf { multipointType != null }, value == 1) ?: return null
             refresh()
@@ -675,7 +713,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
     }
 
     /** False for what PairFree never sends: firmware update, test and log commands. */
-    public fun allowed(out: SonyOut): Boolean = out.command !in when {
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    override fun allowed(out: SonyOut): Boolean = out.command !in when {
         tableSet == 1 && out.table == 1 -> S1.NEVER_SEND
         tableSet == 1 -> S1T2.NEVER_SEND
         out.table == 1 -> S2.NEVER_SEND

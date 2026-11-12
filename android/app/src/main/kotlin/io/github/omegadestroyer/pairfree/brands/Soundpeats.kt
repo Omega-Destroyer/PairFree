@@ -85,8 +85,10 @@ class SoundpeatsDriver(host: DriverHost, private val device: Paired) : TalkDrive
         if (send(talk, talk.write(command, *payload))) publish(talk)
     }
 
-    /** A frame per band, and the earbuds do not reply. A newer write replaces one still going out. */
-    override fun sendEq(frames: List<ByteArray>) = rawEq(frames, null)
+    /** A frame per band, and the earbuds do not reply. A newer write replaces what is left of one still going out. */
+    override fun sendEq(frames: List<ByteArray>) {
+        send(talk ?: return, frames, emptyList(), replaces = EQ_WRITE)
+    }
 
     /**
      * Starts the ear tip fit test; the result replaces [EarbudState.fit] about 9 s later.
@@ -124,7 +126,7 @@ class SoundpeatsDriver(host: DriverHost, private val device: Paired) : TalkDrive
     }
 
     override fun factoryResetConfirmedByUser() {
-        raw(listOf(Requests.factoryResetConfirmedByUser()))
+        send(talk ?: return, listOf(Requests.factoryResetConfirmedByUser()), emptyList())
     }
 
     override fun report(info: ReportInfo): String = plainReport(info, replies, host.state.value)

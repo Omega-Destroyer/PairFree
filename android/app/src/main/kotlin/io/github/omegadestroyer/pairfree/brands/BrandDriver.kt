@@ -192,42 +192,6 @@ abstract class BrandDriver(protected val host: DriverHost) {
         host.eq(EqEvent.OPEN)
         if (follow) host.eq(EqEvent.REPORT)
     }
-
-    /** Sends [frames] on the open channel as they are, then [then] [EarbudsConnection.READ_BACK_MS] later. False when there is no channel. */
-    protected fun raw(frames: List<ByteArray>, then: ByteArray? = null, allowed: (ByteArray) -> Boolean = { true }): Boolean {
-        if (!host.connected) return false
-        val l = host.link ?: return false
-        host.launch {
-            try {
-                for (frame in frames) if (allowed(frame)) l.send(frame)
-                if (then != null) {
-                    delay(EarbudsConnection.READ_BACK_MS)
-                    l.send(then)
-                }
-            } catch (_: IOException) {
-                // the channel closed; the reader notices and reports it
-            }
-        } ?: return false
-        return true
-    }
-
-    private var eqWrite: Job? = null
-
-    /** Sends one EQ write as it is, then [readBack] at once; a newer write replaces one still going out. */
-    protected fun rawEq(frames: List<ByteArray>, readBack: ByteArray?) {
-        if (!host.connected) return
-        val l = host.link ?: return
-        eqWrite?.cancel()
-        eqWrite = host.launch {
-            try {
-                for (frame in frames) l.send(frame)
-                // Earbuds that report their EQ: read it back, so the screen shows what they took.
-                readBack?.let { l.send(it) }
-            } catch (_: IOException) {
-                // the channel closed; the reader notices and reports it
-            }
-        }
-    }
 }
 
 /**
@@ -279,12 +243,13 @@ abstract class TalkDriver<M, T : Talk<M>>(host: DriverHost) : BrandDriver(host) 
 
     /**
      * Queues [out] on the open conversation, and [EarbudsConnection.READ_BACK_MS] later [reads], which confirm them.
-     * False when there is no open channel.
+     * With [replaces] ([EQ_WRITE]) they take the place of what an older write of that kind still has waiting. False when
+     * there is no open channel.
      */
-    protected fun send(talk: T, out: List<M>, reads: List<M> = talk.takeReadBacks()): Boolean {
+    protected fun send(talk: T, out: List<M>, reads: List<M> = talk.takeReadBacks(), replaces: Any? = null): Boolean {
         if (!host.connected) return false
         val running = conversation ?: return false
-        running.send(out)
+        running.send(out, replaces)
         if (reads.isNotEmpty()) {
             host.launch {
                 delay(EarbudsConnection.READ_BACK_MS)
@@ -307,6 +272,11 @@ abstract class TalkDriver<M, T : Talk<M>>(host: DriverHost) : BrandDriver(host) 
     }
 
     override val fitTest: FitTest? get() = talk?.fitTest
+
+    protected companion object {
+        /** The kind of write an EQ curve is: a newer one replaces what is left of the one before ([send]). */
+        val EQ_WRITE = Any()
+    }
 }
 
 /** What opening a channel may use of the connection ([BrandSpec.open]). */

@@ -81,7 +81,7 @@ class SamsungDriver(host: DriverHost, private val device: Paired) : TalkDriver<B
     }
 
     override fun sendEq(frames: List<ByteArray>) {
-        send(talk ?: return, frames, emptyList())
+        send(talk ?: return, frames, emptyList(), replaces = EQ_WRITE)
     }
 
     /**

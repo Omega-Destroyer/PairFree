@@ -15,7 +15,6 @@ import io.github.omegadestroyer.pairfree.protocol.sony.SonyFunction
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyOut
 import io.github.omegadestroyer.pairfree.protocol.sony.SonySession
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyTalk
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 
 /** Sony (docs/sony/PROTOCOL.md). */
@@ -44,12 +43,12 @@ object SonySpec : BrandSpec(Brand.SONY) {
     override fun mayHaveEq(device: Paired): Boolean = true
 }
 
-/** Sony earbuds and headphones ([SonyTalk]). */
-class SonyDriver(host: DriverHost, private val device: Paired) : TalkDriver<SonyOut, SonyTalk>(host) {
+/** Sony earbuds and headphones ([SonySession], which is its own talk). */
+class SonyDriver(host: DriverHost, private val device: Paired) : TalkDriver<SonyOut, SonySession>(host) {
     /** The session of the channel now or last open; for the device report. */
-    val session: SonySession? get() = talk?.session
+    val session: SonySession? get() = talk
 
-    override fun talk(opened: ControlLink): SonyTalk = SonyTalk(SonyModels.tableSetOf(device.service), SonyModels.of(device.model))
+    override fun talk(opened: ControlLink): SonySession = SonySession(SonyModels.tableSetOf(device.service), SonyModels.of(device.model))
 
     /**
      * Sony's earbuds notify every change of their EQ (EQEBB_NTFY_PARAM), and Sony's app updates its EQ on each one

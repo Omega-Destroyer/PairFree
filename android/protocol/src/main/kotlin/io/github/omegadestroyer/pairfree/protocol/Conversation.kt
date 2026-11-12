@@ -35,13 +35,30 @@ public class Conversation<M>(
     private val changed: () -> Unit = {},
     private val fed: () -> Unit = {},
 ) {
-    private class Item<M>(val message: M, val opening: Boolean)
+    private class Item<M>(val message: M, val opening: Boolean, val kind: Any? = null) {
+        var dropped = false
+    }
 
     private val queue = Channel<Item<M>>(Channel.UNLIMITED)
 
-    /** Queues [messages] behind what is waiting. Nothing happens once the conversation has ended. */
-    public fun send(messages: List<M>) {
-        for (m in messages) queue.trySend(Item(m, opening = false))
+    /** What is still waiting of each kind of write ([send]'s `replaces`). */
+    private val waiting = HashMap<Any, MutableList<Item<M>>>()
+
+    /**
+     * Queues [messages] behind what is waiting. With [replaces], they are a write of that kind (an EQ curve, say), and
+     * take the place of whatever an older write of the same kind still has waiting: a write overtaken by a newer one is
+     * not worth finishing. The message going out at that moment still goes. Nothing happens once the conversation has
+     * ended. Like everything of a conversation, to be called from the thread it runs on.
+     */
+    public fun send(messages: List<M>, replaces: Any? = null) {
+        if (replaces == null) {
+            for (m in messages) queue.trySend(Item(m, opening = false))
+            return
+        }
+        waiting.remove(replaces)?.forEach { it.dropped = true }
+        val items = messages.map { Item(it, opening = false, kind = replaces) }
+        waiting[replaces] = items.toMutableList()
+        for (item in items) queue.trySend(item)
     }
 
     /** Talks until the channel closes. */
@@ -53,6 +70,8 @@ public class Conversation<M>(
         val sender = launch {
             try {
                 for (item in queue) {
+                    if (item.dropped) continue
+                    item.kind?.let { kind -> waiting[kind]?.let { left -> left.remove(item); if (left.isEmpty()) waiting.remove(kind) } }
                     val message = item.message
                     if (!talk.allowed(message)) continue
                     val frame = talk.bytes(message)

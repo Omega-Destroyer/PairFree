@@ -23,7 +23,12 @@ import io.github.omegadestroyer.pairfree.protocol.qcy.QcyTalk
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungSession
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungTalk
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyTalk
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyLink
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyMessage
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyOut
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyParser
+import io.github.omegadestroyer.pairfree.protocol.sony.SonySession
+import io.github.omegadestroyer.pairfree.protocol.sony.SonyWire
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTalk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -53,9 +58,13 @@ class ConversationTest {
         val sent = mutableListOf<Pair<Long, List<Byte>>>()
         val incoming = Channel<ByteArray>(Channel.UNLIMITED)
         var closed = false
+
+        /** The earbuds' side, when a test plays one: called with each frame as it goes out. */
+        var peer: ((ByteArray) -> Unit)? = null
         override suspend fun send(frame: ByteArray) {
             if (closed) throw IllegalStateException("closed")
             sent += scope.currentTime to frame.toList()
+            peer?.invoke(frame)
         }
         override fun reads(): Flow<ByteArray> = flow {
             for (bytes in incoming) emit(bytes)
@@ -182,6 +191,20 @@ class ConversationTest {
     }
 
     @Test
+    fun aNewerWriteOfAKindReplacesWhatIsLeftOfTheOlderOne() = runTest {
+        val wire = Wire(this)
+        val (conversation, _) = talking(Plain(Pacing(gapMs = 50, pollMs = 0), opening = emptyList()), wire)
+        val eq = Any()
+        conversation.send(listOf(10, 11, 12, 13), replaces = eq)
+        conversation.send(listOf(7))
+        advanceTimeBy(60)
+        // 10 and 11 have gone; 12 and 13 are overtaken, the plain message between them is not.
+        conversation.send(listOf(20, 21), replaces = eq)
+        advanceTimeBy(1_000)
+        assertEquals(listOf(10, 11, 7, 20, 21), wire.bytes)
+    }
+
+    @Test
     fun aMessageOnTheNeverSendListDoesNotGoOut() = runTest {
         val wire = Wire(this)
         val (conversation, _) = talking(Plain(Pacing(pollMs = 0), opening = listOf(1, 66, 2), never = setOf(66)), wire)
@@ -297,9 +320,42 @@ class ConversationTest {
     @Test
     fun sonySendsItsFirstMessageElevenTimesThenGivesUp() = runTest {
         for (set in 1..2) {
-            val (expected, sent) = silent({ SonyTalk(set, null) }, 60_000)
+            val (expected, sent) = silent({ SonySession(set) }, 60_000)
             assertEquals(List(11) { expected.first() }, sent, "set $set")
         }
+    }
+
+    /**
+     * Sony's session against earbuds that acknowledge every message and answer the first read: the session acknowledges
+     * their answer at once, sends nothing twice, and goes on to its next reads.
+     */
+    @Test
+    fun sonyAcknowledgesAnAnswerAndGoesOnWithoutResending() = runTest {
+        val wire = Wire(this)
+        val earbuds = SonyLink()
+        val parser = SonyParser()
+        val heard = mutableListOf<SonyMessage>()
+        wire.peer = { frame ->
+            for (message in parser.feed(frame)) {
+                heard += message
+                if (message.dataType == SonyWire.ACK) continue
+                wire.incoming.trySend(earbuds.received(message).first)
+                // The protocol info read: version 4010, as a WH-1000XM3 answers it (docs/sony/VIRTUAL_TESTING.md).
+                if (message.payload.contentEquals(byteArrayOf(0x00, 0x00))) {
+                    wire.incoming.trySend(earbuds.frame(SonyOut.table1(0x01, 0x00, 0x40, 0x10)))
+                }
+            }
+        }
+        val session = SonySession(1)
+        val job = backgroundScope.launch { Conversation(session, wire).run() }
+        advanceTimeBy(5_000)
+        job.cancel()
+        val sent = heard.filter { it.dataType != SonyWire.ACK }
+        assertEquals(listOf(0x00, 0x00), sent.first().payload.map { it.toInt() })
+        assertTrue(sent.size > 1, "the session went on after the answer: $sent")
+        assertEquals(sent.size, sent.map { it.payload.toList() to it.seq }.distinct().size, "nothing was sent twice")
+        assertEquals(1, heard.count { it.dataType == SonyWire.ACK }, "the answer was acknowledged once")
+        assertFalse(wire.closed)
     }
 
     @Test

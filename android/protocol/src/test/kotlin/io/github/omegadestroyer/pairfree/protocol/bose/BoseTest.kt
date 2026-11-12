@@ -247,4 +247,13 @@ class BoseTest {
         assertEquals(Setting.Choice("anr", "high", listOf("off", "low", "high", "wind")), setting(s, "anr"))
         assertEquals(listOf(setGet(BoseFunction.SETTINGS_ANR, 2)), s.change(SettingChange.Choice("anr", "wind")))
     }
+
+    @Test
+    fun anEqBandWithItsRangeTheWrongWayRoundDoesNotBreakTheRows() {
+        val s = BoseSession()
+        // Bass with minimum 10 and maximum -10, then mid as Bose's devices send it.
+        s.receive(status(BoseFunction.SETTINGS_RANGE_CONTROL, "0af60000" + "f60a0201"))
+        assertNull(setting(s, "eq_bass"))
+        assertEquals(Setting.Level("eq_mid", 2, -10, 10), setting(s, "eq_mid"))
+    }
 }

@@ -157,7 +157,8 @@ class StatusService : Service() {
         combine(hub.connection.status, hub.connection.state) { s, st -> s to st }.collect { (status, state) ->
             val current = device ?: return@collect
             when (status) {
-                is LinkStatus.Idle -> stop()
+                // Not on to the lines below: they would post a notification again after stop() took it down.
+                is LinkStatus.Idle -> return@collect stop()
                 is LinkStatus.Connected -> {
                     retries = 0
                     if (status.device.address != current.address) {

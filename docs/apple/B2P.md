@@ -72,7 +72,7 @@ product does not list. PairFree follows the same list: a read is sent only for a
 
 ## In PairFree
 
-`BeatsSession` and `B2pFrame` (`protocol/apple/`), opened over the plain serial channel (`EarbudsConnection.serveBeats`) for the Beats
+`BeatsSession` and `B2pFrame` (`protocol/apple/`), opened over the plain serial channel (`BeatsTalk`) for the Beats
 whose `data/apple/devices.json` entry has `b2p` (known by name, `AppleModels.b2p`). On connecting it reads the product id and the
 battery (0152), then one read for each feature in the table above that the model lists, 200 ms apart. It shows the battery, the
 listening mode (off, noise cancelling, transparency), one-bud noise cancelling, ear detection, the microphone and the in-case tones, each

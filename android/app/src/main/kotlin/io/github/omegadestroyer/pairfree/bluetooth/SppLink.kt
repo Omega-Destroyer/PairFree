@@ -40,7 +40,15 @@ class SppLink @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constru
 
     /** Blocks until the channel is open. Only one app can hold it; PeatsAudio must be closed. */
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    override suspend fun connect() = withContext(Dispatchers.IO) { socket.connect() }
+    override suspend fun connect() = withContext(Dispatchers.IO) {
+        try {
+            socket.connect()
+        } catch (e: IOException) {
+            // A socket that did not open is closed here, as GattLink does: a retry makes a new link and drops this one.
+            close()
+            throw e
+        }
+    }
 
     /** Sends one frame, at least [WRITE_GAP_MS] after the previous one. */
     override suspend fun send(frame: ByteArray): Unit = writeLock.withLock {

@@ -1,8 +1,5 @@
 package io.github.omegadestroyer.pairfree
 
-import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
-import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusModels
-import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusWire
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -19,7 +16,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import io.github.omegadestroyer.pairfree.bluetooth.AudioLinks
-import io.github.omegadestroyer.pairfree.bluetooth.Brand
+import io.github.omegadestroyer.pairfree.brands.Brands
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -27,20 +24,6 @@ import io.github.omegadestroyer.pairfree.eq.EqOpener
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Identify
-import io.github.omegadestroyer.pairfree.protocol.Maker
-import io.github.omegadestroyer.pairfree.protocol.Models
-import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
-import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
-import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
-import io.github.omegadestroyer.pairfree.protocol.pixel.PixelTransport
-import io.github.omegadestroyer.pairfree.protocol.qcy.Capsule
-import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
-import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -154,36 +137,9 @@ class Hub(private val app: Application) {
                 val name = d.name ?: d.address
                 val uuids = d.uuids.orEmpty().map { it.uuid.toString() }
                 // The brand first (Identify, data/identify.json), then that brand's own code picks the model and the
-                // service to open; a brand's earbuds it cannot control (Sony's LE side, 1MORE's Tuya
-                // models, EarFun's on other chips) drop out there.
-                when (Identify.maker(name, uuids)) {
-                    Maker.SOUNDCORE -> SoundcoreModels.identify(name, uuids)?.let { Paired(d.address, name, Brand.SOUNDCORE, it.service, it.model) }
-                    Maker.SAMSUNG -> SamsungModels.identify(name, uuids)?.let {
-                        Paired(d.address, name, Brand.SAMSUNG, it.serviceUuid, it.model, SamsungModels.deviceIdIn(uuids))
-                    }
-                    Maker.SONY -> SonyModels.identify(name, uuids)?.let { Paired(d.address, name, Brand.SONY, it.service, it.model?.name) }
-                    Maker.BOSE -> Paired(d.address, name, Brand.BOSE)
-                    Maker.JBL -> JblModels.fromName(name)?.let { Paired(d.address, name, Brand.JBL, model = it.name) }
-                    Maker.APPLE -> Paired(d.address, name, Brand.APPLE)
-                    Maker.NOTHING -> Paired(d.address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)
-                    // The service the earbuds list picks the transport, else the model their name gives (docs/pixel/PROTOCOL.md section 1).
-                    Maker.PIXEL -> {
-                        val known = PixelModels.fromName(name)
-                        val transport = PixelModels.transportOf(uuids) ?: known?.transport ?: PixelTransport.MAESTRO
-                        Paired(d.address, name, Brand.PIXEL, PixelModels.serviceFor(transport), known?.deviceType?.toString())
-                    }
-                    // QCY's model is known for sure from the advert's vendor id, once PairFree looks for it (docs/qcy/PROTOCOL.md).
-                    Maker.QCY -> Paired(d.address, name, Brand.QCY, model = QcyModels.fromName(name).singleOrNull()?.code)
-                    Maker.ONEMORE -> OneMoreModels.identify(name)?.let { Paired(d.address, name, Brand.ONEMORE, model = it.name) }
-                    // EarFun's models on chips whose protocol PairFree does not cover yet drop out (docs/earfun/PROTOCOL.md section 9).
-                    Maker.EARFUN -> EarfunModels.fromName(name)?.takeIf { it.covered }?.let { Paired(d.address, name, Brand.EARFUN, model = it.name) }
-                    Maker.ONEPLUS -> OneplusModels.fromName(name)?.let { Paired(d.address, name, Brand.ONEPLUS, OneplusWire.SPP_UUID, it.id) }
-                    Maker.CAMBRIDGE -> CambridgeModels.fromName(name)?.let { Paired(d.address, name, Brand.CAMBRIDGE, service = CambridgeModels.service(uuids), model = it.name) }
-                    // The QCY-built Capsule3 Pro runs on QCY's protocol, under SOUNDPEATS' name (docs/soundpeats/PROTOCOL.md section 10).
-                    Maker.SOUNDPEATS -> Models.find(null, name)?.takeIf { Capsule.of(it) }?.let { Paired(d.address, name, Brand.QCY, model = it.code, soldAs = Brand.SOUNDPEATS) }
-                        ?: if (Models.isSupported(name)) Paired(d.address, name) else null
-                    null -> null
-                }
+                // service to open ([io.github.omegadestroyer.pairfree.brands.BrandSpec.paired]); a brand's earbuds it cannot
+                // control (Sony's LE side, 1MORE's Tuya models, EarFun's on other chips) drop out there.
+                Identify.maker(name, uuids)?.let { Brands[it].paired(d.address, name, uuids) }
             }
             .sortedBy { it.name }
     }

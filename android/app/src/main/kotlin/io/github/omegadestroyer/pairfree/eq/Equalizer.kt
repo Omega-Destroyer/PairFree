@@ -172,6 +172,7 @@ class Equalizer(
 
     private var pending: Job? = null
     private var reopened: String? = null   // earbuds whose channel opened and whose EQ has not gone back yet
+    private var restoring: String? = null  // earbuds whose EQ is waiting out RESTORE_AFTER_MS before it goes back
     private var sentAt = 0L                 // when this phone last sent an EQ, for [reported]
 
     /**
@@ -180,11 +181,13 @@ class Equalizer(
      */
     fun open(address: String, model: Model?, layout: EqLayout? = null, target: EqTarget? = null) {
         if (model == null || layout == null || target == null) {
+            keepRestore()
             this.address = null
             _state.value = null
             return
         }
         if (this.address == address && _state.value?.model == model) return
+        keepRestore()
         pending?.cancel()
         this.address = address
         val zeros = List(layout.bands.size) { 0 }
@@ -242,14 +245,28 @@ class Equalizer(
         restoreIfDue()
     }
 
+    /**
+     * The EQ is opened again (the firmware named another model entry, the earbuds listed other bands) while the setting was
+     * still waiting to go back: it is due again for the screen that opens next, not dropped with the wait.
+     */
+    private fun keepRestore() {
+        val waiting = restoring ?: return
+        restoring = null
+        if (pending?.isActive != true) return
+        pending?.cancel()
+        reopened = waiting
+    }
+
     private fun restoreIfDue() {
         val s = _state.value ?: return
         if (reopened == null || reopened != address) return
         reopened = null
         if (!s.known || s.target.reportsEq || !s.target.restoresOnConnect) return
         pending?.cancel()
+        restoring = address
         pending = scope.launch {
             delay(RESTORE_AFTER_MS)
+            restoring = null
             _state.value?.let { send(framesOf(it, it.setting)) }
             sentAt = System.currentTimeMillis()
         }
@@ -339,6 +356,8 @@ class Equalizer(
             if (hz != s.layout.bands.map { it.hz }) return false
             val range = -s.layout.userRangeDb..s.layout.userRangeDb
             val gains = json.getJSONArray("gains_db").let { a -> List(a.length()) { a.getInt(it).coerceIn(range) } }
+            // One gain per band: a file with fewer or more would break the curve the screen draws.
+            if (gains.size != hz.size) return false
             val name = json.optString("name").trim().take(MAX_NAME).ifEmpty { "Imported" }
             val profile = EqProfile(EqProfile.USER + name, name, gains)
             val profiles = s.profiles.filter { it.id != profile.id } + profile
@@ -355,6 +374,8 @@ class Equalizer(
         val s = _state.value ?: return
         _state.value = s.copy(setting = setting, known = true)
         storeSetting()
+        // A change made while the setting waited to go back replaces it: the change itself goes out.
+        restoring = null
         pending?.cancel()
         pending = scope.launch {
             delay(SEND_AFTER_MS)

@@ -41,7 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.omegadestroyer.pairfree.AppViewModel
 import io.github.omegadestroyer.pairfree.R
-import io.github.omegadestroyer.pairfree.bluetooth.Brand
+import io.github.omegadestroyer.pairfree.brands.Brands
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.capture.Capture
@@ -166,7 +166,7 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
             else -> Panel {
                 for (device in paired) {
                     PairedRow(device, connecting = (status as? LinkStatus.Connecting)?.device == device) {
-                        val needsScan = (device.brand == Brand.JBL || device.brand == Brand.QCY) &&
+                        val needsScan = Brands[device.brand].needsScan &&
                             ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
                         if (needsScan) {
                             opening = device
@@ -205,33 +205,16 @@ private fun PairedRow(device: Paired, connecting: Boolean, onConnect: () -> Unit
     }
 }
 
-/** The brand's own app, which holds the earbuds' control channel while it is open. Names, so not translated. */
-private fun officialApp(brand: Brand): String = when (brand) {
-    Brand.SOUNDPEATS -> "PeatsAudio or SOUNDPEATS"
-    Brand.SOUNDCORE -> "Soundcore"
-    Brand.SAMSUNG -> "Galaxy Wearable"
-    Brand.SONY -> "Sony | Sound Connect"
-    Brand.BOSE -> "Bose"
-    Brand.JBL -> "JBL Headphones"
-    Brand.NOTHING -> "Nothing X"
-    Brand.PIXEL -> "Pixel Buds"
-    Brand.QCY -> "QCY"
-    Brand.ONEMORE -> "1MORE"
-    Brand.EARFUN -> "EarFun Audio"
-    Brand.CAMBRIDGE -> "Melomania by Cambridge Audio"
-    Brand.ONEPLUS -> "HeyMelody"
-    Brand.APPLE -> ""
-}
-
 @Composable
 private fun failure(status: LinkStatus): String? {
     if (status !is LinkStatus.Failed) return null
     val name = status.device.name
     return when (status.reason) {
-        LinkStatus.Reason.COULD_NOT_OPEN -> when (status.device.brand) {
-            // AirPods have no official app on Android to close (issue #3).
-            Brand.APPLE -> stringResource(R.string.failed_could_not_open_airpods, name)
-            else -> stringResource(R.string.failed_could_not_open, name, officialApp(status.device.soldAs ?: status.device.brand))
+        LinkStatus.Reason.COULD_NOT_OPEN -> {
+            // The brand's own app holds the channel while it is open; AirPods have none on Android to close (issue #3).
+            val officialApp = Brands[status.device.soldAs ?: status.device.brand].officialApp
+            if (Brands[status.device.brand].officialApp.isEmpty()) stringResource(R.string.failed_could_not_open_airpods, name)
+            else stringResource(R.string.failed_could_not_open, name, officialApp)
         }
         LinkStatus.Reason.LOST -> stringResource(R.string.failed_lost, name)
         LinkStatus.Reason.BLUETOOTH_OFF -> stringResource(R.string.failed_bluetooth_off)

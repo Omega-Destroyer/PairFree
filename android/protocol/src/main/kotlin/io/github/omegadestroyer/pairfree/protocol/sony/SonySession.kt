@@ -225,6 +225,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) {
      * summary the same way. PairFree takes the switches; a list type is another page of Sony's app.
      */
     private fun readGeneralCapability(p: ByteArray) {
+        if (p.size < 2) return
         val type = p.u8(1)
         val titleAt = if (tableSet == 1) 2 else 3
         if (p.size < titleAt + 2) return

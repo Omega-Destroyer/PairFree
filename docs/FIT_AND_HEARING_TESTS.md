@@ -8,7 +8,7 @@ vendors' apps decompiled outside the repo, plus the docs and data already in the
 The earbuds run it themselves; the phone starts it and gets a result per earbud. PairFree's side is the `FitTest` interface
 (`protocol/FitTest.kt`): a session implements `startFitTest()` (frames) and `state`, sets `EarbudState.fitTest` for the models that have it, and writes
 the result into `EarbudState.fit`. The shared `FitTestScreen`, the Device tab row and `EarbudsConnection.startFitTest` need nothing brand-specific; a
-new brand is one line in `EarbudsConnection.fitTestSession`. SOUNDPEATS' Qualcomm models stay the one special case (GAIA feature `09`; noise control
+new brand is one line in its driver (`BrandDriver.fitTest`, `brands/`). SOUNDPEATS' Qualcomm models stay the one special case (GAIA feature `09`; noise control
 goes off around the test, which the connection does).
 
 | Brand | Vendor app has it? | Built | Evidence |

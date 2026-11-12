@@ -71,3 +71,12 @@ Gestures, timers, DSEE, connection mode, other functions, table set 2 and PairFr
 comparison remain untested in this profile. Firmware, reset and power-off flows were not opened.
 Raw traces, screenshots, synthetic state, research instrumentation and reference hashes stay at
 `E:\Builds\research\existing-vendor-virtual-2026-11-07`, outside the repository.
+
+## WF-1000XM6 fixture, before and after 0.11.2 (2026-11-12)
+
+A virtual WF-1000XM6 on table set 2 (service 956C7B26) whose replies are the earbuds' own replies in a user's recording (issue #33: model name, firmware, function list, EQEBB type 4 extended info and param, notifications) and whose other requests are only acknowledged; it keeps a written EQ as its new readback. Emulator Android 37, PairFree on it, no hardware.
+
+- **PairFree 0.11.1:** connects, shows battery and noise control, and the Sound tab says "These Sony earbuds have not listed an equalizer", the user's symptom.
+- **PairFree 0.11.2 (debug build):** the Sound tab shows the ten bands 31 Hz to 16 kHz with the recorded curve (+2, +2, +1, then flat) in a +-6 dB graph. PairFree asked EQEBB extended info and param of type 4 and no capability. Two taps of "+" on the first band wrote `58 04 A2 0A 09 08 07 06 06 06 06 06 06 06` and then `58 04 A2 0A 0A 08 07 ...`: the held user setting A2, ten values flat at 6.
+
+This shows PairFree's handling of the recording's messages, not that a real XM6 accepts the writes. The XM6's real capability reply and the +-6 dB range remain unconfirmed (the range is inferred from the flat value).

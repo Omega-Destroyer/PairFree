@@ -5,7 +5,10 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.brands.Brands
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.EqTarget
+import io.github.omegadestroyer.pairfree.R
+import io.github.omegadestroyer.pairfree.eq.EqProfile
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.ui.presetLabel
 import io.github.omegadestroyer.pairfree.hub
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
@@ -36,9 +39,17 @@ object WidgetOptions {
             val code = modelOf(device, EarbudState())?.code
             Equalizer.builtIns(layout, target) + code?.let { hub.equalizer.loadProfiles(it, layout) }.orEmpty()
         }?.map { it.id to it.name } ?: cache?.eq
+        // Stock and the presets in the app's language; the ids, which the buttons keep, are untouched.
+        val shown = eq?.map { (id, name) ->
+            id to when {
+                id == EqProfile.STOCK -> context.getString(R.string.eq_stock)
+                id.startsWith(EqProfile.PRESET) -> context.presetLabel(name)
+                else -> name
+            }
+        }
         val noiseUnknown = noise == null && brandMayHaveNoise(device)
         val eqUnknown = eq == null && brandMayHaveEq(device)
-        return WidgetChoices(noise.orEmpty(), eq.orEmpty(), needsConnection = noiseUnknown || eqUnknown)
+        return WidgetChoices(noise.orEmpty(), shown.orEmpty(), needsConnection = noiseUnknown || eqUnknown)
     }
 
     /** Off, cancelling and transparency, each with the sub-modes given for it. */

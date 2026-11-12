@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.widget
 
+import io.github.omegadestroyer.pairfree.Languages
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -46,6 +47,8 @@ class WidgetService : Service() {
     private var worker = false
 
     private data class Tap(val widgetId: Int, val slot: Int, val address: String)
+
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(Languages.wrap(newBase))
 
     override fun onBind(intent: Intent?): IBinder? = null
 

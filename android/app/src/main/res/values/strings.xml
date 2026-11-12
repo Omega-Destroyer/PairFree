@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PairFree</string>
+    <!--
+      PairFree's text, all of it: the one file a translation is made from (docs/TRANSLATING.md).
+      A translation is a copy of this file at res/values-<language code>/strings.xml with the texts changed and the
+      names left as they are. Keep the placeholders (%1$s, %2$d, %%) and the escapes (\' \" \n). Leave out the entries
+      marked translatable="false". An entry a translation leaves out shows in English, so a partial translation works.
+      The sections: the first screens, Home, a brand's own settings by brand, the fit test, the recording, the widget,
+      and at the end the EQ preset names, which are generated.
+    -->
+    <string name="app_name" translatable="false">PairFree</string>
+
+    <!-- The app's language. %1$s is the language's own name, or app_language_system. -->
+    <string name="app_language">Language: %1$s</string>
+    <string name="app_language_title">Language</string>
+    <string name="app_language_system">Same as the phone</string>
 
     <string name="permission_title">Bluetooth access</string>
     <string name="permission_body">PairFree talks to your earbuds over Bluetooth, and Android asks you to allow that. Later it may ask for two more things, both only for its status notification and both optional: to show notifications, and to link PairFree to your earbuds so the notification can appear when they connect.</string>
@@ -90,6 +103,8 @@
     <string name="report_only_note">The Soundcore app lists this model, but PairFree does not know yet where its battery and settings are. Copy the device report on the Device tab and send it: it holds what the earbuds answered, and adds them for everyone.</string>
     <string name="eq_unconfirmed">Not yet tried on this model: PairFree sends the equalizer as OpenSCQ30\'s code gives it. If the sound does not change as shown, a recording of the official app setting it fixes it for everyone.</string>
     <string name="eq_unavailable">PairFree does not support the equalizer for these earbuds yet. If you want to change EQ settings, you can contribute to the project by tapping the button below. It takes a few minutes with the official PeatsAudio app.</string>
+    <!-- The name an imported EQ profile gets when its file gives none. -->
+    <string name="eq_imported_name">Imported</string>
     <string name="eq_stock">Stock</string>
     <string name="eq_new">New</string>
     <string name="eq_new_unsaved">New, not saved</string>
@@ -910,4 +925,210 @@
     <string name="widget_save">Save</string>
     <string name="widget_done">Done</string>
     <string name="widget_cancel">Cancel</string>
+
+    <!-- Cambridge Audio's legacy Melomania (its rows; the Melomania app's wording where it has one) -->
+    <string name="eq_cambridge">Choose a preset below to start adjusting the five gain bands. The Melomania app gives the bands no frequencies (it labels them Bass, Mid-Range and Treble), so no curve is drawn.</string>
+    <string name="setting_ca_eq">Equalizer</string>
+    <string name="setting_ca_eq_note">Gain values start from the selected preset. A custom curve already on the earbuds is unknown until you choose a preset here. Changes use the earbuds’ custom EQ mode. The vendor app’s three saved slots are stored on that phone.</string>
+    <string name="setting_ca_codec_note">Language and codec changes require both earbuds. A codec preference changes what the earbuds offer; Android chooses the active codec. Changing it may reconnect the earbuds.</string>
+    <string name="setting_ca_ambient_level">Ambient sound level</string>
+    <string name="setting_ca_preset">Preset</string>
+    <string name="setting_ca_codec">Codec preference</string>
+    <string name="setting_ca_language">Voice guidance language</string>
+    <string name="setting_ca_band">Band %1$d gain (dB)</string>
+    <string name="setting_ca_band_bass">Bass, band 1 gain (dB)</string>
+    <string name="setting_ca_band_mid">Mid-range, band 3 gain (dB)</string>
+    <string name="setting_ca_band_treble">Treble, band 5 gain (dB)</string>
+    <string name="setting_ca_play_pause">Play or pause control</string>
+    <string name="setting_ca_next">Next track control</string>
+    <string name="setting_ca_previous">Previous track control</string>
+    <string name="setting_ca_volume_up">Volume up control</string>
+    <string name="setting_ca_volume_down">Volume down control</string>
+    <string name="setting_ca_accept_call">Answer call control</string>
+    <string name="setting_ca_reject_call">Reject call control</string>
+    <string name="setting_ca_end_call">End call control</string>
+    <string name="setting_ca_assistant">Voice assistant control</string>
+    <string name="setting_ca_ambient_control">Ambient sound control</string>
+    <string name="setting_ca_cantonese">Cantonese</string>
+    <string name="setting_ca_neutral">Neutral</string>
+    <string name="setting_ca_immersive">Immersive</string>
+    <string name="setting_ca_rnb">R&amp;B</string>
+    <string name="setting_ca_electronic">Electronic</string>
+    <string name="setting_ca_rock">Rock</string>
+    <string name="setting_ca_voice">Voice</string>
+
+    <!-- BEGIN EQ PRESET NAMES: generated by tools/gen_vendor_strings.py. In this English file, do not edit by hand. -->
+    <!-- Names PairFree gives the vendors' presets. Translate these. -->
+    <string name="preset_name_acoustic">Acoustic</string>
+    <string name="preset_name_balanced">Balanced</string>
+    <string name="preset_name_bass_boost">Bass boost</string>
+    <string name="preset_name_bass_booster">Bass booster</string>
+    <string name="preset_name_bass_reducer">Bass reducer</string>
+    <string name="preset_name_classical">Classical</string>
+    <string name="preset_name_clear">Clear</string>
+    <string name="preset_name_deep">Deep</string>
+    <string name="preset_name_dynamic">Dynamic</string>
+    <string name="preset_name_electronic">Electronic</string>
+    <string name="preset_name_hip_hop">Hip-hop</string>
+    <string name="preset_name_last_saved">Last saved</string>
+    <string name="preset_name_lounge">Lounge</string>
+    <string name="preset_name_more_bass">More bass</string>
+    <string name="preset_name_more_treble">More treble</string>
+    <string name="preset_name_normal">Normal</string>
+    <string name="preset_name_podcast">Podcast</string>
+    <string name="preset_name_pop">Pop</string>
+    <string name="preset_name_soft">Soft</string>
+    <string name="preset_name_sound_by_luca">Sound by Luca</string>
+    <string name="preset_name_studio">Studio</string>
+    <string name="preset_name_treble_boost">Treble boost</string>
+    <string name="preset_name_voice">Voice</string>
+    <string name="preset_name_voice_enhancement">Voice enhancement</string>
+
+    <!-- VENDOR WORDING: EQ preset names as the vendor's own app or table words them, by vendor. Translate them or
+         leave them out: an entry a translation leaves out shows this English wording. -->
+    <!-- EarFun -->
+    <string name="vendor_bass_boost_1">Bass Boost 1</string>
+    <string name="vendor_bass_boost_2">Bass Boost 2</string>
+    <string name="vendor_bass_boost_3">Bass Boost 3</string>
+    <string name="vendor_bass_reducer_1">Bass Reducer 1</string>
+    <string name="vendor_bass_reducer_2">Bass Reducer 2</string>
+    <string name="vendor_bass_reducer_3">Bass Reducer 3</string>
+    <string name="vendor_blues">Blues</string>
+    <string name="vendor_country">Country</string>
+    <string name="vendor_hip_hop_3">Hip-Hop</string>
+    <string name="vendor_hits">Hits</string>
+    <string name="vendor_metal">Metal</string>
+    <string name="vendor_natural">Natural</string>
+    <string name="vendor_r_and_b">R&amp;B</string>
+    <string name="vendor_soul">Soul</string>
+    <string name="vendor_treble_boost_1">Treble Boost 1</string>
+    <string name="vendor_treble_boost_2">Treble Boost 2</string>
+    <string name="vendor_treble_boost_3">Treble Boost 3</string>
+    <string name="vendor_treble_reducer_1">Treble Reducer 1</string>
+    <string name="vendor_treble_reducer_2">Treble Reducer 2</string>
+    <string name="vendor_treble_reducer_3">Treble Reducer 3</string>
+    <string name="vendor_vocal_attenuation">Vocal Attenuation</string>
+    <string name="vendor_vocal_enhancement">Vocal Enhancement</string>
+    <!-- EarFun, JBL, SOUNDPEATS, Sony, Soundcore -->
+    <string name="vendor_rock">Rock</string>
+    <!-- EarFun, JBL, Sony, Soundcore -->
+    <string name="vendor_jazz">Jazz</string>
+    <!-- EarFun, Sony, Soundcore -->
+    <string name="vendor_dance">Dance</string>
+    <!-- EarFun, Soundcore -->
+    <string name="vendor_latin">Latin</string>
+    <!-- JBL -->
+    <string name="vendor_bass_cut">Bass cut</string>
+    <string name="vendor_club">Club</string>
+    <string name="vendor_diablo_gaming_mode">Diablo gaming mode</string>
+    <string name="vendor_extreme_bass">Extreme bass</string>
+    <string name="vendor_fps">Fps</string>
+    <string name="vendor_funk">Funk</string>
+    <string name="vendor_high_end_boost">High end boost</string>
+    <string name="vendor_long_session">Long session</string>
+    <string name="vendor_project_rock">Project rock</string>
+    <!-- JBL, OnePlus -->
+    <string name="vendor_bass">Bass</string>
+    <!-- JBL, Pixel Buds -->
+    <string name="vendor_clarity">Clarity</string>
+    <!-- JBL, Sony -->
+    <string name="vendor_off">Off</string>
+    <string name="vendor_vocal">Vocal</string>
+    <!-- JBL, Soundcore -->
+    <string name="vendor_piano">Piano</string>
+    <!-- OnePlus -->
+    <string name="vendor_balanced_default">Balanced (Default)</string>
+    <string name="vendor_bold">Bold</string>
+    <string name="vendor_clear_vocals">Clear Vocals</string>
+    <string name="vendor_clear_vocals_2">Clear vocals</string>
+    <string name="vendor_crisp_highs">Crisp highs</string>
+    <string name="vendor_dynamic_bass">Dynamic bass</string>
+    <string name="vendor_dynaudio_punchy">Dynaudio Punchy</string>
+    <string name="vendor_dynaudio_real">Dynaudio Real</string>
+    <string name="vendor_dynaudio_simple_and_clear">Dynaudio Simple &amp; Clear</string>
+    <string name="vendor_dynaudio_warm_and_soft">Dynaudio Warm &amp; Soft</string>
+    <string name="vendor_dynaudio_featured">Dynaudio featured</string>
+    <string name="vendor_dynaudio_high_resolution">Dynaudio high-resolution</string>
+    <string name="vendor_dynaudio_original_sound">Dynaudio original sound</string>
+    <string name="vendor_galactic_monologue">Galactic Monologue</string>
+    <string name="vendor_gentle">Gentle</string>
+    <string name="vendor_hd_clarity">HD clarity</string>
+    <string name="vendor_natural_inspiration">Natural Inspiration</string>
+    <string name="vendor_nature_balance">Nature Balance</string>
+    <string name="vendor_pure_vocals">Pure vocals</string>
+    <string name="vendor_reno_featured_dawn">Reno Featured (Dawn)</string>
+    <string name="vendor_reno_featured_purple_galaxy">Reno Featured (Purple Galaxy)</string>
+    <string name="vendor_reno_featured_sunrise_glow">Reno Featured (Sunrise Glow)</string>
+    <string name="vendor_thundering_bass">Thundering bass</string>
+    <string name="vendor_ultimate_sound">Ultimate sound</string>
+    <string name="vendor_vibrant">Vibrant</string>
+    <!-- OnePlus, Pixel Buds -->
+    <string name="vendor_default">Default</string>
+    <!-- OnePlus, SOUNDPEATS, Soundcore -->
+    <string name="vendor_classic">Classic</string>
+    <!-- Pixel Buds -->
+    <string name="vendor_heavy_bass">Heavy bass</string>
+    <string name="vendor_light_bass">Light bass</string>
+    <string name="vendor_vocal_boost">Vocal boost</string>
+    <!-- SOUNDPEATS -->
+    <string name="vendor_acg">ACG</string>
+    <string name="vendor_ballad">Ballad</string>
+    <string name="vendor_bass_enhance">Bass enhance</string>
+    <string name="vendor_bass_reduction">Bass reduction</string>
+    <string name="vendor_bass_weakening">Bass weakening</string>
+    <string name="vendor_book_whisper">Book Whisper</string>
+    <string name="vendor_classical_music">Classical Music</string>
+    <string name="vendor_folk">Folk</string>
+    <string name="vendor_hifi">HIFI</string>
+    <string name="vendor_hightone_enhancement">Hightone enhancement</string>
+    <string name="vendor_hip_hop_2">Hip hop</string>
+    <string name="vendor_popular">Popular</string>
+    <string name="vendor_popularity">Popularity</string>
+    <string name="vendor_qq_music_premium">QQ Music Premium</string>
+    <string name="vendor_rock_and_roll">Rock&amp;roll</string>
+    <string name="vendor_truefree_classic">TRUEFREE Classic</string>
+    <string name="vendor_treble_enhancement">Treble enhancement</string>
+    <!-- Sony -->
+    <string name="vendor_artist_collaboration_1">Artist collaboration 1</string>
+    <string name="vendor_artist_collaboration_10">Artist collaboration 10</string>
+    <string name="vendor_artist_collaboration_11">Artist collaboration 11</string>
+    <string name="vendor_artist_collaboration_12">Artist collaboration 12</string>
+    <string name="vendor_artist_collaboration_2">Artist collaboration 2</string>
+    <string name="vendor_artist_collaboration_3">Artist collaboration 3</string>
+    <string name="vendor_artist_collaboration_4">Artist collaboration 4</string>
+    <string name="vendor_artist_collaboration_5">Artist collaboration 5</string>
+    <string name="vendor_artist_collaboration_6">Artist collaboration 6</string>
+    <string name="vendor_artist_collaboration_7">Artist collaboration 7</string>
+    <string name="vendor_artist_collaboration_8">Artist collaboration 8</string>
+    <string name="vendor_artist_collaboration_9">Artist collaboration 9</string>
+    <string name="vendor_bright">Bright</string>
+    <string name="vendor_edm">EDM</string>
+    <string name="vendor_excited">Excited</string>
+    <string name="vendor_fps_1">FPS 1</string>
+    <string name="vendor_fps_2">FPS 2</string>
+    <string name="vendor_fps_3">FPS 3</string>
+    <string name="vendor_gaming">Gaming</string>
+    <string name="vendor_hard">Hard</string>
+    <string name="vendor_mellow">Mellow</string>
+    <string name="vendor_r_and_b_hip_hop">R&amp;B/Hip-hop</string>
+    <string name="vendor_relaxed">Relaxed</string>
+    <string name="vendor_speech">Speech</string>
+    <!-- Sony, Soundcore -->
+    <string name="vendor_heavy">Heavy</string>
+    <!-- Soundcore -->
+    <string name="vendor_bass_booster">Bass Booster</string>
+    <string name="vendor_bass_off">Bass Off</string>
+    <string name="vendor_bass_reducer">Bass Reducer</string>
+    <string name="vendor_bass_up">Bass Up</string>
+    <string name="vendor_flat">Flat</string>
+    <string name="vendor_hip_hop">Hip Hop</string>
+    <string name="vendor_original">Original</string>
+    <string name="vendor_rnb">RnB</string>
+    <string name="vendor_small_speakers">Small Speakers</string>
+    <string name="vendor_soundcore_signature">Soundcore Signature</string>
+    <string name="vendor_spoken_word">Spoken Word</string>
+    <string name="vendor_treble_booster">Treble Booster</string>
+    <string name="vendor_treble_reducer">Treble Reducer</string>
+    <string name="vendor_volume_booster">Volume Booster</string>
+    <!-- END EQ PRESET NAMES -->
 </resources>

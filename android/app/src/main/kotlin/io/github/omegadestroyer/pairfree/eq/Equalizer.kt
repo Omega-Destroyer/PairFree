@@ -153,6 +153,8 @@ class Equalizer(
     private val prefs: SharedPreferences,
     private val scope: CoroutineScope,
     private val send: (List<ByteArray>) -> Unit,
+    /** The name an imported profile gets when its file gives none, in the app's language. */
+    private val importedName: () -> String = { "Imported" },
 ) : EqActions {
     private val _state = MutableStateFlow<EqState?>(null)
     val state: StateFlow<EqState?> = _state.asStateFlow()
@@ -358,7 +360,7 @@ class Equalizer(
             val gains = json.getJSONArray("gains_db").let { a -> List(a.length()) { a.getInt(it).coerceIn(range) } }
             // One gain per band: a file with fewer or more would break the curve the screen draws.
             if (gains.size != hz.size) return false
-            val name = json.optString("name").trim().take(MAX_NAME).ifEmpty { "Imported" }
+            val name = json.optString("name").trim().take(MAX_NAME).ifEmpty { importedName().take(MAX_NAME) }
             val profile = EqProfile(EqProfile.USER + name, name, gains)
             val profiles = s.profiles.filter { it.id != profile.id } + profile
             _state.value = s.copy(profiles = profiles)

@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -15,6 +16,8 @@ import io.github.omegadestroyer.pairfree.ui.theme.StudioTheme
 
 class MainActivity : ComponentActivity() {
     private val vm: AppViewModel by viewModels()
+
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(Languages.wrap(newBase))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

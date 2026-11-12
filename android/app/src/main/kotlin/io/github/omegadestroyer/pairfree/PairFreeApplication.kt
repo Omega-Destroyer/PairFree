@@ -38,6 +38,8 @@ import java.util.TimeZone
 
 /** The app process; it holds the [Hub] the screens and the status notification share. */
 class PairFreeApplication : Application() {
+    override fun attachBaseContext(base: Context) = super.attachBaseContext(Languages.wrap(base))
+
     val hub: Hub by lazy { Hub(this) }
 }
 
@@ -87,7 +89,7 @@ class Hub(private val app: Application) {
     val audio = AudioLinks(app, adapter)
 
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
-    val equalizer = Equalizer(prefs, scope) { frames -> connection.sendEq(frames) }
+    val equalizer = Equalizer(prefs, scope, { frames -> connection.sendEq(frames) }, { app.getString(R.string.eq_imported_name) })
 
     /** Opens [equalizer] for the connected earbuds of any brand; the Sound tab and the home screen widget share it. */
     val eqOpener = EqOpener(connection, equalizer, scope)

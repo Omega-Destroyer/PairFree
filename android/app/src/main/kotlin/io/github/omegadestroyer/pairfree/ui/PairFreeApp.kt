@@ -97,6 +97,7 @@ private fun PermissionScreen(onResult: (Boolean) -> Unit) {
             Modifier.fillMaxWidth(),
             primary = true,
         )
+        LanguageButton(Modifier.fillMaxWidth())
         if (denied) {
             Text(stringResource(R.string.permission_denied), color = Studio.colors.secondaryText)
             StudioButton(
@@ -178,6 +179,7 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
                 }
             }
         }
+        LanguageButton(Modifier.fillMaxWidth())
         StudioButton(
             stringResource(R.string.bluetooth_settings),
             { context.startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS)) },

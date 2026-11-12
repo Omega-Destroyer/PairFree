@@ -3,6 +3,14 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// The languages built in: the English file, and each res/values-<code>/strings.xml as a language tag (ko, pt-BR), so a
+// new language file is offered in the app without a line of code (docs/TRANSLATING.md).
+val builtInLanguages = listOf("en") + file("src/main/res").listFiles().orEmpty()
+    .filter { it.isDirectory && it.name.startsWith("values-") && File(it, "strings.xml").exists() }
+    .map { it.name.removePrefix("values-") }
+    .map { q -> if (q.startsWith("b+")) q.removePrefix("b+").replace('+', '-') else q.replace("-r", "-") }
+    .sorted()
+
 android {
     namespace = "io.github.omegadestroyer.pairfree"
     compileSdk = 37
@@ -16,6 +24,7 @@ android {
         // x.y.z, and the code is x * 1,000,000 + y * 1,000 + z (CLAUDE.md, Versions; tools/test_version.py checks it).
         versionCode = 11002
         versionName = "0.11.2"
+        buildConfigField("String[]", "LANGUAGES", builtInLanguages.joinToString(prefix = "{", postfix = "}") { "\"$it\"" })
     }
 
     // The release key lives outside the repo. Its file and passwords come from
@@ -62,6 +71,25 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+
+    // Android 13 and later list the app's languages under the phone's per-app language setting, from the same folders
+    // (res/resources.properties names English as the language of res/values).
+    androidResources {
+        generateLocaleConfig = true
+    }
+
+    // A translation may lag behind the English file, or keep an entry the English file dropped: it still builds, and
+    // an entry it lacks shows in English (docs/TRANSLATING.md). tools/test_translations.py checks what must hold.
+    lint {
+        warning += listOf("MissingTranslation", "ExtraTranslation")
+    }
+
+    // Plain JVM tests of the app's own tables (the names in the language file); nothing here needs a device.
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.all { it.useJUnitPlatform() }
     }
 
     // The build tools add an encrypted list of dependencies to the APK's signing block for Google
@@ -85,4 +113,7 @@ dependencies {
     // Switches Android's hidden-API protection off for BluetoothSocket only, to open the AirPods' channel (Apache-2.0; docs/apple/PROTOCOL.md section 7).
     implementation(libs.hiddenapibypass)
     debugImplementation(libs.compose.ui.tooling)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }

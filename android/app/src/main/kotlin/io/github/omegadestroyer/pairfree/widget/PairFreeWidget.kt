@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.widget
 
+import io.github.omegadestroyer.pairfree.Languages
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -109,6 +110,7 @@ class PairFreeWidget : AppWidgetProvider() {
         }
 
         fun refresh(context: Context, ids: IntArray) {
+            @Suppress("NAME_SHADOWING") val context = Languages.wrap(context)
             val manager = AppWidgetManager.getInstance(context)
             for (id in ids) manager.updateAppWidget(id, build(context, id))
         }
@@ -161,6 +163,8 @@ class PairFreeWidget : AppWidgetProvider() {
             views.setViewVisibility(R.id.widget_row_1, View.GONE)
             views.setViewVisibility(R.id.widget_row_2, View.GONE)
             views.setViewVisibility(R.id.widget_setup, View.VISIBLE)
+            // Set here, not only in the layout: the home screen reads the layout's text in the phone's language, not the app's.
+            views.setTextViewText(R.id.widget_setup, context.getString(R.string.widget_set_up))
             val configure = Intent(context, WidgetConfigActivity::class.java).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
             views.setOnClickPendingIntent(R.id.widget_root, PendingIntent.getActivity(context, id, configure, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
             return views

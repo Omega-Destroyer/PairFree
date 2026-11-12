@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.status
 
+import io.github.omegadestroyer.pairfree.Languages
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -75,6 +76,8 @@ class StatusService : Service() {
             }
         }
     }
+
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(Languages.wrap(newBase))
 
     override fun onBind(intent: Intent?): IBinder? = null
 

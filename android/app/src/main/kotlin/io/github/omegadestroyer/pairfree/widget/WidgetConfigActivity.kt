@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.widget
 
+import io.github.omegadestroyer.pairfree.Languages
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -56,6 +57,8 @@ import io.github.omegadestroyer.pairfree.ui.theme.StudioTheme
  */
 class WidgetConfigActivity : ComponentActivity() {
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(Languages.wrap(newBase))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

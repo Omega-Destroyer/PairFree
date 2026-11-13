@@ -122,6 +122,9 @@ def device(r):
         "eq_bands": BANDS.get(name, DEFAULT_BANDS) if on(r, "customizesoundEffects") else None,
         "ear_return": name in EAR_RETURN,
         "volume_limit": name in EAR_RETURN,
+        # 1MORE's app 2.1.3: the music and sleep modes (HeadsetActivity: comfortableMelody), and the Q50's voice enhancement switch (ShortcutActionsActivity hides it on any other name).
+        "sleep_mode": on(r, "comfortableMelody"),
+        "voice_enhancement": name == "1MORE Q50",
         "lights": name in LIGHTS,
         "pictures": pictures(r),
         "reports": [],

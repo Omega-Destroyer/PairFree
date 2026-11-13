@@ -32,6 +32,10 @@ public data class OneMoreModel(
     val volumeLimit: Boolean,
     /** The light's mode and colour (1MORE's app: the NANO alone). */
     val lights: Boolean = false,
+    /** The music and sleep modes (HeadsetConfig comfortableMelody; 1MORE's app 2.1.3, HeadsetActivity). */
+    val sleepMode: Boolean = false,
+    /** The voice enhancement switch, which 1MORE's app shows on the Q50 alone (ShortcutActionsActivity). */
+    val voiceEnhancement: Boolean = false,
     val eqPresets: List<String> = emptyList(),
     val eqBands: OneMoreEqBands? = null,
 )

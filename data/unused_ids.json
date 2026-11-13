@@ -591,20 +591,16 @@
   "QcyItem.VOLUME": "gap-audit 2026-11-12: in the vendor app's table, not built yet"
  },
  "onemore": {
-  "OneMoreCommand.DELETE_MUSIC": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.GET_AI_LICENSE": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.GET_EQ_MODE": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.GET_MUSIC_LIST": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.GET_MUSIC_STATUS": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.GET_VOCAL_ENHANCEMENT": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.PLAY_CONTROL": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.SET_EQ_MODE": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.SET_PLAY_TIME": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.SET_VOCAL_ENHANCEMENT": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.SET_VOLUME": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.TRANSFER_DATA": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.TRANSFER_END": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "OneMoreCommand.TRANSFER_START": "gap-audit 2026-11-12: in the vendor app's table, not built yet"
+  "OneMoreCommand.DELETE_MUSIC": "never sent or private: music upload, delete and the AI licence (hard rules: no uploads; no licence or identity data); checked: CmdKt.sendSppTransfer*, DispatcherKt typeDelMusic/typeGetAiLicense",
+  "OneMoreCommand.GET_AI_LICENSE": "never sent or private: music upload, delete and the AI licence (hard rules: no uploads; no licence or identity data); checked: CmdKt.sendSppTransfer*, DispatcherKt typeDelMusic/typeGetAiLicense",
+  "OneMoreCommand.GET_MUSIC_LIST": "blocked: the soothing music player (SoothingMusicActivity, SoothingMusicActivity2, SoothingMusicActivity22) plays music the app uploads to the earbuds with the transfer commands, which are never sent (owner's rule: no music delete or upload), so there is nothing on the earbuds to play, list, set a timer for or set the volume of; checked: SoothingMusicActivity*, SetTimeActivity, CmdKt, DispatcherKt (result bytes only, no read of the timer)",
+  "OneMoreCommand.GET_MUSIC_STATUS": "blocked: the soothing music player (SoothingMusicActivity, SoothingMusicActivity2, SoothingMusicActivity22) plays music the app uploads to the earbuds with the transfer commands, which are never sent (owner's rule: no music delete or upload), so there is nothing on the earbuds to play, list, set a timer for or set the volume of; checked: SoothingMusicActivity*, SetTimeActivity, CmdKt, DispatcherKt (result bytes only, no read of the timer)",
+  "OneMoreCommand.PLAY_CONTROL": "blocked: the soothing music player (SoothingMusicActivity, SoothingMusicActivity2, SoothingMusicActivity22) plays music the app uploads to the earbuds with the transfer commands, which are never sent (owner's rule: no music delete or upload), so there is nothing on the earbuds to play, list, set a timer for or set the volume of; checked: SoothingMusicActivity*, SetTimeActivity, CmdKt, DispatcherKt (result bytes only, no read of the timer)",
+  "OneMoreCommand.SET_PLAY_TIME": "blocked: the soothing music player (SoothingMusicActivity, SoothingMusicActivity2, SoothingMusicActivity22) plays music the app uploads to the earbuds with the transfer commands, which are never sent (owner's rule: no music delete or upload), so there is nothing on the earbuds to play, list, set a timer for or set the volume of; checked: SoothingMusicActivity*, SetTimeActivity, CmdKt, DispatcherKt (result bytes only, no read of the timer)",
+  "OneMoreCommand.SET_VOLUME": "blocked: the soothing music player (SoothingMusicActivity, SoothingMusicActivity2, SoothingMusicActivity22) plays music the app uploads to the earbuds with the transfer commands, which are never sent (owner's rule: no music delete or upload), so there is nothing on the earbuds to play, list, set a timer for or set the volume of; checked: SoothingMusicActivity*, SetTimeActivity, CmdKt, DispatcherKt (result bytes only, no read of the timer)",
+  "OneMoreCommand.TRANSFER_DATA": "never sent or private: music upload, delete and the AI licence (hard rules: no uploads; no licence or identity data); checked: CmdKt.sendSppTransfer*, DispatcherKt typeDelMusic/typeGetAiLicense",
+  "OneMoreCommand.TRANSFER_END": "never sent or private: music upload, delete and the AI licence (hard rules: no uploads; no licence or identity data); checked: CmdKt.sendSppTransfer*, DispatcherKt typeDelMusic/typeGetAiLicense",
+  "OneMoreCommand.TRANSFER_START": "never sent or private: music upload, delete and the AI licence (hard rules: no uploads; no licence or identity data); checked: CmdKt.sendSppTransfer*, DispatcherKt typeDelMusic/typeGetAiLicense"
  },
  "soundcore": {
   "SoundcoreCommand.AUTO_SWITCH_ONCE_ASLEEP": "gap-audit 2026-11-12: in the vendor app's table, not built yet",

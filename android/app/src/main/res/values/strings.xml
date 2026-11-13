@@ -849,6 +849,10 @@
     <string name="setting_ef_extra_usb_charge">USB charging</string>
     <string name="setting_ef_extra_ambient_voice">Ambient voice</string>
     <string name="setting_ef_extra_call_env">Call environment</string>
+    <string name="setting_sound_mode">Sound mode</string>
+    <string name="setting_sound_mode_music">Music</string>
+    <string name="setting_sound_mode_sleep">Sleep</string>
+    <string name="setting_voice_enhancement">Voice enhancement</string>
     <string name="setting_ef_extra_voice_tip">Voice prompts</string>
     <string name="setting_ef_codec_in_use">Codec in use</string>
     <string name="setting_auto_volume_optimizer">Auto volume optimizer</string>

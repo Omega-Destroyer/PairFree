@@ -11,7 +11,7 @@ import io.github.omegadestroyer.pairfree.protocol.Value
 /**
  * Melomania Connect 2.6.0's custom GAIA v3 API for the A100, M100, P100 and X100 families (docs/cambridge/PROTOCOL.md section 9). A row shows once its
  * read answered, as the app does; the reads that came after API level 1.9, 1.14 and 1.17 wait for that level. Not sent: the Bluetooth addresses (never
- * read), the device list's connect and disconnect (its reply layout is not clear from the app) and flight mode (no screen of the app uses it). Which rows a
+ * read) and flight mode (no screen of the app uses it). Which rows a
  * model gets follows the app's own per-model table ([ConnectConfig]). The EQ is Qualcomm's music processing feature (vendor `001D`, feature 5): the earbuds hold
  * one user set of bands, which the app fills with a preset's gains or the user's.
  */
@@ -43,6 +43,12 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
     private var userSet = false
     private var balance: Int? = null
     private val caseGestures = mutableMapOf<String, Boolean>()
+    private var touchpads = 0
+    private var touchGestures: Set<Int> = emptySet()
+    private val touchConfigs = mutableMapOf<Int, List<Int>>()
+    private val touchPending = mutableMapOf<Int, MutableList<Int>>()
+    private val peers = linkedMapOf<Int, Pair<String, Int>>()
+    private var peersFresh = false
 
     private fun read(feature: Int, command: Int, vararg payload: Int, qtil: Boolean = false): ByteArray {
         val packet = ConnectPacket(feature, CambridgeConnectWire.TYPE_COMMAND, command, payload.map(Int::toByte).toByteArray(),
@@ -72,6 +78,10 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
             add(read(CambridgeConnectWire.FEATURE_GESTURES, CambridgeConnectGestureCmd.GET_SUPPORTED_GESTURE_CONTROLS))
             add(read(CambridgeConnectWire.FEATURE_GESTURES, CambridgeConnectGestureCmd.GET_GESTURE_CONTROLS_ON_OFF))
         }
+        if (config.touch) {
+            add(read(CambridgeConnectWire.FEATURE_GESTURE_CONFIG, CambridgeConnectGestureConfig.GET_TOUCHPADS, qtil = true))
+            add(read(CambridgeConnectWire.FEATURE_GESTURE_CONFIG, CambridgeConnectGestureConfig.GET_GESTURES, qtil = true))
+        }
         if (config.eqPresets.isNotEmpty()) {
             add(read(CambridgeConnectWire.FEATURE_MUSIC, CambridgeConnectMusic.GET_BAND_COUNT, qtil = true))
             add(read(CambridgeConnectWire.FEATURE_MUSIC, CambridgeConnectMusic.GET_SET, qtil = true))
@@ -97,6 +107,10 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
                     if (packet.type == CambridgeConnectWire.TYPE_NOTIFICATION) musicChanged(packet.command)
                     else if (packet.isResponse && key in sent) { answered += key; music(packet.command, p) }
                 }
+                if (packet.feature == CambridgeConnectWire.FEATURE_GESTURE_CONFIG) {
+                    if (packet.type == CambridgeConnectWire.TYPE_NOTIFICATION) touchChanged(packet.command, p)
+                    else if (packet.isResponse && key in sent) { answered += key; touch(packet.command, p) }
+                }
                 continue
             }
             if (!packet.isResponse || key !in sent) continue
@@ -117,6 +131,11 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
                     CambridgeConnectMisc.GET_AUTO_POWER_DOWN_TIMEOUT, CambridgeConnectMisc.SET_AUTO_POWER_DOWN_TIMEOUT ->
                         if (p.size >= 3) autoOff = p[0] * 3600 + p[1] * 60 + p[2]
                     CambridgeConnectMisc.GET_FIND_HEADPHONES_ALERT, CambridgeConnectMisc.SET_FIND_HEADPHONES_ALERT -> on()?.let { flags["ca_find_alert"] = it }
+                    CambridgeConnectMisc.GET_DEVICES -> if (p.size >= 26) {
+                        if (peersFresh) { peers.clear(); peersFresh = false }
+                        val name = String(p.subList(1, 21).takeWhile { it != 0 }.map { it.toByte() }.toByteArray(), Charsets.UTF_8)
+                        peers[p[0]] = name to p[25]
+                    }
                     CambridgeConnectMisc.GET_LEFT_RIGHT_BALANCE, CambridgeConnectMisc.SET_LEFT_RIGHT_BALANCE -> if (p.size >= 2 && p[1] in 0..100) {
                         balance = if (p[0] != 0) -p[1] else p[1]
                     }
@@ -144,7 +163,9 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
                     if (packet.command == CambridgeConnectGestureCmd.GET_SUPPORTED_GESTURE_CONTROLS) supportedGestures = mask else gestures = mask
                 }
             }
-            replies = replies + ("${packet.feature}.${packet.command}" to packet.payload.copyOf(minOf(packet.payload.size, 16)))
+            // The device list holds other devices' names and addresses: it never reaches the report.
+            if (!(packet.feature == CambridgeConnectWire.FEATURE_MISC && packet.command == CambridgeConnectMisc.GET_DEVICES))
+                replies = replies + ("${packet.feature}.${packet.command}" to packet.payload.copyOf(minOf(packet.payload.size, 16)))
         }
         return answered
     }
@@ -169,6 +190,52 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
                 }
             }
         }
+    }
+
+    private fun readTouch(gesture: Int, offset: Int = 0) {
+        readBacks = readBacks + read(CambridgeConnectWire.FEATURE_GESTURE_CONFIG, CambridgeConnectGestureConfig.GET_CONFIG, gesture, offset, qtil = true)
+    }
+
+    /** One reply of the gesture configuration feature (docs/cambridge/PROTOCOL.md section 9). */
+    private fun touch(command: Int, p: List<Int>) {
+        when (command) {
+            CambridgeConnectGestureConfig.GET_TOUCHPADS -> p.getOrNull(0)?.let { touchpads = it }
+            CambridgeConnectGestureConfig.GET_GESTURES -> {
+                touchGestures = TOUCH_GESTURES.filter { g -> p.getOrNull(g.id / 8)?.let { it and (1 shl (g.id % 8)) != 0 } == true }.map { it.id }.toSet()
+                touchGestures.forEach { readTouch(it) }
+            }
+            CambridgeConnectGestureConfig.GET_CONFIG -> if (p.isNotEmpty()) {
+                val gesture = p[0] and 0x7f
+                val more = p[0] and 0x80 != 0
+                val list = touchPending.getOrPut(gesture) { mutableListOf() }
+                var i = 1
+                while (i + 1 < p.size) { list += (p[i] shl 8) or p[i + 1]; i += 2 }
+                if (more) readTouch(gesture, list.size) else touchConfigs[gesture] = touchPending.remove(gesture).orEmpty().toList()
+            }
+        }
+    }
+
+    private fun touchChanged(command: Int, p: List<Int>) {
+        if (command == CambridgeConnectGestureConfig.NOTIFY_CHANGED) p.getOrNull(0)?.let { touchPending.remove(it and 0x7f); readTouch(it and 0x7f) }
+        if (command == CambridgeConnectGestureConfig.NOTIFY_RESET) touchGestures.forEach { touchPending.remove(it); readTouch(it) }
+    }
+
+    /** What a touchpad does for [gesture]: the action of its configuration in the contexts the app's assign screen sets. */
+    private fun touchAction(gesture: Int, touchpad: Int): String? {
+        val configs = touchConfigs[gesture] ?: return null
+        val mine = configs.filter { (it shr 14) == touchpad && ((it shr 7) and 0x7f) in ASSIGN_CONTEXTS }
+        if (mine.isEmpty()) return "none"
+        val action = mine.first() and 0x7f
+        return TOUCH_ACTIONS.entries.firstOrNull { it.value == action }?.key
+    }
+
+    /** [gesture]'s configurations with [touchpad]'s replaced as the app's assign screen does (the touchpad's own and the single-touchpad entries go, the action's contexts come). */
+    private fun touchConfigsWith(gesture: Int, touchpad: Int, option: String): List<Int>? {
+        val existing = touchConfigs[gesture] ?: return null
+        val action = TOUCH_ACTIONS[option] ?: return null
+        val kept = existing.filter { (it shr 14) != touchpad && (it shr 14) != CambridgeConnectTouchpad.SINGLE }
+        val added = if (action < 0) emptyList() else touchContexts(action).map { (touchpad shl 14) or (it shl 7) or action }
+        return (kept + added).takeIf { it.size <= MAX_TOUCH_CONFIGS }
     }
 
     /** The earbuds changed their set or a band on their own: ask again. */
@@ -208,6 +275,13 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
         if (config.loudness && atLeast(CambridgeConnectApi.LOUDNESS_MINOR)) add(read(CambridgeConnectWire.FEATURE_MISC, CambridgeConnectMisc.GET_LOUDNESS))
         if (config.sideTone && atLeast(CambridgeConnectApi.SIDE_TONE_MINOR)) add(read(CambridgeConnectWire.FEATURE_MISC, CambridgeConnectMisc.GET_SIDE_TONE))
         if (config.spatial) add(read(CambridgeConnectWire.FEATURE_MISC, CambridgeConnectMisc.GET_SPATIAL_AUDIO))
+        if (config.connected && atLeast(CambridgeConnectApi.DEVICES_MINOR)) add(readPeers())
+    }
+
+    /** One read of the device list; the earbuds answer with a frame for each device, so the next reply starts the list afresh. */
+    private fun readPeers(): ByteArray {
+        peersFresh = true
+        return read(CambridgeConnectWire.FEATURE_MISC, CambridgeConnectMisc.GET_DEVICES)
     }
 
     private fun battery(p: List<Int>) {
@@ -238,17 +312,41 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
             GESTURES.filter { supportedGestures and (1 shl it.value) != 0 }.map { Setting.Toggle("ca_gesture_${it.key}", mask and (1 shl it.value) != 0) }
         }.orEmpty()
         if (buttons.isNotEmpty()) add(SettingGroup("touch_buttons", SettingTab.CONTROLS, buttons))
+        if (touchpads == 2) {
+            val rows = TOUCH_GESTURES.filter { it.id in touchGestures && it.id in touchConfigs }.flatMap { g ->
+                listOf("left" to CambridgeConnectTouchpad.LEFT, "right" to CambridgeConnectTouchpad.RIGHT).map { (side, pad) ->
+                    Setting.Choice("ca_tp_${g.key}_$side", touchAction(g.id, pad), TOUCH_ACTIONS.keys.toList())
+                }
+            }
+            if (rows.isNotEmpty()) add(SettingGroup("ca_touch", SettingTab.CONTROLS, rows))
+        }
         if (gestures != null && config.touch) add(SettingGroup("ca_case", SettingTab.CONTROLS, CASE_GESTURES.map { g ->
             Setting.Choice("ca_case_${g.key}", caseGestures["ca_case_${g.key}"]?.let { if (it) "on" else "off" }, listOf("on", "off"))
         }))
         val device = buildList<Setting> {
             FLAG_ORDER.filter { it in flags && it !in SOUND_FLAGS }.forEach { add(Setting.Toggle(it, flags.getValue(it))) }
+            val others = peerOptions(connected = false)
+            val live = peerOptions(connected = true)
+            if (others.isNotEmpty()) add(Setting.Choice("ca_peer_connect", null, others.keys.toList()))
+            if (live.isNotEmpty()) add(Setting.Choice("ca_peer_disconnect", null, live.keys.toList()))
             language?.let { l -> LANGUAGES.entries.firstOrNull { it.value == l }?.let { add(Setting.Choice("ca_language", it.key, LANGUAGES.keys.toList())) } }
             autoOff?.let { s -> add(Setting.Choice("ca_auto_off", AUTO_OFF.entries.firstOrNull { it.value == s }?.key, AUTO_OFF.keys.toList())) }
             val enabled = enabledCodecs
             if (enabled != null) availableCodecs.orEmpty().filter { it in CODEC_NAMES }.forEach { add(Setting.Toggle("ca_codec_${CODEC_NAMES.getValue(it)}", it in enabled)) }
         }
         if (device.isNotEmpty()) add(SettingGroup("ca_connection", SettingTab.DEVICE, device))
+    }
+
+    /** The names (made unique) of the paired devices that are not connected, or that are, with their ids. */
+    private fun peerOptions(connected: Boolean): Map<String, Int> {
+        val out = linkedMapOf<String, Int>()
+        for ((id, peer) in peers) {
+            if ((peer.second != CambridgeConnectPeer.PAIRED) != connected) continue
+            var name = peer.first.ifBlank { "#$id" }
+            if (name in out) name = "$name (#$id)"
+            out[name] = id
+        }
+        return out
     }
 
     /** The messages for one of the rows above, or null when the row is not offered. */
@@ -261,6 +359,11 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
             ConnectPacket(feature, CambridgeConnectWire.TYPE_COMMAND, command, payload.map(Int::toByte).toByteArray()).bytes()
         val misc = CambridgeConnectWire.FEATURE_MISC
         when {
+            row is Setting.Choice && change is SettingChange.Choice && (key == "ca_peer_connect" || key == "ca_peer_disconnect") -> {
+                val id = peerOptions(connected = key == "ca_peer_disconnect")[change.option] ?: return null
+                out = frame(misc, if (key == "ca_peer_connect") CambridgeConnectMisc.CONNECT_DEVICE else CambridgeConnectMisc.DISCONNECT_DEVICE, id)
+                back = readPeers()
+            }
             row is Setting.Choice && change is SettingChange.Choice && change.option in row.options -> when (key) {
                 "ca_noise" -> {
                     out = frame(misc, CambridgeConnectMisc.SET_AMBIENT_NOISE_MODE, NOISE.getValue(change.option))
@@ -275,7 +378,15 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
                     out = frame(misc, CambridgeConnectMisc.SET_AUTO_POWER_DOWN_TIMEOUT, s / 3600, s / 60 % 60, s % 60)
                     back = read(misc, CambridgeConnectMisc.GET_AUTO_POWER_DOWN_TIMEOUT)
                 }
-                else -> {
+                else -> if (key.startsWith("ca_tp_")) {
+                    val g = TOUCH_GESTURES.firstOrNull { key.startsWith("ca_tp_${it.key}_") } ?: return null
+                    val pad = if (key.endsWith("_left")) CambridgeConnectTouchpad.LEFT else CambridgeConnectTouchpad.RIGHT
+                    val next = touchConfigsWith(g.id, pad, change.option) ?: return null
+                    touchConfigs[g.id] = next
+                    out = ConnectPacket(CambridgeConnectWire.FEATURE_GESTURE_CONFIG, CambridgeConnectWire.TYPE_COMMAND, CambridgeConnectGestureConfig.SET_CONFIG,
+                        (listOf(g.id, 0) + next.flatMap { listOf(it shr 8, it and 0xff) }).map(Int::toByte).toByteArray(), CambridgeConnectWire.QTIL_VENDOR).bytes()
+                    back = read(CambridgeConnectWire.FEATURE_GESTURE_CONFIG, CambridgeConnectGestureConfig.GET_CONFIG, g.id, 0, qtil = true)
+                } else {
                     val g = CASE_GESTURES.firstOrNull { "ca_case_${it.key}" == key } ?: return null
                     val on = change.option == "on"
                     caseGestures[key] = on
@@ -341,6 +452,9 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
                 CambridgeConnectMisc.SET_LANGUAGE -> n.size == 1 && n[0] in LANGUAGES.values
                 CambridgeConnectMisc.SET_AUTO_POWER_DOWN_TIMEOUT -> n.size == 3 && (n[0] * 3600 + n[1] * 60 + n[2]) in AUTO_OFF.values
                 CambridgeConnectMisc.SET_AMBIENT_NOISE_TOGGLE_OPTIONS -> n.size == 3 && n.all { it <= 1 } && n.any { it == 1 }
+                CambridgeConnectMisc.GET_DEVICES -> n.isEmpty()
+                CambridgeConnectMisc.CONNECT_DEVICE -> n.size == 1 && n[0] in peers.filterValues { it.second == CambridgeConnectPeer.PAIRED }.keys
+                CambridgeConnectMisc.DISCONNECT_DEVICE -> n.size == 1 && n[0] in peers.filterValues { it.second != CambridgeConnectPeer.PAIRED }.keys
                 CambridgeConnectMisc.GET_LEFT_RIGHT_BALANCE -> n.isEmpty()
                 CambridgeConnectMisc.SET_LEFT_RIGHT_BALANCE -> n.size == 2 && n[0] <= 1 && n[1] <= 100
                 CambridgeConnectMisc.SET_FIND_HEADPHONES_ALERT, CambridgeConnectMisc.SET_LOUDNESS, CambridgeConnectMisc.SET_SIDE_TONE -> n.size == 1 && n[0] <= 1
@@ -371,8 +485,20 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
 
     /** The music processing frames [eqCurve] and the reads build, from Qualcomm's vendor, and no other of its features. */
     private fun allowedQtil(p: ConnectPacket): Boolean {
-        if (p.feature != CambridgeConnectWire.FEATURE_MUSIC) return false
         val n = p.payload.map { it.toInt() and 0xff }
+        if (p.feature == CambridgeConnectWire.FEATURE_GESTURE_CONFIG) return when (p.command) {
+            CambridgeConnectGestureConfig.GET_TOUCHPADS, CambridgeConnectGestureConfig.GET_GESTURES -> n.isEmpty()
+            CambridgeConnectGestureConfig.GET_CONFIG -> n.size == 2 && n[0] in touchGestures && n[1] <= MAX_TOUCH_CONFIGS
+            CambridgeConnectGestureConfig.SET_CONFIG -> n.size in 2..(2 + 2 * MAX_TOUCH_CONFIGS) && n.size % 2 == 0 && n[0] in touchGestures && n[1] == 0 &&
+                (2 until n.size step 2).all { i ->
+                    val v = (n[i] shl 8) or n[i + 1]
+                    v in touchConfigs[n[0]].orEmpty() || ((v shr 14) in listOf(CambridgeConnectTouchpad.LEFT, CambridgeConnectTouchpad.RIGHT) &&
+                        ((v shr 7) and 0x7f) in listOf(CambridgeConnectTouchContext.PASSTHROUGH_GLOBAL, CambridgeConnectTouchContext.MEDIA_PLAYER_STREAMING, CambridgeConnectTouchContext.MEDIA_PLAYER_IDLE) &&
+                        (v and 0x7f) in TOUCH_ACTIONS.values.filter { it >= 0 })
+                }
+            else -> false
+        }
+        if (p.feature != CambridgeConnectWire.FEATURE_MUSIC) return false
         return when (p.command) {
             CambridgeConnectMusic.GET_BAND_COUNT, CambridgeConnectMusic.GET_SET -> n.isEmpty()
             CambridgeConnectMusic.GET_BAND_CONFIG -> bandCount > 0 && n == listOf(0, bandCount - 1)
@@ -387,6 +513,8 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
     }
 
     private class Gesture(val key: String, val value: Int)
+
+    private class TouchGesture(val key: String, val id: Int)
 
     private companion object {
         val NOISE = linkedMapOf(
@@ -426,6 +554,30 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
             Gesture("reset", CambridgeConnectGesture.CASE_FACTORY_RESET),
         )
         const val MAX_BANDS = 16
+        const val MAX_TOUCH_CONFIGS = 24
+
+        /** The gestures the app's assign screen sets, by the names of its rows ("swipe up" is what the app calls a triple tap). */
+        val TOUCH_GESTURES = listOf(
+            TouchGesture("tap", CambridgeConnectTouchGesture.TAP), TouchGesture("double_tap", CambridgeConnectTouchGesture.DOUBLE_TAP),
+            TouchGesture("triple_tap", CambridgeConnectTouchGesture.SWIPE_UP), TouchGesture("long_press", CambridgeConnectTouchGesture.LONG_PRESS),
+        )
+
+        /** What the assign screen offers; -1 is "nothing". */
+        val TOUCH_ACTIONS = linkedMapOf(
+            "play_pause" to CambridgeConnectTouchAction.MEDIA_PLAY_PAUSE_TOGGLE, "next" to CambridgeConnectTouchAction.MEDIA_NEXT_TRACK,
+            "previous" to CambridgeConnectTouchAction.MEDIA_PREVIOUS_TRACK, "volume_up" to CambridgeConnectTouchAction.VOLUME_UP,
+            "volume_down" to CambridgeConnectTouchAction.VOLUME_DOWN, "anc_mode" to CambridgeConnectTouchAction.ANC_NEXT_MODE,
+            "assistant" to CambridgeConnectTouchAction.VA_PTT, "none" to -1,
+        )
+        val ASSIGN_CONTEXTS = listOf(CambridgeConnectTouchContext.PASSTHROUGH_GLOBAL, CambridgeConnectTouchContext.MEDIA_PLAYER_IDLE, CambridgeConnectTouchContext.MEDIA_PLAYER_STREAMING)
+
+        /** The contexts the app writes an action for: next and previous while streaming, play/pause and the assistant when idle or streaming, the rest everywhere. */
+        fun touchContexts(action: Int): List<Int> = when (action) {
+            CambridgeConnectTouchAction.MEDIA_NEXT_TRACK, CambridgeConnectTouchAction.MEDIA_PREVIOUS_TRACK -> listOf(CambridgeConnectTouchContext.MEDIA_PLAYER_STREAMING)
+            CambridgeConnectTouchAction.VA_PTT, CambridgeConnectTouchAction.MEDIA_PLAY_PAUSE_TOGGLE ->
+                listOf(CambridgeConnectTouchContext.MEDIA_PLAYER_IDLE, CambridgeConnectTouchContext.MEDIA_PLAYER_STREAMING)
+            else -> listOf(CambridgeConnectTouchContext.PASSTHROUGH_GLOBAL)
+        }
         val SIMPLE = mapOf(
             "ca_gaming" to Triple(CambridgeConnectWire.FEATURE_MODES, CambridgeConnectModes.SET_GAMING_MODE, CambridgeConnectModes.GET_GAMING_MODE),
             "ca_proximity" to Triple(CambridgeConnectWire.FEATURE_MODES, CambridgeConnectModes.SET_PROXIMITY_MODE, CambridgeConnectModes.GET_PROXIMITY_MODE),

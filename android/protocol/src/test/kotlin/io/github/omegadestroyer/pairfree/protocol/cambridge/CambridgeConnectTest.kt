@@ -52,7 +52,7 @@ class CambridgeConnectTest {
         val s2 = CambridgeConnectSession(model)
         s2.start()
         s2.feed(response(0, CambridgeConnectMisc.GET_API_LEVEL, "0111"))
-        assertEquals(2, s2.takeReadBacks().size) // the A100 has toggle options and loudness, no side tone or spatial audio
+        assertEquals(3, s2.takeReadBacks().size) // the A100 has toggle options, loudness and the device list, no side tone or spatial audio
         s2.feed(response(0, CambridgeConnectMisc.GET_BATTERY_STATE, "00000000" + "32" + "28" + "64" + "0000"))
         assertEquals(Value.Number(0x32), s2.state.values[Command.BATTERY_LEFT])
         assertEquals(Value.Number(0x28), s2.state.values[Command.BATTERY_RIGHT])
@@ -180,5 +180,67 @@ class CambridgeConnectTest {
         assertEquals(12, p100.start().size) // no mono, sleep, codec or touch reads; the EQ's two
         assertEquals(false, CambridgeModels.fromName("Melomania X100")!!.config!!.eqCustom)
         assertEquals(true, CambridgeModels.fromName("Melomania A100 SE")!!.config!!.spatial)
+    }
+
+    private fun touchReply(command: Int, payload: String): ByteArray =
+        ConnectPacket(CambridgeConnectWire.FEATURE_GESTURE_CONFIG, CambridgeConnectWire.TYPE_RESPONSE, command, payload.hexBytes(), CambridgeConnectWire.QTIL_VENDOR).bytes()
+
+    @Test fun touchActionsAreQualcommsGestureConfigurationAssignedAsTheAppDoes() {
+        val s = CambridgeConnectSession(model)
+        val start = s.start()
+        // Vendor 001D, feature 11: word 0x1600 (touchpads) and 0x1601 (gestures).
+        assertTrue(start.any { it.contentEquals("ff030000001d1600".hexBytes()) })
+        s.feed(touchReply(CambridgeConnectGestureConfig.GET_TOUCHPADS, "02"))
+        s.feed(touchReply(CambridgeConnectGestureConfig.GET_GESTURES, "63")) // bits 0, 1, 5, 6: tap, swipe up, double tap, long press
+        val asks = s.takeReadBacks()
+        assertEquals(4, asks.size)
+        assertArrayEquals("ff030002001d160400 00".replace(" ", "").hexBytes(), asks[0])
+        // A configuration is touchpad << 14 | context << 7 | action; touchpad 2 is the left, 1 the right. Tap: left plays and pauses when idle or streaming, right skips while streaming.
+        fun cfg(pad: Int, ctx: Int, action: Int) = "%04x".format((pad shl 14) or (ctx shl 7) or action)
+        s.feed(touchReply(CambridgeConnectGestureConfig.GET_CONFIG, "00" + cfg(2, 2, 0) + cfg(2, 1, 0) + cfg(1, 1, 2)))
+        s.feed(touchReply(CambridgeConnectGestureConfig.GET_CONFIG, "05"))
+        s.feed(touchReply(CambridgeConnectGestureConfig.GET_CONFIG, "01"))
+        s.feed(touchReply(CambridgeConnectGestureConfig.GET_CONFIG, "06"))
+        val rows = s.groups.single { it.key == "ca_touch" }.settings.associateBy { it.key }
+        assertEquals("play_pause", (rows["ca_tp_tap_left"] as Setting.Choice).value)
+        assertEquals("next", (rows["ca_tp_tap_right"] as Setting.Choice).value)
+        assertEquals("none", (rows["ca_tp_long_press_left"] as Setting.Choice).value)
+        // Volume up on the left: the single-touchpad entries and the left's own go, the app's context for the action comes, the right's stay.
+        val frame = s.change(SettingChange.Choice("ca_tp_tap_left", "volume_up"))!!.single()
+        assertArrayEquals(("ff030006001d1605" + "0000" + cfg(1, 1, 2) + cfg(2, 0, 16)).hexBytes(), frame)
+        assertTrue(s.allowed(frame))
+        assertEquals("volume_up", (s.groups.single { it.key == "ca_touch" }.settings.first { it.key == "ca_tp_tap_left" } as Setting.Choice).value)
+        // Nothing for the left: its configurations all go.
+        val none = s.change(SettingChange.Choice("ca_tp_tap_left", "none"))!!.single()
+        assertArrayEquals(("ff030004001d1605" + "0000" + cfg(1, 1, 2)).hexBytes(), none)
+        // A reset, a gesture the earbuds do not list and an action the app does not offer are refused.
+        assertFalse(s.allowed(ConnectPacket(11, 0, CambridgeConnectGestureConfig.RESET, byteArrayOf(), CambridgeConnectWire.QTIL_VENDOR).bytes()))
+        assertFalse(s.allowed(ConnectPacket(11, 0, CambridgeConnectGestureConfig.SET_CONFIG, "0200".hexBytes(), CambridgeConnectWire.QTIL_VENDOR).bytes()))
+        assertFalse(s.allowed(ConnectPacket(11, 0, CambridgeConnectGestureConfig.SET_CONFIG, "0000${cfg(2, 0, 9)}".hexBytes(), CambridgeConnectWire.QTIL_VENDOR).bytes()))
+    }
+
+    @Test fun pairedDevicesListOneFramePerDeviceAndNeverReachTheReport() {
+        val s = CambridgeConnectSession(model)
+        s.start()
+        s.feed(response(0, CambridgeConnectMisc.GET_API_LEVEL, "0111"))
+        val reads = s.takeReadBacks()
+        assertTrue(reads.any { it.contentEquals("ff0300000b9e0016".hexBytes()) }, "the A100 lists devices from API 1.15")
+        fun device(id: Int, name: String, status: Int): String =
+            "%02x".format(id) + name.toByteArray().joinToString("") { "%02x".format(it) }.padEnd(40, '0') + "01020304" + "%02x".format(status)
+        s.feed(response(0, CambridgeConnectMisc.GET_DEVICES, device(0, "Phone", CambridgeConnectPeer.CONNECTED_PRIMARY)))
+        s.feed(response(0, CambridgeConnectMisc.GET_DEVICES, device(1, "Laptop", CambridgeConnectPeer.PAIRED)))
+        val rows = s.groups.flatMap { it.settings }.associateBy { it.key }
+        assertEquals(listOf("Laptop"), (rows["ca_peer_connect"] as Setting.Choice).options)
+        assertEquals(listOf("Phone"), (rows["ca_peer_disconnect"] as Setting.Choice).options)
+        val connect = s.change(SettingChange.Choice("ca_peer_connect", "Laptop"))!!.single()
+        assertArrayEquals("ff0300010b9e001701".hexBytes(), connect)
+        assertTrue(s.allowed(connect))
+        assertFalse(s.allowed(ConnectPacket(0, 0, CambridgeConnectMisc.CONNECT_DEVICE, byteArrayOf(0)).bytes()), "a device that is already connected")
+        assertFalse(s.allowed(ConnectPacket(0, 0, CambridgeConnectMisc.CONNECT_DEVICE, byteArrayOf(9)).bytes()), "no such device")
+        assertTrue(s.replies.keys.none { it == "0.22" })
+        // The next list starts afresh.
+        s.takeReadBacks()
+        s.feed(response(0, CambridgeConnectMisc.GET_DEVICES, device(0, "Phone", CambridgeConnectPeer.CONNECTED_PRIMARY)))
+        assertNull(s.groups.flatMap { it.settings }.firstOrNull { it.key == "ca_peer_connect" })
     }
 }

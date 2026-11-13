@@ -22,7 +22,7 @@ def table():
     for model in models():
         if model.get("connect"):
             features = ("Battery, noise control and its button cycle, equalizer with presets, left/right balance, gaming, mono, sleep, loudness, side tone and spatial audio "
-                        "(each where the model has it), wear detection, find alert, touch gestures, voice language, automatic power off, codec choice")
+                        "(each where the model has it), wear detection, find alert, touch gestures and their actions, paired devices, voice language, automatic power off, codec choice")
         else:
             features = "Battery, presets and five gain bands, control toggles, language and codec preference"
             if model["ambient"]:

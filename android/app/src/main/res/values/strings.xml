@@ -988,6 +988,17 @@
     <string name="setting_ca_case_pairing">Case pairing gesture</string>
     <string name="setting_ca_case_reset">Case factory reset gesture</string>
     <string name="setting_ca_balance_note">Negative values lean left, positive right (the app names the earbud and a percentage but gives no screen for it, so this reading is not confirmed).</string>
+    <string name="setting_ca_tp_tap_left">Single tap, Left earbud</string>
+    <string name="setting_ca_tp_tap_right">Single tap, Right earbud</string>
+    <string name="setting_ca_tp_double_tap_left">Double tap, Left earbud</string>
+    <string name="setting_ca_tp_double_tap_right">Double tap, Right earbud</string>
+    <string name="setting_ca_tp_triple_tap_left">Triple tap, Left earbud</string>
+    <string name="setting_ca_tp_triple_tap_right">Triple tap, Right earbud</string>
+    <string name="setting_ca_tp_long_press_left">Long press, Left earbud</string>
+    <string name="setting_ca_tp_long_press_right">Long press, Right earbud</string>
+    <string name="setting_ca_touch_actions">Touch actions</string>
+    <string name="setting_ca_peer_connect">Connect a paired device</string>
+    <string name="setting_ca_peer_disconnect">Disconnect a device</string>
     <string name="setting_ca_cantonese">Cantonese</string>
     <string name="setting_ca_neutral">Neutral</string>
     <string name="setting_ca_immersive">Immersive</string>

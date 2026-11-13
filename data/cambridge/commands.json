@@ -143,7 +143,7 @@
   }
  ],
  "connect": {
-  "_about": "Melomania Connect 2.6.0 (A100, A100 SE, M100, P100, P100 SE, X100; docs/cambridge/PROTOCOL.md section 9): Qualcomm GAIA v3 with Cambridge's custom API. A frame is FF, version 3, flags (1 checksum, 2 length extension), the payload length, the vendor, the command word and the payload, with an XOR byte when the checksum flag is set. The command word is feature << 9 | type << 7 | command (type: 0 command, 1 notification, 2 response, 3 error). Read from devices/gaia3/customapi in the app; ids are the app's enums. The EQ is Qualcomm's music processing feature (vendor 001D, feature 5; QTIL v3), which the app drives through its bundled gaiaclient library: the earbuds hold one user set of bands (frequency, Q, filter, gain in 1/60 dB); the app's presets are lists of band gains (RemoteConfigDefault.json in the APK) that it writes to that user set. Each model's `config` is the app's LocalConfig/DeviceConfig (which controls it shows) and `eq_presets` its bundled RemoteConfigDefault.json.",
+  "_about": "Melomania Connect 2.6.0 (A100, A100 SE, M100, P100, P100 SE, X100; docs/cambridge/PROTOCOL.md section 9): Qualcomm GAIA v3 with Cambridge's custom API. A frame is FF, version 3, flags (1 checksum, 2 length extension), the payload length, the vendor, the command word and the payload, with an XOR byte when the checksum flag is set. The command word is feature << 9 | type << 7 | command (type: 0 command, 1 notification, 2 response, 3 error). Read from devices/gaia3/customapi in the app; ids are the app's enums. The EQ is Qualcomm's music processing feature (vendor 001D, feature 5; QTIL v3), which the app drives through its bundled gaiaclient library: the earbuds hold one user set of bands (frequency, Q, filter, gain in 1/60 dB); the app's presets are lists of band gains (RemoteConfigDefault.json in the APK) that it writes to that user set. Each model's `config` is the app's LocalConfig/DeviceConfig (which controls it shows) and `eq_presets` its bundled RemoteConfigDefault.json. Touch actions are Qualcomm's gesture configuration feature (vendor 001D, feature 11; V3GestureConfigurationPlugin): a configuration is 16 bits, touchpad << 14 | context << 7 | action, listed per gesture; the app's assign screen offers tap, double tap, triple tap (swipe up) and long press per earbud with play/pause, next, previous, volume up and down, next noise mode, voice assistant (push to talk) or nothing. GET_DEVICES (22) is answered with one frame per paired device: id, name (20 bytes, NUL padded), four address bytes, connection status (peer); the app collects the frames for two seconds, and CONNECT_DEVICE/DISCONNECT_DEVICE (23, 24) take the id.",
   "wire": {
    "VERSION": 3,
    "VENDOR": 2974,
@@ -157,7 +157,8 @@
    "TYPE_ERROR": 3,
    "TX_DELAY_MS": 100,
    "QTIL_VENDOR": 29,
-   "FEATURE_MUSIC": 5
+   "FEATURE_MUSIC": 5,
+   "FEATURE_GESTURE_CONFIG": 11
   },
   "misc": {
    "GET_MANUFACTURER": 0,
@@ -320,6 +321,78 @@
    "USER_SET": 63,
    "GAIN_FACTOR": 60,
    "BAND_LENGTH": 7
+  },
+  "gesture_config": {
+   "GET_TOUCHPADS": 0,
+   "GET_GESTURES": 1,
+   "GET_CONTEXTS": 2,
+   "GET_ACTIONS": 3,
+   "GET_CONFIG": 4,
+   "SET_CONFIG": 5,
+   "RESET": 6,
+   "NOTIFY_CHANGED": 0,
+   "NOTIFY_RESET": 1
+  },
+  "touch_gesture": {
+   "TAP": 0,
+   "SWIPE_UP": 1,
+   "SWIPE_DOWN": 2,
+   "TAP_AND_SWIPE_UP": 3,
+   "TAP_AND_SWIPE_DOWN": 4,
+   "DOUBLE_TAP": 5,
+   "LONG_PRESS": 6,
+   "EXTENDED_LONG_PRESS": 7
+  },
+  "touch_context": {
+   "PASSTHROUGH_GLOBAL": 0,
+   "MEDIA_PLAYER_STREAMING": 1,
+   "MEDIA_PLAYER_IDLE": 2,
+   "VOICE_IN_CALL": 3,
+   "VOICE_INCOMING": 4,
+   "VOICE_OUTGOING": 5,
+   "VOICE_IN_CALL_WITH_HELD": 6,
+   "HANDSET_DISCONNECTED": 7,
+   "HANDSET_CONNECTED": 8
+  },
+  "touch_action": {
+   "MEDIA_PLAY_PAUSE_TOGGLE": 0,
+   "MEDIA_STOP": 1,
+   "MEDIA_NEXT_TRACK": 2,
+   "MEDIA_PREVIOUS_TRACK": 3,
+   "MEDIA_SEEK_FORWARD": 4,
+   "MEDIA_SEEK_BACKWARD": 5,
+   "VOICE_ACCEPT_CALL": 6,
+   "VOICE_REJECT_CALL": 7,
+   "VOICE_HANG_UP_CALL": 8,
+   "VOICE_TRANSFER_CALL": 9,
+   "VOICE_CALL_CYCLE": 10,
+   "VOICE_JOIN_CALLS": 11,
+   "VOICE_MIC_MUTE_TOGGLE": 12,
+   "GAMING_MODE_TOGGLE": 13,
+   "ANC_ENABLE_TOGGLE": 14,
+   "ANC_NEXT_MODE": 15,
+   "VOLUME_UP": 16,
+   "VOLUME_DOWN": 17,
+   "RECONNECT_MRU_HANDSET": 18,
+   "VA_PRIVACY_TOGGLE": 19,
+   "VA_FETCH_QUERY": 20,
+   "VA_PTT": 21,
+   "VA_CANCEL": 22,
+   "VA_FETCH": 23,
+   "VA_QUERY": 24,
+   "DISCONNECT_LRU_HANDSET": 25,
+   "VOICE_JOIN_CALLS_HANG_UP": 26
+  },
+  "touchpad": {
+   "SINGLE": 0,
+   "RIGHT": 1,
+   "LEFT": 2,
+   "BOTH": 3
+  },
+  "peer": {
+   "PAIRED": 0,
+   "CONNECTED": 1,
+   "CONNECTED_PRIMARY": 2
   }
  }
 }

@@ -384,6 +384,22 @@ class EarfunTest {
     }
 
     @Test
+    fun theNoiseModesAKeyCyclesThrough() {
+        // EarFun's app (setKeyCustomNoise): a byte for the left key, one for the right; 1 off, 2 ambient, 4 noise cancelling, 8 wind, 16 adaptive.
+        val s = EarfunSession(model("EarFun Air Pro 4i"))
+        assertTrue(hex(EarfunFrame(EarfunCommand.GET_KEY_CUSTOM_NOISE, ByteArray(0)).bytes()) in s.start().map(::hex))
+        s.feed(efReply(EarfunCommand.GET_KEY_CUSTOM_NOISE, "0705"))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Toggle>().filter { it.key.startsWith("ef_cycle_") }
+        assertTrue(rows.isNotEmpty())
+        assertEquals(true, rows.first { it.key == "ef_cycle_left_off" }.on)
+        assertEquals(false, rows.first { it.key == "ef_cycle_right_ambient" }.on)
+        assertEquals(listOf(hex(EarfunFrame(EarfunCommand.SET_KEY_CUSTOM_NOISE, byteArrayOf(5, 5)).bytes())), s.change(SettingChange.Toggle("ef_cycle_left_ambient", false))!!.map(::hex))
+        // Turning off the last mode of a key is refused.
+        s.change(SettingChange.Toggle("ef_cycle_right_off", false))
+        assertNull(s.change(SettingChange.Toggle("ef_cycle_right_anc", false)))
+    }
+
+    @Test
     fun headphoneButtons() {
         val life = EarfunSession(model("EarFun Wave Life"))
         life.feed(efReply(EarfunCommand.GET_KEY, "020504030800"))

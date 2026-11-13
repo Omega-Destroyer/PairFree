@@ -53,6 +53,8 @@ public class EarfunSession(public val model: EarfunModel) {
     private var autoOff: String? = null
     private var spatial: Boolean? = null
     private var codecInUse: Int? = null
+    private var cycleLeft: Int? = null        // the noise modes the left key cycles through, as bits (NORMAL 1, AMBIENT_SOUND 2, NOISE_CANCEL 4, WIND_CANCEL 8, ADAPTIVE 16)
+    private var cycleRight: Int? = null
     private val extraValues = linkedMapOf<String, Int>()      // each extra the earbuds answered: 1 or 0 for a switch, 0 to 100 for the balance
     private var checkEar: Int? = null
     private var keys: Map<String, Int>? = null       // the action byte per touch gesture and side ("hold_left") or button and gesture ("nc_hold")
@@ -90,6 +92,7 @@ public class EarfunSession(public val model: EarfunModel) {
         if (m.game) add(read(EarfunQcc.GET_GAME_MODE, EarfunCommand.GET_GAME_MODE))
         for (e in EXTRAS.filter { it.key in m.extras }) e.get(qualcomm)?.let { add(if (qualcomm) qcc(it) else ef(it)) }
         if ("codec" in m.extras) add(read(EarfunQcc.GET_AUDIO_MODE, EarfunCommand.GET_AUDIO_MODE))
+        if (m.noise != null && !qualcomm) add(ef(EarfunCommand.GET_KEY_CUSTOM_NOISE))
         if (m.multipoint) add(read(EarfunQcc.GET_MULTIPOINT, EarfunCommand.GET_MULTIPOINT))
         if (m.mic && qualcomm) add(qcc(EarfunQcc.GET_MIC))
         if (m.promptVolume) add(read(EarfunQcc.GET_VOICE_VOLUME, EarfunCommand.GET_VOICE_VOLUME))
@@ -248,6 +251,11 @@ public class EarfunSession(public val model: EarfunModel) {
             // Natural is 2; anything else the default (EarfunProtocolParser.setData).
             EarfunCommand.GET_AMBIENT_MODE -> ambientMode = if (v == EarfunValues.AMBIENT_MODE.getValue(EARFUN)["natural"]) "natural" else "default"
             EarfunCommand.GET_GAME_MODE -> game = v == EF_ON
+            // The modes each noise key cycles through (EarfunProtocolParser.setKeyCustomNoise): a byte for the left key, then one for the right.
+            EarfunCommand.GET_KEY_CUSTOM_NOISE -> if (p.size >= 2) {
+                cycleLeft = p.u8(0) and CYCLE_ALL
+                cycleRight = p.u8(1) and CYCLE_ALL
+            }
             in EXTRA_EF_READS -> extra(qualcomm = false, code = command, v = v)
             // EarFun's frame: anything but 2 to 7 is SBC.
             EarfunCommand.GET_AUDIO_MODE -> codecInUse = if (v in 2..7) v else 1
@@ -379,7 +387,7 @@ public class EarfunSession(public val model: EarfunModel) {
                     PowerActions.GROUP, SettingTab.DEVICE,
                     listOfNotNull(Setting.Action(RESTART_KEY).takeIf { m.restart && qualcomm }, Setting.Action(POWER_OFF_KEY).takeIf { m.powerOff }),
                 ),
-            ) + touchGroups(gestures) + buttonGroups()
+            ) + touchGroups(gestures) + buttonGroups() + listOfNotNull(group("ef_cycle", SettingTab.CONTROLS, cycleRows()))
         }
 
     /** The codecs as switches, as EarFun's sound quality screen shows them (HeadsetQualityFragment). */
@@ -564,7 +572,38 @@ public class EarfunSession(public val model: EarfunModel) {
 
     private fun toggle(key: String, on: Boolean): List<ByteArray>? = when {
         key.startsWith(EXTRA_PREFIX) -> extraWrite(key, if (on) 1 else 0)
+        key.startsWith("ef_cycle_") -> cycleWrite(key, on)
         else -> toggleOf(key, on)
+    }
+
+    /** The noise modes a key can cycle through on this model: off always, then those its noise control has. */
+    private fun cycleModes(): List<Pair<String, Int>> = buildList {
+        val n = model.noise ?: return@buildList
+        add("off" to CYCLE_OFF)
+        if ("ambient" in n.values) add("ambient" to CYCLE_AMBIENT)
+        if ("anc" in n.values) add("anc" to CYCLE_CANCEL)
+        if (n.cancelling?.options?.contains("wind") == true) add("wind" to CYCLE_WIND)
+        if (n.cancelling?.options?.contains("adaptive") == true) add("adaptive" to CYCLE_ADAPTIVE)
+    }
+
+    private fun cycleRows(): List<Setting> {
+        val l = cycleLeft ?: return emptyList()
+        val r = cycleRight ?: return emptyList()
+        return cycleModes().flatMap { (name, bit) -> listOf(Setting.Toggle("ef_cycle_left_$name", l and bit != 0), Setting.Toggle("ef_cycle_right_$name", r and bit != 0)) }
+    }
+
+    private fun cycleWrite(key: String, on: Boolean): List<ByteArray>? {
+        val side = key.removePrefix("ef_cycle_").substringBefore('_')
+        val bit = cycleModes().firstOrNull { it.first == key.substringAfter("ef_cycle_${side}_") }?.second ?: return null
+        val l = cycleLeft ?: return null
+        val r = cycleRight ?: return null
+        val held = if (side == "left") l else r
+        val next = if (on) held or bit else held and bit.inv()
+        // A key that cycles through nothing would do nothing; the app keeps at least one.
+        if (next == 0) return null
+        if (side == "left") cycleLeft = next else cycleRight = next
+        readBacks += ef(EarfunCommand.GET_KEY_CUSTOM_NOISE)
+        return listOf(ef(EarfunCommand.SET_KEY_CUSTOM_NOISE, cycleLeft!!, cycleRight!!))
     }
 
     private fun toggleOf(key: String, on: Boolean): List<ByteArray>? = when (key) {
@@ -805,6 +844,12 @@ public class EarfunSession(public val model: EarfunModel) {
         private const val EF_ON = 2
         private const val EXTRA_PREFIX = "ef_extra_"
         private const val EXTRA_BALANCE_MAX = 100
+        private const val CYCLE_OFF = 1
+        private const val CYCLE_AMBIENT = 2
+        private const val CYCLE_CANCEL = 4
+        private const val CYCLE_WIND = 8
+        private const val CYCLE_ADAPTIVE = 16
+        private const val CYCLE_ALL = 31
         private const val CODEC_KEY = "ef_codec_in_use"
 
         /** The codec in use, as the earbuds report it (GET_AUDIO_MODE: 77 on the Qualcomm models, 10 on EarFun's frame): 1 to 7. */

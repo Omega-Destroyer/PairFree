@@ -226,6 +226,11 @@ also has USB charging (100/99), ambient voice (115/114) and the call environment
 empty read; checked: `EarfunProtocolParser`, `HP1000ProtocolParser`), the mic mute (a call control) and the fast pair switch (lab). Which side the balance's
 0 is, the app does not say.
 
+The noise control key's cycle (2071 read, 2076 write, EarFun's frame only): a byte for the left key, one for the right, with a bit for each mode the key cycles through: 1 off,
+2 ambient sound, 4 noise cancelling, 8 wind noise cancelling, 16 adaptive (`EarfunProtocolParser.setKeyCustomNoise`). PairFree shows a switch per mode the model has
+(off always, the others where its noise control lists them) for each key, and keeps at least one on. The volume (2410/2415) is the in-app preview player's, the colour only
+picks a picture, and the fast pair switch is a lab feature: each is in `data/unused_ids.json` with what was checked.
+
 ## 9. Other chips
 
 EarFun's app speaks other chips' own protocols to the remaining models: Airoha's RACE (the Air,

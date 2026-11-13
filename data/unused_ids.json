@@ -70,7 +70,6 @@
   "SonyFunction.Set2.LE_AUDIO_ALERT_NOTIFICATION": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.LISTENING_OPTION": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.LISTENING_OPTION_ASSIGN_CUSTOMIZABLE": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "SonyFunction.Set2.LR_BALANCE_CORRECTION": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.NOISE_CANCELLING_DUAL_SINGLE_OFF_AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.NOISE_CANCELLING_DUAL_SINGLE_OFF_AND_AMBIENT_SOUND_MODE_ONOFF": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.NOISE_CANCELLING_ONOFF": "gap-audit 2026-11-12: in the vendor app's table, not built yet",

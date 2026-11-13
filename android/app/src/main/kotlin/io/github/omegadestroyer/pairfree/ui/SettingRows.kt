@@ -526,6 +526,7 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    "lr_balance_correction" -> stringResource(R.string.setting_lr_balance_correction)
     "battery_safe_mode" -> stringResource(R.string.setting_battery_safe_mode)
     "dual_connection" -> stringResource(R.string.setting_dual_connection)
     "personalised_anc" -> stringResource(R.string.setting_personalised_anc)
@@ -654,6 +655,7 @@ private fun buttonTitle(key: String): String? {
 
 @Composable
 private fun settingNote(key: String): String? = when (key) {
+    "lr_balance_correction" -> stringResource(R.string.setting_lr_balance_correction_note)
     "battery_safe_mode" -> stringResource(R.string.setting_battery_safe_mode_note)
     "caring_charge" -> stringResource(R.string.setting_caring_charge_note)
     "caring_charge_threshold" -> stringResource(R.string.setting_caring_charge_threshold_note)

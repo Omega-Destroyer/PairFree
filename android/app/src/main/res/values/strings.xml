@@ -855,6 +855,8 @@
     <string name="setting_dual_connection">Two devices at once</string>
     <string name="setting_battery_safe_mode">Battery safe mode</string>
     <string name="info_button">More information</string>
+    <string name="setting_lr_balance_correction">Left and right balance correction</string>
+    <string name="setting_lr_balance_correction_note">Evens out a difference between your two ears. The measurement is made in Sony\'s app; PairFree only turns the result on or off, and cannot while no measurement has been made.</string>
     <string name="setting_battery_safe_mode_note">Sony\'s battery care mode. It is meant to spare the battery from wear, which usually means charging to less than full. Sony\'s app does not say what the limit is, so PairFree does not either.</string>
     <string name="setting_caring_charge_note">Sony\'s battery care for the case or headband charging. Its exact limit is set by the earbuds\' firmware; Sony\'s app does not state it.</string>
     <string name="setting_caring_charge_threshold_note">Sony\'s battery care for charging. Its exact limit is set by the earbuds\' firmware; Sony\'s app does not state it.</string>

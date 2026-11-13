@@ -629,6 +629,18 @@ class SonySessionTest {
     }
 
     @Test
+    fun theLeftRightBalanceCorrectionIsAnEqEbbSwitch() {
+        // Function 0x5A; EQEBB type 0x50 (Sony's KMP code): on 0, off 1, off and never set up 2.
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x01, 0x5A, 0x00))
+        assertTrue(out(0x56, 0x50) in s.takeOutbox())
+        s.receive(message(0x57, 0x50, 0x02))
+        assertEquals(Setting.Toggle("lr_balance_correction", false, enabled = false), setting(s, "lr_balance_correction"))
+        s.receive(message(0x57, 0x50, 0x00))
+        assertEquals(listOf(out(0x58, 0x50, 0x01)), s.change(SettingChange.Toggle("lr_balance_correction", false)))
+    }
+
+    @Test
     fun batterySafeModeHasAnEffectByte() {
         // Function 0x2B; power type 11 answers the switch, then whether the effect is active; a write adds 0, "do not change the effect".
         val s = set2()

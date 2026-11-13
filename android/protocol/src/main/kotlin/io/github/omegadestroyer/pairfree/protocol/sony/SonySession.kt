@@ -107,6 +107,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
     private var bgm: Pair<Boolean, Int>? = null             // the background music effect: on, and the room size
     private var guidanceVolume: Int? = null
     private var guidanceVolumeType: Int? = null
+    private var lrBalance: Int? = null          // the left-right balance correction: 0 on, 1 off, 2 off and not set up yet (EQEBBOnOff)
     private var maxVolume: Int? = null          // the volume limit's step, 0 to 4 (SafeListeningInquiredType.MAX_VOL_LV_LIMIT)
     private var optimizerType: Int? = null      // the optimizer the earbuds have, by its type; null without one
     private var optimizing = false
@@ -219,6 +220,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
             outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, it)
             outbox += SonyOut.table1(EQEBB_GET_PARAM, it)
         }
+        if (tableSet == 2 && SonyFunction.Set2.LR_BALANCE_CORRECTION in f) outbox += SonyOut.table1(EQEBB_GET_PARAM, LR_BALANCE_TYPE)
         if (tableSet == 2 && SonyFunction.Set2.SOUND_EFFECT in f) {
             effect = SonyEffect()
             outbox += SonyOut.table1(EQEBB_GET_CAPABILITY, SonyEffect.TYPE)
@@ -441,6 +443,10 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
     }
 
     private fun readEq(p: ByteArray) {
+        if ((p.u8(0) == SonyCommand.Set1.EQEBB_RET_PARAM || p.u8(0) == SonyCommand.Set1.EQEBB_NTFY_PARAM) && p.size == 3 && p.u8(1) == LR_BALANCE_TYPE) {
+            lrBalance = p.u8(2).takeIf { it in 0..2 }
+            return
+        }
         ebb?.read(p)?.let { ebb = it; return }
         effect?.read(p)?.let { effect = it; return }
         ultAssign?.read(p)?.let { ultAssign = it; return }
@@ -487,7 +493,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
                     },
                     dsee?.let { Setting.Toggle("dsee", it) },
                     bgm?.let { (on, room) -> Setting.Choice(BGM_KEY, if (on) BGM_ROOMS[room] ?: OFF else OFF, listOf(OFF) + BGM_ROOMS.values) },
-                ) + switchRows(SettingTab.SOUND),
+                ) + switchRows(SettingTab.SOUND) + listOfNotNull(lrBalance?.let { Setting.Toggle("lr_balance_correction", it == 0, enabled = it != 2) }),
             ),
             group("touch", SettingTab.CONTROLS, keys?.settings.orEmpty()),
             group(
@@ -563,6 +569,10 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
                     "pause_taken_off" -> if (tableSet == 1) SonyOut.table1(SYSTEM_SET_PARAM, S1_CONTROL_BY_WEARING, S1_ON_OFF, if (on) 1 else 0)
                     else SonyOut.table1(SYSTEM_SET_PARAM, S2_CONTROL_BY_WEARING, if (on) ON_V2 else OFF_V2)
                     "voice_guidance" -> voiceGuidanceSet(on)
+                    "lr_balance_correction" -> {
+                        lrBalance = if (on) 0 else 1
+                        SonyOut.table1(SonyCommand.Set1.EQEBB_SET_PARAM, LR_BALANCE_TYPE, if (on) 0 else 1)
+                    }
                     else -> ultButtonSet(change.key, on) ?: generalSet(change.key.removePrefix(GS_KEY).takeIf { change.key.startsWith(GS_KEY) }, on) ?: S2_SWITCHES.firstOrNull { it.key == change.key }?.let { s ->
                         switches[s.key] = on
                         val v = if (on) ON_V2 else OFF_V2
@@ -892,6 +902,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
             )
         }
         private const val ON_V2 = 0
+        private const val LR_BALANCE_TYPE = 0x50
         private const val BATTERY_SAFE_TYPE = 11
         private const val OFF_V2 = 1
 

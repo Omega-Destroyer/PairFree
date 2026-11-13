@@ -63,7 +63,9 @@ class QcyJieliTest {
         // Game mode and sleep are JieLi attributes on this model, asked for with the battery and balance in one read.
         val adv = start.last()
         assertEquals(JieliWire.ADV_GET, adv.opcode)
-        val mask = (1 shl JieliWire.ADV_BATTERY) or (1 shl JieliWire.ADV_WORK_MODE) or (1 shl JieliWire.ADV_SLEEP_MODE) or (1 shl JieliWire.ADV_BALANCE)
+        // On this model the touch controls (attribute 2) and the noise mode (attribute 11) are JieLi's too.
+        val mask = (1 shl JieliWire.ADV_BATTERY) or (1 shl JieliWire.ADV_WORK_MODE) or (1 shl JieliWire.ADV_SLEEP_MODE) or (1 shl JieliWire.ADV_BALANCE) or
+            (1 shl JieliWire.ADV_KEY_SETTINGS) or (1 shl JieliWire.ADV_NOISE_MODE)
         assertEquals(mask, hex(adv.payload).toInt(16))
         assertTrue(start.all { s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, it.bytes())) })
         // The answer: left 60 % charging, right 96 %, case 43 %; game mode on (work mode 2), sleep on, balance centred.
@@ -87,6 +89,45 @@ class QcyJieliTest {
         val outbox = s.takeOutbox().map(::frame)
         assertEquals(RcspFrame.answer(ask), outbox.first())
         assertEquals(mask, hex(outbox.last().payload).toInt(16))
+    }
+
+    @Test
+    fun theButtonsAndTheNoiseModeOfAnOlderPanel() {
+        // QCY's panel for the T13 ANC2 (issue #35) has the older button screen and noise screen. Buttons: JieLi's key settings attribute, triples of
+        // earbud (1 left, 2 right), gesture (1 tap, 2 double, 3 triple, 5 hold) and action (127 none); noise: mode, then the length and three gains.
+        val s = QcyJieliSession(t13)
+        s.start()
+        val keys = "01" + "01" + "01" + "02" + "01" + "7f" + "01" + "02" + "03" + "02" + "02" + "04"
+        val noise = "01" + "06" + "0000" + "0064" + "0032"
+        assertTrue(s.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_KEY_SETTINGS, keys.hexBytes()) + RcspFrame.ltv(JieliWire.ADV_NOISE_MODE, noise.hexBytes()))))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
+        assertEquals("play_pause", rows["touch_single_left"])
+        assertEquals("none", rows["touch_single_right"])
+        assertEquals("next", rows["touch_double_left"])
+        // One change is one key: earbud 2, gesture 2, action 2 (previous).
+        val write = frame(s.change(SettingChange.Choice("touch_double_right", "previous"))!!.single())
+        assertEquals(JieliWire.ADV_SET, write.opcode)
+        assertEquals("0402020202", hex(write.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, write.bytes())))
+        // Action none goes as 127.
+        assertEquals("040201017f", hex(frame(s.change(SettingChange.Choice("touch_single_left", "none"))!!.single()).payload))
+        // The noise: the earbuds report mode 1 (cancelling); off is mode 2, written with the gains they reported.
+        assertEquals(Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key, s.state.number(Command.ANC_MODE))
+        val off = frame(s.set(Command.ANC_MODE, Command.ANC_MODE.labels.entries.first { it.value == "off" }.key)!!.single())
+        assertEquals(JieliWire.ADV_SET, off.opcode)
+        assertEquals("090b" + "02" + "06" + "0000" + "0064" + "0032", hex(off.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, off.bytes())))
+    }
+
+    @Test
+    fun theButtonsOfANewerJieLiModelAreItsKeyItem() {
+        // A newer model reads and writes one key at a time as QCY's item 2B (JLDeviceImpl.setBtnClickFunction): key, then action.
+        val s = QcyJieliSession(ht16)
+        assertTrue(s.start().map { hex(frame(it).payload) }.contains("fe012b"))
+        assertTrue(s.receive(answer(JieliWire.CUSTOM, "2b0c010102010301040105010601".hexBytes())))
+        val write = frame(s.change(SettingChange.Choice("touch_single_left", "next"))!!.single())
+        assertEquals(JieliWire.CUSTOM, write.opcode)
+        assertEquals("2b020103", hex(write.payload))
     }
 
     @Test

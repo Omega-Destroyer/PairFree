@@ -149,6 +149,7 @@
     <string name="action_volume_down">Volume down</string>
     <string name="action_play_pause">Play or pause</string>
     <string name="action_game_mode">Game mode</string>
+    <string name="action_take_picture">Take a picture</string>
     <string name="action_previous">Previous track</string>
     <string name="action_next">Next track</string>
     <string name="action_anc_cycle">Noise control</string>

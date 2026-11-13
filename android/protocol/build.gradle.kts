@@ -1552,9 +1552,12 @@ abstract class GenerateQcyTables : DefaultTask() {
         for ((name, v) in jieli.getValue("target_info") as Map<String, Any?>) out.appendLine("    public const val TARGET_$name: Int = ${int(v)}")
         out.appendLine("}")
         out.appendLine()
-        out.appendLine("/** Every model in data/qcy/devices.json. */")
-        out.appendLine("internal val QCY_MODELS: List<QcyModel> = listOf(")
-        for (d in devices) {
+        // The models in groups of 20, each in an object of its own: one initializer holding all of them passes the JVM's 64 KB method limit.
+        val groups = devices.chunked(20)
+        for ((n, group) in groups.withIndex()) {
+        out.appendLine("private object QcyModelGroup$n {")
+        out.appendLine("val MODELS: List<QcyModel> = listOf(")
+        for (d in group) {
             val form = when (d["kind"]) {
                 "earbuds" -> "EARBUDS"
                 "headphones" -> "HEADPHONES"
@@ -1570,7 +1573,7 @@ abstract class GenerateQcyTables : DefaultTask() {
                 "QcyNoiseMode(${str(m["mode"])}, ${hex(m["from"])}, ${hex(m["to"])}, ${hex(m["default"])}, $scenes)"
             }
             @Suppress("UNCHECKED_CAST")
-            val touch = (d["touch"] as Map<String, Any?>?)?.let { "QcyTouch(${strings(it["gestures"])}, ${strings(it["actions"])})" } ?: "null"
+            val touch = (d["touch"] as Map<String, Any?>?)?.let { "QcyTouch(${strings(it["gestures"])}, ${strings(it["actions"])}${(it["extra_actions"] as Map<String, String>?)?.entries?.joinToString(", ", ", mapOf(", ")") { e -> "${e.key} to ${str(e.value)}" } ?: ""})" } ?: "null"
             @Suppress("UNCHECKED_CAST")
             val settings = (d["settings"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { "QcySetting(${hex(it["item"])}, ${str(it["setting"])}${(it["options"] as List<Map<String, Any?>>?)?.joinToString(", ", ", listOf(", ")") { o -> "${hex(o["key"])} to ${str(o["name"].toString().lowercase().removeSuffix(" mode"))}" } ?: ""})" }
             out.appendLine("    QcyModel(")
@@ -1585,11 +1588,16 @@ abstract class GenerateQcyTables : DefaultTask() {
                 })
                 "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])}, $curves)"
             } ?: "null"
-            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true},")
+            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true}, jieliNoise = ${d["jieli_noise"] == true},")
             out.appendLine("        eq = $eq,")
             out.appendLine("    ),")
         }
         out.appendLine(")")
+        out.appendLine("}")
+        out.appendLine()
+        }
+        out.appendLine("/** Every model in data/qcy/devices.json. */")
+        out.appendLine("internal val QCY_MODELS: List<QcyModel> = " + groups.indices.joinToString(" + ") { "QcyModelGroup$it.MODELS" })
 
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()

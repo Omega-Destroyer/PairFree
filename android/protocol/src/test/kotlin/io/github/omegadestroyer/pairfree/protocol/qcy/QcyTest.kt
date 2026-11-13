@@ -92,6 +92,21 @@ class QcyTest {
     }
 
     @Test
+    fun theSettingsAPanelPicksFromAList() {
+        // The panel rows of type 1000 (cmdid 46 music mode, 51 touch sensitivity): the earbuds report one value byte, the panel names each.
+        val v200 = QcySession(QcyModels.of(16818))
+        v200.receive(settings("ff03" + "2e0103"))
+        val mode = setting(v200, "qcy_music_mode") as Setting.Choice
+        assertEquals("gaming", mode.value)
+        assertEquals(listOf("music", "gaming", "movie"), mode.options)
+        assertEquals("ff032e0104", packet(v200.change(SettingChange.Choice("qcy_music_mode", "movie"))))
+        val c30 = QcySession(QcyModels.of(19794))
+        c30.receive(settings("ff03" + "330134"))
+        assertEquals("high", (setting(c30, "qcy_touch_sensitivity") as Setting.Choice).value)
+        assertEquals("ff0333012d", packet(c30.change(SettingChange.Choice("qcy_touch_sensitivity", "normal"))))
+    }
+
+    @Test
     fun switchesAndWearing() {
         val s = n70()
         for (r in n70.getValue("replies").jsonArray.map { it.jsonObject }) s.receive(settings(r.str("bytes")))

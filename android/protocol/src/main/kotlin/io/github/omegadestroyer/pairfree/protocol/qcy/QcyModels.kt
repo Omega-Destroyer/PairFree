@@ -39,7 +39,8 @@ public data class QcyTouch(val gestures: List<String>, val actions: List<String>
 }
 
 /** One switch a model has: its item and PairFree's name for it. */
-public data class QcySetting(val item: Int, val setting: String)
+/** [options] is empty for a switch; a setting the panel picks from a list has each value byte and its name (music mode, touch sensitivity). */
+public data class QcySetting(val item: Int, val setting: String, val options: List<Pair<Int, String>> = emptyList())
 
 /**
  * A model's equalizer as its control panel lays it out: [bands] bands at [freqs] (Hz), each from minus to plus

@@ -2948,6 +2948,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "2E",
+     "setting": "music_mode",
+     "options": [
+      {
+       "key": "01",
+       "name": "Music mode"
+      },
+      {
+       "key": "03",
+       "name": "Gaming mode"
+      },
+      {
+       "key": "04",
+       "name": "Movie Mode"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -3043,6 +3061,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "2E",
+     "setting": "music_mode",
+     "options": [
+      {
+       "key": "01",
+       "name": "Music mode"
+      },
+      {
+       "key": "03",
+       "name": "Gaming mode"
+      },
+      {
+       "key": "04",
+       "name": "Movie Mode"
+      }
+     ]
     }
    ]
   },
@@ -3260,7 +3296,27 @@
      }
     ]
    },
-   "sleep_timer": true
+   "sleep_timer": true,
+   "settings": [
+    {
+     "item": "2E",
+     "setting": "music_mode",
+     "options": [
+      {
+       "key": "01",
+       "name": "Music mode"
+      },
+      {
+       "key": "03",
+       "name": "Gaming mode"
+      },
+      {
+       "key": "04",
+       "name": "Movie Mode"
+      }
+     ]
+    }
+   ]
   },
   {
    "vendor_id": 16821,
@@ -3387,7 +3443,27 @@
      }
     ]
    },
-   "sleep_timer": true
+   "sleep_timer": true,
+   "settings": [
+    {
+     "item": "2E",
+     "setting": "music_mode",
+     "options": [
+      {
+       "key": "01",
+       "name": "Music mode"
+      },
+      {
+       "key": "03",
+       "name": "Gaming mode"
+      },
+      {
+       "key": "04",
+       "name": "Movie Mode"
+      }
+     ]
+    }
+   ]
   },
   {
    "vendor_id": 16822,
@@ -14289,6 +14365,24 @@
     {
      "item": "10",
      "setting": "sleep_mode"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -14356,6 +14450,24 @@
     {
      "item": "10",
      "setting": "sleep_mode"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -14427,6 +14539,24 @@
     {
      "item": "10",
      "setting": "sleep_mode"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -14503,6 +14633,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -14651,6 +14799,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -14727,6 +14893,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -14876,6 +15060,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ]
   },
@@ -14956,6 +15158,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ]
   },

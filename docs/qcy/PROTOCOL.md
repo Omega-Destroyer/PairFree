@@ -105,6 +105,11 @@ that item, and the earbuds then report it on `1002`. They also report changes ma
 | `40` | Adaptive volume | 01 on, 02 off |
 | `FE` | Request | the item to report |
 
+**List-picking rows (2026-11-13):** panel rows of type 1000 or 111 that give a list: the music mode (item `2E`, cmdid 46: music `01`, gaming `03`, movie `04`; four models) and the touch
+sensitivity (cmdid 51, so item `33`: normal `2D`, medium `26`, high `34`; eight models; QCY's panel says it takes effect after a restart). The value is one byte, read with the request item and
+written as the item with that byte; item `33` is newer than 4.0.7's `DataBean`, so its layout is the panel's (`hasValue`, keys as hex bytes), not code read. `tools/import_qcy_panels.py --choices` adds them.
+The newer 4.2.1 is packed (six readable classes), which keeps Head Control (80), AI scene noise cancelling (84), spatial audio v2 (91) and gaming v2 (74) unread.
+
 **Switch values:** QCY's app sends each switch's on and off bytes as the model's control panel gives
 them. Quicky did not keep those bytes. OpenQCY uses 01 on, 02 off for every switch, and so does
 PairFree; PeatsAudio's library wrote LDAC and two devices as 01 and 00. A report of 01 is on, anything

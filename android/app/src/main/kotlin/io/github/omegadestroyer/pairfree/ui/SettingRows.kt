@@ -515,6 +515,8 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    "qcy_music_mode" -> stringResource(R.string.setting_qcy_music_mode)
+    "qcy_touch_sensitivity" -> stringResource(R.string.setting_qcy_touch_sensitivity)
     "auto_standby" -> stringResource(R.string.setting_auto_standby)
     "caring_charge_threshold" -> stringResource(R.string.setting_caring_charge_threshold)
     "caring_charge" -> stringResource(R.string.setting_caring_charge)
@@ -899,6 +901,20 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "game" -> getString(R.string.action_game_mode)
         else -> getString(R.string.setting_connection_standard)
     }
+    key == "qcy_music_mode" -> getString(
+        when (option) {
+            "gaming" -> R.string.action_game_mode
+            "movie" -> R.string.setting_qcy_mode_movie
+            else -> R.string.setting_qcy_mode_music
+        },
+    )
+    key == "qcy_touch_sensitivity" -> getString(
+        when (option) {
+            "high" -> R.string.setting_level_high
+            "medium" -> R.string.setting_level_medium
+            else -> R.string.setting_qcy_sensitivity_normal
+        },
+    )
     key == "sound_mode" -> getString(if (option == "sleep_mode") R.string.setting_sound_mode_sleep else R.string.setting_sound_mode_music)
     key == "smart_playback" -> getString(
         when (option) {

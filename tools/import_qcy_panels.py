@@ -110,6 +110,32 @@ def preset_gains(layout, eq):
     return out
 
 
+CHOICES = {46: "music_mode", 51: "touch_sensitivity"}  # panel rows of type 1000 or 111 that pick one of a few values (cmdid: PairFree's name)
+
+
+def choices(panel):
+    """The settings a panel row picks from a list: its item (the cmdid in hex), PairFree's name, and each option's value byte and the panel's name for it."""
+    out = []
+    for l in (panel.get("data") or {}).get("controlPanel", {}).get("layouts", []):
+        cmd = l.get("cmdid")
+        try:
+            cmd = int(cmd)
+        except (TypeError, ValueError):
+            continue
+        if cmd not in CHOICES or str(l.get("type")) not in ("1000", "111"):
+            continue
+        options = []
+        for s_ in l.get("subItem", []):
+            key = s_.get("key") if s_.get("key") is not None else ("%02X" % s_["index"] if "index" in s_ else None)
+            if key is not None and s_.get("name"):
+                options.append({"key": key, "name": s_["name"]})
+        if not options:
+            options = [{"key": k, "name": n} for k, n in (l.get("itemName") or {}).items()]
+        if options and CHOICES[cmd] not in [x["setting"] for x in out]:
+            out.append({"item": "%02X" % cmd, "setting": CHOICES[cmd], "options": options})
+    return out
+
+
 def features(panel):
     out = {}
     layouts = (panel.get("data") or {}).get("controlPanel", {}).get("layouts", [])
@@ -149,6 +175,9 @@ def features(panel):
                     seen.append({"item": item, "setting": setting})
             if seen:
                 out["settings"] = seen
+    picks = choices(panel)
+    if picks:
+        out["settings"] = out.get("settings", []) + picks
     return out
 
 
@@ -207,6 +236,18 @@ def main():
     new = [entry(p, panel(p["vendorID"])) for p in missing]
     for d in new:
         print("  ", d["vendor_id"], d["name"], d["protocol"], sorted(k for k in d if k not in ("vendor_id", "name", "names", "family", "protocol", "kind")))
+    if "--choices" in sys.argv:
+        # Adds the list-picking settings (music mode, touch sensitivity) to the models whose panel has them, leaving every other field as it is.
+        added = 0
+        for v, d in have.items():
+            if v in prods and panel(v):
+                have_names = [x["setting"] for x in d.get("settings", [])]
+                for pick in choices(panel(v)):
+                    if pick["setting"] not in have_names:
+                        d.setdefault("settings", []).append(pick)
+                        added += 1
+        DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
+        print(added, "settings added")
     if "--presets" in sys.argv:
         # Adds the preset curves to the models that have them, leaving every other field as it is.
         added = 0

@@ -57,6 +57,8 @@ public data class EarfunModel(
     val promptVolumes: List<String> = emptyList(),
     /** The headphones' buttons. */
     val buttons: EarfunButtons? = null,
+    /** The settings EarFun's app enables per model beyond the shared ones: bass, manner, game_eq, dac, balance, usb_charge, ambient_voice, call_env (DeviceType's getFunctionEnable and combine groups). */
+    val extras: List<String> = emptyList(),
 ) {
     val qualcomm: Boolean get() = protocol == QUALCOMM
 

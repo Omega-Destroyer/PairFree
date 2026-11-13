@@ -1866,7 +1866,7 @@ abstract class GenerateEarfunTables : DefaultTask() {
             out.appendLine("        versionText = ${d["version"] == "text"}, gaiaInit = ${d["gaia_init"]},")
             out.appendLine("        quality = ${strings(d["quality"])}, ldacAptxConflict = ${d["ldac_aptx_conflict"]}, ldacMultipointConflict = ${d["ldac_multipoint_conflict"]},")
             out.appendLine("        ldacGameConflict = ${d["ldac_game_conflict"]}, multipointRestart = ${d["multipoint_restart"]}, restart = ${d["restart"]}, powerOff = ${d["power_off"]},")
-            out.appendLine("        voiceLanguages = ${strings(d["voice_languages"])}, promptVolumes = ${strings(d["prompt_volumes"])}, buttons = $buttons,")
+            out.appendLine("        voiceLanguages = ${strings(d["voice_languages"])}, promptVolumes = ${strings(d["prompt_volumes"])}, buttons = $buttons, extras = ${strings(d["extras"])},")
             out.appendLine("    ),")
         }
         out.appendLine(")")

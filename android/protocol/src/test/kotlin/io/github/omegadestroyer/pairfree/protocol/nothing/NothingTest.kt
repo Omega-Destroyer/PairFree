@@ -51,6 +51,42 @@ class NothingTest {
     private fun setting(s: NothingSession, key: String) = s.groups.flatMap { it.settings }.firstOrNull { it.key == key }
 
     @Test
+    fun timedPowerOffCallTransparencyAndTheAdvancedEqualizerSwitch() {
+        // Nothing X's Flutter layer: NtEarPowerTime (mode 0 shut down or 1 standby, the minutes low byte first), call transparency (a byte) and the advanced EQ mode (a byte).
+        val hp = session("B175")
+        hp.receive(reply(NothingCommand.GET_AUTO_POWER_OFF_TIME, "007800"))
+        assertEquals(Setting.Choice("power_off_time", "120", listOf("30", "60", "120", "180", "240")), setting(hp, "power_off_time"))
+        val w = hp.change(SettingChange.Choice("power_off_time", "60"))!!.single()
+        assertEquals(NothingCommand.SET_AUTO_POWER_OFF_TIME, w.command)
+        assertEquals("003c00", hex(w.payload))
+        val e3 = session("B173")
+        e3.receive(reply(NothingCommand.GET_CALL_TRANSPARENCY, "01"))
+        e3.receive(reply(NothingCommand.GET_ADVANCE_CUSTOM_EQ_MODE, "00"))
+        assertEquals(Setting.Toggle("call_transparency", true), setting(e3, "call_transparency"))
+        assertEquals("00", hex(e3.change(SettingChange.Toggle("call_transparency", false))!!.single().payload))
+        assertEquals("01", hex(e3.change(SettingChange.Toggle("advanced_eq", true))!!.single().payload))
+        val one = session("B181")
+        one.receive(reply(NothingCommand.GET_AUTO_POWER_OFF_TIME, "007800"))
+        assertEquals(null, setting(one, "power_off_time"))
+    }
+
+    @Test
+    fun diracOpteoPresets() {
+        // Nothing X's DiracEQMode: 0 Opteo, 1 rock, 2 electronic, 3 pop, 4 enhance vocals, 5 classical, 6 custom; the models whose table row has diracOpteoSupport.
+        val s = session("B184")
+        s.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "03"))
+        assertEquals("dirac_pop", (setting(s, "dirac_eq") as Setting.Choice).value)
+        val w = s.change(SettingChange.Choice("dirac_eq", "dirac_vocals"))!!.single()
+        assertEquals(NothingCommand.SET_DIRAC_OPTEO_EQ, w.command)
+        assertEquals("04", hex(w.payload))
+        s.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "06"))
+        assertEquals("custom", (setting(s, "dirac_eq") as Setting.Choice).value)
+        val ear2 = session("B155")
+        ear2.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "03"))
+        assertEquals(null, setting(ear2, "dirac_eq"))
+    }
+
+    @Test
     fun twoDevicesAndPersonalisedNoiseCancelling() {
         // Nothing X's DualConnectViewModel: anything but 0 is on, 1 and 0 written; DeviceANCSwitch: the switch, then the calibration byte.
         val s = session("B155")

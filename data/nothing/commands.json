@@ -1,5 +1,5 @@
 {
- "_about": "Nothing's control commands, read from Nothing X 3.4.15 (com.nothing.smartcenter, decompiled outside the repo on 2026-10-18; none of its code is here): com.nothing.base.protocol.constant.ProtocolConstant, by the names it gives, and the EQ commands com.nothing.core.ext.TWSDeviceExtKt keeps to itself. code is the 16-bit command in hex: reads are C0xx, writes F0xx, events the earbuds send unasked E0xx, debug FCxx. The earbuds answer a command with it and bit 15 cleared. never_send marks firmware update, factory reset, calibration, test and debug traffic; private marks reads whose replies hold a serial number or other devices' addresses, which PairFree never sends. docs/nothing/PROTOCOL.md explains the frame and the payloads.",
+ "_about": "Nothing's control commands, read from Nothing X 3.4.15 (com.nothing.smartcenter, decompiled outside the repo on 2026-10-18; none of its code is here): com.nothing.base.protocol.constant.ProtocolConstant, by the names it gives, and the EQ commands com.nothing.core.ext.TWSDeviceExtKt keeps to itself. code is the 16-bit command in hex: reads are C0xx, writes F0xx, events the earbuds send unasked E0xx, debug FCxx. The earbuds answer a command with it and bit 15 cleared. never_send marks firmware update, factory reset, calibration, test and debug traffic; private marks reads whose replies hold a serial number or other devices' addresses, which PairFree never sends. docs/nothing/PROTOCOL.md explains the frame and the payloads. SET_CALL_TRANSPARENCY (F060) and GET_CALL_TRANSPARENCY (C05F) are not in ProtocolConstant: they come from Nothing X's Flutter layer (EarHelper.setCallTransparencyEnable, read with blutter outside the repo on 2026-11-13).",
  "frame": {
   "service_uuid": "AEAC4A03-DFF5-498F-843A-34487CF133EB",
   "start": "55",
@@ -739,6 +739,16 @@
    "name": "DEBUG_CURVE_COMMAND",
    "kind": "debug",
    "never_send": true
+  },
+  {
+   "code": "F060",
+   "name": "SET_CALL_TRANSPARENCY",
+   "kind": "set"
+  },
+  {
+   "code": "C05F",
+   "name": "GET_CALL_TRANSPARENCY",
+   "kind": "get"
   }
  ]
 }

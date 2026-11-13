@@ -10,23 +10,24 @@ Why PairFree:
 • Small and quick: about 3 MB, with no login and no server to wait for
 • Open source (GPL-3.0), with every protocol documented and tested in its repository
 • Your equalizer as files: save your own curves, and export and share them
+• Translations: the app has a language picker, and a new language is one file added by pull request
 
 Supported brands:
 
-• SOUNDPEATS: 47 models, tried on the H3, Air5 Pro+, C30 and TRUEFREE Clip C10
-• Soundcore (Anker): 66 models, tried on the Space A40, AeroClip, Q20i and Sleep A20. With the open-source OpenSCQ30
+• SOUNDPEATS: 88 models, tried on the H3, Air5 Pro+, C30, T3 Pro and TRUEFREE Clip C10
+• Soundcore (Anker): 67 models, tried on the Space A40, AeroClip, Q20i and Sleep A20. With the open-source OpenSCQ30
 • Samsung Galaxy Buds: 16 models, from the 2019 Buds to the Buds4 Pro. From Samsung's plugin and the open-source GalaxyBudsClient
-• Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6. From Sony's app, checked against Gadgetbridge
+• Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6, tried on the WF-1000XM5. From Sony's app, checked against Gadgetbridge
 • Bose: 22 models, from the QC35 to the QC Ultra 2. From Bose's app and bosectl, without Bose's cloud
-• AirPods and Beats on Apple's chips: 30 models, from LibrePods and Apple's Beats app. AirPods need Android 17, or a Pixel on 16 QPR3, or a OnePlus, OPPO or realme phone on 16; the Beats need no particular version
+• AirPods and Beats on Apple's chips: 30 models, tried on the AirPods Pro 3, from LibrePods and Apple's Beats app. AirPods need Android 17, or a Pixel on 16 QPR3, or a OnePlus, OPPO or realme phone on 16; the Beats need no particular version
 • JBL: 112 models, tried on the Live Buds 3. From JBL's app, checked against JblTray
 • Nothing and CMF: 19 models. From Nothing X, checked against nada and nadamas
 • Google Pixel Buds: 5 models, tried on the Pro. From Google's app, checked against pbpctrl
-• QCY: 194 models. From QCY's app, checked against OpenQCY-Desktop
-• 1MORE: 37 models. From 1MORE's app
+• QCY: 194 models, tried on the H3 Pro and T13 ANC2. From QCY's app, checked against OpenQCY-Desktop
+• 1MORE: 39 models. From 1MORE's app
 • EarFun: 26 models. From EarFun's app, checked against Gadgetbridge
-• Cambridge Audio: Melomania 1+ and Touch. From the Melomania app
-• OnePlus and OPPO: 53 models. From HeyMelody
+• Cambridge Audio: 8 models, Melomania 1+ and Touch and the Melomania Connect earbuds. From the Melomania apps
+• OnePlus and OPPO: 53 models, tried on the Buds 4. From HeyMelody
 
 What it controls, on the models that have each:
 

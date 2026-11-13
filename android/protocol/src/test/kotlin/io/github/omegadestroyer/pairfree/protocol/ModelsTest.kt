@@ -20,6 +20,7 @@ class ModelsTest {
             assertEquals(json.str("firmware_code"), model.code)
             assertEquals(json.getValue("names").jsonArray.map { it.jsonPrimitive.content }, model.names, model.code)
             assertEquals(json.str("family"), model.family, model.code)
+            assertEquals(json["touch_disable_inverted"]?.jsonPrimitive?.content == "true", model.touchInverted, model.code)
             val excludes = json["ldac_excludes"]?.jsonArray?.map { Command.valueOf(it.jsonPrimitive.content.uppercase()) }
             assertEquals(excludes.orEmpty().toSet(), model.ldacExcludes, model.code)
             assertEquals(json["ldac_or_multipoint"]?.jsonPrimitive?.boolean ?: false, model.ldacOrMultipoint, model.code)

@@ -59,7 +59,7 @@ private fun bytes(hex: String): ByteArray = hex.chunked(2).map { it.toInt(16).to
 private val H3_EQ: EqState = run {
     val model = Models.find("S5", null)!!
     val layout = model.eq!!
-    val mine = EqProfile(EqProfile.USER + "Customize1", "Customize1", listOf(2, 1, 0, 0, 0, 0, 0, 1, 2, 2))
+    val mine = EqProfile(EqProfile.USER + "Customize1", "Customize1", listOf(2.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 2.0))
     val target = BandEqTarget(SoundpeatsBandEq(layout))
     EqState(model, layout, Equalizer.builtIns(layout, target) + mine, EqSetting(mine.id, mine.gains), target = target)
 }

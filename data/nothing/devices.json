@@ -1127,7 +1127,8 @@
        ],
        "default": null
       }
-     ]
+     ],
+     "call_transparency": true
     }
    ]
   },
@@ -2923,7 +2924,8 @@
        ],
        "default": null
       }
-     ]
+     ],
+     "power_off_time": true
     }
    ]
   }

@@ -79,8 +79,12 @@ ACTIONS = {
     "previous track": "previous", "skip track backward": "previous", "next track": "next", "skip track forward": "next",
     "voice assistant": "voice_assistant", "volume up": "volume_up", "volume down": "volume_down",
     "gaming mode": "game_mode", "low-latency": "game_mode", "low latency mode": "game_mode",
-    "anc mode": "noise_control", "anc": "noise_control",
+    "anc mode": "noise_control", "anc": "noise_control", "anc switching": "noise_control",
+    "volume up+": "volume_up", "volume up-": "volume_down", "take pictures": "take_picture",
+    "n/a": "none", "no function": "none", "nan": "none",
 }
+STANDARD = {"none": 0, "play_pause": 1, "previous": 2, "next": 3, "voice_assistant": 4, "volume_up": 5, "volume_down": 6, "game_mode": 7}  # data/qcy/commands.json keys.actions
+
 GESTURES = {"touch": "single", "double touch": "double", "triple touch": "triple", "long press": "hold"}
 CLICKS = (("single_click", "touch"), ("double_click", "double touch"), ("three_click", "triple touch"), ("long_press", "long press"))
 NEVER = {"1", "3", "100", "type_4"}  # firmware update, resets, pairing records
@@ -90,6 +94,92 @@ SETTINGS = {6: "in_ear", 9: "game_mode", 16: "sleep_mode", 18: "led", 35: "ldac"
 def freq(text):
     t = text.strip().lower()
     return round(float(t[:-1]) * 1000) if t.endswith("k") else int(float(t))
+
+
+def preset_gains(layout, eq):
+    """The presets of a graphic EQ panel as curves: name and a gain in dB per band, for the presets that sit on the model's own bands (no frequency list of
+    their own). The others are parametric (their own frequencies, Q and filter types, written as a parametric EQ) and are left out."""
+    out = []
+    for p in layout.get("sys_eq", []):
+        gains = [x.strip() for x in str(p.get("eqs", "")).split(",") if x.strip() != ""]
+        own = p.get("freq")
+        if len(gains) != eq["bands"] or (own and [freq(x) for x in own.split(",")] != eq["freqs"]):
+            continue
+        if any(o["name"] == p["name"] for o in out):
+            continue  # a second preset under the same name (two "Bass" on the H2 Pro): the first is kept
+        try:
+            out.append({"name": p["name"], "gains": [float(g) for g in gains]})
+        except ValueError:
+            continue
+    return out
+
+
+CHOICES = {46: "music_mode", 51: "touch_sensitivity"}  # panel rows of type 1000 or 111 that pick one of a few values (cmdid: PairFree's name)
+
+
+def choices(panel):
+    """The settings a panel row picks from a list: its item (the cmdid in hex), PairFree's name, and each option's value byte and the panel's name for it."""
+    out = []
+    for l in (panel.get("data") or {}).get("controlPanel", {}).get("layouts", []):
+        cmd = l.get("cmdid")
+        try:
+            cmd = int(cmd)
+        except (TypeError, ValueError):
+            continue
+        if cmd not in CHOICES or str(l.get("type")) not in ("1000", "111"):
+            continue
+        options = []
+        for s_ in l.get("subItem", []):
+            key = s_.get("key") if s_.get("key") is not None else ("%02X" % s_["index"] if "index" in s_ else None)
+            if key is not None and s_.get("name"):
+                options.append({"key": key, "name": s_["name"]})
+        if not options:
+            options = [{"key": k, "name": n} for k, n in (l.get("itemName") or {}).items()]
+        if options and CHOICES[cmd] not in [x["setting"] for x in out]:
+            out.append({"item": "%02X" % cmd, "setting": CHOICES[cmd], "options": options})
+    return out
+
+
+def type1_touch(l):
+    """The older button screen (type 1): left and right, each gesture with the actions and their bytes. The panel's own byte for an
+    action that is not in QCY's standard table (ANC mode is 0A on some models and 0B on others) goes in extra_actions."""
+    gestures, actions, extra = [], [], {}
+    for key, gesture in CLICKS:
+        g = (l.get("left") or {}).get(key)
+        if not isinstance(g, dict) or not g.get("list"):
+            continue
+        gestures.append(GESTURES[gesture])
+        for f in g["list"]:
+            n = f["name"].strip().lower()
+            cmd = int(f["cmd"], 16)
+            name = {5: "volume_up", 6: "volume_down"}[cmd] if n == "volume" and cmd in (5, 6) else ACTIONS.get(n)
+            if name is None:
+                continue
+            if name not in actions:
+                actions.append(name)
+            if STANDARD.get(name) != cmd:
+                extra[str(cmd)] = name
+    if not gestures:
+        return None
+    order = list(dict.fromkeys(ACTIONS.values()))
+    out = {"gestures": gestures, "actions": sorted(actions, key=lambda a: order.index(a) if a in order else 99)}
+    if extra:
+        out["extra_actions"] = dict(sorted(extra.items(), key=lambda kv: int(kv[0])))
+    return out
+
+
+def jieli_noise(l):
+    """The older noise screen (type 11): JieLi's own noise mode, one number per mode (ancindex 1 on, 2 off, 3 transparency), packed
+    as mode << 16 so the shared noise control can use it."""
+    names = {"anc on": "cancelling", "anc off": "off", "transparency": "transparency"}
+    modes = []
+    for m in l["modes"]:
+        mode_ = names.get(m["name"].strip().lower())
+        if mode_ is None:
+            return None
+        v = packed(m["ancindex"] << 16)
+        modes.append({"mode": mode_, "from": v, "to": v, "default": v})
+    return modes
 
 
 def features(panel):
@@ -102,6 +192,9 @@ def features(panel):
         elif t == 2 and l.get("freq"):
             out["eq"] = {"bands": l["count"], "max_db": l["maxdb"], "freqs": [freq(x) for x in l["freq"].split(",")],
                          "presets": [p["name"] for p in l.get("sys_eq", [])]}
+            gains = preset_gains(l, out["eq"])
+            if gains:
+                out["eq"]["preset_gains"] = gains
         elif t in (10, 14) and (l.get("music") or {}).get("event"):
             # The button screen of the newer panels (the older type 1 screen is not read, as in the Quicky list).
             events = [(e["name"], e["left"]["list"]) for e in l["music"]["event"]]
@@ -128,6 +221,22 @@ def features(panel):
                     seen.append({"item": item, "setting": setting})
             if seen:
                 out["settings"] = seen
+    if "touch" not in out:
+        for l in layouts:
+            if l.get("type") == 1:
+                t1 = type1_touch(l)
+                if t1:
+                    out["touch"] = t1
+    if "anc" not in out:
+        for l in layouts:
+            if l.get("type") == 11 and l.get("modes"):
+                modes = jieli_noise(l)
+                if modes:
+                    out["anc"] = modes
+                    out["jieli_noise"] = True
+    picks = choices(panel)
+    if picks:
+        out["settings"] = out.get("settings", []) + picks
     return out
 
 
@@ -146,7 +255,7 @@ def entry(product, panel):
             names.append(n)
     d = {"vendor_id": v, "name": name(product["title"]), "names": names, "family": family(v), "protocol": protocol(v), "kind": kind(v)}
     f = features(panel)
-    for key in ("anc", "eq", "touch", "balance", "sleep_timer", "settings"):
+    for key in ("anc", "jieli_noise", "eq", "touch", "balance", "sleep_timer", "settings"):
         if key in f:
             d[key] = f[key]
     return d
@@ -186,6 +295,44 @@ def main():
     new = [entry(p, panel(p["vendorID"])) for p in missing]
     for d in new:
         print("  ", d["vendor_id"], d["name"], d["protocol"], sorted(k for k in d if k not in ("vendor_id", "name", "names", "family", "protocol", "kind")))
+    if "--choices" in sys.argv:
+        # Adds the list-picking settings (music mode, touch sensitivity) to the models whose panel has them, leaving every other field as it is.
+        added = 0
+        for v, d in have.items():
+            if v in prods and panel(v):
+                have_names = [x["setting"] for x in d.get("settings", [])]
+                for pick in choices(panel(v)):
+                    if pick["setting"] not in have_names:
+                        d.setdefault("settings", []).append(pick)
+                        added += 1
+        DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
+        print(added, "settings added")
+    if "--keys" in sys.argv:
+        # Adds the older panels' buttons (type 1) and noise screen (type 11) to the models that lack them, leaving every other field as it is.
+        touched = noised = 0
+        for v, d in have.items():
+            if v in prods and panel(v):
+                f = features(panel(v))
+                if "touch" not in d and f.get("touch"):
+                    d["touch"] = f["touch"]
+                    touched += 1
+                if "anc" not in d and f.get("jieli_noise"):
+                    d["anc"] = f["anc"]
+                    d["jieli_noise"] = True
+                    noised += 1
+        DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
+        print("buttons added to", touched, "models, noise control to", noised)
+    if "--presets" in sys.argv:
+        # Adds the preset curves to the models that have them, leaving every other field as it is.
+        added = 0
+        for v, d in have.items():
+            if d.get("eq") and v in prods and panel(v):
+                gains = (entry(prods[v], panel(v)).get("eq") or {}).get("preset_gains")
+                if gains and d["eq"].get("preset_gains") != gains:
+                    d["eq"]["preset_gains"] = gains
+                    added += 1
+        DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
+        print("preset curves added to", added, "models")
     if "--write" in sys.argv and new:
         data["devices"] = sorted(data["devices"] + new, key=lambda d: d["vendor_id"])
         about = data["_about"]

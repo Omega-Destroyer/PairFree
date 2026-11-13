@@ -1,7 +1,606 @@
 {
   "_source": "Melomania 2.8.12, com/cambridgeaudio/melomania/b, SearchingActivity, b3/n and a3/h. No PairFree hardware testing.",
   "devices": [
-    {"name": "Melomania 1+", "names": [], "ambient": false, "control_count": 9, "reports": [], "virtual_tests": ["docs/cambridge/VIRTUAL_TESTING.md"]},
-    {"name": "Melomania Touch", "names": [], "ambient": true, "control_count": 10, "reports": [], "virtual_tests": ["docs/cambridge/VIRTUAL_TESTING.md"]}
-  ]
+    {
+      "name": "Melomania 1+",
+      "names": [],
+      "ambient": false,
+      "control_count": 9,
+      "reports": [],
+      "virtual_tests": [
+        "docs/cambridge/VIRTUAL_TESTING.md"
+      ]
+    },
+    {
+      "name": "Melomania Touch",
+      "names": [],
+      "ambient": true,
+      "control_count": 10,
+      "reports": [],
+      "virtual_tests": [
+        "docs/cambridge/VIRTUAL_TESTING.md"
+      ]
+    },
+    {
+      "name": "Melomania A100",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": [],
+      "config": {
+        "headphones": false,
+        "touch": true,
+        "mono": true,
+        "sleep": true,
+        "loudness": true,
+        "side_tone": false,
+        "connected": true,
+        "codec": true,
+        "spatial": false,
+        "adaptive": true
+      },
+      "eq": {
+        "min_db": -9.0,
+        "max_db": 3.0,
+        "custom": true,
+        "presets": [
+          {
+            "name": "Flat",
+            "gains": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Blues",
+            "gains": [
+              -4.2,
+              -1.7,
+              -1.0,
+              -1.4,
+              1.2,
+              2.4,
+              2.8
+            ]
+          },
+          {
+            "name": "Electronic",
+            "gains": [
+              0.9,
+              1.7,
+              0.9,
+              -0.7,
+              0.2,
+              0.9,
+              -1.2
+            ]
+          },
+          {
+            "name": "Natural",
+            "gains": [
+              -0.3,
+              -0.2,
+              -0.1,
+              0.0,
+              0.0,
+              -0.1,
+              -3.6
+            ]
+          },
+          {
+            "name": "Rock",
+            "gains": [
+              1.4,
+              4.8,
+              1.1,
+              0.4,
+              1.4,
+              0.8,
+              -1.7
+            ]
+          },
+          {
+            "name": "Voice",
+            "gains": [
+              -6.0,
+              -4.6,
+              -1.0,
+              0.4,
+              3.0,
+              3.8,
+              -4.7
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Melomania A100 SE",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": [],
+      "config": {
+        "headphones": false,
+        "touch": true,
+        "mono": true,
+        "sleep": true,
+        "loudness": true,
+        "side_tone": false,
+        "connected": true,
+        "codec": true,
+        "spatial": true,
+        "adaptive": true
+      },
+      "eq": {
+        "min_db": -9.0,
+        "max_db": 3.0,
+        "custom": true,
+        "presets": [
+          {
+            "name": "Flat",
+            "gains": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Blues",
+            "gains": [
+              -4.2,
+              -1.7,
+              -1.0,
+              -1.4,
+              1.2,
+              2.4,
+              2.8
+            ]
+          },
+          {
+            "name": "Electronic",
+            "gains": [
+              0.9,
+              1.7,
+              0.9,
+              -0.7,
+              0.2,
+              0.9,
+              -1.2
+            ]
+          },
+          {
+            "name": "Natural",
+            "gains": [
+              -0.3,
+              -0.2,
+              -0.1,
+              0.0,
+              0.0,
+              -0.1,
+              -3.6
+            ]
+          },
+          {
+            "name": "Rock",
+            "gains": [
+              1.4,
+              4.8,
+              1.1,
+              0.4,
+              1.4,
+              0.8,
+              -1.7
+            ]
+          },
+          {
+            "name": "Voice",
+            "gains": [
+              -6.0,
+              -4.6,
+              -1.0,
+              0.4,
+              3.0,
+              3.8,
+              -4.7
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Melomania M100",
+      "names": [
+        "Melomania T100"
+      ],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": [],
+      "config": {
+        "headphones": false,
+        "touch": true,
+        "mono": true,
+        "sleep": true,
+        "loudness": false,
+        "side_tone": false,
+        "connected": false,
+        "codec": false,
+        "spatial": false,
+        "adaptive": false
+      },
+      "eq": {
+        "min_db": -9.0,
+        "max_db": 3.0,
+        "custom": true,
+        "presets": [
+          {
+            "name": "Flat",
+            "gains": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Blues",
+            "gains": [
+              -4.2,
+              -1.7,
+              -1.0,
+              -1.4,
+              1.2,
+              2.4,
+              2.8
+            ]
+          },
+          {
+            "name": "Electronic",
+            "gains": [
+              0.9,
+              1.7,
+              0.9,
+              -0.7,
+              0.2,
+              0.9,
+              -1.2
+            ]
+          },
+          {
+            "name": "Natural",
+            "gains": [
+              -0.3,
+              -0.2,
+              -0.1,
+              0.0,
+              0.0,
+              -0.1,
+              -3.6
+            ]
+          },
+          {
+            "name": "Rock",
+            "gains": [
+              1.4,
+              4.8,
+              1.1,
+              0.4,
+              1.4,
+              0.8,
+              -1.7
+            ]
+          },
+          {
+            "name": "Voice",
+            "gains": [
+              -6.0,
+              -4.6,
+              -1.0,
+              0.4,
+              3.0,
+              3.8,
+              -4.7
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Melomania P100",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": [],
+      "config": {
+        "headphones": true,
+        "touch": false,
+        "mono": false,
+        "sleep": false,
+        "loudness": false,
+        "side_tone": true,
+        "connected": true,
+        "codec": false,
+        "spatial": false,
+        "adaptive": false
+      },
+      "eq": {
+        "min_db": -9.0,
+        "max_db": 3.0,
+        "custom": true,
+        "presets": [
+          {
+            "name": "Flat",
+            "gains": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Blues",
+            "gains": [
+              0.0,
+              -4.5,
+              0.0,
+              0.0,
+              1.4,
+              0.5,
+              1.7
+            ]
+          },
+          {
+            "name": "Electronic",
+            "gains": [
+              0.0,
+              2.5,
+              0.4,
+              0.0,
+              2.2,
+              0.0,
+              0.7
+            ]
+          },
+          {
+            "name": "Natural",
+            "gains": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -2.1,
+              -4.2,
+              0.2
+            ]
+          },
+          {
+            "name": "Rock",
+            "gains": [
+              -0.9,
+              3.0,
+              0.6,
+              -0.3,
+              2.5,
+              0.0,
+              -0.6
+            ]
+          },
+          {
+            "name": "Voice",
+            "gains": [
+              -5.4,
+              2.5,
+              1.5,
+              2.0,
+              1.5,
+              0.2,
+              -0.9
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Melomania P100 SE",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": [],
+      "config": {
+        "headphones": true,
+        "touch": false,
+        "mono": false,
+        "sleep": false,
+        "loudness": true,
+        "side_tone": true,
+        "connected": true,
+        "codec": false,
+        "spatial": false,
+        "adaptive": false
+      },
+      "eq": {
+        "min_db": -9.0,
+        "max_db": 3.0,
+        "custom": true,
+        "presets": [
+          {
+            "name": "Flat",
+            "gains": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Blues",
+            "gains": [
+              0.0,
+              -4.5,
+              0.0,
+              0.0,
+              1.4,
+              0.5,
+              1.7
+            ]
+          },
+          {
+            "name": "Electronic",
+            "gains": [
+              0.0,
+              2.5,
+              0.4,
+              0.0,
+              2.2,
+              0.0,
+              0.7
+            ]
+          },
+          {
+            "name": "Natural",
+            "gains": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -2.1,
+              -4.2,
+              0.2
+            ]
+          },
+          {
+            "name": "Rock",
+            "gains": [
+              -0.9,
+              3.0,
+              0.6,
+              -0.3,
+              2.5,
+              0.0,
+              -0.6
+            ]
+          },
+          {
+            "name": "Voice",
+            "gains": [
+              -5.4,
+              2.5,
+              1.5,
+              2.0,
+              1.5,
+              0.2,
+              -0.9
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Melomania X100",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": [],
+      "config": {
+        "headphones": false,
+        "touch": false,
+        "mono": false,
+        "sleep": false,
+        "loudness": false,
+        "side_tone": false,
+        "connected": false,
+        "codec": false,
+        "spatial": false,
+        "adaptive": false
+      },
+      "eq": {
+        "min_db": -9.0,
+        "max_db": 3.0,
+        "custom": false,
+        "presets": [
+          {
+            "name": "Flat",
+            "gains": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Rock",
+            "gains": [
+              0.0,
+              2.0,
+              0.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Jazz",
+            "gains": [
+              0.0,
+              3.0,
+              0.0,
+              1.0,
+              4.0
+            ]
+          },
+          {
+            "name": "R&B",
+            "gains": [
+              2.0,
+              2.0,
+              0.0,
+              2.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Voice",
+            "gains": [
+              -6.0,
+              -2.0,
+              0.0,
+              6.0,
+              0.0
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "_about_connect": "Melomania Connect models: config is the app's LocalConfig per device type (Melomania Connect 2.6.0; the defaults are decoded from its constructor masks: the app shows touch controls, mono and sleep mode unless a model turns them off, and the EQ runs from -9 to +3 dB, a negative step being three times a positive one). The X100 has no LocalConfig entry, so every optional control is off and its EQ is presets only. eq.presets are RemoteConfigDefault.json's per-model presets (the app also reads Firebase Remote Config, which may update them); the earbuds report their own band frequencies."
 }

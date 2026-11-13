@@ -33,17 +33,26 @@ public abstract class CurveBandEq(protected val layout: EqLayout) : BandEq {
 
     public override fun eqCustomFrames(gains: List<Int>, preampDb: Int): List<ByteArray>? =
         if (gains.size != layout.bands.size) null else writeCurve(layout.masterGainDb + preampDb, layout.curve(gains))
+
+    public override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? =
+        if (gains.size != layout.bands.size) null else writeCurve(layout.masterGainDb + preampDb, layout.curve(gains))
 }
 
 /** SoundPEATS: every band in every write, on top of the model's base curve (docs/soundpeats/PROTOCOL.md section 4), with the preamp the models offer. */
 public class SoundpeatsBandEq(layout: EqLayout) : CurveBandEq(layout) {
     public override val eqHasPreamp: Boolean = true
 
+    /** The band frames carry the gain in hundredths of a dB (scaled by 60 on the wire), so half steps go through. */
+    public override val eqGainStepDb: Double = 0.5
+
     // The layout encodes its own frames (byte for byte as data/soundpeats/test_vectors.json pins them), so the model's layout writes, not a rebuilt curve.
     public override fun eqPresetFrames(name: String, preampDb: Int): List<ByteArray>? =
         layout.presets.firstOrNull { it.name == name }?.let { layout.frames(it, preampDb) }
 
     public override fun eqCustomFrames(gains: List<Int>, preampDb: Int): List<ByteArray>? =
+        if (gains.size != layout.bands.size) null else layout.frames(gains, preampDb)
+
+    public override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? =
         if (gains.size != layout.bands.size) null else layout.frames(gains, preampDb)
 
     public override fun writeCurve(masterGainDb: Double, curve: List<EqBand>): List<ByteArray> = emptyList()

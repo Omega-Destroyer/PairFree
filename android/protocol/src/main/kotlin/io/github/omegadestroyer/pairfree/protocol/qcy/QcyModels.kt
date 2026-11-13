@@ -39,13 +39,23 @@ public data class QcyTouch(val gestures: List<String>, val actions: List<String>
 }
 
 /** One switch a model has: its item and PairFree's name for it. */
-public data class QcySetting(val item: Int, val setting: String)
+/** [options] is empty for a switch; a setting the panel picks from a list has each value byte and its name (music mode, touch sensitivity). */
+public data class QcySetting(val item: Int, val setting: String, val options: List<Pair<Int, String>> = emptyList())
 
 /**
  * A model's equalizer as its control panel lays it out: [bands] bands at [freqs] (Hz), each from minus to plus
  * [maxDb] in whole dB, and the names of the panel's presets, whose curves are QCY's server data.
  */
-public data class QcyEqSpec(val bands: Int, val maxDb: Int, val freqs: List<Int>, val presets: List<String>)
+/**
+ * A model's graphic EQ from its control panel: [presets] are all of QCY's preset names; [presetGains] holds the ones that are curves on the model's own bands (a gain in
+ * dB per band, as the panel lists them), which PairFree offers. The rest are parametric (their own frequencies and Q) and are not offered.
+ */
+public data class QcyEqSpec(val bands: Int, val maxDb: Int, val freqs: List<Int>, val presets: List<String>, private val presetData: String = "") {
+    /** The curves as `name=gain,gain;name=...` in the generated table, read once. */
+    val presetGains: Map<String, List<Double>> by lazy {
+        if (presetData.isEmpty()) emptyMap() else presetData.split(';').associate { part -> part.substringBefore('=') to part.substringAfter('=').split(',').map(String::toDouble) }
+    }
+}
 
 /** One QCY model from data/qcy/devices.json, by the vendor id it advertises. */
 public data class QcyModel(
@@ -61,6 +71,8 @@ public data class QcyModel(
     val settings: List<QcySetting>,
     /** The control panel has the timed power off (item 14): the earbuds turn off once the minutes are up. */
     val sleepTimer: Boolean = false,
+    /** The noise control is JieLi's own noise mode (attribute 11, the control panel's type 11 screen), with one number per mode packed as mode << 16. */
+    val jieliNoise: Boolean = false,
     val eq: QcyEqSpec? = null,
     /** Items whose off value is 00 rather than QCY's 02 (the Capsule3 Pro's LDAC and multipoint). */
     val zeroOff: Set<Int> = emptySet(),

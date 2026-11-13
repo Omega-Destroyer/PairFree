@@ -25,8 +25,7 @@ What it shows, where the model has it:
   level notifications and noise control during Live Translate; on the 2020 model sharing detection;
   and on every model Find my earbuds, which opens Google's Find Hub.
 
-Google's app sets the equalizer in half steps; PairFree's in whole ones, so a curve set in Google's
-app shows rounded until you change it here. Live Translate and the digital assistant need Google's
+Google's app sets the equalizer in half steps, and so does PairFree (0.12.0). Live Translate and the digital assistant need Google's
 own apps on the phone.
 
 Finding the earbuds is Google's Find Hub's: it rings and locates them with a key the earbuds share

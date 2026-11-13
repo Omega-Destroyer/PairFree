@@ -35,6 +35,14 @@ class BoseDriver(host: DriverHost) : TalkDriver<BosePacket, BoseTalk>(host) {
 
     override fun talk(opened: ControlLink): BoseTalk = BoseTalk()
 
+    /** The fit test's start goes through the talk's queue like any other message. */
+    override fun sendEq(frames: List<ByteArray>) {
+        val talk = talk ?: return
+        if (!host.connected) return
+        val parser = io.github.omegadestroyer.pairfree.protocol.bose.BoseParser()
+        if (send(talk, frames.flatMap { parser.feed(it) })) publish(talk)
+    }
+
     override fun report(info: ReportInfo): String? {
         val session = session ?: return null
         return buildString {

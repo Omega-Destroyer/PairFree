@@ -35,6 +35,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       2.0,
+       3.0,
+       3.0,
+       -10.0,
+       4.0,
+       -4.0,
+       2.0,
+       1.0,
+       -2.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       5.0,
+       4.0,
+       3.0,
+       -8.0,
+       3.0,
+       -6.0,
+       2.0,
+       3.0,
+       -6.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       3.0,
+       4.0,
+       -8.0,
+       0.0,
+       -3.0,
+       -1.0,
+       2.0,
+       4.0,
+       3.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       3.0,
+       2.0,
+       3.0,
+       -8.0,
+       1.0,
+       -4.0,
+       1.0,
+       2.0,
+       -3.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       4.0,
+       3.0,
+       4.0,
+       -8.0,
+       -2.0,
+       -1.0,
+       -3.0,
+       5.0,
+       1.0,
+       6.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -79,6 +171,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -1.0,
+       2.0,
+       -1.0,
+       -7.0,
+       6.0,
+       2.0,
+       1.0,
+       9.0,
+       -6.0,
+       3.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       3.0,
+       4.0,
+       2.0,
+       -7.0,
+       3.0,
+       1.0,
+       3.0,
+       6.0,
+       -2.0,
+       2.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       2.0,
+       3.0,
+       2.0,
+       -9.0,
+       5.0,
+       0.0,
+       2.0,
+       7.0,
+       -1.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       2.0,
+       1.0,
+       -8.0,
+       4.0,
+       1.0,
+       2.0,
+       7.0,
+       -6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       1.0,
+       3.0,
+       2.0,
+       -8.0,
+       3.0,
+       0.0,
+       3.0,
+       5.0,
+       1.0,
+       3.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -163,6 +347,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       2.0,
+       3.0,
+       3.0,
+       -10.0,
+       4.0,
+       -4.0,
+       2.0,
+       1.0,
+       -2.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       5.0,
+       4.0,
+       3.0,
+       -8.0,
+       3.0,
+       -6.0,
+       2.0,
+       3.0,
+       -6.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       3.0,
+       4.0,
+       -8.0,
+       0.0,
+       -3.0,
+       -1.0,
+       2.0,
+       4.0,
+       3.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       3.0,
+       2.0,
+       3.0,
+       -8.0,
+       1.0,
+       -4.0,
+       1.0,
+       2.0,
+       -3.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       4.0,
+       3.0,
+       4.0,
+       -8.0,
+       -2.0,
+       -1.0,
+       -3.0,
+       5.0,
+       1.0,
+       6.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -205,6 +481,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -1.0,
+       2.0,
+       -1.0,
+       -7.0,
+       6.0,
+       2.0,
+       1.0,
+       9.0,
+       -6.0,
+       3.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       3.0,
+       4.0,
+       2.0,
+       -7.0,
+       3.0,
+       1.0,
+       3.0,
+       6.0,
+       -2.0,
+       2.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       2.0,
+       3.0,
+       2.0,
+       -9.0,
+       5.0,
+       0.0,
+       2.0,
+       7.0,
+       -1.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       2.0,
+       1.0,
+       -8.0,
+       4.0,
+       1.0,
+       2.0,
+       7.0,
+       -6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       1.0,
+       3.0,
+       2.0,
+       -8.0,
+       3.0,
+       0.0,
+       3.0,
+       5.0,
+       1.0,
+       3.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -310,6 +678,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -323,7 +783,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6514,
@@ -356,6 +833,23 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Classic",
+      "gains": [
+       -3.0,
+       2.0,
+       -11.0,
+       -5.0,
+       -9.0,
+       -4.0,
+       5.0,
+       -5.0,
+       5.0,
+       4.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -369,7 +863,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6515,
@@ -403,6 +914,23 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Classic",
+      "gains": [
+       -3.0,
+       2.0,
+       -11.0,
+       -5.0,
+       -9.0,
+       -4.0,
+       5.0,
+       -5.0,
+       5.0,
+       4.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -416,7 +944,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6516,
@@ -450,6 +995,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -463,7 +1100,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6517,
@@ -496,6 +1150,23 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Classic",
+      "gains": [
+       -3.0,
+       2.0,
+       -11.0,
+       -5.0,
+       -9.0,
+       -4.0,
+       5.0,
+       -5.0,
+       5.0,
+       4.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -509,7 +1180,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6518,
@@ -542,6 +1230,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -555,7 +1335,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6519,
@@ -588,6 +1385,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -601,7 +1490,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6520,
@@ -634,6 +1540,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       -2.0,
+       -8.0,
+       0.0,
+       3.0,
+       4.0,
+       2.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       5.0,
+       6.0,
+       0.0,
+       -2.0,
+       -10.0,
+       -2.0,
+       4.0,
+       2.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       0.0,
+       -2.0,
+       -11.0,
+       -2.0,
+       4.0,
+       2.0,
+       6.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -2.0,
+       -3.0,
+       0.0,
+       -2.0,
+       -10.0,
+       0.0,
+       4.0,
+       4.0,
+       2.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       4.0,
+       4.0,
+       0.0,
+       -2.0,
+       -6.0,
+       0.0,
+       5.0,
+       4.0,
+       4.0,
+       6.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -647,7 +1645,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6577,
@@ -690,6 +1705,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       6.0,
+       5.0,
+       4.0,
+       3.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       5.0,
+       5.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -731,6 +1838,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       6.0,
+       5.0,
+       4.0,
+       3.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       5.0,
+       5.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -775,6 +1974,113 @@
      "Soft",
      "Classic",
      "Bass"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       8.0,
+       8.0,
+       8.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -818,6 +2124,98 @@
      "Soft",
      "Classic",
      "Bass"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -950,6 +2348,98 @@
      "Soft",
      "Classic",
      "Bass"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -1114,7 +2604,9 @@
   },
   {
    "vendor_id": 16759,
-   "reports": ["data/qcy/reports/H3Pro_4177_0.5.3.3.txt"],
+   "reports": [
+    "data/qcy/reports/H3Pro_4177_0.5.3.3.txt"
+   ],
    "name": "QCY H3 Pro",
    "names": [
     "QCY H3 Pro"
@@ -1592,6 +3084,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "2E",
+     "setting": "music_mode",
+     "options": [
+      {
+       "key": "01",
+       "name": "Music mode"
+      },
+      {
+       "key": "03",
+       "name": "Gaming mode"
+      },
+      {
+       "key": "04",
+       "name": "Movie Mode"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -1687,6 +3197,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "2E",
+     "setting": "music_mode",
+     "options": [
+      {
+       "key": "01",
+       "name": "Music mode"
+      },
+      {
+       "key": "03",
+       "name": "Gaming mode"
+      },
+      {
+       "key": "04",
+       "name": "Movie Mode"
+      }
+     ]
     }
    ]
   },
@@ -1810,9 +3338,121 @@
      "Classic",
      "Countryside",
      "Jazz"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       -2.0,
+       0.0,
+       2.0,
+       4.0,
+       -2.0,
+       -2.0,
+       0.0,
+       0.0,
+       4.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       3.0,
+       1.0,
+       0.0,
+       -2.0,
+       -4.0,
+       -4.0,
+       -2.0,
+       0.0,
+       1.0,
+       2.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       0.0,
+       8.0,
+       8.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "name": "Countryside",
+      "gains": [
+       -2.0,
+       0.0,
+       0.0,
+       2.0,
+       2.0,
+       0.0,
+       0.0,
+       0.0,
+       4.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Jazz",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       4.0,
+       4.0,
+       4.0,
+       0.0,
+       2.0,
+       3.0,
+       4.0
+      ]
+     }
     ]
    },
-   "sleep_timer": true
+   "sleep_timer": true,
+   "settings": [
+    {
+     "item": "2E",
+     "setting": "music_mode",
+     "options": [
+      {
+       "key": "01",
+       "name": "Music mode"
+      },
+      {
+       "key": "03",
+       "name": "Gaming mode"
+      },
+      {
+       "key": "04",
+       "name": "Movie Mode"
+      }
+     ]
+    }
+   ]
   },
   {
    "vendor_id": 16821,
@@ -1845,9 +3485,121 @@
      "Classic",
      "Countryside",
      "Jazz"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       -2.0,
+       0.0,
+       2.0,
+       4.0,
+       -2.0,
+       -2.0,
+       0.0,
+       0.0,
+       4.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       3.0,
+       1.0,
+       0.0,
+       -2.0,
+       -4.0,
+       -4.0,
+       -2.0,
+       0.0,
+       1.0,
+       2.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       0.0,
+       8.0,
+       8.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "name": "Countryside",
+      "gains": [
+       -2.0,
+       0.0,
+       0.0,
+       2.0,
+       2.0,
+       0.0,
+       0.0,
+       0.0,
+       4.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Jazz",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       4.0,
+       4.0,
+       4.0,
+       0.0,
+       2.0,
+       3.0,
+       4.0
+      ]
+     }
     ]
    },
-   "sleep_timer": true
+   "sleep_timer": true,
+   "settings": [
+    {
+     "item": "2E",
+     "setting": "music_mode",
+     "options": [
+      {
+       "key": "01",
+       "name": "Music mode"
+      },
+      {
+       "key": "03",
+       "name": "Gaming mode"
+      },
+      {
+       "key": "04",
+       "name": "Movie Mode"
+      }
+     ]
+    }
+   ]
   },
   {
    "vendor_id": 16822,
@@ -2151,6 +3903,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -2163,7 +4007,49 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "10": "noise_control"
+    }
+   },
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010000",
+     "to": "010000",
+     "default": "010000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "jieli_noise": true
   },
   {
    "vendor_id": 18290,
@@ -2198,6 +4084,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -2210,7 +4188,49 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "10": "noise_control"
+    }
+   },
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "410000",
+     "to": "410000",
+     "default": "410000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "jieli_noise": true
   },
   {
    "vendor_id": 18293,
@@ -2243,6 +4263,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -2256,11 +4368,30 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18294,
-   "reports": ["data/qcy/reports/T13ANC2_4776_0.1.0.2.txt"],
+   "reports": [
+    "data/qcy/reports/T13ANC2_4776_0.1.0.2.txt"
+   ],
    "name": "QCY T13 ANC2",
    "names": [
     "QCY T13 ANC2"
@@ -2303,7 +4434,49 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "10": "noise_control"
+    }
+   },
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010000",
+     "to": "010000",
+     "default": "010000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "jieli_noise": true
   },
   {
    "vendor_id": 18295,
@@ -2349,7 +4522,49 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "10": "noise_control"
+    }
+   },
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010000",
+     "to": "010000",
+     "default": "010000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "jieli_noise": true
   },
   {
    "vendor_id": 18296,
@@ -2403,7 +4618,24 @@
      "setting": "sleep_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18297,
@@ -2468,7 +4700,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18298,
@@ -2565,7 +4814,24 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18299,
@@ -2615,7 +4881,24 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18300,
@@ -2712,7 +4995,24 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18301,
@@ -2762,7 +5062,24 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18302,
@@ -2827,7 +5144,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18303,
@@ -2881,7 +5215,24 @@
      "setting": "sleep_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18801,
@@ -2916,6 +5267,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -2923,7 +5366,22 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18802,
@@ -2958,6 +5416,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -2965,7 +5515,22 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18803,
@@ -3000,6 +5565,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3007,7 +5664,23 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 18804,
@@ -3042,6 +5715,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3053,7 +5818,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18805,
@@ -3088,6 +5870,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3095,7 +5969,23 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 18806,
@@ -3129,6 +6019,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3140,7 +6122,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18808,
@@ -3174,6 +6173,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3185,7 +6276,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18809,
@@ -3218,6 +6326,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3229,7 +6429,28 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "take_picture"
+    ],
+    "extra_actions": {
+     "8": "take_picture"
+    }
+   }
   },
   {
    "vendor_id": 18810,
@@ -3263,6 +6484,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3274,7 +6587,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18811,
@@ -3308,6 +6638,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3319,7 +6741,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18812,
@@ -3364,6 +6803,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3371,7 +6902,23 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 18814,
@@ -3414,6 +6961,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -3427,7 +7066,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18863,
@@ -3457,6 +7113,73 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       5.0,
+       -2.0,
+       -4.0,
+       -3.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       1.0,
+       -4.0,
+       1.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -5.0,
+       -4.0,
+       2.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       7.0,
+       2.0,
+       1.0,
+       -6.0,
+       -7.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -3488,6 +7211,23 @@
     ],
     "presets": [
      "Default"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -3547,6 +7287,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -3583,6 +7430,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -3619,6 +7573,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3626,7 +7672,24 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19060,
@@ -3661,6 +7724,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3668,7 +7823,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19061,
@@ -3703,6 +7873,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3710,7 +7972,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19063,
@@ -3745,6 +8022,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -3781,6 +8165,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3788,7 +8264,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19065,
@@ -3823,6 +8314,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3830,7 +8413,22 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19067,
@@ -3865,6 +8463,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3872,7 +8562,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19068,
@@ -3907,6 +8612,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3914,7 +8711,24 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19069,
@@ -3949,6 +8763,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -3956,7 +8862,24 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19071,
@@ -3989,6 +8912,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       -2.0,
+       -8.0,
+       0.0,
+       3.0,
+       4.0,
+       2.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       5.0,
+       6.0,
+       0.0,
+       -2.0,
+       -10.0,
+       -2.0,
+       4.0,
+       2.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       0.0,
+       -2.0,
+       -11.0,
+       -2.0,
+       4.0,
+       2.0,
+       6.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -2.0,
+       -3.0,
+       0.0,
+       -2.0,
+       -10.0,
+       0.0,
+       4.0,
+       4.0,
+       2.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       4.0,
+       4.0,
+       0.0,
+       -2.0,
+       -6.0,
+       0.0,
+       5.0,
+       4.0,
+       4.0,
+       6.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -4002,7 +9017,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19218,
@@ -4037,6 +9069,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       6.0,
+       5.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       6.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -6.0,
+       -6.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4094,6 +9218,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4165,6 +9381,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4224,6 +9532,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -4231,7 +9631,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19393,
@@ -4266,6 +9681,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4326,6 +9833,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4379,6 +9978,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4439,6 +10130,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4492,6 +10275,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4559,6 +10434,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -4566,7 +10533,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19570,
@@ -4601,6 +10583,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -4637,6 +10726,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -4673,6 +10869,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -4680,7 +10968,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19573,
@@ -4715,6 +11018,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -4722,7 +11117,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19574,
@@ -4757,6 +11167,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -4764,7 +11266,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19575,
@@ -4799,6 +11316,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -4806,7 +11415,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19576,
@@ -4841,6 +11465,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -4848,7 +11564,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19649,
@@ -4883,6 +11614,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -4947,6 +11770,112 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -4978,6 +11907,73 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       5.0,
+       -2.0,
+       -4.0,
+       -3.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       1.0,
+       -4.0,
+       1.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -5.0,
+       -4.0,
+       2.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       7.0,
+       2.0,
+       1.0,
+       -6.0,
+       -7.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -5014,6 +12010,112 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -5050,6 +12152,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -5113,6 +12307,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -5149,6 +12450,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -5156,7 +12549,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19747,
@@ -5191,6 +12599,112 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -5227,6 +12741,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -5263,6 +12884,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -5299,6 +13027,114 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -5335,6 +13171,112 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -5366,6 +13308,73 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       5.0,
+       -2.0,
+       -4.0,
+       -3.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       1.0,
+       -4.0,
+       1.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -5.0,
+       -4.0,
+       2.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       7.0,
+       2.0,
+       1.0,
+       -6.0,
+       -7.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -5402,6 +13411,112 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -5433,6 +13548,73 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       5.0,
+       -2.0,
+       -4.0,
+       -3.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       1.0,
+       -4.0,
+       1.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -5.0,
+       -4.0,
+       2.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       7.0,
+       2.0,
+       1.0,
+       -6.0,
+       -7.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -5469,6 +13651,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -5541,6 +13830,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       6.0,
+       5.0,
+       4.0,
+       3.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       5.0,
+       5.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -5642,6 +14023,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       6.0,
+       5.0,
+       4.0,
+       3.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       5.0,
+       5.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -5747,6 +14220,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       6.0,
+       5.0,
+       4.0,
+       3.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       5.0,
+       5.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -5854,6 +14419,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -5867,7 +14524,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19783,
@@ -5942,6 +14616,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       6.0,
+       5.0,
+       4.0,
+       3.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       5.0,
+       5.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -6818,6 +15584,24 @@
     {
      "item": "10",
      "setting": "sleep_mode"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -6885,6 +15669,24 @@
     {
      "item": "10",
      "setting": "sleep_mode"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -6956,6 +15758,24 @@
     {
      "item": "10",
      "setting": "sleep_mode"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -7032,6 +15852,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -7180,6 +16018,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -7256,6 +16112,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ],
    "sleep_timer": true
@@ -7405,6 +16279,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ]
   },
@@ -7485,6 +16377,24 @@
     {
      "item": "24",
      "setting": "multipoint"
+    },
+    {
+     "item": "33",
+     "setting": "touch_sensitivity",
+     "options": [
+      {
+       "key": "26",
+       "name": "Medium"
+      },
+      {
+       "key": "2D",
+       "name": "Normal"
+      },
+      {
+       "key": "34",
+       "name": "High"
+      }
+     ]
     }
    ]
   },
@@ -7531,6 +16441,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -7538,7 +16540,21 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 19826,
@@ -7573,6 +16589,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -7580,7 +16688,21 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 19841,
@@ -7615,6 +16737,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -7622,7 +16836,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19842,
@@ -7657,6 +16886,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -7714,6 +17035,113 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -7750,6 +17178,112 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -7786,6 +17320,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -7793,7 +17419,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19859,
@@ -7828,6 +17469,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -7835,7 +17568,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19860,
@@ -7865,6 +17613,73 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       5.0,
+       -2.0,
+       -4.0,
+       -3.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       1.0,
+       -4.0,
+       1.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -5.0,
+       -4.0,
+       2.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       7.0,
+       2.0,
+       1.0,
+       -6.0,
+       -7.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -7896,6 +17711,73 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       5.0,
+       -2.0,
+       -4.0,
+       -3.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       1.0,
+       -4.0,
+       1.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -5.0,
+       -4.0,
+       2.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       7.0,
+       2.0,
+       1.0,
+       -6.0,
+       -7.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -7932,6 +17814,112 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -7963,6 +17951,73 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       5.0,
+       -2.0,
+       -4.0,
+       -3.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       1.0,
+       -4.0,
+       1.0,
+       6.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -5.0,
+       -4.0,
+       2.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       7.0,
+       2.0,
+       1.0,
+       -6.0,
+       -7.0
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -7999,6 +18054,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -8050,6 +18197,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -8057,7 +18296,24 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19873,
@@ -8132,6 +18388,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -8139,7 +18487,21 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 19905,
@@ -8174,6 +18536,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -8224,6 +18678,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       6.0,
+       5.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       6.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       6.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -6.0,
+       -6.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -8281,6 +18827,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -8331,6 +18969,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -8388,6 +19118,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       -3.0,
+       6.0,
+       4.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       8.0,
+       7.0,
+       5.0,
+       4.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       7.0,
+       6.0,
+       2.0,
+       1.0,
+       -3.0,
+       -4.0,
+       2.0,
+       1.0,
+       4.0,
+       5.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       5.0,
+       -5.0,
+       -4.0,
+       -4.0,
+       3.0,
+       2.0,
+       4.0,
+       4.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       7.0,
+       1.0,
+       2.0,
+       -1.0,
+       1.0,
+       -4.0,
+       -6.0,
+       -7.0,
+       -8.0
+      ]
+     }
     ]
    },
    "touch": {
@@ -8451,6 +19273,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "balance": true,
@@ -8464,7 +19378,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23153,
@@ -8510,7 +19441,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23154,
@@ -8557,7 +19505,24 @@
      "setting": "sleep_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23155,
@@ -8603,7 +19568,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23156,
@@ -8650,7 +19632,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23157,
@@ -8683,6 +19682,98 @@
      "Rock",
      "Soft",
      "Classic"
+    ],
+    "preset_gains": [
+     {
+      "name": "Default",
+      "gains": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Pop",
+      "gains": [
+       -6.0,
+       5.0,
+       -3.0,
+       -2.0,
+       5.0,
+       4.0,
+       -4.0,
+       5.0,
+       4.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Heavy Bass",
+      "gains": [
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Rock",
+      "gains": [
+       5.0,
+       4.0,
+       4.0,
+       2.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Soft",
+      "gains": [
+       -1.0,
+       -3.0,
+       -3.0,
+       2.0,
+       4.0,
+       4.0,
+       3.0,
+       1.0,
+       -1.0,
+       0.0
+      ]
+     },
+     {
+      "name": "Classic",
+      "gains": [
+       6.0,
+       4.0,
+       -2.0,
+       -1.0,
+       -4.0,
+       5.0,
+       1.0,
+       0.0,
+       0.0,
+       0.0
+      ]
+     }
     ]
    },
    "settings": [
@@ -8694,7 +19785,28 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "take_picture"
+    ],
+    "extra_actions": {
+     "8": "take_picture"
+    }
+   }
   },
   {
    "vendor_id": 23158,
@@ -8740,7 +19852,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23159,
@@ -8787,7 +19916,24 @@
      "setting": "sleep_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23160,
@@ -8833,7 +19979,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23872,
@@ -10162,7 +21325,28 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32882,
@@ -10259,7 +21443,28 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32883,
@@ -10357,7 +21562,28 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32884,
@@ -10455,7 +21681,29 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32885,
@@ -10553,7 +21801,29 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32886,
@@ -10660,7 +21930,28 @@
      "item": "27",
      "setting": "dynamic_eq"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32887,
@@ -10755,7 +22046,28 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32889,
@@ -10854,7 +22166,28 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32890,
@@ -10909,7 +22242,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 32891,
@@ -11011,7 +22361,28 @@
      "item": "27",
      "setting": "dynamic_eq"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32892,
@@ -11106,7 +22477,28 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32893,
@@ -11213,7 +22605,28 @@
      "item": "27",
      "setting": "dynamic_eq"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32894,
@@ -11315,7 +22728,28 @@
      "item": "27",
      "setting": "dynamic_eq"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 36977,
@@ -11410,7 +22844,28 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   }
  ]
 }

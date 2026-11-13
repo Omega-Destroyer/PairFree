@@ -195,6 +195,25 @@ class OneMoreTest {
     }
 
     @Test
+    fun theSoundModeAndTheQ50sVoiceEnhancement() {
+        // The music and sleep modes (1MORE 2.1.3, HeadsetActivity) on the models with comfortableMelody; the Q50 alone has voice enhancement.
+        val q50 = OneMoreSession(OneMoreModels.fromName("1MORE Q50"))
+        val start = q50.start().map { it.command }
+        assertTrue(OneMoreCommand.GET_EQ_MODE in start && OneMoreCommand.GET_VOCAL_ENHANCEMENT in start)
+        q50.receive(reply(OneMoreCommand.GET_EQ_MODE, "01"))
+        q50.receive(reply(OneMoreCommand.GET_VOCAL_ENHANCEMENT, "00"))
+        val rows = q50.groups.flatMap { it.settings }
+        assertEquals(Setting.Choice("sound_mode", "sleep_mode", listOf("music_mode", "sleep_mode")), rows.first { it.key == "sound_mode" })
+        assertEquals(Setting.Toggle("voice_enhancement", false), rows.first { it.key == "voice_enhancement" })
+        val set = q50.change(SettingChange.Choice("sound_mode", "music_mode"))!!.single()
+        assertEquals(OneMoreCommand.SET_EQ_MODE, set.command)
+        assertEquals("00", hex(set.payload))
+        assertEquals("01", hex(q50.change(SettingChange.Toggle("voice_enhancement", true))!!.single().payload))
+        val z30 = OneMoreSession(OneMoreModels.fromName("1MORE Z30"))
+        assertTrue(OneMoreCommand.GET_VOCAL_ENHANCEMENT !in z30.start().map { it.command })
+    }
+
+    @Test
     fun theNanosLight() {
         // 1MORE's app reads and sets the NANO's light mode and colour, one byte each, and shows them for that name alone.
         val nano = OneMoreSession(OneMoreModels.fromName("1MORE NANO"))

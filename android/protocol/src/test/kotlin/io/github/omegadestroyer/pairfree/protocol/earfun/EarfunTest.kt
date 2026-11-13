@@ -343,6 +343,63 @@ class EarfunTest {
     }
 
     @Test
+    fun theExtrasEarFunsAppEnablesPerModel() {
+        // The Clip 2 (EarFun frame): bass 2340/2345, manner mode, game EQ, DAC and the balance byte; a switch is 2 on and 1 off.
+        val clip2 = EarfunSession(model("EarFun Clip 2"))
+        val reads = clip2.start().map(::hex)
+        for (c in listOf(EarfunCommand.GET_BASS, EarfunCommand.GET_MANNER_MODE, EarfunCommand.GET_GAME_EQ, EarfunCommand.GET_DAC, EarfunCommand.GET_BALANCE)) {
+            assertTrue(hex(EarfunFrame(c, ByteArray(0)).bytes()) in reads, "read $c")
+        }
+        clip2.feed(efReply(EarfunCommand.GET_BASS, "02"))
+        clip2.feed(efReply(EarfunCommand.GET_DAC, "01"))
+        clip2.feed(efReply(EarfunCommand.GET_BALANCE, "32"))
+        val rows = clip2.groups.flatMap { it.settings }
+        assertEquals(true, (rows.first { it.key == "ef_extra_bass" } as Setting.Toggle).on)
+        assertEquals(false, (rows.first { it.key == "ef_extra_dac" } as Setting.Toggle).on)
+        assertEquals(50, (rows.first { it.key == "ef_extra_balance" } as Setting.Level).value)
+        assertEquals(listOf(hex(EarfunFrame(EarfunCommand.SET_DAC, byteArrayOf(2)).bytes())), clip2.change(SettingChange.Toggle("ef_extra_dac", true))!!.map(::hex))
+        assertEquals(listOf(hex(EarfunFrame(EarfunCommand.SET_BALANCE, byteArrayOf(30)).bytes())), clip2.change(SettingChange.Level("ef_extra_balance", 30))!!.map(::hex))
+        // No manner mode answer on the Clip 2 yet, so no row (a setting shows once its read answered).
+        assertTrue(rows.none { it.key == "ef_extra_manner" })
+
+        // The Wave Pro X (Qualcomm): USB charging and the call environment are 1 and 0.
+        val x = EarfunSession(model("EarFun Wave Pro X"))
+        x.feed(qccReply(EarfunQcc.GET_USB_CHARGE, "01"))
+        x.feed(qccReply(EarfunQcc.GET_BALANCE, "28"))
+        val xRows = x.groups.flatMap { it.settings }
+        assertEquals(true, (xRows.first { it.key == "ef_extra_usb_charge" } as Setting.Toggle).on)
+        assertEquals(40, (xRows.first { it.key == "ef_extra_balance" } as Setting.Level).value)
+        assertEquals(listOf("ff040001000a0363" + "00"), x.change(SettingChange.Toggle("ef_extra_usb_charge", false))!!.map(::hex))
+        // The voice prompts switch (Qualcomm 33/32) and the codec in use (77, 1 to 7), shown by name.
+        x.feed(qccReply(EarfunQcc.GET_VOICE_TIP, "01"))
+        x.feed(qccReply(EarfunQcc.GET_AUDIO_MODE, "07"))
+        val x2 = x.groups.flatMap { it.settings }
+        assertEquals(true, (x2.first { it.key == "ef_extra_voice_tip" } as Setting.Toggle).on)
+        assertEquals("LDAC", (x2.first { it.key == "ef_codec_in_use" } as Setting.Choice).value)
+        assertEquals(listOf("ff040001000a0320" + "00"), x.change(SettingChange.Toggle("ef_extra_voice_tip", false))!!.map(::hex))
+        // A model without them has no rows.
+        val air = EarfunSession(model("EarFun Air Pro 3"))
+        air.feed(qccReply(EarfunQcc.GET_BALANCE, "28"))
+        assertTrue(air.groups.flatMap { it.settings }.none { it.key.startsWith("ef_extra_") })
+    }
+
+    @Test
+    fun theNoiseModesAKeyCyclesThrough() {
+        // EarFun's app (setKeyCustomNoise): a byte for the left key, one for the right; 1 off, 2 ambient, 4 noise cancelling, 8 wind, 16 adaptive.
+        val s = EarfunSession(model("EarFun Air Pro 4i"))
+        assertTrue(hex(EarfunFrame(EarfunCommand.GET_KEY_CUSTOM_NOISE, ByteArray(0)).bytes()) in s.start().map(::hex))
+        s.feed(efReply(EarfunCommand.GET_KEY_CUSTOM_NOISE, "0705"))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Toggle>().filter { it.key.startsWith("ef_cycle_") }
+        assertTrue(rows.isNotEmpty())
+        assertEquals(true, rows.first { it.key == "ef_cycle_left_off" }.on)
+        assertEquals(false, rows.first { it.key == "ef_cycle_right_ambient" }.on)
+        assertEquals(listOf(hex(EarfunFrame(EarfunCommand.SET_KEY_CUSTOM_NOISE, byteArrayOf(5, 5)).bytes())), s.change(SettingChange.Toggle("ef_cycle_left_ambient", false))!!.map(::hex))
+        // Turning off the last mode of a key is refused.
+        s.change(SettingChange.Toggle("ef_cycle_right_off", false))
+        assertNull(s.change(SettingChange.Toggle("ef_cycle_right_anc", false)))
+    }
+
+    @Test
     fun headphoneButtons() {
         val life = EarfunSession(model("EarFun Wave Life"))
         life.feed(efReply(EarfunCommand.GET_KEY, "020504030800"))

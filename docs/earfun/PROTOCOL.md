@@ -210,12 +210,26 @@ EarFun's app writes `FE 98` and the steps above. PairFree follows EarFun's app (
 ## 8. Not yet
 
 - The Qualcomm models' voice prompt languages (voice packs, written like a firmware update).
-- The Clip 2's recorded voice prompt, USB charging on the headphones, the Wave Pro X's spatial audio and second
-  power-off timer, the left-right balance, bass boost, the DAC switch and game EQ (no screen of EarFun's app shows
-  them for the models above, or their read is not known), LE Audio and Fast Pair (lab), Auracast, AI translation,
+- The Clip 2's recorded voice prompt, the Wave Pro X's spatial audio and second power-off timer, LE Audio and Fast Pair (lab), Auracast, AI translation,
   and the codec in use (`4D`).
 - The Qualcomm voice prompt language read: EarFun's app reads it from the frame's length byte
   (`getNormalData(src)` instead of the payload), a slip that does not matter to PairFree, which does not read it.
+
+### 8.1 Built from DeviceType (2026-11-13)
+
+Per model, as `extras` in `devices.json` (from `getFunctionEnable`, the combine groups and the voice protect list): bass enhancement (2340/2345) and manner
+mode (2350/2355) on the Clip and Clip 2, game EQ (2375/2380) and the DAC switch (2390/2395) on the Clip 2, and the left and right balance (a byte, 0 to
+100, 50 the middle; 2330/2335 on EarFun's frame, 86/85 on Qualcomm) on the models whose voice protect screen has it (Clip, Clip 2, Air Pro 4i, Air
+Pro 4+, Air Pro 5, Wave Pro X; the OpenJump's list holds the maximum volume only, which it now offers: its `hearing_protection` was missing). The Wave Pro X
+also has USB charging (100/99), ambient voice (115/114) and the call environment (119/118), switches that are 1 on and 0 off. Switches on EarFun's frame are
+2 on and 1 off. Not built: USB charging on the HP220 and HP300 (EarFun's frame parser has no USB charge command: `getUsbCharge` is the base class's
+empty read; checked: `EarfunProtocolParser`, `HP1000ProtocolParser`), the mic mute (a call control) and the fast pair switch (lab). Which side the balance's
+0 is, the app does not say.
+
+The noise control key's cycle (2071 read, 2076 write, EarFun's frame only): a byte for the left key, one for the right, with a bit for each mode the key cycles through: 1 off,
+2 ambient sound, 4 noise cancelling, 8 wind noise cancelling, 16 adaptive (`EarfunProtocolParser.setKeyCustomNoise`). PairFree shows a switch per mode the model has
+(off always, the others where its noise control lists them) for each key, and keeps at least one on. The volume (2410/2415) is the in-app preview player's, the colour only
+picks a picture, and the fast pair switch is a lab feature: each is in `data/unused_ids.json` with what was checked.
 
 ## 9. Other chips
 

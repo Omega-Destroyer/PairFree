@@ -28,6 +28,7 @@ Want to be on this list? One report from your model helps: see [Help add your mo
 | [@iJahangard](https://github.com/iJahangard) | QCY T13 ANC2 | A device report ([#35](https://github.com/Omega-Destroyer/PairFree/issues/35)) |
 | [@tkslim82](https://github.com/tkslim82) | OnePlus Buds 4 | The first OnePlus earbuds tried with PairFree, with a device report ([#4](https://github.com/Omega-Destroyer/PairFree/issues/4)) |
 | [@shining-cat](https://github.com/shining-cat) | AirPods Pro 3 | Connection reports from a Pixel 8 on Android 17, and the first AirPods tried with PairFree (an AirPods Pro 3 that connected on 0.9.1, with its device report), which showed Off needing "Allow Off" ([#3](https://github.com/Omega-Destroyer/PairFree/issues/3)) |
+| [@XjFred](https://github.com/XjFred) | Sony WF-1000XM6 | A recording of Sony's app with the XM6 ([#33](https://github.com/Omega-Destroyer/PairFree/issues/33)), which showed its equalizer type, and the confirmation that the equalizer works in 0.11.2 |
 | [@ahsanmg](https://github.com/ahsanmg) | SOUNDPEATS T3 Pro | A device report from firmware v0.0.31 ([#31](https://github.com/Omega-Destroyer/PairFree/issues/31)) |
 | A user who wrote to the project directly | Bose SoundLink Flex (BC59, a speaker) | A device report, 2026-10-30, the first Bose reading PairFree has |
 | A user who wrote to the project directly | Soundcore AeroClip (A3388) | A device report, 2026-10-29 |

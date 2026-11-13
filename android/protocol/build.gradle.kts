@@ -189,7 +189,7 @@ abstract class GenerateTables : DefaultTask() {
                 }
                 ", noiseModes = noiseModes(\"$modes\")"
             }
-            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}$noise),")
+            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}$noise, touchInverted = ${d["touch_disable_inverted"] == true}),")
         }
         out.appendLine(")")
         out.appendLine()
@@ -315,7 +315,8 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
 
         out.appendLine()
         out.appendLine("/** Every model's state layout and quirks (data/soundcore/devices.json), read from OpenSCQ30's parsers. */")
-        out.appendLine("internal val SOUNDCORE_LAYOUTS: List<SoundcoreLayout> = listOf(")
+        // Split into functions of a dozen layouts each: one initialiser holding every model overflows the JVM's method size limit.
+        val layoutLines = mutableListOf<String>()
         for (d in devices) {
             @Suppress("UNCHECKED_CAST")
             val state = d["state"] as List<List<Any?>>? ?: continue
@@ -348,9 +349,15 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 (app["features"] as List<*>? ?: emptyList<Any>()) + (d["extra_features"] as List<*>? ?: emptyList<Any>())) -
                 (app["lacks"] as List<*>? ?: emptyList<Any>()).toSet()).distinct().joinToString(", ", "setOf(", ")") { str(it) }
             val vendorIds = (d["vendor_ids"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
-            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds),")
+            layoutLines += "        SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds),"
         }
-        out.appendLine(")")
+        val chunks = layoutLines.chunked(12)
+        chunks.forEachIndexed { i, lines ->
+            out.appendLine("private fun soundcoreLayouts$i(): List<SoundcoreLayout> = listOf(")
+            lines.forEach(out::appendLine)
+            out.appendLine("    )")
+        }
+        out.appendLine("internal val SOUNDCORE_LAYOUTS: List<SoundcoreLayout> = " + chunks.indices.joinToString(" + ") { "soundcoreLayouts$it()" })
 
         @Suppress("UNCHECKED_CAST")
         val actionSets = (JsonSlurper().parse(buttonActionsJson.get().asFile) as Map<String, Any?>).getValue("sets") as Map<String, List<List<Any?>>>
@@ -1234,7 +1241,7 @@ abstract class GenerateNothingTables : DefaultTask() {
                 out.appendLine("            NothingConfig(")
                 out.appendLine("                minFirmware = ${c["min_firmware"]?.let(::str) ?: "null"}, maxFirmware = ${c["max_firmware"]?.let(::str) ?: "null"},")
                 out.appendLine("                anc = ${strings(c["anc"])}, eqPresets = ${c["eq_presets"]}, bassBoost = ${c["bass_boost"]}, spatialAudio = ${c["spatial_audio"]},")
-                out.appendLine("                codecs = ${strings(c["codecs"])}, earDetection = ${c["ear_detection"]}, lowLatency = ${c["low_latency"]}, fitTest = ${c["fit_test"] == true},")
+                out.appendLine("                codecs = ${strings(c["codecs"])}, earDetection = ${c["ear_detection"]}, lowLatency = ${c["low_latency"]}, fitTest = ${c["fit_test"] == true}, dualConnection = ${c["dual_connection"] == true}, diracOpteo = ${c["dirac_opteo"] == true}, personalizedAnc = ${c["personalized_anc"] == true}, powerOffTime = ${c["power_off_time"] == true}, callTransparency = ${c["call_transparency"] == true}, advancedEq = ${c["advanced_eq"] == true},")
                 out.appendLine("                gestures = $gestures,")
                 @Suppress("UNCHECKED_CAST")
                 val simple = c["simple_eq"] as Map<String, Any?>?
@@ -1545,9 +1552,12 @@ abstract class GenerateQcyTables : DefaultTask() {
         for ((name, v) in jieli.getValue("target_info") as Map<String, Any?>) out.appendLine("    public const val TARGET_$name: Int = ${int(v)}")
         out.appendLine("}")
         out.appendLine()
-        out.appendLine("/** Every model in data/qcy/devices.json. */")
-        out.appendLine("internal val QCY_MODELS: List<QcyModel> = listOf(")
-        for (d in devices) {
+        // The models in groups of 20, each in an object of its own: one initializer holding all of them passes the JVM's 64 KB method limit.
+        val groups = devices.chunked(20)
+        for ((n, group) in groups.withIndex()) {
+        out.appendLine("private object QcyModelGroup$n {")
+        out.appendLine("val MODELS: List<QcyModel> = listOf(")
+        for (d in group) {
             val form = when (d["kind"]) {
                 "earbuds" -> "EARBUDS"
                 "headphones" -> "HEADPHONES"
@@ -1563,21 +1573,31 @@ abstract class GenerateQcyTables : DefaultTask() {
                 "QcyNoiseMode(${str(m["mode"])}, ${hex(m["from"])}, ${hex(m["to"])}, ${hex(m["default"])}, $scenes)"
             }
             @Suppress("UNCHECKED_CAST")
-            val touch = (d["touch"] as Map<String, Any?>?)?.let { "QcyTouch(${strings(it["gestures"])}, ${strings(it["actions"])})" } ?: "null"
+            val touch = (d["touch"] as Map<String, Any?>?)?.let { "QcyTouch(${strings(it["gestures"])}, ${strings(it["actions"])}${(it["extra_actions"] as Map<String, String>?)?.entries?.joinToString(", ", ", mapOf(", ")") { e -> "${e.key} to ${str(e.value)}" } ?: ""})" } ?: "null"
             @Suppress("UNCHECKED_CAST")
-            val settings = (d["settings"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { "QcySetting(${hex(it["item"])}, ${str(it["setting"])})" }
+            val settings = (d["settings"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { "QcySetting(${hex(it["item"])}, ${str(it["setting"])}${(it["options"] as List<Map<String, Any?>>?)?.joinToString(", ", ", listOf(", ")") { o -> "${hex(o["key"])} to ${str(o["name"].toString().lowercase().removeSuffix(" mode"))}" } ?: ""})" }
             out.appendLine("    QcyModel(")
             out.appendLine("        ${int(d["vendor_id"])}, ${str(d["name"])}, ${strings(d["names"])}, ${str(d["family"])}, QcyProtocol.$protocol,")
             out.appendLine("        io.github.omegadestroyer.pairfree.protocol.Form.$form, anc = $anc,")
             @Suppress("UNCHECKED_CAST")
             val eq = (d["eq"] as Map<String, Any?>?)?.let { e ->
-                "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])})"
+                @Suppress("UNCHECKED_CAST")
+                // As one string per model ("name=g,g,g;name=..."): a list of doubles per preset passes the JVM's 64 KB method limit over 194 models.
+                val curves = str((e["preset_gains"] as List<Map<String, Any?>>?).orEmpty().joinToString(";") { p ->
+                    "${p["name"]}=${(p["gains"] as List<*>).joinToString(",") { (it as Number).toDouble().toString() }}"
+                })
+                "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])}, $curves)"
             } ?: "null"
-            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true},")
+            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true}, jieliNoise = ${d["jieli_noise"] == true},")
             out.appendLine("        eq = $eq,")
             out.appendLine("    ),")
         }
         out.appendLine(")")
+        out.appendLine("}")
+        out.appendLine()
+        }
+        out.appendLine("/** Every model in data/qcy/devices.json. */")
+        out.appendLine("internal val QCY_MODELS: List<QcyModel> = " + groups.indices.joinToString(" + ") { "QcyModelGroup$it.MODELS" })
 
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()
@@ -1667,7 +1687,7 @@ abstract class GenerateOneMoreTables : DefaultTask() {
             out.appendLine("        listenModes = ${strings(d["listen_modes"])}, connection = ${strings(d["connection"])},")
             out.appendLine("        autoplay = ${d["autoplay"]}, spatialAudio = ${d["spatial_audio"]}, sleepDetection = ${d["sleep_detection"]}, dualDevice = ${d["dual_device"]}, hotWord = ${d["hot_word"]},")
             out.appendLine("        touch = ${d["touch"]?.let(::str) ?: "null"}, touchAssistant = ${d["touch_assistant"]}, eq = ${strings(d["eq"])},")
-            out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]}, lights = ${d["lights"] == true},")
+            out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]}, lights = ${d["lights"] == true}, sleepMode = ${d["sleep_mode"] == true}, voiceEnhancement = ${d["voice_enhancement"] == true},")
             @Suppress("UNCHECKED_CAST")
             val bands = (d["eq_bands"] as Map<String, Any?>?)?.let { b ->
                 fun ints(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { (it as Number).toInt().toString() }
@@ -1854,7 +1874,7 @@ abstract class GenerateEarfunTables : DefaultTask() {
             out.appendLine("        versionText = ${d["version"] == "text"}, gaiaInit = ${d["gaia_init"]},")
             out.appendLine("        quality = ${strings(d["quality"])}, ldacAptxConflict = ${d["ldac_aptx_conflict"]}, ldacMultipointConflict = ${d["ldac_multipoint_conflict"]},")
             out.appendLine("        ldacGameConflict = ${d["ldac_game_conflict"]}, multipointRestart = ${d["multipoint_restart"]}, restart = ${d["restart"]}, powerOff = ${d["power_off"]},")
-            out.appendLine("        voiceLanguages = ${strings(d["voice_languages"])}, promptVolumes = ${strings(d["prompt_volumes"])}, buttons = $buttons,")
+            out.appendLine("        voiceLanguages = ${strings(d["voice_languages"])}, promptVolumes = ${strings(d["prompt_volumes"])}, buttons = $buttons, extras = ${strings(d["extras"])},")
             out.appendLine("    ),")
         }
         out.appendLine(")")
@@ -1926,6 +1946,17 @@ abstract class GenerateCambridgeTables : DefaultTask() {
         @Suppress("UNCHECKED_CAST")
         val d = JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>
         fun quoted(v: Any?) = groovy.json.JsonOutput.toJson(v)
+        fun connectConfig(m: Map<String, Any?>): String {
+            @Suppress("UNCHECKED_CAST")
+            val cfg = m["config"] as Map<String, Any?>? ?: return "null"
+            @Suppress("UNCHECKED_CAST")
+            val eq = m.getValue("eq") as Map<String, Any?>
+            @Suppress("UNCHECKED_CAST")
+            val presets = (eq.getValue("presets") as List<Map<String, Any?>>).joinToString(", ") { p -> "${quoted(p.getValue("name"))} to listOf(${(p.getValue("gains") as List<*>).joinToString(", ")})" }
+            return "ConnectConfig(headphones = ${cfg["headphones"]}, touch = ${cfg["touch"]}, mono = ${cfg["mono"]}, sleep = ${cfg["sleep"]}, loudness = ${cfg["loudness"]}, " +
+                "sideTone = ${cfg["side_tone"]}, connected = ${cfg["connected"]}, codec = ${cfg["codec"]}, spatial = ${cfg["spatial"]}, adaptive = ${cfg["adaptive"]}, " +
+                "eqMinDb = ${eq["min_db"]}, eqMaxDb = ${eq["max_db"]}, eqCustom = ${eq["custom"]}, eqPresets = listOf($presets))"
+        }
         val out = StringBuilder("// Generated from data/cambridge; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.cambridge\n\n")
         for ((section, type) in mapOf("wire" to "CambridgeWire", "commands" to "CambridgeCommand", "values" to "CambridgeValue", "offsets" to "CambridgeOffset")) {
             out.appendLine("public object $type {")
@@ -1936,6 +1967,19 @@ abstract class GenerateCambridgeTables : DefaultTask() {
             }
             out.appendLine("}")
         }
+        @Suppress("UNCHECKED_CAST")
+        val connect = c.getValue("connect") as Map<String, Any?>
+        for ((key, value) in connect) {
+            if (value !is Map<*, *>) continue
+            val name = "CambridgeConnect" + key.split('_').joinToString("") { it.replaceFirstChar(Char::uppercase) }
+            out.appendLine("public object $name {")
+            for ((k, v) in value) {
+                check(k.toString().matches(Regex("[A-Z_0-9]+")))
+                out.appendLine("    public const val $k: Int = $v")
+            }
+            out.appendLine("}")
+        }
+        out.appendLine("public val CAMBRIDGE_CONNECT_AUTO_OFF: List<Int> = listOf(${(connect.getValue("auto_power_down_seconds") as List<*>).joinToString(", ")})")
         out.appendLine("public object CambridgeValues {")
         for (key in listOf("languages", "codecs", "controls")) {
             val values = (c.getValue(key) as List<*>).joinToString(", ") { quoted(it) }
@@ -1950,7 +1994,7 @@ abstract class GenerateCambridgeTables : DefaultTask() {
         @Suppress("UNCHECKED_CAST")
         for (m in d.getValue("devices") as List<Map<String, Any?>>) {
             val names = (m.getValue("names") as List<*>).joinToString(", ") { quoted(it) }
-            out.appendLine("    CambridgeModel(${quoted(m.getValue("name"))}, listOf($names), ${m.getValue("ambient")}, ${m.getValue("control_count")}),")
+            out.appendLine("    CambridgeModel(${quoted(m.getValue("name"))}, listOf($names), ${m.getValue("ambient")}, ${m.getValue("control_count")}, ${m["connect"] == true}, ${connectConfig(m)}),")
         }
         out.appendLine(")")
         val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/cambridge/CambridgeTables.kt")

@@ -205,8 +205,7 @@ write. Google's presets (gol, and its EQ function's own description):
 | Vocal boost | -1 | 0 | 4 | 2 | 0 |
 | Clarity | -2 | 0 | 2 | 3 | 5 |
 
-Field 18 is the curve the user saved, Google's "Last saved". PairFree's EQ screen moves in whole dB, so a half-step
-curve from Google's app shows rounded until it is changed in PairFree; presets go out exactly. The app names the bands,
+Field 18 is the curve the user saved, Google's "Last saved". PairFree's EQ screen moves in half dB (0.12.0), the app's own step, so a curve from Google's app shows as it is; presets go out exactly. The app names the bands,
 not their frequencies.
 
 ## 7. Models and features

@@ -244,10 +244,13 @@ internal fun SoundScreen(
     }
 }
 
-/** A profile's name: Stock in words, presets and saved profiles by their own names. */
+/** A profile's name: Stock and the presets in the app's language, saved profiles by the names the user gave them. */
 @Composable
-internal fun profileName(profile: EqProfile): String =
-    if (profile.id == EqProfile.STOCK) stringResource(R.string.eq_stock) else profile.name
+internal fun profileName(profile: EqProfile): String = when {
+    profile.id == EqProfile.STOCK -> stringResource(R.string.eq_stock)
+    profile.preset != null -> LocalContext.current.presetLabel(profile.name)
+    else -> profile.name
+}
 
 /** What is on the earbuds, as a short name for Home. */
 @Composable

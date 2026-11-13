@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.omegadestroyer.pairfree.R
-import io.github.omegadestroyer.pairfree.bluetooth.Brand
+import io.github.omegadestroyer.pairfree.brands.Brands
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
@@ -189,8 +189,9 @@ internal fun DeviceScreen(
             )
             if (copied) Text(stringResource(R.string.report_copied), style = Studio.type.small, color = c.secondaryText)
             StudioButton(stringResource(R.string.capture_open), actions::openCapture, Modifier.fillMaxWidth())
+            LanguageButton(Modifier.fillMaxWidth())
             // Factory reset is known for SoundPEATS only so far.
-            if (device.brand == Brand.SOUNDPEATS) {
+            if (Brands[device.brand].hasFactoryReset) {
                 StudioButton(stringResource(R.string.factory_reset), { confirmReset = true }, Modifier.fillMaxWidth(), destructive = true)
             }
         }

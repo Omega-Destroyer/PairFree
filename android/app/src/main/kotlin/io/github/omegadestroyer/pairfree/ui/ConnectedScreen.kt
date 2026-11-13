@@ -1,7 +1,5 @@
 package io.github.omegadestroyer.pairfree.ui
 
-import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
-import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusModels
 
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTables
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
@@ -33,9 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,27 +53,18 @@ import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqState
-import io.github.omegadestroyer.pairfree.protocol.SoundpeatsSettings
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Model
-import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
-import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
-import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
-import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
-import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
-import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
-import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
+import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.brands.OwnHearingTest
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
 import io.github.omegadestroyer.pairfree.status.StatusUi
 import io.github.omegadestroyer.pairfree.ui.theme.Studio
@@ -95,10 +84,11 @@ fun ConnectedScreen(vm: AppViewModel, device: Paired, live: Boolean) {
     val model = modelOf(device, state)
     LaunchedEffect(device.address, model) { vm.openEqualizer(device, model) }
     val eq by vm.equalizer.state.collectAsStateWithLifecycle()
-    val soundcore by vm.connection.soundcoreState.collectAsStateWithLifecycle()
+    val extra by vm.connection.extra.collectAsStateWithLifecycle()
+    val soundcore = extra as? SoundcoreState
     val brandSettings by vm.connection.settings.collectAsStateWithLifecycle()
-    // SOUNDPEATS earbuds have no session of their own: their extra settings follow from the state they answered.
-    val settings = if (device.brand == Brand.SOUNDPEATS) SoundpeatsSettings.groups(state, model) else brandSettings
+    // The driver's rows, or for SOUNDPEATS earbuds the rows that follow from the state they answered.
+    val settings = Brands[device.brand].groups(state, model, brandSettings)
     val status by vm.statusUi.collectAsStateWithLifecycle()
     val prompt by vm.statusPrompt.collectAsStateWithLifecycle()
     StatusPrompts(prompt, device.address, vm::statusPromptDone)
@@ -140,14 +130,18 @@ internal fun ConnectedScreen(
         FitTestScreen(device, state, actions, onClose = { fitTest = false })
         return
     }
-    val oneplusTest = remember(device.address, state) { if (device.brand == Brand.ONEPLUS) actions.oneplusHearingTest() else null }
+    val oneplusTest = remember(device.address, state) { actions.oneplusHearingTest() }
     if (hearingTest && oneplusTest != null) {
-        OneplusHearingTestScreen(oneplusTest, actions::sendFrames, onClose = { hearingTest = false })
+        // The test that was there when the screen opened stays until it closes: `oneplusTest` is made anew whenever the
+        // earbuds report anything, and a new one mid-test would start its points over under another id.
+        val running = remember { oneplusTest }
+        OneplusHearingTestScreen(running, actions::sendFrames, onClose = { hearingTest = false })
         return
     }
-    val samsungHearing = device.brand == Brand.SAMSUNG && SamsungModels.of(device.model)?.buds4Layout == true
-    if (hearingTest && samsungHearing) {
-        SamsungHearingTestScreen(SamsungModels.of(device.model)?.legacy == true, actions::sendFrames, onClose = { hearingTest = false })
+    val ownHearing = Brands[device.brand].ownHearingTest(device)
+    val samsungHearing = ownHearing is OwnHearingTest.Samsung
+    if (hearingTest && ownHearing is OwnHearingTest.Samsung) {
+        SamsungHearingTestScreen(ownHearing.legacy, actions::sendFrames, onClose = { hearingTest = false })
         return
     }
     if (finder && eq != null && eq.target.hasCustom) {
@@ -165,22 +159,8 @@ internal fun ConnectedScreen(
                 Tab.HOME -> HomeScreen(device, state, model, actions, live, eq, settings) { tab = Tab.SOUND }
                 // With no equalizer to offer yet, a recording from the official app adds it.
                 Tab.SOUND -> SoundScreen(
-                    eq, eqActions, if (device.brand == Brand.CAMBRIDGE) null else actions::openCapture, settings, actions::changeSetting,
-                    unavailableNote = when (device.brand) {
-                        Brand.SOUNDCORE -> R.string.eq_soundcore_unchecked
-                        Brand.SONY -> R.string.eq_sony_none
-                        Brand.BOSE -> R.string.eq_bose
-                        Brand.JBL -> R.string.eq_jbl
-                        Brand.APPLE -> if (AppleModels.b2p(device.name) != null || AppleModels.bcd(device.name) != null) R.string.eq_beats else R.string.eq_apple
-                        Brand.NOTHING -> R.string.eq_nothing
-                        Brand.PIXEL -> R.string.eq_pixel
-                        Brand.QCY -> R.string.eq_qcy
-                        Brand.ONEMORE -> R.string.eq_onemore
-                        Brand.EARFUN -> R.string.eq_earfun
-                        Brand.CAMBRIDGE -> R.string.eq_cambridge
-                        Brand.ONEPLUS -> R.string.eq_oneplus
-                        else -> R.string.eq_unavailable
-                    },
+                    eq, eqActions, if (Brands[device.brand].offersRecording) actions::openCapture else null, settings, actions::changeSetting,
+                    unavailableNote = Brands[device.brand].eqNote(device),
                     onHearingTest = if (samsungHearing || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
                     onFinder = if (eq != null && eq.target.hasCustom) ({ finder = true }) else null,
                 )
@@ -208,36 +188,8 @@ private fun hearingTable(device: Paired, eq: EqState?): HearingTable? = when {
 
 private const val HEARING_MIN_BANDS = 3
 
-/**
- * The model's table entry: SoundPEATS by firmware code, or by name until the code is known;
- * Soundcore by the model number its service or name gave (data/soundcore/devices.json); Galaxy
- * Buds by the model number their name gave (data/samsung/devices.json).
- */
-internal fun modelOf(device: Paired, state: EarbudState): Model? = when (device.brand) {
-    Brand.SOUNDCORE -> SoundcoreModels.model(device.model ?: state.firmware?.code)
-    Brand.SAMSUNG -> SamsungModels.model(device.model ?: state.firmware?.code)
-    // Sony's by the model name the earbuds give, else their Bluetooth name; one battery is headphones.
-    Brand.SONY -> SonyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
-    // Bose's by the product the device reports, which names the firmware line; before then, its name.
-    Brand.BOSE -> BoseModels.model(state.firmware?.code ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
-    // JBL's by the model its product id names, which the firmware line carries; before then, its name.
-    Brand.JBL -> JblModels.model(state.firmware?.code ?: device.model ?: device.name)
-    // AirPods by the model their model number names, which the firmware line carries; one battery is headphones.
-    Brand.APPLE -> AppleModels.model(state.firmware?.code ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
-    // Nothing's by the product id the earbuds report, which the firmware line carries; before then, the name's.
-    Brand.NOTHING -> NothingModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
-    // Pixel Buds by the device type they report, which the firmware line carries; before then, their name's.
-    Brand.PIXEL -> PixelModels.model(state.firmware?.code ?: device.model ?: device.name)
-    // QCY's by the vendor id the advert named, which the firmware line carries; before then, the name's.
-    Brand.QCY -> if (device.soldAs == Brand.SOUNDPEATS) Models.find(device.model, device.name) else QcyModels.model(state.firmware?.code ?: device.model ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
-    // 1MORE's by the model the Bluetooth name matched.
-    Brand.ONEMORE -> OneMoreModels.model(device.model ?: device.name)
-    // EarFun's by the model the Bluetooth name matched.
-    Brand.EARFUN -> EarfunModels.model(device.model ?: device.name)
-    Brand.CAMBRIDGE -> CambridgeModels.model(device.model ?: device.name)
-    Brand.ONEPLUS -> OneplusModels.model(device.name)
-    Brand.SOUNDPEATS -> Models.find(state.firmware?.code, device.name)
-}
+/** The model's table entry, as its brand finds it from the name and what the earbuds have answered so far. */
+internal fun modelOf(device: Paired, state: EarbudState): Model? = Brands[device.brand].model(device, state)
 
 /** A tab's content: scrolls if it must, 16 px gutters, 16 px between blocks. */
 @Composable
@@ -279,7 +231,7 @@ private fun HomeScreen(
         }
 
         // Soundcore earbuds PairFree knows by name and number only: ask for a report rather than show a guess.
-        if (model?.reportOnly == true || device.brand == Brand.SOUNDCORE && model == null) {
+        if (model?.reportOnly == true || Brands[device.brand].reportOnlyWhenUnknown && model == null) {
             Panel {
                 Text(stringResource(R.string.report_only_title), style = Studio.type.heading)
                 Text(stringResource(R.string.report_only_note), style = Studio.type.small, color = Studio.colors.secondaryText)
@@ -308,7 +260,7 @@ private fun HomeScreen(
                     .takeIf { state.supports(Command.BATTERY_LEFT) },
             )
         }
-        val reportOnly = model?.reportOnly == true || device.brand == Brand.SOUNDCORE && model == null
+        val reportOnly = model?.reportOnly == true || Brands[device.brand].reportOnlyWhenUnknown && model == null
         if (batteries.isEmpty()) {
             // The older Beats (BCD) have no battery or noise control that PairFree reads: say so instead of waiting for ever.
             if (AppleModels.bcd(device.name) != null) Label(stringResource(R.string.beats_bcd_home))

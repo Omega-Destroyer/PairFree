@@ -166,6 +166,11 @@ Custom, `A1` to `A5` the user settings, and others. PairFree offers the presets 
 list, except Custom and the user settings, which stand for the user's own curve. The earbuds
 do not report a preset's curve, so none is drawn. Clear Bass is a setting of its own.
 
+The earbuds send every change of the equalizer as a notification (`EQEBB_NTFY_PARAM`), whoever made it,
+and Sony's app updates its equalizer on each one (13.3.0, its EQ state holder, read 2026-11-11). PairFree's
+Sound tab does the same while it is open (`SonyDriver.followsEqReports`); a report within 2 s of PairFree's
+own write is left out, as for every brand that reports its EQ.
+
 **The six equalizer variants (read 2026-11-12 from Sony's app 13.3.0: `EqEbbInquiredType`, `DeviceCapabilityTableset2Builder`, the `jn0` message classes).** Which one the earbuds have follows from the function they list; the type is the one the app asks with:
 
 | Function (set 2) | Type | What PairFree does |

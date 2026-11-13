@@ -10,36 +10,28 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
+import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.brands.OneplusDriver
+import io.github.omegadestroyer.pairfree.brands.ReportInfo
+import io.github.omegadestroyer.pairfree.brands.SoundcoreDriver
+import io.github.omegadestroyer.pairfree.brands.SoundpeatsDriver
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.capture.BugReport
 import io.github.omegadestroyer.pairfree.capture.Capture
 import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
-import io.github.omegadestroyer.pairfree.protocol.PowerActions
-import io.github.omegadestroyer.pairfree.protocol.SoundpeatsSettings
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.protocol.CurveMatch
-import io.github.omegadestroyer.pairfree.protocol.DeviceReport
 import io.github.omegadestroyer.pairfree.protocol.EqCapture
 import io.github.omegadestroyer.pairfree.protocol.LoggedReads
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Models
-import io.github.omegadestroyer.pairfree.protocol.RecordedBrand
 import io.github.omegadestroyer.pairfree.protocol.RecordingReport
-import io.github.omegadestroyer.pairfree.protocol.ReportPrivacy
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
-import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunSession
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
-import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
-import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyFunction
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.pairfree.status.CompanionLink
 import io.github.omegadestroyer.pairfree.status.FastPairCheck
@@ -242,28 +234,20 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     override fun factoryResetConfirmedByUser() = connection.factoryResetConfirmedByUser()
 
-    override fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) = connection.changeSoundcoreTouch(make)
-
-    override fun resetTouch() = connection.resetSoundcoreTouch()
-
-    override fun changeSetting(change: SettingChange) {
-        // SOUNDPEATS earbuds' extra settings are commands of their own table, sent as any SET is.
-        if (connectedDevice()?.brand == Brand.SOUNDPEATS) {
-            // Restart comes only from its row, after the user confirmed it on screen.
-            if (change is SettingChange.Press && change.key == PowerActions.RESTART) {
-                connection.rebootConfirmedByUser()
-                return
-            }
-            SoundpeatsSettings.change(change)?.let { (command, value) -> connection.set(command, value) }
-            return
-        }
-        connection.changeSetting(change)
+    override fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) {
+        (connection.driver as? SoundcoreDriver)?.changeTouch(make)
     }
+
+    override fun resetTouch() {
+        (connection.driver as? SoundcoreDriver)?.resetTouch()
+    }
+
+    override fun changeSetting(change: SettingChange) = connection.changeSetting(change)
 
     override fun sendFrames(frames: List<ByteArray>) = connection.sendEq(frames)
 
     override fun oneplusHearingTest() =
-        connection.oneplusSession?.hearingTest(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")))
+        (connection.driver as? OneplusDriver)?.session?.hearingTest(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")))
 
     override fun startFitTest() {
         val name = (connection.status.value as? LinkStatus.Connected)?.device?.name
@@ -283,304 +267,16 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     }
 
     /**
-     * A complete, pasteable capture of what the earbuds answered, so a model can be added
-     * from a user's phone with no developer mode and no Bluetooth snooping. On connect the
-     * app sends every read it knows (Requests.ON_CONNECT); this formats the replies the same
-     * way tools/probe.py does, under a header that identifies the model and says where to paste.
+     * The device report to paste into an issue: what the earbuds answered, as their brand's driver writes it
+     * ([io.github.omegadestroyer.pairfree.brands.BrandDriver.report]). Before a driver has anything of its own, SOUNDPEATS' form.
      */
     override fun deviceReport(): String {
         val app = getApplication<Application>()
         val version = app.packageManager.getPackageInfo(app.packageName, 0).versionName
         val device = (connection.status.value as? LinkStatus.Connected)?.device
-        val firmware = connection.state.value.firmware
         val date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'").format(LocalDateTime.now(ZoneOffset.UTC))
-        connection.samsungSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Samsung")
-                appendLine("Model:           ${session.model.model} (${session.model.name})")
-                appendLine("Found by:        ${device?.modelId?.let { "model id $it in the service list" } ?: "Bluetooth name"}")
-                appendLine("Firmware:        ${firmware?.version ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                val payload = session.lastStatusPayload
-                appendLine("The earbuds' full state (message 97, revision ${session.status?.revision ?: "?"}, ${payload?.size ?: 0} bytes), as hex:")
-                appendLine(payload?.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') } ?: "no state yet")
-                appendLine()
-                appendLine("As PairFree read it:")
-                session.status?.values?.forEach { (k, v) -> appendLine("  $k = $v") }
-            }
-        }
-        connection.boseSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Bose")
-                val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product $id, variant ${session.variant ?: "?"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last message of each kind the device sent (block.function, operator: payload as hex;")
-                appendLine("operator 3 is a value, 4 an error, whose first byte says which):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.pixelSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Google Pixel Buds")
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (device type ${session.deviceType ?: "unknown"})")
-                appendLine("Transport:       ${session.transport.name.lowercase()}${session.channel?.let { " (channel $it)" }.orEmpty()}")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last answer to each read PairFree sent (setting N: the field as protobuf, or the error")
-                appendLine("status the earbuds gave; the battery and firmware as protobuf):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-                if (session.refused.isNotEmpty()) appendLine("Settings the earbuds do not have: ${session.refused.joinToString(", ")}")
-            }
-        }
-        connection.nothingSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Nothing")
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product ${session.productId ?: "unknown"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last answer to each read PairFree sent, and the battery and noise events")
-                appendLine("(command: payload as hex; empty means the earbuds answered without a value):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.qcySession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           QCY")
-                val model = session.model
-                appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (vendor id ${model?.code ?: "unknown"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last value of each item and characteristic PairFree read (item or name: value as hex):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.oneMoreSession?.let { session -> return oneMoreReport(session, device, version, date) }
-        connection.cambridgeSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Cambridge Audio (legacy Melomania)")
-                appendLine("Model:           ${session.model.name}")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine("Addresses redacted; only known fields from requested settings reads follow.")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xff).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.earfunSession?.let { session -> return earfunReport(session, device, version, date) }
-        connection.oneplusSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Brand:           OnePlus / OPPO (HeyMelody protocol)")
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"}")
-                appendLine("Product id:      ${session.productId ?: "unknown"}")
-                appendLine("Capability bits: ${session.capabilities?.sorted()?.joinToString(" ") ?: "none yet"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})")
-                appendLine("Captured:        $date")
-            }
-        }
-        connection.beatsSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Brand:           Apple (Beats, ${if (session is io.github.omegadestroyer.pairfree.protocol.apple.BcdSession) "BCD" else "B2P"} protocol)")
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})")
-                appendLine("Captured:        $date")
-                appendLine()
-                session.reportLines.forEach { appendLine(it) }
-                appendLine("Reads answered (value, or none):")
-                session.answers.forEach { (key, value) -> appendLine("  $key: ${value?.let { "%02x".format(it) } ?: "none"}") }
-            }
-        }
-        connection.appleSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Brand:           Apple (AirPods or Beats)")
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (model number ${session.modelNumber ?: "unknown"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("Battery (count, then component, 01, level, status, 01 each), as hex:")
-                appendLine("  ${session.batteryData?.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') } ?: "none yet"}")
-                appendLine("Settings the AirPods reported (control command id: value, as hex):")
-                session.controls.forEach { (id, value) ->
-                    appendLine("  %02x: %s".format(id, value.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }))
-                }
-            }
-        }
-        connection.jblSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           JBL")
-                val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
-                appendLine("Model:           ${session.model.name} (product $id, ${if (session.model.gatt) "Bluetooth LE" else "serial channel"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                if (session.model.family == JblModel.Family.AIROHA) {
-                    appendLine("Airoha chip:     ${session.chipName ?: "unknown"}")
-                    appendLine("Model name:      ${session.modelName ?: "unknown"}")
-                }
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last answer to each of PairFree's reads (command, with the status type or feature id:")
-                appendLine("payload as hex; the device info's name and address are blanked):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.sonySession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Sony")
-                appendLine("Model:           ${session.modelName ?: session.model?.name ?: "unknown"}")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("Table set:       ${session.tableSet} (service ${device?.service ?: "unknown"})")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                val names = if (session.tableSet == 1) SonyFunction.Set1.NAMES else SonyFunction.Set2.NAMES
-                appendLine("Functions the earbuds list (data/sony/functions.json):")
-                session.functions.sorted().forEach { appendLine("  %02x %s".format(it, names[it] ?: "unknown")) }
-                appendLine()
-                appendLine("The last message of each kind they sent (table, command, type: payload as hex):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.soundcoreSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help add support")
-                appendLine("for this model. The serial number's Bluetooth address is masked.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Soundcore")
-                appendLine("Model:           ${session.model}")
-                appendLine("Service:         ${device?.service ?: "serial port"}")
-                appendLine("Firmware:        ${session.lastState?.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                val expected = session.layout?.minSize?.let { "at least $it bytes expected" } ?: "no layout"
-                val got = session.lastState?.size?.let { "$it bytes" } ?: "no reply yet"
-                appendLine("The earbuds' reply to the state request (01 01) ($got, $expected), as hex:")
-                appendLine(session.lastState?.reportHex() ?: "no reply yet")
-            }
-        }
-        return buildString {
-            appendLine("PairFree device report")
-            appendLine("Paste this whole report into a new issue at")
-            appendLine("$ISSUES to help add support")
-            appendLine("for this model. It holds no account, address or other personal data.")
-            appendLine()
-            appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-            appendLine("Firmware:        ${firmware?.text ?: "unknown"}")
-            appendLine("Firmware code:   ${firmware?.code ?: "unknown"}")
-            appendLine("App:             PairFree $version (SPP)")
-            appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-            appendLine("Captured:        $date")
-            appendLine()
-            appendLine("The app asked the earbuds every read it knows. Each line is the feature,")
-            appendLine("its command, the decoded reply and the raw bytes. \"no reply\" means the")
-            appendLine("firmware does not support that read.")
-            appendLine()
-            DeviceReport.lines(connection.lastReplies).forEach(::appendLine)
-            connection.state.value.gaiaFeatures?.let { appendLine(DeviceReport.gaiaLine(it)) }
-            appendLine()
-            appendLine("This is enough to add this model's controls. For its equalizer too, use")
-            appendLine("\"Record from the official app\" on PairFree's Device tab instead.")
-        }
+        val info = ReportInfo(device, version, date, ISSUES)
+        return connection.driver?.report(info) ?: SoundpeatsDriver.plainReport(info, connection.lastReplies, connection.state.value)
     }
 
     private val _capture = MutableStateFlow<Capture>(Capture.Closed)
@@ -628,50 +324,6 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         return Capture.Done(result, since, wholeLog, writes, matches, LoggedReads.of(frames, since), names, vendor, vendor.map(::vendorName))
     }
 
-    /** The device report for 1MORE earbuds or headphones: the model, the firmware and each read's last answer. */
-    private fun oneMoreReport(session: OneMoreSession, device: Paired?, version: String?, date: String): String = buildString {
-        appendLine("PairFree device report")
-        appendLine("Paste this whole report into a new issue at")
-        appendLine("$ISSUES to help check")
-        appendLine("this model. It holds no serial number, address or other personal data.")
-        appendLine()
-        appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-        appendLine("Brand:           1MORE")
-        val model = session.model
-        appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (${model?.model ?: "model unknown"})")
-        appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-        appendLine("App:             PairFree $version")
-        appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-        appendLine("Captured:        $date")
-        appendLine()
-        appendLine("The last answer to each read PairFree sent (command: payload as hex):")
-        session.replies.forEach { (key, payload) ->
-            appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-        }
-    }
-
-    /** The device report for EarFun earbuds or headphones: the model, its protocol, the firmware and each read's last answer. */
-    private fun earfunReport(session: EarfunSession, device: Paired?, version: String?, date: String): String = buildString {
-        appendLine("PairFree device report")
-        appendLine("Paste this whole report into a new issue at")
-        appendLine("$ISSUES to help check")
-        appendLine("this model. It holds no serial number, address or other personal data.")
-        appendLine()
-        appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-        appendLine("Brand:           EarFun")
-        val model = session.model
-        appendLine("Model:           ${model.name} (${model.codes.joinToString(" or ")}, ${model.chip}, ${model.protocol} protocol)")
-        appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-        appendLine("App:             PairFree $version")
-        appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-        appendLine("Captured:        $date")
-        appendLine()
-        appendLine("The last answer to each read PairFree sent (command: payload as hex):")
-        session.replies.forEach { (key, payload) ->
-            appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-        }
-    }
-
     /** The paired device at the address of [earbuds] in a recording; the address itself goes into no report. */
     private fun pairedFor(earbuds: VendorRecording.Earbuds): Paired? {
         val address = earbuds.address?.reversedArray()?.joinToString(":") { "%02X".format(it) } ?: return null
@@ -680,21 +332,12 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     /** The model of other earbuds in a recording, as PairFree knows the paired device at their address. */
     private fun vendorName(earbuds: VendorRecording.Earbuds): String {
-        val code = pairedFor(earbuds)?.model
-        val model = when (earbuds.brand) {
-            RecordedBrand.SOUNDCORE -> SoundcoreModels.model(code)
-            RecordedBrand.SAMSUNG -> SamsungModels.model(code)
-            RecordedBrand.SONY -> code?.let { SonyModels.model(it) }
-            RecordedBrand.NOTHING -> NothingModels.model(code)
-        }
+        // The recorder's brands are named as the app's are.
+        val spec = Brands[Brand.valueOf(earbuds.brand.name)]
+        val model = spec.recordedModel(pairedFor(earbuds)?.model)
         // Sony models are known by their name alone, which is also their code.
         if (model != null) return if (model.names.first() == model.code) model.code else "${model.names.first()} (${model.code})"
-        return when (earbuds.brand) {
-            RecordedBrand.SOUNDCORE -> "Soundcore earbuds (model not matched)"
-            RecordedBrand.SAMSUNG -> "Galaxy Buds (model not matched)"
-            RecordedBrand.SONY -> "Sony earbuds or headphones (model not matched)"
-            RecordedBrand.NOTHING -> "Nothing or CMF earbuds (model not matched)"
-        }
+        return spec.recordedUnmatched
     }
 
     /** Reads a bug report picked on the capture screen, off the main thread. */

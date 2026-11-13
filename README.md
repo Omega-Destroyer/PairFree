@@ -263,6 +263,12 @@ and Python 3.9 or newer.
 
 The probe only sends read commands. It does not change any setting.
 
+## Translating PairFree
+
+PairFree's text is in one file, and a translation is a copy of it with the texts changed; the app then offers the
+language by itself. A partial translation works: what it lacks shows in English. See
+[docs/TRANSLATING.md](docs/TRANSLATING.md).
+
 ## Running the tests
 
 ```

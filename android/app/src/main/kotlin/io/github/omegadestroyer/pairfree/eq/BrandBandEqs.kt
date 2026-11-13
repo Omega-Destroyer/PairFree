@@ -68,7 +68,7 @@ class OneMoreBandEq(private val session: OneMoreSession) : BandEq {
         return BandEqReport(NAMES[name] ?: name, null)
     }
 
-    private companion object {
+    companion object {
         /** The preset sounds as 1MORE's app names them in English; "loud" is its Voice Enhancement. */
         val NAMES = mapOf(
             "studio" to "Studio", "bass_reducer" to "Bass reducer", "bass_booster" to "Bass booster", "acoustic" to "Acoustic",
@@ -104,7 +104,7 @@ class NothingBandEq(private val session: NothingSession) : BandEq {
         return BandEqReport(NAMES[eq.preset ?: return null] ?: return null, null)
     }
 
-    private companion object {
+    companion object {
         /** The presets as Nothing X names them. */
         val NAMES = linkedMapOf("balanced" to "Balanced", "bass" to "More bass", "treble" to "More treble", "voice" to "Voice")
 
@@ -146,7 +146,7 @@ class PixelBandEq(private val session: PixelSession) : BandEq {
     /** True when the earbuds' saved curve is among the presets as Last saved. */
     val hasSaved: Boolean = session.savedEq != null
 
-    private companion object {
+    companion object {
         /** Google's name for the curve the user saved on the earbuds. */
         const val LAST_SAVED = "Last saved"
         const val SAME_DB = 0.01f
@@ -191,7 +191,7 @@ class SamsungBandEq(private val model: SamsungModel, private val curves: List<Li
         else -> BandEqReport(NAMES.getValue(key), current) to false
     }
 
-    private companion object {
+    companion object {
         /** The presets as Samsung's app names them. */
         val NAMES = linkedMapOf(
             SamsungEq.NORMAL to "Normal",

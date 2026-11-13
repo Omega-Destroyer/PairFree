@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.status
 
+import io.github.omegadestroyer.pairfree.Languages
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -75,6 +76,8 @@ class StatusService : Service() {
             }
         }
     }
+
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(Languages.wrap(newBase))
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -157,7 +160,8 @@ class StatusService : Service() {
         combine(hub.connection.status, hub.connection.state) { s, st -> s to st }.collect { (status, state) ->
             val current = device ?: return@collect
             when (status) {
-                is LinkStatus.Idle -> stop()
+                // Not on to the lines below: they would post a notification again after stop() took it down.
+                is LinkStatus.Idle -> return@collect stop()
                 is LinkStatus.Connected -> {
                     retries = 0
                     if (status.device.address != current.address) {

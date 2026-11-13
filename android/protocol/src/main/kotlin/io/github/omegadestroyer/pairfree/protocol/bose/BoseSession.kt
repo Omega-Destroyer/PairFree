@@ -158,12 +158,15 @@ public class BoseSession {
         state = state.copy(values = state.values + values)
     }
 
-    /** The EQ: four bytes per band, its minimum, maximum and value (signed) and its id. */
+    /**
+     * The EQ: four bytes per band, its minimum, maximum and value (signed) and its id. A band whose minimum is above its
+     * maximum is left out: it cannot be a slider, and [groups] would throw on it for the rest of the connection.
+     */
     private fun rangeControl(p: ByteArray): List<EqBand> =
         (0 until p.size / EQ_BAND).map { i ->
             val at = i * EQ_BAND
             EqBand(p.u8(at + 3), p[at].toInt(), p[at + 1].toInt(), p[at + 2].toInt())
-        }
+        }.filter { it.min <= it.max }
 
     /** A mode's configuration: index, prompt (2 bytes), user slot, set up, favourite, then 32 bytes of name. */
     private fun mode(p: ByteArray): Mode? {

@@ -45,7 +45,16 @@ public data class QcySetting(val item: Int, val setting: String)
  * A model's equalizer as its control panel lays it out: [bands] bands at [freqs] (Hz), each from minus to plus
  * [maxDb] in whole dB, and the names of the panel's presets, whose curves are QCY's server data.
  */
-public data class QcyEqSpec(val bands: Int, val maxDb: Int, val freqs: List<Int>, val presets: List<String>)
+/**
+ * A model's graphic EQ from its control panel: [presets] are all of QCY's preset names; [presetGains] holds the ones that are curves on the model's own bands (a gain in
+ * dB per band, as the panel lists them), which PairFree offers. The rest are parametric (their own frequencies and Q) and are not offered.
+ */
+public data class QcyEqSpec(val bands: Int, val maxDb: Int, val freqs: List<Int>, val presets: List<String>, private val presetData: String = "") {
+    /** The curves as `name=gain,gain;name=...` in the generated table, read once. */
+    val presetGains: Map<String, List<Double>> by lazy {
+        if (presetData.isEmpty()) emptyMap() else presetData.split(';').associate { part -> part.substringBefore('=') to part.substringAfter('=').split(',').map(String::toDouble) }
+    }
+}
 
 /** One QCY model from data/qcy/devices.json, by the vendor id it advertises. */
 public data class QcyModel(

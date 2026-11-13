@@ -233,6 +233,25 @@ class QcyTest {
         assertEquals("QCY MeloBuds N70", QcyModels.model("5D45")?.names?.single())
     }
 
+    @Test
+    fun thePanelPresetsThatSitOnTheModelsBandsAreCurves() {
+        // 2026-11-12: QCY's control panels list each preset's gains (dB per band); 108 models have presets on their own bands.
+        val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
+        var withCurves = 0
+        for (d in devices) {
+            val spec = QcyModels.of(d.getValue("vendor_id").jsonPrimitive.int)?.eq ?: continue
+            val json = d["eq"]?.jsonObject?.get("preset_gains")?.jsonArray.orEmpty()
+            assertEquals(json.size, spec.presetGains.size, d.getValue("name").toString())
+            for ((name, gains) in spec.presetGains) {
+                assertEquals(spec.bands, gains.size, name)
+            }
+            if (spec.presetGains.isNotEmpty()) withCurves++
+        }
+        assertEquals(108, withCurves)
+        val era = QcyModels.ALL.first { it.eq?.presetGains?.isNotEmpty() == true }.eq!!
+        assertEquals(10, era.presetGains.values.first().size)
+    }
+
     private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
     @Test

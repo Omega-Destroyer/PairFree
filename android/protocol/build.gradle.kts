@@ -1571,7 +1571,12 @@ abstract class GenerateQcyTables : DefaultTask() {
             out.appendLine("        io.github.omegadestroyer.pairfree.protocol.Form.$form, anc = $anc,")
             @Suppress("UNCHECKED_CAST")
             val eq = (d["eq"] as Map<String, Any?>?)?.let { e ->
-                "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])})"
+                @Suppress("UNCHECKED_CAST")
+                // As one string per model ("name=g,g,g;name=..."): a list of doubles per preset passes the JVM's 64 KB method limit over 194 models.
+                val curves = str((e["preset_gains"] as List<Map<String, Any?>>?).orEmpty().joinToString(";") { p ->
+                    "${p["name"]}=${(p["gains"] as List<*>).joinToString(",") { (it as Number).toDouble().toString() }}"
+                })
+                "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])}, $curves)"
             } ?: "null"
             out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true},")
             out.appendLine("        eq = $eq,")

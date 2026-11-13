@@ -231,9 +231,11 @@ panels are QCY's server data. PairFree asks for both on connecting and uses the 
   the user's own as type `FF` with the gains in dB (`CustomEQLayout`), plus the panel's `basedb`, which is 0
   in the panels QCY's app bundles for when it is offline (`controlpan_default`, `controlpan_jl`) and in most
   of its other bundled panels (−5 in two); Quicky did not keep it, so PairFree adds nothing.
-- **Presets** are curves in the panels. QCY's app writes them with their gains in tenths of a dB, so what the
-  earbuds take there is unclear, and PairFree offers no presets: only Stock (every band at 0) and curves of
-  the user's own. A characteristic that reports a preset's type counts as an EQ PairFree does not know.
+- **Presets** are curves in the panels (`sys_eq`: a name, a gain in dB per band, and for the parametric ones their own frequencies, Qs and filter types). QCY's app
+  keeps a preset's gains in tenths of a dB (`SysEQSeted`: the panel's `eqs` times 10 into a byte array) and the earbuds' EQ characteristic carries whole dB, so what the
+  earbuds take for a preset is not settled. **Since 2026-11-12** PairFree offers the 108 models' presets that sit on the model's own bands (`eq.preset_gains` in
+  `data/qcy/devices.json`, from `tools/import_qcy_panels.py --presets`) as curves: selecting one writes its gains, rounded to whole dB, through the same write as the user's
+  own curve. The 77 models whose presets are parametric get none yet, and two presets that share a name on one model keep the first. Not tried on any earbuds. A characteristic that reports a preset's type counts as an EQ PairFree does not know.
 - **Range and bands:** each model's band count, frequencies and range are in `data/qcy/devices.json` (`eq`);
   the parametric EQ uses the bands the earbuds report.
 - **JieLi models:** the newer ones take items `22` and `20` in the custom command, so the parametric EQ

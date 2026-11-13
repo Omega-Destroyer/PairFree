@@ -76,6 +76,7 @@ internal fun ControlsScreen(
     val keys = state.keys.associate { it.gesture to it.action }
     val hasKeys = state.supports(Command.CUSTOM_KEYS)
     val hasTouchSwitch = state.supports(Command.TOUCH_DISABLED)
+    val inverted = modelOf(device, state)?.touchInverted == true
 
     TabContent {
         Text(stringResource(R.string.tab_controls), style = Studio.type.title)
@@ -100,8 +101,9 @@ internal fun ControlsScreen(
             Panel {
                 SwitchRow(
                     stringResource(R.string.touch_controls),
-                    on = state.switch(Command.TOUCH_DISABLED) == false,
-                    onChange = { on -> actions.set(Command.TOUCH_DISABLED, if (on) 0 else 1) },
+                    // On the firmware codes SOUNDPEATS 2.5.3 inverts the switch for, 1 on the wire means touch is on.
+                    on = state.switch(Command.TOUCH_DISABLED) == inverted,
+                    onChange = { on -> actions.set(Command.TOUCH_DISABLED, if (on != inverted) 0 else 1) },
                     note = stringResource(R.string.touch_controls_note),
                 )
             }

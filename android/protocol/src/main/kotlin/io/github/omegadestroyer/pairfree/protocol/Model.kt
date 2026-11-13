@@ -25,6 +25,8 @@ public data class Model(
     val eq: EqLayout? = null,
     val confirmed: Set<Command> = emptySet(),
     val fitKeepsAnc: Boolean = false,
+    /** SOUNDPEATS 2.5.3's `TouchInversionUtil` shows the touch-disable switch inverted on these firmware codes (and, for its own switch to work, writes it inverted): 1 on the wire means touch is ON. */
+    val touchInverted: Boolean = false,
     val form: Form = Form.EARBUDS,
     val fastPair: Boolean? = null,
     /** PairFree knows the model's name and number but not yet how to read it: the screens ask for a device report. */

@@ -167,6 +167,7 @@ private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find")
 private fun groupTitle(key: String): String = stringResource(
     when (key) {
         "noise" -> R.string.setting_group_noise
+        "ef_cycle" -> R.string.setting_group_ef_cycle
         "sound" -> R.string.setting_group_sound
         "touch" -> R.string.setting_group_touch
         "ambient_customize" -> R.string.setting_group_ambient_customize
@@ -204,6 +205,7 @@ private fun groupTitle(key: String): String = stringResource(
 
 @Composable
 private fun groupNote(key: String): String? = when (key) {
+    "ef_cycle" -> stringResource(R.string.setting_group_ef_cycle_note)
     "find" -> stringResource(R.string.setting_find_note)
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
@@ -220,6 +222,24 @@ private fun ultButtonTitle(key: String): String? {
     if (!key.startsWith("ult_button_")) return null
     val effect = key.removePrefix("ult_button_")
     return stringResource(R.string.setting_ult_button, LocalContext.current.optionLabel("sound_effect", effect))
+}
+
+private val EF_CYCLE_MODES = listOf("off", "ambient", "anc", "wind", "adaptive")
+private val EF_CYCLE_KEYS = EF_CYCLE_MODES.flatMap { listOf("ef_cycle_left_$it", "ef_cycle_right_$it") }.toSet()
+
+/** "Left key: noise cancelling" and the like: which modes each key's noise control cycles through (EarFun's app, getKeyCustomNoiseCancelList). */
+@Composable
+private fun efCycleTitle(key: String): String {
+    val rest = key.removePrefix("ef_cycle_")
+    val side = if (rest.startsWith("left")) R.string.setting_ef_cycle_left else R.string.setting_ef_cycle_right
+    val mode = when (rest.substringAfter('_')) {
+        "ambient" -> R.string.setting_ef_cycle_ambient
+        "anc" -> R.string.setting_ef_cycle_anc
+        "wind" -> R.string.setting_ef_cycle_wind
+        "adaptive" -> R.string.setting_ef_cycle_adaptive
+        else -> R.string.action_off
+    }
+    return stringResource(R.string.setting_ef_cycle_row, stringResource(side), stringResource(mode))
 }
 
 @Composable
@@ -537,6 +557,7 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    in EF_CYCLE_KEYS -> efCycleTitle(key)
     "call_transparency" -> stringResource(R.string.setting_call_transparency)
     "advanced_eq" -> stringResource(R.string.setting_advanced_eq)
     "power_off_time" -> stringResource(R.string.setting_power_off_time)

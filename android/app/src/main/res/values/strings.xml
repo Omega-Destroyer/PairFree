@@ -856,6 +856,15 @@
     <string name="setting_battery_safe_mode">Battery safe mode</string>
     <string name="info_button">More information</string>
     <string name="setting_vibrator">Vibration</string>
+    <string name="setting_group_ef_cycle">Noise control key cycle</string>
+    <string name="setting_group_ef_cycle_note">The noise modes each earbud\'s noise control key goes through, in turn. At least one stays on.</string>
+    <string name="setting_ef_cycle_row">%1$s key: %2$s</string>
+    <string name="setting_ef_cycle_left">Left</string>
+    <string name="setting_ef_cycle_right">Right</string>
+    <string name="setting_ef_cycle_ambient">Ambient sound</string>
+    <string name="setting_ef_cycle_anc">Noise cancelling</string>
+    <string name="setting_ef_cycle_wind">Wind noise cancelling</string>
+    <string name="setting_ef_cycle_adaptive">Adaptive noise cancelling</string>
     <string name="setting_bose_default_mode">Mode at start</string>
     <string name="setting_bose_default_mode_note">The sound mode the headphones start in when you switch them on.</string>
     <string name="setting_bose_modes_persist">Remember the last mode</string>

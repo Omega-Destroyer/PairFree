@@ -526,6 +526,8 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    "upmix_series" -> stringResource(R.string.setting_upmix_series)
+    "vibrator" -> stringResource(R.string.setting_vibrator)
     "lr_balance_correction" -> stringResource(R.string.setting_lr_balance_correction)
     "battery_safe_mode" -> stringResource(R.string.setting_battery_safe_mode)
     "dual_connection" -> stringResource(R.string.setting_dual_connection)
@@ -655,6 +657,8 @@ private fun buttonTitle(key: String): String? {
 
 @Composable
 private fun settingNote(key: String): String? = when (key) {
+    "upmix_series" -> stringResource(R.string.setting_upmix_series_note)
+    "vibrator" -> stringResource(R.string.setting_vibrator_note)
     "lr_balance_correction" -> stringResource(R.string.setting_lr_balance_correction_note)
     "battery_safe_mode" -> stringResource(R.string.setting_battery_safe_mode_note)
     "caring_charge" -> stringResource(R.string.setting_caring_charge_note)
@@ -955,6 +959,14 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "high" -> R.string.setting_level_high
             "medium" -> R.string.setting_level_medium
             else -> R.string.setting_qcy_sensitivity_normal
+        },
+    )
+    key == "upmix_series" -> getString(
+        when (option) {
+            "upmix_cinema" -> R.string.setting_upmix_option_cinema
+            "upmix_game" -> R.string.setting_upmix_option_game
+            "upmix_music" -> R.string.setting_upmix_option_music
+            else -> R.string.action_off
         },
     )
     key == "sound_mode" -> getString(if (option == "sleep_mode") R.string.setting_sound_mode_sleep else R.string.setting_sound_mode_music)

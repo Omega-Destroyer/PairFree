@@ -268,6 +268,13 @@ Not built, with what was checked:
 - Battery safe mode (type 11): built as a switch. A read answers the switch and whether its effect is active; a write is the switch then an effect control, which PairFree
   sends as 0 (leave the effect as it is; 1 turns the effect off). What the mode limits is not stated in the app's code, so the explainer says only that it spares the battery.
 
+Also built on 2026-11-13: set 2's simpler noise control layouts (types `01`, `11`, `12`, `14` and `21`, read from `un0.n`, `o`, `k`, `l`, `d`: the effect byte, then the NC
+byte or NC value, ambient voice, and an ambient on/off or level; `SonyNoise`), vibration (set 1: system type 1, setting type 0, then 1 or 0; set 2: system type 0, on 0), set 1's power
+saving (type 2), the surround upmix (audio type 10: none, cinema, game, music; Sony's "listening option") and the left and right balance correction (EQEBB type `0x50`).
+
+**Sony is finished as far as the sources go:** every function id in `data/unused_ids.json` is used or carries a "blocked: reason; checked: what" line (speaker-only features, head
+tracking and its calibration, assistant setup, device lists, LE Audio mode switching, server-held sound curves, read-only status).
+
 ## 8. Never sent
 
 Firmware update (`UPDT_*`), the test command and the logs are marked `never_send` in

@@ -253,6 +253,41 @@ class SonySessionTest {
     }
 
     @Test
+    fun vibrationPowerSavingAndTheUpmixOption() {
+        // Set 1: system type 1 (vibration) and 2 (power saving), the setting type 0, then 1 for on.
+        val one = set1(SonyFunction.Set1.VIBRATOR, SonyFunction.Set1.POWER_SAVING_MODE)
+        val reads = one.takeOutbox()
+        assertTrue(out(0xF6, 0x01) in reads && out(0xF6, 0x02) in reads, "set 1's reads")
+        one.receive(message(0xF7, 0x01, 0x00, 0x01))
+        assertEquals(Setting.Toggle("vibrator", true), setting(one, "vibrator"))
+        assertEquals(listOf(out(0xF8, 0x01, 0x00, 0x00)), one.change(SettingChange.Toggle("vibrator", false)))
+        // Set 2: vibration is system type 0 with on as 0; the upmix option is audio type 10: none, cinema, game, music.
+        val two = set2(SonyFunction.Set2.VIBRATOR_ON_OFF, SonyFunction.Set2.UPMIX_SERIES)
+        two.receive(message(0xF7, 0x00, 0x00))
+        assertEquals(listOf(out(0xF8, 0x00, 0x01)), two.change(SettingChange.Toggle("vibrator", false)))
+        two.receive(message(0xE7, 0x0A, 0x02))
+        assertEquals("upmix_game", (setting(two, "upmix_series") as Setting.Choice).value)
+        assertEquals(listOf(out(0xE8, 0x0A, 0x03)), two.change(SettingChange.Choice("upmix_series", "upmix_music")))
+    }
+
+    @Test
+    fun set2SimplerNoiseControlLayouts() {
+        // 0x11 (Sony's un0.o): effect, NC on/off, ambient voice, ambient on/off.
+        val a = set2(SonyFunction.Set2.NOISE_CANCELLING_ONOFF_AND_AMBIENT_SOUND_MODE_ONOFF)
+        a.receive(message(0x67, 0x11, 0x01, 0x01, 0x01, 0x00, 0x00))
+        assertEquals(1, a.state.number(Command.ANC_MODE), "noise cancelling")
+        assertEquals(listOf(out(0x68, 0x11, 0x01, 0x01, 0x00, 0x00, 0x01)), a.set(Command.ANC_MODE, 2))
+        // Type 1 (un0.n): effect, then the NC on/off that follows it.
+        val n = set2(SonyFunction.Set2.NOISE_CANCELLING_ONOFF)
+        n.receive(message(0x67, 0x01, 0x01, 0x00, 0x00))
+        assertEquals(listOf(out(0x68, 0x01, 0x01, 0x01, 0x01)), n.change(SettingChange.Toggle("anc", true)))
+        // Type 0x21 (un0.d): effect, ambient voice, ambient on/off.
+        val m = set2(SonyFunction.Set2.AMBIENT_SOUND_MODE_ONOFF)
+        m.receive(message(0x67, 0x21, 0x01, 0x00, 0x00, 0x00))
+        assertEquals(listOf(out(0x68, 0x21, 0x01, 0x01, 0x00, 0x01)), m.change(SettingChange.Toggle("ambient_sound", true)))
+    }
+
+    @Test
     fun set2NoiseControlKeepsTheEarbudsLayout() {
         val s = set2(SonyFunction.Set2.MODE_NC_ASM_NOISE_CANCELLING_DUAL_AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT)
         // 0x17: changed, on, ambient (1), voice off, level 12.

@@ -20,7 +20,7 @@ Each model shows only the settings it has:
 
 ## Sony models
 
-PairFree knows 24 Sony models. Models that have been tried on real earbuds: WF-1000XM5.
+PairFree knows 24 Sony models. Models that have been tried on real earbuds: WF-1000XM5, WF-1000XM6.
 
 Sony support is read from Sony's own app and checked against Gadgetbridge's Sony support. Each model says itself what it has when PairFree connects. It has not been tried on Sony earbuds or headphones yet; two ULT Field speakers have been read.
 

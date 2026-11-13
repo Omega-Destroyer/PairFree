@@ -180,6 +180,8 @@ private fun groupTitle(key: String): String = stringResource(
         "ef_buttons" -> R.string.setting_group_buttons
         "ca_eq" -> R.string.setting_ca_eq
         "ca_sound" -> R.string.setting_ca_sound
+        "ca_case" -> R.string.setting_ca_case_group
+        "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
         "oneplus_head_motion" -> R.string.setting_group_head_motion
@@ -196,6 +198,8 @@ private fun groupNote(key: String): String? = when (key) {
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
     "ca_eq" -> stringResource(R.string.setting_ca_eq_note)
     "ca_connection" -> stringResource(R.string.setting_ca_codec_note)
+    "ca_case" -> stringResource(R.string.setting_ca_case_note)
+    "ca_sound" -> stringResource(R.string.setting_ca_balance_note)
     else -> null
 }
 
@@ -232,6 +236,22 @@ private fun settingTitle(key: String): String = when (key) {
     "op_peer_disconnect" -> stringResource(R.string.setting_op_peer_disconnect)
     "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
     "ca_noise" -> stringResource(R.string.setting_ca_noise)
+    "ca_balance" -> stringResource(R.string.setting_ca_balance)
+    "ca_peer_connect" -> stringResource(R.string.setting_ca_peer_connect)
+    "ca_peer_disconnect" -> stringResource(R.string.setting_ca_peer_disconnect)
+    "ca_tp_tap_left" -> stringResource(R.string.setting_ca_tp_tap_left)
+    "ca_tp_tap_right" -> stringResource(R.string.setting_ca_tp_tap_right)
+    "ca_tp_double_tap_left" -> stringResource(R.string.setting_ca_tp_double_tap_left)
+    "ca_tp_double_tap_right" -> stringResource(R.string.setting_ca_tp_double_tap_right)
+    "ca_tp_triple_tap_left" -> stringResource(R.string.setting_ca_tp_triple_tap_left)
+    "ca_tp_triple_tap_right" -> stringResource(R.string.setting_ca_tp_triple_tap_right)
+    "ca_tp_long_press_left" -> stringResource(R.string.setting_ca_tp_long_press_left)
+    "ca_tp_long_press_right" -> stringResource(R.string.setting_ca_tp_long_press_right)
+    "ca_gesture_pairing_mode" -> stringResource(R.string.setting_ca_pairing_mode_control)
+    "ca_gesture_wear_detect" -> stringResource(R.string.setting_ca_wear_detect_control)
+    "ca_case_power" -> stringResource(R.string.setting_ca_case_power)
+    "ca_case_pairing" -> stringResource(R.string.setting_ca_case_pairing)
+    "ca_case_reset" -> stringResource(R.string.setting_ca_case_reset)
     "ca_codec_sbc" -> "SBC"
     "ca_codec_aac" -> "AAC"
     "ca_codec_aptx" -> "aptX"
@@ -682,7 +702,7 @@ private fun isTouchRow(key: String): Boolean {
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
     key == "op_head_motion" -> getString(if (option == "nod") R.string.op_head_nod else R.string.op_head_shake)
-    key == "op_peer_connect" || key == "op_peer_disconnect" -> option
+    key == "op_peer_connect" || key == "op_peer_disconnect" || key == "ca_peer_connect" || key == "ca_peer_disconnect" -> option
     key == "op_spatial" -> getString(when (option) {
         "fixed" -> R.string.op_spatial_fixed
         "head_tracking" -> R.string.op_spatial_head
@@ -706,6 +726,17 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "transparency_high" -> R.string.setting_ca_transparency_high
         else -> R.string.setting_ca_voice_focus
     })
+    key.startsWith("ca_tp_") -> getString(when (option) {
+        "play_pause" -> R.string.setting_ca_play_pause
+        "next" -> R.string.setting_ca_next
+        "previous" -> R.string.setting_ca_previous
+        "volume_up" -> R.string.setting_ca_volume_up
+        "volume_down" -> R.string.setting_ca_volume_down
+        "anc_mode" -> R.string.setting_ca_ambient_modes_control
+        "assistant" -> R.string.setting_ca_assistant
+        else -> R.string.action_none
+    })
+    key.startsWith("ca_case_") -> getString(if (option == "on") R.string.on else R.string.action_off)
     key == "ca_auto_off" -> if (option == "never") getString(R.string.setting_ca_never) else option
     key == "ca_language" -> getString(when (option) {
         "yue" -> R.string.setting_ca_cantonese

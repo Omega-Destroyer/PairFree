@@ -4,7 +4,17 @@ import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Model
 
 /** A Melomania: the legacy ones of Melomania 2.8.12, or ([connect]) the A100, M100, P100 and X100 families of Melomania Connect 2.6.0 (GAIA v3). */
-public data class CambridgeModel(val name: String, val names: List<String>, val ambient: Boolean, val controlCount: Int, val connect: Boolean = false)
+public data class CambridgeModel(val name: String, val names: List<String>, val ambient: Boolean, val controlCount: Int, val connect: Boolean = false, val config: ConnectConfig? = null)
+
+/**
+ * Which controls Melomania Connect 2.6.0 shows for a device type (its `LocalConfig`, data/cambridge/devices.json) and the EQ it bundles for it:
+ * the gain range in dB, whether the curve can be edited (the X100's cannot: presets only) and the presets as gains in dB, band by band.
+ */
+public data class ConnectConfig(
+    val headphones: Boolean, val touch: Boolean, val mono: Boolean, val sleep: Boolean, val loudness: Boolean, val sideTone: Boolean,
+    val connected: Boolean, val codec: Boolean, val spatial: Boolean, val adaptive: Boolean,
+    val eqMinDb: Double, val eqMaxDb: Double, val eqCustom: Boolean, val eqPresets: List<Pair<String, List<Double>>>,
+)
 
 public object CambridgeModels {
     public val ALL: List<CambridgeModel> get() = CAMBRIDGE_MODELS

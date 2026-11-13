@@ -5,10 +5,15 @@ package io.github.omegadestroyer.pairfree.protocol.cambridge
  * byte, 2: two length bytes), the payload length, the vendor, the command word and the payload. The command word is
  * feature << 9 | type << 7 | command.
  */
-public data class ConnectPacket(val feature: Int, val type: Int, val command: Int, val payload: ByteArray = byteArrayOf()) {
+public data class ConnectPacket(
+    val feature: Int, val type: Int, val command: Int, val payload: ByteArray = byteArrayOf(), val vendor: Int = CambridgeConnectWire.VENDOR,
+) {
     public val word: Int get() = feature shl 9 or (type shl 7) or command
     public val isResponse: Boolean get() = type == CambridgeConnectWire.TYPE_RESPONSE
     public val isError: Boolean get() = type == CambridgeConnectWire.TYPE_ERROR
+
+    /** What a frame is answered by: vendor, feature and command in one number. */
+    public val key: Int get() = (if (vendor == CambridgeConnectWire.QTIL_VENDOR) 1 shl 12 else 0) or (feature shl 7) or command
 
     public fun bytes(checksum: Boolean = false): ByteArray {
         require(feature in 0..0x7f && command in 0..0x7f && payload.size <= MAX_PAYLOAD)
@@ -16,13 +21,13 @@ public data class ConnectPacket(val feature: Int, val type: Int, val command: In
         val flags = (if (checksum) 1 else 0) or (if (extended) 2 else 0)
         val head = byteArrayOf(0xFF.toByte(), CambridgeConnectWire.VERSION.toByte(), flags.toByte()) +
             (if (extended) byteArrayOf((payload.size shr 8).toByte(), payload.size.toByte()) else byteArrayOf(payload.size.toByte())) +
-            byteArrayOf((CambridgeConnectWire.VENDOR shr 8).toByte(), CambridgeConnectWire.VENDOR.toByte(), (word shr 8).toByte(), word.toByte())
+            byteArrayOf((vendor shr 8).toByte(), vendor.toByte(), (word shr 8).toByte(), word.toByte())
         val frame = head + payload
         return if (checksum) frame + frame.fold(0) { x, b -> x xor (b.toInt() and 0xff) }.toByte() else frame
     }
 
     override fun equals(other: Any?): Boolean = other is ConnectPacket && feature == other.feature && type == other.type &&
-        command == other.command && payload.contentEquals(other.payload)
+        command == other.command && vendor == other.vendor && payload.contentEquals(other.payload)
 
     override fun hashCode(): Int = (word * 31) + payload.contentHashCode()
 
@@ -31,7 +36,7 @@ public data class ConnectPacket(val feature: Int, val type: Int, val command: In
     }
 }
 
-/** Bounded stream decoder for [ConnectPacket]s: fragmented or joined frames, the optional XOR, resynchronising after bad data. */
+/** Bounded stream decoder for [ConnectPacket]s of Cambridge's vendor and of Qualcomm's (`001D`): fragmented or joined frames, the optional XOR, resynchronising after bad data. */
 public class ConnectParser {
     private var pending: ByteArray = byteArrayOf()
 
@@ -55,9 +60,9 @@ public class ConnectParser {
                 if (flags and 1 != 0 && pending.take(size).fold(0) { x, b -> x xor (b.toInt() and 0xff) } != 0) { pending = pending.copyOfRange(1, pending.size); continue }
                 val at = 3 + lengthBytes
                 val vendor = (pending[at].toInt() and 0xff shl 8) or (pending[at + 1].toInt() and 0xff)
-                if (vendor == CambridgeConnectWire.VENDOR) {
+                if (vendor == CambridgeConnectWire.VENDOR || vendor == CambridgeConnectWire.QTIL_VENDOR) {
                     val word = (pending[at + 2].toInt() and 0xff shl 8) or (pending[at + 3].toInt() and 0xff)
-                    result += ConnectPacket(word shr 9, (word shr 7) and 3, word and 0x7f, pending.copyOfRange(head, head + length))
+                    result += ConnectPacket(word shr 9, (word shr 7) and 3, word and 0x7f, pending.copyOfRange(head, head + length), vendor)
                 }
                 pending = pending.copyOfRange(size, pending.size)
             }

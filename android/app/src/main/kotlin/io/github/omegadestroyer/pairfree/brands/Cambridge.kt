@@ -4,6 +4,8 @@ import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
+import io.github.omegadestroyer.pairfree.eq.CambridgeBandEq
 import io.github.omegadestroyer.pairfree.eq.EqSource
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Model
@@ -20,7 +22,8 @@ object CambridgeSpec : BrandSpec(Brand.CAMBRIDGE) {
 
     override val offersRecording: Boolean get() = false
 
-    override fun eqNote(device: Paired): Int = R.string.eq_cambridge
+    override fun eqNote(device: Paired): Int =
+        if (CambridgeModels.fromName(device.model ?: device.name)?.connect == true) R.string.eq_cambridge_connect else R.string.eq_cambridge
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         CambridgeModels.fromName(name)?.let { Paired(address, name, Brand.CAMBRIDGE, service = CambridgeModels.service(uuids), model = it.name) }
@@ -40,8 +43,20 @@ class CambridgeDriver(host: DriverHost, private val device: Paired) : TalkDriver
         if (it.connect) CambridgeConnectTalk(it) else CambridgeTalk(it)
     }
 
-    /** Legacy Melomania's five gain controls have no established frequency grid. They use Sound-tab rows. */
-    override fun eqSource(device: Paired, model: Model?): EqSource? = null
+    /** Melomania Connect's EQ goes out through the talk's queue as Qualcomm music processing frames. */
+    override fun sendEq(frames: List<ByteArray>) {
+        val talk = talk as? CambridgeConnectTalk ?: return
+        if (!host.connected) return
+        if (send(talk, frames)) publish(talk)
+    }
+
+    /** Legacy Melomania's five gain controls have no established frequency grid and use Sound-tab rows; the Connect models open the EQ over the bands the earbuds report. */
+    override fun eqSource(device: Paired, model: Model?): EqSource? {
+        val session = connectSession?.takeIf { it.eqKnown && it.eqPresets.isNotEmpty() } ?: return null
+        val band = CambridgeBandEq(session)
+        val target = BandEqTarget(band)
+        return EqSource(session to band.eqBandsHz, target.layout, target) { current -> band.report()?.let { target.reportedAs(it, current) } }
+    }
 
     override fun report(info: ReportInfo): String? {
         connectSession?.let { c ->

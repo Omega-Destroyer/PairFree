@@ -22,12 +22,10 @@ public class CambridgeConnectTalk(model: CambridgeModel) : SessionTalk<ByteArray
     override fun change(change: SettingChange): List<ByteArray>? = session.change(change)
     override fun unanswered(sent: ByteArray): Boolean = true
     override fun feed(bytes: ByteArray): Fed = Fed(true, session.feed(bytes))
+    override val eq: Any? get() = session.eqBands
 
-    /** The frame's feature and command, as [CambridgeConnectSession.feed] names what answered. */
-    private fun key(frame: ByteArray): Int {
-        val word = ConnectParser().feed(frame).singleOrNull() ?: return -1
-        return word.feature * 128 + word.command
-    }
+    /** The frame's vendor, feature and command, as [CambridgeConnectSession.feed] names what answered. */
+    private fun key(frame: ByteArray): Int = ConnectParser().feed(frame).singleOrNull()?.key ?: -1
 
     private companion object {
         const val REPLY_MS = 3_000L

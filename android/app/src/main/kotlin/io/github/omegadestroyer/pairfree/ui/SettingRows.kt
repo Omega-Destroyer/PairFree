@@ -180,6 +180,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ef_buttons" -> R.string.setting_group_buttons
         "ca_eq" -> R.string.setting_ca_eq
         "ca_sound" -> R.string.setting_ca_sound
+        "ca_case" -> R.string.setting_ca_case_group
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
         "oneplus_head_motion" -> R.string.setting_group_head_motion
@@ -196,6 +197,8 @@ private fun groupNote(key: String): String? = when (key) {
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
     "ca_eq" -> stringResource(R.string.setting_ca_eq_note)
     "ca_connection" -> stringResource(R.string.setting_ca_codec_note)
+    "ca_case" -> stringResource(R.string.setting_ca_case_note)
+    "ca_sound" -> stringResource(R.string.setting_ca_balance_note)
     else -> null
 }
 
@@ -232,6 +235,12 @@ private fun settingTitle(key: String): String = when (key) {
     "op_peer_disconnect" -> stringResource(R.string.setting_op_peer_disconnect)
     "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
     "ca_noise" -> stringResource(R.string.setting_ca_noise)
+    "ca_balance" -> stringResource(R.string.setting_ca_balance)
+    "ca_gesture_pairing_mode" -> stringResource(R.string.setting_ca_pairing_mode_control)
+    "ca_gesture_wear_detect" -> stringResource(R.string.setting_ca_wear_detect_control)
+    "ca_case_power" -> stringResource(R.string.setting_ca_case_power)
+    "ca_case_pairing" -> stringResource(R.string.setting_ca_case_pairing)
+    "ca_case_reset" -> stringResource(R.string.setting_ca_case_reset)
     "ca_codec_sbc" -> "SBC"
     "ca_codec_aac" -> "AAC"
     "ca_codec_aptx" -> "aptX"
@@ -706,6 +715,7 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "transparency_high" -> R.string.setting_ca_transparency_high
         else -> R.string.setting_ca_voice_focus
     })
+    key.startsWith("ca_case_") -> getString(if (option == "on") R.string.on else R.string.action_off)
     key == "ca_auto_off" -> if (option == "never") getString(R.string.setting_ca_never) else option
     key == "ca_language" -> getString(when (option) {
         "yue" -> R.string.setting_ca_cantonese

@@ -978,6 +978,16 @@
     <string name="setting_ca_tones">Tones only</string>
     <string name="setting_ca_celebrity">Celebrity voice</string>
     <string name="setting_ca_never">Never</string>
+    <string name="eq_cambridge_connect">Pick a preset or drag the bands. The earbuds report their own band frequencies; Melomania Connect lets each band go down to -9 dB and up to +3 dB, so PairFree holds anything higher to +3 dB.</string>
+    <string name="setting_ca_balance">Left and right balance</string>
+    <string name="setting_ca_pairing_mode_control">Pairing mode control</string>
+    <string name="setting_ca_wear_detect_control">Wear detection control</string>
+    <string name="setting_ca_case_group">Case and power gestures</string>
+    <string name="setting_ca_case_note">Melomania Connect switches these on or off but cannot report them, so the rows show only what PairFree sent this time.</string>
+    <string name="setting_ca_case_power">Power on and off gesture</string>
+    <string name="setting_ca_case_pairing">Case pairing gesture</string>
+    <string name="setting_ca_case_reset">Case factory reset gesture</string>
+    <string name="setting_ca_balance_note">Negative values lean left, positive right (the app names the earbud and a percentage but gives no screen for it, so this reading is not confirmed).</string>
     <string name="setting_ca_cantonese">Cantonese</string>
     <string name="setting_ca_neutral">Neutral</string>
     <string name="setting_ca_immersive">Immersive</string>

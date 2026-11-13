@@ -1931,6 +1931,17 @@ abstract class GenerateCambridgeTables : DefaultTask() {
         @Suppress("UNCHECKED_CAST")
         val d = JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>
         fun quoted(v: Any?) = groovy.json.JsonOutput.toJson(v)
+        fun connectConfig(m: Map<String, Any?>): String {
+            @Suppress("UNCHECKED_CAST")
+            val cfg = m["config"] as Map<String, Any?>? ?: return "null"
+            @Suppress("UNCHECKED_CAST")
+            val eq = m.getValue("eq") as Map<String, Any?>
+            @Suppress("UNCHECKED_CAST")
+            val presets = (eq.getValue("presets") as List<Map<String, Any?>>).joinToString(", ") { p -> "${quoted(p.getValue("name"))} to listOf(${(p.getValue("gains") as List<*>).joinToString(", ")})" }
+            return "ConnectConfig(headphones = ${cfg["headphones"]}, touch = ${cfg["touch"]}, mono = ${cfg["mono"]}, sleep = ${cfg["sleep"]}, loudness = ${cfg["loudness"]}, " +
+                "sideTone = ${cfg["side_tone"]}, connected = ${cfg["connected"]}, codec = ${cfg["codec"]}, spatial = ${cfg["spatial"]}, adaptive = ${cfg["adaptive"]}, " +
+                "eqMinDb = ${eq["min_db"]}, eqMaxDb = ${eq["max_db"]}, eqCustom = ${eq["custom"]}, eqPresets = listOf($presets))"
+        }
         val out = StringBuilder("// Generated from data/cambridge; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.cambridge\n\n")
         for ((section, type) in mapOf("wire" to "CambridgeWire", "commands" to "CambridgeCommand", "values" to "CambridgeValue", "offsets" to "CambridgeOffset")) {
             out.appendLine("public object $type {")
@@ -1968,7 +1979,7 @@ abstract class GenerateCambridgeTables : DefaultTask() {
         @Suppress("UNCHECKED_CAST")
         for (m in d.getValue("devices") as List<Map<String, Any?>>) {
             val names = (m.getValue("names") as List<*>).joinToString(", ") { quoted(it) }
-            out.appendLine("    CambridgeModel(${quoted(m.getValue("name"))}, listOf($names), ${m.getValue("ambient")}, ${m.getValue("control_count")}, ${m["connect"] == true}),")
+            out.appendLine("    CambridgeModel(${quoted(m.getValue("name"))}, listOf($names), ${m.getValue("ambient")}, ${m.getValue("control_count")}, ${m["connect"] == true}, ${connectConfig(m)}),")
         }
         out.appendLine(")")
         val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/cambridge/CambridgeTables.kt")

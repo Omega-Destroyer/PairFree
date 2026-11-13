@@ -20,9 +20,13 @@ def summary():
 def table():
     rows = []
     for model in models():
-        features = "Battery, presets and five gain bands, control toggles, language and codec preference"
-        if model["ambient"]:
-            features += ", ambient sound and level"
+        if model.get("connect"):
+            features = ("Battery, noise control and its button cycle, equalizer with presets, left/right balance, gaming, mono, sleep, loudness, side tone and spatial audio "
+                        "(each where the model has it), wear detection, find alert, touch gestures, voice language, automatic power off, codec choice")
+        else:
+            features = "Battery, presets and five gain bands, control toggles, language and codec preference"
+            if model["ambient"]:
+                features += ", ambient sound and level"
         virtual = [p for p in model.get("virtual_tests", []) if (device_pages.ROOT / p).is_file()]
         status = "Not tested"
         if virtual:

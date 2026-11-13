@@ -1,41 +1,149 @@
 {
-  "_source": "Melomania 2.8.12: q2/b, sb/c, rb/c; docs/cambridge/PROTOCOL.md. Protocol facts, no vendor code.",
-  "wire": {
-    "START": 255, "VERSION": 1, "VENDOR": 10, "ACK": 32768,
-    "MAX_PAYLOAD": 254, "REPLY_MS": 30000,
-    "SPP_UUID": "00001101-0000-1000-8000-00805F9B34FB",
-    "GAIA_UUID": "00001107-D102-11E1-9B23-00025B00A5A5"
+ "_source": "Melomania 2.8.12: q2/b, sb/c, rb/c; docs/cambridge/PROTOCOL.md. Protocol facts, no vendor code.",
+ "wire": {
+  "START": 255,
+  "VERSION": 1,
+  "VENDOR": 10,
+  "ACK": 32768,
+  "MAX_PAYLOAD": 254,
+  "REPLY_MS": 30000,
+  "SPP_UUID": "00001101-0000-1000-8000-00805F9B34FB",
+  "GAIA_UUID": "00001107-D102-11E1-9B23-00025B00A5A5"
+ },
+ "commands": {
+  "STATE": 1920,
+  "PRESET": 660,
+  "CONTROLS": 1923,
+  "SET_PRESET": 532,
+  "SET_BAND": 538,
+  "SET_CONTROLS": 1922,
+  "SET_AMBIENT": 1944,
+  "SET_AMBIENT_LEVEL": 1945,
+  "SET_CODEC": 1976,
+  "SET_LANGUAGE": 523
+ },
+ "values": {
+  "AMBIENT_ON": 1,
+  "AMBIENT_OFF": 2,
+  "AMBIENT_MIN": 0,
+  "AMBIENT_MAX": 100,
+  "BAND_HEADER": 6,
+  "BAND_PARAMETER": 2,
+  "BAND_APPLY": 1,
+  "GAIN_SCALE": 60,
+  "GAIN_MIN": -6,
+  "GAIN_MAX": 6,
+  "FIRST_BAND": 1,
+  "LAST_BAND": 5,
+  "NEUTRAL_PRESET": 0,
+  "CUSTOM_PRESET": 6,
+  "CODEC_LOCKED": 3
+ },
+ "offsets": {
+  "AMBIENT": 2,
+  "LANGUAGE": 3,
+  "LEFT": 8,
+  "RIGHT": 9,
+  "AMBIENT_LEVEL": 10,
+  "LEFT_FIRMWARE": 11,
+  "RIGHT_FIRMWARE": 14,
+  "ADDRESS_START": 17,
+  "ADDRESS_END": 29,
+  "ACTIVE_CODEC": 31,
+  "CODEC": 32
+ },
+ "languages": [
+  "yue",
+  "zh",
+  "en",
+  "fr",
+  "de",
+  "it",
+  "ja",
+  "es"
+ ],
+ "codecs": [
+  "sbc",
+  "aac",
+  "aptx",
+  "aac_aptx"
+ ],
+ "controls": [
+  "play_pause",
+  "next",
+  "previous",
+  "volume_up",
+  "volume_down",
+  "accept_call",
+  "reject_call",
+  "end_call",
+  "assistant",
+  "ambient"
+ ],
+ "presets": [
+  {
+   "name": "neutral",
+   "gains": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
   },
-  "commands": {
-    "STATE": 1920, "PRESET": 660, "CONTROLS": 1923,
-    "SET_PRESET": 532, "SET_BAND": 538, "SET_CONTROLS": 1922,
-    "SET_AMBIENT": 1944, "SET_AMBIENT_LEVEL": 1945,
-    "SET_CODEC": 1976, "SET_LANGUAGE": 523
+  {
+   "name": "immersive",
+   "gains": [
+    0,
+    -2,
+    0,
+    1,
+    0
+   ]
   },
-  "values": {
-    "AMBIENT_ON": 1, "AMBIENT_OFF": 2, "AMBIENT_MIN": 0, "AMBIENT_MAX": 100,
-    "BAND_HEADER": 6, "BAND_PARAMETER": 2, "BAND_APPLY": 1, "GAIN_SCALE": 60,
-    "GAIN_MIN": -6, "GAIN_MAX": 6, "FIRST_BAND": 1, "LAST_BAND": 5,
-    "NEUTRAL_PRESET": 0, "CUSTOM_PRESET": 6, "CODEC_LOCKED": 3
+  {
+   "name": "rnb",
+   "gains": [
+    3,
+    3,
+    0,
+    3,
+    0
+   ]
   },
-  "offsets": {
-    "AMBIENT": 2, "LANGUAGE": 3, "LEFT": 8, "RIGHT": 9, "AMBIENT_LEVEL": 10,
-    "LEFT_FIRMWARE": 11, "RIGHT_FIRMWARE": 14, "ADDRESS_START": 17, "ADDRESS_END": 29,
-    "ACTIVE_CODEC": 31, "CODEC": 32
+  {
+   "name": "electronic",
+   "gains": [
+    0,
+    4,
+    0,
+    1,
+    5
+   ]
   },
-  "languages": ["yue", "zh", "en", "fr", "de", "it", "ja", "es"],
-  "codecs": ["sbc", "aac", "aptx", "aac_aptx"],
-  "controls": ["play_pause", "next", "previous", "volume_up", "volume_down", "accept_call", "reject_call", "end_call", "assistant", "ambient"],
-  "presets": [
-    {"name": "neutral", "gains": [0, 0, 0, 0, 0]},
-    {"name": "immersive", "gains": [0, -2, 0, 1, 0]},
-    {"name": "rnb", "gains": [3, 3, 0, 3, 0]},
-    {"name": "electronic", "gains": [0, 4, 0, 1, 5]},
-    {"name": "rock", "gains": [0, 3, 0, 1, 0]},
-    {"name": "voice", "gains": [-6, -2, 0, 6, 0]}
-  ],
+  {
+   "name": "rock",
+   "gains": [
+    0,
+    3,
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "name": "voice",
+   "gains": [
+    -6,
+    -2,
+    0,
+    6,
+    0
+   ]
+  }
+ ],
  "connect": {
-  "_about": "Melomania Connect 2.6.0 (A100, A100 SE, M100, P100, P100 SE, X100; docs/cambridge/PROTOCOL.md section 9): Qualcomm GAIA v3 with Cambridge's custom API. A frame is FF, version 3, flags (1 checksum, 2 length extension), the payload length, the vendor, the command word and the payload, with an XOR byte when the checksum flag is set. The command word is feature << 9 | type << 7 | command (type: 0 command, 1 notification, 2 response, 3 error). Read from devices/gaia3/customapi in the app; ids are the app's enums.",
+  "_about": "Melomania Connect 2.6.0 (A100, A100 SE, M100, P100, P100 SE, X100; docs/cambridge/PROTOCOL.md section 9): Qualcomm GAIA v3 with Cambridge's custom API. A frame is FF, version 3, flags (1 checksum, 2 length extension), the payload length, the vendor, the command word and the payload, with an XOR byte when the checksum flag is set. The command word is feature << 9 | type << 7 | command (type: 0 command, 1 notification, 2 response, 3 error). Read from devices/gaia3/customapi in the app; ids are the app's enums. The EQ is Qualcomm's music processing feature (vendor 001D, feature 5; QTIL v3), which the app drives through its bundled gaiaclient library: the earbuds hold one user set of bands (frequency, Q, filter, gain in 1/60 dB); the app's presets are lists of band gains (RemoteConfigDefault.json in the APK) that it writes to that user set. Each model's `config` is the app's LocalConfig/DeviceConfig (which controls it shows) and `eq_presets` its bundled RemoteConfigDefault.json.",
   "wire": {
    "VERSION": 3,
    "VENDOR": 2974,
@@ -47,7 +155,9 @@
    "TYPE_NOTIFICATION": 1,
    "TYPE_RESPONSE": 2,
    "TYPE_ERROR": 3,
-   "TX_DELAY_MS": 100
+   "TX_DELAY_MS": 100,
+   "QTIL_VENDOR": 29,
+   "FEATURE_MUSIC": 5
   },
   "misc": {
    "GET_MANUFACTURER": 0,
@@ -196,6 +306,20 @@
    1800,
    3600,
    0
-  ]
+  ],
+  "music": {
+   "GET_STATE": 0,
+   "GET_PRESETS": 1,
+   "GET_SET": 2,
+   "SET_SET": 3,
+   "GET_BAND_COUNT": 4,
+   "GET_BAND_CONFIG": 5,
+   "SET_GAINS": 6,
+   "NOTIFY_SET_CHANGE": 1,
+   "NOTIFY_BAND_CHANGE": 2,
+   "USER_SET": 63,
+   "GAIN_FACTOR": 60,
+   "BAND_LENGTH": 7
+  }
  }
 }

@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.eq
 
 import io.github.omegadestroyer.pairfree.protocol.BandEq
 import io.github.omegadestroyer.pairfree.protocol.BandEqReport
+import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeConnectSession
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingSession
@@ -207,5 +208,31 @@ class SamsungBandEq(private val model: SamsungModel, private val curves: List<Li
             "clear" to "Clear",
             "treble_boost" to "Treble boost",
         )
+    }
+}
+
+/**
+ * Melomania Connect's equalizer (docs/cambridge/PROTOCOL.md section 9): Qualcomm's music processing user set, whose bands the earbuds report (frequency and
+ * gain, in tenths of a dB on the wire). The app's presets are band gains it writes to that set, so they are curves here, and so is the user's own. The range is
+ * the app's: down to -9 dB, up to +3 dB; the screen offers 9 either way and the session clamps what goes out. The models whose curve the app does not let
+ * the user edit (the X100) take presets only.
+ */
+class CambridgeBandEq(private val session: CambridgeConnectSession) : BandEq {
+    private val presets: List<Pair<String, List<Double>>> = session.eqPresets
+    override val eqBandsHz: List<Int> = session.eqBands?.map { it.first }.orEmpty()
+    override val eqRangeDb: Int = maxOf(abs(session.eqMinDb), abs(session.eqMaxDb)).roundToInt()
+    override val eqPresetNames: List<String> = presets.map { it.first }
+    override val eqPresetGains: Map<String, List<Double>> = if (eqBandsHz.isEmpty()) emptyMap() else presets.toMap()
+    override val eqReport: BandEqReport? = null
+
+    override fun eqPresetFrames(name: String): List<ByteArray>? = presets.firstOrNull { it.first == name }?.let { session.eqCurve(it.second) }
+
+    override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = if (eqBandsHz.isEmpty()) null else session.eqCurve(gains.map(Int::toDouble))
+
+    /** What the earbuds hold now: the preset whose gains they have (to a twentieth of a dB), else the curve. */
+    fun report(): BandEqReport? {
+        val held = session.eqBands?.map { it.second } ?: return null
+        val preset = presets.firstOrNull { (_, gains) -> gains.size == held.size && gains.indices.all { abs(gains[it] - held[it]) < 0.05 } }?.first
+        return BandEqReport(preset, held.map { it.roundToInt() })
     }
 }

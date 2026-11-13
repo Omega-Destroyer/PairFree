@@ -639,6 +639,12 @@ class SoundcoreEqualizerTest {
         assertEquals(listOf(6, 0, 0, 0, 0, 0, 0, 0), SoundcoreEqScreen.gainsDb(a40, custom))
         assertNull(SoundcoreEqScreen.preset(a40, custom))
         assertEquals("Soundcore Signature", SoundcoreEqScreen.preset(a40, SoundcoreEqualizer.forPreset(a40, a40.presetSet.presets[0]))!!.name)
+        // Models whose values are tenths of a dB take half steps: +1.5 dB is 15, and the screen's gains come back to the half dB.
+        assertEquals(0.5, SoundcoreEqScreen.stepDb(a40))
+        val half = SoundcoreEqScreen.custom(a40, listOf(1.5, -0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0))!!
+        assertEquals(listOf(15, -5, 0, 0, 0, 0, 0, 0, 0, 0), half.channels[0]!!.toList())
+        assertEquals(listOf(1.5, -0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), SoundcoreEqScreen.gainsDbFine(a40, half))
+        assertEquals(SoundcoreEqScreen.custom(a40, listOf(6, 0, 0, 0, 0, 0, 0, 0)), SoundcoreEqScreen.custom(a40, listOf(6.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)))
         // whole-dB models keep their own range
         assertEquals(6, SoundcoreEqScreen.layout(SoundcoreEqSpec.of("A3116")!!).userRangeDb)
         assertEquals(12, SoundcoreEqScreen.layout(SoundcoreEqSpec.of("A3909")!!).userRangeDb)

@@ -21,6 +21,7 @@ class BandEqTarget(val source: BandEq) : EqTarget {
     override val hasCustom: Boolean = hz.isNotEmpty()
     override val restoresOnConnect: Boolean = source.eqRestoresOnConnect
     override val confirmed: Boolean = source.eqConfirmed
+    override val gainStepDb: Double = source.eqGainStepDb
 
     /** Presets are drawn where the session gives their curves; otherwise the earbuds apply them themselves and their curves are not known. */
     override val presetCurves: Boolean = source.eqPresetGains.isNotEmpty() || source.eqPresetBands.isNotEmpty()
@@ -28,12 +29,12 @@ class BandEqTarget(val source: BandEq) : EqTarget {
     val layout: EqLayout = source.toLayout()
 
     override fun frames(layout: EqLayout, setting: EqSetting, preset: EqPreset?): List<ByteArray> =
-        (if (preset != null) source.eqPresetFrames(preset.name, setting.preampDb) else source.eqCustomFrames(setting.gains, setting.preampDb)).orEmpty()
+        (if (preset != null) source.eqPresetFrames(preset.name, setting.preampDb) else source.eqCustomFramesDb(setting.gains, setting.preampDb)).orEmpty()
 
     /** [reported] as what the opener hands the screen. */
-    fun reportedAs(report: BandEqReport, current: List<Int> = emptyList()): EqReported? = reported(report, current)?.let { EqReported(it.first, it.second) }
+    fun reportedAs(report: BandEqReport, current: List<Double> = emptyList()): EqReported? = reported(report, current)?.let { EqReported(it.first, it.second) }
 
     /** What the earbuds hold, as the screen's profile (null for the custom curve) and gains; null while they have not said. */
-    fun reported(report: BandEqReport, current: List<Int>): Pair<String?, List<Int>>? =
-        if (report.preset != null) EqProfile.PRESET + report.preset to (report.gains ?: current) else null to (report.gains ?: return null)
+    fun reported(report: BandEqReport, current: List<Double>): Pair<String?, List<Double>>? =
+        if (report.preset != null) EqProfile.PRESET + report.preset to (report.gainsDb ?: current) else null to (report.gainsDb ?: return null)
 }

@@ -60,6 +60,29 @@ class EqLayoutTest {
     }
 
     @Test
+    fun halfStepsAreExactAndWholeStepsStayTheSame() {
+        // Owner, 2026-11-13: half-dB steps where the wire takes them. A whole-dB list written as doubles is the same bytes as before,
+        // and each half step moves the gain by exactly 30 units of the wire's 1/60 dB.
+        for (model in Models.ALL) {
+            val layout = model.eq ?: continue
+            val at = if (layout.command == Wire.EQ_COMMAND_QUALCOMM) 1 else 2
+            for (user in -layout.userRangeDb..layout.userRangeDb) {
+                assertEquals(
+                    layout.payloads(List(layout.bands.size) { user }).map { it.hex() },
+                    layout.payloads(List(layout.bands.size) { user.toDouble() }).map { it.hex() },
+                    model.code,
+                )
+            }
+            val flat = layout.payloads(List(layout.bands.size) { 0.0 })
+            val half = layout.payloads(List(layout.bands.size) { 0.5 })
+            half.forEachIndexed { i, p ->
+                if (i < layout.fixedBands.size) return@forEachIndexed
+                assertEquals(30, p.u16(at + 4).toShort().toInt() - flat[i].u16(at + 4).toShort().toInt(), "${model.code} band ${i + 1}")
+            }
+        }
+    }
+
+    @Test
     fun fixedBandsGoFirstAndPresetsDrawOnlyTheirOwn() {
         // The Clip C10 (issue #9): TRUEFREE's curve, then the user's eight bands.
         val layout = Models.find("T2", null)!!.eq!!

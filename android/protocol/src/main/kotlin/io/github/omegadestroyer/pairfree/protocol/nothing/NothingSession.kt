@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.nothing
 
+import kotlin.math.roundToInt
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
@@ -59,7 +60,7 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
     private var noiseMode: Int? = null      // the mode in effect (group 1 of the noise report)
     private var noiseLevel: Int? = null     // the cancelling strength to go back to (group 2)
     private var eqMode: Int? = null
-    private var customEq: Map<Int, Int>? = null   // the custom EQ's gain by filter type, whole dB
+    private var customEq: Map<Int, Double>? = null   // the custom EQ's gain by filter type, in dB (half steps)
     private var bass: Pair<Boolean, Int>? = null
     private var spatial: ByteArray? = null
     private var codec: Int? = null
@@ -249,16 +250,14 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
      * The custom EQ as Nothing X reads it (CustomEQ): a count, the total gain (a float), then per filter its
      * type (0 low shelf, 1 peak, 2 high shelf) and its gain, frequency and Q as little-endian floats.
      */
-    private fun simpleEq(p: ByteArray): Map<Int, Int>? {
+    private fun simpleEq(p: ByteArray): Map<Int, Double>? {
         val n = p.u8(0)
         if (p.size < SIMPLE_EQ_HEAD + n * SIMPLE_EQ_FILTER) return null
         return (0 until n).associate { i ->
             val at = SIMPLE_EQ_HEAD + i * SIMPLE_EQ_FILTER
-            p.u8(at) to floatLe(p, at + 1).roundToIntSafe()
+            p.u8(at) to floatLe(p, at + 1).let { f -> if (f.isNaN()) 0.0 else (f * 2.0).roundToInt() / 2.0 }
         }
     }
-
-    private fun Float.roundToIntSafe(): Int = if (isNaN()) 0 else (if (this < 0) this - 0.5f else this + 0.5f).toInt()
 
     private fun floatLe(p: ByteArray, at: Int): Float = Float.fromBits(le(p.copyOfRange(at, at + 4)))
 
@@ -271,7 +270,7 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
      * The EQ the earbuds last reported: the mode (0 balanced, 1 voice, 2 more treble, 3 more bass, 5 the
      * custom curve) and the custom curve's gains in whole dB, bass, mid and treble, where they have one.
      */
-    public val eq: NothingEq? get() = eqMode?.let { NothingEq(EQ_PRESETS[it], it == EQ_CUSTOM, customEq?.let { c -> SIMPLE_ORDER.map { t -> c[t] ?: 0 } }) }
+    public val eq: NothingEq? get() = eqMode?.let { NothingEq(EQ_PRESETS[it], it == EQ_CUSTOM, customEq?.let { c -> SIMPLE_ORDER.map { t -> (c[t] ?: 0.0).roundToInt() } }, customEq?.let { c -> SIMPLE_ORDER.map { t -> c[t] ?: 0.0 } }) }
 
     /** The presets the model has, in the order Nothing X lists them, by [EQ_ORDER]'s names. */
     public val eqPresets: List<String> get() = if (config?.eqPresets != false) EQ_ORDER else emptyList()
@@ -293,15 +292,18 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
      * as Nothing X's SimpleEqualizerViewModel writes them: the custom mode first where it is not on, then the
      * three filters with a total gain of minus the highest gain, so the curve does not clip.
      */
-    public fun eqCustom(gains: List<Int>): List<NothingFrame>? {
+    public fun eqCustom(gains: List<Int>): List<NothingFrame>? = eqCustomDb(gains.map(Int::toDouble))
+
+    /** The same for gains in dB that move in half steps: the filters' gains are floats on the wire. */
+    public fun eqCustomDb(gains: List<Double>): List<NothingFrame>? {
         val f = config?.simpleEq ?: return null
         if (gains.size != SIMPLE_ORDER.size) return null
-        val byType = SIMPLE_ORDER.zip(gains.map { it.coerceIn(-SIMPLE_EQ_RANGE, SIMPLE_EQ_RANGE) }).toMap()
+        val byType = SIMPLE_ORDER.zip(gains.map { it.coerceIn(-SIMPLE_EQ_RANGE.toDouble(), SIMPLE_EQ_RANGE.toDouble()) }).toMap()
         val out = mutableListOf<NothingFrame>()
         if (eqMode != EQ_CUSTOM) out += frame(NothingCommand.SET_EQ_MODE, EQ_CUSTOM, 0)
         eqMode = EQ_CUSTOM
         customEq = byType
-        val total = -(byType.values.maxOrNull() ?: 0).coerceAtLeast(0).toFloat()
+        val total = -(byType.values.maxOrNull() ?: 0.0).coerceAtLeast(0.0).toFloat()
         val filters = mapOf(LOW_SHELF to (f.lowHz to f.lowQ), PEAK to (f.peakHz to f.peakQ), HIGH_SHELF to (f.highHz to f.highQ))
         val payload = mutableListOf(SIMPLE_WIRE_ORDER.size)
         payload += floatBytes(total)
@@ -755,4 +757,4 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
  * Nothing earbuds' EQ as they last reported it: the [preset] by [NothingSession.eqPresets]' names, or null for
  * another mode; [custom] when the custom curve is on; [gains] that curve (bass, mid, treble), where they hold one.
  */
-public data class NothingEq(val preset: String?, val custom: Boolean, val gains: List<Int>?)
+public data class NothingEq(val preset: String?, val custom: Boolean, val gains: List<Int>?, val gainsDb: List<Double>? = gains?.map(Int::toDouble))

@@ -231,7 +231,10 @@ for.
   band. Left out until a report shows what the profile index means on the earbuds (Nothing X keeps
   its profiles on the phone, and writing one index may replace what it stored there) and how the
   mode and the presets interact. nada uses `C06C`/`C06D`, which are not in 3.4.15.
-- **Dual connection** (`F01A`/`C027`): what its value means is in Dart, so it is left out. Some
-  models restart after a change (`dualConnectionReboot`).
+- **Dual connection** (`F01A` write, `C027` read): built 2026-11-13 from Nothing X's Kotlin (`TWSDeviceExtKt.dual`, `DualConnectViewModel`): one byte, 1 on and 0 off, any
+  other value on a read counts as on; shown on the models whose table row has `dual_connection`. The paired devices' list (`C02E`/`E00E` and the connect and disconnect
+  writes) holds other devices' addresses and stays unsent. Some models restart after a change (`dualConnectionReboot`, in Dart).
+- **Personalised noise cancelling** (`F011` write, `C020` read, `DeviceANCSwitch`): the switch byte, then a calibration byte; PairFree writes only the switch, and
+  never starts the calibration (`SET_CALIBRATION`, in the never-sent list). It reads the switch on every model and shows it where the earbuds answer.
 - **Ear tip fit test:** started with `F014` (`SET_LEAK_DETECT`) and the byte 1; the result arrives as `E00D`, one byte per earbud (left, right). The start and the layout are from the open-source web client ear-web and desktop client attune (AGPL-3.0: facts only), which send them on the Ear (2), Ear (a), Ear, Ear (3) and the CMF Buds models; Nothing X's own start sits in its Dart code (`libapp.so`, not yet read, `isSupportEarTipFitTest` gates the screen). Which value means what (0 good, 1 poor, 2 not in the ear) is attune's reading, not Nothing X's: inferred, to be settled by a recording or the Dart code. PairFree offers the test on the models whose feature table says `fit_test` (`NothingTest.fitTestOnTheModelsThatHaveItAndNoOther`).
 - **Other features:** personalised noise cancelling and sound (Mimi).

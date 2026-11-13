@@ -515,6 +515,8 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    "dual_connection" -> stringResource(R.string.setting_dual_connection)
+    "personalised_anc" -> stringResource(R.string.setting_personalised_anc)
     "qcy_music_mode" -> stringResource(R.string.setting_qcy_music_mode)
     "qcy_touch_sensitivity" -> stringResource(R.string.setting_qcy_touch_sensitivity)
     "auto_standby" -> stringResource(R.string.setting_auto_standby)

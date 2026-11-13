@@ -1241,7 +1241,7 @@ abstract class GenerateNothingTables : DefaultTask() {
                 out.appendLine("            NothingConfig(")
                 out.appendLine("                minFirmware = ${c["min_firmware"]?.let(::str) ?: "null"}, maxFirmware = ${c["max_firmware"]?.let(::str) ?: "null"},")
                 out.appendLine("                anc = ${strings(c["anc"])}, eqPresets = ${c["eq_presets"]}, bassBoost = ${c["bass_boost"]}, spatialAudio = ${c["spatial_audio"]},")
-                out.appendLine("                codecs = ${strings(c["codecs"])}, earDetection = ${c["ear_detection"]}, lowLatency = ${c["low_latency"]}, fitTest = ${c["fit_test"] == true},")
+                out.appendLine("                codecs = ${strings(c["codecs"])}, earDetection = ${c["ear_detection"]}, lowLatency = ${c["low_latency"]}, fitTest = ${c["fit_test"] == true}, dualConnection = ${c["dual_connection"] == true},")
                 out.appendLine("                gestures = $gestures,")
                 @Suppress("UNCHECKED_CAST")
                 val simple = c["simple_eq"] as Map<String, Any?>?

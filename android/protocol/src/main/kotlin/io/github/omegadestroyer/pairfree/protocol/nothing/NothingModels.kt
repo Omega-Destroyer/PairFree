@@ -45,6 +45,8 @@ public data class NothingConfig(
     val simpleEq: NothingSimpleEq? = null,
     /** The model has the ear tip fit test (`isSupportEarTipFitTest` in Nothing X). */
     val fitTest: Boolean = false,
+    /** The model has the two-devices switch (`dual_connection` in Nothing X's table; `F01A` writes, `C027` reads). */
+    val dualConnection: Boolean = false,
 ) {
     /**
      * True when [firmware] is in this range. Nothing X's ranges name the last two fields ("*.*.1.74"),

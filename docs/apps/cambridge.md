@@ -19,7 +19,7 @@ Each model shows only the settings it has:
 
 ## Cambridge Audio models
 
-PairFree knows 2 Cambridge Audio models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 8 Cambridge Audio models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
 
 Cambridge Audio support is read from the Melomania app (2.8.12) and its commands were checked against the official app run on a virtual earbud. It has not been tried with PairFree on real earbuds yet. The newer Melomania Connect models (A100, M100, P100) are not covered.
 

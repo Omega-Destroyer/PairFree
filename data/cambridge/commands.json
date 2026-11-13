@@ -33,5 +33,169 @@
     {"name": "electronic", "gains": [0, 4, 0, 1, 5]},
     {"name": "rock", "gains": [0, 3, 0, 1, 0]},
     {"name": "voice", "gains": [-6, -2, 0, 6, 0]}
+  ],
+ "connect": {
+  "_about": "Melomania Connect 2.6.0 (A100, A100 SE, M100, P100, P100 SE, X100; docs/cambridge/PROTOCOL.md section 9): Qualcomm GAIA v3 with Cambridge's custom API. A frame is FF, version 3, flags (1 checksum, 2 length extension), the payload length, the vendor, the command word and the payload, with an XOR byte when the checksum flag is set. The command word is feature << 9 | type << 7 | command (type: 0 command, 1 notification, 2 response, 3 error). Read from devices/gaia3/customapi in the app; ids are the app's enums.",
+  "wire": {
+   "VERSION": 3,
+   "VENDOR": 2974,
+   "FEATURE_MISC": 0,
+   "FEATURE_MODES": 1,
+   "FEATURE_CODEC": 2,
+   "FEATURE_GESTURES": 3,
+   "TYPE_COMMAND": 0,
+   "TYPE_NOTIFICATION": 1,
+   "TYPE_RESPONSE": 2,
+   "TYPE_ERROR": 3,
+   "TX_DELAY_MS": 100
+  },
+  "misc": {
+   "GET_MANUFACTURER": 0,
+   "GET_MODEL": 1,
+   "GET_API_LEVEL": 2,
+   "GET_BATTERY_STATE": 3,
+   "GET_FIRMWARE_VERSIONS": 4,
+   "GET_BLUETOOTH_ADDRESSES": 5,
+   "GET_LANGUAGE": 6,
+   "SET_LANGUAGE": 7,
+   "SET_AUTO_POWER_DOWN_TIMEOUT": 8,
+   "GET_AUTO_POWER_DOWN_TIMEOUT": 9,
+   "SET_LEFT_RIGHT_BALANCE": 10,
+   "GET_LEFT_RIGHT_BALANCE": 11,
+   "SET_FIND_HEADPHONES_ALERT": 12,
+   "GET_FIND_HEADPHONES_ALERT": 13,
+   "SWITCH_AMBIENT_NOISE_MODE": 14,
+   "SET_AMBIENT_NOISE_MODE": 15,
+   "GET_AMBIENT_NOISE_MODE": 16,
+   "GET_VARIANT": 17,
+   "SET_AMBIENT_NOISE_TOGGLE_OPTIONS": 18,
+   "GET_AMBIENT_NOISE_TOGGLE_OPTIONS": 19,
+   "SET_LOUDNESS": 20,
+   "GET_LOUDNESS": 21,
+   "GET_DEVICES": 22,
+   "CONNECT_DEVICE": 23,
+   "DISCONNECT_DEVICE": 24,
+   "SET_SIDE_TONE": 25,
+   "GET_SIDE_TONE": 26,
+   "SET_SPATIAL_AUDIO": 27,
+   "GET_SPATIAL_AUDIO": 28
+  },
+  "modes": {
+   "SET_GAMING_MODE": 0,
+   "GET_GAMING_MODE": 1,
+   "SET_FLIGHT_MODE": 2,
+   "GET_FLIGHT_MODE": 3,
+   "GET_AUDIO_MODE": 5,
+   "SET_PROXIMITY_MODE": 6,
+   "GET_PROXIMITY_MODE": 7,
+   "SET_MONO_MODE": 8,
+   "GET_MONO_MODE": 9,
+   "SET_SLEEP_MODE": 10,
+   "GET_SLEEP_MODE": 11
+  },
+  "codec_cmd": {
+   "SET_ENABLED_CODECS": 0,
+   "GET_ENABLED_CODECS": 1,
+   "GET_AVAILABLE_CODECS": 2,
+   "GET_CURRENT_CODEC": 3
+  },
+  "gesture_cmd": {
+   "GET_SUPPORTED_GESTURE_CONTROLS": 0,
+   "GET_GESTURE_CONTROLS_ON_OFF": 1,
+   "SET_GESTURE_CONTROLS_ON_OFF": 2,
+   "SET_GESTURE_CONTROL_ON_OFF": 3
+  },
+  "ambient_action": {
+   "OFF": 0,
+   "NOISE_CANCELLING": 1,
+   "TRANSPARENCY": 2,
+   "TOGGLE": 3
+  },
+  "ambient_mode": {
+   "OFF": 0,
+   "ANC_HIGH": 1,
+   "TRANSPARENCY_LOW": 2,
+   "ANC_MED": 3,
+   "TRANSPARENCY_HIGH": 4,
+   "ANC_LOW": 5,
+   "TRANSPARENCY_VOICE_FOCUS": 6,
+   "ANC_HIGH_OFF": 7,
+   "ANC_MED_OFF": 8,
+   "ANC_LOW_OFF": 9
+  },
+  "codec": {
+   "SBC": 0,
+   "AAC_LC": 1,
+   "APTX": 2,
+   "APTX_ADAPTIVE": 3,
+   "APTX_ADAPTIVE_LOSSLESS": 4,
+   "APTX_HD": 5,
+   "APTX_LL": 6,
+   "APTX_MONO": 7,
+   "APTX_VOICE": 8,
+   "LDAC": 9,
+   "LHDC": 10,
+   "LC3": 11
+  },
+  "gesture": {
+   "PLAY_PAUSE": 0,
+   "NEXT_TRACK": 1,
+   "PREVIOUS_TRACK": 2,
+   "MIC_MUTE": 3,
+   "VOLUME_UP": 4,
+   "VOLUME_DOWN": 5,
+   "ACCEPT_CALL": 6,
+   "REJECT_CALL": 7,
+   "END_CALL": 8,
+   "VOICE_ASSISTANT": 9,
+   "TRANSPARENCY": 10,
+   "ANC": 11,
+   "PAIRING_MODE": 12,
+   "WEAR_DETECT": 13,
+   "AMBIENT_NOISE_MODES": 14,
+   "GAMING_MODE": 15,
+   "POWER_ON_OFF": 240,
+   "CASE_PAIRING": 241,
+   "CASE_FACTORY_RESET": 242
+  },
+  "language": {
+   "TONES": 0,
+   "ENGLISH": 1,
+   "GERMAN": 2,
+   "SPANISH": 3,
+   "ITALIAN": 4,
+   "JAPANESE": 5,
+   "KOREAN": 6,
+   "CANTONESE": 7,
+   "MANDARIN": 8,
+   "FRENCH": 9,
+   "CELEBRITY": 10,
+   "OFF": 255
+  },
+  "audio_mode": {
+   "BATTERY_SAVER": 0,
+   "HIGH_QUALITY": 1
+  },
+  "virtualizer": {
+   "MODE_1": 1,
+   "MODE_2": 2
+  },
+  "charging": {
+   "NOT_CHARGING": 0,
+   "CHARGING": 1,
+   "MIS_CHARGING": 2
+  },
+  "api": {
+   "TOGGLE_OPTIONS_MAJOR": 1,
+   "TOGGLE_OPTIONS_MINOR": 9,
+   "LOUDNESS_MINOR": 14,
+   "DEVICES_MINOR": 15,
+   "SIDE_TONE_MINOR": 17
+  },
+  "auto_power_down_seconds": [
+   1800,
+   3600,
+   0
   ]
+ }
 }

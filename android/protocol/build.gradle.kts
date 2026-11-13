@@ -1941,6 +1941,19 @@ abstract class GenerateCambridgeTables : DefaultTask() {
             }
             out.appendLine("}")
         }
+        @Suppress("UNCHECKED_CAST")
+        val connect = c.getValue("connect") as Map<String, Any?>
+        for ((key, value) in connect) {
+            if (value !is Map<*, *>) continue
+            val name = "CambridgeConnect" + key.split('_').joinToString("") { it.replaceFirstChar(Char::uppercase) }
+            out.appendLine("public object $name {")
+            for ((k, v) in value) {
+                check(k.toString().matches(Regex("[A-Z_0-9]+")))
+                out.appendLine("    public const val $k: Int = $v")
+            }
+            out.appendLine("}")
+        }
+        out.appendLine("public val CAMBRIDGE_CONNECT_AUTO_OFF: List<Int> = listOf(${(connect.getValue("auto_power_down_seconds") as List<*>).joinToString(", ")})")
         out.appendLine("public object CambridgeValues {")
         for (key in listOf("languages", "codecs", "controls")) {
             val values = (c.getValue(key) as List<*>).joinToString(", ") { quoted(it) }
@@ -1955,7 +1968,7 @@ abstract class GenerateCambridgeTables : DefaultTask() {
         @Suppress("UNCHECKED_CAST")
         for (m in d.getValue("devices") as List<Map<String, Any?>>) {
             val names = (m.getValue("names") as List<*>).joinToString(", ") { quoted(it) }
-            out.appendLine("    CambridgeModel(${quoted(m.getValue("name"))}, listOf($names), ${m.getValue("ambient")}, ${m.getValue("control_count")}),")
+            out.appendLine("    CambridgeModel(${quoted(m.getValue("name"))}, listOf($names), ${m.getValue("ambient")}, ${m.getValue("control_count")}, ${m["connect"] == true}),")
         }
         out.appendLine(")")
         val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/cambridge/CambridgeTables.kt")

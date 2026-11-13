@@ -179,6 +179,7 @@ private fun groupTitle(key: String): String = stringResource(
         "power" -> R.string.setting_group_power
         "ef_buttons" -> R.string.setting_group_buttons
         "ca_eq" -> R.string.setting_ca_eq
+        "ca_sound" -> R.string.setting_ca_sound
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
         "oneplus_head_motion" -> R.string.setting_group_head_motion
@@ -230,6 +231,43 @@ private fun settingTitle(key: String): String = when (key) {
     "op_peer_connect" -> stringResource(R.string.setting_op_peer_connect)
     "op_peer_disconnect" -> stringResource(R.string.setting_op_peer_disconnect)
     "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
+    "ca_noise" -> stringResource(R.string.setting_ca_noise)
+    "ca_codec_sbc" -> "SBC"
+    "ca_codec_aac" -> "AAC"
+    "ca_codec_aptx" -> "aptX"
+    "ca_codec_aptx_adaptive" -> "aptX Adaptive"
+    "ca_codec_aptx_lossless" -> "aptX Lossless"
+    "ca_codec_aptx_hd" -> "aptX HD"
+    "ca_codec_aptx_ll" -> "aptX Low Latency"
+    "ca_codec_ldac" -> "LDAC"
+    "ca_codec_lhdc" -> "LHDC"
+    "ca_codec_lc3" -> "LC3"
+    "ca_toggle_normal" -> stringResource(R.string.setting_ca_toggle_normal)
+    "ca_toggle_anc" -> stringResource(R.string.setting_ca_toggle_anc)
+    "ca_toggle_transparency" -> stringResource(R.string.setting_ca_toggle_transparency)
+    "ca_gaming" -> stringResource(R.string.setting_ca_gaming)
+    "ca_mono" -> stringResource(R.string.setting_ca_mono)
+    "ca_sleep" -> stringResource(R.string.setting_ca_sleep)
+    "ca_loudness" -> stringResource(R.string.setting_ca_loudness)
+    "ca_side_tone" -> stringResource(R.string.setting_ca_side_tone)
+    "ca_spatial" -> stringResource(R.string.setting_ca_spatial)
+    "ca_proximity" -> stringResource(R.string.setting_ca_proximity)
+    "ca_find_alert" -> stringResource(R.string.setting_ca_find_alert)
+    "ca_auto_off" -> stringResource(R.string.setting_ca_auto_off)
+    "ca_gesture_play_pause" -> stringResource(R.string.setting_ca_play_pause)
+    "ca_gesture_next" -> stringResource(R.string.setting_ca_next)
+    "ca_gesture_previous" -> stringResource(R.string.setting_ca_previous)
+    "ca_gesture_mic_mute" -> stringResource(R.string.setting_ca_mic_mute)
+    "ca_gesture_volume_up" -> stringResource(R.string.setting_ca_volume_up)
+    "ca_gesture_volume_down" -> stringResource(R.string.setting_ca_volume_down)
+    "ca_gesture_accept_call" -> stringResource(R.string.setting_ca_accept_call)
+    "ca_gesture_reject_call" -> stringResource(R.string.setting_ca_reject_call)
+    "ca_gesture_end_call" -> stringResource(R.string.setting_ca_end_call)
+    "ca_gesture_assistant" -> stringResource(R.string.setting_ca_assistant)
+    "ca_gesture_transparency" -> stringResource(R.string.setting_ca_transparency_control)
+    "ca_gesture_anc" -> stringResource(R.string.setting_ca_anc_control)
+    "ca_gesture_ambient_modes" -> stringResource(R.string.setting_ca_ambient_modes_control)
+    "ca_gesture_gaming" -> stringResource(R.string.setting_ca_gaming_control)
     "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
     "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
     "ca_preset" -> stringResource(R.string.setting_ca_preset)
@@ -659,8 +697,22 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "standard_noise" -> R.string.op_level_standard
         else -> R.string.op_level_more
     })
+    key == "ca_noise" -> getString(when (option) {
+        "off" -> R.string.action_off
+        "anc_high" -> R.string.setting_ca_noise_anc_high
+        "anc_med" -> R.string.setting_ca_noise_anc_med
+        "anc_low" -> R.string.setting_ca_noise_anc_low
+        "transparency_low" -> R.string.setting_ca_transparency_low
+        "transparency_high" -> R.string.setting_ca_transparency_high
+        else -> R.string.setting_ca_voice_focus
+    })
+    key == "ca_auto_off" -> if (option == "never") getString(R.string.setting_ca_never) else option
     key == "ca_language" -> getString(when (option) {
         "yue" -> R.string.setting_ca_cantonese
+        "tones" -> R.string.setting_ca_tones
+        "celebrity" -> R.string.setting_ca_celebrity
+        "off" -> R.string.action_off
+        "ko" -> R.string.language_ko
         "zh" -> R.string.language_zh
         "fr" -> R.string.language_fr
         "de" -> R.string.language_de

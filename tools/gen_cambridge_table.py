@@ -1,4 +1,4 @@
-"""Generate the legacy Melomania device page from data/cambridge/devices.json."""
+"""Generate the Melomania device page from data/cambridge/devices.json."""
 import json
 from html import escape
 

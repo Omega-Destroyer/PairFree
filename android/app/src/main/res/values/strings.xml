@@ -835,6 +835,15 @@
     <string name="setting_power_saving">Power saving</string>
     <string name="setting_sound_leakage_reduction">Sound leakage reduction</string>
     <string name="setting_voice_contents">Voice content mode</string>
+    <string name="setting_auto_standby">Standby when idle</string>
+    <string name="setting_caring_charge">Caring charge</string>
+    <string name="setting_caring_charge_threshold">Caring charge</string>
+    <string name="setting_stamina">Stamina mode</string>
+    <string name="setting_touch_panel_backlight_off">Turn off touch panel light automatically</string>
+    <string name="setting_auto_play">Play automatically when worn</string>
+    <string name="setting_auto_volume_optimizer">Auto volume optimizer</string>
+    <string name="setting_auto_volume_limited">Adaptive volume with limit</string>
+    <string name="setting_max_volume_limit">Maximum volume</string>
     <string name="setting_upmix_cinema">Cinema upmix</string>
     <string name="setting_battery_voice">Announce the battery level</string>
     <string name="setting_power_sound">Power on and off sound</string>

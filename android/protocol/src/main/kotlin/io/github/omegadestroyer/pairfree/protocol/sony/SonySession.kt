@@ -107,6 +107,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
     private var bgm: Pair<Boolean, Int>? = null             // the background music effect: on, and the room size
     private var guidanceVolume: Int? = null
     private var guidanceVolumeType: Int? = null
+    private var maxVolume: Int? = null          // the volume limit's step, 0 to 4 (SafeListeningInquiredType.MAX_VOL_LV_LIMIT)
     private var optimizerType: Int? = null      // the optimizer the earbuds have, by its type; null without one
     private var optimizing = false
     private val generalTitles = linkedMapOf<Int, String>()     // each general setting the earbuds described as a switch: its title
@@ -343,7 +344,12 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
                     else -> null
                 }
                 guidanceVolumeType?.let { outbox += SonyOut.table2(S2T2.VOICE_GUIDANCE_GET_PARAM, it) }
+                if (f.MAX_VOLUME_LEVEL_LIMIT in functions2) outbox += SonyOut.table2(S2T2.SAFE_LISTENING_GET_PARAM, MAX_VOL_LV_LIMIT)
             }
+            S2T2.POWER_RET_PARAM, S2T2.POWER_NTFY_PARAM, S2T2.SYSTEM_RET_PARAM, S2T2.SYSTEM_NTFY_PARAM -> readSwitch(2, p)
+            // The volume limit's step: the type, then 0 to 4 (Sony's app: SafeListeningInquiredType.MAX_VOL_LV_LIMIT).
+            S2T2.SAFE_LISTENING_RET_PARAM, S2T2.SAFE_LISTENING_NTFY_PARAM ->
+                if (p.size == 3 && p.u8(1) == MAX_VOL_LV_LIMIT && p.u8(2) in 0..MAX_VOLUME_STEPS - 1) maxVolume = p.u8(2)
             // The type, on (0) or off (1), and on two types the language, which a change to type 2 sends back.
             S2T2.VOICE_GUIDANCE_RET_PARAM, S2T2.VOICE_GUIDANCE_NTFY_PARAM -> when {
                 p.size >= 3 && p.u8(1) == voiceGuidanceType -> {
@@ -401,6 +407,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
             S2.POWER_RET_STATUS, S2.POWER_NTFY_STATUS -> battery(p)
             S2.POWER_RET_CAPABILITY -> readControls(p)
             S2.POWER_RET_PARAM, S2.POWER_NTFY_PARAM -> if (!readControls(p)) readSwitch(1, p)
+            S2.SAR_AUTO_PLAY_RET_PARAM, S2.SAR_AUTO_PLAY_NTFY_PARAM -> readSwitch(1, p)
             NCASM_RET_PARAM, NCASM_NTFY_PARAM -> SonyNoise.of(2, p)?.let { noise = it }
             AUDIO_RET_PARAM, AUDIO_NTFY_PARAM -> when {
                 // Upscaling: off (0) or auto (1).
@@ -496,6 +503,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
                     autoOff?.setting,
                     pauseWhenOff?.let { Setting.Toggle("pause_taken_off", it) },
                     voiceGuidance?.let { Setting.Toggle("voice_guidance", it) },
+                    maxVolume?.let { Setting.Level(MAX_VOLUME_KEY, it + 1, 1, MAX_VOLUME_STEPS) },
                     guidanceVolume?.let { Setting.Level(GUIDANCE_VOLUME_KEY, it.coerceIn(-GUIDANCE_VOLUME_MAX, GUIDANCE_VOLUME_MAX), -GUIDANCE_VOLUME_MAX, GUIDANCE_VOLUME_MAX) },
                 ) + switchRows(SettingTab.DEVICE) + generalRows(),
             ),
@@ -575,6 +583,10 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
                     "ambient_volume" -> noiseSet(level = v)
                     "clear_bass" -> eqSet(eq?.setCurve(clearBass = v))
                     EBB_KEY -> ebb?.set(v)?.also { ebb = ebb?.after(v) }
+                    MAX_VOLUME_KEY -> maxVolume?.let {
+                        maxVolume = v - 1
+                        SonyOut.table2(S2T2.SAFE_LISTENING_SET_PARAM, MAX_VOL_LV_LIMIT, v - 1)
+                    }
                     // The volume, then whether to play a sample of it (Sony's app plays one: feedbackSound).
                     GUIDANCE_VOLUME_KEY -> guidanceVolumeType?.let { type ->
                         guidanceVolume = v
@@ -825,6 +837,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
         private const val S2_GUIDANCE_VOLUME = 32
         private const val S2_GUIDANCE_VOLUME_5 = 33
         private const val GUIDANCE_VOLUME_KEY = "voice_guidance_volume"
+        private const val MAX_VOLUME_KEY = "max_volume_limit"
+        private const val MAX_VOL_LV_LIMIT = 5
+        private const val MAX_VOLUME_STEPS = 5
         private const val GUIDANCE_VOLUME_MAX = 2
 
         /**
@@ -839,6 +854,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
             val audio = setOf(AUDIO_RET_PARAM, AUDIO_NTFY_PARAM)
             val system = setOf(SYSTEM_RET_PARAM, SYSTEM_NTFY_PARAM)
             val guidance = setOf(SonyCommand.Set2Table2.VOICE_GUIDANCE_RET_PARAM, SonyCommand.Set2Table2.VOICE_GUIDANCE_NTFY_PARAM)
+            val sar = setOf(SonyCommand.Set2.SAR_AUTO_PLAY_RET_PARAM, SonyCommand.Set2.SAR_AUTO_PLAY_NTFY_PARAM)
+            val powerT2 = setOf(SonyCommand.Set2Table2.POWER_RET_PARAM, SonyCommand.Set2Table2.POWER_NTFY_PARAM)
+            val systemT2 = setOf(SonyCommand.Set2Table2.SYSTEM_RET_PARAM, SonyCommand.Set2Table2.SYSTEM_NTFY_PARAM)
             val f = SonyFunction.Set2
             val f2 = SonyFunction.Set2Table2
             val g = SonyCommand.Set2Table2.VOICE_GUIDANCE_GET_PARAM
@@ -856,6 +874,17 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
                 S2Switch("battery_voice", SettingTab.DEVICE, 2, f2.VOICE_GUIDANCE_BATTERY_LEVEL_VOICE, 48, g, s, guidance),
                 S2Switch("power_sound", SettingTab.DEVICE, 2, f2.VOICE_GUIDANCE_POWER_ON_OFF_SOUND, 49, g, s, guidance),
                 S2Switch("ult_beep", SettingTab.DEVICE, 2, f2.VOICE_GUIDANCE_SOUND_EFFECT_ULT_BEEP_ON_OFF, 50, g, s, guidance),
+                // Table 2's PowerInquiredType: AUTO_STANDBY, CARING_CHARGE_WITH_THRESHOLD (the param is on or off; the threshold is read-only status)
+                S2Switch("auto_standby", SettingTab.DEVICE, 2, f2.AUTO_STANDBY, 0, SonyCommand.Set2Table2.POWER_GET_PARAM, SonyCommand.Set2Table2.POWER_SET_PARAM, powerT2),
+                S2Switch("caring_charge_threshold", SettingTab.DEVICE, 2, f2.CARING_CHARGE_WITH_THRESHOLD, 1, SonyCommand.Set2Table2.POWER_GET_PARAM, SonyCommand.Set2Table2.POWER_SET_PARAM, powerT2),
+                // Table 1's PowerInquiredType CARING_CHARGE (12), STAMINA (14) and AUTOMATIC_TOUCH_PANEL_BACKLIGHT_TURN_OFF (15); SARAutoPlayInquiredType AUTO_PLAY (1)
+                S2Switch("caring_charge", SettingTab.DEVICE, 1, f.CARING_CHARGE, 12, SonyCommand.Set2.POWER_GET_PARAM, SonyCommand.Set2.POWER_SET_PARAM, power),
+                S2Switch("stamina", SettingTab.DEVICE, 1, f.STAMINA, 14, SonyCommand.Set2.POWER_GET_PARAM, SonyCommand.Set2.POWER_SET_PARAM, power),
+                S2Switch("touch_panel_backlight_off", SettingTab.DEVICE, 1, f.AUTOMATIC_TOUCH_PANEL_BACKLIGHT_TURN_OFF, 15, SonyCommand.Set2.POWER_GET_PARAM, SonyCommand.Set2.POWER_SET_PARAM, power),
+                S2Switch("auto_play", SettingTab.DEVICE, 1, f.AUTO_PLAY, 1, SonyCommand.Set2.SAR_AUTO_PLAY_GET_PARAM, SonyCommand.Set2.SAR_AUTO_PLAY_SET_PARAM, sar),
+                // Table 2's SystemInquiredType: AUTO_VOLUME_OPTIMIZER, AUTO_VOLUME_WITH_LIMITATION
+                S2Switch("auto_volume_optimizer", SettingTab.SOUND, 2, f2.AUTO_VOLUME_OPTIMIZER, 3, SonyCommand.Set2Table2.SYSTEM_GET_PARAM, SonyCommand.Set2Table2.SYSTEM_SET_PARAM, systemT2),
+                S2Switch("auto_volume_limited", SettingTab.SOUND, 2, f2.AUTO_VOLUME_WITH_LIMITATION, 4, SonyCommand.Set2Table2.SYSTEM_GET_PARAM, SonyCommand.Set2Table2.SYSTEM_SET_PARAM, systemT2),
             )
         }
         private const val ON_V2 = 0

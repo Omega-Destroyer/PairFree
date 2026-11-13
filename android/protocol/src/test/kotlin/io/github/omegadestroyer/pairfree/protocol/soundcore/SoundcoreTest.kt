@@ -683,11 +683,12 @@ class SoundcoreModelsTest {
     @Test
     fun reportOnlyModels() {
         // Models only the Soundcore app's strings name: found by their service or name, with nothing to read but a report.
-        val liberty4 = "0cf12d31-fac3-4553-bd80-d6832e7b3953"
-        assertEquals(SoundcoreModels.Match("A3953", liberty4), SoundcoreModels.identify("soundcore Liberty 4", listOf(liberty4)))
-        assertEquals(SoundcoreModels.Match("A3953", null), SoundcoreModels.identify("Soundcore Liberty 4", emptyList()))
-        assertTrue(SoundcoreModels.model("A3953")!!.reportOnly)
-        assertTrue(SoundcoreLayout.of("A3953")!!.fields.isEmpty())
+        val sportX10 = "0cf12d31-fac3-4553-bd80-d6832e7b3961"
+        assertEquals(SoundcoreModels.Match("A3961", sportX10), SoundcoreModels.identify("soundcore Sport X10", listOf(sportX10)))
+        assertEquals(SoundcoreModels.Match("A3961", null), SoundcoreModels.identify("Soundcore Sport X10", emptyList()))
+        assertTrue(SoundcoreModels.model("A3961")!!.reportOnly)
+        assertTrue(SoundcoreLayout.of("A3961")!!.fields.isEmpty())
+        assertTrue(!SoundcoreModels.model("A3953")!!.reportOnly, "the Liberty 4 is read from Soundcore 3.3.0")
         assertTrue(!SoundcoreModels.model("A3936")!!.reportOnly)
         // A Soundcore vendor service naming a number PairFree does not know at all: report only too.
         val unknown = "0cf12d31-fac3-4553-bd80-d6832e7b9999"
@@ -1080,7 +1081,7 @@ class SoundcoreSleepA20Test {
             assertEquals(step.frames(), packets.map { SoundcorePacket.build(it.command, it.body).hex() }, step.toString())
         }
         assertEquals("off", (session.groups.single().settings.single() as Setting.Choice).value)
-        assertNull(SoundcoreSession("A3936").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())) }.groups.singleOrNull(), "the A40 has no sleep timer")
+        assertNull(SoundcoreSession("A3936").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())) }.groups.firstOrNull { it.key == "sleep" }, "the A40 has no sleep timer")
     }
 
     @Test

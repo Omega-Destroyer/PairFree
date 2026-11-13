@@ -181,6 +181,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_eq" -> R.string.setting_ca_eq
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
+        "sc_device" -> R.string.setting_sc_device
         "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
@@ -236,6 +237,21 @@ private fun settingTitle(key: String): String = when (key) {
     "op_peer_disconnect" -> stringResource(R.string.setting_op_peer_disconnect)
     "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
     "ca_noise" -> stringResource(R.string.setting_ca_noise)
+    "sc_wearing_detection" -> stringResource(R.string.setting_sc_wearing_detection)
+    "sc_smart_play" -> stringResource(R.string.setting_sc_smart_play)
+    "sc_adaptive_noise" -> stringResource(R.string.setting_sc_adaptive_noise)
+    "sc_super_hearing" -> stringResource(R.string.setting_sc_super_hearing)
+    "sc_call_mix" -> stringResource(R.string.setting_sc_call_mix)
+    "sc_microphone" -> stringResource(R.string.setting_sc_microphone)
+    "sc_press_sensitivity" -> stringResource(R.string.setting_sc_press_sensitivity)
+    "sc_side_tone" -> stringResource(R.string.setting_sc_side_tone)
+    "sc_in_ear_tone" -> stringResource(R.string.setting_sc_in_ear_tone)
+    "sc_bass_up" -> stringResource(R.string.setting_sc_bass_up)
+    "sc_spatial_audio" -> stringResource(R.string.setting_sc_spatial_audio)
+    "sc_low_battery_prompt" -> stringResource(R.string.setting_sc_low_battery_prompt)
+    "sc_ambient_sound_prompt" -> stringResource(R.string.setting_sc_ambient_sound_prompt)
+    "sc_sound_leak_compensation" -> stringResource(R.string.setting_sc_sound_leak_compensation)
+    "sc_auto_power_off" -> stringResource(R.string.setting_sc_auto_power_off)
     "ca_balance" -> stringResource(R.string.setting_ca_balance)
     "ca_peer_connect" -> stringResource(R.string.setting_ca_peer_connect)
     "ca_peer_disconnect" -> stringResource(R.string.setting_ca_peer_disconnect)
@@ -735,6 +751,13 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "anc_mode" -> R.string.setting_ca_ambient_modes_control
         "assistant" -> R.string.setting_ca_assistant
         else -> R.string.action_none
+    })
+    key == "sc_press_sensitivity" -> getString(when (option) {
+        "softest" -> R.string.setting_sc_press_softest
+        "soft" -> R.string.setting_sc_press_soft
+        "normal" -> R.string.setting_sc_press_normal
+        "firm" -> R.string.setting_sc_press_firm
+        else -> R.string.setting_sc_press_firmest
     })
     key.startsWith("ca_case_") -> getString(if (option == "on") R.string.on else R.string.action_off)
     key == "ca_auto_off" -> if (option == "never") getString(R.string.setting_ca_never) else option

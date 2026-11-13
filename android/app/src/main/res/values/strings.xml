@@ -304,6 +304,7 @@
     <string name="language_fr" translatable="false">Français</string>
     <string name="language_es" translatable="false">Español</string>
     <string name="language_it" translatable="false">Italiano</string>
+    <string name="language_ko" translatable="false">한국어</string>
     <string name="find_earbuds">Find my earbuds</string>
     <string name="find_warning">Take the earbuds out of your ears first. The beep is loud.</string>
     <string name="beep">Beep %1$s</string>
@@ -949,6 +950,34 @@
     <string name="setting_ca_end_call">End call control</string>
     <string name="setting_ca_assistant">Voice assistant control</string>
     <string name="setting_ca_ambient_control">Ambient sound control</string>
+    <string name="setting_ca_noise">Noise control</string>
+    <string name="setting_ca_toggle_normal">Button cycle: normal</string>
+    <string name="setting_ca_toggle_anc">Button cycle: noise cancelling</string>
+    <string name="setting_ca_toggle_transparency">Button cycle: transparency</string>
+    <string name="setting_ca_sound">Sound</string>
+    <string name="setting_ca_gaming">Gaming mode</string>
+    <string name="setting_ca_mono">Mono audio</string>
+    <string name="setting_ca_sleep">Sleep mode</string>
+    <string name="setting_ca_loudness">Loudness</string>
+    <string name="setting_ca_side_tone">Side tone</string>
+    <string name="setting_ca_spatial">Spatial audio</string>
+    <string name="setting_ca_proximity">Wear detection</string>
+    <string name="setting_ca_find_alert">Find my earbuds alert</string>
+    <string name="setting_ca_auto_off">Automatic power off (minutes)</string>
+    <string name="setting_ca_mic_mute">Microphone mute control</string>
+    <string name="setting_ca_transparency_control">Transparency control</string>
+    <string name="setting_ca_gaming_control">Gaming mode control</string>
+    <string name="setting_ca_anc_control">Noise cancelling control</string>
+    <string name="setting_ca_ambient_modes_control">Noise control cycle</string>
+    <string name="setting_ca_voice_focus">Voice focus</string>
+    <string name="setting_ca_noise_anc_high">Noise cancelling: high</string>
+    <string name="setting_ca_noise_anc_med">Noise cancelling: medium</string>
+    <string name="setting_ca_noise_anc_low">Noise cancelling: low</string>
+    <string name="setting_ca_transparency_low">Transparency: low</string>
+    <string name="setting_ca_transparency_high">Transparency: high</string>
+    <string name="setting_ca_tones">Tones only</string>
+    <string name="setting_ca_celebrity">Celebrity voice</string>
+    <string name="setting_ca_never">Never</string>
     <string name="setting_ca_cantonese">Cantonese</string>
     <string name="setting_ca_neutral">Neutral</string>
     <string name="setting_ca_immersive">Immersive</string>

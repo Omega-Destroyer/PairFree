@@ -39,7 +39,8 @@ class CambridgeTest {
     }
 
     @Test fun modelsStayWithinTheirEvidenceAndSharedServicesDoNotIdentifyThem() {
-        assertNull(CambridgeModels.fromName("Melomania A100"))
+        assertEquals(true, CambridgeModels.fromName("Melomania A100")?.connect)
+        assertEquals("Melomania M100", CambridgeModels.fromName("Melomania T100")?.name)
         assertNull(CambridgeModels.fromName("Melomania 1"))
         assertNull(CambridgeModels.fromName("Melomania Touch Extra"))
         assertEquals("Melomania Touch", CambridgeModels.fromName(" melomania touch ")?.name)

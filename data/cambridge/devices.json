@@ -1,7 +1,81 @@
 {
   "_source": "Melomania 2.8.12, com/cambridgeaudio/melomania/b, SearchingActivity, b3/n and a3/h. No PairFree hardware testing.",
   "devices": [
-    {"name": "Melomania 1+", "names": [], "ambient": false, "control_count": 9, "reports": [], "virtual_tests": ["docs/cambridge/VIRTUAL_TESTING.md"]},
-    {"name": "Melomania Touch", "names": [], "ambient": true, "control_count": 10, "reports": [], "virtual_tests": ["docs/cambridge/VIRTUAL_TESTING.md"]}
+    {
+      "name": "Melomania 1+",
+      "names": [],
+      "ambient": false,
+      "control_count": 9,
+      "reports": [],
+      "virtual_tests": [
+        "docs/cambridge/VIRTUAL_TESTING.md"
+      ]
+    },
+    {
+      "name": "Melomania Touch",
+      "names": [],
+      "ambient": true,
+      "control_count": 10,
+      "reports": [],
+      "virtual_tests": [
+        "docs/cambridge/VIRTUAL_TESTING.md"
+      ]
+    },
+    {
+      "name": "Melomania A100",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": []
+    },
+    {
+      "name": "Melomania A100 SE",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": []
+    },
+    {
+      "name": "Melomania M100",
+      "names": [
+        "Melomania T100"
+      ],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": []
+    },
+    {
+      "name": "Melomania P100",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": []
+    },
+    {
+      "name": "Melomania P100 SE",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": []
+    },
+    {
+      "name": "Melomania X100",
+      "names": [],
+      "ambient": true,
+      "control_count": 0,
+      "connect": true,
+      "reports": [],
+      "virtual_tests": []
+    }
   ]
 }

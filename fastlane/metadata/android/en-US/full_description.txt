@@ -17,7 +17,7 @@ Supported brands:
 • SOUNDPEATS: 88 models, tried on the H3, Air5 Pro+, C30, T3 Pro and TRUEFREE Clip C10
 • Soundcore (Anker): 67 models, tried on the Space A40, AeroClip, Q20i and Sleep A20. With the open-source OpenSCQ30
 • Samsung Galaxy Buds: 16 models, from the 2019 Buds to the Buds4 Pro. From Samsung's plugin and the open-source GalaxyBudsClient
-• Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6, tried on the WF-1000XM5. From Sony's app, checked against Gadgetbridge
+• Sony: 24 models, from the WH-1000XM2 to the WH-1000XM6, tried on the WF-1000XM5 and WF-1000XM6. From Sony's app, checked against Gadgetbridge
 • Bose: 22 models, from the QC35 to the QC Ultra 2. From Bose's app and bosectl, without Bose's cloud
 • AirPods and Beats on Apple's chips: 30 models, tried on the AirPods Pro 3, from LibrePods and Apple's Beats app. AirPods need Android 17, or a Pixel on 16 QPR3, or a OnePlus, OPPO or realme phone on 16; the Beats need no particular version
 • JBL: 112 models, tried on the Live Buds 3. From JBL's app, checked against JblTray

@@ -150,7 +150,7 @@ actions without the assistant, and hearing your own voice and the volume limit (
 ## 6. Not yet
 
 - **EQ:** the music and sleep styles (`003B`/`003C`), the HQ60's THX preset, and 1MORE's finer gain steps. 1MORE's
-  app 2.0.0 declares the styles (`BluetoothOrderConstents`) but never sends them, so nothing shows their payloads.
+  app 2.0.0 declares the styles (`BluetoothOrderConstents`) but never sends them, so nothing shows their payloads. **Corrected 2026-11-12: 1MORE 2.1.3 does send them** (`HeadsetActivity`: `sendSppSetEQMode(0)` music and `(1)` sleep; `SetTimeActivity`: `sendSppSetPlayTime((i + 1) * 2)`, or 0 for no timer; `ShortcutActionsActivity`: `sendSppSetVocalEnhancement`), so the layouts can be built from 2.1.3.
 - **Music on the earbuds** (`0038` to `003A`, `0049`, `0071` to `0073`) and the play time or sleep timer (`0068`),
   which the app also declares but never sends.
 - **The `FE` frames** (section 2), and whether the earbuds' XOR and length field always hold.

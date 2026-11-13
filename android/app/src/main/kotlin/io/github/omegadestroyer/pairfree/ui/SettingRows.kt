@@ -526,6 +526,10 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    "call_transparency" -> stringResource(R.string.setting_call_transparency)
+    "advanced_eq" -> stringResource(R.string.setting_advanced_eq)
+    "power_off_time" -> stringResource(R.string.setting_power_off_time)
+    "dirac_eq" -> stringResource(R.string.setting_dirac_eq)
     "le_audio" -> stringResource(R.string.setting_le_audio)
     "le_audio_mode" -> stringResource(R.string.setting_le_audio_mode)
     "upmix_series" -> stringResource(R.string.setting_upmix_series)
@@ -659,6 +663,10 @@ private fun buttonTitle(key: String): String? {
 
 @Composable
 private fun settingNote(key: String): String? = when (key) {
+    "call_transparency" -> stringResource(R.string.setting_call_transparency_note)
+    "advanced_eq" -> stringResource(R.string.setting_advanced_eq_note)
+    "power_off_time" -> stringResource(R.string.setting_power_off_time_note)
+    "dirac_eq" -> stringResource(R.string.setting_dirac_eq_note)
     "le_audio" -> stringResource(R.string.setting_le_audio_note)
     "le_audio_mode" -> stringResource(R.string.setting_le_audio_mode_note)
     "upmix_series" -> stringResource(R.string.setting_upmix_series_note)
@@ -980,6 +988,18 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             else -> R.string.setting_le_high_reliability
         },
     )
+    key == "dirac_eq" -> getString(
+        when (option) {
+            "dirac_rock" -> R.string.setting_dirac_rock
+            "dirac_electronic" -> R.string.setting_dirac_electronic
+            "dirac_pop" -> R.string.setting_dirac_pop
+            "dirac_vocals" -> R.string.setting_dirac_vocals
+            "dirac_classical" -> R.string.setting_dirac_classical
+            "custom" -> R.string.setting_dirac_custom
+            else -> R.string.setting_dirac_opteo
+        },
+    )
+    key == "power_off_time" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: option
     key == "sound_mode" -> getString(if (option == "sleep_mode") R.string.setting_sound_mode_sleep else R.string.setting_sound_mode_music)
     key == "smart_playback" -> getString(
         when (option) {

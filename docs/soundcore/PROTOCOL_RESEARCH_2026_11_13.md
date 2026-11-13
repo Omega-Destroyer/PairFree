@@ -183,7 +183,8 @@ The normal Sleep A10 callbacks also map `01 10` to sleep-history retrieval,
 `01 A6` to clock sync, `01 A7` to alarms, `01 A9` to current mode, `01 AA` to smart
 play, `01 AB` to custom play time, `01 AC` to adaptive noise, `01 A4` to selected
 music, `01 B1` to volume, and `01 B2`/`01 15` to playback set/read. Command
-**01 B0 clears sleep history** and is not a harmless read. These meanings are
+**01 B0 is the reset-sleep-time write**, not a harmless read; its exact deletion
+scope has not been established. These meanings are
 model-specific; for example `01 10` has another meaning on older non-sleep models.
 Clock, alarm and sleep-history bodies require privacy handling.
 

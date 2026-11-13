@@ -47,6 +47,16 @@ public data class NothingConfig(
     val fitTest: Boolean = false,
     /** The model has the two-devices switch (`dual_connection` in Nothing X's table; `F01A` writes, `C027` reads). */
     val dualConnection: Boolean = false,
+    /** The model has Dirac Opteo's presets (`diracOpteoSupport` in Nothing X's table; `F01D` writes, `C050` reads). */
+    val diracOpteo: Boolean = false,
+    /** The model has personalised noise cancelling (`personalizedAnc`; `F011` writes, `C020` reads). */
+    val personalizedAnc: Boolean = false,
+    /** The model has the timed power off (`powerOffTime`; `F00B` writes, `C011` reads). */
+    val powerOffTime: Boolean = false,
+    /** The model has call transparency (`callTransparency`; `F060` writes, `C05F` reads: from Nothing X's Flutter layer). */
+    val callTransparency: Boolean = false,
+    /** The model has the advanced equalizer (`advancedEq`; `F04F` writes the mode, `C04C` reads it). */
+    val advancedEq: Boolean = false,
 ) {
     /**
      * True when [firmware] is in this range. Nothing X's ranges name the last two fields ("*.*.1.74"),

@@ -43,6 +43,11 @@ public data class EqLayout(
     public fun curve(userGainsDb: List<Int>): List<EqBand> =
         fixedBands + bands.mapIndexed { i, b -> b.copy(gainDb = b.gainDb + userGainsDb.getOrElse(i) { 0 }) }
 
+    /** The same for gains in dB that need not be whole (half steps). */
+    @JvmName("curveDb")
+    public fun curve(userGainsDb: List<Double>): List<EqBand> =
+        fixedBands + bands.mapIndexed { i, b -> b.copy(gainDb = b.gainDb + userGainsDb.getOrElse(i) { 0.0 }) }
+
     /** The bands of [preset] that stand where [bands] do: those after [fixedBands], when the preset starts with them. */
     public fun ownBands(preset: EqPreset): List<EqBand> =
         if (fixedBands.isNotEmpty() && preset.bands.take(fixedBands.size) == fixedBands) preset.bands.drop(fixedBands.size) else preset.bands
@@ -60,12 +65,25 @@ public data class EqLayout(
         )
     }
 
+    /** The same for gains in dB that need not be whole: hundredths of a dB carry them exactly. */
+    @JvmName("payloadsDb")
+    public fun payloads(userGainsDb: List<Double>, preampDb: Int = 0): List<ByteArray> {
+        require(userGainsDb.size == bands.size) { "need ${bands.size} gains, got ${userGainsDb.size}" }
+        return encode(
+            fixedBands.map { it to hundredths(it.gainDb) } + bands.mapIndexed { i, band -> band to hundredths(band.gainDb) + hundredths(userGainsDb[i]) },
+            preampDb,
+        )
+    }
+
     /** One payload per band of [preset], with a preamp of [preampDb] added to the master gain. */
     public fun payloads(preset: EqPreset, preampDb: Int = 0): List<ByteArray> =
         encode(preset.bands.map { it to hundredths(it.gainDb) }, preampDb)
 
     /** The frames to send, vendor [Wire.VENDOR_EQ], one per band. The official app leaves 50 ms between them. */
     public fun frames(userGainsDb: List<Int>, preampDb: Int = 0): List<ByteArray> = wrap(payloads(userGainsDb, preampDb))
+
+    @JvmName("framesDb")
+    public fun frames(userGainsDb: List<Double>, preampDb: Int = 0): List<ByteArray> = wrap(payloads(userGainsDb, preampDb))
 
     public fun frames(preset: EqPreset, preampDb: Int = 0): List<ByteArray> = wrap(payloads(preset, preampDb))
 

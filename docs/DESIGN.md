@@ -194,6 +194,13 @@ whatever the connected model needs. The labels above are the official app's
 generic custom layout. The H3's is 50, 160, 350, 800, 1.6k, 2.8k, 4.6k, 8k, 12k and
 17k, from -6 to +6 dB in whole dB.
 
+Gain steps (owner, 2026-11-13): the gains are in dB and move in the step the earbuds' wire takes, which the brand's `BandEq` states
+(`eqGainStepDb`): half a dB for SOUNDPEATS (the layout's frames carry hundredths of a dB), Soundcore models whose values are tenths of a dB,
+Nothing and CMF (the filters' gains are floats), the Pixel Buds (Google's own sliders move in halves) and Melomania Connect (tenths of a dB on
+the wire); a whole dB for every other brand, whose wire holds whole units or whose half steps are not known. The slider, the buttons and
+a drag on the graph move by that step; a saved profile or an imported file with halves on a whole-dB brand is rounded to the step. A hearing
+test or the A/B finder works in whole dB.
+
 The gains on screen are the user's, on top of the model's base curve, the way the
 official app does it, so 0 dB on every band is the earbuds' own tuning (the Stock
 profile). A model's presets come from `data/soundpeats/devices.json` (`eq.presets`). They are

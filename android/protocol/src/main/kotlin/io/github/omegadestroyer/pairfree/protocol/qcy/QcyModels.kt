@@ -71,6 +71,8 @@ public data class QcyModel(
     val settings: List<QcySetting>,
     /** The control panel has the timed power off (item 14): the earbuds turn off once the minutes are up. */
     val sleepTimer: Boolean = false,
+    /** The noise control is JieLi's own noise mode (attribute 11, the control panel's type 11 screen), with one number per mode packed as mode << 16. */
+    val jieliNoise: Boolean = false,
     val eq: QcyEqSpec? = null,
     /** Items whose off value is 00 rather than QCY's 02 (the Capsule3 Pro's LDAC and multipoint). */
     val zeroOff: Set<Int> = emptySet(),

@@ -332,6 +332,18 @@ class NothingTest {
     }
 
     @Test
+    fun theCustomEqTakesHalfSteps() {
+        // The filters' gains are floats: bass +1.5 dB is 3FC00000, and the total gain is minus the highest gain.
+        val s = session("B155")
+        s.receive(reply(NothingCommand.GET_EQ_MODE, "0000"))
+        val whole = s.eqCustomDb(listOf(2.0, 0.0, 0.0))!!.last().payload
+        assertEquals(hex(s.eqCustom(listOf(2, 0, 0))!!.last().payload), hex(whole))
+        val frames = s.eqCustomDb(listOf(1.5, -0.5, 0.0))!!
+        assertTrue(hex(frames.last().payload).contains("0000c0bf"), "the total gain of -1.5")
+        assertTrue(hex(frames.last().payload).contains("000000bf"), "mid -0.5")
+    }
+
+    @Test
     fun theCustomEqAsNothingXWritesIt() {
         val s = session("B155")
         assertTrue(NothingCommand.GET_CUSTOM_EQ_VALUE in NothingSession(NothingModels.of("B155")).start().map { it.command })

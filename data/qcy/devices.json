@@ -783,7 +783,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6514,
@@ -846,7 +863,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6515,
@@ -910,7 +944,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6516,
@@ -1049,7 +1100,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6517,
@@ -1112,7 +1180,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6518,
@@ -1250,7 +1335,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6519,
@@ -1388,7 +1490,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6520,
@@ -1526,7 +1645,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 6577,
@@ -3871,7 +4007,49 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "10": "noise_control"
+    }
+   },
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010000",
+     "to": "010000",
+     "default": "010000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "jieli_noise": true
   },
   {
    "vendor_id": 18290,
@@ -4010,7 +4188,49 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "10": "noise_control"
+    }
+   },
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "410000",
+     "to": "410000",
+     "default": "410000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "jieli_noise": true
   },
   {
    "vendor_id": 18293,
@@ -4148,7 +4368,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18294,
@@ -4197,7 +4434,49 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "10": "noise_control"
+    }
+   },
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010000",
+     "to": "010000",
+     "default": "010000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "jieli_noise": true
   },
   {
    "vendor_id": 18295,
@@ -4243,7 +4522,49 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "10": "noise_control"
+    }
+   },
+   "anc": [
+    {
+     "mode": "cancelling",
+     "from": "010000",
+     "to": "010000",
+     "default": "010000"
+    },
+    {
+     "mode": "transparency",
+     "from": "030000",
+     "to": "030000",
+     "default": "030000"
+    },
+    {
+     "mode": "off",
+     "from": "020000",
+     "to": "020000",
+     "default": "020000"
+    }
+   ],
+   "jieli_noise": true
   },
   {
    "vendor_id": 18296,
@@ -4297,7 +4618,24 @@
      "setting": "sleep_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18297,
@@ -4362,7 +4700,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18298,
@@ -4459,7 +4814,24 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18299,
@@ -4509,7 +4881,24 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18300,
@@ -4606,7 +4995,24 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18301,
@@ -4656,7 +5062,24 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18302,
@@ -4721,7 +5144,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18303,
@@ -4775,7 +5215,24 @@
      "setting": "sleep_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18801,
@@ -4909,7 +5366,22 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18802,
@@ -5043,7 +5515,22 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18803,
@@ -5177,7 +5664,23 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 18804,
@@ -5315,7 +5818,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18805,
@@ -5449,7 +5969,23 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 18806,
@@ -5586,7 +6122,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18808,
@@ -5723,7 +6276,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18809,
@@ -5859,7 +6429,28 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "take_picture"
+    ],
+    "extra_actions": {
+     "8": "take_picture"
+    }
+   }
   },
   {
    "vendor_id": 18810,
@@ -5996,7 +6587,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18811,
@@ -6133,7 +6741,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18812,
@@ -6277,7 +6902,23 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 18814,
@@ -6425,7 +7066,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 18863,
@@ -6507,6 +7165,21 @@
        -7.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -6707,6 +7380,21 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
    }
   },
   {
@@ -6834,6 +7522,21 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -6969,7 +7672,24 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19060,
@@ -7103,7 +7823,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19061,
@@ -7237,7 +7972,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19063,
@@ -7364,6 +8114,21 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -7499,7 +8264,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19065,
@@ -7633,7 +8413,22 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19067,
@@ -7767,7 +8562,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19068,
@@ -7901,7 +8711,24 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19069,
@@ -8035,7 +8862,24 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19071,
@@ -8173,7 +9017,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19218,
@@ -8770,7 +9631,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19393,
@@ -9657,7 +10533,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19570,
@@ -9784,6 +10675,21 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -9912,6 +10818,21 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -10047,7 +10968,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19573,
@@ -10181,7 +11117,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19574,
@@ -10315,7 +11266,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19575,
@@ -10449,7 +11415,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19576,
@@ -10583,7 +11564,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19649,
@@ -10867,6 +11863,20 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
    }
   },
   {
@@ -10949,6 +11959,21 @@
        -7.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -11077,6 +12102,20 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -11361,6 +12400,21 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
    }
   },
   {
@@ -11495,7 +12549,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19747,
@@ -11622,6 +12691,20 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -11751,6 +12834,21 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
    }
   },
   {
@@ -11878,6 +12976,21 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -12007,6 +13120,22 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
    }
   },
   {
@@ -12135,6 +13264,20 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
    }
   },
   {
@@ -12217,6 +13360,21 @@
        -7.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -12346,6 +13504,20 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
    }
   },
   {
@@ -12428,6 +13600,21 @@
        -7.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -12556,6 +13743,21 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
     ]
    }
   },
@@ -13322,7 +14524,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19783,
@@ -15321,7 +16540,21 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 19826,
@@ -15455,7 +16688,21 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 19841,
@@ -15589,7 +16836,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19842,
@@ -15866,6 +17128,21 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
    }
   },
   {
@@ -15993,6 +17270,20 @@
        -8.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -16128,7 +17419,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19859,
@@ -16262,7 +17568,22 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19860,
@@ -16344,6 +17665,21 @@
        -7.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -16427,6 +17763,21 @@
        -7.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -16556,6 +17907,20 @@
       ]
      }
     ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
    }
   },
   {
@@ -16638,6 +18003,21 @@
        -7.0
       ]
      }
+    ]
+   },
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
     ]
    }
   },
@@ -16916,7 +18296,24 @@
      "item": "10",
      "setting": "sleep_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 19873,
@@ -17090,7 +18487,21 @@
      "item": "2C",
      "setting": "in_ear"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down"
+    ]
+   }
   },
   {
    "vendor_id": 19905,
@@ -17967,7 +19378,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23153,
@@ -18013,7 +19441,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23154,
@@ -18060,7 +19505,24 @@
      "setting": "sleep_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23155,
@@ -18106,7 +19568,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23156,
@@ -18153,7 +19632,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23157,
@@ -18289,7 +19785,28 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "take_picture"
+    ],
+    "extra_actions": {
+     "8": "take_picture"
+    }
+   }
   },
   {
    "vendor_id": 23158,
@@ -18335,7 +19852,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23159,
@@ -18382,7 +19916,24 @@
      "setting": "sleep_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23160,
@@ -18428,7 +19979,24 @@
      "setting": "game_mode"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 23872,
@@ -19757,7 +21325,28 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32882,
@@ -19854,7 +21443,28 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32883,
@@ -19952,7 +21562,28 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32884,
@@ -20050,7 +21681,29 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32885,
@@ -20148,7 +21801,29 @@
      "setting": "multipoint"
     }
    ],
-   "sleep_timer": true
+   "sleep_timer": true,
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32886,
@@ -20255,7 +21930,28 @@
      "item": "27",
      "setting": "dynamic_eq"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32887,
@@ -20350,7 +22046,28 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32889,
@@ -20449,7 +22166,28 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32890,
@@ -20504,7 +22242,24 @@
      "item": "09",
      "setting": "game_mode"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "game_mode"
+    ]
+   }
   },
   {
    "vendor_id": 32891,
@@ -20606,7 +22361,28 @@
      "item": "27",
      "setting": "dynamic_eq"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32892,
@@ -20701,7 +22477,28 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32893,
@@ -20808,7 +22605,28 @@
      "item": "27",
      "setting": "dynamic_eq"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 32894,
@@ -20910,7 +22728,28 @@
      "item": "27",
      "setting": "dynamic_eq"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   },
   {
    "vendor_id": 36977,
@@ -21005,7 +22844,28 @@
      "item": "24",
      "setting": "multipoint"
     }
-   ]
+   ],
+   "touch": {
+    "gestures": [
+     "single",
+     "double",
+     "triple",
+     "hold"
+    ],
+    "actions": [
+     "none",
+     "play_pause",
+     "previous",
+     "next",
+     "voice_assistant",
+     "volume_up",
+     "volume_down",
+     "noise_control"
+    ],
+    "extra_actions": {
+     "11": "noise_control"
+    }
+   }
   }
  ]
 }

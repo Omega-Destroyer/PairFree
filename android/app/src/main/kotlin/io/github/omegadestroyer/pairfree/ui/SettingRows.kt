@@ -1087,6 +1087,7 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "noise_control" -> R.string.action_anc_cycle
             "voice_assistant" -> R.string.action_voice_assistant
             "game_mode" -> R.string.action_game_mode
+            "take_picture" -> R.string.action_take_picture
             "volume_up" -> R.string.action_volume_up
             "volume_down" -> R.string.action_volume_down
             "spatial_audio" -> R.string.action_spatial_audio

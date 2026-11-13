@@ -105,9 +105,14 @@ class NothingBandEq(private val session: NothingSession) : BandEq {
 
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = session.eqCustom(gains)?.map(NothingFrame::bytes)
 
+    /** The filters' gains are floats on the wire, so half steps go through. */
+    override val eqGainStepDb: Double = 0.5
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = session.eqCustomDb(gains)?.map(NothingFrame::bytes)
+
     /** What [eq] says the earbuds hold: their custom curve, or the preset they apply. */
     fun report(eq: NothingEq): BandEqReport? {
-        if (eq.custom) return BandEqReport(null, eq.gains ?: return null)
+        if (eq.custom) return BandEqReport(null, eq.gains ?: return null, eq.gainsDb)
         return BandEqReport(NAMES[eq.preset ?: return null] ?: return null, null)
     }
 
@@ -144,10 +149,15 @@ class PixelBandEq(private val session: PixelSession) : BandEq {
 
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = session.eqWrite(gains.map { it.toFloat() })?.map { it.bytes }
 
-    /** What [gains] say the earbuds hold: a preset's name where one matches, and the gains in whole dB. */
+    /** Google's own sliders move in half steps, and the earbuds take them. */
+    override val eqGainStepDb: Double = 0.5
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = session.eqWrite(gains.map { it.toFloat() })?.map { it.bytes }
+
+    /** What [gains] say the earbuds hold: a preset's name where one matches, and the gains in half dB. */
     fun report(gains: List<Float>): BandEqReport {
         val match = presets.firstOrNull { (_, p) -> p.zip(gains).all { (a, b) -> abs(a - b) < SAME_DB } }
-        return BandEqReport(match?.first, gains.map { it.roundToInt() })
+        return BandEqReport(match?.first, gains.map { it.roundToInt() }, gains.map { (it * 2).roundToInt() / 2.0 })
     }
 
     /** True when the earbuds' saved curve is among the presets as Last saved. */
@@ -192,10 +202,10 @@ class SamsungBandEq(private val model: SamsungModel, private val curves: List<Li
         SamsungEq.custom(model, gains)?.map { SamsungPacket.build(it.id, it.payload, model.legacy) }
 
     /** The preset [status] says the earbuds hold, or the custom curve (whose values stay what this phone last sent, [current]); null while it does not say. */
-    fun report(status: SamsungStatus, current: List<Int>): Pair<BandEqReport, Boolean>? = when (val key = SamsungEq.reported(status)) {
+    fun report(status: SamsungStatus, current: List<Double>): Pair<BandEqReport, Boolean>? = when (val key = SamsungEq.reported(status)) {
         null -> null
-        SamsungEq.CUSTOM -> BandEqReport(null, current) to true
-        else -> BandEqReport(NAMES.getValue(key), current) to false
+        SamsungEq.CUSTOM -> BandEqReport(null, null, current) to true
+        else -> BandEqReport(NAMES.getValue(key), null, current) to false
     }
 
     companion object {
@@ -229,10 +239,15 @@ class CambridgeBandEq(private val session: CambridgeConnectSession) : BandEq {
 
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = if (eqBandsHz.isEmpty()) null else session.eqCurve(gains.map(Int::toDouble))
 
+    /** The gains travel in tenths of a dB, so half steps go through. */
+    override val eqGainStepDb: Double = 0.5
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = if (eqBandsHz.isEmpty()) null else session.eqCurve(gains)
+
     /** What the earbuds hold now: the preset whose gains they have (to a twentieth of a dB), else the curve. */
     fun report(): BandEqReport? {
         val held = session.eqBands?.map { it.second } ?: return null
         val preset = presets.firstOrNull { (_, gains) -> gains.size == held.size && gains.indices.all { abs(gains[it] - held[it]) < 0.05 } }?.first
-        return BandEqReport(preset, held.map { it.roundToInt() })
+        return BandEqReport(preset, held.map { it.roundToInt() }, held.map { (it * 2).roundToInt() / 2.0 })
     }
 }

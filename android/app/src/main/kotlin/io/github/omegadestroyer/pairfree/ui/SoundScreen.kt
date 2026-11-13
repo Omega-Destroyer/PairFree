@@ -174,14 +174,17 @@ internal fun SoundScreen(
 
             Panel {
                 val gain = gains[selected]
+                val step = eq.target.gainStepDb
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(bandName(eq.layout.bands[selected]), Modifier.weight(1f), style = Studio.type.heading)
                     Text(dbText(gain), style = Studio.type.number, color = Studio.colors.accent)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StepButton(plus = false, { actions.setGain(selected, gain - 1) }, enabled = gain > -r)
-                    StudioSlider(gain, -r..r, { actions.setGain(selected, it) }, Modifier.weight(1f), bandName(eq.layout.bands[selected]), origin = 0)
-                    StepButton(plus = true, { actions.setGain(selected, gain + 1) }, enabled = gain < r)
+                    StepButton(plus = false, { actions.setGain(selected, gain - step) }, enabled = gain > -r)
+                    // The slider counts steps (whole dB, or half dB where the earbuds take them).
+                    val steps = (r / step).roundToInt()
+                    StudioSlider((gain / step).roundToInt(), -steps..steps, { actions.setGain(selected, it * step) }, Modifier.weight(1f), bandName(eq.layout.bands[selected]), origin = 0)
+                    StepButton(plus = true, { actions.setGain(selected, gain + step) }, enabled = gain < r)
                 }
             }
         } else {
@@ -293,14 +296,22 @@ private fun bandLabel(key: String, short: Boolean): String = stringResource(
 
 /** `+2 dB`, `0 dB`, `−3 dB`, with a true minus sign. */
 @Composable
-internal fun dbText(db: Int): String = stringResource(
-    R.string.db,
-    when {
-        db > 0 -> "+$db"
-        db < 0 -> "−${-db}"
-        else -> "0"
-    },
-)
+internal fun dbText(db: Int): String = dbText(db.toDouble())
+
+/** A gain in dB with its sign: whole numbers as they are, half steps with one decimal ("+1.5"). */
+@Composable
+internal fun dbText(db: Double): String {
+    val n = kotlin.math.abs(db)
+    val number = if (n == kotlin.math.floor(n)) n.toInt().toString() else "%.1f".format(java.util.Locale.ROOT, n)
+    return stringResource(
+        R.string.db,
+        when {
+            db > 0 -> "+$number"
+            db < 0 -> "−$number"
+            else -> "0"
+        },
+    )
+}
 
 /**
  * The curve: each band's difference from stock, bands evenly spaced. When [editable], tap a
@@ -308,13 +319,14 @@ internal fun dbText(db: Int): String = stringResource(
  * is larger and its label amber. A preset is drawn the same way, on a wider scale if it needs one.
  */
 @Composable
-private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (Int) -> Unit, onGain: (Int, Int) -> Unit) {
+private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (Int) -> Unit, onGain: (Int, Double) -> Unit) {
     val c = Studio.colors
     val measurer = rememberTextMeasurer()
     val axis = Studio.type.label.copy(letterSpacing = 0.sp, color = c.label)
     val gains = eq.curve
     val r = scaleFor(eq)
     val user = eq.layout.userRangeDb
+    val stepDb = eq.target.gainStepDb
     val n = gains.size
     val labels = eq.curveBands.map { bandShort(it) }
     val select by rememberUpdatedState(onSelect)
@@ -327,7 +339,7 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
         fun x(i: Int) = left + column * (i + 0.5f)
         fun y(db: Double) = top + ((r - db) / (2.0 * r)).toFloat() * (bottom - top)
         fun band(x: Float) = ((x - left) / column).toInt().coerceIn(0, n - 1)
-        fun db(y: Float) = (r - (y - top) / (bottom - top) * 2 * r).roundToInt().coerceIn(-r, r)
+        fun db(y: Float): Double = ((r - (y - top) / (bottom - top) * 2 * r) / stepDb).roundToInt() * stepDb
     }
 
     Canvas(
@@ -346,7 +358,7 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
                 var dragged = 0
                 detectDragGestures(onDragStart = { dragged = geo.band(it.x); select(dragged) }) { change, _ ->
                     change.consume()
-                    gain(dragged, geo.db(change.position.y).coerceIn(-user, user))
+                    gain(dragged, geo.db(change.position.y).coerceIn(-user.toDouble(), user.toDouble()))
                 }
             },
     ) {
@@ -395,7 +407,7 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
 
 /** A band's button: frequency over gain. The picked one is filled amber. */
 @Composable
-private fun BandButton(label: String, gain: Int, selected: Boolean, onClick: () -> Unit) {
+private fun BandButton(label: String, gain: Double, selected: Boolean, onClick: () -> Unit) {
     val c = Studio.colors
     val shape = RoundedCornerShape(StudioShape.smallCorner)
     Column(
@@ -472,11 +484,12 @@ internal fun SoundCard(eq: EqState, onOpen: () -> Unit) {
 internal object NoEqActions : EqActions {
     override fun select(profile: EqProfile) = Unit
     override fun startNew() = Unit
-    override fun setGain(band: Int, db: Int) = Unit
+    override fun setGain(band: Int, db: Double) = Unit
     override fun setPreamp(db: Int) = Unit
     override fun save(name: String) = Unit
     override fun applyCurve(name: String, gains: List<Int>) = Unit
     override fun preview(gains: List<Int>) = Unit
+    override fun previewDb(gains: List<Double>) = Unit
     override fun delete(profile: EqProfile) = Unit
     override fun exportJson(): String = ""
     override fun importJson(text: String): Boolean = false

@@ -19,17 +19,15 @@ What it shows, where the model has it:
 - **Sound:** the equalizer, as a curve of your own over the bands the earbuds report and, on the models whose control panel lists
   them, QCY's presets (as curves; the panels are QCY's server data, read once by a script outside the app), the balance between the earbuds,
   spatial audio, dynamic EQ and adaptive volume.
-- **Controls:** what a tap, double tap, triple tap and hold do on each earbud on the models whose control panel has the newer button
-  screen. Not yet on most JieLi models and the older QCY ones, whose panels list the buttons and the noise control in an older layout
-  PairFree does not read yet (for example the T13 ANC2, issue #35).
+- **Controls:** what a tap, double tap, triple tap and hold do on each earbud, from the actions the model's control panel lists (on
+  the JieLi models as QCY's app sends them; 0.12.0 added the older panel screens, for example the T13 ANC2, issue #35, not yet tried on real earbuds).
 - **Device:** game mode, in-ear detection, LDAC, two devices at once, sleep mode (touch controls off),
   wind noise detection, the status light, and the timed power off (the earbuds turn off once after 15,
   30, 60 or 90 minutes).
 
 Added in 0.12.0: the music mode and the touch sensitivity on the models whose panel lists them (not tried on real earbuds).
 
-Not yet: the older button and noise control screens of the panels (above), the per-ear personalised equalizer and the ear tip
-fit test (QCY's fit detection).
+Not yet: the per-ear personalised equalizer and the ear tip fit test (QCY's fit detection).
 
 QCY support is written from QCY's own app (QCY 4.0.7), read for its messages, and checked against
 [OpenQCY-Desktop](https://github.com/GiorgioRafael/OpenQCY-Desktop) by GiorgioRafael (MIT), which was
@@ -101,7 +99,7 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY DT08</td><td><code>4978</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode</td><td>Not tested</td></tr>
 <tr><td>QCY DT08</td><td><code>497A</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode</td><td>Not tested</td></tr>
 <tr><td>QCY DT08</td><td><code>497B</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode</td><td>Not tested</td></tr>
-<tr><td>QCY DT10</td><td><code>4771</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance</td><td>Not tested</td></tr>
+<tr><td>QCY DT10</td><td><code>4771</code></td><td>JieLi</td><td>Earbuds</td><td>ANC, transparency</td><td>sleep mode, game mode, balance</td><td>Not tested</td></tr>
 <tr><td>QCY Era 5</td><td><code>11E7</code></td><td>Other</td><td>Headphones</td><td>transparency</td><td>game mode, spatial audio, two devices, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY Era 7</td><td><code>4179</code></td><td>JieLi</td><td>Headphones</td><td>—</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY FairyBuds</td><td><code>4979</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode</td><td>Not tested</td></tr>
@@ -142,7 +140,7 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY HT19 MeloBuds DUAL BT6</td><td><code>5D4B</code></td><td>WUQI</td><td>Earbuds</td><td>ANC (5 scenes), transparency (7 levels)</td><td>game mode, wind detection, sleep mode, LDAC, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY HT20 MeloBuds NEO BT6</td><td><code>807C</code></td><td>JieLi</td><td>Earbuds</td><td>ANC (5 scenes), transparency</td><td>sleep mode, two devices, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY HT27</td><td><code>5D4D</code></td><td>WUQI</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY M10</td><td><code>4D95</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY M10</td><td><code>4D95</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY M18</td><td><code>4A79</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
 <tr><td>QCY M18</td><td><code>4C74</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY M18</td><td><code>4C77</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
@@ -167,11 +165,11 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY MeloBuds Pro</td><td><code>4D4A</code></td><td>WUQI</td><td>Earbuds</td><td>ANC (5 scenes), transparency (7 levels)</td><td>game mode, sleep mode, LDAC, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT10</td><td><code>4DC1</code></td><td>Realtek</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT10 Pro</td><td><code>4DC5</code></td><td>Realtek</td><td>Earbuds</td><td>—</td><td>game mode, touch controls</td><td>Not tested</td></tr>
-<tr><td>QCY QT10S</td><td><code>4D14</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY QT10S</td><td><code>4D14</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT11</td><td><code>4DC2</code></td><td>Realtek</td><td>Earbuds</td><td>—</td><td>game mode, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT12</td><td><code>4A72</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 <tr><td>QCY QT12</td><td><code>4C72</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY QT12</td><td><code>4D86</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY QT12</td><td><code>4D86</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT12S</td><td><code>4D99</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT12S</td><td><code>4DC4</code></td><td>Realtek</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT16</td><td><code>4B12</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>game mode, touch controls</td><td>Not tested</td></tr>
@@ -179,10 +177,10 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY T11S</td><td><code>4D17</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>in-ear detection, game mode, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T13</td><td><code>4A73</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
 <tr><td>QCY T13</td><td><code>4A7D</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
-<tr><td>QCY T13</td><td><code>4D9A</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
-<tr><td>QCY T13 ANC</td><td><code>4772</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance</td><td>Not tested</td></tr>
-<tr><td><a href="../../data/qcy/reports/T13ANC2_4776_0.1.0.2.txt">QCY T13 ANC2</a></td><td><code>4776</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Tested</td></tr>
-<tr><td>QCY T13 ANC2 APP</td><td><code>4777</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
+<tr><td>QCY T13</td><td><code>4D9A</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>sleep mode, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T13 ANC</td><td><code>4772</code></td><td>JieLi</td><td>Earbuds</td><td>ANC, transparency</td><td>sleep mode, game mode, balance</td><td>Not tested</td></tr>
+<tr><td><a href="../../data/qcy/reports/T13ANC2_4776_0.1.0.2.txt">QCY T13 ANC2</a></td><td><code>4776</code></td><td>JieLi</td><td>Earbuds</td><td>ANC, transparency</td><td>sleep mode, game mode, balance, timed power off</td><td>Tested</td></tr>
+<tr><td>QCY T13 ANC2 APP</td><td><code>4777</code></td><td>JieLi</td><td>Earbuds</td><td>ANC, transparency</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T13 Plus</td><td><code>8075</code></td><td>JieLi</td><td>Earbuds</td><td>ANC (5 scenes), transparency</td><td>sleep mode, game mode, two devices, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T13 Pro</td><td><code>4A7C</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
 <tr><td>QCY T13 Pro</td><td><code>8077</code></td><td>JieLi</td><td>Earbuds</td><td>ANC (5 scenes), transparency</td><td>sleep mode, two devices, balance, timed power off</td><td>Not tested</td></tr>
@@ -198,52 +196,52 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY T18</td><td><code>4B14</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 <tr><td>QCY T19</td><td><code>4974</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode</td><td>Not tested</td></tr>
 <tr><td>QCY T1C</td><td><code>4973</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
-<tr><td>QCY T1C</td><td><code>4D32</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T1C</td><td><code>4D94</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY T1C</td><td><code>4D32</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T1C</td><td><code>4D94</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T1C Pro</td><td><code>497D</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
-<tr><td>QCY T1S</td><td><code>4D33</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T1S</td><td><code>4D96</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T1X</td><td><code>4D12</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY T1S</td><td><code>4D33</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T1S</td><td><code>4D96</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T1X</td><td><code>4D12</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T29 APP</td><td><code>1975</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T2C</td><td><code>4975</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode</td><td>Not tested</td></tr>
-<tr><td>QCY T2C</td><td><code>49AF</code></td><td>RD</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T2C</td><td><code>4D97</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T3</td><td><code>4D24</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY T2C</td><td><code>49AF</code></td><td>RD</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T2C</td><td><code>4D97</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T3</td><td><code>4D24</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T30 AIR</td><td><code>5A77</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>game mode, sleep mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T31 MeloBuds Neo</td><td><code>5A78</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T33 APP</td><td><code>4D53</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, sleep mode, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
-<tr><td>QCY T4</td><td><code>4D27</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T4</td><td><code>4D31</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY T4</td><td><code>4D27</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T4</td><td><code>4D31</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T41 Motif</td><td><code>1978</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T43 Buds</td><td><code>1977</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY T4S</td><td><code>4D15</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY T4S</td><td><code>4D15</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T5</td><td><code>4A71</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 <tr><td>QCY T5</td><td><code>4A77</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 <tr><td>QCY T5</td><td><code>4C73</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T5</td><td><code>4D21</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T5 Pro</td><td><code>4D25</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T5S</td><td><code>4D22</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
-<tr><td>QCY T6</td><td><code>4D23</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T6</td><td><code>4D35</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY T5</td><td><code>4D21</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T5 Pro</td><td><code>4D25</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T5S</td><td><code>4D22</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>in-ear detection, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T6</td><td><code>4D23</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T6</td><td><code>4D35</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T7</td><td><code>4A74</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY T7</td><td><code>4C75</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY T7</td><td><code>4D71</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
-<tr><td>QCY T7</td><td><code>4D92</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
-<tr><td>QCY T7S</td><td><code>4D81</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
+<tr><td>QCY T7</td><td><code>4D92</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>in-ear detection, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T7S</td><td><code>4D81</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>in-ear detection, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T8</td><td><code>4A75</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY T8</td><td><code>4A78</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY T8</td><td><code>4C71</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY T8</td><td><code>4C76</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY T8</td><td><code>4C78</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY T8</td><td><code>4D72</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
-<tr><td>QCY T8</td><td><code>4D93</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
-<tr><td>QCY T8</td><td><code>4DB1</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
+<tr><td>QCY T8</td><td><code>4D93</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>in-ear detection, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T8</td><td><code>4DB1</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>in-ear detection, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T8S</td><td><code>4A7B</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>in-ear detection</td><td>Not tested</td></tr>
 <tr><td>QCY T8S</td><td><code>4D82</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>in-ear detection, touch controls</td><td>Not tested</td></tr>
-<tr><td>QCY T9</td><td><code>4D91</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY T9S</td><td><code>4D34</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
+<tr><td>QCY T9</td><td><code>4D91</code></td><td>ZR</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T9S</td><td><code>4D34</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY TWS HT05</td><td><code>4D42</code></td><td>WUQI</td><td>Earbuds</td><td>ANC (3 scenes), transparency (7 levels)</td><td>game mode, sleep mode, balance, touch controls</td><td>Not tested</td></tr>
-<tr><td>QCY TWS HT07</td><td><code>4D46</code></td><td>WUQI</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
+<tr><td>QCY TWS HT07</td><td><code>4D46</code></td><td>WUQI</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY TWS QT26</td><td><code>5A74</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY TWS QT27</td><td><code>1974</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY TWS QT29</td><td><code>1973</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>

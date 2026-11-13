@@ -4,6 +4,7 @@
   {
    "codes": ["TW400"],
    "name": "EarFun Free Pro 3",
+ "extras": ["voice_tip"],
    "names": [],
    "protocol": "qualcomm",
    "chip": "Qualcomm",
@@ -74,6 +75,7 @@
   {
    "codes": ["TW500", "TW500_3072"],
    "name": "EarFun Air Pro 3",
+ "extras": ["voice_tip"],
    "names": [],
    "protocol": "qualcomm",
    "chip": "Qualcomm",
@@ -140,6 +142,7 @@
   {
    "codes": ["TW600"],
    "name": "EarFun Air Pro 4",
+ "extras": ["voice_tip", "codec"],
    "names": [],
    "protocol": "qualcomm",
    "chip": "Qualcomm",
@@ -210,6 +213,7 @@
   {
    "codes": ["TW700", "TW700AI"],
    "name": "EarFun Air Pro 4+",
+ "extras": ["balance", "voice_tip", "codec"],
    "names": ["EarFun Air Pro 4+AI"],
    "protocol": "qualcomm",
    "chip": "Qualcomm",
@@ -282,6 +286,7 @@
   {
    "codes": ["TW800"],
    "name": "EarFun Air Pro 5",
+ "extras": ["balance", "voice_tip", "codec"],
    "names": [],
    "protocol": "qualcomm",
    "chip": "Qualcomm",
@@ -552,6 +557,7 @@
   {
    "codes": ["HP1000"],
    "name": "EarFun Wave Pro X",
+ "extras": ["balance", "usb_charge", "ambient_voice", "call_env", "voice_tip", "codec"],
    "names": [],
    "protocol": "qualcomm",
    "chip": "Qualcomm",
@@ -626,6 +632,7 @@
   {
    "codes": ["TW220", "TW220_VDL"],
    "name": "EarFun Air 2 NC",
+ "extras": ["codec"],
    "names": [],
    "protocol": "earfun",
    "chip": "EarFun's own",
@@ -746,6 +753,7 @@
   {
    "codes": ["OW100", "OW100_NEW"],
    "name": "EarFun OpenJump",
+ "extras": ["codec"],
    "names": [],
    "protocol": "earfun",
    "chip": "EarFun's own",
@@ -791,7 +799,7 @@
    "prompt_volumes": ["0", "25", "50", "75", "100"],
    "buttons": null,
    "mic": false,
-   "hearing_protection": false,
+   "hearing_protection": true,
    "in_ear": false,
    "case_charge_bit": false,
    "noise": null,
@@ -802,6 +810,7 @@
   {
    "codes": ["CW100"],
    "name": "EarFun Clip",
+ "extras": ["bass", "manner", "balance", "codec"],
    "names": [],
    "protocol": "earfun",
    "chip": "EarFun's own",
@@ -859,6 +868,7 @@
   {
    "codes": ["CW200"],
    "name": "EarFun Clip 2",
+ "extras": ["bass", "manner", "game_eq", "dac", "balance", "codec"],
    "names": [],
    "protocol": "earfun",
    "chip": "EarFun's own",
@@ -918,6 +928,7 @@
   {
    "codes": ["TW230"],
    "name": "EarFun Air Pro 4i",
+ "extras": ["balance", "codec"],
    "names": [],
    "protocol": "earfun",
    "chip": "EarFun's own",

@@ -841,6 +841,16 @@
     <string name="setting_stamina">Stamina mode</string>
     <string name="setting_touch_panel_backlight_off">Turn off touch panel light automatically</string>
     <string name="setting_auto_play">Play automatically when worn</string>
+    <string name="setting_ef_extra_bass">Bass enhancement</string>
+    <string name="setting_ef_extra_manner">Manner mode</string>
+    <string name="setting_ef_extra_game_eq">Game EQ</string>
+    <string name="setting_ef_extra_dac">DAC</string>
+    <string name="setting_ef_extra_balance">Left and right balance (50 is the middle)</string>
+    <string name="setting_ef_extra_usb_charge">USB charging</string>
+    <string name="setting_ef_extra_ambient_voice">Ambient voice</string>
+    <string name="setting_ef_extra_call_env">Call environment</string>
+    <string name="setting_ef_extra_voice_tip">Voice prompts</string>
+    <string name="setting_ef_codec_in_use">Codec in use</string>
     <string name="setting_auto_volume_optimizer">Auto volume optimizer</string>
     <string name="setting_auto_volume_limited">Adaptive volume with limit</string>
     <string name="setting_max_volume_limit">Maximum volume</string>

@@ -728,7 +728,7 @@ private fun isTouchRow(key: String): Boolean {
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
     key == "op_head_motion" -> getString(if (option == "nod") R.string.op_head_nod else R.string.op_head_shake)
-    key == "op_peer_connect" || key == "op_peer_disconnect" || key == "ca_peer_connect" || key == "ca_peer_disconnect" -> option
+    key == "op_peer_connect" || key == "op_peer_disconnect" || key == "ca_peer_connect" || key == "ca_peer_disconnect" || key == "ef_codec_in_use" -> option
     key == "op_spatial" -> getString(when (option) {
         "fixed" -> R.string.op_spatial_fixed
         "head_tracking" -> R.string.op_spatial_head

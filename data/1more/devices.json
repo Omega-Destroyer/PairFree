@@ -22,6 +22,8 @@
    "eq_bands": {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1200},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2023/02/28/20230228151523A007.png", "ear": "/profile/upload/2023/02/28/20230228151402A003.png", "list": "/profile/upload/2023/02/28/20230228151432A004.png", "left": "/profile/upload/2023/07/19/20230719135230A124.png", "right": "/profile/upload/2023/03/13/20230313104654A004.png", "dialog": "/profile/upload/2023/02/28/20230228151509A006.png", "dialog_gif": "/profile/upload/2023/02/28/20230228151445A005.gif", "swatch": "/profile/upload/2023/02/28/20230228151309A002.png"},
@@ -49,6 +51,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2026/04/14/20260414194355A094.png", "ear": "/profile/upload/2026/04/14/20260414194149A075.png", "list": "/profile/upload/2026/04/14/20260414194306A087.png", "left": "/profile/upload/2026/04/14/20260414194215A078.png", "right": "/profile/upload/2026/04/14/20260414194240A083.png", "dialog": "/profile/upload/2026/04/14/20260414194323A090.png", "dialog_gif": "/profile/upload/2026/06/09/20260609172125A191.gif", "swatch": "/profile/upload/2026/04/14/20260414194121A071.png"},
@@ -78,6 +82,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": true,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2023/03/01/20230301110955A055.png", "ear": "/profile/upload/2023/03/01/20230301110749A042.png", "list": "/profile/upload/2023/03/01/20230301110823A045.png", "left": "/profile/upload/2023/07/19/20230719135102A121.png", "right": "/profile/upload/2023/07/19/20230719135112A122.png", "dialog": "/profile/upload/2023/03/01/20230301110929A052.png", "dialog_gif": "/profile/upload/2023/03/01/20230301110852A049.gif", "swatch": "/profile/upload/2023/03/01/20230301110654A039.png"},
@@ -106,6 +112,8 @@
    "eq_bands": {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1200},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2023/09/13/20230913153231A129.png", "ear": "/profile/upload/2023/09/13/20230913153047A126.png", "list": "/profile/upload/2023/09/13/20230913153150A127.png", "left": "/profile/upload/2023/09/13/20230913153250A130.png", "right": "/profile/upload/2023/09/13/20230913153302A131.png", "dialog": "/profile/upload/2023/09/13/20230913153213A128.png", "dialog_gif": "/profile/upload/2023/09/13/20230913153347A132.gif", "swatch": "/profile/upload/2023/09/13/20230913152944A125.png"},
@@ -133,6 +141,8 @@
    "eq_bands": {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1200},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑武士", "home": "/profile/upload/2026/10/15/20261015120530A175.png", "ear": "/profile/upload/2026/10/15/20261015120511A171.png", "list": "/profile/upload/2026/10/15/20261015120515A172.png", "left": "/profile/upload/2026/10/15/20261015120534A176.png", "right": "/profile/upload/2026/10/15/20261015120537A177.png", "dialog": "/profile/upload/2026/10/15/20261015120526A174.png", "dialog_gif": "/profile/upload/2026/10/15/20261015120521A173.gif", "swatch": "/profile/upload/2026/10/15/20261015120500A170.png"},
@@ -162,6 +172,8 @@
    "eq_bands": {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1200},
    "ear_return": true,
    "volume_limit": true,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2024/11/11/20241111114818A034.png", "ear": "/profile/upload/2024/11/11/20241111114738A028.png", "list": "/profile/upload/2024/11/11/20241111114751A029.png", "left": "/profile/upload/2024/11/11/20241111114824A035.png", "right": "/profile/upload/2024/11/11/20241111114826A036.png", "dialog": "/profile/upload/2024/11/11/20241111114809A033.png", "dialog_gif": "/profile/upload/2024/11/18/20241118201650A152.gif", "swatch": "/profile/upload/2024/11/11/20241111114734A027.png"},
@@ -191,6 +203,8 @@
    "eq_bands": {"hz": [68, 288, 682, 1600, 2000, 3560, 4800, 7192, 9300, 13236], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1500},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2024/11/12/20241112184856A104.png", "ear": "/profile/upload/2024/11/12/20241112184846A100.png", "list": "/profile/upload/2024/11/12/20241112184848A101.png", "left": "/profile/upload/2024/11/12/20241112184859A105.png", "right": "/profile/upload/2024/11/12/20241112184901A106.png", "dialog": "/profile/upload/2024/11/12/20241112184854A103.png", "dialog_gif": "/profile/upload/2024/11/12/20241112184906A107.gif", "swatch": "/profile/upload/2024/11/12/20241112184842A099.png"},
@@ -220,6 +234,8 @@
    "eq_bands": {"hz": [74, 200, 800, 1200, 2000, 3200, 4800, 6700, 11000, 13500], "q": [80, 200, 110, 70, 90, 80, 150, 100, 200, 200], "zero": 1500, "offsets": [450, -800, 250, 0, 0, 300, 0, 0, 150, 0]},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "粉色", "home": "/profile/upload/2026/03/24/20260324153818A023.png", "ear": "/profile/upload/2026/03/24/20260324153808A020.png", "list": "/profile/upload/2026/03/24/20260324153811A021.png", "left": "/profile/upload/2026/03/24/20260324153852A025.png", "right": "/profile/upload/2026/03/24/20260324153855A026.png", "dialog": "/profile/upload/2026/03/24/20260324153815A022.png", "dialog_gif": "/profile/upload/2026/03/24/20260324153834A024.gif", "swatch": "/profile/upload/2026/03/24/20260324153804A019.png"},
@@ -248,6 +264,8 @@
    "eq_bands": {"hz": [68, 282, 682, 1234, 2013, 3080, 4800, 6794, 9815, 13236], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1500},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "摩卡棕", "home": "/profile/upload/2025/03/19/20250319134902A211.png", "ear": "/profile/upload/2025/03/19/20250319134849A208.png", "list": "/profile/upload/2025/03/19/20250319134853A209.png", "dialog": "/profile/upload/2025/03/19/20250319134858A210.png", "dialog_gif": "/profile/upload/2025/03/19/20250319142931A212.gif", "swatch": "/profile/upload/2025/03/19/20250319134843A207.png"},
@@ -278,6 +296,8 @@
    "eq_bands": {"hz": [76, 260, 680, 1200, 2200, 3200, 4800, 7300, 10000, 13000], "q": [130, 80, 90, 100, 120, 220, 120, 160, 200, 200], "zero": 1500, "whole_db": true},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "银色", "home": "/profile/upload/2026/04/24/20260424145215A123.png", "ear": "/profile/upload/2026/04/24/20260424144953A111.png", "list": "/profile/upload/2026/04/24/20260424145028A116.png", "dialog": "/profile/upload/2026/04/24/20260424145037A117.png", "dialog_gif": "/profile/upload/2026/04/24/20260424145234A125.gif", "swatch": "/profile/upload/2026/04/24/20260424144946A110.png"},
@@ -306,6 +326,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": true,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2025/06/17/20250617152411A442.png", "ear": "/profile/upload/2025/06/17/20250617152314A438.png", "list": "/profile/upload/2025/06/17/20250617152326A439.png", "dialog": "/profile/upload/2025/06/17/20250617152356A441.png", "dialog_gif": "/profile/upload/2025/04/21/20250421185751A312.gif", "swatch": "/profile/upload/2025/06/17/20250617152248A435.png"},
@@ -333,6 +355,8 @@
    "eq_bands": {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1200},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": true,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2026/08/21/20260821105154A009.png", "ear": "/profile/upload/2026/08/21/20260821105124A005.png", "list": "/profile/upload/2026/08/21/20260821105130A006.png", "left": "/profile/upload/2026/08/21/20260821105158A010.png", "right": "/profile/upload/2026/08/21/20260821105202A011.png", "dialog": "/profile/upload/2026/08/21/20260821105150A008.png", "dialog_gif": "/profile/upload/2026/08/21/20260821105144A007.gif", "swatch": "/profile/upload/2026/08/21/20260821105118A004.png"}
@@ -359,6 +383,8 @@
    "eq_bands": {"hz": [95, 200, 300, 650, 1000, 2000, 3200, 4500, 5500, 7500, 9800, 12000], "q": [80, 90, 80, 100, 100, 100, 160, 160, 160, 160, 160, 160], "zero": 1500, "whole_db": true},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2026/08/04/20260804173545A027.png", "ear": "/profile/upload/2026/08/04/20260804173528A024.png", "list": "/profile/upload/2026/08/04/20260804173533A025.png", "left": "/profile/upload/2026/08/05/20260805174619A039.png", "right": "/profile/upload/2026/08/05/20260805161700A036.png", "dialog": "/profile/upload/2026/08/04/20260804173540A026.png", "dialog_gif": "/profile/upload/2026/08/03/20260803163958A012.gif", "swatch": "/profile/upload/2026/08/04/20260804173521A023.png"},
@@ -386,6 +412,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2024/11/15/20241115114725A145.png", "ear": "/profile/upload/2024/11/15/20241115114716A141.png", "list": "/profile/upload/2024/11/15/20241115114718A142.png", "left": "/profile/upload/2024/11/15/20241115114727A146.png", "right": "/profile/upload/2024/11/15/20241115114729A147.png", "dialog": "/profile/upload/2024/11/15/20241115114723A144.png", "dialog_gif": "/profile/upload/2025/01/02/20250102172322A188.gif", "swatch": "/profile/upload/2024/11/15/20241115114714A140.png"},
@@ -413,6 +441,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2026/07/03/20260703100234A237.png", "ear": "/profile/upload/2026/07/03/20260703100218A234.png", "list": "/profile/upload/2026/07/03/20260703100224A235.png", "left": "/profile/upload/2026/07/03/20260703100240A238.png", "right": "/profile/upload/2026/07/03/20260703100247A239.png", "dialog": "/profile/upload/2026/07/03/20260703100231A236.png", "dialog_gif": "/profile/upload/2026/07/03/20260703100304A240.gif", "swatch": "/profile/upload/2026/07/03/20260703100214A233.png"},
@@ -440,6 +470,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": true,
+   "voice_enhancement": true,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2025/10/16/20251016101903A677.png", "ear": "/profile/upload/2025/10/16/20251016101800A671.png", "list": "/profile/upload/2025/10/16/20251016101814A673.png", "left": "/profile/upload/2025/09/16/20250916102106A634.png", "right": "/profile/upload/2025/09/16/20250916102108A635.png", "dialog": "/profile/upload/2025/10/16/20251016101833A675.png", "dialog_gif": "/profile/upload/2025/10/21/20251021135049A679.gif", "swatch": "/profile/upload/2025/10/16/20251016101747A669.png"},
@@ -467,6 +499,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "浅色", "home": "/profile/upload/2024/04/11/20240411190209A130.png", "ear": "/profile/upload/2024/04/11/20240411190127A124.png", "list": "/profile/upload/2024/04/11/20240411190154A126.png", "left": "/profile/upload/2024/04/11/20240411190225A131.png", "right": "/profile/upload/2024/04/11/20240411190227A132.png", "dialog": "/profile/upload/2024/04/11/20240411190206A129.png", "dialog_gif": "/profile/upload/2024/04/11/20240411190202A128.gif", "swatch": "/profile/upload/2024/04/11/20240411190158A127.png"},
@@ -494,6 +528,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2026/03/04/20260304152753A926.png", "ear": "/profile/upload/2026/03/04/20260304152555A914.png", "list": "/profile/upload/2026/03/04/20260304152604A915.png", "left": "/profile/upload/2026/03/10/20260310141126A952.png", "right": "/profile/upload/2026/03/10/20260310141133A953.png", "dialog": "/profile/upload/2026/03/04/20260304152702A921.png", "dialog_gif": "/profile/upload/2026/03/04/20260304152646A920.gif", "swatch": "/profile/upload/2026/03/04/20260304152520A909.png"},
@@ -522,6 +558,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2026/03/04/20260304152451A908.png", "ear": "/profile/upload/2026/03/04/20260304152305A895.png", "list": "/profile/upload/2026/03/04/20260304152310A896.png", "left": "/profile/upload/2025/09/08/20250908152742A536.png", "right": "/profile/upload/2025/09/08/20250908152746A537.png", "dialog": "/profile/upload/2026/03/04/20260304152424A904.png", "dialog_gif": "/profile/upload/2026/03/04/20260304152343A901.gif", "swatch": "/profile/upload/2026/03/04/20260304152235A890.png"},
@@ -550,6 +588,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2025/05/26/20250526144229A430.png", "ear": "/profile/upload/2025/05/26/20250526144146A424.png", "list": "/profile/upload/2025/05/26/20250526144200A426.png", "left": "/profile/upload/2025/05/23/20250523100818A413.png", "right": "/profile/upload/2025/05/23/20250523100826A414.png", "dialog": "/profile/upload/2025/05/26/20250526144215A428.png", "dialog_gif": "/profile/upload/2025/05/23/20250523100949A417.gif", "swatch": "/profile/upload/2025/05/26/20250526144128A422.png"},
@@ -577,6 +617,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "肤色", "home": "/profile/upload/2025/05/14/20250514185944A388.png", "ear": "/profile/upload/2025/05/14/20250514185912A385.png", "list": "/profile/upload/2025/05/14/20250514185921A386.png", "left": "/profile/upload/2025/05/19/20250519152506A394.png", "right": "/profile/upload/2025/05/19/20250519152515A395.png", "dialog": "/profile/upload/2025/05/14/20250514185932A387.png", "dialog_gif": "/profile/upload/2025/04/16/20250416160423A278.gif", "swatch": "/profile/upload/2025/05/14/20250514185854A384.png"},
@@ -606,6 +648,8 @@
    "eq_bands": {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1200},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2026/09/21/20260921161747A091.png", "ear": "/profile/upload/2026/09/21/20260921161718A087.png", "list": "/profile/upload/2026/09/21/20260921161723A088.png", "left": "/profile/upload/2026/09/21/20260921161754A092.png", "right": "/profile/upload/2026/09/21/20260921161759A093.png", "dialog": "/profile/upload/2026/09/21/20260921161742A090.png", "dialog_gif": "/profile/upload/2026/09/23/20260923111418A094.gif", "swatch": "/profile/upload/2026/09/21/20260921161714A086.png"}
@@ -632,6 +676,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "玫瑰金", "home": "/profile/upload/2025/04/22/20250422193102A337.png", "ear": "/profile/upload/2025/04/22/20250422193237A340.png", "list": "/profile/upload/2025/04/22/20250422193026A334.png", "left": "/profile/upload/2025/04/22/20250422193145A338.png", "right": "/profile/upload/2025/04/22/20250422193149A339.png", "dialog": "/profile/upload/2025/04/22/20250422193037A335.png", "dialog_gif": "/profile/upload/2025/04/22/20250422193055A336.gif", "swatch": "/profile/upload/2025/04/22/20250422193015A333.png"},
@@ -661,6 +707,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "粉色", "home": "/profile/upload/2026/08/10/20260810094736A061.png", "ear": "/profile/upload/2026/08/10/20260810094634A052.png", "list": "/profile/upload/2026/08/10/20260810094643A054.png", "left": "/profile/upload/2026/08/10/20260810094745A063.png", "right": "/profile/upload/2026/08/10/20260810094754A065.png", "dialog": "/profile/upload/2026/08/10/20260810094715A059.png", "dialog_gif": "/profile/upload/2026/08/10/20260810094702A057.gif", "swatch": "/profile/upload/2026/08/10/20260810094617A050.png"},
@@ -689,6 +737,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2026/06/16/20260616111454A223.png", "ear": "/profile/upload/2026/06/16/20260616111402A218.png", "list": "/profile/upload/2026/06/16/20260616111409A219.png", "left": "/profile/upload/2026/06/16/20260616111601A224.png", "right": "/profile/upload/2026/06/16/20260616111607A225.png", "dialog": "/profile/upload/2026/06/16/20260616111428A221.png", "dialog_gif": "/profile/upload/2026/06/16/20260616111418A220.gif", "swatch": "/profile/upload/2026/06/16/20260616111351A217.png"},
@@ -719,6 +769,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "蓝色", "home": "/profile/upload/2026/09/17/20260917150524A060.png", "ear": "/profile/upload/2026/09/17/20260917150430A054.png", "list": "/profile/upload/2026/09/17/20260917150515A059.png", "left": "/profile/upload/2026/09/17/20260917150401A051.png", "right": "/profile/upload/2026/09/17/20260917150404A052.png", "dialog": "/profile/upload/2026/09/17/20260917150454A057.png", "dialog_gif": "/profile/upload/2026/09/17/20260917150443A056.gif", "swatch": "/profile/upload/2026/09/17/20260917150420A053.png"},
@@ -750,6 +802,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "紫色", "home": "/profile/upload/2025/07/21/20250721154435A463.png", "ear": "/profile/upload/2025/07/21/20250721154417A459.png", "list": "/profile/upload/2025/07/21/20250721154422A460.png", "left": "/profile/upload/2025/07/21/20250721154440A464.png", "right": "/profile/upload/2025/07/21/20250721154444A465.png", "dialog": "/profile/upload/2025/07/21/20250721154432A462.png", "dialog_gif": "/profile/upload/2025/07/21/20250721154427A461.gif", "swatch": "/profile/upload/2025/07/21/20250721154414A458.png"},
@@ -777,6 +831,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2026/09/10/20260910104809A032.png", "ear": "/profile/upload/2026/09/10/20260910104746A028.png", "list": "/profile/upload/2026/09/10/20260910104751A029.png", "left": "/profile/upload/2026/09/10/20260910104815A033.png", "right": "/profile/upload/2026/09/10/20260910104819A034.png", "dialog": "/profile/upload/2026/09/10/20260910104804A031.png", "dialog_gif": "/profile/upload/2026/09/10/20260910104759A030.gif", "swatch": "/profile/upload/2026/09/10/20260910104741A027.png"}
@@ -803,6 +859,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2025/09/09/20250909170505A588.png", "ear": "/profile/upload/2025/09/09/20250909170450A584.png", "list": "/profile/upload/2025/09/09/20250909170454A585.png", "left": "/profile/upload/2025/09/09/20250909170509A589.png", "right": "/profile/upload/2025/09/09/20250909170513A590.png", "dialog": "/profile/upload/2025/09/09/20250909170502A587.png", "dialog_gif": "/profile/upload/2025/09/09/20250909170458A586.gif", "swatch": "/profile/upload/2025/09/09/20250909170441A583.png"},
@@ -832,6 +890,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "银色", "home": "/profile/upload/2026/09/23/20260923144219A115.png", "ear": "/profile/upload/2026/09/23/20260923144143A112.png", "list": "/profile/upload/2026/09/23/20260923144158A113.png", "left": "/profile/upload/2026/09/23/20260923144224A116.png", "right": "/profile/upload/2026/09/23/20260923144227A117.png", "dialog": "/profile/upload/2026/09/23/20260923144207A114.png", "dialog_gif": "/profile/upload/2026/10/08/20261008143744A137.gif", "swatch": "/profile/upload/2026/09/23/20260923144132A111.png"},
@@ -861,6 +921,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2025/11/28/20251128153730A737.png", "ear": "/profile/upload/2025/11/28/20251128153715A733.png", "list": "/profile/upload/2025/11/28/20251128153718A734.png", "left": "/profile/upload/2025/11/28/20251128153735A738.png", "right": "/profile/upload/2025/11/28/20251128153739A739.png", "dialog": "/profile/upload/2025/11/28/20251128153727A736.png", "dialog_gif": "/profile/upload/2025/11/28/20251128153724A735.gif", "swatch": "/profile/upload/2025/11/28/20251128153710A732.png"},
@@ -889,6 +951,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2024/05/30/20240530172033A010.png", "ear": "/profile/upload/2024/05/30/20240530172002A004.png", "list": "/profile/upload/2024/05/30/20240530172005A005.png", "left": "/profile/upload/2024/05/30/20240530172039A011.png", "right": "/profile/upload/2024/05/30/20240530172042A012.png", "dialog": "/profile/upload/2024/05/30/20240530172029A009.png", "dialog_gif": "/profile/upload/2024/05/30/20240530172012A006.gif", "swatch": "/profile/upload/2024/05/30/20240530172000A003.png"}
@@ -915,6 +979,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2024/05/09/20240509163553A173.png", "ear": "/profile/upload/2024/05/09/20240509163536A169.png", "list": "/profile/upload/2024/05/09/20240509163539A170.png", "left": "/profile/upload/2024/05/11/20240511142920A187.png", "right": "/profile/upload/2024/05/11/20240511142923A188.png", "dialog": "/profile/upload/2024/05/09/20240509163551A172.png", "dialog_gif": "/profile/upload/2024/05/09/20240509163542A171.gif", "swatch": "/profile/upload/2024/05/09/20240509163533A168.png"},
@@ -942,6 +1008,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "紫色", "home": "/profile/upload/2026/03/02/20260302102650A833.png", "ear": "/profile/upload/2026/03/02/20260302102245A818.png", "list": "/profile/upload/2026/03/02/20260302102356A825.png", "left": "/profile/upload/2026/03/02/20260302102656A834.png", "right": "/profile/upload/2026/03/02/20260302102702A835.png", "dialog": "/profile/upload/2026/03/02/20260302102434A826.png", "dialog_gif": "/profile/upload/2026/03/20/20260320133831A010.gif", "swatch": "/profile/upload/2026/03/02/20260302102229A817.png"},
@@ -971,6 +1039,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2024/06/13/20240613182244A043.png", "ear": "/profile/upload/2024/06/13/20240613182218A038.png", "list": "/profile/upload/2024/06/13/20240613182221A039.png", "left": "/profile/upload/2024/06/13/20240613182252A044.png", "right": "/profile/upload/2024/06/13/20240613182256A045.png", "dialog": "/profile/upload/2024/06/13/20240613182241A042.png", "dialog_gif": "/profile/upload/2024/06/13/20240613182228A040.gif", "swatch": "/profile/upload/2024/06/13/20240613182213A037.png"},
@@ -998,6 +1068,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "黑色", "home": "/profile/upload/2026/09/18/20260918144804A077.png", "ear": "/profile/upload/2026/09/18/20260918144748A075.png", "list": "/profile/upload/2026/09/18/20260918144744A074.png", "left": "/profile/upload/2026/09/18/20260918144808A078.png", "right": "/profile/upload/2026/09/18/20260918144812A079.png", "dialog": "/profile/upload/2026/09/18/20260918144752A076.png", "dialog_gif": "/profile/upload/2026/09/18/20260918144738A073.gif", "swatch": "/profile/upload/2026/09/18/20260918144733A072.png"}
@@ -1024,6 +1096,8 @@
    "eq_bands": {"hz": [68, 288, 682, 1600, 2000, 3560, 4800, 7400, 9308, 13236], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1500},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "米白色", "home": "/profile/upload/2025/04/22/20250422164336A332.png", "ear": "/profile/upload/2025/04/22/20250422164310A329.png", "list": "/profile/upload/2025/04/22/20250422164319A330.png", "dialog": "/profile/upload/2025/04/22/20250422164330A331.png", "dialog_gif": "/profile/upload/2025/04/21/20250421183453A304.gif", "swatch": "/profile/upload/2025/04/22/20250422164302A328.png"},
@@ -1051,6 +1125,8 @@
    "eq_bands": {"hz": [68, 288, 682, 1600, 2000, 3560, 4800, 7192, 9300, 13236], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1500},
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": false,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "锖色", "home": "/profile/upload/2024/12/23/20241223141608A187.png", "ear": "/profile/upload/2024/12/23/20241223141541A184.png", "list": "/profile/upload/2024/12/23/20241223141553A185.png", "dialog": "/profile/upload/2024/12/23/20241223141601A186.png", "dialog_gif": "/profile/upload/2024/12/23/20241223141428A182.gif", "swatch": "/profile/upload/2024/12/23/20241223141530A183.png"},
@@ -1078,6 +1154,8 @@
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
+   "sleep_mode": true,
+   "voice_enhancement": false,
    "lights": false,
    "pictures": [
     {"colour": "白色", "home": "/profile/upload/2024/11/15/20241115114136A127.png", "ear": "/profile/upload/2024/11/15/20241115114128A123.png", "list": "/profile/upload/2024/11/15/20241115114130A124.png", "left": "/profile/upload/2024/11/15/20241115114139A128.png", "right": "/profile/upload/2024/11/15/20241115114141A129.png", "dialog": "/profile/upload/2024/11/15/20241115114134A126.png", "dialog_gif": "/profile/upload/2024/11/15/20241115114132A125.gif", "swatch": "/profile/upload/2024/11/15/20241115114126A122.png"}

@@ -43,6 +43,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     private var connection: Int? = null
     private var autoplay: Int? = null
     private var sleepDetection: Boolean? = null
+    private var sleepMode: Int? = null
+    private var voiceEnhancement: Boolean? = null
     private var dualDevice: Boolean? = null
     private var hotWord: Boolean? = null
     private var spatial: Boolean? = null
@@ -83,6 +85,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
         if (m.spatialAudio) add(frame(OneMoreCommand.GET_SPATIAL_AUDIO))
         if (m.autoplay) add(frame(OneMoreCommand.GET_AUTOPLAY))
         if (m.sleepDetection) add(frame(OneMoreCommand.GET_SLEEP_DETECTION))
+        if (m.sleepMode) add(frame(OneMoreCommand.GET_EQ_MODE))
+        if (m.voiceEnhancement) add(frame(OneMoreCommand.GET_VOCAL_ENHANCEMENT))
         if (m.hotWord) add(frame(OneMoreCommand.GET_HOT_WORD))
         when (m.touch) {
             TOUCH_EACH -> add(frame(OneMoreCommand.GET_ALL_CUSTOM))
@@ -148,6 +152,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.GET_SPATIAL_AUDIO -> spatial = v == ON
             OneMoreCommand.GET_AUTOPLAY -> autoplay = v
             OneMoreCommand.GET_SLEEP_DETECTION -> sleepDetection = v == ON
+            OneMoreCommand.GET_EQ_MODE -> if (v in SLEEP_MODES) sleepMode = v
+            OneMoreCommand.GET_VOCAL_ENHANCEMENT -> voiceEnhancement = v == ON
             OneMoreCommand.GET_HOT_WORD -> hotWord = v == ON
             OneMoreCommand.GET_DOUBLE_CLICK -> doubleClick = v
             OneMoreCommand.GET_TRIPLE_CLICK -> tripleClick = v
@@ -327,6 +333,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
                     listOfNotNull(
                         autoplay?.takeIf { m?.autoplay == true }?.let { Setting.Choice("smart_playback", AUTOPLAY[it], AUTOPLAY.values.toList()) },
                         sleepDetection?.takeIf { m?.sleepDetection == true }?.let { Setting.Toggle("sleep_detection", it) },
+                        sleepMode?.takeIf { m?.sleepMode == true }?.let { Setting.Choice("sound_mode", SLEEP_MODES[it], SLEEP_MODES.values.toList()) },
+                        voiceEnhancement?.takeIf { m?.voiceEnhancement == true }?.let { Setting.Toggle("voice_enhancement", it) },
                         hotWord?.takeIf { m?.hotWord == true }?.let { Setting.Toggle("voice_command", it) },
                         earReturn?.takeIf { m?.earReturn == true }?.let { on ->
                             Setting.Choice("ear_return", LEVELS[if (on) earReturnDepth ?: LEVEL_LOW else LEVEL_OFF], LEVELS.values.toList())
@@ -454,6 +462,11 @@ public class OneMoreSession(public val model: OneMoreModel?) {
                         readBacks += frame(OneMoreCommand.GET_SLEEP_DETECTION)
                         listOf(frame(OneMoreCommand.SET_SLEEP_DETECTION, b))
                     }
+                    "voice_enhancement" -> {
+                        voiceEnhancement = on
+                        readBacks += frame(OneMoreCommand.GET_VOCAL_ENHANCEMENT)
+                        listOf(frame(OneMoreCommand.SET_VOCAL_ENHANCEMENT, b))
+                    }
                     "voice_command" -> {
                         hotWord = on
                         readBacks += frame(OneMoreCommand.GET_HOT_WORD)
@@ -498,6 +511,12 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             lightColour = v
             readBacks += frame(OneMoreCommand.GET_LIGHT_COLOR)
             listOf(frame(OneMoreCommand.SET_LIGHT_COLOR, v))
+        }
+        "sound_mode" -> {
+            val v = SLEEP_MODES.entries.firstOrNull { it.value == option }?.key ?: return null
+            sleepMode = v
+            readBacks += frame(OneMoreCommand.GET_EQ_MODE)
+            listOf(frame(OneMoreCommand.SET_EQ_MODE, v))
         }
         "smart_playback" -> {
             val v = AUTOPLAY.entries.firstOrNull { it.value == option }?.key ?: return null
@@ -612,6 +631,9 @@ public class OneMoreSession(public val model: OneMoreModel?) {
         private val EACH_ORDER = listOf(2, 1, 3, 4, 5, 6, 0)
         private const val EACH_ASSISTANT = 6
 
+        /** The music (0) and sleep (1) modes (HeadsetActivity: sendSppSetEQMode). */
+        private val SLEEP_MODES = linkedMapOf(0 to "music_mode", 1 to "sleep_mode")
+
         /** Both earbuds' actions (clickBinaural). */
         private val BOTH_ACTIONS = linkedMapOf(1 to "play_pause", 2 to "previous_next", 3 to "volume", 4 to "voice_assistant", 0 to "none")
 
@@ -624,6 +646,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.SET_AUTOPLAY to OneMoreCommand.GET_AUTOPLAY,
             OneMoreCommand.SET_SLEEP_DETECTION to OneMoreCommand.GET_SLEEP_DETECTION,
             OneMoreCommand.SET_HOT_WORD to OneMoreCommand.GET_HOT_WORD,
+            OneMoreCommand.SET_EQ_MODE to OneMoreCommand.GET_EQ_MODE,
+            OneMoreCommand.SET_VOCAL_ENHANCEMENT to OneMoreCommand.GET_VOCAL_ENHANCEMENT,
             OneMoreCommand.SET_DOUBLE_CLICK to OneMoreCommand.GET_DOUBLE_CLICK,
             OneMoreCommand.SET_TRIPLE_CLICK to OneMoreCommand.GET_TRIPLE_CLICK,
             OneMoreCommand.SET_CUSTOM to OneMoreCommand.GET_ALL_CUSTOM,

@@ -16,17 +16,20 @@ What it shows, where the model has it:
 - **Home:** the battery (each earbud and the case, or one for headphones), noise control (off, noise
   cancelling, transparency), the noise cancelling scene (adaptive, indoor, commuting, noisy or wind)
   and its strength, and the transparency level.
-- **Sound:** the equalizer, as a curve of your own over the bands the earbuds report (QCY's presets are
-  curves QCY's app gets from QCY's servers, so PairFree has none), the balance between the earbuds,
+- **Sound:** the equalizer, as a curve of your own over the bands the earbuds report and, on the models whose control panel lists
+  them, QCY's presets (as curves; the panels are QCY's server data, read once by a script outside the app), the balance between the earbuds,
   spatial audio, dynamic EQ and adaptive volume.
-- **Controls:** what a tap, double tap, triple tap and hold do on each earbud (not on JieLi's chips:
-  QCY's product list gives their touch controls for none of them).
+- **Controls:** what a tap, double tap, triple tap and hold do on each earbud on the models whose control panel has the newer button
+  screen. Not yet on most JieLi models and the older QCY ones, whose panels list the buttons and the noise control in an older layout
+  PairFree does not read yet (for example the T13 ANC2, issue #35).
 - **Device:** game mode, in-ear detection, LDAC, two devices at once, sleep mode (touch controls off),
   wind noise detection, the status light, and the timed power off (the earbuds turn off once after 15,
   30, 60 or 90 minutes).
 
-Not yet: QCY's equalizer presets, the equalizer of the older models on JieLi's chips, the prompt volume (its
-steps come from QCY's servers) and the ear tip fit test.
+Added in 0.12.0: the music mode and the touch sensitivity on the models whose panel lists them (not tried on real earbuds).
+
+Not yet: the older button and noise control screens of the panels (above), the per-ear personalised equalizer and the ear tip
+fit test (QCY's fit detection).
 
 QCY support is written from QCY's own app (QCY 4.0.7), read for its messages, and checked against
 [OpenQCY-Desktop](https://github.com/GiorgioRafael/OpenQCY-Desktop) by GiorgioRafael (MIT), which was

@@ -217,8 +217,7 @@ sends only as item `17`.
 reset among them), the attributes PairFree does not write (the name among them), and QCY's never-sent
 items (section 3) inside the custom command.
 
-**Left out:** the touch controls (no JieLi model's panel in Quicky lists them) and the EQ, which the
-older models take through JieLi's own EQ setting and the newer ones as items `20` and `22`.
+**Left out (corrected 2026-11-13):** the touch controls and the noise control of the older panel screens. Quicky's list has none, but QCY's own panels do: 61 JieLi models' panels have the button screen as type 1 (left and right, single, double and triple touch, each action with its byte, `ANC mode` is `0A`), and four have the noise screen as type 11 (`ancindex` 1 on, 2 off, 3 transparency). QCY's app sets a key on a new JieLi device as the custom command `2B 02 <key> <action>` (`JLDeviceImpl.setBtnClickFunction`; odd keys left, even right: 1 and 2 touch, 3 and 4 double, 5 and 6 triple, 9 and 10 hold) and on an old one as the JieLi advanced-info attribute 2 with three bytes (action 0 sent as 127); the noise mode goes through JieLi's own noise mode command (`setCurrentNoiseMode`). `tools/import_qcy_panels.py` reads only the newer types 10 and 14 (button screen) and 9 (noise), so these models (the T13 ANC2, issue #35) show neither yet: to build. The EQ is the older models' JieLi setting and the newer ones' items `20` and `22`.
 
 ## 7. EQ
 

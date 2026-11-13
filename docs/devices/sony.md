@@ -26,9 +26,16 @@ What it shows, where the model has it:
   leakage reduction, voice content mode, cinema upmix, adaptive volume and the background music
   effect.
 
-Not yet: 360 Reality Audio, head gestures, the voice assistant's wake word, caring charge, the touch
-panel's backlight, the LE Audio connection mode, the call settings and the earpiece fitting test;
-each is in Sony's app and still to be read.
+Also, from the app's own lists (0.12.0, none tried on real earbuds): the LE Audio switch and connection mode (the earbuds
+reconnect, as the app warns), left and right balance correction, vibration, power saving on the older models, standby,
+caring charge, stamina mode, the touch panel's light, auto play, auto volume, a maximum volume limit and battery safe mode
+(an "i" beside a setting explains the ones whose effect is not obvious).
+
+Not offered, with the reason in `docs/sony/PROTOCOL.md`: Adaptive Sound Control (the phone runs it from places and activity and
+needs location permission), safe listening (a listening log the app stores), 360 Reality Audio, head gestures and head tracking
+(they run on the headphones' motion sensor stream), the voice assistant's wake word and quick access (they need an assistant set up
+on the phone), the call microphone test, the ear tip fitting test and the curves of Sony's creator sound effect (content from
+Sony's server).
 
 Sony support is written from Sony's own app (Sony | Sound Connect 13.3.0), read for its
 messages, and checked against [Gadgetbridge](https://codeberg.org/Freeyourgadget/Gadgetbridge),

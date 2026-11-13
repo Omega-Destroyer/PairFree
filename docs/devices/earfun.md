@@ -22,6 +22,9 @@ What it shows, where the model has it:
   finding a lost earbud, sound quality (LDAC, aptX, aptX Adaptive, aptX Lossless: the earbuds restart after a
   change), and restarting or turning the earbuds off, after you confirm.
 
+Added in 0.12.0 from EarFun's app, per model as the app enables them (not tried on real earbuds): bass enhancement, manner mode, game EQ, DAC,
+left and right balance, USB charging, ambient voice, call environment, the codec in use and which noise modes each earbud's key cycles through.
+
 Not yet: the voice prompt languages of the Qualcomm models, which EarFun's app downloads as voice packs, and the
 models on chips whose own protocol PairFree does not cover yet (marked in the table). The speakers are left for
 later.

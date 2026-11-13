@@ -265,8 +265,8 @@ Not built, with what was checked:
   permissions the owner has not allowed. Checked: `ao0` (sense classes), the `adaptivesoundcontrol` package.
 - Safe listening and the safe volume control's WHO level: a listening-volume log the phone stores and shows (`SlState`, `SlDevice`, `SafeListening*` types);
   no setting to offer without that store. Checked: `to0`, `so0`, `ro0`, `uo0`, `w40.a`, `wt.k`, `v40.b`.
-- Battery safe mode (type 11): four bytes (on or off, then an effect control, 0 not to change or 1 turn off the effect) whose effect field is not yet
-  understood; still open.
+- Battery safe mode (type 11): built as a switch. A read answers the switch and whether its effect is active; a write is the switch then an effect control, which PairFree
+  sends as 0 (leave the effect as it is; 1 turns the effect off). What the mode limits is not stated in the app's code, so the explainer says only that it spares the battery.
 
 ## 8. Never sent
 

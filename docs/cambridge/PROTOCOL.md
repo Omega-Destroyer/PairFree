@@ -243,3 +243,12 @@ decompiler conditional in b3/e should not be interpreted as requiring an absent 
 The complete protocol suite, debug APK build, Android lint and 133 Python checks pass after these changes.
 Neither model is counted as hardware tested. A distinct "Vendor app tested virtually" category is generated
 on the device page from each model's `virtual_tests` records, independently of hardware `reports`.
+
+## 9. Melomania Connect 2.6.0: the vendor app for A100, M100 and P100 (2026-11-12)
+
+The owner supplied Melomania Connect 2.6.0 (`com.cambridgeaudio.melomaniaplus`, APKPure XAPK): **unprotected**, four dex files, 15,096 classes (jadx, `E:\Builds\research\decompiled\melomania-connect-2.6.0`). It replaces BudsLink as the source for the newer family (section 6, which stays as the cross-check): the protocol is Qualcomm GAIA v3 with a Cambridge plugin. `CAMBRIDGE_AUDIO_VENDOR_ID` is 2974 (`0x0B9E`, as BudsLink's vendor number). The code is clean Kotlin with named commands:
+
+- `devices/gaia3/customapi/CambridgeAudioPlugin`, `CambridgeAudioVendor` and `Gaia3CustomApi`; models `Commands`, `Responses`, `FeatureIds`, `ModesIds`, `GestureIds`, `CodecIds`, `MiscIds`, `AudioMode(s)`, `AmbientNoiseAction`, `Codec`, `Gesture`, `Language`, `LeftRightBalance`, `Timeout`, `VirtualizerMode`, `BatteryState`, `FirmwareVersion(s)`; encoding in `utils/PacketEncode` and `PacketDecode`.
+- Repositories for audio curation, battery, custom info, device info and discovery in `devices/gaia3/`.
+
+Not built yet: PairFree has nothing for A100, M100 and P100. The plugin's command list, per-feature layouts and per-model feature sets still have to be read from these classes and a session built on PairFree's GAIA v3 framing (used by SOUNDPEATS and EarFun). To do (not blocked). Evidence to keep apart as always: source analysis only, no hardware, no virtual run.

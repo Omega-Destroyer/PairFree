@@ -16,6 +16,12 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.TouchPress
 fun numberOf(command: Command, name: String): Int = command.labels.entries.first { it.value == name }.key
 
 /** A noise-cancelling scene. The official app shows `normal` (0x11) with its adaptive label (docs/soundpeats/PROTOCOL.md 3.1). */
+/**
+ * An EQ preset's name in the app's language: its entry in the language file where it has one ([VendorNames]), else the
+ * English wording, which stays the preset's name inside the app.
+ */
+fun Context.presetLabel(name: String): String = VendorNames.ID[name]?.let { getString(it) } ?: name
+
 @Composable
 fun sceneName(code: Int): String = LocalContext.current.sceneLabel(code)
 

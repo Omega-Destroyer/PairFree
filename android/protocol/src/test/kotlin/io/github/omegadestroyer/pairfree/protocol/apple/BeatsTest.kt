@@ -51,6 +51,15 @@ class BeatsTest {
     }
 
     @Test
+    fun aStrayStartByteDoesNotHoldBackTheFramesAfterIt() {
+        val a = B2pFrame(1, 0x0153, byteArrayOf(0, 0, 80, 0, 0)).bytes()
+        // FF, then bytes that would read as a length of 0xFFFF.
+        val (frames, rest) = B2pFrame.split(byteArrayOf(0xFF.toByte(), 0x00, 0xFF.toByte(), 0xFF.toByte()) + a)
+        assertEquals(1, frames.size)
+        assertEquals(0, rest.size)
+    }
+
+    @Test
     fun opcodesAreInTheOpcodeTable() {
         val names = Json.parseToJsonElement(repoFile("data/apple/b2p_opcodes.json").readText()).jsonObject.getValue("opcodes").jsonObject
         fun name(op: Int) = names.getValue("%04X".format(op)).jsonPrimitive.content

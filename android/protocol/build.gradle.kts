@@ -2069,6 +2069,9 @@ kotlin.sourceSets.main {
 }
 
 dependencies {
+    // The one conversation loop every brand shares (Conversation.kt) is coroutines; the library is multiplatform, as this module must stay.
+    api(libs.coroutines.core)
+    testImplementation(libs.coroutines.test)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platform.launcher)

@@ -46,12 +46,16 @@ public class B2pFrame(public val sequence: Int, public val opcode: Int, public v
             return B2pFrame(bytes[4].toInt() and 0xFF, opcode, bytes.copyOfRange(7, length - 4))
         }
 
-        /** The whole frames at the start of [buffer] and the bytes left over (a frame not yet complete). */
+        /**
+         * The whole frames at the start of [buffer] and the bytes left over (a frame not yet complete). A frame starts with
+         * both header bytes, as [parse] wants them: a stray `FF` alone would have its next bytes read as a length of up to
+         * 64 KB, and everything the Beats sent after it held back until that many bytes had come.
+         */
         public fun split(buffer: ByteArray): Pair<List<ByteArray>, ByteArray> {
             val frames = mutableListOf<ByteArray>()
             var at = 0
             while (buffer.size - at >= 4) {
-                if (buffer[at] != 0xFF.toByte()) { at++; continue }
+                if (buffer[at] != 0xFF.toByte() || buffer[at + 1] != 0xB2.toByte()) { at++; continue }
                 val length = (buffer[at + 2].toInt() and 0xFF) or ((buffer[at + 3].toInt() and 0xFF) shl 8)
                 if (length < OVERHEAD) { at++; continue }
                 if (buffer.size - at < length) break

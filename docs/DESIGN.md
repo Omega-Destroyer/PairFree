@@ -130,6 +130,10 @@ when nothing is connected.
 - Every paired device PairFree supports, of any brand (SoundPEATS, Soundcore, ...), each
   with a Connect button. The user picks a device, never a brand: PairFree works out the
   brand and model by itself (owner, 2026-10-13).
+- A Language button, when the app has more than one language built in: the language's own name on it, and a list of
+  the built-in languages to pick from, each by its own name, with "Same as the phone" first. The same button is on the
+  screen that asks for Bluetooth access, before this one, and on the Device tab (owner, 2026-11-12;
+  `docs/TRANSLATING.md`). The screens are drawn again in the chosen language at once.
 - A button that opens the system Bluetooth settings.
 - One line: "No account. No internet. Nothing leaves this phone."
 
@@ -166,7 +170,7 @@ lists, six on OnePlus and OPPO), and states only where a brand differs, each wit
 profile, whether the EQ is put back on connecting, whether the writes are confirmed, whether the earbuds report their custom curve.
 OnePlus and OPPO implement it in their session; QCY, 1MORE, Nothing, Galaxy Buds and the Pixel Buds through adapters in `eq/BrandBandEqs.kt`, and Sony, JBL, Soundcore and EarFun in `eq/VendorBandEqs.kt` (2026-11-10, branch `feature/band-eq-brands`; checked by building and by the protocol tests only, not on a screen). What those four needed was one more flag, `eqReportsState` (EarFun's earbuds cannot report their EQ); the rest was already a default: Sony's queued messages are the frames (`SonyBandEq.encode`), JBL's calibration and three write families stay in its session, Soundcore's HearID block is passed on from the latest state. Still on their own targets: SoundPEATS and its Capsule (master gain, preamp, the model's base curve, bands that differ from preset to preset), which are the table-driven origin the generic screen was modelled on. **Update, same day:** SoundPEATS and the Capsule moved too, through `CurveBandEq` (`protocol/CurveBandEqs.kt`): the generic now carries a base curve (`eqBaseBands`: frequency, Q and base gain per band), fixed bands, a master gain, complete presets of their own (`eqPresetBands`) and a preamp, and the screen's "which profile is on the earbuds" test compares curves instead of one brand's payloads. A brand with a whole-curve parametric write drops in by giving a layout and a `writeCurve`. `CurveBandEqTest` checks every SoundPEATS model's layout and frames against the model table's own.
 
-**Fit test (2026-11-10).** `protocol/FitTest.kt`: a session whose earbuds run the test themselves implements `FitTest`; `EarbudsConnection.fitTestSession` lists the brands. Which brands have one, and which hearing tests exist, is in `docs/FIT_AND_HEARING_TESTS.md`.
+**Fit test (2026-11-10).** `protocol/FitTest.kt`: a session whose earbuds run the test themselves implements `FitTest`; the brand's driver names it (`BrandDriver.fitTest`, `brands/`). Which brands have one, and which hearing tests exist, is in `docs/FIT_AND_HEARING_TESTS.md`.
 
 
 - Profile chips: built-in presets, the user's saved profiles, and New.
@@ -389,6 +393,17 @@ the project" and a button), and when a bug report is shared to the app.
 - A maintainer saves it under `data/soundpeats/reports/`, where `tools/gen_models_table.py` reads
   its settings, and turns its equalizer into the model's `eq` entry and test vectors with
   `tools/import_eq_capture.py`, which checks every value against the bytes.
+
+## Languages
+
+All text is in one file, `res/values/strings.xml`; a translation is that file under `res/values-<code>/`, and an entry it
+lacks shows in English. The app lists the languages that are built in (the build makes the list from those folders) and
+follows the phone unless the user picks one. Android 13 and later keep the choice (it also shows under the phone's
+per-app language setting); on Android 12 PairFree keeps it and applies it to every context it draws text from, the
+notification and the widget included. EQ preset names are shown through the file too: the words PairFree gives and the
+vendors' own wording, in two generated sections, so a translator finds them in one place and may leave the vendors'
+wording as it is. Reports (device, connection, recording) stay in English in every language: they are read by the
+maintainers and by the project's tools. Details: `docs/TRANSLATING.md`.
 
 ## Behaviour
 

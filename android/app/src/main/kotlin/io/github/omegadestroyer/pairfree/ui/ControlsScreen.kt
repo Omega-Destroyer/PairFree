@@ -24,7 +24,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.omegadestroyer.pairfree.R
-import io.github.omegadestroyer.pairfree.bluetooth.Brand
+import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.brands.Controls
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.CustomKeys
@@ -53,12 +54,13 @@ internal fun ControlsScreen(
     touch: SoundcoreTouch? = null,
     settings: List<SettingGroup> = emptyList(),
 ) {
-    if (device.brand == Brand.SOUNDCORE) {
+    val kind = Brands[device.brand].controls
+    if (kind == Controls.SOUNDCORE) {
         SoundcoreControls(device, state, touch, actions)
         return
     }
-    if (device.brand == Brand.SAMSUNG || device.brand == Brand.SONY || device.brand == Brand.BOSE || device.brand == Brand.JBL || device.brand == Brand.APPLE || device.brand == Brand.NOTHING || device.brand == Brand.PIXEL || device.brand == Brand.ONEPLUS || device.brand == Brand.QCY || device.brand == Brand.ONEMORE || device.brand == Brand.EARFUN || device.brand == Brand.CAMBRIDGE) {
-        // These brands' touch settings come as generic rows.
+    if (kind == Controls.ROWS) {
+        // Every other brand's touch settings come as generic rows from its driver.
         TabContent {
             Text(stringResource(R.string.tab_controls), style = Studio.type.title)
             if (settings.none { it.tab == SettingTab.CONTROLS }) {

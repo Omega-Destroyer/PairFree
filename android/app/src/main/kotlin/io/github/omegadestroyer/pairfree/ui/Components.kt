@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.ui
 
+import io.github.omegadestroyer.pairfree.Languages
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.Canvas
@@ -660,4 +661,28 @@ fun TextEntryDialog(
         }
     }
     LaunchedEffect(Unit) { focus.requestFocus() }
+}
+
+/**
+ * The app's language, where more than one is built in: its own name on a button, and the built-in languages to pick
+ * from, each by its own name (docs/TRANSLATING.md). "Same as the phone" lets Android's language decide again.
+ */
+@Composable
+fun LanguageButton(modifier: Modifier = Modifier) {
+    if (Languages.ALL.size < 2) return
+    val context = LocalContext.current
+    var picking by remember { mutableStateOf(false) }
+    val chosen = Languages.chosen(context)
+    val system = stringResource(R.string.app_language_system)
+    StudioButton(stringResource(R.string.app_language, chosen?.let(Languages::name) ?: system), { picking = true }, modifier)
+    if (picking) {
+        PickerDialog(
+            title = stringResource(R.string.app_language_title),
+            options = listOf<String?>(null) + Languages.ALL,
+            selected = chosen,
+            label = { it?.let(Languages::name) ?: system },
+            onPick = { tag -> Languages.activityOf(context)?.let { Languages.choose(it, tag) } },
+            onDismiss = { picking = false },
+        )
+    }
 }

@@ -80,3 +80,5 @@ A virtual WF-1000XM6 on table set 2 (service 956C7B26) whose replies are the ear
 - **PairFree 0.11.2 (debug build):** the Sound tab shows the ten bands 31 Hz to 16 kHz with the recorded curve (+2, +2, +1, then flat) in a +-6 dB graph. PairFree asked EQEBB extended info and param of type 4 and no capability. Two taps of "+" on the first band wrote `58 04 A2 0A 09 08 07 06 06 06 06 06 06 06` and then `58 04 A2 0A 0A 08 07 ...`: the held user setting A2, ten values flat at 6.
 
 This shows PairFree's handling of the recording's messages, not that a real XM6 accepts the writes. The XM6's real capability reply and the +-6 dB range remain unconfirmed (the range is inferred from the flat value).
+
+The same virtual XM6 and the virtual "Nothing Ear" were run against the `refactor/brand-sessions` build with the 0.11.2 fixes merged (2026-11-12): both devices are listed, the XM6's Sound tab shows the ten bands with the recorded curve, and two taps of "+" wrote `58 04 A2 0A 0A 08 07 ...` through the new `Conversation` loop.

@@ -481,3 +481,48 @@ bounded body sizes in `commands.json`; these entries add no probes or settings.
 The [capture guide](SLEEP_A30_CAPTURE_GUIDE.md) uses PairFree's filtered public report rather
 than requesting raw files. This needs a build containing these recorder changes. A separate
 unidentified transfer channel or another container format still requires further app analysis.
+
+## A3953 (Liberty 4): the state reply as Soundcore 3.3.0 reads it (2026-11-12)
+
+Source: `com/oceanwing/devicecmd/manager/l/n/a.java` (`A3953AnalysisService`) of Soundcore 3.3.0 (the newest readable app, `docs/soundcore/NEW_APK_ASSESSMENT.md`) and its base class `k/b.java`; command constants in `k/g.java` (`Cmm2CmdData`, 87 `08 EE 00 00 00 <group> <command>` prefixes). The state reply must be at least 163 bytes (`parseCmmBtDeviceInfo2`); offsets below count from the start of the packet (the 9-byte header `08 EE 00 00 00 cmd1 cmd2 len len` ends at 8), so subtract 9 for PairFree's payload-relative layouts.
+
+| Offset | Size | Field |
+|---|---|---|
+| 9 | 1 | host device (which earbud the phone is on) |
+| 10 | 1 | TWS status (1 both earbuds) |
+| 11, 12 | 1+1 | left and right battery (level 0 to 5) |
+| 13, 14 | 1+1 | left and right charging |
+| 15 | 5+5 | left and right firmware text |
+| 25 | 16 | serial number text |
+| 41, 42 | 1+1 | current EQ index (two bytes; `FE` second byte = custom, `EE` = another set, else a preset number) |
+| 43 | 20 | the custom EQ curve (ten bands, two bytes each) |
+| 63 | 1 | HearID age range (`FF`/`FE` mean no data) |
+| 64 | 1 | HearID switch |
+| 65 | 20 | HearID curve |
+| 85 | 4 | HearID time (little-endian) |
+| 89 | 1 | HearID type |
+| 90 | 20 | custom HearID curve (first byte `FF` = none) |
+| 110, 111 | 1+1 | HearID EQ index |
+| 112 | 1 | length of the button block, counting from this byte |
+| 113 | 24 | button block (`ControllerBtnModel`): per press (single, double, long, triple) and side, an enabled/action pair for the earbud alone and for TWS (high and low nibbles) |
+| 112 + length - 1 | 1 | which of ANC, transparency and normal the cycle includes (bits 1, 2, 3) |
+| then | 6 | ANC block (`A3951ANC`): mode byte, manual (low nibble) and auto (high nibble) level, a byte, the automation mode, wind flags (bit 1 suppression, bit 2 detected) and the auto sensitivity |
+| +6 | 4 | personalised ANC test time |
+| | 1+1 | its volume and result index |
+| | 1 | wear detection switch |
+| | 1+1 | left and right wearing |
+| | 1 | case battery |
+| | 1 | bass up |
+| | 1 | LDAC |
+| | 1 | two-device switch |
+| | 1+1 | auto power-off switch and its index (0 to 3) |
+| | 1 | HearID volume |
+| | 1 | in-ear beep |
+| | 1 | low battery alert |
+| | 1 | ambient sound prompt |
+| | 1 | spatial audio switch |
+| | 1+1 | spatial effect and sound mode |
+| | 4 | health: sedentary reminder, sitting posture, abnormal heart rate alarm, its threshold |
+| (replies longer than 163 bytes) | 1+1 | device colour (one character) and press sensitivity |
+
+Not built: PairFree has no layout for the model yet (it stays report-only). The block sizes differ from the A3951's and A3947's in PairFree's tables (the button block is 24 bytes and its length is given in the reply; the ANC block is 6 bytes), so the layout needs new field decoders, and the write commands (sound modes, EQ, buttons, prompts, spatial audio, press sensitivity) have to be read from the app's A3953 presenters. Listed in `data/unused_ids.json`.

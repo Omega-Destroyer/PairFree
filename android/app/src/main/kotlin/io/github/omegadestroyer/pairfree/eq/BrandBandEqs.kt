@@ -31,13 +31,19 @@ import kotlin.math.roundToInt
  * every band at 0. The frames are the session's GATT messages, which the connection queues on the QCY link.
  */
 class QcyBandEq(private val session: QcyControl, eq: QcyEq) : BandEq {
+    /** QCY's presets that are curves on this model's own bands (from its control panel), by name. */
+    private val curves: Map<String, List<Double>> = session.model?.eq?.presetGains.orEmpty().filterValues { it.size == eq.freqs.size }
+
     override val eqBandsHz: List<Int> = eq.freqs
     override val eqRangeDb: Int = eq.maxDb
-    override val eqPresetNames: List<String> = emptyList()
+    override val eqPresetNames: List<String> = curves.keys.toList()
+    override val eqPresetGains: Map<String, List<Double>> = curves
     override val eqHasStock: Boolean = true
     override val eqReport: BandEqReport? = null
 
-    override fun eqPresetFrames(name: String): List<ByteArray>? = null
+    /** A preset goes to the earbuds as the curve it is, through the same write as the user's own curve (whole dB, within the model's range). */
+    override fun eqPresetFrames(name: String): List<ByteArray>? =
+        curves[name]?.let { c -> session.eqCustom(c.map { it.roundToInt().coerceIn(-eqRangeDb, eqRangeDb) }) }
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = session.eqCustom(gains)
 
     /** What [eq] says the earbuds hold; null while they hold one of QCY's presets, whose curve is unknown, or another band set. */

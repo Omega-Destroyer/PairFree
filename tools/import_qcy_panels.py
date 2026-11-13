@@ -92,6 +92,24 @@ def freq(text):
     return round(float(t[:-1]) * 1000) if t.endswith("k") else int(float(t))
 
 
+def preset_gains(layout, eq):
+    """The presets of a graphic EQ panel as curves: name and a gain in dB per band, for the presets that sit on the model's own bands (no frequency list of
+    their own). The others are parametric (their own frequencies, Q and filter types, written as a parametric EQ) and are left out."""
+    out = []
+    for p in layout.get("sys_eq", []):
+        gains = [x.strip() for x in str(p.get("eqs", "")).split(",") if x.strip() != ""]
+        own = p.get("freq")
+        if len(gains) != eq["bands"] or (own and [freq(x) for x in own.split(",")] != eq["freqs"]):
+            continue
+        if any(o["name"] == p["name"] for o in out):
+            continue  # a second preset under the same name (two "Bass" on the H2 Pro): the first is kept
+        try:
+            out.append({"name": p["name"], "gains": [float(g) for g in gains]})
+        except ValueError:
+            continue
+    return out
+
+
 def features(panel):
     out = {}
     layouts = (panel.get("data") or {}).get("controlPanel", {}).get("layouts", [])
@@ -102,6 +120,9 @@ def features(panel):
         elif t == 2 and l.get("freq"):
             out["eq"] = {"bands": l["count"], "max_db": l["maxdb"], "freqs": [freq(x) for x in l["freq"].split(",")],
                          "presets": [p["name"] for p in l.get("sys_eq", [])]}
+            gains = preset_gains(l, out["eq"])
+            if gains:
+                out["eq"]["preset_gains"] = gains
         elif t in (10, 14) and (l.get("music") or {}).get("event"):
             # The button screen of the newer panels (the older type 1 screen is not read, as in the Quicky list).
             events = [(e["name"], e["left"]["list"]) for e in l["music"]["event"]]
@@ -186,6 +207,17 @@ def main():
     new = [entry(p, panel(p["vendorID"])) for p in missing]
     for d in new:
         print("  ", d["vendor_id"], d["name"], d["protocol"], sorted(k for k in d if k not in ("vendor_id", "name", "names", "family", "protocol", "kind")))
+    if "--presets" in sys.argv:
+        # Adds the preset curves to the models that have them, leaving every other field as it is.
+        added = 0
+        for v, d in have.items():
+            if d.get("eq") and v in prods and panel(v):
+                gains = (entry(prods[v], panel(v)).get("eq") or {}).get("preset_gains")
+                if gains and d["eq"].get("preset_gains") != gains:
+                    d["eq"]["preset_gains"] = gains
+                    added += 1
+        DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
+        print("preset curves added to", added, "models")
     if "--write" in sys.argv and new:
         data["devices"] = sorted(data["devices"] + new, key=lambda d: d["vendor_id"])
         about = data["_about"]

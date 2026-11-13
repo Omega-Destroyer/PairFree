@@ -315,7 +315,8 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
 
         out.appendLine()
         out.appendLine("/** Every model's state layout and quirks (data/soundcore/devices.json), read from OpenSCQ30's parsers. */")
-        out.appendLine("internal val SOUNDCORE_LAYOUTS: List<SoundcoreLayout> = listOf(")
+        // Split into functions of a dozen layouts each: one initialiser holding every model overflows the JVM's method size limit.
+        val layoutLines = mutableListOf<String>()
         for (d in devices) {
             @Suppress("UNCHECKED_CAST")
             val state = d["state"] as List<List<Any?>>? ?: continue
@@ -348,9 +349,15 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 (app["features"] as List<*>? ?: emptyList<Any>()) + (d["extra_features"] as List<*>? ?: emptyList<Any>())) -
                 (app["lacks"] as List<*>? ?: emptyList<Any>()).toSet()).distinct().joinToString(", ", "setOf(", ")") { str(it) }
             val vendorIds = (d["vendor_ids"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
-            out.appendLine("    SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds),")
+            layoutLines += "        SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds),"
         }
-        out.appendLine(")")
+        val chunks = layoutLines.chunked(12)
+        chunks.forEachIndexed { i, lines ->
+            out.appendLine("private fun soundcoreLayouts$i(): List<SoundcoreLayout> = listOf(")
+            lines.forEach(out::appendLine)
+            out.appendLine("    )")
+        }
+        out.appendLine("internal val SOUNDCORE_LAYOUTS: List<SoundcoreLayout> = " + chunks.indices.joinToString(" + ") { "soundcoreLayouts$it()" })
 
         @Suppress("UNCHECKED_CAST")
         val actionSets = (JsonSlurper().parse(buttonActionsJson.get().asFile) as Map<String, Any?>).getValue("sets") as Map<String, List<List<Any?>>>

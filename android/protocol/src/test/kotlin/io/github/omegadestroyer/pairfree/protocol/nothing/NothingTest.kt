@@ -51,6 +51,24 @@ class NothingTest {
     private fun setting(s: NothingSession, key: String) = s.groups.flatMap { it.settings }.firstOrNull { it.key == key }
 
     @Test
+    fun twoDevicesAndPersonalisedNoiseCancelling() {
+        // Nothing X's DualConnectViewModel: anything but 0 is on, 1 and 0 written; DeviceANCSwitch: the switch, then the calibration byte.
+        val s = session("B155")
+        s.receive(reply(NothingCommand.GET_DUAL_ENABLE, "01"))
+        s.receive(reply(NothingCommand.GET_PERSONALIZED_ANC, "0100"))
+        assertEquals(Setting.Toggle("dual_connection", true), setting(s, "dual_connection"))
+        assertEquals(Setting.Toggle("personalised_anc", true), setting(s, "personalised_anc"))
+        val off = s.change(SettingChange.Toggle("dual_connection", false))!!.single()
+        assertEquals(NothingCommand.SET_DUAL_ENABLE, off.command)
+        assertEquals("00", hex(off.payload))
+        assertEquals("00", hex(s.change(SettingChange.Toggle("personalised_anc", false))!!.single().payload))
+        // The Ear (1) has no two-devices switch in Nothing X's table.
+        val one = session("B181")
+        one.receive(reply(NothingCommand.GET_DUAL_ENABLE, "01"))
+        assertEquals(null, setting(one, "dual_connection"))
+    }
+
+    @Test
     fun theCrcIsModbus() {
         val check = vectors.getValue("crc_check").jsonObject
         assertEquals(check.str("crc").toInt(16), NothingFrame.crc16(check.str("ascii").encodeToByteArray()))

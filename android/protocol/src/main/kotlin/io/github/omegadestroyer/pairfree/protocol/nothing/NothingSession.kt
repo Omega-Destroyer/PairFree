@@ -63,6 +63,8 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
     private var bass: Pair<Boolean, Int>? = null
     private var spatial: ByteArray? = null
     private var codec: Int? = null
+    private var dual: Boolean? = null
+    private var personalised: Boolean? = null
     private var earDetection: Boolean? = null
     private var lowLag: Boolean? = null
     private var keys: Map<Triple<Int, Int, Int>, Int> = emptyMap()
@@ -94,6 +96,8 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
         add(frame(NothingCommand.GET_BASS_BOOST))
         add(frame(NothingCommand.GET_SPATIAL_AUDIO))
         add(frame(NothingCommand.GET_LHDC_COMMANDS))
+        add(frame(NothingCommand.GET_DUAL_ENABLE))
+        add(frame(NothingCommand.GET_PERSONALIZED_ANC))
         add(frame(NothingCommand.GET_KEY_CONFIGURATION))
     }
 
@@ -184,6 +188,9 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
             NothingCommand.GET_BASS_BOOST -> bass = (p.u8(0) == 1) to (if (p.size > 1) p.u8(1) else BASS_MIN).coerceIn(BASS_MIN, BASS_MAX)
             NothingCommand.GET_SPATIAL_AUDIO -> spatial = p.copyOf()
             NothingCommand.GET_LHDC_COMMANDS -> codec = p.u8(0)
+            // Two devices: anything but 0 is on (DualConnectViewModel.onUpdate). Personalised noise cancelling: its switch, then whether a calibration is running (DeviceANCSwitch).
+            NothingCommand.GET_DUAL_ENABLE -> dual = p.u8(0) != 0
+            NothingCommand.GET_PERSONALIZED_ANC -> personalised = p.u8(0) == 1
             NothingCommand.GET_KEY_CONFIGURATION -> {
                 keys = keyTable(p)
                 keysRead = true
@@ -348,6 +355,7 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
                         eqMode?.takeIf { c == null }?.let { Setting.Choice("eq_preset", EQ_PRESETS[it] ?: EQ_OTHER[it], EQ_ORDER) },
                         bass?.takeIf { c?.bassBoost != false }?.let { Setting.Toggle("bass_boost", it.first) },
                         bass?.takeIf { c?.bassBoost != false && it.first }?.let { Setting.Level("bass_level", it.second, BASS_MIN, BASS_MAX) },
+                        personalised?.let { Setting.Toggle("personalised_anc", it) },
                         spatial?.takeIf { c?.spatialAudio != false }?.let { Setting.Toggle("spatial_audio", it.u8(0) == 1) },
                         spatial?.takeIf { c?.spatialAudio != false && model?.headTracking == true && it.size > 1 }
                             ?.let { Setting.Toggle("head_tracking", it.u8(1) == 1, enabled = it.u8(0) == 1) },
@@ -356,6 +364,7 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
                 group(
                     "connection", SettingTab.DEVICE,
                     listOfNotNull(
+                        dual?.takeIf { c?.dualConnection != false }?.let { Setting.Toggle("dual_connection", it) },
                         codec?.let { v ->
                             val options = listOf(CODEC_STANDARD) + (c?.codecs ?: CODECS.values.filter { it != CODEC_STANDARD })
                             Setting.Choice("codec", CODECS[v], options).takeIf { options.size > 1 }
@@ -468,6 +477,16 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
                         bass = on to level
                         readBacks += frame(NothingCommand.GET_BASS_BOOST)
                         frame(NothingCommand.SET_BASS_BOOST, if (on) 1 else 0, level)
+                    }
+                    "dual_connection" -> {
+                        dual = on
+                        readBacks += frame(NothingCommand.GET_DUAL_ENABLE)
+                        frame(NothingCommand.SET_DUAL_ENABLE, if (on) 1 else 0)
+                    }
+                    "personalised_anc" -> {
+                        personalised = on
+                        readBacks += frame(NothingCommand.GET_PERSONALIZED_ANC)
+                        frame(NothingCommand.SET_PERSONALIZED, if (on) 1 else 0)
                     }
                     "spatial_audio", "head_tracking" -> {
                         val s = spatial ?: return null
@@ -674,6 +693,8 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
             NothingCommand.SET_BASS_BOOST to (NothingCommand.GET_BASS_BOOST to intArrayOf()),
             NothingCommand.SET_SPATIAL_AUDIO to (NothingCommand.GET_SPATIAL_AUDIO to intArrayOf()),
             NothingCommand.SET_LHDC_COMMANDS to (NothingCommand.GET_LHDC_COMMANDS to intArrayOf()),
+            NothingCommand.SET_DUAL_ENABLE to (NothingCommand.GET_DUAL_ENABLE to intArrayOf()),
+            NothingCommand.SET_PERSONALIZED to (NothingCommand.GET_PERSONALIZED_ANC to intArrayOf()),
             NothingCommand.SET_KEY_CONFIGURATION to (NothingCommand.GET_KEY_CONFIGURATION to intArrayOf()),
             NothingCommand.SET_WHERE_AM_I to (NothingCommand.GET_REMOTE_BATTERY_LEVEL to intArrayOf()),
         )

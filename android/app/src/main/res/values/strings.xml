@@ -852,6 +852,8 @@
     <string name="setting_sound_mode">Sound mode</string>
     <string name="setting_sound_mode_music">Music</string>
     <string name="setting_sound_mode_sleep">Sleep</string>
+    <string name="setting_dual_connection">Two devices at once</string>
+    <string name="setting_personalised_anc">Personalised noise cancelling</string>
     <string name="setting_qcy_music_mode">Sound mode</string>
     <string name="setting_qcy_mode_music">Music</string>
     <string name="setting_qcy_mode_movie">Movie</string>

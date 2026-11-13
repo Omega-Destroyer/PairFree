@@ -23,6 +23,7 @@ brand's protocol doc. When it is reported, add the link; when the project fixes 
 | Q20i (A3004) noise mode: the Soundcore app writes `06 81` with six bytes, the four sound mode bytes then `01 FC`; OpenSCQ30 writes the four. The state holds the two extra bytes after the sound modes. What they mean is not known. | Same recording | No |
 | Sleep A20 (A6611): OpenSCQ30's library does not support it. A user's recording confirms its EQ (bytes 30-51), touch controls (53-56) and sleep timer (67-70, `15 85` writes, `15 03` reads). | User's recording, GitHub issue #8, `data/soundcore/reports/A6611_03.22.txt`; `docs/soundcore/PROTOCOL.md` section 11 | No |
 | Models the Soundcore app 2.9.9 reads without a feature OpenSCQ30 lists for them (`soundcore_app.lacks` in `data/soundcore/devices.json`). | Soundcore app 2.9.9's parsers; `docs/soundcore/PROTOCOL.md` section 10 | No |
+| Rock preset: the exposed Soundcore 3.3.0 tables for A3040/A3936/A3947/A3952/A3953 store visible gains `3, 2, -1, -1, 1, 3, 3, 3`; the recorded OpenSCQ30-derived `type_2` table stores `3, 2, -1, -1, 1, 3, 4, 5`. This is a raw-table discrepancy; final EQ serialization and hardware behavior have not been compared, and PairFree's preset data is unchanged. | [Protocol follow-up, 2026-11-13](soundcore/PROTOCOL_RESEARCH_2026_11_13.md): actual A3947/A3953 `g(17)` getters executed offline; all five source matrices compared. External fixtures: `E:\Builds\research\soundcore-protocol-2026-11-13\builder-probe\eq-results.json` and `preset-comparison.json`. | No |
 
 ## GalaxyBudsClient (Samsung)
 

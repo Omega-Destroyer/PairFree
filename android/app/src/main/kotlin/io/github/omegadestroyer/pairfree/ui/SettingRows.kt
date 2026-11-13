@@ -526,6 +526,8 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    "le_audio" -> stringResource(R.string.setting_le_audio)
+    "le_audio_mode" -> stringResource(R.string.setting_le_audio_mode)
     "upmix_series" -> stringResource(R.string.setting_upmix_series)
     "vibrator" -> stringResource(R.string.setting_vibrator)
     "lr_balance_correction" -> stringResource(R.string.setting_lr_balance_correction)
@@ -657,6 +659,8 @@ private fun buttonTitle(key: String): String? {
 
 @Composable
 private fun settingNote(key: String): String? = when (key) {
+    "le_audio" -> stringResource(R.string.setting_le_audio_note)
+    "le_audio_mode" -> stringResource(R.string.setting_le_audio_mode_note)
     "upmix_series" -> stringResource(R.string.setting_upmix_series_note)
     "vibrator" -> stringResource(R.string.setting_vibrator_note)
     "lr_balance_correction" -> stringResource(R.string.setting_lr_balance_correction_note)
@@ -967,6 +971,13 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "upmix_game" -> R.string.setting_upmix_option_game
             "upmix_music" -> R.string.setting_upmix_option_music
             else -> R.string.action_off
+        },
+    )
+    key == "le_audio_mode" -> getString(
+        when (option) {
+            "le_low_latency" -> R.string.setting_le_low_latency
+            "le_low_latency_eq" -> R.string.setting_le_low_latency_eq
+            else -> R.string.setting_le_high_reliability
         },
     )
     key == "sound_mode" -> getString(if (option == "sleep_mode") R.string.setting_sound_mode_sleep else R.string.setting_sound_mode_music)

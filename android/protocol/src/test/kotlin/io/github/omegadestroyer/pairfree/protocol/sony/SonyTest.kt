@@ -253,6 +253,33 @@ class SonySessionTest {
     }
 
     @Test
+    fun leAudioSwitchModeAndTheConfirmationOfTheReconnection() {
+        // LE Audio on or off: LEA type 12 (function 0x42); the mode: table 2's LEA type 2 (function 0x62), 0 to 2.
+        val s = set2(SonyFunction.Set2.CLASSIC_ONLY_LE_CLASSIC_SETTING)
+        assertTrue(out(0x46, 0x0C) in s.takeOutbox())
+        s.receive(message(0x47, 0x0C, 0x00, 0x00))
+        assertEquals(Setting.Toggle("le_audio", true), setting(s, "le_audio"))
+        // An alert nobody asked for is left alone.
+        s.receive(message(0x99, 0x00, 0x00, 0x01))
+        assertTrue(s.takeOutbox().isEmpty())
+        assertEquals(listOf(out(0x48, 0x0C, 0x01, 0x01)), s.change(SettingChange.Toggle("le_audio", false)))
+        // The earbuds ask to confirm the reconnection: positive, once; a confirmation-only alert needs no answer.
+        s.receive(message(0x99, 0x00, 0x00, 0x01))
+        assertEquals(listOf(out(0x98, 0x00, 0x00, 0x01)), s.takeOutbox())
+        s.receive(message(0x99, 0x00, 0x00, 0x01))
+        assertTrue(s.takeOutbox().isEmpty())
+        val m = set2()
+        m.receive(message(0x07, 0x00, 0x01, 0x62, 0x00, table = 2))
+        assertTrue(out(0x66, 0x02, table = 2) in m.takeOutbox())
+        m.receive(message(0x67, 0x02, 0x01, table = 2))
+        assertEquals("le_low_latency", (setting(m, "le_audio_mode") as Setting.Choice).value)
+        assertEquals(listOf(out(0x68, 0x02, 0x02, table = 2)), m.change(SettingChange.Choice("le_audio_mode", "le_low_latency_eq")))
+        // A flexible alert (type 6): message, a count of items, the items, then the action type.
+        m.receive(message(0x99, 0x06, 0x03, 0x01, 0x07, 0x02))
+        assertEquals(listOf(out(0x98, 0x06, 0x03, 0x01)), m.takeOutbox())
+    }
+
+    @Test
     fun vibrationPowerSavingAndTheUpmixOption() {
         // Set 1: system type 1 (vibration) and 2 (power saving), the setting type 0, then 1 for on.
         val one = set1(SonyFunction.Set1.VIBRATOR, SonyFunction.Set1.POWER_SAVING_MODE)

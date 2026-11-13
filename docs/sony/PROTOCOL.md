@@ -272,6 +272,12 @@ Also built on 2026-11-13: set 2's simpler noise control layouts (types `01`, `11
 byte or NC value, ambient voice, and an ambient on/off or level; `SonyNoise`), vibration (set 1: system type 1, setting type 0, then 1 or 0; set 2: system type 0, on 0), set 1's power
 saving (type 2), the surround upmix (audio type 10: none, cinema, game, music; Sony's "listening option") and the left and right balance correction (EQEBB type `0x50`).
 
+LE Audio (owner, 2026-11-13: build it, the drop is expected): the switch is table 1's LEA type 12 (`LEA_SET_PARAM`: on 0 or off 1, then 0 when the connection method changes, which is
+how the app turns it on, or 1 for the setting alone, which is how it turns it off; read with `LEA_GET_PARAM`), and the connection mode is table 2's LEA type 2 (high reliability 0, low
+latency 1, low latency with the EQ restricted 2). The earbuds then ask to confirm the reconnection with `ALERT_NTFY_PARAM` (type 0, a fixed message, or type 6, a flexible one, each
+with an action type: 0 confirmation only, 1 or 2 an answer wanted); the app's dialog answers with `ALERT_SET_PARAM` (the type, the message, 1 positive or 0 negative). PairFree answers
+positive, once, only after a change of its own. The channel drops and PairFree's reconnect takes over.
+
 **Sony is finished as far as the sources go:** every function id in `data/unused_ids.json` is used or carries a "blocked: reason; checked: what" line (speaker-only features, head
 tracking and its calibration, assistant setup, device lists, LE Audio mode switching, server-held sound curves, read-only status).
 

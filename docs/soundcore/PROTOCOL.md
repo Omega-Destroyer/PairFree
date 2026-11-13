@@ -14,6 +14,11 @@ on 2026-10-29 (section 10). Each model's state layout (section 5) was read from 
 on 2026-10-13 and checked against the replies in its tests and, where 2.9.9 has the model, against the
 app's own parser.
 
+Protocol follow-up (2026-11-13): [exposed-source findings and targeted validation](PROTOCOL_RESEARCH_2026_11_13.md)
+record the A3943/A3961 manager bindings, A3947/A3953 noise-write checks, a Rock preset
+table discrepancy, and the separate Sleep A10 audio-transfer service. These are
+version-scoped research findings; they do not establish newer-model support.
+
 ## 1. Transport
 
 Classic Bluetooth serial (RFCOMM), like SoundPEATS. OpenSCQ30 connects to a vendor service

@@ -856,6 +856,13 @@
     <string name="setting_battery_safe_mode">Battery safe mode</string>
     <string name="info_button">More information</string>
     <string name="setting_vibrator">Vibration</string>
+    <string name="setting_le_audio">LE Audio</string>
+    <string name="setting_le_audio_note">Switches between LE Audio and the older Classic Bluetooth audio. The headphones reconnect when you change this, so the connection drops for a moment and PairFree reconnects by itself.</string>
+    <string name="setting_le_audio_mode">LE Audio connection mode</string>
+    <string name="setting_le_audio_mode_note">Chooses between a more reliable connection and a lower delay. The lowest delay limits the equalizer. The headphones reconnect when you change it.</string>
+    <string name="setting_le_high_reliability">High reliability</string>
+    <string name="setting_le_low_latency">Low latency</string>
+    <string name="setting_le_low_latency_eq">Low latency, EQ restricted</string>
     <string name="setting_upmix_series">Surround upmix</string>
     <string name="setting_upmix_series_note">Spreads ordinary stereo into a wider surround sound, tuned for films, games or music. Sony calls this the listening option.</string>
     <string name="setting_upmix_option_cinema">Cinema</string>

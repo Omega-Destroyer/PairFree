@@ -252,6 +252,22 @@ Read from Sony's app, each shown only where the earbuds list its function:
 - **Power off**: set 1 `COMMON_SET_POWER_OFF` 00 01, set 2 `POWER_SET_STATUS` 03 01, where the earbuds list
   power off; offered behind a confirmation (owner, 2026-11-03).
 
+### 7.2 Gap audit 2026-11-13 (read from Sony | Sound Connect 13.3.0)
+
+Built as switches (type byte, then on 0 or off 1; `S2_SWITCHES`): standby when idle and caring charge's switch (table 2 power types 0 and 1), the
+auto volume optimizer and the limited auto volume (table 2 system types 3 and 4), caring charge (table 1 power type 12), stamina (14), the touch panel
+backlight's automatic turn-off (15) and auto play (SAR/auto play type 1). The maximum volume limit is a step 0 to 4 (table 2 safe listening type 5,
+`SAFE_LISTENING_SET_PARAM`), shown as 1 to 5; the app's own status byte for it is read-only there (no set-status class in `to0`).
+
+Not built, with what was checked:
+- Adaptive Sound Control (`AUTO_NCASM`, `ADAPTIVE_CONTROL_WITH_PARAMETER_NOTIFICATION`): the phone works out places and activity and sends `SENSE_SET_PARAM`
+  with a list of applicable functions per context; the app's own builder (`ao0.p`) refuses an empty list. It needs location and activity-recognition
+  permissions the owner has not allowed. Checked: `ao0` (sense classes), the `adaptivesoundcontrol` package.
+- Safe listening and the safe volume control's WHO level: a listening-volume log the phone stores and shows (`SlState`, `SlDevice`, `SafeListening*` types);
+  no setting to offer without that store. Checked: `to0`, `so0`, `ro0`, `uo0`, `w40.a`, `wt.k`, `v40.b`.
+- Battery safe mode (type 11): four bytes (on or off, then an effect control, 0 not to change or 1 turn off the effect) whose effect field is not yet
+  understood; still open.
+
 ## 8. Never sent
 
 Firmware update (`UPDT_*`), the test command and the logs are marked `never_send` in

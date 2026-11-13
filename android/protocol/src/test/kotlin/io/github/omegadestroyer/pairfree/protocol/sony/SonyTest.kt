@@ -607,6 +607,45 @@ class SonySessionTest {
     }
 
     @Test
+    fun set2SecondTableSwitchesAndVolumeLimit() {
+        // Table 2's functions: standby 0x20, caring charge 0x22, volume limit 0x55, auto volume 0xF3 and 0xF4 (Sony's app: Power, System and SafeListening types).
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x05, 0x20, 0x00, 0x22, 0x00, 0x55, 0x00, 0xF3, 0x00, 0xF4, 0x00, table = 2))
+        val reads = s.takeOutbox()
+        assertTrue(out(0x26, 0x00, table = 2) in reads, "standby's read")
+        assertTrue(out(0x26, 0x01, table = 2) in reads, "caring charge's read")
+        assertTrue(out(0xF6, 0x03, table = 2) in reads, "auto volume optimizer's read")
+        assertTrue(out(0xF6, 0x04, table = 2) in reads, "limited auto volume's read")
+        assertTrue(out(0x56, 0x05, table = 2) in reads, "volume limit's read")
+        s.receive(message(0x27, 0x00, 0x00, table = 2))
+        assertEquals(true, (setting(s, "auto_standby") as Setting.Toggle).on, "0 is on")
+        assertEquals(listOf(out(0x28, 0x00, 0x01, table = 2)), s.change(SettingChange.Toggle("auto_standby", false)))
+        s.receive(message(0xF7, 0x04, 0x01, table = 2))
+        assertEquals(listOf(out(0xF8, 0x04, 0x00, table = 2)), s.change(SettingChange.Toggle("auto_volume_limited", true)))
+        // The limit: a step 0 to 4, shown 1 to 5.
+        s.receive(message(0x57, 0x05, 0x02, table = 2))
+        assertEquals(3, (setting(s, "max_volume_limit") as Setting.Level).value)
+        assertEquals(listOf(out(0x58, 0x05, 0x04, table = 2)), s.change(SettingChange.Level("max_volume_limit", 5)))
+    }
+
+    @Test
+    fun set2FirstTableSwitchesFromTheirOwnTypes() {
+        // Functions: caring charge 0x2C, stamina 0x2E, touch panel backlight 0x2F, auto play 0xB1.
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x04, 0x2C, 0x00, 0x2E, 0x00, 0x2F, 0x00, 0xB1, 0x00))
+        val reads = s.takeOutbox()
+        assertTrue(out(0x26, 0x0C) in reads, "caring charge's read")
+        assertTrue(out(0x26, 0x0E) in reads, "stamina's read")
+        assertTrue(out(0x26, 0x0F) in reads, "touch panel backlight's read")
+        assertTrue(out(0xB6, 0x01) in reads, "auto play's read")
+        s.receive(message(0xB7, 0x01, 0x01))
+        assertEquals(false, (setting(s, "auto_play") as Setting.Toggle).on)
+        assertEquals(listOf(out(0xB8, 0x01, 0x00)), s.change(SettingChange.Toggle("auto_play", true)))
+        s.receive(message(0x27, 0x0F, 0x00))
+        assertEquals(listOf(out(0x28, 0x0F, 0x01)), s.change(SettingChange.Toggle("touch_panel_backlight_off", false)))
+    }
+
+    @Test
     fun set2Switches() {
         val s = set2()
         // Functions: power saving (0x26), sound leakage reduction (0xE9), background music (0xE4); table 2's battery voice (0x46).

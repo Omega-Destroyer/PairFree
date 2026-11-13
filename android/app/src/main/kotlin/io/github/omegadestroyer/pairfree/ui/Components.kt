@@ -305,7 +305,26 @@ fun SwitchMark(on: Boolean, enabled: Boolean = true) {
     }
 }
 
-/** A setting that is on or off: title, an optional note under it, and the switch. The whole row toggles. */
+/** A small "i" beside a setting's title: tapping it shows or hides the setting's short explanation. */
+@Composable
+fun InfoButton(open: Boolean, onClick: () -> Unit) {
+    val c = Studio.colors
+    val description = stringResource(R.string.info_button)
+    Box(
+        Modifier
+            .size(36.dp)
+            .clip(CircleShape)
+            .clickable(role = Role.Button, onClick = onClick)
+            .semantics { contentDescription = description },
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(Modifier.size(20.dp).border(1.dp, if (open) c.accent else c.label, CircleShape), contentAlignment = Alignment.Center) {
+            Text("i", style = Studio.type.small, color = if (open) c.accent else c.label)
+        }
+    }
+}
+
+/** A setting that is on or off: title, the switch, and an optional explanation behind an info button. The whole row toggles. */
 @Composable
 fun SwitchRow(
     title: String,
@@ -324,9 +343,13 @@ fun SwitchRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        var open by remember { mutableStateOf(false) }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(title, color = if (enabled) c.text else c.secondaryText)
-            if (note != null) Text(note, style = Studio.type.small, color = c.secondaryText)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(title, Modifier.weight(1f, fill = false), color = if (enabled) c.text else c.secondaryText)
+                if (note != null) InfoButton(open) { open = !open }
+            }
+            if (note != null && open) Text(note, style = Studio.type.small, color = c.secondaryText)
         }
         SwitchMark(on, enabled)
     }
@@ -334,19 +357,26 @@ fun SwitchRow(
 
 /** A row that shows a current value and opens a choice when tapped. */
 @Composable
-fun ValueRow(title: String, value: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun ValueRow(title: String, value: String, onClick: () -> Unit, modifier: Modifier = Modifier, note: String? = null) {
     val c = Studio.colors
-    Row(
-        modifier
-            .fillMaxWidth()
-            .heightIn(min = 48.dp)
-            .clickable(role = Role.Button, onClick = onClick),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Text(title, Modifier.weight(1f))
-        Text(value, color = c.accent, textAlign = TextAlign.End)
-        Chevron()
+    var open by remember { mutableStateOf(false) }
+    Column {
+        Row(
+            modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp)
+                .clickable(role = Role.Button, onClick = onClick),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                Text(title, Modifier.weight(1f, fill = false))
+                if (note != null) InfoButton(open) { open = !open }
+            }
+            Text(value, color = c.accent, textAlign = TextAlign.End)
+            Chevron()
+        }
+        if (note != null && open) Text(note, style = Studio.type.small, color = c.secondaryText)
     }
 }
 

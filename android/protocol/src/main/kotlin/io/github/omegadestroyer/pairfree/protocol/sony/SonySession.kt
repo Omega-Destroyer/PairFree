@@ -434,7 +434,8 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
 
     /** One of set 2's simple switches: its type, then on (0) or off (1) (Sony's OnOffSettingValue). */
     private fun readSwitch(table: Int, p: ByteArray) {
-        if (tableSet != 2 || p.size != 3) return
+        // Battery safe mode (power type 11) has a fourth byte, whether its effect is active now; the switch is the third.
+        if (tableSet != 2 || !(p.size == 3 || p.size == 4 && table == 1 && p.u8(1) == BATTERY_SAFE_TYPE)) return
         val s = S2_SWITCHES.firstOrNull { it.table == table && it.type == p.u8(1) && p.u8(0) in it.replies } ?: return
         switches[s.key] = p.u8(2) == ON_V2
     }
@@ -565,7 +566,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
                     else -> ultButtonSet(change.key, on) ?: generalSet(change.key.removePrefix(GS_KEY).takeIf { change.key.startsWith(GS_KEY) }, on) ?: S2_SWITCHES.firstOrNull { it.key == change.key }?.let { s ->
                         switches[s.key] = on
                         val v = if (on) ON_V2 else OFF_V2
-                        if (s.table == 1) SonyOut.table1(s.set, s.type, v) else SonyOut.table2(s.set, s.type, v)
+                        // Battery safe mode also takes the effect control: 0 leaves the effect as it is (BatterySafeModeEffectStatusControl).
+                        if (s.table == 1 && s.type == BATTERY_SAFE_TYPE) SonyOut.table1(s.set, s.type, v, 0)
+                        else if (s.table == 1) SonyOut.table1(s.set, s.type, v) else SonyOut.table2(s.set, s.type, v)
                     }
                 }?.also {
                     when (change.key) {
@@ -879,6 +882,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
                 S2Switch("caring_charge_threshold", SettingTab.DEVICE, 2, f2.CARING_CHARGE_WITH_THRESHOLD, 1, SonyCommand.Set2Table2.POWER_GET_PARAM, SonyCommand.Set2Table2.POWER_SET_PARAM, powerT2),
                 // Table 1's PowerInquiredType CARING_CHARGE (12), STAMINA (14) and AUTOMATIC_TOUCH_PANEL_BACKLIGHT_TURN_OFF (15); SARAutoPlayInquiredType AUTO_PLAY (1)
                 S2Switch("caring_charge", SettingTab.DEVICE, 1, f.CARING_CHARGE, 12, SonyCommand.Set2.POWER_GET_PARAM, SonyCommand.Set2.POWER_SET_PARAM, power),
+                S2Switch("battery_safe_mode", SettingTab.DEVICE, 1, f.BATTERY_SAFE_MODE, BATTERY_SAFE_TYPE, SonyCommand.Set2.POWER_GET_PARAM, SonyCommand.Set2.POWER_SET_PARAM, power),
                 S2Switch("stamina", SettingTab.DEVICE, 1, f.STAMINA, 14, SonyCommand.Set2.POWER_GET_PARAM, SonyCommand.Set2.POWER_SET_PARAM, power),
                 S2Switch("touch_panel_backlight_off", SettingTab.DEVICE, 1, f.AUTOMATIC_TOUCH_PANEL_BACKLIGHT_TURN_OFF, 15, SonyCommand.Set2.POWER_GET_PARAM, SonyCommand.Set2.POWER_SET_PARAM, power),
                 S2Switch("auto_play", SettingTab.DEVICE, 1, f.AUTO_PLAY, 1, SonyCommand.Set2.SAR_AUTO_PLAY_GET_PARAM, SonyCommand.Set2.SAR_AUTO_PLAY_SET_PARAM, sar),
@@ -888,6 +892,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
             )
         }
         private const val ON_V2 = 0
+        private const val BATTERY_SAFE_TYPE = 11
         private const val OFF_V2 = 1
 
         // Set 2's connection mode types (AudioInquiredType), and its voice guidance types (VoiceGuidanceInquiredType).

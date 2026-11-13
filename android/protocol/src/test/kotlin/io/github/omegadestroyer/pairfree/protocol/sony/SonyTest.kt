@@ -629,6 +629,17 @@ class SonySessionTest {
     }
 
     @Test
+    fun batterySafeModeHasAnEffectByte() {
+        // Function 0x2B; power type 11 answers the switch, then whether the effect is active; a write adds 0, "do not change the effect".
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x01, 0x2B, 0x00))
+        assertTrue(out(0x26, 0x0B) in s.takeOutbox())
+        s.receive(message(0x27, 0x0B, 0x00, 0x01))
+        assertEquals(true, (setting(s, "battery_safe_mode") as Setting.Toggle).on)
+        assertEquals(listOf(out(0x28, 0x0B, 0x01, 0x00)), s.change(SettingChange.Toggle("battery_safe_mode", false)))
+    }
+
+    @Test
     fun set2FirstTableSwitchesFromTheirOwnTypes() {
         // Functions: caring charge 0x2C, stamina 0x2E, touch panel backlight 0x2F, auto play 0xB1.
         val s = set2()

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import android.content.Context
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,6 +57,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         settingTitle(setting.key),
                         setting.value?.let { optionName(setting.key, it) } ?: stringResource(R.string.unknown),
                         { picking = setting },
+                        note = settingNote(setting.key),
                     )
                     is Setting.Level -> Box(Modifier.alpha(if (setting.enabled) 1f else 0.4f)) {
                         LevelRow(setting) { if (setting.enabled) onChange(it) }
@@ -109,10 +111,16 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
 @Composable
 private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) {
     val title = settingTitle(setting.key)
+    val note = settingNote(setting.key)
+    var open by remember { mutableStateOf(false) }
     val steps = (setting.min..setting.max).toList()
     if (steps.size <= 5) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(title)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(title)
+                if (note != null) InfoButton(open) { open = !open }
+            }
+            if (note != null && open) Text(note, style = Studio.type.small, color = Studio.colors.secondaryText)
             Segmented(steps, setting.value, { levelName(setting.key, it, setting.max) }, { onChange(SettingChange.Level(setting.key, it)) }, primary = false)
         }
         return
@@ -127,9 +135,12 @@ private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) 
     }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(title, Modifier.weight(1f))
+            Text(title, Modifier.weight(1f, fill = false))
+            if (note != null) InfoButton(open) { open = !open }
+            Spacer(Modifier.weight(1f))
             Text(levelName(setting.key, current, setting.max), style = Studio.type.number, color = Studio.colors.accent)
         }
+        if (note != null && open) Text(note, style = Studio.type.small, color = Studio.colors.secondaryText)
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StepButton(plus = false, { pending = (current - 1).coerceAtLeast(setting.min) }, enabled = current > setting.min)
             StudioSlider(current, setting.min..setting.max, { pending = it }, Modifier.weight(1f), description = title, origin = levelOrigin(setting))
@@ -515,6 +526,7 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    "battery_safe_mode" -> stringResource(R.string.setting_battery_safe_mode)
     "dual_connection" -> stringResource(R.string.setting_dual_connection)
     "personalised_anc" -> stringResource(R.string.setting_personalised_anc)
     "qcy_music_mode" -> stringResource(R.string.setting_qcy_music_mode)
@@ -642,6 +654,32 @@ private fun buttonTitle(key: String): String? {
 
 @Composable
 private fun settingNote(key: String): String? = when (key) {
+    "battery_safe_mode" -> stringResource(R.string.setting_battery_safe_mode_note)
+    "caring_charge" -> stringResource(R.string.setting_caring_charge_note)
+    "caring_charge_threshold" -> stringResource(R.string.setting_caring_charge_threshold_note)
+    "stamina" -> stringResource(R.string.setting_stamina_note)
+    "touch_panel_backlight_off" -> stringResource(R.string.setting_touch_panel_backlight_off_note)
+    "auto_play" -> stringResource(R.string.setting_auto_play_note)
+    "auto_standby" -> stringResource(R.string.setting_auto_standby_note)
+    "auto_volume_optimizer" -> stringResource(R.string.setting_auto_volume_optimizer_note)
+    "auto_volume_limited" -> stringResource(R.string.setting_auto_volume_limited_note)
+    "max_volume_limit" -> stringResource(R.string.setting_max_volume_limit_note)
+    "ef_extra_bass" -> stringResource(R.string.setting_ef_extra_bass_note)
+    "ef_extra_manner" -> stringResource(R.string.setting_ef_extra_manner_note)
+    "ef_extra_game_eq" -> stringResource(R.string.setting_ef_extra_game_eq_note)
+    "ef_extra_dac" -> stringResource(R.string.setting_ef_extra_dac_note)
+    "ef_extra_balance" -> stringResource(R.string.setting_ef_extra_balance_note)
+    "ef_extra_usb_charge" -> stringResource(R.string.setting_ef_extra_usb_charge_note)
+    "ef_extra_ambient_voice" -> stringResource(R.string.setting_ef_extra_ambient_voice_note)
+    "ef_extra_call_env" -> stringResource(R.string.setting_ef_extra_call_env_note)
+    "ef_extra_voice_tip" -> stringResource(R.string.setting_ef_extra_voice_tip_note)
+    "ef_codec_in_use" -> stringResource(R.string.setting_ef_codec_in_use_note)
+    "sound_mode" -> stringResource(R.string.setting_sound_mode_note)
+    "voice_enhancement" -> stringResource(R.string.setting_voice_enhancement_note)
+    "qcy_music_mode" -> stringResource(R.string.setting_qcy_music_mode_note)
+    "qcy_touch_sensitivity" -> stringResource(R.string.setting_qcy_touch_sensitivity_note)
+    "dual_connection" -> stringResource(R.string.setting_dual_connection_note)
+    "personalised_anc" -> stringResource(R.string.setting_personalised_anc_note)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure_note)
     "voice_focus" -> stringResource(R.string.setting_voice_focus_note)
     "extra_loud" -> stringResource(R.string.setting_extra_loud_note)

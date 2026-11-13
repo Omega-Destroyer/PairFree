@@ -26,7 +26,6 @@
   "SonyFunction.Set2.AUDIO_360_UPMIX_OPTIMIZATION": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.AUTO_NCASM": "blocked: Adaptive Sound Control is run by the phone (the app registers places and recognises activity, then sends SENSE_SET_PARAM with a non-empty list of applicable functions per context; an empty list is refused by the app's own builder); needs location and activity-recognition permissions the owner has not allowed; checked: ao0 sense classes (p.k rejects an empty list), com.sony.songpal.mdr.application.adaptivesoundcontrol",
   "SonyFunction.Set2.AUTO_PLAY_CANT_BE_USED_WITH_LEA_CONNECTION": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
-  "SonyFunction.Set2.BATTERY_SAFE_MODE": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.BGM_MODE_CANT_BE_USED_WITH_LEA_CONNECTION": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.BGM_MODE_SMALL_MIDDLE_LARGE_AND_ERRORCODE": "gap-audit 2026-11-12: in the vendor app's table, not built yet",
   "SonyFunction.Set2.BLE_SETUP": "gap-audit 2026-11-12: in the vendor app's table, not built yet",

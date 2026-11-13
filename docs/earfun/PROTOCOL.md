@@ -211,8 +211,7 @@ EarFun's app writes `FE 98` and the steps above. PairFree follows EarFun's app (
 
 - The Qualcomm models' voice prompt languages (voice packs, written like a firmware update).
 - The Clip 2's recorded voice prompt, USB charging on the headphones, the Wave Pro X's spatial audio and second
-  power-off timer, the left-right balance, bass boost, the DAC switch and game EQ (no screen of EarFun's app shows
-  them for the models above, or their read is not known), LE Audio and Fast Pair (lab), Auracast, AI translation,
+  power-off timer, the left-right balance, bass boost, the DAC switch and game EQ (**corrected 2026-11-12: EarFun's app does enable them per model**, in `DeviceType.java`: bass enhancement and manner mode on the Clip, bass enhancement, manner mode, game EQ and the DAC switch on the Clip 2, balance and maximum volume (voice protect) on the OpenJump, Clip 2 and TW230, USB charging on the HP220, HP300 and HP1000; their commands are in `commands.json`, see `data/unused_ids.json` for what is still unbuilt), LE Audio and Fast Pair (lab), Auracast, AI translation,
   and the codec in use (`4D`).
 - The Qualcomm voice prompt language read: EarFun's app reads it from the frame's length byte
   (`getNormalData(src)` instead of the payload), a slip that does not matter to PairFree, which does not read it.

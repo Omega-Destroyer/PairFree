@@ -243,9 +243,8 @@ None of this has been tried with PairFree; the N70's parametric EQ is OpenQCY's.
 
 ## 8. Not yet
 
-- **EQ:** QCY's presets, and the older JieLi models' EQ (section 7).
-- **Fit test (`11`):** no model's control panel in Quicky's dump gives it a command (one lists "Fit
-  detection" with none).
+- **EQ:** QCY's presets (**corrected 2026-11-12: the saved panels hold them, 186 panels with `eqs` gain lists per preset name**; the unit is still to confirm), and the older JieLi models' EQ (section 7).
+- **Fit test (`11`):** Quicky's dump gives no command, but **QCY's own panels do (corrected 2026-11-12): 20 of the saved panels in `server_dump/qcy/panels` carry "Fit detection" as type 110 with cmdid 17** (`CMDID_COMPACTNESS`); the reply layout is not read yet.
 - **Voice language (`19`):** named in QCY's tables, but QCY's app never writes it.
 
 **Prompt volume (`1D`, since the 2026-11-03 audit):** read on every model, since which have it is on QCY's

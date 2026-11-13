@@ -189,7 +189,7 @@ abstract class GenerateTables : DefaultTask() {
                 }
                 ", noiseModes = noiseModes(\"$modes\")"
             }
-            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}$noise),")
+            out.appendLine("    Model(${str(d["firmware_code"])}, $names, ${str(d["family"])}, $excludes, $either, $eq, $confirmed, $keepsAnc, fastPair = ${d["fast_pair"]}$noise, touchInverted = ${d["touch_disable_inverted"] == true}),")
         }
         out.appendLine(")")
         out.appendLine()

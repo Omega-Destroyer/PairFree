@@ -249,7 +249,8 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
                 f["is_case_charging"] = b and 0x01 != 0
             }
 
-            if (model.buds4Layout) return readBuds4(model, p, f, revision)
+            // The Galaxy Buds3 is read as its own plugin reads it (jellymgr, SM-R530): see [readBuds4], whose first bytes it shares.
+            if (model.buds4Layout || model.device == "Buds3") return readBuds4(model, p, f, revision)
 
             if (model.device == "Buds2Pro") {
                 if (revision >= 1) {
@@ -268,6 +269,9 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
                     f["extra_clear_call_sound"] = next() != 0
                     if (more()) f["extra_high_ambient_enabled"] = next() != 0
                 }
+                // Samsung's Buds2 Pro plugin (zenithmgr) adds voice boost and volume normalization from revision 14.
+                if (revision >= 14 && more()) f["voice_boost"] = next() != 0
+                if (revision >= 14 && more()) f["volume_normalization"] = next() != 0
                 return
             }
 
@@ -310,7 +314,7 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
         }
 
         /**
-         * The rest of the state as Samsung's own plugin reads it for the Buds4 family and the models only it knows
+         * The rest of the state as Samsung's own plugin reads it for the Buds4 family and the models only it knows (and, to byte 51, the Buds3)
          * (docs/samsung/PROTOCOL.md section 12), from byte 34. It differs from GalaxyBudsClient's from byte 40: an auto
          * adjust sound byte at 41 and no lighting byte, so head tracking, charging and the settings after them sit one
          * byte later. Each model then adds its own fields.
@@ -339,6 +343,17 @@ public class SamsungStatus private constructor(public val model: SamsungModel, p
             f["hot_command_language"] = u8(48)
             f["adjust_sound_fit"] = u8(49)
             f["adaptive_volume_enabled"] = bool(50)
+            if (model.device == "Buds3") {
+                // Samsung's Buds3 plugin has no lighting byte or siren detection: adapt sound follows, then the hot command version,
+                // voice boost, volume normalization and the digital assistant's two sides. Each is read only where the reply holds it.
+                fun has(i: Int) = i < p.size
+                if (has(51)) f["adapt_sound_enabled"] = bool(51)
+                if (has(54)) f["hot_command_version"] = "${u8(52)}.${u8(53)}.${u8(54)}"
+                if (has(55)) f["voice_boost"] = bool(55)
+                if (has(56)) f["volume_normalization"] = bool(56)
+                if (has(57)) f["digital_assistant"] = u8(57)
+                return
+            }
             f["double_pinch_and_hold_advanced"] = u8(51)
             f["siren_detect"] = bool(52)
             f["adapt_sound_enabled"] = bool(53)

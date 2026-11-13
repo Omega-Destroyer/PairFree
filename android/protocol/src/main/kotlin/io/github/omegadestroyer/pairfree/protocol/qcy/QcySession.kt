@@ -298,7 +298,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
                     toggle(QcyItem.LED_MODE, "led"),
                     timerRow(),
                     promptVolumeRow(),
-                ),
+                ) + choiceRows(),
             ),
             group(PowerActions.GROUP, SettingTab.DEVICE, listOfNotNull(Setting.Action(PowerActions.POWER_OFF).takeIf { model?.sleepTimer == true })),
         ) + touchGroups()
@@ -311,6 +311,20 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         val v = values[QcyItem.TONE_VOLUME] ?: return null
         val max = if (v.size >= 2 && v[1].toInt() and 0xFF > 0) v[1].toInt() and 0xFF else PROMPT_MAX
         return Setting.Level(PROMPT_KEY, (v[0].toInt() and 0xFF).coerceIn(0, max), 0, max)
+    }
+
+    /** The settings the panel picks from a list: the value byte the earbuds reported, by the option's name. */
+    private fun choiceRows(): List<Setting.Choice> = model?.settings.orEmpty().filter { it.options.isNotEmpty() }.mapNotNull { s ->
+        val v = values[s.item]?.firstOrNull()?.toInt()?.and(0xFF) ?: return@mapNotNull null
+        Setting.Choice(CHOICE_PREFIX + s.setting, s.options.firstOrNull { it.first == v }?.second, s.options.map { it.second })
+    }
+
+    private fun choice(key: String, option: String): ByteArray? {
+        val s = model?.settings.orEmpty().firstOrNull { CHOICE_PREFIX + it.setting == key } ?: return null
+        val v = s.options.firstOrNull { it.second == option }?.first ?: return null
+        values[s.item] = byteArrayOf(v.toByte())
+        readBacks += request(s.item)
+        return command(s.item, v)
     }
 
     private fun toggle(item: Int, key: String): Setting.Toggle? = on(item)?.let { Setting.Toggle(key, it) }
@@ -498,6 +512,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
                     }
                     change.key.startsWith("touch_") -> touch(change.key, change.option) ?: return null
                     change.key == TIMER_KEY -> timer(change.option) ?: return null
+                    change.key.startsWith(CHOICE_PREFIX) -> choice(change.key, change.option) ?: return null
                     else -> return null
                 }
             }
@@ -557,6 +572,8 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         )
 
         /** Brand switches by their key. */
+        private const val CHOICE_PREFIX = "qcy_"
+
         private val TOGGLES = mapOf(
             "spatial_audio" to QcyItem.SPATIAL_AUDIO, "dynamic_eq" to QcyItem.ADAPTIVE_EQ, "adaptive_volume" to QcyItem.ADAPTIVE_VOLUME,
             "sleep_mode" to QcyItem.SLEEP_MODE, "wind_detection" to QcyItem.WIND_DETECTION, "led" to QcyItem.LED_MODE,

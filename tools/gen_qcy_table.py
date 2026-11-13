@@ -50,7 +50,7 @@ def noise(model):
     return ", ".join(parts) or "—"
 
 
-NAMES = {"game_mode": "game mode", "sleep_mode": "sleep mode", "in_ear": "in-ear detection", "ldac": "LDAC", "multipoint": "two devices",
+NAMES = {"music_mode": "sound mode (music, gaming, movie)", "touch_sensitivity": "touch sensitivity", "game_mode": "game mode", "sleep_mode": "sleep mode", "in_ear": "in-ear detection", "ldac": "LDAC", "multipoint": "two devices",
          "wind_detection": "wind detection", "spatial_audio": "spatial audio", "dynamic_eq": "dynamic EQ", "adaptive_volume": "adaptive volume", "led": "status light"}
 
 

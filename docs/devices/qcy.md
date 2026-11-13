@@ -77,13 +77,13 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY C1 OPEN</td><td><code>11E4</code></td><td>Other</td><td>Headphones</td><td>—</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY C2</td><td><code>11E2</code></td><td>Other</td><td>Headphones</td><td>—</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY Crossky C10</td><td><code>477B</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>game mode, sleep mode, two devices, balance, timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY Crossky C30</td><td><code>4D52</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, sleep mode, balance, timed power off, touch controls</td><td>Not tested</td></tr>
-<tr><td>QCY Crossky C30S</td><td><code>4D54</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, LDAC, sleep mode, balance, timed power off, touch controls</td><td>Not tested</td></tr>
-<tr><td>QCY Crossky C50</td><td><code>4D55</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>adaptive volume, game mode, dynamic EQ, sleep mode, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
-<tr><td>QCY Crossky C50</td><td><code>4D57</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>adaptive volume, game mode, dynamic EQ, sleep mode, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY Crossky C30</td><td><code>4D52</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, sleep mode, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY Crossky C30S</td><td><code>4D54</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, LDAC, sleep mode, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY Crossky C50</td><td><code>4D55</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>adaptive volume, game mode, dynamic EQ, sleep mode, two devices, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY Crossky C50</td><td><code>4D57</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>adaptive volume, game mode, dynamic EQ, sleep mode, two devices, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY Crossky C50i</td><td><code>807A</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>two devices, adaptive volume, LDAC, game mode, balance, timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY Crossky C50S</td><td><code>4D5B</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>LDAC, adaptive volume, game mode, dynamic EQ, sleep mode, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
-<tr><td>QCY Crossky C50S</td><td><code>4D5C</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>LDAC, adaptive volume, game mode, dynamic EQ, sleep mode, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY Crossky C50S</td><td><code>4D5B</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>LDAC, adaptive volume, game mode, dynamic EQ, sleep mode, two devices, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY Crossky C50S</td><td><code>4D5C</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>LDAC, adaptive volume, game mode, dynamic EQ, sleep mode, two devices, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY Crossky GTR</td><td><code>4775</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY Crossky GTR2</td><td><code>5A72</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>game mode, sleep mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY Crossky Link</td><td><code>4161</code></td><td>Other</td><td>Headphones</td><td>—</td><td>game mode, timed power off</td><td>Not tested</td></tr>
@@ -93,7 +93,7 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY Crossky R70</td><td><code>4D4F</code></td><td>WUQI</td><td>Earbuds</td><td>—</td><td>game mode, sleep mode, LDAC, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY CT01 APP</td><td><code>477D</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>game mode, sleep mode, two devices, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY CT03</td><td><code>5D43</code></td><td>WUQI</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY CT06 BlueTooth 6.0</td><td><code>4D59</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>adaptive volume, game mode, dynamic EQ, sleep mode, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY CT06 BlueTooth 6.0</td><td><code>4D59</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>adaptive volume, game mode, dynamic EQ, sleep mode, two devices, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY DT06</td><td><code>4B15</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>game mode, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY DT08</td><td><code>4978</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode</td><td>Not tested</td></tr>
 <tr><td>QCY DT08</td><td><code>497A</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode</td><td>Not tested</td></tr>
@@ -115,13 +115,13 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY H3 Lite ANC APP</td><td><code>417A</code></td><td>JieLi</td><td>Headphones</td><td>ANC, transparency</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td><a href="../../data/qcy/reports/H3Pro_4177_0.5.3.3.txt">QCY H3 Pro</a></td><td><code>4177</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>game mode, LDAC, two devices, balance, timed power off</td><td>Tested</td></tr>
 <tr><td>QCY H3 PRO ANC</td><td><code>417B</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>game mode, LDAC, two devices, balance, timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY H3S</td><td><code>417C</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>LDAC, two devices, balance, timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY H3S EXTREME ANC</td><td><code>417D</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>LDAC, two devices, balance, timed power off</td><td>Not tested</td></tr>
+<tr><td>QCY H3S</td><td><code>417C</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>LDAC, two devices, sound mode (music, gaming, movie), balance, timed power off</td><td>Not tested</td></tr>
+<tr><td>QCY H3S EXTREME ANC</td><td><code>417D</code></td><td>JieLi</td><td>Headphones</td><td>ANC (5 scenes), transparency</td><td>LDAC, two devices, sound mode (music, gaming, movie), balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY H4</td><td><code>41D1</code></td><td>BES</td><td>Headphones</td><td>ANC (4 scenes), transparency</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY H4 ANC HEADSET</td><td><code>41D2</code></td><td>BES</td><td>Headphones</td><td>ANC (4 scenes), transparency</td><td>game mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY HEROAD GT2</td><td><code>41B7</code></td><td>Other</td><td>Headphones</td><td>—</td><td>—</td><td>Not tested</td></tr>
-<tr><td>QCY Heroad V200</td><td><code>41B2</code></td><td>Other</td><td>Headphones</td><td>—</td><td>timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY Heroad VT200</td><td><code>41B5</code></td><td>Other</td><td>Headphones</td><td>—</td><td>timed power off</td><td>Not tested</td></tr>
+<tr><td>QCY Heroad V200</td><td><code>41B2</code></td><td>Other</td><td>Headphones</td><td>—</td><td>sound mode (music, gaming, movie), timed power off</td><td>Not tested</td></tr>
+<tr><td>QCY Heroad VT200</td><td><code>41B5</code></td><td>Other</td><td>Headphones</td><td>—</td><td>sound mode (music, gaming, movie), timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY HT01</td><td><code>4DA1</code></td><td>RD</td><td>Earbuds</td><td>—</td><td>in-ear detection, game mode, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY HT01C</td><td><code>4CC1</code></td><td>Realtek</td><td>Earbuds</td><td>—</td><td>in-ear detection, game mode, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY HT02</td><td><code>4BC2</code></td><td>Realtek</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
@@ -208,7 +208,7 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY T3</td><td><code>4D24</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 <tr><td>QCY T30 AIR</td><td><code>5A77</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>game mode, sleep mode, balance, timed power off</td><td>Not tested</td></tr>
 <tr><td>QCY T31 MeloBuds Neo</td><td><code>5A78</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY T33 APP</td><td><code>4D53</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, sleep mode, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td>QCY T33 APP</td><td><code>4D53</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, sleep mode, touch sensitivity, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY T4</td><td><code>4D27</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 <tr><td>QCY T4</td><td><code>4D31</code></td><td>Other</td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 <tr><td>QCY T41 Motif</td><td><code>1978</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>

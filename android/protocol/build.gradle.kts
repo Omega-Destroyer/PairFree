@@ -1572,7 +1572,7 @@ abstract class GenerateQcyTables : DefaultTask() {
             @Suppress("UNCHECKED_CAST")
             val touch = (d["touch"] as Map<String, Any?>?)?.let { "QcyTouch(${strings(it["gestures"])}, ${strings(it["actions"])})" } ?: "null"
             @Suppress("UNCHECKED_CAST")
-            val settings = (d["settings"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { "QcySetting(${hex(it["item"])}, ${str(it["setting"])})" }
+            val settings = (d["settings"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { "QcySetting(${hex(it["item"])}, ${str(it["setting"])}${(it["options"] as List<Map<String, Any?>>?)?.joinToString(", ", ", listOf(", ")") { o -> "${hex(o["key"])} to ${str(o["name"].toString().lowercase().removeSuffix(" mode"))}" } ?: ""})" }
             out.appendLine("    QcyModel(")
             out.appendLine("        ${int(d["vendor_id"])}, ${str(d["name"])}, ${strings(d["names"])}, ${str(d["family"])}, QcyProtocol.$protocol,")
             out.appendLine("        io.github.omegadestroyer.pairfree.protocol.Form.$form, anc = $anc,")

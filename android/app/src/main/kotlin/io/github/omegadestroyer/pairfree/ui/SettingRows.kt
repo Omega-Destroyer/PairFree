@@ -413,6 +413,17 @@ private fun settingTitle(key: String): String = when (key) {
     "dsee" -> stringResource(R.string.setting_dsee)
     "pause_taken_off" -> stringResource(R.string.setting_pause_taken_off)
     "bose_conversation_mode" -> stringResource(R.string.setting_bose_conversation_mode)
+    "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode)
+    "bose_modes_persist" -> stringResource(R.string.setting_bose_modes_persist)
+    "bose_latency" -> stringResource(R.string.setting_bose_latency)
+    "bose_volume" -> stringResource(R.string.setting_bose_volume)
+    "bose_on_head" -> stringResource(R.string.setting_bose_on_head)
+    "bose_on_head_play" -> stringResource(R.string.setting_bose_on_head_play)
+    "bose_on_head_answer" -> stringResource(R.string.setting_bose_on_head_answer)
+    "bose_on_head_transparency" -> stringResource(R.string.setting_bose_on_head_transparency)
+    "bose_le_audio" -> stringResource(R.string.setting_bose_le_audio)
+    "bose_volume_control" -> stringResource(R.string.setting_bose_volume_control)
+    "bose_teams_button" -> stringResource(R.string.setting_bose_teams_button)
     "bose_auto_aware" -> stringResource(R.string.setting_bose_auto_aware)
     "bose_head_gesture" -> stringResource(R.string.setting_bose_head_gesture)
     "bose_flip_to_off" -> stringResource(R.string.setting_bose_flip_to_off)
@@ -663,6 +674,14 @@ private fun buttonTitle(key: String): String? {
 
 @Composable
 private fun settingNote(key: String): String? = when (key) {
+    "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode_note)
+    "bose_modes_persist" -> stringResource(R.string.setting_bose_modes_persist_note)
+    "bose_latency" -> stringResource(R.string.setting_bose_latency_note)
+    "bose_volume" -> stringResource(R.string.setting_bose_volume_note)
+    "bose_on_head" -> stringResource(R.string.setting_bose_on_head_note)
+    "bose_le_audio" -> stringResource(R.string.setting_bose_le_audio_note)
+    "bose_volume_control" -> stringResource(R.string.setting_bose_volume_control_note)
+    "bose_teams_button" -> stringResource(R.string.setting_bose_teams_button_note)
     "call_transparency" -> stringResource(R.string.setting_call_transparency_note)
     "advanced_eq" -> stringResource(R.string.setting_advanced_eq_note)
     "power_off_time" -> stringResource(R.string.setting_power_off_time_note)
@@ -1000,6 +1019,15 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         },
     )
     key == "power_off_time" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: option
+    key == "bose_volume_control" -> getString(
+        when (option) {
+            "bose_volume_buttons" -> R.string.setting_bose_volume_buttons
+            "bose_volume_touch" -> R.string.setting_bose_volume_touch
+            "bose_volume_motion" -> R.string.setting_bose_volume_motion
+            else -> R.string.action_off
+        },
+    )
+    key == "bose_teams_button" -> getString(if (option == "bose_teams_dedicated") R.string.setting_bose_teams_dedicated else R.string.setting_bose_teams_combination)
     key == "sound_mode" -> getString(if (option == "sleep_mode") R.string.setting_sound_mode_sleep else R.string.setting_sound_mode_music)
     key == "smart_playback" -> getString(
         when (option) {

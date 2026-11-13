@@ -7,6 +7,7 @@ Target: **5.0.35-435**, package `com.oceanwing.soundcore`. Branch: `research/sou
 - [Recovery evidence and virtual checks](APK_RECOVERY_5_0_35.md): protected business DEX and selected method bodies recovered; 2,984 protocol/model/control classes, 27,002 methods, zero instruction-store markers remaining in that measured selection.
 - [App registration inventory](REGISTERED_MODELS_5_0_35.md): 161 keys, including aliases and separate cases, with recovered model bodies and observed SPP UUIDs.
 - [New SDK profiles](SDK_PROFILES_5_0_35.md): 14 product/component profiles, plus a SAMPLE scaffold excluded from totals. The union with the app table is 165 distinct keys after case normalization.
+- [Things / OMC protocol path](THINGS_PROTOCOL_5_0_35.md): an additional 351 recovered classes / 2,353 methods and the named-function-to-QuickJS bridge; online product definitions still required.
 - [Latest protocol findings](LATEST_PROTOCOL_FINDINGS_5_0_35.md): newer parametric EQ, firmware table gates, packet variants, and a virtually checked D1206 button serializer.
 - Derived CSV catalogues contain 467 builder methods, 683 runtime constants, 106 constant boolean overrides and 408 EQ-related vectors from 44 tables.
 

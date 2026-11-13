@@ -17,9 +17,9 @@ All ten APKM members were retained, including the two feature splits. The origin
 3. Many instruction arrays in those DEX images were still return/zero padding. Their repurposed debug offsets identify an instruction store: `index = 0x04000000 - debug_info_off`. All 297,210 distinct indices from 0 through 297,209 were present, exactly matching the count in the `ijiami.ajm` header. This is structural evidence, not recovery of those method bodies.
 4. A same-signer Android instrumentation harness allowed the packer to supply the business class loader, then skipped the normal application's `onCreate`. This avoided unrelated startup failures and worked where Frida attachments had failed.
 5. Loading and resolving targeted protocol classes caused their live instruction arrays to be restored. The harness captured the corresponding live DEX images, rather than assuming that a nonzero code item contained meaningful instructions. Decompiled copies have repaired SHA-1/Adler-32 header checksums; raw captures are also retained.
-6. The measured selection contains **2,984 protocol/model/control classes and 27,002 declared methods, with zero instruction-store markers remaining in that selection**. It includes legacy command and analysis services, model registration, transport classes, modern SDK profiles, control/EQ classes and builders declared outside the usual protocol packages. Another pass loaded 505 inline helper dependencies referenced by these classes.
+6. The measured selection contains **2,984 protocol/model/control classes and 27,002 declared methods, with zero instruction-store markers remaining in that selection**. It includes legacy command and analysis services, model registration, transport classes, modern SDK profiles, control/EQ classes and builders declared outside the usual protocol packages. A further pass followed inline helper references, using DEX class names to avoid decompiler-only aliases.
 
-The last broad capture measured **28,978 changed instruction arrays and replaced markers** across the captured images. That includes incidental dependencies. It is not a claim that all 297,210 protected methods in the whole application were recovered. Decompiler warnings and unrelated protected classes remain; the selected builder catalogue has no `Method not decompiled` failures.
+The first protocol checkpoint measured **28,978 changed instruction arrays and replaced markers** across the captured images. That includes incidental dependencies. It is not a claim that all 297,210 protected methods in the whole application were recovered. Decompiler warnings and unrelated protected classes remain; the selected builder catalogue has no `Method not decompiled` failures.
 
 ## Offline observations
 
@@ -57,5 +57,7 @@ Root: `E:/Builds/research/soundcore-full-protocol-2026-11-13`.
 - `live-fixed/` and `live-jadx/sources/`: checksum-repaired analysis copies and recovered Java.
 - `protocol-class-index.json`, `live-recovery-measurement.json`: coverage measurements.
 - `model-route-facts.json`, `sdk-profile-facts.json`: derived registration/profile facts.
+
+A later Things pass recovered another 351 selected classes / 2,353 methods with no remaining instruction-store markers; see [Things protocol research](THINGS_PROTOCOL_5_0_35.md).
 
 Use these artifacts to continue semantic protocol analysis. Keep vendor implementation and raw artifacts outside Git; commit only derived protocol facts and documentation.

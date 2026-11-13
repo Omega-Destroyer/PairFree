@@ -67,3 +67,18 @@ This is a real limit, recorded with what was checked.
 ## Read afterwards: JBL PersoniFi's audiogram-to-EQ rule (JBL Headphones 5.37.10)
 
 Read from `nt.b` (`HearingTestBandProvider`), `nt.a`, `mt.j` and `xu.g`: the audiogram's thresholds per ear are floored at 0 dB; the loss at each of the nine frequencies is the lower of the two ears (`mt.j.d`); for every frequency except 250 and 500 Hz a loss of 30 dB or less gives a boost of 0.34 x loss (a loss over 30 dB gives none), as a peaking filter (type 1, Q 1.0); the four largest boosts are kept (sorted by boost, then by the filter's second value) and passed through a last adjustment step (`p.a`, not read). `mt.b` holds amplitude multipliers per frequency for JBL's warble tone files (`warble_250` to `warble_12k`), one table per model family (Club 700, Club One, Club 950, a default, each with an ANC-on variant): they calibrate JBL's own headphones' output to dB HL and are not transferable. PairFree's generic hearing test already turns relative results into per-band gains, so JBL's rule is recorded here but not ported: the thresholds it needs are absolute, and PairFree's phone-run tones are not calibrated to JBL's headphones.
+
+## Soundcore 3.3.0 (2026-11-12): the newest readable app
+
+The owner supplied 3.3.0 (APKMirror, `com.oceanwing.soundcore` 3.3.0-272). **It is not protected**: 11 `classes*.dex` files, 15,042 decompiled classes (jadx, `E:\Builds\research\decompiled\soundcore-3.3.0`), no ijiami files. 3.8.9 (also supplied) is already ijiami-protected, so 3.3.0 is the last readable app after 2.9.9. Compared with 2.9.9 it names 15 more model codes: A3004, A3040, A3130, A3398, A3399, A3850, A3936, A3943, A3944, A3947, A3948, A3949, A3953, A3961 and A6610. It holds a per-model package in `activity/<model>/` and a state parser per model family under `devicecmd/manager/l/` (for example `l/n/a.java`, `A3953AnalysisService`, parses the A3953's ANC state byte by byte).
+
+What this opens, against what PairFree has:
+- **Models PairFree lists as report-only that 3.3.0 describes:** the Liberty 4 (A3953: 47 activities, HearID 3 test, pressure sensitivity, prompts, spatial audio, ANC test, wear detection), the Sport X10 (A3961), the Sleep A10 (A6610: 26 activities), the VR P10 (A3850, a dongle) and the Life Note C (A3943, no activities of its own).
+- **Models PairFree lacks:** A3130, A3398, A3399.
+- **Models PairFree built from OpenSCQ30 and the owner's recordings that the app can now confirm:** the Space A40 (A3936: HearID, HearID advance and custom, custom UI, find device, EQ), the Liberty 4 NC (A3947), the A20i/A25i (A3948), the Life P2 Mini (A3944), the Q20i and the Space Q45.
+
+Not yet read (to do, none blocked): the A3953, A3936, A3961, A6610 and A3850 state parsers and command ids, their feature screens, and A3936's HearID conversion, which is the part 6.4.0's protection hid. Tracked in `data/unused_ids.json` and the gap-audit plan.
+
+## Galaxy Buds plugins of the older models (2026-11-12)
+
+Samsung's Galaxy Wearable app downloads one plugin per model from the Galaxy Store; the owner supplied six from APKMirror, all unprotected: `fridaymgr` (label Galaxy Buds), `popcornmgr` (Galaxy Buds+), `neobeanmgr` (Galaxy Buds Live), `berrymgr` (Galaxy Buds2), `zenithmgr` (Galaxy Buds2 Pro) and `paranmgr` (Galaxy Buds3 Pro), decompiled under `E:\Builds\research\decompiled\samsung-<name>`. `pearlmgr` and `jellymgr` (the other two packages GalaxyBudsClient lists; probably Buds FE and Buds3) are not supplied yet. These give the app's own layouts for the models PairFree took from GalaxyBudsClient only; the comparison is to do.

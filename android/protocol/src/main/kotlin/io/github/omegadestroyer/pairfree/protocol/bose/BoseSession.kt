@@ -2,6 +2,8 @@ package io.github.omegadestroyer.pairfree.protocol.bose
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -20,9 +22,9 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * SET needs. The device answers a SETGET with the new value, or with an error, after which PairFree
  * reads the setting again so the screen shows what the device holds.
  */
-public class BoseSession {
+public class BoseSession : FitTest {
     /** What the shared screens show. */
-    public var state: EarbudState = EarbudState()
+    override var state: EarbudState = EarbudState()
         private set
 
     public var productId: Int? = null
@@ -60,6 +62,8 @@ public class BoseSession {
     private var settingsConfig: ByteArray? = null
     private val modes = sortedMapOf<Int, Mode>()
     private val outbox = mutableListOf<BosePacket>()
+    private val flags = mutableMapOf<String, Boolean>()
+    private var alerts: Int? = null
 
     /** One EQ band as the device reports it: its id, range and value (Bose's RangeControl). */
     public data class EqBand(val id: Int, val min: Int, val max: Int, val value: Int)
@@ -81,6 +85,8 @@ public class BoseSession {
         add(BosePacket.get(BoseFunction.PRODUCT_INFO_FIRMWARE_VERSION))
         add(BosePacket.get(BoseFunction.STATUS_BATTERY_LEVEL))
         for (f in SETTINGS) add(BosePacket.get(f))
+        for (f in FLAGS.values) add(BosePacket.get(f))
+        add(BosePacket.get(BoseFunction.SETTINGS_ALERTS))
         add(BosePacket.get(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE))
         add(BosePacket.get(BoseFunction.AUDIO_MODES_CURRENT_MODE))
         add(BosePacket.get(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG))
@@ -130,6 +136,9 @@ public class BoseSession {
             // Minutes, 0 for never; Bose's app reads a reply of three bytes or more as the first byte and the third.
             BoseFunction.SETTINGS_STANDBY_TIMER -> if (p.isNotEmpty()) standbyMinutes = if (p.size < 3) p.u8(0) else (p.u8(2) shl 8) or p.u8(0)
             BoseFunction.SETTINGS_BUTTONS -> if (p.size >= 3) button = p.copyOf()
+            BoseFunction.SETTINGS_ALERTS -> if (p.isNotEmpty()) alerts = p.u8(0)
+            BoseFunction.CONTROL_FIT_QUALITY -> if (p.size >= 4) fitStatus(p)
+            in FLAGS.values -> if (p.isNotEmpty()) FLAGS.entries.firstOrNull { it.value == function }?.let { flags[it.key] = p.u8(0) and 1 == 1 }
             BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE -> if (p.isNotEmpty()) spatial = p.u8(0)
             BoseFunction.AUDIO_MODES_CURRENT_MODE -> if (p.isNotEmpty()) currentMode = p.u8(0)
             BoseFunction.AUDIO_MODES_SETTINGS_CONFIG -> if (p.size >= SETTINGS_CONFIG_SIZE) settingsConfig = p.copyOf(SETTINGS_CONFIG_SIZE)
@@ -175,8 +184,37 @@ public class BoseSession {
         return Mode(p.u8(0), (p.u8(1) shl 8) or p.u8(2), name, userSlot = p.u8(3) == 1, configured = p.u8(4) == 1)
     }
 
+    /**
+     * The fit test (Bose's `ControlFitQualityStartPacket`, control 15): the earbuds answer with a status for each earbud: which one (1 left, 2 right), the
+     * personalisation result, a debug byte and the level. Bose's app (`FitQualityInfo`) counts a complete personalisation at the customisable level as a good fit,
+     * a complete one at another level as a poor fit, and every other result as an error, which is no result here.
+     */
+    private fun fitStatus(p: ByteArray) {
+        val fit = when {
+            p.u8(1) != FIT_COMPLETE -> FitResult.Fit.UNKNOWN
+            p.u8(3) == FIT_CUSTOMIZABLE -> FitResult.Fit.GOOD
+            else -> FitResult.Fit.NOT_FIT
+        }
+        val held = state.fit
+        state = state.copy(fit = when (p.u8(0)) {
+            FIT_LEFT -> FitResult(fit, held?.right ?: FitResult.Fit.UNKNOWN)
+            FIT_RIGHT -> FitResult(held?.left ?: FitResult.Fit.UNKNOWN, fit)
+            else -> held
+        })
+    }
+
+    /** True for the earbuds of Bose's that have the fit test: the QC Earbuds II and the QC Ultra Earbuds. */
+    private val hasFitTest: Boolean get() = model?.name in FIT_MODELS
+
+    override fun startFitTest(): List<ByteArray>? {
+        if (!hasFitTest) return null
+        state = state.copy(fit = null)
+        return listOf(BosePacket.start(BoseFunction.CONTROL_FIT_QUALITY).bytes())
+    }
+
     /** Puts the firmware where the shared screens read it: the model's name and the version. */
     private fun refresh() {
+        if (state.fitTest != hasFitTest) state = state.copy(fitTest = hasFitTest)
         val fw = firmware ?: return
         val name = model?.name ?: productId?.let { "Bose " + it.toString(16).uppercase().padStart(4, '0') } ?: "Bose"
         state = state.copy(values = state.values + (Command.FIRMWARE_VERSION to Value.Text("${name}_$fw")))
@@ -208,6 +246,10 @@ public class BoseSession {
                     },
                     autoPlayPause?.let { Setting.Toggle("pause_taken_off", it) },
                     autoAnswer?.let { Setting.Toggle("auto_answer", it) },
+                ) + FLAGS.keys.mapNotNull { key -> flags[key]?.let { Setting.Toggle(key, it) } } + listOfNotNull(
+                    alerts?.let { Setting.Toggle(ALERT_RINGTONE, it and 1 != 0) },
+                    alerts?.let { Setting.Toggle(ALERT_HAPTICS, it and 2 != 0) },
+                ) + listOfNotNull(
                     voicePrompts?.takeIf { it and PROMPTS_TOGGLABLE != 0 }?.let { Setting.Toggle("voice_prompts", it and PROMPTS_ENABLED != 0) },
                 ),
             ),
@@ -281,6 +323,15 @@ public class BoseSession {
                     }
                     "pause_taken_off" -> BosePacket.setGet(BoseFunction.SETTINGS_AUTO_PLAY_PAUSE, b).also { autoPlayPause = on }
                     "auto_answer" -> BosePacket.setGet(BoseFunction.SETTINGS_AUTO_ANSWER, b).also { autoAnswer = on }
+                    ALERT_RINGTONE, ALERT_HAPTICS -> {
+                        // Bose's SettingsAlertsSetGetPacket: bit 0 the ringtone, bit 1 the haptics, in one byte.
+                        val held = alerts ?: return null
+                        val bit = if (change.key == ALERT_RINGTONE) 1 else 2
+                        val next = if (on) held or bit else held and bit.inv()
+                        alerts = next
+                        BosePacket.setGet(BoseFunction.SETTINGS_ALERTS, next and 3)
+                    }
+                    in FLAGS.keys -> BosePacket.setGet(FLAGS.getValue(change.key), b).also { flags[change.key] = on }
                     "voice_prompts" -> {
                         // Bose's app writes on (bit 5) and the language (bits 0 to 4) in one byte.
                         val v = voicePrompts ?: return null
@@ -387,8 +438,22 @@ public class BoseSession {
             BoseFunction.SETTINGS_BUTTONS,
         )
 
+        /**
+         * The on/off settings Bose's app has beyond those above, each one byte whose bit 0 is on (its Settings packets, 13.3.4): conversation mode, auto aware,
+         * head gestures, flip to off, motion auto-off, disabling touch, auto volume and keeping the noise cancellation level. Not in [WRITTEN]: a model without one
+         * answers its read with an error, which must not be read again.
+         */
+        private val FLAGS = linkedMapOf(
+            "bose_conversation_mode" to BoseFunction.SETTINGS_CONVERSATION_MODE, "bose_auto_aware" to BoseFunction.SETTINGS_AUTO_AWARE_MODE,
+            "bose_head_gesture" to BoseFunction.SETTINGS_HEAD_GESTURE, "bose_flip_to_off" to BoseFunction.SETTINGS_FLIP_TO_OFF,
+            "bose_motion_auto_off" to BoseFunction.SETTINGS_MOTION_INACTIVITY_AUTO_OFF, "bose_disable_touch" to BoseFunction.SETTINGS_DISABLE_CAPTOUCH,
+            "bose_auto_volume" to BoseFunction.SETTINGS_AUTO_VOLUME_LEVEL, "bose_cnc_persistence" to BoseFunction.SETTINGS_CNC_PERSISTENCE,
+        )
+        private const val ALERT_RINGTONE = "bose_alert_ringtone"
+        private const val ALERT_HAPTICS = "bose_alert_haptics"
+
         /** What the device report shows: the functions PairFree reads. */
-        private val REPORTED = SETTINGS.toSet() + setOf(
+        private val REPORTED = SETTINGS.toSet() + FLAGS.values + BoseFunction.SETTINGS_ALERTS + setOf(
             BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE,
             BoseFunction.PRODUCT_INFO_BMAP_VERSION, BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS, BoseFunction.PRODUCT_INFO_FIRMWARE_VERSION,
             BoseFunction.STATUS_BATTERY_LEVEL, BoseFunction.AUDIO_MODES_CURRENT_MODE, BoseFunction.AUDIO_MODES_SETTINGS_CONFIG,
@@ -398,6 +463,12 @@ public class BoseSession {
         private val WRITTEN = SETTINGS.toSet() + setOf(
             BoseFunction.AUDIO_MODES_CURRENT_MODE, BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE,
         )
+
+        private val FIT_MODELS = setOf("Bose QC Earbuds II", "Bose QC Ultra Earbuds", "Bose QC Ultra 2 Earbuds")
+        private const val FIT_LEFT = 1
+        private const val FIT_RIGHT = 2
+        private const val FIT_COMPLETE = 0
+        private const val FIT_CUSTOMIZABLE = 2
 
         private const val RECORD = 4
         private const val SINGLE = 0

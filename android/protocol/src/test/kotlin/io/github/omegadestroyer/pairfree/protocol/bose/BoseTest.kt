@@ -132,6 +132,46 @@ class BoseTest {
     }
 
     @Test
+    fun theOtherSwitchesOfBosesAppAreRowsOnceTheirReadAnswers() {
+        val s = BoseSession()
+        assertNull(setting(s, "bose_conversation_mode"))
+        s.receive(status(BoseFunction.SETTINGS_CONVERSATION_MODE, "01"))
+        s.receive(status(BoseFunction.SETTINGS_FLIP_TO_OFF, "00"))
+        s.receive(status(BoseFunction.SETTINGS_ALERTS, "02"))
+        assertEquals(Setting.Toggle("bose_conversation_mode", true), setting(s, "bose_conversation_mode"))
+        assertEquals(Setting.Toggle("bose_flip_to_off", false), setting(s, "bose_flip_to_off"))
+        assertEquals(Setting.Toggle("bose_alert_ringtone", false), setting(s, "bose_alert_ringtone"))
+        assertEquals(Setting.Toggle("bose_alert_haptics", true), setting(s, "bose_alert_haptics"))
+        assertNull(setting(s, "bose_head_gesture"), "not read, so not offered")
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_FLIP_TO_OFF, 1)), s.change(SettingChange.Toggle("bose_flip_to_off", true)))
+        // The two alert bits go in one byte, the other kept.
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_ALERTS, 3)), s.change(SettingChange.Toggle("bose_alert_ringtone", true)))
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_ALERTS, 1)), s.change(SettingChange.Toggle("bose_alert_haptics", false)))
+        assertTrue(BosePacket.get(BoseFunction.SETTINGS_CONVERSATION_MODE) in BoseSession().start())
+    }
+
+    @Test
+    fun theFitTestIsBosesFitQualityOnTheEarbudsThatHaveIt() {
+        val s = BoseSession()
+        assertNull(s.startFitTest(), "the model is not known yet")
+        s.receive(status(BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS, "407200"))
+        assertTrue(s.state.hasFitTest, "the QC Ultra Earbuds")
+        val frames = s.startFitTest()!!
+        assertEquals(listOf(BosePacket.start(BoseFunction.CONTROL_FIT_QUALITY).bytes().toList()), frames.map { it.toList() })
+        assertTrue(s.allowed(BosePacket.start(BoseFunction.CONTROL_FIT_QUALITY)))
+        // Left: personalisation complete at the customisable level is a good fit; right: complete at another level is not.
+        s.receive(status(BoseFunction.CONTROL_FIT_QUALITY, "01000002"))
+        s.receive(status(BoseFunction.CONTROL_FIT_QUALITY, "02000001"))
+        assertEquals(io.github.omegadestroyer.pairfree.protocol.FitResult(io.github.omegadestroyer.pairfree.protocol.FitResult.Fit.GOOD, io.github.omegadestroyer.pairfree.protocol.FitResult.Fit.NOT_FIT), s.state.fit)
+        // An error (not worn) is no result.
+        s.receive(status(BoseFunction.CONTROL_FIT_QUALITY, "02010002"))
+        assertEquals(io.github.omegadestroyer.pairfree.protocol.FitResult.Fit.UNKNOWN, s.state.fit!!.right)
+        val headphones = BoseSession()
+        headphones.receive(status(BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS, "400C00"))
+        assertNull(headphones.startFitTest())
+    }
+
+    @Test
     fun earbudsReportEachSide() {
         val s = BoseSession()
         s.receive(status(BoseFunction.STATUS_BATTERY_LEVEL, vectors.str("qc_ultra2_earbuds_battery")))

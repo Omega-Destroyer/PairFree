@@ -1020,6 +1020,16 @@
     <string name="setting_sc_super_hearing">Super hearing</string>
     <string name="setting_sc_call_mix">Call mix</string>
     <string name="setting_sc_microphone">Microphone</string>
+    <string name="setting_bose_conversation_mode">Conversation mode</string>
+    <string name="setting_bose_auto_aware">Auto aware</string>
+    <string name="setting_bose_head_gesture">Head gestures</string>
+    <string name="setting_bose_flip_to_off">Flip to turn off</string>
+    <string name="setting_bose_motion_auto_off">Turn off when still</string>
+    <string name="setting_bose_disable_touch">Disable touch controls</string>
+    <string name="setting_bose_auto_volume">Automatic volume</string>
+    <string name="setting_bose_cnc_persistence">Keep the noise cancellation level</string>
+    <string name="setting_bose_alert_ringtone">Alert tones</string>
+    <string name="setting_bose_alert_haptics">Alert vibration</string>
     <string name="setting_ca_cantonese">Cantonese</string>
     <string name="setting_ca_neutral">Neutral</string>
     <string name="setting_ca_immersive">Immersive</string>

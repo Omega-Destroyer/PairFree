@@ -34,6 +34,15 @@ Keep account details out of chat. A failure can be described using only the disp
 
 ## Verification and maintenance
 
-`test_account_fetch_offline.py` beside the tool has six passing offline tests: simulated login/catalogue/metadata/script retrieval, account-data exclusion from output, no account headers on CDN requests, stop on HTTP 401 without leaking error content, rejection of encrypted login data, URL/redirect/path restrictions, and hidden-input refusal for pipes. Synthetic test output stays under the ignored vendor-data tree and is removed after each test. No account or live login request was used for validation.
+`test_account_fetch_offline.py` beside the tool has eight passing offline tests: simulated login/catalogue/metadata/script retrieval, account-data exclusion from output, no account headers on CDN requests, stop on HTTP 401 without leaking error content, rejection of encrypted login data, URL/redirect/path restrictions, and hidden-input refusal for pipes. Synthetic test output stays under the ignored vendor-data tree and is removed after each test. No account or live login request was used for validation.
 
 The recovered account/security sources used for these facts are outside Git in `C:/Users/Nima/AppData/Local/PairFreeResearch/soundcore-login-2026-11-13/` (`jadx/`, `jadx2/`, focused `SecurityApisKt.java`). They were recovered in the disposable offline emulator by resolving method definitions, without calling login, security signing, key exchange or account-state helpers. The emulator was shut down afterward. The Python tools and launcher remain outside Git, as required for vendor-server fetch code.
+
+
+## HTTP 200 troubleshooting (2026-11-14)
+
+The owner observed HTTP 200 followed by the tool's generic rejection message. This establishes that the HTTP exchange completed, not successful login, a password error, or a requirement for additional verification. The previous message grouped those possibilities too broadly.
+
+The updated tool prints a `Response diagnostic:` line on JSON failures: fixed response-type labels, bounded numeric `res_code`/`code`/`error_code` fields, data-object shape and a boolean indicating whether a token field is present. Optional message hints are fixed English keyword categories, not server text and not a diagnosis. Unknown keys, messages, account data, token values and code values matching supplied credential material are withheld. Nothing from this diagnostic is saved to disk.
+
+Rerun the same launcher locally. Share only the `Stage:` and `Response diagnostic:` lines if further help is needed. Do not share a login body, password, email, session token or raw response. Two additional mocked tests cover HTTP-200 application failure and diagnostic privacy; no real account was accessed by the agent.

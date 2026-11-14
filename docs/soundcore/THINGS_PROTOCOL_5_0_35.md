@@ -133,3 +133,8 @@ The original catalogue observation remains in `catalogue.json.meta.json` and `ru
 ## Owner-run account tool
 
 At the owner?s request, a separate [local own-account tool](OWN_ACCOUNT_FETCH.md) now prompts for hidden credentials and can attempt the documented login/catalogue/metadata path. Only mocked offline tests have run. The app also signs and encrypts login with a vendor app secret, so account credentials alone may be refused; the tool does not extract or reuse that secret. This does not change the observed anonymous HTTP 401 results above.
+
+
+## Security follow-up: guest key versus app secret
+
+The [security follow-up](SECURITY_FLOW_5_0_35.md) distinguishes legacy app-secret signing from the Things guest callback. `SoundCoreThingIot.c/m/n` hashes timestamp plus selected key with SHA-1 and emits lower-case hex; its signed-out key is cached guest-negotiated state, while its signed-in key is empty. Guest creation carries `client_secret_info.public_key` and returns guest identity/server-public-key data. This is not yet a working guest downloader: header binding, the protected legacy wrapper and the Things crypto envelope still require verification. No new server request or protocol download occurred in that follow-up.

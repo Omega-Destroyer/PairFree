@@ -2,6 +2,10 @@
 
 The owner requested this local tool on 2026-11-13. It follows the explicit CLAUDE.md exception for a script run by the owner with credentials typed at its prompt. The agent must not run it with a real account, request pasted credentials/tokens, inspect its login response, or extract an app secret.
 
+## Current status
+
+The encrypted client is **not ready**. Normal launch now stops before asking for credentials or making requests. See [security implementation status](SECURITY_FLOW_5_0_35.md). Use `--security-status` to inspect progress. The instructions below describe the earlier unsigned diagnostic; `--legacy-unsigned` is now required to opt into it.
+
 ## Run locally
 
 Double-click `E:/Builds/research/soundcore-full-protocol-2026-11-13/Fetch-Soundcore-Account.cmd`, or run this in your own PowerShell terminal:
@@ -34,7 +38,7 @@ Keep account details out of chat. A failure can be described using only the disp
 
 ## Verification and maintenance
 
-`test_account_fetch_offline.py` beside the tool has eight passing offline tests: simulated login/catalogue/metadata/script retrieval, account-data exclusion from output, no account headers on CDN requests, stop on HTTP 401 without leaking error content, rejection of encrypted login data, URL/redirect/path restrictions, and interactive-input refusal for pipes. Synthetic test output stays under the ignored vendor-data tree and is removed after each test. No account or live login request was used for validation.
+`test_account_fetch_offline.py` beside the tool has nine passing offline tests: simulated login/catalogue/metadata/script retrieval, account-data exclusion from output, no account headers on CDN requests, stop on HTTP 401 without leaking error content, rejection of encrypted login data, URL/redirect/path restrictions, and interactive-input refusal for pipes. Synthetic test output stays under the ignored vendor-data tree and is removed after each test. No account or live login request was used for validation.
 
 The recovered account/security sources used for these facts are outside Git in `C:/Users/Nima/AppData/Local/PairFreeResearch/soundcore-login-2026-11-13/` (`jadx/`, `jadx2/`, focused `SecurityApisKt.java`). They were recovered in the disposable offline emulator by resolving method definitions, without calling login, security signing, key exchange or account-state helpers. The emulator was shut down afterward. The Python tools and launcher remain outside Git, as required for vendor-server fetch code.
 
@@ -71,3 +75,6 @@ Private app data is not accessible through the tested `run-as` route. The origin
 An automatic approval review rejected a combined command including a private-directory permission check, and then rejected a separate offline-emulator startup/source-preparation command. The only supplied reason was `blocked by policy`. The rejected commands did not execute; private access and emulator startup were not retried through alternate tools. Subsequent work was limited to existing local source and the already-readable external filename scan.
 
 Current result: successful manual vendor login does not yet provide an accessible protocol export through ordinary ADB on this phone. An app-supported protocol export or another authorized access method is still required; no credentials or account-session extraction is a substitute.
+
+
+The owner subsequently authorized local app-secret use for this Soundcore case. Signing components and the EC helper are implemented outside Git, with 18 total offline checks across the tool and security modules. Body encryption, key exchange and Things header/envelope binding remain unverified. [The security status document](SECURITY_FLOW_5_0_35.md) records the outstanding work and an accidental app-key exposure in a source-inspection tool response.

@@ -77,3 +77,8 @@ Commit only derived docs/data on the isolated research branch. Record the input 
 ## Native declarations and per-model follow-up
 
 Zero instruction-store markers only measures restoration of that protection mechanism. The original 2,984-class selection also contains **188 declared native methods in 17 classes**, mainly activities, popups and lifecycle code. It must not be described as full recovery of those methods. The [per-model evidence](MODEL_FEATURES_5_0_35.md) records 165 compiled-registry keys, declared home-VM bounds, reachable home-card factories, explicit serializer routes, 17 legacy More-panel branches and A3028/A3028CC firmware-dependent manager migration. The latest source/mapping directory for this follow-up is `C:/Users/Nima/AppData/Local/PairFreeResearch/soundcore-feature-mapping-2026-11-13/`.
+
+
+## Failed-current-run guard (2026-11-14)
+
+The external runner now checks the instrumentation completion marker and result code before pulling outputs. `am instrument` can exit at the shell with code zero while reporting `Process crashed`; pulling an existing folder afterward yields stale observations. The latest security pass failed to reproduce a complete capture on both the old lab and a fresh guest, so it claims no new crypto definitions. See [security follow-up](SECURITY_FLOW_5_0_35.md) for the tested conditions. Its lab metadata/clock were restored and headless guests shut down; old successful host captures remain available.

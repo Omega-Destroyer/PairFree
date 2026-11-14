@@ -29,13 +29,17 @@ The interceptor adds request timestamp, a request-once UUID and `unique-sign`. `
 
 `ThingVisitorManager` requests `passport/create_guest` with `client_secret_info.public_key`. Its API method includes PHONE model type and Soundcore app name, and uses an OpenUDID argument. The normal common interceptor also supplies terminal and other app headers. A future standalone client must use its own generated ephemeral identifier, not read the owner's phone identifier.
 
-The response model contains `guest_id` and `server_secret_info.public_key`. The manager derives shared key material, stores guest identity/key state, and refreshes the Things configuration. This is a possible route to cloud definitions without personal login, but the end-to-end guest client has not been implemented or verified.
+The response model contains `guest_id` and `server_secret_info.public_key`. The manager derives shared key material, stores guest identity/key state, and refreshes the Things configuration. A standalone two-request guest probe is now implemented outside Git and tested offline; server interoperability has not been verified. See [guest probe](GUEST_PROTOCOL_PROBE.md).
 
 The recovered **CommonKit** ECDH helper uses curve P-256, provider SC, uncompressed EC point hex, and `KeyAgreement.generateSecret("AES")`. An independent synthetic reference using SpongyCastle 1.58.0.0 returned 32 shared bytes; the Python implementation matches it in both directions. The guest caller uses the separate protected InterfaceSafe wrapper, so equivalence of its full encoding/derivation must still be verified. The helper/reference evidence must not be promoted to an observed guest-server handshake.
 
 `SoundCoreThingIot.c/m/n` establishes **SHA-1 of timestamp concatenated with the selected key, formatted as lower-case hex**. Its key selector returns the cached guest key when signed out and an empty string when signed in. In this path the selected guest key is negotiated state, not the embedded app signing secret. This corrects the earlier assumption that all timestamp signing used a static vendor credential.
 
-**Unresolved:** the callback's actual request-header binding, the Things preset-key selection, the SDK's additional exchange and its encrypted request/response envelope. `SoundCoreIotKit.setInfoProvider` and relevant `CryptoRequestFunctions` implementations remain protected. Header names must not be guessed from the existence of constants such as X-Signature or X-Auth-Token.
+**Header binding recovered in the follow-up:** `SoundCoreIotKit.setInfoProvider$lambda$0` takes `PlatformFunctionKt.currentTimeSeconds()`, returns `X-Auth-TS` with that decimal value and `X-Auth-Token` with the callback result. `GlobalHeaderRouting` sets `X-Terminal-ID` to the guest ID. This is direct method-body evidence, not an inference from header constants. `X-Signature` belongs to separate crypto processing.
+
+The newer `soundcore-login-2026-11-13/jadx2/sources` and feature-mapping trees contain this helper even though the older discovery tree has placeholders. The external method-inventory parser also misses some generic Map return types containing commas; an absent inventory entry must not be treated as an absent body. Inspect the redacted class and compare recovery trees before declaring a method protected.
+
+**Still unresolved:** Things preset-key selection and the SDK's additional exchange/encrypted request-response envelope (`CryptoRequestFunctions`). The probe omits that additional layer explicitly and stops on refusal or non-structured data. It is an experiment to establish whether a signed plaintext guest catalogue is accepted, not a verified reproduction of the complete SDK.
 
 ## Recovery attempts and evidence limits
 
@@ -49,7 +53,7 @@ This remains a loader/semantic-recovery task, not a claim that native code is im
 
 ## Validation and artifacts
 
-18 offline tests pass: nine account-tool/privacy/gating cases and nine material/signing/EC cases. They cover sorted header signing, raw query preservation, credential representation/serialization, cleared-key refusal, bounded ELF mapping, invalid EC point handling, the synthetic SpongyCastle reference and stopping the normal CLI before any credential prompt or request.
+27 offline tests pass: nine account-tool/privacy/gating cases, nine material/signing/EC cases and nine guest-probe cases. They cover sorted header signing, raw query preservation, credential representation/serialization, cleared-key refusal, bounded ELF mapping, invalid EC point handling, the synthetic SpongyCastle reference, stopping the normal account CLI before credentials/network, guest header binding, request construction/pacing, refusal handling and exclusion of guest state from saved output. No live guest request was made by the agent.
 
 - External scripts: `soundcore_app_security.py`, `test_security_profile_offline.py`, `test_account_fetch_offline.py`, and `fetch_soundcore_account.py` under the research root above.
 - Crypto environment, native payload copies and recovery experiments: `C:/Users/Nima/AppData/Local/PairFreeResearch/soundcore-crypto-2026-11-14/`.

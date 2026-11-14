@@ -4,7 +4,7 @@ The owner requested this local tool on 2026-11-13. It follows the explicit CLAUD
 
 ## Current status
 
-The encrypted client is **not ready**. Normal launch now stops before asking for credentials or making requests. See [security implementation status](SECURITY_FLOW_5_0_35.md). Use `--security-status` to inspect progress. The instructions below describe the earlier unsigned diagnostic; `--legacy-unsigned` is now required to opt into it.
+The encrypted client is **not ready**. Normal launch now stops before asking for credentials or making requests. See [security implementation status](SECURITY_FLOW_5_0_35.md). Use `--security-status` to inspect progress. The instructions below describe the earlier unsigned diagnostic; `--legacy-unsigned` is now required to opt into it. The next owner-run experiment is the separate [guest probe](GUEST_PROTOCOL_PROBE.md), which needs no personal login.
 
 ## Run locally
 

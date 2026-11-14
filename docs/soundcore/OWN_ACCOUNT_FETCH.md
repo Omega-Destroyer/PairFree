@@ -26,6 +26,8 @@ If a plaintext account login succeeds, `LoginSafelyResult.data` contains the `Ac
 
 ## Output and privacy
 
+Started account-fetch runs now also save `run-report.json` in their timestamped output directory and update `server_dump/soundcore/latest-run-report.json`, including failures before login succeeds. Reports contain fixed stage/status/structural diagnostics and validated milestones, without credentials, headers, raw response bodies or server messages. The encrypted-login readiness gate still stops ordinary launch before entering the fetch flow. See [guest probe reporting](GUEST_PROTOCOL_PROBE.md) for the shared report format.
+
 Only protocol catalogue/metadata and public JS/ZIP resources are saved, under:
 
 `E:/Builds/research/soundcore-full-protocol-2026-11-13/worktree/server_dump/soundcore/own-account-<UTC timestamp>/`

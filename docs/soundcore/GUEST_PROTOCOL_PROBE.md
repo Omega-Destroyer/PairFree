@@ -1,6 +1,6 @@
 # Soundcore 5.0.35 guest catalogue probe
 
-The local probe is implemented and passes offline tests. **Live server compatibility remains unverified.** It is intended to determine whether the guest route can supply the catalogue without a personal login. It does not yet fetch per-model definitions or implement the SDK's additional encryption.
+The local probe is implemented and passes offline tests. **Owner-run result: guest bootstrap accepted, catalogue HTTP 401.** The owner reported `Stage: get_product_list; HTTP status: 401` after running the probe. Reaching that stage requires a validated guest response and successful local EC agreement, so this verifies the bootstrap path, but does not establish that the server accepted the derived key or catalogue signature. The exact cause of the catalogue refusal remains unresolved; additional SDK crypto is one unimplemented part, not a proven diagnosis. Do not repeat the unchanged request. The tool does not yet fetch per-model definitions or implement the SDK's additional encryption.
 
 ## Run locally
 
@@ -26,14 +26,16 @@ The previous bare anonymous catalogue request received HTTP 401. This probe chan
 
 HTTP 200 alone is insufficient. Both application envelopes and their data shapes must pass validation. Guest-bootstrap replies, private/shared keys, identifiers, headers and server messages are never saved or displayed. Fixed stage/status/structural diagnostics are displayed on failure. The tool stops immediately on refusal, unexpected data, unsupported EC encoding or an encrypted/non-JSON response.
 
+Every started probe now creates its output directory before loading material or making requests. A `run-report.json` records UTC start/finish times, outcome/exit code, validated milestones and the stage, HTTP status and allowlisted structural diagnostic for each request. It is updated after each request, so an interrupted process can leave a report marked `running`. The newest snapshot is also written to `server_dump/soundcore/latest-run-report.json`; previous timestamped reports remain intact. Failure produces a report even when no catalogue is saved. The account downloader uses the same reporting helper for future metadata/resource pulls. Reports contain no HTTP headers, response bodies, server messages, credentials or session values. A disk/permission failure can prevent report creation; the tool then stops before making requests.
+
 Only a successful plaintext structured catalogue is redacted and saved to the ignored directory:
 
 `worktree/server_dump/soundcore/guest-probe-<UTC timestamp>/catalogue.json`
 
 No personal-account session is used or stored. There are no earbud, firmware, pairing, account-change, telemetry, or CDN requests. HTTPS certificate checking is enabled, redirects and environment proxies are disabled, and response size is bounded. Python cannot guarantee complete erasure of immutable temporary strings; the process exits after the probe.
 
-For review, report only the fixed `Stage:`, HTTP status and `Response diagnostic:` lines, or that a catalogue was saved. No raw guest reply or authentication value is needed. If successful, the next task is to inspect the sanitized catalogue shape and extend the guest client to request per-model definitions. If refused, recover the missing SDK crypto processing before another attempt.
+For future review, inspect `latest-run-report.json` and the corresponding timestamped folder directly; terminal copying is no longer needed. No raw guest reply or authentication value is needed. If successful, the next task is to inspect the sanitized catalogue shape and extend the guest client to request per-model definitions. After the observed refusal, recover the missing SDK processing and verify the catalogue requirements before another attempt. The earlier run predates file reporting; its result is recorded here from the owner's message, not represented as a machine-generated report.
 
 ## Offline checks
 
-`test_guest_fetch_offline.py` has nine synthetic tests covering header names/time units, EC agreement, strict bootstrap envelopes, identifier rejection, body/header construction, pacing, allowlisted paths, immediate HTTP-refusal handling, fallback-only material loading and sanitized/no-output result paths. Together with the existing security/account tests, 27 tests pass. All scripts and launchers stay outside Git under the research root; only these factual instructions are committed.
+`test_guest_fetch_offline.py` has ten synthetic tests covering header names/time units, EC agreement, strict bootstrap envelopes, identifier rejection, body/header construction, pacing, allowlisted paths, immediate HTTP-refusal handling, fallback-only material loading and sanitized output/report paths. A full simulated bootstrap-200/catalogue-401 run checks that both stages and the validated-bootstrap milestone are saved without guest material. `test_run_report_offline.py` checks diagnostic allowlisting, latest-report replacement and preservation of earlier runs. Together with the existing security/account tests, 29 tests pass. All scripts and launchers stay outside Git under the research root; only these factual instructions are committed.

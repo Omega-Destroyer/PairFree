@@ -32,6 +32,8 @@ Two bounded diagnostic runs were made under that clarification. Both validated g
 
 The script's guest authentication and encrypted catalogue request are unchanged by this diagnostic follow-up. No further unchanged live probe is warranted. The current recovery target remains the actual InterfaceSafe guest agreement/formatting and cache accessors, rather than guessing alternate key formats. The second run and all safe reports remain under the ignored vendor-data directory.
 
+The subsequent owner-selected [focused helper recovery pass](HELPER_RECOVERY_5_0_35.md) indexed the exact targets and tested the loader offline. It recovered no new method bodies and made no vendor-server requests; catalogue authentication remains unchanged.
+
 ## Evidence boundaries
 
 | Component | Evidence in Soundcore 5.0.35 | Remaining limit |

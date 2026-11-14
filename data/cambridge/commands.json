@@ -1,37 +1,398 @@
 {
-  "_source": "Melomania 2.8.12: q2/b, sb/c, rb/c; docs/cambridge/PROTOCOL.md. Protocol facts, no vendor code.",
+ "_source": "Melomania 2.8.12: q2/b, sb/c, rb/c; docs/cambridge/PROTOCOL.md. Protocol facts, no vendor code.",
+ "wire": {
+  "START": 255,
+  "VERSION": 1,
+  "VENDOR": 10,
+  "ACK": 32768,
+  "MAX_PAYLOAD": 254,
+  "REPLY_MS": 30000,
+  "SPP_UUID": "00001101-0000-1000-8000-00805F9B34FB",
+  "GAIA_UUID": "00001107-D102-11E1-9B23-00025B00A5A5"
+ },
+ "commands": {
+  "STATE": 1920,
+  "PRESET": 660,
+  "CONTROLS": 1923,
+  "SET_PRESET": 532,
+  "SET_BAND": 538,
+  "SET_CONTROLS": 1922,
+  "SET_AMBIENT": 1944,
+  "SET_AMBIENT_LEVEL": 1945,
+  "SET_CODEC": 1976,
+  "SET_LANGUAGE": 523
+ },
+ "values": {
+  "AMBIENT_ON": 1,
+  "AMBIENT_OFF": 2,
+  "AMBIENT_MIN": 0,
+  "AMBIENT_MAX": 100,
+  "BAND_HEADER": 6,
+  "BAND_PARAMETER": 2,
+  "BAND_APPLY": 1,
+  "GAIN_SCALE": 60,
+  "GAIN_MIN": -6,
+  "GAIN_MAX": 6,
+  "FIRST_BAND": 1,
+  "LAST_BAND": 5,
+  "NEUTRAL_PRESET": 0,
+  "CUSTOM_PRESET": 6,
+  "CODEC_LOCKED": 3
+ },
+ "offsets": {
+  "AMBIENT": 2,
+  "LANGUAGE": 3,
+  "LEFT": 8,
+  "RIGHT": 9,
+  "AMBIENT_LEVEL": 10,
+  "LEFT_FIRMWARE": 11,
+  "RIGHT_FIRMWARE": 14,
+  "ADDRESS_START": 17,
+  "ADDRESS_END": 29,
+  "ACTIVE_CODEC": 31,
+  "CODEC": 32
+ },
+ "languages": [
+  "yue",
+  "zh",
+  "en",
+  "fr",
+  "de",
+  "it",
+  "ja",
+  "es"
+ ],
+ "codecs": [
+  "sbc",
+  "aac",
+  "aptx",
+  "aac_aptx"
+ ],
+ "controls": [
+  "play_pause",
+  "next",
+  "previous",
+  "volume_up",
+  "volume_down",
+  "accept_call",
+  "reject_call",
+  "end_call",
+  "assistant",
+  "ambient"
+ ],
+ "presets": [
+  {
+   "name": "neutral",
+   "gains": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "immersive",
+   "gains": [
+    0,
+    -2,
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "name": "rnb",
+   "gains": [
+    3,
+    3,
+    0,
+    3,
+    0
+   ]
+  },
+  {
+   "name": "electronic",
+   "gains": [
+    0,
+    4,
+    0,
+    1,
+    5
+   ]
+  },
+  {
+   "name": "rock",
+   "gains": [
+    0,
+    3,
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "name": "voice",
+   "gains": [
+    -6,
+    -2,
+    0,
+    6,
+    0
+   ]
+  }
+ ],
+ "connect": {
+  "_about": "Melomania Connect 2.6.0 (A100, A100 SE, M100, P100, P100 SE, X100; docs/cambridge/PROTOCOL.md section 9): Qualcomm GAIA v3 with Cambridge's custom API. A frame is FF, version 3, flags (1 checksum, 2 length extension), the payload length, the vendor, the command word and the payload, with an XOR byte when the checksum flag is set. The command word is feature << 9 | type << 7 | command (type: 0 command, 1 notification, 2 response, 3 error). Read from devices/gaia3/customapi in the app; ids are the app's enums. The EQ is Qualcomm's music processing feature (vendor 001D, feature 5; QTIL v3), which the app drives through its bundled gaiaclient library: the earbuds hold one user set of bands (frequency, Q, filter, gain in 1/60 dB); the app's presets are lists of band gains (RemoteConfigDefault.json in the APK) that it writes to that user set. Each model's `config` is the app's LocalConfig/DeviceConfig (which controls it shows) and `eq_presets` its bundled RemoteConfigDefault.json. Touch actions are Qualcomm's gesture configuration feature (vendor 001D, feature 11; V3GestureConfigurationPlugin): a configuration is 16 bits, touchpad << 14 | context << 7 | action, listed per gesture; the app's assign screen offers tap, double tap, triple tap (swipe up) and long press per earbud with play/pause, next, previous, volume up and down, next noise mode, voice assistant (push to talk) or nothing. GET_DEVICES (22) is answered with one frame per paired device: id, name (20 bytes, NUL padded), four address bytes, connection status (peer); the app collects the frames for two seconds, and CONNECT_DEVICE/DISCONNECT_DEVICE (23, 24) take the id.",
   "wire": {
-    "START": 255, "VERSION": 1, "VENDOR": 10, "ACK": 32768,
-    "MAX_PAYLOAD": 254, "REPLY_MS": 30000,
-    "SPP_UUID": "00001101-0000-1000-8000-00805F9B34FB",
-    "GAIA_UUID": "00001107-D102-11E1-9B23-00025B00A5A5"
+   "VERSION": 3,
+   "VENDOR": 2974,
+   "FEATURE_MISC": 0,
+   "FEATURE_MODES": 1,
+   "FEATURE_CODEC": 2,
+   "FEATURE_GESTURES": 3,
+   "TYPE_COMMAND": 0,
+   "TYPE_NOTIFICATION": 1,
+   "TYPE_RESPONSE": 2,
+   "TYPE_ERROR": 3,
+   "TX_DELAY_MS": 100,
+   "QTIL_VENDOR": 29,
+   "FEATURE_MUSIC": 5,
+   "FEATURE_GESTURE_CONFIG": 11
   },
-  "commands": {
-    "STATE": 1920, "PRESET": 660, "CONTROLS": 1923,
-    "SET_PRESET": 532, "SET_BAND": 538, "SET_CONTROLS": 1922,
-    "SET_AMBIENT": 1944, "SET_AMBIENT_LEVEL": 1945,
-    "SET_CODEC": 1976, "SET_LANGUAGE": 523
+  "misc": {
+   "GET_MANUFACTURER": 0,
+   "GET_MODEL": 1,
+   "GET_API_LEVEL": 2,
+   "GET_BATTERY_STATE": 3,
+   "GET_FIRMWARE_VERSIONS": 4,
+   "GET_BLUETOOTH_ADDRESSES": 5,
+   "GET_LANGUAGE": 6,
+   "SET_LANGUAGE": 7,
+   "SET_AUTO_POWER_DOWN_TIMEOUT": 8,
+   "GET_AUTO_POWER_DOWN_TIMEOUT": 9,
+   "SET_LEFT_RIGHT_BALANCE": 10,
+   "GET_LEFT_RIGHT_BALANCE": 11,
+   "SET_FIND_HEADPHONES_ALERT": 12,
+   "GET_FIND_HEADPHONES_ALERT": 13,
+   "SWITCH_AMBIENT_NOISE_MODE": 14,
+   "SET_AMBIENT_NOISE_MODE": 15,
+   "GET_AMBIENT_NOISE_MODE": 16,
+   "GET_VARIANT": 17,
+   "SET_AMBIENT_NOISE_TOGGLE_OPTIONS": 18,
+   "GET_AMBIENT_NOISE_TOGGLE_OPTIONS": 19,
+   "SET_LOUDNESS": 20,
+   "GET_LOUDNESS": 21,
+   "GET_DEVICES": 22,
+   "CONNECT_DEVICE": 23,
+   "DISCONNECT_DEVICE": 24,
+   "SET_SIDE_TONE": 25,
+   "GET_SIDE_TONE": 26,
+   "SET_SPATIAL_AUDIO": 27,
+   "GET_SPATIAL_AUDIO": 28
   },
-  "values": {
-    "AMBIENT_ON": 1, "AMBIENT_OFF": 2, "AMBIENT_MIN": 0, "AMBIENT_MAX": 100,
-    "BAND_HEADER": 6, "BAND_PARAMETER": 2, "BAND_APPLY": 1, "GAIN_SCALE": 60,
-    "GAIN_MIN": -6, "GAIN_MAX": 6, "FIRST_BAND": 1, "LAST_BAND": 5,
-    "NEUTRAL_PRESET": 0, "CUSTOM_PRESET": 6, "CODEC_LOCKED": 3
+  "modes": {
+   "SET_GAMING_MODE": 0,
+   "GET_GAMING_MODE": 1,
+   "SET_FLIGHT_MODE": 2,
+   "GET_FLIGHT_MODE": 3,
+   "GET_AUDIO_MODE": 5,
+   "SET_PROXIMITY_MODE": 6,
+   "GET_PROXIMITY_MODE": 7,
+   "SET_MONO_MODE": 8,
+   "GET_MONO_MODE": 9,
+   "SET_SLEEP_MODE": 10,
+   "GET_SLEEP_MODE": 11
   },
-  "offsets": {
-    "AMBIENT": 2, "LANGUAGE": 3, "LEFT": 8, "RIGHT": 9, "AMBIENT_LEVEL": 10,
-    "LEFT_FIRMWARE": 11, "RIGHT_FIRMWARE": 14, "ADDRESS_START": 17, "ADDRESS_END": 29,
-    "ACTIVE_CODEC": 31, "CODEC": 32
+  "codec_cmd": {
+   "SET_ENABLED_CODECS": 0,
+   "GET_ENABLED_CODECS": 1,
+   "GET_AVAILABLE_CODECS": 2,
+   "GET_CURRENT_CODEC": 3
   },
-  "languages": ["yue", "zh", "en", "fr", "de", "it", "ja", "es"],
-  "codecs": ["sbc", "aac", "aptx", "aac_aptx"],
-  "controls": ["play_pause", "next", "previous", "volume_up", "volume_down", "accept_call", "reject_call", "end_call", "assistant", "ambient"],
-  "presets": [
-    {"name": "neutral", "gains": [0, 0, 0, 0, 0]},
-    {"name": "immersive", "gains": [0, -2, 0, 1, 0]},
-    {"name": "rnb", "gains": [3, 3, 0, 3, 0]},
-    {"name": "electronic", "gains": [0, 4, 0, 1, 5]},
-    {"name": "rock", "gains": [0, 3, 0, 1, 0]},
-    {"name": "voice", "gains": [-6, -2, 0, 6, 0]}
-  ]
+  "gesture_cmd": {
+   "GET_SUPPORTED_GESTURE_CONTROLS": 0,
+   "GET_GESTURE_CONTROLS_ON_OFF": 1,
+   "SET_GESTURE_CONTROLS_ON_OFF": 2,
+   "SET_GESTURE_CONTROL_ON_OFF": 3
+  },
+  "ambient_action": {
+   "OFF": 0,
+   "NOISE_CANCELLING": 1,
+   "TRANSPARENCY": 2,
+   "TOGGLE": 3
+  },
+  "ambient_mode": {
+   "OFF": 0,
+   "ANC_HIGH": 1,
+   "TRANSPARENCY_LOW": 2,
+   "ANC_MED": 3,
+   "TRANSPARENCY_HIGH": 4,
+   "ANC_LOW": 5,
+   "TRANSPARENCY_VOICE_FOCUS": 6,
+   "ANC_HIGH_OFF": 7,
+   "ANC_MED_OFF": 8,
+   "ANC_LOW_OFF": 9
+  },
+  "codec": {
+   "SBC": 0,
+   "AAC_LC": 1,
+   "APTX": 2,
+   "APTX_ADAPTIVE": 3,
+   "APTX_ADAPTIVE_LOSSLESS": 4,
+   "APTX_HD": 5,
+   "APTX_LL": 6,
+   "APTX_MONO": 7,
+   "APTX_VOICE": 8,
+   "LDAC": 9,
+   "LHDC": 10,
+   "LC3": 11
+  },
+  "gesture": {
+   "PLAY_PAUSE": 0,
+   "NEXT_TRACK": 1,
+   "PREVIOUS_TRACK": 2,
+   "MIC_MUTE": 3,
+   "VOLUME_UP": 4,
+   "VOLUME_DOWN": 5,
+   "ACCEPT_CALL": 6,
+   "REJECT_CALL": 7,
+   "END_CALL": 8,
+   "VOICE_ASSISTANT": 9,
+   "TRANSPARENCY": 10,
+   "ANC": 11,
+   "PAIRING_MODE": 12,
+   "WEAR_DETECT": 13,
+   "AMBIENT_NOISE_MODES": 14,
+   "GAMING_MODE": 15,
+   "POWER_ON_OFF": 240,
+   "CASE_PAIRING": 241,
+   "CASE_FACTORY_RESET": 242
+  },
+  "language": {
+   "TONES": 0,
+   "ENGLISH": 1,
+   "GERMAN": 2,
+   "SPANISH": 3,
+   "ITALIAN": 4,
+   "JAPANESE": 5,
+   "KOREAN": 6,
+   "CANTONESE": 7,
+   "MANDARIN": 8,
+   "FRENCH": 9,
+   "CELEBRITY": 10,
+   "OFF": 255
+  },
+  "audio_mode": {
+   "BATTERY_SAVER": 0,
+   "HIGH_QUALITY": 1
+  },
+  "virtualizer": {
+   "MODE_1": 1,
+   "MODE_2": 2
+  },
+  "charging": {
+   "NOT_CHARGING": 0,
+   "CHARGING": 1,
+   "MIS_CHARGING": 2
+  },
+  "api": {
+   "TOGGLE_OPTIONS_MAJOR": 1,
+   "TOGGLE_OPTIONS_MINOR": 9,
+   "LOUDNESS_MINOR": 14,
+   "DEVICES_MINOR": 15,
+   "SIDE_TONE_MINOR": 17
+  },
+  "auto_power_down_seconds": [
+   1800,
+   3600,
+   0
+  ],
+  "music": {
+   "GET_STATE": 0,
+   "GET_PRESETS": 1,
+   "GET_SET": 2,
+   "SET_SET": 3,
+   "GET_BAND_COUNT": 4,
+   "GET_BAND_CONFIG": 5,
+   "SET_GAINS": 6,
+   "NOTIFY_SET_CHANGE": 1,
+   "NOTIFY_BAND_CHANGE": 2,
+   "USER_SET": 63,
+   "GAIN_FACTOR": 60,
+   "BAND_LENGTH": 7
+  },
+  "gesture_config": {
+   "GET_TOUCHPADS": 0,
+   "GET_GESTURES": 1,
+   "GET_CONTEXTS": 2,
+   "GET_ACTIONS": 3,
+   "GET_CONFIG": 4,
+   "SET_CONFIG": 5,
+   "RESET": 6,
+   "NOTIFY_CHANGED": 0,
+   "NOTIFY_RESET": 1
+  },
+  "touch_gesture": {
+   "TAP": 0,
+   "SWIPE_UP": 1,
+   "SWIPE_DOWN": 2,
+   "TAP_AND_SWIPE_UP": 3,
+   "TAP_AND_SWIPE_DOWN": 4,
+   "DOUBLE_TAP": 5,
+   "LONG_PRESS": 6,
+   "EXTENDED_LONG_PRESS": 7
+  },
+  "touch_context": {
+   "PASSTHROUGH_GLOBAL": 0,
+   "MEDIA_PLAYER_STREAMING": 1,
+   "MEDIA_PLAYER_IDLE": 2,
+   "VOICE_IN_CALL": 3,
+   "VOICE_INCOMING": 4,
+   "VOICE_OUTGOING": 5,
+   "VOICE_IN_CALL_WITH_HELD": 6,
+   "HANDSET_DISCONNECTED": 7,
+   "HANDSET_CONNECTED": 8
+  },
+  "touch_action": {
+   "MEDIA_PLAY_PAUSE_TOGGLE": 0,
+   "MEDIA_STOP": 1,
+   "MEDIA_NEXT_TRACK": 2,
+   "MEDIA_PREVIOUS_TRACK": 3,
+   "MEDIA_SEEK_FORWARD": 4,
+   "MEDIA_SEEK_BACKWARD": 5,
+   "VOICE_ACCEPT_CALL": 6,
+   "VOICE_REJECT_CALL": 7,
+   "VOICE_HANG_UP_CALL": 8,
+   "VOICE_TRANSFER_CALL": 9,
+   "VOICE_CALL_CYCLE": 10,
+   "VOICE_JOIN_CALLS": 11,
+   "VOICE_MIC_MUTE_TOGGLE": 12,
+   "GAMING_MODE_TOGGLE": 13,
+   "ANC_ENABLE_TOGGLE": 14,
+   "ANC_NEXT_MODE": 15,
+   "VOLUME_UP": 16,
+   "VOLUME_DOWN": 17,
+   "RECONNECT_MRU_HANDSET": 18,
+   "VA_PRIVACY_TOGGLE": 19,
+   "VA_FETCH_QUERY": 20,
+   "VA_PTT": 21,
+   "VA_CANCEL": 22,
+   "VA_FETCH": 23,
+   "VA_QUERY": 24,
+   "DISCONNECT_LRU_HANDSET": 25,
+   "VOICE_JOIN_CALLS_HANG_UP": 26
+  },
+  "touchpad": {
+   "SINGLE": 0,
+   "RIGHT": 1,
+   "LEFT": 2,
+   "BOTH": 3
+  },
+  "peer": {
+   "PAIRED": 0,
+   "CONNECTED": 1,
+   "CONNECTED_PRIMARY": 2
+  }
+ }
 }

@@ -1,5 +1,5 @@
 {
-  "_about": "Soundcore command table. A command is two bytes, written as hex. source: openscq30 (read from OpenSCQ30's source) or soundcore_app (seen in a recording of the official app). confirmed lists the models a recording in data/soundcore/reports confirms it on. private marks bodies that can carry personal data (addresses, names, serial numbers, sleep times or alarms): a recording from the official app leaves them out. capture_max_bytes bounds a newly identified control's published body; larger replies get a short preview. Recording-only entries add no probes or settings. See docs/soundcore/PROTOCOL.md.",
+  "_about": "Soundcore command table. A command is two bytes, written as hex. source: openscq30 (read from OpenSCQ30's source) or soundcore_app (seen in a recording of the official app, or read in its code, Soundcore 3.3.0's `Cmm2CmdData`: the note says which). confirmed lists the models a recording in data/soundcore/reports confirms it on. private marks bodies that can carry personal data (addresses, names, serial numbers, sleep times or alarms): a recording from the official app leaves them out. capture_max_bytes bounds a newly identified control's published body; larger replies get a short preview. Recording-only entries add no probes or settings. See docs/soundcore/PROTOCOL.md.",
   "frame": {
     "to_earbuds_header": "08EE000000",
     "from_earbuds_header": "09FF000001",
@@ -108,6 +108,34 @@
     {"id": "dual_connections_enabled", "command": "0B84", "source": "openscq30", "confirmed": ["A3936"],
      "note": "Two devices at once. Body: 1 on, 0 off."},
     {"id": "wear_fit_detection", "command": "0901", "source": "soundcore_app", "confirmed": [],
-     "note": "The ear tip fit test (Soundcore 2.9.9, the A3951 family's manager: A3931, A3935, A3951). Request with no body; the reply's body is the left earbud's code, the right's, then pressure and over and under values (24 bytes or more): a code of 0 or 1 is a good fit. 2.9.9 sends it and only logs the result on these models; PairFree shows it on the shared fit test screen. Not confirmed on hardware."}
+     "note": "The ear tip fit test (Soundcore 2.9.9, the A3951 family's manager: A3931, A3935, A3951). Request with no body; the reply's body is the left earbud's code, the right's, then pressure and over and under values (24 bytes or more): a code of 0 or 1 is a good fit. 2.9.9 sends it and only logs the result on these models; PairFree shows it on the shared fit test screen. Not confirmed on hardware."},
+    {"id": "wearing_detection", "command": "0181", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 `Cmm2CmdData` 01 81 (`setMoreWearDetectionCallback`)."},
+    {"id": "side_tone", "command": "0184", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 84 (`setMoreSideToneCallback`)."},
+    {"id": "in_ear_tone", "command": "018C", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 8C (`setInEarToneCallback`; the A3953's in-ear beep)."},
+    {"id": "bass_up", "command": "0284", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 02 84 (`setDeviceBassUpCallback`)."},
+    {"id": "spatial_audio", "command": "1081", "source": "soundcore_app",
+     "note": "Body: switch, effect, sound mode (one byte each). Soundcore 3.3.0 10 81 (`setSpatialAudioStatusCallback`; the A3953's spatial audio)."},
+    {"id": "low_battery_prompt", "command": "1082", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 10 82 (`setLowBatteryAlertSwitchCallback`)."},
+    {"id": "ambient_sound_prompt", "command": "1083", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 10 83 (`setAmbientSoundPromptSwitchCallback`)."},
+    {"id": "sound_leak_compensation", "command": "1086", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 10 86 (`setLeakySwitchCallback`)."},
+    {"id": "press_sensitivity", "command": "0485", "source": "soundcore_app",
+     "note": "Body: one byte, the level. Soundcore 3.3.0 04 85 (`setCustomPressSensitivityCallback`; the A3953's press sensitivity screen)."},
+    {"id": "smart_play", "command": "01AA", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 AA (`setSmartPlaySwitchCallback`; the Sleep A10 pauses the sound once asleep)."},
+    {"id": "adaptive_noise", "command": "01AC", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 AC (`setAdaptiveNoiseSwitchCallback`; the Sleep A10)."},
+    {"id": "super_hearing", "command": "01A1", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 A1 (`setSuperHearingCallback`; the VR P10)."},
+    {"id": "call_mix", "command": "01A2", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 A2 (`setCallMixCallback`; the VR P10)."},
+    {"id": "microphone", "command": "01A3", "source": "soundcore_app",
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 A3 (`setMicrophoneCallback`; the VR P10)."}
   ]
 }

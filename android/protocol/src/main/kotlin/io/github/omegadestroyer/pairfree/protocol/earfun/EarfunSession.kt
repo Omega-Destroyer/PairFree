@@ -52,6 +52,10 @@ public class EarfunSession(public val model: EarfunModel) {
     private var hearing: String? = null
     private var autoOff: String? = null
     private var spatial: Boolean? = null
+    private var codecInUse: Int? = null
+    private var cycleLeft: Int? = null        // the noise modes the left key cycles through, as bits (NORMAL 1, AMBIENT_SOUND 2, NOISE_CANCEL 4, WIND_CANCEL 8, ADAPTIVE 16)
+    private var cycleRight: Int? = null
+    private val extraValues = linkedMapOf<String, Int>()      // each extra the earbuds answered: 1 or 0 for a switch, 0 to 100 for the balance
     private var checkEar: Int? = null
     private var keys: Map<String, Int>? = null       // the action byte per touch gesture and side ("hold_left") or button and gesture ("nc_hold")
     private var quality: Int? = null                 // the codec bits the earbuds reported
@@ -86,6 +90,9 @@ public class EarfunSession(public val model: EarfunModel) {
             if (n.ambient != null) add(read(EarfunQcc.GET_AMBIENT_MODE, EarfunCommand.GET_AMBIENT_MODE))
         }
         if (m.game) add(read(EarfunQcc.GET_GAME_MODE, EarfunCommand.GET_GAME_MODE))
+        for (e in EXTRAS.filter { it.key in m.extras }) e.get(qualcomm)?.let { add(if (qualcomm) qcc(it) else ef(it)) }
+        if ("codec" in m.extras) add(read(EarfunQcc.GET_AUDIO_MODE, EarfunCommand.GET_AUDIO_MODE))
+        if (m.noise != null && !qualcomm) add(ef(EarfunCommand.GET_KEY_CUSTOM_NOISE))
         if (m.multipoint) add(read(EarfunQcc.GET_MULTIPOINT, EarfunCommand.GET_MULTIPOINT))
         if (m.mic && qualcomm) add(qcc(EarfunQcc.GET_MIC))
         if (m.promptVolume) add(read(EarfunQcc.GET_VOICE_VOLUME, EarfunCommand.GET_VOICE_VOLUME))
@@ -208,6 +215,8 @@ public class EarfunSession(public val model: EarfunModel) {
             EarfunQcc.GET_NOISE_CANCEL_MODE -> cancelMode = subMode(model.noise?.cancelling, EarfunValues.NOISE_CANCEL_MODE, v)
             EarfunQcc.GET_AMBIENT_MODE -> ambientMode = subMode(model.noise?.ambient, EarfunValues.AMBIENT_MODE, v)
             EarfunQcc.GET_GAME_MODE -> game = v == 1
+            in EXTRA_QCC_READS -> extra(qualcomm = true, code = code, v = v)
+            EarfunQcc.GET_AUDIO_MODE -> codecInUse = v
             EarfunQcc.GET_MULTIPOINT -> multipoint = v == 1
             EarfunQcc.GET_MIC -> mic = if (v in 1..2) v else 0
             EarfunQcc.GET_VOICE_VOLUME -> promptVolume = nameOf(EarfunValues.VOICE_VOLUME.getValue(QUALCOMM), v) ?: "100"
@@ -242,6 +251,14 @@ public class EarfunSession(public val model: EarfunModel) {
             // Natural is 2; anything else the default (EarfunProtocolParser.setData).
             EarfunCommand.GET_AMBIENT_MODE -> ambientMode = if (v == EarfunValues.AMBIENT_MODE.getValue(EARFUN)["natural"]) "natural" else "default"
             EarfunCommand.GET_GAME_MODE -> game = v == EF_ON
+            // The modes each noise key cycles through (EarfunProtocolParser.setKeyCustomNoise): a byte for the left key, then one for the right.
+            EarfunCommand.GET_KEY_CUSTOM_NOISE -> if (p.size >= 2) {
+                cycleLeft = p.u8(0) and CYCLE_ALL
+                cycleRight = p.u8(1) and CYCLE_ALL
+            }
+            in EXTRA_EF_READS -> extra(qualcomm = false, code = command, v = v)
+            // EarFun's frame: anything but 2 to 7 is SBC.
+            EarfunCommand.GET_AUDIO_MODE -> codecInUse = if (v in 2..7) v else 1
             EarfunCommand.GET_MULTIPOINT -> multipoint = v == EF_ON
             EarfunCommand.GET_SPATIAL_AUDIO -> spatial = v == EF_ON
             EarfunCommand.GET_VOICE_VOLUME -> promptVolume = nameOf(EarfunValues.VOICE_VOLUME.getValue(EARFUN), v) ?: "0"
@@ -352,7 +369,7 @@ public class EarfunSession(public val model: EarfunModel) {
             val gestures = m.touch?.gestures
             return listOfNotNull(
                 group("noise", SettingTab.HOME, noiseRows()),
-                group("sound", SettingTab.SOUND, listOfNotNull(spatial?.takeIf { m.spatial }?.let { Setting.Toggle("spatial_audio", it) })),
+                group("sound", SettingTab.SOUND, listOfNotNull(spatial?.takeIf { m.spatial }?.let { Setting.Toggle("spatial_audio", it) }) + extraRows(SettingTab.SOUND)),
                 group(
                     "other", SettingTab.DEVICE,
                     listOfNotNull(
@@ -363,14 +380,14 @@ public class EarfunSession(public val model: EarfunModel) {
                         language?.takeIf { m.voiceLanguages.isNotEmpty() }?.let { Setting.Choice("ef_voice_language", it, m.voiceLanguages) },
                         hearing?.takeIf { m.hearingProtection }?.let { Setting.Choice("ef_hearing_protection", it, HEARING) },
                         autoOff?.takeIf { m.autoOff.isNotEmpty() }?.let { Setting.Choice("auto_off", it, m.autoOff) },
-                    ),
+                    ) + extraRows(SettingTab.DEVICE),
                 ),
-                group("ef_quality", SettingTab.DEVICE, qualityRows()),
+                group("ef_quality", SettingTab.DEVICE, qualityRows() + listOfNotNull(codecInUse?.takeIf { "codec" in m.extras }?.let { c -> CODECS[c]?.let { Setting.Choice(CODEC_KEY, it, listOf(it)) } })),
                 group(
                     PowerActions.GROUP, SettingTab.DEVICE,
                     listOfNotNull(Setting.Action(RESTART_KEY).takeIf { m.restart && qualcomm }, Setting.Action(POWER_OFF_KEY).takeIf { m.powerOff }),
                 ),
-            ) + touchGroups(gestures) + buttonGroups()
+            ) + touchGroups(gestures) + buttonGroups() + listOfNotNull(group("ef_cycle", SettingTab.CONTROLS, cycleRows()))
         }
 
     /** The codecs as switches, as EarFun's sound quality screen shows them (HeadsetQualityFragment). */
@@ -513,19 +530,83 @@ public class EarfunSession(public val model: EarfunModel) {
                 if (setting !is Setting.Choice || change.option !in setting.options) return null
                 choice(change.key, change.option) ?: return null
             }
+            is SettingChange.Level -> {
+                if (setting !is Setting.Level || !setting.enabled || !change.key.startsWith(EXTRA_PREFIX)) return null
+                extraWrite(change.key, change.value.coerceIn(setting.min, setting.max)) ?: return null
+            }
             // The screen asks the user to confirm both first.
             is SettingChange.Press -> when (change.key) {
                 RESTART_KEY -> listOf(qcc(EarfunQcc.RESTART))
                 POWER_OFF_KEY -> listOf(if (qualcomm) qcc(EarfunQcc.SET_CONTROL_PLAY, POWER_OFF) else ef(EarfunCommand.SET_CONTROL_PLAY, POWER_OFF))
                 else -> return null
             }
-            else -> return null
         }
         refresh()
         return out
     }
 
-    private fun toggle(key: String, on: Boolean): List<ByteArray>? = when (key) {
+    /** One of the extras: what EarFun's app calls it, its tab, and the read and write each protocol has (null where it has none). */
+    private class Extra(val key: String, val tab: SettingTab, val level: Boolean, val ef: Pair<Int, Int>?, val qcc: Pair<Int, Int>?) {
+        fun get(qualcomm: Boolean): Int? = (if (qualcomm) qcc else ef)?.first
+        fun set(qualcomm: Boolean): Int? = (if (qualcomm) qcc else ef)?.second
+    }
+
+    private fun extra(qualcomm: Boolean, code: Int, v: Int) {
+        val e = EXTRAS.firstOrNull { it.get(qualcomm) == code && it.key in model.extras } ?: return
+        // A switch is 2 on and 1 off on EarFun's frame, 1 and 0 on the Qualcomm models; the balance is a byte, 0 to 100.
+        extraValues[e.key] = if (e.level) v.coerceIn(0, EXTRA_BALANCE_MAX) else if (v == if (qualcomm) 1 else EF_ON) 1 else 0
+    }
+
+    private fun extraRows(tab: SettingTab): List<Setting> = EXTRAS.filter { it.tab == tab && it.key in model.extras }.mapNotNull { e ->
+        extraValues[e.key]?.let { if (e.level) Setting.Level(EXTRA_PREFIX + e.key, it, 0, EXTRA_BALANCE_MAX) else Setting.Toggle(EXTRA_PREFIX + e.key, it == 1) }
+    }
+
+    private fun extraWrite(key: String, value: Int): List<ByteArray>? {
+        val e = EXTRAS.firstOrNull { EXTRA_PREFIX + it.key == key && it.key in model.extras } ?: return null
+        val set = e.set(qualcomm) ?: return null
+        val get = e.get(qualcomm) ?: return null
+        extraValues[e.key] = value
+        readBacks += if (qualcomm) qcc(get) else ef(get)
+        return listOf(if (qualcomm) qcc(set, value) else ef(set, if (e.level) value else efSwitch(value == 1)))
+    }
+
+    private fun toggle(key: String, on: Boolean): List<ByteArray>? = when {
+        key.startsWith(EXTRA_PREFIX) -> extraWrite(key, if (on) 1 else 0)
+        key.startsWith("ef_cycle_") -> cycleWrite(key, on)
+        else -> toggleOf(key, on)
+    }
+
+    /** The noise modes a key can cycle through on this model: off always, then those its noise control has. */
+    private fun cycleModes(): List<Pair<String, Int>> = buildList {
+        val n = model.noise ?: return@buildList
+        add("off" to CYCLE_OFF)
+        if ("ambient" in n.values) add("ambient" to CYCLE_AMBIENT)
+        if ("anc" in n.values) add("anc" to CYCLE_CANCEL)
+        if (n.cancelling?.options?.contains("wind") == true) add("wind" to CYCLE_WIND)
+        if (n.cancelling?.options?.contains("adaptive") == true) add("adaptive" to CYCLE_ADAPTIVE)
+    }
+
+    private fun cycleRows(): List<Setting> {
+        val l = cycleLeft ?: return emptyList()
+        val r = cycleRight ?: return emptyList()
+        return cycleModes().flatMap { (name, bit) -> listOf(Setting.Toggle("ef_cycle_left_$name", l and bit != 0), Setting.Toggle("ef_cycle_right_$name", r and bit != 0)) }
+    }
+
+    private fun cycleWrite(key: String, on: Boolean): List<ByteArray>? {
+        val side = key.removePrefix("ef_cycle_").substringBefore('_')
+        val bit = cycleModes().firstOrNull { it.first == key.substringAfter("ef_cycle_${side}_") }?.second ?: return null
+        val l = cycleLeft ?: return null
+        val r = cycleRight ?: return null
+        val held = if (side == "left") l else r
+        val next = if (on) held or bit else held and bit.inv()
+        // A key that cycles through nothing would do nothing; the app keeps at least one.
+        if (next == 0) return null
+        if (side == "left") cycleLeft = next else cycleRight = next
+        readBacks += ef(EarfunCommand.GET_KEY_CUSTOM_NOISE)
+        return listOf(ef(EarfunCommand.SET_KEY_CUSTOM_NOISE, cycleLeft!!, cycleRight!!))
+    }
+
+    private fun toggleOf(key: String, on: Boolean): List<ByteArray>? = when (key) {
         "spatial_audio" -> {
             spatial = on
             readBacks += ef(EarfunCommand.GET_SPATIAL_AUDIO)
@@ -761,6 +842,33 @@ public class EarfunSession(public val model: EarfunModel) {
 
         /** EarFun's own frame writes switches as 2 on, 1 off. */
         private const val EF_ON = 2
+        private const val EXTRA_PREFIX = "ef_extra_"
+        private const val EXTRA_BALANCE_MAX = 100
+        private const val CYCLE_OFF = 1
+        private const val CYCLE_AMBIENT = 2
+        private const val CYCLE_CANCEL = 4
+        private const val CYCLE_WIND = 8
+        private const val CYCLE_ADAPTIVE = 16
+        private const val CYCLE_ALL = 31
+        private const val CODEC_KEY = "ef_codec_in_use"
+
+        /** The codec in use, as the earbuds report it (GET_AUDIO_MODE: 77 on the Qualcomm models, 10 on EarFun's frame): 1 to 7. */
+        private val CODECS = mapOf(1 to "SBC", 2 to "AAC", 3 to "aptX", 4 to "aptX HD", 5 to "aptX Adaptive", 6 to "aptX Lossless", 7 to "LDAC")
+
+        /** EarFun's app (HeadsetDevice and each parser): bass 2340/2345, manner mode 2350/2355, game EQ 2375/2380, DAC 2390/2395, balance 2330/2335; Qualcomm: balance 86/85, USB charging 100/99, ambient voice 115/114, call environment 119/118. */
+        private val EXTRAS: List<Extra> = listOf(
+            Extra("bass", SettingTab.SOUND, false, EarfunCommand.GET_BASS to EarfunCommand.SET_BASS, null),
+            Extra("manner", SettingTab.DEVICE, false, EarfunCommand.GET_MANNER_MODE to EarfunCommand.SET_MANNER_MODE, null),
+            Extra("game_eq", SettingTab.SOUND, false, EarfunCommand.GET_GAME_EQ to EarfunCommand.SET_GAME_EQ, null),
+            Extra("dac", SettingTab.SOUND, false, EarfunCommand.GET_DAC to EarfunCommand.SET_DAC, null),
+            Extra("balance", SettingTab.SOUND, true, EarfunCommand.GET_BALANCE to EarfunCommand.SET_BALANCE, EarfunQcc.GET_BALANCE to EarfunQcc.SET_BALANCE),
+            Extra("usb_charge", SettingTab.DEVICE, false, null, EarfunQcc.GET_USB_CHARGE to EarfunQcc.SET_USB_CHARGE),
+            Extra("ambient_voice", SettingTab.DEVICE, false, null, EarfunQcc.GET_AMBIENT_VOICE to EarfunQcc.SET_AMBIENT_VOICE),
+            Extra("call_env", SettingTab.DEVICE, false, null, EarfunQcc.GET_CALL_ENV to EarfunQcc.SET_CALL_ENV),
+            Extra("voice_tip", SettingTab.DEVICE, false, null, EarfunQcc.GET_VOICE_TIP to EarfunQcc.SET_VOICE_TIP),
+        )
+        private val EXTRA_QCC_READS: Set<Int> = EXTRAS.mapNotNull { it.qcc?.first }.toSet()
+        private val EXTRA_EF_READS: Set<Int> = EXTRAS.mapNotNull { it.ef?.first }.toSet()
         private const val EF_OFF = 1
 
         public const val ANC_MODE_KEY: String = "ef_anc_mode"

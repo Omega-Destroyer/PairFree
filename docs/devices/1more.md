@@ -19,7 +19,9 @@ What it shows, where the model has it:
   you take them out, sleep detection, voice commands, finding a lost earbud, on the HQ20 hearing your
   own voice and the volume limit, and on the NANO its light's mode and colour.
 
-Not yet: the music and sleep sound styles.
+Added in 0.12.0 from 1MORE's app: the music and sleep sound style, and the Q50's voice enhancement (not tried on real earbuds).
+
+Not yet: the soothing music player's own commands (uploading and deleting sounds on the earbuds stay never sent).
 
 Two models, the S52 and the S22Ultra, are Tuya AI earbuds: 1MORE's app reaches them through Tuya's
 platform instead of its own connection, so PairFree does not list them.

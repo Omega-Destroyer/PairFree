@@ -24,7 +24,11 @@ What it shows, where the model has it:
 
 - **Ear tip fit test** on the models whose table has it (start and result from open-source clients; which value is a good fit is inferred).
 
-Not yet: Nothing's advanced equalizer and the Dirac presets on CMF models, dual connection, and personalised noise cancelling and Mimi's hearing test.
+Added in 0.12.0 from Nothing X (its Kotlin and its Flutter layer; none tried on real earbuds): two devices at once, personalised noise cancelling,
+the Dirac Opteo presets on the CMF models, the timed power off of the CMF Headphone Pro, call transparency on the Ear (3), and the switch of
+the advanced equalizer.
+
+Not yet: the advanced equalizer's own band editor (Nothing X edits it in a plugin of its own) and Mimi's hearing test (it needs Mimi's sign-in).
 
 Nothing and CMF support is written from Nothing's own app (Nothing X 3.4.15), read for its
 messages and its per-model feature table, and checked against

@@ -231,7 +231,18 @@ for.
   band. Left out until a report shows what the profile index means on the earbuds (Nothing X keeps
   its profiles on the phone, and writing one index may replace what it stored there) and how the
   mode and the presets interact. nada uses `C06C`/`C06D`, which are not in 3.4.15.
-- **Dual connection** (`F01A`/`C027`): what its value means is in Dart, so it is left out. Some
-  models restart after a change (`dualConnectionReboot`).
+- **Dual connection** (`F01A` write, `C027` read): built 2026-11-13 from Nothing X's Kotlin (`TWSDeviceExtKt.dual`, `DualConnectViewModel`): one byte, 1 on and 0 off, any
+  other value on a read counts as on; shown on the models whose table row has `dual_connection`. The paired devices' list (`C02E`/`E00E` and the connect and disconnect
+  writes) holds other devices' addresses and stays unsent. Some models restart after a change (`dualConnectionReboot`, in Dart).
+- **Personalised noise cancelling** (`F011` write, `C020` read, `DeviceANCSwitch`): the switch byte, then a calibration byte; PairFree writes only the switch, and
+  never starts the calibration (`SET_CALIBRATION`, in the never-sent list). It reads the switch on every model and shows it where the earbuds answer.
+- **Read from the Flutter layer (2026-11-13).** Nothing X 3.4.15's Dart code (Dart 3.9.2, `libapp.so` decompiled with blutter in Docker, outside the repo) was read for what the Kotlin
+  layer leaves out: **Dirac Opteo presets** (`F01D` write, `C050` read, one byte, `DiracEQMode`: 0 Opteo, 1 rock, 2 electronic, 3 pop, 4 enhance vocals, 5 classical, 6 the custom
+  curve; the models whose table row has `diracOpteoSupport`), the **timed power off** (`F00B`/`C011`: the mode, 0 shut down or 1 standby, then the minutes in two bytes, low byte first;
+  half an hour to four hours; only the CMF Headphone Pro's row has `powerOffTime`), **call transparency** (`F060`/`C05F`, one byte; the Ear (3)) and the **advanced equalizer's switch**
+  (`F04F`/`C04C`, one byte; the models with `advancedEq`). The Dart `EarHelper` has no method for the 3D sound, smart ANC and smart free, adaptive EQ, bass enhancer mode, FIR ANC,
+  high volume gain, system audio, box LED or LE switch commands, nor does the Kotlin layer call them, so their payloads are in no source (`data/unused_ids.json` says so for each).
+  Not built: the super mic and walkie-talkie modes of the Ear (3) (`F05F`/`F061`: phone recording features), and the advanced equalizer's curve (the eight bands are edited by Nothing X's
+  own EQ pages as phone-held profiles).
 - **Ear tip fit test:** started with `F014` (`SET_LEAK_DETECT`) and the byte 1; the result arrives as `E00D`, one byte per earbud (left, right). The start and the layout are from the open-source web client ear-web and desktop client attune (AGPL-3.0: facts only), which send them on the Ear (2), Ear (a), Ear, Ear (3) and the CMF Buds models; Nothing X's own start sits in its Dart code (`libapp.so`, not yet read, `isSupportEarTipFitTest` gates the screen). Which value means what (0 good, 1 poor, 2 not in the ear) is attune's reading, not Nothing X's: inferred, to be settled by a recording or the Dart code. PairFree offers the test on the models whose feature table says `fit_test` (`NothingTest.fitTestOnTheModelsThatHaveItAndNoOther`).
 - **Other features:** personalised noise cancelling and sound (Mimi).

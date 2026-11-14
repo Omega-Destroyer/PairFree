@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import android.content.Context
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,6 +57,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         settingTitle(setting.key),
                         setting.value?.let { optionName(setting.key, it) } ?: stringResource(R.string.unknown),
                         { picking = setting },
+                        note = settingNote(setting.key),
                     )
                     is Setting.Level -> Box(Modifier.alpha(if (setting.enabled) 1f else 0.4f)) {
                         LevelRow(setting) { if (setting.enabled) onChange(it) }
@@ -117,10 +119,16 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
 @Composable
 private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) {
     val title = settingTitle(setting.key)
+    val note = settingNote(setting.key)
+    var open by remember { mutableStateOf(false) }
     val steps = (setting.min..setting.max).toList()
     if (steps.size <= 5) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(title)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(title)
+                if (note != null) InfoButton(open) { open = !open }
+            }
+            if (note != null && open) Text(note, style = Studio.type.small, color = Studio.colors.secondaryText)
             Segmented(steps, setting.value, { levelName(setting.key, it, setting.max) }, { onChange(SettingChange.Level(setting.key, it)) }, primary = false)
         }
         return
@@ -135,9 +143,12 @@ private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) 
     }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(title, Modifier.weight(1f))
+            Text(title, Modifier.weight(1f, fill = false))
+            if (note != null) InfoButton(open) { open = !open }
+            Spacer(Modifier.weight(1f))
             Text(levelName(setting.key, current, setting.max), style = Studio.type.number, color = Studio.colors.accent)
         }
+        if (note != null && open) Text(note, style = Studio.type.small, color = Studio.colors.secondaryText)
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StepButton(plus = false, { pending = (current - 1).coerceAtLeast(setting.min) }, enabled = current > setting.min)
             StudioSlider(current, setting.min..setting.max, { pending = it }, Modifier.weight(1f), description = title, origin = levelOrigin(setting))
@@ -164,6 +175,7 @@ private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find")
 private fun groupTitle(key: String): String = stringResource(
     when (key) {
         "noise" -> R.string.setting_group_noise
+        "ef_cycle" -> R.string.setting_group_ef_cycle
         "sound" -> R.string.setting_group_sound
         "touch" -> R.string.setting_group_touch
         "ambient_customize" -> R.string.setting_group_ambient_customize
@@ -187,6 +199,10 @@ private fun groupTitle(key: String): String = stringResource(
         "power" -> R.string.setting_group_power
         "ef_buttons" -> R.string.setting_group_buttons
         "ca_eq" -> R.string.setting_ca_eq
+        "ca_sound" -> R.string.setting_ca_sound
+        "ca_case" -> R.string.setting_ca_case_group
+        "sc_device" -> R.string.setting_sc_device
+        "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
         "oneplus_head_motion" -> R.string.setting_group_head_motion
@@ -197,12 +213,15 @@ private fun groupTitle(key: String): String = stringResource(
 
 @Composable
 private fun groupNote(key: String): String? = when (key) {
+    "ef_cycle" -> stringResource(R.string.setting_group_ef_cycle_note)
     "find" -> stringResource(R.string.setting_find_note)
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
     "ca_eq" -> stringResource(R.string.setting_ca_eq_note)
     "ca_connection" -> stringResource(R.string.setting_ca_codec_note)
+    "ca_case" -> stringResource(R.string.setting_ca_case_note)
+    "ca_sound" -> stringResource(R.string.setting_ca_balance_note)
     else -> null
 }
 
@@ -211,6 +230,24 @@ private fun ultButtonTitle(key: String): String? {
     if (!key.startsWith("ult_button_")) return null
     val effect = key.removePrefix("ult_button_")
     return stringResource(R.string.setting_ult_button, LocalContext.current.optionLabel("sound_effect", effect))
+}
+
+private val EF_CYCLE_MODES = listOf("off", "ambient", "anc", "wind", "adaptive")
+private val EF_CYCLE_KEYS = EF_CYCLE_MODES.flatMap { listOf("ef_cycle_left_$it", "ef_cycle_right_$it") }.toSet()
+
+/** "Left key: noise cancelling" and the like: which modes each key's noise control cycles through (EarFun's app, getKeyCustomNoiseCancelList). */
+@Composable
+private fun efCycleTitle(key: String): String {
+    val rest = key.removePrefix("ef_cycle_")
+    val side = if (rest.startsWith("left")) R.string.setting_ef_cycle_left else R.string.setting_ef_cycle_right
+    val mode = when (rest.substringAfter('_')) {
+        "ambient" -> R.string.setting_ef_cycle_ambient
+        "anc" -> R.string.setting_ef_cycle_anc
+        "wind" -> R.string.setting_ef_cycle_wind
+        "adaptive" -> R.string.setting_ef_cycle_adaptive
+        else -> R.string.action_off
+    }
+    return stringResource(R.string.setting_ef_cycle_row, stringResource(side), stringResource(mode))
 }
 
 @Composable
@@ -238,6 +275,74 @@ private fun settingTitle(key: String): String = when (key) {
     "op_peer_connect" -> stringResource(R.string.setting_op_peer_connect)
     "op_peer_disconnect" -> stringResource(R.string.setting_op_peer_disconnect)
     "op_eq_new" -> stringResource(R.string.setting_op_eq_new)
+    "ca_noise" -> stringResource(R.string.setting_ca_noise)
+    "sc_wearing_detection" -> stringResource(R.string.setting_sc_wearing_detection)
+    "sc_smart_play" -> stringResource(R.string.setting_sc_smart_play)
+    "sc_adaptive_noise" -> stringResource(R.string.setting_sc_adaptive_noise)
+    "sc_super_hearing" -> stringResource(R.string.setting_sc_super_hearing)
+    "sc_call_mix" -> stringResource(R.string.setting_sc_call_mix)
+    "sc_microphone" -> stringResource(R.string.setting_sc_microphone)
+    "sc_press_sensitivity" -> stringResource(R.string.setting_sc_press_sensitivity)
+    "sc_side_tone" -> stringResource(R.string.setting_sc_side_tone)
+    "sc_in_ear_tone" -> stringResource(R.string.setting_sc_in_ear_tone)
+    "sc_bass_up" -> stringResource(R.string.setting_sc_bass_up)
+    "sc_spatial_audio" -> stringResource(R.string.setting_sc_spatial_audio)
+    "sc_low_battery_prompt" -> stringResource(R.string.setting_sc_low_battery_prompt)
+    "sc_ambient_sound_prompt" -> stringResource(R.string.setting_sc_ambient_sound_prompt)
+    "sc_sound_leak_compensation" -> stringResource(R.string.setting_sc_sound_leak_compensation)
+    "sc_auto_power_off" -> stringResource(R.string.setting_sc_auto_power_off)
+    "ca_balance" -> stringResource(R.string.setting_ca_balance)
+    "ca_peer_connect" -> stringResource(R.string.setting_ca_peer_connect)
+    "ca_peer_disconnect" -> stringResource(R.string.setting_ca_peer_disconnect)
+    "ca_tp_tap_left" -> stringResource(R.string.setting_ca_tp_tap_left)
+    "ca_tp_tap_right" -> stringResource(R.string.setting_ca_tp_tap_right)
+    "ca_tp_double_tap_left" -> stringResource(R.string.setting_ca_tp_double_tap_left)
+    "ca_tp_double_tap_right" -> stringResource(R.string.setting_ca_tp_double_tap_right)
+    "ca_tp_triple_tap_left" -> stringResource(R.string.setting_ca_tp_triple_tap_left)
+    "ca_tp_triple_tap_right" -> stringResource(R.string.setting_ca_tp_triple_tap_right)
+    "ca_tp_long_press_left" -> stringResource(R.string.setting_ca_tp_long_press_left)
+    "ca_tp_long_press_right" -> stringResource(R.string.setting_ca_tp_long_press_right)
+    "ca_gesture_pairing_mode" -> stringResource(R.string.setting_ca_pairing_mode_control)
+    "ca_gesture_wear_detect" -> stringResource(R.string.setting_ca_wear_detect_control)
+    "ca_case_power" -> stringResource(R.string.setting_ca_case_power)
+    "ca_case_pairing" -> stringResource(R.string.setting_ca_case_pairing)
+    "ca_case_reset" -> stringResource(R.string.setting_ca_case_reset)
+    "ca_codec_sbc" -> "SBC"
+    "ca_codec_aac" -> "AAC"
+    "ca_codec_aptx" -> "aptX"
+    "ca_codec_aptx_adaptive" -> "aptX Adaptive"
+    "ca_codec_aptx_lossless" -> "aptX Lossless"
+    "ca_codec_aptx_hd" -> "aptX HD"
+    "ca_codec_aptx_ll" -> "aptX Low Latency"
+    "ca_codec_ldac" -> "LDAC"
+    "ca_codec_lhdc" -> "LHDC"
+    "ca_codec_lc3" -> "LC3"
+    "ca_toggle_normal" -> stringResource(R.string.setting_ca_toggle_normal)
+    "ca_toggle_anc" -> stringResource(R.string.setting_ca_toggle_anc)
+    "ca_toggle_transparency" -> stringResource(R.string.setting_ca_toggle_transparency)
+    "ca_gaming" -> stringResource(R.string.setting_ca_gaming)
+    "ca_mono" -> stringResource(R.string.setting_ca_mono)
+    "ca_sleep" -> stringResource(R.string.setting_ca_sleep)
+    "ca_loudness" -> stringResource(R.string.setting_ca_loudness)
+    "ca_side_tone" -> stringResource(R.string.setting_ca_side_tone)
+    "ca_spatial" -> stringResource(R.string.setting_ca_spatial)
+    "ca_proximity" -> stringResource(R.string.setting_ca_proximity)
+    "ca_find_alert" -> stringResource(R.string.setting_ca_find_alert)
+    "ca_auto_off" -> stringResource(R.string.setting_ca_auto_off)
+    "ca_gesture_play_pause" -> stringResource(R.string.setting_ca_play_pause)
+    "ca_gesture_next" -> stringResource(R.string.setting_ca_next)
+    "ca_gesture_previous" -> stringResource(R.string.setting_ca_previous)
+    "ca_gesture_mic_mute" -> stringResource(R.string.setting_ca_mic_mute)
+    "ca_gesture_volume_up" -> stringResource(R.string.setting_ca_volume_up)
+    "ca_gesture_volume_down" -> stringResource(R.string.setting_ca_volume_down)
+    "ca_gesture_accept_call" -> stringResource(R.string.setting_ca_accept_call)
+    "ca_gesture_reject_call" -> stringResource(R.string.setting_ca_reject_call)
+    "ca_gesture_end_call" -> stringResource(R.string.setting_ca_end_call)
+    "ca_gesture_assistant" -> stringResource(R.string.setting_ca_assistant)
+    "ca_gesture_transparency" -> stringResource(R.string.setting_ca_transparency_control)
+    "ca_gesture_anc" -> stringResource(R.string.setting_ca_anc_control)
+    "ca_gesture_ambient_modes" -> stringResource(R.string.setting_ca_ambient_modes_control)
+    "ca_gesture_gaming" -> stringResource(R.string.setting_ca_gaming_control)
     "ca_ambient" -> stringResource(R.string.setting_ambient_sound)
     "ca_ambient_level" -> stringResource(R.string.setting_ca_ambient_level)
     "ca_preset" -> stringResource(R.string.setting_ca_preset)
@@ -335,6 +440,27 @@ private fun settingTitle(key: String): String = when (key) {
     "clear_bass" -> stringResource(R.string.setting_clear_bass)
     "dsee" -> stringResource(R.string.setting_dsee)
     "pause_taken_off" -> stringResource(R.string.setting_pause_taken_off)
+    "bose_conversation_mode" -> stringResource(R.string.setting_bose_conversation_mode)
+    "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode)
+    "bose_modes_persist" -> stringResource(R.string.setting_bose_modes_persist)
+    "bose_latency" -> stringResource(R.string.setting_bose_latency)
+    "bose_volume" -> stringResource(R.string.setting_bose_volume)
+    "bose_on_head" -> stringResource(R.string.setting_bose_on_head)
+    "bose_on_head_play" -> stringResource(R.string.setting_bose_on_head_play)
+    "bose_on_head_answer" -> stringResource(R.string.setting_bose_on_head_answer)
+    "bose_on_head_transparency" -> stringResource(R.string.setting_bose_on_head_transparency)
+    "bose_le_audio" -> stringResource(R.string.setting_bose_le_audio)
+    "bose_volume_control" -> stringResource(R.string.setting_bose_volume_control)
+    "bose_teams_button" -> stringResource(R.string.setting_bose_teams_button)
+    "bose_auto_aware" -> stringResource(R.string.setting_bose_auto_aware)
+    "bose_head_gesture" -> stringResource(R.string.setting_bose_head_gesture)
+    "bose_flip_to_off" -> stringResource(R.string.setting_bose_flip_to_off)
+    "bose_motion_auto_off" -> stringResource(R.string.setting_bose_motion_auto_off)
+    "bose_disable_touch" -> stringResource(R.string.setting_bose_disable_touch)
+    "bose_auto_volume" -> stringResource(R.string.setting_bose_auto_volume)
+    "bose_cnc_persistence" -> stringResource(R.string.setting_bose_cnc_persistence)
+    "bose_alert_ringtone" -> stringResource(R.string.setting_bose_alert_ringtone)
+    "bose_alert_haptics" -> stringResource(R.string.setting_bose_alert_haptics)
     "voice_guidance" -> stringResource(R.string.setting_voice_guidance)
     "connection_priority" -> stringResource(R.string.setting_sony_connection_priority)
     "assign_left" -> stringResource(R.string.setting_sony_assign_side, stringResource(R.string.left))
@@ -462,6 +588,42 @@ private fun settingTitle(key: String): String = when (key) {
     "volume_limit" -> stringResource(R.string.setting_volume_limit)
     // Sony (SonySession, set 2)
     "power_saving" -> stringResource(R.string.setting_power_saving)
+    in EF_CYCLE_KEYS -> efCycleTitle(key)
+    "call_transparency" -> stringResource(R.string.setting_call_transparency)
+    "advanced_eq" -> stringResource(R.string.setting_advanced_eq)
+    "power_off_time" -> stringResource(R.string.setting_power_off_time)
+    "dirac_eq" -> stringResource(R.string.setting_dirac_eq)
+    "le_audio" -> stringResource(R.string.setting_le_audio)
+    "le_audio_mode" -> stringResource(R.string.setting_le_audio_mode)
+    "upmix_series" -> stringResource(R.string.setting_upmix_series)
+    "vibrator" -> stringResource(R.string.setting_vibrator)
+    "lr_balance_correction" -> stringResource(R.string.setting_lr_balance_correction)
+    "battery_safe_mode" -> stringResource(R.string.setting_battery_safe_mode)
+    "dual_connection" -> stringResource(R.string.setting_dual_connection)
+    "personalised_anc" -> stringResource(R.string.setting_personalised_anc)
+    "qcy_music_mode" -> stringResource(R.string.setting_qcy_music_mode)
+    "qcy_touch_sensitivity" -> stringResource(R.string.setting_qcy_touch_sensitivity)
+    "auto_standby" -> stringResource(R.string.setting_auto_standby)
+    "caring_charge_threshold" -> stringResource(R.string.setting_caring_charge_threshold)
+    "caring_charge" -> stringResource(R.string.setting_caring_charge)
+    "stamina" -> stringResource(R.string.setting_stamina)
+    "touch_panel_backlight_off" -> stringResource(R.string.setting_touch_panel_backlight_off)
+    "auto_play" -> stringResource(R.string.setting_auto_play)
+    "auto_volume_optimizer" -> stringResource(R.string.setting_auto_volume_optimizer)
+    "auto_volume_limited" -> stringResource(R.string.setting_auto_volume_limited)
+    "max_volume_limit" -> stringResource(R.string.setting_max_volume_limit)
+    "ef_extra_bass" -> stringResource(R.string.setting_ef_extra_bass)
+    "ef_extra_manner" -> stringResource(R.string.setting_ef_extra_manner)
+    "ef_extra_game_eq" -> stringResource(R.string.setting_ef_extra_game_eq)
+    "ef_extra_dac" -> stringResource(R.string.setting_ef_extra_dac)
+    "ef_extra_balance" -> stringResource(R.string.setting_ef_extra_balance)
+    "ef_extra_usb_charge" -> stringResource(R.string.setting_ef_extra_usb_charge)
+    "ef_extra_ambient_voice" -> stringResource(R.string.setting_ef_extra_ambient_voice)
+    "ef_extra_call_env" -> stringResource(R.string.setting_ef_extra_call_env)
+    "ef_extra_voice_tip" -> stringResource(R.string.setting_ef_extra_voice_tip)
+    "ef_codec_in_use" -> stringResource(R.string.setting_ef_codec_in_use)
+    "sound_mode" -> stringResource(R.string.setting_sound_mode)
+    "voice_enhancement" -> stringResource(R.string.setting_voice_enhancement)
     "sound_leakage_reduction" -> stringResource(R.string.setting_sound_leakage_reduction)
     "voice_contents" -> stringResource(R.string.setting_voice_contents)
     "upmix_cinema" -> stringResource(R.string.setting_upmix_cinema)
@@ -564,6 +726,49 @@ private fun buttonTitle(key: String): String? {
 
 @Composable
 private fun settingNote(key: String): String? = when (key) {
+    "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode_note)
+    "bose_modes_persist" -> stringResource(R.string.setting_bose_modes_persist_note)
+    "bose_latency" -> stringResource(R.string.setting_bose_latency_note)
+    "bose_volume" -> stringResource(R.string.setting_bose_volume_note)
+    "bose_on_head" -> stringResource(R.string.setting_bose_on_head_note)
+    "bose_le_audio" -> stringResource(R.string.setting_bose_le_audio_note)
+    "bose_volume_control" -> stringResource(R.string.setting_bose_volume_control_note)
+    "bose_teams_button" -> stringResource(R.string.setting_bose_teams_button_note)
+    "call_transparency" -> stringResource(R.string.setting_call_transparency_note)
+    "advanced_eq" -> stringResource(R.string.setting_advanced_eq_note)
+    "power_off_time" -> stringResource(R.string.setting_power_off_time_note)
+    "dirac_eq" -> stringResource(R.string.setting_dirac_eq_note)
+    "le_audio" -> stringResource(R.string.setting_le_audio_note)
+    "le_audio_mode" -> stringResource(R.string.setting_le_audio_mode_note)
+    "upmix_series" -> stringResource(R.string.setting_upmix_series_note)
+    "vibrator" -> stringResource(R.string.setting_vibrator_note)
+    "lr_balance_correction" -> stringResource(R.string.setting_lr_balance_correction_note)
+    "battery_safe_mode" -> stringResource(R.string.setting_battery_safe_mode_note)
+    "caring_charge" -> stringResource(R.string.setting_caring_charge_note)
+    "caring_charge_threshold" -> stringResource(R.string.setting_caring_charge_threshold_note)
+    "stamina" -> stringResource(R.string.setting_stamina_note)
+    "touch_panel_backlight_off" -> stringResource(R.string.setting_touch_panel_backlight_off_note)
+    "auto_play" -> stringResource(R.string.setting_auto_play_note)
+    "auto_standby" -> stringResource(R.string.setting_auto_standby_note)
+    "auto_volume_optimizer" -> stringResource(R.string.setting_auto_volume_optimizer_note)
+    "auto_volume_limited" -> stringResource(R.string.setting_auto_volume_limited_note)
+    "max_volume_limit" -> stringResource(R.string.setting_max_volume_limit_note)
+    "ef_extra_bass" -> stringResource(R.string.setting_ef_extra_bass_note)
+    "ef_extra_manner" -> stringResource(R.string.setting_ef_extra_manner_note)
+    "ef_extra_game_eq" -> stringResource(R.string.setting_ef_extra_game_eq_note)
+    "ef_extra_dac" -> stringResource(R.string.setting_ef_extra_dac_note)
+    "ef_extra_balance" -> stringResource(R.string.setting_ef_extra_balance_note)
+    "ef_extra_usb_charge" -> stringResource(R.string.setting_ef_extra_usb_charge_note)
+    "ef_extra_ambient_voice" -> stringResource(R.string.setting_ef_extra_ambient_voice_note)
+    "ef_extra_call_env" -> stringResource(R.string.setting_ef_extra_call_env_note)
+    "ef_extra_voice_tip" -> stringResource(R.string.setting_ef_extra_voice_tip_note)
+    "ef_codec_in_use" -> stringResource(R.string.setting_ef_codec_in_use_note)
+    "sound_mode" -> stringResource(R.string.setting_sound_mode_note)
+    "voice_enhancement" -> stringResource(R.string.setting_voice_enhancement_note)
+    "qcy_music_mode" -> stringResource(R.string.setting_qcy_music_mode_note)
+    "qcy_touch_sensitivity" -> stringResource(R.string.setting_qcy_touch_sensitivity_note)
+    "dual_connection" -> stringResource(R.string.setting_dual_connection_note)
+    "personalised_anc" -> stringResource(R.string.setting_personalised_anc_note)
     "relieve_pressure" -> stringResource(R.string.setting_relieve_pressure_note)
     "voice_focus" -> stringResource(R.string.setting_voice_focus_note)
     "extra_loud" -> stringResource(R.string.setting_extra_loud_note)
@@ -683,7 +888,7 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     })
     key == "a3954_auto_power_off_duration" -> if (option == "off") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
     key == "op_head_motion" -> getString(if (option == "nod") R.string.op_head_nod else R.string.op_head_shake)
-    key == "op_peer_connect" || key == "op_peer_disconnect" -> option
+    key == "op_peer_connect" || key == "op_peer_disconnect" || key == "ca_peer_connect" || key == "ca_peer_disconnect" || key == "ef_codec_in_use" -> option
     key == "op_spatial" -> getString(when (option) {
         "fixed" -> R.string.op_spatial_fixed
         "head_tracking" -> R.string.op_spatial_head
@@ -698,8 +903,40 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "standard_noise" -> R.string.op_level_standard
         else -> R.string.op_level_more
     })
+    key == "ca_noise" -> getString(when (option) {
+        "off" -> R.string.action_off
+        "anc_high" -> R.string.setting_ca_noise_anc_high
+        "anc_med" -> R.string.setting_ca_noise_anc_med
+        "anc_low" -> R.string.setting_ca_noise_anc_low
+        "transparency_low" -> R.string.setting_ca_transparency_low
+        "transparency_high" -> R.string.setting_ca_transparency_high
+        else -> R.string.setting_ca_voice_focus
+    })
+    key.startsWith("ca_tp_") -> getString(when (option) {
+        "play_pause" -> R.string.setting_ca_play_pause
+        "next" -> R.string.setting_ca_next
+        "previous" -> R.string.setting_ca_previous
+        "volume_up" -> R.string.setting_ca_volume_up
+        "volume_down" -> R.string.setting_ca_volume_down
+        "anc_mode" -> R.string.setting_ca_ambient_modes_control
+        "assistant" -> R.string.setting_ca_assistant
+        else -> R.string.action_none
+    })
+    key == "sc_press_sensitivity" -> getString(when (option) {
+        "softest" -> R.string.setting_sc_press_softest
+        "soft" -> R.string.setting_sc_press_soft
+        "normal" -> R.string.setting_sc_press_normal
+        "firm" -> R.string.setting_sc_press_firm
+        else -> R.string.setting_sc_press_firmest
+    })
+    key.startsWith("ca_case_") -> getString(if (option == "on") R.string.on else R.string.action_off)
+    key == "ca_auto_off" -> if (option == "never") getString(R.string.setting_ca_never) else option
     key == "ca_language" -> getString(when (option) {
         "yue" -> R.string.setting_ca_cantonese
+        "tones" -> R.string.setting_ca_tones
+        "celebrity" -> R.string.setting_ca_celebrity
+        "off" -> R.string.action_off
+        "ko" -> R.string.language_ko
         "zh" -> R.string.language_zh
         "fr" -> R.string.language_fr
         "de" -> R.string.language_de
@@ -801,6 +1038,57 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "game" -> getString(R.string.action_game_mode)
         else -> getString(R.string.setting_connection_standard)
     }
+    key == "qcy_music_mode" -> getString(
+        when (option) {
+            "gaming" -> R.string.action_game_mode
+            "movie" -> R.string.setting_qcy_mode_movie
+            else -> R.string.setting_qcy_mode_music
+        },
+    )
+    key == "qcy_touch_sensitivity" -> getString(
+        when (option) {
+            "high" -> R.string.setting_level_high
+            "medium" -> R.string.setting_level_medium
+            else -> R.string.setting_qcy_sensitivity_normal
+        },
+    )
+    key == "upmix_series" -> getString(
+        when (option) {
+            "upmix_cinema" -> R.string.setting_upmix_option_cinema
+            "upmix_game" -> R.string.setting_upmix_option_game
+            "upmix_music" -> R.string.setting_upmix_option_music
+            else -> R.string.action_off
+        },
+    )
+    key == "le_audio_mode" -> getString(
+        when (option) {
+            "le_low_latency" -> R.string.setting_le_low_latency
+            "le_low_latency_eq" -> R.string.setting_le_low_latency_eq
+            else -> R.string.setting_le_high_reliability
+        },
+    )
+    key == "dirac_eq" -> getString(
+        when (option) {
+            "dirac_rock" -> R.string.setting_dirac_rock
+            "dirac_electronic" -> R.string.setting_dirac_electronic
+            "dirac_pop" -> R.string.setting_dirac_pop
+            "dirac_vocals" -> R.string.setting_dirac_vocals
+            "dirac_classical" -> R.string.setting_dirac_classical
+            "custom" -> R.string.setting_dirac_custom
+            else -> R.string.setting_dirac_opteo
+        },
+    )
+    key == "power_off_time" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: option
+    key == "bose_volume_control" -> getString(
+        when (option) {
+            "bose_volume_buttons" -> R.string.setting_bose_volume_buttons
+            "bose_volume_touch" -> R.string.setting_bose_volume_touch
+            "bose_volume_motion" -> R.string.setting_bose_volume_motion
+            else -> R.string.action_off
+        },
+    )
+    key == "bose_teams_button" -> getString(if (option == "bose_teams_dedicated") R.string.setting_bose_teams_dedicated else R.string.setting_bose_teams_combination)
+    key == "sound_mode" -> getString(if (option == "sleep_mode") R.string.setting_sound_mode_sleep else R.string.setting_sound_mode_music)
     key == "smart_playback" -> getString(
         when (option) {
             "pause_play" -> R.string.setting_playback_pause_play
@@ -838,6 +1126,7 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "noise_control" -> R.string.action_anc_cycle
             "voice_assistant" -> R.string.action_voice_assistant
             "game_mode" -> R.string.action_game_mode
+            "take_picture" -> R.string.action_take_picture
             "volume_up" -> R.string.action_volume_up
             "volume_down" -> R.string.action_volume_down
             "spatial_audio" -> R.string.action_spatial_audio

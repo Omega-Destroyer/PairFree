@@ -92,6 +92,21 @@ class QcyTest {
     }
 
     @Test
+    fun theSettingsAPanelPicksFromAList() {
+        // The panel rows of type 1000 (cmdid 46 music mode, 51 touch sensitivity): the earbuds report one value byte, the panel names each.
+        val v200 = QcySession(QcyModels.of(16818))
+        v200.receive(settings("ff03" + "2e0103"))
+        val mode = setting(v200, "qcy_music_mode") as Setting.Choice
+        assertEquals("gaming", mode.value)
+        assertEquals(listOf("music", "gaming", "movie"), mode.options)
+        assertEquals("ff032e0104", packet(v200.change(SettingChange.Choice("qcy_music_mode", "movie"))))
+        val c30 = QcySession(QcyModels.of(19794))
+        c30.receive(settings("ff03" + "330134"))
+        assertEquals("high", (setting(c30, "qcy_touch_sensitivity") as Setting.Choice).value)
+        assertEquals("ff0333012d", packet(c30.change(SettingChange.Choice("qcy_touch_sensitivity", "normal"))))
+    }
+
+    @Test
     fun switchesAndWearing() {
         val s = n70()
         for (r in n70.getValue("replies").jsonArray.map { it.jsonObject }) s.receive(settings(r.str("bytes")))
@@ -231,6 +246,25 @@ class QcyTest {
         assertTrue(QcyModels.identify("QCY-T13"))
         assertFalse(QcyModels.identify("Galaxy Buds3"))
         assertEquals("QCY MeloBuds N70", QcyModels.model("5D45")?.names?.single())
+    }
+
+    @Test
+    fun thePanelPresetsThatSitOnTheModelsBandsAreCurves() {
+        // 2026-11-12: QCY's control panels list each preset's gains (dB per band); 108 models have presets on their own bands.
+        val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
+        var withCurves = 0
+        for (d in devices) {
+            val spec = QcyModels.of(d.getValue("vendor_id").jsonPrimitive.int)?.eq ?: continue
+            val json = d["eq"]?.jsonObject?.get("preset_gains")?.jsonArray.orEmpty()
+            assertEquals(json.size, spec.presetGains.size, d.getValue("name").toString())
+            for ((name, gains) in spec.presetGains) {
+                assertEquals(spec.bands, gains.size, name)
+            }
+            if (spec.presetGains.isNotEmpty()) withCurves++
+        }
+        assertEquals(108, withCurves)
+        val era = QcyModels.ALL.first { it.eq?.presetGains?.isNotEmpty() == true }.eq!!
+        assertEquals(10, era.presetGains.values.first().size)
     }
 
     private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key

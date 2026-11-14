@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.eq
 
 import io.github.omegadestroyer.pairfree.protocol.BandEq
 import io.github.omegadestroyer.pairfree.protocol.BandEqReport
+import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeConnectSession
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingSession
@@ -31,13 +32,19 @@ import kotlin.math.roundToInt
  * every band at 0. The frames are the session's GATT messages, which the connection queues on the QCY link.
  */
 class QcyBandEq(private val session: QcyControl, eq: QcyEq) : BandEq {
+    /** QCY's presets that are curves on this model's own bands (from its control panel), by name. */
+    private val curves: Map<String, List<Double>> = session.model?.eq?.presetGains.orEmpty().filterValues { it.size == eq.freqs.size }
+
     override val eqBandsHz: List<Int> = eq.freqs
     override val eqRangeDb: Int = eq.maxDb
-    override val eqPresetNames: List<String> = emptyList()
+    override val eqPresetNames: List<String> = curves.keys.toList()
+    override val eqPresetGains: Map<String, List<Double>> = curves
     override val eqHasStock: Boolean = true
     override val eqReport: BandEqReport? = null
 
-    override fun eqPresetFrames(name: String): List<ByteArray>? = null
+    /** A preset goes to the earbuds as the curve it is, through the same write as the user's own curve (whole dB, within the model's range). */
+    override fun eqPresetFrames(name: String): List<ByteArray>? =
+        curves[name]?.let { c -> session.eqCustom(c.map { it.roundToInt().coerceIn(-eqRangeDb, eqRangeDb) }) }
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = session.eqCustom(gains)
 
     /** What [eq] says the earbuds hold; null while they hold one of QCY's presets, whose curve is unknown, or another band set. */
@@ -98,9 +105,14 @@ class NothingBandEq(private val session: NothingSession) : BandEq {
 
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = session.eqCustom(gains)?.map(NothingFrame::bytes)
 
+    /** The filters' gains are floats on the wire, so half steps go through. */
+    override val eqGainStepDb: Double = 0.5
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = session.eqCustomDb(gains)?.map(NothingFrame::bytes)
+
     /** What [eq] says the earbuds hold: their custom curve, or the preset they apply. */
     fun report(eq: NothingEq): BandEqReport? {
-        if (eq.custom) return BandEqReport(null, eq.gains ?: return null)
+        if (eq.custom) return BandEqReport(null, eq.gains ?: return null, eq.gainsDb)
         return BandEqReport(NAMES[eq.preset ?: return null] ?: return null, null)
     }
 
@@ -137,10 +149,15 @@ class PixelBandEq(private val session: PixelSession) : BandEq {
 
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = session.eqWrite(gains.map { it.toFloat() })?.map { it.bytes }
 
-    /** What [gains] say the earbuds hold: a preset's name where one matches, and the gains in whole dB. */
+    /** Google's own sliders move in half steps, and the earbuds take them. */
+    override val eqGainStepDb: Double = 0.5
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = session.eqWrite(gains.map { it.toFloat() })?.map { it.bytes }
+
+    /** What [gains] say the earbuds hold: a preset's name where one matches, and the gains in half dB. */
     fun report(gains: List<Float>): BandEqReport {
         val match = presets.firstOrNull { (_, p) -> p.zip(gains).all { (a, b) -> abs(a - b) < SAME_DB } }
-        return BandEqReport(match?.first, gains.map { it.roundToInt() })
+        return BandEqReport(match?.first, gains.map { it.roundToInt() }, gains.map { (it * 2).roundToInt() / 2.0 })
     }
 
     /** True when the earbuds' saved curve is among the presets as Last saved. */
@@ -185,10 +202,10 @@ class SamsungBandEq(private val model: SamsungModel, private val curves: List<Li
         SamsungEq.custom(model, gains)?.map { SamsungPacket.build(it.id, it.payload, model.legacy) }
 
     /** The preset [status] says the earbuds hold, or the custom curve (whose values stay what this phone last sent, [current]); null while it does not say. */
-    fun report(status: SamsungStatus, current: List<Int>): Pair<BandEqReport, Boolean>? = when (val key = SamsungEq.reported(status)) {
+    fun report(status: SamsungStatus, current: List<Double>): Pair<BandEqReport, Boolean>? = when (val key = SamsungEq.reported(status)) {
         null -> null
-        SamsungEq.CUSTOM -> BandEqReport(null, current) to true
-        else -> BandEqReport(NAMES.getValue(key), current) to false
+        SamsungEq.CUSTOM -> BandEqReport(null, null, current) to true
+        else -> BandEqReport(NAMES.getValue(key), null, current) to false
     }
 
     companion object {
@@ -201,5 +218,36 @@ class SamsungBandEq(private val model: SamsungModel, private val curves: List<Li
             "clear" to "Clear",
             "treble_boost" to "Treble boost",
         )
+    }
+}
+
+/**
+ * Melomania Connect's equalizer (docs/cambridge/PROTOCOL.md section 9): Qualcomm's music processing user set, whose bands the earbuds report (frequency and
+ * gain, in tenths of a dB on the wire). The app's presets are band gains it writes to that set, so they are curves here, and so is the user's own. The range is
+ * the app's: down to -9 dB, up to +3 dB; the screen offers 9 either way and the session clamps what goes out. The models whose curve the app does not let
+ * the user edit (the X100) take presets only.
+ */
+class CambridgeBandEq(private val session: CambridgeConnectSession) : BandEq {
+    private val presets: List<Pair<String, List<Double>>> = session.eqPresets
+    override val eqBandsHz: List<Int> = session.eqBands?.map { it.first }.orEmpty()
+    override val eqRangeDb: Int = maxOf(abs(session.eqMinDb), abs(session.eqMaxDb)).roundToInt()
+    override val eqPresetNames: List<String> = presets.map { it.first }
+    override val eqPresetGains: Map<String, List<Double>> = if (eqBandsHz.isEmpty()) emptyMap() else presets.toMap()
+    override val eqReport: BandEqReport? = null
+
+    override fun eqPresetFrames(name: String): List<ByteArray>? = presets.firstOrNull { it.first == name }?.let { session.eqCurve(it.second) }
+
+    override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = if (eqBandsHz.isEmpty()) null else session.eqCurve(gains.map(Int::toDouble))
+
+    /** The gains travel in tenths of a dB, so half steps go through. */
+    override val eqGainStepDb: Double = 0.5
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = if (eqBandsHz.isEmpty()) null else session.eqCurve(gains)
+
+    /** What the earbuds hold now: the preset whose gains they have (to a twentieth of a dB), else the curve. */
+    fun report(): BandEqReport? {
+        val held = session.eqBands?.map { it.second } ?: return null
+        val preset = presets.firstOrNull { (_, gains) -> gains.size == held.size && gains.indices.all { abs(gains[it] - held[it]) < 0.05 } }?.first
+        return BandEqReport(preset, held.map { it.roundToInt() }, held.map { (it * 2).roundToInt() / 2.0 })
     }
 }

@@ -158,10 +158,12 @@ public class SoundcoreSession(public val model: String) : FitTest {
     public val groups: List<SettingGroup>
         get() {
             val s = lastState ?: return emptyList()
+            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s))
             val rows = listOfNotNull(sleepTimerRow(s)) + A30_FLAGS.filter { it.home.not() }.mapNotNull { flagRow(s, it) } +
                 listOfNotNull(listeningRow(s, A30_LISTENING_MODE), listeningRow(s, A30_DEFAULT_LISTENING_MODE))
             val home = A30_FLAGS.filter { it.home }.mapNotNull { flagRow(s, it) } + listOfNotNull(listeningRow(s, A30_LISTENING_MODE))
             return listOfNotNull(
+                if (switches.isEmpty()) null else SettingGroup("sc_device", SettingTab.DEVICE, switches),
                 if (home.isEmpty()) null else SettingGroup("sleep_sound", SettingTab.HOME, home),
                 if (rows.filterNot { it in home }.isEmpty()) null else SettingGroup("sleep", SettingTab.DEVICE, rows.filterNot { it in home }),
                 a3954SoundRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
@@ -219,6 +221,19 @@ public class SoundcoreSession(public val model: String) : FitTest {
             s.field("wearing_detection")?.let { Setting.Toggle("a3954_wearing_detection", it.u8(0) != 0) },
             s.field("sound_leak_compensation")?.let { Setting.Toggle("a3954_sound_leak_compensation", it.u8(0) != 0) },
         )
+    }
+
+    /**
+     * One of the earbuds' own switches ([SWITCHES]: wear detection, side tone, prompts and the rest, as the Soundcore app's code names them), where the
+     * model's state has its field. A switch of more than one byte keeps the other bytes as the earbuds reported them.
+     */
+    private fun switchRow(s: SoundcoreState, w: Switch): Setting? =
+        if (s.layout.has(w.field) && s.flag(w.field) != null) Setting.Toggle(w.key, s.flag(w.field) == true) else null
+
+    /** The A3953's press sensitivity: five levels from softest (0) to firmest (4), set with both earbuds connected (its screen). */
+    private fun pressRow(s: SoundcoreState): Setting? {
+        val v = s.field("press_sensitivity")?.takeIf { it.isNotEmpty() }?.u8(0) ?: return null
+        return Setting.Choice(PRESS_SENSITIVITY, PRESS_LEVELS.getOrNull(v), PRESS_LEVELS)
     }
 
     /** One of the Sleep A30's switches (OpenSCQ30's d1301 flags), where the model's state holds it. */
@@ -286,10 +301,22 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 } else bytes
                 return listOf(SoundcorePacket(f.second, body))
             }
+            SWITCHES.firstOrNull { it.key == change.key }?.let { w ->
+                if (switchRow(s, w) == null) return null
+                val held = s.field(w.field) ?: return null
+                val body = held.copyOf().also { it[0] = if (change.on) 1 else 0 }
+                lastState = s.with(w.field, body)
+                return listOf(SoundcorePacket(w.command, body))
+            }
             val f = A30_FLAGS.firstOrNull { it.key == change.key } ?: return null
             if (flagRow(s, f) == null) return null
             lastState = s.with(f.field, byteArrayOf(if (change.on) 1 else 0))
             return listOf(SoundcorePacket(f.command, byteArrayOf(if (change.on) 1 else 0)))
+        }
+        if (change is SettingChange.Choice && change.key == PRESS_SENSITIVITY) {
+            val v = PRESS_LEVELS.indexOf(change.option).takeIf { it >= 0 && pressRow(s) != null } ?: return null
+            lastState = s.with("press_sensitivity", byteArrayOf(v.toByte()))
+            return listOf(SoundcorePacket(SoundcoreCommand.PRESS_SENSITIVITY, byteArrayOf(v.toByte())))
         }
         if (change is SettingChange.Choice && change.key != SLEEP_TIMER) {
             if (model == "A3954") {
@@ -411,6 +438,32 @@ public class SoundcoreSession(public val model: String) : FitTest {
 
         // The Sleep A30's switches and listening modes (OpenSCQ30 d1301; no recording of PairFree's yet): the row, the state field, the
         // OpenSCQ30 feature that lists it for the model, the command, and whether it shows on the Home tab.
+        /**
+         * The earbuds' own switches, by the state field that holds them and the command that sets them (Soundcore 3.3.0's `Cmm2CmdData`, whose callbacks
+         * name each: `setMoreWearDetectionCallback`, `setMoreSideToneCallback`, `setLowBatteryAlertSwitchCallback`...). A switch whose body has more than one
+         * byte (auto power off: switch and duration index; spatial audio: switch, effect and mode) is written back with the other bytes as reported.
+         */
+        private const val PRESS_SENSITIVITY = "sc_press_sensitivity"
+        private val PRESS_LEVELS = listOf("softest", "soft", "normal", "firm", "firmest")
+
+        private class Switch(val key: String, val field: String, val command: Int)
+        private val SWITCHES = listOf(
+            Switch("sc_wearing_detection", "wearing_detection", SoundcoreCommand.WEARING_DETECTION),
+            Switch("sc_side_tone", "side_tone", SoundcoreCommand.SIDE_TONE),
+            Switch("sc_in_ear_tone", "in_ear_tone", SoundcoreCommand.IN_EAR_TONE),
+            Switch("sc_bass_up", "bass_up", SoundcoreCommand.BASS_UP),
+            Switch("sc_spatial_audio", "spatial_audio", SoundcoreCommand.SPATIAL_AUDIO),
+            Switch("sc_low_battery_prompt", "low_battery_prompt", SoundcoreCommand.LOW_BATTERY_PROMPT),
+            Switch("sc_ambient_sound_prompt", "ambient_sound_prompt", SoundcoreCommand.AMBIENT_SOUND_PROMPT),
+            Switch("sc_sound_leak_compensation", "sound_leak_compensation", SoundcoreCommand.SOUND_LEAK_COMPENSATION),
+            Switch("sc_auto_power_off", "auto_power_off", SoundcoreCommand.AUTO_POWER_OFF),
+            Switch("sc_smart_play", "smart_play", SoundcoreCommand.SMART_PLAY),
+            Switch("sc_adaptive_noise", "adaptive_noise", SoundcoreCommand.ADAPTIVE_NOISE),
+            Switch("sc_super_hearing", "super_hearing", SoundcoreCommand.SUPER_HEARING),
+            Switch("sc_call_mix", "call_mix", SoundcoreCommand.CALL_MIX),
+            Switch("sc_microphone", "microphone", SoundcoreCommand.MICROPHONE),
+        )
+
         private class A30Flag(val key: String, val field: String, val feature: String, val command: Int, val home: Boolean)
         private class A30Choice(val key: String, val field: String, val feature: String, val command: Int)
         private val A30_FLAGS = listOf(

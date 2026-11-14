@@ -1,0 +1,8 @@
+Sony WF-1000XM6: a user's recording and confirmation
+Source:  GitHub issue #33, 2026-11-11 (a recording of Sony's app with the earbuds, made with PairFree 0.7.2's recorder on Android), and the user's
+         reply of 2026-11-13 on PairFree 0.11.2. The recording's raw text is not kept here: it held the earbuds' list of paired devices.
+Note:    the user wrote of 0.11.2: "It works great in 0.11.2 !! Well done."
+
+What the recording showed: table set 2; the earbuds list their equalizer as "preset EQ and error code" (EQEBB type 4), which 0.11.1 did not read, so the
+Sound tab was empty (issue #33). 0.11.2 reads it as the recording shows: ten bands from 31 Hz to 16 kHz, flat at the value 6, and writes the curve into the
+user setting the way Sony's app does in the recording. The user confirmed on 2026-11-13 that the equalizer works in 0.11.2.

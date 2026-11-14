@@ -18,9 +18,15 @@ What it shows, where the model has it:
 - **Controls:** what the shortcut or action button does, from the actions the model lists. One
   set to Spotify Tap or Alexa in Bose's app shows it and keeps it.
 - **Device:** the auto-off timer, two devices at once, pause when taken off, answering calls
-  automatically, voice prompts, and how much of your own voice you hear during calls.
+  automatically, voice prompts, and how much of your own voice you hear during calls. Added in 0.12.0 from
+  Bose's app, where the model has them (none tried on real headphones): conversation mode, auto aware, head
+  gestures, flip to off, motion auto-off, disabling the touch surface, auto volume, keeping the noise cancelling
+  level, alerts, on-head detection, LE Audio, the volume control way, the Teams button, the headphones' own volume,
+  the audio delay, the mode they start in and whether they keep the last mode, finding them with a chirp, and on the
+  QC Earbuds II and QC Ultra Earbuds the ear tip fit test.
 
-Not yet: changing the modes themselves, and anything
+Not yet: changing the modes themselves (a wrong write would overwrite your own modes), hearing assistance (a fitted
+hearing-aid block), and anything
 Bose's app does through Bose's cloud. PairFree never contacts Bose's servers, so whatever needs
 Bose's sign-in stays out of reach: a model that refuses a change keeps its setting, and PairFree
 shows what it holds.

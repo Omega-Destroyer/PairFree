@@ -105,6 +105,11 @@ that item, and the earbuds then report it on `1002`. They also report changes ma
 | `40` | Adaptive volume | 01 on, 02 off |
 | `FE` | Request | the item to report |
 
+**List-picking rows (2026-11-13):** panel rows of type 1000 or 111 that give a list: the music mode (item `2E`, cmdid 46: music `01`, gaming `03`, movie `04`; four models) and the touch
+sensitivity (cmdid 51, so item `33`: normal `2D`, medium `26`, high `34`; eight models; QCY's panel says it takes effect after a restart). The value is one byte, read with the request item and
+written as the item with that byte; item `33` is newer than 4.0.7's `DataBean`, so its layout is the panel's (`hasValue`, keys as hex bytes), not code read. `tools/import_qcy_panels.py --choices` adds them.
+The newer 4.2.1 is packed (six readable classes), which keeps Head Control (80), AI scene noise cancelling (84), spatial audio v2 (91) and gaming v2 (74) unread.
+
 **Switch values:** QCY's app sends each switch's on and off bytes as the model's control panel gives
 them. Quicky did not keep those bytes. OpenQCY uses 01 on, 02 off for every switch, and so does
 PairFree; PeatsAudio's library wrote LDAC and two devices as 01 and 00. A report of 01 is on, anything
@@ -212,8 +217,7 @@ sends only as item `17`.
 reset among them), the attributes PairFree does not write (the name among them), and QCY's never-sent
 items (section 3) inside the custom command.
 
-**Left out:** the touch controls (no JieLi model's panel in Quicky lists them) and the EQ, which the
-older models take through JieLi's own EQ setting and the newer ones as items `20` and `22`.
+**Built 2026-11-13 (issue #35):** the touch controls and the noise control of the older panel screens. Quicky's list has none, but QCY's own panels do: 61 JieLi models' panels have the button screen as type 1 (left and right, single, double and triple touch, each action with its byte, `ANC mode` is `0A`), and four have the noise screen as type 11 (`ancindex` 1 on, 2 off, 3 transparency). QCY's app sets a key on a new JieLi device as the custom command `2B 02 <key> <action>` (`JLDeviceImpl.setBtnClickFunction`; odd keys left, even right: 1 and 2 touch, 3 and 4 double, 5 and 6 triple, 9 and 10 hold) and on an old one as the JieLi advanced-info attribute 2 with three bytes (action 0 sent as 127); the noise mode goes through JieLi's own noise mode command (`setCurrentNoiseMode`). `tools/import_qcy_panels.py --keys` reads them (touch and its `extra_actions`, since the panel gives its own byte for an action the standard table lacks: ANC mode is `0A` on some models and `0B` on others, take a picture `08`; and `jieli_noise` with each mode packed as `ancindex << 16`) and `QcyJieliSession` sends them: a key as the custom command `2B` with the key and the action on the newer models, as the key settings attribute (2: earbud, gesture 1 to 5, action) on the older ones, and the noise mode as attribute 11 (the mode, then the length and the minimum, maximum and current gain the earbuds last reported, two bytes each, high first: `NoiseMode.toData`); the panel's noise strength sliders (`progress` 100, two models) are not offered. 106 models gained their buttons, four their noise control. Not tried on real earbuds. The EQ is the older models' JieLi setting and the newer ones' items `20` and `22`.
 
 ## 7. EQ
 
@@ -231,9 +235,11 @@ panels are QCY's server data. PairFree asks for both on connecting and uses the 
   the user's own as type `FF` with the gains in dB (`CustomEQLayout`), plus the panel's `basedb`, which is 0
   in the panels QCY's app bundles for when it is offline (`controlpan_default`, `controlpan_jl`) and in most
   of its other bundled panels (−5 in two); Quicky did not keep it, so PairFree adds nothing.
-- **Presets** are curves in the panels. QCY's app writes them with their gains in tenths of a dB, so what the
-  earbuds take there is unclear, and PairFree offers no presets: only Stock (every band at 0) and curves of
-  the user's own. A characteristic that reports a preset's type counts as an EQ PairFree does not know.
+- **Presets** are curves in the panels (`sys_eq`: a name, a gain in dB per band, and for the parametric ones their own frequencies, Qs and filter types). QCY's app
+  keeps a preset's gains in tenths of a dB (`SysEQSeted`: the panel's `eqs` times 10 into a byte array) and the earbuds' EQ characteristic carries whole dB, so what the
+  earbuds take for a preset is not settled. **Since 2026-11-12** PairFree offers the 108 models' presets that sit on the model's own bands (`eq.preset_gains` in
+  `data/qcy/devices.json`, from `tools/import_qcy_panels.py --presets`) as curves: selecting one writes its gains, rounded to whole dB, through the same write as the user's
+  own curve. The 77 models whose presets are parametric get none yet, and two presets that share a name on one model keep the first. Not tried on any earbuds. A characteristic that reports a preset's type counts as an EQ PairFree does not know.
 - **Range and bands:** each model's band count, frequencies and range are in `data/qcy/devices.json` (`eq`);
   the parametric EQ uses the bands the earbuds report.
 - **JieLi models:** the newer ones take items `22` and `20` in the custom command, so the parametric EQ
@@ -243,9 +249,8 @@ None of this has been tried with PairFree; the N70's parametric EQ is OpenQCY's.
 
 ## 8. Not yet
 
-- **EQ:** QCY's presets, and the older JieLi models' EQ (section 7).
-- **Fit test (`11`):** no model's control panel in Quicky's dump gives it a command (one lists "Fit
-  detection" with none).
+- **EQ:** QCY's presets (**corrected 2026-11-12: the saved panels hold them, 186 panels with `eqs` gain lists per preset name**; the unit is still to confirm), and the older JieLi models' EQ (section 7).
+- **Fit test (`11`):** Quicky's dump gives no command, but **QCY's own panels do (corrected 2026-11-12): 20 of the saved panels in `server_dump/qcy/panels` carry "Fit detection" as type 110 with cmdid 17** (`CMDID_COMPACTNESS`); the reply layout is not read yet.
 - **Voice language (`19`):** named in QCY's tables, but QCY's app never writes it.
 
 **Prompt volume (`1D`, since the 2026-11-03 audit):** read on every model, since which have it is on QCY's

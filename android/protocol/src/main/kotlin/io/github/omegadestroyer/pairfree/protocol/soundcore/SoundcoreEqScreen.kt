@@ -43,6 +43,24 @@ public object SoundcoreEqScreen {
         return SoundcoreEqualizer.forCustom(spec, IntArray(spec.presetSet.bandHz.size) { gainsDb.getOrElse(it) { 0 } * u })
     }
 
+    /** The step the screen moves a band by: half a dB where the model's values are tenths of a dB, a whole dB where they are whole. */
+    public fun stepDb(spec: SoundcoreEqSpec): Double = if (unitsPerDb(spec) >= 2) 0.5 else 1.0
+
+    /** The custom curve for [gainsDb] that move in half steps, one per visible band, or null when the model takes none. */
+    @JvmName("customDb")
+    public fun custom(spec: SoundcoreEqSpec, gainsDb: List<Double>): SoundcoreEqConfig? {
+        val u = unitsPerDb(spec)
+        return SoundcoreEqualizer.forCustom(spec, IntArray(spec.presetSet.bandHz.size) { (gainsDb.getOrElse(it) { 0.0 } * u).roundToInt() })
+    }
+
+    /** The visible bands of [config]'s first curve in dB, to the screen's [stepDb]; zeros when no curve is there. */
+    public fun gainsDbFine(spec: SoundcoreEqSpec, config: SoundcoreEqConfig): List<Double> {
+        val u = unitsPerDb(spec).toDouble()
+        val step = stepDb(spec)
+        val curve = config.channels.firstOrNull { it != null }
+        return spec.presetSet.bandHz.indices.map { i -> curve?.getOrNull(i)?.let { (it / u / step).roundToInt() * step } ?: 0.0 }
+    }
+
     /** The preset [config] is, or null for a custom curve or a preset number the model's set does not list. */
     public fun preset(spec: SoundcoreEqSpec, config: SoundcoreEqConfig): SoundcorePreset? =
         if (config.preset == spec.presetSet.customPreset) null else spec.presetSet.presets.firstOrNull { it.id == config.preset }

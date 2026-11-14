@@ -155,12 +155,16 @@ class SoundcoreBandEq(private val spec: SoundcoreEqSpec, private val state: () -
 
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = SoundcoreEqScreen.custom(spec, gains)?.let(::write)
 
+    override val eqGainStepDb: Double = SoundcoreEqScreen.stepDb(spec)
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = SoundcoreEqScreen.custom(spec, gains)?.let(::write)
+
     private fun write(config: SoundcoreEqConfig): List<ByteArray> =
         SoundcoreEqualizer.write(spec, state(), config).map { SoundcorePacket.build(it.command, it.body, checksum) }
 
     /** What [state] says the earbuds hold: the preset by its name, or a custom curve, with the gains; null when it holds no EQ. */
     fun report(state: SoundcoreState): BandEqReport? {
         val config = SoundcoreEqualizer.read(spec, state) ?: return null
-        return BandEqReport(SoundcoreEqScreen.preset(spec, config)?.name, SoundcoreEqScreen.gainsDb(spec, config))
+        return BandEqReport(SoundcoreEqScreen.preset(spec, config)?.name, SoundcoreEqScreen.gainsDb(spec, config), SoundcoreEqScreen.gainsDbFine(spec, config))
     }
 }

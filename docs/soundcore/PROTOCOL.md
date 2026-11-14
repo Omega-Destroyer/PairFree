@@ -14,6 +14,11 @@ on 2026-10-29 (section 10). Each model's state layout (section 5) was read from 
 on 2026-10-13 and checked against the replies in its tests and, where 2.9.9 has the model, against the
 app's own parser.
 
+Protocol follow-up (2026-11-13): [exposed-source findings and targeted validation](PROTOCOL_RESEARCH_2026_11_13.md)
+record the A3943/A3961 manager bindings, A3947/A3953 noise-write checks, a Rock preset
+table discrepancy, and the separate Sleep A10 audio-transfer service. These are
+version-scoped research findings; they do not establish newer-model support.
+
 ## 1. Transport
 
 Classic Bluetooth serial (RFCOMM), like SoundPEATS. OpenSCQ30 connects to a vendor service
@@ -481,3 +486,48 @@ bounded body sizes in `commands.json`; these entries add no probes or settings.
 The [capture guide](SLEEP_A30_CAPTURE_GUIDE.md) uses PairFree's filtered public report rather
 than requesting raw files. This needs a build containing these recorder changes. A separate
 unidentified transfer channel or another container format still requires further app analysis.
+
+## A3953 (Liberty 4): the state reply as Soundcore 3.3.0 reads it (2026-11-12)
+
+Source: `com/oceanwing/devicecmd/manager/l/n/a.java` (`A3953AnalysisService`) of Soundcore 3.3.0 (the newest readable app, `docs/soundcore/NEW_APK_ASSESSMENT.md`) and its base class `k/b.java`; command constants in `k/g.java` (`Cmm2CmdData`, 87 `08 EE 00 00 00 <group> <command>` prefixes). The state reply must be at least 163 bytes (`parseCmmBtDeviceInfo2`); offsets below count from the start of the packet (the 9-byte header `08 EE 00 00 00 cmd1 cmd2 len len` ends at 8), so subtract 9 for PairFree's payload-relative layouts.
+
+| Offset | Size | Field |
+|---|---|---|
+| 9 | 1 | host device (which earbud the phone is on) |
+| 10 | 1 | TWS status (1 both earbuds) |
+| 11, 12 | 1+1 | left and right battery (level 0 to 5) |
+| 13, 14 | 1+1 | left and right charging |
+| 15 | 5+5 | left and right firmware text |
+| 25 | 16 | serial number text |
+| 41, 42 | 1+1 | current EQ index (two bytes; `FE` second byte = custom, `EE` = another set, else a preset number) |
+| 43 | 20 | the custom EQ curve (ten bands, two bytes each) |
+| 63 | 1 | HearID age range (`FF`/`FE` mean no data) |
+| 64 | 1 | HearID switch |
+| 65 | 20 | HearID curve |
+| 85 | 4 | HearID time (little-endian) |
+| 89 | 1 | HearID type |
+| 90 | 20 | custom HearID curve (first byte `FF` = none) |
+| 110, 111 | 1+1 | HearID EQ index |
+| 112 | 1 | length of the button block, counting from this byte |
+| 113 | 24 | button block (`ControllerBtnModel`): per press (single, double, long, triple) and side, an enabled/action pair for the earbud alone and for TWS (high and low nibbles) |
+| 112 + length - 1 | 1 | which of ANC, transparency and normal the cycle includes (bits 1, 2, 3) |
+| then | 6 | ANC block (`A3951ANC`): mode byte, manual (low nibble) and auto (high nibble) level, a byte, the automation mode, wind flags (bit 1 suppression, bit 2 detected) and the auto sensitivity |
+| +6 | 4 | personalised ANC test time |
+| | 1+1 | its volume and result index |
+| | 1 | wear detection switch |
+| | 1+1 | left and right wearing |
+| | 1 | case battery |
+| | 1 | bass up |
+| | 1 | LDAC |
+| | 1 | two-device switch |
+| | 1+1 | auto power-off switch and its index (0 to 3) |
+| | 1 | HearID volume |
+| | 1 | in-ear beep |
+| | 1 | low battery alert |
+| | 1 | ambient sound prompt |
+| | 1 | spatial audio switch |
+| | 1+1 | spatial effect and sound mode |
+| | 4 | health: sedentary reminder, sitting posture, abnormal heart rate alarm, its threshold |
+| (replies longer than 163 bytes) | 1+1 | device colour (one character) and press sensitivity |
+
+Built (2026-11-13): the layout is in `data/soundcore/devices.json` (the HearID block, the button block with its length byte and the personalised ANC test fields are skipped; every other row of the table is read), so the Liberty 4 shows its battery with the case, firmware, noise mode (written with the existing `06 81` block write, as `A3953CmdService.q1` builds it), LDAC (`01 FF`), two devices at once (`0B 84`) and, as earbud settings, wear detection (`01 81`), bass boost (`02 84`), in-ear beep (`01 8C`), low battery prompt (`10 82`), ambient sound prompt (`10 83`), spatial audio (`10 81`: switch, effect, mode, the last two kept) and automatic power off (`01 86`: switch and duration index, the index kept), plus the press sensitivity (`04 85`, levels 0 to 4: softest, soft, normal, firm, firmest). Every command is named by its callback in `CMM2_COMMANDS.md`. Not built yet for the model: the equalizer (the app writes `03 87` or `02 81`; the HearID part is 49 bytes here, not the 48 of the A3947's), the touch controls (the 24-byte button block), and the HearID and ANC tests. Nothing has been tried on a Liberty 4.

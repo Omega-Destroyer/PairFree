@@ -1,7 +1,12 @@
 package io.github.omegadestroyer.pairfree.protocol
 
-/** What a brand's earbuds hold of their equalizer: the preset they apply, or the gains (whole dB, one per band) of the custom curve. */
-public data class BandEqReport(val preset: String?, val gains: List<Int>?)
+import kotlin.math.roundToInt
+
+/**
+ * What a brand's earbuds hold of their equalizer: the preset they apply, or the gains of the custom curve, one per band: [gains] in whole dB and
+ * [gainsDb] as the earbuds hold them where their step is finer (the screen uses [gainsDb], rounded to the brand's [BandEq.eqGainStepDb]).
+ */
+public data class BandEqReport(val preset: String?, val gains: List<Int>?, val gainsDb: List<Double>? = gains?.map(Int::toDouble))
 
 /**
  * A brand-neutral graphic equalizer, for any earbuds that offer presets they apply themselves and/or a custom curve on named bands.
@@ -14,6 +19,12 @@ public interface BandEq {
 
     /** The user's gain range: from minus this to plus this, in whole dB. */
     public val eqRangeDb: Int
+
+    /** The step of a band's gain in dB: 1 for whole dB, 0.5 where the earbuds' wire takes half steps ([eqCustomFramesDb] then carries them). */
+    public val eqGainStepDb: Double get() = 1.0
+
+    /** The frames of a custom curve of [gains] in dB (multiples of [eqGainStepDb]); earbuds of whole dB round them. */
+    public fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = eqCustomFrames(gains.map { it.roundToInt() }, preampDb)
 
     /** The presets the earbuds apply themselves, by the names the screen shows. */
     public val eqPresetNames: List<String>

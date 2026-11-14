@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.nothing
 
+import kotlin.math.roundToInt
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
@@ -59,10 +60,16 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
     private var noiseMode: Int? = null      // the mode in effect (group 1 of the noise report)
     private var noiseLevel: Int? = null     // the cancelling strength to go back to (group 2)
     private var eqMode: Int? = null
-    private var customEq: Map<Int, Int>? = null   // the custom EQ's gain by filter type, whole dB
+    private var customEq: Map<Int, Double>? = null   // the custom EQ's gain by filter type, in dB (half steps)
     private var bass: Pair<Boolean, Int>? = null
     private var spatial: ByteArray? = null
     private var codec: Int? = null
+    private var dual: Boolean? = null
+    private var personalised: Boolean? = null
+    private var dirac: Int? = null
+    private var powerOff: Pair<Int, Int>? = null     // the power off mode (0 shut down, 1 standby) and its minutes
+    private var callTransparency: Boolean? = null
+    private var advancedEq: Boolean? = null
     private var earDetection: Boolean? = null
     private var lowLag: Boolean? = null
     private var keys: Map<Triple<Int, Int, Int>, Int> = emptyMap()
@@ -94,6 +101,12 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
         add(frame(NothingCommand.GET_BASS_BOOST))
         add(frame(NothingCommand.GET_SPATIAL_AUDIO))
         add(frame(NothingCommand.GET_LHDC_COMMANDS))
+        add(frame(NothingCommand.GET_DUAL_ENABLE))
+        add(frame(NothingCommand.GET_PERSONALIZED_ANC))
+        add(frame(NothingCommand.GET_DIRAC_OPTEO_EQ))
+        add(frame(NothingCommand.GET_AUTO_POWER_OFF_TIME))
+        add(frame(NothingCommand.GET_CALL_TRANSPARENCY))
+        add(frame(NothingCommand.GET_ADVANCE_CUSTOM_EQ_MODE))
         add(frame(NothingCommand.GET_KEY_CONFIGURATION))
     }
 
@@ -184,6 +197,15 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
             NothingCommand.GET_BASS_BOOST -> bass = (p.u8(0) == 1) to (if (p.size > 1) p.u8(1) else BASS_MIN).coerceIn(BASS_MIN, BASS_MAX)
             NothingCommand.GET_SPATIAL_AUDIO -> spatial = p.copyOf()
             NothingCommand.GET_LHDC_COMMANDS -> codec = p.u8(0)
+            // Two devices: anything but 0 is on (DualConnectViewModel.onUpdate). Personalised noise cancelling: its switch, then whether a calibration is running (DeviceANCSwitch).
+            NothingCommand.GET_DUAL_ENABLE -> dual = p.u8(0) != 0
+            NothingCommand.GET_PERSONALIZED_ANC -> personalised = p.u8(0) == 1
+            // Dirac Opteo's preset: a byte, the app's DiracEQMode index (0 Opteo, 1 rock, 2 electronic, 3 pop, 4 enhance vocals, 5 classical, 6 the custom curve).
+            NothingCommand.GET_DIRAC_OPTEO_EQ -> dirac = p.u8(0)
+            // Timed power off (Nothing X's NtEarPowerTime): 0 shut down or 1 standby, then the minutes in two bytes, low first.
+            NothingCommand.GET_AUTO_POWER_OFF_TIME -> if (p.size >= 3 && p.u8(0) in 0..1) powerOff = p.u8(0) to (p.u8(1) or (p.u8(2) shl 8))
+            NothingCommand.GET_CALL_TRANSPARENCY -> callTransparency = p.u8(0) == 1
+            NothingCommand.GET_ADVANCE_CUSTOM_EQ_MODE -> advancedEq = p.u8(0) == 1
             NothingCommand.GET_KEY_CONFIGURATION -> {
                 keys = keyTable(p)
                 keysRead = true
@@ -228,16 +250,14 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
      * The custom EQ as Nothing X reads it (CustomEQ): a count, the total gain (a float), then per filter its
      * type (0 low shelf, 1 peak, 2 high shelf) and its gain, frequency and Q as little-endian floats.
      */
-    private fun simpleEq(p: ByteArray): Map<Int, Int>? {
+    private fun simpleEq(p: ByteArray): Map<Int, Double>? {
         val n = p.u8(0)
         if (p.size < SIMPLE_EQ_HEAD + n * SIMPLE_EQ_FILTER) return null
         return (0 until n).associate { i ->
             val at = SIMPLE_EQ_HEAD + i * SIMPLE_EQ_FILTER
-            p.u8(at) to floatLe(p, at + 1).roundToIntSafe()
+            p.u8(at) to floatLe(p, at + 1).let { f -> if (f.isNaN()) 0.0 else (f * 2.0).roundToInt() / 2.0 }
         }
     }
-
-    private fun Float.roundToIntSafe(): Int = if (isNaN()) 0 else (if (this < 0) this - 0.5f else this + 0.5f).toInt()
 
     private fun floatLe(p: ByteArray, at: Int): Float = Float.fromBits(le(p.copyOfRange(at, at + 4)))
 
@@ -250,7 +270,7 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
      * The EQ the earbuds last reported: the mode (0 balanced, 1 voice, 2 more treble, 3 more bass, 5 the
      * custom curve) and the custom curve's gains in whole dB, bass, mid and treble, where they have one.
      */
-    public val eq: NothingEq? get() = eqMode?.let { NothingEq(EQ_PRESETS[it], it == EQ_CUSTOM, customEq?.let { c -> SIMPLE_ORDER.map { t -> c[t] ?: 0 } }) }
+    public val eq: NothingEq? get() = eqMode?.let { NothingEq(EQ_PRESETS[it], it == EQ_CUSTOM, customEq?.let { c -> SIMPLE_ORDER.map { t -> (c[t] ?: 0.0).roundToInt() } }, customEq?.let { c -> SIMPLE_ORDER.map { t -> c[t] ?: 0.0 } }) }
 
     /** The presets the model has, in the order Nothing X lists them, by [EQ_ORDER]'s names. */
     public val eqPresets: List<String> get() = if (config?.eqPresets != false) EQ_ORDER else emptyList()
@@ -272,15 +292,18 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
      * as Nothing X's SimpleEqualizerViewModel writes them: the custom mode first where it is not on, then the
      * three filters with a total gain of minus the highest gain, so the curve does not clip.
      */
-    public fun eqCustom(gains: List<Int>): List<NothingFrame>? {
+    public fun eqCustom(gains: List<Int>): List<NothingFrame>? = eqCustomDb(gains.map(Int::toDouble))
+
+    /** The same for gains in dB that move in half steps: the filters' gains are floats on the wire. */
+    public fun eqCustomDb(gains: List<Double>): List<NothingFrame>? {
         val f = config?.simpleEq ?: return null
         if (gains.size != SIMPLE_ORDER.size) return null
-        val byType = SIMPLE_ORDER.zip(gains.map { it.coerceIn(-SIMPLE_EQ_RANGE, SIMPLE_EQ_RANGE) }).toMap()
+        val byType = SIMPLE_ORDER.zip(gains.map { it.coerceIn(-SIMPLE_EQ_RANGE.toDouble(), SIMPLE_EQ_RANGE.toDouble()) }).toMap()
         val out = mutableListOf<NothingFrame>()
         if (eqMode != EQ_CUSTOM) out += frame(NothingCommand.SET_EQ_MODE, EQ_CUSTOM, 0)
         eqMode = EQ_CUSTOM
         customEq = byType
-        val total = -(byType.values.maxOrNull() ?: 0).coerceAtLeast(0).toFloat()
+        val total = -(byType.values.maxOrNull() ?: 0.0).coerceAtLeast(0.0).toFloat()
         val filters = mapOf(LOW_SHELF to (f.lowHz to f.lowQ), PEAK to (f.peakHz to f.peakQ), HIGH_SHELF to (f.highHz to f.highQ))
         val payload = mutableListOf(SIMPLE_WIRE_ORDER.size)
         payload += floatBytes(total)
@@ -348,6 +371,9 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
                         eqMode?.takeIf { c == null }?.let { Setting.Choice("eq_preset", EQ_PRESETS[it] ?: EQ_OTHER[it], EQ_ORDER) },
                         bass?.takeIf { c?.bassBoost != false }?.let { Setting.Toggle("bass_boost", it.first) },
                         bass?.takeIf { c?.bassBoost != false && it.first }?.let { Setting.Level("bass_level", it.second, BASS_MIN, BASS_MAX) },
+                        personalised?.takeIf { c?.personalizedAnc != false }?.let { Setting.Toggle("personalised_anc", it) },
+                        advancedEq?.takeIf { c?.advancedEq != false }?.let { Setting.Toggle("advanced_eq", it) },
+                        dirac?.takeIf { c?.diracOpteo != false }?.let { Setting.Choice("dirac_eq", DIRAC_MODES[it] ?: "custom", DIRAC_MODES.values.toList()) },
                         spatial?.takeIf { c?.spatialAudio != false }?.let { Setting.Toggle("spatial_audio", it.u8(0) == 1) },
                         spatial?.takeIf { c?.spatialAudio != false && model?.headTracking == true && it.size > 1 }
                             ?.let { Setting.Toggle("head_tracking", it.u8(1) == 1, enabled = it.u8(0) == 1) },
@@ -356,6 +382,9 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
                 group(
                     "connection", SettingTab.DEVICE,
                     listOfNotNull(
+                        callTransparency?.takeIf { c?.callTransparency != false }?.let { Setting.Toggle("call_transparency", it) },
+                        powerOff?.takeIf { c?.powerOffTime != false }?.let { (_, minutes) -> Setting.Choice("power_off_time", minutes.toString(), POWER_OFF_MINUTES.map { it.toString() }) },
+                        dual?.takeIf { c?.dualConnection != false }?.let { Setting.Toggle("dual_connection", it) },
                         codec?.let { v ->
                             val options = listOf(CODEC_STANDARD) + (c?.codecs ?: CODECS.values.filter { it != CODEC_STANDARD })
                             Setting.Choice("codec", CODECS[v], options).takeIf { options.size > 1 }
@@ -469,6 +498,26 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
                         readBacks += frame(NothingCommand.GET_BASS_BOOST)
                         frame(NothingCommand.SET_BASS_BOOST, if (on) 1 else 0, level)
                     }
+                    "dual_connection" -> {
+                        dual = on
+                        readBacks += frame(NothingCommand.GET_DUAL_ENABLE)
+                        frame(NothingCommand.SET_DUAL_ENABLE, if (on) 1 else 0)
+                    }
+                    "call_transparency" -> {
+                        callTransparency = on
+                        readBacks += frame(NothingCommand.GET_CALL_TRANSPARENCY)
+                        frame(NothingCommand.SET_CALL_TRANSPARENCY, if (on) 1 else 0)
+                    }
+                    "advanced_eq" -> {
+                        advancedEq = on
+                        readBacks += frame(NothingCommand.GET_ADVANCE_CUSTOM_EQ_MODE)
+                        frame(NothingCommand.SET_ADVANCE_CUSTOM_EQ_MODE, if (on) 1 else 0)
+                    }
+                    "personalised_anc" -> {
+                        personalised = on
+                        readBacks += frame(NothingCommand.GET_PERSONALIZED_ANC)
+                        frame(NothingCommand.SET_PERSONALIZED, if (on) 1 else 0)
+                    }
                     "spatial_audio", "head_tracking" -> {
                         val s = spatial ?: return null
                         val next = s.copyOf().also { it[if (change.key == "spatial_audio") 0 else 1] = (if (on) 1 else 0).toByte() }
@@ -497,6 +546,19 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
                         noiseLevel = mode
                         readBacks += frame(NothingCommand.GET_CURRENT_NOISE_REDUCTION, NOISE_GROUPS)
                         frame(NothingCommand.SET_CURRENT_NOISE_REDUCTION, NOISE_MODE, mode, 0)
+                    }
+                    change.key == "power_off_time" -> {
+                        val minutes = change.option.toIntOrNull()?.takeIf { it in POWER_OFF_MINUTES } ?: return null
+                        val mode = powerOff?.first ?: return null
+                        powerOff = mode to minutes
+                        readBacks += frame(NothingCommand.GET_AUTO_POWER_OFF_TIME)
+                        frame(NothingCommand.SET_AUTO_POWER_OFF_TIME, mode, minutes and 0xFF, minutes shr 8)
+                    }
+                    change.key == "dirac_eq" -> {
+                        val v = DIRAC_MODES.entries.firstOrNull { it.value == change.option }?.key ?: return null
+                        dirac = v
+                        readBacks += frame(NothingCommand.GET_DIRAC_OPTEO_EQ)
+                        frame(NothingCommand.SET_DIRAC_OPTEO_EQ, v)
                     }
                     change.key == "eq_preset" -> {
                         val v = EQ_PRESETS.entries.firstOrNull { it.value == change.option }?.key ?: return null
@@ -665,7 +727,16 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
         private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
         /** Each write, and the read that shows its value again after the earbuds refused it. */
+        /** NtEarPowerTime's PowerTimeType: half an hour to four hours. */
+        private val POWER_OFF_MINUTES = listOf(30, 60, 120, 180, 240)
+
+        private val DIRAC_MODES = linkedMapOf(0 to "dirac_opteo", 1 to "dirac_rock", 2 to "dirac_electronic", 3 to "dirac_pop", 4 to "dirac_vocals", 5 to "dirac_classical")
+
         private val WRITES: Map<Int, Pair<Int, IntArray>> = mapOf(
+            NothingCommand.SET_AUTO_POWER_OFF_TIME to (NothingCommand.GET_AUTO_POWER_OFF_TIME to intArrayOf()),
+            NothingCommand.SET_CALL_TRANSPARENCY to (NothingCommand.GET_CALL_TRANSPARENCY to intArrayOf()),
+            NothingCommand.SET_ADVANCE_CUSTOM_EQ_MODE to (NothingCommand.GET_ADVANCE_CUSTOM_EQ_MODE to intArrayOf()),
+            NothingCommand.SET_DIRAC_OPTEO_EQ to (NothingCommand.GET_DIRAC_OPTEO_EQ to intArrayOf()),
             NothingCommand.SET_CURRENT_NOISE_REDUCTION to (NothingCommand.GET_CURRENT_NOISE_REDUCTION to intArrayOf(NOISE_GROUPS)),
             NothingCommand.SET_EQ_MODE to (NothingCommand.GET_EQ_MODE to intArrayOf()),
             NothingCommand.SET_CUSTOM_EQ to (NothingCommand.GET_CUSTOM_EQ_VALUE to intArrayOf()),
@@ -674,6 +745,8 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
             NothingCommand.SET_BASS_BOOST to (NothingCommand.GET_BASS_BOOST to intArrayOf()),
             NothingCommand.SET_SPATIAL_AUDIO to (NothingCommand.GET_SPATIAL_AUDIO to intArrayOf()),
             NothingCommand.SET_LHDC_COMMANDS to (NothingCommand.GET_LHDC_COMMANDS to intArrayOf()),
+            NothingCommand.SET_DUAL_ENABLE to (NothingCommand.GET_DUAL_ENABLE to intArrayOf()),
+            NothingCommand.SET_PERSONALIZED to (NothingCommand.GET_PERSONALIZED_ANC to intArrayOf()),
             NothingCommand.SET_KEY_CONFIGURATION to (NothingCommand.GET_KEY_CONFIGURATION to intArrayOf()),
             NothingCommand.SET_WHERE_AM_I to (NothingCommand.GET_REMOTE_BATTERY_LEVEL to intArrayOf()),
         )
@@ -684,4 +757,4 @@ public class NothingSession(private val hint: NothingModel? = null) : FitTest {
  * Nothing earbuds' EQ as they last reported it: the [preset] by [NothingSession.eqPresets]' names, or null for
  * another mode; [custom] when the custom curve is on; [gains] that curve (bass, mid, treble), where they hold one.
  */
-public data class NothingEq(val preset: String?, val custom: Boolean, val gains: List<Int>?)
+public data class NothingEq(val preset: String?, val custom: Boolean, val gains: List<Int>?, val gainsDb: List<Double>? = gains?.map(Int::toDouble))

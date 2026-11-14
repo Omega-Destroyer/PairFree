@@ -252,6 +252,35 @@ Read from Sony's app, each shown only where the earbuds list its function:
 - **Power off**: set 1 `COMMON_SET_POWER_OFF` 00 01, set 2 `POWER_SET_STATUS` 03 01, where the earbuds list
   power off; offered behind a confirmation (owner, 2026-11-03).
 
+### 7.2 Gap audit 2026-11-13 (read from Sony | Sound Connect 13.3.0)
+
+Built as switches (type byte, then on 0 or off 1; `S2_SWITCHES`): standby when idle and caring charge's switch (table 2 power types 0 and 1), the
+auto volume optimizer and the limited auto volume (table 2 system types 3 and 4), caring charge (table 1 power type 12), stamina (14), the touch panel
+backlight's automatic turn-off (15) and auto play (SAR/auto play type 1). The maximum volume limit is a step 0 to 4 (table 2 safe listening type 5,
+`SAFE_LISTENING_SET_PARAM`), shown as 1 to 5; the app's own status byte for it is read-only there (no set-status class in `to0`).
+
+Not built, with what was checked:
+- Adaptive Sound Control (`AUTO_NCASM`, `ADAPTIVE_CONTROL_WITH_PARAMETER_NOTIFICATION`): the phone works out places and activity and sends `SENSE_SET_PARAM`
+  with a list of applicable functions per context; the app's own builder (`ao0.p`) refuses an empty list. It needs location and activity-recognition
+  permissions the owner has not allowed. Checked: `ao0` (sense classes), the `adaptivesoundcontrol` package.
+- Safe listening and the safe volume control's WHO level: a listening-volume log the phone stores and shows (`SlState`, `SlDevice`, `SafeListening*` types);
+  no setting to offer without that store. Checked: `to0`, `so0`, `ro0`, `uo0`, `w40.a`, `wt.k`, `v40.b`.
+- Battery safe mode (type 11): built as a switch. A read answers the switch and whether its effect is active; a write is the switch then an effect control, which PairFree
+  sends as 0 (leave the effect as it is; 1 turns the effect off). What the mode limits is not stated in the app's code, so the explainer says only that it spares the battery.
+
+Also built on 2026-11-13: set 2's simpler noise control layouts (types `01`, `11`, `12`, `14` and `21`, read from `un0.n`, `o`, `k`, `l`, `d`: the effect byte, then the NC
+byte or NC value, ambient voice, and an ambient on/off or level; `SonyNoise`), vibration (set 1: system type 1, setting type 0, then 1 or 0; set 2: system type 0, on 0), set 1's power
+saving (type 2), the surround upmix (audio type 10: none, cinema, game, music; Sony's "listening option") and the left and right balance correction (EQEBB type `0x50`).
+
+LE Audio (owner, 2026-11-13: build it, the drop is expected): the switch is table 1's LEA type 12 (`LEA_SET_PARAM`: on 0 or off 1, then 0 when the connection method changes, which is
+how the app turns it on, or 1 for the setting alone, which is how it turns it off; read with `LEA_GET_PARAM`), and the connection mode is table 2's LEA type 2 (high reliability 0, low
+latency 1, low latency with the EQ restricted 2). The earbuds then ask to confirm the reconnection with `ALERT_NTFY_PARAM` (type 0, a fixed message, or type 6, a flexible one, each
+with an action type: 0 confirmation only, 1 or 2 an answer wanted); the app's dialog answers with `ALERT_SET_PARAM` (the type, the message, 1 positive or 0 negative). PairFree answers
+positive, once, only after a change of its own. The channel drops and PairFree's reconnect takes over.
+
+**Sony is finished as far as the sources go:** every function id in `data/unused_ids.json` is used or carries a "blocked: reason; checked: what" line (speaker-only features, head
+tracking and its calibration, assistant setup, device lists, LE Audio mode switching, server-held sound curves, read-only status).
+
 ## 8. Never sent
 
 Firmware update (`UPDT_*`), the test command and the logs are marked `never_send` in

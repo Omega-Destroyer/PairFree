@@ -31,7 +31,7 @@ class SonyTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.data["devices"]), s["models"])
-        self.assertEqual(["WF-1000XM5"], s["tested"], "the one model with a user's report (GitHub issue #26)")
+        self.assertEqual(["WF-1000XM5", "WF-1000XM6"], s["tested"], "a user's report (GitHub issue #26) and a user's recording and confirmation (issue #33)")
 
     def test_rows(self):
         self.assertEqual({"Model": "WH-1000XM3", "Type": "Headphones", "Table set": "1", "Status": "Not tested",

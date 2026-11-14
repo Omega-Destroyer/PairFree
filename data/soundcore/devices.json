@@ -1005,12 +1005,41 @@
       ],
       "openscq30": {
         "module": null,
-        "source": "Soundcore app 6.4.0, its label_ strings",
+        "source": "Soundcore app 3.3.0, its A3850AnalysisService (PairFree's own reading: OpenSCQ30 has no A3850)",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 22],
+        ["skip", 12],
+        ["skip", 1],
+        ["skip", 2],
+        ["super_hearing", 1],
+        ["call_mix", 1],
+        ["microphone", 1]
+      ],
+      "soundcore_app": {
+        "version": "3.3.0",
+        "parser": "A3850",
+        "features": [
+          "dual_battery",
+          "serial_number_and_dual_firmware_version",
+          "tws_status",
+          "super_hearing",
+          "call_mix",
+          "microphone"
+        ]
+      },
+      "notes": "Read from Soundcore 3.3.0's A3850AnalysisService, not from OpenSCQ30 or a recording. Skipped: the equalizer, the button block, the sound mode cycle and the light colour and mode. The dongle's own commands (0F xx) are not built. Nothing has been tried on a VR P10."
     },
     {
       "model": "A3871",
@@ -2603,12 +2632,70 @@
       ],
       "openscq30": {
         "module": null,
-        "source": "Soundcore app 6.4.0, its label_ strings",
+        "source": "Soundcore app 3.3.0, its A3953AnalysisService (PairFree's own reading: OpenSCQ30 has no A3953)",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["equalizer", 22],
+        ["skip", 49],
+        ["skip", 1],
+        ["skip", 24],
+        ["sound_mode_cycle", 1],
+        ["sound_modes", 6],
+        ["skip", 4],
+        ["skip", 2],
+        ["wearing_detection", 1],
+        ["skip", 2],
+        ["case_battery", 1],
+        ["bass_up", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["skip", 1],
+        ["in_ear_tone", 1],
+        ["low_battery_prompt", 1],
+        ["ambient_sound_prompt", 1],
+        ["optional:spatial_audio", 3],
+        ["optional:skip", 4],
+        ["optional:color", 1],
+        ["optional:press_sensitivity", 1]
+      ],
+      "soundcore_app": {
+        "version": "3.3.0",
+        "parser": "A3953",
+        "features": [
+          "sound_modes",
+          "dual_battery",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version",
+          "tws_status",
+          "dual_connections",
+          "ldac",
+          "wearing_detection",
+          "auto_power_off",
+          "a3953_spatial_audio",
+          "bass_up",
+          "in_ear_tone",
+          "low_battery_prompt",
+          "ambient_sound_prompt",
+          "press_sensitivity"
+        ]
+      },
+      "notes": "Read from Soundcore 3.3.0's A3953AnalysisService (docs/soundcore/PROTOCOL.md, the A3953 section), not from OpenSCQ30 or a recording. The HearID block (49 bytes), the button block (24 bytes, preceded by its length byte) and the personalised ANC test fields are skipped: the equalizer and touch controls are not built yet. The reply is at least 163 bytes; spatial audio, the health block, the colour and press sensitivity come after that on longer replies."
     },
     {
       "model": "A3954",
@@ -3550,12 +3637,45 @@
       ],
       "openscq30": {
         "module": null,
-        "source": "Soundcore app 6.4.0, its label_ strings",
+        "source": "Soundcore app 3.3.0, its A6610AnalysisService (PairFree's own reading: OpenSCQ30 has no A6610)",
         "features": []
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 22],
+        ["skip", 12],
+        ["skip", 1],
+        ["skip", 1],
+        ["smart_play", 1],
+        ["skip", 1],
+        ["adaptive_noise", 1],
+        ["skip", 1],
+        ["skip", 1],
+        ["skip", 3],
+        ["optional:press_sensitivity", 1],
+        ["optional:skip", 2]
+      ],
+      "soundcore_app": {
+        "version": "3.3.0",
+        "parser": "A6610",
+        "features": [
+          "dual_battery",
+          "serial_number_and_dual_firmware_version",
+          "tws_status",
+          "smart_play",
+          "adaptive_noise"
+        ]
+      },
+      "notes": "Read from Soundcore 3.3.0's A6610AnalysisService, not from OpenSCQ30 or a recording. Skipped: the equalizer, the button block, the current sleep mode, the play time, the voice prompt, the colour and the sleep sound (id, whether it is loaded, volume); the press sensitivity (firmware 252 and later) and the play countdown follow on longer replies. Nothing has been tried on a Sleep A10."
     },
     {
       "model": "A6611",

@@ -508,8 +508,10 @@ the app's offers, not tests on earbuds; models with a `reports` entry are the ex
   case, `BT5107`, `BS519W2D`, `Air3Pro`, `BS390RB`, `WQT7033`, `QCC3040`, `BS343RB`,
   `BT5106-3040`, `T28Pro`, `T28`, `T57`, `ATS3019DK12`, `OPERA03`, `OPERA05`, `HILISTENING`,
   `FREELITE` or `JULIRUNFREE`. `AIR3DELUXEHSW53D` is no longer in the list. It inverts the
-  state it shows; how it writes the switch was not traced. `touch_disable_inverted` in
-  `data/soundpeats/devices.json` marks these models; PairFree does not act on it yet.
+  state it shows (`TouchInversionUtil.invertIfNeeded`, used by `HomeViewModel.disabledTouchState`), and the repository then sends whatever boolean it is given as
+  command `03 13` (787); the UI caller of that setter is not in the readable decompile, so that the write is inverted too is inferred (an app that showed the
+  switch inverted and wrote it as shown would flip back on every tap). Since 2026-11-12 `touch_disable_inverted` in `data/soundpeats/devices.json` marks these models
+  (`Model.touchInverted`) and the Controls tab reads and writes the switch inverted for them; not tried on any of those earbuds.
 - `S9`: when a feature that conflicts with EQ is turned off, the app does not put
   the previous EQ back. On every other model it does.
 - `S22`: see section 3.1.

@@ -387,3 +387,17 @@ turns Adapt Sound on. Levels read as thresholds: Samsung's presets are all 5 (no
 Not traced: the earbuds' reply to 204 (PairFree does not wait for one) and how the Galaxy Wearable app then keeps the profile on the phone
 (`FittingDataProvider`, a Samsung content provider that does not exist outside Samsung's phones). Virtual and unit tests only
 (`SamsungHearingTestTest`); no Galaxy Buds have been tried.
+
+## 13. Samsung's own plugins for the older models (read 2026-11-13)
+
+The owner supplied the plugins of eight more models (decompiled outside the repo): Galaxy Buds (`fridaymgr`, SM-R170), Buds+ (`popcornmgr`, R175), Buds Live (`neobeanmgr`, R180), Buds2 (`berrymgr`, R177), Buds FE (`pearlmgr`, R400N), Buds2 Pro (`zenithmgr`, R510), Buds3 (`jellymgr`, R530) and Buds3 Pro (`paranmgr`, R630). Each has the status parser (`MsgExtendedStatusUpdated`, the class with the `<Codename>_MsgExtendedStatusUpdated` log tag) and a table of features by revision (`p097i7/e.java` in the Buds2, Buds2 Pro and Buds3 plugins), so the bytes that exist at a revision are known from the app, not inferred.
+
+What was compared with GalaxyBudsClient's layout and what changed in PairFree:
+
+- **Buds3 (R530):** differs from GalaxyBudsClient from byte 41, as the Buds4 family does: byte 41 is auto adjust sound (GalaxyBudsClient has head tracking there), so head tracking, the charging byte, extra clear call sound, extra high ambient and auto pause sit one byte later, and there is no lighting byte. After the hot command language (48), the adaptive volume (50) and adapt sound (51) come the hot command version (52 to 54), voice boost (55), volume normalization (56) and the digital assistant's two sides (57). PairFree now reads the Buds3 so (`SamsungStatus.readBuds4`, the Buds3 branch); writes are unchanged, since the plugin's writes for the Buds3 have not been compared.
+- **Buds2 Pro (R510):** the plugin's table adds voice boost and volume normalization from revision 14 (read now), and at revision 1 only an ear adaptation status and fitting and sound detect modes (bytes 41 to 44; not read: revision 1 is the first firmware), and at revision 6 only a skipped byte (amplify ambient sound). Auto adjust sound from revision 3, head tracking from 8, charging from 11 and extra clear call sound and extra high ambient from 13 match GalaxyBudsClient.
+- **Buds2 (R177):** the plugin's table: fit test from revision 2, bixby from 1, double tap side and customised ambient sound from 5, ambient during calls from 6, touch control for calls and in-ear detection from 7, 360 audio and its calibration from 8, background auto update and ring on wearing from 9, charging from 10; ANC with one earbud only at revisions 3 and 4. GalaxyBudsClient's Buds2 path agrees except that it reads the one-earbud switch at every revision from 3 (byte 28); the plugin lists it for 3 and 4 only. Not changed: no firmware with such a reply is known.
+- **Buds3 Pro (R630), Buds FE (R400N), Buds+, Live, Buds:** their parsers are present (only the Buds3's and the Buds2 Pro's tails were compared here). The Buds3 Pro's decompiled constructor holds more feature-gated fields than the Buds3's, so its layout still follows GalaxyBudsClient. Open, not blocked: the feature table of the Buds3 Pro (`paranmgr`, `p097i7`-style class) has to be read the way the Buds3's was.
+
+None of this has been tried on earbuds.
+

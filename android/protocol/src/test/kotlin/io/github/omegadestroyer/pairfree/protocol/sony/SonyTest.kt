@@ -253,6 +253,68 @@ class SonySessionTest {
     }
 
     @Test
+    fun leAudioSwitchModeAndTheConfirmationOfTheReconnection() {
+        // LE Audio on or off: LEA type 12 (function 0x42); the mode: table 2's LEA type 2 (function 0x62), 0 to 2.
+        val s = set2(SonyFunction.Set2.CLASSIC_ONLY_LE_CLASSIC_SETTING)
+        assertTrue(out(0x46, 0x0C) in s.takeOutbox())
+        s.receive(message(0x47, 0x0C, 0x00, 0x00))
+        assertEquals(Setting.Toggle("le_audio", true), setting(s, "le_audio"))
+        // An alert nobody asked for is left alone.
+        s.receive(message(0x99, 0x00, 0x00, 0x01))
+        assertTrue(s.takeOutbox().isEmpty())
+        assertEquals(listOf(out(0x48, 0x0C, 0x01, 0x01)), s.change(SettingChange.Toggle("le_audio", false)))
+        // The earbuds ask to confirm the reconnection: positive, once; a confirmation-only alert needs no answer.
+        s.receive(message(0x99, 0x00, 0x00, 0x01))
+        assertEquals(listOf(out(0x98, 0x00, 0x00, 0x01)), s.takeOutbox())
+        s.receive(message(0x99, 0x00, 0x00, 0x01))
+        assertTrue(s.takeOutbox().isEmpty())
+        val m = set2()
+        m.receive(message(0x07, 0x00, 0x01, 0x62, 0x00, table = 2))
+        assertTrue(out(0x66, 0x02, table = 2) in m.takeOutbox())
+        m.receive(message(0x67, 0x02, 0x01, table = 2))
+        assertEquals("le_low_latency", (setting(m, "le_audio_mode") as Setting.Choice).value)
+        assertEquals(listOf(out(0x68, 0x02, 0x02, table = 2)), m.change(SettingChange.Choice("le_audio_mode", "le_low_latency_eq")))
+        // A flexible alert (type 6): message, a count of items, the items, then the action type.
+        m.receive(message(0x99, 0x06, 0x03, 0x01, 0x07, 0x02))
+        assertEquals(listOf(out(0x98, 0x06, 0x03, 0x01)), m.takeOutbox())
+    }
+
+    @Test
+    fun vibrationPowerSavingAndTheUpmixOption() {
+        // Set 1: system type 1 (vibration) and 2 (power saving), the setting type 0, then 1 for on.
+        val one = set1(SonyFunction.Set1.VIBRATOR, SonyFunction.Set1.POWER_SAVING_MODE)
+        val reads = one.takeOutbox()
+        assertTrue(out(0xF6, 0x01) in reads && out(0xF6, 0x02) in reads, "set 1's reads")
+        one.receive(message(0xF7, 0x01, 0x00, 0x01))
+        assertEquals(Setting.Toggle("vibrator", true), setting(one, "vibrator"))
+        assertEquals(listOf(out(0xF8, 0x01, 0x00, 0x00)), one.change(SettingChange.Toggle("vibrator", false)))
+        // Set 2: vibration is system type 0 with on as 0; the upmix option is audio type 10: none, cinema, game, music.
+        val two = set2(SonyFunction.Set2.VIBRATOR_ON_OFF, SonyFunction.Set2.UPMIX_SERIES)
+        two.receive(message(0xF7, 0x00, 0x00))
+        assertEquals(listOf(out(0xF8, 0x00, 0x01)), two.change(SettingChange.Toggle("vibrator", false)))
+        two.receive(message(0xE7, 0x0A, 0x02))
+        assertEquals("upmix_game", (setting(two, "upmix_series") as Setting.Choice).value)
+        assertEquals(listOf(out(0xE8, 0x0A, 0x03)), two.change(SettingChange.Choice("upmix_series", "upmix_music")))
+    }
+
+    @Test
+    fun set2SimplerNoiseControlLayouts() {
+        // 0x11 (Sony's un0.o): effect, NC on/off, ambient voice, ambient on/off.
+        val a = set2(SonyFunction.Set2.NOISE_CANCELLING_ONOFF_AND_AMBIENT_SOUND_MODE_ONOFF)
+        a.receive(message(0x67, 0x11, 0x01, 0x01, 0x01, 0x00, 0x00))
+        assertEquals(1, a.state.number(Command.ANC_MODE), "noise cancelling")
+        assertEquals(listOf(out(0x68, 0x11, 0x01, 0x01, 0x00, 0x00, 0x01)), a.set(Command.ANC_MODE, 2))
+        // Type 1 (un0.n): effect, then the NC on/off that follows it.
+        val n = set2(SonyFunction.Set2.NOISE_CANCELLING_ONOFF)
+        n.receive(message(0x67, 0x01, 0x01, 0x00, 0x00))
+        assertEquals(listOf(out(0x68, 0x01, 0x01, 0x01, 0x01)), n.change(SettingChange.Toggle("anc", true)))
+        // Type 0x21 (un0.d): effect, ambient voice, ambient on/off.
+        val m = set2(SonyFunction.Set2.AMBIENT_SOUND_MODE_ONOFF)
+        m.receive(message(0x67, 0x21, 0x01, 0x00, 0x00, 0x00))
+        assertEquals(listOf(out(0x68, 0x21, 0x01, 0x01, 0x00, 0x01)), m.change(SettingChange.Toggle("ambient_sound", true)))
+    }
+
+    @Test
     fun set2NoiseControlKeepsTheEarbudsLayout() {
         val s = set2(SonyFunction.Set2.MODE_NC_ASM_NOISE_CANCELLING_DUAL_AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT)
         // 0x17: changed, on, ambient (1), voice off, level 12.
@@ -604,6 +666,68 @@ class SonySessionTest {
         m.receive(message(0x47, 0x21, 0xFF, table = 2))
         assertEquals(-1, (setting(m, "voice_guidance_volume") as Setting.Level).value)
         assertEquals(listOf(out(0x48, 0x21, 0x02, 0x00, table = 2)), m.change(SettingChange.Level("voice_guidance_volume", 2)))
+    }
+
+    @Test
+    fun set2SecondTableSwitchesAndVolumeLimit() {
+        // Table 2's functions: standby 0x20, caring charge 0x22, volume limit 0x55, auto volume 0xF3 and 0xF4 (Sony's app: Power, System and SafeListening types).
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x05, 0x20, 0x00, 0x22, 0x00, 0x55, 0x00, 0xF3, 0x00, 0xF4, 0x00, table = 2))
+        val reads = s.takeOutbox()
+        assertTrue(out(0x26, 0x00, table = 2) in reads, "standby's read")
+        assertTrue(out(0x26, 0x01, table = 2) in reads, "caring charge's read")
+        assertTrue(out(0xF6, 0x03, table = 2) in reads, "auto volume optimizer's read")
+        assertTrue(out(0xF6, 0x04, table = 2) in reads, "limited auto volume's read")
+        assertTrue(out(0x56, 0x05, table = 2) in reads, "volume limit's read")
+        s.receive(message(0x27, 0x00, 0x00, table = 2))
+        assertEquals(true, (setting(s, "auto_standby") as Setting.Toggle).on, "0 is on")
+        assertEquals(listOf(out(0x28, 0x00, 0x01, table = 2)), s.change(SettingChange.Toggle("auto_standby", false)))
+        s.receive(message(0xF7, 0x04, 0x01, table = 2))
+        assertEquals(listOf(out(0xF8, 0x04, 0x00, table = 2)), s.change(SettingChange.Toggle("auto_volume_limited", true)))
+        // The limit: a step 0 to 4, shown 1 to 5.
+        s.receive(message(0x57, 0x05, 0x02, table = 2))
+        assertEquals(3, (setting(s, "max_volume_limit") as Setting.Level).value)
+        assertEquals(listOf(out(0x58, 0x05, 0x04, table = 2)), s.change(SettingChange.Level("max_volume_limit", 5)))
+    }
+
+    @Test
+    fun theLeftRightBalanceCorrectionIsAnEqEbbSwitch() {
+        // Function 0x5A; EQEBB type 0x50 (Sony's KMP code): on 0, off 1, off and never set up 2.
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x01, 0x5A, 0x00))
+        assertTrue(out(0x56, 0x50) in s.takeOutbox())
+        s.receive(message(0x57, 0x50, 0x02))
+        assertEquals(Setting.Toggle("lr_balance_correction", false, enabled = false), setting(s, "lr_balance_correction"))
+        s.receive(message(0x57, 0x50, 0x00))
+        assertEquals(listOf(out(0x58, 0x50, 0x01)), s.change(SettingChange.Toggle("lr_balance_correction", false)))
+    }
+
+    @Test
+    fun batterySafeModeHasAnEffectByte() {
+        // Function 0x2B; power type 11 answers the switch, then whether the effect is active; a write adds 0, "do not change the effect".
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x01, 0x2B, 0x00))
+        assertTrue(out(0x26, 0x0B) in s.takeOutbox())
+        s.receive(message(0x27, 0x0B, 0x00, 0x01))
+        assertEquals(true, (setting(s, "battery_safe_mode") as Setting.Toggle).on)
+        assertEquals(listOf(out(0x28, 0x0B, 0x01, 0x00)), s.change(SettingChange.Toggle("battery_safe_mode", false)))
+    }
+
+    @Test
+    fun set2FirstTableSwitchesFromTheirOwnTypes() {
+        // Functions: caring charge 0x2C, stamina 0x2E, touch panel backlight 0x2F, auto play 0xB1.
+        val s = set2()
+        s.receive(message(0x07, 0x00, 0x04, 0x2C, 0x00, 0x2E, 0x00, 0x2F, 0x00, 0xB1, 0x00))
+        val reads = s.takeOutbox()
+        assertTrue(out(0x26, 0x0C) in reads, "caring charge's read")
+        assertTrue(out(0x26, 0x0E) in reads, "stamina's read")
+        assertTrue(out(0x26, 0x0F) in reads, "touch panel backlight's read")
+        assertTrue(out(0xB6, 0x01) in reads, "auto play's read")
+        s.receive(message(0xB7, 0x01, 0x01))
+        assertEquals(false, (setting(s, "auto_play") as Setting.Toggle).on)
+        assertEquals(listOf(out(0xB8, 0x01, 0x00)), s.change(SettingChange.Toggle("auto_play", true)))
+        s.receive(message(0x27, 0x0F, 0x00))
+        assertEquals(listOf(out(0x28, 0x0F, 0x01)), s.change(SettingChange.Toggle("touch_panel_backlight_off", false)))
     }
 
     @Test

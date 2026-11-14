@@ -19,11 +19,11 @@ import org.json.JSONException
 import org.json.JSONObject
 
 /**
- * Something the Sound tab can put on the earbuds: user gains, one per band in whole dB on
+ * Something the Sound tab can put on the earbuds: user gains, one per band in dB (whole, or half steps where the brand takes them) on
  * top of the model's base curve, or a [preset], a complete curve sent as it is. Stock
  * (all gains 0) and the model's presets are built in; the user's own are saved on the phone.
  */
-data class EqProfile(val id: String, val name: String, val gains: List<Int>, val preset: EqPreset? = null) {
+data class EqProfile(val id: String, val name: String, val gains: List<Double>, val preset: EqPreset? = null) {
     /** Built in: Stock or a preset. Cannot be changed or deleted. */
     val builtIn: Boolean get() = !id.startsWith(USER)
 
@@ -35,7 +35,7 @@ data class EqProfile(val id: String, val name: String, val gains: List<Int>, val
 }
 
 /** What this phone last sent to the earbuds. The earbuds cannot report their EQ (docs/soundpeats/PROTOCOL.md section 4). */
-data class EqSetting(val profileId: String?, val gains: List<Int>, val preampDb: Int = 0)
+data class EqSetting(val profileId: String?, val gains: List<Double>, val preampDb: Int = 0)
 
 /**
  * How the Sound tab reaches one brand's earbuds. SoundPEATS earbuds cannot report their EQ,
@@ -48,6 +48,9 @@ interface EqTarget {
 
     /** True when a Stock profile (every gain 0 on the base curve) belongs in the list. */
     val hasStock: Boolean
+
+    /** How far a band's gain moves in one step, in dB: 1, or 0.5 where the earbuds' wire takes half steps. */
+    val gainStepDb: Double get() = 1.0
 
     /** False when the model takes only its presets, no curve of the user's own. */
     val hasCustom: Boolean get() = true
@@ -110,7 +113,7 @@ data class EqState(
     val curve: List<Double>
         get() = preset?.let(layout::ownBands)?.takeIf { it.size == layout.bands.size }
             ?.mapIndexed { i, b -> b.gainDb - layout.bands[i].gainDb }
-            ?: setting.gains.map { it.toDouble() }
+            ?: setting.gains
 
     /** The bands of [curve], leaving out the layout's fixed bands. A preset may move some bands. */
     val curveBands: List<EqBand> get() = preset?.let(layout::ownBands)?.takeIf { it.size == layout.bands.size } ?: layout.bands
@@ -123,7 +126,7 @@ data class EqState(
 interface EqActions {
     fun select(profile: EqProfile)
     fun startNew()
-    fun setGain(band: Int, db: Int)
+    fun setGain(band: Int, db: Double)
     fun setPreamp(db: Int)
 
     /** Saves the current gains under [name], replacing a saved profile of that name. */
@@ -134,6 +137,9 @@ interface EqActions {
 
     /** Puts [gains] on the earbuds as a curve of the user's own without saving it: the A/B sound finder's candidates. */
     fun preview(gains: List<Int>)
+
+    /** The same for gains in dB that may be half steps: the finder puts back the curve it started from. */
+    fun previewDb(gains: List<Double>)
     fun delete(profile: EqProfile)
 
     /** The current gains as a profile file. */
@@ -192,7 +198,7 @@ class Equalizer(
         keepRestore()
         pending?.cancel()
         this.address = address
-        val zeros = List(layout.bands.size) { 0 }
+        val zeros = List(layout.bands.size) { 0.0 }
         val saved = loadSetting(address, layout)
         _state.value = EqState(
             model,
@@ -207,10 +213,10 @@ class Equalizer(
 
     /**
      * The EQ earbuds that report theirs hold now: one of the model's presets ([profileId]) or a
-     * custom curve ([gains] in whole dB). Ignored while a change from this phone is on its way,
+     * custom curve ([gains] in dB, to the target's step). Ignored while a change from this phone is on its way,
      * so an older report does not undo it.
      */
-    fun reported(profileId: String?, gains: List<Int>) {
+    fun reported(profileId: String?, gains: List<Double>) {
         val s = _state.value ?: return
         if (!s.target.reportsEq || gains.size != s.layout.bands.size) return
         if (pending?.isActive == true || System.currentTimeMillis() - sentAt < SETTLE_MS) return
@@ -282,14 +288,14 @@ class Equalizer(
 
     override fun startNew() {
         val s = _state.value ?: return
-        apply(s.setting.copy(profileId = null, gains = List(s.layout.bands.size) { 0 }))
+        apply(s.setting.copy(profileId = null, gains = List(s.layout.bands.size) { 0.0 }))
     }
 
-    override fun setGain(band: Int, db: Int) {
+    override fun setGain(band: Int, db: Double) {
         val s = _state.value ?: return
         if (band !in s.layout.bands.indices || s.preset != null) return
         val gains = s.setting.gains.toMutableList()
-        gains[band] = db.coerceIn(-s.layout.userRangeDb, s.layout.userRangeDb)
+        gains[band] = snap(db, s.target.gainStepDb, s.layout.userRangeDb)
         apply(s.setting.copy(gains = gains))
     }
 
@@ -314,15 +320,16 @@ class Equalizer(
         val s = _state.value ?: return
         if (gains.size != s.layout.bands.size) return
         val r = s.layout.userRangeDb
-        apply(s.setting.copy(profileId = null, gains = gains.map { it.coerceIn(-r, r) }))
+        apply(s.setting.copy(profileId = null, gains = gains.map { it.coerceIn(-r, r).toDouble() }))
         save(name)
     }
 
-    override fun preview(gains: List<Int>) {
+    override fun preview(gains: List<Int>) = previewDb(gains.map(Int::toDouble))
+
+    override fun previewDb(gains: List<Double>) {
         val s = _state.value ?: return
         if (gains.size != s.layout.bands.size) return
-        val r = s.layout.userRangeDb
-        apply(s.setting.copy(profileId = null, gains = gains.map { it.coerceIn(-r, r) }))
+        apply(s.setting.copy(profileId = null, gains = gains.map { snap(it, s.target.gainStepDb, s.layout.userRangeDb) }))
     }
 
     override fun delete(profile: EqProfile) {
@@ -357,7 +364,7 @@ class Equalizer(
             val hz = json.getJSONArray("bands_hz").let { a -> List(a.length()) { a.getInt(it) } }
             if (hz != s.layout.bands.map { it.hz }) return false
             val range = -s.layout.userRangeDb..s.layout.userRangeDb
-            val gains = json.getJSONArray("gains_db").let { a -> List(a.length()) { a.getInt(it).coerceIn(range) } }
+            val gains = json.getJSONArray("gains_db").let { a -> List(a.length()) { snap(a.getDouble(it), s.target.gainStepDb, range.last) } }
             // One gain per band: a file with fewer or more would break the curve the screen draws.
             if (gains.size != hz.size) return false
             val name = json.optString("name").trim().take(MAX_NAME).ifEmpty { importedName().take(MAX_NAME) }
@@ -394,7 +401,7 @@ class Equalizer(
     internal fun loadProfiles(code: String, layout: EqLayout): List<EqProfile> = try {
         val array = JSONArray(prefs.getString(KEY_PROFILES + code, "[]"))
         List(array.length()) { array.getJSONObject(it) }.mapNotNull { o ->
-            val gains = o.getJSONArray("gains").let { a -> List(a.length()) { a.getInt(it) } }
+            val gains = o.getJSONArray("gains").let { a -> List(a.length()) { a.getDouble(it) } }
             if (gains.size != layout.bands.size) null else EqProfile(EqProfile.USER + o.getString("name"), o.getString("name"), gains)
         }
     } catch (_: JSONException) {
@@ -410,7 +417,7 @@ class Equalizer(
     private fun loadSetting(address: String, layout: EqLayout): EqSetting? = try {
         prefs.getString(KEY_SETTING + address, null)?.let { text ->
             val o = JSONObject(text)
-            val gains = o.getJSONArray("gains").let { a -> List(a.length()) { a.getInt(it) } }
+            val gains = o.getJSONArray("gains").let { a -> List(a.length()) { a.getDouble(it) } }
             if (gains.size != layout.bands.size) null
             else EqSetting(o.optString("profile").ifEmpty { null }, gains, o.optInt("preamp", 0))
         }
@@ -442,6 +449,9 @@ class Equalizer(
         /** The preamp only lowers the master gain, never raises it. */
         const val PREAMP_MIN_DB = -6
 
+        /** [db] on the grid of [step] dB, within plus or minus [range]. */
+        fun snap(db: Double, step: Double, range: Int): Double = (Math.round(db / step) * step).coerceIn(-range.toDouble(), range.toDouble())
+
         const val FORMAT = "pairfree-eq"
 
         /** Profile files this app reads: its own, and those exported while it was called SoundPeter. */
@@ -452,7 +462,7 @@ class Equalizer(
 
         /** Stock, the base curve alone (the earbuds' own tuning) where [target] has one, then the model's presets. */
         fun builtIns(layout: EqLayout, target: EqTarget): List<EqProfile> {
-            val zeros = List(layout.bands.size) { 0 }
+            val zeros = List(layout.bands.size) { 0.0 }
             val stock = if (target.hasStock) listOf(EqProfile(EqProfile.STOCK, "Stock", zeros)) else emptyList()
             return stock + layout.presets.map { EqProfile(EqProfile.PRESET + it.name, it.name, zeros, it) }
         }

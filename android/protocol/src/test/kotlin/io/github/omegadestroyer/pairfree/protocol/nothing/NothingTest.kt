@@ -51,6 +51,60 @@ class NothingTest {
     private fun setting(s: NothingSession, key: String) = s.groups.flatMap { it.settings }.firstOrNull { it.key == key }
 
     @Test
+    fun timedPowerOffCallTransparencyAndTheAdvancedEqualizerSwitch() {
+        // Nothing X's Flutter layer: NtEarPowerTime (mode 0 shut down or 1 standby, the minutes low byte first), call transparency (a byte) and the advanced EQ mode (a byte).
+        val hp = session("B175")
+        hp.receive(reply(NothingCommand.GET_AUTO_POWER_OFF_TIME, "007800"))
+        assertEquals(Setting.Choice("power_off_time", "120", listOf("30", "60", "120", "180", "240")), setting(hp, "power_off_time"))
+        val w = hp.change(SettingChange.Choice("power_off_time", "60"))!!.single()
+        assertEquals(NothingCommand.SET_AUTO_POWER_OFF_TIME, w.command)
+        assertEquals("003c00", hex(w.payload))
+        val e3 = session("B173")
+        e3.receive(reply(NothingCommand.GET_CALL_TRANSPARENCY, "01"))
+        e3.receive(reply(NothingCommand.GET_ADVANCE_CUSTOM_EQ_MODE, "00"))
+        assertEquals(Setting.Toggle("call_transparency", true), setting(e3, "call_transparency"))
+        assertEquals("00", hex(e3.change(SettingChange.Toggle("call_transparency", false))!!.single().payload))
+        assertEquals("01", hex(e3.change(SettingChange.Toggle("advanced_eq", true))!!.single().payload))
+        val one = session("B181")
+        one.receive(reply(NothingCommand.GET_AUTO_POWER_OFF_TIME, "007800"))
+        assertEquals(null, setting(one, "power_off_time"))
+    }
+
+    @Test
+    fun diracOpteoPresets() {
+        // Nothing X's DiracEQMode: 0 Opteo, 1 rock, 2 electronic, 3 pop, 4 enhance vocals, 5 classical, 6 custom; the models whose table row has diracOpteoSupport.
+        val s = session("B184")
+        s.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "03"))
+        assertEquals("dirac_pop", (setting(s, "dirac_eq") as Setting.Choice).value)
+        val w = s.change(SettingChange.Choice("dirac_eq", "dirac_vocals"))!!.single()
+        assertEquals(NothingCommand.SET_DIRAC_OPTEO_EQ, w.command)
+        assertEquals("04", hex(w.payload))
+        s.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "06"))
+        assertEquals("custom", (setting(s, "dirac_eq") as Setting.Choice).value)
+        val ear2 = session("B155")
+        ear2.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "03"))
+        assertEquals(null, setting(ear2, "dirac_eq"))
+    }
+
+    @Test
+    fun twoDevicesAndPersonalisedNoiseCancelling() {
+        // Nothing X's DualConnectViewModel: anything but 0 is on, 1 and 0 written; DeviceANCSwitch: the switch, then the calibration byte.
+        val s = session("B155")
+        s.receive(reply(NothingCommand.GET_DUAL_ENABLE, "01"))
+        s.receive(reply(NothingCommand.GET_PERSONALIZED_ANC, "0100"))
+        assertEquals(Setting.Toggle("dual_connection", true), setting(s, "dual_connection"))
+        assertEquals(Setting.Toggle("personalised_anc", true), setting(s, "personalised_anc"))
+        val off = s.change(SettingChange.Toggle("dual_connection", false))!!.single()
+        assertEquals(NothingCommand.SET_DUAL_ENABLE, off.command)
+        assertEquals("00", hex(off.payload))
+        assertEquals("00", hex(s.change(SettingChange.Toggle("personalised_anc", false))!!.single().payload))
+        // The Ear (1) has no two-devices switch in Nothing X's table.
+        val one = session("B181")
+        one.receive(reply(NothingCommand.GET_DUAL_ENABLE, "01"))
+        assertEquals(null, setting(one, "dual_connection"))
+    }
+
+    @Test
     fun theCrcIsModbus() {
         val check = vectors.getValue("crc_check").jsonObject
         assertEquals(check.str("crc").toInt(16), NothingFrame.crc16(check.str("ascii").encodeToByteArray()))
@@ -275,6 +329,18 @@ class NothingTest {
         val vendor = payloads("f041", "original_callback_invoked").single()
         val frames = s.eqCustom(listOf(6, 1, -3))!!
         assertEquals(vendor, hex(frames.last().payload))
+    }
+
+    @Test
+    fun theCustomEqTakesHalfSteps() {
+        // The filters' gains are floats: bass +1.5 dB is 3FC00000, and the total gain is minus the highest gain.
+        val s = session("B155")
+        s.receive(reply(NothingCommand.GET_EQ_MODE, "0000"))
+        val whole = s.eqCustomDb(listOf(2.0, 0.0, 0.0))!!.last().payload
+        assertEquals(hex(s.eqCustom(listOf(2, 0, 0))!!.last().payload), hex(whole))
+        val frames = s.eqCustomDb(listOf(1.5, -0.5, 0.0))!!
+        assertTrue(hex(frames.last().payload).contains("0000c0bf"), "the total gain of -1.5")
+        assertTrue(hex(frames.last().payload).contains("000000bf"), "mid -0.5")
     }
 
     @Test

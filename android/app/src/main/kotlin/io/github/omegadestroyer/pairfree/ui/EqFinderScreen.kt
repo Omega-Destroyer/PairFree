@@ -24,6 +24,7 @@ import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.protocol.hearing.EqFinder
 import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import kotlin.math.roundToInt
 
 /**
  * PairFree's own A/B sound finder ([EqFinder]): the user plays their own music and switches between two curves on the earbuds, then keeps the one they
@@ -31,7 +32,7 @@ import io.github.omegadestroyer.pairfree.ui.theme.Studio
  */
 @Composable
 internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String, onClose: () -> Unit) {
-    val finder = remember { EqFinder(eq.layout.bands.map { it.hz }, eq.layout.userRangeDb, eq.setting.gains) }
+    val finder = remember { EqFinder(eq.layout.bands.map { it.hz }, eq.layout.userRangeDb, eq.setting.gains.map { it.roundToInt() }) }
     val original = remember { eq.selected to eq.setting.gains }
     var started by remember { mutableStateOf(false) }
     var step by remember { mutableIntStateOf(0) }
@@ -39,7 +40,7 @@ internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String,
     var kept by remember { mutableStateOf(false) }
     val restore = {
         val (profile, gains) = original
-        if (profile != null) actions.select(profile) else actions.preview(gains)
+        if (profile != null) actions.select(profile) else actions.previewDb(gains)
     }
     val close = {
         if (!kept) restore()

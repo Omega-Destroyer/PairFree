@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /** What earbuds that report their EQ hold now: the preset's profile id (null for a curve of the user's own) and the gains in whole dB. */
-class EqReported(val profileId: String?, val gains: List<Int>, val resendCustom: Boolean = false)
+class EqReported(val profileId: String?, val gains: List<Double>, val resendCustom: Boolean = false)
 
 /**
  * One brand's equalizer, ready for the Sound tab: its [layout] and [target], a [key] that says when the screen must be opened again
@@ -24,7 +24,7 @@ class EqSource(
     val layout: EqLayout?,
     val target: EqTarget,
     /** The gains the screen shows now, for brands that report a preset only and keep the curve as it is. */
-    val reported: (current: List<Int>) -> EqReported? = { null },
+    val reported: (current: List<Double>) -> EqReported? = { null },
 )
 
 /**

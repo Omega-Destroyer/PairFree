@@ -2,6 +2,8 @@ package io.github.omegadestroyer.pairfree.protocol.bose
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -20,9 +22,9 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * SET needs. The device answers a SETGET with the new value, or with an error, after which PairFree
  * reads the setting again so the screen shows what the device holds.
  */
-public class BoseSession {
+public class BoseSession : FitTest {
     /** What the shared screens show. */
-    public var state: EarbudState = EarbudState()
+    override var state: EarbudState = EarbudState()
         private set
 
     public var productId: Int? = null
@@ -60,6 +62,17 @@ public class BoseSession {
     private var settingsConfig: ByteArray? = null
     private val modes = sortedMapOf<Int, Mode>()
     private val outbox = mutableListOf<BosePacket>()
+    private val flags = mutableMapOf<String, Boolean>()
+    private var alerts: Int? = null
+    private var onHead: ByteArray? = null        // on-head detection: the flags (enabled, then which automatic actions exist) and which are on
+    private var leAudio: Boolean? = null
+    private var volumeControl: Pair<Int, Int>? = null   // how the volume is changed (0 off, 1 buttons, 2 touch, 3 motion) and the supported bits
+    private var teamsButton: Int? = null
+    private var volume: Pair<Int, Int>? = null    // the headphones' own volume: the highest level, then the current one
+    private var defaultMode: Int? = null        // the mode the headphones start in
+    private var modesPersist: Boolean? = null    // whether the headphones keep the mode they were in
+    private var latency: Triple<Int, Int, Int>? = null   // the audio delay in ms: current, lowest, highest
+    private var chirping: Boolean? = null         // the find chirp, null while the headphones have not answered
 
     /** One EQ band as the device reports it: its id, range and value (Bose's RangeControl). */
     public data class EqBand(val id: Int, val min: Int, val max: Int, val value: Int)
@@ -81,6 +94,17 @@ public class BoseSession {
         add(BosePacket.get(BoseFunction.PRODUCT_INFO_FIRMWARE_VERSION))
         add(BosePacket.get(BoseFunction.STATUS_BATTERY_LEVEL))
         for (f in SETTINGS) add(BosePacket.get(f))
+        for (f in FLAGS.values) add(BosePacket.get(f))
+        add(BosePacket.get(BoseFunction.SETTINGS_ALERTS))
+        add(BosePacket.get(BoseFunction.SETTINGS_ON_HEAD_DETECTION))
+        add(BosePacket.get(BoseFunction.AUDIO_MANAGEMENT_VOLUME))
+        add(BosePacket.get(BoseFunction.CONTROL_CHIRP))
+        add(BosePacket.get(BoseFunction.AUDIO_MODES_DEFAULT_MODE))
+        add(BosePacket.get(BoseFunction.AUDIO_MODES_PERSISTENCE))
+        add(BosePacket.get(BoseFunction.AUDIO_MANAGEMENT_LATENCY))
+        add(BosePacket.get(BoseFunction.SETTINGS_LE_AUDIO_CONTROL))
+        add(BosePacket.get(BoseFunction.SETTINGS_VOLUME_CONTROL))
+        add(BosePacket.get(BoseFunction.SETTINGS_TEAMS_BUTTON_MODE))
         add(BosePacket.get(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE))
         add(BosePacket.get(BoseFunction.AUDIO_MODES_CURRENT_MODE))
         add(BosePacket.get(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG))
@@ -130,6 +154,22 @@ public class BoseSession {
             // Minutes, 0 for never; Bose's app reads a reply of three bytes or more as the first byte and the third.
             BoseFunction.SETTINGS_STANDBY_TIMER -> if (p.isNotEmpty()) standbyMinutes = if (p.size < 3) p.u8(0) else (p.u8(2) shl 8) or p.u8(0)
             BoseFunction.SETTINGS_BUTTONS -> if (p.size >= 3) button = p.copyOf()
+            BoseFunction.SETTINGS_ALERTS -> if (p.isNotEmpty()) alerts = p.u8(0)
+            // Bose's SettingsOnHeadDetectionResponse: bit 0 of the first byte is on, bits 1 to 3 say the automatic play, answer and transparency exist; the second byte's bits 0 to 2 are theirs.
+            BoseFunction.SETTINGS_ON_HEAD_DETECTION -> if (p.size >= 2) onHead = p.copyOf(2)
+            BoseFunction.SETTINGS_LE_AUDIO_CONTROL -> if (p.isNotEmpty()) leAudio = p.u8(0) and 1 == 1
+            // The way the volume is changed, then which ways exist (bit 0 buttons, bit 1 touch, both for motion), as the app reads it.
+            BoseFunction.SETTINGS_VOLUME_CONTROL -> if (p.isNotEmpty()) volumeControl = p.u8(0) to (if (p.size > 1) p.u8(1) else 0)
+            BoseFunction.SETTINGS_TEAMS_BUTTON_MODE -> if (p.isNotEmpty()) teamsButton = p.u8(0)
+            // The volume: the highest level, then the current one (Bose's AudioManagementVolumeResponse). The chirp: bit 0 is whether it is sounding.
+            BoseFunction.AUDIO_MANAGEMENT_VOLUME -> if (p.size >= 2 && p.u8(0) > 0) volume = p.u8(0) to p.u8(1).coerceAtMost(p.u8(0))
+            BoseFunction.CONTROL_CHIRP -> if (p.isNotEmpty()) chirping = p.u8(0) and 1 == 1
+            BoseFunction.AUDIO_MODES_DEFAULT_MODE -> if (p.isNotEmpty()) defaultMode = p.u8(0)
+            BoseFunction.AUDIO_MODES_PERSISTENCE -> if (p.isNotEmpty()) modesPersist = p.u8(0) == 1
+            // The latency: the current, lowest and highest, each two bytes, high byte first (Bose's AudioManagementLatencyResponse).
+            BoseFunction.AUDIO_MANAGEMENT_LATENCY -> if (p.size >= 6) latency = Triple((p.u8(0) shl 8) or p.u8(1), (p.u8(2) shl 8) or p.u8(3), (p.u8(4) shl 8) or p.u8(5))
+            BoseFunction.CONTROL_FIT_QUALITY -> if (p.size >= 4) fitStatus(p)
+            in FLAGS.values -> if (p.isNotEmpty()) FLAGS.entries.firstOrNull { it.value == function }?.let { flags[it.key] = p.u8(0) and 1 == 1 }
             BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE -> if (p.isNotEmpty()) spatial = p.u8(0)
             BoseFunction.AUDIO_MODES_CURRENT_MODE -> if (p.isNotEmpty()) currentMode = p.u8(0)
             BoseFunction.AUDIO_MODES_SETTINGS_CONFIG -> if (p.size >= SETTINGS_CONFIG_SIZE) settingsConfig = p.copyOf(SETTINGS_CONFIG_SIZE)
@@ -175,8 +215,57 @@ public class BoseSession {
         return Mode(p.u8(0), (p.u8(1) shl 8) or p.u8(2), name, userSlot = p.u8(3) == 1, configured = p.u8(4) == 1)
     }
 
+    /**
+     * The fit test (Bose's `ControlFitQualityStartPacket`, control 15): the earbuds answer with a status for each earbud: which one (1 left, 2 right), the
+     * personalisation result, a debug byte and the level. Bose's app (`FitQualityInfo`) counts a complete personalisation at the customisable level as a good fit,
+     * a complete one at another level as a poor fit, and every other result as an error, which is no result here.
+     */
+    private fun fitStatus(p: ByteArray) {
+        val fit = when {
+            p.u8(1) != FIT_COMPLETE -> FitResult.Fit.UNKNOWN
+            p.u8(3) == FIT_CUSTOMIZABLE -> FitResult.Fit.GOOD
+            else -> FitResult.Fit.NOT_FIT
+        }
+        val held = state.fit
+        state = state.copy(fit = when (p.u8(0)) {
+            FIT_LEFT -> FitResult(fit, held?.right ?: FitResult.Fit.UNKNOWN)
+            FIT_RIGHT -> FitResult(held?.left ?: FitResult.Fit.UNKNOWN, fit)
+            else -> held
+        })
+    }
+
+    /** True for the earbuds of Bose's that have the fit test: the QC Earbuds II and the QC Ultra Earbuds. */
+    /** The ways to change the volume the headphones list: off, plus each the supported bits name (the app's own reading: bit 0 buttons, bit 1 touch, both motion). */
+    private fun volumeOptions(bits: Int, current: Int): List<String> = buildList {
+        add(VOLUME_CONTROL.getValue(0))
+        if (bits and 1 != 0) add(VOLUME_CONTROL.getValue(1))
+        if (bits and 2 != 0) add(VOLUME_CONTROL.getValue(2))
+        if (bits and 3 == 3) add(VOLUME_CONTROL.getValue(3))
+        VOLUME_CONTROL[current]?.let { if (it !in this) add(it) }
+    }
+
+    /** On-head detection: the switch, and the automatic play, answer and transparency the headphones have. */
+    private fun onHeadRows(): List<Setting> {
+        val h = onHead ?: return emptyList()
+        return buildList {
+            add(Setting.Toggle(ON_HEAD_KEY, h.u8(0) and 1 != 0))
+            if (h.u8(0) and 2 != 0) add(Setting.Toggle(ON_HEAD_PLAY_KEY, h.u8(1) and 1 != 0, enabled = h.u8(0) and 1 != 0))
+            if (h.u8(0) and 4 != 0) add(Setting.Toggle(ON_HEAD_ANSWER_KEY, h.u8(1) and 2 != 0, enabled = h.u8(0) and 1 != 0))
+            if (h.u8(0) and 8 != 0) add(Setting.Toggle(ON_HEAD_TRANSPARENCY_KEY, h.u8(1) and 4 != 0, enabled = h.u8(0) and 1 != 0))
+        }
+    }
+
+    private val hasFitTest: Boolean get() = model?.name in FIT_MODELS
+
+    override fun startFitTest(): List<ByteArray>? {
+        if (!hasFitTest) return null
+        state = state.copy(fit = null)
+        return listOf(BosePacket.start(BoseFunction.CONTROL_FIT_QUALITY).bytes())
+    }
+
     /** Puts the firmware where the shared screens read it: the model's name and the version. */
     private fun refresh() {
+        if (state.fitTest != hasFitTest) state = state.copy(fitTest = hasFitTest)
         val fw = firmware ?: return
         val name = model?.name ?: productId?.let { "Bose " + it.toString(16).uppercase().padStart(4, '0') } ?: "Bose"
         state = state.copy(values = state.values + (Command.FIRMWARE_VERSION to Value.Text("${name}_$fw")))
@@ -190,9 +279,12 @@ public class BoseSession {
                 "sound", SettingTab.SOUND,
                 eq.mapNotNull { b -> EQ_KEYS[b.id]?.let { Setting.Level(it, b.value.coerceIn(b.min, b.max), b.min, b.max) } } +
                     listOfNotNull(
+                        volume?.let { (max, now) -> Setting.Level("bose_volume", now, 0, max) },
+                        latency?.takeIf { it.third > it.second }?.let { (now, low, high) -> Setting.Level("bose_latency", now.coerceIn(low, high), low, high) },
                         spatial?.let { v -> SPATIAL.firstOrNull { it.first == v }?.let { Setting.Choice(SPATIAL_KEY, it.second, SPATIAL.map { s -> s.second }) } },
                     ),
             ),
+            group("find", SettingTab.DEVICE, listOfNotNull(chirping?.let { Setting.Action("find", it) })),
             group("touch", SettingTab.CONTROLS, listOfNotNull(button?.let(::buttonRow))),
             group(
                 "connection", SettingTab.DEVICE,
@@ -208,6 +300,16 @@ public class BoseSession {
                     },
                     autoPlayPause?.let { Setting.Toggle("pause_taken_off", it) },
                     autoAnswer?.let { Setting.Toggle("auto_answer", it) },
+                ) + FLAGS.keys.mapNotNull { key -> flags[key]?.let { Setting.Toggle(key, it) } } + onHeadRows() + listOfNotNull(
+                    leAudio?.let { Setting.Toggle("bose_le_audio", it) },
+                    modesPersist?.let { Setting.Toggle("bose_modes_persist", it) },
+                    volumeControl?.takeIf { it.second != 0 }?.let { (value, bits) ->
+                        Setting.Choice(VOLUME_CONTROL_KEY, VOLUME_CONTROL[value], volumeOptions(bits, value))
+                    },
+                    teamsButton?.takeIf { it in TEAMS_BUTTON }?.let { Setting.Choice(TEAMS_BUTTON_KEY, TEAMS_BUTTON[it], TEAMS_BUTTON.values.toList()) },
+                    alerts?.let { Setting.Toggle(ALERT_RINGTONE, it and 1 != 0) },
+                    alerts?.let { Setting.Toggle(ALERT_HAPTICS, it and 2 != 0) },
+                ) + listOfNotNull(
                     voicePrompts?.takeIf { it and PROMPTS_TOGGLABLE != 0 }?.let { Setting.Toggle("voice_prompts", it and PROMPTS_ENABLED != 0) },
                 ),
             ),
@@ -230,6 +332,7 @@ public class BoseSession {
         val current = currentMode
         if (listed.isNotEmpty() && current != null) {
             add(Setting.Choice("audio_mode", listed.firstOrNull { it.index == current }?.let(::optionOf), listed.map(::optionOf)))
+            defaultMode?.let { d -> add(Setting.Choice("bose_default_mode", listed.firstOrNull { it.index == d }?.let(::optionOf), listed.map(::optionOf))) }
         }
         anr?.let { v -> add(Setting.Choice("anr", ANR.firstOrNull { it.first == v }?.second, ANR.map { it.second })) }
         cnc?.let { c ->
@@ -281,6 +384,29 @@ public class BoseSession {
                     }
                     "pause_taken_off" -> BosePacket.setGet(BoseFunction.SETTINGS_AUTO_PLAY_PAUSE, b).also { autoPlayPause = on }
                     "auto_answer" -> BosePacket.setGet(BoseFunction.SETTINGS_AUTO_ANSWER, b).also { autoAnswer = on }
+                    ALERT_RINGTONE, ALERT_HAPTICS -> {
+                        // Bose's SettingsAlertsSetGetPacket: bit 0 the ringtone, bit 1 the haptics, in one byte.
+                        val held = alerts ?: return null
+                        val bit = if (change.key == ALERT_RINGTONE) 1 else 2
+                        val next = if (on) held or bit else held and bit.inv()
+                        alerts = next
+                        BosePacket.setGet(BoseFunction.SETTINGS_ALERTS, next and 3)
+                    }
+                    in FLAGS.keys -> BosePacket.setGet(FLAGS.getValue(change.key), b).also { flags[change.key] = on }
+                    "bose_le_audio" -> BosePacket.setGet(BoseFunction.SETTINGS_LE_AUDIO_CONTROL, b).also { leAudio = on }
+                    "bose_modes_persist" -> BosePacket.setGet(BoseFunction.AUDIO_MODES_PERSISTENCE, b).also { modesPersist = on }
+                    ON_HEAD_KEY, ON_HEAD_PLAY_KEY, ON_HEAD_ANSWER_KEY, ON_HEAD_TRANSPARENCY_KEY -> {
+                        val held = onHead ?: return null
+                        val next = held.copyOf()
+                        if (change.key == ON_HEAD_KEY) {
+                            next[0] = ((next.u8(0) and 1.inv()) or b).toByte()
+                        } else {
+                            val bit = when (change.key) { ON_HEAD_PLAY_KEY -> 1; ON_HEAD_ANSWER_KEY -> 2; else -> 4 }
+                            next[1] = (if (on) next.u8(1) or bit else next.u8(1) and bit.inv()).toByte()
+                        }
+                        onHead = next
+                        BosePacket.setGet(BoseFunction.SETTINGS_ON_HEAD_DETECTION, next.u8(0) and 1, next.u8(1) and 7)
+                    }
                     "voice_prompts" -> {
                         // Bose's app writes on (bit 5) and the language (bits 0 to 4) in one byte.
                         val v = voicePrompts ?: return null
@@ -296,6 +422,14 @@ public class BoseSession {
                 val v = change.value.coerceIn(setting.min, setting.max)
                 when (change.key) {
                     "noise_level" -> noiseLevel(v) ?: return null
+                    "bose_latency" -> {
+                        latency = latency?.copy(first = v) ?: return null
+                        BosePacket.setGet(BoseFunction.AUDIO_MANAGEMENT_LATENCY, v shr 8, v and 0xFF)
+                    }
+                    "bose_volume" -> {
+                        volume = volume?.copy(second = v) ?: return null
+                        BosePacket.setGet(BoseFunction.AUDIO_MANAGEMENT_VOLUME, v)
+                    }
                     else -> {
                         val band = EQ_KEYS.entries.firstOrNull { it.value == change.key }?.key ?: return null
                         eq = eq.map { if (it.id == band) it.copy(value = v) else it }
@@ -306,6 +440,21 @@ public class BoseSession {
             is SettingChange.Choice -> {
                 if (setting !is Setting.Choice || change.option !in setting.options) return null
                 when (change.key) {
+                    VOLUME_CONTROL_KEY -> {
+                        val v = VOLUME_CONTROL.entries.firstOrNull { it.value == change.option }?.key ?: return null
+                        volumeControl = volumeControl?.copy(first = v) ?: return null
+                        BosePacket.setGet(BoseFunction.SETTINGS_VOLUME_CONTROL, v)
+                    }
+                    TEAMS_BUTTON_KEY -> {
+                        val v = TEAMS_BUTTON.entries.firstOrNull { it.value == change.option }?.key ?: return null
+                        teamsButton = v
+                        BosePacket.setGet(BoseFunction.SETTINGS_TEAMS_BUTTON_MODE, v)
+                    }
+                    "bose_default_mode" -> {
+                        val mode = modes.values.firstOrNull { it.listed && optionOf(it) == change.option } ?: return null
+                        defaultMode = mode.index
+                        BosePacket.setGet(BoseFunction.AUDIO_MODES_DEFAULT_MODE, mode.index)
+                    }
                     "audio_mode" -> {
                         val mode = modes.values.firstOrNull { it.listed && optionOf(it) == change.option } ?: return null
                         currentMode = mode.index
@@ -348,6 +497,12 @@ public class BoseSession {
             // The screen asks the user to confirm first.
             is SettingChange.Press -> when (change.key) {
                 PowerActions.POWER_OFF -> BosePacket.start(BoseFunction.CONTROL_POWER, POWER_OFF)
+                // The find chirp: begin (1) or end (0), as Bose's ControlChirpStartPacket.
+                "find" -> {
+                    val on = chirping ?: return null
+                    chirping = !on
+                    BosePacket.start(BoseFunction.CONTROL_CHIRP, if (on) 0 else 1)
+                }
                 else -> return null
             }
         }
@@ -387,8 +542,31 @@ public class BoseSession {
             BoseFunction.SETTINGS_BUTTONS,
         )
 
+        /**
+         * The on/off settings Bose's app has beyond those above, each one byte whose bit 0 is on (its Settings packets, 13.3.4): conversation mode, auto aware,
+         * head gestures, flip to off, motion auto-off, disabling touch, auto volume and keeping the noise cancellation level. Not in [WRITTEN]: a model without one
+         * answers its read with an error, which must not be read again.
+         */
+        private val FLAGS = linkedMapOf(
+            "bose_conversation_mode" to BoseFunction.SETTINGS_CONVERSATION_MODE, "bose_auto_aware" to BoseFunction.SETTINGS_AUTO_AWARE_MODE,
+            "bose_head_gesture" to BoseFunction.SETTINGS_HEAD_GESTURE, "bose_flip_to_off" to BoseFunction.SETTINGS_FLIP_TO_OFF,
+            "bose_motion_auto_off" to BoseFunction.SETTINGS_MOTION_INACTIVITY_AUTO_OFF, "bose_disable_touch" to BoseFunction.SETTINGS_DISABLE_CAPTOUCH,
+            "bose_auto_volume" to BoseFunction.SETTINGS_AUTO_VOLUME_LEVEL, "bose_cnc_persistence" to BoseFunction.SETTINGS_CNC_PERSISTENCE,
+        )
+        private const val ON_HEAD_KEY = "bose_on_head"
+        private const val ON_HEAD_PLAY_KEY = "bose_on_head_play"
+        private const val ON_HEAD_ANSWER_KEY = "bose_on_head_answer"
+        private const val ON_HEAD_TRANSPARENCY_KEY = "bose_on_head_transparency"
+        private const val VOLUME_CONTROL_KEY = "bose_volume_control"
+        private const val TEAMS_BUTTON_KEY = "bose_teams_button"
+        private val VOLUME_CONTROL = linkedMapOf(0 to "bose_volume_off", 1 to "bose_volume_buttons", 2 to "bose_volume_touch", 3 to "bose_volume_motion")
+        private val TEAMS_BUTTON = linkedMapOf(0 to "bose_teams_combination", 1 to "bose_teams_dedicated")
+        private const val ALERT_RINGTONE = "bose_alert_ringtone"
+        private const val ALERT_HAPTICS = "bose_alert_haptics"
+
         /** What the device report shows: the functions PairFree reads. */
-        private val REPORTED = SETTINGS.toSet() + setOf(
+        private val REPORTED = SETTINGS.toSet() + FLAGS.values + BoseFunction.SETTINGS_ALERTS + setOf(
+            BoseFunction.AUDIO_MANAGEMENT_VOLUME, BoseFunction.CONTROL_CHIRP, BoseFunction.AUDIO_MODES_DEFAULT_MODE, BoseFunction.AUDIO_MODES_PERSISTENCE, BoseFunction.AUDIO_MANAGEMENT_LATENCY, BoseFunction.SETTINGS_ON_HEAD_DETECTION, BoseFunction.SETTINGS_LE_AUDIO_CONTROL, BoseFunction.SETTINGS_VOLUME_CONTROL, BoseFunction.SETTINGS_TEAMS_BUTTON_MODE,
             BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE,
             BoseFunction.PRODUCT_INFO_BMAP_VERSION, BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS, BoseFunction.PRODUCT_INFO_FIRMWARE_VERSION,
             BoseFunction.STATUS_BATTERY_LEVEL, BoseFunction.AUDIO_MODES_CURRENT_MODE, BoseFunction.AUDIO_MODES_SETTINGS_CONFIG,
@@ -398,6 +576,12 @@ public class BoseSession {
         private val WRITTEN = SETTINGS.toSet() + setOf(
             BoseFunction.AUDIO_MODES_CURRENT_MODE, BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE,
         )
+
+        private val FIT_MODELS = setOf("Bose QC Earbuds II", "Bose QC Ultra Earbuds", "Bose QC Ultra 2 Earbuds")
+        private const val FIT_LEFT = 1
+        private const val FIT_RIGHT = 2
+        private const val FIT_COMPLETE = 0
+        private const val FIT_CUSTOMIZABLE = 2
 
         private const val RECORD = 4
         private const val SINGLE = 0

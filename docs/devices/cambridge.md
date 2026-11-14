@@ -5,7 +5,7 @@ Cambridge Audio support is new and has not been tried with PairFree on any earbu
 owns a pair, so every model relies on reports from people who do. The official Melomania app was run against
 virtual earbuds to check what it sends (see below), which is a separate thing from testing PairFree on real earbuds.
 
-PairFree lists Melomania 1+ and Melomania Touch among your paired devices by their Bluetooth name, and talks
+PairFree lists Melomania 1+, Melomania Touch and the Melomania Connect models (A100, A100 SE, M100/T100, P100, P100 SE, X100) among your paired devices by their Bluetooth name, and talks
 to them over the same Bluetooth connection the Melomania app uses. Close the Melomania app first: only one app can
 hold that connection.
 
@@ -21,8 +21,9 @@ What it shows, where the model has it:
   both earbuds are in range. The codec preference changes what the earbuds offer; Android chooses the one it plays.
 - The device report keeps the answers PairFree asked for, with the two Bluetooth addresses blanked.
 
-Not covered: the original Melomania 1 and the newer Melomania Connect models (A100, M100, P100), which have their own
-app and a different protocol; the three custom EQ slots the Melomania app keeps on the phone; and the
+**Melomania Connect models** (read from Melomania Connect 2.6.0, which shows each model only the controls it has; Qualcomm GAIA v3 with Cambridge's own commands; no pair has been tried with PairFree): noise control on Home with the choice of modes the button cycles through; Sound has the equalizer (the app's presets for the model and a curve of your own, over the bands the earbuds report), left/right balance, and where the model has them gaming mode, mono audio, loudness, side tone and spatial audio; Controls has the touch gestures the earbuds list (pairing mode and wear detection among them), what a tap, double tap, triple tap and long press do on each earbud (as the app's assign screen offers) and three case and power gestures that can be switched but not read; Device has sleep mode, wear detection, the find-my-earbuds alert, the voice language, automatic power off (30 or 60 minutes, or never), which codecs the earbuds offer and, on the models that list them, connecting or disconnecting a paired device. Rows show once the earbuds answer their read. Flight mode is only on the app's test page and is not sent.
+
+Not covered: the original Melomania 1; the three custom EQ slots the Melomania app keeps on the phone; and the
 high-performance/low-power audio switch, which the app does by installing a different firmware image, so PairFree
 leaves it alone (it never sends firmware, a factory reset or a power-off).
 
@@ -47,5 +48,11 @@ A device report from either model helps:
 <tr><th>Model</th><th>Implemented</th><th>Status</th></tr>
 <tr><td>Melomania 1+</td><td>Battery, presets and five gain bands, control toggles, language and codec preference</td><td><a href="../../docs/cambridge/VIRTUAL_TESTING.md">Vendor app tested virtually</a>; no hardware test</td></tr>
 <tr><td>Melomania Touch</td><td>Battery, presets and five gain bands, control toggles, language and codec preference, ambient sound and level</td><td><a href="../../docs/cambridge/VIRTUAL_TESTING.md">Vendor app tested virtually</a>; no hardware test</td></tr>
+<tr><td>Melomania A100</td><td>Battery, noise control and its button cycle, equalizer with presets, left/right balance, gaming, mono, sleep, loudness, side tone and spatial audio (each where the model has it), wear detection, find alert, touch gestures and their actions, paired devices, voice language, automatic power off, codec choice</td><td>Not tested</td></tr>
+<tr><td>Melomania A100 SE</td><td>Battery, noise control and its button cycle, equalizer with presets, left/right balance, gaming, mono, sleep, loudness, side tone and spatial audio (each where the model has it), wear detection, find alert, touch gestures and their actions, paired devices, voice language, automatic power off, codec choice</td><td>Not tested</td></tr>
+<tr><td>Melomania M100</td><td>Battery, noise control and its button cycle, equalizer with presets, left/right balance, gaming, mono, sleep, loudness, side tone and spatial audio (each where the model has it), wear detection, find alert, touch gestures and their actions, paired devices, voice language, automatic power off, codec choice</td><td>Not tested</td></tr>
+<tr><td>Melomania P100</td><td>Battery, noise control and its button cycle, equalizer with presets, left/right balance, gaming, mono, sleep, loudness, side tone and spatial audio (each where the model has it), wear detection, find alert, touch gestures and their actions, paired devices, voice language, automatic power off, codec choice</td><td>Not tested</td></tr>
+<tr><td>Melomania P100 SE</td><td>Battery, noise control and its button cycle, equalizer with presets, left/right balance, gaming, mono, sleep, loudness, side tone and spatial audio (each where the model has it), wear detection, find alert, touch gestures and their actions, paired devices, voice language, automatic power off, codec choice</td><td>Not tested</td></tr>
+<tr><td>Melomania X100</td><td>Battery, noise control and its button cycle, equalizer with presets, left/right balance, gaming, mono, sleep, loudness, side tone and spatial audio (each where the model has it), wear detection, find alert, touch gestures and their actions, paired devices, voice language, automatic power off, codec choice</td><td>Not tested</td></tr>
 </table>
 <!-- cambridge-table:end -->

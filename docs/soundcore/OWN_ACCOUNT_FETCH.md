@@ -49,3 +49,12 @@ Rerun the same launcher locally. Share only the `Stage:` and `Response diagnosti
 
 
 At the owner's request, the prompts now use visible terminal input for both email and password. The launcher is unchanged. Piped input remains disabled; credential/session storage and response diagnostics are unchanged.
+
+
+## Manual emulator login setup attempt (2026-11-14)
+
+The owner authorized a visible emulator for manual login in the official app. A separate clean AVD, `PairFree_Soundcore_Login30` at `emulator-5604`, was created under `C:/Users/Nima/AppData/Local/PairFreeResearch/soundcore-login-2026-11-14/avds`. All ten original 5.0.35 APKM members installed with original signatures retained. This guest is separate from the modified protocol-instrumentation lab.
+
+**Login is not ready:** ordinary startup failed before the account UI with `UnsatisfiedLinkError` for the packer's `s.h.e.l.l.N.al` classloader entry point. Both arm64-v8a and armeabi-v7a translation paths were attempted. The lab's hidden-API/SELinux adjustments did not resolve arm64 startup. Forcing the original package to x86_64 was refused with `INSTALL_FAILED_NO_MATCHING_ABIS`. The installed API33 image advertises only x86_64 and provides no ARM translation; that test guest was stopped. A Windows-emulator ARM-CPU preflight was rejected with `QEMU2 emulator does not support arm64 CPU architecture`.
+
+This is an unresolved loader-compatibility task, not a failed account login or proof that vendor-app login cannot be used. The earlier successful protocol harness bypasses application `onCreate` and does not establish working normal startup, native dependencies or account screens. No user account was entered or inspected. The visible API30 guest remains available, but must reach a working account UI before asking the owner to sign in. External `SESSION_NOTES.md` records the lab paths and privacy constraints for continuation.

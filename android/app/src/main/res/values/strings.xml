@@ -935,6 +935,10 @@
     <string name="setting_ca_preset">Preset</string>
     <string name="setting_ca_codec">Codec preference</string>
     <string name="setting_ca_language">Voice guidance language</string>
+    <string name="setting_a3954_air_pressure">Case air pressure</string>
+    <string name="setting_a3954_airplane_mode">Airplane mode</string>
+    <string name="setting_a3954_air_pressure_update">Optimize air pressure</string>
+    <string name="setting_a3954_spatial_mode">Spatial audio mode</string>
     <string name="setting_ca_band">Band %1$d gain (dB)</string>
     <string name="setting_ca_band_bass">Bass, band 1 gain (dB)</string>
     <string name="setting_ca_band_mid">Mid-range, band 3 gain (dB)</string>

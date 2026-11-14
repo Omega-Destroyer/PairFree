@@ -28,6 +28,9 @@ public sealed interface Setting {
 
     /** A button; [active] while what it started is still going, when pressing it again stops it. */
     public data class Action(override val key: String, val active: Boolean = false) : Setting
+
+    /** A read-only device value, such as a sensor reading. */
+    public data class Information(override val key: String, val value: String) : Setting
 }
 
 /** A change to a [Setting] from the screens. */

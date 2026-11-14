@@ -1,0 +1,1524 @@
+{
+  "apk_version": "5.0.35-435",
+  "input_apkm_sha256": "b7acfeee5c506879e5870a8215562b8b0cd896a93aaa54cd3eb28c24cdc6e734",
+  "selection": "all 64 concrete CmmBtCmdService hierarchy classes in the measured index, excluding dynamic ThingsCmdService",
+  "synthetic_inputs_only": true,
+  "physical_device_connected": false,
+  "transport_send_called": false,
+  "parser_and_parametric_cases": [
+    {
+      "kind": "EQ",
+      "model": "D1206",
+      "start_offset": 0,
+      "input_f32le": [
+        -6,
+        -3.5,
+        0,
+        1.25,
+        3,
+        6,
+        9,
+        -1
+      ],
+      "observed_positions": [
+        -6.0,
+        -3.5,
+        0.0,
+        1.25,
+        3.0,
+        6.0,
+        9.0,
+        -1.0,
+        12.0
+      ]
+    },
+    {
+      "kind": "EQ",
+      "model": "D1406",
+      "start_offset": 0,
+      "input_f32le": [
+        -6,
+        -3.5,
+        0,
+        1.25,
+        3,
+        6,
+        9,
+        -1
+      ],
+      "observed_positions": [
+        -6.0,
+        -3.5,
+        0.0,
+        1.25,
+        3.0,
+        6.0,
+        9.0,
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "kind": "EQ",
+      "model": "D1206",
+      "start_offset": 3,
+      "input_f32le": [
+        -6,
+        -3.5,
+        0,
+        1.25,
+        3,
+        6,
+        9,
+        -1
+      ],
+      "observed_positions": [
+        -6.0,
+        -3.5,
+        0.0,
+        1.25,
+        3.0,
+        6.0,
+        9.0,
+        -1.0,
+        12.0
+      ]
+    },
+    {
+      "kind": "EQ",
+      "model": "D1406",
+      "start_offset": 3,
+      "input_f32le": [
+        -6,
+        -3.5,
+        0,
+        1.25,
+        3,
+        6,
+        9,
+        -1
+      ],
+      "observed_positions": [
+        -6.0,
+        -3.5,
+        0.0,
+        1.25,
+        3.0,
+        6.0,
+        9.0,
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "kind": "SHORT_EQ",
+      "model": "D1206",
+      "input_bytes": 31,
+      "observed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "kind": "SHORT_EQ",
+      "model": "D1406",
+      "input_bytes": 31,
+      "observed": "BufferUnderflowException"
+    },
+    {
+      "kind": "SANITIZED_EQ",
+      "model": "D1406",
+      "input_f32le": [
+        "NaN",
+        "+Infinity",
+        101,
+        -101,
+        100,
+        -100,
+        0.5,
+        -0.5
+      ],
+      "observed_positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        100.0,
+        -100.0,
+        0.5,
+        -0.5,
+        0.0
+      ]
+    },
+    {
+      "kind": "ANC_SELECTION",
+      "model": "D1206",
+      "mask_u8": 165,
+      "observed_flags": [
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true
+      ]
+    },
+    {
+      "kind": "PARAMETRIC_EQ",
+      "model": "D1206",
+      "eq_index": 65278,
+      "hear_id_enabled": false,
+      "hear_id_state": 1,
+      "hear_id_time": 305419896,
+      "filters": [],
+      "prefix_hex": "08ee000000038a",
+      "payload_hex": "fefe00017856341200"
+    },
+    {
+      "kind": "PARAMETRIC_EQ",
+      "model": "D1206",
+      "eq_index": 65278,
+      "hear_id_enabled": true,
+      "hear_id_state": 1,
+      "hear_id_time": 305419896,
+      "filters": [
+        {
+          "type": 1,
+          "gain": 1.25,
+          "fc_hz": 100,
+          "q": 0.7
+        }
+      ],
+      "prefix_hex": "08ee000000038a",
+      "payload_hex": "fefe01017856341201010000a03f0000c8423333333f"
+    },
+    {
+      "kind": "PARAMETRIC_EQ",
+      "model": "D1206",
+      "eq_index": 65278,
+      "hear_id_enabled": false,
+      "hear_id_state": 1,
+      "hear_id_time": 305419896,
+      "filters": [
+        {
+          "type": 1,
+          "gain": 1.25,
+          "fc_hz": 100,
+          "q": 0.7
+        },
+        {
+          "type": 3,
+          "gain": -3.5,
+          "fc_hz": 8000,
+          "q": 1
+        }
+      ],
+      "prefix_hex": "08ee000000038a",
+      "payload_hex": "fefe00017856341202010000a03f0000c8423333333f03000060c00000fa450000803f"
+    },
+    {
+      "kind": "ANC_TRUNCATED",
+      "model": "D1206",
+      "input_bytes": 15,
+      "observed": "null"
+    },
+    {
+      "kind": "ANC_TRUNCATED",
+      "model": "D1206",
+      "input_bytes": 16,
+      "observed": "BufferUnderflowException"
+    }
+  ],
+  "button_builder_cases": [
+    {
+      "class": "com.oceanwing.devicecmd.manager.cmmbt2.CmmBtCmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.cmmbt2.CmmBtCmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3004.A3004CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3004.A3004CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3004c.A3004cCmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3004c.A3004cCmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3005.A3005CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3005.A3005CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3012.A3012CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3012.A3012CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3025.A3025CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3025.A3025CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3035.A3035CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3035.A3035CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3040.A3040CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3040.A3040CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3062.A3062CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3062.A3062CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3130.A3130CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3130.A3130CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3131.A3131CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3131.A3131CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3133.A3133CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3133.A3133CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3134.A3134CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3134.A3134CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3135.A3135CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3135.A3135CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3136.A3136CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3136.A3136CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3138.A3138CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3138.A3138CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3148.A3148CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3148.A3148CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3166.A3166CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3166.A3166CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3172.A3172CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3172.A3172CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a31a3.A31A3CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a31a3.A31A3CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3330.A3330CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3330.A3330CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3331.A3331CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3331.A3331CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3388.A3388CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3388.A3388CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3398.A3398CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3398.A3398CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3399.A3399CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3399.A3399CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a33a1.A33A1CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a33a1.A33A1CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3600.A3600CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3600.A3600CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3850.A3850CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3850.A3850CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3871.A3871CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3871.A3871CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3874.A3874CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3874.A3874CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3875.A3875CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3875.A3875CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3876.A3876CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3876.A3876CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3936.A3936CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3936.A3936CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3947.A3947CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3947.A3947CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3948.A3948CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3948.A3948CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3952.A3952CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3952.A3952CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3953.A3953CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3953.A3953CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3954.A3954CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3954.A3954CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3955.A3955CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3955.A3955CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3956.A3956CmdService",
+      "wide": true,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee000000048c",
+      "payload_hex": "00020507"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3956.A3956CmdService",
+      "wide": true,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee000000048c",
+      "payload_hex": "01020507"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3957.A3957CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3957.A3957CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3958.A3958CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3958.A3958CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3968.A3968CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3968.A3968CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3994.A3994CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a3994.A3994CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a6610.A6610CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a6610.A6610CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a6611.A6611CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.a6611.A6611CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1101.D1101CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1101.D1101CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1105.D1105CmdService",
+      "wide": true,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee000000048c",
+      "payload_hex": "00020507"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1105.D1105CmdService",
+      "wide": true,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee000000048c",
+      "payload_hex": "01020507"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1200.D1200CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1200.D1200CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1202.D1202CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1202.D1202CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1205.D1205CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1205.D1205CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1206.D1206CmdService",
+      "wide": true,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee000000048c",
+      "payload_hex": "00020507"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1206.D1206CmdService",
+      "wide": true,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee000000048c",
+      "payload_hex": "01020507"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1301.D1301BleCmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1301.D1301BleCmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1301.D1301CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1301.D1301CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1302.D1302CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1302.D1302CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1303.D1303CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1303.D1303CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1402.D1402CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1402.D1402CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1404.D1404CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1404.D1404CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1406.D1406CmdService",
+      "wide": true,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee000000048c",
+      "payload_hex": "00020507"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d1406.D1406CmdService",
+      "wide": true,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee000000048c",
+      "payload_hex": "01020507"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d3200.D3200CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d3200.D3200CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d5100.D5100CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d5100.D5100CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d5103.D5103CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.devicecmd.manager.product.d5103.D5103CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.soundcore.activity.a3028.A3028CmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.soundcore.activity.a3028.A3028CmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    },
+    {
+      "class": "com.oceanwing.soundcore.activity.a3028cc.A3028CCCmdService",
+      "wide": false,
+      "left": true,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "000275"
+    },
+    {
+      "class": "com.oceanwing.soundcore.activity.a3028cc.A3028CCCmdService",
+      "wide": false,
+      "left": false,
+      "gesture_id": 2,
+      "un_tws_function": 7,
+      "tws_function": 5,
+      "prefix_hex": "08ee0000000481",
+      "payload_hex": "010275"
+    }
+  ],
+  "skipped_interfaces": []
+}

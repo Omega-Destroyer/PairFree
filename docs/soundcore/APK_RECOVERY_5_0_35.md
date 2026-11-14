@@ -61,3 +61,7 @@ Root: `E:/Builds/research/soundcore-full-protocol-2026-11-13`.
 A later Things pass recovered another 351 selected classes / 2,353 methods with no remaining instruction-store markers; see [Things protocol research](THINGS_PROTOCOL_5_0_35.md).
 
 Use these artifacts to continue semantic protocol analysis. Keep vendor implementation and raw artifacts outside Git; commit only derived protocol facts and documentation.
+
+## Follow-up observations
+
+The [expanded virtual checks](VIRTUAL_PROTOCOL_CHECKS_5_0_35.md) add 128 shared button-writer cases and 13 parser/parametric-EQ cases. An additional 95 script-discovery/request-routing classes (601 methods) were recovered with zero instruction-store markers remaining in that measured selection. Their helpers and unrelated app code are not implied to be fully recovered. The latest artifact tree for this pass is `discovery-jadx/`; script lookup and request construction are documented in the Things protocol notes.

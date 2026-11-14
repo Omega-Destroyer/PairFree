@@ -21,7 +21,7 @@ For the `c6()` path, `m6` constructs command **03/8A** (prefix `08 ee 00 00 00 0
 | 0 | EQ index | u16 little-endian |
 | 2 | HearID enabled | u8 boolean |
 | 3 | HearID state | u8 |
-| 4 | HearID time | four bytes via `BytesUtil.S`; verify conversion independently before implementing |
+| 4 | HearID time | 32-bit little-endian; confirmed with `0x12345678` in the virtual writer check |
 | 8 | Filter count | u8 |
 | 9 + 13*n | Filter type | u8 |
 | 10 + 13*n | Gain | IEEE-754 f32 little-endian |
@@ -56,3 +56,7 @@ Cases have separate registrations and profiles, such as D1203-Box and D1204-Box,
 - `EQ_TABLES_5_0_35.csv`: 408 vectors from 44 runtime static tables. Preserve gains, type, frequency and Q as separate roles, and resolve preset index and firmware selection before using them.
 
 The catalogues cover recovered evidence, not a finished implementation specification for all settings. Next work is per-model feature/caller mapping, ordered reply schemas and version gates, full preset selection, button action enumerations, and virtual serializer/parser cases. The online Things/OMC registry remains a separate completeness requirement.
+
+## Additional virtual checks
+
+The [expanded virtual checks](VIRTUAL_PROTOCOL_CHECKS_5_0_35.md) cover the shared button writer across 64 concrete classes, parametric EQ serialization, D1206/D1406 float EQ decoding, ANC-selection bits and short-buffer behavior. These are synthetic serializer/parser checks, not hardware acceptance.

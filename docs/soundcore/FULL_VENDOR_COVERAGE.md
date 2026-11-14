@@ -2,6 +2,8 @@
 
 Target: **5.0.35-435**, package `com.oceanwing.soundcore`. Branch: `research/soundcore-full-protocol`. Scope is all vendor-supported models, independently of PairFree's current device list. This research is **in progress**, with no application implementation changes.
 
+[Reproducible recovery runbook](PROTOCOL_RECOVERY_RUNBOOK.md) records the working commands, prerequisites and validation pitfalls.
+
 ## Recovered coverage
 
 - [Recovery evidence and virtual checks](APK_RECOVERY_5_0_35.md): protected business DEX and selected method bodies recovered; 2,984 protocol/model/control classes, 27,002 methods, zero instruction-store markers remaining in that measured selection.
@@ -9,6 +11,7 @@ Target: **5.0.35-435**, package `com.oceanwing.soundcore`. Branch: `research/sou
 - [New SDK profiles](SDK_PROFILES_5_0_35.md): 14 product/component profiles, plus a SAMPLE scaffold excluded from totals. The union with the app table is 165 distinct keys after case normalization.
 - [Things / OMC protocol path](THINGS_PROTOCOL_5_0_35.md): an additional 351 recovered classes / 2,353 methods and the named-function-to-QuickJS bridge; online product definitions still required.
 - [Latest protocol findings](LATEST_PROTOCOL_FINDINGS_5_0_35.md): newer parametric EQ, firmware table gates, packet variants, and a virtually checked D1206 button serializer.
+- [Expanded virtual checks](VIRTUAL_PROTOCOL_CHECKS_5_0_35.md): 128 button-writer cases across 64 concrete classes and 13 EQ/ANC/parser cases, with machine-readable observations.
 - Derived CSV catalogues contain 467 builder methods, 683 runtime constants, 106 constant boolean overrides and 408 EQ-related vectors from 44 tables.
 
 ## Evidence categories
@@ -19,7 +22,8 @@ Target: **5.0.35-435**, package `com.oceanwing.soundcore`. Branch: `research/sou
 | Compiled registration/profile | This APK has an explicit model route | App and SDK inventory documents |
 | Recovered protocol code | Original instruction bodies are available for research | Measured protocol selection recovered |
 | Virtually checked data | Vendor getters or static tables were read offline | Registration UUIDs, scoped constants and EQ vectors |
-| Virtually checked serialization | Actual vendor code produced compared bytes | Six wrapper cases and two D1206 button cases |
+| Virtually checked serialization | Actual vendor code produced compared bytes | Six wrapper cases; shared button writer sweep; three parametric EQ cases |
+| Virtually checked parsing | Synthetic buffers decoded by vendor methods | EQ blocks, ANC-selection bits and short-buffer cases in the expanded checks |
 | Physical device verified | Bud accepted a command and changed/reported state | None in this exercise |
 
 ## Completeness work still required

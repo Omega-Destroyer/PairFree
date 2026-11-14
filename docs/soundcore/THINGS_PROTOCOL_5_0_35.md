@@ -67,3 +67,28 @@ No Things command was sent or invoked through the encoding engine, and no vendor
 4. Exercise those scripts/serializers offline with synthetic state, including firmware boundaries, before marking their commands virtually checked.
 
 Local continuation artifacts: `things-protocol-index.json`, `things-recovery-summary.json`, `live-fixed/`, `live-jadx/sources/com/anker/esiotkit/` and the focused `td-jadx/` tree under the external research root listed in the recovery document.
+
+## Script discovery follow-up
+
+A further 95 selected script-discovery/request-routing classes (601 methods) were recovered with zero remaining instruction-store markers in those classes. The new source tree is `discovery-jadx/`, with measurements in `script-discovery-summary.json` and `script-discovery-class-index.json` outside Git.
+
+`JSFileManagerImpl` computes a document directory per configured environment and a `JavaScript` child directory. The observed naming variants are `<PN>.js`, `<PN>.zip`, `<PN>New.js`, `<PN>New.zip` and `<PN>Handle.mix.js`. The `New` suffix is controlled by its `isNew` argument. These are source-derived paths, not files read from an existing user's installation. Its read path can call back into the repository to obtain a missing product resource.
+
+All ten APK members were checked by archive entry names for product-script/archive patterns. The only three `.js` entries were Flutter toast/wakelock helpers and `WebViewJavascriptBridge.js`; none was a PN-specific Things handler. One broad PN/archive name match was `assets/lottie/a3953_run_data.zip`, an animation-path candidate, not an identified protocol bundle. This is a filename inventory, not proof that no differently named or encrypted bundle exists. Secret assets were not opened.
+
+### Catalogue request path
+
+`ThingNetApi` exposes these relative POST paths relevant to catalogue/configuration discovery:
+
+| Relative path | Result role |
+| --- | --- |
+| `app/things/get_product_list` | Product descriptions; includes a Category header argument |
+| `app/things/get_product_category_list` | Product categories |
+| `app/things/get_product_config` | Product/Thing configuration; two typed overloads |
+| `app/things/get_things_list` | Thing Description model results |
+
+Other methods query pairing information or resolve a PN from an SN. The SN lookup is not a permitted shortcut for this catalogue research because it requires a device identifier. None of these methods was called.
+
+Request construction is more involved than an optional account login: `GlobalHeaderRouting` adds account-token headers only when its provider returns a token; `CryptoRouting` defaults its encryption requirement to true, with an explicit internal opt-out; and Soundcore registers a timestamp-signing callback through `SoundCoreThingIot.j`/`k`. The callback delegates to its secret-dependent signing routine. That callback was not invoked and no secret value or credential was read or used.
+
+These code paths do **not** establish whether the catalogue server accepts an unsigned anonymous request. No server response or authentication refusal has been observed. Endpoint-specific exceptions, exact configuration and a permitted unsigned/public resource path remain to be traced before any research fetch. Do not label the online catalogue impossible or login-only on this evidence, and do not replay app credentials to obtain it.

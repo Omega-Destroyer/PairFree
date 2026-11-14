@@ -57,7 +57,7 @@ An additional **351 Things/schema/repository classes with 2,353 methods** were s
 
 The bundled `assets/resource.zip` was inspected by archive member names only: its 319 entries describe ambient sound resources, not an identified per-product protocol script bundle. No inference is made about other encrypted or downloaded resources from that check.
 
-No Things command was sent or invoked through the encoding engine, and no vendor API request or account login was made. Virtual checks currently cover the static wrapper/D1206 cases recorded in [recovery evidence](APK_RECOVERY_5_0_35.md).
+No Things command was sent or invoked through the encoding engine. Two unsigned anonymous API requests were subsequently attempted, as recorded below; no account login or app credential was used. Virtual checks cover the [expanded serializer/parser cases](VIRTUAL_PROTOCOL_CHECKS_5_0_35.md) and the pure firmware predicates in the [feature mapping](MODEL_FEATURES_5_0_35.md).
 
 ## Remaining requirements for full coverage
 
@@ -87,8 +87,44 @@ All ten APK members were checked by archive entry names for product-script/archi
 | `app/things/get_product_config` | Product/Thing configuration; two typed overloads |
 | `app/things/get_things_list` | Thing Description model results |
 
-Other methods query pairing information or resolve a PN from an SN. The SN lookup is not a permitted shortcut for this catalogue research because it requires a device identifier. None of these methods was called.
+Other methods query pairing information or resolve a PN from an SN. The SN lookup is not a permitted shortcut for this catalogue research because it requires a device identifier. Only the product-list and Thing Description routes were attempted anonymously below. Pairing and SN lookup routes were not called.
 
 Request construction is more involved than an optional account login: `GlobalHeaderRouting` adds account-token headers only when its provider returns a token; `CryptoRouting` defaults its encryption requirement to true, with an explicit internal opt-out; and Soundcore registers a timestamp-signing callback through `SoundCoreThingIot.j`/`k`. The callback delegates to its secret-dependent signing routine. That callback was not invoked and no secret value or credential was read or used.
 
-These code paths do **not** establish whether the catalogue server accepts an unsigned anonymous request. No server response or authentication refusal has been observed. Endpoint-specific exceptions, exact configuration and a permitted unsigned/public resource path remain to be traced before any research fetch. Do not label the online catalogue impossible or login-only on this evidence, and do not replay app credentials to obtain it.
+The routing code alone does not establish anonymous access. Actual unsigned requests to two production routes subsequently returned HTTP 401; see the request-level evidence below. This does not establish that every vendor resource or public CDN is authenticated. Other routes remain untested; app signing material must not be replayed to access them.
+
+
+## Anonymous fetch results ? 2026-11-13
+
+The current production Things origin was traced through `ThingsEnvUtil.a` to `AIOTDomain.e`: `https://aiot-sc-api-pr.soundcore.com`. A separate China origin is configured in code, but was not tried after the global refusal. Anka origins belong to a different configuration path and were not substituted as authentication workarounds.
+
+| Request | JSON body | Result |
+| --- | --- | --- |
+| POST `/app/things/get_product_list` | `{}` | HTTP 401; 32-byte reply; stopped |
+| POST `/app/things/get_things_list` | `{"product_codes":["D1302"],"code_time_map":{}}` | HTTP 401; 32-byte reply; stopped |
+
+Both requests used the public `Category: soundcore` header and JSON Accept/Content-Type. They used no authorization, app signing, preset key, cookies, account data or device identifier. D1302 is a public model code. There was no alternate-host retry or authentication attempt. **Zero protocol scripts were downloaded.**
+
+Exact DTO element names were inspected through the vendor's Kotlin serialization descriptors in the offline emulator:
+
+| DTO | Serialized properties |
+| --- | --- |
+| GetProductListRequest | `product_codes` (empty default omitted by the app's normal serialization) |
+| GetThingListRequest | `product_codes`, `code_time_map` |
+| GetProductDataRequest | `product_codes` |
+
+The repository's method named `getTDBySnList` uses `GetThingListRequest`; the inspected non-existing-product caller supplies product numbers, not individual serial numbers. This distinguishes the direct model-metadata attempt from the separate prohibited SN lookup route.
+
+`TDProfile` supplies `plugin_path` / `pluginPath` and `plugin_path_zip` / `pluginPathZip`, plus script IDs, product code and version. The script manager prefers the ZIP variant when present and has a plain-JS alternative. CDN locations must come from verified metadata; local `<PN>.js` filenames are not evidence of a remote URL.
+
+The external script is `E:/Builds/research/soundcore-full-protocol-2026-11-13/fetch_cloud_protocols.py`. Its modes are `--discover --download`, `--protocol-metadata D1302 --download`, and `--metadata <saved-reply> --download`. The first two have already been attempted and refused; do not repeat those unchanged requests. The downloader:
+
+- spaces requests by at least 3.1 seconds and retains hashes/status/provenance;
+- accepts only verified vendor HTTPS hosts and protocol `.js`/`.zip` resources;
+- refuses signed/authentication query parameters, device identifiers, firmware paths and redirects;
+- stops on HTTP 401/403 or application-level authentication/non-success results;
+- stores all raw replies only under the ignored `server_dump/soundcore/cloud-protocol-2026-11-13/` directory.
+
+The original catalogue observation remains in `catalogue.json.meta.json` and `run-status.json`; the independent metadata observation is in `protocol-metadata-D1302.json.meta.json` and `protocol-metadata-D1302-status.json`. Raw replies and downloaded vendor content stay out of Git.
+
+**Blocked for these unsigned routes:** authentication/access refusal; checked: production origin and request DTO/caller tracing, then one anonymous request to each endpoint, both HTTP 401. Other public resource paths are still research work; these results are not a universal login requirement. The full online inventory and product scripts remain unresolved.

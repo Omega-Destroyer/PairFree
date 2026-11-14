@@ -173,3 +173,6 @@ The app registration table was executed in an offline API 30 research emulator. 
 Every registration has a recovered model body. The shared and model-specific command/parser classes were recovered too. This table records routing and transport evidence; it does not certify every setting or a complete implementation. Per-model feature gates, payload field meanings, preset selection and firmware branches still need to be traced through callers and checked against the serializers. None of these registrations has been tested against physical hardware in this exercise.
 
 The legacy `getServiceUUID()` getter commonly returns `FB349B5F8000008000100000DAF51201`. That value is preserved as vendor metadata; do not use it as the GATT service UUID for every product. The newer SDK declares normal Android UUID strings per channel. The six `isBoxConnected()` getters that depend on live device state threw in the unconnected harness; no box-presence result is asserted for them.
+
+
+See [per-model feature evidence](MODEL_FEATURES_5_0_35.md) for declared UI bounds and firmware-dependent routes, including the A3028/A3028CC migration that cannot be represented as one unconditional builder choice.

@@ -227,3 +227,8 @@ The identifier column preserves the product/label resource suffix. It is not ass
 Original APKM SHA-256: `b7acfeee5c506879e5870a8215562b8b0cd896a93aaa54cd3eb28c24cdc6e734`. Resource XML SHA-256: `4494184d610b8bf8b82f8311989caf4169a13a76d7ed0a0b471be962d5cdb7a7`.
 
 External research directory: `E:\Builds\research\soundcore-full-protocol-2026-11-13`. `model_census.py` rebuilds this document and the full local JSON from the extracted 5.0.35 resource XML. No secret assets are opened. Captured/decompiled vendor code and binary inputs stay outside Git.
+
+
+## Follow-up: compiled per-model evidence
+
+The resource-name census above and the actual compiled registrations are different inventories. [Per-model feature evidence](MODEL_FEATURES_5_0_35.md) now maps all 165 compiled-registry keys, including aliases and case-only profiles; it does not treat every resource name as a compiled registration or claim that every feature is resolved. [Cloud research](THINGS_PROTOCOL_5_0_35.md) records HTTP 401 from both attempted anonymous production routes; no cloud protocol was downloaded. The server catalogue may contain additional models beyond these local inventories.

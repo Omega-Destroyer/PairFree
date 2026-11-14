@@ -1,0 +1,129 @@
+{
+  "scope": "offline pure predicates only; no manager migration or transport invoked",
+  "methods": [
+    "AbOtaVersionCheckUtils.a",
+    "AbOtaVersionCheckUtils.c"
+  ],
+  "cases": [
+    {
+      "model": "A3028",
+      "parsed_firmware": 399,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3028",
+      "parsed_firmware": 400,
+      "migration_eligible": true,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3028",
+      "parsed_firmware": 517,
+      "migration_eligible": true,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3028",
+      "parsed_firmware": 518,
+      "migration_eligible": true,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3028CC",
+      "parsed_firmware": 399,
+      "migration_eligible": true,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3028CC",
+      "parsed_firmware": 400,
+      "migration_eligible": true,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3028CC",
+      "parsed_firmware": 517,
+      "migration_eligible": true,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3028CC",
+      "parsed_firmware": 518,
+      "migration_eligible": true,
+      "custom_controls_eligible": true
+    },
+    {
+      "model": "A3027",
+      "parsed_firmware": 399,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3027",
+      "parsed_firmware": 400,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3027",
+      "parsed_firmware": 517,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3027",
+      "parsed_firmware": 518,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3029",
+      "parsed_firmware": 399,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3029",
+      "parsed_firmware": 400,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3029",
+      "parsed_firmware": 517,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "A3029",
+      "parsed_firmware": 518,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "a3028",
+      "parsed_firmware": 399,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "a3028",
+      "parsed_firmware": 400,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "a3028",
+      "parsed_firmware": 517,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    },
+    {
+      "model": "a3028",
+      "parsed_firmware": 518,
+      "migration_eligible": false,
+      "custom_controls_eligible": false
+    }
+  ]
+}

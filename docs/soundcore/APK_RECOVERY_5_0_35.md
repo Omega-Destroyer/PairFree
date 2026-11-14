@@ -65,3 +65,8 @@ Use these artifacts to continue semantic protocol analysis. Keep vendor implemen
 ## Follow-up observations
 
 The [expanded virtual checks](VIRTUAL_PROTOCOL_CHECKS_5_0_35.md) add 128 shared button-writer cases and 13 parser/parametric-EQ cases. An additional 95 script-discovery/request-routing classes (601 methods) were recovered with zero instruction-store markers remaining in that measured selection. Their helpers and unrelated app code are not implied to be fully recovered. The latest artifact tree for this pass is `discovery-jadx/`; script lookup and request construction are documented in the Things protocol notes.
+
+
+## Native declarations and per-model follow-up
+
+Zero instruction-store markers only measures restoration of that protection mechanism. The original 2,984-class selection also contains **188 declared native methods in 17 classes**, mainly activities, popups and lifecycle code. It must not be described as full recovery of those methods. The [per-model evidence](MODEL_FEATURES_5_0_35.md) records 165 compiled-registry keys, declared home-VM bounds, reachable home-card factories, explicit serializer routes, 17 legacy More-panel branches and A3028/A3028CC firmware-dependent manager migration. The latest source/mapping directory for this follow-up is `C:/Users/Nima/AppData/Local/PairFreeResearch/soundcore-feature-mapping-2026-11-13/`.

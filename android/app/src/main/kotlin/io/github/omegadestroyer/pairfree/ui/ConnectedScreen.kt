@@ -274,7 +274,7 @@ private fun HomeScreen(
             }
         }
 
-        if (state.supports(Command.ANC_MODE)) NoiseControl(state, actions)
+        if (state.supports(Command.ANC_MODE) && model?.code != "A3954") NoiseControl(state, actions)
         SettingGroups(settings, SettingTab.HOME, actions::changeSetting)
         eq?.let { SoundCard(it, onOpenSound) }
         QuickSwitches(state, model, actions)

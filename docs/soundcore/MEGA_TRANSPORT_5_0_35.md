@@ -2,7 +2,27 @@
 
 The owner-run guest probe accepted `passport/create_guest`, then received HTTP 401 at `app/things/get_product_list`. That observation validates guest response parsing and local EC-point agreement, but not acceptance of the guest signature by the catalogue service. The previous client omitted the SDK's separate transport identity, encryption and signature. The exact server reason for the 401 was not captured and must not be stated as proven.
 
-The external probe now has a materially different **experimental** profile, `guest-mega-v1`: guest creation, a separate transport key exchange, then one encrypted/signed catalogue request. Its implementation has passed synthetic tests; the owner has not yet tested this profile against Soundcore. It never retries or substitutes another host after refusal.
+The external probe has a materially different **experimental** profile, `guest-mega-v1`: guest creation, a separate transport key exchange, then one encrypted/signed catalogue request. The owner subsequently tested this profile. Its saved report establishes the results below. It never retries or substitutes another host after refusal.
+
+## Owner-run encrypted-profile result
+
+The report started at `2026-11-14T22:12:19Z` and recorded:
+
+| Stage | HTTP status | Local validation |
+| --- | --- | --- |
+| `create_guest` | 200 | Guest response and EC agreement accepted |
+| `exchange` | 200 | Success envelope and preset-wrapped server EC point accepted; transport shared value derived |
+| `get_product_list` | 401 | Refused; no catalogue saved |
+
+Milestones `guest_bootstrap_validated` and `things_transport_established` are present. The saved `latest-run-report.json` contains only safe diagnostics, not bootstrap replies or keys. This is live evidence for the exchange encoding and preset/server-point handling, but it does not prove acceptance of the later guest-auth signature, HMAC, ciphertext or permissions. Do not describe the remaining failure as a failed exchange or assert a particular server reason.
+
+The refusal body was discarded by that script version, leaving an empty refusal diagnostic. Future runs inspect at most 8 KiB of the already-returned error body locally and retain only allowlisted response shape, numeric codes and fixed wording categories. Raw bodies, message text and headers are never saved or displayed. This does not trigger another request or retry. **No authentication change was made in this follow-up, and no unchanged rerun is requested merely to obtain the new diagnostic.**
+
+Additional offline checks confirmed that `SoundCoreThingIot$getProductList$2` explicitly calls `getProductList("soundcore")`. The SDK's generic `CATEGORY_SOUND_CORE` value is `eufy_soundcore`, but that different constant is not evidence for changing this request's explicit category. No speculative category substitution was enabled.
+
+The actual guest helpers live in the earlier `dex-9882140` capture under `com.acc.interfacesafe`; focused decompilation confirms `ECDH.b` and `ECDHJava` still have instruction-store stubs. `AccountBaseUtil.j`/`D` are also protected in the inspected tree. The guest-specific agreement/formatting and storage-accessor behavior therefore remain recovery targets; the recovered CommonKit reference alone cannot establish every detail of those distinct helpers. This focused decompilation is not a newly successful runtime capture.
+
+**Blocked for the current catalogue profile:** server access refusal; checked: recorded owner-run guest/exchange successes followed by catalogue 401, direct catalogue caller/category, guest callback/header binding, transport reference and remaining protected guest/helper bodies. Recover those semantics and/or obtain a safe refusal classification during a justified changed run before making another access attempt. This is not proof that the catalogue always requires a personal login.
 
 ## Evidence boundaries
 
@@ -38,6 +58,6 @@ These are cross-app SDK inferences with matching local CommonKit algorithms and 
 
 `soundcore_things_transport.py`, the updated `fetch_soundcore_guest.py`, and tests remain outside Git under `E:/Builds/research/soundcore-full-protocol-2026-11-13/`. The owner-run loader pins the recovered preset source file's SHA-256 and reads the verified production branch locally. Key values are not embedded in the scripts or docs, printed, accepted as arguments, serialized, or saved in reports. No production preset was used for a network request by the agent. Inspection returned only source hashes, branch comparisons and format booleans, never key literals.
 
-38 offline tests pass across security, guest, transport, reporting and account tools. Nine new transport cases cover an independent JDK25 AES/HMAC reference, ASCII-versus-binary HMAC key representation, wrapped server EC points, raw encrypted request bodies, response decoding, source pinning/production selection, clearing/serialization refusal, the full three-request mock flow and immediate stop at exchange/catalogue refusal. Saved fixtures exclude session/key values. The historical two-request 401 fixture remains explicitly separate from the new profile.
+40 offline tests pass across security, guest, transport, reporting and account tools. Nine transport cases cover an independent JDK25 AES/HMAC reference, ASCII-versus-binary HMAC key representation, wrapped server EC points, raw encrypted request bodies, response decoding, source pinning/production selection, clearing/serialization refusal, the full three-request mock flow and immediate stop at exchange/catalogue refusal. Two additional cases verify bounded error-body inspection and exclusion of raw server messages/credentials from diagnostics. Saved fixtures exclude session/key values. The historical two-request 401 fixture remains explicitly separate from the new profile.
 
 The report records `guest-mega-v1` and milestones `guest_bootstrap_validated`, `things_transport_established` and `catalogue_saved`, where reached. Failures carry a fixed category and per-request HTTP/structural diagnostics. This is sufficient to review the next run directly from local files without terminal copying. See [run instructions](GUEST_PROTOCOL_PROBE.md).

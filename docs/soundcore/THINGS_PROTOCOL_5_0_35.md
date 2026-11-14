@@ -128,3 +128,8 @@ The external script is `E:/Builds/research/soundcore-full-protocol-2026-11-13/fe
 The original catalogue observation remains in `catalogue.json.meta.json` and `run-status.json`; the independent metadata observation is in `protocol-metadata-D1302.json.meta.json` and `protocol-metadata-D1302-status.json`. Raw replies and downloaded vendor content stay out of Git.
 
 **Blocked for these unsigned routes:** authentication/access refusal; checked: production origin and request DTO/caller tracing, then one anonymous request to each endpoint, both HTTP 401. Other public resource paths are still research work; these results are not a universal login requirement. The full online inventory and product scripts remain unresolved.
+
+
+## Owner-run account tool
+
+At the owner?s request, a separate [local own-account tool](OWN_ACCOUNT_FETCH.md) now prompts for hidden credentials and can attempt the documented login/catalogue/metadata path. Only mocked offline tests have run. The app also signs and encrypts login with a vendor app secret, so account credentials alone may be refused; the tool does not extract or reuse that secret. This does not change the observed anonymous HTTP 401 results above.

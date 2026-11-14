@@ -29,7 +29,7 @@ The interceptor adds request timestamp, a request-once UUID and `unique-sign`. `
 
 `ThingVisitorManager` requests `passport/create_guest` with `client_secret_info.public_key`. Its API method includes PHONE model type and Soundcore app name, and uses an OpenUDID argument. The normal common interceptor also supplies terminal and other app headers. A future standalone client must use its own generated ephemeral identifier, not read the owner's phone identifier.
 
-The response model contains `guest_id` and `server_secret_info.public_key`. The manager derives shared key material, stores guest identity/key state, and refreshes the Things configuration. A standalone two-request guest probe is now implemented outside Git and tested offline; server interoperability has not been verified. See [guest probe](GUEST_PROTOCOL_PROBE.md).
+The response model contains `guest_id` and `server_secret_info.public_key`. The manager derives shared key material, stores guest identity/key state, and refreshes the Things configuration. The owner ran the original two-request probe: guest creation passed, then the plaintext catalogue received HTTP 401. The updated probe now adds a separate transport key exchange and encrypted/signed catalogue request; this new profile has not yet been tested live. See [guest probe](GUEST_PROTOCOL_PROBE.md) and [transport evidence](MEGA_TRANSPORT_5_0_35.md).
 
 The recovered **CommonKit** ECDH helper uses curve P-256, provider SC, uncompressed EC point hex, and `KeyAgreement.generateSecret("AES")`. An independent synthetic reference using SpongyCastle 1.58.0.0 returned 32 shared bytes; the Python implementation matches it in both directions. The guest caller uses the separate protected InterfaceSafe wrapper, so equivalence of its full encoding/derivation must still be verified. The helper/reference evidence must not be promoted to an observed guest-server handshake.
 
@@ -39,7 +39,7 @@ The recovered **CommonKit** ECDH helper uses curve P-256, provider SC, uncompres
 
 The newer `soundcore-login-2026-11-13/jadx2/sources` and feature-mapping trees contain this helper even though the older discovery tree has placeholders. The external method-inventory parser also misses some generic Map return types containing commas; an absent inventory entry must not be treated as an absent body. Inspect the redacted class and compare recovery trees before declaring a method protected.
 
-**Still unresolved:** Things preset-key selection and the SDK's additional exchange/encrypted request-response envelope (`CryptoRequestFunctions`). The probe omits that additional layer explicitly and stops on refusal or non-structured data. It is an experiment to establish whether a signed plaintext guest catalogue is accepted, not a verified reproduction of the complete SDK.
+**Follow-up implementation:** preset selection is traced to `WebSocketServiceManager.k()`, with the first return branch matching the production environment from `BuildEnv.b()`/`j()`. `OpenApiNetApi` gives the separate exchange path, and its DTOs give client/server public-key fields. Recovered CommonKit helpers establish CBC/PKCS7/Base64, IV prefixing, shared-key truncation and HMAC canonicalization. The related public Mega implementation supplies corroborating orchestration where ESIot method bodies remain packed. The owner-run loader reads the exact hash-pinned source locally, without copying preset literals into code or reports. See the evidence table in the transport document: this is an experimental cross-app SDK profile, not proof of complete Soundcore interoperability. The failed plaintext request is no longer the default.
 
 ## Recovery attempts and evidence limits
 
@@ -53,7 +53,7 @@ This remains a loader/semantic-recovery task, not a claim that native code is im
 
 ## Validation and artifacts
 
-27 offline tests pass: nine account-tool/privacy/gating cases, nine material/signing/EC cases and nine guest-probe cases. They cover sorted header signing, raw query preservation, credential representation/serialization, cleared-key refusal, bounded ELF mapping, invalid EC point handling, the synthetic SpongyCastle reference, stopping the normal account CLI before credentials/network, guest header binding, request construction/pacing, refusal handling and exclusion of guest state from saved output. No live guest request was made by the agent.
+38 offline tests pass across account, signing/EC, guest, reporting and transport modules. They cover sorted header signing, raw query preservation, credential representation/serialization, cleared-key refusal, bounded ELF mapping, invalid EC points, synthetic SpongyCastle/JDK crypto references, the normal account CLI gate, guest headers, pacing, output sanitization, production-source selection, and full simulated transport success/refusal. No live guest request was made by the agent.
 
 - External scripts: `soundcore_app_security.py`, `test_security_profile_offline.py`, `test_account_fetch_offline.py`, and `fetch_soundcore_account.py` under the research root above.
 - Crypto environment, native payload copies and recovery experiments: `C:/Users/Nima/AppData/Local/PairFreeResearch/soundcore-crypto-2026-11-14/`.

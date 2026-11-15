@@ -115,6 +115,8 @@
      "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 84 (`setMoreSideToneCallback`)."},
     {"id": "in_ear_tone", "command": "018C", "source": "soundcore_app",
      "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 8C (`setInEarToneCallback`; the A3953's in-ear beep)."},
+    {"id": "eq_normalized", "command": "038A", "source": "soundcore_app",
+     "note": "The parametric equalizer of the models whose command service takes `c6()` (Soundcore 5.0.35 `CmmBtCmdService.m6`): the position (u16), the HearID switch, state and time (u32), the filter count and 13 bytes a filter (type, then gain, Hz and Q as float32). Bodies are built by SoundcoreNormalizedEqualizer."},
     {"id": "bass_up", "command": "0284", "source": "soundcore_app",
      "note": "Body: 1 on, 0 off. Soundcore 3.3.0 02 84 (`setDeviceBassUpCallback`)."},
     {"id": "spatial_audio", "command": "1081", "source": "soundcore_app",

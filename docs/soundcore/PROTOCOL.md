@@ -583,8 +583,7 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   automation, wind, 0, multi-scene, 0), seven on the Liberty 5 Pro pair (mode, automation, transparency option, two level bytes as reported, two
   multi-scene bytes), six on the Space 2 pair. Offered: the Liberty Buds 2's and the Liberty 5 Pro pair's noise mode and touch controls, the AeroClip 2's
   touch controls (triple tap: white noise) and dual connections, the AeroClip 2 Pro's touch controls (its own action list), the Space 2 pair's noise
-  mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. Not offered: the `03 8A` equalizer (its preset tables
-  are firmware gated on the Liberty 5 Pro pair), the switches of records 26 and 27 whose screens were not read, the Space 2's one-button records (72, 73), the
+  mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. Not offered: the switches of records 26 and 27 whose screens were not read, the Space 2's one-button records (72, 73), the
   sleep sounds and playback records (31 to 33, 81, 106) of the Sleep Earbuds 4, and the case's own channels (D1203-Box, D1204-Box, D1302-Box, D1303-Box).
 - **Liberty 4 Pro (A3954).** `A3954AnalysisService.e1` confirms the layout field by field, including pull request 42's change: after the spatial audio
   triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
@@ -602,9 +601,19 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   wear detection byte from 51 bytes and the single taps from 55. The writes are `04 81` (side, gesture, one function byte on this family; the newer
   `CmmBtCmdService` packs two nibbles under the same command), `04 83` (side, gesture, enabled), `02 81` (an index and eight positions per ear) and `03 82`
   (HearID). The A3909 and A3913 carry a transparency switch byte after the buttons that PairFree does not read.
-- **Newer EQ.** Models whose service selects the `c6()` path (A3956 and its relatives, D1105, D1205, D1206, D1404, D1406) write the EQ as `03 8A`: an index,
-  the HearID fields and then 13 bytes per filter (type, gain, frequency and Q as little-endian floats). Not built yet, with their firmware-gated tables
-  (A3956: firmware ranges 348 to 399, 448 to 499, 548 to 599 and 648 to 699).
+- **The parametric equalizer (`03 8A`).** The models whose command service takes `c6()` (the Liberty 5 Pro pair, the AeroClip 2 and 2 Pro, the P42i, the
+  Liberty Buds 2, the Q31i and the Space 2 Pro pair; `eq_normalized` in `devices.json`) write their equalizer as one packet,
+  `CmmBtCmdService.m6`: the position (u16 little-endian), the HearID switch (always off), the HearID state and its time (u32 little-endian, as the earbuds
+  last reported them: record 51 on the tag-length-value models, 0 where the reply holds none), the filter count and 13 bytes a filter (a type byte, then
+  the gain in dB, the centre frequency in Hz and the Q as little-endian floats). A preset is its own position with its own filters, from the app's tables
+  (`data/soundcore/eq_filters.json`: Soundcore Signature, Clear Vocals, Powerful Bass, Soothing Calm, and Balanced where the model has it); the Liberty 5 Pro
+  pair's list depends on the firmware (3.48 to 3.98, 4.48 to 4.98, 5.48 to 5.98 and 6.48 to 6.98 list Balanced at position 0 and the Signature at 4). A
+  custom curve is position 0xFEFE with up to eight peaking filters (type 1, Q 0.7) at 100, 200, 400, 800, 1600, 3200, 6400 and 12800 Hz whose gains
+  are the curve's; PairFree offers -6 to 6 dB in half steps (the app's own HearID curve limit is 7 dB less one; the custom screen's range is in the app's
+  native screen code). The earbuds report the position they hold (record 11), so a preset shows by name; a custom curve's gains are not in the reply.
+  Left out: the AeroClip 2's "volume booster" (position 30), whose table holds values (type 0xFD, and -3, 2 and 4 in the gain, frequency and Q columns)
+  that look like another structure. Bytes are pinned by `theNormalisedEqualizerWritesTheAppsBytes`, which rebuilds the Liberty Buds 2's signature and
+  balanced presets and a custom curve. Not tried on earbuds.
 - **Not recoverable from the app.** The online product catalogue (HTTP 401 without an account) and the screens' view models (native code in the 5.0.35
   restoration). The Sleep A30's audio upload is in the research branch's `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md`; PairFree builds none of it
   (section 13).

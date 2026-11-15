@@ -1250,7 +1250,6 @@
     <!-- OnePlus -->
     <string name="vendor_balanced_default">Balanced (Default)</string>
     <string name="vendor_bold">Bold</string>
-    <string name="vendor_clear_vocals">Clear Vocals</string>
     <string name="vendor_clear_vocals_2">Clear vocals</string>
     <string name="vendor_crisp_highs">Crisp highs</string>
     <string name="vendor_dynamic_bass">Dynamic bass</string>
@@ -1277,6 +1276,8 @@
     <string name="vendor_default">Default</string>
     <!-- OnePlus, SOUNDPEATS, Soundcore -->
     <string name="vendor_classic">Classic</string>
+    <!-- OnePlus, Soundcore -->
+    <string name="vendor_clear_vocals">Clear Vocals</string>
     <!-- Pixel Buds -->
     <string name="vendor_heavy_bass">Heavy bass</string>
     <string name="vendor_light_bass">Light bass</string>
@@ -1334,8 +1335,10 @@
     <string name="vendor_flat">Flat</string>
     <string name="vendor_hip_hop">Hip Hop</string>
     <string name="vendor_original">Original</string>
+    <string name="vendor_powerful_bass">Powerful Bass</string>
     <string name="vendor_rnb">RnB</string>
     <string name="vendor_small_speakers">Small Speakers</string>
+    <string name="vendor_soothing_calm">Soothing Calm</string>
     <string name="vendor_soundcore_signature">Soundcore Signature</string>
     <string name="vendor_spoken_word">Spoken Word</string>
     <string name="vendor_treble_booster">Treble Booster</string>

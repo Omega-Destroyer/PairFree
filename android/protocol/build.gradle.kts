@@ -247,6 +247,10 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val buttonActionsJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val eqFiltersJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -468,6 +472,39 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
 
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()
+        // The parametric presets of the `03 8A` models (data/soundcore/eq_filters.json) and which model takes which table (devices.json eq_normalized).
+        @Suppress("UNCHECKED_CAST")
+        val filterTables = (JsonSlurper().parse(eqFiltersJson.get().asFile) as Map<String, Any?>).getValue("tables") as Map<String, List<Map<String, Any?>>>
+        fun flt(v: Any?) = "${(v as Number).toDouble()}f"
+        out.appendLine()
+        out.appendLine("/** The normalised equalizers' presets (data/soundcore/eq_filters.json). */")
+        out.appendLine("internal val SOUNDCORE_FILTER_TABLES: Map<String, List<SoundcoreNormalizedPreset>> = mapOf(")
+        for ((name, presets) in filterTables) {
+            val list = presets.joinToString(",\n        ", "listOf(\n        ", ",\n    )") { p ->
+                @Suppress("UNCHECKED_CAST")
+                val filters = (p.getValue("filters") as List<List<Any?>>).joinToString(", ", "listOf(", ")") { f ->
+                    "SoundcoreFilter(${(f[0] as Number).toInt()}, ${flt(f[1])}, ${flt(f[2])}, ${flt(f[3])})"
+                }
+                "SoundcoreNormalizedPreset(${(p.getValue("command") as Number).toInt()}, ${str(p["key"])}, ${str(p["name"])}, $filters)"
+            }
+            out.appendLine("    ${str(name)} to $list,")
+        }
+        out.appendLine(")")
+        out.appendLine()
+        out.appendLine("/** Every model whose equalizer is the normalised `03 8A` (data/soundcore/devices.json eq_normalized). */")
+        out.appendLine("internal val SOUNDCORE_NORMALIZED_EQ: List<SoundcoreNormalizedSpec> = listOf(")
+        for (d in devices) {
+            @Suppress("UNCHECKED_CAST")
+            val n = d["eq_normalized"] as Map<String, Any?>? ?: continue
+            val whenTable = (n["table_when"] as String?)?.let { str(it) } ?: "null"
+            @Suppress("UNCHECKED_CAST")
+            val ranges = (n["firmware_ranges"] as List<List<Any?>>? ?: emptyList()).joinToString(", ", "listOf(", ")") { r ->
+                "${(r[0] as Number).toInt()}..${(r[1] as Number).toInt()}"
+            }
+            out.appendLine("    SoundcoreNormalizedSpec(${str(d["model"])}, ${str(n["table"])}, $whenTable, $ranges),")
+        }
+        out.appendLine(")")
+
         dir.resolve("SoundcoreTables.kt").writeText(out.toString())
     }
 }
@@ -477,6 +514,7 @@ val generateSoundcoreTables = tasks.register<GenerateSoundcoreTables>("generateS
     devicesJson = rootProject.layout.projectDirectory.file("../data/soundcore/devices.json")
     eqPresetsJson = rootProject.layout.projectDirectory.file("../data/soundcore/eq_presets.json")
     buttonActionsJson = rootProject.layout.projectDirectory.file("../data/soundcore/button_actions.json")
+    eqFiltersJson = rootProject.layout.projectDirectory.file("../data/soundcore/eq_filters.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.soundcore"
     outputDir = layout.buildDirectory.dir("generated/soundcore")
 }

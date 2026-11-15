@@ -396,6 +396,41 @@ class SoundcoreLayoutTest {
         assertEquals("015500", state.field("limit_high_volume")!!.hex())
     }
 
+    /** The `03 8A` equalizer (Soundcore 5.0.35, `CmmBtCmdService.m6` and `j5`): each payload byte for byte, the HearID state and time passed on. */
+    @Test
+    fun theNormalisedEqualizerWritesTheAppsBytes() {
+        fun rec(tag: Int, vararg v: Int) = byteArrayOf(tag.toByte(), v.size.toByte()) + ByteArray(v.size) { v[it].toByte() }
+        fun text(s: String) = IntArray(s.length) { s[it].code }
+        val reply = rec(1, 0) + rec(2, 1) + rec(5, *text("01.23")) + rec(6, *text("01.24")) + rec(11, 4, 0) + rec(51, 0, 2, 0x78, 0x56, 0x34, 0x12)
+        val state = SoundcoreState.parse(SoundcoreLayout.of("D1206")!!, reply)!!
+        val presets = SoundcoreNormalizedSpec.of("D1206")!!.presets(state.firmware)
+        assertEquals(listOf("Soundcore Signature", "Clear Vocals", "Powerful Bass", "Soothing Calm", "Balanced"), presets.map { it.name })
+        assertEquals(listOf(0, 1, 2, 3, 4), presets.map { it.command })
+        val signature = SoundcoreNormalizedEqualizer.preset(presets[0], null)
+        assertEquals(0x038A, signature.command)
+        assertEquals("000000000000000003020000c03f0060ea453333333f01000040400000f0419a99993e010000803f000048420000803f", signature.body.hex())
+        // The earbuds' HearID state and time go back as they sent them.
+        assertEquals(
+            "040000027856341204020000803f00c0f3450000c03f0100000040000070420000003f01000060400000ba430000803f010000404000888c450000c03f",
+            SoundcoreNormalizedEqualizer.preset(presets[4], state).body.hex(),
+        )
+        assertEquals(4, SoundcoreNormalizedEqualizer.position(state))
+        val custom = SoundcoreNormalizedEqualizer.custom(listOf(0.0, 1.0, 2.0, 3.0, -3.5, 6.0, -6.0, 0.5), null)
+        assertEquals(
+            "fefe0000000000000801000000000000c8423333333f010000803f000048433333333f01000000400000c8433333333f0100004040000048443333333f" +
+                "01000060c00000c8443333333f010000c040000048453333333f010000c0c00000c8453333333f010000003f000048463333333f",
+            custom.body.hex(),
+        )
+        // The Liberty 5 Pro pair's list depends on the firmware: 3.48 to 3.98, 4.48 to 4.98 and so on add Balanced and move the Signature.
+        val pro = SoundcoreNormalizedSpec.of("D1203")!!
+        assertEquals(listOf(0, 1, 2, 3), pro.presets("03.47").map { it.command })
+        assertEquals(listOf(4, 1, 2, 3, 0), pro.presets("03.48").map { it.command })
+        assertEquals(listOf(4, 1, 2, 3, 0), pro.presets("03.98").map { it.command })
+        assertEquals(listOf(0, 1, 2, 3), pro.presets("03.99").map { it.command })
+        assertEquals(listOf(4, 1, 2, 3, 0), pro.presets("06.60").map { it.command })
+        assertEquals(listOf(0, 1, 2, 3), pro.presets(null).map { it.command })
+    }
+
     @Test
     fun readsEveryReplyInOpenScq30sTests() {
         assertEquals(37, replies.size)

@@ -9,6 +9,7 @@ import io.github.omegadestroyer.pairfree.eq.BandEqTarget
 import io.github.omegadestroyer.pairfree.eq.EqSource
 import io.github.omegadestroyer.pairfree.eq.EqTarget
 import io.github.omegadestroyer.pairfree.eq.SoundcoreBandEq
+import io.github.omegadestroyer.pairfree.eq.SoundcoreNormalizedBandEq
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.Model
@@ -17,6 +18,7 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreNormalizedSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreSession
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTalk
@@ -48,7 +50,8 @@ object SoundcoreSpec : BrandSpec(Brand.SOUNDCORE) {
         if (SoundcoreLayout.of(device.model)?.has("sound_modes") == true) three() else emptyList()
 
     override fun eqOffline(device: Paired): Pair<EqLayout, EqTarget>? =
-        SoundcoreEqSpec.of(device.model)?.let { BandEqTarget(SoundcoreBandEq(it, { null }, true)) }?.let { it.layout to it }
+        (SoundcoreEqSpec.of(device.model)?.let { BandEqTarget(SoundcoreBandEq(it, { null }, true)) }
+            ?: SoundcoreNormalizedSpec.of(device.model)?.let { BandEqTarget(SoundcoreNormalizedBandEq(it, { null }, true)) })?.let { it.layout to it }
 }
 
 /**
@@ -112,8 +115,14 @@ class SoundcoreDriver(host: DriverHost, private val device: Paired) : TalkDriver
      * confirmed. The earbuds report their EQ with every state; the Sound tab follows it.
      */
     override fun eqSource(device: Paired, model: Model?): EqSource? {
+        val checksum = SoundcoreLayout.of(device.model)?.checksum ?: true
+        SoundcoreNormalizedSpec.of(device.model)?.let { normalized ->
+            val band = SoundcoreNormalizedBandEq(normalized, { lastState }, checksum)
+            val target = BandEqTarget(band)
+            return EqSource(normalized, target.layout, target) { current -> lastState?.let { band.report(it) }?.let { target.reportedAs(it, current) } }
+        }
         val spec = SoundcoreEqSpec.of(device.model) ?: return null
-        val band = SoundcoreBandEq(spec, { lastState }, SoundcoreLayout.of(spec.model)?.checksum ?: true)
+        val band = SoundcoreBandEq(spec, { lastState }, checksum)
         val target = BandEqTarget(band)
         return EqSource(spec, target.layout, target) { current -> lastState?.let { band.report(it) }?.let { target.reportedAs(it, current) } }
     }

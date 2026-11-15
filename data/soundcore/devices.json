@@ -4572,9 +4572,12 @@
         ["dual_firmware", 10],
         ["serial", 16],
         ["case_battery", 1],
-        ["buttons", 12]
+        ["buttons", 12],
+        ["eq_index", 2],
+        ["hear_id_state", 1],
+        ["hear_id_time", 4]
       ],
-      "notes": "Read from the Soundcore app 5.0.35: the app builds the AeroClip 2 Pro with D1105AnalysisService and D1105CmdService (constructed with its code; neither branches on it), so its records and touch writes are the AeroClip 2's. Its data source lists other actions: translate, ask or answer and recording besides the playback ones, and no white noise. Only the touch controls are offered. The battery's scale is not in the parser. Not tried on the earbuds.",
+      "notes": "Read from the Soundcore app 5.0.35: the app builds the AeroClip 2 Pro with D1105AnalysisService and D1105CmdService (constructed with its code; neither branches on it), so its records and touch writes are the AeroClip 2's. Its data source lists other actions: translate, ask or answer and recording besides the playback ones, and no white noise. Only the touch controls and the equalizer are offered. The battery's scale is not in the parser. Not tried on the earbuds. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "buttons": {
         "groups": [
           {
@@ -4616,9 +4619,15 @@
         [21, 0, "pack"],
         [22, 0, "pack"],
         [23, 0, "pack"],
-        [24, 0, "pack"]
+        [24, 0, "pack"],
+        [11, 0, 2],
+        [51, 1, 1],
+        [51, 2, 4]
       ],
-      "tlv_private": [7, 41]
+      "tlv_private": [7, 41],
+      "eq_normalized": {
+        "table": "d1105"
+      }
     },
     {
       "model": "D1105",
@@ -4644,9 +4653,12 @@
         ["serial", 16],
         ["case_battery", 1],
         ["buttons", 12],
-        ["dual_connections_enabled", 1]
+        ["dual_connections_enabled", 1],
+        ["eq_index", 2],
+        ["hear_id_state", 1],
+        ["hear_id_time", 4]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the equalizer (`03 8A`), the game mode (its command is not read), the nap timer and the other records.",
+      "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the game mode (its command is not read), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
         [1, 0, 1],
         [2, 0, 1],
@@ -4671,7 +4683,10 @@
         [23, 0, "pack"],
         [24, 0, "pack"],
         [27, 0, "bit",
-          3]
+          3],
+        [11, 0, 2],
+        [51, 1, 1],
+        [51, 2, 4]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -4692,6 +4707,9 @@
             }
           }
         ]
+      },
+      "eq_normalized": {
+        "table": "d1105"
       }
     },
     {
@@ -4994,9 +5012,12 @@
         ["serial", 16],
         ["case_battery", 1],
         ["buttons", 12],
-        ["sound_modes", 7]
+        ["sound_modes", 7],
+        ["eq_index", 2],
+        ["hear_id_state", 1],
+        ["hear_id_time", 4]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the equalizer (`03 8A`, whose preset tables are firmware gated), the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box).",
+      "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
         [1, 0, 1],
         [2, 0, 1],
@@ -5026,7 +5047,10 @@
         [37, 0, 1],
         [37, 1, 1],
         [38, 0, 1],
-        [38, 1, 1]
+        [38, 1, 1],
+        [11, 0, 2],
+        [51, 1, 1],
+        [51, 2, 4]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5046,6 +5070,16 @@
               "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3956"}
             }
           }
+        ]
+      },
+      "eq_normalized": {
+        "table": "a3956",
+        "table_when": "a3956_balanced",
+        "firmware_ranges": [
+          [348, 398],
+          [448, 498],
+          [548, 598],
+          [648, 698]
         ]
       }
     },
@@ -5073,9 +5107,12 @@
         ["serial", 16],
         ["case_battery", 1],
         ["buttons", 12],
-        ["sound_modes", 7]
+        ["sound_modes", 7],
+        ["eq_index", 2],
+        ["hear_id_state", 1],
+        ["hear_id_time", 4]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro Max and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the equalizer (`03 8A`, whose preset tables are firmware gated), the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box).",
+      "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro Max and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
         [1, 0, 1],
         [2, 0, 1],
@@ -5105,7 +5142,10 @@
         [37, 0, 1],
         [37, 1, 1],
         [38, 0, 1],
-        [38, 1, 1]
+        [38, 1, 1],
+        [11, 0, 2],
+        [51, 1, 1],
+        [51, 2, 4]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5125,6 +5165,16 @@
               "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "a3956"}
             }
           }
+        ]
+      },
+      "eq_normalized": {
+        "table": "a3956",
+        "table_when": "a3956_balanced",
+        "firmware_ranges": [
+          [348, 398],
+          [448, 498],
+          [548, 598],
+          [648, 698]
         ]
       }
     },
@@ -5152,7 +5202,8 @@
         ["serial", 16],
         ["skip", 5],
         ["case_battery", 1],
-        ["skip", 34],
+        ["eq_index", 2],
+        ["skip", 32],
         ["skip", 111],
         ["skip", 1],
         ["buttons", 8],
@@ -5165,7 +5216,7 @@
         ["skip", 2],
         ["skip", 15]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1205AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. The reply is 228 bytes: the usual head, a 34-byte equalizer block (an index and 32 bytes of normalised filter data) and 111 HearID bytes that PairFree skips, the button block (eight bytes, as the P31i's, with the length byte), the sound modes (8 bytes), and a tail that begins as the P31i's (D1202). Its command service replaces headers of the shared writes (sound leak compensation and spatial audio among them) and the noise mode payload, so only the battery, the firmware and the touch controls (the shared 04 81 writer; its action lists are the P31i's) are offered; the equalizer is the normalised 03 8A format, which PairFree does not write yet. The buttons' length byte is taken as the P31i's (10).",
+      "notes": "Read from the Soundcore app 5.0.35 (D1205AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. The reply is 228 bytes: the usual head, a 34-byte equalizer block (an index and 32 bytes of normalised filter data) and 111 HearID bytes that PairFree skips, the button block (eight bytes, as the P31i's, with the length byte), the sound modes (8 bytes), and a tail that begins as the P31i's (D1202). Its command service replaces headers of the shared writes (sound leak compensation and spatial audio among them) and the noise mode payload, so only the battery, the firmware and the touch controls (the shared 04 81 writer; its action lists are the P31i's) are offered. The buttons' length byte is taken as the P31i's (10). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "buttons": {
         "groups": [
           {
@@ -5180,6 +5231,9 @@
           }
         ],
         "reset": true
+      },
+      "eq_normalized": {
+        "table": "d1205"
       }
     },
     {
@@ -5206,9 +5260,12 @@
         ["serial", 16],
         ["case_battery", 1],
         ["buttons", 12],
-        ["sound_modes", 8]
+        ["sound_modes", 8],
+        ["eq_index", 2],
+        ["hear_id_state", 1],
+        ["hear_id_time", 4]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1206AnalysisService.e1 and D1206CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's own write has eight bytes, which the `sound_modes` block rebuilds from records 36, 37, 38 and the bits of 27) and the touch controls (records 13 to 24: two bytes each, with both earbuds in and with one; the write is `04 8C` with them as two bytes). Not offered: the equalizer (the `03 8A` format PairFree does not write), the switches of records 26 and 27 (their screens were not read), the touch lock, the sleep and AI settings. The triple tap's recording action depends on a firmware predicate and is not listed.",
+      "notes": "Read from the Soundcore app 5.0.35 (D1206AnalysisService.e1 and D1206CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's own write has eight bytes, which the `sound_modes` block rebuilds from records 36, 37, 38 and the bits of 27) and the touch controls (records 13 to 24: two bytes each, with both earbuds in and with one; the write is `04 8C` with them as two bytes). Not offered: the switches of records 26 and 27 (their screens were not read), the touch lock, the sleep and AI settings. The triple tap's recording action depends on a firmware predicate and is not listed. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
         [1, 0, 1],
         [2, 0, 1],
@@ -5241,7 +5298,10 @@
           3],
         [255, 0, 1],
         [38, 0, 1],
-        [255, 0, 1]
+        [255, 0, 1],
+        [11, 0, 2],
+        [51, 1, 1],
+        [51, 2, 4]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5262,6 +5322,9 @@
             }
           }
         ]
+      },
+      "eq_normalized": {
+        "table": "d1206"
       }
     },
     {
@@ -5523,10 +5586,14 @@
       "state": [
         ["single_battery", 2],
         ["firmware", 5],
-        ["serial", 16]
+        ["serial", 16],
+        ["eq_index", 2]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1404AnalysisService.e1), not tried on the headphones: the head of the reply (level and charging, firmware, serial). The rest has a block whose length depends on a count the headphones send (13 bytes per filter), which fixed layouts cannot hold. No battery scale is shown: the parser does not give one.",
-      "kind": "headphones"
+      "notes": "Read from the Soundcore app 5.0.35 (D1404AnalysisService.e1), not tried on the headphones: the head of the reply (level and charging, firmware, serial). The rest has a block whose length depends on a count the headphones send (13 bytes per filter), which fixed layouts cannot hold. No battery scale is shown: the parser does not give one. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "kind": "headphones",
+      "eq_normalized": {
+        "table": "d1404"
+      }
     },
     {
       "model": "D1406",
@@ -5548,9 +5615,12 @@
         ["firmware", 5],
         ["serial", 16],
         ["sound_modes", 6],
-        ["limit_high_volume", 3]
+        ["limit_high_volume", 3],
+        ["eq_index", 2],
+        ["hear_id_state", 1],
+        ["hear_id_time", 4]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the equalizer (`03 8A`), the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records.",
+      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "kind": "headphones",
       "tlv": [
         [3, 1, 1],
@@ -5564,9 +5634,15 @@
         [27, 1, "bit",
           3],
         [37, 1, "hi"],
-        [39, 0, 3]
+        [39, 0, 3],
+        [11, 0, 2],
+        [51, 1, 1],
+        [51, 2, 4]
       ],
-      "tlv_private": [7, 41]
+      "tlv_private": [7, 41],
+      "eq_normalized": {
+        "table": "d1406"
+      }
     },
     {
       "model": "D1407",
@@ -5588,9 +5664,12 @@
         ["firmware", 5],
         ["serial", 16],
         ["sound_modes", 6],
-        ["limit_high_volume", 3]
+        ["limit_high_volume", 3],
+        ["eq_index", 2],
+        ["hear_id_state", 1],
+        ["hear_id_time", 4]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the equalizer (`03 8A`), the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records.",
+      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "kind": "headphones",
       "tlv": [
         [3, 1, 1],
@@ -5604,9 +5683,15 @@
         [27, 1, "bit",
           3],
         [37, 1, "hi"],
-        [39, 0, 3]
+        [39, 0, 3],
+        [11, 0, 2],
+        [51, 1, 1],
+        [51, 2, 4]
       ],
-      "tlv_private": [7, 41]
+      "tlv_private": [7, 41],
+      "eq_normalized": {
+        "table": "d1406"
+      }
     }
   ]
 }

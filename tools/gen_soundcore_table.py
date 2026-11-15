@@ -103,7 +103,7 @@ def rows(devices, checked=frozenset()):
         else:
             status = "Not tested"
         # A model's own eq or buttons entry counts too: a recording can add them where OpenSCQ30 has none (the Sleep A20).
-        own = {"Equalizer": "eq" in m, "Touch controls": "buttons" in m}
+        own = {"Equalizer": "eq" in m or "eq_normalized" in m, "Touch controls": "buttons" in m}
         cells = [name, code, status, battery(f)] + [cell(m, title, test(f) or own.get(title, False)) for title, test in COLUMNS]
         out.append("<tr>" + "".join(f"<td>{c}</td>" for c in cells) + "</tr>")
     return out

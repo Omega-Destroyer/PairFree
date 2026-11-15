@@ -75,3 +75,9 @@ Together the EQ/ANC cases and parametric writer comprise **13 new checks**, in a
 ## Limits
 
 Class/method recovery, parser behavior and packet construction remain separate from a real device accepting a command. Firmware-dependent capability and preset branches, action enumerations, connection sequencing and full state layouts are still being mapped per model. The full vendor-supported list also includes the unresolved online Things/OMC path.
+
+## Offline model EQ and filter checks (2026-11-15)
+
+[Model EQ selection evidence](EQ_MODEL_SELECTION_5_0_35.md) documents an additional offline interpreter pass: 40 annotated provider routes, 36 inherited holder types, 432 numeric getter/source comparisons across six normalized services, 20 actual model/firmware predicate cases, and seven shared `m6` serializer cases. Five serializer cases use synthetic lists and two use D1105's actual signature/volume-booster table outputs. They preserve its fourth zero point and raw negative role values, including type byte 0xFD. Firmware interpretation of those nonstandard points is unresolved.
+
+This is restored DEX interpretation with modeled Android state, bean setters and diagnostics. No device or app/emulator lifecycle was exercised. The serializer checks overlap the earlier runtime writer checks above; do not sum them as unique coverage or promote any model to physically tested. Exact cases and per-model routing limits are in `EQ_MODEL_SELECTION_5_0_35.json`.

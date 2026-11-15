@@ -92,3 +92,16 @@ Zero instruction-store markers only measures restoration of that protection mech
 ## Failed-current-run guard (2026-11-14)
 
 The external runner now checks the instrumentation completion marker and result code before pulling outputs. `am instrument` can exit at the shell with code zero while reporting `Process crashed`; pulling an existing folder afterward yields stale observations. The latest security pass failed to reproduce a complete capture on both the old lab and a fresh guest, so it claims no new crypto definitions. See [security follow-up](SECURITY_FLOW_5_0_35.md) for the tested conditions. Its lab metadata/clock were restored and headless guests shut down; old successful host captures remain available.
+
+## Model EQ selection and normalized filter follow-up (2026-11-15)
+
+[Model selections and filter payloads](EQ_MODEL_SELECTION_5_0_35.md) adds DEX/source agreement for 40 annotated provider routes and 36 inherited holder types, plus 432 getter crosschecks, 20 actual predicate cases and seven offline serializer cases. D1102 is an additional provider route outside the 165-key compiled registry; Things is a separate dynamic route. D1105's zero/negative table values are retained and flagged without assigning firmware semantics.
+
+All new tools remain in the external `per-model-analysis/` directory. Compile `EqModelRouteProbe.java`, `EqFilterProbe.java` and `EqVersionProbe.java` on the existing JADX JAR classpath alongside `DexProtocolIndex.java`, `ControlFactoryProbe.java` and `ControlChoiceProbe.java`. Run:
+
+1. `EqModelRouteProbe <restored-DEX-directory> ../registry-models.json eq-model-dex-routes.json`.
+2. `EqFilterProbe <restored-DEX-directory> eq-filter-getter-cases.json static-prefixes.json eq-normalized-payload-cases.json`.
+3. `EqVersionProbe <restored-DEX-directory> eq-normalized-version-cases.json`.
+4. `python map_eq_model_selection.py`, then `python write_eq_selection_docs.py`, then `python verify_eq_selection.py`.
+
+Use the prior generated `eq-preset-bindings.json`, `dex-protocol-index.json`, model route JSON and static prefix inventory. Run this writer after the earlier documentation writers, which can overwrite their follow-up links. Provider annotation suffixes and numeric tables are checked independently against source; no arbitrary route literals are exported. Point getters, device state, command-bean setters and diagnostics are modeled in serializer checks. These checks execute no Android lifecycle, outer packet framing, checksum or transport. Keep `verify_analysis.py` and `verify_refined_analysis.py` passing as regression checks. Do not confuse the 432 table-getter cases with the earlier 432 control-firmware cases.

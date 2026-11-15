@@ -206,3 +206,5 @@ The following is still to do, not an absence-of-support claim: evaluate each mod
 The online catalogue and per-product TD/JavaScript files are a separate completeness requirement. The restored catalogue helpers are available for further authentication/routing analysis. The existing guest profile was not changed or retried here.
 
 External reproduction: `per-model-analysis/` under the research root holds `DexProtocolIndex.java`, `map_protocol_routes.py`, `extract_static_prefixes.py`, `ControlFactoryProbe.java`, `map_control_sources.py`, `LegacyPayloadProbe.java`, `extract_eq_vectors.py` and this document generator. All tools and vendor source stay outside Git.
+
+[Model EQ selections and normalized filter payloads](EQ_MODEL_SELECTION_5_0_35.md) adds provider/holder selection, table-role bindings, predicate checks and offline payload cases.

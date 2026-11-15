@@ -43,3 +43,5 @@ Builder `j` starts from the default 22-entry list and removes source row 2. The 
 For builder `l`, signature is command position **4** when `A3956VersionUtils.h` is true, while balanced is position **0**. In the false branch, signature is position 0 and balanced is absent. Builder `o` inserts balanced after signature when `D1406VersionUtils.d` is true. Gain lists, label filtering and command-position arrays must follow the same predicate. A global “signature is always zero” assumption would be wrong.
 
 The binding generator checks that gain, name and command-position counts agree in each branch. It preserves resource identifiers rather than guessing retail/translated preset names. Per-model default-type selection, explicit list replacement, sort order and the conversion of these bean values to device filters remain further work.
+
+[Model EQ selections and normalized filter payloads](EQ_MODEL_SELECTION_5_0_35.md) adds provider/holder selection, table-role bindings, predicate checks and offline payload cases.

@@ -548,10 +548,17 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   number there) and no call buttons; the **V40i (A3878)** is the V20i's plus a bass up byte, without the light; the **Q20i Plus (A3004C)** has the
   Q20i's bytes (battery and firmware only, since its commands go through a service of its own); the **Q21i NC (A300B)** is the Q20i's bytes plus the
   dual connections switch (packet byte 50), the colour and the auto power off switch and index (from firmware 427), which the user's 61-byte reply in
-  issue #22 holds exactly (`readsTheQ21iNcReplyAsTheVendorParserDoes`). None is tried on real earbuds. The rest of the new models' layouts are to
-  do, not blocked, and the closest model by parser steps is known for some: D1200 is near the Liberty 5 (A3957, 0.89) with a 3D mode, touch lock,
-  music rush and audio wake-up in place of its spatial and easy chat bytes; D1205 near the P31i (D1202, 0.84); D1402 near the Space One Pro (A3062).
-  Each needs its own diff before a layout is written (a twin's bytes are not assumed from a name): each model's state parser is `AnalysisService.e1` in the restored `com.oceanwing.devicecmd.manager.product.<model>`
+  issue #22 holds exactly (`readsTheQ21iNcReplyAsTheVendorParserDoes`). The same comparison gave layouts for the **Liberty Buds (D1200)**, which
+  reads the Liberty 5's (A3957) bytes up to the hearing protection and has its own tail (3D mode, touch lock, music rush, audio wake-up and AI
+  language, skipped; its command service differs from the Liberty 5's only in the manual noise level's range), the **P42i (D1205)** (a 34-byte
+  normalised EQ block, 111 HearID bytes, then a tail that begins as the P31i's; the reply adds up to the 228 bytes its parser needs) and the
+  **AeroFit family**: the A3871, A3872 and A3873 (one parser class, the V20i's head, six touch bytes, their command service the V20i's) and the
+  A3874 (head only, its own command service). The D1205 and A3874 offer no switches because their command services replace headers of the
+  shared writes. No battery scale is given for the D1200, D1205 or the AeroFit family: their parsers clamp the level (0 to 100, 0 to 9) but a clamp
+  is not a scale (the Liberty 5 and the Liberty 4 Pro share one clamp and differ in scale), so the battery shows once a report settles it. None is
+  tried on real earbuds. The rest of the new models' layouts are to do, not blocked; the closest known model is the Space One Pro (A3062) for the
+  D1402 (0.80 by parser steps).
+  A twin's bytes are never assumed from a name: each model's state parser is `AnalysisService.e1` in the restored `com.oceanwing.devicecmd.manager.product.<model>`
   package. The ones checked read in sequence (A3954 and A3994 begin with the host byte, the TWS byte, two batteries and two charging flags, two firmware
   strings of five bytes and the 16-byte serial, then the 22 EQ bytes and a length-prefixed button block), but they differ model by model (the A3331 has no
   charging flags and carries the case's firmware and battery after the serial), so each is transcribed on its own. D1105, D1206, D1302, D1303 and D1406

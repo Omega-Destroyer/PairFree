@@ -882,7 +882,7 @@ class SoundcoreButtonsTest {
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(40, withButtons.size)
+        assertEquals(45, withButtons.size)
         for (d in devices) {
             // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
             // A3031's state holds them, but OpenSCQ30 does not offer them), and a recording adds the Sleep A20's.

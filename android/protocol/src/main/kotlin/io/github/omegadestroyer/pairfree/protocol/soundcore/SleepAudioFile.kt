@@ -145,6 +145,9 @@ public object BesTransferMessages {
         return message(0x8C, BEST + seed + u32(crc))
     }
 
+    /** A chunk of the file (`85`): the app's `BesOtaCMD.k` writes them with no `BEST`. */
+    public fun data(chunk: ByteArray): ByteArray = message(0x85, chunk)
+
     /** The check of one segment: `BEST` and its CRC-32. */
     public fun segmentCrc(crc32: Long): ByteArray = message(0x82, BEST + u32(crc32))
 

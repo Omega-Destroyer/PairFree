@@ -631,12 +631,18 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
      92 bytes are the inner length 88 (u32), the file's `n-4`, `n-3` and `n-2` bytes and a zero, the option flags (bit 0 clear user data, 1 update the
      Bluetooth name, 2 the BLE name, 3 the Bluetooth address, 4 the BLE address, all read from the app's preferences `ota_config_*`, which nothing in the
      music path sets, so 0), the name and address fields (zero), the CRC-32 of the first 88 bytes (u32). The resume message is `BEST`, the 32-byte code the
-     earbuds gave the app earlier (zeros when it has none), 1 2 3 4 and the CRC-32 of those 36 bytes. What is still not traced: the reply parser
-     `BesOtaCMD.y` (which maps each answer to the handler's message numbers 2305 to 2329 and may send the announcement itself) and the data scheduler
-     `BesOtaService.X`. The handler `BesOtaService.e` reads: begin (`90`, 3 s) answered by 2311 which sends the resume message (`8C`, 3 s); its answer
-     2312 and the announcement's answer 2313 lead to the configuration; `SEND_CONFIGURE_OK` (2320) starts the data; `CRC_CHECK_PACKAGE_OK` (2324) and
-     `WHOLE_CRC_CHECK` (2325) go on with the next piece; `WHOLE_CRC_CHECK_OK` (2326) sends the final activation. Note that for a music file this
-     handler is the firmware updater's own, with the music flags: `startOta` goes to the begin message when both are set and otherwise to the upgrade type.
+     earbuds gave the app earlier (zeros when it has none), 1 2 3 4 and the CRC-32 of those 36 bytes. The reply parser `BesOtaCMD.y`, the scheduler `k`, `j` and `f` and the handler `BesOtaService.e` are traced too (restored DEX; the opcode constants
+     are the class's static byte fields): requests are 0x99 (protocol query, answered 0x9A, which turns the length field on), 0x97 (slot `10 + index`, 0x98),
+     0x90 (begin, 0x91), 0x8C (resume, 0x8D), 0x80 (announcement, 0x81), 0x86 (configuration, 0x87), 0x85 (data, no answer), 0x82 (segment check, 0x83),
+     0x88 (end, 0x84), 0x92 (activate, 0x93); a status of 1 at byte 5 accepts. The 0x8D answer holds the offset the earbuds have (u32 at byte 5): above 0
+     the app goes straight to the configuration, at 0 the answer carries the 32-byte code at byte 9 (kept in the app's preferences) and the announcement
+     follows; the 0x81 answer holds `BEST`, two versions and the earbuds' packet size (u16 at byte 13). Data chunks are `min(packet size - 1, 512) - 4`
+     bytes (507 for a 512 packet), written about 20 ms apart; a segment is 32,768 bytes and ends the chunk that reaches its boundary (or the file's end), and
+     its check is the CRC-32 of the file from the segment's start to the offset; a refused check puts the offset back to the last verified one and the
+     segment goes again, three times at most. `BesUpload` (with the virtual earbud of `BesUploadTest`) runs this from the first message to the activation,
+     with a fresh start, a resume and refused segments. The first message is the only one sent before the length field exists (`99 00 00 00 01`, the app's
+     protocol query with its skip-version flag), read from the code and not seen on the wire. For a music file the handler is the firmware updater's own with
+     the music flags: `startOta` goes to the begin message when both are set and otherwise to the upgrade type.
   2. The encoder: to do: the app calls FFmpeg for mono SBC (16 kHz, 128 kb/s, or 72 on the second try; 32 kHz for sound type 3) and caps the clip at 60 seconds
      (10 for the AAC branch); Android has no SBC encoder, so PairFree needs its own, checked against the app's output.
   3. Media IDs: blocked: the app takes them from its server (`getIdFromServer`) and no source says whether the earbuds accept an ID PairFree picks; checked:

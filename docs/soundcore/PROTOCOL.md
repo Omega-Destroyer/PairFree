@@ -643,8 +643,13 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
      with a fresh start, a resume and refused segments. The first message is the only one sent before the length field exists (`99 00 00 00 01`, the app's
      protocol query with its skip-version flag), read from the code and not seen on the wire. For a music file the handler is the firmware updater's own with
      the music flags: `startOta` goes to the begin message when both are set and otherwise to the upgrade type.
-  2. The encoder: to do: the app calls FFmpeg for mono SBC (16 kHz, 128 kb/s, or 72 on the second try; 32 kHz for sound type 3) and caps the clip at 60 seconds
-     (10 for the AAC branch); Android has no SBC encoder, so PairFree needs its own, checked against the app's output.
+  2. The encoder: built (`SbcEncoder`). The app calls FFmpeg (FFmpegKit) for mono SBC (16 kHz, 128 kb/s, or 72 on the second try; 32 kHz for sound type 3)
+     and caps the clip at 60 seconds (10 for the AAC branch). Android's own SBC encoder is the Bluetooth stack's, not an API an app can call to make a file, so
+     PairFree carries a port of FFmpeg's `sbc` encoder (from BlueZ's codec, LGPL-2.1-or-later, credited in the file): 8 subbands, 16 blocks, loudness
+     allocation, bitpool 60 / 32 at 16 kHz and 28 / 14 at 32 kHz for 128 / 72 kb/s (frames of 128, 72, 64 and 36 bytes). `SbcEncoderTest` compares its output
+     byte for byte with FFmpeg's (PyAV 17) at all four settings. Any further option in the app's FFmpeg command line (beyond rate, channels
+     and bit rate) was not checked here. The AAC branch and the decoding of the user's own audio files (MP3, M4A and so on) to
+     16-bit mono PCM are not built; Android's `MediaCodec` does the decoding in the app.
   3. Media IDs: blocked: the app takes them from its server (`getIdFromServer`) and no source says whether the earbuds accept an ID PairFree picks; checked:
      `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md` section 8 and the evidence JSON's `unresolved` list.
   4. The transport: the transfer is a second RFCOMM service (`66666666-6666-6666-6666-666666666666`), which PairFree's connection does not open beside

@@ -295,6 +295,8 @@ cd android
 - [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) by Kyle Scheuing (GPL-3.0-or-later): the
   Soundcore protocol, model list and per-model features that PairFree's Soundcore support is
   ported from. Code ported from it says so where it is.
+- [FFmpeg](https://ffmpeg.org) (LGPL-2.1-or-later), whose SBC encoder (from BlueZ's SBC codec) PairFree's
+  mono SBC encoder for the Soundcore Sleep A30's sounds is ported from (`SbcEncoder.kt`).
 - [GalaxyBudsClient](https://github.com/timschneeb/GalaxyBudsClient) by Tim Schneeberger (GPLv3):
   the Galaxy Buds protocol, model list, per-model features and state layouts that PairFree's
   Samsung support is ported from. Code ported from it says so where it is.

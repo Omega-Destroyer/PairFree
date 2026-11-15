@@ -171,18 +171,25 @@ public class SoundcoreSession(public val model: String) : FitTest {
             )
         }
 
+    /**
+     * The Liberty 4 Pro's noise control (OpenSCQ30's a3954 module, checked against the 5.0.35 app's reply parser and its sound modes write, which
+     * send the same five bytes): the mode, a slider from 1 to 11 with 6 the middle (1 to 5 noise cancelling, strongest at 1; 7 to 11 transparency,
+     * strongest at 11), airplane mode's update setting, and wind noise suppression. Which way the slider runs is OpenSCQ30's reading; the app's own
+     * screen code is not recoverable (docs/soundcore/PROTOCOL.md, section 14), so a recording of the Soundcore app settles it.
+     */
     private fun a3954SoundRows(s: SoundcoreState): List<Setting>? {
         if (model != "A3954") return null
         val b = s.field("sound_modes") ?: return null
         val mode = b.u8(0)
+        val slider = b.u8(1)
         val modeOption = when (mode) { 0 -> "anc"; 1 -> "transparency"; 2 -> "normal"; 3 -> "airplane"; else -> null }
         return listOfNotNull(
             Setting.Choice("a3954_ambient_mode", modeOption, listOf("transparency", "normal", "anc", "airplane")),
-            if (mode == 3) Setting.Choice("a3954_airplane_mode", b.u8(2).toString(), listOf("manual", "automatic")) else null,
-            if (mode == 3 && b.u8(2) == 0) Setting.Action("a3954_air_pressure_update") else null,
+            if (mode == 0 && slider in 1..5) Setting.Level("a3954_anc_strength", 6 - slider, 1, 5) else null,
+            if (mode == 1 && slider in 7..11) Setting.Level("a3954_transparency_strength", slider - 6, 1, 5) else null,
+            if (mode == 3) Setting.Choice("a3954_airplane_mode", listOf("manual", "automatic").getOrNull(b.u8(2)), listOf("manual", "automatic")) else null,
             if (mode == 3) s.field("air_pressure")?.let { Setting.Information("a3954_air_pressure", "${it.u8(0) / 100}.${(it.u8(0) % 100).toString().padStart(2, '0')} atm") } else null,
             Setting.Toggle("a3954_wind_noise", b.u8(3) and 1 != 0),
-            if (mode != 3) Setting.Level("a3954_noise_strength", b.u8(1).coerceIn(1, 11), 1, 11) else null,
         )
     }
 
@@ -201,7 +208,6 @@ public class SoundcoreSession(public val model: String) : FitTest {
             else -> null
         }
         return listOfNotNull(
-            Setting.Toggle("a3954_spatial_audio", spatial.u8(0) != 0),
             if (spatial.u8(0) != 0) Setting.Choice("a3954_spatial_mode", spatialMode, SPATIAL_MODES) else null,
             Setting.Toggle("a3954_easy_chat", easy.u8(0) != 0),
             Setting.Choice("a3954_easy_chat_wait", listOf("5s", "10s", "15s").getOrNull(wait.u8(0)), listOf("5s", "10s", "15s")),
@@ -216,10 +222,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             case?.let { Setting.Toggle("a3954_case_find", it.u8(2) != 0) },
             case?.let { Setting.Toggle("a3954_case_spatial", it.u8(3) != 0) },
             s.field("limit_high_volume")?.let { Setting.Toggle("a3954_volume_limit", it.u8(0) != 0) },
-            s.field("limit_high_volume")?.let { Setting.Level("a3954_volume_limit_db", it.u8(1).coerceIn(75, 100), 75, 100) },
-            s.field("low_battery_prompt")?.let { Setting.Toggle("a3954_low_battery_prompt", it.u8(0) != 0) },
-            s.field("wearing_detection")?.let { Setting.Toggle("a3954_wearing_detection", it.u8(0) != 0) },
-            s.field("sound_leak_compensation")?.let { Setting.Toggle("a3954_sound_leak_compensation", it.u8(0) != 0) },
+            s.field("limit_high_volume")?.let { Setting.Level("a3954_volume_limit_db", it.u8(1).coerceIn(75, 100) / 5 * 5, 75, 100) },
         )
     }
 
@@ -263,15 +266,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
      */
     public fun change(change: SettingChange): List<SoundcorePacket>? {
         val s = lastState ?: return null
-        if (change is SettingChange.Press && change.key == "a3954_air_pressure_update") {
-            val modes = s.field("sound_modes") ?: return null
-            if (model != "A3954" || modes.u8(0) != 3 || modes.u8(2) != 0) return null
-            return listOf(SoundcorePacket(0x1681, ByteArray(0)))
-        }
         if (change is SettingChange.Toggle) {
-            if (model == "A3954") {
+            if (model == "A3954" && change.key.startsWith("a3954_")) {
                 val f = when (change.key) {
-                    "a3954_spatial_audio" -> "spatial_audio" to 0x1081
                     "a3954_easy_chat" -> "easy_chat_enabled" to 0x109D
                     "a3954_wind_noise" -> "sound_modes" to SoundcoreCommand.SET_SOUND_MODES
                     "a3954_case_atmospheric" -> "case_features" to 0x0787
@@ -279,14 +276,11 @@ public class SoundcoreSession(public val model: String) : FitTest {
                     "a3954_case_find" -> "case_features" to 0x0787
                     "a3954_case_spatial" -> "case_features" to 0x0787
                     "a3954_volume_limit" -> "limit_high_volume" to 0x2082
-                    "a3954_low_battery_prompt" -> "low_battery_prompt" to 0x1082
-                    "a3954_wearing_detection" -> "wearing_detection" to 0x0181
-                    "a3954_sound_leak_compensation" -> "sound_leak_compensation" to 0x1086
                     else -> null
                 } ?: return null
                 val bytes = s.field(f.first) ?: return null
                 when (change.key) {
-                    "a3954_wind_noise" -> bytes[3] = ((bytes.u8(3) and 2) or (if (change.on) 1 else 0)).toByte()
+                    "a3954_wind_noise" -> bytes[3] = (if (change.on) 1 else 0).toByte() // the detection bit is the earbuds' own
                     "a3954_case_atmospheric", "a3954_case_camera", "a3954_case_find", "a3954_case_spatial" -> {
                         val i = listOf("a3954_case_atmospheric", "a3954_case_camera", "a3954_case_find", "a3954_case_spatial").indexOf(change.key)
                         bytes[i] = (if (change.on) 1 else 0).toByte()
@@ -296,8 +290,6 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 lastState = s.with(f.first, bytes)
                 val body = if (change.key == "a3954_easy_chat") {
                     byteArrayOf(bytes[0], s.field("easy_chat_wait_time")?.get(0) ?: 0)
-                } else if (change.key == "a3954_volume_limit") {
-                    byteArrayOf(bytes[0], bytes[1])
                 } else bytes
                 return listOf(SoundcorePacket(f.second, body))
             }
@@ -319,9 +311,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
             return listOf(SoundcorePacket(SoundcoreCommand.PRESS_SENSITIVITY, byteArrayOf(v.toByte())))
         }
         if (change is SettingChange.Choice && change.key != SLEEP_TIMER) {
-            if (model == "A3954") {
+            if (model == "A3954" && change.key.startsWith("a3954_") && change.key != "a3954_auto_power_off_duration") {
                 val f = when (change.key) {
-                    "a3954_ambient_mode" -> Quad("sound_modes", SoundcoreCommand.SET_SOUND_MODES, 0, listOf("transparency", "normal", "anc", "airplane"))
+                    "a3954_ambient_mode" -> Quad("sound_modes", SoundcoreCommand.SET_SOUND_MODES, 0, listOf("anc", "transparency", "normal", "airplane"))
                     "a3954_airplane_mode" -> Quad("sound_modes", SoundcoreCommand.SET_SOUND_MODES, 2, listOf("manual", "automatic"))
                     "a3954_spatial_mode" -> {
                         val bytes = s.field("spatial_audio") ?: return null
@@ -345,9 +337,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 val v = selected
                 bytes[f.index] = v.toByte()
                 if (change.key == "a3954_ambient_mode") {
-                    val mode = when (change.option) { "anc" -> 0; "transparency" -> 1; "normal" -> 2; else -> 3 }
-                    bytes[0] = mode.toByte()
-                    bytes[1] = when (mode) { 0 -> 9; 1 -> 3; 2 -> 6; else -> bytes.u8(1) }.toByte()
+                    // A mode goes to the slider's own side of the middle (OpenSCQ30: 5, 7 and 6); airplane mode keeps the slider.
+                    bytes[1] = when (bytes.u8(0)) { 0 -> 5; 1 -> 7; 2 -> 6; else -> bytes.u8(1) }.toByte()
                 }
                 lastState = s.with(f.field, bytes)
                 if (f.field == "sound_modes") soundModes = bytes.copyOf()
@@ -374,19 +365,21 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change is SettingChange.Level && model == "A3954") {
             if (change.key == "a3954_volume_limit_db") {
                 val bytes = s.field("limit_high_volume") ?: return null
+                // Three bytes, as the app writes them: the switch, the limit in dB (steps of 5) and the third byte (the reading refresh) as reported.
                 bytes[1] = (change.value.coerceIn(75, 100) / 5 * 5).toByte()
                 lastState = s.with("limit_high_volume", bytes)
-                return listOf(SoundcorePacket(0x2082, byteArrayOf(bytes[0], bytes[1])))
+                return listOf(SoundcorePacket(0x2082, bytes))
             }
             val bytes = s.field("sound_modes") ?: return null
-            if (change.key != "a3954_noise_strength") return null
-            val next = change.value
-            if (change.key != "a3954_noise_strength" || bytes.u8(0) == 3 || next !in 1..11) return null
-            bytes[1] = next.toByte()
-            bytes[0] = when (next) { in 1..5 -> 1; 6 -> 2; else -> 0 }.toByte()
+            val v = change.value.coerceIn(1, 5)
+            val slider = when {
+                change.key == "a3954_anc_strength" && bytes.u8(0) == 0 -> 6 - v
+                change.key == "a3954_transparency_strength" && bytes.u8(0) == 1 -> 6 + v
+                else -> return null
+            }
+            bytes[1] = slider.toByte()
             lastState = s.with("sound_modes", bytes)
             soundModes = bytes.copyOf()
-            put(Command.ANC_MODE, Value.Number(when (bytes.u8(0)) { 0 -> ancNumber("anc"); 1 -> ancNumber("transparency"); else -> ancNumber("off") }))
             return listOf(SoundcorePacket(SoundcoreCommand.SET_SOUND_MODES, bytes))
         }
         if (change !is SettingChange.Choice || change.key != SLEEP_TIMER || SLEEP_TIMER !in s.layout.features) return null

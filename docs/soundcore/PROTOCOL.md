@@ -531,3 +531,42 @@ Source: `com/oceanwing/devicecmd/manager/l/n/a.java` (`A3953AnalysisService`) of
 | (replies longer than 163 bytes) | 1+1 | device colour (one character) and press sensitivity |
 
 Built (2026-11-13): the layout is in `data/soundcore/devices.json` (the HearID block, the button block with its length byte and the personalised ANC test fields are skipped; every other row of the table is read), so the Liberty 4 shows its battery with the case, firmware, noise mode (written with the existing `06 81` block write, as `A3953CmdService.q1` builds it), LDAC (`01 FF`), two devices at once (`0B 84`) and, as earbud settings, wear detection (`01 81`), bass boost (`02 84`), in-ear beep (`01 8C`), low battery prompt (`10 82`), ambient sound prompt (`10 83`), spatial audio (`10 81`: switch, effect, mode, the last two kept) and automatic power off (`01 86`: switch and duration index, the index kept), plus the press sensitivity (`04 85`, levels 0 to 4: softest, soft, normal, firm, firmest). Every command is named by its callback in `CMM2_COMMANDS.md`. Not built yet for the model: the equalizer (the app writes `03 87` or `02 81`; the HearID part is 49 bytes here, not the 48 of the A3947's), the touch controls (the 24-byte button block), and the HearID and ANC tests. Nothing has been tried on a Liberty 4.
+
+## 14. The Soundcore app 5.0.35 (2026-11-15)
+
+The owner restored the packed business code of the Soundcore app 5.0.35-435 (`com.oceanwing.soundcore`) outside the repo and wrote up what it holds
+on the local branch `research/soundcore-full-protocol` (`docs/soundcore/*_5_0_35.*` there, not part of `main`; vendor code and raw artifacts stay outside
+Git). What PairFree took from it, and what it did to the models and to pull request 42:
+
+- **Model list.** The app registers 165 keys (161 app registrations and four SDK-only ones). Every earbud and headphone among them that was not in
+  `devices.json` is now listed as a report-only model with the app's own label: A3004C (Q20i Plus), A3600 (Frames), A3875 (AeroFit 2 Pro), D1102
+  and D1105 (AeroClip 2 Pro and 2), D1200 and D1206 (Liberty Buds, 2), D1203 and D1204 (Liberty 5 Pro, Pro Max), D1205 (P42i), D1302 and D1303 (Sleep
+  Earbuds 4 Pro, 4), D1402, D1404, D1406 and D1407 (Space 2, Q31i, Space 2 Pro, Pro Max); the Sleep A30 Special is a name of the A30 (the same command
+  service and data source). PairFree finds them, asks for their state and offers a device report. The speakers and their cases are left out.
+  Their layouts are to do, not blocked: each model's state parser is `AnalysisService.e1` in the restored `com.oceanwing.devicecmd.manager.product.<model>`
+  package. The ones checked read in sequence (A3954 and A3994 begin with the host byte, the TWS byte, two batteries and two charging flags, two firmware
+  strings of five bytes and the 16-byte serial, then the 22 EQ bytes and a length-prefixed button block), but they differ model by model (the A3331 has no
+  charging flags and carries the case's firmware and battery after the serial), so each is transcribed on its own. D1105, D1206, D1302, D1303 and D1406
+  answer in tag, length and value form (D1206 reads tags 1 to 92 from a map), which PairFree's fixed layouts cannot hold yet.
+- **Liberty 4 Pro (A3954).** `A3954AnalysisService.e1` confirms the layout field by field, including pull request 42's change: after the spatial audio
+  triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
+  write (`A3954CmdService.M0`) is five bytes: the mode (0 to 3), the slider (1 to 11), the automatic pressure update, wind noise suppression, and 0xFF. The
+  limit-high-volume write is three bytes (switch, dB, third byte). The slider's direction is not in the restored code (the screen's view model is native
+  code that the restoration leaves empty); OpenSCQ30 reads 1 to 5 as noise cancelling (strongest at 1) and 7 to 11 as transparency, and PairFree follows it
+  until a recording of the app settles it.
+- **Pull request 42** (Onlineraider, merged with its commits and corrected): its layout fix and its writes for spatial audio, easy chat, the case's
+  features and language, and the auto power off durations match the vendor's code and OpenSCQ30. Corrected: it read the noise slider the wrong way round
+  against OpenSCQ30 (low half transparency, high half noise cancelling), wrote the limit-high-volume setting without its third byte, sent an air pressure
+  update command (`16 81`) that neither the app's constants nor OpenSCQ30 hold (removed: no source), kept wind noise's detection bit in the write, and
+  showed the wearing detection, low battery prompt, sound leak compensation and spatial audio switches a second time beside the shared rows.
+- **Legacy A3909 family.** The restored `A3909DeviceManager` parsers agree with the layouts taken from 2.9.9: the HearID block is 21 bytes (switch, eight
+  positions per ear, a big-endian time), the buttons come as four bytes on the A3909 and A3913 and, on the A3910, as enable and function pairs with a
+  wear detection byte from 51 bytes and the single taps from 55. The writes are `04 81` (side, gesture, one function byte on this family; the newer
+  `CmmBtCmdService` packs two nibbles under the same command), `04 83` (side, gesture, enabled), `02 81` (an index and eight positions per ear) and `03 82`
+  (HearID). The A3909 and A3913 carry a transparency switch byte after the buttons that PairFree does not read.
+- **Newer EQ.** Models whose service selects the `c6()` path (A3956 and its relatives, D1105, D1205, D1206, D1404, D1406) write the EQ as `03 8A`: an index,
+  the HearID fields and then 13 bytes per filter (type, gain, frequency and Q as little-endian floats). Not built yet, with their firmware-gated tables
+  (A3956: firmware ranges 348 to 399, 448 to 499, 548 to 599 and 648 to 699).
+- **Not recoverable from the app.** The online product catalogue (HTTP 401 without an account) and the screens' view models (native code in the 5.0.35
+  restoration). The Sleep A30's audio upload is in the research branch's `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md`; PairFree builds none of it
+  (section 13).

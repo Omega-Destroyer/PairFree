@@ -492,6 +492,47 @@ class SoundcoreModelSessionTest {
         val session = SoundcoreSession("A3947")
         for (command in listOf(Command.ANC_MODE, Command.GAME_MODE, Command.LDAC, Command.MULTIPOINT)) assertNull(session.set(command, 1))
     }
+
+    /**
+     * The Liberty 4 Pro (pull request 42 by Onlineraider, corrected against the 5.0.35 app's parser and OpenSCQ30): the state of
+     * OpenSCQ30's test reply, and each write it takes, byte for byte.
+     */
+    @Test
+    fun liberty4ProReadsAndWritesItsRows() {
+        val session = connected("A3954")
+        val rows = session.groups.flatMap { it.settings }.associateBy { it.key }
+        assertEquals(Setting.Choice("a3954_ambient_mode", "normal", listOf("transparency", "normal", "anc", "airplane")), rows["a3954_ambient_mode"])
+        assertTrue("a3954_anc_strength" !in rows && "a3954_transparency_strength" !in rows, "the middle of the slider has no strength")
+        assertEquals(Setting.Toggle("a3954_wind_noise", false), rows["a3954_wind_noise"])
+        assertEquals(Setting.Choice("a3954_easy_chat_wait", "5s", listOf("5s", "10s", "15s")), rows["a3954_easy_chat_wait"])
+        assertEquals(Setting.Choice("a3954_auto_power_off_duration", "10", listOf("off", "10", "20", "30", "60")), rows["a3954_auto_power_off_duration"])
+        assertEquals(Setting.Level("a3954_volume_limit_db", 95, 75, 100), rows["a3954_volume_limit_db"])
+        // The shared switches are not shown twice.
+        assertTrue(rows.keys.none { it.startsWith("a3954_") && (it.contains("wearing") || it.contains("low_battery") || it.contains("leak")) })
+        assertNotNull(rows["sc_wearing_detection"])
+
+        fun body(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
+        // Noise cancelling is the low half of the slider, strongest at 1; the app writes five bytes (the last is 0xFF).
+        assertEquals("0681:00050000", body(SettingChange.Choice("a3954_ambient_mode", "anc")))
+        assertEquals("0681:00040000", body(SettingChange.Level("a3954_anc_strength", 2)))
+        assertEquals("0681:01070000", body(SettingChange.Choice("a3954_ambient_mode", "transparency")))
+        assertEquals("0681:010b0000", body(SettingChange.Level("a3954_transparency_strength", 5)))
+        assertEquals("0681:010b0001", body(SettingChange.Toggle("a3954_wind_noise", true)))
+        val frame = session.frames(session.change(SettingChange.Toggle("a3954_wind_noise", true))!!).single()
+        assertEquals("010b0001ff", frame.copyOfRange(9, 14).hex(), "the app's fifth byte")
+        // The limit goes with its third byte as reported; the switch and the wait time keep the byte next to them.
+        assertEquals("2082:015500", body(SettingChange.Level("a3954_volume_limit_db", 85)))
+        assertEquals("2082:005500", body(SettingChange.Toggle("a3954_volume_limit", false)))
+        assertEquals("109d:0001", body(SettingChange.Choice("a3954_easy_chat_wait", "10s")))
+        assertEquals("109d:0101", body(SettingChange.Toggle("a3954_easy_chat", true)))
+        assertEquals("1081:010200", body(SettingChange.Choice("a3954_spatial_mode", "head_tracking")))
+        assertEquals("1081:010103", body(SettingChange.Choice("a3954_spatial_mode", "gaming")))
+        assertEquals("0787:00010000", body(SettingChange.Toggle("a3954_case_camera", true)))
+        assertEquals("078a:00", body(SettingChange.Choice("a3954_case_language", "Japanese")))
+        assertEquals("0186:0101", body(SettingChange.Choice("a3954_auto_power_off_duration", "20")))
+        assertEquals("0181:01", body(SettingChange.Toggle("sc_wearing_detection", true)))
+        assertNull(session.change(SettingChange.Level("a3954_anc_strength", 3)), "a strength only in its own mode")
+    }
 }
 
 /**

@@ -19,7 +19,6 @@ Want to be on this list? One report from your model helps: see [Help add your mo
 | [@tkslim82](https://github.com/tkslim82) | Google Pixel Buds Pro | The first Pixel Buds tried with PairFree: a report in which every setting PairFree reads answered ([#4](https://github.com/Omega-Destroyer/PairFree/issues/4)) |
 | [@zokibada](https://github.com/zokibada) | Soundcore Sleep A20 (A6611) | A recording of the official app, which is what the model's layout is built from ([#8](https://github.com/Omega-Destroyer/PairFree/issues/8)) |
 | [@djocqer](https://github.com/djocqer) | Soundcore Q20i (A3004) | A recording of the official app ([#11](https://github.com/Omega-Destroyer/PairFree/issues/11)) |
-| [@azmifaisal01](https://github.com/azmifaisal01) | Soundcore Life Dot 3i | A device report ([#7](https://github.com/Omega-Destroyer/PairFree/issues/7)) |
 | [@MaxTheDreaded](https://github.com/MaxTheDreaded) | Soundcore Q21i NC (A300B) | A device report ([#22](https://github.com/Omega-Destroyer/PairFree/issues/22)); its state reply fits the Q20i's layout for the first 39 bytes |
 | [@Guigui-Guru](https://github.com/Guigui-Guru) | QCY T13 Pro | A connection report ([#28](https://github.com/Omega-Destroyer/PairFree/issues/28)) that showed the newer T13 Pro (vendor id 32887) missing from the model table |
 | [@THED4NIEL](https://github.com/THED4NIEL) | Sony ULT Field 5 and ULT Field 3 (speakers) | Device reports ([#14](https://github.com/Omega-Destroyer/PairFree/issues/14), [#15](https://github.com/Omega-Destroyer/PairFree/issues/15)), the first Sony readings PairFree has |
@@ -39,6 +38,8 @@ The project's own readings come from its owner's SOUNDPEATS H3 and Air5 Pro+ and
 
 | Who | What |
 |-----|------|
+| [@Onlineraider](https://github.com/Onlineraider) | The Soundcore Liberty 4 Pro (A3954) settings: its sound modes, spatial audio, easy chat, case features and language, auto power off and volume limit rows ([pull request #42](https://github.com/Omega-Destroyer/PairFree/pull/42), merged with the author's commits and corrected against the Soundcore app) |
+| [@azmifaisal01](https://github.com/azmifaisal01) | Said the Soundcore Life Dot 3i works ([#7](https://github.com/Omega-Destroyer/PairFree/issues/7)); counted as tried once a device report arrives |
 | [@thomas2403](https://github.com/thomas2403) | The Sony WF-1000XM5 crash on connecting ([#2](https://github.com/Omega-Destroyer/PairFree/issues/2)), fixed in 0.4.0 and confirmed |
 | [@upt8543-eng](https://github.com/upt8543-eng) | The request for a 2x1 widget ([#12](https://github.com/Omega-Destroyer/PairFree/issues/12)), which became the home screen widget in 0.8.0 |
 

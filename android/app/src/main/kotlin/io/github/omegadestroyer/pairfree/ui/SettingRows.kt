@@ -523,13 +523,11 @@ private fun settingTitle(key: String): String = when (key) {
     "bass_boost" -> stringResource(R.string.setting_bass_boost)
     "bass_level" -> stringResource(R.string.setting_bass_level)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio)
-    "a3954_spatial_audio" -> stringResource(R.string.setting_spatial_audio)
     "a3954_spatial_mode" -> stringResource(R.string.setting_a3954_spatial_mode)
     "a3954_easy_chat" -> stringResource(R.string.setting_speak_to_chat)
     "a3954_easy_chat_wait" -> stringResource(R.string.setting_voice_detect_wait)
     "a3954_airplane_mode" -> stringResource(R.string.setting_audio_mode)
     "a3954_ambient_mode" -> stringResource(R.string.noise_control)
-    "a3954_noise_strength" -> stringResource(R.string.setting_anc_level)
     "a3954_anc_strength" -> stringResource(R.string.setting_anc_level)
     "a3954_transparency_strength" -> stringResource(R.string.setting_ambient_volume)
     "a3954_wind_noise" -> stringResource(R.string.setting_wind_reduction)
@@ -543,9 +541,6 @@ private fun settingTitle(key: String): String = when (key) {
     "a3954_auto_power_off" -> stringResource(R.string.auto_shutdown)
     "a3954_volume_limit" -> stringResource(R.string.setting_hearing_protection)
     "a3954_volume_limit_db" -> stringResource(R.string.setting_hearing_protection)
-    "a3954_low_battery_prompt" -> stringResource(R.string.setting_voice_guidance)
-    "a3954_wearing_detection" -> stringResource(R.string.setting_ear_detection)
-    "a3954_sound_leak_compensation" -> stringResource(R.string.setting_jbl_auto_compensation)
     "head_tracking" -> stringResource(R.string.setting_head_tracking)
     "audio_360" -> stringResource(R.string.setting_audio_360)
     "adjust_sound_fit" -> stringResource(R.string.setting_adjust_sound_fit)
@@ -1385,7 +1380,6 @@ private fun eqBandTitle(key: String): String? {
 }
 
 private fun actionStart(key: String): Int = when (key) {
-    "a3954_air_pressure_update" -> R.string.setting_a3954_air_pressure_update
     "op_eq_new" -> R.string.setting_op_eq_new
     "find" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open

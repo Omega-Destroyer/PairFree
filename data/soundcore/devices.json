@@ -57,6 +57,21 @@
       "notes": "The Soundcore app writes the noise mode as six bytes: the four sound mode bytes, then 01 FC (the state holds two bytes there, 8D FC before the app's first write). PairFree sends OpenSCQ30's four; whether the Q20i takes them is not known yet."
     },
     {
+      "model": "A3004C",
+      "names": [
+        "soundcore Q20i Plus"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through A3004cCmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
+      "kind": "headphones"
+    },
+    {
       "model": "A3005",
       "names": [
         "Soundcore Q11i"
@@ -999,6 +1014,21 @@
       ]
     },
     {
+      "model": "A3600",
+      "names": [
+        "Soundcore Frames"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through A3600CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
+      "kind": "headphones"
+    },
+    {
       "model": "A3850",
       "names": [
         "Soundcore VR P10"
@@ -1086,7 +1116,8 @@
     {
       "model": "A3874",
       "names": [
-        "soundcore AeroFit 2"
+        "soundcore AeroFit 2",
+        "AeroFit 2 AI Assistant"
       ],
       "openscq30": {
         "module": null,
@@ -1096,6 +1127,20 @@
       "report_only": true,
       "state": [],
       "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
+      "model": "A3875",
+      "names": [
+        "soundcore AeroFit 2 Pro"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through A3875CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
     },
     {
       "model": "A3876",
@@ -3813,6 +3858,48 @@
       }
     },
     {
+      "model": "D1102",
+      "names": [
+        "soundcore AeroClip 2 Pro"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through its SDK profile (D1102DataSource)), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
+      "model": "D1105",
+      "names": [
+        "Anker AeroClip 2"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1105CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
+      "model": "D1200",
+      "names": [
+        "Liberty Buds"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1200CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
       "model": "D1202",
       "names": [
         "Soundcore P31i"
@@ -4010,9 +4097,66 @@
       }
     },
     {
+      "model": "D1203",
+      "names": [
+        "soundcore Liberty 5 Pro"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through A3956CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
+      "model": "D1204",
+      "names": [
+        "soundcore Liberty 5 Pro Max"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through A3956CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
+      "model": "D1205",
+      "names": [
+        "soundcore P42i"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1205CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
+      "model": "D1206",
+      "names": [
+        "Liberty Buds 2"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1206CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
       "model": "D1301",
       "names": [
-        "Soundcore Sleep A30"
+        "Soundcore Sleep A30",
+        "Soundcore Sleep A30 Special"
       ],
       "openscq30": {
         "module": "d1301",
@@ -4081,6 +4225,95 @@
         ],
         "reset": true
       }
+    },
+    {
+      "model": "D1302",
+      "names": [
+        "Anker Sleep Earbuds 4 Pro"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through its SDK profile (D1302DataSource)), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
+      "model": "D1303",
+      "names": [
+        "Anker Sleep Earbuds 4"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1303CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+    },
+    {
+      "model": "D1402",
+      "names": [
+        "Space 2"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1402CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
+      "kind": "headphones"
+    },
+    {
+      "model": "D1404",
+      "names": [
+        "Anker soundcore Q31i",
+        "soundcore Q31i"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1404CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
+      "kind": "headphones"
+    },
+    {
+      "model": "D1406",
+      "names": [
+        "Anker Space 2 Pro"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1406CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
+      "kind": "headphones"
+    },
+    {
+      "model": "D1407",
+      "names": [
+        "Anker Space 2 Pro Max"
+      ],
+      "openscq30": {
+        "module": null,
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": []
+      },
+      "report_only": true,
+      "state": [],
+      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1406CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
+      "kind": "headphones"
     }
   ]
 }

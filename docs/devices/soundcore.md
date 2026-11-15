@@ -32,14 +32,14 @@ OpenSCQ30 lacks.
 
 <table>
 <tr><th>Model</th><th>Number</th><th>Status</th><th>Battery</th><th>Noise control</th><th>Equalizer</th><th>HearID</th><th>Touch controls</th><th>Two devices</th><th>LDAC</th><th>Game mode</th><th>3D / spatial</th><th>Wear detection</th><th>Touch tone</th><th>Auto power-off</th></tr>
-<tr><td>Anker AeroClip 2</td><td>D1105</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Anker AeroClip 2</td><td>D1105</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>—</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Anker Sleep Earbuds 4</td><td>D1303</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Anker Sleep Earbuds 4 Pro</td><td>D1302</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Anker soundcore Q31i, soundcore Q31i</td><td>D1404</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Anker Space 2 Pro</td><td>D1406</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Anker Space 2 Pro Max</td><td>D1407</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Anker Space 2 Pro</td><td>D1406</td><td>Not tested</td><td>One</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Anker Space 2 Pro Max</td><td>D1407</td><td>Not tested</td><td>One</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Liberty Buds</td><td>D1200</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>—</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>Liberty Buds 2</td><td>D1206</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Liberty Buds 2</td><td>D1206</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>—</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>A20i, soundcore A25i</td><td>A3948</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Checked</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
 <tr><td>soundcore A30i</td><td>A3958</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>AeroClip</td><td><a href="../../data/soundcore/reports/A3388_02.49.txt">A3388</a></td><td>Tested</td><td>Each earbud, case</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>

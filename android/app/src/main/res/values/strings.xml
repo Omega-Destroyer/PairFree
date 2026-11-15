@@ -161,6 +161,7 @@
     <string name="action_lights">Lights</string>
     <string name="action_noise_cancelling">Noise cancelling</string>
     <string name="action_change_mode">Change mode</string>
+    <string name="action_white_noise">White noise</string>
     <string name="slides">Slides</string>
     <string name="gesture_slide_up">Slide up</string>
     <string name="gesture_slide_down">Slide down</string>

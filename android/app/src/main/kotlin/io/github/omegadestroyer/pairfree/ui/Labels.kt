@@ -113,6 +113,7 @@ fun soundcoreActionName(name: String): String = when (name) {
     "lights" -> stringResource(R.string.action_lights)
     "noise_canceling" -> stringResource(R.string.action_noise_cancelling)
     "change_mode" -> stringResource(R.string.action_change_mode)
+    "white_noise" -> stringResource(R.string.action_white_noise)
     else -> name
 }
 

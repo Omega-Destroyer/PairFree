@@ -349,7 +349,26 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 (app["features"] as List<*>? ?: emptyList<Any>()) + (d["extra_features"] as List<*>? ?: emptyList<Any>())) -
                 (app["lacks"] as List<*>? ?: emptyList<Any>()).toSet()).distinct().joinToString(", ", "setOf(", ")") { str(it) }
             val vendorIds = (d["vendor_ids"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
-            layoutLines += "        SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds),"
+            // A model that answers in tag-length-value records: [tag, at, size] bytes, [tag, at, "bit", n], or [tag, at, "lo" | "hi" | "pack" | "level"].
+            @Suppress("UNCHECKED_CAST")
+            val tlvItems = d["tlv"] as List<List<Any?>>?
+            val tlv = if (tlvItems == null) "" else tlvItems.joinToString(", ", ", tlv = listOf(", ")") { item ->
+                val tag = (item[0] as Number).toInt()
+                val at = (item[1] as Number).toInt()
+                val kind = item[2]
+                when (kind) {
+                    is Number -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.BYTES, ${kind.toInt()})"
+                    "bit" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.BIT, 1, ${(item[3] as Number).toInt()})"
+                    "lo" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.LOW)"
+                    "hi" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.HIGH)"
+                    "pack" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.PACK)"
+                    "level" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.LEVEL)"
+                    "swap" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.SWAP)"
+                    else -> error("unknown tlv item $item in ${d["model"]}")
+                }
+            }
+            val tlvPrivate = (d["tlv_private"] as List<*>?)?.joinToString(", ", ", tlvPrivate = setOf(", ")") { (it as Number).toInt().toString() } ?: ""
+            layoutLines += "        SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds$tlv$tlvPrivate),"
         }
         val chunks = layoutLines.chunked(12)
         chunks.forEachIndexed { i, lines ->
@@ -393,7 +412,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 val command = (g["command"] as String?)?.let { "0x$it" } ?: "SoundcoreCommand.BUTTON_ACTION"
                 "SoundcoreButtonGroup(${(g.getValue("fields") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }}, $order, $presses, " +
                     "setAll = ${g["set_all"] == true}, ignoreEnabled = ${g["ignore_enabled"] == true}, actionCommand = $command, " +
-                    "duringCall = ${g["during"] == "call"})"
+                    "duringCall = ${g["during"] == "call"}, wide = ${g["wide"] == true})"
             }
             @Suppress("UNCHECKED_CAST")
             val fixed = (buttons["fixed"] as Map<String, Any?>? ?: emptyMap()).entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${press(k)} to ${str(v)}" }

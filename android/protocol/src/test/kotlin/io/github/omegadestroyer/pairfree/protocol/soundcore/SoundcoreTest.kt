@@ -350,6 +350,52 @@ class SoundcoreLayoutTest {
         assertEquals("0100", s.field("auto_power_off")!!.hex())
     }
 
+    /** A tag-length-value reply (the Liberty Buds 2, Soundcore 5.0.35's D1206AnalysisService) and the writes its own command service makes. */
+    @Test
+    fun readsAndWritesTheLibertyBuds2sRecords() {
+        fun rec(tag: Int, vararg v: Int) = byteArrayOf(tag.toByte(), v.size.toByte()) + ByteArray(v.size) { v[it].toByte() }
+        fun text(s: String) = IntArray(s.length) { s[it].code }
+        var reply = rec(1, 0) + rec(2, 1) + rec(3, 0, 80) + rec(4, 1, 81) + rec(5, *text("01.23")) + rec(6, *text("01.24")) +
+            rec(7, *IntArray(16) { 0x41 + it }) + rec(8, 0, 90)
+        // The touch controls, records 13 to 24: the value with both earbuds in, then with one (15 is off).
+        for (tag in 13..24) reply += rec(tag, tag - 13, 15)
+        reply += rec(27, 0b0000_1000, 0b0000_1000, 0, 0, 1) + rec(36, 1, 2, 0) + rec(37, 0x31, 0x22) + rec(38, 3, 4) + rec(41, 1, 2, 3, 4, 5, 6)
+        val session = SoundcoreSession("D1206")
+        assertTrue(session.receive(SoundcorePacket(SoundcoreCommand.STATE, reply)))
+        val state = SoundcoreState.parse(SoundcoreLayout.of("D1206")!!, reply)!!
+        assertEquals("0001", state.field("tws_status")!!.hex())
+        assertEquals("50510001", state.field("dual_battery")!!.hex())
+        assertEquals("01.23", state.firmware)
+        assertEquals("5a", state.field("case_battery")!!.hex())
+        assertEquals("f0f1f2f3f4f5f6f7f8f9fafb", state.field("buttons")!!.hex())
+        // The noise mode block as the app's write holds it: mode, manual level << 4 | 15, hear guard, automation, wind, 0, multi-scene, 0.
+        assertEquals("011f010201000300", state.field("sound_modes")!!.hex())
+        assertEquals(AmbientMode.TRANSPARENCY, state.ambientMode)
+        // The serial and the case's address are hidden in a report.
+        val hex = state.reportHex()
+        assertTrue("41 42 43" !in hex && "01 02 03 04 05 06" !in hex, hex)
+        // A noise mode change writes the app's eight bytes with the mode changed.
+        val anc = session.set(Command.ANC_MODE, Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key)!!
+        assertEquals(SoundcoreCommand.SET_SOUND_MODES, ((anc[5].toInt() and 0xFF) shl 8) or (anc[6].toInt() and 0xFF))
+        assertEquals("001f010201000300", anc.copyOfRange(9, anc.size - 1).hex())
+        // A touch control goes as 04 8C: side, gesture, the value with both earbuds in, the value with one.
+        val group = SoundcoreButtonSpec.of("D1206")!!.groups.single()
+        val packet = SoundcoreButtons.set(group, state, TouchSide.LEFT, TouchPress.DOUBLE, 6)!!.packets.single()
+        assertEquals(0x048C, packet.command)
+        assertEquals("0000060f", packet.body.hex())
+    }
+
+    /** The Space 2 Pro's six-byte noise mode write: mode, the first level's nibbles swapped from its reply, the transparency option, automation, wind, and the second level's high nibble. */
+    @Test
+    fun theSpace2ProRebuildsItsNoiseModeWrite() {
+        fun rec(tag: Int, vararg v: Int) = byteArrayOf(tag.toByte(), v.size.toByte()) + ByteArray(v.size) { v[it].toByte() }
+        val reply = rec(1, 0) + rec(3, 0, 70) + rec(5, *"02.01".map { it.code }.toIntArray()) + rec(7, *IntArray(16) { 0x30 }) +
+            rec(27, 0, 0b0000_1000) + rec(36, 2, 1, 1) + rec(37, 0x12, 0x34) + rec(39, 1, 85, 0)
+        val state = SoundcoreState.parse(SoundcoreLayout.of("D1406")!!, reply)!!
+        assertEquals("022101010103", state.field("sound_modes")!!.hex())
+        assertEquals("015500", state.field("limit_high_volume")!!.hex())
+    }
+
     @Test
     fun readsEveryReplyInOpenScq30sTests() {
         assertEquals(37, replies.size)
@@ -882,7 +928,7 @@ class SoundcoreButtonsTest {
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(45, withButtons.size)
+        assertEquals(47, withButtons.size)
         for (d in devices) {
             // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
             // A3031's state holds them, but OpenSCQ30 does not offer them), and a recording adds the Sleep A20's.

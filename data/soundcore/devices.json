@@ -4176,11 +4176,71 @@
       "openscq30": {
         "module": null,
         "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
-        "features": []
+        "features": [
+          "button_configuration",
+          "dual_connections",
+          "tws_status",
+          "dual_battery_custom",
+          "case_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1105CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["case_battery", 1],
+        ["buttons", 12],
+        ["dual_connections_enabled", 1]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the equalizer (`03 8A`), the game mode (its command is not read), the nap timer and the other records.",
+      "tlv": [
+        [1, 0, 1],
+        [2, 0, 1],
+        [3, 1, 1],
+        [4, 1, 1],
+        [3, 0, 1],
+        [4, 0, 1],
+        [5, 0, 5],
+        [6, 0, 5],
+        [7, 0, 16],
+        [8, 1, 1],
+        [13, 0, "pack"],
+        [14, 0, "pack"],
+        [15, 0, "pack"],
+        [16, 0, "pack"],
+        [17, 0, "pack"],
+        [18, 0, "pack"],
+        [19, 0, "pack"],
+        [20, 0, "pack"],
+        [21, 0, "pack"],
+        [22, 0, "pack"],
+        [23, 0, "pack"],
+        [24, 0, "pack"],
+        [27, 0, "bit",
+          3]
+      ],
+      "tlv_private": [7, 41],
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long", "left_slide_up", "right_slide_up", "left_slide_down", "right_slide_down"],
+            "ignore_enabled": true,
+            "wide": true,
+            "command": "048C",
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "white_noise"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "slide_up": {"id": 6, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          }
+        ]
+      }
     },
     {
       "model": "D1200",
@@ -4548,11 +4608,79 @@
       "openscq30": {
         "module": null,
         "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
-        "features": []
+        "features": [
+          "a3957_sound_modes",
+          "button_configuration",
+          "tws_status",
+          "dual_battery_custom",
+          "case_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1206CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery", 4],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["case_battery", 1],
+        ["buttons", 12],
+        ["sound_modes", 8]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (D1206AnalysisService.e1 and D1206CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's own write has eight bytes, which the `sound_modes` block rebuilds from records 36, 37, 38 and the bits of 27) and the touch controls (records 13 to 24: two bytes each, with both earbuds in and with one; the write is `04 8C` with them as two bytes). Not offered: the equalizer (the `03 8A` format PairFree does not write), the switches of records 26 and 27 (their screens were not read), the touch lock, the sleep and AI settings. The triple tap's recording action depends on a firmware predicate and is not listed.",
+      "tlv": [
+        [1, 0, 1],
+        [2, 0, 1],
+        [3, 1, 1],
+        [4, 1, 1],
+        [3, 0, 1],
+        [4, 0, 1],
+        [5, 0, 5],
+        [6, 0, 5],
+        [7, 0, 16],
+        [8, 1, 1],
+        [13, 0, "pack"],
+        [14, 0, "pack"],
+        [15, 0, "pack"],
+        [16, 0, "pack"],
+        [17, 0, "pack"],
+        [18, 0, "pack"],
+        [19, 0, "pack"],
+        [20, 0, "pack"],
+        [21, 0, "pack"],
+        [22, 0, "pack"],
+        [23, 0, "pack"],
+        [24, 0, "pack"],
+        [36, 0, 1],
+        [37, 0, "level"],
+        [27, 4, "bit",
+          0],
+        [36, 1, 1],
+        [27, 1, "bit",
+          3],
+        [255, 0, 1],
+        [38, 0, 1],
+        [255, 0, 1]
+      ],
+      "tlv_private": [7, 41],
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long", "left_slide_up", "right_slide_up", "left_slide_down", "right_slide_down"],
+            "ignore_enabled": true,
+            "wide": true,
+            "command": "048C",
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"},
+              "slide_up": {"id": 6, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"},
+              "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"}
+            }
+          }
+        ]
+      }
     },
     {
       "model": "D1301",
@@ -4695,12 +4823,37 @@
       "openscq30": {
         "module": null,
         "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
-        "features": []
+        "features": [
+          "a3957_sound_modes",
+          "limit_high_volume",
+          "serial_number_and_firmware_version",
+          "single_battery"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1406CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
-      "kind": "headphones"
+      "state": [
+        ["single_battery", 2],
+        ["firmware", 5],
+        ["serial", 16],
+        ["sound_modes", 6],
+        ["limit_high_volume", 3]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the equalizer (`03 8A`), the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records.",
+      "kind": "headphones",
+      "tlv": [
+        [3, 1, 1],
+        [3, 0, 1],
+        [5, 0, 5],
+        [7, 0, 16],
+        [36, 0, 1],
+        [37, 0, "swap"],
+        [36, 2, 1],
+        [36, 1, 1],
+        [27, 1, "bit",
+          3],
+        [37, 1, "hi"],
+        [39, 0, 3]
+      ],
+      "tlv_private": [7, 41]
     },
     {
       "model": "D1407",
@@ -4710,12 +4863,37 @@
       "openscq30": {
         "module": null,
         "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
-        "features": []
+        "features": [
+          "a3957_sound_modes",
+          "limit_high_volume",
+          "serial_number_and_firmware_version",
+          "single_battery"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app 5.0.35 registers it (its commands go through D1406CmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
-      "kind": "headphones"
+      "state": [
+        ["single_battery", 2],
+        ["firmware", 5],
+        ["serial", 16],
+        ["sound_modes", 6],
+        ["limit_high_volume", 3]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the equalizer (`03 8A`), the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records.",
+      "kind": "headphones",
+      "tlv": [
+        [3, 1, 1],
+        [3, 0, 1],
+        [5, 0, 5],
+        [7, 0, 16],
+        [36, 0, 1],
+        [37, 0, "swap"],
+        [36, 2, 1],
+        [36, 1, 1],
+        [27, 1, "bit",
+          3],
+        [37, 1, "hi"],
+        [39, 0, 3]
+      ],
+      "tlv_private": [7, 41]
     }
   ]
 }

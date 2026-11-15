@@ -558,6 +558,19 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   is not a scale (the Liberty 5 and the Liberty 4 Pro share one clamp and differ in scale), so the battery shows once a report settles it. None is
   tried on real earbuds. The rest of the new models' layouts are to do, not blocked; the closest known model is the Space One Pro (A3062) for the
   D1402 (0.80 by parser steps).
+- **Tag-length-value models (D1105, D1206, D1406, D1407).** These answer `01 01` with records `tag, length, value` from the first byte
+  (`ParseCommonCmdUtils.a`), and pack switches into bits. `data/soundcore/devices.json` gives such a model a `tlv` list, which turns the records into
+  the fixed body its `state` fields describe: `[tag, at, n]` takes n bytes, `[tag, at, "bit", b]` a bit as 0 or 1, `"lo"` and `"hi"` a nibble,
+  `"pack"` the touch control's two bytes (with both earbuds in, with one) as OpenSCQ30's one nibble-packed byte, `"level"` and `"swap"` the nibble
+  forms the app's noise mode write uses; `tlv_private` lists the records that hold serial numbers and addresses (hidden in a report).
+  The records the three share: 1 host, 2 TWS, 3 and 4 (charging, level) per earbud, 5 and 6 firmware, 7 serial, 8 case (charging, level), 13 to 24 the
+  touch controls (single, double, triple, long, slide up, slide down; left then right), 25 auto power off, 26 and 27 switch bits, 36 to 38 the noise
+  mode, 39 the high volume limit, 44 spatial audio, 46 the modes the button cycles. The touch writes of these models are `04 8C` (side, gesture, the value
+  with both earbuds in, the value with one: `wide` in the button spec), and the noise mode write is the model's own: eight bytes on the Liberty Buds 2
+  (mode, manual level << 4 | 15, hear guard, automation, wind, 0, multi-scene, 0), six on the Space 2 pair, seven on the AeroClip 2. Offered:
+  the Liberty Buds 2's noise mode and touch controls, the AeroClip 2's touch controls (triple tap: white noise) and dual connections, the Space 2
+  pair's noise mode and high volume limit. Not offered: the `03 8A` equalizer, the switches whose screens were not read, the Space 2's one-button
+  records (72, 73), and the Sleep Earbuds 4 (D1302, D1303), whose records are the sleep products' own (50 to 106). None is tried on real earbuds.
   A twin's bytes are never assumed from a name: each model's state parser is `AnalysisService.e1` in the restored `com.oceanwing.devicecmd.manager.product.<model>`
   package. The ones checked read in sequence (A3954 and A3994 begin with the host byte, the TWS byte, two batteries and two charging flags, two firmware
   strings of five bytes and the 16-byte serial, then the 22 EQ bytes and a length-prefixed button block), but they differ model by model (the A3331 has no

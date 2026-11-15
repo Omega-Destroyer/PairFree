@@ -79,8 +79,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
                     },
                 )
             }
-            SoundcoreCommand.SOUND_MODES -> if (body.size >= 4 && soundModes?.size == 4) {
-                val modes = body.copyOfRange(0, 4)
+            // The earbuds' notice holds the state's block, or more bytes after it (the Liberty 4 Pro's has a fifth).
+            SoundcoreCommand.SOUND_MODES -> if (soundModes?.size?.let { body.size >= it } == true) {
+                val modes = body.copyOfRange(0, soundModes!!.size)
                 soundModes = modes
                 lastState = lastState?.with("sound_modes", modes)
                 put(Command.ANC_MODE, Value.Number(ancValue(AmbientMode.of(modes.u8(0)))))

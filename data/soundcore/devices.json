@@ -36,7 +36,7 @@
         ["firmware", 5],
         ["serial", 16],
         ["equalizer", 12],
-        ["sound_modes", 4]
+        ["sound_modes", 6]
       ],
       "eq": {
         "write": "drc",
@@ -54,7 +54,7 @@
       "reports": [
         "data/soundcore/reports/A3004_05.08.txt"
       ],
-      "notes": "The Soundcore app writes the noise mode as six bytes: the four sound mode bytes, then 01 FC (the state holds two bytes there, 8D FC before the app's first write). PairFree sends OpenSCQ30's four; whether the Q20i takes them is not known yet."
+      "notes": "The Soundcore app's sound modes block is six bytes (A3004AnalysisService.y3 and A3004CmdService.M0 in 5.0.35): the mode, the manual and adaptive strength, the transparency byte, the automation mode, wind noise (bit 0 the suppression switch, bit 1 wind detected, read only) and the adaptive sensitivity (0xFC where unset). The write sends the wind byte as just the suppression bit and the rest as reported, which is why the recording shows 8D FC read and 01 FC written (issue #11)."
     },
     {
       "model": "A3004C",

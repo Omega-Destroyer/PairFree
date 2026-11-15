@@ -51,7 +51,7 @@ A language is one file ([docs/TRANSLATING.md](docs/TRANSLATING.md)). Translators
 
 | Who | Language |
 |-----|----------|
-| [@iJahangard](https://github.com/iJahangard) | Persian (`fa`), 94% ([#44](https://github.com/Omega-Destroyer/PairFree/issues/44)) |
+| [@iJahangard](https://github.com/iJahangard) | Persian (`fa`) ([#44](https://github.com/Omega-Destroyer/PairFree/issues/44)); the 61 entries added after their file (the Sleep A30 sound upload and the newer Soundcore rows) were translated by AI and need a native speaker's check |
 
 ## And the projects PairFree learns from
 

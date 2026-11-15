@@ -1,0 +1,959 @@
+{
+  "apk": "5.0.35-435",
+  "input_apkm_sha256": "b7acfeee5c506879e5870a8215562b8b0cd896a93aaa54cd3eb28c24cdc6e734",
+  "scope": "Restored-source tracing, interpreted DEX getters/control builders and synthetic ARM64 container execution. No Bluetooth, account, network, valid audio encoding or earbud acceptance test.",
+  "native_library_sha256": "fa32df302d5b717d723223dc7b6c94a1d6c504581a929c46c0a31ee357e5a8a0",
+  "audio_path": {
+    "models": [
+      "D1301",
+      "D1301S"
+    ],
+    "vendor_type": 1,
+    "transport": "BES SPP",
+    "spp_uuid": "66666666-6666-6666-6666-666666666666",
+    "tota_wrapper": false,
+    "user_flag": 1,
+    "upgrade_type": 2,
+    "user_selector": "10 + indexInDevice",
+    "without_response": true,
+    "skip_get_version": true,
+    "source_methods": [
+      "TransferringSoundViewModel.z",
+      "TransferringSoundViewModel.I",
+      "MultiMusicOtaUpdate.S",
+      "MultiMusicOtaUpdate.i0",
+      "DefaultBesTaskFactory.a",
+      "BesOtaService.e0"
+    ],
+    "wq_package_wrapper": "TransferringSoundViewModel.N returns before wrapping unless vendor type == 3; D1301/D1301S return 1"
+  },
+  "preparation": {
+    "container_header_bytes": 256,
+    "sbc_audio_type": 0,
+    "aac_audio_type": 1,
+    "channels": 1,
+    "default_initial_kbps": 128,
+    "default_fallback_kbps": 72,
+    "reencode_size_threshold_bytes": 1024000,
+    "size_threshold_scope": "App checks prepared bin file size and may re-encode; not independently established firmware capacity or final rejection bound",
+    "default_sample_rate_hz": 16000,
+    "sound_type_3_sample_rate_hz": 32000,
+    "sbc_requested_duration_cap_seconds": 60,
+    "aac_requested_duration_cap_seconds": 10,
+    "duration_scope": "FFmpeg output caps min(first selected sound playTime, cap); not maximum firmware clip acceptance or overnight playback duration",
+    "native_writer": "transfer_sbc_t_bin at ARM64 0x59ae8; eight arguments, codecType eighth",
+    "native_header_fields": [
+      {
+        "offset": 0,
+        "bytes": 4,
+        "field": "magic_u32_le",
+        "value_or_source": 909521201
+      },
+      {
+        "offset": 4,
+        "bytes": 1,
+        "field": "codec_type_u8",
+        "value_or_source": "caller audioType"
+      },
+      {
+        "offset": 5,
+        "bytes": 2,
+        "field": "format_version_u16_le",
+        "value_or_source": 272
+      },
+      {
+        "offset": 7,
+        "bytes": 1,
+        "field": "reserved",
+        "value_or_source": 0
+      },
+      {
+        "offset": 8,
+        "bytes": 8,
+        "field": "media_id_u64_le",
+        "value_or_source": "caller transferId"
+      },
+      {
+        "offset": 16,
+        "bytes": 1,
+        "field": "media_type_u8",
+        "value_or_source": "caller soundType"
+      },
+      {
+        "offset": 17,
+        "bytes": 7,
+        "field": "reserved",
+        "value_or_source": 0
+      },
+      {
+        "offset": 24,
+        "bytes": 64,
+        "field": "name_bytes",
+        "value_or_source": "strncpy truncated/padded; never export personal filenames"
+      },
+      {
+        "offset": 88,
+        "bytes": 4,
+        "field": "payload_length_u32_le",
+        "value_or_source": "encoded byte count"
+      },
+      {
+        "offset": 92,
+        "bytes": 4,
+        "field": "legacy_constant_u32_le",
+        "value_or_source": 128
+      },
+      {
+        "offset": 96,
+        "bytes": 4,
+        "field": "sample_rate_u32_le",
+        "value_or_source": "caller-selected sample rate"
+      },
+      {
+        "offset": 100,
+        "bytes": 4,
+        "field": "reserved_u32_le",
+        "value_or_source": 0
+      },
+      {
+        "offset": 104,
+        "bytes": 4,
+        "field": "header_size_u32_le",
+        "value_or_source": "caller headerBufferSize; 256 on inspected mix path"
+      },
+      {
+        "offset": 108,
+        "bytes": 2,
+        "field": "payload_crc16_le",
+        "value_or_source": "poly 0x1021 init 0"
+      },
+      {
+        "offset": 110,
+        "bytes": 2,
+        "field": "header_crc16_le",
+        "value_or_source": "CRC over bytes 0..109"
+      },
+      {
+        "offset": 112,
+        "bytes": 144,
+        "field": "reserved_padding",
+        "value_or_source": "zero with a 256-byte header"
+      }
+    ]
+  },
+  "offline_mode": {
+    "mode_command_prefix": "08ee00000001a9",
+    "bluetooth_mode": 0,
+    "local_mode": 1,
+    "mode_payload_bytes": 1,
+    "source_methods": [
+      "D1301ToggleModeItemBinder.v/w",
+      "D1301MainVM.H1",
+      "Cmm2BtDeviceManager.G",
+      "CmmBtCmdService.b4",
+      "D1301AnalysisService.W1"
+    ],
+    "app_upload_entry_requires_network": true,
+    "app_id_assignment_uses_server": true,
+    "phone_saved_file_library_can_be_offline": "Proposed PairFree behavior; not implemented",
+    "firmware_accepts_locally_generated_ids": "Unverified"
+  },
+  "inventory_snapshot": {
+    "source_method": "D1301AnalysisService.C3",
+    "start_offset": "e1 supplies iN + 74; iN depends on earlier snapshot layout",
+    "fields": [
+      {
+        "relative_offset": 0,
+        "field": "volume",
+        "type": "u8"
+      },
+      {
+        "relative_offset": 1,
+        "field": "current_index",
+        "type": "u8"
+      },
+      {
+        "relative_offset": 2,
+        "field": "playing",
+        "type": "u8 == 1"
+      },
+      {
+        "relative_offset": 3,
+        "field": "entry_count",
+        "type": "u8"
+      }
+    ],
+    "entry_bytes": 10,
+    "entry_fields": [
+      "index u8",
+      "media ID u64 little endian",
+      "sound type u8; zero remapped to 2"
+    ],
+    "allocator_candidates": [
+      0,
+      1
+    ],
+    "allocator_scope": "DataUtil.b candidates; does not establish two simultaneously usable arbitrary tracks"
+  },
+  "post_transfer": {
+    "query_audio_inventory": "Cmm2BtDeviceManager.d3 -> CmmBtCmdService.g2; prefix 08ee0000001301",
+    "cleanup": "Cmm2BtDeviceManager.e8 -> CmmBtCmdService.U3; prefix 08ee0000001304",
+    "cleanup_payload": "count u8, index u8 repeated count; optional nonempty metadata list adds count u8 and index u8 + ID u64 LE entries",
+    "refresh": "Cmm2BtDeviceManager.r requests normal device state except model-specific popup exclusions",
+    "local_transferring_flag": "j8 only updates local model/event; not a Bluetooth command"
+  },
+  "capture_filter_audit": {
+    "existing_recognizer_header_bytes": 128,
+    "required_a30_header_bytes": 256,
+    "recognizer_accepts_inspected_256_header": false,
+    "separate_bes_channel_auto_identification": "Not established by current SnoopLog; raw fallback requires a previously normal-framed Soundcore channel",
+    "required_changes": [
+      "Associate BES service UUID/channel with Soundcore without guessing arbitrary RFCOMM traffic",
+      "Reassemble BES opcode/u32-LE-length frames per link/channel/direction/reconnect",
+      "Recognize codec byte 0/1 and header-size field 104=256 while preserving legacy field 92=128",
+      "Count audio payloads and sizes; omit audio, filenames, media IDs and 32-byte resume tokens",
+      "Decode bounded ACK/status fields; never export full raw transfer/configuration bodies"
+    ],
+    "implementation_changed": false
+  },
+  "dex_cases": {
+    "scope": "Restored DEX numeric routing/config and BES control-frame builders only; device/model getters and Kotlin collection/equality APIs modeled; no network, files, Bluetooth, preferences or firmware traffic",
+    "route_cases": [
+      {
+        "model": "D1301",
+        "audio_type": 0,
+        "vendor_type": 1,
+        "size_reencode_threshold": 1024000,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "model": "D1301",
+        "audio_type": 1,
+        "vendor_type": 1,
+        "size_reencode_threshold": 1024000,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "model": "D1301S",
+        "audio_type": 0,
+        "vendor_type": 1,
+        "size_reencode_threshold": 1024000,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "model": "D1301S",
+        "audio_type": 1,
+        "vendor_type": 1,
+        "size_reencode_threshold": 1024000,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "model": "D1302",
+        "audio_type": 0,
+        "vendor_type": 3,
+        "size_reencode_threshold": 1024000,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "model": "D1302",
+        "audio_type": 1,
+        "vendor_type": 3,
+        "size_reencode_threshold": 1024000,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "model": "D1303",
+        "audio_type": 0,
+        "vendor_type": 3,
+        "size_reencode_threshold": 1024000,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "model": "D1303",
+        "audio_type": 1,
+        "vendor_type": 3,
+        "size_reencode_threshold": 1024000,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "model": "D1105",
+        "audio_type": 0,
+        "vendor_type": 3,
+        "size_reencode_threshold": 194560,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "model": "D1105",
+        "audio_type": 1,
+        "vendor_type": 3,
+        "size_reencode_threshold": 194560,
+        "initial_kbps": 96,
+        "fallback_kbps": 96,
+        "sample_rate_override": 32000,
+        "slot_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "model": "A6611",
+        "audio_type": 0,
+        "vendor_type": 1,
+        "size_reencode_threshold": 716800,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "model": "A6611",
+        "audio_type": 1,
+        "vendor_type": 1,
+        "size_reencode_threshold": 716800,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "model": "UNKNOWN",
+        "audio_type": 0,
+        "vendor_type": 1,
+        "size_reencode_threshold": 716800,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "model": "UNKNOWN",
+        "audio_type": 1,
+        "vendor_type": 1,
+        "size_reencode_threshold": 716800,
+        "initial_kbps": 128,
+        "fallback_kbps": 72,
+        "sample_rate_override": null,
+        "slot_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "mode_cases": [
+      {
+        "prefix": "08ee00000001a9",
+        "payload_u8": 0,
+        "mode": 0
+      },
+      {
+        "prefix": "08ee00000001a9",
+        "payload_u8": 1,
+        "mode": 1
+      }
+    ],
+    "frame_cases": [
+      {
+        "method": "i",
+        "frame": "8e0400000042455354"
+      },
+      {
+        "method": "o",
+        "frame": "9b00000000"
+      },
+      {
+        "method": "l",
+        "frame": "920400000042455354"
+      },
+      {
+        "method": "s",
+        "frame": "900100000000"
+      },
+      {
+        "input": 0,
+        "frame": "970100000000",
+        "method": "t"
+      },
+      {
+        "input": 0,
+        "frame": "9d0100000000",
+        "method": "u"
+      },
+      {
+        "input": 1,
+        "frame": "970100000001",
+        "method": "t"
+      },
+      {
+        "input": 1,
+        "frame": "9d0100000001",
+        "method": "u"
+      },
+      {
+        "input": 2,
+        "frame": "970100000002",
+        "method": "t"
+      },
+      {
+        "input": 2,
+        "frame": "9d0100000002",
+        "method": "u"
+      },
+      {
+        "input": 3,
+        "frame": "970100000003",
+        "method": "t"
+      },
+      {
+        "input": 3,
+        "frame": "9d0100000000",
+        "method": "u"
+      },
+      {
+        "input": 10,
+        "frame": "97010000000a",
+        "method": "t"
+      },
+      {
+        "input": 10,
+        "frame": "9d0100000000",
+        "method": "u"
+      },
+      {
+        "input": 0,
+        "frame": "990400000000000000",
+        "method": "n"
+      },
+      {
+        "input": 1,
+        "frame": "990400000000000001",
+        "method": "n"
+      }
+    ]
+  },
+  "native_container_cases": [
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 0,
+      "name_length": 5,
+      "output_length": 128,
+      "output_sha256": "d7824a5c024510e9404669517da7ca30ef90b0ef9c261bf2ca1390348bc4e68e",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 0,
+      "name_length": 64,
+      "output_length": 128,
+      "output_sha256": "e6659ec1d9da6918b5280f3442bb3c5ec294fbae46d1439c8543bbdfd5f46ee6",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 0,
+      "name_length": 80,
+      "output_length": 128,
+      "output_sha256": "06dbc26f9f8e142ec589adc2b7252833d76f2a1cab2e60687dd5703978b9a49e",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 1,
+      "name_length": 5,
+      "output_length": 129,
+      "output_sha256": "401cc27d33639c634125d86bcbfea48d84b48e91c91e4ab066b9ff0b8f1745ff",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 1,
+      "name_length": 64,
+      "output_length": 129,
+      "output_sha256": "4a901f9300f6a1aae287a8c4d28040c4c075473b8e717862b26661d7995bc15e",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 1,
+      "name_length": 80,
+      "output_length": 129,
+      "output_sha256": "32b032cd291dec8b1b7d60b75ef6a6f0cfd7952ea69391a053a6c0e615c70590",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 255,
+      "name_length": 5,
+      "output_length": 383,
+      "output_sha256": "b68319262b0b96a593ae516a732250f8bcca2755fb2fc404c5ba6d9bdbb6f85e",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 255,
+      "name_length": 64,
+      "output_length": 383,
+      "output_sha256": "3ca6e643236b64c8f67a5358ff479629646b3c9467d2d4fbc9d30496995e2c3d",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 255,
+      "name_length": 80,
+      "output_length": 383,
+      "output_sha256": "79a9b3593bca044976197f83980c7701ae9c726e5e0d71f0fd9b54ed88089727",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 4096,
+      "name_length": 5,
+      "output_length": 4224,
+      "output_sha256": "00977e7e3a1fb8df7fc30bcd63d5db3366d20972ecd1f62551f376f564cb02be",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 4096,
+      "name_length": 64,
+      "output_length": 4224,
+      "output_sha256": "c9e7bb603023a25d8b907f9d9f9e023406304abba7e10348cd301baf1806f149",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 0,
+      "input_length": 4096,
+      "name_length": 80,
+      "output_length": 4224,
+      "output_sha256": "8a65beefa1bc760bd340c750f4564b67c82f57218285609982a2828464ee419c",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 0,
+      "name_length": 5,
+      "output_length": 128,
+      "output_sha256": "5a4f29bbfd73ab5e759e9f1ea767b7cd08480fe03c6d7722936943a88459e4bf",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 0,
+      "name_length": 64,
+      "output_length": 128,
+      "output_sha256": "91fde8268509ba63c30dee173f36350fb534f0dd143a4c17cf0e9daa92e1c055",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 0,
+      "name_length": 80,
+      "output_length": 128,
+      "output_sha256": "503b4089094d977be78c25656073566378643582bd064746861d82d92c8dc297",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 1,
+      "name_length": 5,
+      "output_length": 129,
+      "output_sha256": "405177572a055db3151f2c0a993bd77b31f215fba879d7527d2765fbb98112ad",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 1,
+      "name_length": 64,
+      "output_length": 129,
+      "output_sha256": "9980125475d92cb098f789184edba60cee5389d9f366ad73a83423205633e721",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 1,
+      "name_length": 80,
+      "output_length": 129,
+      "output_sha256": "94263300782edc286512afa1347124c4d68e5872c90c962fa7c927f88fe30300",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 255,
+      "name_length": 5,
+      "output_length": 383,
+      "output_sha256": "240dea4c3061dbb9306008c7e6f64be02823a23d7e19336574c4ecacf7be1dca",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 255,
+      "name_length": 64,
+      "output_length": 383,
+      "output_sha256": "f30f4a24ef7698ffeb0afdd9126de312004381eaa147051344ec8aae2cdb53bd",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 255,
+      "name_length": 80,
+      "output_length": 383,
+      "output_sha256": "01c6826fb509a0383daffa8bbf95cb5cb9ffa684ed6f6b6afb578930200e7b31",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 4096,
+      "name_length": 5,
+      "output_length": 4224,
+      "output_sha256": "98cffce6881b5753dbd38c5b564c8b9b1223a64de69a43d8772afbd05b5fb6a4",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 4096,
+      "name_length": 64,
+      "output_length": 4224,
+      "output_sha256": "0c5d515bd5a66fdb47f108ba9158914d4ddd502105ebb210c58afc678407431a",
+      "matches": true
+    },
+    {
+      "header_size": 128,
+      "codec_type": 1,
+      "input_length": 4096,
+      "name_length": 80,
+      "output_length": 4224,
+      "output_sha256": "1edfb12737fb8ed6ed2ebedf58da431af964187e7973c702d2cb1f3263c3698d",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 0,
+      "name_length": 5,
+      "output_length": 256,
+      "output_sha256": "c35015e88f3ebc24c3c6134cf2a06d58608ec076c3a7272408e89fb1567444bb",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 0,
+      "name_length": 64,
+      "output_length": 256,
+      "output_sha256": "bac776f8b29d0519d677902deb7345769dad250a2789b2b13dc74987e2d8f457",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 0,
+      "name_length": 80,
+      "output_length": 256,
+      "output_sha256": "ed05e9353b781b5acaa8c0fe323d5f6343a32de0b0e23e458467f95e39d0697e",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 1,
+      "name_length": 5,
+      "output_length": 257,
+      "output_sha256": "2b1c175970754c0548c48ea491abf889d72f1bfebe1f506d61a4629b6b362bc9",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 1,
+      "name_length": 64,
+      "output_length": 257,
+      "output_sha256": "4ba6b4acfcb1a12ccebcd8d32531a8fae1a759b003d3225862f5c84fa323646d",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 1,
+      "name_length": 80,
+      "output_length": 257,
+      "output_sha256": "103e0e957f8bfe39f0538a6e7565001636836df00033cb9f8a109f56e514157e",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 255,
+      "name_length": 5,
+      "output_length": 511,
+      "output_sha256": "3ce99cd1505cace6c0762ef95f3396c7bdd8672fde2e420a6ffa1089569ad856",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 255,
+      "name_length": 64,
+      "output_length": 511,
+      "output_sha256": "7ae60fab1385e3d334144d741d36f632ad39be4a0bcb37aa880645e97c24071b",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 255,
+      "name_length": 80,
+      "output_length": 511,
+      "output_sha256": "aa54fb4dfeb7728df94f9d11366e97869a6537ef52f31e2bb883c4843df6e769",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 4096,
+      "name_length": 5,
+      "output_length": 4352,
+      "output_sha256": "497374dbd128e132deb00847ed7bd463519708b0138dd4b12453da80fa6c7e12",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 4096,
+      "name_length": 64,
+      "output_length": 4352,
+      "output_sha256": "ea054022bc144adf8fa0c7c5d4be82ca8aaa8a2ff261459bfdd15aa1c83ab813",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 0,
+      "input_length": 4096,
+      "name_length": 80,
+      "output_length": 4352,
+      "output_sha256": "2a87624f975ad0b60d8d2c0ebba3f9ee23e46daedec95070d81043748f312239",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 0,
+      "name_length": 5,
+      "output_length": 256,
+      "output_sha256": "a51fd16e0c03bf7999f46e0b383ed973a6e05c2b927d82fad44721ee9dc084cd",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 0,
+      "name_length": 64,
+      "output_length": 256,
+      "output_sha256": "13256c9d7382cea1e989273d9f4c15903c17866fae0256ca5265ba4fec1947d2",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 0,
+      "name_length": 80,
+      "output_length": 256,
+      "output_sha256": "08b7f63a4295f0cfc289db4ba7c39feef98b17263305bb911ca6a01c8d406259",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 1,
+      "name_length": 5,
+      "output_length": 257,
+      "output_sha256": "f6d91d4182387ecde73fbfd2608e0ab2d76497d54544b17a76765bd0999a40c3",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 1,
+      "name_length": 64,
+      "output_length": 257,
+      "output_sha256": "89215ddaffe212c9606154e7c2127f9d1c233c1a6da68b3bc86ff8408f3bd5cd",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 1,
+      "name_length": 80,
+      "output_length": 257,
+      "output_sha256": "3e3cb2da5ed197fc13d2df2865e9834be42e96272ffde2f2b703c88454c60718",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 255,
+      "name_length": 5,
+      "output_length": 511,
+      "output_sha256": "dba2e1662f20941ec0a5c0570f9f3b04936a41ecf0361a2beb02a3b0c27b0dc8",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 255,
+      "name_length": 64,
+      "output_length": 511,
+      "output_sha256": "a3c65ccd5e42ff6a1a32746271eca7c2ebd5ea6215659e219644764c419df44c",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 255,
+      "name_length": 80,
+      "output_length": 511,
+      "output_sha256": "0e8c6276687cd9dceb2535225fdcca4fb5e30b82e22d2563ef1725d01dc7d4a9",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 4096,
+      "name_length": 5,
+      "output_length": 4352,
+      "output_sha256": "47944c7edbc783bc42732677f903dbadc537cd67be855be7765c7c9d12cefd7d",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 4096,
+      "name_length": 64,
+      "output_length": 4352,
+      "output_sha256": "0d678139d24e90e06606dda4be5fa1e0ac79587559b18032cbf1bc315038fa9a",
+      "matches": true
+    },
+    {
+      "header_size": 256,
+      "codec_type": 1,
+      "input_length": 4096,
+      "name_length": 80,
+      "output_length": 4352,
+      "output_sha256": "78d2944f5573d8082e4d3a9213661ee194f0447f48e50654560d0a295caa8fc4",
+      "matches": true
+    }
+  ],
+  "unresolved": [
+    "Physical acceptance/playback of an independently encoded A30 file",
+    "Firmware maximum clip size/duration and exact SBC encoder/frame constraints",
+    "Meaning of allocator slots 0/1 versus one-file product UI",
+    "Firmware behavior for locally chosen media IDs and metadata",
+    "Full lifecycle/stream reassembly, resume, interruption, replacement and cancellation verification",
+    "Snore characteristic payload and adaptive-masking semantics for arbitrary imported audio"
+  ],
+  "summary": {
+    "routing_config_cases": 14,
+    "bes_control_builder_cases": 16,
+    "local_mode_builder_cases": 2,
+    "native_container_cases": 48,
+    "network_requests": 0,
+    "device_commands_sent": 0,
+    "app_code_changed": false
+  }
+}

@@ -208,3 +208,5 @@ The online catalogue and per-product TD/JavaScript files are a separate complete
 External reproduction: `per-model-analysis/` under the research root holds `DexProtocolIndex.java`, `map_protocol_routes.py`, `extract_static_prefixes.py`, `ControlFactoryProbe.java`, `map_control_sources.py`, `LegacyPayloadProbe.java`, `extract_eq_vectors.py` and this document generator. All tools and vendor source stay outside Git.
 
 [Model EQ selections and normalized filter payloads](EQ_MODEL_SELECTION_5_0_35.md) adds provider/holder selection, table-role bindings, predicate checks and offline payload cases.
+
+[Sleep A30 file writing and offline playback](SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md) documents the D1301/D1301S preparation/BES path, synthetic checks and remaining transfer/recording gaps.

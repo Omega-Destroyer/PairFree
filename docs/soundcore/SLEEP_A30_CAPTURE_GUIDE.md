@@ -1,5 +1,7 @@
 # Sleep A30: recording an audio transfer for PairFree
 
+**Maintainer update, 2026-11-15:** The [restored-app protocol work](SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md#9-recording-filter-audit-and-capture-implications) identifies a separate BES SPP channel and a 256-byte container. The existing filter's 128-byte recognizer and normal-channel fallback do not establish complete coverage of that path. Before requesting a new transfer recording, provide a build whose filtered report supports those details; the documentation change alone does not supply that build. A report without transfer diagnostics may reflect this filter gap. Continue to request only the filtered text report, never a raw snoop file or Android ZIP.
+
 Thank you for helping investigate custom audio uploads. We need a recording of the **official
 Soundcore app transferring its own sounds to your Sleep A30**. Use Soundcore's normal transfer
 controls; PairFree will filter the resulting report on your phone.

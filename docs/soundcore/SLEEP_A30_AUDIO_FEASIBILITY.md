@@ -3,6 +3,16 @@
 Research date: **2026-11-09**. Target: **Soundcore Sleep A30, D1301**. This is a research
 assessment; it adds no upload implementation and reports no successful upload to real earbuds.
 
+## Updated findings: 2026-11-15
+
+The restored 5.0.35-435 app now supplies a substantially more complete [A30 upload and offline-playback specification](SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md), with [numeric evidence and checks](SLEEP_A30_UPLOAD_EVIDENCE_5_0_35.json). Use that specification for current protocol work. The original 6.4.0 investigation below remains historical evidence; its statements that the A30 caller, transfer commands and app-side limits were unknown have been superseded in part.
+
+The recovered A30 path prepares a 256-byte-header container and uses a separate BES audio-transfer SPP service. Forty-eight executions of the current native writer matched an independent reconstruction. The app has a 1,024,000-byte re-encoding threshold and SBC/AAC preparation branches capped at 60/10 seconds respectively; these are app policies, not established firmware maxima. Local playback mode is distinct from the official app's network-gated upload workflow. Physical acceptance of custom files and locally assigned IDs remains unverified.
+
+The existing capture filter recognizes the older 128-byte container and does not establish classification of the separate BES channel. See the new specification's recording-filter audit before requesting a transfer capture. No uploader, saved-file library or recorder update is implemented by these research documents.
+
+## Historical 6.4.0 assessment
+
 For an owner's next capture, use the [step-by-step A30 Bluetooth recording guide](SLEEP_A30_CAPTURE_GUIDE.md).
 The recorder now exports safe transfer diagnostics through PairFree's normal public text report;
 raw logs and full Android bug reports are not requested. See the recording scope in section 13

@@ -467,11 +467,19 @@ nor PairFree reads.
 
 ## 13. Sleep A30 (D1301): custom local audio research
 
-The [custom-audio feasibility assessment](SLEEP_A30_AUDIO_FEASIBILITY.md) records the 2026-11-09
-app/native investigation and a proposed saved-file library. The A30 holds one local audio file.
-The app's generic SBC container writer was reproduced in isolation, but its A30 use, accepted
-encoding, transfer commands and maximum clip size/duration remain unverified. No audio uploader
-is implemented or hardware-tested by that assessment; existing D1301 settings are separate.
+The current [A30 file-upload and offline-playback specification](SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md)
+traces restored 5.0.35-435 code, superseding part of the [earlier feasibility assessment](SLEEP_A30_AUDIO_FEASIBILITY.md).
+It documents preparation, the 256-byte native container, separate BES SPP service, control/ACK
+messages, segment/retry behavior, final activation and inventory refresh. Evidence includes 48
+native container comparisons, 14 routing/config cases, 16 BES control-builder cases and two mode
+builder cases. These do not establish physical acceptance of a custom file or a complete transfer.
+
+The vendor app's 1,024,000-byte re-encoding threshold and SBC/AAC 60/10-second preparation caps
+are app policies, not verified firmware maxima. Its upload entry requires network access;
+earbud Local playback and PairFree's proposed offline saved-file library are separate. Local mode
+uses ordinary `01 A9` with payload 1; Bluetooth mode uses 0. The app's allocator has candidates
+0 and 1, whose relation to the one-local-file product UI remains unresolved. No uploader or saved
+library is implemented by this research.
 
 **Recording support:** PairFree's on-phone snoop filter now retains timing, sizes and at most
 four preview bytes for unknown framed Soundcore messages, plus metadata for unframed data on a
@@ -484,8 +492,10 @@ private. D1301 listening/default/sleep-switch controls from OpenSCQ30 have recor
 bounded body sizes in `commands.json`; these entries add no probes or settings.
 
 The [capture guide](SLEEP_A30_CAPTURE_GUIDE.md) uses PairFree's filtered public report rather
-than requesting raw files. This needs a build containing these recorder changes. A separate
-unidentified transfer channel or another container format still requires further app analysis.
+than requesting raw files. The existing recognizer requires a 128-byte header and the raw fallback
+requires an already identified normal Soundcore channel: it cannot be assumed to decode this
+separate BES channel or the 256-byte header. The new specification lists the required recorder
+follow-up. This documentation update does not implement it or request raw logs as a workaround.
 
 ## A3953 (Liberty 4): the state reply as Soundcore 3.3.0 reads it (2026-11-12)
 

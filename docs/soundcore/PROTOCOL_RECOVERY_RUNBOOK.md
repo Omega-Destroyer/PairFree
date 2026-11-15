@@ -76,6 +76,8 @@ Commit only derived docs/data on the isolated research branch. Record the input 
 
 ## Native declarations and per-model follow-up
 
+**2026-11-15 recovery path:** [Offline instruction-store recovery](OFFLINE_UNPACK_5_0_35.md) now restores all 297,210 marked methods across 23 DEX files without completing the Android loader. It documents the native bootstrap, inflater oracle, complete record parsing, 49,460 withheld-method comparisons and reproducible external scripts. Use its `catalogue-security/native-offline-restored/` and `catalogue-security/offline-restored-jadx/` trees for further analysis. This supersedes dependence on additional runtime class captures for instruction-store bodies; it does not recover declared native methods or prove cloud authentication.
+
 Zero instruction-store markers only measures restoration of that protection mechanism. The original 2,984-class selection also contains **188 declared native methods in 17 classes**, mainly activities, popups and lifecycle code. It must not be described as full recovery of those methods. The [per-model evidence](MODEL_FEATURES_5_0_35.md) records 165 compiled-registry keys, declared home-VM bounds, reachable home-card factories, explicit serializer routes, 17 legacy More-panel branches and A3028/A3028CC firmware-dependent manager migration. The latest source/mapping directory for this follow-up is `C:/Users/Nima/AppData/Local/PairFreeResearch/soundcore-feature-mapping-2026-11-13/`.
 
 

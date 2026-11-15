@@ -1,5 +1,7 @@
 # Soundcore Things transport follow-up
 
+**Update, 2026-11-15:** The [offline unpack](OFFLINE_UNPACK_5_0_35.md) has recovered the previously protected security helpers. Direct Soundcore code now confirms several transport choices described below as cross-app inferences. The historical evidence table retains its earlier scope; the guest script and catalogue 401 are unchanged, and no new live request was made.
+
 The owner-run guest probe accepted `passport/create_guest`, then received HTTP 401 at `app/things/get_product_list`. That observation validates guest response parsing and local EC-point agreement, but not acceptance of the guest signature by the catalogue service. The previous client omitted the SDK's separate transport identity, encryption and signature. The exact server reason for the 401 was not captured and must not be stated as proven.
 
 The external probe has a materially different **experimental** profile, `guest-mega-v1`: guest creation, a separate transport key exchange, then one encrypted/signed catalogue request. The owner subsequently tested this profile. Its saved report establishes the results below. It never retries or substitutes another host after refusal.

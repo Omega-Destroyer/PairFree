@@ -1,5 +1,7 @@
 # Soundcore 5.0.35: local security implementation status
 
+**Recovery update, 2026-11-15:** [Offline unpacking](OFFLINE_UNPACK_5_0_35.md) has now restored the 279 missing instruction-store helper methods. The earlier packed-body limitation below is historical. Login/download interoperability is still unresolved; the existing personal-login gate and last catalogue 401 have not changed.
+
 **Status: incomplete. The encrypted login/download client is not ready.** This pass adds verified signing components and an EC reference implementation, not a working replacement for the vendor's full security stack. The launcher now stops before requesting credentials or making network calls while required pieces remain unverified. `--security-status` prints the exact state; `--legacy-unsigned` explicitly selects the old diagnostic that the server previously refused.
 
 ## Authorization and scope

@@ -1,5 +1,7 @@
 # Soundcore 5.0.35: focused helper recovery checkpoint
 
+**Update, 2026-11-15:** [Offline native recovery](OFFLINE_UNPACK_5_0_35.md) now restores all 297,210 instruction-store methods, including the 279 missing helper methods indexed below. This document preserves the preceding unsuccessful runtime experiments; its recovery blocker has been superseded. Catalogue authentication remains unresolved.
+
 The owner selected recovery of the remaining helpers in this APK, rather than inspecting another app version. This pass stayed within that scope. **No missing authentication method body was recovered, no catalogue-authentication fix is claimed, and no vendor-server request was made.** The guest downloader remains at the previously recorded catalogue 401.
 
 ## Exact recovery targets

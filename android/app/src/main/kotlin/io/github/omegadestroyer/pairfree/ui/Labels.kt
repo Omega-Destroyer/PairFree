@@ -114,6 +114,8 @@ fun soundcoreActionName(name: String): String = when (name) {
     "noise_canceling" -> stringResource(R.string.action_noise_cancelling)
     "change_mode" -> stringResource(R.string.action_change_mode)
     "white_noise" -> stringResource(R.string.action_white_noise)
+    "translate" -> stringResource(R.string.action_translate)
+    "ask_answer" -> stringResource(R.string.action_ask_answer)
     else -> name
 }
 

@@ -33,27 +33,27 @@ OpenSCQ30 lacks.
 <table>
 <tr><th>Model</th><th>Number</th><th>Status</th><th>Battery</th><th>Noise control</th><th>Equalizer</th><th>HearID</th><th>Touch controls</th><th>Two devices</th><th>LDAC</th><th>Game mode</th><th>3D / spatial</th><th>Wear detection</th><th>Touch tone</th><th>Auto power-off</th></tr>
 <tr><td>Anker AeroClip 2</td><td>D1105</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>—</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Anker Sleep Earbuds 4</td><td>D1303</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Anker Sleep Earbuds 4 Pro</td><td>D1302</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Anker soundcore Q31i, soundcore Q31i</td><td>D1404</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Anker Sleep Earbuds 4</td><td>D1303</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>—</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
+<tr><td>Anker Sleep Earbuds 4 Pro</td><td>D1302</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>—</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
+<tr><td>Anker soundcore Q31i, soundcore Q31i</td><td>D1404</td><td>Not tested</td><td>One</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Anker Space 2 Pro</td><td>D1406</td><td>Not tested</td><td>One</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Anker Space 2 Pro Max</td><td>D1407</td><td>Not tested</td><td>One</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Liberty Buds</td><td>D1200</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>—</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
 <tr><td>Liberty Buds 2</td><td>D1206</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>—</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>A20i, soundcore A25i</td><td>A3948</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Checked</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
-<tr><td>soundcore A30i</td><td>A3958</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>soundcore A30i</td><td>A3958</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>AeroClip</td><td><a href="../../data/soundcore/reports/A3388_02.49.txt">A3388</a></td><td>Tested</td><td>Each earbud, case</td><td>—</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
 <tr><td>soundcore AeroClip 2 Pro</td><td>D1102</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>soundcore AeroFit</td><td>A3872</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>—</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>soundcore AeroFit 2, AeroFit 2 AI Assistant</td><td>A3874</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>soundcore AeroFit 2 Pro</td><td>A3875</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>soundcore AeroFit 2 Pro</td><td>A3875</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>soundcore AeroFit Pro</td><td>A3871</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>—</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>C30i</td><td>A3330</td><td>Checked</td><td>Each earbud, case</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Checked</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
 <tr><td>soundcore C40i</td><td>A3331</td><td>Not tested</td><td>Each earbud, case</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Checked</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td></tr>
 <tr><td>C50i</td><td>D1101</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
-<tr><td>Frames</td><td>A3600</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Frames</td><td>A3600</td><td>Not tested</td><td>Each earbud</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>soundcore H30i</td><td>A3012</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>soundcore K20i</td><td>A3994</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>soundcore K20i</td><td>A3994</td><td>Not tested</td><td>Each earbud</td><td>—</td><td>—</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>Liberty 2</td><td>A3913</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Liberty 2 Pro</td><td>A3909</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Liberty 2 Pro+</td><td>A3930</td><td>Checked</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
@@ -62,8 +62,8 @@ OpenSCQ30 lacks.
 <tr><td>Liberty 4 NC</td><td>A3947</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>Liberty 4 Pro</td><td>A3954</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td></tr>
 <tr><td>Liberty 5</td><td>A3957</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>soundcore Liberty 5 Pro</td><td>D1203</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>soundcore Liberty 5 Pro Max</td><td>D1204</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>soundcore Liberty 5 Pro</td><td>D1203</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>—</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>soundcore Liberty 5 Pro Max</td><td>D1204</td><td>Not tested</td><td>Each earbud, case</td><td>✅</td><td>—</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Liberty Air 2 Pro</td><td>A3951</td><td>Checked</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
 <tr><td>Liberty Air2, Liberty Air 2</td><td>A3910</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Life 2 Neo, Q10i</td><td>A3033</td><td>Checked</td><td>One</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>—</td></tr>
@@ -114,6 +114,6 @@ OpenSCQ30 lacks.
 <tr><td>soundcore V40i</td><td>A3878</td><td>Not tested</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
 <tr><td>Vortex</td><td>A3031</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>VR P10</td><td>A3850</td><td>Checked</td><td>Each earbud</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Space 2</td><td>D1402</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Space 2</td><td>D1402</td><td>Not tested</td><td>One</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
 </table>
 <!-- soundcore-table:end -->

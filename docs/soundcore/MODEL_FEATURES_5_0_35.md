@@ -1,5 +1,7 @@
 # Soundcore 5.0.35-435: per-model feature evidence
 
+**2026-11-15 expansion:** [Full restored-code route analysis](MODEL_PROTOCOL_ROUTES_5_0_35.md) follows all 165 keys beyond this earlier home-card matrix, including legacy inline serializers, direct SPP devices, component roles, exact control-factory dispatch, action IDs and additional EQ evidence. This matrix retains its original extraction scope; a cell marked unmapped below is not the latest route inventory.
+
 This maps all **165 compiled-registry keys** (161 app registrations plus four SDK-only keys). Keys include aliases and separate cases; they are not a count of distinct earbud products. The online Things catalogue can add other products. This is research evidence for later implementation, not a claim of complete feature coverage or tested hardware support.
 
 ## How to read the evidence

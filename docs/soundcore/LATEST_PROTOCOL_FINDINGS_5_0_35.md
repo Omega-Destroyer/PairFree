@@ -1,5 +1,7 @@
 # Soundcore 5.0.35-435: recovered protocol findings
 
+**2026-11-15 expansion:** [Per-model route evidence](MODEL_PROTOCOL_ROUTES_5_0_35.md), [control mappings](CONTROL_MAPPING_5_0_35.md) and [additional legacy layouts](LEGACY_PROTOCOL_DETAILS_5_0_35.md) now use the complete restored instruction store. In particular, legacy A3909 04/81 carries one function byte, and its HearID time is big-endian; the common-writer descriptions below must not be generalized to those legacy methods.
+
 This document records findings from the latest recovered vendor Java, separately from 3.3/OpenSCQ30 evidence. [Recovery and virtual check limits](APK_RECOVERY_5_0_35.md) apply throughout. Source identifiers refer to the external `live-jadx/sources` tree.
 
 ## Packet construction

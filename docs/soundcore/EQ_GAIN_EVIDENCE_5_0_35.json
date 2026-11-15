@@ -1,0 +1,3691 @@
+{
+  "scope": "Recovered source literal EQ positions plus exact DEX builder call references; not a per-model preset assignment. Complements existing runtime EQ_TABLES_5_0_35.csv.",
+  "vectors": [
+    {
+      "class": "com.soundcore.eq.conf.A3956EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        3.0,
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.A3956EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        -0.9,
+        2.4,
+        3.0,
+        5.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.A3956EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        6.0,
+        2.0,
+        -1.5,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.A3956EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        3.0,
+        4.0,
+        -5.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        4.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        4.0,
+        4.0,
+        2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        6.0,
+        5.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        -3.0,
+        -2.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        0.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 6,
+      "positions": [
+        2.0,
+        -3.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 7,
+      "positions": [
+        2.0,
+        1.0,
+        3.0,
+        3.0,
+        2.0,
+        -2.0,
+        -4.0,
+        -5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 8,
+      "positions": [
+        3.0,
+        2.0,
+        -2.0,
+        2.0,
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 9,
+      "positions": [
+        -2.0,
+        -2.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 10,
+      "positions": [
+        2.0,
+        3.0,
+        -1.0,
+        -1.0,
+        2.0,
+        -1.0,
+        2.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 11,
+      "positions": [
+        2.0,
+        2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 12,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        3.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 13,
+      "positions": [
+        -1.0,
+        2.0,
+        4.0,
+        3.0,
+        0.0,
+        -2.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 14,
+      "positions": [
+        0.0,
+        3.0,
+        3.0,
+        2.0,
+        4.0,
+        5.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 15,
+      "positions": [
+        -1.0,
+        1.0,
+        3.0,
+        3.0,
+        1.0,
+        -1.0,
+        -2.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 16,
+      "positions": [
+        6.0,
+        2.0,
+        -2.0,
+        -2.0,
+        2.0,
+        3.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 17,
+      "positions": [
+        3.0,
+        2.0,
+        -1.0,
+        -1.0,
+        1.0,
+        3.0,
+        4.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 18,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 19,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 20,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        0.0,
+        -1.0,
+        -5.0,
+        5.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 21,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        -6.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        3.2,
+        -0.6,
+        -1.8,
+        2.0,
+        -0.72,
+        -5.2,
+        1.2,
+        0.48,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        6.0,
+        5.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        0.8,
+        -1.6,
+        0.2,
+        0.4,
+        0.92,
+        -4.0,
+        0.8,
+        -0.8,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 6,
+      "positions": [
+        2.0,
+        -3.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 7,
+      "positions": [
+        2.0,
+        1.0,
+        3.0,
+        3.0,
+        2.0,
+        -2.0,
+        -4.0,
+        -5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 8,
+      "positions": [
+        3.0,
+        2.0,
+        -2.0,
+        2.0,
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 9,
+      "positions": [
+        -2.0,
+        -2.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 10,
+      "positions": [
+        2.0,
+        3.0,
+        -1.0,
+        -1.0,
+        2.0,
+        -1.0,
+        2.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 11,
+      "positions": [
+        2.0,
+        2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 12,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        3.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 13,
+      "positions": [
+        -1.0,
+        2.0,
+        4.0,
+        3.0,
+        0.0,
+        -2.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 14,
+      "positions": [
+        0.0,
+        3.0,
+        3.0,
+        2.0,
+        4.0,
+        5.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 15,
+      "positions": [
+        -1.0,
+        1.0,
+        3.0,
+        3.0,
+        1.0,
+        -1.0,
+        -2.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 16,
+      "positions": [
+        6.0,
+        2.0,
+        -2.0,
+        -2.0,
+        2.0,
+        3.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 17,
+      "positions": [
+        4.0,
+        -0.6,
+        -2.4,
+        1.6,
+        -1.04,
+        -4.52,
+        2.7,
+        0.48,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 18,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 19,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 20,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        0.0,
+        -1.0,
+        -5.0,
+        5.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 21,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        -6.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        5.3,
+        -2.1,
+        -0.9,
+        -1.6,
+        1.2,
+        -3.9,
+        -3.2,
+        0.2,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        6.0,
+        5.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        -3.0,
+        -2.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        0.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 6,
+      "positions": [
+        2.0,
+        -3.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 7,
+      "positions": [
+        2.0,
+        1.0,
+        3.0,
+        3.0,
+        2.0,
+        -2.0,
+        -4.0,
+        -5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 8,
+      "positions": [
+        3.0,
+        2.0,
+        -2.0,
+        2.0,
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 9,
+      "positions": [
+        -2.0,
+        -2.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 10,
+      "positions": [
+        2.0,
+        3.0,
+        -1.0,
+        -1.0,
+        2.0,
+        -1.0,
+        2.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 11,
+      "positions": [
+        2.0,
+        2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 12,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        3.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 13,
+      "positions": [
+        -1.0,
+        2.0,
+        4.0,
+        3.0,
+        0.0,
+        -2.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 14,
+      "positions": [
+        0.0,
+        3.0,
+        3.0,
+        2.0,
+        4.0,
+        5.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 15,
+      "positions": [
+        -1.0,
+        1.0,
+        3.0,
+        3.0,
+        1.0,
+        -1.0,
+        -2.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 16,
+      "positions": [
+        6.0,
+        2.0,
+        -2.0,
+        -2.0,
+        2.0,
+        3.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 17,
+      "positions": [
+        3.0,
+        2.0,
+        -1.0,
+        -1.0,
+        1.0,
+        3.0,
+        4.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 18,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 19,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 20,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        0.0,
+        -1.0,
+        -5.0,
+        5.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 21,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        -6.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        4.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        4.0,
+        4.0,
+        2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        6.0,
+        5.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        -3.0,
+        -2.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        0.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 6,
+      "positions": [
+        2.0,
+        -3.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 7,
+      "positions": [
+        2.0,
+        1.0,
+        3.0,
+        3.0,
+        2.0,
+        -2.0,
+        -4.0,
+        -5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 8,
+      "positions": [
+        3.0,
+        2.0,
+        -2.0,
+        2.0,
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 9,
+      "positions": [
+        -2.0,
+        -2.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 10,
+      "positions": [
+        2.0,
+        3.0,
+        -1.0,
+        -1.0,
+        2.0,
+        -1.0,
+        2.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 11,
+      "positions": [
+        2.0,
+        2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 12,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        3.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 13,
+      "positions": [
+        -1.0,
+        2.0,
+        4.0,
+        3.0,
+        0.0,
+        -2.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 14,
+      "positions": [
+        0.0,
+        3.0,
+        3.0,
+        2.0,
+        4.0,
+        5.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 15,
+      "positions": [
+        -1.0,
+        1.0,
+        3.0,
+        3.0,
+        1.0,
+        -1.0,
+        -2.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 16,
+      "positions": [
+        3.0,
+        -1.0,
+        -5.0,
+        -5.0,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        -3.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 17,
+      "positions": [
+        3.0,
+        2.0,
+        -1.0,
+        -1.0,
+        1.0,
+        3.0,
+        4.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 18,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 19,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 20,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        0.0,
+        -1.0,
+        -5.0,
+        5.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 21,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        -6.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        6.0,
+        5.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        -2.0,
+        -2.0,
+        -2.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.C50iEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.C50iEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.C50iEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        6.0,
+        5.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.C50iEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.C50iEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.C50iEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        -2.0,
+        -2.0,
+        -2.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1205EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        3.0,
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1205EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        -1.5,
+        1.5,
+        2.5,
+        2.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1205EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        6.0,
+        2.0,
+        -1.5,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1205EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        3.0,
+        4.0,
+        -5.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1206EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        1.5,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1206EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        -0.9,
+        2.4,
+        3.0,
+        5.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1206EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        6.0,
+        2.0,
+        -1.5,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1206EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        3.0,
+        4.0,
+        -5.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.D1206EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        1.0,
+        2.0,
+        3.5,
+        3.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        6.0,
+        -1.0,
+        1.0,
+        0.0,
+        1.0,
+        -1.0,
+        1.0,
+        1.5,
+        1.5
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        6.0,
+        -1.0,
+        1.0,
+        0.0,
+        1.0,
+        -1.0,
+        2.0,
+        3.5,
+        1.5
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        5.0,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        -1.0,
+        1.0,
+        1.5,
+        1.5
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        7.0,
+        3.0,
+        2.0,
+        0.0,
+        1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        7.0,
+        3.0,
+        2.0,
+        0.0,
+        1.0,
+        -1.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        6.0,
+        3.0,
+        1.0,
+        0.0,
+        1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 6,
+      "positions": [
+        3.0,
+        0.0,
+        2.0,
+        2.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 7,
+      "positions": [
+        3.0,
+        0.0,
+        2.0,
+        2.0,
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 8,
+      "positions": [
+        2.0,
+        0.0,
+        1.0,
+        2.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 9,
+      "positions": [
+        2.0,
+        -1.0,
+        0.0,
+        -1.0,
+        0.0,
+        -2.0,
+        0.0,
+        -1.0,
+        -1.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 10,
+      "positions": [
+        2.0,
+        -1.0,
+        0.0,
+        -1.0,
+        0.0,
+        -2.0,
+        1.0,
+        1.0,
+        -1.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 11,
+      "positions": [
+        1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        0.0,
+        -2.0,
+        0.0,
+        -1.0,
+        -1.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 1,
+      "positions": [
+        4.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        4.0,
+        4.0,
+        2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 2,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 3,
+      "positions": [
+        -4.0,
+        -3.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 4,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 5,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 6,
+      "positions": [
+        2.0,
+        -3.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 7,
+      "positions": [
+        2.0,
+        1.0,
+        3.0,
+        3.0,
+        2.0,
+        -2.0,
+        -4.0,
+        -5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 8,
+      "positions": [
+        3.0,
+        2.0,
+        -2.0,
+        2.0,
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 9,
+      "positions": [
+        -2.0,
+        -2.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 10,
+      "positions": [
+        2.0,
+        3.0,
+        -1.0,
+        -1.0,
+        2.0,
+        -1.0,
+        2.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 11,
+      "positions": [
+        2.0,
+        2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 12,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        3.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 13,
+      "positions": [
+        -1.0,
+        2.0,
+        4.0,
+        3.0,
+        0.0,
+        -2.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 14,
+      "positions": [
+        0.0,
+        3.0,
+        3.0,
+        2.0,
+        4.0,
+        5.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 15,
+      "positions": [
+        -1.0,
+        1.0,
+        3.0,
+        3.0,
+        1.0,
+        -1.0,
+        -2.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 16,
+      "positions": [
+        6.0,
+        2.0,
+        -2.0,
+        -2.0,
+        2.0,
+        3.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 17,
+      "positions": [
+        3.0,
+        2.0,
+        -1.0,
+        -1.0,
+        1.0,
+        3.0,
+        4.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 18,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 19,
+      "positions": [
+        -3.0,
+        -2.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        0.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 20,
+      "positions": [
+        -2.0,
+        -2.0,
+        -2.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.EQGainValues",
+      "source_method": "c",
+      "constructor_ordinal": 21,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        -6.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        4.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        4.0,
+        4.0,
+        2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        0.0,
+        -5.0,
+        -6.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 6,
+      "positions": [
+        2.0,
+        -3.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 7,
+      "positions": [
+        2.0,
+        1.0,
+        3.0,
+        3.0,
+        2.0,
+        -2.0,
+        -4.0,
+        -5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 8,
+      "positions": [
+        3.0,
+        2.0,
+        -2.0,
+        2.0,
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 9,
+      "positions": [
+        -2.0,
+        -2.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 10,
+      "positions": [
+        2.0,
+        3.0,
+        -1.0,
+        -1.0,
+        2.0,
+        -1.0,
+        2.0,
+        3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 11,
+      "positions": [
+        2.0,
+        2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 12,
+      "positions": [
+        0.0,
+        0.0,
+        -2.0,
+        -2.0,
+        -2.0,
+        0.0,
+        3.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 13,
+      "positions": [
+        -1.0,
+        2.0,
+        4.0,
+        3.0,
+        0.0,
+        -2.0,
+        2.0,
+        1.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 14,
+      "positions": [
+        0.0,
+        3.0,
+        3.0,
+        2.0,
+        4.0,
+        5.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 15,
+      "positions": [
+        -1.0,
+        1.0,
+        3.0,
+        3.0,
+        1.0,
+        -1.0,
+        -2.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 16,
+      "positions": [
+        6.0,
+        2.0,
+        -2.0,
+        -2.0,
+        2.0,
+        3.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 17,
+      "positions": [
+        3.0,
+        2.0,
+        -1.0,
+        -1.0,
+        1.0,
+        3.0,
+        4.0,
+        5.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 18,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 19,
+      "positions": [
+        -3.0,
+        -2.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        0.0,
+        -3.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 20,
+      "positions": [
+        -2.0,
+        -2.0,
+        -2.0,
+        -1.0,
+        1.0,
+        2.0,
+        2.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.K20IEQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 21,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        -2.0,
+        -3.0,
+        -4.0,
+        -4.0,
+        -6.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        4.0,
+        3.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        6.0,
+        5.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        3.0,
+        3.0,
+        -2.0,
+        -2.0,
+        0.0,
+        2.0,
+        3.0,
+        4.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        -3.0,
+        2.0,
+        4.0,
+        4.0,
+        3.0,
+        2.0,
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "position_count": 9,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        3.0,
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        -0.9,
+        2.4,
+        3.0,
+        5.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        6.0,
+        2.0,
+        -1.5,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        3.0,
+        4.0,
+        -5.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        3.0,
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        3.0,
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 6,
+      "positions": [
+        -0.9,
+        2.4,
+        3.0,
+        5.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 7,
+      "positions": [
+        6.0,
+        2.0,
+        -1.5,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 8,
+      "positions": [
+        3.0,
+        4.0,
+        -5.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 0,
+      "positions": [
+        3.0,
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 1,
+      "positions": [
+        3.0,
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 2,
+      "positions": [
+        -0.9,
+        2.4,
+        3.0,
+        5.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 3,
+      "positions": [
+        6.0,
+        2.0,
+        -1.5,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 4,
+      "positions": [
+        3.0,
+        4.0,
+        -5.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 5,
+      "positions": [
+        3.0,
+        1.0,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 6,
+      "positions": [
+        -0.9,
+        2.4,
+        3.0,
+        5.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 7,
+      "positions": [
+        6.0,
+        2.0,
+        -1.5,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    },
+    {
+      "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+      "source_method": "a",
+      "constructor_ordinal": 8,
+      "positions": [
+        3.0,
+        4.0,
+        -5.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.0
+      ],
+      "position_count": 10,
+      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+    }
+  ],
+  "nonliteral_constructors": [],
+  "list_builder_links": [
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->a()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/A3956EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/A3956ResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/A3956ResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/A3956ResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/A3956ResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/A3956ResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->d()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew2EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew2EQResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew2EQResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew2EQResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew2EQResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew2EQResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->e()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew3EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew3EQResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew3EQResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew3EQResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew3EQResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew3EQResourceValues;->h()[Ljava/lang/String;",
+        "Lcom/soundcore/eq/conf/AeroNew3EQResourceValues;->i(I)I"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->f()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew4EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew4EQResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew4EQResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew4EQResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew4EQResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew4EQResourceValues;->h()[Ljava/lang/String;",
+        "Lcom/soundcore/eq/conf/AeroNew4EQResourceValues;->i(I)I"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->g()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew5EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew5EQResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew5EQResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew5EQResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew5EQResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew5EQResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->h()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew6EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/AeroNew6EQResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew6EQResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew6EQResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew6EQResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/AeroNew6EQResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->i()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/normalize/AeroNew7EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/normalize/AeroNew7EQResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/AeroNew7EQResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/AeroNew7EQResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/AeroNew7EQResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/AeroNew7EQResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->k()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/C50iEQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/C50iEQResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/C50iEQResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/C50iEQResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/C50iEQResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/C50iEQResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->l()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/normalize/D1204EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/normalize/D1204ResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/D1204ResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/D1204ResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/D1204ResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/D1204ResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->m()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/D1205EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/D1205ResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/D1205ResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/D1205ResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/D1205ResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/D1205ResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->n()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/D1206EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/D1206ResourceValues;->a()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/D1206ResourceValues;->c()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/D1206ResourceValues;->d()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/D1206ResourceValues;->f()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/D1206ResourceValues;->h()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->o()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/normalize/D1404EQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/normalize/D1404ResourceValues;->e()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/D1404ResourceValues;->g()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/D1404ResourceValues;->h()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/D1404ResourceValues;->j()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/normalize/D1404ResourceValues;->l()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->p()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/EQGainValues;->d()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/EQResourceValues;->e()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/EQResourceValues;->f()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/EQResourceValues;->h()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/EQResourceValues;->j()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    },
+    {
+      "method": "Lcom/soundcore/eq/conf/EQInfoListBuilder;->t()Ljava/util/ArrayList;",
+      "gain_calls": [
+        "Lcom/soundcore/eq/conf/K20IEQGainValues;->b()[Lcom/oceanwing/devicecmd/model/bean/EQWaveValueBean;"
+      ],
+      "resource_calls": [
+        "Lcom/soundcore/eq/conf/EQResourceValues;->e()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/EQResourceValues;->f()[[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/EQResourceValues;->h()[Ljava/lang/Integer;",
+        "Lcom/soundcore/eq/conf/EQResourceValues;->j()[Ljava/lang/String;"
+      ],
+      "version_calls": []
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "cases": [
+    {
+      "payload": "000206",
+      "case": "legacy-left-button",
+      "prefix": "08ee0000000481",
+      "matches": true
+    },
+    {
+      "payload": "010105",
+      "case": "legacy-right-button",
+      "prefix": "08ee0000000481",
+      "matches": true
+    },
+    {
+      "payload": "000201",
+      "case": "legacy-enable-gesture",
+      "prefix": "08ee0000000483",
+      "matches": true
+    },
+    {
+      "payload": "3412000102030405060708090a0b0c0d0e0f",
+      "case": "legacy-eight-band-EQ",
+      "prefix": "08ee0000000281",
+      "matches": true
+    },
+    {
+      "payload": "0102ff0000010203040508090a0b0c0d0e0f12345678",
+      "case": "legacy-HearID-big-endian-time",
+      "prefix": "08ee0000000382",
+      "matches": true
+    },
+    {
+      "case": "flare-unchecksummed-frame",
+      "frame_hex": "08ee00000001870a002a",
+      "matches": true
+    }
+  ],
+  "scope": "Five restored DEX payload serializers with wrapper interception, plus one complete Flare framer; synthetic beans/helpers; no transport, earbud or Android app execution"
+}

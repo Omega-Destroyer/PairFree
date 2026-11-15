@@ -614,7 +614,7 @@ class SoundcoreEqualizerTest {
     fun specsMatchTheData() {
         val withEq = devices.filter { "eq" in it }
         assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
-        assertEquals(50, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i and the A30i")
+        assertEquals(55, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i, the A30i, the Life Note C, the R50i VI, the P41i, the Sport X10 and the Life Q20+")
         for (d in withEq) {
             val eq = d.getValue("eq").jsonObject
             val spec = SoundcoreEqSpec.of(d.str("model"))!!
@@ -792,11 +792,11 @@ class SoundcoreModelsTest {
     @Test
     fun reportOnlyModels() {
         // Models only the Soundcore app's strings name: found by their service or name, with nothing to read but a report.
-        val sportX10 = "0cf12d31-fac3-4553-bd80-d6832e7b3961"
-        assertEquals(SoundcoreModels.Match("A3961", sportX10), SoundcoreModels.identify("soundcore Sport X10", listOf(sportX10)))
-        assertEquals(SoundcoreModels.Match("A3961", null), SoundcoreModels.identify("Soundcore Sport X10", emptyList()))
-        assertTrue(SoundcoreModels.model("A3961")!!.reportOnly)
-        assertTrue(SoundcoreLayout.of("A3961")!!.fields.isEmpty())
+        val lifeNc = "0cf12d31-fac3-4553-bd80-d6832e7b3201"
+        assertEquals(SoundcoreModels.Match("A3201", lifeNc), SoundcoreModels.identify("soundcore Life NC", listOf(lifeNc)))
+        assertEquals(SoundcoreModels.Match("A3201", null), SoundcoreModels.identify("Soundcore Life NC", emptyList()))
+        assertTrue(SoundcoreModels.model("A3201")!!.reportOnly)
+        assertTrue(SoundcoreLayout.of("A3201")!!.fields.isEmpty())
         assertTrue(!SoundcoreModels.model("A3953")!!.reportOnly, "the Liberty 4 is read from Soundcore 3.3.0")
         assertTrue(!SoundcoreModels.model("A3936")!!.reportOnly)
         // A Soundcore vendor service naming a number PairFree does not know at all: report only too.
@@ -928,7 +928,7 @@ class SoundcoreButtonsTest {
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(53, withButtons.size)
+        assertEquals(58, withButtons.size)
         for (d in devices) {
             // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
             // A3031's state holds them, but OpenSCQ30 does not offer them), and a recording adds the Sleep A20's.

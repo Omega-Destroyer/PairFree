@@ -163,6 +163,7 @@
     <string name="action_change_mode">Change mode</string>
     <string name="action_white_noise">White noise</string>
     <string name="action_translate">Translate</string>
+    <string name="action_recording">Recording</string>
     <string name="action_ask_answer">Ask or answer</string>
     <string name="slides">Slides</string>
     <string name="gesture_slide_up">Slide up</string>

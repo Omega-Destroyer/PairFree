@@ -112,6 +112,17 @@
     "white_noise": [
       [19, "white_noise"]
     ],
+    "d1102": [
+      [0, "volume_up"],
+      [1, "volume_down"],
+      [2, "previous_song"],
+      [3, "next_song"],
+      [5, "voice_assistant"],
+      [6, "play_pause"],
+      [7, "recording"],
+      [10, "translate"],
+      [11, "ask_answer"]
+    ],
     "a3956": [
       [0, "volume_up"],
       [1, "volume_down"],

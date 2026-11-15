@@ -538,44 +538,54 @@ The owner restored the packed business code of the Soundcore app 5.0.35-435 (`co
 on the local branch `research/soundcore-full-protocol` (`docs/soundcore/*_5_0_35.*` there, not part of `main`; vendor code and raw artifacts stay outside
 Git). What PairFree took from it, and what it did to the models and to pull request 42:
 
-- **Model list.** The app registers 165 keys (161 app registrations and four SDK-only ones). Every earbud and headphone among them that was not in
-  `devices.json` is now listed as a report-only model with the app's own label: A3004C (Q20i Plus), A3600 (Frames), A3875 (AeroFit 2 Pro), D1102
-  and D1105 (AeroClip 2 Pro and 2), D1200 and D1206 (Liberty Buds, 2), D1203 and D1204 (Liberty 5 Pro, Pro Max), D1205 (P42i), D1302 and D1303 (Sleep
-  Earbuds 4 Pro, 4), D1402, D1404, D1406 and D1407 (Space 2, Q31i, Space 2 Pro, Pro Max); the Sleep A30 Special is a name of the A30 (the same command
-  service and data source). PairFree finds them, asks for their state and offers a device report. The speakers and their cases are left out.
-  Four of the models that were report-only now have their layout, read from the restored parser and compared with a model PairFree already reads
-  (the same bytes in the same order, the same command service): the **C40i (A3331)** is the C30i's, with the C30i's surround byte skipped (a mode
-  number there) and no call buttons; the **V40i (A3878)** is the V20i's plus a bass up byte, without the light; the **Q20i Plus (A3004C)** has the
-  Q20i's bytes (battery and firmware only, since its commands go through a service of its own); the **Q21i NC (A300B)** is the Q20i's bytes plus the
-  dual connections switch (packet byte 50), the colour and the auto power off switch and index (from firmware 427), which the user's 61-byte reply in
-  issue #22 holds exactly (`readsTheQ21iNcReplyAsTheVendorParserDoes`). The same comparison gave layouts for the **Liberty Buds (D1200)**, which
-  reads the Liberty 5's (A3957) bytes up to the hearing protection and has its own tail (3D mode, touch lock, music rush, audio wake-up and AI
-  language, skipped; its command service differs from the Liberty 5's only in the manual noise level's range), the **P42i (D1205)** (a 34-byte
-  normalised EQ block, 111 HearID bytes, then a tail that begins as the P31i's; the reply adds up to the 228 bytes its parser needs) and the
-  **AeroFit family**: the A3871, A3872 and A3873 (one parser class, the V20i's head, six touch bytes, their command service the V20i's) and the
-  A3874 (head only, its own command service). The D1205 and A3874 offer no switches because their command services replace headers of the
-  shared writes. No battery scale is given for the D1200, D1205 or the AeroFit family: their parsers clamp the level (0 to 100, 0 to 9) but a clamp
-  is not a scale (the Liberty 5 and the Liberty 4 Pro share one clamp and differ in scale), so the battery shows once a report settles it. None is
-  tried on real earbuds. The rest of the new models' layouts are to do, not blocked; the closest known model is the Space One Pro (A3062) for the
-  D1402 (0.80 by parser steps).
-- **Tag-length-value models (D1105, D1206, D1406, D1407).** These answer `01 01` with records `tag, length, value` from the first byte
-  (`ParseCommonCmdUtils.a`), and pack switches into bits. `data/soundcore/devices.json` gives such a model a `tlv` list, which turns the records into
-  the fixed body its `state` fields describe: `[tag, at, n]` takes n bytes, `[tag, at, "bit", b]` a bit as 0 or 1, `"lo"` and `"hi"` a nibble,
-  `"pack"` the touch control's two bytes (with both earbuds in, with one) as OpenSCQ30's one nibble-packed byte, `"level"` and `"swap"` the nibble
-  forms the app's noise mode write uses; `tlv_private` lists the records that hold serial numbers and addresses (hidden in a report).
-  The records the three share: 1 host, 2 TWS, 3 and 4 (charging, level) per earbud, 5 and 6 firmware, 7 serial, 8 case (charging, level), 13 to 24 the
-  touch controls (single, double, triple, long, slide up, slide down; left then right), 25 auto power off, 26 and 27 switch bits, 36 to 38 the noise
-  mode, 39 the high volume limit, 44 spatial audio, 46 the modes the button cycles. The touch writes of these models are `04 8C` (side, gesture, the value
-  with both earbuds in, the value with one: `wide` in the button spec), and the noise mode write is the model's own: eight bytes on the Liberty Buds 2
-  (mode, manual level << 4 | 15, hear guard, automation, wind, 0, multi-scene, 0), six on the Space 2 pair, seven on the AeroClip 2. Offered:
-  the Liberty Buds 2's noise mode and touch controls, the AeroClip 2's touch controls (triple tap: white noise) and dual connections, the Space 2
-  pair's noise mode and high volume limit. Not offered: the `03 8A` equalizer, the switches whose screens were not read, the Space 2's one-button
-  records (72, 73), and the Sleep Earbuds 4 (D1302, D1303), whose records are the sleep products' own (50 to 106). None is tried on real earbuds.
-  A twin's bytes are never assumed from a name: each model's state parser is `AnalysisService.e1` in the restored `com.oceanwing.devicecmd.manager.product.<model>`
-  package. The ones checked read in sequence (A3954 and A3994 begin with the host byte, the TWS byte, two batteries and two charging flags, two firmware
-  strings of five bytes and the 16-byte serial, then the 22 EQ bytes and a length-prefixed button block), but they differ model by model (the A3331 has no
-  charging flags and carries the case's firmware and battery after the serial), so each is transcribed on its own. D1105, D1206, D1302, D1303 and D1406
-  answer in tag, length and value form (D1206 reads tags 1 to 92 from a map), which PairFree's fixed layouts cannot hold yet.
+- **Model list.** The app registers 165 keys (161 app registrations and four SDK-only ones). Every earbud and headphone among them is in
+  `devices.json`; the speakers and the cases are left out. The aliases the app lists under another key are names of that key's model (the Sleep A30
+  Special, the AeroFit 2 AI Assistant). Each model's state parser is `AnalysisService.e1` in the restored
+  `com.oceanwing.devicecmd.manager.product.<model>` package (the older models: their `DeviceManager`), and each was compared with the parsers of the
+  models PairFree already reads: the same bytes in the same order, the same command service, and no branch on the product code is what makes two
+  models twins (a twin's bytes are never assumed from a name). What each new model offers (none is tried on real earbuds; "head" is the level, the
+  charging, the firmware, the serial and the case):
+
+  | Model | Read as | Offered |
+  |---|---|---|
+  | A3331 C40i | the C30i (A3330), its surround byte skipped | everything the C30i has |
+  | A3878 V40i | the V20i (A3876) plus a bass up byte | everything the V20i has, without the light |
+  | A3004C Q20i Plus | the Q20i (A3004) | head only (its command service is its own) |
+  | A300B Q21i NC | the Q20i plus dual connections and auto power off (user's reply, issue #22) | head, switches |
+  | A3958 A30i | the P30i (A3959): one parser class, one command service | everything the P30i has |
+  | A3943 Life Note C | the Life P2 Mini (A3944): A3948's classes | everything the P2 Mini has |
+  | A3969 R50i VI | the P20i (A3949): A3948's classes | everything the P20i has |
+  | A3937 P41i | the P40i (A3955): A3955's classes | everything the P40i has |
+  | A3961 Sport X10 | the Life Note 3i (A3982): the legacy A3933 manager | all but the single presses (they move with the firmware) |
+  | A3045 Life Q20+ | the Life Q30 (A3028): the legacy A3951 manager | everything the Q30 has |
+  | A3994 K20i | the P30i's head, no noise modes | touch controls, game mode, touch tone, auto power off |
+  | A3871, A3872, A3873 AeroFit Pro, AeroFit, V30i | the V20i's head, six touch bytes | touch controls, switches |
+  | A3874, A3875, A3600, A3012, D1404 | their own head | head (the A3012 also its two switches) |
+  | D1200 Liberty Buds | the Liberty 5 (A3957) up to the hearing protection, own tail | noise mode, switches, touch controls |
+  | D1205 P42i | its own head, the P31i's tail | head, touch controls |
+  | D1402 Space 2 | the Space One Pro (A3062) head, own tail | noise mode, LDAC, dual connections, auto power off, volume limit |
+  | D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303 | tag-length-value (below) | see below |
+
+  The battery is shown only where a twin or a recording gives its scale: a parser's clamp (0 to 100, 0 to 9) is not a scale (the Liberty 5 and the
+  Liberty 4 Pro share one clamp and differ in scale), so the models above without a twin show no battery until a device report settles it. Left report-only:
+  the Life NC (A3201), which the app reads item by item (`01 01` to `01 0A` each with its own reply) instead of one state reply, which PairFree's
+  layouts do not express yet; and the A3201's siblings among the speakers.
+- **Tag-length-value models (D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303).** These answer `01 01` with records `tag, length, value`
+  from the first byte (`ParseCommonCmdUtils.a`) and pack switches into bits. `data/soundcore/devices.json` gives such a model a `tlv` list, which turns
+  the records into the fixed body its `state` fields describe: `[tag, at, n]` takes n bytes, `[tag, at, "bit", b]` a bit as 0 or 1, `"lo"` and
+  `"hi"` a nibble, `"pack"` the touch control's two bytes (with both earbuds in, with one) as OpenSCQ30's one nibble-packed byte, `"level"` and
+  `"swap"` the nibble forms the app's noise mode write uses; `tlv_private` lists the records that hold serial numbers and addresses (hidden in a
+  report). The records the Liberty Buds 2, the Liberty 5 Pro pair and the AeroClip 2 share: 1 host, 2 TWS, 3 and 4 (charging, level) per earbud, 5 and 6
+  firmware, 7 serial, 8 case (charging, level), 13 to 24 the touch controls (single, double, triple, long, slide up, slide down; left then right),
+  25 auto power off, 26 and 27 switch bits, 36 to 38 the noise mode, 39 the high volume limit, 44 spatial audio, 46 the modes the button cycles. The
+  touch writes of these models are `04 8C` (side, gesture, the value with both earbuds in, the value with one: `wide` in the button spec; the Sleep
+  Earbuds 4 keep `04 81`), and the noise mode write is the model's own: eight bytes on the Liberty Buds 2 (mode, manual level << 4 | 15, hear guard,
+  automation, wind, 0, multi-scene, 0), seven on the Liberty 5 Pro pair (mode, automation, transparency option, two level bytes as reported, two
+  multi-scene bytes), six on the Space 2 pair. Offered: the Liberty Buds 2's and the Liberty 5 Pro pair's noise mode and touch controls, the AeroClip 2's
+  touch controls (triple tap: white noise) and dual connections, the AeroClip 2 Pro's touch controls (its own action list), the Space 2 pair's noise
+  mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. Not offered: the `03 8A` equalizer (its preset tables
+  are firmware gated on the Liberty 5 Pro pair), the switches of records 26 and 27 whose screens were not read, the Space 2's one-button records (72, 73), the
+  sleep sounds and playback records (31 to 33, 81, 106) of the Sleep Earbuds 4, and the case's own channels (D1203-Box, D1204-Box, D1302-Box, D1303-Box).
 - **Liberty 4 Pro (A3954).** `A3954AnalysisService.e1` confirms the layout field by field, including pull request 42's change: after the spatial audio
   triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
   write (`A3954CmdService.M0`) is five bytes: the mode (0 to 3), the slider (1 to 11), the automatic pressure update, wind noise suppression, and 0xFF. The

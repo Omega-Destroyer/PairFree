@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
  * A virtual earbud for [BesUpload], written from the app's own answers (`BesOtaCMD.y`): it checks every message it takes (the announcement's length and
  * CRC-32, the configuration's CRC-32, each segment's CRC-32 over the bytes it holds) and rebuilds the file from the chunks. It runs the protocol, not an A30.
  */
-private class VirtualBesEarbud(
+internal class VirtualBesEarbud(
     private val file: ByteArray,
     private val resumeFrom: Int = 0,
     private val refuseSegments: Int = 0,

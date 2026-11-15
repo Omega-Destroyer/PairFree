@@ -246,6 +246,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     override fun sendFrames(frames: List<ByteArray>) = connection.sendEq(frames)
 
+    private val sleepUploader = io.github.omegadestroyer.pairfree.sleep.SleepUploader(app, viewModelScope, adapter)
+
+    override fun sleepUploader() = sleepUploader
+
     override fun oneplusHearingTest() =
         (connection.driver as? OneplusDriver)?.session?.hearingTest(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")))
 

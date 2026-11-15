@@ -33,6 +33,9 @@ object SoundcoreSpec : BrandSpec(Brand.SOUNDCORE) {
     /** Soundcore earbuds PairFree knows by name and number only: ask for a report rather than show a guess. */
     override val reportOnlyWhenUnknown: Boolean get() = true
 
+    /** The Sleep A30 (D1301): its sounds go over a second serial channel (docs/soundcore/PROTOCOL.md section 14). Untested on one. */
+    override fun offersSleepSounds(device: Paired): Boolean = device.model == "D1301"
+
     override fun eqNote(device: Paired): Int = R.string.eq_soundcore_unchecked
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =

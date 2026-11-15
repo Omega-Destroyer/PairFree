@@ -120,10 +120,16 @@ internal fun ConnectedScreen(
     var fitTest by rememberSaveable { mutableStateOf(false) }
     var hearingTest by rememberSaveable { mutableStateOf(false) }
     var sealCheck by rememberSaveable { mutableStateOf(false) }
+    var sleepSounds by rememberSaveable { mutableStateOf(false) }
     var finder by rememberSaveable { mutableStateOf(false) }
     val model = modelOf(device, state)
     if (sealCheck) {
         SealCheckScreen(onClose = { sealCheck = false })
+        return
+    }
+    val uploader = if (Brands[device.brand].offersSleepSounds(device)) actions.sleepUploader() else null
+    if (sleepSounds && uploader != null) {
+        SleepSoundScreen(device.address, uploader, onClose = { sleepSounds = false })
         return
     }
     if (fitTest) {
@@ -165,7 +171,7 @@ internal fun ConnectedScreen(
                     onFinder = if (eq != null && eq.target.hasCustom) ({ finder = true }) else null,
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)
-                Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status, { fitTest = true }, { sealCheck = true })
+                Tab.DEVICE -> DeviceScreen(device, state, model, actions, settings, status, { fitTest = true }, { sealCheck = true }, if (uploader != null) ({ sleepSounds = true }) else null)
             }
         }
         TabBar(tab) { tab = it }

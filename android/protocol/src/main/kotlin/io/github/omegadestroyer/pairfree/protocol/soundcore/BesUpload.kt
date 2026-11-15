@@ -69,6 +69,11 @@ public class BesUpload(
         return out
     }
 
+    /** Stops the transfer from outside (a timeout, a closed channel, the user's cancel). */
+    public fun abort(why: String) {
+        if (phase != Phase.DONE && phase != Phase.FAILED) fail(why)
+    }
+
     private fun status(message: ByteArray): Boolean = message.size > 5 && message[5].toInt() == 1
 
     private fun fail(why: String): List<ByteArray> {

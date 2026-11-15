@@ -621,7 +621,7 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   Left out: the AeroClip 2's "volume booster" (position 30), whose table holds values (type 0xFD, and -3, 2 and 4 in the gain, frequency and Q columns)
   that look like another structure. Bytes are pinned by `theNormalisedEqualizerWritesTheAppsBytes`, which rebuilds the Liberty Buds 2's signature and
   balanced presets and a custom curve. Not tried on earbuds.
-- **Sleep A30 upload (issue #23): the groundwork is built, the upload is not offered.** `SleepAudioFile` writes the container the app's native writer makes
+- **Sleep A30 upload (issue #23): built and offered on the Device tab, UNTESTED on an A30.** `SleepAudioFile` writes the container the app's native writer makes
   (a 256-byte header with the magic, codec, media ID, sound type, name, payload length, sample rate and the two CRC-16s, then the encoded audio unchanged)
   and `BesTransferMessages` the BES transfer's simple messages (version, side, user index `10 + index`, begin, announcement with the file's CRC-32, segment
   check, end, final activation); `SleepAudioFileTest` pins them to the bytes in `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md` (on the research branch). What stops the
@@ -650,11 +650,14 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
      byte for byte with FFmpeg's (PyAV 17) at all four settings. Any further option in the app's FFmpeg command line (beyond rate, channels
      and bit rate) was not checked here. The AAC branch and the decoding of the user's own audio files (MP3, M4A and so on) to
      16-bit mono PCM are not built; Android's `MediaCodec` does the decoding in the app.
-  3. Media IDs: blocked: the app takes them from its server (`getIdFromServer`) and no source says whether the earbuds accept an ID PairFree picks; checked:
+  3. Media IDs: PairFree picks a random positive 64-bit ID (`SleepUploader`) and the screen says so. Not settled: whether the earbuds accept it. Blocked from the app: the app takes them from its server (`getIdFromServer`) and no source says whether the earbuds accept an ID PairFree picks; checked:
      `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md` section 8 and the evidence JSON's `unresolved` list.
-  4. The transport: the transfer is a second RFCOMM service (`66666666-6666-6666-6666-666666666666`), which PairFree's connection does not open beside
-     the control channel, and the earbuds' behaviour when both are open is not known.
-  5. Acceptance: no independently prepared file has been played by an A30 (research section 10). The transfer is the app's firmware-update machinery with the
+  4. The transport: built (`BesLink`, `BesUploadRunner`): a second RFCOMM socket on `66666666-6666-6666-6666-666666666666` opened beside the control channel,
+     which stays open; the earbuds' behaviour with both open is not known. `BesUploadRunnerTest` runs the transfer over a line that cuts, joins and delays the
+     answers, makes the earbuds miss a turn, refuse segments, fall silent or lose the link, and cancels mid-transfer. The sound is decoded with Android's
+     `MediaCodec`, mixed to mono, resampled (`SleepSound.resample`), cut at 60 s and encoded (`SleepSound.prepare`: 128 kb/s, 72 kb/s when over 1,024,000
+     bytes).
+  5. Acceptance: the screen asks for an opt-in switch and a confirmation before anything is sent, and says it is untested. No independently prepared file has been played by an A30 (research section 10). The transfer is the app's firmware-update machinery with the
      music-file settings (`upgradeType 2`, user flag 1); PairFree's rule is that such traffic goes only behind an explicit confirmation and an opt-in, and
      the first real test is the issue's author's A30.
   Local playback itself needs none of this: the listening mode `01 A9` (0 Bluetooth, 1 local) is in the Device tab since 0.9.0, so a sound the Soundcore app

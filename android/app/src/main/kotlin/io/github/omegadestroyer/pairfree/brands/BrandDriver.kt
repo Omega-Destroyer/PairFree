@@ -340,6 +340,9 @@ abstract class BrandSpec(val brand: Brand) {
     open fun recordedModel(code: String?): Model? = null
     open val recordedUnmatched: String get() = "${brand.name.lowercase().replaceFirstChar { it.uppercase() }} earbuds (model not matched)"
 
+    /** True when the Device tab offers to put a sound of the user's on [device] (the Soundcore Sleep A30's local mode, issue #23). */
+    open fun offersSleepSounds(device: Paired): Boolean = false
+
     /** True when the Sound tab offers a recording from the official app for earbuds with no EQ yet. */
     open val offersRecording: Boolean get() = true
 

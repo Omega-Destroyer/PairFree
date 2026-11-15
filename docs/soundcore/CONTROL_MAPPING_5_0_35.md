@@ -1,5 +1,7 @@
 # Soundcore 5.0.35: control factories and action identifiers
 
+**Follow-up:** [Evaluated gesture/state rules](CONTROL_GESTURE_RULES_5_0_35.md) now distinguish menu membership by gesture, TWS and predicate outcome, with additional concrete firmware checks. Gesture visibility and hardware acceptance remain separate.
+
 The restored `DataSourceUtil.c` string-switch was interpreted directly because its Java decompilation has broken branches. All 165 compiled keys were evaluated with `ThingsModelUtil.h(productCode) = false`. A separate check with that predicate true selected `ThingsDataSource`; an unknown code selected `BaseDataSourceImpl`. This checks factory dispatch only, with no Android constructor/UI or Bluetooth execution.
 
 The 38 resulting sources and their conditional action/gesture references are in [CONTROL_EVIDENCE_5_0_35.json](CONTROL_EVIDENCE_5_0_35.json). A default source is not proof that its screen is reachable or supported. Candidate action sets retain all branches and still require gesture, firmware, model and device-state evaluation.

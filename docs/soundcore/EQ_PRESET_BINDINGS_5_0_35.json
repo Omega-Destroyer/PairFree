@@ -1,0 +1,4837 @@
+{
+  "scope": "Literal preset bean positions bound to name resource and EqInfo.cmdPosition by the recovered list builders. These are UI/preset definitions, not filter coefficients, display-dB conversions, frequency/Q maps or per-model enabled presets. Callers may replace EQConfig.eqInfoList after construction.",
+  "preset_sets": {
+    "a": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.a",
+      "gain_getter": "com.soundcore.eq.conf.A3956EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.A3956ResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            3.0,
+            1.0,
+            1.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 3,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.A3956EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "a3909_eq_acoustic",
+          "bean_positions": [
+            -0.9,
+            2.4,
+            3.0,
+            5.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.A3956EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -1.5,
+            1.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.A3956EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 3,
+          "name_resource": "a3909_eq_bass_reducer",
+          "bean_positions": [
+            3.0,
+            4.0,
+            -5.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.A3956EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        }
+      ]
+    },
+    "d": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.d",
+      "gain_getter": "com.soundcore.eq.conf.AeroNew2EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.AeroNew2EQResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "a3909_eq_acoustic",
+          "bean_positions": [
+            4.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            4.0,
+            4.0,
+            2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 30,
+          "name_resource": "a3871_eq_volumebooster",
+          "bean_positions": [
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            6.0,
+            5.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 19,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            -2.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            0.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 5
+          }
+        },
+        {
+          "list_ordinal": 6,
+          "command_position": 6,
+          "name_resource": "a3909_eq_dance",
+          "bean_positions": [
+            2.0,
+            -3.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 6
+          }
+        },
+        {
+          "list_ordinal": 7,
+          "command_position": 7,
+          "name_resource": "a3909_eq_deep",
+          "bean_positions": [
+            2.0,
+            1.0,
+            3.0,
+            3.0,
+            2.0,
+            -2.0,
+            -4.0,
+            -5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 7
+          }
+        },
+        {
+          "list_ordinal": 8,
+          "command_position": 8,
+          "name_resource": "a3909_eq_electronic",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -2.0,
+            2.0,
+            1.0,
+            2.0,
+            3.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 8
+          }
+        },
+        {
+          "list_ordinal": 9,
+          "command_position": 9,
+          "name_resource": "a3909_eq_flat",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 9
+          }
+        },
+        {
+          "list_ordinal": 10,
+          "command_position": 10,
+          "name_resource": "a3909_eq_hiphop",
+          "bean_positions": [
+            2.0,
+            3.0,
+            -1.0,
+            -1.0,
+            2.0,
+            -1.0,
+            2.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 10
+          }
+        },
+        {
+          "list_ordinal": 11,
+          "command_position": 11,
+          "name_resource": "a3909_eq_jazz",
+          "bean_positions": [
+            2.0,
+            2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 11
+          }
+        },
+        {
+          "list_ordinal": 12,
+          "command_position": 12,
+          "name_resource": "a3909_eq_latin",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            3.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 12
+          }
+        },
+        {
+          "list_ordinal": 13,
+          "command_position": 13,
+          "name_resource": "a3909_eq_lounge",
+          "bean_positions": [
+            -1.0,
+            2.0,
+            4.0,
+            3.0,
+            0.0,
+            -2.0,
+            2.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 13
+          }
+        },
+        {
+          "list_ordinal": 14,
+          "command_position": 14,
+          "name_resource": "a3909_eq_piano",
+          "bean_positions": [
+            0.0,
+            3.0,
+            3.0,
+            2.0,
+            4.0,
+            5.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 14
+          }
+        },
+        {
+          "list_ordinal": 15,
+          "command_position": 15,
+          "name_resource": "a3909_eq_pop",
+          "bean_positions": [
+            -1.0,
+            1.0,
+            3.0,
+            3.0,
+            1.0,
+            -1.0,
+            -2.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 15
+          }
+        },
+        {
+          "list_ordinal": 16,
+          "command_position": 16,
+          "name_resource": "a3909_eq_rb",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -2.0,
+            -2.0,
+            2.0,
+            3.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 16
+          }
+        },
+        {
+          "list_ordinal": 17,
+          "command_position": 17,
+          "name_resource": "a3909_eq_rock",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -1.0,
+            -1.0,
+            1.0,
+            3.0,
+            4.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 17
+          }
+        },
+        {
+          "list_ordinal": 18,
+          "command_position": 18,
+          "name_resource": "a3909_eq_small_speaker",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 18
+          }
+        },
+        {
+          "list_ordinal": 19,
+          "command_position": 5,
+          "name_resource": "a3909_eq_spokern_word",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 19
+          }
+        },
+        {
+          "list_ordinal": 20,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            0.0,
+            -1.0,
+            -5.0,
+            5.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 20
+          }
+        },
+        {
+          "list_ordinal": 21,
+          "command_position": 21,
+          "name_resource": "a3909_eq_treble_reducer",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            -6.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 21
+          }
+        }
+      ]
+    },
+    "e": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.e",
+      "gain_getter": "com.soundcore.eq.conf.AeroNew3EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.AeroNew3EQResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "a3138_eq_balance",
+          "bean_positions": [
+            3.2,
+            -0.6,
+            -1.8,
+            2.0,
+            -0.72,
+            -5.2,
+            1.2,
+            0.48,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 30,
+          "name_resource": "a3871_eq_volumebooster",
+          "bean_positions": [
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            6.0,
+            5.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 19,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            0.8,
+            -1.6,
+            0.2,
+            0.4,
+            0.92,
+            -4.0,
+            0.8,
+            -0.8,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 5
+          }
+        },
+        {
+          "list_ordinal": 6,
+          "command_position": 6,
+          "name_resource": "a3909_eq_dance",
+          "bean_positions": [
+            2.0,
+            -3.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 6
+          }
+        },
+        {
+          "list_ordinal": 7,
+          "command_position": 7,
+          "name_resource": "a3909_eq_deep",
+          "bean_positions": [
+            2.0,
+            1.0,
+            3.0,
+            3.0,
+            2.0,
+            -2.0,
+            -4.0,
+            -5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 7
+          }
+        },
+        {
+          "list_ordinal": 8,
+          "command_position": 8,
+          "name_resource": "a3909_eq_electronic",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -2.0,
+            2.0,
+            1.0,
+            2.0,
+            3.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 8
+          }
+        },
+        {
+          "list_ordinal": 9,
+          "command_position": 9,
+          "name_resource": "a3909_eq_flat",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 9
+          }
+        },
+        {
+          "list_ordinal": 10,
+          "command_position": 10,
+          "name_resource": "a3909_eq_hiphop",
+          "bean_positions": [
+            2.0,
+            3.0,
+            -1.0,
+            -1.0,
+            2.0,
+            -1.0,
+            2.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 10
+          }
+        },
+        {
+          "list_ordinal": 11,
+          "command_position": 11,
+          "name_resource": "a3909_eq_jazz",
+          "bean_positions": [
+            2.0,
+            2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 11
+          }
+        },
+        {
+          "list_ordinal": 12,
+          "command_position": 12,
+          "name_resource": "a3909_eq_latin",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            3.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 12
+          }
+        },
+        {
+          "list_ordinal": 13,
+          "command_position": 13,
+          "name_resource": "a3909_eq_lounge",
+          "bean_positions": [
+            -1.0,
+            2.0,
+            4.0,
+            3.0,
+            0.0,
+            -2.0,
+            2.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 13
+          }
+        },
+        {
+          "list_ordinal": 14,
+          "command_position": 14,
+          "name_resource": "a3909_eq_piano",
+          "bean_positions": [
+            0.0,
+            3.0,
+            3.0,
+            2.0,
+            4.0,
+            5.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 14
+          }
+        },
+        {
+          "list_ordinal": 15,
+          "command_position": 15,
+          "name_resource": "a3909_eq_pop",
+          "bean_positions": [
+            -1.0,
+            1.0,
+            3.0,
+            3.0,
+            1.0,
+            -1.0,
+            -2.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 15
+          }
+        },
+        {
+          "list_ordinal": 16,
+          "command_position": 16,
+          "name_resource": "a3909_eq_rb",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -2.0,
+            -2.0,
+            2.0,
+            3.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 16
+          }
+        },
+        {
+          "list_ordinal": 17,
+          "command_position": 17,
+          "name_resource": "a3909_eq_rock",
+          "bean_positions": [
+            4.0,
+            -0.6,
+            -2.4,
+            1.6,
+            -1.04,
+            -4.52,
+            2.7,
+            0.48,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 17
+          }
+        },
+        {
+          "list_ordinal": 18,
+          "command_position": 18,
+          "name_resource": "a3909_eq_small_speaker",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 18
+          }
+        },
+        {
+          "list_ordinal": 19,
+          "command_position": 5,
+          "name_resource": "a3909_eq_spokern_word",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 19
+          }
+        },
+        {
+          "list_ordinal": 20,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            0.0,
+            -1.0,
+            -5.0,
+            5.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 20
+          }
+        },
+        {
+          "list_ordinal": 21,
+          "command_position": 21,
+          "name_resource": "a3909_eq_treble_reducer",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            -6.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 21
+          }
+        }
+      ]
+    },
+    "f": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.f",
+      "gain_getter": "com.soundcore.eq.conf.AeroNew4EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.AeroNew4EQResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "a3138_eq_balance",
+          "bean_positions": [
+            5.3,
+            -2.1,
+            -0.9,
+            -1.6,
+            1.2,
+            -3.9,
+            -3.2,
+            0.2,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 30,
+          "name_resource": "a3871_eq_volumebooster",
+          "bean_positions": [
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            6.0,
+            5.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 19,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            -2.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            0.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 5
+          }
+        },
+        {
+          "list_ordinal": 6,
+          "command_position": 6,
+          "name_resource": "a3909_eq_dance",
+          "bean_positions": [
+            2.0,
+            -3.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 6
+          }
+        },
+        {
+          "list_ordinal": 7,
+          "command_position": 7,
+          "name_resource": "a3909_eq_deep",
+          "bean_positions": [
+            2.0,
+            1.0,
+            3.0,
+            3.0,
+            2.0,
+            -2.0,
+            -4.0,
+            -5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 7
+          }
+        },
+        {
+          "list_ordinal": 8,
+          "command_position": 8,
+          "name_resource": "a3909_eq_electronic",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -2.0,
+            2.0,
+            1.0,
+            2.0,
+            3.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 8
+          }
+        },
+        {
+          "list_ordinal": 9,
+          "command_position": 9,
+          "name_resource": "a3909_eq_flat",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 9
+          }
+        },
+        {
+          "list_ordinal": 10,
+          "command_position": 10,
+          "name_resource": "a3909_eq_hiphop",
+          "bean_positions": [
+            2.0,
+            3.0,
+            -1.0,
+            -1.0,
+            2.0,
+            -1.0,
+            2.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 10
+          }
+        },
+        {
+          "list_ordinal": 11,
+          "command_position": 11,
+          "name_resource": "a3909_eq_jazz",
+          "bean_positions": [
+            2.0,
+            2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 11
+          }
+        },
+        {
+          "list_ordinal": 12,
+          "command_position": 12,
+          "name_resource": "a3909_eq_latin",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            3.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 12
+          }
+        },
+        {
+          "list_ordinal": 13,
+          "command_position": 13,
+          "name_resource": "a3909_eq_lounge",
+          "bean_positions": [
+            -1.0,
+            2.0,
+            4.0,
+            3.0,
+            0.0,
+            -2.0,
+            2.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 13
+          }
+        },
+        {
+          "list_ordinal": 14,
+          "command_position": 14,
+          "name_resource": "a3909_eq_piano",
+          "bean_positions": [
+            0.0,
+            3.0,
+            3.0,
+            2.0,
+            4.0,
+            5.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 14
+          }
+        },
+        {
+          "list_ordinal": 15,
+          "command_position": 15,
+          "name_resource": "a3909_eq_pop",
+          "bean_positions": [
+            -1.0,
+            1.0,
+            3.0,
+            3.0,
+            1.0,
+            -1.0,
+            -2.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 15
+          }
+        },
+        {
+          "list_ordinal": 16,
+          "command_position": 16,
+          "name_resource": "a3909_eq_rb",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -2.0,
+            -2.0,
+            2.0,
+            3.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 16
+          }
+        },
+        {
+          "list_ordinal": 17,
+          "command_position": 17,
+          "name_resource": "a3909_eq_rock",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -1.0,
+            -1.0,
+            1.0,
+            3.0,
+            4.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 17
+          }
+        },
+        {
+          "list_ordinal": 18,
+          "command_position": 18,
+          "name_resource": "a3909_eq_small_speaker",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 18
+          }
+        },
+        {
+          "list_ordinal": 19,
+          "command_position": 5,
+          "name_resource": "a3909_eq_spokern_word",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 19
+          }
+        },
+        {
+          "list_ordinal": 20,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            0.0,
+            -1.0,
+            -5.0,
+            5.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 20
+          }
+        },
+        {
+          "list_ordinal": 21,
+          "command_position": 21,
+          "name_resource": "a3909_eq_treble_reducer",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            -6.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 21
+          }
+        }
+      ]
+    },
+    "g": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.g",
+      "gain_getter": "com.soundcore.eq.conf.AeroNew5EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.AeroNew5EQResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "a3909_eq_acoustic",
+          "bean_positions": [
+            4.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            4.0,
+            4.0,
+            2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 30,
+          "name_resource": "a3871_eq_volumebooster",
+          "bean_positions": [
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            6.0,
+            5.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 19,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            -2.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            0.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 5
+          }
+        },
+        {
+          "list_ordinal": 6,
+          "command_position": 6,
+          "name_resource": "a3909_eq_dance",
+          "bean_positions": [
+            2.0,
+            -3.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 6
+          }
+        },
+        {
+          "list_ordinal": 7,
+          "command_position": 7,
+          "name_resource": "a3909_eq_deep",
+          "bean_positions": [
+            2.0,
+            1.0,
+            3.0,
+            3.0,
+            2.0,
+            -2.0,
+            -4.0,
+            -5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 7
+          }
+        },
+        {
+          "list_ordinal": 8,
+          "command_position": 8,
+          "name_resource": "a3909_eq_electronic",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -2.0,
+            2.0,
+            1.0,
+            2.0,
+            3.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 8
+          }
+        },
+        {
+          "list_ordinal": 9,
+          "command_position": 9,
+          "name_resource": "a3909_eq_flat",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 9
+          }
+        },
+        {
+          "list_ordinal": 10,
+          "command_position": 10,
+          "name_resource": "a3909_eq_hiphop",
+          "bean_positions": [
+            2.0,
+            3.0,
+            -1.0,
+            -1.0,
+            2.0,
+            -1.0,
+            2.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 10
+          }
+        },
+        {
+          "list_ordinal": 11,
+          "command_position": 11,
+          "name_resource": "a3909_eq_jazz",
+          "bean_positions": [
+            2.0,
+            2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 11
+          }
+        },
+        {
+          "list_ordinal": 12,
+          "command_position": 12,
+          "name_resource": "a3909_eq_latin",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            3.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 12
+          }
+        },
+        {
+          "list_ordinal": 13,
+          "command_position": 13,
+          "name_resource": "a3909_eq_lounge",
+          "bean_positions": [
+            -1.0,
+            2.0,
+            4.0,
+            3.0,
+            0.0,
+            -2.0,
+            2.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 13
+          }
+        },
+        {
+          "list_ordinal": 14,
+          "command_position": 14,
+          "name_resource": "a3909_eq_piano",
+          "bean_positions": [
+            0.0,
+            3.0,
+            3.0,
+            2.0,
+            4.0,
+            5.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 14
+          }
+        },
+        {
+          "list_ordinal": 15,
+          "command_position": 15,
+          "name_resource": "a3909_eq_pop",
+          "bean_positions": [
+            -1.0,
+            1.0,
+            3.0,
+            3.0,
+            1.0,
+            -1.0,
+            -2.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 15
+          }
+        },
+        {
+          "list_ordinal": 16,
+          "command_position": 16,
+          "name_resource": "a3909_eq_rb",
+          "bean_positions": [
+            3.0,
+            -1.0,
+            -5.0,
+            -5.0,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            -3.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 16
+          }
+        },
+        {
+          "list_ordinal": 17,
+          "command_position": 17,
+          "name_resource": "a3909_eq_rock",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -1.0,
+            -1.0,
+            1.0,
+            3.0,
+            4.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 17
+          }
+        },
+        {
+          "list_ordinal": 18,
+          "command_position": 18,
+          "name_resource": "a3909_eq_small_speaker",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 18
+          }
+        },
+        {
+          "list_ordinal": 19,
+          "command_position": 5,
+          "name_resource": "a3909_eq_spokern_word",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 19
+          }
+        },
+        {
+          "list_ordinal": 20,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            0.0,
+            -1.0,
+            -5.0,
+            5.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 20
+          }
+        },
+        {
+          "list_ordinal": 21,
+          "command_position": 21,
+          "name_resource": "a3909_eq_treble_reducer",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            -6.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 21
+          }
+        }
+      ]
+    },
+    "h": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.h",
+      "gain_getter": "com.soundcore.eq.conf.AeroNew6EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.AeroNew6EQResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 30,
+          "name_resource": "a3871_eq_volumebooster",
+          "bean_positions": [
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            6.0,
+            5.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 5,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 20,
+          "name_resource": "eq_treble_boost",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -2.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 5
+          }
+        }
+      ]
+    },
+    "i": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.i",
+      "gain_getter": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.normalize.AeroNew7EQResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "clear_vocals_mode",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "powerful_bass",
+          "bean_positions": [
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            6.0,
+            5.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 3,
+          "name_resource": "soothing_calm",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 30,
+          "name_resource": "a3871_eq_volumebooster",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        }
+      ]
+    },
+    "k": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.k",
+      "gain_getter": "com.soundcore.eq.conf.C50iEQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.C50iEQResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.C50iEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.C50iEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 30,
+          "name_resource": "a3871_eq_volumebooster",
+          "bean_positions": [
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            6.0,
+            5.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.C50iEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.C50iEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 5,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.C50iEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -2.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.C50iEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 5
+          }
+        }
+      ]
+    },
+    "l": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.l",
+      "gain_getter": "com.soundcore.eq.conf.normalize.D1204EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.normalize.D1204ResourceValues",
+      "predicate": "A3956VersionUtils.h",
+      "variants": {
+        "true": {
+          "presets": [
+            {
+              "list_ordinal": 0,
+              "command_position": 4,
+              "name_resource": "anker_signature",
+              "bean_positions": [
+                3.0,
+                1.0,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 3,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 0
+              }
+            },
+            {
+              "list_ordinal": 1,
+              "command_position": 1,
+              "name_resource": "clear_vocals_mode",
+              "bean_positions": [
+                -0.9,
+                2.4,
+                3.0,
+                5.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 1
+              }
+            },
+            {
+              "list_ordinal": 2,
+              "command_position": 2,
+              "name_resource": "powerful_bass",
+              "bean_positions": [
+                6.0,
+                2.0,
+                -1.5,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 2
+              }
+            },
+            {
+              "list_ordinal": 3,
+              "command_position": 3,
+              "name_resource": "soothing_calm",
+              "bean_positions": [
+                3.0,
+                4.0,
+                -5.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 3
+              }
+            },
+            {
+              "list_ordinal": 4,
+              "command_position": 0,
+              "name_resource": "eq_soundcore_balanced",
+              "bean_positions": [
+                3.0,
+                1.0,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 3,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 4
+              }
+            }
+          ]
+        },
+        "false": {
+          "presets": [
+            {
+              "list_ordinal": 0,
+              "command_position": 0,
+              "name_resource": "anker_signature",
+              "bean_positions": [
+                3.0,
+                1.0,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 3,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 5
+              }
+            },
+            {
+              "list_ordinal": 1,
+              "command_position": 1,
+              "name_resource": "clear_vocals_mode",
+              "bean_positions": [
+                -0.9,
+                2.4,
+                3.0,
+                5.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 6
+              }
+            },
+            {
+              "list_ordinal": 2,
+              "command_position": 2,
+              "name_resource": "powerful_bass",
+              "bean_positions": [
+                6.0,
+                2.0,
+                -1.5,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 7
+              }
+            },
+            {
+              "list_ordinal": 3,
+              "command_position": 3,
+              "name_resource": "soothing_calm",
+              "bean_positions": [
+                3.0,
+                4.0,
+                -5.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 8
+              }
+            }
+          ]
+        }
+      },
+      "index_evidence": "Conditional gain, label and command-position lists; source predicate outcomes retained."
+    },
+    "m": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.m",
+      "gain_getter": "com.soundcore.eq.conf.D1205EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.D1205ResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            3.0,
+            1.0,
+            1.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 3,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1205EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "clear_vocals_mode",
+          "bean_positions": [
+            -1.5,
+            1.5,
+            2.5,
+            2.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1205EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "powerful_bass",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -1.5,
+            1.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1205EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 3,
+          "name_resource": "soothing_calm",
+          "bean_positions": [
+            3.0,
+            4.0,
+            -5.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1205EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        }
+      ]
+    },
+    "n": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.n",
+      "gain_getter": "com.soundcore.eq.conf.D1206EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.D1206ResourceValues",
+      "index_evidence": "resource command-position array",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            1.5,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 3,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1206EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "clear_vocals_mode",
+          "bean_positions": [
+            -0.9,
+            2.4,
+            3.0,
+            5.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1206EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "powerful_bass",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -1.5,
+            1.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1206EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 3,
+          "name_resource": "soothing_calm",
+          "bean_positions": [
+            3.0,
+            4.0,
+            -5.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1206EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 4,
+          "name_resource": "eq_soundcore_balanced",
+          "bean_positions": [
+            1.0,
+            2.0,
+            3.5,
+            3.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": 4,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.D1206EQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        }
+      ]
+    },
+    "o": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.o",
+      "gain_getter": "com.soundcore.eq.conf.normalize.D1404EQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.normalize.D1404ResourceValues",
+      "predicate": "D1406VersionUtils.d",
+      "variants": {
+        "true": {
+          "presets": [
+            {
+              "list_ordinal": 0,
+              "command_position": 0,
+              "name_resource": "anker_signature",
+              "bean_positions": [
+                3.0,
+                1.0,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 3,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 0
+              }
+            },
+            {
+              "list_ordinal": 1,
+              "command_position": 4,
+              "name_resource": "eq_soundcore_balanced",
+              "bean_positions": [
+                3.0,
+                1.0,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 3,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 1
+              }
+            },
+            {
+              "list_ordinal": 2,
+              "command_position": 1,
+              "name_resource": "clear_vocals_mode",
+              "bean_positions": [
+                -0.9,
+                2.4,
+                3.0,
+                5.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 2
+              }
+            },
+            {
+              "list_ordinal": 3,
+              "command_position": 2,
+              "name_resource": "powerful_bass",
+              "bean_positions": [
+                6.0,
+                2.0,
+                -1.5,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 3
+              }
+            },
+            {
+              "list_ordinal": 4,
+              "command_position": 3,
+              "name_resource": "soothing_calm",
+              "bean_positions": [
+                3.0,
+                4.0,
+                -5.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 4
+              }
+            }
+          ]
+        },
+        "false": {
+          "presets": [
+            {
+              "list_ordinal": 0,
+              "command_position": 0,
+              "name_resource": "anker_signature",
+              "bean_positions": [
+                3.0,
+                1.0,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 3,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 5
+              }
+            },
+            {
+              "list_ordinal": 1,
+              "command_position": 1,
+              "name_resource": "clear_vocals_mode",
+              "bean_positions": [
+                -0.9,
+                2.4,
+                3.0,
+                5.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 6
+              }
+            },
+            {
+              "list_ordinal": 2,
+              "command_position": 2,
+              "name_resource": "powerful_bass",
+              "bean_positions": [
+                6.0,
+                2.0,
+                -1.5,
+                1.5,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 7
+              }
+            },
+            {
+              "list_ordinal": 3,
+              "command_position": 3,
+              "name_resource": "soothing_calm",
+              "bean_positions": [
+                3.0,
+                4.0,
+                -5.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "explicit_valid_count": 4,
+              "gain_source": {
+                "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
+                "source_method": "a",
+                "constructor_ordinal": 8
+              }
+            }
+          ]
+        }
+      },
+      "index_evidence": "Conditional gain, label and command-position lists; source predicate outcomes retained."
+    },
+    "p": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.p",
+      "gain_getter": "com.soundcore.eq.conf.EQGainValues.d",
+      "resource_class": "com.soundcore.eq.conf.EQResourceValues",
+      "index_evidence": "loop ordinal assigned explicitly by EqInfoListBuilder",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "a3909_eq_acoustic",
+          "bean_positions": [
+            4.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            4.0,
+            4.0,
+            2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 3,
+          "name_resource": "a3909_eq_bass_reducer",
+          "bean_positions": [
+            -4.0,
+            -3.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 5,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 5
+          }
+        },
+        {
+          "list_ordinal": 6,
+          "command_position": 6,
+          "name_resource": "a3909_eq_dance",
+          "bean_positions": [
+            2.0,
+            -3.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 6
+          }
+        },
+        {
+          "list_ordinal": 7,
+          "command_position": 7,
+          "name_resource": "a3909_eq_deep",
+          "bean_positions": [
+            2.0,
+            1.0,
+            3.0,
+            3.0,
+            2.0,
+            -2.0,
+            -4.0,
+            -5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 7
+          }
+        },
+        {
+          "list_ordinal": 8,
+          "command_position": 8,
+          "name_resource": "a3909_eq_electronic",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -2.0,
+            2.0,
+            1.0,
+            2.0,
+            3.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 8
+          }
+        },
+        {
+          "list_ordinal": 9,
+          "command_position": 9,
+          "name_resource": "a3909_eq_flat",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 9
+          }
+        },
+        {
+          "list_ordinal": 10,
+          "command_position": 10,
+          "name_resource": "a3909_eq_hiphop",
+          "bean_positions": [
+            2.0,
+            3.0,
+            -1.0,
+            -1.0,
+            2.0,
+            -1.0,
+            2.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 10
+          }
+        },
+        {
+          "list_ordinal": 11,
+          "command_position": 11,
+          "name_resource": "a3909_eq_jazz",
+          "bean_positions": [
+            2.0,
+            2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 11
+          }
+        },
+        {
+          "list_ordinal": 12,
+          "command_position": 12,
+          "name_resource": "a3909_eq_latin",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            3.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 12
+          }
+        },
+        {
+          "list_ordinal": 13,
+          "command_position": 13,
+          "name_resource": "a3909_eq_lounge",
+          "bean_positions": [
+            -1.0,
+            2.0,
+            4.0,
+            3.0,
+            0.0,
+            -2.0,
+            2.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 13
+          }
+        },
+        {
+          "list_ordinal": 14,
+          "command_position": 14,
+          "name_resource": "a3909_eq_piano",
+          "bean_positions": [
+            0.0,
+            3.0,
+            3.0,
+            2.0,
+            4.0,
+            5.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 14
+          }
+        },
+        {
+          "list_ordinal": 15,
+          "command_position": 15,
+          "name_resource": "a3909_eq_pop",
+          "bean_positions": [
+            -1.0,
+            1.0,
+            3.0,
+            3.0,
+            1.0,
+            -1.0,
+            -2.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 15
+          }
+        },
+        {
+          "list_ordinal": 16,
+          "command_position": 16,
+          "name_resource": "a3909_eq_rb",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -2.0,
+            -2.0,
+            2.0,
+            3.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 16
+          }
+        },
+        {
+          "list_ordinal": 17,
+          "command_position": 17,
+          "name_resource": "a3909_eq_rock",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -1.0,
+            -1.0,
+            1.0,
+            3.0,
+            4.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 17
+          }
+        },
+        {
+          "list_ordinal": 18,
+          "command_position": 18,
+          "name_resource": "a3909_eq_small_speaker",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 18
+          }
+        },
+        {
+          "list_ordinal": 19,
+          "command_position": 19,
+          "name_resource": "a3909_eq_spokern_word",
+          "bean_positions": [
+            -3.0,
+            -2.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            0.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 19
+          }
+        },
+        {
+          "list_ordinal": 20,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -2.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 20
+          }
+        },
+        {
+          "list_ordinal": 21,
+          "command_position": 21,
+          "name_resource": "a3909_eq_treble_reducer",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            -6.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 21
+          }
+        }
+      ]
+    },
+    "t": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.t",
+      "gain_getter": "com.soundcore.eq.conf.K20IEQGainValues.b",
+      "resource_class": "com.soundcore.eq.conf.EQResourceValues",
+      "index_evidence": "loop ordinal assigned explicitly by EqInfoListBuilder",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "a3909_eq_acoustic",
+          "bean_positions": [
+            4.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            4.0,
+            4.0,
+            2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 2,
+          "name_resource": "a3909_eq_bass_boost",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 2
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 3,
+          "name_resource": "a3909_eq_bass_reducer",
+          "bean_positions": [
+            0.0,
+            -5.0,
+            -6.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 5,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 5
+          }
+        },
+        {
+          "list_ordinal": 6,
+          "command_position": 6,
+          "name_resource": "a3909_eq_dance",
+          "bean_positions": [
+            2.0,
+            -3.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 6
+          }
+        },
+        {
+          "list_ordinal": 7,
+          "command_position": 7,
+          "name_resource": "a3909_eq_deep",
+          "bean_positions": [
+            2.0,
+            1.0,
+            3.0,
+            3.0,
+            2.0,
+            -2.0,
+            -4.0,
+            -5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 7
+          }
+        },
+        {
+          "list_ordinal": 8,
+          "command_position": 8,
+          "name_resource": "a3909_eq_electronic",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -2.0,
+            2.0,
+            1.0,
+            2.0,
+            3.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 8
+          }
+        },
+        {
+          "list_ordinal": 9,
+          "command_position": 9,
+          "name_resource": "a3909_eq_flat",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 9
+          }
+        },
+        {
+          "list_ordinal": 10,
+          "command_position": 10,
+          "name_resource": "a3909_eq_hiphop",
+          "bean_positions": [
+            2.0,
+            3.0,
+            -1.0,
+            -1.0,
+            2.0,
+            -1.0,
+            2.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 10
+          }
+        },
+        {
+          "list_ordinal": 11,
+          "command_position": 11,
+          "name_resource": "a3909_eq_jazz",
+          "bean_positions": [
+            2.0,
+            2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 11
+          }
+        },
+        {
+          "list_ordinal": 12,
+          "command_position": 12,
+          "name_resource": "a3909_eq_latin",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            3.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 12
+          }
+        },
+        {
+          "list_ordinal": 13,
+          "command_position": 13,
+          "name_resource": "a3909_eq_lounge",
+          "bean_positions": [
+            -1.0,
+            2.0,
+            4.0,
+            3.0,
+            0.0,
+            -2.0,
+            2.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 13
+          }
+        },
+        {
+          "list_ordinal": 14,
+          "command_position": 14,
+          "name_resource": "a3909_eq_piano",
+          "bean_positions": [
+            0.0,
+            3.0,
+            3.0,
+            2.0,
+            4.0,
+            5.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 14
+          }
+        },
+        {
+          "list_ordinal": 15,
+          "command_position": 15,
+          "name_resource": "a3909_eq_pop",
+          "bean_positions": [
+            -1.0,
+            1.0,
+            3.0,
+            3.0,
+            1.0,
+            -1.0,
+            -2.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 15
+          }
+        },
+        {
+          "list_ordinal": 16,
+          "command_position": 16,
+          "name_resource": "a3909_eq_rb",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -2.0,
+            -2.0,
+            2.0,
+            3.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 16
+          }
+        },
+        {
+          "list_ordinal": 17,
+          "command_position": 17,
+          "name_resource": "a3909_eq_rock",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -1.0,
+            -1.0,
+            1.0,
+            3.0,
+            4.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 17
+          }
+        },
+        {
+          "list_ordinal": 18,
+          "command_position": 18,
+          "name_resource": "a3909_eq_small_speaker",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 18
+          }
+        },
+        {
+          "list_ordinal": 19,
+          "command_position": 19,
+          "name_resource": "a3909_eq_spokern_word",
+          "bean_positions": [
+            -3.0,
+            -2.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            0.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 19
+          }
+        },
+        {
+          "list_ordinal": 20,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -2.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 20
+          }
+        },
+        {
+          "list_ordinal": 21,
+          "command_position": 21,
+          "name_resource": "a3909_eq_treble_reducer",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            -6.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.K20IEQGainValues",
+            "source_method": "a",
+            "constructor_ordinal": 21
+          }
+        }
+      ]
+    },
+    "j": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.j",
+      "derived_from": "p",
+      "removed_source_list_ordinal": 2,
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 0
+          }
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 1,
+          "name_resource": "a3909_eq_acoustic",
+          "bean_positions": [
+            4.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            4.0,
+            4.0,
+            2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 1
+          }
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 3,
+          "name_resource": "a3909_eq_bass_reducer",
+          "bean_positions": [
+            -4.0,
+            -3.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 3
+          }
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 4,
+          "name_resource": "a3909_eq_classical",
+          "bean_positions": [
+            3.0,
+            3.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 4
+          }
+        },
+        {
+          "list_ordinal": 4,
+          "command_position": 5,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            2.0,
+            4.0,
+            4.0,
+            3.0,
+            2.0,
+            0.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 5
+          }
+        },
+        {
+          "list_ordinal": 5,
+          "command_position": 6,
+          "name_resource": "a3909_eq_dance",
+          "bean_positions": [
+            2.0,
+            -3.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 6
+          }
+        },
+        {
+          "list_ordinal": 6,
+          "command_position": 7,
+          "name_resource": "a3909_eq_deep",
+          "bean_positions": [
+            2.0,
+            1.0,
+            3.0,
+            3.0,
+            2.0,
+            -2.0,
+            -4.0,
+            -5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 7
+          }
+        },
+        {
+          "list_ordinal": 7,
+          "command_position": 8,
+          "name_resource": "a3909_eq_electronic",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -2.0,
+            2.0,
+            1.0,
+            2.0,
+            3.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 8
+          }
+        },
+        {
+          "list_ordinal": 8,
+          "command_position": 9,
+          "name_resource": "a3909_eq_flat",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -1.0,
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 9
+          }
+        },
+        {
+          "list_ordinal": 9,
+          "command_position": 10,
+          "name_resource": "a3909_eq_hiphop",
+          "bean_positions": [
+            2.0,
+            3.0,
+            -1.0,
+            -1.0,
+            2.0,
+            -1.0,
+            2.0,
+            3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 10
+          }
+        },
+        {
+          "list_ordinal": 10,
+          "command_position": 11,
+          "name_resource": "a3909_eq_jazz",
+          "bean_positions": [
+            2.0,
+            2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            2.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 11
+          }
+        },
+        {
+          "list_ordinal": 11,
+          "command_position": 12,
+          "name_resource": "a3909_eq_latin",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            -2.0,
+            -2.0,
+            0.0,
+            3.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 12
+          }
+        },
+        {
+          "list_ordinal": 12,
+          "command_position": 13,
+          "name_resource": "a3909_eq_lounge",
+          "bean_positions": [
+            -1.0,
+            2.0,
+            4.0,
+            3.0,
+            0.0,
+            -2.0,
+            2.0,
+            1.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 13
+          }
+        },
+        {
+          "list_ordinal": 13,
+          "command_position": 14,
+          "name_resource": "a3909_eq_piano",
+          "bean_positions": [
+            0.0,
+            3.0,
+            3.0,
+            2.0,
+            4.0,
+            5.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 14
+          }
+        },
+        {
+          "list_ordinal": 14,
+          "command_position": 15,
+          "name_resource": "a3909_eq_pop",
+          "bean_positions": [
+            -1.0,
+            1.0,
+            3.0,
+            3.0,
+            1.0,
+            -1.0,
+            -2.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 15
+          }
+        },
+        {
+          "list_ordinal": 15,
+          "command_position": 16,
+          "name_resource": "a3909_eq_rb",
+          "bean_positions": [
+            6.0,
+            2.0,
+            -2.0,
+            -2.0,
+            2.0,
+            3.0,
+            3.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 16
+          }
+        },
+        {
+          "list_ordinal": 16,
+          "command_position": 17,
+          "name_resource": "a3909_eq_rock",
+          "bean_positions": [
+            3.0,
+            2.0,
+            -1.0,
+            -1.0,
+            1.0,
+            3.0,
+            4.0,
+            5.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 17
+          }
+        },
+        {
+          "list_ordinal": 17,
+          "command_position": 18,
+          "name_resource": "a3909_eq_small_speaker",
+          "bean_positions": [
+            4.0,
+            3.0,
+            1.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 18
+          }
+        },
+        {
+          "list_ordinal": 18,
+          "command_position": 19,
+          "name_resource": "a3909_eq_spokern_word",
+          "bean_positions": [
+            -3.0,
+            -2.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            0.0,
+            -3.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 19
+          }
+        },
+        {
+          "list_ordinal": 19,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            -2.0,
+            -2.0,
+            -2.0,
+            -1.0,
+            1.0,
+            2.0,
+            2.0,
+            4.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 20
+          }
+        },
+        {
+          "list_ordinal": 20,
+          "command_position": 21,
+          "name_resource": "a3909_eq_treble_reducer",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            -2.0,
+            -3.0,
+            -4.0,
+            -4.0,
+            -6.0,
+            0.0
+          ],
+          "explicit_valid_count": null,
+          "gain_source": {
+            "class": "com.soundcore.eq.conf.EQGainValues",
+            "source_method": "c",
+            "constructor_ordinal": 21
+          }
+        }
+      ]
+    },
+    "b": {
+      "builder": "com.soundcore.eq.conf.EQInfoListBuilder.b",
+      "boolean_parameter": "isNewVersion",
+      "presets": [
+        {
+          "list_ordinal": 0,
+          "command_position": 0,
+          "name_resource": "anker_signature",
+          "bean_positions": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "condition": "unconditional"
+        },
+        {
+          "list_ordinal": 1,
+          "command_position": 19,
+          "name_resource": "a3909_eq_vocal_booster",
+          "bean_positions": [
+            -3.0,
+            -2.0,
+            1.0,
+            2.0,
+            2.0,
+            1.0,
+            0.0,
+            -3.0,
+            0.0
+          ],
+          "condition": "unconditional"
+        },
+        {
+          "list_ordinal": 2,
+          "command_position": 20,
+          "name_resource": "a3909_eq_treble_booster",
+          "bean_positions": [
+            0.0,
+            0.0,
+            -2.0,
+            0.0,
+            -1.0,
+            -5.0,
+            5.0,
+            1.0,
+            0.0
+          ],
+          "condition": "unconditional"
+        },
+        {
+          "list_ordinal": 3,
+          "command_position": 30,
+          "name_resource": "a3871_eq_volumebooster",
+          "bean_positions": [
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            6.0,
+            5.0,
+            4.0,
+            0.0
+          ],
+          "condition": "isNewVersion"
+        }
+      ]
+    }
+  },
+  "config_type_dispatch": {
+    "1": "j",
+    "4": "d",
+    "5": "t",
+    "6": "d",
+    "7": "e",
+    "8": "f",
+    "9": "k",
+    "10": "g",
+    "11": "h",
+    "12": "a",
+    "13": "l",
+    "14": "m",
+    "15": "o",
+    "16": "n",
+    "17": "i",
+    "default": "p"
+  },
+  "unresolved": [],
+  "selector_checks": {
+    "cases": [
+      {
+        "matches": true,
+        "config_type": 0,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 1,
+        "selected_list_builder": "j"
+      },
+      {
+        "matches": true,
+        "config_type": 2,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 3,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 4,
+        "selected_list_builder": "d"
+      },
+      {
+        "matches": true,
+        "config_type": 5,
+        "selected_list_builder": "t"
+      },
+      {
+        "matches": true,
+        "config_type": 6,
+        "selected_list_builder": "d"
+      },
+      {
+        "matches": true,
+        "config_type": 7,
+        "selected_list_builder": "e"
+      },
+      {
+        "matches": true,
+        "config_type": 8,
+        "selected_list_builder": "f"
+      },
+      {
+        "matches": true,
+        "config_type": 9,
+        "selected_list_builder": "k"
+      },
+      {
+        "matches": true,
+        "config_type": 10,
+        "selected_list_builder": "g"
+      },
+      {
+        "matches": true,
+        "config_type": 11,
+        "selected_list_builder": "h"
+      },
+      {
+        "matches": true,
+        "config_type": 12,
+        "selected_list_builder": "a"
+      },
+      {
+        "matches": true,
+        "config_type": 13,
+        "selected_list_builder": "l"
+      },
+      {
+        "matches": true,
+        "config_type": 14,
+        "selected_list_builder": "m"
+      },
+      {
+        "matches": true,
+        "config_type": 15,
+        "selected_list_builder": "o"
+      },
+      {
+        "matches": true,
+        "config_type": 16,
+        "selected_list_builder": "n"
+      },
+      {
+        "matches": true,
+        "config_type": 17,
+        "selected_list_builder": "i"
+      },
+      {
+        "matches": true,
+        "config_type": 18,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 19,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 20,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 21,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 22,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 23,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 24,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 25,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 26,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 27,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 28,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 29,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 30,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": -1,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 99,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": -2147483648,
+        "selected_list_builder": "p"
+      },
+      {
+        "matches": true,
+        "config_type": 2147483647,
+        "selected_list_builder": "p"
+      }
+    ],
+    "scope": "Restored EQInfoListBuilder.r integer dispatch only; selected list bodies not executed"
+  }
+}

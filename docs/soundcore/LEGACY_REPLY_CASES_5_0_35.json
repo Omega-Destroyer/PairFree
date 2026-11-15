@@ -1,0 +1,724 @@
+{
+  "scope": "Restored parser DEX with synthetic beans/device state and modeled setters. Full packet validation/dispatch and transport are not run. P0 local custom-EQ state getter is modeled, not inferred from the packet.",
+  "cases": [
+    {
+      "case": "A3951-twelve-byte-button-block",
+      "input_hex": "017500a3014201f001060005",
+      "result": {
+        "leftDoubleSwitch": 1,
+        "rightTwsDoubleClick": 2,
+        "rightSingleClick": 5,
+        "leftTwsDoubleClick": 5,
+        "rightDoubleSwitch": 1,
+        "leftSingleSwitch": 1,
+        "rightLongPressSwitch": 1,
+        "rightTwsLongClick": 0,
+        "leftSingleClick": 6,
+        "rightSingleSwitch": 0,
+        "rightUnTwsDoubleClick": 4,
+        "leftUnTwsLongClick": 10,
+        "leftTwsLongClick": 3,
+        "rightUnTwsLongClick": 15,
+        "leftUnTwsDoubleClick": 7,
+        "leftLongPressSwitch": 0
+      },
+      "matches": true
+    },
+    {
+      "case": "A3951-button-helper-eleven-bytes",
+      "result": "ArrayIndexOutOfBoundsException",
+      "scope": "Direct helper behavior; caller validation not executed",
+      "matches": true
+    },
+    {
+      "case": "A3951-EQ-byte-helper",
+      "model": "A3028",
+      "input_hex": "003b3c78b4b5faff",
+      "positions": [
+        6.0,
+        6.0,
+        6.0,
+        12.0,
+        18.0,
+        18.0,
+        18.0,
+        18.0
+      ],
+      "matches": true
+    },
+    {
+      "case": "A3951-EQ-byte-helper",
+      "model": "A3954",
+      "input_hex": "003b3c78b4b5faff",
+      "positions": [
+        0.0,
+        5.900000095367432,
+        6.0,
+        12.0,
+        18.0,
+        18.100000381469727,
+        25.0,
+        25.5
+      ],
+      "matches": true
+    },
+    {
+      "case": "snapshot-y0",
+      "length": 0,
+      "matches": true,
+      "model": "A3909",
+      "success": false
+    },
+    {
+      "case": "snapshot-y0",
+      "length": 45,
+      "matches": true,
+      "model": "A3909",
+      "success": false
+    },
+    {
+      "case": "snapshot-y0",
+      "decoded": {
+        "needShowTwoBattery": 1,
+        "ageRange": 25,
+        "gender": 1,
+        "leftHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "hearIdSwitch": 1,
+        "rightCharging": 0,
+        "customBtnModel": {
+          "fields": {
+            "rightLongPressClick": 6,
+            "leftDoubleClick": 3,
+            "leftLongPressClick": 4,
+            "rightDoubleClick": 5
+          }
+        },
+        "rightHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "transSwitch": 1,
+        "twsStatus": 1,
+        "hostDevice": 1,
+        "rightBattery": 80,
+        "hearIdHasData": 1,
+        "leftBattery": 70,
+        "leftCharging": 1,
+        "eqInfoWithCustomValues": {
+          "fields": {
+            "eqCmdMode": 2
+          }
+        },
+        "hearIdTime": 305419896,
+        "eqType": 3
+      },
+      "length": 46,
+      "matches": true,
+      "model": "A3909",
+      "success": true,
+      "omitted_modeled_fields": [
+        "eqInfoWithCustomValues.customValues (P0 local-state dependency)"
+      ]
+    },
+    {
+      "case": "snapshot-y0",
+      "decoded": {
+        "needShowTwoBattery": 1,
+        "ageRange": 25,
+        "gender": 1,
+        "leftHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "hearIdSwitch": 1,
+        "rightCharging": 0,
+        "customBtnModel": {
+          "fields": {
+            "rightLongPressClick": 6,
+            "leftDoubleClick": 3,
+            "leftLongPressClick": 4,
+            "rightDoubleClick": 5
+          }
+        },
+        "rightHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "transSwitch": 1,
+        "twsStatus": 1,
+        "hostDevice": 1,
+        "rightBattery": 80,
+        "hearIdHasData": 1,
+        "leftBattery": 70,
+        "leftCharging": 1,
+        "eqInfoWithCustomValues": {
+          "fields": {
+            "eqCmdMode": 2
+          }
+        },
+        "hearIdTime": 305419896,
+        "eqType": 3
+      },
+      "length": 47,
+      "matches": true,
+      "model": "A3909",
+      "success": true,
+      "omitted_modeled_fields": [
+        "eqInfoWithCustomValues.customValues (P0 local-state dependency)"
+      ]
+    },
+    {
+      "case": "snapshot-y0",
+      "decoded": {
+        "needShowTwoBattery": 1,
+        "ageRange": 25,
+        "gender": 1,
+        "leftHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "hearIdSwitch": 1,
+        "rightCharging": 0,
+        "customBtnModel": {
+          "fields": {
+            "rightLongPressClick": 6,
+            "leftDoubleClick": 3,
+            "leftLongPressClick": 4,
+            "rightDoubleClick": 5
+          }
+        },
+        "rightHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "transSwitch": 1,
+        "twsStatus": 1,
+        "hostDevice": 1,
+        "rightBattery": 80,
+        "hearIdHasData": 1,
+        "leftBattery": 70,
+        "leftCharging": 1,
+        "eqInfoWithCustomValues": {
+          "fields": {
+            "eqCmdMode": 2
+          }
+        },
+        "hearIdTime": 305419896,
+        "eqType": 3
+      },
+      "length": 54,
+      "matches": true,
+      "model": "A3909",
+      "success": true,
+      "omitted_modeled_fields": [
+        "eqInfoWithCustomValues.customValues (P0 local-state dependency)"
+      ]
+    },
+    {
+      "case": "snapshot-y0",
+      "decoded": {
+        "needShowTwoBattery": 1,
+        "ageRange": 25,
+        "gender": 1,
+        "leftHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "hearIdSwitch": 1,
+        "rightCharging": 0,
+        "customBtnModel": {
+          "fields": {
+            "rightLongPressClick": 6,
+            "leftDoubleClick": 3,
+            "leftLongPressClick": 4,
+            "rightDoubleClick": 5
+          }
+        },
+        "rightHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "transSwitch": 1,
+        "twsStatus": 1,
+        "hostDevice": 1,
+        "rightBattery": 80,
+        "hearIdHasData": 1,
+        "leftBattery": 70,
+        "leftCharging": 1,
+        "eqInfoWithCustomValues": {
+          "fields": {
+            "eqCmdMode": 2
+          }
+        },
+        "hearIdTime": 305419896,
+        "eqType": 3
+      },
+      "length": 55,
+      "matches": true,
+      "model": "A3909",
+      "success": true,
+      "omitted_modeled_fields": [
+        "eqInfoWithCustomValues.customValues (P0 local-state dependency)"
+      ]
+    },
+    {
+      "case": "snapshot-y0-null",
+      "matches": true,
+      "success": false
+    },
+    {
+      "case": "snapshot-y0-index",
+      "raw_index": 0,
+      "decoded_index": 0,
+      "eq_type": 3,
+      "matches": true
+    },
+    {
+      "case": "snapshot-y0-index",
+      "raw_index": 22,
+      "decoded_index": 22,
+      "eq_type": 3,
+      "matches": true
+    },
+    {
+      "case": "snapshot-y0-index",
+      "raw_index": 23,
+      "decoded_index": 0,
+      "eq_type": 3,
+      "matches": true
+    },
+    {
+      "case": "snapshot-y0-index",
+      "raw_index": 238,
+      "decoded_index": 238,
+      "eq_type": 3,
+      "matches": true
+    },
+    {
+      "case": "snapshot-y0-index",
+      "raw_index": 60933,
+      "decoded_index": 5,
+      "eq_type": 2,
+      "matches": true
+    },
+    {
+      "case": "snapshot-y0-index",
+      "raw_index": 65278,
+      "decoded_index": 65278,
+      "eq_type": 1,
+      "matches": true
+    },
+    {
+      "case": "snapshot-u0",
+      "length": 0,
+      "matches": true,
+      "model": "A3910",
+      "success": false
+    },
+    {
+      "case": "snapshot-u0",
+      "length": 49,
+      "matches": true,
+      "model": "A3910",
+      "success": false
+    },
+    {
+      "case": "snapshot-u0",
+      "decoded": {
+        "needShowTwoBattery": 1,
+        "ageRange": 25,
+        "gender": 1,
+        "leftHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "hearIdSwitch": 1,
+        "rightCharging": 0,
+        "customBtnModel": {
+          "fields": {
+            "rightLongPressClick": 6,
+            "leftDoubleClick": 3,
+            "leftLongPressClick": 4,
+            "leftDoubleSwitch": 1,
+            "rightDoubleSwitch": 1,
+            "rightLongPressSwitch": 0,
+            "rightDoubleClick": 5,
+            "leftLongPressSwitch": 0
+          }
+        },
+        "rightHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "autoEarDetection": 0,
+        "transSwitch": 1,
+        "twsStatus": 1,
+        "hostDevice": 1,
+        "rightBattery": 80,
+        "hearIdHasData": 1,
+        "leftBattery": 70,
+        "leftCharging": 1,
+        "eqInfoWithCustomValues": {
+          "fields": {
+            "eqCmdMode": 2
+          }
+        },
+        "hearIdTime": 305419896,
+        "eqType": 3
+      },
+      "length": 50,
+      "matches": true,
+      "model": "A3910",
+      "single_tap_supported": false,
+      "success": true,
+      "wear_supported": false,
+      "omitted_modeled_fields": [
+        "eqInfoWithCustomValues.customValues (P0 local-state dependency)"
+      ]
+    },
+    {
+      "case": "snapshot-u0",
+      "decoded": {
+        "needShowTwoBattery": 1,
+        "ageRange": 25,
+        "gender": 1,
+        "leftHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "hearIdSwitch": 1,
+        "rightCharging": 0,
+        "customBtnModel": {
+          "fields": {
+            "rightLongPressClick": 6,
+            "leftDoubleClick": 3,
+            "leftLongPressClick": 4,
+            "leftDoubleSwitch": 1,
+            "rightDoubleSwitch": 1,
+            "rightLongPressSwitch": 0,
+            "rightDoubleClick": 5,
+            "leftLongPressSwitch": 0
+          }
+        },
+        "rightHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "autoEarDetection": 1,
+        "transSwitch": 1,
+        "twsStatus": 1,
+        "hostDevice": 1,
+        "rightBattery": 80,
+        "hearIdHasData": 1,
+        "leftBattery": 70,
+        "leftCharging": 1,
+        "eqInfoWithCustomValues": {
+          "fields": {
+            "eqCmdMode": 2
+          }
+        },
+        "hearIdTime": 305419896,
+        "eqType": 3
+      },
+      "length": 51,
+      "matches": true,
+      "model": "A3910",
+      "single_tap_supported": false,
+      "success": true,
+      "wear_supported": true,
+      "omitted_modeled_fields": [
+        "eqInfoWithCustomValues.customValues (P0 local-state dependency)"
+      ]
+    },
+    {
+      "case": "snapshot-u0",
+      "decoded": {
+        "needShowTwoBattery": 1,
+        "ageRange": 25,
+        "gender": 1,
+        "leftHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "hearIdSwitch": 1,
+        "rightCharging": 0,
+        "customBtnModel": {
+          "fields": {
+            "rightLongPressClick": 6,
+            "leftDoubleClick": 3,
+            "leftLongPressClick": 4,
+            "leftDoubleSwitch": 1,
+            "rightDoubleSwitch": 1,
+            "rightLongPressSwitch": 0,
+            "rightDoubleClick": 5,
+            "leftLongPressSwitch": 0
+          }
+        },
+        "rightHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "autoEarDetection": 1,
+        "transSwitch": 1,
+        "twsStatus": 1,
+        "hostDevice": 1,
+        "rightBattery": 80,
+        "hearIdHasData": 1,
+        "leftBattery": 70,
+        "leftCharging": 1,
+        "eqInfoWithCustomValues": {
+          "fields": {
+            "eqCmdMode": 2
+          }
+        },
+        "hearIdTime": 305419896,
+        "eqType": 3
+      },
+      "length": 54,
+      "matches": true,
+      "model": "A3910",
+      "single_tap_supported": false,
+      "success": true,
+      "wear_supported": true,
+      "omitted_modeled_fields": [
+        "eqInfoWithCustomValues.customValues (P0 local-state dependency)"
+      ]
+    },
+    {
+      "case": "snapshot-u0",
+      "decoded": {
+        "needShowTwoBattery": 1,
+        "ageRange": 25,
+        "gender": 1,
+        "leftHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "hearIdSwitch": 1,
+        "rightCharging": 0,
+        "customBtnModel": {
+          "fields": {
+            "rightLongPressClick": 6,
+            "leftSingleClick": 4,
+            "leftDoubleClick": 3,
+            "leftLongPressClick": 4,
+            "rightSingleSwitch": 1,
+            "leftDoubleSwitch": 1,
+            "rightSingleClick": 5,
+            "rightDoubleSwitch": 1,
+            "leftSingleSwitch": 1,
+            "rightLongPressSwitch": 0,
+            "rightDoubleClick": 5,
+            "leftLongPressSwitch": 0
+          }
+        },
+        "rightHearIdData": {
+          "fields": {
+            "postion0": 0.0,
+            "postion1": 6.0,
+            "postion2": 12.0,
+            "postion3": 18.0,
+            "postion4": 24.0,
+            "postion5": 24.0,
+            "postion6": 24.0,
+            "postion7": 24.0
+          }
+        },
+        "autoEarDetection": 1,
+        "transSwitch": 1,
+        "twsStatus": 1,
+        "hostDevice": 1,
+        "rightBattery": 80,
+        "hearIdHasData": 1,
+        "leftBattery": 70,
+        "leftCharging": 1,
+        "eqInfoWithCustomValues": {
+          "fields": {
+            "eqCmdMode": 2
+          }
+        },
+        "hearIdTime": 305419896,
+        "eqType": 3
+      },
+      "length": 55,
+      "matches": true,
+      "model": "A3910",
+      "single_tap_supported": true,
+      "success": true,
+      "wear_supported": true,
+      "omitted_modeled_fields": [
+        "eqInfoWithCustomValues.customValues (P0 local-state dependency)"
+      ]
+    },
+    {
+      "case": "snapshot-u0-null",
+      "matches": true,
+      "success": false
+    },
+    {
+      "case": "snapshot-u0-index",
+      "raw_index": 0,
+      "decoded_index": 0,
+      "eq_type": 3,
+      "matches": true
+    },
+    {
+      "case": "snapshot-u0-index",
+      "raw_index": 22,
+      "decoded_index": 22,
+      "eq_type": 3,
+      "matches": true
+    },
+    {
+      "case": "snapshot-u0-index",
+      "raw_index": 23,
+      "decoded_index": 0,
+      "eq_type": 3,
+      "matches": true
+    },
+    {
+      "case": "snapshot-u0-index",
+      "raw_index": 238,
+      "decoded_index": 0,
+      "eq_type": 3,
+      "matches": true
+    },
+    {
+      "case": "snapshot-u0-index",
+      "raw_index": 60933,
+      "decoded_index": 5,
+      "eq_type": 2,
+      "matches": true
+    },
+    {
+      "case": "snapshot-u0-index",
+      "raw_index": 65278,
+      "decoded_index": 65278,
+      "eq_type": 1,
+      "matches": true
+    }
+  ]
+}

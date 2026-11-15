@@ -14,11 +14,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.A3956EQGainValues",
@@ -33,11 +33,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.A3956EQGainValues",
@@ -52,11 +52,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.A3956EQGainValues",
@@ -71,11 +71,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -93,7 +93,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -111,7 +112,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -129,7 +131,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -147,7 +150,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -165,7 +169,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -183,7 +188,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -201,7 +207,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -219,7 +226,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -237,7 +245,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -255,7 +264,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -273,7 +283,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -291,7 +302,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -309,7 +321,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -327,7 +340,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -345,7 +359,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -363,7 +378,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -381,7 +397,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -399,7 +416,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -417,7 +435,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -435,7 +454,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -453,7 +473,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew2EQGainValues",
@@ -471,7 +492,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -489,7 +511,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -507,7 +530,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -525,7 +549,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -543,7 +568,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -561,7 +587,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -579,7 +606,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -597,7 +625,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -615,7 +644,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -633,7 +663,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -651,7 +682,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -669,7 +701,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -687,7 +720,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -705,7 +739,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -723,7 +758,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -741,7 +777,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -759,7 +796,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -777,7 +815,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -795,7 +834,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -813,7 +853,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -831,7 +872,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -849,7 +891,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew3EQGainValues",
@@ -867,7 +910,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -885,7 +929,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -903,7 +948,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -921,7 +967,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -939,7 +986,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -957,7 +1005,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -975,7 +1024,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -993,7 +1043,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1011,7 +1062,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1029,7 +1081,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1047,7 +1100,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1065,7 +1119,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1083,7 +1138,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1101,7 +1157,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1119,7 +1176,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1137,7 +1195,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1155,7 +1214,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1173,7 +1233,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1191,7 +1252,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1209,7 +1271,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1227,7 +1290,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1245,7 +1309,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew4EQGainValues",
@@ -1263,7 +1328,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1281,7 +1347,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1299,7 +1366,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1317,7 +1385,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1335,7 +1404,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1353,7 +1423,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1371,7 +1442,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1389,7 +1461,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1407,7 +1480,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1425,7 +1499,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1443,7 +1518,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1461,7 +1537,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1479,7 +1556,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1497,7 +1575,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1515,7 +1594,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1533,7 +1613,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1551,7 +1632,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1569,7 +1651,8 @@
         -3.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1587,7 +1670,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1605,7 +1689,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1623,7 +1708,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1641,7 +1727,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew5EQGainValues",
@@ -1659,7 +1746,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
@@ -1677,7 +1765,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
@@ -1695,7 +1784,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
@@ -1713,7 +1803,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
@@ -1731,7 +1822,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
@@ -1749,7 +1841,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.AeroNew6EQGainValues",
@@ -1767,7 +1860,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.C50iEQGainValues",
@@ -1785,7 +1879,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.C50iEQGainValues",
@@ -1803,7 +1898,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.C50iEQGainValues",
@@ -1821,7 +1917,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.C50iEQGainValues",
@@ -1839,7 +1936,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.C50iEQGainValues",
@@ -1857,7 +1955,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.C50iEQGainValues",
@@ -1875,7 +1974,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1205EQGainValues",
@@ -1890,11 +1990,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1205EQGainValues",
@@ -1909,11 +2009,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1205EQGainValues",
@@ -1928,11 +2028,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1205EQGainValues",
@@ -1947,11 +2047,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1206EQGainValues",
@@ -1966,11 +2066,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1206EQGainValues",
@@ -1985,11 +2085,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1206EQGainValues",
@@ -2004,11 +2104,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1206EQGainValues",
@@ -2023,11 +2123,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.D1206EQGainValues",
@@ -2042,11 +2142,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2064,7 +2164,8 @@
         1.5
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2082,7 +2183,8 @@
         1.5
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2100,7 +2202,8 @@
         1.5
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2118,7 +2221,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2136,7 +2240,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2154,7 +2259,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2172,7 +2278,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2190,7 +2297,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2208,7 +2316,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2226,7 +2335,8 @@
         -1.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2244,7 +2354,8 @@
         -1.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2262,7 +2373,8 @@
         -1.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2280,7 +2392,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2298,7 +2411,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2316,7 +2430,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2334,7 +2449,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2352,7 +2468,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2370,7 +2487,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2388,7 +2506,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2406,7 +2525,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2424,7 +2544,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2442,7 +2563,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2460,7 +2582,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2478,7 +2601,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2496,7 +2620,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2514,7 +2639,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2532,7 +2658,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2550,7 +2677,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2568,7 +2696,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2586,7 +2715,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2604,7 +2734,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2622,7 +2753,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2640,7 +2772,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.EQGainValues",
@@ -2658,7 +2791,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2676,7 +2810,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2694,7 +2829,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2712,7 +2848,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2730,7 +2867,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2748,7 +2886,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2766,7 +2905,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2784,7 +2924,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2802,7 +2943,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2820,7 +2962,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2838,7 +2981,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2856,7 +3000,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2874,7 +3019,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2892,7 +3038,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2910,7 +3057,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2928,7 +3076,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2946,7 +3095,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2964,7 +3114,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -2982,7 +3133,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -3000,7 +3152,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -3018,7 +3171,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -3036,7 +3190,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.K20IEQGainValues",
@@ -3054,7 +3209,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
@@ -3072,7 +3228,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
@@ -3090,7 +3247,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
@@ -3108,7 +3266,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
@@ -3126,7 +3285,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.AeroNew7EQGainValues",
@@ -3144,7 +3304,8 @@
         0.0
       ],
       "position_count": 9,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "explicit_valid_count": null,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3159,11 +3320,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3178,11 +3339,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3197,11 +3358,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3216,11 +3377,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3235,11 +3396,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3254,11 +3415,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3273,11 +3434,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3292,11 +3453,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1204EQGainValues",
@@ -3311,11 +3472,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3330,11 +3491,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3349,11 +3510,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3368,11 +3529,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3387,11 +3548,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3406,11 +3567,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3425,11 +3586,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        3.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 3,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3444,11 +3605,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3463,11 +3624,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     },
     {
       "class": "com.soundcore.eq.conf.normalize.D1404EQGainValues",
@@ -3482,11 +3643,11 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        4.0
+        0.0
       ],
-      "position_count": 10,
-      "scope": "Literal EQ bean positions; selection, preset index, frequency mapping and transmitted count require caller tracing."
+      "position_count": 9,
+      "explicit_valid_count": 4,
+      "scope": "Literal EQ bean positions; explicit validCount is separate. Selection, preset index, frequency mapping and transmitted count require caller tracing."
     }
   ],
   "nonliteral_constructors": [],

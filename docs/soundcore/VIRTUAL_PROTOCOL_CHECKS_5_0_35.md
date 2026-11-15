@@ -1,5 +1,7 @@
 # Soundcore 5.0.35-435: virtual protocol checks
 
+**Further interpreted checks:** [Control choice rules](CONTROL_GESTURE_RULES_5_0_35.md) cover 912 predicate-boundary scenarios and 432 concrete firmware cases; [preset bindings](EQ_PRESET_BINDINGS_5_0_35.md) include 35 type-dispatch checks; [legacy reply layouts](LEGACY_REPLY_LAYOUTS_5_0_35.md) include 30 parser checks. These use bounded restored-DEX interpretation with documented synthetic/modeling boundaries. They are distinct from Android instrumentation and hardware testing.
+
 **Additional evidence, 2026-11-15:** [Six legacy serializer/framer checks](LEGACY_PROTOCOL_DETAILS_5_0_35.md) use bounded interpretation of restored DEX with synthetic beans and a local sink. This is a distinct check method from the Android instrumentation below. Five verify A3909 payloads; one verifies complete Flare framing. [Control-factory interpretation](CONTROL_MAPPING_5_0_35.md) checks dispatch/action IDs, not transmitted packets or device acceptance.
 
 These are offline calls to recovered vendor serializers and parsers, using synthetic objects and buffers. No earbud was connected and no transport send/connect method was called. The [machine-readable cases](VIRTUAL_PROTOCOL_CASES_5_0_35.json) include input parameters, observed bytes/values and the APKM SHA-256.

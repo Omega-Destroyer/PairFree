@@ -1,5 +1,7 @@
 # Soundcore 5.0.35: model routes after full instruction-store recovery
 
+**Follow-up:** [Evaluated control rules](CONTROL_GESTURE_RULES_5_0_35.md), [preset bindings](EQ_PRESET_BINDINGS_5_0_35.md) and [legacy reply layouts](LEGACY_REPLY_LAYOUTS_5_0_35.md) resolve additional gaps in this route inventory. The literal EQ metadata now separates constructor validCount from position values.
+
 This pass covers all **165 compiled-registry keys**, including aliases and component keys. It is a protocol research inventory, not 165 distinct supported products or complete per-device feature specifications. The online Things/OMC catalogue remains unenumerated because the last catalogue request returned 401; no server request was made in this pass.
 
 ## New evidence

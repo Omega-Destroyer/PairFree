@@ -3671,6 +3671,7 @@
         "Soundcore P30i",
         "Soundcore R50i NC"
       ],
+      "reports": ["data/soundcore/reports/A3959_01.65.txt"],
       "openscq30": {
         "module": "a3959",
         "features": [

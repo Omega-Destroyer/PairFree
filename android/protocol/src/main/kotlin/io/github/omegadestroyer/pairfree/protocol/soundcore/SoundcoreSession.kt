@@ -140,7 +140,11 @@ public class SoundcoreSession(public val model: String) : FitTest {
             Command.ANC_MODE -> {
                 val modes = soundModes ?: return null
                 val ambient = ambientFor(value) ?: return null
-                val changed = modes.copyOf().also { it[0] = ambient.value.toByte() }
+                val changed = modes.copyOf().also {
+                    it[0] = ambient.value.toByte()
+                    // The P30i family's sensitivity byte is 0xFF until set; the official app writes 0 (recording, issue #45).
+                    if (A3959_MODES in l.features && it.size >= 7 && it[5] == 0xFF.toByte()) it[5] = 0
+                }
                 soundModes = changed
                 lastState = shown.with("sound_modes", changed)
                 SoundcorePacket.build(SoundcoreCommand.SET_SOUND_MODES, soundModesBody(changed), checksum)
@@ -169,7 +173,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 if (switches.isEmpty()) null else SettingGroup("sc_device", SettingTab.DEVICE, switches),
                 if (home.isEmpty()) null else SettingGroup("sleep_sound", SettingTab.HOME, home),
                 if (rows.filterNot { it in home }.isEmpty()) null else SettingGroup("sleep", SettingTab.DEVICE, rows.filterNot { it in home }),
-                a3954SoundRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
+                (a3954SoundRows(s) ?: a3959SoundRows(s))?.takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
+                a3959FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
             )
         }
@@ -193,6 +198,65 @@ public class SoundcoreSession(public val model: String) : FitTest {
             if (mode == 3) Setting.Choice("a3954_airplane_mode", listOf("manual", "automatic").getOrNull(b.u8(2)), listOf("manual", "automatic")) else null,
             if (mode == 3) s.field("air_pressure")?.let { Setting.Information("a3954_air_pressure", "${it.u8(0) / 100}.${(it.u8(0) % 100).toString().padStart(2, '0')} atm") } else null,
             Setting.Toggle("a3954_wind_noise", b.u8(3) and 1 != 0),
+        )
+    }
+
+    /**
+     * The P30i family's noise control (OpenSCQ30's a3959 module and the recording of a P30i / R50i NC from the official app, issue #45): the sound mode
+     * block's seven bytes are the mode, manual strength (high nibble) and adaptive level (low nibble), a second mode byte the app leaves 0, the noise
+     * cancelling kind (manual, adaptive, multi-scene), wind noise (bit 0 suppression, bit 1 detected), the adaptive sensitivity (0 to 10) and the
+     * multi-scene setting (transport, outdoor, indoor).
+     */
+    private fun a3959SoundRows(s: SoundcoreState): List<Setting>? {
+        if (A3959_MODES !in s.layout.features) return null
+        val b = s.field("sound_modes")?.takeIf { it.size >= 7 } ?: return null
+        val ambient = b.u8(0)
+        val kind = b.u8(3)
+        val anc = ambient == 0
+        return listOfNotNull(
+            if (anc) Setting.Choice("a3959_nc_mode", A3959_KINDS.getOrNull(kind), A3959_KINDS) else null,
+            if (anc && kind == 0) Setting.Level("a3959_manual_strength", (b.u8(1) shr 4).coerceIn(1, 5), 1, 5) else null,
+            if (anc && kind == 1) Setting.Information("a3959_adaptive_level", "${(b.u8(1) and 15).coerceIn(0, 5)}/5") else null,
+            if (anc && kind == 1) Setting.Level("a3959_sensitivity", b.u8(5).let { if (it == 0xFF) 0 else it }.coerceIn(0, 10), 0, 10) else null,
+            if (anc && kind == 2) Setting.Choice("a3959_scene", A3959_SCENES.getOrNull(b.u8(6)), A3959_SCENES) else null,
+            if (ambient <= 1) Setting.Toggle("a3959_wind_noise", b.u8(4) and 1 != 0) else null,
+            if (ambient <= 1) Setting.Information("a3959_wind_detected", if (b.u8(4) and 2 != 0) "yes" else "no") else null,
+        )
+    }
+
+    /** The write for a change to one of [a3959SoundRows]: the seven bytes as the earbuds reported them with the one field changed. */
+    private fun a3959Change(s: SoundcoreState, change: SettingChange): List<SoundcorePacket>? {
+        if (A3959_MODES !in s.layout.features || !change.key.startsWith("a3959_")) return null
+        val bytes = s.field("sound_modes")?.takeIf { it.size >= 7 } ?: return null
+        when (change) {
+            is SettingChange.Choice -> when (change.key) {
+                "a3959_nc_mode" -> bytes[3] = A3959_KINDS.indexOf(change.option).takeIf { it >= 0 }?.toByte() ?: return null
+                "a3959_scene" -> bytes[6] = A3959_SCENES.indexOf(change.option).takeIf { it >= 0 }?.toByte() ?: return null
+                else -> return null
+            }
+            is SettingChange.Level -> when (change.key) {
+                "a3959_manual_strength" -> bytes[1] = ((change.value.coerceIn(1, 5) shl 4) or (bytes.u8(1) and 15)).toByte()
+                "a3959_sensitivity" -> bytes[5] = change.value.coerceIn(0, 10).toByte()
+                else -> return null
+            }
+            is SettingChange.Toggle -> if (change.key == "a3959_wind_noise") bytes[4] = (if (change.on) 1 else 0).toByte() else return null
+            else -> return null
+        }
+        // The app writes the sensitivity byte as 0 where the earbuds report 0xFF (unset), as the recording shows.
+        if (bytes.u8(5) == 0xFF) bytes[5] = 0
+        lastState = s.with("sound_modes", bytes)
+        soundModes = bytes.copyOf()
+        return listOf(SoundcorePacket(SoundcoreCommand.SET_SOUND_MODES, bytes))
+    }
+
+    /** The P30i family's power-off durations (10, 20, 30 or 60 minutes, as the recording of the official app shows). */
+    private fun a3959FeatureRows(s: SoundcoreState): List<Setting>? {
+        if (A3959_MODES !in s.layout.features) return null
+        return listOfNotNull(
+            s.field("auto_power_off")?.takeIf { it.size >= 2 }?.let {
+                val options = listOf("off", "10", "20", "30", "60")
+                Setting.Choice("a3954_auto_power_off_duration", if (it.u8(0) == 0) "off" else options.getOrNull(it.u8(1) + 1), options)
+            },
         )
     }
 
@@ -234,7 +298,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
      * model's state has its field. A switch of more than one byte keeps the other bytes as the earbuds reported them.
      */
     private fun switchRow(s: SoundcoreState, w: Switch): Setting? =
-        if (s.layout.has(w.field) && s.flag(w.field) != null) Setting.Toggle(w.key, s.flag(w.field) == true) else null
+        // The P30i family shows its power-off durations instead of the bare switch.
+        if (w.key == "sc_auto_power_off" && A3959_MODES in s.layout.features) null
+        else if (s.layout.has(w.field) && s.flag(w.field) != null) Setting.Toggle(w.key, s.flag(w.field) == true) else null
 
     /** The A3953's press sensitivity: five levels from softest (0) to firmest (4), set with both earbuds connected (its screen). */
     private fun pressRow(s: SoundcoreState): Setting? {
@@ -273,6 +339,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
      */
     public fun change(change: SettingChange): List<SoundcorePacket>? {
         val s = lastState ?: return null
+        a3959Change(s, change)?.let { return it }
         if (change is SettingChange.Toggle) {
             if (model == "A3954" && change.key.startsWith("a3954_")) {
                 val f = when (change.key) {
@@ -429,7 +496,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         public const val A3936: String = "A3936"
 
         /** The models whose manager in Soundcore 2.9.9 sends the wear fit detection (`0901`): the A3951 family's `M0()` list that PairFree has. */
-        public val WEAR_FIT_MODELS: Set<String> = setOf("A3931", "A3935", "A3951")
+        public val WEAR_FIT_MODELS: Set<String> = setOf("A3931", "A3935", "A3951", "A3959")
 
         /** Models whose state PairFree can read: every model with a layout in data/soundcore/devices.json. */
         public val SUPPORTED_MODELS: Set<String> get() = SoundcoreLayout.ALL.map { it.model }.toSet()
@@ -449,6 +516,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
          * name each: `setMoreWearDetectionCallback`, `setMoreSideToneCallback`, `setLowBatteryAlertSwitchCallback`...). A switch whose body has more than one
          * byte (auto power off: switch and duration index; spatial audio: switch, effect and mode) is written back with the other bytes as reported.
          */
+        private const val A3959_MODES = "a3959_sound_modes"
+        private val A3959_KINDS = listOf("manual", "adaptive", "multi_scene")
+        private val A3959_SCENES = listOf("transport", "outdoor", "indoor")
         private const val MAX_VOLUME = "sc_max_volume"
         private const val MAX_VOLUME_STEPS = 16
         private const val PRESS_SENSITIVITY = "sc_press_sensitivity"
@@ -470,6 +540,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             Switch("sc_super_hearing", "super_hearing", SoundcoreCommand.SUPER_HEARING),
             Switch("sc_call_mix", "call_mix", SoundcoreCommand.CALL_MIX),
             Switch("sc_microphone", "microphone", SoundcoreCommand.MICROPHONE),
+            Switch("sc_surround_sound", "surround_sound", SoundcoreCommand.SURROUND_SOUND),
             Switch("sc_vibration", "vibration", SoundcoreCommand.VIBRATION),
             Switch("sc_max_volume_switch", "max_volume_switch", SoundcoreCommand.MAX_VOLUME_SWITCH),
         )

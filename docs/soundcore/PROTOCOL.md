@@ -598,6 +598,13 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   limit-high-volume write is three bytes (switch, dB, third byte). The slider's direction is not in the restored code (the screen's view model is native
   code that the restoration leaves empty); OpenSCQ30 reads 1 to 5 as noise cancelling (strongest at 1) and 7 to 11 as transparency, and PairFree follows it
   until a recording of the app settles it.
+- **P30i (A3959) and R50i NC, recorded from the official app (issue #45).** The sound modes block is seven bytes: the mode (0 noise cancelling, 1 transparency,
+  2 normal), the manual strength (high nibble, 1 to 5) and adaptive level (low nibble, read only), a byte the app leaves 0, the kind of noise cancelling
+  (0 manual, 1 adaptive, 2 multi-scene), wind noise (bit 0 suppression, bit 1 detected), the adaptive sensitivity (0 to 10; `FF` unset) and the multi-scene
+  setting (0 transport, 1 outdoor, 2 indoor). The recording shows each as a `06 81` write of those seven bytes, which PairFree now offers
+  (`a3959SoundRows`, pinned by `theP30iFamilyReadsAndWritesItsNoiseControl`). Also in the recording and now offered: surround sound (`02 86`, state byte after the dual connection switch), the
+  auto power off durations (`01 86`: switch and index, 10, 20, 30, 60 minutes) and the fit test (`09 01`, answered with 14 bytes after about nine seconds, 0 or 1 for a good fit). The sensitivity slider's range is OpenSCQ30's (the recording never moves it).
+
 - **Pull request 42** (Onlineraider, merged with its commits and corrected): its layout fix and its writes for spatial audio, easy chat, the case's
   features and language, and the auto power off durations match the vendor's code and OpenSCQ30. Corrected: it read the noise slider the wrong way round
   against OpenSCQ30 (low half transparency, high half noise cancelling), wrote the limit-high-volume setting without its third byte, sent an air pressure

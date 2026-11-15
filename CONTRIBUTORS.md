@@ -42,6 +42,8 @@ The project's own readings come from its owner's SOUNDPEATS H3 and Air5 Pro+ and
 | [@azmifaisal01](https://github.com/azmifaisal01) | Said the Soundcore Life Dot 3i works ([#7](https://github.com/Omega-Destroyer/PairFree/issues/7)); counted as tried once a device report arrives |
 | [@thomas2403](https://github.com/thomas2403) | The Sony WF-1000XM5 crash on connecting ([#2](https://github.com/Omega-Destroyer/PairFree/issues/2)), fixed in 0.4.0 and confirmed |
 | [@upt8543-eng](https://github.com/upt8543-eng) | The request for a 2x1 widget ([#12](https://github.com/Omega-Destroyer/PairFree/issues/12)), which became the home screen widget in 0.8.0 |
+| [@THED4NIEL](https://github.com/THED4NIEL) | Nothing Ear | A device report ([#41](https://github.com/Omega-Destroyer/PairFree/issues/41)), and the retest that showed the earbuds listed after re-pairing ([#30](https://github.com/Omega-Destroyer/PairFree/issues/30)) |
+| [@vagasajid2](https://github.com/vagasajid2) | Soundcore P30i (A3959) and R50i NC | A recording of the official app ([#45](https://github.com/Omega-Destroyer/PairFree/issues/45)): the noise control, equalizer, touch, auto power off and fit test writes, and the requests that led to them ([#38](https://github.com/Omega-Destroyer/PairFree/issues/38), [#43](https://github.com/Omega-Destroyer/PairFree/issues/43)) |
 
 ## Translations
 
@@ -49,6 +51,7 @@ A language is one file ([docs/TRANSLATING.md](docs/TRANSLATING.md)). Translators
 
 | Who | Language |
 |-----|----------|
+| [@iJahangard](https://github.com/iJahangard) | Persian (`fa`), 94% ([#44](https://github.com/Omega-Destroyer/PairFree/issues/44)) |
 
 ## And the projects PairFree learns from
 

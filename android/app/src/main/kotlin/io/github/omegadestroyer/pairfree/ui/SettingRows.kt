@@ -86,7 +86,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Text(settingTitle(setting.key), Modifier.weight(1f))
-                        Text(setting.value, color = Studio.colors.secondaryText)
+                        Text(if (setting.key == "a3959_wind_detected") stringResource(if (setting.value == "yes") R.string.yes else R.string.no) else setting.value, color = Studio.colors.secondaryText)
                     }
                 }
             }
@@ -527,6 +527,14 @@ private fun settingTitle(key: String): String = when (key) {
     "bass_level" -> stringResource(R.string.setting_bass_level)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio)
     "a3954_spatial_mode" -> stringResource(R.string.setting_a3954_spatial_mode)
+    "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
+    "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
+    "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
+    "a3959_sensitivity" -> stringResource(R.string.setting_a3959_sensitivity)
+    "a3959_scene" -> stringResource(R.string.setting_a3959_scene)
+    "a3959_wind_noise" -> stringResource(R.string.setting_wind_reduction)
+    "a3959_wind_detected" -> stringResource(R.string.setting_a3959_wind_detected)
+    "sc_surround_sound" -> stringResource(R.string.setting_sc_surround_sound)
     "a3954_easy_chat" -> stringResource(R.string.setting_speak_to_chat)
     "a3954_easy_chat_wait" -> stringResource(R.string.setting_voice_detect_wait)
     "a3954_airplane_mode" -> stringResource(R.string.setting_audio_mode)
@@ -877,6 +885,8 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "a3959_nc_mode" -> getString(when (option) { "manual" -> R.string.a3959_manual; "adaptive" -> R.string.a3959_adaptive; else -> R.string.a3959_multi_scene })
+    key == "a3959_scene" -> getString(when (option) { "transport" -> R.string.a3959_transport; "outdoor" -> R.string.a3959_outdoor; else -> R.string.a3959_indoor })
     key == "a3954_spatial_mode" -> option.replace('_', ' ').replaceFirstChar { it.uppercase() }
     key == "a3954_ambient_mode" -> getString(when (option) {
         "transparency" -> R.string.anc_transparency

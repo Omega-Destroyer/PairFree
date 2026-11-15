@@ -651,6 +651,60 @@ class SoundcoreModelSessionTest {
         assertEquals("0181:01", body(SettingChange.Toggle("sc_wearing_detection", true)))
         assertNull(session.change(SettingChange.Level("a3954_anc_strength", 3)), "a strength only in its own mode")
     }
+
+    /** A P30i / R50i NC recorded from the official app (issue #45): its state, and the seven-byte sound modes writes it sent. */
+    @Test
+    fun theP30iFamilyReadsAndWritesItsNoiseControl() {
+        val state = "0001070" + "6ffff30312e363530312e" + "30".repeat(18) + "fefeb4647d82879687967878" + "00".repeat(10) + "0a" + "ffff636fffff4444" + "35" +
+            "02510001" + "00ff00" + "31" + "01" + "00" + "00" + "0102" + "01" + "00" + "00".repeat(12)
+        val session = SoundcoreSession("A3959").also { assertTrue(it.receive(SoundcorePacket(SoundcoreCommand.STATE, state.hexBytes()))) }
+        fun rows() = session.groups.flatMap { it.settings }.associateBy { it.key }
+        fun notice(hex: String) = session.receive(SoundcorePacket(SoundcoreCommand.SOUND_MODES, hex.hexBytes()))
+        fun body(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
+
+        // Normal mode: no noise cancelling rows, the power-off duration instead of a bare switch, and surround sound.
+        assertTrue(rows().keys.none { it.startsWith("a3959_") })
+        assertEquals(Setting.Choice("a3954_auto_power_off_duration", "30", listOf("off", "10", "20", "30", "60")), rows()["a3954_auto_power_off_duration"])
+        assertNull(rows()["sc_auto_power_off"])
+        assertEquals(Setting.Toggle("sc_surround_sound", false), rows()["sc_surround_sound"])
+        // The official app writes the unset sensitivity byte as 0 where the earbuds report 0xFF.
+        val frame = session.set(Command.ANC_MODE, Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key)!!
+        assertEquals("00510001000000", frame.copyOfRange(9, 16).hex())
+
+        notice("00550000000000")
+        assertEquals(Setting.Choice("a3959_nc_mode", "manual", listOf("manual", "adaptive", "multi_scene")), rows()["a3959_nc_mode"])
+        assertEquals(Setting.Level("a3959_manual_strength", 5, 1, 5), rows()["a3959_manual_strength"])
+        assertEquals(Setting.Toggle("a3959_wind_noise", false), rows()["a3959_wind_noise"])
+        assertEquals("0681:00450000000000", body(SettingChange.Level("a3959_manual_strength", 4)))
+        notice("00550000000000")
+        assertEquals("0681:00550001000000", body(SettingChange.Choice("a3959_nc_mode", "adaptive")))
+        notice("00550000000000")
+        assertEquals("0681:00550000010000", body(SettingChange.Toggle("a3959_wind_noise", true)))
+
+        notice("00550001000000")
+        assertEquals(Setting.Information("a3959_adaptive_level", "5/5"), rows()["a3959_adaptive_level"])
+        assertEquals(Setting.Level("a3959_sensitivity", 0, 0, 10), rows()["a3959_sensitivity"])
+        assertEquals("0681:00550001000700", body(SettingChange.Level("a3959_sensitivity", 7)))
+        notice("00550001000000")
+        assertEquals("0681:00550002000000", body(SettingChange.Choice("a3959_nc_mode", "multi_scene")))
+
+        notice("00550002000000")
+        assertEquals(Setting.Choice("a3959_scene", "transport", listOf("transport", "outdoor", "indoor")), rows()["a3959_scene"])
+        assertEquals("0681:00550002000001", body(SettingChange.Choice("a3959_scene", "outdoor")))
+        notice("00550002000000")
+        assertEquals("0681:00550002000002", body(SettingChange.Choice("a3959_scene", "indoor")))
+
+        // Transparency has wind noise but no noise cancelling kind; the detection bit is the earbuds' own.
+        notice("01550001020000")
+        assertEquals(Setting.Information("a3959_wind_detected", "yes"), rows()["a3959_wind_detected"])
+        assertNull(rows()["a3959_nc_mode"])
+        assertEquals("0681:01550001010000", body(SettingChange.Toggle("a3959_wind_noise", true)))
+
+        assertEquals("0186:0101", body(SettingChange.Choice("a3954_auto_power_off_duration", "20")))
+        assertEquals("0186:0001", body(SettingChange.Choice("a3954_auto_power_off_duration", "off")))
+        assertEquals("0286:01", body(SettingChange.Toggle("sc_surround_sound", true)))
+        assertEquals("0901", session.startFitTest()!!.single().copyOfRange(5, 7).hex(), "the fit test the official app runs")
+    }
 }
 
 /**

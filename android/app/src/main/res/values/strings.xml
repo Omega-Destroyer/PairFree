@@ -1171,6 +1171,22 @@
     <string name="setting_ca_rock">Rock</string>
     <string name="setting_ca_voice">Voice</string>
 
+    <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
+    <string name="setting_a3959_nc_mode">Noise cancelling type</string>
+    <string name="setting_a3959_adaptive_level">Adaptive level</string>
+    <string name="setting_a3959_sensitivity">Adaptive sensitivity</string>
+    <string name="setting_a3959_scene">Scene</string>
+    <string name="setting_a3959_wind_detected">Wind detected</string>
+    <string name="setting_sc_surround_sound">Surround sound</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="a3959_manual">Manual</string>
+    <string name="a3959_adaptive">Adaptive</string>
+    <string name="a3959_multi_scene">Multi-scene</string>
+    <string name="a3959_transport">Transport</string>
+    <string name="a3959_outdoor">Outdoor</string>
+    <string name="a3959_indoor">Indoor</string>
+
     <!-- Soundcore Sleep A30: a sound from the phone (issue #23, docs/soundcore/PROTOCOL.md section 14). Untested on an A30. -->
     <string name="sleep_upload_title">Sleep sounds</string>
     <string name="sleep_upload_about">Put a sound from this phone on the earbuds, to play in their local mode. Experimental: not tried on a Sleep A30 yet.</string>

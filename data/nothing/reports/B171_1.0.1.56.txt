@@ -1,0 +1,29 @@
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help check
+this model. It holds no serial number, address or other personal data.
+
+Bluetooth name:  Nothing Ear
+Brand:           Nothing
+Model:           Nothing Ear (product B171)
+Firmware:        1.0.1.56
+App:             PairFree 0.12.0
+OS:              Android 17 (API 37)
+Captured:        2026-11-13 20:34 UTC
+
+The last answer to each read PairFree sent, and the battery and noise events
+(command: payload as hex; empty means the earbuds answered without a value):
+  C001: 31 2e 30 2e 30 0a
+  C01C: 71 b1
+  C042: 31 2e 30 2e 31 2e 35 36
+  C007: 02 02 5f 03 64
+  C01E: 01 07 00 02 01 00
+  C01F: 00
+  C044: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  C00E: 09 01 01 02 01 07 01 09 01 0a 01 0b 00 0e 01 12 01 15 01
+  C041: 02
+  C04E: 01 06
+  C029: 02
+  C027: 00
+  C04C: 00
+  C018: 08 02 01 02 08 03 01 02 09 02 01 03 0b 03 01 03 0b 02 01 07 16 03 01 07 16 02 01 09 01 03 01 09 01

@@ -83,7 +83,8 @@
   "opcodes": [
    {"id": "03", "name": "GET_TARGET_INFO"},
    {"id": "07", "name": "GET_SYS_INFO"},
-   {"id": "08", "name": "SET_SYS_INFO", "never_send": true},
+   {"id": "08", "name": "SET_SYS_INFO", "note": "sent only for the EQ attribute (SYS_EQ) under the public function (SYS_PUBLIC): JLDeviceImpl.setEQ; every other system information write stays unsent"},
+   {"id": "09", "name": "SYS_INFO_AUTO_UPDATE", "note": "the earbuds' own notice of a changed system setting; the EQ is what QCY's app listens to (onEqChange)"},
    {"id": "0E", "name": "FUNCTION", "never_send": true},
    {"id": "C0", "name": "ADV_SET"},
    {"id": "C1", "name": "ADV_GET"},
@@ -96,6 +97,7 @@
    {"id": "FF", "name": "CUSTOM", "note": "QCY's own items, without QCY's FF and length header"}
   ],
   "adv": {"BATTERY": 0, "DEVICE_NAME": 1, "KEY_SETTINGS": 2, "LED": 3, "MIC_CHANNEL": 4, "WORK_MODE": 5, "PRODUCT": 6, "IN_EAR": 8, "LANGUAGE": 9, "SLEEP_MODE": 10, "NOISE_MODE": 11, "BALANCE": 12},
-  "target_info": {"FIRMWARE": 5}
+  "target_info": {"FIRMWARE": 5},
+  "sys": {"PUBLIC": 255, "EQ": 4}
  }
 }

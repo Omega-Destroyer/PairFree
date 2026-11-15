@@ -1610,6 +1610,8 @@ abstract class GenerateQcyTables : DefaultTask() {
         for ((name, v) in jieli.getValue("adv") as Map<String, Any?>) out.appendLine("    public const val ADV_$name: Int = ${int(v)}")
         @Suppress("UNCHECKED_CAST")
         for ((name, v) in jieli.getValue("target_info") as Map<String, Any?>) out.appendLine("    public const val TARGET_$name: Int = ${int(v)}")
+        @Suppress("UNCHECKED_CAST")
+        for ((name, v) in jieli.getValue("sys") as Map<String, Any?>) out.appendLine("    public const val SYS_$name: Int = ${int(v)}")
         out.appendLine("}")
         out.appendLine()
         // The models in groups of 20, each in an object of its own: one initializer holding all of them passes the JVM's 64 KB method limit.

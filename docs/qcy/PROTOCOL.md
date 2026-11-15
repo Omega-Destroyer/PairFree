@@ -213,7 +213,7 @@ The earbuds' own commands that want an answer get one: status 0 and their sequen
 Every JieLi model's noise values in QCY's control panels are packed ones (section 5), which QCY's app
 sends only as item `17`.
 
-**Never sent:** reboot `E7`, function `0E` and system info `08` writes, system operations `C5` (factory
+**Never sent:** reboot `E7`, function `0E`, every system info `08` write except the EQ attribute (section 7), system operations `C5` (factory
 reset among them), the attributes PairFree does not write (the name among them), and QCY's never-sent
 items (section 3) inside the custom command.
 
@@ -243,13 +243,19 @@ panels are QCY's server data. PairFree asks for both on connecting and uses the 
 - **Range and bands:** each model's band count, frequencies and range are in `data/qcy/devices.json` (`eq`);
   the parametric EQ uses the bands the earbuds report.
 - **JieLi models:** the newer ones take items `22` and `20` in the custom command, so the parametric EQ
-  goes there too. The older ones take JieLi's own EQ setting (system info `08`), which PairFree does not send.
+  goes there too. The older ones take JieLi's own EQ setting, which is the same bytes as the EQ characteristic carried in RCSP's system
+  information (**built 2026-11-15, issue #35**; read from QCY's app 4.0.7: `JLDeviceImpl.getEQInfo` and `setEQ`, `CommandBuilder.buildGetEqValueCmd` and
+  `buildSetEqValueCmd`, `ParseHelper.convertToEqInfo`): the read is opcode `07` with the public function `FF` and the 4-byte mask `00 00 00 10` (attribute 4);
+  the answer, and the earbuds' own notice (opcode `09`), hold the function and attribute 4: the EQ type and ten gains in signed whole dB (`FF` a curve of the
+  user's own; QCY's app sends a preset as its type with the gains `7F`). The write is opcode `08`, function `FF`, attribute 4 with eleven bytes: the type, then ten gains
+  padded with zeros. It is the only system information write PairFree sends (`QcyJieliSession.allowed`); `QcyJieliTest.theEqOfAnOlderJieLiModelIsJieLisSystemInformation`
+  pins the bytes. Presets go as curves like on the other models. Not tried on earbuds.
 
 None of this has been tried with PairFree; the N70's parametric EQ is OpenQCY's.
 
 ## 8. Not yet
 
-- **EQ:** QCY's presets (**corrected 2026-11-12: the saved panels hold them, 186 panels with `eqs` gain lists per preset name**; the unit is still to confirm), and the older JieLi models' EQ (section 7).
+- **EQ:** QCY's presets (**corrected 2026-11-12: the saved panels hold them, 186 panels with `eqs` gain lists per preset name**; the unit is still to confirm), (the older JieLi models' EQ was built 2026-11-15, section 7).
 - **Fit test (`11`):** Quicky's dump gives no command, but **QCY's own panels do (corrected 2026-11-12): 20 of the saved panels in `server_dump/qcy/panels` carry "Fit detection" as type 110 with cmdid 17** (`CMDID_COMPACTNESS`); the reply layout is not read yet.
 - **Voice language (`19`):** named in QCY's tables, but QCY's app never writes it.
 

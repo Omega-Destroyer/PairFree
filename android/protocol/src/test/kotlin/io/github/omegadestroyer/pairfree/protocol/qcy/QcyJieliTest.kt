@@ -231,4 +231,28 @@ class QcyJieliTest {
         val newer = QcyJieliSession(ht16)
         assertTrue(newer.start().map(::frame).none { it.opcode == JieliWire.GET_SYS_INFO })
     }
+
+    /** A hold the panel does not list is offered when the earbuds' own key table reports the hold keys (issue #35: the T13 ANC2's report holds keys 9 and 10). */
+    @Test
+    fun aHoldTheEarbudsReportIsOfferedEvenWhenThePanelDoesNotListIt() {
+        assertFalse("hold" in t13.touch!!.gestures, "the T13 ANC2's panel lists three gestures")
+        val s = QcyJieliSession(t13)
+        s.start()
+        // Triples of earbud, gesture (1 tap, 5 hold) and action: the report's hold keys are 07 on the left and 0a (noise control) on the right.
+        val keys = "010101" + "020101" + "010507" + "02050a"
+        s.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_KEY_SETTINGS, keys.hexBytes())))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
+        assertTrue("touch_hold_left" in rows && "touch_hold_right" in rows, rows.keys.toString())
+        assertEquals("noise_control", rows["touch_hold_right"])
+        // The write is the key settings attribute with gesture 5, as for the other gestures.
+        val write = frame(s.change(SettingChange.Choice("touch_hold_left", "play_pause"))!!.single())
+        assertEquals(JieliWire.ADV_SET, write.opcode)
+        assertEquals("0402" + "0105" + "01", hex(write.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, write.bytes())))
+        // Without hold keys in the earbuds' table, no hold row.
+        val plain = QcyJieliSession(t13)
+        plain.start()
+        plain.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_KEY_SETTINGS, ("010101" + "020101").hexBytes())))
+        assertTrue(plain.groups.flatMap { it.settings }.none { it.key.startsWith("touch_hold") })
+    }
 }

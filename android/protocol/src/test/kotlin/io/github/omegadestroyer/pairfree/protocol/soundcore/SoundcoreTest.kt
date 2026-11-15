@@ -6,6 +6,7 @@ import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
+import io.github.omegadestroyer.pairfree.protocol.Value
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import io.github.omegadestroyer.pairfree.protocol.repoFile
 import kotlinx.serialization.json.Json
@@ -431,6 +432,26 @@ class SoundcoreLayoutTest {
         assertEquals(listOf(0, 1, 2, 3), pro.presets(null).map { it.command })
     }
 
+    /** The Life NC (Soundcore 5.0.35, A3201DeviceManager): its own request, no checksum, and the writes of its three settings. */
+    @Test
+    fun theLifeNcAsksWithItsOwnRequestAndReadsItsRows() {
+        val session = SoundcoreSession("A3201")
+        val request = session.requestState()
+        assertEquals("08ee00000001090900", request.hex(), "the request is `01 09` with no checksum")
+        val reply = byteArrayOf(4, 1, 2, 1, 10) + "1.23".encodeToByteArray() + "A3201XXXXXXXXXXX".encodeToByteArray() + "Life NC".encodeToByteArray()
+        assertTrue(session.receive(SoundcorePacket(0x0109, reply)))
+        assertEquals(Value.Steps(4, 5), session.state.values[Command.BATTERY_LEFT])
+        val rows = session.groups.flatMap { it.settings }.associateBy { it.key }
+        assertEquals(Setting.Toggle("sc_vibration", true), rows["sc_vibration"])
+        assertEquals(Setting.Toggle("sc_max_volume_switch", true), rows["sc_max_volume_switch"])
+        assertEquals(Setting.Level("sc_max_volume", 10, 0, 16), rows["sc_max_volume"])
+        fun write(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
+        assertEquals("0182:00", write(SettingChange.Toggle("sc_vibration", false)))
+        assertEquals("0184:00", write(SettingChange.Toggle("sc_max_volume_switch", false)))
+        assertEquals("0185:0c", write(SettingChange.Level("sc_max_volume", 12)))
+        assertTrue("41 33 32 30 31" !in session.lastState!!.reportHex(), "the serial is hidden in a report")
+    }
+
     @Test
     fun readsEveryReplyInOpenScq30sTests() {
         assertEquals(37, replies.size)
@@ -827,11 +848,11 @@ class SoundcoreModelsTest {
     @Test
     fun reportOnlyModels() {
         // Models only the Soundcore app's strings name: found by their service or name, with nothing to read but a report.
+        // Every model the Soundcore app 5.0.35 registers for earbuds and headphones now has a layout: a name finds one, not a report-only entry.
         val lifeNc = "0cf12d31-fac3-4553-bd80-d6832e7b3201"
         assertEquals(SoundcoreModels.Match("A3201", lifeNc), SoundcoreModels.identify("soundcore Life NC", listOf(lifeNc)))
         assertEquals(SoundcoreModels.Match("A3201", null), SoundcoreModels.identify("Soundcore Life NC", emptyList()))
-        assertTrue(SoundcoreModels.model("A3201")!!.reportOnly)
-        assertTrue(SoundcoreLayout.of("A3201")!!.fields.isEmpty())
+        assertTrue(SoundcoreModels.ALL.none { it.reportOnly })
         assertTrue(!SoundcoreModels.model("A3953")!!.reportOnly, "the Liberty 4 is read from Soundcore 3.3.0")
         assertTrue(!SoundcoreModels.model("A3936")!!.reportOnly)
         // A Soundcore vendor service naming a number PairFree does not know at all: report only too.

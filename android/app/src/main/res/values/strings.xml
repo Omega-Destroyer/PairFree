@@ -1132,6 +1132,9 @@
     <string name="setting_sc_device">Earbud settings</string>
     <string name="setting_sc_wearing_detection">Wear detection</string>
     <string name="setting_sc_side_tone">Side tone</string>
+    <string name="setting_sc_vibration">Vibration</string>
+    <string name="setting_sc_max_volume_switch">Limit the volume</string>
+    <string name="setting_sc_max_volume">Volume limit</string>
     <string name="setting_sc_in_ear_tone">In-ear beep</string>
     <string name="setting_sc_bass_up">Bass boost</string>
     <string name="setting_sc_spatial_audio">Spatial audio</string>

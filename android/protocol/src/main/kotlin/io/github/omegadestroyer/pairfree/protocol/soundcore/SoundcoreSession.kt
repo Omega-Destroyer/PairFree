@@ -43,7 +43,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
         val body = packet.body
         if (body.isEmpty()) return false
         val before = state
-        when (packet.command) {
+        // The Life NC asks for its state with `01 09` ([SoundcoreCommand.DEVICE_INFO]) and answers under it.
+        val command = if (packet.command == SoundcoreCommand.DEVICE_INFO && layout?.stateCommand == SoundcoreCommand.DEVICE_INFO) SoundcoreCommand.STATE else packet.command
+        when (command) {
             SoundcoreCommand.STATE -> {
                 val l = layout ?: return false
                 val s = SoundcoreState.parse(l, body) ?: return false
@@ -159,7 +161,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
     public val groups: List<SettingGroup>
         get() {
             val s = lastState ?: return emptyList()
-            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s))
+            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s), maxVolumeRow(s))
             val rows = listOfNotNull(sleepTimerRow(s)) + A30_FLAGS.filter { it.home.not() }.mapNotNull { flagRow(s, it) } +
                 listOfNotNull(listeningRow(s, A30_LISTENING_MODE), listeningRow(s, A30_DEFAULT_LISTENING_MODE))
             val home = A30_FLAGS.filter { it.home }.mapNotNull { flagRow(s, it) } + listOfNotNull(listeningRow(s, A30_LISTENING_MODE))
@@ -239,6 +241,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
         val v = s.field("press_sensitivity")?.takeIf { it.isNotEmpty() }?.u8(0) ?: return null
         return Setting.Choice(PRESS_SENSITIVITY, PRESS_LEVELS.getOrNull(v), PRESS_LEVELS)
     }
+
+    /** The Life NC's volume limit: 0 to 16 steps. */
+    private fun maxVolumeRow(s: SoundcoreState): Setting? =
+        s.field("max_volume")?.firstOrNull()?.let { Setting.Level(MAX_VOLUME, (it.toInt() and 0xFF).coerceIn(0, MAX_VOLUME_STEPS), 0, MAX_VOLUME_STEPS) }
 
     /** One of the Sleep A30's switches (OpenSCQ30's d1301 flags), where the model's state holds it. */
     private fun flagRow(s: SoundcoreState, f: A30Flag): Setting? {
@@ -363,6 +369,12 @@ public class SoundcoreSession(public val model: String) : FitTest {
             lastState = s.with(c.field, byteArrayOf(v.toByte()))
             return listOf(SoundcorePacket(c.command, byteArrayOf(v.toByte())))
         }
+        if (change is SettingChange.Level && change.key == MAX_VOLUME) {
+            if (maxVolumeRow(s) == null) return null
+            val body = byteArrayOf(change.value.coerceIn(0, MAX_VOLUME_STEPS).toByte())
+            lastState = s.with("max_volume", body)
+            return listOf(SoundcorePacket(SoundcoreCommand.MAX_VOLUME, body))
+        }
         if (change is SettingChange.Level && model == "A3954") {
             if (change.key == "a3954_volume_limit_db") {
                 val bytes = s.field("limit_high_volume") ?: return null
@@ -395,7 +407,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
     }
 
     /** The request for the full state, sent on connecting and now and then after. */
-    public fun requestState(): ByteArray = SoundcorePacket.build(SoundcoreCommand.STATE, checksum = checksum)
+    public fun requestState(): ByteArray = SoundcorePacket.build(layout?.stateCommand ?: SoundcoreCommand.STATE, checksum = checksum)
 
     private fun flag(command: Int, value: Int): ByteArray =
         SoundcorePacket.build(command, byteArrayOf(if (value != 0) 1 else 0), checksum)
@@ -437,6 +449,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
          * name each: `setMoreWearDetectionCallback`, `setMoreSideToneCallback`, `setLowBatteryAlertSwitchCallback`...). A switch whose body has more than one
          * byte (auto power off: switch and duration index; spatial audio: switch, effect and mode) is written back with the other bytes as reported.
          */
+        private const val MAX_VOLUME = "sc_max_volume"
+        private const val MAX_VOLUME_STEPS = 16
         private const val PRESS_SENSITIVITY = "sc_press_sensitivity"
         private val PRESS_LEVELS = listOf("softest", "soft", "normal", "firm", "firmest")
 
@@ -456,6 +470,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
             Switch("sc_super_hearing", "super_hearing", SoundcoreCommand.SUPER_HEARING),
             Switch("sc_call_mix", "call_mix", SoundcoreCommand.CALL_MIX),
             Switch("sc_microphone", "microphone", SoundcoreCommand.MICROPHONE),
+            Switch("sc_vibration", "vibration", SoundcoreCommand.VIBRATION),
+            Switch("sc_max_volume_switch", "max_volume_switch", SoundcoreCommand.MAX_VOLUME_SWITCH),
         )
 
         private class A30Flag(val key: String, val field: String, val feature: String, val command: Int, val home: Boolean)

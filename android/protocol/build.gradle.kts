@@ -372,7 +372,10 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 }
             }
             val tlvPrivate = (d["tlv_private"] as List<*>?)?.joinToString(", ", ", tlvPrivate = setOf(", ")") { (it as Number).toInt().toString() } ?: ""
-            layoutLines += "        SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds$tlv$tlvPrivate),"
+            val stateCommand = (d["state_command"] as String?)?.let { hex ->
+                ", stateCommand = SoundcoreCommand.${(commands.first { it["command"] == hex }["id"] as String).uppercase()}"
+            } ?: ""
+            layoutLines += "        SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds$tlv$tlvPrivate$stateCommand),"
         }
         val chunks = layoutLines.chunked(12)
         chunks.forEachIndexed { i, lines ->

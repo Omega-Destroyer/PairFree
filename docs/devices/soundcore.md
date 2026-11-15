@@ -23,8 +23,8 @@ The Soundcore app 5.0.35 (read outside the repo: its business code is packed, an
 about forty more models, among them the Liberty Buds 2, the Liberty 5 Pro and Pro Max, the AeroClip 2 and 2 Pro, the P42i, the Space 2 and Space 2 Pro
 (Soundcore's newest models answer in tag, length and value records, which PairFree now reads) and the C40i, V40i, A30i, K20i and the AeroFit
 family. Each is the twin of a model PairFree already reads, or has its own layout from the app's parser; none has been tried on real earbuds, and
-their notes in the table say what each offers. The battery of a model whose scale only a report can give is not shown. Still report-only: the
-Life NC (the app reads it item by item). The Liberty 4 Pro's settings are from pull request 42 by Onlineraider, corrected against the app.
+their notes in the table say what each offers. The battery of a model whose scale only a report can give is not shown. The Life NC speaks an older
+protocol (one request returns its state) and shows its battery, vibration and volume limit. The Liberty 4 Pro's settings are from pull request 42 by Onlineraider, corrected against the app.
 `docs/soundcore/PROTOCOL.md` describes the protocol (section 14 for the 5.0.35 models).
 
 ## All models
@@ -79,7 +79,7 @@ Life NC (the app reads it item by item). The Liberty 4 Pro's settings are from p
 <tr><td>Life Dot 2 NC, Life Dot 2 XR</td><td>A3931</td><td>Checked</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>Life Dot 2S, Liberty Neo 2</td><td>A3926</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅ Checked</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Life Dot 3i, Dot 3i</td><td>A3982</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
-<tr><td>Life NC</td><td>A3201</td><td>Report only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Life NC</td><td>A3201</td><td>Not tested</td><td>One</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Life Note 3</td><td>A3933</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
 <tr><td>Life Note 3i, Note 3i</td><td>A3983</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>
 <tr><td>Life Note 3S</td><td>A3945</td><td>Checked</td><td>Each earbud, case</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td></tr>

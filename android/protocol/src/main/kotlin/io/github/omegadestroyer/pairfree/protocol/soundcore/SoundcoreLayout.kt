@@ -108,6 +108,8 @@ public class SoundcoreLayout(
     public val tlv: List<SoundcoreTlv> = emptyList(),
     /** The records of a tag-length-value reply that hold serial numbers or addresses: their values are hidden in a report. */
     public val tlvPrivate: Set<Int> = emptySet(),
+    /** The command that asks for and carries the state: [SoundcoreCommand.STATE], or the model's own (the Life NC's `01 09`). */
+    public val stateCommand: Int = SoundcoreCommand.STATE,
 ) {
     /** The bytes every reply has; optional fields come after them. */
     public val minSize: Int = fields.filterNot { it.optional }.sumOf { it.size }

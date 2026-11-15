@@ -567,9 +567,16 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   | D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303 | tag-length-value (below) | see below |
 
   The battery is shown only where a twin or a recording gives its scale: a parser's clamp (0 to 100, 0 to 9) is not a scale (the Liberty 5 and the
-  Liberty 4 Pro share one clamp and differ in scale), so the models above without a twin show no battery until a device report settles it. Left report-only:
-  the Life NC (A3201), which the app reads item by item (`01 01` to `01 0A` each with its own reply) instead of one state reply, which PairFree's
-  layouts do not express yet; and the A3201's siblings among the speakers.
+  Liberty 4 Pro share one clamp and differ in scale), so the models above without a twin show no battery until a device report settles it. No earbud or
+  headphone the app registers is report-only any more. The **Life NC (A3201)** speaks an older protocol: one request, `01 09` (it names its own
+  `stateCommand` in `devices.json`), returns its whole state in a frame with no checksum (the level 0 to 5, the vibration switch, the custom button
+  function, the volume limit's switch and value 0 to 16, the firmware as four characters, the serial and the name); the writes are `01 82`, `01 84` and
+  `01 85`. Its equalizer is read and set by index (`02 01`, `02 81`) and its presets are in a native screen, so none is offered.
+  **Switch bits of the tag-length-value models** (records 26 and 27: the prompts, the touch lock, LDAC, 3D mode, adaptive volume, side tone and the
+  rest): blocked: which of them each model shows is the model's "more" data provider, whose bodies are empty stubs in the restored app; checked:
+  `D1206MoreDataProvider` (6 of its 9 methods are stubs), `D1206MainActivity` (57 stubs, 12 native methods), `A3954AncFragmentVM` and the other
+  models' main view models. The bits are read; offering a switch the model does not have would write to a bit it ignores. A device report from the
+  model (or the Soundcore app's screens recorded) settles which to offer.
 - **Tag-length-value models (D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303).** These answer `01 01` with records `tag, length, value`
   from the first byte (`ParseCommonCmdUtils.a`) and pack switches into bits. `data/soundcore/devices.json` gives such a model a `tlv` list, which turns
   the records into the fixed body its `state` fields describe: `[tag, at, n]` takes n bytes, `[tag, at, "bit", b]` a bit as 0 or 1, `"lo"` and

@@ -875,13 +875,31 @@
       ],
       "openscq30": {
         "module": null,
-        "source": "Soundcore app 6.4.0, its label_ strings",
-        "features": []
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": [
+          "battery_level",
+          "serial_number_and_firmware_version"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app (2.9.9) asks the Life NC for each setting with a message of its own, an older protocol than the one state reply PairFree reads, so PairFree offers a device report only.",
-      "kind": "headphones"
+      "state": [
+        ["battery_level", 1],
+        ["vibration", 1],
+        ["skip", 1],
+        ["max_volume_switch", 1],
+        ["max_volume", 1],
+        ["skip", 4],
+        ["serial", 16]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (A3201DeviceManager and A3201CmdConstants), not tried on the headphones. The older protocol the Life NC speaks has one request, `01 09`, that returns its whole state in a frame without a checksum: the level (0 to 5), the vibration switch, the custom button function (skipped), the volume limit's switch and value (0 to 16), the firmware (four characters), the serial and the name; the writes are `01 82` (vibration), `01 84` and `01 85` (the volume limit). Its equalizer is read and set by index (`02 01`, `02 81`), whose presets are in the app's native screen code, so none is offered.",
+      "kind": "headphones",
+      "checksum": false,
+      "state_command": "0109",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      }
     },
     {
       "model": "A3330",

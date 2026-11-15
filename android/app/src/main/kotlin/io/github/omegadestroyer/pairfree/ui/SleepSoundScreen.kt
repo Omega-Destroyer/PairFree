@@ -41,7 +41,9 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
     var name by rememberSaveable { mutableStateOf("") }
     var slot by rememberSaveable { mutableIntStateOf(0) }
     var high by rememberSaveable { mutableStateOf(false) }
-    var confirm by remember { mutableStateOf(false) }
+    // What the confirmation dialog will send: the sound's name and the action.
+    var pending by remember { mutableStateOf<Pair<String, () -> Unit>?>(null) }
+    val catalogue by uploader.catalogue.collectAsState()
     val c = Studio.colors
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
@@ -79,6 +81,14 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
                 StudioButton(stringResource(R.string.sleep_upload_slot_n, 1), { slot = 0 }, Modifier.weight(1f), primary = slot == 0, enabled = !busy)
                 StudioButton(stringResource(R.string.sleep_upload_slot_n, 2), { slot = 1 }, Modifier.weight(1f), primary = slot == 1, enabled = !busy)
             }
+            Text(
+                (0..1).map { n ->
+                    val held = catalogue.slots.firstOrNull { it.address == address && it.slot == n }?.let { s -> catalogue.entries.firstOrNull { it.hash == s.hash } }
+                    stringResource(R.string.sleep_upload_slot_holds, n + 1, held?.name ?: stringResource(R.string.sleep_upload_slot_unknown))
+                }.joinToString("\n"),
+                style = Studio.type.small,
+                color = c.secondaryText,
+            )
             SwitchRow(stringResource(R.string.sleep_upload_quality), high, { high = it }, note = stringResource(R.string.sleep_upload_quality_note), enabled = !busy)
         }
 
@@ -95,6 +105,11 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
                 if (s.clipped) Text(stringResource(R.string.sleep_upload_clipped), style = Studio.type.small, color = c.secondaryText)
                 Text(stringResource(R.string.sleep_upload_next), style = Studio.type.small, color = c.secondaryText)
             }
+            is SleepUploadUi.AlreadyThere -> Panel {
+                Text(stringResource(R.string.sleep_upload_already, s.name, s.slot + 1), color = c.accent)
+                Text(stringResource(R.string.sleep_upload_already_note), style = Studio.type.small, color = c.secondaryText)
+                StudioButton(stringResource(R.string.sleep_upload_send_anyway), { pending = s.name to { uploader.reset(); picked?.let { u -> uploader.start(address, u, slot, high, force = true) } } }, Modifier.fillMaxWidth(), enabled = picked != null)
+            }
             is SleepUploadUi.Failed -> Panel {
                 Text(stringResource(R.string.sleep_upload_failed, s.reason), color = c.destructive)
                 Text(stringResource(R.string.sleep_upload_failed_next), style = Studio.type.small, color = c.secondaryText)
@@ -106,24 +121,49 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
         } else {
             StudioButton(
                 stringResource(R.string.sleep_upload_start),
-                { confirm = true },
+                { pending = name to { uploader.reset(); picked?.let { u -> uploader.start(address, u, slot, high) } } },
                 Modifier.fillMaxWidth(),
                 primary = true,
                 enabled = understood && picked != null,
             )
         }
+
+        if (catalogue.entries.isNotEmpty()) {
+            Panel {
+                Label(stringResource(R.string.sleep_upload_catalogue))
+                Text(stringResource(R.string.sleep_upload_catalogue_note, slot + 1), style = Studio.type.small, color = c.secondaryText)
+                catalogue.entries.forEachIndexed { i, entry ->
+                    if (i > 0) Divider()
+                    val on = catalogue.slots.filter { it.address == address && it.hash == entry.hash }.map { it.slot + 1 }.sorted()
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(entry.name, color = c.text)
+                        Text(
+                            stringResource(R.string.sleep_upload_entry, entry.seconds) + if (on.isEmpty()) "" else "  ·  " + stringResource(R.string.sleep_upload_entry_on, on.joinToString(", ")),
+                            style = Studio.type.small,
+                            color = c.secondaryText,
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            StudioButton(
+                                stringResource(R.string.sleep_upload_entry_send, slot + 1),
+                                { pending = entry.name to { uploader.reset(); uploader.startFromCatalogue(address, entry.hash, slot) } },
+                                Modifier.weight(1f),
+                                enabled = understood && !busy,
+                            )
+                            StudioButton(stringResource(R.string.sleep_upload_entry_forget), { uploader.forget(entry.hash) }, Modifier.weight(1f), destructive = true, enabled = !busy)
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    if (confirm) {
+    pending?.let { (label, action) ->
         ConfirmDialog(
             title = stringResource(R.string.sleep_upload_confirm_title),
-            body = stringResource(R.string.sleep_upload_confirm, name, slot + 1),
+            body = stringResource(R.string.sleep_upload_confirm, label, slot + 1),
             confirm = stringResource(R.string.sleep_upload_confirm_yes),
-            onConfirm = {
-                uploader.reset()
-                picked?.let { uploader.start(address, it, slot, high) }
-            },
-            onDismiss = { confirm = false },
+            onConfirm = action,
+            onDismiss = { pending = null },
         )
     }
 }

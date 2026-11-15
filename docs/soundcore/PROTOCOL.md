@@ -657,6 +657,10 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
      answers, makes the earbuds miss a turn, refuse segments, fall silent or lose the link, and cancels mid-transfer. The sound is decoded with Android's
      `MediaCodec`, mixed to mono, resampled (`SleepSound.resample`), cut at 60 s and encoded (`SleepSound.prepare`: 128 kb/s, 72 kb/s when over 1,024,000
      bytes).
+     The catalogue (`SleepLibrary`, kept in `files/sleep/` on the phone): a sound is identified by the SHA-256 of its encoded audio and sound type, so the
+     same audio keeps the media ID it was first given and is stored once; PairFree remembers which sound it last sent to each slot of each earbud and does
+     not send it again unless asked ("send anyway"). It does not read the earbuds' inventory (`13 01`), so a slot changed by the Soundcore app since is not
+     noticed. The prepared container is kept, so a catalogued sound is sent again without the original file.
   5. Acceptance: the screen asks for an opt-in switch and a confirmation before anything is sent, and says it is untested. No independently prepared file has been played by an A30 (research section 10). The transfer is the app's firmware-update machinery with the
      music-file settings (`upgradeType 2`, user flag 1); PairFree's rule is that such traffic goes only behind an explicit confirmation and an opt-in, and
      the first real test is the issue's author's A30.

@@ -12,6 +12,8 @@ import android.provider.OpenableColumns
 import io.github.omegadestroyer.pairfree.bluetooth.BesLink
 import io.github.omegadestroyer.pairfree.protocol.soundcore.BesUpload
 import io.github.omegadestroyer.pairfree.protocol.soundcore.BesUploadRunner
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SleepAudioFile
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SleepLibrary
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SleepSound
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.IOException
 import java.nio.ByteOrder
 import java.security.SecureRandom
@@ -32,6 +35,9 @@ sealed interface SleepUploadUi {
     data object Connecting : SleepUploadUi
     data class Sending(val done: Int, val total: Int) : SleepUploadUi
     data class Done(val seconds: Int, val clipped: Boolean) : SleepUploadUi
+
+    /** The sound is the one PairFree last sent to that slot, so nothing was sent. */
+    data class AlreadyThere(val name: String, val slot: Int) : SleepUploadUi
     data class Failed(val reason: String) : SleepUploadUi
 }
 
@@ -45,6 +51,35 @@ class SleepUploader(private val app: Application, private val scope: CoroutineSc
     val state: StateFlow<SleepUploadUi> = _state.asStateFlow()
     private var job: Job? = null
 
+    /** What the catalogue holds, for the screen. */
+    data class Catalogue(val entries: List<SleepLibrary.Entry>, val slots: List<SleepLibrary.Slot>)
+
+    private val folder = File(app.filesDir, "sleep")
+    private val library: SleepLibrary = runCatching { SleepLibrary.parse(File(folder, INDEX).readText()) }.getOrDefault(SleepLibrary())
+    private val _catalogue = MutableStateFlow(snapshot())
+
+    /** The sounds sent so far and what each slot of each earbud was last given. */
+    val catalogue: StateFlow<Catalogue> = _catalogue.asStateFlow()
+
+    private fun snapshot() = Catalogue(library.entries, library.slots)
+
+    private fun save() {
+        _catalogue.value = snapshot()
+        runCatching {
+            folder.mkdirs()
+            File(folder, INDEX).writeText(library.serialize())
+        }
+    }
+
+    private fun containerFile(hash: String) = File(folder, "$hash.bin")
+
+    /** Takes a sound out of the catalogue and the phone's storage. The earbuds are not touched. */
+    fun forget(hash: String) {
+        library.remove(hash)
+        runCatching { containerFile(hash).delete() }
+        save()
+    }
+
     /** The file's own name without its extension, for the sound's name. */
     fun nameOf(uri: Uri): String {
         val raw = runCatching {
@@ -55,11 +90,18 @@ class SleepUploader(private val app: Application, private val scope: CoroutineSc
 
     /** Starts the upload of [uri] to the earbuds at [address], into the sound slot [slot] (0 or 1). */
     @SuppressLint("MissingPermission") // the screen opens only with the earbuds connected, which needs the permission
-    fun start(address: String, uri: Uri, slot: Int, highQuality: Boolean) {
+    fun start(address: String, uri: Uri, slot: Int, highQuality: Boolean, force: Boolean = false) = begin(address, uri, null, slot, highQuality, force)
+
+    /** Sends a sound from the catalogue (by its hash) to [slot], from the container kept on the phone. */
+    @SuppressLint("MissingPermission")
+    fun startFromCatalogue(address: String, hash: String, slot: Int, force: Boolean = false) = begin(address, null, hash, slot, false, force)
+
+    @SuppressLint("MissingPermission")
+    private fun begin(address: String, uri: Uri?, hash: String?, slot: Int, highQuality: Boolean, force: Boolean) {
         if (job?.isActive == true) return
         job = scope.launch {
             val failure = try {
-                run(address, uri, slot, highQuality)
+                run(address, uri, hash, slot, highQuality, force)
             } catch (e: kotlinx.coroutines.CancellationException) {
                 _state.value = SleepUploadUi.Failed("cancelled")
                 throw e
@@ -71,14 +113,43 @@ class SleepUploader(private val app: Application, private val scope: CoroutineSc
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun run(address: String, uri: Uri, slot: Int, highQuality: Boolean): String? {
-        val soundType = SleepSound.soundType(highQuality)
+    private suspend fun run(address: String, uri: Uri?, catalogued: String?, slot: Int, highQuality: Boolean, force: Boolean): String? {
         _state.value = SleepUploadUi.Preparing
-        val pcm = withContext(Dispatchers.Default) { decode(uri, SleepSound.sampleRate(soundType)) }
-        if (pcm.isEmpty()) return "there is no sound in that file"
-        // The earbuds take the media ID from the app's server in Soundcore's app; whether they accept one PairFree picks is not known.
-        val mediaId = SecureRandom().nextLong() and Long.MAX_VALUE
-        val prepared = withContext(Dispatchers.Default) { SleepSound.prepare(pcm, mediaId, nameOf(uri), soundType) }
+        val file: ByteArray
+        val hash: String
+        val soundType: Int
+        val seconds: Int
+        val bitRate: Int
+        var clipped = false
+        val name: String
+        if (catalogued != null) {
+            val entry = library.find(catalogued) ?: return "that sound is no longer in the catalogue"
+            file = withContext(Dispatchers.IO) { runCatching { containerFile(catalogued).readBytes() }.getOrNull() } ?: return "the phone no longer holds that sound's file"
+            hash = catalogued
+            soundType = entry.soundType
+            seconds = entry.seconds
+            bitRate = entry.bitRate
+            name = entry.name
+        } else {
+            soundType = SleepSound.soundType(highQuality)
+            val source = uri!!
+            val pcm = withContext(Dispatchers.Default) { decode(source, SleepSound.sampleRate(soundType)) }
+            if (pcm.isEmpty()) return "there is no sound in that file"
+            val label = nameOf(source)
+            // The same audio is the same sound whatever it is called, and keeps the media ID it was first given (docs/soundcore/PROTOCOL.md section 14).
+            val prepared = withContext(Dispatchers.Default) { SleepSound.prepare(pcm, SecureRandom().nextLong() and Long.MAX_VALUE, label, soundType) }
+            hash = SleepLibrary.hashOf(prepared.file, soundType = soundType)
+            val known = library.find(hash)
+            file = if (known == null) prepared.file else SleepAudioFile.build(prepared.file.copyOfRange(SleepAudioFile.HEADER_SIZE, prepared.file.size), known.mediaId, known.name, soundType, SleepSound.sampleRate(soundType))
+            seconds = prepared.seconds
+            bitRate = known?.bitRate ?: prepared.bitRate
+            clipped = prepared.clipped
+            name = known?.name ?: label
+        }
+        if (!force && library.holds(address, slot, hash)) {
+            _state.value = SleepUploadUi.AlreadyThere(name, slot)
+            return null
+        }
         val remote = adapter?.getRemoteDevice(address) ?: return "Bluetooth is not available"
         _state.value = SleepUploadUi.Connecting
         val link = BesLink(remote)
@@ -86,11 +157,18 @@ class SleepUploader(private val app: Application, private val scope: CoroutineSc
             try {
                 link.connect(scope)
             } catch (e: IOException) {
-                return "the earbuds' sound channel did not open (${e.message ?: "no reason given"})"
+                return "the earbuds’ sound channel did not open (${e.message ?: "no reason given"})"
             }
-            _state.value = SleepUploadUi.Sending(0, prepared.file.size)
-            val result = BesUploadRunner(BesUpload(prepared.file, slot), link, prepared.file.size, { done, total -> _state.value = SleepUploadUi.Sending(done, total) }).run()
-            if (result == null) _state.value = SleepUploadUi.Done(prepared.seconds, prepared.clipped)
+            _state.value = SleepUploadUi.Sending(0, file.size)
+            val result = BesUploadRunner(BesUpload(file, slot), link, file.size, { done, total -> _state.value = SleepUploadUi.Sending(done, total) }).run()
+            if (result == null) {
+                val mediaId = (0 until 8).fold(0L) { acc, i -> acc or ((file[8 + i].toLong() and 0xFF) shl (8 * i)) }
+                withContext(Dispatchers.IO) { runCatching { folder.mkdirs(); containerFile(hash).writeBytes(file) } }
+                library.add(SleepLibrary.Entry(hash, mediaId, name, seconds, bitRate, soundType, System.currentTimeMillis()))
+                library.sent(address, slot, hash, System.currentTimeMillis())
+                save()
+                _state.value = SleepUploadUi.Done(seconds, clipped)
+            }
             return result
         } finally {
             link.close()
@@ -106,6 +184,10 @@ class SleepUploader(private val app: Application, private val scope: CoroutineSc
     }
 
     /** Mono 16-bit samples at [rate] from the first audio track of [uri], cut at the sound's longest length. */
+    private companion object {
+        const val INDEX = "index.txt"
+    }
+
     private fun decode(uri: Uri, rate: Int): ShortArray {
         val extractor = MediaExtractor()
         try {

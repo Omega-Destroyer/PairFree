@@ -20,7 +20,7 @@ Each model shows only the settings it has:
 
 ## Nothing and CMF models
 
-PairFree knows 19 Nothing and CMF models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 19 Nothing and CMF models. Models that have been tried on real earbuds: Nothing Ear.
 
 Nothing support is read from Nothing X and checked against two open-source projects tried on four Nothing and CMF models. It has not been tried with PairFree yet.
 

@@ -80,6 +80,14 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         primary = setting.active,
                         destructive = setting.key in CONFIRM_KEYS,
                     )
+                    is Setting.Information -> Row(
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Text(settingTitle(setting.key), Modifier.weight(1f))
+                        Text(if (setting.key == "a3959_wind_detected") stringResource(if (setting.value == "yes") R.string.yes else R.string.no) else setting.value, color = Studio.colors.secondaryText)
+                    }
                 }
             }
             groupNote(group.key)?.let { Text(it, style = Studio.type.small, color = Studio.colors.secondaryText) }
@@ -276,6 +284,9 @@ private fun settingTitle(key: String): String = when (key) {
     "sc_microphone" -> stringResource(R.string.setting_sc_microphone)
     "sc_press_sensitivity" -> stringResource(R.string.setting_sc_press_sensitivity)
     "sc_side_tone" -> stringResource(R.string.setting_sc_side_tone)
+    "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
+    "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
+    "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
     "sc_in_ear_tone" -> stringResource(R.string.setting_sc_in_ear_tone)
     "sc_bass_up" -> stringResource(R.string.setting_sc_bass_up)
     "sc_spatial_audio" -> stringResource(R.string.setting_sc_spatial_audio)
@@ -515,6 +526,32 @@ private fun settingTitle(key: String): String = when (key) {
     "bass_boost" -> stringResource(R.string.setting_bass_boost)
     "bass_level" -> stringResource(R.string.setting_bass_level)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio)
+    "a3954_spatial_mode" -> stringResource(R.string.setting_a3954_spatial_mode)
+    "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
+    "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
+    "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
+    "a3959_sensitivity" -> stringResource(R.string.setting_a3959_sensitivity)
+    "a3959_scene" -> stringResource(R.string.setting_a3959_scene)
+    "a3959_wind_noise" -> stringResource(R.string.setting_wind_reduction)
+    "a3959_wind_detected" -> stringResource(R.string.setting_a3959_wind_detected)
+    "sc_surround_sound" -> stringResource(R.string.setting_sc_surround_sound)
+    "a3954_easy_chat" -> stringResource(R.string.setting_speak_to_chat)
+    "a3954_easy_chat_wait" -> stringResource(R.string.setting_voice_detect_wait)
+    "a3954_airplane_mode" -> stringResource(R.string.setting_audio_mode)
+    "a3954_ambient_mode" -> stringResource(R.string.noise_control)
+    "a3954_anc_strength" -> stringResource(R.string.setting_anc_level)
+    "a3954_transparency_strength" -> stringResource(R.string.setting_ambient_volume)
+    "a3954_wind_noise" -> stringResource(R.string.setting_wind_reduction)
+    "a3954_case_atmospheric" -> stringResource(R.string.setting_adaptive_audio)
+    "a3954_case_camera" -> stringResource(R.string.setting_group_other)
+    "a3954_case_find" -> stringResource(R.string.find_earbuds)
+    "a3954_case_spatial" -> stringResource(R.string.setting_spatial_audio)
+    "a3954_case_language" -> stringResource(R.string.setting_ca_language)
+    "a3954_air_pressure" -> stringResource(R.string.setting_a3954_air_pressure)
+    "a3954_auto_power_off_duration" -> stringResource(R.string.setting_power_off_timer)
+    "a3954_auto_power_off" -> stringResource(R.string.auto_shutdown)
+    "a3954_volume_limit" -> stringResource(R.string.setting_hearing_protection)
+    "a3954_volume_limit_db" -> stringResource(R.string.setting_hearing_protection)
     "head_tracking" -> stringResource(R.string.setting_head_tracking)
     "audio_360" -> stringResource(R.string.setting_audio_360)
     "adjust_sound_fit" -> stringResource(R.string.setting_adjust_sound_fit)
@@ -848,6 +885,16 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "a3959_nc_mode" -> getString(when (option) { "manual" -> R.string.a3959_manual; "adaptive" -> R.string.a3959_adaptive; else -> R.string.a3959_multi_scene })
+    key == "a3959_scene" -> getString(when (option) { "transport" -> R.string.a3959_transport; "outdoor" -> R.string.a3959_outdoor; else -> R.string.a3959_indoor })
+    key == "a3954_spatial_mode" -> option.replace('_', ' ').replaceFirstChar { it.uppercase() }
+    key == "a3954_ambient_mode" -> getString(when (option) {
+        "transparency" -> R.string.anc_transparency
+        "normal" -> R.string.anc_off
+        "anc" -> R.string.setting_anc
+        else -> R.string.setting_a3954_airplane_mode
+    })
+    key == "a3954_auto_power_off_duration" -> if (option == "off") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
     key == "op_head_motion" -> getString(if (option == "nod") R.string.op_head_nod else R.string.op_head_shake)
     key == "op_peer_connect" || key == "op_peer_disconnect" || key == "ca_peer_connect" || key == "ca_peer_disconnect" || key == "ef_codec_in_use" -> option
     key == "op_spatial" -> getString(when (option) {
@@ -1312,6 +1359,7 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             else -> R.string.setting_hold_custom
         },
     )
+    key.startsWith("a3954_") -> option.replace('_', ' ').replaceFirstChar { it.uppercase() }
     else -> option
 }
 

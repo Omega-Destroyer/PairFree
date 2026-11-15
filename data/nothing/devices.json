@@ -874,7 +874,8 @@
    "crc": true,
    "activate": true,
    "head_tracking": false,
-   "configs": [
+   "reports": ["data/nothing/reports/B171_1.0.1.56.txt"],
+      "configs": [
     {
      "anc": [
       "high",

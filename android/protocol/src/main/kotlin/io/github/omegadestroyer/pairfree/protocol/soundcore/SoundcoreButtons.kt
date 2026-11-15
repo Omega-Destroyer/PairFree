@@ -38,6 +38,8 @@ public data class SoundcoreButtonGroup(
     val actionCommand: Int = SoundcoreCommand.BUTTON_ACTION,
     /** The actions used during calls (the A3330). */
     val duringCall: Boolean = false,
+    /** The action write carries the value with both earbuds in and the value with one as two bytes (`04 8C`), not as one packed byte. */
+    val wide: Boolean = false,
 )
 
 /** A model's touch controls (data/soundcore/devices.json buttons), read from OpenSCQ30. */
@@ -194,7 +196,10 @@ public object SoundcoreButtons {
                 val id = group.presses.getValue(pr).id
                 listOfNotNull(
                     if (current[i].action != target[i].action) {
-                        SoundcorePacket(group.actionCommand, body(s.byte, id, target[i].action.byte()))
+                        SoundcorePacket(
+                            group.actionCommand,
+                            if (group.wide) body(s.byte, id, target[i].action.connected, target[i].action.disconnected) else body(s.byte, id, target[i].action.byte()),
+                        )
                     } else {
                         null
                     },

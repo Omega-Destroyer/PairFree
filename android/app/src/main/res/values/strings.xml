@@ -161,6 +161,10 @@
     <string name="action_lights">Lights</string>
     <string name="action_noise_cancelling">Noise cancelling</string>
     <string name="action_change_mode">Change mode</string>
+    <string name="action_white_noise">White noise</string>
+    <string name="action_translate">Translate</string>
+    <string name="action_recording">Recording</string>
+    <string name="action_ask_answer">Ask or answer</string>
     <string name="slides">Slides</string>
     <string name="gesture_slide_up">Slide up</string>
     <string name="gesture_slide_down">Slide down</string>
@@ -1059,6 +1063,9 @@
     <string name="setting_ca_preset">Preset</string>
     <string name="setting_ca_codec">Codec preference</string>
     <string name="setting_ca_language">Voice guidance language</string>
+    <string name="setting_a3954_air_pressure">Case air pressure</string>
+    <string name="setting_a3954_airplane_mode">Airplane mode</string>
+    <string name="setting_a3954_spatial_mode">Spatial audio mode</string>
     <string name="setting_ca_band">Band %1$d gain (dB)</string>
     <string name="setting_ca_band_bass">Bass, band 1 gain (dB)</string>
     <string name="setting_ca_band_mid">Mid-range, band 3 gain (dB)</string>
@@ -1125,6 +1132,9 @@
     <string name="setting_sc_device">Earbud settings</string>
     <string name="setting_sc_wearing_detection">Wear detection</string>
     <string name="setting_sc_side_tone">Side tone</string>
+    <string name="setting_sc_vibration">Vibration</string>
+    <string name="setting_sc_max_volume_switch">Limit the volume</string>
+    <string name="setting_sc_max_volume">Volume limit</string>
     <string name="setting_sc_in_ear_tone">In-ear beep</string>
     <string name="setting_sc_bass_up">Bass boost</string>
     <string name="setting_sc_spatial_audio">Spatial audio</string>
@@ -1160,6 +1170,61 @@
     <string name="setting_ca_electronic">Electronic</string>
     <string name="setting_ca_rock">Rock</string>
     <string name="setting_ca_voice">Voice</string>
+
+    <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
+    <string name="setting_a3959_nc_mode">Noise cancelling type</string>
+    <string name="setting_a3959_adaptive_level">Adaptive level</string>
+    <string name="setting_a3959_sensitivity">Adaptive sensitivity</string>
+    <string name="setting_a3959_scene">Scene</string>
+    <string name="setting_a3959_wind_detected">Wind detected</string>
+    <string name="setting_sc_surround_sound">Surround sound</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="a3959_manual">Manual</string>
+    <string name="a3959_adaptive">Adaptive</string>
+    <string name="a3959_multi_scene">Multi-scene</string>
+    <string name="a3959_transport">Transport</string>
+    <string name="a3959_outdoor">Outdoor</string>
+    <string name="a3959_indoor">Indoor</string>
+
+    <!-- Soundcore Sleep A30: a sound from the phone (issue #23, docs/soundcore/PROTOCOL.md section 14). Untested on an A30. -->
+    <string name="sleep_upload_title">Sleep sounds</string>
+    <string name="sleep_upload_about">Put a sound from this phone on the earbuds, to play in their local mode. Experimental: not tried on a Sleep A30 yet.</string>
+    <string name="sleep_upload_open">Send a sound to the earbuds</string>
+    <string name="sleep_upload_intro">Pick an audio file. PairFree cuts it to 60 seconds, makes it mono, converts it the way the Soundcore app does and sends it to the earbuds over their second Bluetooth channel. Keep the phone near the earbuds and charge them first.</string>
+    <string name="sleep_upload_warning_title">Not tried on real earbuds</string>
+    <string name="sleep_upload_warning">This was built from the Soundcore app’s code and checked only against a simulated earbud. Nobody has tried it on a Sleep A30. It uses the same transfer the earbuds use for updates, and PairFree makes up the sound’s ID itself, because the Soundcore app takes it from Soundcore’s server. The earbuds may refuse the sound, or the sound slot may need to be set up again in the Soundcore app. If something goes wrong, tell us in the project’s issues.</string>
+    <string name="sleep_upload_understood">I understand, and want to try it</string>
+    <string name="sleep_upload_sound">Sound</string>
+    <string name="sleep_upload_pick">Choose an audio file</string>
+    <string name="sleep_upload_pick_again">Choose another file</string>
+    <string name="sleep_upload_slot">Put it in</string>
+    <string name="sleep_upload_slot_n">Sound %1$d</string>
+    <string name="sleep_upload_quality">Better sound quality</string>
+    <string name="sleep_upload_quality_note">Uses 32 kHz instead of 16 kHz. The file is the same size at the same bit rate, but the Soundcore app only does this for some of its own sounds.</string>
+    <string name="sleep_upload_start">Send to the earbuds</string>
+    <string name="sleep_upload_confirm_title">Send this sound?</string>
+    <string name="sleep_upload_confirm">PairFree will replace sound %2$d on the earbuds with \“%1$s\”. This is experimental and was never tried on a Sleep A30. Keep the phone near the earbuds until it is done.</string>
+    <string name="sleep_upload_confirm_yes">Send</string>
+    <string name="sleep_upload_preparing">Preparing the sound…</string>
+    <string name="sleep_upload_connecting">Opening the earbuds’ sound channel…</string>
+    <string name="sleep_upload_sending">Sending: %1$d%%</string>
+    <string name="sleep_upload_done">Sent: %1$d s of sound. Switch the earbuds to their local mode (Device tab) to play it.</string>
+    <string name="sleep_upload_clipped">The sound was longer than 60 seconds, so it was cut.</string>
+    <string name="sleep_upload_slot_holds">Sound %1$d: %2$s</string>
+    <string name="sleep_upload_slot_unknown">not sent from PairFree</string>
+    <string name="sleep_upload_already">“%1$s” is already on the earbuds in sound %2$d, so nothing was sent.</string>
+    <string name="sleep_upload_already_note">PairFree remembers what it sent. If you changed the sound with the Soundcore app since, send it again.</string>
+    <string name="sleep_upload_send_anyway">Send it again anyway</string>
+    <string name="sleep_upload_catalogue">Sounds sent before</string>
+    <string name="sleep_upload_catalogue_note">Kept on this phone, so you do not have to find the file again. Send goes to sound %1$d, chosen above. Remove only forgets it here; the earbuds keep it.</string>
+    <string name="sleep_upload_entry">%1$d s</string>
+    <string name="sleep_upload_entry_on">on the earbuds: sound %1$s</string>
+    <string name="sleep_upload_entry_send">Send to sound %1$d</string>
+    <string name="sleep_upload_entry_forget">Remove</string>
+    <string name="sleep_upload_next">If the earbuds do not play it, the Soundcore app may be needed to select the sound.</string>
+    <string name="sleep_upload_failed">The sound was not sent: %1$s</string>
+    <string name="sleep_upload_failed_next">Nothing else changes on the earbuds. Try again, and if it keeps failing please report it in the project’s issues with the text above.</string>
 
     <!-- BEGIN EQ PRESET NAMES: generated by tools/gen_vendor_strings.py. In this English file, do not edit by hand. -->
     <!-- Names PairFree gives the vendors' presets. Translate these. -->
@@ -1243,7 +1308,6 @@
     <!-- OnePlus -->
     <string name="vendor_balanced_default">Balanced (Default)</string>
     <string name="vendor_bold">Bold</string>
-    <string name="vendor_clear_vocals">Clear Vocals</string>
     <string name="vendor_clear_vocals_2">Clear vocals</string>
     <string name="vendor_crisp_highs">Crisp highs</string>
     <string name="vendor_dynamic_bass">Dynamic bass</string>
@@ -1270,6 +1334,8 @@
     <string name="vendor_default">Default</string>
     <!-- OnePlus, SOUNDPEATS, Soundcore -->
     <string name="vendor_classic">Classic</string>
+    <!-- OnePlus, Soundcore -->
+    <string name="vendor_clear_vocals">Clear Vocals</string>
     <!-- Pixel Buds -->
     <string name="vendor_heavy_bass">Heavy bass</string>
     <string name="vendor_light_bass">Light bass</string>
@@ -1327,8 +1393,10 @@
     <string name="vendor_flat">Flat</string>
     <string name="vendor_hip_hop">Hip Hop</string>
     <string name="vendor_original">Original</string>
+    <string name="vendor_powerful_bass">Powerful Bass</string>
     <string name="vendor_rnb">RnB</string>
     <string name="vendor_small_speakers">Small Speakers</string>
+    <string name="vendor_soothing_calm">Soothing Calm</string>
     <string name="vendor_soundcore_signature">Soundcore Signature</string>
     <string name="vendor_spoken_word">Spoken Word</string>
     <string name="vendor_treble_booster">Treble Booster</string>

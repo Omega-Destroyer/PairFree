@@ -194,4 +194,41 @@ class QcyJieliTest {
         assertTrue(s.allowed(cmd(JieliWire.ADV_SET, "020801")))
         assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.request(QcyItem.GAME_MODE))), "QCY's own characteristic is not JieLi's")
     }
+
+    /** The older JieLi models' EQ (issue #35): JieLi's own EQ setting, system information attribute 4, as QCY's app reads and writes it (JLDeviceImpl). */
+    @Test
+    fun theEqOfAnOlderJieLiModelIsJieLisSystemInformation() {
+        val s = QcyJieliSession(t13)
+        val start = s.start().map(::frame)
+        // The read: the public function (FF) and the mask for attribute 4.
+        val read = start.single { it.opcode == JieliWire.GET_SYS_INFO }
+        assertEquals("ff00000010", hex(read.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, read.bytes())))
+        assertEquals(null, s.eq, "nothing shown before the earbuds answer")
+        // The answer: type 0xFF (a custom curve) and ten gains in whole dB.
+        val gains = "00020300fe0100000000"
+        s.receive(answer(JieliWire.GET_SYS_INFO, byteArrayOf(JieliWire.SYS_PUBLIC.toByte()) + RcspFrame.ltv(JieliWire.SYS_EQ, ("ff" + gains).hexBytes())))
+        val eq = s.eq!!
+        assertTrue(eq.custom)
+        assertEquals(listOf(0, 2, 3, 0, -2, 1, 0, 0, 0, 0), eq.gains)
+        // A curve of the user's own: type FF, the gains, padded to ten bands; and it is read back after.
+        val write = frame(s.eqCustom(listOf(1, 2, 3, 4, 5, -1, -2, -3, -4, -5))!!.single())
+        assertEquals(JieliWire.SET_SYS_INFO, write.opcode)
+        assertEquals("ff" + "0c" + "04" + "ff" + "0102030405fffefdfcfb", hex(write.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, write.bytes())))
+        assertEquals(JieliWire.GET_SYS_INFO, s.takeReadBacks().map(::frame).single().opcode)
+        // The earbuds' own notice of a change shows too.
+        val notice = RcspFrame(command = true, wantsAnswer = false, opcode = JieliWire.SYS_INFO_AUTO_UPDATE, sn = 9, payload = byteArrayOf(JieliWire.SYS_PUBLIC.toByte()) + RcspFrame.ltv(JieliWire.SYS_EQ, ("02" + "00".repeat(10)).hexBytes()))
+        s.receive(GattEnvelope.received(JieliWire.NOTIFY_SHORT, notice.bytes()))
+        assertFalse(s.eq!!.custom, "a preset's type is not a curve PairFree knows")
+        // Nothing else of the system information goes out: another function, another attribute, or a different mask.
+        fun allowed(opcode: Int, payload: String) = s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, RcspFrame(command = true, wantsAnswer = true, opcode = opcode, sn = 1, payload = payload.hexBytes()).bytes()))
+        assertFalse(allowed(JieliWire.SET_SYS_INFO, "00" + "0c04ff" + "00".repeat(10)), "another function")
+        assertFalse(allowed(JieliWire.SET_SYS_INFO, "ff" + "0c05ff" + "00".repeat(10)), "another attribute")
+        assertFalse(allowed(JieliWire.GET_SYS_INFO, "ff" + "00000001"), "another mask")
+        assertFalse(allowed(JieliWire.FUNCTION, "00"))
+        // The newer models take no JieLi EQ setting: theirs is QCY's parametric item.
+        val newer = QcyJieliSession(ht16)
+        assertTrue(newer.start().map(::frame).none { it.opcode == JieliWire.GET_SYS_INFO })
+    }
 }

@@ -21,6 +21,7 @@ import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelSession
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyEqs
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreNormalizedSpec
 import io.github.omegadestroyer.pairfree.ui.VendorNames
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -53,6 +54,7 @@ class VendorNamesTest {
         // The vendors' own wording, from their tables.
         for (model in Models.ALL) vendor.add("SOUNDPEATS", model.eq?.presets.orEmpty().map { it.name })
         for (spec in SoundcoreEqSpec.ALL) vendor.add("Soundcore", BandEqTarget(SoundcoreBandEq(spec, { null }, true)).layout.presets.map { it.name })
+        for (spec in SoundcoreNormalizedSpec.ALL) for (firmware in listOf(null, "03.48")) vendor.add("Soundcore", spec.presets(firmware).map { it.name })
         for (model in JblModels.ALL) if (model.eq?.written == true) vendor.add("JBL", JblBandEq(JblSession(model)).eqPresetNames)
         for (model in EarfunModels.ALL) model.eq?.let { vendor.add("EarFun", EarfunBandEq(EarfunSession(model), it).eqPresetNames) }
         for (model in PixelModels.ALL) if (model.family == PixelFamily.ALLEGRO) {

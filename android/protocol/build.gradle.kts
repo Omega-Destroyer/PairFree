@@ -247,6 +247,10 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val buttonActionsJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val eqFiltersJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -349,7 +353,29 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 (app["features"] as List<*>? ?: emptyList<Any>()) + (d["extra_features"] as List<*>? ?: emptyList<Any>())) -
                 (app["lacks"] as List<*>? ?: emptyList<Any>()).toSet()).distinct().joinToString(", ", "setOf(", ")") { str(it) }
             val vendorIds = (d["vendor_ids"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
-            layoutLines += "        SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds),"
+            // A model that answers in tag-length-value records: [tag, at, size] bytes, [tag, at, "bit", n], or [tag, at, "lo" | "hi" | "pack" | "level"].
+            @Suppress("UNCHECKED_CAST")
+            val tlvItems = d["tlv"] as List<List<Any?>>?
+            val tlv = if (tlvItems == null) "" else tlvItems.joinToString(", ", ", tlv = listOf(", ")") { item ->
+                val tag = (item[0] as Number).toInt()
+                val at = (item[1] as Number).toInt()
+                val kind = item[2]
+                when (kind) {
+                    is Number -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.BYTES, ${kind.toInt()})"
+                    "bit" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.BIT, 1, ${(item[3] as Number).toInt()})"
+                    "lo" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.LOW)"
+                    "hi" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.HIGH)"
+                    "pack" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.PACK)"
+                    "level" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.LEVEL)"
+                    "swap" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.SWAP)"
+                    else -> error("unknown tlv item $item in ${d["model"]}")
+                }
+            }
+            val tlvPrivate = (d["tlv_private"] as List<*>?)?.joinToString(", ", ", tlvPrivate = setOf(", ")") { (it as Number).toInt().toString() } ?: ""
+            val stateCommand = (d["state_command"] as String?)?.let { hex ->
+                ", stateCommand = SoundcoreCommand.${(commands.first { it["command"] == hex }["id"] as String).uppercase()}"
+            } ?: ""
+            layoutLines += "        SoundcoreLayout(${str(d["model"])}, $fields, ${scale("earbuds")}, ${scale("case")}, $checksum, $uuid, $gaming, $minFirmware, $features, $vendorIds$tlv$tlvPrivate$stateCommand),"
         }
         val chunks = layoutLines.chunked(12)
         chunks.forEachIndexed { i, lines ->
@@ -393,7 +419,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 val command = (g["command"] as String?)?.let { "0x$it" } ?: "SoundcoreCommand.BUTTON_ACTION"
                 "SoundcoreButtonGroup(${(g.getValue("fields") as List<*>).joinToString(", ", "listOf(", ")") { str(it) }}, $order, $presses, " +
                     "setAll = ${g["set_all"] == true}, ignoreEnabled = ${g["ignore_enabled"] == true}, actionCommand = $command, " +
-                    "duringCall = ${g["during"] == "call"})"
+                    "duringCall = ${g["during"] == "call"}, wide = ${g["wide"] == true})"
             }
             @Suppress("UNCHECKED_CAST")
             val fixed = (buttons["fixed"] as Map<String, Any?>? ?: emptyMap()).entries.joinToString(", ", "mapOf(", ")") { (k, v) -> "${press(k)} to ${str(v)}" }
@@ -449,6 +475,39 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
 
         val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
         dir.mkdirs()
+        // The parametric presets of the `03 8A` models (data/soundcore/eq_filters.json) and which model takes which table (devices.json eq_normalized).
+        @Suppress("UNCHECKED_CAST")
+        val filterTables = (JsonSlurper().parse(eqFiltersJson.get().asFile) as Map<String, Any?>).getValue("tables") as Map<String, List<Map<String, Any?>>>
+        fun flt(v: Any?) = "${(v as Number).toDouble()}f"
+        out.appendLine()
+        out.appendLine("/** The normalised equalizers' presets (data/soundcore/eq_filters.json). */")
+        out.appendLine("internal val SOUNDCORE_FILTER_TABLES: Map<String, List<SoundcoreNormalizedPreset>> = mapOf(")
+        for ((name, presets) in filterTables) {
+            val list = presets.joinToString(",\n        ", "listOf(\n        ", ",\n    )") { p ->
+                @Suppress("UNCHECKED_CAST")
+                val filters = (p.getValue("filters") as List<List<Any?>>).joinToString(", ", "listOf(", ")") { f ->
+                    "SoundcoreFilter(${(f[0] as Number).toInt()}, ${flt(f[1])}, ${flt(f[2])}, ${flt(f[3])})"
+                }
+                "SoundcoreNormalizedPreset(${(p.getValue("command") as Number).toInt()}, ${str(p["key"])}, ${str(p["name"])}, $filters)"
+            }
+            out.appendLine("    ${str(name)} to $list,")
+        }
+        out.appendLine(")")
+        out.appendLine()
+        out.appendLine("/** Every model whose equalizer is the normalised `03 8A` (data/soundcore/devices.json eq_normalized). */")
+        out.appendLine("internal val SOUNDCORE_NORMALIZED_EQ: List<SoundcoreNormalizedSpec> = listOf(")
+        for (d in devices) {
+            @Suppress("UNCHECKED_CAST")
+            val n = d["eq_normalized"] as Map<String, Any?>? ?: continue
+            val whenTable = (n["table_when"] as String?)?.let { str(it) } ?: "null"
+            @Suppress("UNCHECKED_CAST")
+            val ranges = (n["firmware_ranges"] as List<List<Any?>>? ?: emptyList()).joinToString(", ", "listOf(", ")") { r ->
+                "${(r[0] as Number).toInt()}..${(r[1] as Number).toInt()}"
+            }
+            out.appendLine("    SoundcoreNormalizedSpec(${str(d["model"])}, ${str(n["table"])}, $whenTable, $ranges),")
+        }
+        out.appendLine(")")
+
         dir.resolve("SoundcoreTables.kt").writeText(out.toString())
     }
 }
@@ -458,6 +517,7 @@ val generateSoundcoreTables = tasks.register<GenerateSoundcoreTables>("generateS
     devicesJson = rootProject.layout.projectDirectory.file("../data/soundcore/devices.json")
     eqPresetsJson = rootProject.layout.projectDirectory.file("../data/soundcore/eq_presets.json")
     buttonActionsJson = rootProject.layout.projectDirectory.file("../data/soundcore/button_actions.json")
+    eqFiltersJson = rootProject.layout.projectDirectory.file("../data/soundcore/eq_filters.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.soundcore"
     outputDir = layout.buildDirectory.dir("generated/soundcore")
 }
@@ -1550,6 +1610,8 @@ abstract class GenerateQcyTables : DefaultTask() {
         for ((name, v) in jieli.getValue("adv") as Map<String, Any?>) out.appendLine("    public const val ADV_$name: Int = ${int(v)}")
         @Suppress("UNCHECKED_CAST")
         for ((name, v) in jieli.getValue("target_info") as Map<String, Any?>) out.appendLine("    public const val TARGET_$name: Int = ${int(v)}")
+        @Suppress("UNCHECKED_CAST")
+        for ((name, v) in jieli.getValue("sys") as Map<String, Any?>) out.appendLine("    public const val SYS_$name: Int = ${int(v)}")
         out.appendLine("}")
         out.appendLine()
         // The models in groups of 20, each in an object of its own: one initializer holding all of them passes the JVM's 64 KB method limit.

@@ -16,6 +16,8 @@ import io.github.omegadestroyer.pairfree.protocol.sony.SonySession
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqConfig
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqScreen
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreNormalizedEqualizer
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreNormalizedSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqualizer
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcorePacket
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
@@ -166,5 +168,36 @@ class SoundcoreBandEq(private val spec: SoundcoreEqSpec, private val state: () -
     fun report(state: SoundcoreState): BandEqReport? {
         val config = SoundcoreEqualizer.read(spec, state) ?: return null
         return BandEqReport(SoundcoreEqScreen.preset(spec, config)?.name, SoundcoreEqScreen.gainsDb(spec, config), SoundcoreEqScreen.gainsDbFine(spec, config))
+    }
+}
+
+/**
+ * The Soundcore models whose equalizer is the parametric `03 8A` (docs/soundcore/PROTOCOL.md section 14): the presets are the app's, each a command position and
+ * its filters; a custom curve is eight peaking filters from 100 Hz to 12.8 kHz, from -6 to 6 dB in half steps. The earbuds report the position they hold, so a
+ * preset shows by name; a custom curve's gains are not in the reply. Not tried on the earbuds, which the Sound tab says.
+ */
+class SoundcoreNormalizedBandEq(private val spec: SoundcoreNormalizedSpec, private val state: () -> SoundcoreState?, private val checksum: Boolean) : BandEq {
+    private fun presets() = spec.presets(state()?.firmware)
+
+    override val eqBandsHz: List<Int> = SoundcoreNormalizedEqualizer.CUSTOM_HZ
+    override val eqRangeDb: Int = SoundcoreNormalizedEqualizer.RANGE_DB
+    override val eqGainStepDb: Double = 0.5
+    override val eqPresetNames: List<String> = presets().map { it.name }
+    override val eqConfirmed: Boolean = false
+    override val eqReport: BandEqReport? = null
+
+    private fun wrap(p: SoundcorePacket): List<ByteArray> = listOf(SoundcorePacket.build(p.command, p.body, checksum))
+
+    override fun eqPresetFrames(name: String): List<ByteArray>? =
+        presets().firstOrNull { it.name == name }?.let { wrap(SoundcoreNormalizedEqualizer.preset(it, state())) }
+
+    override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = eqCustomFramesDb(gains.map { it.toDouble() }, 0)
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = wrap(SoundcoreNormalizedEqualizer.custom(gains, state()))
+
+    /** What [state] says the earbuds hold: the preset at the position they report; null for a custom curve (its gains are not in the reply) or no position. */
+    fun report(state: SoundcoreState): BandEqReport? {
+        val position = SoundcoreNormalizedEqualizer.position(state) ?: return null
+        return presets().firstOrNull { it.command == position }?.let { BandEqReport(it.name, null) }
     }
 }

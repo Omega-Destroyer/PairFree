@@ -48,6 +48,7 @@ internal fun DeviceScreen(
     status: StatusUi? = null,
     onFitTest: () -> Unit = {},
     onSealCheck: () -> Unit = {},
+    onSleepSounds: (() -> Unit)? = null,
 ) {
     var picker by remember { mutableStateOf<Picker?>(null) }
     var confirmReset by remember { mutableStateOf(false) }
@@ -96,6 +97,14 @@ internal fun DeviceScreen(
                 if (model?.ldacOrMultipoint == true) {
                     Text(stringResource(R.string.ldac_or_multipoint), style = Studio.type.small, color = c.secondaryText)
                 }
+            }
+        }
+
+        if (onSleepSounds != null) {
+            Panel {
+                Label(stringResource(R.string.sleep_upload_title))
+                Text(stringResource(R.string.sleep_upload_about), style = Studio.type.small, color = c.secondaryText)
+                StudioButton(stringResource(R.string.sleep_upload_open), onSleepSounds, Modifier.fillMaxWidth())
             }
         }
 

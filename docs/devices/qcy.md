@@ -20,7 +20,7 @@ What it shows, where the model has it:
   them, QCY's presets (as curves; the panels are QCY's server data, read once by a script outside the app), the balance between the earbuds,
   spatial audio, dynamic EQ and adaptive volume.
 - **Controls:** what a tap, double tap, triple tap and hold do on each earbud, from the actions the model's control panel lists (on
-  the JieLi models as QCY's app sends them; 0.12.0 added the older panel screens, for example the T13 ANC2, issue #35, not yet tried on real earbuds).
+  the JieLi models as QCY's app sends them; 0.12.0 added the older panel screens, for example the T13 ANC2, issue #35, and the older JieLi models' equalizer, JieLi's own EQ setting; both not yet tried on real earbuds).
 - **Device:** game mode, in-ear detection, LDAC, two devices at once, sleep mode (touch controls off),
   wind noise detection, the status light, and the timed power off (the earbuds turn off once after 15,
   30, 60 or 90 minutes).

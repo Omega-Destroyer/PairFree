@@ -78,8 +78,8 @@ public object SleepAudioFile {
 
 /**
  * The BES transfer's messages as the app's builders emit them in user-flag-1 mode: an opcode byte, a four-byte little-endian length and the payload (BES's
- * own framing, not the Soundcore frame). Only the messages the app's builders produce from fixed or simple inputs are here; the resume token and the
- * 92-byte configuration are not.
+ * own framing, not the Soundcore frame). The builders are the app's `BesOtaCMD` methods (traced in the restored DEX): the configuration `m`, the resume
+ * message `e`, the announcement `v`, and the fixed ones.
  */
 public object BesTransferMessages {
     private val BEST = byteArrayOf(0x42, 0x45, 0x53, 0x54)
@@ -108,6 +108,42 @@ public object BesTransferMessages {
 
     /** The file announcement: `BEST`, the file's length and its CRC-32. */
     public fun announce(length: Long, crc32: Long): ByteArray = message(0x80, BEST + u32(length) + u32(crc32))
+
+    /** The announcement of [file] (the whole container): its length and CRC-32. */
+    public fun announce(file: ByteArray): ByteArray = announce(file.size.toLong(), SleepAudioFile.crc32(file))
+
+    /**
+     * The 92-byte transfer configuration (`86`) as `BesOtaCMD.m` builds it with the app's four OTA options off, which is how they stand unless the app's OTA
+     * settings screen set them: the inner length 88; three bytes of the file's tail (the third, second and first byte before its last: `file[n-4]`, `file[n-3]`,
+     * `file[n-2]`) and a zero; the option flags (clear user data, update the Bluetooth name and address, the BLE name and address: all 0); the name and address
+     * fields (zero); and the CRC-32 of the first 88 bytes. [file] is the whole prepared container.
+     */
+    public fun configuration(file: ByteArray): ByteArray {
+        require(file.size >= 4) { "a prepared file is longer than four bytes" }
+        val body = ByteArray(92)
+        body[0] = 88
+        body[4] = file[file.size - 4]
+        body[5] = file[file.size - 3]
+        body[6] = file[file.size - 2]
+        val crc = SleepAudioFile.crc32(body, 0, 88)
+        for (i in 0 until 4) body[88 + i] = (crc shr (8 * i)).toByte()
+        return message(0x86, body)
+    }
+
+    /**
+     * The message that starts or resumes a transfer (`8C`, `BesOtaCMD.e`): `BEST`, the 32-byte code the earbuds gave the app on an earlier transfer (zeros when
+     * the app has none), the bytes 1, 2, 3, 4 and the CRC-32 of those 36 bytes.
+     */
+    public fun resume(code: ByteArray? = null): ByteArray {
+        val seed = ByteArray(36)
+        code?.copyInto(seed, 0, 0, minOf(code.size, 32))
+        seed[32] = 1
+        seed[33] = 2
+        seed[34] = 3
+        seed[35] = 4
+        val crc = SleepAudioFile.crc32(seed)
+        return message(0x8C, BEST + seed + u32(crc))
+    }
 
     /** The check of one segment: `BEST` and its CRC-32. */
     public fun segmentCrc(crc32: Long): ByteArray = message(0x82, BEST + u32(crc32))

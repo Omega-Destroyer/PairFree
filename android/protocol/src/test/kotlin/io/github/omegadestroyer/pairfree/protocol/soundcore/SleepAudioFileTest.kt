@@ -47,6 +47,30 @@ class SleepAudioFileTest {
         assertEquals(64, file.copyOfRange(24, 88).count { it == 'x'.code.toByte() })
     }
 
+    /** `BesOtaCMD.m` and `BesOtaCMD.e`, as the restored DEX builds them. */
+    @Test
+    fun theConfigurationAndResumeMessagesFollowTheApp() {
+        val file = ByteArray(1000) { (it * 3 + 1).toByte() }
+        val message = BesTransferMessages.configuration(file)
+        assertEquals(5 + 92, message.size)
+        assertEquals("865c000000", message.copyOfRange(0, 5).hex())
+        val body = message.copyOfRange(5, message.size)
+        assertEquals("58000000", body.copyOfRange(0, 4).hex(), "the inner length, 88")
+        assertEquals(listOf(file[996], file[997], file[998], 0.toByte()), body.copyOfRange(4, 8).toList(), "three bytes of the file's tail")
+        assertEquals(0, body.copyOfRange(8, 88).count { it.toInt() != 0 }, "every option and name field is off or zero")
+        val crc = SleepAudioFile.crc32(body, 0, 88)
+        assertEquals(crc, (0 until 4).sumOf { (body[88 + it].toLong() and 0xFF) shl (8 * it) })
+
+        val resume = BesTransferMessages.resume()
+        assertEquals("8c2c00000042455354", resume.copyOfRange(0, 9).hex())
+        assertEquals(5 + 44, resume.size)
+        val seed = ByteArray(32) + byteArrayOf(1, 2, 3, 4)
+        assertEquals(SleepAudioFile.crc32(seed), (0 until 4).sumOf { (resume[45 + it].toLong() and 0xFF) shl (8 * it) })
+        val code = ByteArray(32) { (it + 10).toByte() }
+        assertEquals(code.toList(), BesTransferMessages.resume(code).copyOfRange(9, 41).toList())
+        assertEquals(BesTransferMessages.announce(1000, SleepAudioFile.crc32(file)).hex(), BesTransferMessages.announce(file).hex())
+    }
+
     @Test
     fun theBesMessagesAreTheAppsBytes() {
         assertEquals("8e0400000042455354", BesTransferMessages.version().hex())

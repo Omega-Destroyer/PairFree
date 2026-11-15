@@ -626,10 +626,17 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   and `BesTransferMessages` the BES transfer's simple messages (version, side, user index `10 + index`, begin, announcement with the file's CRC-32, segment
   check, end, final activation); `SleepAudioFileTest` pins them to the bytes in `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md` (on the research branch). What stops the
   upload itself, each with what was checked:
-  1. The 92-byte transfer configuration (`86`) and the resume token (`8C`): blocked: their builders are in the BES SDK classes of the restored app and the
-     Java view of them is empty; checked: `BesOtaCMD` and `BesOtaService` (both the `com.bes.bessdk` and the `com.oceanwing.ota.sdk.bes` copies) show stub
-     bodies only, and the research's interpreter ran the small builders but not these two; the DEX of the two methods has to be traced instruction by
-     instruction.
+  1. The transfer configuration (`86`) and the resume message (`8C`) are now traced and built (`BesTransferMessages.configuration` and `resume`), from the
+     restored DEX of `BesOtaCMD.m`, `e` and `v` and the helpers `ArrayUtil.h` (little-endian int), `e` (`java.util.zip.CRC32`) and `a` (concatenation): the
+     92 bytes are the inner length 88 (u32), the file's `n-4`, `n-3` and `n-2` bytes and a zero, the option flags (bit 0 clear user data, 1 update the
+     Bluetooth name, 2 the BLE name, 3 the Bluetooth address, 4 the BLE address, all read from the app's preferences `ota_config_*`, which nothing in the
+     music path sets, so 0), the name and address fields (zero), the CRC-32 of the first 88 bytes (u32). The resume message is `BEST`, the 32-byte code the
+     earbuds gave the app earlier (zeros when it has none), 1 2 3 4 and the CRC-32 of those 36 bytes. What is still not traced: the reply parser
+     `BesOtaCMD.y` (which maps each answer to the handler's message numbers 2305 to 2329 and may send the announcement itself) and the data scheduler
+     `BesOtaService.X`. The handler `BesOtaService.e` reads: begin (`90`, 3 s) answered by 2311 which sends the resume message (`8C`, 3 s); its answer
+     2312 and the announcement's answer 2313 lead to the configuration; `SEND_CONFIGURE_OK` (2320) starts the data; `CRC_CHECK_PACKAGE_OK` (2324) and
+     `WHOLE_CRC_CHECK` (2325) go on with the next piece; `WHOLE_CRC_CHECK_OK` (2326) sends the final activation. Note that for a music file this
+     handler is the firmware updater's own, with the music flags: `startOta` goes to the begin message when both are set and otherwise to the upgrade type.
   2. The encoder: to do: the app calls FFmpeg for mono SBC (16 kHz, 128 kb/s, or 72 on the second try; 32 kHz for sound type 3) and caps the clip at 60 seconds
      (10 for the AAC branch); Android has no SBC encoder, so PairFree needs its own, checked against the app's output.
   3. Media IDs: blocked: the app takes them from its server (`getIdFromServer`) and no source says whether the earbuds accept an ID PairFree picks; checked:

@@ -380,7 +380,10 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         val options = touch.actions.filter { a -> touch.table.containsValue(a) }
         if (options.size < 2 || form != Form.EARBUDS) return emptyList()
         return listOf("left", "right").mapNotNull { side ->
-            val rows = touch.gestures.mapNotNull { g ->
+            // A hold the panel does not list is offered when the earbuds' own key table has the hold keys: their firmware reports it (the T13 ANC2, issue #35),
+            // and the write is the same as for the other gestures; the read-back shows what the earbuds took.
+            val gestures = touch.gestures + listOf("hold").filter { "hold" !in touch.gestures && QcyKeys.KEYS.filterValues { it.startsWith("hold_") }.keys.any { table.containsKey(it) } }
+            val rows = gestures.mapNotNull { g ->
                 val key = QcyKeys.KEYS.entries.firstOrNull { it.value == "${g}_$side" }?.key ?: return@mapNotNull null
                 val action = table[key] ?: return@mapNotNull null
                 Setting.Choice("touch_${g}_$side", touch.table[action] ?: "other", options)

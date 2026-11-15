@@ -82,8 +82,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 )
             }
             // The earbuds' notice holds the state's block, or more bytes after it (the Liberty 4 Pro's has a fifth).
-            SoundcoreCommand.SOUND_MODES -> if (soundModes?.size?.let { body.size >= it } == true) {
-                val modes = body.copyOfRange(0, soundModes!!.size)
+            SoundcoreCommand.SOUND_MODES -> if (soundModes?.size?.let { body.size >= minOf(it, 4) } == true) {
+                // A notice shorter than the block (the Q20i's sound modes are six bytes) updates the bytes it holds.
+                val modes = soundModes!!.copyOf().also { body.copyInto(it, 0, 0, minOf(body.size, it.size)) }
                 soundModes = modes
                 lastState = lastState?.with("sound_modes", modes)
                 put(Command.ANC_MODE, Value.Number(ancValue(AmbientMode.of(modes.u8(0)))))
@@ -123,8 +124,12 @@ public class SoundcoreSession(public val model: String) : FitTest {
             SoundcorePacket.build(it.command, body, checksum)
         }
 
-    private fun soundModesBody(modes: ByteArray): ByteArray =
-        if (model == "A3954" && modes.size == 4) modes + byteArrayOf(0xFF.toByte()) else modes
+    private fun soundModesBody(modes: ByteArray): ByteArray = when {
+        model == "A3954" && modes.size == 4 -> modes + byteArrayOf(0xFF.toByte())
+        // The Q20i's block: the app writes the wind byte as its suppression bit alone (`isWindNoiseSuppression ? 1 : 0`), the sensitivity as reported (issue #11).
+        model == "A3004" && modes.size == 6 -> modes.copyOf().also { it[4] = (it[4].toInt() and 1).toByte() }
+        else -> modes
+    }
 
     /**
      * The packet for a setting from the screens, or null when these earbuds cannot take it: a

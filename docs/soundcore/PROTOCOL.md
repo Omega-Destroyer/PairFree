@@ -459,10 +459,14 @@ nor PairFree reads.
   OpenSCQ30's common set for this model: Bass Booster goes as preset `7E 7E`, as OpenSCQ30 has it for the
   A3005, A3035 and A3062, and Rock is the set's +4 and +5 dB ending, not the common set's +3 and +3.
 - **Noise mode.** The app sends `06 81` with six bytes: the mode (0 noise cancelling, 2 normal,
-  1 transparency, OpenSCQ30's numbers), three zero bytes, then `01 FC` each time. The state holds two
-  bytes after the four sound mode bytes, `8D FC` before the app's first write and `01 FC` after it.
-  OpenSCQ30, and so PairFree, sends the four sound mode bytes alone. Not changed until a user says
-  whether PairFree's noise mode works on the Q20i: what the two bytes are is not known.
+  1 transparency, OpenSCQ30's numbers), three zero bytes, then `01 FC` each time. **Answered 2026-11-15 from
+  the app's own code** (Soundcore 5.0.35, restored: `A3004AnalysisService.y3` reads the block and
+  `A3004CmdService.M0` writes it): the six bytes are the mode, the manual strength (high nibble) and adaptive
+  strength (low nibble), the transparency byte, the automation mode, the wind noise byte and the adaptive
+  sensitivity. The wind byte holds the suppression switch in bit 0 and "wind detected" in bit 1 (read only);
+  the app writes `isWindNoiseSuppression() ? 1 : 0`, so the `8D` the earbuds reported (suppression on, other
+  bits not the app's) goes back as `01`. The sensitivity goes back as reported, `FC` here. PairFree now sends
+  all six, the same way (`theQ20iWritesTheSixByteSoundModesTheAppWrites`); before 0.12.2 it sent four.
 - The earbuds answered each mode change with `0B 02` (seven bytes, left out of the recording).
 
 ## 13. Sleep A30 (D1301): custom local audio research

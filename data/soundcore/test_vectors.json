@@ -1871,7 +1871,7 @@
     ]
   },
   "a3004_recording": {
-    "about": "A user's Q20i (A3004, firmware 05.08) with the Soundcore app (data/soundcore/reports/A3004_05.08.txt, GitHub issue #11), serial zeroed: PairFree's own state reply, taken after the recording, the EQ writes in order (a preset by OpenSCQ30's key in the A3005 set, or the custom curve's eight bands in tenths of a dB, and the 02 83 body) and the Soundcore app's noise mode writes (06 81 bodies), which PairFree does not send as they are yet.",
+    "about": "A user's Q20i (A3004, firmware 05.08) with the Soundcore app (data/soundcore/reports/A3004_05.08.txt, GitHub issue #11), serial zeroed: PairFree's own state reply, taken after the recording, the EQ writes in order (a preset by OpenSCQ30's key in the A3005 set, or the custom curve's eight bands in tenths of a dB, and the 02 83 body) and the Soundcore app's noise mode writes (06 81 bodies), which PairFree sends as they are since the app's code showed what the last two bytes are (wind noise suppression and the adaptive sensitivity).",
     "state": "020030352e3038000000000000000000000000000000001100968c6e6e8296a0aa78780100000001fc0100010003040700000000000000000000000000",
     "eq": [
       {

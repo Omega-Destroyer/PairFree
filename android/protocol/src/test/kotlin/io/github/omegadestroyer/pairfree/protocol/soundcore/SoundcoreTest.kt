@@ -1249,6 +1249,24 @@ class SoundcoreSleepA20Test {
         }
     }
 
+    /**
+     * GitHub issue #11: the Q20i's noise mode writes are six bytes, the app's own (A3004CmdService.M0): the mode, the strengths, the automation mode, then the wind
+     * byte as its suppression bit alone and the sensitivity as reported. The first reply of the recording holds `8D FC` there; the app wrote `01 FC`.
+     */
+    @Test
+    fun theQ20iWritesTheSixByteSoundModesTheAppWrites() {
+        val q20i = vectors.getValue("a3004_recording").jsonObject
+        val writes = q20i.getValue("sound_mode_writes").jsonArray.map { it.jsonPrimitive.content }
+        val first = q20i.str("state").replace("0100000001fc", "02000000" + "8dfc")
+        val session = SoundcoreSession("A3004").also { assertTrue(it.receive(SoundcorePacket(SoundcoreCommand.STATE, first.hexBytes()))) }
+        fun mode(name: String): String {
+            val frame = session.set(Command.ANC_MODE, Command.ANC_MODE.labels.entries.first { it.value == name }.key)!!
+            assertEquals(SoundcoreCommand.SET_SOUND_MODES, ((frame[5].toInt() and 0xFF) shl 8) or (frame[6].toInt() and 0xFF))
+            return frame.copyOfRange(9, 15).hex()
+        }
+        assertEquals(writes, listOf(mode("anc"), mode("off"), mode("transparency")))
+    }
+
     /** GitHub issue #11: a Q20i's every EQ write from the Soundcore app, Bass Booster as preset 7E 7E. */
     @Test
     fun rebuildsTheQ20isRecordedEqWrites() {

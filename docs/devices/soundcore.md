@@ -19,7 +19,13 @@ the layouts are checked against. Recordings from a real Space A40 (`data/soundco
 confirmed them, and showed that its case reports its battery in percent. The parsers of the
 Soundcore app's last readable version (2.9.9) confirmed 15 of the layouts and gave 8 models
 OpenSCQ30 lacks.
-`docs/soundcore/PROTOCOL.md` describes the protocol.
+The Soundcore app 5.0.35 (read outside the repo: its business code is packed, and the project's owner restored it) gave the layouts of
+about forty more models, among them the Liberty Buds 2, the Liberty 5 Pro and Pro Max, the AeroClip 2 and 2 Pro, the P42i, the Space 2 and Space 2 Pro
+(Soundcore's newest models answer in tag, length and value records, which PairFree now reads) and the C40i, V40i, A30i, K20i and the AeroFit
+family. Each is the twin of a model PairFree already reads, or has its own layout from the app's parser; none has been tried on real earbuds, and
+their notes in the table say what each offers. The battery of a model whose scale only a report can give is not shown. Still report-only: the
+Life NC (the app reads it item by item). The Liberty 4 Pro's settings are from pull request 42 by Onlineraider, corrected against the app.
+`docs/soundcore/PROTOCOL.md` describes the protocol (section 14 for the 5.0.35 models).
 
 ## All models
 

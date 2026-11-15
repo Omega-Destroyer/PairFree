@@ -64,12 +64,26 @@
       "openscq30": {
         "module": null,
         "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
-        "features": []
+        "features": [
+          "single_battery",
+          "serial_number_and_firmware_version"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app 5.0.35 registers it (its commands go through A3004cCmdService), but neither OpenSCQ30 nor a recording nor the app's recovered parsers give its state layout, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess.",
-      "kind": "headphones"
+      "state": [
+        ["single_battery", 2],
+        ["firmware", 5],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["sound_modes", 4]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (A3004CAnalysisService.e1), not from OpenSCQ30 and not tried on the headphones. Its reads are the Q20i's (A3004) byte for byte, so it shows the battery and the firmware. Its commands go through A3004cCmdService, a class of its own that has not been compared with the Q20i's, so no setting is offered.",
+      "kind": "headphones",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      }
     },
     {
       "model": "A3005",
@@ -925,12 +939,75 @@
       ],
       "openscq30": {
         "module": null,
-        "source": "Soundcore app 6.4.0, its label_ strings",
-        "features": []
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": [
+          "equalizer_with_drc",
+          "disable_all_buttons",
+          "button_configuration",
+          "reset_button_configuration",
+          "dual_connections",
+          "touch_tone",
+          "low_battery_prompt",
+          "tws_status",
+          "dual_battery_level_custom",
+          "case_battery_level",
+          "serial_number_and_dual_firmware_version"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery_level", 2],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 5],
+        ["case_battery", 1],
+        ["skip", 1],
+        ["buttons", 6],
+        ["skip", 1],
+        ["skip", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["dual_connections_enabled", 1],
+        ["disable_all_buttons", 1],
+        ["skip", 1],
+        ["equalizer", 12],
+        ["skip", 1]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (A3331AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its state is the C30i's (A3330) byte for byte: the same battery, firmware, serial, case, button block, switches and EQ bytes, and the same command service and action list. Two differences: the byte the C30i reads as a surround switch is a mode number on the C40i, so it is skipped here, and the C40i does not read the C30i's call buttons.",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        },
+        "case": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [-120, 134],
+        "digits": 1,
+        "presets": "a3330"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          }
+        ],
+        "reset": true,
+        "checked": "openscq30_tests"
+      }
     },
     {
       "model": "A3388",
@@ -1224,12 +1301,71 @@
       ],
       "openscq30": {
         "module": null,
-        "source": "Soundcore app 6.4.0, its label_ strings",
-        "features": []
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": [
+          "a3876_equalizer",
+          "button_configuration",
+          "reset_button_configuration",
+          "dual_connections",
+          "a3876_volume_balance",
+          "auto_power_off",
+          "voice_prompt",
+          "gaming_mode",
+          "tws_status",
+          "dual_battery_level_custom",
+          "serial_number_and_dual_firmware_version"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "The Soundcore app lists it. Neither OpenSCQ30 nor a recording gives its state layout yet, so PairFree finds it, asks for its state and offers a device report with the reply, and shows nothing it would have to guess."
+      "state": [
+        ["tws_status", 2],
+        ["dual_battery_level", 2],
+        ["dual_firmware", 10],
+        ["serial", 16],
+        ["skip", 6],
+        ["equalizer", 22],
+        ["skip", 1],
+        ["buttons", 8],
+        ["skip", 7],
+        ["skip", 1],
+        ["voice_prompt", 1],
+        ["auto_power_off", 2],
+        ["skip", 1],
+        ["gaming_mode", 1],
+        ["volume_balance", 1],
+        ["dual_connections_enabled", 1],
+        ["bass_up", 1]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (A3878AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its state is the V20i's (A3876) byte for byte plus one byte after the dual connections switch (bass up), with the same command service. Its action list has no light button, so the light bytes are skipped and its touch actions are the V20i's without the light.",
+      "battery": {
+        "earbuds": {
+          "max": 10,
+          "offset": 1
+        }
+      },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [-120, 134],
+        "digits": 1,
+        "presets": "a3876"
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": ["buttons"],
+            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long"],
+            "ignore_enabled": true,
+            "presses": {
+              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
+              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
+              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+            }
+          }
+        ],
+        "reset": true
+      }
     },
     {
       "model": "A3909",
@@ -3081,12 +3217,31 @@
       ],
       "openscq30": {
         "module": null,
-        "source": "a user's device report (GitHub issue #22); neither OpenSCQ30 nor the Soundcore app 2.9.9 names it",
-        "features": []
+        "source": "Soundcore app 5.0.35, its model registry (docs/soundcore/PROTOCOL.md, section 14)",
+        "features": [
+          "single_battery",
+          "serial_number_and_firmware_version"
+        ]
       },
-      "report_only": true,
-      "state": [],
-      "notes": "A user's report holds a 61-byte state reply whose first 39 bytes fit the Q20i's (A3004) layout exactly (battery, firmware 05.xx, serial, EQ preset 7E 7E with ten bands, four sound mode bytes); 22 more bytes follow that the A3004 layout has no field for. That is a lead, not a layout: PairFree finds the model, asks for its state and offers a device report, and shows no settings until a recording of the Soundcore app confirms what the Q21i NC takes. The report is data/soundcore/reports/A300B_05.xx.txt (not listed in reports: a report-only model is not counted as tried)."
+      "state": [
+        ["single_battery", 2],
+        ["firmware", 5],
+        ["serial", 16],
+        ["equalizer", 12],
+        ["sound_modes", 4],
+        ["skip", 2],
+        ["dual_connections_enabled", 1],
+        ["skip", 1],
+        ["optional:auto_power_off", 2]
+      ],
+      "notes": "Read from the Soundcore app 5.0.35 (route A3004311: the Q20i's command service and parser, A3004AnalysisService.e1), checked against a user's 61-byte reply (GitHub issue #22): after the sound modes the app reads the dual connections switch (packet byte 50), the colour, the auto power off switch and its index (from firmware 427), then a button block; the reply holds exactly those bytes. PairFree shows the battery, the firmware and the switches it reads; the sound modes and the EQ are not offered until a recording shows what the Q21i NC takes (it differs from the Q20i in what the app writes, docs/soundcore/PROTOCOL.md section 12). The report is data/soundcore/reports/A300B_05.xx.txt (not listed in reports: PairFree had not read the model when it was sent).",
+      "battery": {
+        "earbuds": {
+          "max": 5,
+          "offset": 0
+        }
+      },
+      "kind": "headphones"
     },
     {
       "model": "A3958",

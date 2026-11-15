@@ -334,6 +334,22 @@ class SoundcoreLayoutTest {
         }
     }
 
+    /**
+     * The Q21i NC's 61-byte reply (issue #22, masked digits written as 0): the vendor parser (Soundcore 5.0.35, A3004AnalysisService) reads the
+     * Q20i's bytes, then the dual connections switch (packet byte 50), the colour, and the auto power off switch and index.
+     */
+    @Test
+    fun readsTheQ21iNcReplyAsTheVendorParserDoes() {
+        val body = ("02003035" + "2e3030" + "30".repeat(16) + "7e7e8c82969" + "68c6450467878" + "000000000000" + "01" + "00" + "0100" + "03" + "0403" +
+            "00".repeat(13)).hexBytes()
+        assertEquals(61, body.size)
+        val s = SoundcoreState.parse(SoundcoreLayout.of("A300B")!!, body)!!
+        assertEquals(40, s.batteryLeft)
+        assertEquals("05.00", s.firmware)
+        assertEquals(true, s.flag("dual_connections_enabled"))
+        assertEquals("0100", s.field("auto_power_off")!!.hex())
+    }
+
     @Test
     fun readsEveryReplyInOpenScq30sTests() {
         assertEquals(37, replies.size)
@@ -552,7 +568,7 @@ class SoundcoreEqualizerTest {
     fun specsMatchTheData() {
         val withEq = devices.filter { "eq" in it }
         assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
-        assertEquals(47, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip")
+        assertEquals(49, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i and the V40i")
         for (d in withEq) {
             val eq = d.getValue("eq").jsonObject
             val spec = SoundcoreEqSpec.of(d.str("model"))!!
@@ -866,7 +882,7 @@ class SoundcoreButtonsTest {
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(38, withButtons.size)
+        assertEquals(40, withButtons.size)
         for (d in devices) {
             // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
             // A3031's state holds them, but OpenSCQ30 does not offer them), and a recording adds the Sleep A20's.

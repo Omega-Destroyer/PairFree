@@ -543,7 +543,15 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   and D1105 (AeroClip 2 Pro and 2), D1200 and D1206 (Liberty Buds, 2), D1203 and D1204 (Liberty 5 Pro, Pro Max), D1205 (P42i), D1302 and D1303 (Sleep
   Earbuds 4 Pro, 4), D1402, D1404, D1406 and D1407 (Space 2, Q31i, Space 2 Pro, Pro Max); the Sleep A30 Special is a name of the A30 (the same command
   service and data source). PairFree finds them, asks for their state and offers a device report. The speakers and their cases are left out.
-  Their layouts are to do, not blocked: each model's state parser is `AnalysisService.e1` in the restored `com.oceanwing.devicecmd.manager.product.<model>`
+  Four of the models that were report-only now have their layout, read from the restored parser and compared with a model PairFree already reads
+  (the same bytes in the same order, the same command service): the **C40i (A3331)** is the C30i's, with the C30i's surround byte skipped (a mode
+  number there) and no call buttons; the **V40i (A3878)** is the V20i's plus a bass up byte, without the light; the **Q20i Plus (A3004C)** has the
+  Q20i's bytes (battery and firmware only, since its commands go through a service of its own); the **Q21i NC (A300B)** is the Q20i's bytes plus the
+  dual connections switch (packet byte 50), the colour and the auto power off switch and index (from firmware 427), which the user's 61-byte reply in
+  issue #22 holds exactly (`readsTheQ21iNcReplyAsTheVendorParserDoes`). None is tried on real earbuds. The rest of the new models' layouts are to
+  do, not blocked, and the closest model by parser steps is known for some: D1200 is near the Liberty 5 (A3957, 0.89) with a 3D mode, touch lock,
+  music rush and audio wake-up in place of its spatial and easy chat bytes; D1205 near the P31i (D1202, 0.84); D1402 near the Space One Pro (A3062).
+  Each needs its own diff before a layout is written (a twin's bytes are not assumed from a name): each model's state parser is `AnalysisService.e1` in the restored `com.oceanwing.devicecmd.manager.product.<model>`
   package. The ones checked read in sequence (A3954 and A3994 begin with the host byte, the TWS byte, two batteries and two charging flags, two firmware
   strings of five bytes and the 16-byte serial, then the 22 EQ bytes and a length-prefixed button block), but they differ model by model (the A3331 has no
   charging flags and carries the case's firmware and battery after the serial), so each is transcribed on its own. D1105, D1206, D1302, D1303 and D1406

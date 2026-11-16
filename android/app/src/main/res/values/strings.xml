@@ -1757,5 +1757,7 @@
     <string name="jb_group_speakerphone">Speakerphone</string>
     <string name="jb_ht_level">HearThrough level</string>
     <string name="jb_anc_level">Noise cancelling level</string>
+    <string name="jb_ht_mix">Hear music with HearThrough</string>
+    <string name="jb_loop">Modes on the button</string>
     <!-- Jabra: end of the generated section. -->
 </resources>

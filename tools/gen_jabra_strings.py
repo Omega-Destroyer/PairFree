@@ -175,7 +175,7 @@ GROUPS = {
     "speakerphone": "Speakerphone",
     "noise": "Noise control",
 }
-FIXED_TITLES = {"jb_ht_level": "HearThrough level", "jb_anc_level": "Noise cancelling level"}
+FIXED_TITLES = {"jb_ht_level": "HearThrough level", "jb_anc_level": "Noise cancelling level", "jb_ht_mix": "Hear music with HearThrough", "jb_loop": "Modes on the button"}
 
 
 def slug(text):

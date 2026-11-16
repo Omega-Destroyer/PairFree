@@ -99,7 +99,10 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
             out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.EQUALIZER, 0)
             out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.EQUALIZER_ENABLE)
         }
-        if (hasAmbience()) for (selector in AMBIENCE_READS) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, selector)
+        if (hasAmbience()) {
+            for (selector in AMBIENCE_READS) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, selector)
+            if (variant?.has("ambience_mode_loop") == true) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.SOUND_MODE_LOOP.main, JabraCommands.SOUND_MODE_LOOP.sub, ByteArray(0))
+        }
         for (s in settings()) {
             if (s.virtual != null || s.special || s.main == null || s.sub == null || s.widget == JabraWidget.STATIC || s.widget == JabraWidget.TEXT) continue
             if (seen.add("${s.destination}/${keyOf(s.main, s.sub, s.selectorBytes, s.selectors.size)}")) out += read(s)
@@ -358,6 +361,18 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         val anc = ambience(3)
         if (htMax != null && htMax > 0 && ht != null) add(Setting.Level("jb_ht_level", htMax - ht.coerceIn(0, htMax) + 1, 1, htMax + 1))
         if (ancMax != null && ancMax > 0 && anc != null && variant?.noiseLoop?.contains("anc") != false) add(Setting.Level("jb_anc_level", ancMax - anc.coerceIn(0, ancMax) + 1, 1, ancMax + 1))
+        // The music mix: bit 0 of the HearThrough extended settings, offered where the supported-data reply's bit 0 of that byte says the earbuds have it.
+        val ext = ambience(4)
+        if (ext != null && (u8("13/be/00", 4) ?: 0) and 1 != 0) add(Setting.Toggle("jb_ht_mix", ext and 1 != 0))
+        loop()?.let { names -> add(Setting.Choice("jb_loop", names.joinToString("_"), LOOP_CHOICES.map { it.joinToString("_") })) }
+    }
+
+    /** The modes the button cycles through, in order ("Off", "HT", "ANC"), from the loop read; null before it has answered or where the model has no loop. */
+    private fun loop(): List<String>? {
+        val b = replies["13/bf"] ?: return null
+        val n = b.firstOrNull()?.toInt()?.and(0xFF) ?: return null
+        if (n == 0 || b.size < 1 + n) return null
+        return (1..n).map { LOOP_NAMES.getOrNull(b[it].toInt() and 0xFF) ?: return null }
     }
 
     /** The value of a setting from the last answer to its read, or null before it came. */
@@ -415,6 +430,22 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
 
     override fun change(change: SettingChange): List<JabraPacket>? {
         when (change.key) {
+            "jb_loop" -> {
+                val option = (change as? SettingChange.Choice)?.option ?: return null
+                val modes = LOOP_CHOICES.firstOrNull { it.joinToString("_") == option } ?: return null
+                val body = byteArrayOf(modes.size.toByte()) + ByteArray(modes.size) { LOOP_NAMES.indexOf(modes[it]).toByte() }
+                replies["13/bf"] = body
+                readBacks = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.SOUND_MODE_LOOP.main, JabraCommands.SOUND_MODE_LOOP.sub, ByteArray(0)))
+                return listOf(packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.SOUND_MODE_LOOP.main, JabraCommands.SOUND_MODE_LOOP.sub, body))
+            }
+            "jb_ht_mix" -> {
+                val on = (change as? SettingChange.Toggle)?.on ?: return null
+                val held = ambience(4) ?: return null
+                val value = if (on) held or 1 else held and 1.inv()
+                replies["13/be/04"] = byteArrayOf(4, value.toByte())
+                readBacks = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, 4))
+                return listOf(packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.AMBIENCE, 4, value))
+            }
             "jb_ht_level", "jb_anc_level" -> {
                 val value = (change as? SettingChange.Level)?.value ?: return null
                 val ht = change.key == "jb_ht_level"
@@ -459,11 +490,16 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         private const val CONFIG_MAIN = 0x13
         private const val ADDRESS_RIGHT = 4
         private const val ADDRESS_CRADLE = 0x15
+        /** The SDK's ordinals for the loop (off 0, HearThrough 1, ANC 2), which differ from the selected-mode bits. */
+        private val LOOP_NAMES = listOf("Off", "HT", "ANC")
+
+        /** The loops the Sound+ app offers: HearThrough and ANC, with or without off, and HearThrough and off. */
+        private val LOOP_CHOICES = listOf(listOf("HT", "ANC"), listOf("HT", "ANC", "Off"), listOf("HT", "Off"))
         private val BUTTON_GROUPS = mapOf(0 to "buttons_music", 1 to "buttons_call_incoming", 2 to "buttons_call_ongoing")
         private const val AMBIENCE_OFF = 0x01
         private const val AMBIENCE_HEARTHROUGH = 0x02
         private const val AMBIENCE_ANC = 0x04
-        private val AMBIENCE_READS = intArrayOf(0x00, 0x01, 0x02, 0x03)
+        private val AMBIENCE_READS = intArrayOf(0x00, 0x01, 0x02, 0x03, 0x04)
         private val ON_NAMES = setOf("on", "enable", "enabled")
         private val OFF_NAMES = setOf("off", "disable", "disabled")
 

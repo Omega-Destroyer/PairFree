@@ -458,5 +458,7 @@ internal object JabraLabels {
     val FIXED_TITLE: Map<String, Int> = mapOf(
         "jb_anc_level" to R.string.jb_anc_level,
         "jb_ht_level" to R.string.jb_ht_level,
+        "jb_ht_mix" to R.string.jb_ht_mix,
+        "jb_loop" to R.string.jb_loop,
     )
 }

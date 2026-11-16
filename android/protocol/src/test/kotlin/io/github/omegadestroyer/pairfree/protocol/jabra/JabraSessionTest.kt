@@ -46,8 +46,8 @@ class JabraSessionTest {
         assertEquals(11846, s.pid)
         assertEquals("1.2.4", s.firmware)
         assertEquals("11846_01-92_1.2.4", s.profile?.snapshot)
-        // The ambience command's four reads, then each setting's read once; the sidetone's two settings share one read at the DSP's address.
-        assertEquals(listOf("00", "01", "02", "03"), reads.filter { it.main == 0x13 && it.sub == 0xBE }.map { "%02x".format(it.payload[1]) })
+        // The ambience command's five reads, then each setting's read once; the sidetone's two settings share one read at the DSP's address.
+        assertEquals(listOf("00", "01", "02", "03", "04"), reads.filter { it.main == 0x13 && it.sub == 0xBE }.map { "%02x".format(it.payload[1]) })
         assertEquals(1, reads.count { it.main == 0x13 && it.sub == 0x7C && it.destination == JabraWire.DSP })
         // Six buttons' gestures in three contexts: eighteen reads of one command, each with its three selector bytes.
         val buttons = reads.filter { it.main == 0x13 && it.sub == 0x9A }
@@ -167,5 +167,21 @@ class JabraSessionTest {
         assertNull(s.eqCurve(listOf(7.0, 0.0, 0.0, 0.0, 0.0)))
         // A flat curve switches the equalizer off.
         assertEquals("7e00", JabraParser().feed(s.eqCurve(listOf(0.0, 0.0, 0.0, 0.0, 0.0))!!.first()).single().payload.hex())
+    }
+    @Test
+    fun theButtonsSoundModeLoopAndTheMusicMixAreWrittenWhole() {
+        val (s, reads) = opened()
+        assertTrue(reads.any { it.main == 0x13 && it.sub == 0xBF })
+        // Loop of HearThrough and ANC: the SDK's ordinals (off 0, HearThrough 1, ANC 2) after the count, not the selected-mode bits.
+        s.feed(reply(0x13, 0xBF, 2, 1, 2))
+        s.feed(reply(0x13, 0xBE, 0x00, 0x07, 0x04, 0x04, 0x01, 0x00, 0x00))
+        s.feed(reply(0x13, 0xBE, 0x04, 0x20))
+        val noise = s.groups.first { it.key == "jb_noise" }.settings
+        assertEquals("HT_ANC", (noise.single { it.key == "jb_loop" } as Setting.Choice).value)
+        val loop = s.change(SettingChange.Choice("jb_loop", "HT_ANC_Off"))!!.single()
+        assertEquals("bf03010200", loop.payload.hex())
+        // The mix is bit 0 of the extended settings; the submode bits in the same byte stay.
+        assertEquals(false, (noise.single { it.key == "jb_ht_mix" } as Setting.Toggle).on)
+        assertEquals("be0421", s.change(SettingChange.Toggle("jb_ht_mix", true))!!.single().payload.hex())
     }
 }

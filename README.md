@@ -334,7 +334,7 @@ cd android
   app.
 - [Quicky](https://github.com/hui1601/Quicky) by hui1601: QCY's product list and the features of each
   model, and its protocol notes. Facts only; it has no licence, and none of its code is in PairFree.
-- [IBM Plex](https://github.com/IBM/plex) fonts (SIL Open Font License 1.1).
+- [IBM Plex](https://github.com/IBM/plex) fonts, and for the Sketchbook look [Fredoka](https://github.com/hafontia/Fredoka-One) and [Nunito](https://github.com/googlefonts/nunito) (all SIL Open Font License 1.1).
 
 ## License
 

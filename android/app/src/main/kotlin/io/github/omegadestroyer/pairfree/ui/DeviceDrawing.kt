@@ -31,12 +31,12 @@ private val ACCENT = Color(0xFFE6A23C)
 
 private fun roles(c: LookColors): Map<Color, Color> = mapOf(
     BACKGROUND to c.background,
-    PANEL to c.panel,
+    PANEL to c.artFill,
     RAISED to c.raised,
     HAIRLINE to c.hairline,
     INK to c.text,
     GUIDE to c.label,
-    ACCENT to c.accent,
+    ACCENT to c.artAccent,
 )
 
 /**
@@ -48,17 +48,42 @@ fun deviceArtPainter(@DrawableRes drawing: Int): Painter {
     val colors = Look.colors
     val art = Look.art
     val source = ImageVector.vectorResource(drawing)
-    val image = remember(source, colors, art) { source.inLook(roles(colors), art) }
+    val image = remember(source, colors, art) { source.inLook(roles(colors), art, colors) }
     return rememberVectorPainter(image)
 }
 
-private fun ImageVector.inLook(roles: Map<Color, Color>, art: LookArt): ImageVector {
-    if (art.stroke == 1f && roles.all { (from, to) -> from == to }) return this
+/**
+ * The drawing in a look. "line" keeps the drawing as it is, in the look's colours. "cartoon" draws the same shapes
+ * another way: the dashed guide lines go, every line is heavier, and each filled shape gets its flat colour set off
+ * from its line by [LookArt.offset], as in a print whose colour plate sits a little off, over a plain fill that still
+ * hides what lies behind the shape.
+ */
+private fun ImageVector.inLook(roles: Map<Color, Color>, art: LookArt, colors: LookColors): ImageVector {
+    val cartoon = art.style == "cartoon"
+    if (!cartoon && art.stroke == 1f && roles.all { (from, to) -> from == to }) return this
     fun Brush?.mapped(): Brush? = if (this is SolidColor) SolidColor(roles[value] ?: value) else this
     val out = ImageVector.Builder(name, defaultWidth, defaultHeight, viewportWidth, viewportHeight, tintColor, tintBlendMode, autoMirror)
+    fun cartoon(node: VectorPath) {
+        val fill = node.fill
+        val stroke = node.stroke
+        if (fill == null && (stroke as? SolidColor)?.value == GUIDE) return // centre lines and the like
+        if (fill != null) {
+            out.addPath(node.pathData, node.pathFillType, fill = SolidColor(colors.panel))
+            out.addGroup(translationX = art.offset, translationY = art.offset)
+            out.addPath(node.pathData, node.pathFillType, fill = fill.mapped(), fillAlpha = node.fillAlpha)
+            out.clearGroup()
+        }
+        // A shape without a line of its own (an accent) gets a fine one, so its colour is held by ink as the others are.
+        val ink = stroke.mapped() ?: SolidColor(colors.text)
+        val width = if (stroke != null) node.strokeLineWidth * art.stroke else art.stroke
+        out.addPath(
+            node.pathData, node.pathFillType, stroke = ink, strokeAlpha = node.strokeAlpha, strokeLineWidth = width,
+            strokeLineCap = node.strokeLineCap, strokeLineJoin = node.strokeLineJoin, strokeLineMiter = node.strokeLineMiter,
+        )
+    }
     fun add(group: VectorGroup) {
         for (node in group) when (node) {
-            is VectorPath -> out.addPath(
+            is VectorPath -> if (cartoon) cartoon(node) else out.addPath(
                 pathData = node.pathData,
                 pathFillType = node.pathFillType,
                 name = node.name,

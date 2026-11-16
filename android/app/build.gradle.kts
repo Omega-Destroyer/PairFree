@@ -21,6 +21,8 @@ abstract class GenerateLooks : DefaultTask() {
     @TaskAction
     fun generate() {
         val roles = listOf("background", "panel", "raised", "hairline", "text", "secondary_text", "label", "accent", "on_accent", "destructive")
+        // Roles only some looks need, and the role each falls back to (docs/LOOKS.md).
+        val optional = mapOf("outline" to "hairline", "shadow" to "hairline", "highlight" to "raised", "art_fill" to "panel", "art_accent" to "accent")
         val system = Regex("system_(accent[123]|neutral[12])_(0|10|50|100|200|300|400|500|600|700|800|900|1000)")
         val hex = Regex("#[0-9A-Fa-f]{6}")
         fun camel(s: String) = s.split('_').mapIndexed { i, w -> if (i == 0) w else w.replaceFirstChar(Char::uppercase) }.joinToString("")
@@ -45,10 +47,11 @@ abstract class GenerateLooks : DefaultTask() {
             fun palette(key: String): String {
                 @Suppress("UNCHECKED_CAST")
                 val p = look[key] as? Map<String, Any?> ?: return "null"
-                val unknown = p.keys - roles.toSet()
+                val unknown = p.keys - roles.toSet() - optional.keys
                 if (unknown.isNotEmpty()) fail("$key has roles the app does not know: $unknown")
-                return roles.joinToString(", ", "Palette(", ")") { role ->
-                    val v = p[role] as? String ?: fail("$key lacks $role")
+                return (roles + optional.keys).joinToString(", ", "Palette(", ")") { role ->
+                    // A role a look leaves out takes another role's colour.
+                    val v = (p[role] ?: p[optional[role]]) as? String ?: fail("$key lacks $role")
                     when {
                         hex.matches(v) -> "${camel(role)} = Tone.fixed(0xFF${v.drop(1).uppercase()}.toInt())"
                         system.matches(v) -> "${camel(role)} = Tone.system(android.R.color.$v)"
@@ -70,14 +73,19 @@ abstract class GenerateLooks : DefaultTask() {
             out.appendLine("        dark = ${palette("dark")},")
             out.appendLine("        light = ${palette("light")},")
             out.appendLine("        textFont = ${str(type["text"])},")
+            out.appendLine("        headingFont = ${str(type["headings"] ?: type["text"])},")
             out.appendLine("        numberFont = ${str(type["numbers"])},")
             out.appendLine("        labelCaps = ${type["label_caps"] as Boolean},")
             out.appendLine("        hairline = ${num(shape["hairline"])},")
             out.appendLine("        corner = ${num(shape["corner"])},")
             out.appendLine("        smallCorner = ${num(shape["small_corner"])},")
             out.appendLine("        panelBorder = ${shape["panel_border"] as Boolean},")
+            out.appendLine("        uneven = ${num(shape["uneven"] ?: 0)},")
+            out.appendLine("        shadow = ${num(shape["shadow"] ?: 0)},")
+            out.appendLine("        selectedFill = ${(shape["selected_fill"] ?: false) as Boolean},")
             out.appendLine("        artStyle = ${str(art["style"])},")
             out.appendLine("        artStroke = ${num(art["stroke"])},")
+            out.appendLine("        artOffset = ${num(art["offset"] ?: 0)},")
             out.appendLine("    ),")
         }
         out.appendLine(")")

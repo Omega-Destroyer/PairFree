@@ -230,7 +230,7 @@ class PairFreeWidget : AppWidgetProvider() {
                 views.setTextViewText(cell[1], caption)
                 views.setTextViewText(cell[2], label)
                 // The chosen button is filled with the accent; the others are a raised fill inside a hairline edge.
-                look.fill(views, cell[0]) { if (active) it.accent else it.hairline }
+                look.fill(views, cell[0]) { if (active) it.accent else it.outline }
                 look.fill(views, cell[3]) { if (active) it.accent else it.raised }
                 look.text(views, cell[2]) { if (active) it.onAccent else it.text }
                 look.text(views, cell[1]) { if (active) it.onAccent else it.secondaryText }

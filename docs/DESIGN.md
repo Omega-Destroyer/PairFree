@@ -55,8 +55,8 @@ These came from the owner and are not up for trade.
 
 ## Looks
 
-The app ships with three looks (owner, 2026-11-16): Studio, the default; Studio Light; and
-Material You. A look is a skin: a palette, a pair of fonts, a shape language and a way of
+The app ships with four looks (owner, 2026-11-16): Studio, the default; Studio Light; Material
+You; and Sketchbook. A look is a skin: a palette, a pair of fonts, a shape language and a way of
 drawing the devices. Every look uses the same screens, the same layout and the same
 features. A feature never exists in one look only.
 
@@ -103,10 +103,12 @@ The phone's own colours (Android 12's wallpaper palette, read as system colours;
 library is not used), the phone's font, 20 px and 12 px corners, panels without outlines, labels
 in sentence case. Dark and light, following the phone. Values in `data/looks/material-you.json`.
 
-### Sketchbook (next)
+### Sketchbook
 
-Owner, 2026-11-16: to be built after the three above, as the first look that changes shapes and
-drawings and not only colours (`docs/LOOKS.md`, A look that changes more than colours). The values:
+Owner, 2026-11-16: the fourth look, and the first that changes shapes and drawings and not only
+colours (`docs/LOOKS.md`, A look that changes more than colours). Values in
+`data/looks/sketchbook.json`, from the table below; panels are the card colour, dialogs white,
+tracks and dividers the soft shadow colour.
 
 Light, friendly, hand-drawn.
 
@@ -129,7 +131,11 @@ Light, friendly, hand-drawn.
   soft shadow colour.
 - Selected state: teal fill with white text for primary choices, peach fill with a
   raised shadow for secondary ones.
-- Device drawings: cartoon outlines with flat colour fills offset from the line.
+- Device drawings: cartoon outlines with flat colour fills offset from the line. They are the
+  same traced shapes as Studio's, drawn in the cartoon style by the app (`ui/DeviceDrawing.kt`):
+  no centre lines, lines half again as heavy, the teal tint set 2.5 units off each shape, accents in peach.
+- As built: corners differ by 30 % of their radius (14 px panels, 10 px controls); the hard shadow
+  is 3 px, under panels, buttons and chosen chips; small labels are in sentence case.
 
 ### Rules for every look
 
@@ -602,7 +608,6 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
 
 ## Still open
 
-- Sketchbook, the hand-drawn look (Looks above).
 - Which side the Air5 Pro+ drawing shows. It has not been checked against the L/R
   marking on a real pair.
 - Tile design (the widget is in Widget above; it takes the chosen look's colours, `widget/WidgetLook.kt`).

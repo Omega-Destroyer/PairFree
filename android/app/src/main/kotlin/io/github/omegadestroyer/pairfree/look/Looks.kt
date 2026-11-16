@@ -36,6 +36,15 @@ data class Palette(
     val accent: Tone,
     val onAccent: Tone,
     val destructive: Tone,
+    /** The outline of panels and controls; the hairline where a look gives none. */
+    val outline: Tone,
+    /** The hard shadow of a look that has one. */
+    val shadow: Tone,
+    /** The fill of a chosen secondary choice, in a look that fills them. */
+    val highlight: Tone,
+    /** The fill of a device drawing's body, and the colour of its accents. */
+    val artFill: Tone,
+    val artAccent: Tone,
 )
 
 /**
@@ -49,14 +58,23 @@ data class LookSpec(
     val dark: Palette?,
     val light: Palette?,
     val textFont: String,
+    val headingFont: String,
     val numberFont: String,
     val labelCaps: Boolean,
     val hairline: Float,
     val corner: Float,
     val smallCorner: Float,
     val panelBorder: Boolean,
+    /** How far the four corners of a shape differ from one another, as a part of the radius (0: all alike). */
+    val uneven: Float,
+    /** The offset in dp of the hard shadow under panels and buttons (0: none). */
+    val shadow: Float,
+    /** Whether a chosen secondary choice is filled with the highlight, or outlined in the accent. */
+    val selectedFill: Boolean,
     val artStyle: String,
     val artStroke: Float,
+    /** In the cartoon style, how far a drawing's flat fill sits from its line, in the drawing's own units. */
+    val artOffset: Float,
 ) {
     /** True when the look is drawn dark while the phone is in dark mode ([night]) or not. A look with both palettes follows the phone. */
     fun isDark(night: Boolean): Boolean = if (dark != null && light != null) night else dark != null

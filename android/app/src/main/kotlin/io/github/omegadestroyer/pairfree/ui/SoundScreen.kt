@@ -419,14 +419,12 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
 @Composable
 private fun BandButton(label: String, gain: Double, selected: Boolean, onClick: () -> Unit) {
     val c = Look.colors
-    val shape = RoundedCornerShape(Look.shape.smallCorner)
+    val shape = Look.shape.control
     Column(
         Modifier
             .width(56.dp)
             .heightIn(min = Look.shape.touch)
-            .clip(shape)
-            .background(if (selected) c.accent else c.panel)
-            .border(Look.shape.hairline, if (selected) c.accent else c.hairline, shape)
+            .surface(shape, if (selected) c.accent else c.panel, if (selected) c.accent else c.outline, raised = false)
             .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
             .padding(vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

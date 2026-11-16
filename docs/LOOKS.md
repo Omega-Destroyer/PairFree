@@ -8,6 +8,7 @@ inked. Every look uses the same screens and the same features (`docs/DESIGN.md`,
 | Studio       | `data/looks/studio.json`       | Dark, amber, IBM Plex. The default.                                     |
 | Studio Light | `data/looks/studio-light.json` | Studio on paper: the same type and lines, light.                        |
 | Material You | `data/looks/material-you.json` | The phone's wallpaper colours and font, round corners; follows dark mode. |
+| Sketchbook   | `data/looks/sketchbook.json`   | Light and hand-drawn: its own fonts, hard shadows, cartoon drawings.    |
 
 The look is chosen on the connect screen and on the Device tab, next to the language. The screens, the home screen
 widget and the status notification's accent follow it.
@@ -44,14 +45,19 @@ lists what it finds. You are credited in `CONTRIBUTORS.md`.
 - `name`: for readers of the file. People see the name from `strings.xml`.
 - `order`: where the picker lists it. Leave it out to come after the built-in looks.
 - `dark`, `light`: the palettes. Give one, or both: a look with both follows the phone's dark mode.
-- `type.text`, `type.numbers`: fonts by name. `plex_sans`, `plex_mono`, `system` (the phone's font) and
-  `system_mono` exist. A look with a font of its own adds the font files to `android/app/src/main/res/font/`
-  (SIL Open Font License or as free) and one line to `fontFamily()` in `ui/theme/Look.kt`.
+- `type.text`, `type.numbers`, and `type.headings` where titles have a font of their own: fonts by name.
+  `plex_sans`, `plex_mono`, `fredoka`, `nunito`, `system` (the phone's font) and `system_mono` exist. A look with
+  another font adds the font files to `android/app/src/main/res/font/` (SIL Open Font License or as free), its
+  licence to `android/app/src/main/assets/licenses/`, and one line to `fontFamily()` in `ui/theme/Look.kt`.
 - `type.label_caps`: whether small labels are set in capitals, as Studio's are.
 - `shape`: in dp. `hairline` is the width of outlines, `corner` the radius of panels and dialogs, `small_corner` of
   buttons and chips. `panel_border` false leaves panels without an outline, told from the background by colour.
-- `art.style`: how the device drawings are drawn. `line` is the only style so far (below). `art.stroke` multiplies
-  every line's width.
+  Three more, each optional: `uneven` (0 to 1) makes a shape's four corners differ by that part of the radius;
+  `shadow` puts a hard shadow that many dp below and to the right of panels and buttons; `selected_fill` true fills
+  a chosen secondary choice with the highlight colour, where Studio outlines it in the accent.
+- `art.style`: how the device drawings are drawn. `line`: thin technical lines with dashed centre lines. `cartoon`:
+  heavier lines, no centre lines, and each shape's flat colour set off from its line by `art.offset` (in the
+  drawing's units; a drawing is 96 wide). `art.stroke` multiplies every line's width.
 
 ### Colours
 
@@ -69,6 +75,11 @@ Each palette has the same ten roles:
 | `accent`         | What is chosen or can be pressed; the accents of a device drawing |
 | `on_accent`      | Text on the accent                                                |
 | `destructive`    | Factory reset and the like                                        |
+
+Five more roles are optional; a look that leaves one out gets the colour of the role in brackets: `outline`, the
+outline of panels and controls (`hairline`); `shadow`, the hard shadow (`hairline`); `highlight`, the fill of a
+chosen secondary choice (`raised`); `art_fill`, the body of a device drawing (`panel`); `art_accent`, the accents of
+a device drawing (`accent`).
 
 A colour is `#RRGGBB`, or one of the colours Android makes from the wallpaper, by its resource name:
 `system_accent1_200`, `system_neutral2_800` and so on (`accent1` to `accent3`, `neutral1` and `neutral2`, each from
@@ -99,13 +110,13 @@ The launcher icon is Studio's in every look.
 
 The parts are there for it, and each is one place:
 
-- **Shapes of controls**: `ui/Components.kt` draws every button, switch, slider, panel and dialog. A look that
-  needs something the tokens do not say (a shadow, a filled chip) adds a field to `shape` in the look files, to
-  `LookShape`, and reads it in the component. Screens do not change.
-- **Drawings in another style**: `art.style` names it. The shapes of each model are data
-  (`tools/device_art/<brand>/`), so a second style is a second writer in `tools/gen_device_art.py` that draws the
-  same shapes differently, into `assets/devices/<brand>/<model>/<style>/` and its own drawables; `deviceArt()` then
-  picks by the look's style and falls back to `line`.
+Sketchbook is the example: nothing in it is a special case in a screen.
 
-Not built yet: Sketchbook (`docs/DESIGN.md`), the hand-drawn look, which needs both (hard shadows, uneven corners,
-cartoon drawings with flat fills, the Fredoka and Nunito fonts).
+- **Shapes of controls**: `ui/Components.kt` draws every button, switch, slider, panel and dialog, and every
+  outlined shape goes through one modifier, `surface`, which draws the look's shadow, fill and outline. A look that
+  needs something the tokens do not say adds a field to `shape` in the look files, to `LookShape`
+  (`ui/theme/Look.kt`) and to the build's reader, and reads it in the component. Screens do not change.
+- **Drawings in another style**: `art.style` names it, and `ui/DeviceDrawing.kt` draws it from the same generated
+  drawings: a style is a function there that turns each path of a drawing into the paths to draw. So a new style
+  reaches all the drawings at once, with nothing regenerated. A style that needs other shapes than the traced ones
+  would be a second writer in `tools/gen_device_art.py`; none needs that so far.

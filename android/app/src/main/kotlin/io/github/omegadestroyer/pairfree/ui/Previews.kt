@@ -123,3 +123,15 @@ private fun HomeMaterialYouPreview() = Connected(Tab.HOME, look = "material-you"
 @Preview(widthDp = 390, heightDp = 844, showBackground = true)
 @Composable
 private fun SoundMaterialYouPreview() = Connected(Tab.SOUND, look = "material-you")
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFFEEF3EF, showBackground = true)
+@Composable
+private fun HomeSketchbookPreview() = Connected(Tab.HOME, look = "sketchbook")
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFFEEF3EF, showBackground = true)
+@Composable
+private fun SoundSketchbookPreview() = Connected(Tab.SOUND, look = "sketchbook")
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFFEEF3EF, showBackground = true)
+@Composable
+private fun ControlsSketchbookPreview() = Connected(Tab.CONTROLS, look = "sketchbook")

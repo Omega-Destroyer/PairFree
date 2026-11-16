@@ -54,6 +54,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
@@ -71,12 +74,36 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlin.math.abs
 import kotlin.math.roundToInt
+
+/**
+ * A panel's or a control's surface in the app's look: under it the look's hard shadow where it has one ([raised], and
+ * only under a fill, since a shadow would show through an empty shape), then the fill clipped to [shape], then the edge.
+ * Every outlined shape in the app goes through this, so a look's outline and shadow reach all of them.
+ */
+@Composable
+fun Modifier.surface(shape: Shape, fill: Color, edge: Color?, raised: Boolean = true, width: Dp = Look.shape.hairline): Modifier {
+    val offset = Look.shape.shadow
+    val shadow = Look.colors.shadow
+    val under = if (raised && offset > 0.dp && fill.alpha > 0f) {
+        Modifier.drawBehind {
+            translate(offset.toPx(), offset.toPx()) { drawOutline(shape.createOutline(size, layoutDirection, this), shadow) }
+        }
+    } else {
+        Modifier
+    }
+    return this.then(under).clip(shape).background(fill).then(if (edge != null) Modifier.border(width, edge, shape) else Modifier)
+}
+
+/** The fill of a control that is not chosen: none, or the raised colour in a look whose controls cast a shadow. */
+private val restingFill: Color
+    @Composable get() = if (Look.shape.shadow > 0.dp) Look.colors.raised else Color.Transparent
 
 /** Text in the look's type. Defaults to body text in the text colour. */
 @Composable
@@ -99,13 +126,11 @@ fun Label(text: String, modifier: Modifier = Modifier, color: Color = Look.color
 /** A panel: the look's corners, and a hairline border where the look outlines its panels. No shadow. */
 @Composable
 fun Panel(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(Look.shape.corner)
+    val shape = Look.shape.panel
     Column(
         modifier
             .fillMaxWidth()
-            .clip(shape)
-            .background(Look.colors.panel)
-            .then(if (Look.shape.panelBorder) Modifier.border(Look.shape.hairline, Look.colors.hairline, shape) else Modifier)
+            .surface(shape, Look.colors.panel, if (Look.shape.panelBorder) Look.colors.outline else null)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         content = content,
@@ -138,8 +163,8 @@ fun AppButton(
     enabled: Boolean = true,
 ) {
     val c = Look.colors
-    val shape = RoundedCornerShape(Look.shape.smallCorner)
-    val fill = if (primary && enabled) c.accent else Color.Transparent
+    val shape = Look.shape.control
+    val fill = if (primary && enabled) c.accent else restingFill
     val edge = when {
         !enabled -> c.hairline
         destructive -> c.destructive
@@ -154,9 +179,7 @@ fun AppButton(
     Box(
         modifier
             .heightIn(min = Look.shape.touch)
-            .clip(shape)
-            .background(fill)
-            .border(Look.shape.hairline, edge, shape)
+            .surface(shape, fill, edge, raised = enabled)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
@@ -223,13 +246,12 @@ fun <T> Segmented(
     primary: Boolean = true,
 ) {
     val c = Look.colors
-    val shape = RoundedCornerShape(Look.shape.smallCorner)
+    val shape = Look.shape.control
     Row(
         modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .clip(shape)
-            .border(Look.shape.hairline, c.hairline, shape)
+            .surface(shape, restingFill, c.outline)
             .selectableGroup(),
     ) {
         options.forEachIndexed { i, option ->
@@ -238,11 +260,11 @@ fun <T> Segmented(
                     Modifier
                         .width(Look.shape.hairline)
                         .fillMaxHeight()
-                        .background(c.hairline),
+                        .background(c.outline),
                 )
             }
             val on = option == selected
-            val inner = RoundedCornerShape(Look.shape.smallCorner)
+            val inner = Look.shape.control
             Box(
                 Modifier
                     .weight(1f)
@@ -251,6 +273,7 @@ fun <T> Segmented(
                     .then(
                         when {
                             on && primary -> Modifier.background(c.accent)
+                            on && Look.shape.selectedFill -> Modifier.background(c.highlight)
                             on -> Modifier.border(1.5.dp, c.accent, inner)
                             else -> Modifier
                         },
@@ -264,6 +287,7 @@ fun <T> Segmented(
                     style = Look.type.body.copy(fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal),
                     color = when {
                         on && primary -> c.onAccent
+                        on && Look.shape.selectedFill -> c.text
                         on -> c.accent
                         else -> c.secondaryText
                     },
@@ -389,12 +413,14 @@ fun ValueRow(title: String, value: String, onClick: () -> Unit, modifier: Modifi
 @Composable
 fun Chip(text: String, selected: Boolean, onClick: () -> Unit) {
     val c = Look.colors
-    val shape = RoundedCornerShape(Look.shape.smallCorner)
+    val shape = Look.shape.control
     Box(
         Modifier
             .heightIn(min = Look.shape.touch)
-            .clip(shape)
-            .border(if (selected) 1.5.dp else Look.shape.hairline, if (selected) c.accent else c.hairline, shape)
+            .then(
+                if (Look.shape.selectedFill) Modifier.surface(shape, if (selected) c.highlight else restingFill, c.outline, raised = selected)
+                else Modifier.surface(shape, Color.Transparent, if (selected) c.accent else c.outline, width = if (selected) 1.5.dp else Look.shape.hairline),
+            )
             .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
@@ -402,7 +428,11 @@ fun Chip(text: String, selected: Boolean, onClick: () -> Unit) {
         Text(
             text,
             style = Look.type.body.copy(fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal),
-            color = if (selected) c.accent else c.secondaryText,
+            color = when {
+                selected && Look.shape.selectedFill -> c.text
+                selected -> c.accent
+                else -> c.secondaryText
+            },
         )
     }
 }
@@ -491,14 +521,13 @@ fun AppSlider(
 @Composable
 fun StepButton(plus: Boolean, onClick: () -> Unit, enabled: Boolean = true) {
     val c = Look.colors
-    val shape = RoundedCornerShape(Look.shape.smallCorner)
+    val shape = Look.shape.control
     val ink = if (enabled) c.accent else c.hairline
     val description = stringResource(if (plus) R.string.increase else R.string.decrease)
     Box(
         Modifier
             .size(Look.shape.touch)
-            .clip(shape)
-            .border(Look.shape.hairline, if (enabled) c.accent else c.hairline, shape)
+            .surface(shape, restingFill, if (enabled) c.accent else c.hairline, raised = enabled)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .semantics { contentDescription = description },
         contentAlignment = Alignment.Center,
@@ -515,14 +544,12 @@ fun StepButton(plus: Boolean, onClick: () -> Unit, enabled: Boolean = true) {
 @Composable
 fun AppDialog(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     val c = Look.colors
-    val shape = RoundedCornerShape(Look.shape.corner)
+    val shape = Look.shape.panel
     Dialog(onDismissRequest = onDismiss) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .clip(shape)
-                .background(c.raised)
-                .border(Look.shape.hairline, c.hairline, shape)
+                .surface(shape, c.raised, c.outline)
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -662,7 +689,7 @@ fun TextEntryDialog(
     var text by remember { mutableStateOf(initial) }
     val focus = remember { FocusRequester() }
     val c = Look.colors
-    val shape = RoundedCornerShape(Look.shape.smallCorner)
+    val shape = Look.shape.control
     fun done() {
         if (text.isBlank()) return
         onDismiss()

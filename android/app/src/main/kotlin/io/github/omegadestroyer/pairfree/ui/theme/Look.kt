@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -15,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -46,6 +48,11 @@ data class LookColors(
     val accent: Color,
     val onAccent: Color,
     val destructive: Color,
+    val outline: Color,
+    val shadow: Color,
+    val highlight: Color,
+    val artFill: Color,
+    val artAccent: Color,
     /** Whether the look is a dark one as drawn now: the system bars' icons go light on it. */
     val dark: Boolean,
 )
@@ -63,6 +70,20 @@ val PlexMono = FontFamily(
     Font(R.font.ibm_plex_mono_medium, FontWeight.Medium),
 )
 
+/** Fredoka, Sketchbook's rounded font for titles and headings. SIL Open Font License, bundled. */
+val Fredoka = FontFamily(
+    Font(R.font.fredoka, FontWeight.Medium, variationSettings = FontVariation.Settings(FontVariation.weight(500))),
+    Font(R.font.fredoka, FontWeight.SemiBold, variationSettings = FontVariation.Settings(FontVariation.weight(600))),
+)
+
+/** Nunito, Sketchbook's text font, one variable font file for every weight. SIL Open Font License, bundled. */
+val Nunito = FontFamily(
+    Font(R.font.nunito, FontWeight.Normal, variationSettings = FontVariation.Settings(FontVariation.weight(500))),
+    Font(R.font.nunito, FontWeight.Medium, variationSettings = FontVariation.Settings(FontVariation.weight(700))),
+    Font(R.font.nunito, FontWeight.SemiBold, variationSettings = FontVariation.Settings(FontVariation.weight(800))),
+    Font(R.font.nunito, FontWeight.Bold, variationSettings = FontVariation.Settings(FontVariation.weight(900))),
+)
+
 /**
  * The fonts a look can name (`type` in its file). A look with a font of its own adds the files to `res/font` (SIL Open
  * Font License or as free) and a line here; tools/test_looks.py checks each look's names against this list.
@@ -70,6 +91,8 @@ val PlexMono = FontFamily(
 fun fontFamily(name: String): FontFamily = when (name) {
     "plex_sans" -> PlexSans
     "plex_mono" -> PlexMono
+    "fredoka" -> Fredoka
+    "nunito" -> Nunito
     "system_mono" -> FontFamily.Monospace
     else -> FontFamily.Default // "system": the phone's own font
 }
@@ -87,9 +110,9 @@ data class LookType(
     val labelCaps: Boolean,
 ) {
     companion object {
-        fun of(text: FontFamily, numbers: FontFamily, labelCaps: Boolean) = LookType(
-            title = TextStyle(fontFamily = text, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, lineHeight = 26.sp),
-            heading = TextStyle(fontFamily = text, fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 22.sp),
+        fun of(text: FontFamily, headings: FontFamily, numbers: FontFamily, labelCaps: Boolean) = LookType(
+            title = TextStyle(fontFamily = headings, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, lineHeight = 26.sp),
+            heading = TextStyle(fontFamily = headings, fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 22.sp),
             body = TextStyle(fontFamily = text, fontSize = 15.sp, lineHeight = 21.sp),
             small = TextStyle(fontFamily = text, fontSize = 13.sp, lineHeight = 18.sp),
             label = TextStyle(fontFamily = numbers, fontWeight = FontWeight.Medium, fontSize = if (labelCaps) 11.sp else 12.sp, letterSpacing = if (labelCaps) 1.sp else 0.2.sp),
@@ -100,7 +123,7 @@ data class LookType(
     }
 }
 
-/** Lines and corners. Touch targets are at least 44 px in every look (docs/DESIGN.md, Rules for every look). */
+/** Lines, corners and shadows. Touch targets are at least 44 px in every look (docs/DESIGN.md, Rules for every look). */
 @Immutable
 data class LookShape(
     val hairline: Dp,
@@ -108,12 +131,31 @@ data class LookShape(
     val smallCorner: Dp,
     /** Whether a panel is outlined, or told from the background by its colour alone. */
     val panelBorder: Boolean,
+    /** How far a shape's four corners differ, as a part of the radius: a hand-drawn look's are never quite alike. */
+    val uneven: Float = 0f,
+    /** The offset of the hard shadow under panels and buttons; zero in a look without one. */
+    val shadow: Dp = 0.dp,
+    /** Whether a chosen secondary choice is filled with the highlight colour, or outlined in the accent. */
+    val selectedFill: Boolean = false,
     val touch: Dp = 44.dp,
-)
+) {
+    /** The shape of panels and dialogs. */
+    val panel: Shape = rounded(corner)
 
-/** How the device drawings are drawn: the drawing style's name and a factor on every stroke's width. */
+    /** The shape of buttons, chips and other controls. */
+    val control: Shape = rounded(smallCorner)
+
+    private fun rounded(radius: Dp): Shape =
+        if (uneven == 0f) RoundedCornerShape(radius)
+        else RoundedCornerShape(radius * (1 + uneven), radius * (1 - uneven), radius * (1 + uneven / 2), radius * (1 - uneven / 2))
+}
+
+/**
+ * How the device drawings are drawn: the style ("line": thin technical lines; "cartoon": heavier lines with a flat
+ * fill set off from them), a factor on every stroke's width, and the cartoon fill's offset in the drawing's units.
+ */
 @Immutable
-data class LookArt(val style: String, val stroke: Float)
+data class LookArt(val style: String, val stroke: Float, val offset: Float = 0f)
 
 private val STUDIO: LookSpec = Looks.ALL.firstOrNull { it.id == Looks.DEFAULT } ?: Looks.ALL.first()
 
@@ -128,16 +170,22 @@ private fun colors(palette: Palette, dark: Boolean, resolve: (io.github.omegades
     accent = Color(resolve(palette.accent)),
     onAccent = Color(resolve(palette.onAccent)),
     destructive = Color(resolve(palette.destructive)),
+    outline = Color(resolve(palette.outline)),
+    shadow = Color(resolve(palette.shadow)),
+    highlight = Color(resolve(palette.highlight)),
+    artFill = Color(resolve(palette.artFill)),
+    artAccent = Color(resolve(palette.artAccent)),
     dark = dark,
 )
 
-private fun type(spec: LookSpec) = LookType.of(fontFamily(spec.textFont), fontFamily(spec.numberFont), spec.labelCaps)
-private fun shape(spec: LookSpec) = LookShape(spec.hairline.dp, spec.corner.dp, spec.smallCorner.dp, spec.panelBorder)
+private fun type(spec: LookSpec) = LookType.of(fontFamily(spec.textFont), fontFamily(spec.headingFont), fontFamily(spec.numberFont), spec.labelCaps)
+private fun shape(spec: LookSpec) = LookShape(spec.hairline.dp, spec.corner.dp, spec.smallCorner.dp, spec.panelBorder, spec.uneven, spec.shadow.dp, spec.selectedFill)
+private fun art(spec: LookSpec) = LookArt(spec.artStyle, spec.artStroke, spec.artOffset)
 
 private val LocalLookColors = staticCompositionLocalOf<LookColors> { error("No look: wrap the screen in LookTheme") }
 private val LocalLookType = staticCompositionLocalOf { type(STUDIO) }
 private val LocalLookShape = staticCompositionLocalOf { shape(STUDIO) }
-private val LocalLookArt = staticCompositionLocalOf { LookArt(STUDIO.artStyle, STUDIO.artStroke) }
+private val LocalLookArt = staticCompositionLocalOf { art(STUDIO) }
 
 /** The look the screen is drawn in. */
 object Look {
@@ -169,7 +217,7 @@ fun LookTheme(look: LookSpec? = null, content: @Composable () -> Unit) {
         LocalLookColors provides colors,
         LocalLookType provides remember(spec) { type(spec) },
         LocalLookShape provides remember(spec) { shape(spec) },
-        LocalLookArt provides remember(spec) { LookArt(spec.artStyle, spec.artStroke) },
+        LocalLookArt provides remember(spec) { art(spec) },
         content = content,
     )
 }

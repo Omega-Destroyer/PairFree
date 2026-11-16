@@ -417,15 +417,13 @@ private fun SwitchTile(
     onTurnedOn: () -> Unit = {},
 ) {
     val c = Look.colors
-    val shape = RoundedCornerShape(Look.shape.smallCorner)
+    val shape = Look.shape.control
     val on = state.switch(command) == true
     val blocked = state.blockedByLdac(command, model)
     Column(
         modifier
             .fillMaxHeight()
-            .clip(shape)
-            .background(c.raised)
-            .border(Look.shape.hairline, if (on && !blocked) c.accent else c.hairline, shape)
+            .surface(shape, c.raised, if (on && !blocked) c.accent else c.outline, raised = !blocked)
             .toggleable(value = on, enabled = !blocked, role = Role.Switch) {
                 actions.set(command, if (it) 1 else 0)
                 if (it) onTurnedOn()

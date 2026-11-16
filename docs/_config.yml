@@ -25,19 +25,27 @@ defaults:
 exclude:
   - 1more
   - apple
+  - audiotechnica
   - bose
+  - cambridge
   - devices
   - earfun
+  - huawei
   - jbl
   - nothing
+  - oneplus
   - pixel
   - qcy
   - samsung
   - screenshots
+  - sennheiser
+  - skullcandy
   - sony
   - soundcore
   - soundpeats
   - DESIGN.md
+  - EXISTING_VENDOR_VIRTUAL_AUDIT.md
+  - FIT_AND_HEARING_TESTS.md
   - UPSTREAM.md
   - RESEARCH.md
   - VIRTUAL_TESTING.md

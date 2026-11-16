@@ -412,6 +412,13 @@ vendors' own wording, in two generated sections, so a translator finds them in o
 wording as it is. Reports (device, connection, recording) stay in English in every language: they are read by the
 maintainers and by the project's tools. Details: `docs/TRANSLATING.md`.
 
+Right-to-left languages (Persian so far, then Arabic, Hebrew, Urdu) mirror the whole screen by themselves. What does not
+mirror, on purpose (`ui/Direction.kt`, `Physical`; first review by a Persian-speaking tester, issue #44): the left earbud stays
+on the left and the right one on the right (battery card, fit test, the Controls picker, the find buttons), and whatever runs
+from low to high going right: sliders with their minus and plus buttons, the equalizer's curve and its band buttons. Row
+arrows point the way forward (`Chevron` flips). A number with a sign (`+2`) carries an invisible left-to-right mark so the sign
+stays in front; a language's own file decides the percent sign's place and whether the units show.
+
 ## Behaviour
 
 Proposed, not yet reviewed by the owner.
@@ -560,7 +567,9 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
   covers; models that look alike share one. 1MORE's earbuds are traced from the line drawings
   1MORE's app shows for each model, filled in, with the touch area as the accent. A model code
   that is also a SoundPEATS firmware code (1MORE's S32) is left to the Bluetooth name.
-- Headphones are drawn whole; ear hooks and clips as one earbud.
+- Headphones are drawn whole; ear hooks and clips as one earbud. Neckbands too (they trace as a loop of cable).
+- Accents (amber) mark one or two features a viewer would pick out: a logo plate, an LED, a speaker grille, a stem's sensor
+  strip; a touch surface is outlined as a panel. They are placed by hand, as fractions of the traced body, from the render.
 - Models without art of their own, or a part no photo shows clearly, use a generic
   earbud or case. The app picks drawings by Bluetooth name, then firmware code.
 - Drawings show the product's general shape. They do not reproduce logos.

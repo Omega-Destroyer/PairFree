@@ -55,6 +55,7 @@ PairFree controls earbuds of other brands too:
 - [EarFun](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/)
 - [Cambridge Audio](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/)
 - [Sennheiser](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/)
+- [Jabra](https://omega-destroyer.github.io/PairFree/open-source-jabra-app/)
 - [OnePlus and OPPO](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/)
 
 ---

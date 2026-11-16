@@ -184,6 +184,17 @@ BRANDS = [
         notes="Sennheiser support is read from Sennheiser Smart Control 4.9.4 and Smart Control Plus 1.6.3. It has not been tried with PairFree on any product yet. The older models on other protocols (Momentum 3, PXC 550, HD 450 and others) are not covered.",
     ),
     dict(
+        slug="jabra", page="jabra", name="Jabra", app="Jabra Sound+",
+        title="Open-source Jabra Sound+ alternative",
+        lead="PairFree is a free, open-source Android app that controls Jabra's Elite and Evolve2 earbuds and headphones that speak Jabra's own protocol without Sound+: no account, no internet access.",
+        does=[
+            "Battery for each earbud and the case.",
+            "Noise control (off, noise cancelling, HearThrough) with its levels, and the modes the button cycles through.",
+            "The equalizer with Sound+'s presets, the button functions, sidetone and the voice prompt language.",
+        ],
+        notes="Jabra support is read from Jabra Sound+ 5.22.0. It has not been tried with PairFree on any product yet. The models Sound+ drives through Qualcomm's GAIA (Elite 2, 3, 4, 5 and Connect 5t) are not covered yet.",
+    ),
+    dict(
         slug="oneplus", page="oneplus", name="OnePlus and OPPO", app="HeyMelody",
         title="Open-source HeyMelody alternative for OnePlus and OPPO earbuds",
         lead="PairFree is a free, open-source Android app that controls OnePlus and OPPO earbuds without HeyMelody: no account, no internet access.",

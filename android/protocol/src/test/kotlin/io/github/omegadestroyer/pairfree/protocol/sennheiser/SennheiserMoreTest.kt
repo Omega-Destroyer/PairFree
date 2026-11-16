@@ -134,6 +134,8 @@ class SennheiserMoreTest {
         assertEquals(listOf("Laptop"), (after.single { it.key == SennheiserSession.KEY_PEER_DISCONNECT } as Setting.Choice).options)
         assertEquals(listOf("1403:01"), words(s.change(SettingChange.Choice(SennheiserSession.KEY_PEER_DISCONNECT, "Laptop"))!!))
         assertNull(s.change(SettingChange.Choice(SennheiserSession.KEY_PEER_DISCONNECT, "Nothing")))
+        assertEquals(listOf("1405:01"), words(s.change(SettingChange.Choice(SennheiserSession.KEY_PEER_DELETE, "Laptop"))!!))
+        assertNull(s.change(SettingChange.Choice(SennheiserSession.KEY_PEER_DELETE, "Pixel")), "the phone's own entry is never forgotten")
     }
 
     @Test
@@ -178,7 +180,7 @@ class SennheiserMoreTest {
         assertEquals(Setting.Action(SennheiserSession.KEY_AURACAST_SCAN, false), s.row(SennheiserSession.KEY_AURACAST_SCAN))
         assertEquals(listOf("2a24:"), words(run { s.feed(event(0x2a25, "01")); s.change(SettingChange.Press(SennheiserSession.KEY_AURACAST_SCAN))!! }))
         val add = s.row(SennheiserSession.KEY_AURACAST_ADD) as Setting.Choice
-        assertEquals(listOf("Cafe"), add.options, "a broadcast that needs a code is not offered")
+        assertEquals(listOf("Cafe", "Lock"), add.options)
         // The app's AddSource: type, address, set, broadcast id, synchronise without past info, interval unknown, one subgroup that takes every stream, no metadata.
         assertEquals(listOf("2a02:00aabbccddeeff01010203" + "02ffff01ffffffff00"), words(s.change(SettingChange.Choice(SennheiserSession.KEY_AURACAST_ADD, "Cafe"))!!))
         assertEquals(listOf("2a22:"), words(s.takeReadBacks()))
@@ -188,6 +190,12 @@ class SennheiserMoreTest {
         s.feed(reply(0x2a21, "02" + "00" + "aabbccddeeff" + "01" + "010203" + "02" + "00" + "01" + "00000001" + "00"))
         assertEquals(Setting.Information(SennheiserSession.KEY_AURACAST_SOURCE, "receiving:Cafe"), s.row(SennheiserSession.KEY_AURACAST_SOURCE))
         assertEquals(listOf("2a05:02"), words(s.change(SettingChange.Choice(SennheiserSession.KEY_AURACAST_REMOVE, "Cafe"))!!))
+        // A source that wants a code gets the line to type it: the code padded to sixteen bytes.
+        s.feed(reply(0x2a22, "0103"))
+        s.takeOutbox()
+        s.feed(reply(0x2a21, "03" + "02" + "112233445566" + "02" + "040506" + "00" + "01" + "01" + "00000000" + "00"))
+        assertEquals(Setting.Text(SennheiserSession.KEY_AURACAST_CODE, "", 16), s.row(SennheiserSession.KEY_AURACAST_CODE))
+        assertEquals(listOf("2a04:03" + "31323334".padEnd(32, '0')), words(s.change(SettingChange.Choice(SennheiserSession.KEY_AURACAST_CODE, "1234"))!!))
     }
 
     @Test
@@ -204,5 +212,25 @@ class SennheiserMoreTest {
         m4.start()
         assertNull(m4.row(io.github.omegadestroyer.pairfree.protocol.PowerActions.RESTART))
         assertNull(m4.change(SettingChange.Press(io.github.omegadestroyer.pairfree.protocol.PowerActions.RESTART)))
+    }
+
+    @Test
+    fun overBluetoothLeAPacketHasNoFrame() {
+        val s = SennheiserSession(model("CX Plus True Wireless"), ble = true)
+        val first = s.start().first()
+        val onTheAir = s.bytes(first)
+        assertEquals(first.size - 4, onTheAir.size)
+        assertEquals(0x04, onTheAir[0].toInt())
+        assertEquals(0x95, onTheAir[1].toInt() and 0xFF)
+        // The earbuds' answer is the vendor, the word and the payload.
+        val reply = Gaia3Packet(0x0495, 0x0603 + 0x100, "5a5a".bytes()).bytes()
+        s.feed(reply.copyOfRange(4, reply.size))
+        assertEquals(io.github.omegadestroyer.pairfree.protocol.Value.Number(90), s.state.values[io.github.omegadestroyer.pairfree.protocol.Command.BATTERY_LEFT])
+        assertNotNull(model("CX Plus True Wireless").ble)
+        assertNull(model("Momentum 4 Wireless").ble)
+        val old = Gaia2Session(Gaia2Models.ALL.first { it.name == "CX 400BT True Wireless" }, ble = true)
+        val sent = old.bytes(old.start().first())
+        assertEquals(0x04, sent[0].toInt())
+        assertNotNull(Gaia2Models.ALL.first { it.name == "Momentum True Wireless" }.bleUuids)
     }
 }

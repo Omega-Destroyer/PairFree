@@ -131,8 +131,9 @@ checked: it runs in a native library of the app, `libmusic_fit_native-lib.so` (6
 ### 4.6 Fit test
 
 `FitTest_CheckPrecondition` (`1E01`) then `FitTest_Check` (`1E00`), each answered by a notification with the left and right earbud (feature 15 registered): the precondition is 1 for a ready earbud; the result is 0 to 29 bad, 30 to 59
-acceptable, 60 to 100 good, 254 invalid, 255 none. checked: the app plays its own 10 second music clip (`fit_test.ogg`, 44.1 kHz stereo, bass-heavy, loudest in the middle) in a loop above a target volume while the earbuds measure;
-PairFree cannot include the file, so the screen asks for music at a medium or higher volume, and the result may then be invalid. Accentum True Wireless, Momentum Sport, Momentum True Wireless 3 and 4.
+acceptable, 60 to 100 good, 254 invalid, 255 none. The app plays its own 10 second music clip (`fit_test.ogg`, 44.1 kHz stereo, bass-heavy, loudest in the middle) in a loop above a target volume while the earbuds measure; PairFree cannot include the file, so the screen plays a
+steady 120 Hz tone in both ears (owner, 2026-11-15: a tone, as other brands do) and asks for a medium phone volume. Whether the earbuds accept a tone as well as the clip is not known: a result of 254 would say so.
+Accentum True Wireless, Momentum Sport, Momentum True Wireless 3 and 4.
 
 ### 4.7 Paired devices (multipoint)
 

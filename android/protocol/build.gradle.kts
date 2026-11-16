@@ -2325,7 +2325,7 @@ abstract class GenerateSennheiserTables : DefaultTask() {
         out.appendLine("/** One property of a GAIA v2 product: the vendor and command of its read and its write (null when it has none), and the app's map of names to numbers. */")
         out.appendLine("public class Gaia2Prop(public val id: String, public val getVendor: Int?, public val get: Int?, public val setVendor: Int?, public val set: Int?, public val values: Map<String, Int>)")
         out.appendLine()
-        out.appendLine("public class Gaia2Model(public val name: String, public val form: io.github.omegadestroyer.pairfree.protocol.Form, public val names: List<String>, public val ble: Boolean, public val eq: Boolean, public val props: Map<String, Gaia2Prop>)")
+        out.appendLine("public class Gaia2Model(public val name: String, public val form: io.github.omegadestroyer.pairfree.protocol.Form, public val names: List<String>, public val ble: Boolean, public val eq: Boolean, public val props: Map<String, Gaia2Prop>, public val bleUuids: SennheiserBle? = null)")
         out.appendLine()
         out.appendLine("internal val GAIA2_MODELS: List<Gaia2Model> = listOf(")
         @Suppress("UNCHECKED_CAST")
@@ -2343,7 +2343,9 @@ abstract class GenerateSennheiserTables : DefaultTask() {
             }
             out.appendLine("    Gaia2Model(${str(p["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(p["names"])}, ${p["transport"] == "ble"}, ${p["eq"] == true}, mapOf(")
             out.appendLine("            $props,")
-            out.appendLine("    )),")
+            @Suppress("UNCHECKED_CAST")
+            val g2ble = p["ble"] as Map<String, Any?>?
+            out.appendLine("    ), ${if (g2ble == null) "null" else "SennheiserBle(${str(g2ble["service"])}, ${str(g2ble["write"])}, ${str(g2ble["notify"])}, ${str(g2ble["data"])}, ${str(g2ble["pairing"])})"}),")
         }
         out.appendLine(")")
         out.appendLine()
@@ -2398,6 +2400,12 @@ abstract class GenerateSennheiserTables : DefaultTask() {
                 val g1 = eqm["gen1"] as List<Any?>?
                 "SennheiserModelEq(${eqm["gen2"]}, ${if (g1 == null) "null" else str(g1[0])}, ${if (g1 == null) "null" else str(g1[1])}, ${(eqm["three_band"] as Number).toInt()}, ${str(eqm["presets"])})"
             }
+            fun bleText(b: Any?): String {
+                if (b == null) return "null"
+                @Suppress("UNCHECKED_CAST")
+                val m = b as Map<String, Any?>
+                return "SennheiserBle(${str(m["service"])}, ${str(m["write"])}, ${str(m["notify"])}, ${str(m["data"])}, ${str(m["pairing"])})"
+            }
             fun featuresText(m: Map<String, Any?>): String {
                 @Suppress("UNCHECKED_CAST")
                 val f = (m["features"] as Map<String, Any?>?) ?: emptyMap()
@@ -2410,7 +2418,7 @@ abstract class GenerateSennheiserTables : DefaultTask() {
             }
             val sidetone = (d["sidetone_max"] as Number?)?.toInt()?.toString() ?: "null"
             val transparency = (d["transparency"] as String?)?.let { str(it) } ?: "null"
-            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props, $eqText, $sidetone, $transparency, $touchText, ${featuresText(d)}, ${d["peers"] == true}, ${d["fit_test"] == true}, ${d["sensors"] == true}),")
+            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props, $eqText, $sidetone, $transparency, $touchText, ${featuresText(d)}, ${d["peers"] == true}, ${d["fit_test"] == true}, ${d["sensors"] == true}, ${bleText(d["ble"])}),")
         }
         out.appendLine(")")
 

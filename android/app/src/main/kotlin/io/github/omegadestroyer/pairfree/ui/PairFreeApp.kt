@@ -167,7 +167,7 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
             else -> Panel {
                 for (device in paired) {
                     PairedRow(device, connecting = (status as? LinkStatus.Connecting)?.device == device) {
-                        val needsScan = Brands[device.brand].needsScan &&
+                        val needsScan = Brands[device.brand].needsScan(device) &&
                             ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
                         if (needsScan) {
                             opening = device

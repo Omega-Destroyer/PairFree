@@ -317,6 +317,9 @@ abstract class BrandSpec(val brand: Brand) {
     /** True when finding the earbuds may take an LE scan, so the permission is asked for when the user opens them. */
     open val needsScan: Boolean get() = false
 
+    /** True when this device may need the scan: by default the brand's [needsScan]; Sennheiser's only for the products Smart Control opens over LE. */
+    open fun needsScan(device: Paired): Boolean = needsScan
+
     /** What the Controls tab shows: by default the driver's rows. */
     open val controls: Controls get() = Controls.ROWS
 

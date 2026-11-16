@@ -1235,8 +1235,13 @@
     <string name="setting_sh_fit_bad">Bad fit</string>
     <string name="setting_sh_fit_invalid">No usable result</string>
     <string name="setting_sh_fit_not_ready">Not ready: wear both earbuds</string>
-    <string name="setting_sh_fit_note">Wear both earbuds and play music on the phone at a medium or higher volume, then start. The earbuds measure for about 25 seconds. Sennheiser\'s app plays its own music clip for this, which PairFree cannot include.</string>
+    <string name="setting_sh_fit_note">Wear both earbuds and start. PairFree plays a steady low tone from the phone while the earbuds measure for about 25 seconds; keep the phone volume at a comfortable medium level and stay quiet.</string>
     <string name="setting_sh_peer_connect">Connect a paired device</string>
+    <string name="setting_sh_peer_delete">Forget a paired device</string>
+    <string name="setting_sh_peer_delete_body">%1$s is removed from the earbuds' list of paired devices. Pair it again to use it.</string>
+    <string name="setting_sh_peer_delete_confirm">Forget</string>
+    <string name="setting_sh_auracast_code_title">Broadcast code</string>
+    <string name="setting_sh_auracast_code_send">Send the code</string>
     <string name="setting_sh_peer_disconnect">Disconnect a device</string>
     <string name="setting_group_sh_sensors">Sport sensors</string>
     <string name="setting_sh_sensors">Measure heart rate and body temperature</string>
@@ -1253,7 +1258,7 @@
     <string name="setting_sh_auracast_code">Needs a code</string>
     <string name="setting_sh_auracast_bad_code">Wrong code</string>
     <string name="setting_sh_auracast_failed">Could not connect</string>
-    <string name="setting_sh_auracast_note">The earbuds look for broadcasts for five seconds. Broadcasts that need a code are not listed: PairFree cannot take a code yet.</string>
+    <string name="setting_sh_auracast_note">The earbuds look for broadcasts for five seconds. A broadcast that needs a code asks for it once it is added.</string>
 
     <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
     <string name="setting_a3959_nc_mode">Noise cancelling type</string>

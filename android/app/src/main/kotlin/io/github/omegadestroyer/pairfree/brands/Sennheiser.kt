@@ -1,6 +1,18 @@
 package io.github.omegadestroyer.pairfree.brands
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import io.github.omegadestroyer.pairfree.R
+import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
+import io.github.omegadestroyer.pairfree.bluetooth.GattLink
+import io.github.omegadestroyer.pairfree.bluetooth.SennheiserFinder
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserBle
+import java.io.IOException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -32,6 +44,37 @@ object SennheiserSpec : BrandSpec(Brand.SENNHEISER) {
     override val officialApp = "Sennheiser Smart Control"
 
     override val offersRecording: Boolean get() = false
+
+    private fun bleOf(device: Paired): SennheiserBle? = SennheiserModels.ALL.firstOrNull { it.name == device.model }?.ble ?: Gaia2Models.ALL.firstOrNull { it.name == device.model }?.bleUuids
+
+    override fun needsScan(device: Paired): Boolean = bleOf(device) != null
+
+    /**
+     * The serial port, or for the products Smart Control opens only over Bluetooth LE a GATT channel: first on the classic address, else on the device a scan finds
+     * (docs/sennheiser/PROTOCOL.md section 6). The link runs Sennheiser's own bonding steps when the earbuds are not bonded for LE.
+     */
+    @SuppressLint("MissingPermission") // only called while connecting, which needs the permission; the scan's is checked here
+    override suspend fun open(env: OpenEnv, remote: BluetoothDevice, device: Paired, driver: BrandDriver): ControlLink {
+        val ble = bleOf(device)
+        val ctx = env.context
+        if (ble == null || ctx == null) return super.open(env, remote, device, driver)
+        val uuids = GattLink.Uuids(java.util.UUID.fromString(ble.service), java.util.UUID.fromString(ble.notify), java.util.UUID.fromString(ble.write), 517)
+        val pairing = GattLink.Pairing(java.util.UUID.fromString(ble.pairing), java.util.UUID.fromString(ble.data))
+        fun gatt(d: BluetoothDevice) = env.hold(GattLink(ctx, d, env.linkLog, uuids = uuids, pairing = pairing))
+        try {
+            env.note("LE (GATT) on the classic address")
+            return gatt(remote).apply { connect() }
+        } catch (e: IOException) {
+            env.log?.invoke("LE on the classic address: ${e.message}")
+            env.note("failed: ${ConnectionReport.describe(e)}")
+        }
+        currentCoroutineContext().ensureActive()
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
+        val names = (SennheiserModels.ALL.firstOrNull { it.name == device.model }?.names ?: Gaia2Models.ALL.firstOrNull { it.name == device.model }?.names).orEmpty() + device.name
+        val found = env.adapter?.let { SennheiserFinder(it, env.linkLog).find(names, device.address) } ?: throw NotFound()
+        env.note("LE (GATT) on the address the scan found")
+        return gatt(found).apply { connect() }
+    }
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         SennheiserModels.fromName(name)?.let { Paired(address, name, Brand.SENNHEISER, SennheiserWire.CLASSIC_UUID, it.name) }
@@ -67,9 +110,9 @@ class SennheiserDriver(host: DriverHost, private val device: Paired) : TalkDrive
 
     override fun talk(opened: ControlLink): SessionTalk<ByteArray> {
         val v3 = SennheiserModels.ALL.firstOrNull { it.name == device.model } ?: SennheiserModels.fromName(device.name)
-        if (v3 == null) legacy?.let { return Gaia2Session(it) }
+        if (v3 == null) legacy?.let { return Gaia2Session(it, ble = it.ble) }
         if (v3 == null) nautilus?.let { return NautilusSession(it) }
-        return SennheiserSession(v3)
+        return SennheiserSession(v3, ble = v3?.ble != null)
     }
 
     /** The equalizer goes out through the talk's queue, one message after another. */

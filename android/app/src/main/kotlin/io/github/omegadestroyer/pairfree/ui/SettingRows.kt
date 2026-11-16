@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import android.content.Context
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,8 @@ import kotlinx.coroutines.delay
 internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange: (SettingChange) -> Unit) {
     var picking by remember { mutableStateOf<Setting.Choice?>(null) }
     var confirming by remember { mutableStateOf<String?>(null) }
+    var typing by remember { mutableStateOf<Setting.Text?>(null) }
+    var confirmingChoice by remember { mutableStateOf<SettingChange.Choice?>(null) }
     val context = LocalContext.current
     for (group in groups.filter { it.tab == tab }) {
         Panel {
@@ -59,10 +62,18 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         { picking = setting },
                         note = settingNote(setting.key),
                     )
+                    is Setting.Text -> ValueRow(
+                        settingTitle(setting.key),
+                        setting.value.ifEmpty { stringResource(R.string.unknown) },
+                        { typing = setting },
+                        note = settingNote(setting.key),
+                    )
                     is Setting.Level -> Box(Modifier.alpha(if (setting.enabled) 1f else 0.4f)) {
                         LevelRow(setting) { if (setting.enabled) onChange(it) }
                     }
-                    is Setting.Action -> StudioButton(
+                    is Setting.Action -> {
+                    if (setting.key == "sh_fit_test") FitTone(setting.active)
+                    StudioButton(
                         stringResource(if (setting.active) actionStop(setting.key) else actionStart(setting.key)),
                         {
                             val link = LINKS[setting.key]
@@ -80,6 +91,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         primary = setting.active,
                         destructive = setting.key in CONFIRM_KEYS,
                     )
+                    }
                     is Setting.Information -> Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -111,17 +123,53 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
             destructive = true,
         )
     }
+    typing?.let { text ->
+        TextEntryDialog(
+            title = settingTitle(text.key),
+            initial = "",
+            hint = settingTitle(text.key),
+            confirm = stringResource(R.string.setting_sh_auracast_code_send),
+            maxLength = text.maxLength,
+            onDone = { onChange(SettingChange.Choice(text.key, it)) },
+            onDismiss = { typing = null },
+        )
+    }
+    confirmingChoice?.let { change ->
+        ConfirmDialog(
+            title = settingTitle(change.key),
+            body = stringResource(R.string.setting_sh_peer_delete_body, change.option),
+            confirm = stringResource(R.string.setting_sh_peer_delete_confirm),
+            onConfirm = { onChange(change) },
+            onDismiss = { confirmingChoice = null },
+            destructive = true,
+        )
+    }
     picking?.let { choice ->
         PickerDialog(
             title = settingTitle(choice.key),
             options = choice.options,
             selected = choice.value,
             label = { optionName(choice.key, it) },
-            onPick = { onChange(SettingChange.Choice(choice.key, it)) },
+            onPick = { if (choice.key in CONFIRM_CHOICES) confirmingChoice = SettingChange.Choice(choice.key, it) else onChange(SettingChange.Choice(choice.key, it)) },
             onDismiss = { picking = null },
         )
     }
 }
+
+/** Sennheiser's fit test measures against a sound the phone plays, as the app's own clip does: a steady low tone, both ears, while the test runs. */
+@Composable
+private fun FitTone(active: Boolean) {
+    val context = LocalContext.current
+    val player = remember { io.github.omegadestroyer.pairfree.hearing.TonePlayer(context) }
+    DisposableEffect(active) {
+        if (active) player.playOnSide(FIT_TONE_HZ, FIT_TONE_DB, FIT_TONE_SECONDS, io.github.omegadestroyer.pairfree.hearing.TonePlayer.BOTH, loop = true) else player.stop()
+        onDispose { player.stop() }
+    }
+}
+
+private const val FIT_TONE_HZ = 120f
+private const val FIT_TONE_DB = -24f
+private const val FIT_TONE_SECONDS = 30
 
 /** A level: up to five steps as a segmented row, more as a slider with minus and plus that sends once it settles. */
 @Composable
@@ -174,6 +222,9 @@ private const val SEND_AFTER_MS = 300L
 private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
+/** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
+private val CONFIRM_CHOICES = setOf("sh_peer_delete")
+
 private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
@@ -582,6 +633,8 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_fit_right" -> stringResource(R.string.setting_sh_fit_right)
     "sh_peer_connect" -> stringResource(R.string.setting_sh_peer_connect)
     "sh_peer_disconnect" -> stringResource(R.string.setting_sh_peer_disconnect)
+    "sh_peer_delete" -> stringResource(R.string.setting_sh_peer_delete)
+    "sh_auracast_code" -> stringResource(R.string.setting_sh_auracast_code_title)
     "sh_sensors" -> stringResource(R.string.setting_sh_sensors)
     "sh_heart_rate" -> stringResource(R.string.setting_sh_heart_rate)
     "sh_body_temperature" -> stringResource(R.string.setting_sh_body_temperature)

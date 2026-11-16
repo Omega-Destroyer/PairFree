@@ -97,7 +97,7 @@ public object Gaia2Models {
  * battery; a setting shows once its read answered. The products that only speak over Bluetooth LE (CX 400BT, Momentum True Wireless and 2) are in the table but cannot
  * be opened. The equalizer is the app's three-band one: a parameter group and two knob values.
  */
-public class Gaia2Session(public val model: Gaia2Model) : SessionTalk<ByteArray>(), SennheiserEqSource {
+public class Gaia2Session(public val model: Gaia2Model, private val ble: Boolean = false) : SessionTalk<ByteArray>(), SennheiserEqSource {
     private var current: EarbudState = EarbudState()
     override val state: EarbudState get() = current
     override val pacing: Pacing = Pacing(replyMs = 3_000L, gapMs = 50L)
@@ -145,7 +145,8 @@ public class Gaia2Session(public val model: Gaia2Model) : SessionTalk<ByteArray>
         return model.props.values.any { (it.get != null && it.getVendor == packet.vendor && it.get == packet.command) || (it.set != null && it.setVendor == packet.vendor && it.set == packet.command) }
     }
 
-    override fun bytes(message: ByteArray): ByteArray = message
+    /** Over Bluetooth LE a packet is the vendor, the command and the payload with no frame. */
+    override fun bytes(message: ByteArray): ByteArray = if (ble) message.copyOfRange(4, message.size) else message
 
     override fun answers(sent: ByteArray, got: Any): Boolean = got is Int && Gaia2Parser().feed(sent).singleOrNull()?.key == got
 
@@ -156,7 +157,8 @@ public class Gaia2Session(public val model: Gaia2Model) : SessionTalk<ByteArray>
     override fun feed(bytes: ByteArray): Fed {
         var changed = false
         val keys = mutableListOf<Any>()
-        for (packet in parser.feed(bytes)) guarded {
+        val framed = if (ble && bytes.size >= 4) byteArrayOf(0xFF.toByte(), 1, 0, (bytes.size - 4).toByte()) + bytes else bytes
+        for (packet in parser.feed(framed)) guarded {
             log?.invoke("recv ${packet.vendor.toString(16)}:${packet.command.toString(16)} ${packet.payload.joinToString("") { "%02x".format(it) }}")
             if (!packet.isResponse) return@guarded
             if (packet.key !in asked) return@guarded

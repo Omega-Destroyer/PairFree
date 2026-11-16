@@ -13,6 +13,7 @@
     "CX 350BT"
    ],
    "transport": "spp",
+   "ble": null,
    "source": "Smart Control 4.9.4 cx350.json",
    "eq": true,
    "properties": {
@@ -167,6 +168,7 @@
     "HD 250BT"
    ],
    "transport": "spp",
+   "ble": null,
    "source": "Smart Control 4.9.4 hd250.json",
    "eq": true,
    "properties": {
@@ -321,6 +323,7 @@
     "HD 350BT"
    ],
    "transport": "spp",
+   "ble": null,
    "source": "Smart Control 4.9.4 hd350.json",
    "eq": true,
    "properties": {
@@ -506,6 +509,7 @@
     "HD 450BT"
    ],
    "transport": "spp",
+   "ble": null,
    "source": "Smart Control 4.9.4 hd450.json",
    "eq": true,
    "properties": {
@@ -691,6 +695,7 @@
     "HD 450SE"
    ],
    "transport": "spp",
+   "ble": null,
    "source": "Smart Control 4.9.4 hd450se.json",
    "eq": true,
    "properties": {
@@ -876,6 +881,7 @@
     "HD 458BT"
    ],
    "transport": "spp",
+   "ble": null,
    "source": "Smart Control 4.9.4 hd458.json",
    "eq": false,
    "properties": {
@@ -1061,6 +1067,7 @@
     "IE 80S BT"
    ],
    "transport": "spp",
+   "ble": null,
    "source": "Smart Control 4.9.4 ie80.json",
    "eq": false,
    "properties": {
@@ -1293,6 +1300,13 @@
     "CX 400BT TW"
    ],
    "transport": "ble",
+   "ble": {
+    "service": "0000FDCE-0000-1000-8000-00805F9B34FB",
+    "write": "63331338-23C1-11E5-B696-FEFF819CDC9F",
+    "notify": "63331339-23C1-11E5-B696-FEFF819CDC9F",
+    "data": "6333133A-23C1-11E5-B696-FEFF819CDC9F",
+    "pairing": "63331379-23C1-11E5-B696-FEFF819CDC9F"
+   },
    "source": "Smart Control 4.9.4 cx400.json",
    "eq": true,
    "properties": {
@@ -1644,6 +1658,13 @@
     "MOMENTUM TW"
    ],
    "transport": "ble",
+   "ble": {
+    "service": "63331337-23C1-11E5-B696-FEFF819CDC9F",
+    "write": "63331338-23C1-11E5-B696-FEFF819CDC9F",
+    "notify": "63331339-23C1-11E5-B696-FEFF819CDC9F",
+    "data": "6333133A-23C1-11E5-B696-FEFF819CDC9F",
+    "pairing": "63331379-23C1-11E5-B696-FEFF819CDC9F"
+   },
    "source": "Smart Control 4.9.4 tw1.json",
    "eq": true,
    "properties": {
@@ -1897,6 +1918,13 @@
     "MOMENTUM TW 2"
    ],
    "transport": "ble",
+   "ble": {
+    "service": "0000FDCE-0000-1000-8000-00805F9B34FB",
+    "write": "63331338-23C1-11E5-B696-FEFF819CDC9F",
+    "notify": "63331339-23C1-11E5-B696-FEFF819CDC9F",
+    "data": "6333133A-23C1-11E5-B696-FEFF819CDC9F",
+    "pairing": "63331379-23C1-11E5-B696-FEFF819CDC9F"
+   },
    "source": "Smart Control 4.9.4 tw2.json",
    "eq": true,
    "properties": {

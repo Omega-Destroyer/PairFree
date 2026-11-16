@@ -2238,6 +2238,34 @@
    }
   },
   {
+   "id": "peer_delete",
+   "open": false,
+   "app_property": "PairedDevicesDeleteEntry",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1405",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1505",
+     "error": "1585",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ]
+     ]
+    }
+   }
+  },
+  {
    "id": "peer_status",
    "open": false,
    "app_property": "PairedDevicesGetConnectionStatus",
@@ -2507,6 +2535,93 @@
      "vendor": "0495",
      "command": "2B05",
      "error": "2B85",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "auracast_code",
+   "open": false,
+   "app_property": "Auracast_SetBroadcastCode",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A04",
+     "params": [
+      [
+       "UINT8",
+       "SourceId"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ],
+      [
+       "UINT8",
+       "BroadcastCode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2B04",
+     "error": "2B84",
      "params": []
     }
    }

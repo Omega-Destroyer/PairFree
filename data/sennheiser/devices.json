@@ -66,6 +66,7 @@
    "peers": true,
    "fit_test": false,
    "sensors": false,
+   "ble": null,
    "touch": null
   },
   {
@@ -133,6 +134,7 @@
    "peers": true,
    "fit_test": false,
    "sensors": false,
+   "ble": null,
    "touch": null
   },
   {
@@ -199,6 +201,7 @@
    "peers": true,
    "fit_test": true,
    "sensors": false,
+   "ble": null,
    "touch": [
     {
      "action": "none",
@@ -305,6 +308,13 @@
    "peers": true,
    "fit_test": false,
    "sensors": false,
+   "ble": {
+    "service": "0000FDCE-0000-1000-8000-00805F9B34FB",
+    "write": "63331338-23C1-11E5-B696-FEFF819CDC9F",
+    "notify": "63331339-23C1-11E5-B696-FEFF819CDC9F",
+    "data": "6333133A-23C1-11E5-B696-FEFF819CDC9F",
+    "pairing": "63331379-23C1-11E5-B696-FEFF819CDC9F"
+   },
    "touch": [
     {
      "action": "none",
@@ -395,6 +405,13 @@
    "peers": true,
    "fit_test": false,
    "sensors": false,
+   "ble": {
+    "service": "0000FDCE-0000-1000-8000-00805F9B34FB",
+    "write": "63331338-23C1-11E5-B696-FEFF819CDC9F",
+    "notify": "63331339-23C1-11E5-B696-FEFF819CDC9F",
+    "data": "6333133A-23C1-11E5-B696-FEFF819CDC9F",
+    "pairing": "63331379-23C1-11E5-B696-FEFF819CDC9F"
+   },
    "touch": [
     {
      "action": "none",
@@ -508,6 +525,13 @@
    "peers": true,
    "fit_test": false,
    "sensors": false,
+   "ble": {
+    "service": "0000FDCE-0000-1000-8000-00805F9B34FB",
+    "write": "6333133B-23C1-11E5-B696-FEFF819CDC9F",
+    "notify": "6333133C-23C1-11E5-B696-FEFF819CDC9F",
+    "data": "6333133D-23C1-11E5-B696-FEFF819CDC9F",
+    "pairing": "63331379-23C1-11E5-B696-FEFF819CDC9F"
+   },
    "touch": [
     {
      "action": "none",
@@ -612,6 +636,13 @@
    "peers": true,
    "fit_test": false,
    "sensors": false,
+   "ble": {
+    "service": "0000FDCE-0000-1000-8000-00805F9B34FB",
+    "write": "6333133B-23C1-11E5-B696-FEFF819CDC9F",
+    "notify": "6333133C-23C1-11E5-B696-FEFF819CDC9F",
+    "data": "6333133D-23C1-11E5-B696-FEFF819CDC9F",
+    "pairing": "63331379-23C1-11E5-B696-FEFF819CDC9F"
+   },
    "touch": [
     {
      "action": "none",
@@ -735,6 +766,7 @@
    "peers": true,
    "fit_test": false,
    "sensors": false,
+   "ble": null,
    "touch": null
   },
   {
@@ -807,6 +839,7 @@
    "peers": true,
    "fit_test": true,
    "sensors": true,
+   "ble": null,
    "touch": [
     {
      "action": "none",
@@ -942,6 +975,7 @@
    "peers": true,
    "fit_test": true,
    "sensors": false,
+   "ble": null,
    "touch": [
     {
      "action": "none",
@@ -1069,6 +1103,7 @@
    "peers": true,
    "fit_test": true,
    "sensors": false,
+   "ble": null,
    "touch": [
     {
      "action": "none",
@@ -1145,6 +1180,7 @@
    "sidetone_max": null,
    "transparency": null,
    "touch": null,
+   "ble": null,
    "features": {},
    "peers": false,
    "fit_test": false,
@@ -1167,6 +1203,7 @@
    "sidetone_max": null,
    "transparency": null,
    "touch": null,
+   "ble": null,
    "features": {},
    "peers": false,
    "fit_test": false,
@@ -1186,6 +1223,7 @@
    "sidetone_max": null,
    "transparency": null,
    "touch": null,
+   "ble": null,
    "features": {},
    "peers": false,
    "fit_test": false,
@@ -1208,6 +1246,7 @@
    "sidetone_max": null,
    "transparency": null,
    "touch": null,
+   "ble": null,
    "features": {},
    "peers": false,
    "fit_test": false,

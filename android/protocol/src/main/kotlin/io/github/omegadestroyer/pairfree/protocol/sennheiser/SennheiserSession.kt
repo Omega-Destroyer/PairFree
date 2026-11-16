@@ -18,7 +18,7 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * been answered. [model] is the product when its name is known (its product file lists which properties it has); with none, every property is read.
  * Never sent: anything that is not in data/sennheiser/commands.json (factory reset, firmware update, the panic log...); [allowed] is a closed list.
  */
-public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk<ByteArray>(), SennheiserEqSource {
+public class SennheiserSession(public val model: SennheiserModel?, private val ble: Boolean = false) : SessionTalk<ByteArray>(), SennheiserEqSource {
     private var current: EarbudState = EarbudState()
     override val state: EarbudState get() = current
     override val pacing: Pacing = Pacing(replyMs = REPLY_MS, gapMs = GAP_MS)
@@ -112,7 +112,8 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         return SennheiserCommands.ALL.any { it.vendor == packet.vendor && (it.get == packet.word || it.set == packet.word) }
     }
 
-    override fun bytes(message: ByteArray): ByteArray = message
+    /** Over Bluetooth LE a packet is the vendor, the word and the payload with no frame (docs/sennheiser/PROTOCOL.md section 3). */
+    override fun bytes(message: ByteArray): ByteArray = if (ble) message.copyOfRange(4, message.size) else message
 
     /** An answer is a reply or an error with the sent command's vendor and command. */
     override fun answers(sent: ByteArray, got: Any): Boolean = got is Int && Gaia3Parser().feed(sent).singleOrNull()?.key == got
@@ -127,7 +128,8 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     override fun feed(bytes: ByteArray): Fed {
         var changed = false
         val keys = mutableListOf<Any>()
-        for (packet in parser.feed(bytes)) guarded {
+        val framed = if (ble && bytes.size >= 4) byteArrayOf(0xFF.toByte(), 3, 0, (bytes.size - 4).toByte()) + bytes else bytes
+        for (packet in parser.feed(framed)) guarded {
             log?.invoke("recv $packet")
             if (packet.key !in asked && !packet.isNotification) return@guarded
             if (packet.isReply || packet.isError) keys += packet.key
@@ -451,9 +453,11 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             if (auracastKnown) add(SettingGroup("sh_auracast", SettingTab.DEVICE, buildList {
                 add(Setting.Action(KEY_AURACAST_SCAN, auracastScanning))
                 val added = auracastStates.values.map { it.addressKey }.toSet()
-                val offered = auracastScan.values.filter { !it.encrypted && it.addressKey !in added }
+                val offered = auracastScan.values.filter { it.addressKey !in added }
                 if (offered.isNotEmpty()) add(Setting.Choice(KEY_AURACAST_ADD, null, offered.map { it.label }))
                 for (src in auracastStates.values.sortedBy { it.sourceId }) add(Setting.Information(KEY_AURACAST_SOURCE, src.state + ":" + (auracastScan[src.addressKey]?.name ?: src.addressKey)))
+                // A source that wants a code (or got a wrong one) gets a line to type it in.
+                if (auracastStates.values.any { it.state == "code_required" || it.state == "bad_code" }) add(Setting.Text(KEY_AURACAST_CODE, "", AURACAST_CODE_LENGTH))
                 if (auracastStates.isNotEmpty()) add(Setting.Choice(KEY_AURACAST_REMOVE, null, auracastStates.values.sortedBy { it.sourceId }.map { auracastScan[it.addressKey]?.name ?: it.addressKey }))
             }))
             val others = pairedDevices.filter { it.index != peerOwn }
@@ -464,6 +468,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 add(SettingGroup("connection", SettingTab.DEVICE, buildList {
                     if (off.isNotEmpty()) add(Setting.Choice(KEY_PEER_CONNECT, null, off))
                     if (on.isNotEmpty()) add(Setting.Choice(KEY_PEER_DISCONNECT, null, on))
+                    add(Setting.Choice(KEY_PEER_DELETE, null, others.map(::label)))
                 }))
             }
             if (model?.sensors == true && sensorsOn != null) add(SettingGroup("sh_sensors", SettingTab.DEVICE, buildList {
@@ -693,7 +698,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
 
     private fun auracastChange(change: SettingChange.Choice): List<ByteArray>? {
         if (change.key == KEY_AURACAST_ADD) {
-            val b = auracastScan.values.firstOrNull { it.label == change.option && !it.encrypted } ?: return null
+            val b = auracastScan.values.firstOrNull { it.label == change.option } ?: return null
             val c = command(SennheiserCommands.AURACAST_ADD) ?: return null
             // The app's `BassAddSourceOperation`: the broadcaster's address and set, its id, "synchronise without past info", an unknown interval (0xFFFF),
             // one subgroup that takes every stream, and no metadata.
@@ -706,6 +711,25 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         auracastStates.remove(target.sourceId)
         readBacks += read(command(SennheiserCommands.AURACAST_IDS)!!)
         return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(target.sourceId.toByte())))
+    }
+
+    /** The code of the source that waits for one: up to sixteen characters, padded with zero bytes as the app does (`BassSetBroadcastCodeOperation`). */
+    private fun auracastCode(code: String): List<ByteArray>? {
+        val target = auracastStates.values.firstOrNull { it.state == "code_required" || it.state == "bad_code" } ?: return null
+        val c = command(SennheiserCommands.AURACAST_CODE) ?: return null
+        val bytes = code.toByteArray(Charsets.UTF_8).take(AURACAST_CODE_LENGTH).toByteArray()
+        if (bytes.isEmpty()) return null
+        readBacks += readWith(SennheiserCommands.AURACAST_STATE, byteArrayOf(target.sourceId.toByte()))
+        return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(target.sourceId.toByte()) + bytes + ByteArray(AURACAST_CODE_LENGTH - bytes.size)))
+    }
+
+    /** Deletes an entry of the earbuds' paired devices list (`DeviceList_DeleteEntry`); the screen confirms first. Never the phone's own entry. */
+    private fun peerDelete(change: SettingChange.Choice): List<ByteArray>? {
+        val target = pairedDevices.filter { it.index != peerOwn }.firstOrNull { it.name == change.option || "${it.name} (${it.index})" == change.option } ?: return null
+        val c = command(SennheiserCommands.PEER_DELETE) ?: return null
+        peers.remove(target.index)
+        readBacks += read(command(SennheiserCommands.PEER_COUNT)!!)
+        return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(target.index.toByte())))
     }
 
     private fun peerChange(change: SettingChange.Choice): List<ByteArray>? {
@@ -788,6 +812,8 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         if (change is SettingChange.Press) return press(change.key)
         if (change is SettingChange.Choice && (change.key == KEY_PEER_CONNECT || change.key == KEY_PEER_DISCONNECT)) return peerChange(change)
         if (change is SettingChange.Choice && (change.key == KEY_AURACAST_ADD || change.key == KEY_AURACAST_REMOVE)) return auracastChange(change)
+        if (change is SettingChange.Choice && change.key == KEY_AURACAST_CODE) return auracastCode(change.option)
+        if (change is SettingChange.Choice && change.key == KEY_PEER_DELETE) return peerDelete(change)
         if (change is SettingChange.Choice && change.key.startsWith("touch_")) return changeTouch(change)
         if (change is SettingChange.Choice && change.key == KEY_AUTO_OFF) {
             val minutes = change.option.toIntOrNull() ?: return null
@@ -1120,6 +1146,9 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         public const val KEY_AURACAST_ADD: String = "sh_auracast_add"
         public const val KEY_AURACAST_REMOVE: String = "sh_auracast_remove"
         public const val KEY_AURACAST_SOURCE: String = "sh_auracast_source"
+        public const val KEY_AURACAST_CODE: String = "sh_auracast_code"
+        public const val KEY_PEER_DELETE: String = "sh_peer_delete"
+        private const val AURACAST_CODE_LENGTH = 16
 
         /** How long the earbuds scan for broadcasts (the app's `AURACAST_SCANNING_TIME_SECS`), and `BassSyncOperation`'s "synchronise without past info". */
         private const val AURACAST_SCAN_SECONDS = 5

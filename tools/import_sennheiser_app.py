@@ -240,6 +240,16 @@ EQ_MODELS = {
 # What each product's class in Smart Control's JavaScript sets up beyond its properties (docs/sennheiser/PROTOCOL.md section 4.2).
 # sidetone_max: the highest level of `SidetoneState` the product's screen offers (`phoneCallsMaxValue`, or the CX models' OFF, MIN and MAX);
 # transparency: "slider" (`ANC_Transparency`, 0 to 100, on the Accentum Plus and the Momentum 4) or "levels" (`TransparentHearing`: the app writes 1, 50 or 100).
+# The Bluetooth LE characteristics Smart Control's `DeviceConfig` names for the products Android opens over LE (service, write, notify, the encrypted data one):
+# `GAIA_BLE_*` (63331338, 39, 3A) or `GAIA3_BLE_*` (6333133B, 3C, 3D) on the service FDCE, or for the Momentum True Wireless 1 the GAIA service 63331337.
+_BASE = "-23C1-11E5-B696-FEFF819CDC9F"
+_FDCE = "0000FDCE-0000-1000-8000-00805F9B34FB"
+BLE_GAIA = {"service": _FDCE, "write": "63331338" + _BASE, "notify": "63331339" + _BASE, "data": "6333133A" + _BASE, "pairing": "63331379" + _BASE}
+BLE_GAIA3 = {"service": _FDCE, "write": "6333133B" + _BASE, "notify": "6333133C" + _BASE, "data": "6333133D" + _BASE, "pairing": "63331379" + _BASE}
+BLE_MTW = {**BLE_GAIA, "service": "63331337" + _BASE}
+BLE_V3 = {"cx200.json": BLE_GAIA, "cx200sports.json": BLE_GAIA, "cx400II.json": BLE_GAIA3, "cx500.json": BLE_GAIA3}
+BLE_V2 = {"cx400.json": BLE_GAIA, "tw1.json": BLE_MTW, "tw2.json": BLE_GAIA}
+
 EXTRAS = {
     "ac1.json": {"sidetone_max": 2, "transparency": None},
     "acp1.json": {"sidetone_max": 4, "transparency": "slider"},
@@ -311,6 +321,7 @@ ACTIONS = [
     ("product", "PairedDevicesOwnDeviceIndex", "peer_own", "get"),
     ("product", "PairedDevicesConnectDevice", "peer_connect", "set"),
     ("product", "PairedDevicesDisconnectDevice", "peer_disconnect", "set"),
+    ("product", "PairedDevicesDeleteEntry", "peer_delete", "set"),
     ("product", "PairedDevicesGetConnectionStatus", "peer_status", "get"),
     ("product", "Sensor_SensorData", "sensor_data", "get"),
     ("product", "Sensor_SetSensorEnable", "sensor_enable", "set"),
@@ -318,6 +329,7 @@ ACTIONS = [
     ("product", "Reboot", "reboot", "set"),
     ("auracast-1", "Auracast_AddSource", "auracast_add", "set"),
     ("auracast-1", "Auracast_RemoveSource", "auracast_remove", "set"),
+    ("auracast-1", "Auracast_SetBroadcastCode", "auracast_code", "set"),
     ("auracast-1", "Auracast_GetSourceIds", "auracast_ids", "sides"),
     ("auracast-1", "Auracast_GetReceiveState", "auracast_state", "get"),
     ("auracast-1", "Auracast_StartSourceScan", "auracast_scan", "set"),
@@ -492,7 +504,7 @@ def main(assets):
                         props[pid][key] = entry[key]
                 continue
             props[pid] = entry
-        legacy.append({"name": name, "kind": klass, "names": names, "transport": transport, "source": "Smart Control 4.9.4 " + fname, "eq": eq and "eq_knob" in props, "properties": props})
+        legacy.append({"name": name, "kind": klass, "names": names, "transport": transport, "ble": BLE_V2.get(fname), "source": "Smart Control 4.9.4 " + fname, "eq": eq and "eq_knob" in props, "properties": props})
     (OUT / "gaia2.json").write_text(json.dumps({
         "_about": "Sennheiser's GAIA v2 products as Smart Control 4.9.4's product files define them (docs/sennheiser/PROTOCOL.md section 4.9): a frame is FF, 01, flags, the payload's length, a vendor (0494 Sennheiser's, 000A Qualcomm's), a command and the payload; a response is the command + 8000 and starts with a status byte (0 is success). transport says how Android opens the product (spp: the serial port, ble: Bluetooth LE only). Written by tools/import_sennheiser_app.py.",
         "transport": {"spp_uuid": "a2129ff3-081b-4c45-8afe-469d9c4842eb", "vendor": "0494", "qualcomm_vendor": "000A"},
@@ -551,12 +563,14 @@ def main(assets):
     for fname, (name, klass, names) in SC_MODELS.items():
         have = [pid for app_name, pid in PROPS.items() if app_name in products[fname]]
         touch = TOUCH.get(fname)
+        ble = BLE_V3.get(fname)
         feats = {f["name"]: f.get("minVersion", "0.0.0") for f in json.loads((assets / fname).read_text(encoding="utf-8"))["features"]}
         models.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": have, "eq": EQ_MODELS[fname], **EXTRAS[fname],
                        "features": {**{k: v for k, v in feats.items() if k in FEATURE_FILES}, **({"reboot": "0.0.0"} if "Reboot" in products[fname] else {})}, "peers": "PairedDevicesListSize" in products[fname], "fit_test": "FitTestCheck" in products[fname], "sensors": "Sensor_SensorData" in products[fname],
+                       "ble": ble,
                        "touch": None if touch is None else [{"action": a[0], "gestures": a[1], **({"min_firmware": a[2]} if len(a) > 2 else {})} for a in touch]})
     for name, klass, names, article in SCP_MODELS:
-        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None, "sidetone_max": None, "transparency": None, "touch": None, "features": {}, "peers": False, "fit_test": False, "sensors": False})
+        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None, "sidetone_max": None, "transparency": None, "touch": None, "ble": None, "features": {}, "peers": False, "fit_test": False, "sensors": False})
     OUT.mkdir(parents=True, exist_ok=True)
     eq = {
         "_about": "Sennheiser's equalizers as Smart Control 4.9.4 computes them (docs/sennheiser/PROTOCOL.md section 6): gen2 (the earbuds hold five band gains in tenths of a dB), gen1 (a five band shelf filter set the app calculates: bass boost, loudness weights, headroom, Q, band frequencies) and the older three-band bass, mid and treble; presets in dB per band. Written by tools/import_sennheiser_app.py.",

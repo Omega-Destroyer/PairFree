@@ -25,7 +25,12 @@ public class SennheiserModel(
     public val peers: Boolean = false,
     public val fitTest: Boolean = false,
     public val sensors: Boolean = false,
+    /** Set for the products Android opens over Bluetooth LE only (`DeviceConfig`): the service and characteristics of their GATT channel. */
+    public val ble: SennheiserBle? = null,
 )
+
+/** The GATT channel of a Sennheiser product: service, write, notify, the encrypted data characteristic whose read starts the bonding, and the pairing characteristic of Sennheiser's own bonding steps. */
+public class SennheiserBle(public val service: String, public val write: String, public val notify: String, public val data: String, public val pairing: String)
 
 /** A function a product's touch controls can be set to, the gestures it is allowed on (none listed: any) and the firmware it needs where its class says so. */
 public class SennheiserTouchAction(public val action: String, public val gestures: List<String>, public val minFirmware: String?)

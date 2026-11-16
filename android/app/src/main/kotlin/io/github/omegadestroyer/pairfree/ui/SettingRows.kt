@@ -540,6 +540,7 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_battery_protection" -> stringResource(R.string.setting_sh_battery_protection)
     "sh_prompts" -> stringResource(R.string.setting_sh_prompts)
     "sh_codec" -> stringResource(R.string.setting_sh_codec)
+    "sh_bass_boost" -> stringResource(R.string.setting_sh_bass_boost)
     "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
     "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
     "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)

@@ -23,8 +23,9 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     override val pacing: Pacing = Pacing(replyMs = REPLY_MS, gapMs = GAP_MS)
 
     private val parser = Gaia3Parser()
-    private val commands: List<SennheiserCommand> = SennheiserCommands.ALL.filter { model?.properties == null || it.id in model.properties }
-    private val byKey: Map<Int, SennheiserCommand> = SennheiserCommands.ALL.filter { it.get != null }.associateBy { Gaia3Packet.keyOf(it.vendor, it.get!!) }
+    private fun isEq(c: SennheiserCommand): Boolean = c.vendor == SennheiserWire.VENDOR && ((c.get ?: c.set ?: 0) shr 9) == FEATURE_USER_EQ
+    private val commands: List<SennheiserCommand> = SennheiserCommands.ALL.filter { (model?.properties == null || it.id in model.properties) && it.open && !isEq(it) }
+    private val byKey: Map<Int, SennheiserCommand> = SennheiserCommands.ALL.filter { it.get != null && !isEq(it) }.associateBy { Gaia3Packet.keyOf(it.vendor, it.get!!) }
     private val asked = mutableSetOf<Int>()
     private val answered = mutableMapOf<String, ByteArray>()
     private var readBacks = emptyList<ByteArray>()
@@ -34,8 +35,10 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
 
     private fun command(id: String): SennheiserCommand? = SennheiserCommands.ALL.firstOrNull { it.id == id }
 
-    private fun frame(vendor: Int, word: Int, vararg payload: Int): ByteArray {
-        val packet = Gaia3Packet(vendor, word, ByteArray(payload.size) { payload[it].toByte() })
+    private fun frame(vendor: Int, word: Int, vararg payload: Int): ByteArray = frameOf(vendor, word, ByteArray(payload.size) { payload[it].toByte() })
+
+    private fun frameOf(vendor: Int, word: Int, payload: ByteArray): ByteArray {
+        val packet = Gaia3Packet(vendor, word, payload)
         asked += packet.key
         return packet.bytes()
     }
@@ -45,6 +48,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     override fun start(): List<ByteArray> = buildList {
         for (feature in REGISTERED) SennheiserWire.FEATURES[feature]?.let { add(frame(SennheiserWire.REGISTER_VENDOR, SennheiserWire.REGISTER_COMMAND, it)) }
         for (c in commands) if (c.get != null) add(read(c))
+        addAll(eqStart())
     }
 
     override fun poll(): List<ByteArray> = command(SennheiserCommands.BATTERY_PERCENT)?.let { listOf(read(it)) } ?: emptyList()
@@ -63,6 +67,8 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
 
     override fun takeReadBacks(): List<ByteArray> = readBacks.also { readBacks = emptyList() }
 
+    override fun takeOutbox(): List<ByteArray> = eqOutbox.also { eqOutbox = emptyList() }
+
     override fun feed(bytes: ByteArray): Fed {
         var changed = false
         val keys = mutableListOf<Any>()
@@ -70,6 +76,10 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             log?.invoke("recv $packet")
             if (packet.key !in asked && !packet.isNotification) return@guarded
             if (packet.isReply || packet.isError) keys += packet.key
+            if (packet.vendor == SennheiserWire.VENDOR && packet.feature == FEATURE_USER_EQ) {
+                if (eqFeed(packet)) changed = true
+                return@guarded
+            }
             if (packet.isError) return@guarded
             if (!packet.isReply && !packet.isNotification) return@guarded
             val c = byKey[packet.key] ?: return@guarded
@@ -177,6 +187,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 on(SennheiserCommands.TRANSPARENCY_PAUSE)?.let { add(Setting.Toggle(KEY_PAUSE_TRANSPARENT, it)) }
             }
             if (noise.isNotEmpty()) add(SettingGroup("noise", SettingTab.HOME, noise))
+            if (eqKnown) add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Toggle(KEY_BASS_BOOST, eqBass))))
             val calls = buildList<Setting> {
                 on(SennheiserCommands.AUTO_CALL)?.let { add(Setting.Toggle(KEY_AUTO_CALL, it)) }
                 on(SennheiserCommands.COMFORT_CALL)?.let { add(Setting.Toggle(KEY_COMFORT_CALL, it)) }
@@ -225,6 +236,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     override fun change(change: SettingChange): List<ByteArray>? {
         if (change is SettingChange.Toggle) {
             val flag = if (change.on) 1 else 0
+            if (change.key == KEY_BASS_BOOST) return eqBassBoost(change.on)
             val id = TOGGLES[change.key]
             if (id != null) {
                 if (values[id] == null) return null
@@ -253,6 +265,257 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         return null
     }
 
+    // The equalizer (docs/sennheiser/PROTOCOL.md section 6) ------------------------------------------------------------------------------------
+
+    private class EqPending(val key: Int, val tag: String)
+
+    private val eqPending = ArrayDeque<EqPending>()
+    private var eqOutbox = emptyList<ByteArray>()
+
+    /** Which equalizer the product answered as, or null until one did (or when it has none). */
+    public var eqKind: SennheiserEqKind? = null
+        private set
+
+    /** The band gains the earbuds hold (or this phone last sent), in dB. */
+    public var eqGains: List<Double>? = null
+        private set
+
+    /** Bass boost, the app's `bassBoostEnabled` (user-eq-2's sub-mode 1; the knob's flag on the older two). */
+    public var eqBass: Boolean = false
+        private set
+
+    private var gen2Min = -SennheiserEqTables.GEN2_RANGE_DB.toDouble()
+    private var gen2Max = SennheiserEqTables.GEN2_RANGE_DB.toDouble()
+    private var gen2Bands = 0
+    private val gen2Read = mutableMapOf<Int, Double>()
+    private var levelShift: Double? = null
+    private var knobX: Int? = null
+    private var knobY: Int? = null
+    private var shelfReply: List<Int>? = null
+    private var knobAsked = false
+
+    /** What the earbuds last said of their EQ, for the Sound tab to follow. */
+    override val eq: Any? get() = if (eqKind == null) null else Triple(eqKind, eqGains, eqBass)
+
+    private val shelf: SennheiserShelfEq? get() = model?.eq?.gen1?.let { SennheiserEqTables.GEN1[it] }
+
+    private fun eqFrame(c: SennheiserCommand, set: Boolean, payload: ByteArray, tag: String = ""): ByteArray {
+        val word = (if (set) c.set else c.get)!!
+        val packet = Gaia3Packet(c.vendor, word, payload)
+        eqPending += EqPending(packet.key, tag)
+        asked += packet.key
+        return packet.bytes()
+    }
+
+    private fun u16(v: Int): ByteArray = byteArrayOf((v shr 8).toByte(), v.toByte())
+
+    private fun shortList(values: List<Int>): ByteArray = values.flatMap { listOf((it shr 8).toByte(), it.toByte()) }.toByteArray()
+
+    private fun eqRead(id: String, tag: String, payload: ByteArray = ByteArray(0)): ByteArray = eqFrame(command(id)!!, false, payload, tag)
+
+    /** What the opening asks for: the audio mode, and the first read of whichever equalizer the model has. */
+    private fun eqStart(): List<ByteArray> {
+        val m = model?.eq ?: return emptyList()
+        if (!m.gen2 && m.gen1 == null && m.threeBandLimit == 0) return emptyList()
+        return buildList {
+            command(SennheiserCommands.AUDIO_MODE)?.let { add(read(it)) }
+            if (m.gen2) {
+                add(eqRead(SennheiserCommands.EQ2_CONFIG, "config"))
+                add(eqRead(SennheiserCommands.EQ_SUBMODE, "sub"))
+            } else {
+                add(askKnob())
+            }
+        }
+    }
+
+    private fun askKnob(): ByteArray {
+        knobAsked = true
+        return eqRead(SennheiserCommands.EQ1_KNOB, "knobY", u16(1))
+    }
+
+    private fun int16At(p: List<Int>, i: Int): Int? = if (p.size >= 2 * i + 2) (p[2 * i] shl 8) or p[2 * i + 1] else null
+
+    /** Takes one answer of the equalizer feature. True when what the Sound tab shows changed. */
+    private fun eqFeed(packet: Gaia3Packet): Boolean {
+        val m = model?.eq ?: return false
+        if (packet.isNotification) {
+            if (packet.key == Gaia3Packet.keyOf(SennheiserWire.VENDOR, 0x1009) && eqKind == SennheiserEqKind.GEN2 && packet.payload.isNotEmpty()) {
+                eqBass = (packet.payload[0].toInt() and 0xFF) == 1
+                return true
+            }
+            return false
+        }
+        val at = eqPending.indexOfFirst { it.key == packet.key }
+        if (at < 0) return false
+        val tag = eqPending.removeAt(at).tag
+        val p = packet.payload.map { it.toInt() and 0xFF }
+        if (packet.isError) {
+            if (tag == "config") eqOutbox += legacyReads()
+            return false
+        }
+        if (tag.isEmpty()) return false
+        when {
+            tag == "config" -> {
+                if (p.size < 5) {
+                    eqOutbox += legacyReads()
+                    return false
+                }
+                gen2Bands = p[0]
+                gen2Min = p[1].toByte().toInt() / 10.0
+                gen2Max = p[2].toByte().toInt() / 10.0
+                eqKind = SennheiserEqKind.GEN2
+                eqOutbox += (0 until gen2Bands).map { eqRead(SennheiserCommands.EQ2_SLIDER, "slider$it", byteArrayOf(it.toByte())) }
+                return false
+            }
+            tag == "sub" -> {
+                eqBass = p.firstOrNull() == 1
+                return eqKnown
+            }
+            tag.startsWith("slider") -> {
+                val gain = p.firstOrNull()?.toByte()?.toInt() ?: return false
+                gen2Read[tag.removePrefix("slider").toInt()] = gain / 10.0
+                if (gen2Read.size < gen2Bands) return false
+                eqGains = (0 until gen2Bands).map { gen2Read.getValue(it) }
+                return true
+            }
+            tag == "knobY" -> {
+                knobY = int16At(p, 0) ?: return false
+                if (eqKind == null) {
+                    // The app takes its five-band equalizer from the firmware its product file names (`Eq5Band_Gen1_MinFwVersion`); older firmware has the three knobs.
+                    val min = SennheiserEq.version(m.gen1MinFirmware)
+                    val have = SennheiserEq.version(firmware)
+                    if (m.gen1 != null && have != null && min != null && SennheiserEq.atLeast(have, min)) {
+                        eqKind = SennheiserEqKind.GEN1
+                        eqOutbox += eqRead(SennheiserCommands.EQ1_LEVEL_SHIFT, "shift")
+                        eqOutbox += eqRead(SennheiserCommands.EQ1_PARAMS, "params", shortList(SennheiserEq.SHELF_REFRESH))
+                    } else if (m.threeBandLimit > 0) {
+                        eqKind = SennheiserEqKind.THREE_BAND
+                        eqOutbox += eqRead(SennheiserCommands.EQ1_KNOB, "knobX", u16(0))
+                    }
+                    return false
+                }
+                return if (eqKind == SennheiserEqKind.GEN1) decodeShelf() else false
+            }
+            tag == "knobX" -> {
+                knobX = int16At(p, 0) ?: return false
+                return decodeThree()
+            }
+            tag == "shift" -> {
+                levelShift = (p.firstOrNull()?.toByte()?.toInt() ?: return false) / 10.0
+                return decodeShelf()
+            }
+            tag == "params" -> {
+                shelfReply = (0 until p.size / 2).map { int16At(p, it)!!.toShort().toInt() }
+                return decodeShelf()
+            }
+        }
+        return false
+    }
+
+    /** The reads of the older equalizers, once the newer one did not answer. */
+    private fun legacyReads(): List<ByteArray> = if (knobAsked) emptyList() else listOf(askKnob())
+
+    private fun decodeShelf(): Boolean {
+        val p = shelf ?: return false
+        val shift = levelShift ?: return false
+        val y = knobY ?: return false
+        val reply = shelfReply ?: return false
+        val (gains, bass) = SennheiserEq.shelfGains(shift, y, reply, p) ?: return false
+        eqGains = gains
+        eqBass = bass
+        return true
+    }
+
+    private fun decodeThree(): Boolean {
+        val (gains, bass) = SennheiserEq.threeFromKnobs(knobX ?: return false, knobY ?: return false) ?: return false
+        eqGains = gains
+        eqBass = bass
+        return true
+    }
+
+    /** The bands in Hz the Sound tab draws, for the equalizer the earbuds answered as; empty while none did. */
+    public val eqBandsHz: List<Int>
+        get() = when (eqKind) {
+            SennheiserEqKind.GEN2 -> if (gen2Bands == SennheiserEqTables.GEN2_HZ.size) SennheiserEqTables.GEN2_HZ else List(gen2Bands) { it + 1 }
+            SennheiserEqKind.GEN1 -> shelf?.hz.orEmpty()
+            SennheiserEqKind.THREE_BAND -> SennheiserEqTables.THREE_BAND_HZ
+            null -> emptyList()
+        }
+
+    /** The range of one band in dB: the earbuds' own for the newest equalizer, the app's six for the others. */
+    public val eqMaxDb: Double
+        get() = when (eqKind) {
+            SennheiserEqKind.GEN2 -> gen2Max
+            SennheiserEqKind.GEN1 -> (shelf?.rangeDb ?: 6).toDouble()
+            else -> SennheiserEqTables.THREE_BAND_RANGE_DB.toDouble()
+        }
+    public val eqMinDb: Double get() = if (eqKind == SennheiserEqKind.GEN2) gen2Min else -eqMaxDb
+
+    /** The presets the app offers the product, as curves over [eqBandsHz]. */
+    public val eqPresets: List<Pair<String, List<Double>>>
+        get() {
+            val m = model?.eq ?: return emptyList()
+            val key = if (eqKind == SennheiserEqKind.THREE_BAND) "default3" else m.presets
+            return SennheiserEqTables.PRESETS[key].orEmpty().filter { it.second.size == eqBandsHz.size }
+        }
+
+    /** Whether the earbuds answered as an equalizer whose gains are known. */
+    public val eqKnown: Boolean get() = eqKind != null && eqGains != null
+
+    private fun setAudioMode(): List<ByteArray> {
+        val audio = command(SennheiserCommands.AUDIO_MODE) ?: return emptyList()
+        val b = values[SennheiserCommands.AUDIO_MODE] ?: return emptyList()
+        val now = if (b.size >= 2) ((b[0].toInt() and 0xFF) shl 8) or (b[1].toInt() and 0xFF) else b[0].toInt() and 0xFF
+        // The equalizer only sounds in the user equalizer mode (`AudioMode`'s USEREQ); the app turns it on with the equalizer.
+        if (now == AUDIO_USER_EQ) return emptyList()
+        values[SennheiserCommands.AUDIO_MODE] = u16(AUDIO_USER_EQ)
+        return listOf(frameOf(audio.vendor, audio.set!!, u16(AUDIO_USER_EQ)))
+    }
+
+    /** The messages that set the band [gains] (dB), or null while the earbuds have not said which equalizer they have. */
+    public fun eqCurve(gains: List<Double>): List<ByteArray>? {
+        val kind = eqKind ?: return null
+        if (gains.size != eqBandsHz.size) return null
+        val m = model?.eq ?: return null
+        val clipped = gains.map { it.coerceIn(eqMinDb, eqMaxDb) }
+        val out = mutableListOf<ByteArray>()
+        out += setAudioMode()
+        when (kind) {
+            SennheiserEqKind.GEN2 -> {
+                out += eqFrame(command(SennheiserCommands.EQ_SUBMODE)!!, true, byteArrayOf(if (eqBass) 1 else 0))
+                val slider = command(SennheiserCommands.EQ2_SLIDER)!!
+                clipped.forEachIndexed { i, g -> out += eqFrame(slider, true, byteArrayOf(i.toByte(), Math.round(g * 10).toInt().toByte())) }
+            }
+            SennheiserEqKind.GEN1 -> {
+                val p = shelf ?: return null
+                val c = SennheiserEq.shelfConfig(clipped, p, eqBass)
+                out += eqFrame(command(SennheiserCommands.EQ1_PARAMS)!!, true, shortList(SennheiserEq.shelfParams(c, p)))
+                out += eqFrame(command(SennheiserCommands.EQ1_LEVEL_SHIFT)!!, true, byteArrayOf((10 * c.levelShift).toInt().toByte()))
+                out += eqFrame(command(SennheiserCommands.EQ1_KNOB)!!, true, u16(1) + u16(SennheiserEq.shelfKnobY(eqBass)))
+            }
+            SennheiserEqKind.THREE_BAND -> {
+                val t = clipped.toMutableList()
+                if (eqBass) t[0] += SennheiserEqTables.THREE_BAND_BASS_BOOST
+                val smooth = SennheiserEq.threeSmooth(t, m.threeBandLimit)
+                out += eqFrame(command(SennheiserCommands.EQ1_PARAMS)!!, true, shortList(SennheiserEq.threeParams(smooth, eqBass)))
+                val (x, y) = SennheiserEq.threeKnobs(clipped, eqBass)
+                out += eqFrame(command(SennheiserCommands.EQ1_KNOB)!!, true, u16(0) + u16(x))
+                out += eqFrame(command(SennheiserCommands.EQ1_KNOB)!!, true, u16(1) + u16(y))
+            }
+        }
+        eqGains = clipped
+        return out
+    }
+
+    private fun eqBassBoost(on: Boolean): List<ByteArray>? {
+        val gains = eqGains ?: return null
+        if (eqKind == null) return null
+        eqBass = on
+        // user-eq-2 holds bass boost as the sub-mode, written alone; the others carry it in the curve and the knob.
+        if (eqKind == SennheiserEqKind.GEN2) return setAudioMode() + eqFrame(command(SennheiserCommands.EQ_SUBMODE)!!, true, byteArrayOf(if (on) 1 else 0))
+        return eqCurve(gains)
+    }
+
     override fun unanswered(sent: ByteArray): Boolean = false
 
     public companion object {
@@ -270,6 +533,13 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         public const val KEY_BATTERY_PROTECTION: String = "sh_battery_protection"
         public const val KEY_PROMPTS: String = "sh_prompts"
         public const val KEY_CODEC: String = "sh_codec"
+        public const val KEY_BASS_BOOST: String = "sh_bass_boost"
+
+        /** The feature id of the equalizers (Sennheiser's `user_eq`). */
+        internal const val FEATURE_USER_EQ: Int = 8
+
+        /** The audio mode that turns the user equalizer on (`AudioMode`'s USEREQ). */
+        private const val AUDIO_USER_EQ = 1
 
         private const val REPLY_MS = 3_000L
         private const val GAP_MS = 50L

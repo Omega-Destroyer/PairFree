@@ -11,10 +11,12 @@ What it shows, where the product answers (a model with a product file in Smart C
 everything and shows what answers):
 - **Home:** the battery of each earbud and the case; noise control (off, noise cancelling, transparency, as Smart Control does: turning one on turns the other off); anti-wind and adaptive noise
   cancelling; pause music in full transparency.
+- **Sound:** the equalizer, in whichever of Sennheiser's three forms the product answers (five bands the earbuds hold, a five-band shelf set, or bass, mid and treble) with Smart Control's presets and
+  bass boost; the earbuds are switched to their user equalizer mode when a curve is sent.
 - **Device:** answering calls automatically, comfort call, on-head detection, smart pause, low latency mode, locking the touch controls, eco mode, battery protection, voice prompts and tones, the codec in use.
 - The device report keeps the answer to each property PairFree asked for.
 
-Not covered yet (all in Smart Control's own product files; nothing was left out for being unknown): the equalizer, the touch and button assignments, the transparency level, sidetone, find my headphones, personalised
+Not covered yet (all in Smart Control's own product files; nothing was left out for being unknown): the touch and button assignments, the transparency level, sidetone, find my headphones, personalised
 sound, audio modes, the fit test, multipoint, Auracast and the voice assistant. The older products (GAIA v2: CX 350, CX 400, HD 250 to 458, IE 80, Momentum True Wireless 1 and 2; Nautilus: Momentum 3, PXC 550,
 PXC 550-II), the Accentum Clip (Airoha) and the soundbars use other protocols: see the protocol document. PairFree never sends a factory reset, firmware update or the panic log erase.
 

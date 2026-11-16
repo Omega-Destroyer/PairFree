@@ -58,7 +58,28 @@ Each is a property of the product files (`data/sennheiser/commands.json`), read 
 | voice prompts and tones | `Setting_AudioPromptMode` (`0802`/`0801`): 0 off, 1 tones, 2 tones and voice | |
 | codec in use; firmware; model number; charging | `Sound_CodecUsed` (`0800`), `Service_SystemReleaseVersion` (`1201`: three u16), `Versions_ModelId` (`1206`), `Battery_ChargingStatus` (`0602`) | read only; the last two are in the device report |
 
+| equalizer | three generations, picked by what the product answers (section 4.1) | `eq2_*`, `eq1_*`: vendor `0495`, feature 8 (`1000` to `1109`), and `audio_mode` (`0804`/`0803`) |
+
 The status of every write is read back a moment later. `SennheiserTest` pins the frames and the rebuilt bytes of the writes.
+
+### 4.1 The equalizer
+
+Smart Control 4.9.4 has three, each ported from its JavaScript (`Eq5BandGen2`, `Eq5BandGen1`, `Eq3Band`, `EqKnobValuesCoder`; `SennheiserEq` keeps JavaScript's rounding and truncation) and its numbers from
+`EqPresetsService` and `get5BandParametersForDevice` / `get3BandParametersForDevice` (`data/sennheiser/eq.json`, written by the importer). The Sound tab opens over the bands of whichever answers:
+
+1. **user-eq-2** (a model with `gen2` in `devices.json`: Accentum, Accentum Plus, Accentum True Wireless, Momentum 4, Momentum Sport, Momentum True Wireless 4): `UserEQ_GetConfiguration` (`1000`: bands, minimum and maximum in
+   tenths of a dB, preset counts) then one `UserEQ_GetSliderGain` (`1002`, band index) per band; a write is `UserEQ_SetSliderGain` (`1001`, band, gain in tenths as one signed byte). Bass boost is the
+   sub-mode (`1009` read, `1008` write, 1 on; its notification `1089` is followed). The bands are 63, 250, 1000, 4000 and 8000 Hz, plus or minus 6 dB.
+2. **user-eq-1, five bands** (from the firmware each product file names, `Eq5Band_Gen1_MinFwVersion`): the earbuds hold a shelf filter set the app calculates from the band gains: bass boost, loudness compensation,
+   clipping prevention and the shelf gains give a parameter group (`EQ_UserParameterGroup_Set`, `1002`, signed 16-bit values), the level shift in tenths of a dB (`1006`) and the knob's flags (`1004`, index 1:
+   new storage `0x4000`, bass boost `0x1000`). A read is the level shift (`1007`), the knob (`1005`) and the parameter group read (`1003`).
+3. **user-eq-1, three knobs** (older firmware, and the CX models): bass, mid and treble, centred on their mean and cut to the product's gain limit, as a parameter group plus the two knob values (`1004` index 0 and 1).
+
+Every curve is written after `AudioMode` USEREQ (`0803`, 1) when the product's last answer was another mode, as the app does when the equalizer is used. Smart Control's presets are curves over those bands, so
+they go as curves; PairFree's gains move in half dB (the earbuds of the first kind hold tenths, the others the app's rounded numbers). The replies of the two user-eq generations share command words (`1002` is
+gen 2's slider read and gen 1's parameter write), so the session decodes a feature 8 reply only against the read it sent. `SennheiserEqTest` pins the parameter groups against a port of the app's JavaScript
+run outside the repo, and the frames each generation sends. checked: the app's `EqKnobValuesCoder` was read for its bit layout; the Plus-only products (Momentum 5, Momentum True Wireless 5, HDB 630, HDR 275)
+have no product file in either app, so PairFree asks them nothing about the equalizer.
 
 ## 5. Never sent
 
@@ -69,8 +90,8 @@ The status of every write is read back a moment later. `SennheiserTest` pins the
 
 Each says what was read.
 
-- The equalizer: checked: `features/user-eq-1.json` and `user-eq-2.json` define it (band count, range, selectable and user presets, slider gain per band, sub mode; vendor `0495` words `1000` to `1109`) and
-  Smart Control keeps its presets and band layouts per product in its JavaScript (`EqPresetsService`, `Eq3Band`, `Eq5BandGen1`, `Gaia5BandEqGen1Model`).
+- The equalizer's user presets that live on the earbuds (`selectablePreset`, `userPresets` of `UserEQ_GetConfiguration`) and the Plus app's equalizer for its own products: checked: the first are counted in the
+  configuration reply but no command in the product files names or applies them; the Plus-only products have no product file.
 - Touch and button configuration (`GetMMIConfig`, `SetMMIConfig`, `SetDefaultMMIConfig`, `ApplyMMIConfig`): checked: the commands are in the product files and the action list in Smart Control Plus has 55
   values (`kEa` in the Dart dump, each with its number).
 - Transparent hearing's level (`TransparentHearing` / `ANC_Transparency`, 0 to 100 on the Momentum 4 and Momentum Sport): checked: the commands (`1803`/`1802`, `1A03`/`1A02`) and the slider's range (`min: 0, max: 100`) are in the product files; not built until a product's behaviour is known.

@@ -2164,6 +2164,10 @@ abstract class GenerateSennheiserTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val devicesJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val eqJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -2176,8 +2180,13 @@ abstract class GenerateSennheiserTables : DefaultTask() {
         val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
         @Suppress("UNCHECKED_CAST")
         val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("models") as List<Map<String, Any?>>
+        @Suppress("UNCHECKED_CAST")
+        val eq = JsonSlurper().parse(eqJson.get().asFile) as Map<String, Any?>
         fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
         fun hex(v: Any?) = "0x" + (v as String).uppercase()
+        fun dbl(v: Any?) = (v as Number).toDouble().toString()
+        fun doubles(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { dbl(it) }
+        fun ints(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { (it as Number).toInt().toString() }
         fun strings(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
 
         val out = StringBuilder()
@@ -2215,6 +2224,8 @@ abstract class GenerateSennheiserTables : DefaultTask() {
         out.appendLine("    public val set: Int?,")
         out.appendLine("    public val setParams: List<String>,")
         out.appendLine("    public val values: Map<String, Int>,")
+        out.appendLine("    /** True when the channel's opening reads it (a read with no payload); the others are read by the feature that needs them. */")
+        out.appendLine("    public val open: Boolean,")
         out.appendLine(")")
         out.appendLine()
         out.appendLine("public object SennheiserCommands {")
@@ -2236,11 +2247,41 @@ abstract class GenerateSennheiserTables : DefaultTask() {
             val notification = reply(get)?.get("notification")
             out.appendLine("        SennheiserCommand(")
             out.appendLine("            ${str(c["id"])}, ${hex(vendor)}, ${send(get)?.let { hex(it["command"]) } ?: "null"}, ${strings(types(reply(get)))}, ${notification?.let { hex(it) } ?: "null"},")
-            out.appendLine("            ${send(set)?.let { hex(it["command"]) } ?: "null"}, ${strings(types(send(set)))}, mapOf($values),")
+            out.appendLine("            ${send(set)?.let { hex(it["command"]) } ?: "null"}, ${strings(types(send(set)))}, mapOf($values), ${c["open"] != false},")
             out.appendLine("        ),")
         }
         out.appendLine("    )")
         for (c in list) out.appendLine("    public const val ${(c["id"] as String).uppercase()}: String = ${str(c["id"])}")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val gen1 = eq.getValue("gen1") as Map<String, Map<String, Any?>>
+        @Suppress("UNCHECKED_CAST")
+        val three = eq.getValue("three_band") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val gen2 = eq.getValue("gen2") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val presets = eq.getValue("presets") as Map<String, List<Map<String, Any?>>>
+        out.appendLine("/** The equalizers' numbers (data/sennheiser/eq.json): the five-band shelf filter sets, the three-band constants and the presets. */")
+        out.appendLine("public object SennheiserEqTables {")
+        out.appendLine("    public val GEN2_HZ: List<Int> = ${ints(gen2["hz"])}")
+        out.appendLine("    public const val GEN2_RANGE_DB: Int = ${(gen2["range_db"] as Number).toInt()}")
+        out.appendLine("    public val THREE_BAND_HZ: List<Int> = ${ints(three["hz"])}")
+        out.appendLine("    public const val THREE_BAND_BASS_BOOST: Double = ${dbl(three["bass_boost"])}")
+        out.appendLine("    public const val THREE_BAND_BASS_FREQUENCY: Int = ${(three["bass_boost_frequency"] as Number).toInt()}")
+        out.appendLine("    public const val THREE_BAND_LOWER_MID_FREQUENCY: Int = ${(three["lower_mid_frequency"] as Number).toInt()}")
+        out.appendLine("    public const val THREE_BAND_UPPER_MID_FREQUENCY: Int = ${(three["upper_mid_frequency"] as Number).toInt()}")
+        out.appendLine("    public const val THREE_BAND_RANGE_DB: Int = ${(three["range_db"] as Number).toInt()}")
+        out.appendLine("    public val GEN1: Map<String, SennheiserShelfEq> = mapOf(")
+        for ((k, v) in gen1) {
+            out.appendLine("        ${str(k)} to SennheiserShelfEq(${doubles(v["bass_boost"])}, ${doubles(v["loudness_weights"])}, ${doubles(v["max_headroom"])}, ${doubles(v["q"])}, ${ints(v["band_frequencies"])}, ${ints(v["hz"])}, ${(v["range_db"] as Number).toInt()}),")
+        }
+        out.appendLine("    )")
+        out.appendLine("    public val PRESETS: Map<String, List<Pair<String, List<Double>>>> = mapOf(")
+        for ((k, list) in presets) {
+            out.appendLine("        ${str(k)} to listOf(${list.joinToString(", ") { "${str(it["name"])} to ${doubles(it["gains"])}" }}),")
+        }
+        out.appendLine("    )")
         out.appendLine("}")
         out.appendLine()
         out.appendLine("/** Every model in data/sennheiser/devices.json. */")
@@ -2252,7 +2293,14 @@ abstract class GenerateSennheiserTables : DefaultTask() {
                 else -> error("unknown kind ${d["kind"]}")
             }
             val props = if (d["properties"] == null) "null" else "setOf(" + (d["properties"] as List<*>).joinToString(", ") { str(it) } + ")"
-            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props),")
+            @Suppress("UNCHECKED_CAST")
+            val eqm = d["eq"] as Map<String, Any?>?
+            val eqText = if (eqm == null) "null" else {
+                @Suppress("UNCHECKED_CAST")
+                val g1 = eqm["gen1"] as List<Any?>?
+                "SennheiserModelEq(${eqm["gen2"]}, ${if (g1 == null) "null" else str(g1[0])}, ${if (g1 == null) "null" else str(g1[1])}, ${(eqm["three_band"] as Number).toInt()}, ${str(eqm["presets"])})"
+            }
+            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props, $eqText),")
         }
         out.appendLine(")")
 
@@ -2265,6 +2313,7 @@ abstract class GenerateSennheiserTables : DefaultTask() {
 val generateSennheiserTables = tasks.register<GenerateSennheiserTables>("generateSennheiserTables") {
     commandsJson = rootProject.layout.projectDirectory.file("../data/sennheiser/commands.json")
     devicesJson = rootProject.layout.projectDirectory.file("../data/sennheiser/devices.json")
+    eqJson = rootProject.layout.projectDirectory.file("../data/sennheiser/eq.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.sennheiser"
     outputDir = layout.buildDirectory.dir("generated/sennheiser")
 }

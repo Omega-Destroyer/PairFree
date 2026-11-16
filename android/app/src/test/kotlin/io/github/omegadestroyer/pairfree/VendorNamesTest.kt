@@ -22,6 +22,7 @@ import io.github.omegadestroyer.pairfree.protocol.pixel.PixelSession
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyEqs
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreNormalizedSpec
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserEqTables
 import io.github.omegadestroyer.pairfree.ui.VendorNames
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -60,6 +61,7 @@ class VendorNamesTest {
         for (model in PixelModels.ALL) if (model.family == PixelFamily.ALLEGRO) {
             vendor.add("Pixel Buds", PixelBandEq(PixelSession(model.transport, model)).eqPresetNames)
         }
+        vendor.add("Sennheiser", SennheiserEqTables.PRESETS.values.flatMap { list -> list.map { it.first } })
         vendor.add("Sony", SonyEqs.ALL.filter { !it.custom }.map { it.label })
         for (model in OneplusModels.ALL) vendor.add("OnePlus", model.presets.map { it.name })
         // 1MORE preset sounds PairFree has no word for show under the vendor's key.

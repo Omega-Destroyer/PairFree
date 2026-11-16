@@ -1,0 +1,641 @@
+{
+ "_about": "Sennheiser's equalizers as Smart Control 4.9.4 computes them (docs/sennheiser/PROTOCOL.md section 6): gen2 (the earbuds hold five band gains in tenths of a dB), gen1 (a five band shelf filter set the app calculates: bass boost, loudness weights, headroom, Q, band frequencies) and the older three-band bass, mid and treble; presets in dB per band. Written by tools/import_sennheiser_app.py.",
+ "gen2": {
+  "hz": [
+   63,
+   250,
+   1000,
+   4000,
+   8000
+  ],
+  "range_db": 6
+ },
+ "gen1": {
+  "momentum4": {
+   "bass_boost": [
+    5,
+    5,
+    0,
+    0,
+    0
+   ],
+   "loudness_weights": [
+    -26.683,
+    -10.813,
+    -4.773,
+    -4.813,
+    -5.993
+   ],
+   "max_headroom": [
+    5,
+    5,
+    4,
+    3,
+    2
+   ],
+   "q": [
+    0.707107,
+    0.707107,
+    0.707107,
+    0.707107
+   ],
+   "band_frequencies": [
+    0,
+    120,
+    400,
+    3000,
+    6000
+   ],
+   "hz": [
+    63,
+    250,
+    1000,
+    4000,
+    8000
+   ],
+   "range_db": 6
+  },
+  "accentum": {
+   "bass_boost": [
+    5,
+    -2,
+    0,
+    0,
+    0
+   ],
+   "loudness_weights": [
+    -26.683,
+    -10.813,
+    -4.773,
+    -4.813,
+    -5.993
+   ],
+   "max_headroom": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "q": [
+    0.707107,
+    0.707107,
+    0.707107,
+    0.707107
+   ],
+   "band_frequencies": [
+    0,
+    125,
+    400,
+    1600,
+    5000
+   ],
+   "hz": [
+    50,
+    250,
+    800,
+    3000,
+    8000
+   ],
+   "range_db": 6
+  },
+  "mtw3": {
+   "bass_boost": [
+    4,
+    1.5,
+    0,
+    0,
+    0
+   ],
+   "loudness_weights": [
+    -28.4,
+    -10.6,
+    -3.7,
+    -3.6,
+    -13.9
+   ],
+   "max_headroom": [
+    3,
+    6,
+    3,
+    3,
+    3
+   ],
+   "q": [
+    0.5,
+    0.707107,
+    0.707107,
+    0.707107
+   ],
+   "band_frequencies": [
+    0,
+    90,
+    325,
+    1500,
+    6500
+   ],
+   "hz": [
+    63,
+    250,
+    1000,
+    4000,
+    8000
+   ],
+   "range_db": 6
+  },
+  "momentum_sport": {
+   "bass_boost": [
+    3,
+    3,
+    0,
+    0,
+    0
+   ],
+   "loudness_weights": [
+    -28.4,
+    -10.6,
+    -3.7,
+    -3.6,
+    -13.9
+   ],
+   "max_headroom": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "q": [
+    0.5,
+    0.707107,
+    0.707107,
+    0.707107
+   ],
+   "band_frequencies": [
+    0,
+    90,
+    325,
+    1500,
+    6500
+   ],
+   "hz": [
+    63,
+    250,
+    1000,
+    4000,
+    8000
+   ],
+   "range_db": 6
+  },
+  "accentum_tw": {
+   "bass_boost": [
+    6,
+    3,
+    0,
+    1.5,
+    0
+   ],
+   "loudness_weights": [
+    -26.683,
+    -10.813,
+    -4.773,
+    -4.813,
+    -5.993
+   ],
+   "max_headroom": [
+    2.5,
+    2.5,
+    2.5,
+    2.5,
+    2.5
+   ],
+   "q": [
+    0.5,
+    0.707107,
+    0.707107,
+    0.707107
+   ],
+   "band_frequencies": [
+    0,
+    90,
+    325,
+    1500,
+    6500
+   ],
+   "hz": [
+    63,
+    250,
+    1000,
+    4000,
+    8000
+   ],
+   "range_db": 6
+  },
+  "mtw4": {
+   "bass_boost": [
+    4,
+    1.5,
+    0,
+    0,
+    0
+   ],
+   "loudness_weights": [
+    -28.4,
+    -10.6,
+    -3.7,
+    -3.6,
+    -13.9
+   ],
+   "max_headroom": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "q": [
+    0.5,
+    0.707107,
+    0.707107,
+    0.707107
+   ],
+   "band_frequencies": [
+    0,
+    90,
+    325,
+    1500,
+    6500
+   ],
+   "hz": [
+    63,
+    250,
+    1000,
+    4000,
+    8000
+   ],
+   "range_db": 6
+  }
+ },
+ "three_band": {
+  "hz": [
+   50,
+   1000,
+   8000
+  ],
+  "bass_boost": 5,
+  "bass_boost_frequency": 150,
+  "lower_mid_frequency": 280,
+  "upper_mid_frequency": 1600,
+  "range_db": 6
+ },
+ "presets": {
+  "default3": [
+   {
+    "name": "Rock",
+    "gains": [
+     0,
+     3,
+     0
+    ]
+   },
+   {
+    "name": "Pop",
+    "gains": [
+     0,
+     2,
+     3
+    ]
+   },
+   {
+    "name": "Dance",
+    "gains": [
+     2,
+     -2,
+     2
+    ]
+   },
+   {
+    "name": "Hip hop",
+    "gains": [
+     3,
+     2,
+     0
+    ]
+   },
+   {
+    "name": "Classical",
+    "gains": [
+     -2,
+     0,
+     1
+    ]
+   },
+   {
+    "name": "Movie",
+    "gains": [
+     0.7,
+     1.2,
+     -2.2
+    ]
+   }
+  ],
+  "momentum4": [
+   {
+    "name": "Rock",
+    "gains": [
+     0,
+     2,
+     2.5,
+     1.5,
+     -2
+    ]
+   },
+   {
+    "name": "Pop",
+    "gains": [
+     0,
+     -2.5,
+     0,
+     2.5,
+     0
+    ]
+   },
+   {
+    "name": "Dance",
+    "gains": [
+     3.5,
+     2,
+     -1.5,
+     1.5,
+     3
+    ]
+   },
+   {
+    "name": "Hip hop",
+    "gains": [
+     3,
+     1.5,
+     -1.5,
+     0,
+     -1.5
+    ]
+   },
+   {
+    "name": "Classical",
+    "gains": [
+     -2,
+     -1.5,
+     0,
+     3.5,
+     4
+    ]
+   },
+   {
+    "name": "Movie",
+    "gains": [
+     0,
+     0,
+     2,
+     2,
+     -2
+    ]
+   },
+   {
+    "name": "Jazz",
+    "gains": [
+     -3.2,
+     0,
+     2.2,
+     2.2,
+     0
+    ]
+   }
+  ],
+  "accentum": [
+   {
+    "name": "Rock",
+    "gains": [
+     0,
+     0,
+     3,
+     3,
+     -1
+    ]
+   },
+   {
+    "name": "Pop",
+    "gains": [
+     0,
+     -5,
+     0,
+     5,
+     0
+    ]
+   },
+   {
+    "name": "Dance",
+    "gains": [
+     2,
+     -3,
+     -3,
+     1,
+     1
+    ]
+   },
+   {
+    "name": "Hip hop",
+    "gains": [
+     3,
+     -1,
+     -4,
+     2,
+     0
+    ]
+   },
+   {
+    "name": "Classical",
+    "gains": [
+     0,
+     0,
+     0,
+     1,
+     2
+    ]
+   },
+   {
+    "name": "Movie",
+    "gains": [
+     0,
+     0,
+     2,
+     2,
+     -1
+    ]
+   },
+   {
+    "name": "Jazz",
+    "gains": [
+     -3,
+     0,
+     2,
+     2,
+     0
+    ]
+   }
+  ],
+  "mtw3": [
+   {
+    "name": "Rock",
+    "gains": [
+     -2.5,
+     0.5,
+     2.5,
+     -0.5,
+     -3.5
+    ]
+   },
+   {
+    "name": "Pop",
+    "gains": [
+     0,
+     -2.5,
+     0,
+     2.5,
+     -1
+    ]
+   },
+   {
+    "name": "Dance",
+    "gains": [
+     3,
+     -1,
+     -2,
+     0,
+     1
+    ]
+   },
+   {
+    "name": "Hip hop",
+    "gains": [
+     2.5,
+     1.5,
+     -1.5,
+     -1.5,
+     -1.5
+    ]
+   },
+   {
+    "name": "Classical",
+    "gains": [
+     -3.5,
+     -1.5,
+     0,
+     1.5,
+     0.5
+    ]
+   },
+   {
+    "name": "Movie",
+    "gains": [
+     -3,
+     -1,
+     0,
+     1,
+     -4
+    ]
+   },
+   {
+    "name": "Jazz",
+    "gains": [
+     -4,
+     0,
+     1,
+     3,
+     -1
+    ]
+   }
+  ],
+  "momentum_sport": [
+   {
+    "name": "Natural",
+    "gains": [
+     -2,
+     1,
+     0,
+     0.7,
+     0
+    ]
+   },
+   {
+    "name": "Rock",
+    "gains": [
+     -2.5,
+     0.5,
+     2.5,
+     -0.5,
+     -3.5
+    ]
+   },
+   {
+    "name": "Pop",
+    "gains": [
+     0,
+     -2.5,
+     0,
+     2.5,
+     -1
+    ]
+   },
+   {
+    "name": "Dance",
+    "gains": [
+     3,
+     -1,
+     -2,
+     0,
+     1
+    ]
+   },
+   {
+    "name": "Hip hop",
+    "gains": [
+     2.5,
+     1.5,
+     -1.5,
+     -1.5,
+     -1.5
+    ]
+   },
+   {
+    "name": "Classical",
+    "gains": [
+     -3.5,
+     -1.5,
+     0,
+     1.5,
+     0.5
+    ]
+   },
+   {
+    "name": "Movie",
+    "gains": [
+     -3,
+     -1,
+     0,
+     1,
+     -4
+    ]
+   },
+   {
+    "name": "Jazz",
+    "gains": [
+     -4,
+     0,
+     1,
+     3,
+     -1
+    ]
+   }
+  ]
+ }
+}

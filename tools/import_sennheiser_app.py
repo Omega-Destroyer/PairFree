@@ -64,6 +64,76 @@ SCP_MODELS = [
 ]
 
 
+# The equalizer (docs/sennheiser/PROTOCOL.md section 6). Smart Control 4.9.4's JavaScript holds the numbers (`41710` get5BandParametersForDevice,
+# get3BandParametersForDevice and getMultiBandGen2ParametersForDevice, and `default3BandEqPresets`, `momentum4_5BandEqPresets` and the other preset functions
+# of `EqPresetsService`); they are transcribed here with the product each belongs to.
+ROOT2 = 1 / 2 ** 0.5
+EQ_GEN1 = {
+    # key: (bassBoost, loudnessWeights, maxHeadroom, qFactor, bandFrequencies, labels)
+    "momentum4": ([5, 5, 0, 0, 0], [-26.683, -10.813, -4.773, -4.813, -5.993], [5, 5, 4, 3, 2], [ROOT2] * 4, [0, 120, 400, 3000, 6000], [63, 250, 1000, 4000, 8000]),
+    "accentum": ([5, -2, 0, 0, 0], [-26.683, -10.813, -4.773, -4.813, -5.993], [0, 0, 0, 0, 0], [ROOT2] * 4, [0, 125, 400, 1600, 5000], [50, 250, 800, 3000, 8000]),
+    "mtw3": ([4, 1.5, 0, 0, 0], [-28.4, -10.6, -3.7, -3.6, -13.9], [3, 6, 3, 3, 3], [0.5, ROOT2, ROOT2, ROOT2], [0, 90, 325, 1500, 6500], [63, 250, 1000, 4000, 8000]),
+    "momentum_sport": ([3, 3, 0, 0, 0], [-28.4, -10.6, -3.7, -3.6, -13.9], [2, 2, 2, 2, 2], [0.5, ROOT2, ROOT2, ROOT2], [0, 90, 325, 1500, 6500], [63, 250, 1000, 4000, 8000]),
+    "accentum_tw": ([6, 3, 0, 1.5, 0], [-26.683, -10.813, -4.773, -4.813, -5.993], [2.5] * 5, [0.5, ROOT2, ROOT2, ROOT2], [0, 90, 325, 1500, 6500], [63, 250, 1000, 4000, 8000]),
+    "mtw4": ([4, 1.5, 0, 0, 0], [-28.4, -10.6, -3.7, -3.6, -13.9], [3] * 5, [0.5, ROOT2, ROOT2, ROOT2], [0, 90, 325, 1500, 6500], [63, 250, 1000, 4000, 8000]),
+}
+EQ_GEN2_HZ = [63, 250, 1000, 4000, 8000]
+EQ_3BAND = {"hz": [50, 1000, 8000], "bass_boost": 5, "bass_boost_frequency": 150, "lower_mid_frequency": 280, "upper_mid_frequency": 1600, "range_db": 6}
+EQ_PRESETS = {
+    "default3": [("Rock", [0, 3, 0]), ("Pop", [0, 2, 3]), ("Dance", [2, -2, 2]), ("Hip hop", [3, 2, 0]), ("Classical", [-2, 0, 1]), ("Movie", [0.7, 1.2, -2.2])],
+    "momentum4": [("Rock", [0, 2, 2.5, 1.5, -2]), ("Pop", [0, -2.5, 0, 2.5, 0]), ("Dance", [3.5, 2, -1.5, 1.5, 3]), ("Hip hop", [3, 1.5, -1.5, 0, -1.5]),
+                  ("Classical", [-2, -1.5, 0, 3.5, 4]), ("Movie", [0, 0, 2, 2, -2]), ("Jazz", [-3.2, 0, 2.2, 2.2, 0])],
+    "accentum": [("Rock", [0, 0, 3, 3, -1]), ("Pop", [0, -5, 0, 5, 0]), ("Dance", [2, -3, -3, 1, 1]), ("Hip hop", [3, -1, -4, 2, 0]),
+                 ("Classical", [0, 0, 0, 1, 2]), ("Movie", [0, 0, 2, 2, -1]), ("Jazz", [-3, 0, 2, 2, 0])],
+    "mtw3": [("Rock", [-2.5, 0.5, 2.5, -0.5, -3.5]), ("Pop", [0, -2.5, 0, 2.5, -1]), ("Dance", [3, -1, -2, 0, 1]), ("Hip hop", [2.5, 1.5, -1.5, -1.5, -1.5]),
+             ("Classical", [-3.5, -1.5, 0, 1.5, 0.5]), ("Movie", [-3, -1, 0, 1, -4]), ("Jazz", [-4, 0, 1, 3, -1])],
+}
+EQ_PRESETS["momentum_sport"] = [("Natural", [-2, 1, 0, 0.7, 0])] + EQ_PRESETS["mtw3"]
+# Per model (the product file's name): which equalizer generations it has and with what. gen2: user-eq-2 (the earbuds answer UserEQ_GetConfiguration);
+# gen1: the 5-band shelf EQ of user-eq-1 (its parameters, and the firmware from which the app uses it: `Eq5Band_Gen1_MinFwVersion`); three_band: the older bass,
+# mid and treble knobs (gain limit of `get3BandParametersForDevice`); presets: the set `EqPresetsService.getOriginalPresets` gives the product.
+EQ_MODELS = {
+    "ac1.json": {"gen2": True, "gen1": ["accentum", "2.12.0"], "three_band": 4, "presets": "accentum"},
+    "acp1.json": {"gen2": True, "gen1": ["accentum", "2.12.0"], "three_band": 4, "presets": "accentum"},
+    "atw1.json": {"gen2": True, "gen1": ["accentum_tw", "2.10.5"], "three_band": 4, "presets": "mtw3"},
+    "cx200.json": {"gen2": False, "gen1": None, "three_band": 4, "presets": "default3"},
+    "cx200sports.json": {"gen2": False, "gen1": None, "three_band": 0, "presets": "default3"},
+    "cx400II.json": {"gen2": False, "gen1": None, "three_band": 4, "presets": "default3"},
+    "cx500.json": {"gen2": False, "gen1": None, "three_band": 4, "presets": "default3"},
+    "m4.json": {"gen2": True, "gen1": ["momentum4", "2.12.0"], "three_band": 2, "presets": "momentum4"},
+    "msport1.json": {"gen2": True, "gen1": ["momentum_sport", "0.0.0"], "three_band": 4, "presets": "momentum_sport"},
+    "tw3.json": {"gen2": False, "gen1": ["mtw3", "2.10.5"], "three_band": 4, "presets": "mtw3"},
+    "tw4.json": {"gen2": True, "gen1": ["mtw4", "0.0.0"], "three_band": 4, "presets": "mtw3"},
+}
+
+# The commands of the shared feature files (assets/app/features): (file, app property) -> (PairFree id, read on opening). The ones that take a payload (a band's
+# index, the parameters to query) are read when the equalizer asks, not when the channel opens.
+FEATURE_PROPS = {
+    ("audio-mode-2", "AudioMode"): ("audio_mode", True),
+    ("user-eq-2", "UserEQ_GetConfiguration"): ("eq2_config", True),
+    ("user-eq-2", "UserEQ_SetSliderGain"): ("eq2_slider", False),
+    ("user-eq-2", "UserEQ_GetSliderGain"): ("eq2_slider", False),
+    ("user-eq-2", "User_EQ_SubMode"): ("eq_submode", True),
+    ("user-eq-1", "Sound_CustomEQKnobY"): ("eq1_knob", False),
+    ("user-eq-1", "Sound_SetCustomEQ"): ("eq1_params", False),
+    ("user-eq-1", "Sound_GetCustomEQ"): ("eq1_params", False),
+    ("user-eq-1", "Sound_LevelShift"): ("eq1_level_shift", True),
+}
+
+
+def invocation(prop):
+    """A property written as an Invocation (a command with its result): its command and reply, as read or write by its name."""
+    inv = prop.get("Invocation", {})
+    cmd = inv.get("Command")
+    rsp = prop.get("Result", {}).get("Response")
+    if not isinstance(cmd, dict) or "gaiaV3" not in cmd:
+        return None, None
+    block = {"send": command(cmd)}
+    if isinstance(rsp, dict) and "gaiaV3" in rsp:
+        block["reply"] = command(rsp)
+    return ("set" if "Set" in cmd["PI_command_name"] else "get"), block
+
+
 def hexid(v):
     return format(int(v, 16), "04X")
 
@@ -123,6 +193,20 @@ def main(assets):
                 # The same property on another product: the ids must agree.
                 assert commands[pid]["get"]["send"]["command"] == entry.get("get", {}).get("send", {}).get("command"), (pid, fname)
             commands.setdefault(pid, entry)
+    features = {name: {p["name"]: p for p in json.loads((assets / "features" / (name + ".json")).read_text(encoding="utf-8"))["properties"]} for name in ("audio-mode-2", "user-eq-1", "user-eq-2")}
+    for (fname, app_name), (pid, on_open) in FEATURE_PROPS.items():
+        p = features[fname][app_name]
+        entry = commands.setdefault(pid, {"app_property": app_name, "open": on_open})
+        for key in ("Get", "Set"):
+            blk = side(p, key)
+            if blk:
+                entry["get" if key == "Get" else "set"] = blk
+        if "Invocation" in p:
+            where, blk = invocation(p)
+            if where:
+                entry[where] = blk
+        if p.get("Value", {}).get("map"):
+            entry["values"] = p["Value"]["map"]
     reg = products["m4.json"]["RegisterNotification_ANC"]["Invocation"]["Command"]["gaiaV3"]
     data = {
         "_about": "Sennheiser's GAIA v3 commands, read from Smart Control 4.9.4's product files (docs/sennheiser/PROTOCOL.md). A command is a vendor id (0495 Sennheiser's own, 001D Qualcomm's) and a command word; its reply is the word + 0100 and its error + 0180. send/reply list each parameter's type and the app's name for it; values is the app's map of names to numbers. Written by tools/import_sennheiser_app.py; PairFree builds only what is listed here (the app's other properties are in the research notes).",
@@ -134,7 +218,7 @@ def main(assets):
             "company_id": "0BA3",
         },
         "register_notification": {"vendor": hexid(reg["vendor_ID"]), "command": hexid(reg["GAIA_command_ID"]), "features": FEATURES},
-        "commands": [{"id": pid, **commands[pid]} for pid in PROPS.values() if pid in commands],
+        "commands": [{"id": pid, "open": commands[pid].get("open", True), **{k: v for k, v in commands[pid].items() if k != "open"}} for pid in dict.fromkeys(list(PROPS.values()) + [v[0] for v in FEATURE_PROPS.values()]) if pid in commands],
         "never_send": [
             {"app_property": "Service_FactoryReset", "vendor": "0495", "command": "0040", "why": "factory reset"},
             {"app_property": "Debug_ErasePanicLog", "why": "erases the earbuds' panic log"},
@@ -145,10 +229,18 @@ def main(assets):
     models = []
     for fname, (name, klass, names) in SC_MODELS.items():
         have = [pid for app_name, pid in PROPS.items() if app_name in products[fname]]
-        models.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": have})
+        models.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": have, "eq": EQ_MODELS[fname]})
     for name, klass, names, article in SCP_MODELS:
-        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None})
+        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None})
     OUT.mkdir(parents=True, exist_ok=True)
+    eq = {
+        "_about": "Sennheiser's equalizers as Smart Control 4.9.4 computes them (docs/sennheiser/PROTOCOL.md section 6): gen2 (the earbuds hold five band gains in tenths of a dB), gen1 (a five band shelf filter set the app calculates: bass boost, loudness weights, headroom, Q, band frequencies) and the older three-band bass, mid and treble; presets in dB per band. Written by tools/import_sennheiser_app.py.",
+        "gen2": {"hz": EQ_GEN2_HZ, "range_db": 6},
+        "gen1": {k: {"bass_boost": v[0], "loudness_weights": v[1], "max_headroom": v[2], "q": [round(q, 6) for q in v[3]], "band_frequencies": v[4], "hz": v[5], "range_db": 6} for k, v in EQ_GEN1.items()},
+        "three_band": EQ_3BAND,
+        "presets": {k: [{"name": n, "gains": g} for n, g in v] for k, v in EQ_PRESETS.items()},
+    }
+    (OUT / "eq.json").write_text(json.dumps(eq, indent=1) + "\n", encoding="utf-8")
     (OUT / "commands.json").write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
     (OUT / "devices.json").write_text(json.dumps({
         "_about": "Sennheiser models PairFree controls, all on Qualcomm's GAIA v3 (docs/sennheiser/PROTOCOL.md). names are the Bluetooth names Smart Control maps to the model; properties lists the PairFree properties (commands.json ids) the app's own product file has, or null for a model with no product file in the apps: PairFree reads each property and shows what answers. reports lists device reports.",

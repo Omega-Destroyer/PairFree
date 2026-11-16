@@ -7,7 +7,7 @@ import io.github.omegadestroyer.pairfree.protocol.Model
  * A Sennheiser model on GAIA v3 (data/sennheiser/devices.json). [properties] are the PairFree properties (data/sennheiser/commands.json ids) the app's own
  * product file lists for it, or null for a model only Smart Control Plus names: PairFree then reads every property and shows the ones that answer.
  */
-public class SennheiserModel(public val name: String, public val form: Form, public val names: List<String>, public val properties: Set<String>?)
+public class SennheiserModel(public val name: String, public val form: Form, public val names: List<String>, public val properties: Set<String>?, public val eq: SennheiserModelEq? = null)
 
 public object SennheiserModels {
     public val ALL: List<SennheiserModel> get() = SENNHEISER_MODELS

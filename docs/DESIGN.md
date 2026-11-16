@@ -167,6 +167,12 @@ when nothing is connected.
 Everything here fits without scrolling on a 390 by 844 screen.
 
 1. Model name and connection state. A button to switch earbuds.
+   Under it, only while PairFree's channel is open and the phone is not playing through the earbuds
+   (connected but not Android's active output, or not connected for sound at all; issue #48): a panel
+   saying so, with "Use for sound on this phone", which asks Android to connect and play through them
+   (`AudioLinks.useForSound`; nothing goes to the earbuds). After a tap it also offers Bluetooth
+   settings, for a phone that refuses or where nothing comes of it. It stays hidden whenever PairFree
+   cannot tell (LE Audio, an output whose address Android hides).
 2. Battery for left, case and right, each with a drawing, a percentage and a bar. Headphones
    and speakers report one battery: it shows once, named and drawn as the product, with a
    generic headphones or speaker drawing until the model has its own (owner, 2026-10-14).

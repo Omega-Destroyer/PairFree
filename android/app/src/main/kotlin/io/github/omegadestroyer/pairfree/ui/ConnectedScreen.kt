@@ -234,6 +234,9 @@ private fun HomeScreen(
             AppButton(stringResource(R.string.switch_earbuds), actions::switchEarbuds)
         }
 
+        // The phone is not playing through these earbuds: offer to make it (issue #48).
+        if (live) SoundLinkCard(device.address)
+
         // Soundcore earbuds PairFree knows by name and number only: ask for a report rather than show a guess.
         if (model?.reportOnly == true || Brands[device.brand].reportOnlyWhenUnknown && model == null) {
             Panel {

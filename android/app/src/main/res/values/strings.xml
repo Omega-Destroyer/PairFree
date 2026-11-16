@@ -22,6 +22,13 @@
     <string name="look_studio_light">Studio Light</string>
     <string name="look_material_you">Material You</string>
     <string name="look_sketchbook">Sketchbook</string>
+    <!-- Home tab, when PairFree can reach the earbuds' settings but the phone is not playing sound through them (issue #48). -->
+    <string name="sound_link_title">This phone is not playing through these earbuds</string>
+    <string name="sound_link_connected">They are connected, but Android is sending sound somewhere else.</string>
+    <string name="sound_link_none">PairFree can reach their settings, but Android has not connected them for sound. That happens when another device is using them.</string>
+    <string name="sound_link_use">Use for sound on this phone</string>
+    <string name="sound_link_asked">Android was asked to switch. If nothing changes in a few seconds, choose them in Bluetooth settings.</string>
+    <string name="sound_link_refused">Android did not take the request on this phone. Choose them in Bluetooth settings.</string>
 
     <string name="permission_title">Bluetooth access</string>
     <string name="permission_body">PairFree talks to your earbuds over Bluetooth, and Android asks you to allow that. Later it may ask for two more things, both only for its status notification and both optional: to show notifications, and to link PairFree to your earbuds so the notification can appear when they connect.</string>

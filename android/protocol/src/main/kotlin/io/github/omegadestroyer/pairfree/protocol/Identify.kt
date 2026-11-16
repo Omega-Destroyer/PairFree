@@ -15,12 +15,14 @@ import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserModels
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserWire
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyWire
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 
 /** The brands PairFree controls. */
-public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL, QCY, ONEMORE, EARFUN, CAMBRIDGE, ONEPLUS }
+public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL, QCY, ONEMORE, EARFUN, CAMBRIDGE, ONEPLUS, SENNHEISER }
 
 /**
  * Which brand a paired device is, from what Android keeps for it: its Bluetooth name and the services it lists
@@ -73,6 +75,8 @@ public object Identify {
             Maker.NOTHING -> NothingWire.SERVICE_UUID.lowercase() in list
             Maker.ONEPLUS -> OneplusWire.SPP_UUID.lowercase() in list
             Maker.PIXEL -> PixelModels.hasService(list)
+            // Sennheiser's GAIA 3 serial service (its own UUID, not Qualcomm's): Smart Control opens it for every one of them.
+            Maker.SENNHEISER -> SennheiserWire.CLASSIC_UUID.lowercase() in list
             // The standard serial service, and Airoha's and JieLi's, which other brands' earbuds offer too.
             Maker.SOUNDPEATS, Maker.JBL, Maker.QCY, Maker.ONEMORE, Maker.EARFUN, Maker.CAMBRIDGE -> false
         }
@@ -90,6 +94,7 @@ public object Identify {
         Maker.EARFUN -> EarfunModels.fromName(name) != null
         Maker.CAMBRIDGE -> CambridgeModels.fromName(name) != null
         Maker.ONEPLUS -> OneplusModels.fromName(name) != null
+        Maker.SENNHEISER -> SennheiserModels.fromName(name) != null
         // Galaxy Buds names hold "Galaxy"; Bose's "Bose"; the Beats that speak B2P are known by name.
         Maker.APPLE -> AppleModels.b2p(name) != null || AppleModels.bcd(name) != null
         Maker.SAMSUNG, Maker.BOSE -> false

@@ -33,6 +33,7 @@ class GapAuditTest {
         Brand("pixel", "pixel", listOf("PixelWire"), "pixel", listOf("Pixel")),
         Brand("apple", "apple", listOf("AppleControl", "AppleOpcode"), "apple", listOf("Apple")),
         Brand("cambridge", "cambridge", listOf("CambridgeCommand"), "cambridge", listOf("Cambridge")),
+        Brand("sennheiser", "sennheiser", listOf("SennheiserCommands"), "sennheiser", listOf("Sennheiser")),
     )
 
     private val listed: JsonObject = Json.parseToJsonElement(repoFile("data/unused_ids.json").readText()).jsonObject

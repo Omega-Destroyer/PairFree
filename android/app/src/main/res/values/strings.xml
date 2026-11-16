@@ -1171,6 +1171,21 @@
     <string name="setting_ca_rock">Rock</string>
     <string name="setting_ca_voice">Voice</string>
 
+    <!-- Sennheiser (docs/sennheiser/PROTOCOL.md), the words of Smart Control's own screens where it has them -->
+    <string name="setting_sh_adaptive_anc">Adaptive noise cancelling</string>
+    <string name="setting_sh_pause_transparent">Pause music in full transparency</string>
+    <string name="setting_sh_comfort_call">Comfort call</string>
+    <string name="setting_sh_on_head">On-head detection</string>
+    <string name="setting_sh_smart_pause">Smart pause</string>
+    <string name="setting_sh_low_latency">Low latency mode</string>
+    <string name="setting_sh_touch_lock">Lock the touch controls</string>
+    <string name="setting_sh_eco_mode">Eco mode</string>
+    <string name="setting_sh_battery_protection">Battery protection</string>
+    <string name="setting_sh_prompts">Voice prompts and tones</string>
+    <string name="setting_sh_prompts_tones">Tones only</string>
+    <string name="setting_sh_prompts_voice">Tones and voice</string>
+    <string name="setting_sh_codec">Codec in use</string>
+
     <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
     <string name="setting_a3959_nc_mode">Noise cancelling type</string>
     <string name="setting_a3959_adaptive_level">Adaptive level</string>

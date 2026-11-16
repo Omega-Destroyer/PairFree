@@ -27,6 +27,7 @@ Supported brands:
 • 1MORE: 39 models. From 1MORE's app
 • EarFun: 26 models. From EarFun's app, checked against Gadgetbridge
 • Cambridge Audio: 8 models, Melomania 1+ and Touch and the Melomania Connect earbuds. From the Melomania apps
+• Sennheiser: 15 models on GAIA v3 (Accentum, Momentum 4 and 5, Momentum True Wireless 3 to 5 and more), none tried yet. From Sennheiser Smart Control
 • OnePlus and OPPO: 53 models, tried on the Buds 4. From HeyMelody
 
 What it controls, on the models that have each:
@@ -49,4 +50,4 @@ Close the brand's own app before using PairFree: only one app can control the ea
 
 Thanks to everyone who sent device reports: CONTRIBUTORS.md on GitHub.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun or Cambridge Audio.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio or Sennheiser.

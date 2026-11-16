@@ -173,6 +173,17 @@ BRANDS = [
         notes="Cambridge Audio support is read from the Melomania app (2.8.12) and its commands were checked against the official app run on a virtual earbud. It has not been tried with PairFree on real earbuds yet. The newer Melomania Connect models (A100, M100, P100) are not covered.",
     ),
     dict(
+        slug="sennheiser", page="sennheiser", name="Sennheiser", app="Sennheiser Smart Control",
+        title="Open-source Sennheiser Smart Control alternative",
+        lead="PairFree is a free, open-source Android app that controls Sennheiser's Momentum, Accentum and CX earbuds and headphones that speak GAIA v3 without Smart Control: no account, no internet access.",
+        does=[
+            "Battery for each earbud and the case.",
+            "Noise control (off, noise cancelling, transparency), anti-wind and adaptive noise cancelling.",
+            "Answering calls automatically, comfort call, on-head detection, smart pause, low latency mode, and locking the touch controls.",
+        ],
+        notes="Sennheiser support is read from Sennheiser Smart Control 4.9.4 and Smart Control Plus 1.6.3. It has not been tried with PairFree on any product yet. The older models on other protocols (Momentum 3, PXC 550, HD 450 and others) are not covered.",
+    ),
+    dict(
         slug="oneplus", page="oneplus", name="OnePlus and OPPO", app="HeyMelody",
         title="Open-source HeyMelody alternative for OnePlus and OPPO earbuds",
         lead="PairFree is a free, open-source Android app that controls OnePlus and OPPO earbuds without HeyMelody: no account, no internet access.",
@@ -219,7 +230,7 @@ QUESTIONS = [
 
 NOT_AFFILIATED = (
     "PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, "
-    "Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, OnePlus or OPPO; the names are used to say which earbuds it works with."
+    "Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, OnePlus or OPPO; the names are used to say which earbuds it works with."
 )
 
 

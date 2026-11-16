@@ -86,7 +86,14 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Text(settingTitle(setting.key), Modifier.weight(1f))
-                        Text(if (setting.key == "a3959_wind_detected") stringResource(if (setting.value == "yes") R.string.yes else R.string.no) else setting.value, color = Studio.colors.secondaryText)
+                        Text(
+                            when {
+                                setting.key == "a3959_wind_detected" -> stringResource(if (setting.value == "yes") R.string.yes else R.string.no)
+                                setting.key.startsWith("sh_wear") -> optionName(setting.key, setting.value)
+                                else -> setting.value
+                            },
+                            color = Studio.colors.secondaryText,
+                        )
                     }
                 }
             }
@@ -191,7 +198,7 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_right" -> R.string.setting_group_touch_right
         "touch_case" -> R.string.setting_group_touch_case
         "touch_dial" -> R.string.setting_group_touch_dial
-        "touch_buttons" -> R.string.touch_controls
+        "touch_buttons", "touch_default" -> R.string.touch_controls
         "sleep" -> R.string.setting_group_sleep
         "sleep_sound" -> R.string.setting_group_sleep_sound
         "attention" -> R.string.setting_group_attention
@@ -541,6 +548,19 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_prompts" -> stringResource(R.string.setting_sh_prompts)
     "sh_codec" -> stringResource(R.string.setting_sh_codec)
     "sh_bass_boost" -> stringResource(R.string.setting_sh_bass_boost)
+    "sh_sidetone" -> stringResource(R.string.setting_sh_sidetone)
+    "sh_auto_off" -> stringResource(R.string.setting_sh_auto_off)
+    "sh_bt_compat" -> stringResource(R.string.setting_sh_bt_compat)
+    "sh_transparency_slider" -> stringResource(R.string.setting_sh_transparency_slider)
+    "sh_transparency_level" -> stringResource(R.string.setting_sh_transparency_level)
+    "sh_tap_sensitivity" -> stringResource(R.string.setting_sh_tap_sensitivity)
+    "sh_open_eartip" -> stringResource(R.string.setting_sh_open_eartip)
+    "sh_lossless" -> stringResource(R.string.setting_sh_lossless)
+    "sh_sample_rate" -> stringResource(R.string.setting_sh_sample_rate)
+    "sh_prompt_language" -> stringResource(R.string.setting_sh_prompt_language)
+    "sh_wear" -> stringResource(R.string.setting_sh_wear)
+    "sh_wear_left" -> stringResource(R.string.setting_sh_wear_left)
+    "sh_wear_right" -> stringResource(R.string.setting_sh_wear_right)
     "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
     "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
     "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
@@ -899,6 +919,9 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "sh_auto_off" -> if (option == "0") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
+    key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> getString(when (option) { "low" -> R.string.setting_level_low; "mid", "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_high })
+    key.startsWith("sh_wear") -> getString(when (option) { "in_case" -> R.string.setting_sh_wear_in_case; "not_on_head" -> R.string.setting_sh_wear_off; "on_head" -> R.string.setting_sh_wear_on; else -> R.string.unknown })
     key == "sh_prompts" -> getString(when (option) { "tone_voice_off" -> R.string.action_off; "tone_on" -> R.string.setting_sh_prompts_tones; else -> R.string.setting_sh_prompts_voice })
     key == "a3959_nc_mode" -> getString(when (option) { "manual" -> R.string.a3959_manual; "adaptive" -> R.string.a3959_adaptive; else -> R.string.a3959_multi_scene })
     key == "a3959_scene" -> getString(when (option) { "transport" -> R.string.a3959_transport; "outdoor" -> R.string.a3959_outdoor; else -> R.string.a3959_indoor })
@@ -1143,6 +1166,12 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     (key.startsWith("touch_") && isTouchRow(key)) || key.startsWith("ef_button_") -> getString(
         when (option) {
             "none" -> R.string.action_none
+            "sh_anc" -> R.string.setting_anc
+            "sh_transparency" -> R.string.anc_transparency
+            "sh_lock" -> R.string.setting_sh_touch_lock
+            "sh_open_ear_tip" -> R.string.setting_sh_open_eartip
+            "sh_anc_transparency" -> R.string.setting_sh_anc_transparency
+            "sh_sound_mode" -> R.string.setting_sh_sound_mode
             "play_pause" -> R.string.action_play_pause
             "previous" -> R.string.action_previous
             "next" -> R.string.action_next
@@ -1414,6 +1443,7 @@ private fun actionStart(key: String): Int = when (key) {
     "nc_optimizer" -> R.string.setting_nc_optimizer_start
     "restart" -> R.string.setting_restart
     "power_off" -> R.string.setting_power_off
+    "sh_touch_default" -> R.string.setting_sh_touch_default
     else -> R.string.setting_action_start
 }
 

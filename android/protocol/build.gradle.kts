@@ -2168,6 +2168,10 @@ abstract class GenerateSennheiserTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val eqJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val touchJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -2178,6 +2182,8 @@ abstract class GenerateSennheiserTables : DefaultTask() {
     fun generate() {
         @Suppress("UNCHECKED_CAST")
         val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val touch = JsonSlurper().parse(touchJson.get().asFile) as Map<String, Any?>
         @Suppress("UNCHECKED_CAST")
         val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("models") as List<Map<String, Any?>>
         @Suppress("UNCHECKED_CAST")
@@ -2284,6 +2290,17 @@ abstract class GenerateSennheiserTables : DefaultTask() {
         out.appendLine("    )")
         out.appendLine("}")
         out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        fun intMap(v: Any?) = (v as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${(it.value as Number).toInt()}" }
+        out.appendLine("/** The touch and button numbers and the choices of auto power-off and transparency (data/sennheiser/touch.json). */")
+        out.appendLine("public object SennheiserTouchTables {")
+        out.appendLine("    public val ACTIONS: Map<String, Int> = ${intMap(touch["actions"])}")
+        out.appendLine("    public val GESTURES: Map<String, Int> = ${intMap(touch["gestures"])}")
+        out.appendLine("    public val BUTTONS: Map<String, Int> = ${intMap(touch["buttons"])}")
+        out.appendLine("    public val AUTO_OFF_SECONDS: List<Int> = ${ints(touch["auto_off_seconds"])}")
+        out.appendLine("    public val TRANSPARENCY_LEVELS: List<Int> = ${ints(touch["transparency_levels"])}")
+        out.appendLine("}")
+        out.appendLine()
         out.appendLine("/** Every model in data/sennheiser/devices.json. */")
         out.appendLine("internal val SENNHEISER_MODELS: List<SennheiserModel> = listOf(")
         for (d in devices) {
@@ -2300,7 +2317,14 @@ abstract class GenerateSennheiserTables : DefaultTask() {
                 val g1 = eqm["gen1"] as List<Any?>?
                 "SennheiserModelEq(${eqm["gen2"]}, ${if (g1 == null) "null" else str(g1[0])}, ${if (g1 == null) "null" else str(g1[1])}, ${(eqm["three_band"] as Number).toInt()}, ${str(eqm["presets"])})"
             }
-            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props, $eqText),")
+            @Suppress("UNCHECKED_CAST")
+            val touchList = d["touch"] as List<Map<String, Any?>>?
+            val touchText = if (touchList == null) "null" else touchList.joinToString(", ", "listOf(", ")") {
+                "SennheiserTouchAction(${str(it["action"])}, ${strings(it["gestures"])}, ${it["min_firmware"]?.let { f -> str(f) } ?: "null"})"
+            }
+            val sidetone = (d["sidetone_max"] as Number?)?.toInt()?.toString() ?: "null"
+            val transparency = (d["transparency"] as String?)?.let { str(it) } ?: "null"
+            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props, $eqText, $sidetone, $transparency, $touchText),")
         }
         out.appendLine(")")
 
@@ -2314,6 +2338,7 @@ val generateSennheiserTables = tasks.register<GenerateSennheiserTables>("generat
     commandsJson = rootProject.layout.projectDirectory.file("../data/sennheiser/commands.json")
     devicesJson = rootProject.layout.projectDirectory.file("../data/sennheiser/devices.json")
     eqJson = rootProject.layout.projectDirectory.file("../data/sennheiser/eq.json")
+    touchJson = rootProject.layout.projectDirectory.file("../data/sennheiser/touch.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.sennheiser"
     outputDir = layout.buildDirectory.dir("generated/sennheiser")
 }

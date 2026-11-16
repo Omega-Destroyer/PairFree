@@ -24,7 +24,15 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
 
     private val parser = Gaia3Parser()
     private fun isEq(c: SennheiserCommand): Boolean = c.vendor == SennheiserWire.VENDOR && ((c.get ?: c.set ?: 0) shr 9) == FEATURE_USER_EQ
-    private val commands: List<SennheiserCommand> = SennheiserCommands.ALL.filter { (model?.properties == null || it.id in model.properties) && it.open && !isEq(it) }
+    private val commands: List<SennheiserCommand> = SennheiserCommands.ALL.filter { (model?.properties == null || it.id in model.properties) && it.open && !isEq(it) && usedByScreens(it.id) }
+
+    /** A property the app's screen for this product does not use is not read (the Momentum 4's `TransparentHearing` is the older switch; its screen is the slider). */
+    private fun usedByScreens(id: String): Boolean = when (id) {
+        SennheiserCommands.SIDETONE -> model?.sidetoneMax != null
+        SennheiserCommands.ANC_LEVEL -> model?.transparency == "slider"
+        SennheiserCommands.TRANSPARENCY_LEVEL -> model?.transparency == "levels"
+        else -> true
+    }
     private val byKey: Map<Int, SennheiserCommand> = SennheiserCommands.ALL.filter { it.get != null && !isEq(it) }.associateBy { Gaia3Packet.keyOf(it.vendor, it.get!!) }
     private val asked = mutableSetOf<Int>()
     private val answered = mutableMapOf<String, ByteArray>()
@@ -49,6 +57,27 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         for (feature in REGISTERED) SennheiserWire.FEATURES[feature]?.let { add(frame(SennheiserWire.REGISTER_VENDOR, SennheiserWire.REGISTER_COMMAND, it)) }
         for (c in commands) if (c.get != null) add(read(c))
         addAll(eqStart())
+        addAll(moreStart())
+    }
+
+    /** The reads that need a payload: the auto power-off timer (timer 0) and, where the product has them, each touch gesture. */
+    private fun moreStart(): List<ByteArray> = buildList {
+        if (has(SennheiserCommands.AUTO_OFF)) add(readWith(SennheiserCommands.AUTO_OFF, byteArrayOf(0)))
+        addAll(touchReads())
+    }
+
+    /** One read per gesture of each earbud, and whether they are the defaults. */
+    private fun touchReads(): List<ByteArray> = buildList {
+        if (model?.touch == null || !has(SennheiserCommands.MMI)) return@buildList
+        for (side in listOf("left", "right")) for (gesture in TOUCH_GESTURE_ORDER) add(readWith(SennheiserCommands.MMI, byteArrayOf(touchSide(side).toByte(), touchPattern(gesture).toByte())))
+        if (has(SennheiserCommands.MMI_IS_DEFAULT)) add(read(command(SennheiserCommands.MMI_IS_DEFAULT)!!))
+    }
+
+    private fun has(id: String): Boolean = command(id) != null && (model?.properties == null || id in model.properties)
+
+    private fun readWith(id: String, payload: ByteArray): ByteArray {
+        val c = command(id)!!
+        return frameOf(c.vendor, c.get!!, payload)
     }
 
     override fun poll(): List<ByteArray> = command(SennheiserCommands.BATTERY_PERCENT)?.let { listOf(read(it)) } ?: emptyList()
@@ -90,9 +119,28 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     }
 
     private val values = mutableMapOf<String, ByteArray>()
+    private val touchState = mutableMapOf<Pair<Int, Int>, Int>()
+    private var autoOffSeconds: Int? = null
 
     /** Takes one property's bytes; true when what the screens show changed. */
     private fun decode(c: SennheiserCommand, payload: ByteArray): Boolean {
+        if (c.id == SennheiserCommands.MMI) {
+            // A gesture's answer names its own button and gesture: button, gesture, function.
+            if (payload.size < 3) return false
+            val at = (payload[0].toInt() and 0xFF) to (payload[1].toInt() and 0xFF)
+            val function = payload[2].toInt() and 0xFF
+            if (touchState[at] == function) return false
+            touchState[at] = function
+            return true
+        }
+        if (c.id == SennheiserCommands.AUTO_OFF) {
+            // The answer to the read of timer 0: the timer's number, then its value in seconds.
+            if (payload.size < 3 || payload[0].toInt() != 0) return false
+            val seconds = ((payload[1].toInt() and 0xFF) shl 8) or (payload[2].toInt() and 0xFF)
+            if (autoOffSeconds == seconds) return false
+            autoOffSeconds = seconds
+            return true
+        }
         val before = values[c.id]
         if (before != null && before.contentEquals(payload)) return false
         values[c.id] = payload.copyOf()
@@ -185,12 +233,20 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 ancState(ANTI_WIND)?.let { add(Setting.Toggle(KEY_ANTI_WIND, it, enabled = on(SennheiserCommands.ANC_STATUS) != false)) }
                 ancState(ADAPTIVE)?.let { add(Setting.Toggle(KEY_ADAPTIVE, it, enabled = on(SennheiserCommands.ANC_STATUS) != false)) }
                 on(SennheiserCommands.TRANSPARENCY_PAUSE)?.let { add(Setting.Toggle(KEY_PAUSE_TRANSPARENT, it)) }
+                // The transparency level: the Momentum 4 and Accentum Plus have the app's slider between transparency (0) and noise cancelling (100); the earbuds with
+                // transparent hearing take three levels (what the app writes: 1, 50 and 100).
+                if (model?.transparency == "slider") values[SennheiserCommands.ANC_LEVEL]?.firstOrNull()?.let { add(Setting.Level(KEY_TRANSPARENCY_SLIDER, (it.toInt() and 0xFF).coerceAtMost(100), 0, 100)) }
+                if (model?.transparency == "levels") u8(SennheiserCommands.TRANSPARENCY_LEVEL)?.let { v ->
+                    add(Setting.Choice(KEY_TRANSPARENCY_LEVEL, TRANSPARENCY_NAMES.entries.firstOrNull { it.value == v }?.key, TRANSPARENCY_NAMES.keys.toList()))
+                }
             }
             if (noise.isNotEmpty()) add(SettingGroup("noise", SettingTab.HOME, noise))
             if (eqKnown) add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Toggle(KEY_BASS_BOOST, eqBass))))
             val calls = buildList<Setting> {
                 on(SennheiserCommands.AUTO_CALL)?.let { add(Setting.Toggle(KEY_AUTO_CALL, it)) }
                 on(SennheiserCommands.COMFORT_CALL)?.let { add(Setting.Toggle(KEY_COMFORT_CALL, it)) }
+                val max = model?.sidetoneMax
+                if (max != null) u8(SennheiserCommands.SIDETONE)?.let { add(Setting.Level(KEY_SIDETONE, it.coerceAtMost(max), 0, max)) }
             }
             if (calls.isNotEmpty()) add(SettingGroup("calls", SettingTab.DEVICE, calls))
             val other = buildList<Setting> {
@@ -202,10 +258,96 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 on(SennheiserCommands.ECO_MODE)?.let { add(Setting.Toggle(KEY_ECO, it)) }
                 on(SennheiserCommands.BATTERY_PROTECTION)?.let { add(Setting.Toggle(KEY_BATTERY_PROTECTION, it)) }
                 u8(SennheiserCommands.PROMPT_MODE)?.let { add(Setting.Choice(KEY_PROMPTS, PROMPTS.entries.firstOrNull { e -> e.value == it }?.key, PROMPTS.keys.toList())) }
+                autoOffSeconds?.let { sec -> add(Setting.Choice(KEY_AUTO_OFF, (sec / 60).toString(), SennheiserTouchTables.AUTO_OFF_SECONDS.map { (it / 60).toString() })) }
+                on(SennheiserCommands.BT_COMPAT)?.let { add(Setting.Toggle(KEY_BT_COMPAT, it)) }
+                on(SennheiserCommands.OPEN_EARTIP)?.let { add(Setting.Toggle(KEY_OPEN_EARTIP, it)) }
+                on(SennheiserCommands.LOSSLESS)?.let { add(Setting.Toggle(KEY_LOSSLESS, it)) }
+                u8(SennheiserCommands.TAP_SENSITIVITY)?.let { v -> command(SennheiserCommands.TAP_SENSITIVITY)?.values?.entries?.firstOrNull { it.value == v }?.let { e -> add(Setting.Choice(KEY_TAP_SENSITIVITY, e.key.lowercase(), TAP_OPTIONS)) } }
                 codec()?.let { add(Setting.Information(KEY_CODEC, it)) }
+                sampleRate()?.let { add(Setting.Information(KEY_SAMPLE_RATE, "$it Hz")) }
+                promptLanguage()?.let { add(Setting.Information(KEY_PROMPT_LANGUAGE, it.lowercase().replaceFirstChar { c -> c.uppercase() })) }
+                wearStates().forEachIndexed { i, state -> add(Setting.Information(if (model?.form == io.github.omegadestroyer.pairfree.protocol.Form.EARBUDS) (if (i == 0) KEY_WEAR_LEFT else KEY_WEAR_RIGHT) else KEY_WEAR, state)) }
             }
             if (other.isNotEmpty()) add(SettingGroup("other", SettingTab.DEVICE, other))
+            addAll(touchGroups())
         }
+
+    private fun sampleRate(): Int? = values[SennheiserCommands.SAMPLE_RATE]?.takeIf { it.size >= 4 }?.fold(0L) { acc, b -> (acc shl 8) or (b.toLong() and 0xFF) }?.takeIf { it in 1..1_000_000 }?.toInt()
+
+    /** The language of the voice prompts the earbuds read out (`VoicePrompt_Language`: the app's names, 0 English to 7 Korean). */
+    private fun promptLanguage(): String? = u8(SennheiserCommands.PROMPT_LANGUAGE)?.let { code -> command(SennheiserCommands.PROMPT_LANGUAGE)?.values?.entries?.firstOrNull { it.value == code }?.key }
+
+    /** Where each earbud (or the headphones) is: `PhysicalDevice_State` in the app's words, as keys the screens turn into words. */
+    private fun wearStates(): List<String> {
+        val b = values[SennheiserCommands.PHYSICAL_STATE] ?: return emptyList()
+        val names = mapOf(1 to "in_case", 2 to "not_on_head", 3 to "on_head")
+        val count = if (model?.form == io.github.omegadestroyer.pairfree.protocol.Form.EARBUDS) 2 else 1
+        return b.take(count).map { names[it.toInt() and 0xFF] ?: "unknown" }
+    }
+
+    // Touch and button controls (docs/sennheiser/PROTOCOL.md section 4.3) -------------------------------------------------------------------
+
+    private fun touchSide(name: String): Int = SennheiserTouchTables.BUTTONS.getValue(name)
+
+    private fun touchPattern(gesture: String): Int = SennheiserTouchTables.GESTURES.getValue(gesture)
+
+    /** The functions this product's screen offers for [gesture], with the firmware its class demands. */
+    private fun touchChoices(gesture: String): List<SennheiserTouchAction> {
+        val list = model?.touch ?: return emptyList()
+        val have = SennheiserEq.version(firmware)
+        return list.filter { a ->
+            (a.gestures.isEmpty() || gesture in a.gestures) &&
+                (a.minFirmware == null || (have != null && SennheiserEq.version(a.minFirmware)?.let { SennheiserEq.atLeast(have, it) } == true))
+        }
+    }
+
+    private fun touchGroups(): List<SettingGroup> {
+        if (model?.touch == null || touchState.isEmpty()) return emptyList()
+        val out = mutableListOf<SettingGroup>()
+        for (side in listOf("left", "right")) {
+            val rows = buildList<Setting> {
+                for (gesture in TOUCH_GESTURE_ORDER) {
+                    val function = touchState[touchSide(side) to touchPattern(gesture)] ?: continue
+                    // The app shows a gesture only when the earbuds' answer is one of the functions its screen offers.
+                    val current = model.touch.firstOrNull { SennheiserTouchTables.ACTIONS[it.action] == function } ?: continue
+                    val options = touchChoices(gesture)
+                    if (options.isEmpty()) continue
+                    add(Setting.Choice(touchKey(gesture, side), TOUCH_OPTION.getValue(current.action), options.map { TOUCH_OPTION.getValue(it.action) }))
+                }
+            }
+            if (rows.isNotEmpty()) out += SettingGroup("touch_$side", SettingTab.CONTROLS, rows)
+        }
+        if (out.isNotEmpty() && touchDefault == false) out += SettingGroup("touch_default", SettingTab.CONTROLS, listOf(Setting.Action(KEY_TOUCH_DEFAULT)))
+        return out
+    }
+
+    private val touchDefault: Boolean? get() = values[SennheiserCommands.MMI_IS_DEFAULT]?.firstOrNull()?.let { it.toInt() != 0 }
+
+    private fun touchKey(gesture: String, side: String) = "touch_${TOUCH_KEY_GESTURE.getValue(gesture)}_$side"
+
+    /** A choice in one of the touch rows: the key is `touch_<gesture>_<side>`. */
+    private fun changeTouch(change: SettingChange.Choice): List<ByteArray>? {
+        val side = change.key.substringAfterLast('_')
+        val gestureKey = change.key.removePrefix("touch_").removeSuffix("_$side")
+        val gesture = TOUCH_KEY_GESTURE.entries.firstOrNull { it.value == gestureKey }?.key ?: return null
+        if (side != "left" && side != "right") return null
+        val action = TOUCH_OPTION.entries.firstOrNull { it.value == change.option }?.key ?: return null
+        if (touchChoices(gesture).none { it.action == action }) return null
+        val function = SennheiserTouchTables.ACTIONS.getValue(action)
+        val c = command(SennheiserCommands.MMI) ?: return null
+        touchState[touchSide(side) to touchPattern(gesture)] = function
+        readBacks += readWith(SennheiserCommands.MMI, byteArrayOf(touchSide(side).toByte(), touchPattern(gesture).toByte()))
+        return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(touchSide(side).toByte(), touchPattern(gesture).toByte(), function.toByte())))
+    }
+
+    /** Restores the gestures to the product's own defaults (`SetDefaultMMIConfig`, as the app's reset of the touch controls does), then reads them again. */
+    private fun restoreTouch(): List<ByteArray>? {
+        val c = command(SennheiserCommands.MMI_DEFAULT) ?: return null
+        values[SennheiserCommands.MMI_IS_DEFAULT] = byteArrayOf(1)
+        val out = listOf(frameOf(c.vendor, c.set!!, ByteArray(0)))
+        readBacks += touchReads()
+        return out
+    }
 
     private fun write(id: String, vararg payload: Int): List<ByteArray>? {
         val c = command(id) ?: return null
@@ -255,6 +397,40 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 i += 2
             }
             return write(SennheiserCommands.ANC_MODE, mode, flag)?.also { refresh() }
+        }
+        if (change is SettingChange.Level) {
+            val (id, max) = when (change.key) {
+                KEY_SIDETONE -> SennheiserCommands.SIDETONE to (model?.sidetoneMax ?: return null)
+                KEY_TRANSPARENCY_SLIDER -> SennheiserCommands.ANC_LEVEL to 100
+                else -> return null
+            }
+            if (values[id] == null) return null
+            val v = change.value.coerceIn(0, max)
+            values[id] = byteArrayOf(v.toByte())
+            return write(id, v)
+        }
+        if (change is SettingChange.Press && change.key == KEY_TOUCH_DEFAULT) return restoreTouch()
+        if (change is SettingChange.Choice && change.key.startsWith("touch_")) return changeTouch(change)
+        if (change is SettingChange.Choice && change.key == KEY_AUTO_OFF) {
+            val minutes = change.option.toIntOrNull() ?: return null
+            val seconds = minutes * 60
+            if (seconds !in SennheiserTouchTables.AUTO_OFF_SECONDS) return null
+            val c = command(SennheiserCommands.AUTO_OFF) ?: return null
+            autoOffSeconds = seconds
+            readBacks += readWith(SennheiserCommands.AUTO_OFF, byteArrayOf(0))
+            return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(0, (seconds shr 8).toByte(), seconds.toByte())))
+        }
+        if (change is SettingChange.Choice && change.key == KEY_TRANSPARENCY_LEVEL) {
+            val v = TRANSPARENCY_NAMES[change.option] ?: return null
+            if (values[SennheiserCommands.TRANSPARENCY_LEVEL] == null) return null
+            values[SennheiserCommands.TRANSPARENCY_LEVEL] = byteArrayOf(v.toByte())
+            return write(SennheiserCommands.TRANSPARENCY_LEVEL, v)
+        }
+        if (change is SettingChange.Choice && change.key == KEY_TAP_SENSITIVITY) {
+            val v = command(SennheiserCommands.TAP_SENSITIVITY)?.values?.entries?.firstOrNull { it.key.equals(change.option, ignoreCase = true) }?.value ?: return null
+            if (values[SennheiserCommands.TAP_SENSITIVITY] == null) return null
+            values[SennheiserCommands.TAP_SENSITIVITY] = byteArrayOf(v.toByte())
+            return write(SennheiserCommands.TAP_SENSITIVITY, v)
         }
         if (change is SettingChange.Choice && change.key == KEY_PROMPTS) {
             val v = PROMPTS[change.option] ?: return null
@@ -534,6 +710,20 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         public const val KEY_PROMPTS: String = "sh_prompts"
         public const val KEY_CODEC: String = "sh_codec"
         public const val KEY_BASS_BOOST: String = "sh_bass_boost"
+        public const val KEY_SIDETONE: String = "sh_sidetone"
+        public const val KEY_AUTO_OFF: String = "sh_auto_off"
+        public const val KEY_BT_COMPAT: String = "sh_bt_compat"
+        public const val KEY_TRANSPARENCY_SLIDER: String = "sh_transparency_slider"
+        public const val KEY_TRANSPARENCY_LEVEL: String = "sh_transparency_level"
+        public const val KEY_TAP_SENSITIVITY: String = "sh_tap_sensitivity"
+        public const val KEY_OPEN_EARTIP: String = "sh_open_eartip"
+        public const val KEY_LOSSLESS: String = "sh_lossless"
+        public const val KEY_SAMPLE_RATE: String = "sh_sample_rate"
+        public const val KEY_PROMPT_LANGUAGE: String = "sh_prompt_language"
+        public const val KEY_WEAR: String = "sh_wear"
+        public const val KEY_WEAR_LEFT: String = "sh_wear_left"
+        public const val KEY_WEAR_RIGHT: String = "sh_wear_right"
+        public const val KEY_TOUCH_DEFAULT: String = "sh_touch_default"
 
         /** The feature id of the equalizers (Sennheiser's `user_eq`). */
         internal const val FEATURE_USER_EQ: Int = 8
@@ -561,7 +751,28 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             KEY_TOUCH_LOCK to SennheiserCommands.TOUCH_LOCK,
             KEY_ECO to SennheiserCommands.ECO_MODE,
             KEY_BATTERY_PROTECTION to SennheiserCommands.BATTERY_PROTECTION,
+            KEY_BT_COMPAT to SennheiserCommands.BT_COMPAT,
+            KEY_OPEN_EARTIP to SennheiserCommands.OPEN_EARTIP,
+            KEY_LOSSLESS to SennheiserCommands.LOSSLESS,
         )
+
+        /** The gestures a product's earbuds are asked about, in the order the app reads them. */
+        private val TOUCH_GESTURE_ORDER = listOf("single", "double", "triple", "long_press")
+
+        /** The rows' keys for the gestures (the screens' shared touch rows call a long press "hold"). */
+        private val TOUCH_KEY_GESTURE = mapOf("single" to "single", "double" to "double", "triple" to "triple", "long_press" to "hold")
+
+        /** The words (option keys) the screens have for each function: the shared touch ones where they exist, else `sh_`. */
+        private val TOUCH_OPTION = mapOf(
+            "none" to "none", "play_pause" to "play_pause", "next_song" to "next", "previous_song" to "previous", "volume_up" to "volume_up", "volume_down" to "volume_down",
+            "voice_assistant" to "voice_assistant", "anc" to "sh_anc", "transparent_hearing" to "sh_transparency", "toggle_lock" to "sh_lock",
+            "toggle_open_ear_tip" to "sh_open_ear_tip", "anc_th_toggle" to "sh_anc_transparency", "toggle_bass_boost" to "bass_boost", "sound_mode_toggle" to "sh_sound_mode",
+        )
+
+        /** The three transparency levels the app's screens write for the earbuds with transparent hearing. */
+        private val TRANSPARENCY_NAMES = linkedMapOf("low" to 1, "medium" to 50, "high" to 100)
+
+        private val TAP_OPTIONS = listOf("low", "mid", "high")
 
         /** The app's `Setting_AudioPromptMode` values. */
         private val PROMPTS = linkedMapOf("tone_voice_off" to 0, "tone_on" to 1, "tone_voice_on" to 2)

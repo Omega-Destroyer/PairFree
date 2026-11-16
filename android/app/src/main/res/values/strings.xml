@@ -1187,6 +1187,25 @@
     <string name="setting_sh_prompts_voice">Tones and voice</string>
     <string name="setting_sh_codec">Codec in use</string>
     <string name="setting_sh_bass_boost">Bass boost</string>
+    <string name="setting_sh_sidetone">Sidetone (hear your own voice on calls)</string>
+    <string name="setting_sh_auto_off">Automatic power off</string>
+    <string name="setting_sh_bt_compat">Bluetooth compatibility mode</string>
+    <string name="setting_sh_transparency_slider">Transparency and noise cancelling</string>
+    <string name="setting_sh_transparency_level">Transparency level</string>
+    <string name="setting_sh_tap_sensitivity">Tap sensitivity</string>
+    <string name="setting_sh_open_eartip">Open ear tip support</string>
+    <string name="setting_sh_lossless">aptX Lossless</string>
+    <string name="setting_sh_sample_rate">Sample rate</string>
+    <string name="setting_sh_prompt_language">Voice prompt language</string>
+    <string name="setting_sh_wear">Worn</string>
+    <string name="setting_sh_wear_left">Left earbud</string>
+    <string name="setting_sh_wear_right">Right earbud</string>
+    <string name="setting_sh_wear_in_case">In the case</string>
+    <string name="setting_sh_wear_off">Not worn</string>
+    <string name="setting_sh_wear_on">Worn</string>
+    <string name="setting_sh_anc_transparency">Switch between noise cancelling and transparency</string>
+    <string name="setting_sh_sound_mode">Switch the sound mode</string>
+    <string name="setting_sh_touch_default">Restore the default touch controls</string>
 
     <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
     <string name="setting_a3959_nc_mode">Noise cancelling type</string>

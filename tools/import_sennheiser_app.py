@@ -33,7 +33,27 @@ PROPS = {
     "Power_EcoMode": "eco_mode",
     "Power_BatteryProtectionMode": "battery_protection",
     "Setting_AudioPromptMode": "prompt_mode",
+    # The second batch (docs/sennheiser/PROTOCOL.md section 4.2).
+    "SidetoneState": "sidetone",
+    "BluetoothCompatibilityMode": "bt_compat",
+    "ANC_Transparency": "anc_level",
+    "TransparentHearing": "transparency_level",
+    "VoicePrompt_Language": "prompt_language",
+    "TapDetection": "tap_sensitivity",
+    "Sound_OpenEartip": "open_eartip",
+    "AptXLosslessSupport": "lossless",
+    "PhysicalDevice_State": "physical_state",
+    "Sound_Sample_Rate": "sample_rate",
+    # A write and a read that are two properties in the files (each an Invocation), kept as one id.
+    "Config_GetTimer": "auto_off",
+    "Config_SetTimer": "auto_off",
+    "IsDefaultMMIConfig": "mmi_is_default",
+    "SetDefaultMMIConfig": "mmi_default",
+    "GetMMIConfig": "mmi",
+    "SetMMIConfig": "mmi",
 }
+# Properties that need a payload to read (a timer number, a button and a pattern): the session reads them where it knows the payload.
+NOT_ON_OPEN = {"auto_off", "mmi", "mmi_default", "mmi_is_default"}
 
 # The Sennheiser vendor id's notification registration (RegisterNotification_* in the product files; `Additional_Values` is the feature id).
 FEATURES = {"core": 0, "device": 2, "battery": 3, "generic_audio": 4, "user_eq": 8, "versions": 9, "device_management": 10, "mmi": 11,
@@ -104,6 +124,49 @@ EQ_MODELS = {
     "msport1.json": {"gen2": True, "gen1": ["momentum_sport", "0.0.0"], "three_band": 4, "presets": "momentum_sport"},
     "tw3.json": {"gen2": False, "gen1": ["mtw3", "2.10.5"], "three_band": 4, "presets": "mtw3"},
     "tw4.json": {"gen2": True, "gen1": ["mtw4", "0.0.0"], "three_band": 4, "presets": "mtw3"},
+}
+
+# What each product's class in Smart Control's JavaScript sets up beyond its properties (docs/sennheiser/PROTOCOL.md section 4.2).
+# sidetone_max: the highest level of `SidetoneState` the product's screen offers (`phoneCallsMaxValue`, or the CX models' OFF, MIN and MAX);
+# transparency: "slider" (`ANC_Transparency`, 0 to 100, on the Accentum Plus and the Momentum 4) or "levels" (`TransparentHearing`: the app writes 1, 50 or 100).
+EXTRAS = {
+    "ac1.json": {"sidetone_max": 2, "transparency": None},
+    "acp1.json": {"sidetone_max": 4, "transparency": "slider"},
+    "atw1.json": {"sidetone_max": 2, "transparency": "levels"},
+    "cx200.json": {"sidetone_max": 2, "transparency": None},
+    "cx200sports.json": {"sidetone_max": 2, "transparency": None},
+    "cx400II.json": {"sidetone_max": 2, "transparency": None},
+    "cx500.json": {"sidetone_max": 2, "transparency": None},
+    "m4.json": {"sidetone_max": 4, "transparency": "slider"},
+    "msport1.json": {"sidetone_max": 2, "transparency": "levels"},
+    "tw3.json": {"sidetone_max": None, "transparency": "levels"},
+    "tw4.json": {"sidetone_max": 2, "transparency": "levels"},
+}
+AUTO_OFF_SECONDS = [0, 900, 1800, 3600]
+TRANSPARENCY_LEVELS = [1, 50, 100]
+
+# The touch and button functions (`O.S2`), the gestures (`O.m3`) and which buttons: the app's own numbers. A product's `touch` lists the functions its class
+# offers (`availableActions`) with the gestures each is allowed on (`constrainedTo`; empty: any), and the firmware a function needs where the class says so.
+# The Accentum, Accentum Plus and Momentum 4 offer none (their `availableActions` is empty: the app only shows their fixed gestures).
+TOUCH_ACTIONS = {
+    "none": 0, "play_pause": 1, "next_song": 2, "previous_song": 3, "volume_up": 4, "volume_down": 5, "transparent_hearing": 6, "voice_assistant": 7,
+    "anc": 9, "toggle_lock": 13, "toggle_open_ear_tip": 16, "anc_th_toggle": 18, "toggle_bass_boost": 21, "sound_mode_toggle": 15,
+}
+TOUCH_PATTERNS = {"single": 1, "double": 2, "triple": 3, "long_press": 4}
+TOUCH_SIDES = {"right": 0, "left": 1}
+_RW = ["single", "double", "triple"]
+_FE = ["double", "triple"]
+_CX = [("none", []), ("play_pause", _RW), ("next_song", _RW), ("previous_song", _RW), ("voice_assistant", []), ("volume_up", ["long_press"]), ("volume_down", ["long_press"])]
+TOUCH = {
+    "atw1.json": [*_CX, ("anc", []), ("transparent_hearing", []), ("toggle_lock", ["triple", "long_press"])],
+    "cx200.json": list(_CX),
+    "cx200sports.json": [*_CX, ("toggle_open_ear_tip", [], "2.9.5"), ("toggle_lock", ["triple"], "2.9.5")],
+    "cx400II.json": [*_CX, ("anc", []), ("transparent_hearing", [])],
+    "cx500.json": [*_CX, ("anc", []), ("transparent_hearing", [])],
+    "msport1.json": [("none", _FE), ("play_pause", _FE), ("previous_song", _FE), ("next_song", _FE), ("anc_th_toggle", _FE), ("toggle_lock", _FE),
+                     ("toggle_bass_boost", _FE, "3.17.3"), ("sound_mode_toggle", _FE, "3.17.3"), ("voice_assistant", _FE), ("volume_up", ["long_press"]), ("volume_down", ["long_press"])],
+    "tw3.json": [*_CX, ("anc", []), ("transparent_hearing", [])],
+    "tw4.json": [*_CX, ("anc", []), ("transparent_hearing", []), ("toggle_lock", ["triple", "long_press"])],
 }
 
 # The commands of the shared feature files (assets/app/features): (file, app property) -> (PairFree id, read on opening). The ones that take a payload (a band's
@@ -189,10 +252,22 @@ def main(assets):
                 entry["get"] = get
             if set_:
                 entry["set"] = set_
-            if pid in commands and commands[pid] != entry:
-                # The same property on another product: the ids must agree.
-                assert commands[pid]["get"]["send"]["command"] == entry.get("get", {}).get("send", {}).get("command"), (pid, fname)
-            commands.setdefault(pid, entry)
+            if "Invocation" in p:
+                where, blk = invocation(p)
+                if where:
+                    entry[where] = blk
+            if pid in commands:
+                # The same property on another product (or the other half of a read and a write): the ids must agree, and a half adds to the entry.
+                old = commands[pid]
+                for key in ("get", "set"):
+                    if key in entry and key in old:
+                        assert old[key]["send"]["command"] == entry[key]["send"]["command"], (pid, fname, key)
+                    elif key in entry:
+                        old[key] = entry[key]
+                if "values" in entry and "values" not in old:
+                    old["values"] = entry["values"]
+                continue
+            commands[pid] = entry
     features = {name: {p["name"]: p for p in json.loads((assets / "features" / (name + ".json")).read_text(encoding="utf-8"))["properties"]} for name in ("audio-mode-2", "user-eq-1", "user-eq-2")}
     for (fname, app_name), (pid, on_open) in FEATURE_PROPS.items():
         p = features[fname][app_name]
@@ -218,20 +293,21 @@ def main(assets):
             "company_id": "0BA3",
         },
         "register_notification": {"vendor": hexid(reg["vendor_ID"]), "command": hexid(reg["GAIA_command_ID"]), "features": FEATURES},
-        "commands": [{"id": pid, "open": commands[pid].get("open", True), **{k: v for k, v in commands[pid].items() if k != "open"}} for pid in dict.fromkeys(list(PROPS.values()) + [v[0] for v in FEATURE_PROPS.values()]) if pid in commands],
+        "commands": [{"id": pid, "open": commands[pid].get("open", pid not in NOT_ON_OPEN), **{k: v for k, v in commands[pid].items() if k != "open"}} for pid in dict.fromkeys(list(PROPS.values()) + [v[0] for v in FEATURE_PROPS.values()]) if pid in commands],
         "never_send": [
             {"app_property": "Service_FactoryReset", "vendor": "0495", "command": "0040", "why": "factory reset"},
             {"app_property": "Debug_ErasePanicLog", "why": "erases the earbuds' panic log"},
             {"app_property": "Upgrade_*", "why": "firmware update (the VMUP commands)"},
-            {"app_property": "SetMMIConfig, SetDefaultMMIConfig", "why": "not built yet"},
         ],
     }
     models = []
     for fname, (name, klass, names) in SC_MODELS.items():
         have = [pid for app_name, pid in PROPS.items() if app_name in products[fname]]
-        models.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": have, "eq": EQ_MODELS[fname]})
+        touch = TOUCH.get(fname)
+        models.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": have, "eq": EQ_MODELS[fname], **EXTRAS[fname],
+                       "touch": None if touch is None else [{"action": a[0], "gestures": a[1], **({"min_firmware": a[2]} if len(a) > 2 else {})} for a in touch]})
     for name, klass, names, article in SCP_MODELS:
-        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None})
+        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None, "sidetone_max": None, "transparency": None, "touch": None})
     OUT.mkdir(parents=True, exist_ok=True)
     eq = {
         "_about": "Sennheiser's equalizers as Smart Control 4.9.4 computes them (docs/sennheiser/PROTOCOL.md section 6): gen2 (the earbuds hold five band gains in tenths of a dB), gen1 (a five band shelf filter set the app calculates: bass boost, loudness weights, headroom, Q, band frequencies) and the older three-band bass, mid and treble; presets in dB per band. Written by tools/import_sennheiser_app.py.",
@@ -240,6 +316,14 @@ def main(assets):
         "three_band": EQ_3BAND,
         "presets": {k: [{"name": n, "gains": g} for n, g in v] for k, v in EQ_PRESETS.items()},
     }
+    (OUT / "touch.json").write_text(json.dumps({
+        "_about": "Sennheiser's touch and button configuration as Smart Control 4.9.4 uses it (docs/sennheiser/PROTOCOL.md section 4.3): the numbers of the functions, gestures and buttons, the gestures it reads from each earbud, and the auto power-off and transparency choices. Each model's functions are in devices.json. Written by tools/import_sennheiser_app.py.",
+        "actions": TOUCH_ACTIONS,
+        "gestures": TOUCH_PATTERNS,
+        "buttons": TOUCH_SIDES,
+        "auto_off_seconds": AUTO_OFF_SECONDS,
+        "transparency_levels": TRANSPARENCY_LEVELS,
+    }, indent=1) + "\n", encoding="utf-8")
     (OUT / "eq.json").write_text(json.dumps(eq, indent=1) + "\n", encoding="utf-8")
     (OUT / "commands.json").write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
     (OUT / "devices.json").write_text(json.dumps({

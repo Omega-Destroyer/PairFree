@@ -378,6 +378,12 @@
      "error": "1B80",
      "params": []
     }
+   },
+   "values": {
+    "OFF": 0,
+    "ANTI_WIND": 1,
+    "COMFORT": 2,
+    "HYBRID": 3
    }
   },
   {
@@ -903,6 +909,634 @@
    }
   },
   {
+   "id": "sidetone",
+   "open": true,
+   "app_property": "SidetoneState",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0806",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0906",
+     "error": "0986",
+     "params": [
+      [
+       "UINT8",
+       "sidetone state"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0805",
+     "params": [
+      [
+       "UINT8",
+       "sidetone state"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0905",
+     "error": "0985",
+     "params": []
+    }
+   },
+   "values": {
+    "OFF": 0,
+    "MIN": 1,
+    "MAX": 2
+   }
+  },
+  {
+   "id": "bt_compat",
+   "open": true,
+   "app_property": "BluetoothCompatibilityMode",
+   "values": {
+    "betterCompatibility": 1,
+    "betterAudio": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0406",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0506",
+     "error": "0586",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0405",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0505",
+     "error": "0585",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "anc_level",
+   "open": true,
+   "app_property": "ANC_Transparency",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1A03",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1B03",
+     "notification": "1A83",
+     "error": "1983",
+     "params": [
+      [
+       "UINT8",
+       "level"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "1B03",
+     "notification": "1A83",
+     "error": "1983",
+     "params": [
+      [
+       "UINT8",
+       "level"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1A02",
+     "params": [
+      [
+       "UINT8",
+       "level"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1B02",
+     "error": "1982",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "transparency_level",
+   "open": true,
+   "app_property": "TransparentHearing",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1803",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1903",
+     "notification": "1883",
+     "error": "1983",
+     "params": [
+      [
+       "UINT8",
+       "status"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "1903",
+     "notification": "1883",
+     "error": "1983",
+     "params": [
+      [
+       "UINT8",
+       "status"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1802",
+     "params": [
+      [
+       "UINT8",
+       "status"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1902",
+     "error": "1982",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "prompt_language",
+   "open": true,
+   "app_property": "VoicePrompt_Language",
+   "values": {
+    "ENGLISH": 0,
+    "GERMAN": 1,
+    "FRENCH": 2,
+    "SPANISH": 3,
+    "CHINESE": 4,
+    "JAPANESE": 5,
+    "RUSSIAN": 6,
+    "KOREAN": 7
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0807",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0907",
+     "error": "0987",
+     "params": [
+      [
+       "UINT8",
+       "language code"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "tap_sensitivity",
+   "open": true,
+   "app_property": "TapDetection",
+   "values": {
+    "LOW": 2,
+    "MID": 1,
+    "HIGH": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2601",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2701",
+     "error": "2781",
+     "params": [
+      [
+       "UINT8",
+       "tap sensitivity state"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2600",
+     "params": [
+      [
+       "UINT8",
+       "TapDetection"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2700",
+     "error": "2780",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "open_eartip",
+   "open": true,
+   "app_property": "Sound_OpenEartip",
+   "values": {
+    "OFF": 0,
+    "ON": 1
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0811",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0911",
+     "notification": "0891",
+     "error": "0991",
+     "params": [
+      [
+       "UINT8",
+       "OpenEartip"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "0911",
+     "notification": "0891",
+     "error": "0991",
+     "params": [
+      [
+       "UINT8",
+       "OpenEartip"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0810",
+     "params": [
+      [
+       "UINT8",
+       "OpenEartip"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0910",
+     "error": "0990",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "lossless",
+   "open": true,
+   "app_property": "AptXLosslessSupport",
+   "values": {
+    "LOSSLESS_OFF": 0,
+    "LOSSLESS_ON": 1
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0408",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0508",
+     "error": "0588",
+     "params": [
+      [
+       "UINT8",
+       "AptXLosslessSupport"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0407",
+     "params": [
+      [
+       "UINT8",
+       "AptXLosslessSupport"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0507",
+     "error": "0587",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "physical_state",
+   "open": true,
+   "app_property": "PhysicalDevice_State",
+   "values": {
+    "UNKNOWN": 0,
+    "IN_CASE": 1,
+    "NOT_ON_HEAD": 2,
+    "ON_HEAD": 3
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0402",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0502",
+     "notification": "0482",
+     "error": "0582",
+     "params": [
+      [
+       "UINT8",
+       "headset or left earbud"
+      ],
+      [
+       "UINT8",
+       "right earbud"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "0502",
+     "notification": "0482",
+     "error": "0582",
+     "params": [
+      [
+       "UINT8",
+       "headset or left earbud"
+      ],
+      [
+       "UINT8",
+       "right earbud"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "sample_rate",
+   "open": true,
+   "app_property": "Sound_Sample_Rate",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "081A",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "091A",
+     "notification": "089A",
+     "error": "099A",
+     "params": [
+      [
+       "UINT32",
+       "sample rate"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "091A",
+     "notification": "089A",
+     "error": "099A",
+     "params": [
+      [
+       "UINT32",
+       "sample rate"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "auto_off",
+   "open": false,
+   "app_property": "Config_GetTimer",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0601",
+     "params": [
+      [
+       "UINT8",
+       "Timer number"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0701",
+     "error": "0781",
+     "params": [
+      [
+       "UINT8",
+       "Timer number"
+      ],
+      [
+       "UINT16",
+       "Timer value"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0600",
+     "params": [
+      [
+       "UINT8",
+       "Timer number"
+      ],
+      [
+       "UINT16",
+       "Timer value"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0700",
+     "error": "0780",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "mmi_is_default",
+   "open": false,
+   "app_property": "IsDefaultMMIConfig",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1605",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1705",
+     "error": "1785",
+     "params": [
+      [
+       "BOOL",
+       "default"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "mmi_default",
+   "open": false,
+   "app_property": "SetDefaultMMIConfig",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1604",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1704",
+     "error": "1784",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "mmi",
+   "open": false,
+   "app_property": "GetMMIConfig",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1601",
+     "params": [
+      [
+       "UINT8",
+       "button number"
+      ],
+      [
+       "UINT8",
+       "pattern"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1701",
+     "error": "1781",
+     "params": [
+      [
+       "UINT8",
+       "button number"
+      ],
+      [
+       "UINT8",
+       "pattern"
+      ],
+      [
+       "UINT8",
+       "function"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1600",
+     "params": [
+      [
+       "UINT8",
+       "button number"
+      ],
+      [
+       "UINT8",
+       "pattern"
+      ],
+      [
+       "UINT8",
+       "function"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1700",
+     "error": "1780",
+     "params": []
+    }
+   }
+  },
+  {
    "id": "audio_mode",
    "open": true,
    "app_property": "AudioMode",
@@ -1258,10 +1892,6 @@
   {
    "app_property": "Upgrade_*",
    "why": "firmware update (the VMUP commands)"
-  },
-  {
-   "app_property": "SetMMIConfig, SetDefaultMMIConfig",
-   "why": "not built yet"
   }
  ]
 }

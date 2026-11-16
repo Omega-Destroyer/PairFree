@@ -41,6 +41,12 @@ class PairFreeApplication : Application() {
     override fun attachBaseContext(base: Context) = super.attachBaseContext(Languages.wrap(base))
 
     val hub: Hub by lazy { Hub(this) }
+
+    /** Dark mode or the wallpaper changed: a look that follows the phone's colours gets its widgets drawn again (widget/WidgetLook.kt). */
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        io.github.omegadestroyer.pairfree.widget.PairFreeWidget.refreshAll(this)
+    }
 }
 
 /** What the home screen widget follows: the channel, the earbuds' state and rows, and the EQ. */

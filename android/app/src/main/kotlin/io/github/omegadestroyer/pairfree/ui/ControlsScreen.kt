@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.omegadestroyer.pairfree.R
@@ -38,7 +37,7 @@ import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.pairfree.protocol.soundcore.TouchButton
 import io.github.omegadestroyer.pairfree.protocol.soundcore.TouchPress
 import io.github.omegadestroyer.pairfree.protocol.soundcore.TouchSide
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 
 /**
  * Touch controls (docs/DESIGN.md, Controls): pick a side, then what each tap and hold does.
@@ -62,9 +61,9 @@ internal fun ControlsScreen(
     if (kind == Controls.ROWS) {
         // Every other brand's touch settings come as generic rows from its driver.
         TabContent {
-            Text(stringResource(R.string.tab_controls), style = Studio.type.title)
+            Text(stringResource(R.string.tab_controls), style = Look.type.title)
             if (settings.none { it.tab == SettingTab.CONTROLS }) {
-                Text(stringResource(R.string.no_controls), color = Studio.colors.secondaryText)
+                Text(stringResource(R.string.no_controls), color = Look.colors.secondaryText)
             }
             SettingGroups(settings, SettingTab.CONTROLS, actions::changeSetting)
         }
@@ -79,9 +78,9 @@ internal fun ControlsScreen(
     val inverted = modelOf(device, state)?.touchInverted == true
 
     TabContent {
-        Text(stringResource(R.string.tab_controls), style = Studio.type.title)
+        Text(stringResource(R.string.tab_controls), style = Look.type.title)
         if (!hasKeys && !hasTouchSwitch) {
-            Text(stringResource(R.string.no_controls), color = Studio.colors.secondaryText)
+            Text(stringResource(R.string.no_controls), color = Look.colors.secondaryText)
         }
         if (hasKeys) {
             Physical {
@@ -111,7 +110,7 @@ internal fun ControlsScreen(
             }
         }
         if (hasKeys) {
-            StudioButton(stringResource(R.string.reset_gestures), { confirmReset = true }, Modifier.fillMaxWidth())
+            AppButton(stringResource(R.string.reset_gestures), { confirmReset = true }, Modifier.fillMaxWidth())
         }
     }
 
@@ -154,11 +153,11 @@ private fun SoundcoreControls(device: Paired, state: EarbudState, touch: Soundco
     val twoSides = touch?.groups.orEmpty().any { (_, buttons) -> buttons.any { it.side == TouchSide.RIGHT } }
 
     TabContent {
-        Text(stringResource(R.string.tab_controls), style = Studio.type.title)
+        Text(stringResource(R.string.tab_controls), style = Look.type.title)
         if (touch == null) {
             Label(stringResource(R.string.reading))
         } else if (touch.isEmpty) {
-            Text(stringResource(R.string.no_controls), color = Studio.colors.secondaryText)
+            Text(stringResource(R.string.no_controls), color = Look.colors.secondaryText)
         } else {
             if (twoSides) {
                 PairDrawing(deviceArt(state.firmware?.code, device.name).bud, side)
@@ -191,8 +190,8 @@ private fun SoundcoreControls(device: Paired, state: EarbudState, touch: Soundco
             if (touch.hasOneEarbudActions) {
                 Text(
                     stringResource(if (touch.bothIn) R.string.touch_both_in else R.string.touch_one_in),
-                    style = Studio.type.small,
-                    color = Studio.colors.secondaryText,
+                    style = Look.type.small,
+                    color = Look.colors.secondaryText,
                 )
             }
             val switches = listOfNotNull(
@@ -210,7 +209,7 @@ private fun SoundcoreControls(device: Paired, state: EarbudState, touch: Soundco
             }
             touch.noiseCycle?.let { cycle -> NoiseCycle(cycle, actions) }
             if (touch.canReset) {
-                StudioButton(stringResource(R.string.reset_gestures), { confirmReset = true }, Modifier.fillMaxWidth())
+                AppButton(stringResource(R.string.reset_gestures), { confirmReset = true }, Modifier.fillMaxWidth())
             }
         }
     }
@@ -279,7 +278,7 @@ private fun FixedRow(title: String, value: String) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(title, Modifier.weight(1f))
-        Text(value, color = Studio.colors.secondaryText)
+        Text(value, color = Look.colors.secondaryText)
     }
 }
 
@@ -295,7 +294,7 @@ private fun PairDrawing(bud: Int, side: Side) {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Image(
-                    painterResource(bud),
+                    deviceArtPainter(bud),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -306,7 +305,7 @@ private fun PairDrawing(bud: Int, side: Side) {
                     Modifier
                         .fillMaxWidth(0.5f)
                         .height(2.dp)
-                        .background(if (on) Studio.colors.accent else Color.Transparent),
+                        .background(if (on) Look.colors.accent else Color.Transparent),
                 )
             }
         }

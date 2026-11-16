@@ -1,0 +1,32 @@
+{
+  "_about": "Studio on paper: Studio's type, hairlines and line drawings with a light palette (owner, 2026-11-16). The amber is darkened so text in it passes 4.5:1 on every surface.",
+  "name": "Studio Light",
+  "order": 2,
+  "light": {
+    "background": "#F4F2ED",
+    "panel": "#FBFAF7",
+    "raised": "#FFFFFF",
+    "hairline": "#D5D2CA",
+    "text": "#1B1E22",
+    "secondary_text": "#4E545C",
+    "label": "#646A73",
+    "accent": "#8A5A00",
+    "on_accent": "#FFFFFF",
+    "destructive": "#A4472E"
+  },
+  "type": {
+    "text": "plex_sans",
+    "numbers": "plex_mono",
+    "label_caps": true
+  },
+  "shape": {
+    "hairline": 1,
+    "corner": 6,
+    "small_corner": 4,
+    "panel_border": true
+  },
+  "art": {
+    "style": "line",
+    "stroke": 1.0
+  }
+}

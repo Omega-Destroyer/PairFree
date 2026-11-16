@@ -55,10 +55,18 @@ These came from the owner and are not up for trade.
 
 ## Looks
 
-The app ships with one look for now: Studio. More looks can be added later as
-skins. A look is a skin: a palette, a pair of fonts, a shape language and a set of
-device drawings. Every look uses the same screens, the same layout and the same
+The app ships with three looks (owner, 2026-11-16): Studio, the default; Studio Light; and
+Material You. A look is a skin: a palette, a pair of fonts, a shape language and a way of
+drawing the devices. Every look uses the same screens, the same layout and the same
 features. A feature never exists in one look only.
+
+A look is one file, `data/looks/<id>.json`, and the build lists what the folder holds, so a
+look is added by pull request as a translation is (`docs/LOOKS.md`). No screen holds a colour,
+a font or a corner of its own: they come from the look (`ui/theme/Look.kt`), the device
+drawings are re-inked in it (`ui/DeviceDrawing.kt`), and the home screen widget and the
+notification's accent follow it (`widget/WidgetLook.kt`). The look is chosen on the connect
+screen and on the Device tab, beside the language. A look with a dark and a light palette
+follows the phone's dark mode.
 
 ### Studio
 
@@ -84,10 +92,21 @@ Dark, precise, made to feel like audio equipment.
   amber text for secondary ones.
 - Device drawings: thin technical line art, 1.5 px stroke, with dashed centre lines.
 
-### Sketchbook (parked)
+### Studio Light
 
-Not being built for now. The owner chose to work on Studio only. The values are
-kept here in case it comes back as a second skin.
+Studio on paper: the same fonts, hairlines and line drawings, light. Values in
+`data/looks/studio-light.json`; the amber is darkened to `#8A5A00` so text in it passes 4.5:1.
+
+### Material You
+
+The phone's own colours (Android 12's wallpaper palette, read as system colours; the Material
+library is not used), the phone's font, 20 px and 12 px corners, panels without outlines, labels
+in sentence case. Dark and light, following the phone. Values in `data/looks/material-you.json`.
+
+### Sketchbook (next)
+
+Owner, 2026-11-16: to be built after the three above, as the first look that changes shapes and
+drawings and not only colours (`docs/LOOKS.md`, A look that changes more than colours). The values:
 
 Light, friendly, hand-drawn.
 
@@ -583,10 +602,10 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
 
 ## Still open
 
-- A light version of Studio.
+- Sketchbook, the hand-drawn look (Looks above).
 - Which side the Air5 Pro+ drawing shows. It has not been checked against the L/R
   marking on a real pair.
-- Tile design (the widget is in Widget above; its look is the Studio colours as RemoteViews).
+- Tile design (the widget is in Widget above; it takes the chosen look's colours, `widget/WidgetLook.kt`).
 - The EQ of every model other than the H3 and Air5 Pro+, until someone records it
   (Record from the official app above).
 - Hearing tests: SOUNDPEATS' is built (owner, 2026-11-04; docs/soundpeats/PROTOCOL.md section 13). The other brands'

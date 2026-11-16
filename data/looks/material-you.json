@@ -1,0 +1,44 @@
+{
+  "_about": "Material You: the phone's own colours (Android 12's wallpaper palette, read as system colours, without the Material library), the phone's font, rounder corners and panels without outlines. It has a dark and a light palette, so it follows the phone's dark mode.",
+  "name": "Material You",
+  "order": 3,
+  "dark": {
+    "background": "system_neutral1_900",
+    "panel": "system_neutral2_800",
+    "raised": "system_neutral2_700",
+    "hairline": "system_neutral2_600",
+    "text": "system_neutral1_50",
+    "secondary_text": "system_neutral2_200",
+    "label": "system_neutral2_300",
+    "accent": "system_accent1_200",
+    "on_accent": "system_accent1_800",
+    "destructive": "#F2B8B5"
+  },
+  "light": {
+    "background": "system_neutral1_10",
+    "panel": "system_neutral2_50",
+    "raised": "system_neutral2_100",
+    "hairline": "system_neutral2_300",
+    "text": "system_neutral1_900",
+    "secondary_text": "system_neutral2_700",
+    "label": "system_neutral2_600",
+    "accent": "system_accent1_600",
+    "on_accent": "system_accent1_0",
+    "destructive": "#B3261E"
+  },
+  "type": {
+    "text": "system",
+    "numbers": "system",
+    "label_caps": false
+  },
+  "shape": {
+    "hairline": 1,
+    "corner": 20,
+    "small_corner": 12,
+    "panel_border": false
+  },
+  "art": {
+    "style": "line",
+    "stroke": 1.0
+  }
+}

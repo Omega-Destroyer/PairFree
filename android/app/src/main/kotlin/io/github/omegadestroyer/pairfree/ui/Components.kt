@@ -1,6 +1,8 @@
 package io.github.omegadestroyer.pairfree.ui
 
 import io.github.omegadestroyer.pairfree.Languages
+import io.github.omegadestroyer.pairfree.look.Looks
+import androidx.compose.runtime.collectAsState
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.Canvas
@@ -72,39 +74,38 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import io.github.omegadestroyer.pairfree.R
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
-import io.github.omegadestroyer.pairfree.ui.theme.StudioShape
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-/** Text in the Studio type. Defaults to body text in the text colour. */
+/** Text in the look's type. Defaults to body text in the text colour. */
 @Composable
 fun Text(
     text: String,
     modifier: Modifier = Modifier,
-    style: TextStyle = Studio.type.body,
-    color: Color = Studio.colors.text,
+    style: TextStyle = Look.type.body,
+    color: Color = Look.colors.text,
     textAlign: TextAlign? = null,
 ) {
     BasicText(text, modifier, style.copy(color = color, textAlign = textAlign ?: style.textAlign))
 }
 
-/** A small capitalised label in Plex Mono. */
+/** A small label, in capitals where the look sets its labels so (Studio's are, in Plex Mono). */
 @Composable
-fun Label(text: String, modifier: Modifier = Modifier, color: Color = Studio.colors.label) {
-    Text(text.uppercase(), modifier, Studio.type.label, color)
+fun Label(text: String, modifier: Modifier = Modifier, color: Color = Look.colors.label) {
+    Text(if (Look.type.labelCaps) text.uppercase() else text, modifier, Look.type.label, color)
 }
 
-/** A panel: hairline border, 6 px corners, no shadow. */
+/** A panel: the look's corners, and a hairline border where the look outlines its panels. No shadow. */
 @Composable
 fun Panel(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(StudioShape.corner)
+    val shape = RoundedCornerShape(Look.shape.corner)
     Column(
         modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(Studio.colors.panel)
-            .border(StudioShape.hairline, Studio.colors.hairline, shape)
+            .background(Look.colors.panel)
+            .then(if (Look.shape.panelBorder) Modifier.border(Look.shape.hairline, Look.colors.hairline, shape) else Modifier)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         content = content,
@@ -117,8 +118,8 @@ fun Divider() {
     Box(
         Modifier
             .fillMaxWidth()
-            .height(StudioShape.hairline)
-            .background(Studio.colors.hairline),
+            .height(Look.shape.hairline)
+            .background(Look.colors.hairline),
     )
 }
 
@@ -128,7 +129,7 @@ fun Divider() {
  * colour, so the choice never rests on colour alone.
  */
 @Composable
-fun StudioButton(
+fun AppButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -136,8 +137,8 @@ fun StudioButton(
     destructive: Boolean = false,
     enabled: Boolean = true,
 ) {
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.smallCorner)
+    val c = Look.colors
+    val shape = RoundedCornerShape(Look.shape.smallCorner)
     val fill = if (primary && enabled) c.accent else Color.Transparent
     val edge = when {
         !enabled -> c.hairline
@@ -152,15 +153,15 @@ fun StudioButton(
     }
     Box(
         modifier
-            .heightIn(min = StudioShape.touch)
+            .heightIn(min = Look.shape.touch)
             .clip(shape)
             .background(fill)
-            .border(StudioShape.hairline, edge, shape)
+            .border(Look.shape.hairline, edge, shape)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text, style = Studio.type.heading, color = ink, textAlign = TextAlign.Center)
+        Text(text, style = Look.type.heading, color = ink, textAlign = TextAlign.Center)
     }
 }
 
@@ -173,7 +174,7 @@ fun LevelBar(percent: Int?, modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .height(4.dp)
             .clip(shape)
-            .background(Studio.colors.hairline),
+            .background(Look.colors.hairline),
     ) {
         if (percent != null && percent > 0) {
             Box(
@@ -181,7 +182,7 @@ fun LevelBar(percent: Int?, modifier: Modifier = Modifier) {
                     .fillMaxHeight()
                     .fillMaxWidth(percent.coerceIn(0, 100) / 100f)
                     .clip(shape)
-                    .background(Studio.colors.accent),
+                    .background(Look.colors.accent),
             )
         }
     }
@@ -201,7 +202,7 @@ fun StepBar(level: Int?, steps: Int, modifier: Modifier = Modifier) {
                     .weight(1f)
                     .height(12.dp)
                     .clip(shape)
-                    .background(if (level != null && step <= level) Studio.colors.accent else Studio.colors.hairline),
+                    .background(if (level != null && step <= level) Look.colors.accent else Look.colors.hairline),
             )
         }
     }
@@ -221,32 +222,32 @@ fun <T> Segmented(
     modifier: Modifier = Modifier,
     primary: Boolean = true,
 ) {
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.smallCorner)
+    val c = Look.colors
+    val shape = RoundedCornerShape(Look.shape.smallCorner)
     Row(
         modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .clip(shape)
-            .border(StudioShape.hairline, c.hairline, shape)
+            .border(Look.shape.hairline, c.hairline, shape)
             .selectableGroup(),
     ) {
         options.forEachIndexed { i, option ->
             if (i > 0) {
                 Box(
                     Modifier
-                        .width(StudioShape.hairline)
+                        .width(Look.shape.hairline)
                         .fillMaxHeight()
                         .background(c.hairline),
                 )
             }
             val on = option == selected
-            val inner = RoundedCornerShape(StudioShape.smallCorner)
+            val inner = RoundedCornerShape(Look.shape.smallCorner)
             Box(
                 Modifier
                     .weight(1f)
                     .fillMaxHeight()
-                    .heightIn(min = StudioShape.touch)
+                    .heightIn(min = Look.shape.touch)
                     .then(
                         when {
                             on && primary -> Modifier.background(c.accent)
@@ -260,7 +261,7 @@ fun <T> Segmented(
             ) {
                 Text(
                     label(option),
-                    style = Studio.type.body.copy(fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal),
+                    style = Look.type.body.copy(fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal),
                     color = when {
                         on && primary -> c.onAccent
                         on -> c.accent
@@ -276,7 +277,7 @@ fun <T> Segmented(
 /** The switch graphic: the knob moves and the track fills, so on and off differ in more than colour. */
 @Composable
 fun SwitchMark(on: Boolean, enabled: Boolean = true) {
-    val c = Studio.colors
+    val c = Look.colors
     val track = if (on && enabled) c.accent else Color.Transparent
     val edge = when {
         !enabled -> c.hairline
@@ -293,7 +294,7 @@ fun SwitchMark(on: Boolean, enabled: Boolean = true) {
             .size(width = 40.dp, height = 24.dp)
             .clip(CircleShape)
             .background(track)
-            .border(StudioShape.hairline, edge, CircleShape)
+            .border(Look.shape.hairline, edge, CircleShape)
             .padding(4.dp),
         contentAlignment = if (on) Alignment.CenterEnd else Alignment.CenterStart,
     ) {
@@ -309,7 +310,7 @@ fun SwitchMark(on: Boolean, enabled: Boolean = true) {
 /** A small "i" beside a setting's title: tapping it shows or hides the setting's short explanation. */
 @Composable
 fun InfoButton(open: Boolean, onClick: () -> Unit) {
-    val c = Studio.colors
+    val c = Look.colors
     val description = stringResource(R.string.info_button)
     Box(
         Modifier
@@ -320,7 +321,7 @@ fun InfoButton(open: Boolean, onClick: () -> Unit) {
         contentAlignment = Alignment.Center,
     ) {
         Box(Modifier.size(20.dp).border(1.dp, if (open) c.accent else c.label, CircleShape), contentAlignment = Alignment.Center) {
-            Text("i", style = Studio.type.small, color = if (open) c.accent else c.label)
+            Text("i", style = Look.type.small, color = if (open) c.accent else c.label)
         }
     }
 }
@@ -335,7 +336,7 @@ fun SwitchRow(
     note: String? = null,
     enabled: Boolean = true,
 ) {
-    val c = Studio.colors
+    val c = Look.colors
     Row(
         modifier
             .fillMaxWidth()
@@ -350,7 +351,7 @@ fun SwitchRow(
                 Text(title, Modifier.weight(1f, fill = false), color = if (enabled) c.text else c.secondaryText)
                 if (note != null) InfoButton(open) { open = !open }
             }
-            if (note != null && open) Text(note, style = Studio.type.small, color = c.secondaryText)
+            if (note != null && open) Text(note, style = Look.type.small, color = c.secondaryText)
         }
         SwitchMark(on, enabled)
     }
@@ -359,7 +360,7 @@ fun SwitchRow(
 /** A row that shows a current value and opens a choice when tapped. */
 @Composable
 fun ValueRow(title: String, value: String, onClick: () -> Unit, modifier: Modifier = Modifier, note: String? = null) {
-    val c = Studio.colors
+    val c = Look.colors
     var open by remember { mutableStateOf(false) }
     Column {
         Row(
@@ -377,7 +378,7 @@ fun ValueRow(title: String, value: String, onClick: () -> Unit, modifier: Modifi
             Text(value, color = c.accent, textAlign = TextAlign.End)
             Chevron()
         }
-        if (note != null && open) Text(note, style = Studio.type.small, color = c.secondaryText)
+        if (note != null && open) Text(note, style = Look.type.small, color = c.secondaryText)
     }
 }
 
@@ -387,20 +388,20 @@ fun ValueRow(title: String, value: String, onClick: () -> Unit, modifier: Modifi
  */
 @Composable
 fun Chip(text: String, selected: Boolean, onClick: () -> Unit) {
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.smallCorner)
+    val c = Look.colors
+    val shape = RoundedCornerShape(Look.shape.smallCorner)
     Box(
         Modifier
-            .heightIn(min = StudioShape.touch)
+            .heightIn(min = Look.shape.touch)
             .clip(shape)
-            .border(if (selected) 1.5.dp else StudioShape.hairline, if (selected) c.accent else c.hairline, shape)
+            .border(if (selected) 1.5.dp else Look.shape.hairline, if (selected) c.accent else c.hairline, shape)
             .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text,
-            style = Studio.type.body.copy(fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal),
+            style = Look.type.body.copy(fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal),
             color = if (selected) c.accent else c.secondaryText,
         )
     }
@@ -408,7 +409,7 @@ fun Chip(text: String, selected: Boolean, onClick: () -> Unit) {
 
 @Composable
 fun Chevron() {
-    val color = Studio.colors.label
+    val color = Look.colors.label
     // Points the way forward: right on a left-to-right screen, left on a right-to-left one.
     val flip = if (isRtl()) -1f else 1f
     Canvas(Modifier.size(width = 8.dp, height = 14.dp).graphicsLayer(scaleX = flip)) {
@@ -423,7 +424,7 @@ fun Chevron() {
  * Drag or tap anywhere along it. Screen readers can set it directly.
  */
 @Composable
-fun StudioSlider(
+fun AppSlider(
     value: Int,
     range: IntRange,
     onChange: (Int) -> Unit,
@@ -431,7 +432,7 @@ fun StudioSlider(
     description: String? = null,
     origin: Int = range.first,
 ) {
-    val c = Studio.colors
+    val c = Look.colors
     val change by rememberUpdatedState(onChange)
     var width by remember { mutableIntStateOf(1) }
     val knob = 10.dp
@@ -441,7 +442,7 @@ fun StudioSlider(
     Box(
         modifier
             .fillMaxWidth()
-            .height(StudioShape.touch)
+            .height(Look.shape.touch)
             .onSizeChanged { width = it.width }
             .pointerInput(range) {
                 val inset = knob.toPx()
@@ -489,15 +490,15 @@ fun StudioSlider(
 /** A square minus or plus button for stepping a value. */
 @Composable
 fun StepButton(plus: Boolean, onClick: () -> Unit, enabled: Boolean = true) {
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.smallCorner)
+    val c = Look.colors
+    val shape = RoundedCornerShape(Look.shape.smallCorner)
     val ink = if (enabled) c.accent else c.hairline
     val description = stringResource(if (plus) R.string.increase else R.string.decrease)
     Box(
         Modifier
-            .size(StudioShape.touch)
+            .size(Look.shape.touch)
             .clip(shape)
-            .border(StudioShape.hairline, if (enabled) c.accent else c.hairline, shape)
+            .border(Look.shape.hairline, if (enabled) c.accent else c.hairline, shape)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .semantics { contentDescription = description },
         contentAlignment = Alignment.Center,
@@ -510,22 +511,22 @@ fun StepButton(plus: Boolean, onClick: () -> Unit, enabled: Boolean = true) {
     }
 }
 
-/** A dialog in the Studio look: raised panel, hairline, title. */
+/** A dialog in the app's look: raised panel, hairline, title. */
 @Composable
-fun StudioDialog(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.corner)
+fun AppDialog(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
+    val c = Look.colors
+    val shape = RoundedCornerShape(Look.shape.corner)
     Dialog(onDismissRequest = onDismiss) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .clip(shape)
                 .background(c.raised)
-                .border(StudioShape.hairline, c.hairline, shape)
+                .border(Look.shape.hairline, c.hairline, shape)
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(title, style = Studio.type.title)
+            Text(title, style = Look.type.title)
             content()
         }
     }
@@ -539,11 +540,11 @@ fun StudioDialog(title: String, onDismiss: () -> Unit, content: @Composable Colu
 @Composable
 fun LdacPhoneDialog(onDismiss: () -> Unit) {
     val context = LocalContext.current
-    StudioDialog(stringResource(R.string.ldac_on_title), onDismiss) {
-        Text(stringResource(R.string.ldac_on_body), color = Studio.colors.secondaryText)
+    AppDialog(stringResource(R.string.ldac_on_title), onDismiss) {
+        Text(stringResource(R.string.ldac_on_body), color = Look.colors.secondaryText)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StudioButton(stringResource(R.string.close), onDismiss, Modifier.weight(1f))
-            StudioButton(
+            AppButton(stringResource(R.string.close), onDismiss, Modifier.weight(1f))
+            AppButton(
                 stringResource(R.string.bluetooth_settings),
                 {
                     onDismiss()
@@ -566,11 +567,11 @@ fun ConfirmDialog(
     onDismiss: () -> Unit,
     destructive: Boolean = false,
 ) {
-    StudioDialog(title, onDismiss) {
-        Text(body, color = Studio.colors.secondaryText)
+    AppDialog(title, onDismiss) {
+        Text(body, color = Look.colors.secondaryText)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StudioButton(stringResource(R.string.cancel), onDismiss, Modifier.weight(1f))
-            StudioButton(
+            AppButton(stringResource(R.string.cancel), onDismiss, Modifier.weight(1f))
+            AppButton(
                 confirm,
                 {
                     onDismiss()
@@ -594,8 +595,8 @@ fun <T> PickerDialog(
     onPick: (T) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val c = Studio.colors
-    StudioDialog(title, onDismiss) {
+    val c = Look.colors
+    AppDialog(title, onDismiss) {
         Column(
             Modifier
                 .heightIn(max = 420.dp)
@@ -618,7 +619,7 @@ fun <T> PickerDialog(
                     RadioMark(on)
                     Text(
                         label(option),
-                        style = Studio.type.body.copy(fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal),
+                        style = Look.type.body.copy(fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal),
                         color = if (on) c.accent else c.text,
                     )
                 }
@@ -629,7 +630,7 @@ fun <T> PickerDialog(
 
 @Composable
 private fun RadioMark(on: Boolean) {
-    val c = Studio.colors
+    val c = Look.colors
     Box(
         Modifier
             .size(20.dp)
@@ -660,23 +661,23 @@ fun TextEntryDialog(
 ) {
     var text by remember { mutableStateOf(initial) }
     val focus = remember { FocusRequester() }
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.smallCorner)
+    val c = Look.colors
+    val shape = RoundedCornerShape(Look.shape.smallCorner)
     fun done() {
         if (text.isBlank()) return
         onDismiss()
         onDone(text)
     }
-    StudioDialog(title, onDismiss) {
+    AppDialog(title, onDismiss) {
         BasicTextField(
             value = text,
             onValueChange = { text = it.take(maxLength) },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focus)
-                .border(StudioShape.hairline, c.accent, shape)
+                .border(Look.shape.hairline, c.accent, shape)
                 .padding(12.dp),
-            textStyle = Studio.type.body.copy(color = c.text),
+            textStyle = Look.type.body.copy(color = c.text),
             cursorBrush = SolidColor(c.accent),
             singleLine = true,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
@@ -689,8 +690,8 @@ fun TextEntryDialog(
             },
         )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StudioButton(stringResource(R.string.cancel), onDismiss, Modifier.weight(1f))
-            StudioButton(confirm, { done() }, Modifier.weight(1f), primary = true, enabled = text.isNotBlank())
+            AppButton(stringResource(R.string.cancel), onDismiss, Modifier.weight(1f))
+            AppButton(confirm, { done() }, Modifier.weight(1f), primary = true, enabled = text.isNotBlank())
         }
     }
     LaunchedEffect(Unit) { focus.requestFocus() }
@@ -707,7 +708,7 @@ fun LanguageButton(modifier: Modifier = Modifier) {
     var picking by remember { mutableStateOf(false) }
     val chosen = Languages.chosen(context)
     val system = stringResource(R.string.app_language_system)
-    StudioButton(stringResource(R.string.app_language, chosen?.let(Languages::name) ?: system), { picking = true }, modifier)
+    AppButton(stringResource(R.string.app_language, chosen?.let(Languages::name) ?: system), { picking = true }, modifier)
     if (picking) {
         PickerDialog(
             title = stringResource(R.string.app_language_title),
@@ -715,6 +716,29 @@ fun LanguageButton(modifier: Modifier = Modifier) {
             selected = chosen,
             label = { it?.let(Languages::name) ?: system },
             onPick = { tag -> Languages.activityOf(context)?.let { Languages.choose(it, tag) } },
+            onDismiss = { picking = false },
+        )
+    }
+}
+
+/**
+ * The app's look, where more than one is built in: its name on a button, and the built-in looks to pick from
+ * (docs/LOOKS.md). The screens are drawn again in the chosen one at once.
+ */
+@Composable
+fun LookButton(modifier: Modifier = Modifier) {
+    if (Looks.ALL.size < 2) return
+    val context = LocalContext.current
+    var picking by remember { mutableStateOf(false) }
+    val chosen by Looks.flow(context).collectAsState()
+    AppButton(stringResource(R.string.app_look, stringResource(chosen.name)), { picking = true }, modifier)
+    if (picking) {
+        PickerDialog(
+            title = stringResource(R.string.app_look_title),
+            options = Looks.ALL,
+            selected = chosen,
+            label = { stringResource(it.name) },
+            onPick = { Looks.choose(context, it) },
             onDismiss = { picking = false },
         )
     }

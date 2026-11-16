@@ -4,10 +4,8 @@ import io.github.omegadestroyer.pairfree.Languages
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color as AndroidColor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -45,11 +43,12 @@ import io.github.omegadestroyer.pairfree.protocol.widget.WidgetSlot
 import io.github.omegadestroyer.pairfree.ui.Chip
 import io.github.omegadestroyer.pairfree.ui.Label
 import io.github.omegadestroyer.pairfree.ui.Panel
-import io.github.omegadestroyer.pairfree.ui.StudioButton
-import io.github.omegadestroyer.pairfree.ui.StudioDialog
+import io.github.omegadestroyer.pairfree.ui.AppButton
+import io.github.omegadestroyer.pairfree.ui.AppDialog
 import io.github.omegadestroyer.pairfree.ui.Text
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
-import io.github.omegadestroyer.pairfree.ui.theme.StudioTheme
+import io.github.omegadestroyer.pairfree.ui.theme.Look
+import io.github.omegadestroyer.pairfree.ui.theme.LookSystemBars
+import io.github.omegadestroyer.pairfree.ui.theme.LookTheme
 
 /**
  * Sets up a widget (docs/DESIGN.md, Widget): the paired earbuds PairFree can control, and for each the eight buttons. Nothing
@@ -66,13 +65,11 @@ class WidgetConfigActivity : ComponentActivity() {
         // Cancelled until saved: Android then drops a widget that was never set up.
         setResult(RESULT_CANCELED, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId))
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) return finish()
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(AndroidColor.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.dark(AndroidColor.TRANSPARENT),
-        )
+        enableEdgeToEdge()
         setContent {
-            StudioTheme {
-                Column(Modifier.fillMaxSize().background(Studio.colors.background).systemBarsPadding()) {
+            LookTheme {
+                LookSystemBars()
+                Column(Modifier.fillMaxSize().background(Look.colors.background).systemBarsPadding()) {
                     Setup(applicationContext, ::save, ::finish)
                 }
             }
@@ -100,25 +97,25 @@ class WidgetConfigActivity : ComponentActivity() {
             Label(stringResource(R.string.widget_title))
             when {
                 !hub.hasPermission() -> NeedsPermission(context)
-                devices.isEmpty() -> Text(stringResource(R.string.widget_no_earbuds), color = Studio.colors.secondaryText)
+                devices.isEmpty() -> Text(stringResource(R.string.widget_no_earbuds), color = Look.colors.secondaryText)
                 open != null -> Buttons(context, open, layouts[open.address] ?: emptyList(), { layouts[open.address] = it; last = open.address }, { editing = null })
                 else -> {
-                    Text(stringResource(R.string.widget_follows_hint), color = Studio.colors.secondaryText)
+                    Text(stringResource(R.string.widget_follows_hint), color = Look.colors.secondaryText)
                     Panel {
                         for (device in devices) {
                             val set = layouts[device.address].orEmpty().count { it != WidgetSlot.Empty }
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Column(Modifier.weight(1f)) {
-                                    Text(device.name, style = Studio.type.heading)
+                                    Text(device.name, style = Look.type.heading)
                                     Label(if (set == 0) stringResource(R.string.widget_not_set_up) else stringResource(R.string.widget_buttons_set, set))
                                 }
-                                StudioButton(stringResource(R.string.widget_title), { editing = device })
+                                AppButton(stringResource(R.string.widget_title), { editing = device })
                             }
                         }
                     }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        StudioButton(stringResource(R.string.widget_cancel), onCancel, Modifier.weight(1f))
-                        StudioButton(
+                        AppButton(stringResource(R.string.widget_cancel), onCancel, Modifier.weight(1f))
+                        AppButton(
                             stringResource(R.string.widget_save),
                             { onSave(WidgetConfig(last ?: layouts.keys.firstOrNull(), layouts.toMap())) },
                             Modifier.weight(1f),
@@ -133,8 +130,8 @@ class WidgetConfigActivity : ComponentActivity() {
 
     @Composable
     private fun NeedsPermission(context: Context) {
-        Text(stringResource(R.string.widget_needs_permission), color = Studio.colors.secondaryText)
-        StudioButton(stringResource(R.string.widget_open_app), { context.startActivity(Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) })
+        Text(stringResource(R.string.widget_needs_permission), color = Look.colors.secondaryText)
+        AppButton(stringResource(R.string.widget_open_app), { context.startActivity(Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) })
     }
 
     /** One pair's eight buttons. A pair with none yet starts with a noise toggle and an EQ toggle where the earbuds have them. */
@@ -143,12 +140,12 @@ class WidgetConfigActivity : ComponentActivity() {
         val options = remember(device) { WidgetOptions.of(context, device) }
         val slots = WidgetStore.padded(saved.ifEmpty { defaults(options) })
         var editing by remember { mutableStateOf<Int?>(null) }
-        Text(device.name, style = Studio.type.heading)
-        if (options.needsConnection) Text(stringResource(R.string.widget_connect_once), color = Studio.colors.secondaryText)
+        Text(device.name, style = Look.type.heading)
+        if (options.needsConnection) Text(stringResource(R.string.widget_connect_once), color = Look.colors.secondaryText)
         if (options.noise.isEmpty() && options.eq.isEmpty()) {
-            Text(stringResource(R.string.widget_nothing_to_offer), color = Studio.colors.secondaryText)
+            Text(stringResource(R.string.widget_nothing_to_offer), color = Look.colors.secondaryText)
         } else {
-            Text(stringResource(R.string.widget_size_hint), color = Studio.colors.secondaryText)
+            Text(stringResource(R.string.widget_size_hint), color = Look.colors.secondaryText)
             for (row in 0 until 2) {
                 Panel {
                     for (i in row * WidgetGrid.PER_ROW until (row + 1) * WidgetGrid.PER_ROW) {
@@ -160,7 +157,7 @@ class WidgetConfigActivity : ComponentActivity() {
                         ) {
                             Label("${i + 1}", Modifier.padding(end = 4.dp))
                             Column(Modifier.weight(1f)) {
-                                Text(describe(context, slot, options), color = if (slot == WidgetSlot.Empty) Studio.colors.label else Studio.colors.text)
+                                Text(describe(context, slot, options), color = if (slot == WidgetSlot.Empty) Look.colors.label else Look.colors.text)
                                 kindName(slot)?.let { Label(stringResource(it)) }
                             }
                         }
@@ -168,7 +165,7 @@ class WidgetConfigActivity : ComponentActivity() {
                 }
             }
         }
-        StudioButton(stringResource(R.string.widget_done), onBack, Modifier.fillMaxWidth(), primary = true)
+        AppButton(stringResource(R.string.widget_done), onBack, Modifier.fillMaxWidth(), primary = true)
         editing?.let { index ->
             SlotDialog(context, options, slots[index], onDismiss = { editing = null }) { slot ->
                 onChange(slots.toMutableList().also { it[index] = slot })
@@ -259,7 +256,7 @@ class WidgetConfigActivity : ComponentActivity() {
             Kind.NOISE, Kind.EQ -> ticked.size == 1
             else -> ticked.size >= 2
         }
-        StudioDialog(stringResource(R.string.widget_title), onDismiss) {
+        AppDialog(stringResource(R.string.widget_title), onDismiss) {
             Column(Modifier.heightIn(max = 460.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 for (k in kinds) Chip(stringResource(k.label), k == kind) {
                     if (k != kind) {
@@ -267,7 +264,7 @@ class WidgetConfigActivity : ComponentActivity() {
                         ticked = emptyList()
                     }
                 }
-                if (cycle) Text(stringResource(R.string.widget_cycle_hint), color = Studio.colors.secondaryText)
+                if (cycle) Text(stringResource(R.string.widget_cycle_hint), color = Look.colors.secondaryText)
                 labels.forEachIndexed { index, label ->
                     val position = ticked.indexOf(index)
                     Row(
@@ -281,14 +278,14 @@ class WidgetConfigActivity : ComponentActivity() {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Label(if (position >= 0) (if (cycle) "${position + 1}" else "●") else "○", Modifier.padding(end = 4.dp), Studio.colors.accent)
+                        Label(if (position >= 0) (if (cycle) "${position + 1}" else "●") else "○", Modifier.padding(end = 4.dp), Look.colors.accent)
                         Text(label)
                     }
                 }
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                StudioButton(stringResource(R.string.widget_cancel), onDismiss, Modifier.weight(1f))
-                StudioButton(
+                AppButton(stringResource(R.string.widget_cancel), onDismiss, Modifier.weight(1f))
+                AppButton(
                     stringResource(R.string.widget_done),
                     {
                         onPick(

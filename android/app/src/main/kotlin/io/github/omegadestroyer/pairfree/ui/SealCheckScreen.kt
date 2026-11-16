@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.hearing.TonePlayer
 import io.github.omegadestroyer.pairfree.protocol.hearing.SealCheck
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 
 /**
  * The ear tip seal check with tones from the phone ([SealCheck], after JBL's): a low tone in one earbud at a time, normal and then softer, and the user
@@ -55,7 +55,7 @@ internal fun SealCheckScreen(onClose: () -> Unit) {
         // The tone repeats until the user answers: a low tone is easy to miss in one short burst.
         player.playOnSide(SealCheck.HZ, tone.levelDb, SealCheck.SECONDS, if (tone.left) TonePlayer.LEFT else TonePlayer.RIGHT, loop = true)
     }
-    val c = Studio.colors
+    val c = Look.colors
     Column(
         Modifier
             .fillMaxSize()
@@ -64,14 +64,14 @@ internal fun SealCheckScreen(onClose: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.seal_check), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), close)
+            Text(stringResource(R.string.seal_check), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), close)
         }
         when {
             !started -> {
                 Text(stringResource(R.string.seal_check_intro), color = c.secondaryText)
                 if (busy) Text(stringResource(R.string.hearing_test_music), color = c.destructive)
-                StudioButton(
+                AppButton(
                     stringResource(R.string.hearing_test_start),
                     {
                         if (player.musicActive) {
@@ -92,14 +92,14 @@ internal fun SealCheckScreen(onClose: () -> Unit) {
                     val side = if (tone?.left == true) R.string.samsung_hearing_left else R.string.samsung_hearing_right
                     Text(
                         stringResource(if (tone?.softer == true) R.string.seal_check_softer else R.string.seal_check_normal, stringResource(side)),
-                        style = Studio.type.heading,
+                        style = Look.type.heading,
                     )
                     LevelBar((check.progress * 100).toInt())
-                    Text(stringResource(R.string.seal_check_listen), style = Studio.type.small, color = c.secondaryText)
+                    Text(stringResource(R.string.seal_check_listen), style = Look.type.small, color = c.secondaryText)
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     for (heard in listOf(true, false)) {
-                        StudioButton(
+                        AppButton(
                             stringResource(if (heard) R.string.samsung_hearing_yes else R.string.samsung_hearing_no),
                             {
                                 player.stop()
@@ -125,14 +125,14 @@ internal fun SealCheckScreen(onClose: () -> Unit) {
                                         else -> R.string.seal_check_poor
                                     },
                                 ),
-                                style = Studio.type.number,
+                                style = Look.type.number,
                                 color = if (seal == SealCheck.Seal.GOOD) c.accent else c.destructive,
                             )
                         }
                     }
                 }
-                Text(stringResource(R.string.seal_check_advice), style = Studio.type.small, color = c.secondaryText)
-                StudioButton(stringResource(R.string.capture_close), close, Modifier.fillMaxWidth(), primary = true)
+                Text(stringResource(R.string.seal_check_advice), style = Look.type.small, color = c.secondaryText)
+                AppButton(stringResource(R.string.capture_close), close, Modifier.fillMaxWidth(), primary = true)
             }
         }
     }

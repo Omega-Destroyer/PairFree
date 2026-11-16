@@ -46,6 +46,7 @@ exclude:
   - DESIGN.md
   - EXISTING_VENDOR_VIRTUAL_AUDIT.md
   - FIT_AND_HEARING_TESTS.md
+  - LOOKS.md
   - UPSTREAM.md
   - RESEARCH.md
   - VIRTUAL_TESTING.md

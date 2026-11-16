@@ -146,6 +146,28 @@ other devices), `14` (sends a device's address), `17` (head tracking), `1A` (ren
 (the AirPods' keys); control commands `06` (owning the connection), `20` and `36` (automatic
 connection) and `3A` (temporary pairing).
 
+### 6.1 Taking the sound over (issue #48, 2026-11-16)
+
+A user's AirPods Pro 3, shared with other devices, show in Android as connected but not active, while
+PairFree's channel works. LibrePods' answer is its takeover (`AirPodsService.takeOver`, read at commit
+4589176), which has two halves:
+
+- **To the AirPods**: control command `06` (owns connection) set to 1, then three opcode `10` messages
+  (media information, show the hand-over notice, the hijack request). LibrePods sends these only with
+  its Xposed hook that gives the phone Apple's Bluetooth vendor id, and skips them when the AirPods
+  report owning as 0 ("vendorid is probably not set to apple"): without that id the AirPods do not
+  treat the phone as one of the devices they hand over between. blocked: the owner ruled out posing as
+  an Apple device (section 7); checked: `takeOver`, `sendHijackRequest`, `sendMediaInformataion` and
+  `sendSmartRoutingShowUI` in LibrePods, and its `vendor_id_hook` guard. So `06` and `10` stay never sent.
+- **To Android**: `connectAudio`, which calls `BluetoothA2dp.connect(device)` (and, with a permission
+  only system apps have, the connection policy). PairFree does this half, for every brand
+  (`AudioLinks.useForSound`): `connect` where the earbuds are not connected for sound, then
+  `setActiveDevice`, on A2DP and hands-free. Android's Bluetooth service takes both from an app with
+  the Bluetooth permission (AOSP's `A2dpService` binder checks `BLUETOOTH_CONNECT` alone for them, on
+  Android 14, 16 and main); they are outside the public SDK, so they are called by name. The Home tab
+  offers it when the phone is not playing through the connected earbuds, with Bluetooth settings as
+  the way out where a phone refuses. Not tried on AirPods or any real earbuds.
+
 ## 7. Why AirPods need a particular Android (2026-11-10)
 
 Checked against LibrePods' issues, its current source and the Beats app:

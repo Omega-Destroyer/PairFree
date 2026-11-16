@@ -25,6 +25,8 @@
    "transparent_hearing": 12,
    "anc": 13,
    "fit_test": 15,
+   "personalized_sound": 16,
+   "auracast": 21,
    "find_device": 22
   }
  },
@@ -2310,6 +2312,421 @@
       [
        "UINT8",
        "enabled"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "auracast_add",
+   "open": false,
+   "app_property": "Auracast_AddSource",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A02",
+     "params": [
+      [
+       "UINT8",
+       "AdvertiserAddressType"
+      ],
+      [
+       "UINT8",
+       "AdvertiserAddress"
+      ],
+      [
+       "UINT8",
+       "AdvertiserAddress"
+      ],
+      [
+       "UINT8",
+       "AdvertiserAddress"
+      ],
+      [
+       "UINT8",
+       "AdvertiserAddress"
+      ],
+      [
+       "UINT8",
+       "AdvertiserAddress"
+      ],
+      [
+       "UINT8",
+       "AdvertiserAddress"
+      ],
+      [
+       "UINT8",
+       "AdvertisingSID"
+      ],
+      [
+       "UINT8",
+       "BroadcastID"
+      ],
+      [
+       "UINT8",
+       "BroadcastID"
+      ],
+      [
+       "UINT8",
+       "BroadcastID"
+      ],
+      [
+       "UINT8",
+       "PASync"
+      ],
+      [
+       "UINT8",
+       "PAInterval"
+      ],
+      [
+       "UINT8",
+       "PAInterval"
+      ],
+      [
+       "UINT8",
+       "NumSubgroups"
+      ],
+      [
+       "UINT8",
+       "BISSync_B0"
+      ],
+      [
+       "UINT8",
+       "BISSync_B1"
+      ],
+      [
+       "UINT8",
+       "BISSync_B2"
+      ],
+      [
+       "UINT8",
+       "BISSync_B3"
+      ],
+      [
+       "UINT8",
+       "MetadataLength"
+      ],
+      [
+       "UINT8",
+       "Metadata"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2B02",
+     "error": "2B82",
+     "params": [
+      [
+       "UINT8",
+       "SourceID"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "auracast_remove",
+   "open": false,
+   "app_property": "Auracast_RemoveSource",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A05",
+     "params": [
+      [
+       "UINT8",
+       "SourceId"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2B05",
+     "error": "2B85",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "auracast_ids",
+   "open": false,
+   "app_property": "Auracast_GetSourceIds",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A22",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2B22",
+     "notification": "2AA2",
+     "error": "2BA2",
+     "params": [
+      [
+       "UINT8",
+       "NumOfSourceIds"
+      ],
+      [
+       "UINT8",
+       "SourceIds"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "2B22",
+     "notification": "2AA2",
+     "error": "2BA2",
+     "params": [
+      [
+       "UINT8",
+       "NumOfSourceIds"
+      ],
+      [
+       "UINT8",
+       "SourceIds"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "auracast_state",
+   "open": false,
+   "app_property": "Auracast_GetReceiveState",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A21",
+     "params": [
+      [
+       "UINT8",
+       "SourceId"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2B21",
+     "error": "2BA1",
+     "params": [
+      [
+       "UINT8",
+       "SourceID"
+      ],
+      [
+       "UINT8",
+       "SourceAddressType"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B0"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B1"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B2"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B3"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B4"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B5"
+      ],
+      [
+       "UINT8",
+       "SourceAdvSID"
+      ],
+      [
+       "UINT8",
+       "BroadcastID_B0"
+      ],
+      [
+       "UINT8",
+       "BroadcastID_B2"
+      ],
+      [
+       "UINT8",
+       "BroadcastID_B3"
+      ],
+      [
+       "UINT8",
+       "PASyncState"
+      ],
+      [
+       "UINT8",
+       "BIGEncryption"
+      ],
+      [
+       "UINT8",
+       "BadCode"
+      ],
+      [
+       "UINT8",
+       "NumSubgroups"
+      ],
+      [
+       "UINT32",
+       "BISSync"
+      ],
+      [
+       "UINT8",
+       "MetadataLength"
+      ],
+      [
+       "UINT8",
+       "Metadata"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "auracast_scan",
+   "open": false,
+   "app_property": "Auracast_StartSourceScan",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A23",
+     "params": [
+      [
+       "UINT16",
+       "scaninterval"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2B23",
+     "error": "2BA3",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "auracast_scan_stop",
+   "open": false,
+   "app_property": "Auracast_StopSourceScan",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A24",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2B24",
+     "error": "2BA4",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "auracast_result",
+   "open": false,
+   "app_property": "Auracast_ScanResultEvent",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A20",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2A20",
+     "notification": "2AA0",
+     "params": [
+      [
+       "UINT8",
+       "RSSI"
+      ],
+      [
+       "UINT8",
+       "Broadcast_Name_Length"
+      ],
+      [
+       "UINT8",
+       "Broadcast_Name"
+      ],
+      [
+       "UINT8",
+       "SourceAddressType"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B0"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B1"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B2"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B3"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B4"
+      ],
+      [
+       "UINT8",
+       "SourceAddress_B5"
+      ],
+      [
+       "UINT8",
+       "SourceAdvSID"
+      ],
+      [
+       "UINT8",
+       "BroadcastID_B1"
+      ],
+      [
+       "UINT8",
+       "BroadcastID_B2"
+      ],
+      [
+       "UINT8",
+       "BroadcastID_B3"
+      ],
+      [
+       "UINT8",
+       "Encryption"
+      ],
+      [
+       "UINT16",
+       "PAInterval"
+      ],
+      [
+       "UINT8",
+       "NumSubgroups"
+      ],
+      [
+       "UINT32",
+       "BISSync"
+      ],
+      [
+       "UINT8",
+       "MetadataLength"
+      ],
+      [
+       "UINT8",
+       "Metadata"
       ]
      ]
     }

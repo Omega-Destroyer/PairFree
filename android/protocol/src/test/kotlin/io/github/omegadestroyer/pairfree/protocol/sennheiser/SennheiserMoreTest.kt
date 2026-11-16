@@ -154,4 +154,33 @@ class SennheiserMoreTest {
         assertEquals(listOf("2201:0000", "2201:0100"), words(s.change(SettingChange.Toggle(SennheiserSession.KEY_SENSORS, false))!!))
         assertNotNull(model("Momentum Sport").features["find-device-1"])
     }
+
+    @Test
+    fun auracastScansAddsAndRemovesAsTheAppDoes() {
+        val s = SennheiserSession(model("Momentum True Wireless 4"))
+        val start = words(s.start())
+        assertTrue("0007:15" in start && "2a22:" in start, "feature 21 is registered and the sources are asked for: $start")
+        assertNull(s.row(SennheiserSession.KEY_AURACAST_SCAN))
+        // No sources yet: a count of zero.
+        s.feed(reply(0x2a22, "00"))
+        assertEquals(Setting.Action(SennheiserSession.KEY_AURACAST_SCAN, false), s.row(SennheiserSession.KEY_AURACAST_SCAN))
+        assertEquals(listOf("2a23:0005"), words(s.change(SettingChange.Press(SennheiserSession.KEY_AURACAST_SCAN))!!))
+        // A broadcast the earbuds found: signal, name length and name, address type and address, set, id and the encryption flag, then the rest.
+        val name = "Cafe".toByteArray().joinToString("") { "%02x".format(it) }
+        val open = "c8" + "04" + name + "00" + "aabbccddeeff" + "01" + "010203" + "00" + "0000" + "01" + "00000001"
+        val locked = "c0" + "04" + "4c6f636b" + "00" + "112233445566" + "02" + "040506" + "01" + "0000" + "01" + "00000001"
+        s.feed(event(0x2a20, open))
+        s.feed(event(0x2a20, locked))
+        val add = s.row(SennheiserSession.KEY_AURACAST_ADD) as Setting.Choice
+        assertEquals(listOf("Cafe"), add.options, "a broadcast that needs a code is not offered")
+        // The app's AddSource: type, address, set, broadcast id, synchronise without past info, interval unknown, one subgroup that takes every stream, no metadata.
+        assertEquals(listOf("2a02:00aabbccddeeff01010203" + "02ffff01ffffffff00"), words(s.change(SettingChange.Choice(SennheiserSession.KEY_AURACAST_ADD, "Cafe"))!!))
+        assertEquals(listOf("2a22:"), words(s.takeReadBacks()))
+        s.feed(reply(0x2a22, "0102"))
+        assertEquals(listOf("2a21:02"), words(s.takeOutbox()))
+        // The receive state: source id, address type and address, set, broadcast id, PA sync (2 synced), encryption (0 none), then subgroups and their stream bits.
+        s.feed(reply(0x2a21, "02" + "00" + "aabbccddeeff" + "01" + "010203" + "02" + "00" + "01" + "00000001" + "00"))
+        assertEquals(Setting.Information(SennheiserSession.KEY_AURACAST_SOURCE, "receiving:Cafe"), s.row(SennheiserSession.KEY_AURACAST_SOURCE))
+        assertEquals(listOf("2a05:02"), words(s.change(SettingChange.Choice(SennheiserSession.KEY_AURACAST_REMOVE, "Cafe"))!!))
+    }
 }

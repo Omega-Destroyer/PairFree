@@ -57,7 +57,7 @@ NOT_ON_OPEN = {"auto_off", "mmi", "mmi_default", "mmi_is_default"}
 
 # The Sennheiser vendor id's notification registration (RegisterNotification_* in the product files; `Additional_Values` is the feature id).
 FEATURES = {"core": 0, "device": 2, "battery": 3, "generic_audio": 4, "user_eq": 8, "versions": 9, "device_management": 10, "mmi": 11,
-            "transparent_hearing": 12, "anc": 13, "fit_test": 15, "find_device": 22}
+            "transparent_hearing": 12, "anc": 13, "fit_test": 15, "personalized_sound": 16, "auracast": 21, "find_device": 22}
 
 # The products Smart Control 4.9.4 defines as GAIAV3 (its product file, the app's name), with the Bluetooth names the app maps to them
 # (DeviceType.getDeviceTypeByManufacturerName and deviceTypeByBluetoothNameMap) and what kind of product it is.
@@ -204,6 +204,13 @@ ACTIONS = [
     ("product", "Sensor_SensorData", "sensor_data", "get"),
     ("product", "Sensor_SetSensorEnable", "sensor_enable", "set"),
     ("product", "Sensor_GetSensorEnable", "sensor_state", "get"),
+    ("auracast-1", "Auracast_AddSource", "auracast_add", "set"),
+    ("auracast-1", "Auracast_RemoveSource", "auracast_remove", "set"),
+    ("auracast-1", "Auracast_GetSourceIds", "auracast_ids", "sides"),
+    ("auracast-1", "Auracast_GetReceiveState", "auracast_state", "get"),
+    ("auracast-1", "Auracast_StartSourceScan", "auracast_scan", "set"),
+    ("auracast-1", "Auracast_StopSourceScan", "auracast_scan_stop", "set"),
+    ("auracast-1", "Auracast_ScanResultEvent", "auracast_result", "event"),
 ]
 # Which product files carry a shared feature file (with the firmware its entry names), as the products' `features` say.
 FEATURE_FILES = ("find-device-1", "sound-personalization-1", "sound-personalization-2", "audio-mode-1", "audio-mode-2", "auracast-1")
@@ -336,8 +343,12 @@ def main(assets):
             elif "Invocation" in p:
                 entry[how] = invoke_block(p)
             elif "Get" in p and "Event" in p["Get"]:
-                # An event only (`PairedDevicesGetConnectionStatus` is also a command; this form is the notification alone).
-                entry[how] = {"send": command(p["Get"]["Event"])}
+                # An event only: the command word is the notification's without its type bit.
+                ev = p["Get"]["Event"]
+                g = ev["gaiaV3"]
+                word = format(int(g["GAIA_notification_ID"], 16) & ~0x80, "04X")
+                entry["get"] = {"send": {"vendor": hexid(g["vendor_ID"]), "command": word, "params": []},
+                                "reply": {"vendor": hexid(g["vendor_ID"]), "command": word, "notification": hexid(g["GAIA_notification_ID"]), "params": [[x["type"], x["name"]] for x in ev.get("parameter", [])]}}
             else:
                 blk = side(p, "Get")
                 if blk:

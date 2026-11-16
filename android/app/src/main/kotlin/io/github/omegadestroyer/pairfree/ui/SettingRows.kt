@@ -90,6 +90,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                             when {
                                 setting.key == "a3959_wind_detected" -> stringResource(if (setting.value == "yes") R.string.yes else R.string.no)
                                 setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") -> optionName(setting.key, setting.value)
+                                setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
                             },
                             color = Studio.colors.secondaryText,
@@ -200,6 +201,7 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_dial" -> R.string.setting_group_touch_dial
         "touch_buttons", "touch_default" -> R.string.touch_controls
         "sh_fit" -> R.string.setting_group_sh_fit
+        "sh_auracast" -> R.string.setting_group_sh_auracast
         "sh_sensors" -> R.string.setting_group_sh_sensors
         "sleep" -> R.string.setting_group_sleep
         "sleep_sound" -> R.string.setting_group_sleep_sound
@@ -225,6 +227,7 @@ private fun groupNote(key: String): String? = when (key) {
     "ef_cycle" -> stringResource(R.string.setting_group_ef_cycle_note)
     "find" -> stringResource(R.string.setting_find_note)
     "sh_fit" -> stringResource(R.string.setting_sh_fit_note)
+    "sh_auracast" -> stringResource(R.string.setting_sh_auracast_note)
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
@@ -574,6 +577,9 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_sensors" -> stringResource(R.string.setting_sh_sensors)
     "sh_heart_rate" -> stringResource(R.string.setting_sh_heart_rate)
     "sh_body_temperature" -> stringResource(R.string.setting_sh_body_temperature)
+    "sh_auracast_add" -> stringResource(R.string.setting_sh_auracast_add)
+    "sh_auracast_remove" -> stringResource(R.string.setting_sh_auracast_remove)
+    "sh_auracast_source" -> stringResource(R.string.setting_sh_auracast_source)
     "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
     "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
     "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
@@ -934,6 +940,7 @@ private fun isTouchRow(key: String): Boolean {
 internal fun Context.optionLabel(key: String, option: String): String = when {
     key == "sh_auto_off" -> if (option == "0") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
     key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> getString(when (option) { "low" -> R.string.setting_level_low; "mid", "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_high })
+    key == "sh_auracast_source" -> getString(when (option) { "receiving" -> R.string.setting_sh_auracast_receiving; "synced" -> R.string.setting_sh_auracast_synced; "code_required" -> R.string.setting_sh_auracast_code; "bad_code" -> R.string.setting_sh_auracast_bad_code; "failed" -> R.string.setting_sh_auracast_failed; else -> R.string.setting_sh_auracast_not_synced })
     key.startsWith("sh_fit_") -> getString(when (option) { "bad" -> R.string.setting_sh_fit_bad; "acceptable" -> R.string.setting_sh_fit_acceptable; "good" -> R.string.setting_sh_fit_good; "invalid" -> R.string.setting_sh_fit_invalid; "not_ready" -> R.string.setting_sh_fit_not_ready; else -> R.string.unknown })
     key.startsWith("sh_wear") -> getString(when (option) { "in_case" -> R.string.setting_sh_wear_in_case; "not_on_head" -> R.string.setting_sh_wear_off; "on_head" -> R.string.setting_sh_wear_on; else -> R.string.unknown })
     key == "sh_prompts" -> getString(when (option) { "tone_voice_off" -> R.string.action_off; "tone_on" -> R.string.setting_sh_prompts_tones; else -> R.string.setting_sh_prompts_voice })
@@ -1462,6 +1469,7 @@ private fun actionStart(key: String): Int = when (key) {
     "sh_find_left" -> R.string.setting_sh_find_left
     "sh_find_right" -> R.string.setting_sh_find_right
     "sh_fit_test" -> R.string.setting_sh_fit_start
+    "sh_auracast_scan" -> R.string.setting_sh_auracast_scan
     else -> R.string.setting_action_start
 }
 

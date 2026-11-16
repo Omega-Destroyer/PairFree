@@ -66,6 +66,8 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         if (model?.peers == true) add("device_management")
         if (model?.fitTest == true) add("fit_test")
         if (hasFeature("find-device-1")) add("find_device")
+        if (hasFeature("sound-personalization-1") || hasFeature("sound-personalization-2")) add("personalized_sound")
+        if (hasFeature("auracast-1")) add("auracast")
     }
 
     private fun hasFeature(name: String): Boolean = model?.properties != null && model.features.containsKey(name)
@@ -83,6 +85,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             add(read(command(SennheiserCommands.PEER_OWN)!!))
         }
         if (model?.sensors == true && model.properties != null) add(readWith(SennheiserCommands.SENSOR_STATE, byteArrayOf(SENSOR_HEART_RATE.toByte())))
+        if (hasFeature("auracast-1")) add(read(command(SennheiserCommands.AURACAST_IDS)!!))
     }
 
     /** One read per gesture of each earbud, and whether they are the defaults. */
@@ -154,6 +157,9 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     private val sensorData = mutableMapOf<Int, ByteArray>()
     private var sensorsOn: Boolean? = null
     private var moreOutbox = emptyList<ByteArray>()
+    private var auracastKnown = false
+    private val auracastStates = mutableMapOf<Int, AuracastSource>()
+    private val auracastScan = linkedMapOf<String, AuracastBroadcast>()
 
     private fun markFind(): Boolean {
         if (findKnown) return false
@@ -238,6 +244,28 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 }
                 if (known.status == status) return false
                 peers[index] = SennheiserPeer(index, status, known.name)
+                return true
+            }
+            SennheiserCommands.AURACAST_IDS -> {
+                // The count of sources the earbuds receive from, then their ids (the app's `Auracast_GetSourceIds`).
+                if (payload.isEmpty()) return false
+                auracastKnown = true
+                val ids = payload.drop(1).map { it.toInt() and 0xFF }.take(payload[0].toInt() and 0xFF)
+                auracastStates.keys.retainAll(ids.toSet())
+                for (id in ids) moreOutbox += readWith(SennheiserCommands.AURACAST_STATE, byteArrayOf(id.toByte()))
+                return true
+            }
+            SennheiserCommands.AURACAST_STATE -> {
+                val st = AuracastSource.of(payload) ?: return false
+                auracastKnown = true
+                if (auracastStates[st.sourceId]?.same(st) == true) return false
+                auracastStates[st.sourceId] = st
+                return true
+            }
+            SennheiserCommands.AURACAST_RESULT -> {
+                val r = AuracastBroadcast.of(payload) ?: return false
+                auracastKnown = true
+                auracastScan[r.addressKey] = r
                 return true
             }
             SennheiserCommands.SENSOR_STATE -> {
@@ -407,6 +435,14 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                     add(Setting.Information(KEY_FIT_LEFT, fitWord(fitLeft)))
                     add(Setting.Information(KEY_FIT_RIGHT, fitWord(fitRight)))
                 }
+            }))
+            if (auracastKnown) add(SettingGroup("sh_auracast", SettingTab.DEVICE, buildList {
+                add(Setting.Action(KEY_AURACAST_SCAN))
+                val added = auracastStates.values.map { it.addressKey }.toSet()
+                val offered = auracastScan.values.filter { !it.encrypted && it.addressKey !in added }
+                if (offered.isNotEmpty()) add(Setting.Choice(KEY_AURACAST_ADD, null, offered.map { it.label }))
+                for (src in auracastStates.values.sortedBy { it.sourceId }) add(Setting.Information(KEY_AURACAST_SOURCE, src.state + ":" + (auracastScan[src.addressKey]?.name ?: src.addressKey)))
+                if (auracastStates.isNotEmpty()) add(Setting.Choice(KEY_AURACAST_REMOVE, null, auracastStates.values.sortedBy { it.sourceId }.map { auracastScan[it.addressKey]?.name ?: it.addressKey }))
             }))
             val others = pairedDevices.filter { it.index != peerOwn }
             if (others.isNotEmpty()) {
@@ -589,6 +625,13 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 val c = command(SennheiserCommands.FIT_PRECONDITION) ?: return null
                 return listOf(frameOf(c.vendor, c.get!!, ByteArray(0)))
             }
+            KEY_AURACAST_SCAN -> {
+                // The earbuds scan themselves, for five seconds as the app asks (`AURACAST_SCANNING_TIME_SECS`); the results come as events.
+                val c = command(SennheiserCommands.AURACAST_SCAN) ?: return null
+                if (!auracastKnown) return null
+                auracastScan.clear()
+                return listOf(frameOf(c.vendor, c.set!!, u16(AURACAST_SCAN_SECONDS)))
+            }
             KEY_PERSONALIZED_RESET -> {
                 val c = command(SennheiserCommands.PERSONALIZED_RESET) ?: return null
                 readBacks += read(command(SennheiserCommands.PERSONALIZED_MODE)!!)
@@ -627,6 +670,23 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             }
         }
         return null
+    }
+
+    private fun auracastChange(change: SettingChange.Choice): List<ByteArray>? {
+        if (change.key == KEY_AURACAST_ADD) {
+            val b = auracastScan.values.firstOrNull { it.label == change.option && !it.encrypted } ?: return null
+            val c = command(SennheiserCommands.AURACAST_ADD) ?: return null
+            // The app's `BassAddSourceOperation`: the broadcaster's address and set, its id, "synchronise without past info", an unknown interval (0xFFFF),
+            // one subgroup that takes every stream, and no metadata.
+            val payload = byteArrayOf(b.addressType.toByte()) + b.address + byteArrayOf(b.advSid.toByte()) + b.broadcastId + byteArrayOf(PA_SYNC_WITHOUT_PAST.toByte(), -1, -1, 1, -1, -1, -1, -1, 0)
+            readBacks += read(command(SennheiserCommands.AURACAST_IDS)!!)
+            return listOf(frameOf(c.vendor, c.set!!, payload))
+        }
+        val target = auracastStates.values.firstOrNull { (auracastScan[it.addressKey]?.name ?: it.addressKey) == change.option } ?: return null
+        val c = command(SennheiserCommands.AURACAST_REMOVE) ?: return null
+        auracastStates.remove(target.sourceId)
+        readBacks += read(command(SennheiserCommands.AURACAST_IDS)!!)
+        return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(target.sourceId.toByte())))
     }
 
     private fun peerChange(change: SettingChange.Choice): List<ByteArray>? {
@@ -702,6 +762,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         if (change is SettingChange.Press && change.key == KEY_TOUCH_DEFAULT) return restoreTouch()
         if (change is SettingChange.Press) return press(change.key)
         if (change is SettingChange.Choice && (change.key == KEY_PEER_CONNECT || change.key == KEY_PEER_DISCONNECT)) return peerChange(change)
+        if (change is SettingChange.Choice && (change.key == KEY_AURACAST_ADD || change.key == KEY_AURACAST_REMOVE)) return auracastChange(change)
         if (change is SettingChange.Choice && change.key.startsWith("touch_")) return changeTouch(change)
         if (change is SettingChange.Choice && change.key == KEY_AUTO_OFF) {
             val minutes = change.option.toIntOrNull() ?: return null
@@ -1029,6 +1090,14 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         public const val KEY_SENSORS: String = "sh_sensors"
         public const val KEY_HEART_RATE: String = "sh_heart_rate"
         public const val KEY_BODY_TEMPERATURE: String = "sh_body_temperature"
+        public const val KEY_AURACAST_SCAN: String = "sh_auracast_scan"
+        public const val KEY_AURACAST_ADD: String = "sh_auracast_add"
+        public const val KEY_AURACAST_REMOVE: String = "sh_auracast_remove"
+        public const val KEY_AURACAST_SOURCE: String = "sh_auracast_source"
+
+        /** How long the earbuds scan for broadcasts (the app's `AURACAST_SCANNING_TIME_SECS`), and `BassSyncOperation`'s "synchronise without past info". */
+        private const val AURACAST_SCAN_SECONDS = 5
+        private const val PA_SYNC_WITHOUT_PAST = 2
 
         /** `AudioMode` values (`audio-mode-1` and `-2`): 2 is speech (the app's podcast mode), 3 the personalised sound. */
         private const val AUDIO_SPEECH = 2
@@ -1105,3 +1174,58 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
 
 /** One entry of the earbuds' paired devices list: its index, the connection status the earbuds report (0 disconnected, 1 classic, 2 LE, 3 both) and its name. */
 public class SennheiserPeer(public val index: Int, public val status: Int, public val name: String)
+
+/**
+ * A broadcast the earbuds found (Smart Control's `AuracastScanResult`): its name, the broadcaster's address and set, the broadcast id and whether it needs a code.
+ * The layout is the app's: the signal strength, the name's length and bytes, the address type, six address bytes, the set, three id bytes and the encryption flag.
+ */
+public class AuracastBroadcast(public val name: String, public val addressType: Int, public val address: ByteArray, public val advSid: Int, public val broadcastId: ByteArray, public val encrypted: Boolean) {
+    public val addressKey: String get() = address.joinToString(":") { "%02X".format(it) }
+    public val label: String get() = name.ifEmpty { addressKey }
+
+    public companion object {
+        public fun of(p: ByteArray): AuracastBroadcast? {
+            if (p.size < 2) return null
+            val len = p[1].toInt() and 0xFF
+            if (p.size < 14 + len) return null
+            val name = String(p.copyOfRange(2, 2 + len), Charsets.UTF_8)
+            return AuracastBroadcast(name, p[2 + len].toInt() and 0xFF, p.copyOfRange(3 + len, 9 + len), p[9 + len].toInt() and 0xFF, p.copyOfRange(10 + len, 13 + len), (p[13 + len].toInt() and 0xFF) != 0)
+        }
+    }
+}
+
+/** A source the earbuds receive a broadcast from (`BassReceiveState`): its id, the broadcaster's address and the synchronisation and encryption states. */
+public class AuracastSource(public val sourceId: Int, public val address: ByteArray, public val paSync: Int, public val encryption: Int, public val playing: Boolean) {
+    public val addressKey: String get() = address.joinToString(":") { "%02X".format(it) }
+
+    /** The state as a key for the screens: receiving, synced, not synced, code required or bad code. */
+    public val state: String get() = when {
+        encryption == 1 -> "code_required"
+        encryption == 3 -> "bad_code"
+        playing -> "receiving"
+        paSync == 2 -> "synced"
+        paSync == 3 -> "failed"
+        else -> "not_synced"
+    }
+
+    internal fun same(o: AuracastSource): Boolean = sourceId == o.sourceId && address.contentEquals(o.address) && paSync == o.paSync && encryption == o.encryption && playing == o.playing
+
+    public companion object {
+        public fun of(p: ByteArray): AuracastSource? {
+            if (p.size < 14) return null
+            val encryption = p[13].toInt() and 0xFF
+            // After the encryption state a wrong code adds the 16 bytes of the code that failed; then the number of subgroups and each one's synchronisation bits.
+            var at = if (encryption == 3) 30 else 14
+            if (p.size <= at) return AuracastSource(p[0].toInt() and 0xFF, p.copyOfRange(2, 8), p[12].toInt() and 0xFF, encryption, false)
+            val groups = p[at].toInt() and 0xFF
+            at += 1
+            var playing = false
+            for (g in 0 until groups) {
+                val from = at + g
+                val to = minOf(p.size, from + 4)
+                if (from < to && p.copyOfRange(from, to).any { it.toInt() != 0 }) playing = true
+            }
+            return AuracastSource(p[0].toInt() and 0xFF, p.copyOfRange(2, 8), p[12].toInt() and 0xFF, encryption, playing)
+        }
+    }
+}

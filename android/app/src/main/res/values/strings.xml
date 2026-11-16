@@ -1230,6 +1230,18 @@
     <string name="setting_sh_sensors">Measure heart rate and body temperature</string>
     <string name="setting_sh_heart_rate">Heart rate (beats per minute)</string>
     <string name="setting_sh_body_temperature">Body temperature</string>
+    <string name="setting_group_sh_auracast">Auracast</string>
+    <string name="setting_sh_auracast_scan">Look for broadcasts</string>
+    <string name="setting_sh_auracast_add">Listen to a broadcast</string>
+    <string name="setting_sh_auracast_remove">Stop listening to</string>
+    <string name="setting_sh_auracast_source">Broadcast</string>
+    <string name="setting_sh_auracast_receiving">Playing</string>
+    <string name="setting_sh_auracast_synced">Connected</string>
+    <string name="setting_sh_auracast_not_synced">Not connected</string>
+    <string name="setting_sh_auracast_code">Needs a code</string>
+    <string name="setting_sh_auracast_bad_code">Wrong code</string>
+    <string name="setting_sh_auracast_failed">Could not connect</string>
+    <string name="setting_sh_auracast_note">The earbuds look for broadcasts for five seconds. Broadcasts that need a code are not listed: PairFree cannot take a code yet.</string>
 
     <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
     <string name="setting_a3959_nc_mode">Noise cancelling type</string>

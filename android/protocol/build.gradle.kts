@@ -2439,7 +2439,172 @@ val generateSennheiserTables = tasks.register<GenerateSennheiserTables>("generat
     outputDir = layout.buildDirectory.dir("generated/sennheiser")
 }
 
+/** Writes Jabra's GNP command constants, settings, firmware snapshots and models from data/jabra. */
+abstract class GenerateJabraTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val settingsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val settings = (JsonSlurper().parse(settingsJson.get().asFile) as Map<String, Any?>).getValue("settings") as Map<String, Map<String, Any?>>
+        @Suppress("UNCHECKED_CAST")
+        val devices = JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
+        fun strings(v: Any?) = ((v as List<*>?) ?: emptyList<Any?>()).joinToString(", ", "listOf<String>(", ")") { str(it) }
+        fun int(v: Any?) = (v as Number).toInt()
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/jabra by the generateJabraTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val wire = commands.getValue("wire") as Map<String, Any?>
+        out.appendLine("/** The transport's constants (data/jabra/commands.json). */")
+        out.appendLine("public object JabraWire {")
+        out.appendLine("    public const val SPP_UUID: String = ${str(wire["spp_uuid"])}")
+        out.appendLine("    public const val DESTINATION: Int = ${int(wire["destination"])}")
+        out.appendLine("    public const val SOURCE: Int = ${int(wire["source"])}")
+        @Suppress("UNCHECKED_CAST")
+        val addresses = wire.getValue("addresses") as Map<String, Any?>
+        out.appendLine("    public const val DSP: Int = ${int(addresses["dsp"])}")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** A command PairFree sends by name: the vendor's group and its main and subcommand bytes. */")
+        out.appendLine("public class JabraCommand(public val family: String, public val main: Int, public val sub: Int)")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val named = commands.getValue("named") as Map<String, Map<String, Any?>>
+        out.appendLine("public object JabraCommands {")
+        for ((k, v) in named) out.appendLine("    public val ${k.uppercase()}: JabraCommand = JabraCommand(${str(v["family"])}, ${int(v["main"])}, ${int(v["sub"])})")
+        @Suppress("UNCHECKED_CAST")
+        val never = commands.getValue("never_send") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val families = never.getValue("families") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val neverCommands = never.getValue("commands") as Map<String, Map<String, Any?>>
+        out.appendLine("    /** Main command groups never sent: production tests, firmware, debug (hard rules). */")
+        out.appendLine("    public val NEVER_SEND_GROUPS: Set<Int> = setOf(${families.values.map { int(it) }.toSortedSet().joinToString(", ")})")
+        out.appendLine("    /** Single commands never sent: factory default, restart preparation, pairing database writes, link keys. */")
+        out.appendLine("    public val NEVER_SEND: List<Pair<Int, Int>> = listOf(${neverCommands.values.joinToString(", ") { "${int(it["main"])} to ${int(it["sub"])}" }})")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val presets = commands.getValue("eq_presets") as List<Map<String, Any?>>
+        out.appendLine("public object JabraPresets {")
+        out.appendLine("    public val ALL: List<JabraPreset> = listOf(")
+        for (p in presets) out.appendLine("        JabraPreset(${str(p["name"])}, listOf(${(p["gain_percent"] as List<*>).joinToString(", ") { int(it).toString() }})),")
+        out.appendLine("    )")
+        out.appendLine("}")
+        out.appendLine()
+
+        fun selText(m: Map<String, Any?>): String {
+            @Suppress("UNCHECKED_CAST")
+            val sel = (m["selectors"] as List<List<Any?>>?) ?: emptyList()
+            return sel.joinToString(",") { "${int(it[0])}:${it[1]}" }
+        }
+        fun optText(m: Map<String, Any?>): String {
+            @Suppress("UNCHECKED_CAST")
+            val opts = (m["options"] as List<List<String>>?) ?: emptyList()
+            for (o in opts) require(!o[0].contains(';') && !o[0].contains(':')) { "option ${o[0]}" }
+            return opts.joinToString(";") { "${it[0]}:${it[1]}" }
+        }
+        val entries = settings.entries.toList()
+        out.appendLine("public object JabraSettings {")
+        val chunks = entries.chunked(40)
+        for ((i, chunk) in chunks.withIndex()) {
+            out.appendLine("    private fun part$i(): List<JabraSetting> = listOf(")
+            for ((id, m) in chunk) {
+                val main = (m["main"] as Number?)?.toInt() ?: -1
+                val sub = (m["sub"] as Number?)?.toInt() ?: -1
+                val cfg = ((m["config_mode"] as List<*>?) ?: emptyList<Any?>()).joinToString(",")
+                val virtual = (m["virtual"] as String?)?.let { str(it) } ?: "null"
+                out.appendLine("        make(${str(id)}, ${str(m["name"])}, ${str(m["group"])}, ${int(m["dest"])}, ${str(m["command"])}, ${str(m["widget"])}, $main, $sub, ${str(selText(m))}, ${(m["pos"] as Number?)?.toInt() ?: 0}, ${int(m["width"])}, ${m["shared"] == true}, ${str(optText(m))}, ${str(cfg)}, ${m["special"] == true}, $virtual, ${strings(m["depends"])}),")
+            }
+            out.appendLine("    )")
+            out.appendLine()
+        }
+        out.appendLine("    public val ALL: List<JabraSetting> = ${(0 until chunks.size).joinToString(" + ") { "part$it()" }}")
+        out.appendLine()
+        out.appendLine("    public val BY_ID: Map<String, JabraSetting> = ALL.associateBy { it.id }")
+        out.appendLine()
+        out.appendLine("    private fun make(")
+        out.appendLine("        id: String, name: String, group: String, dest: Int, command: String, widget: String, main: Int, sub: Int, selectors: String, pos: Int, width: Int,")
+        out.appendLine("        shared: Boolean, options: String, configMode: String, special: Boolean, virtual: String?, depends: List<String>,")
+        out.appendLine("    ): JabraSetting = JabraSetting(")
+        out.appendLine("        id, name, group, dest, command, JabraWidget.valueOf(widget.uppercase()), main.takeIf { it >= 0 }, sub.takeIf { it >= 0 },")
+        out.appendLine("        if (selectors.isEmpty()) emptyList() else selectors.split(',').map { it.substringBefore(':').toInt() to it.substringAfter(':').toInt(16) },")
+        out.appendLine("        pos, width, shared,")
+        out.appendLine("        if (options.isEmpty()) emptyList() else options.split(';').map { JabraOption(it.substringBefore(':'), it.substringAfter(':').toInt(16)) },")
+        out.appendLine("        if (configMode.isEmpty()) emptySet() else configMode.split(',').toSet(), special, virtual, depends,")
+        out.appendLine("    )")
+        out.appendLine("}")
+        out.appendLine()
+
+        @Suppress("UNCHECKED_CAST")
+        val profiles = devices.getValue("profiles") as Map<String, Map<String, Any?>>
+        out.appendLine("/** The firmware snapshots the Sound+ app bundles (data/jabra/devices.json). */")
+        out.appendLine("public object JabraProfiles {")
+        out.appendLine("    public val ALL: List<JabraProfile> = listOf(")
+        for ((snapshot, p) in profiles) {
+            out.appendLine("        JabraProfile(${str(snapshot)}, ${int(p["pid"])}, ${str(p["variant"])}, ${str(p["firmware"])}, ${strings(p["caps"])}.toSet(), ${strings(p["settings"])}),")
+        }
+        out.appendLine("    )")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val models = devices.getValue("models") as List<Map<String, Any?>>
+        out.appendLine("/** Jabra's production models by display name (data/jabra/devices.json). */")
+        out.appendLine("public object JabraModels {")
+        out.appendLine("    public val ALL: List<JabraModel> = listOf(")
+        for (m in models) {
+            @Suppress("UNCHECKED_CAST")
+            val variants = m["variants"] as List<Map<String, Any?>>
+            out.appendLine("        JabraModel(${str(m["name"])}, ${str(m["kind"])}, listOf(")
+            for (v in variants) {
+                @Suppress("UNCHECKED_CAST")
+                val spatial = ((v["spatial"] as Map<String, Any?>?) ?: emptyMap()).keys
+                val le = (v["le_audio_firmware"] as String?)?.let { str(it) } ?: "null"
+                out.appendLine("            JabraVariant(${int(v["pid"])}, ${str(v["definition"])}, ${str(v["protocol"])}, ${strings(v["flags"])}.toSet(), ${str(v["battery"])}, ${str(v["wear"])}, ${strings(v["snapshots"])}, ${strings(v["noise_loop"])}, ${v["my_controls"] == true}, ${v["mysound"] == true}, ${v["spotify"] == true}, ${strings(v["assistants"])}, ${strings(spatial.toList())}.toSet(), $le),")
+            }
+            out.appendLine("        )),")
+        }
+        out.appendLine("    )")
+        out.appendLine("}")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("JabraTables.kt").writeText(out.toString())
+    }
+}
+
+val generateJabraTables = tasks.register<GenerateJabraTables>("generateJabraTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/jabra/commands.json")
+    settingsJson = rootProject.layout.projectDirectory.file("../data/jabra/settings.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/jabra/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.jabra"
+    outputDir = layout.buildDirectory.dir("generated/jabra")
+}
+
 kotlin.sourceSets.main {
+    kotlin.srcDir(generateJabraTables)
     kotlin.srcDir(generateCambridgeTables)
     kotlin.srcDir(generateSennheiserTables)
     kotlin.srcDir(generateOneplusTables)
@@ -2483,6 +2648,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/oneplus")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/nothing")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/sennheiser")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/jabra")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/pixel")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/qcy")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/1more")).withPathSensitivity(PathSensitivity.RELATIVE)

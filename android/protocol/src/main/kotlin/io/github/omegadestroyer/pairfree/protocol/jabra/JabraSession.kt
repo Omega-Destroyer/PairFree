@@ -1,0 +1,386 @@
+package io.github.omegadestroyer.pairfree.protocol.jabra
+
+import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.Fed
+import io.github.omegadestroyer.pairfree.protocol.Pacing
+import io.github.omegadestroyer.pairfree.protocol.Setting
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.SettingGroup
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
+import io.github.omegadestroyer.pairfree.protocol.SessionTalk
+import io.github.omegadestroyer.pairfree.protocol.Value
+
+/**
+ * Jabra's GNP (docs/jabra/PROTOCOL.md): the Sound+ service over RFCOMM, for the earbuds and headphones the app drives through its own SDK. One request waits for its
+ * reply before the next goes. The conversation opens with the product id and the firmware version, which pick the firmware snapshot (data/jabra/devices.json) whose form
+ * lists the model's settings; each of them is then read once, and a row shows when its read answered. Noise control is the ambience command's (`13/BE`) where the
+ * firmware has it. Not tried on any Jabra product.
+ */
+public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacket>() {
+    private var current: EarbudState = EarbudState()
+    override val state: EarbudState get() = current
+    override val pacing: Pacing = Pacing(replyMs = REPLY_MS, gapMs = GAP_MS)
+
+    private val parser = JabraParser()
+    private var sequence = 0
+    private val sentKeys = HashMap<Int, String>()
+
+    /** The product id the earbuds reported, their firmware, and what they were matched to. */
+    public var pid: Int? = null
+        private set
+    public var firmware: String? = null
+        private set
+    public var variant: JabraVariant? = model.variants.singleOrNull()
+        private set
+    public var profile: JabraProfile? = null
+        private set
+    private var configured = false
+
+    /** Each answer by its read key (command and selector bytes), the bytes after the subcommand: the session's whole state, and the device report's. */
+    private val replies = LinkedHashMap<String, ByteArray>()
+    public val answered: Map<String, ByteArray> get() = replies
+
+    private var outbox = emptyList<JabraPacket>()
+    private var readBacks = emptyList<JabraPacket>()
+
+    /** How many leading payload bytes of a command's reply are selectors, by main and subcommand: the settings of the profile tell, and the ambience command has one. */
+    private val selectorCounts = HashMap<Int, Int>()
+
+    private fun hasAmbience(): Boolean = profile?.caps?.contains("ambiencemodes") == true
+    private fun settings(): List<JabraSetting> = profile?.settings?.mapNotNull { JabraSettings.BY_ID[it] }.orEmpty()
+
+    // ---- messages -------------------------------------------------------------------------------------------------------------------------------------
+
+    private fun next(): Int {
+        sequence = (sequence % 250) + 1
+        return sequence
+    }
+
+    private fun packet(destination: Int, attribute: Int, command: JabraCommand, vararg payload: Int): JabraPacket =
+        packet(destination, attribute, command.main, command.sub, ByteArray(payload.size) { payload[it].toByte() })
+
+    private fun packet(destination: Int, attribute: Int, main: Int, sub: Int, body: ByteArray): JabraPacket {
+        val p = JabraPacket(destination, JabraWire.SOURCE, next(), attribute, main, byteArrayOf(sub.toByte()) + body)
+        sentKeys[p.sequence] = keyOf(main, sub, body, selectorCounts[(main shl 8) or sub] ?: 0)
+        return p
+    }
+
+    private fun keyOf(main: Int, sub: Int, body: ByteArray, selectors: Int): String =
+        "%02x/%02x".format(main, sub) + (0 until selectors).joinToString("") { "/%02x".format(body.getOrElse(it) { 0 }) }
+
+    private fun read(setting: JabraSetting): JabraPacket = packet(setting.destination, JabraPacket.READ, setting.main!!, setting.sub!!, setting.selectorBytes)
+
+    override fun start(): List<JabraPacket> = listOf(
+        packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.PID),
+        packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.VERSION),
+        packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.BATTERY),
+    )
+
+    override fun poll(): List<JabraPacket> = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.BATTERY))
+
+    /** Reads out in this order once the model is known: noise control, then each setting of the snapshot's form, once per command and selector. */
+    private fun configure() {
+        if (configured) return
+        configured = true
+        val p = pickProfile()
+        profile = p
+        selectorCounts[(JabraCommands.AMBIENCE.main shl 8) or JabraCommands.AMBIENCE.sub] = 1
+        val out = mutableListOf<JabraPacket>()
+        val seen = HashSet<String>()
+        for (s in settings()) {
+            if (s.main == null || s.sub == null) continue
+            val k = (s.main shl 8) or s.sub
+            selectorCounts[k] = maxOf(selectorCounts[k] ?: 0, s.selectors.size)
+        }
+        if (hasAmbience()) for (selector in AMBIENCE_READS) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, selector)
+        for (s in settings()) {
+            if (s.virtual != null || s.special || s.main == null || s.sub == null || s.widget == JabraWidget.STATIC || s.widget == JabraWidget.TEXT) continue
+            if (seen.add("${s.destination}/${keyOf(s.main, s.sub, s.selectorBytes, s.selectors.size)}")) out += read(s)
+        }
+        outbox = outbox + out
+    }
+
+    /** The snapshot for the product id: the firmware's own, else the nearest older one, else the oldest. */
+    private fun pickProfile(): JabraProfile? {
+        val id = pid ?: variant?.pid ?: return null
+        val all = JabraProfiles.ALL.filter { it.pid == id }
+        if (all.isEmpty()) return null
+        val fw = firmware?.let(::versionOf)
+        if (fw == null) return all.maxWithOrNull { x, y -> compare(versionOf(x.firmware), versionOf(y.firmware)) }
+        all.firstOrNull { versionOf(it.firmware) == fw }?.let { return it }
+        val older = all.filter { compare(versionOf(it.firmware), fw) <= 0 }
+        return older.maxWithOrNull { a, b -> compare(versionOf(a.firmware), versionOf(b.firmware)) } ?: all.minWithOrNull { a, b -> compare(versionOf(a.firmware), versionOf(b.firmware)) }
+    }
+
+    override fun takeOutbox(): List<JabraPacket> = outbox.also { outbox = emptyList() }
+
+    override fun takeReadBacks(): List<JabraPacket> = readBacks.also { readBacks = emptyList() }
+
+    /** Only the settings and ambience commands of the tables go out, never a group or command of the never-send lists (hard rules). */
+    override fun allowed(message: JabraPacket): Boolean {
+        if (message.main in JabraCommands.NEVER_SEND_GROUPS) return false
+        val sub = message.sub ?: return false
+        if (JabraCommands.NEVER_SEND.any { it.first == message.main && it.second == sub }) return false
+        if (message.isWrite) return message.main == CONFIG_MAIN
+        return message.isRead
+    }
+
+    override fun bytes(message: JabraPacket): ByteArray = message.bytes()
+
+    override fun describe(message: JabraPacket): String = message.toString()
+
+    override fun answers(sent: JabraPacket, got: Any): Boolean = got is String && (got == sentKeys[sent.sequence] || got == "seq:${sent.sequence}")
+
+    // ---- reading ----------------------------------------------------------------------------------------------------------------------------------------
+
+    override fun feed(bytes: ByteArray): Fed {
+        var changed = false
+        val answers = mutableListOf<Any>()
+        for (packet in parser.feed(bytes)) guarded {
+            log?.invoke("recv $packet")
+            when {
+                packet.main == NACK -> answers += "seq:${packet.sequence}"
+                packet.isReply || packet.isEvent -> {
+                    val sub = packet.sub ?: return@guarded
+                    val body = packet.body
+                    val key = keyOf(packet.main, sub, body, selectorCounts[(packet.main shl 8) or sub] ?: 0)
+                    if (packet.isReply) answers += key
+                    changed = handle(packet.main, sub, body, key) || changed
+                }
+            }
+        }
+        if (changed) refresh()
+        return Fed(changed, answers)
+    }
+
+    /** True when the answer changed what the screens show. */
+    private fun handle(main: Int, sub: Int, body: ByteArray, key: String): Boolean {
+        when {
+            main == JabraCommands.PID.main && sub == JabraCommands.PID.sub -> {
+                if (body.size >= 2) {
+                    val id = (body[0].toInt() and 0xFF) or ((body[1].toInt() and 0xFF) shl 8)
+                    pid = id
+                    variant = model.variant(id) ?: variant
+                    if (firmware != null) configure()
+                }
+                return true
+            }
+            main == JabraCommands.VERSION.main && sub == JabraCommands.VERSION.sub -> {
+                firmware = text(body)
+                if (pid != null) configure()
+                return true
+            }
+        }
+        replies[key] = body
+        return true
+    }
+
+    override fun unanswered(sent: JabraPacket): Boolean {
+        val k = sentKeys[sent.sequence]
+        // Earbuds that never answered the product id or the version are read by what the model's table says.
+        if (!configured && (k == keyOf(JabraCommands.PID.main, JabraCommands.PID.sub, ByteArray(0), 0) || k == keyOf(JabraCommands.VERSION.main, JabraCommands.VERSION.sub, ByteArray(0), 0))) {
+            configure()
+            return true
+        }
+        return false
+    }
+
+    /** The ASCII string after a length byte (the version reply), else the whole payload as text. */
+    private fun text(body: ByteArray): String {
+        if (body.isEmpty()) return ""
+        val n = body[0].toInt() and 0xFF
+        val chars = if (n in 1 until body.size) body.copyOfRange(1, 1 + minOf(n, body.size - 1)) else body.copyOfRange(1, body.size)
+        return String(chars.takeWhile { it.toInt() != 0 }.toByteArray(), Charsets.US_ASCII).trim()
+    }
+
+    // ---- state ----------------------------------------------------------------------------------------------------------------------------------------
+
+    private fun u8(key: String, at: Int): Int? = replies[key]?.getOrNull(at)?.toInt()?.and(0xFF)
+
+    private fun ambience(selector: Int): Int? = u8("13/be/%02x".format(selector), 1)
+
+    private fun refresh() {
+        val next = current.values.toMutableMap()
+        fun put(c: Command, v: Value?) {
+            if (v == null) next.remove(c) else next[c] = v
+        }
+        firmware?.let { put(Command.FIRMWARE_VERSION, Value.Text("${model.name}_$it")) }
+        val battery = replies["12/02"]
+        if (battery != null && battery.size >= 2) {
+            val levels = batteryLevels(battery)
+            put(Command.BATTERY_LEFT, levels.left?.let { Value.Number(it) })
+            put(Command.BATTERY_RIGHT, levels.right?.let { Value.Number(it) })
+            put(Command.BATTERY_CASE, levels.cradle?.let { Value.Number(it) })
+        }
+        ambience(1)?.let { code ->
+            val name = when (code) {
+                AMBIENCE_ANC -> "anc"
+                AMBIENCE_HEARTHROUGH -> "transparency"
+                AMBIENCE_OFF -> "off"
+                else -> null
+            }
+            put(Command.ANC_MODE, name?.let { n -> Value.Number(Command.ANC_MODE.labels.entries.first { it.value == n }.key) })
+        }
+        current = current.copy(values = next)
+    }
+
+    private class Levels(val left: Int?, val right: Int?, val cradle: Int?)
+
+    /**
+     * STATUS `12/02`: flags, the local level, two ADC bytes, the number of extra units, then each as address, a reserved byte and a level.
+     * Jabra's SDK places the case by its address (0x15) and the other earbud by the extra unit's address, 4 for the right and 5 for the left,
+     * the local level belonging to the other side; with no extra unit it is one combined level (shown as the left). The side of the local
+     * level is inferred from the extra unit, not read from a link event (docs/jabra/PROTOCOL.md).
+     */
+    private fun batteryLevels(b: ByteArray): Levels {
+        fun at(i: Int) = b.getOrNull(i)?.toInt()?.and(0xFF)
+        val local = at(1)?.takeIf { it in 0..100 }
+        val extras = at(4) ?: 0
+        var cradle: Int? = null
+        var other: Pair<Int, Int>? = null
+        for (i in 0 until extras) {
+            val base = 5 + 3 * i
+            val address = at(base) ?: break
+            val level = at(base + 2)?.takeIf { it in 0..100 } ?: continue
+            if (address == ADDRESS_CRADLE) cradle = level else other = address to level
+        }
+        val o = other ?: return Levels(local, null, cradle)
+        return if (o.first == ADDRESS_RIGHT) Levels(local, o.second, cradle) else Levels(o.second, local, cradle)
+    }
+
+    // ---- rows -------------------------------------------------------------------------------------------------------------------------------------------
+
+    override val groups: List<SettingGroup>
+        get() {
+            val out = mutableListOf<SettingGroup>()
+            val noise = noiseRows()
+            if (noise.isNotEmpty()) out += SettingGroup("jb_noise", SettingTab.HOME, noise)
+            val byGroup = LinkedHashMap<Pair<String, SettingTab>, MutableList<Setting>>()
+            for (s in settings()) {
+                val row = row(s) ?: continue
+                val tab = if (s.command == "USER_BUTTONS") SettingTab.CONTROLS else SettingTab.DEVICE
+                byGroup.getOrPut((if (tab == SettingTab.CONTROLS) "buttons" else s.group) to tab) { mutableListOf() }.let { if (it.none { r -> r.key == row.key }) it += row }
+            }
+            for ((k, rows) in byGroup) out += SettingGroup("jb_${k.first}", k.second, rows)
+            return out
+        }
+
+    private fun noiseRows(): List<Setting> = buildList {
+        if (!hasAmbience()) return@buildList
+        val htMax = u8("13/be/00", 2)
+        val ancMax = u8("13/be/00", 3)
+        val ht = ambience(2)
+        val anc = ambience(3)
+        if (htMax != null && htMax > 0 && ht != null) add(Setting.Level("jb_ht_level", htMax - ht.coerceIn(0, htMax) + 1, 1, htMax + 1))
+        if (ancMax != null && ancMax > 0 && anc != null && variant?.noiseLoop?.contains("anc") != false) add(Setting.Level("jb_anc_level", ancMax - anc.coerceIn(0, ancMax) + 1, 1, ancMax + 1))
+    }
+
+    /** The value of a setting from the last answer to its read, or null before it came. */
+    private fun valueOf(s: JabraSetting): Int? {
+        val body = replies[keyOf(s.main ?: return null, s.sub ?: return null, s.selectorBytes, s.selectors.size)] ?: return null
+        if (s.pos < 1 || body.size < s.pos - 1 + s.width) return null
+        var v = 0
+        for (i in 0 until s.width) v = (v shl 8) or (body[s.pos - 1 + i].toInt() and 0xFF)
+        return v
+    }
+
+    /** The two codes of a switch: the option called on and the one called off; null when the form gives both the same code. */
+    private fun switchCodes(s: JabraSetting): Pair<Int, Int>? {
+        val on = s.options.firstOrNull { it.name.lowercase() in ON_NAMES }?.code ?: return null
+        val off = s.options.firstOrNull { it.name.lowercase() in OFF_NAMES }?.code ?: return null
+        return if (on == off) null else on to off
+    }
+
+    private fun row(s: JabraSetting): Setting? {
+        if (s.virtual != null || s.special || s.main == null) return null
+        val v = valueOf(s) ?: return null
+        val key = "jb_${s.id}"
+        return when (s.widget) {
+            JabraWidget.BOOL -> switchCodes(s)?.let { (on, _) -> Setting.Toggle(key, v == on) }
+            JabraWidget.LIST -> if (s.options.isEmpty()) null else Setting.Choice(key, s.option(v)?.name, s.options.map { it.name })
+            else -> null
+        }
+    }
+
+    // ---- changes -----------------------------------------------------------------------------------------------------------------------------------------
+
+    override fun set(command: Command, value: Int): List<JabraPacket>? {
+        if (command != Command.ANC_MODE || !hasAmbience()) return null
+        val code = when (Command.ANC_MODE.labels[value]) {
+            "off" -> AMBIENCE_OFF
+            "anc" -> AMBIENCE_ANC
+            "transparency" -> AMBIENCE_HEARTHROUGH
+            else -> return null
+        }
+        replies["13/be/01"] = byteArrayOf(1, code.toByte())
+        refresh()
+        readBacks = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, 1))
+        return listOf(packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.AMBIENCE, 1, code))
+    }
+
+    override fun change(change: SettingChange): List<JabraPacket>? {
+        when (change.key) {
+            "jb_ht_level", "jb_anc_level" -> {
+                val value = (change as? SettingChange.Level)?.value ?: return null
+                val ht = change.key == "jb_ht_level"
+                val max = u8("13/be/00", if (ht) 2 else 3) ?: return null
+                val raw = (max + 1 - value).coerceIn(0, max)
+                val selector = if (ht) 2 else 3
+                replies["13/be/%02x".format(selector)] = byteArrayOf(selector.toByte(), raw.toByte())
+                readBacks = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, selector))
+                return listOf(packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.AMBIENCE, selector, raw))
+            }
+        }
+        val s = settings().firstOrNull { "jb_${it.id}" == change.key } ?: return null
+        val code = when (change) {
+            is SettingChange.Toggle -> switchCodes(s)?.let { if (change.on) it.first else it.second }
+            is SettingChange.Choice -> s.options.firstOrNull { it.name == change.option }?.code
+            else -> null
+        } ?: return null
+        return write(s, code)
+    }
+
+    /** The write of one setting: the selectors and the value, or for a shared payload the last read payload with only this value changed. */
+    private fun write(s: JabraSetting, code: Int): List<JabraPacket>? {
+        val main = s.main ?: return null
+        val sub = s.sub ?: return null
+        if (main != CONFIG_MAIN || "write" in s.configMode) return null
+        val key = keyOf(main, sub, s.selectorBytes, s.selectors.size)
+        val base = replies[key]
+        val body = if (s.shared) base?.copyOf() ?: return null else ByteArray(maxOf(s.pos - 1 + s.width, s.selectors.maxOfOrNull { it.first } ?: 0))
+        if (body.size < s.pos - 1 + s.width) return null
+        for ((position, byte) in s.selectors) body[position - 1] = byte.toByte()
+        for (i in 0 until s.width) body[s.pos - 1 + i] = (code shr (8 * (s.width - 1 - i))).toByte()
+        replies[key] = body
+        refresh()
+        readBacks = listOf(read(s))
+        return listOf(packet(s.destination, JabraPacket.WRITE, main, sub, body))
+    }
+
+    public companion object {
+        private const val REPLY_MS = 1_000L
+        private const val GAP_MS = 20L
+        private const val NACK = 0xFE
+        private const val CONFIG_MAIN = 0x13
+        private const val ADDRESS_RIGHT = 4
+        private const val ADDRESS_CRADLE = 0x15
+        private const val AMBIENCE_OFF = 0x01
+        private const val AMBIENCE_HEARTHROUGH = 0x02
+        private const val AMBIENCE_ANC = 0x04
+        private val AMBIENCE_READS = intArrayOf(0x00, 0x01, 0x02, 0x03)
+        private val ON_NAMES = setOf("on", "enable", "enabled")
+        private val OFF_NAMES = setOf("off", "disable", "disabled")
+
+        /** A dotted version as numbers; non-numeric parts are dropped. */
+        public fun versionOf(text: String): List<Int> = Regex("\\d+").findAll(text).map { it.value.toInt() }.toList()
+
+        public fun compare(a: List<Int>, b: List<Int>): Int {
+            for (i in 0 until maxOf(a.size, b.size)) {
+                val d = a.getOrElse(i) { 0 }.compareTo(b.getOrElse(i) { 0 })
+                if (d != 0) return d
+            }
+            return 0
+        }
+    }
+}

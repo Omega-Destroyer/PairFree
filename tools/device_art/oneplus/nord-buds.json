@@ -1,0 +1,20 @@
+{
+ "name": "OnePlus Nord Buds / OnePlus Nord Buds 2 / OnePlus Nord Buds 2r / OnePlus Nord Buds CE",
+ "names": [
+  "OnePlus Nord Buds",
+  "OnePlus Nord Buds 2",
+  "OnePlus Nord Buds 2r",
+  "OnePlus Nord Buds CE"
+ ],
+ "codes": [],
+ "source": "Traced from oneplus_nord_buds_ce, the left bud (the maker's own product image, found by image search), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "192,174 212,174 234,182 262,201 271,218 271,463 269,474 264,482 256,488 246,491 234,491 224,486 216,478 212,468 210,313 184,308 155,295 127,276 122,261 121,229 126,210 139,199 163,184",
+  "axis": [
+   196.0,
+   332.9
+  ]
+ },
+ "case": "generic"
+}

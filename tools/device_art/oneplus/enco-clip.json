@@ -1,0 +1,24 @@
+{
+ "name": "OPPO Enco Clip / OPPO Enco Clip2 / OnePlus Buds Clip",
+ "names": [
+  "OPPO Enco Clip",
+  "OPPO Enco Clip2",
+  "OPPO Enco Nobel",
+  "OnePlus Buds Clip",
+  "OnePlus Open Nobel"
+ ],
+ "codes": [],
+ "source": "Traced from oppo_enco_clip2, one ear clip (the maker's own product image, found by image search), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "322,100 350,101 378,111 400,128 422,156 450,213 513,396 517,419 516,444 510,469 501,487 487,507 470,522 453,532 430,541 395,543 375,540 354,532 325,511 299,478 232,486 200,482 174,474 153,462 139,448 122,423 115,404 111,372 113,347 121,319 134,296 147,280 163,266 204,245 212,238 224,217 246,154 265,126 291,108",
+  "holes": [
+   "325,149 334,152 346,164 362,193 373,235 376,255 376,273 350,254 319,240 312,233 307,223 304,208 306,184 313,164"
+  ],
+  "axis": [
+   314.0,
+   321.9
+  ]
+ },
+ "case": "generic"
+}

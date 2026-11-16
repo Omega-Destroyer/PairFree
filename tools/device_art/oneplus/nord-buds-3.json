@@ -1,0 +1,19 @@
+{
+ "name": "OnePlus Nord Buds 3 / OnePlus Nord Buds 3 Pro / OnePlus Nord Buds 3r",
+ "names": [
+  "OnePlus Nord Buds 3",
+  "OnePlus Nord Buds 3 Pro",
+  "OnePlus Nord Buds 3r"
+ ],
+ "codes": [],
+ "source": "Traced from oneplus_nord_buds_3r, the left bud (the maker's own product image, found by image search), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "202,170 220,172 256,188 285,193 296,201 304,215 306,232 305,443 298,463 290,470 281,474 270,475 260,471 250,461 244,449 243,324 240,311 234,311 214,324 197,330 174,331 152,326 152,340 149,344 132,347 116,347 97,343 81,334 71,318 61,290 60,280 63,269 73,252 84,240 104,228 118,236 136,209 155,190 180,176",
+  "axis": [
+   183.2,
+   322.5
+  ]
+ },
+ "case": "generic"
+}

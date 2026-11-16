@@ -1,0 +1,21 @@
+{
+ "name": "OPPO Enco X3 / OPPO Enco X3i / OPPO Enco X3s / OPPO Enco X4",
+ "names": [
+  "OPPO Enco Bohr",
+  "OPPO Enco X3",
+  "OPPO Enco X3i",
+  "OPPO Enco X3s",
+  "OPPO Enco X4"
+ ],
+ "codes": [],
+ "source": "Traced from oppo_enco_x3s, a bud out of its case (the maker's own product image, found by image search), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "267,27 286,29 299,37 315,67 316,74 276,187 269,198 257,201 242,194 236,182 259,108 234,100 221,104 204,99 190,85 187,68 191,55 203,44 221,39 232,43 249,33",
+  "axis": [
+   251.5,
+   114.4
+  ]
+ },
+ "case": "generic"
+}

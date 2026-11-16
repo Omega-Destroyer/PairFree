@@ -258,7 +258,7 @@ class CambridgeBandEq(private val session: CambridgeConnectSession) : BandEq {
  * app calculates, or the three knobs of the older firmware. Smart Control's presets are curves over those bands, so they are written like the user's own; the
  * range is the earbuds' own (user-eq-2) or the app's six dB, in half steps (the newest hold tenths).
  */
-class SennheiserBandEq(private val session: SennheiserSession) : BandEq {
+class SennheiserBandEq(private val session: io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserEqSource) : BandEq {
     private val presets: List<Pair<String, List<Double>>> = session.eqPresets
     override val eqBandsHz: List<Int> = session.eqBandsHz
     override val eqRangeDb: Int = maxOf(abs(session.eqMinDb), abs(session.eqMaxDb)).roundToInt()

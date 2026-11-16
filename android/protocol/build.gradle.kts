@@ -2172,6 +2172,10 @@ abstract class GenerateSennheiserTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val touchJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val gaia2Json: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -2184,6 +2188,8 @@ abstract class GenerateSennheiserTables : DefaultTask() {
         val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
         @Suppress("UNCHECKED_CAST")
         val touch = JsonSlurper().parse(touchJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val gaia2 = JsonSlurper().parse(gaia2Json.get().asFile) as Map<String, Any?>
         @Suppress("UNCHECKED_CAST")
         val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("models") as List<Map<String, Any?>>
         @Suppress("UNCHECKED_CAST")
@@ -2301,6 +2307,40 @@ abstract class GenerateSennheiserTables : DefaultTask() {
         out.appendLine("    public val TRANSPARENCY_LEVELS: List<Int> = ${ints(touch["transparency_levels"])}")
         out.appendLine("}")
         out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val g2transport = gaia2.getValue("transport") as Map<String, Any?>
+        out.appendLine("/** The older GAIA v2 products (data/sennheiser/gaia2.json): their serial service and vendors. */")
+        out.appendLine("public object Gaia2Wire {")
+        out.appendLine("    public const val SPP_UUID: String = ${str(g2transport["spp_uuid"])}")
+        out.appendLine("    public const val VENDOR: Int = ${hex(g2transport["vendor"])}")
+        out.appendLine("    public const val QUALCOMM_VENDOR: Int = ${hex(g2transport["qualcomm_vendor"])}")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** One property of a GAIA v2 product: the vendor and command of its read and its write (null when it has none), and the app's map of names to numbers. */")
+        out.appendLine("public class Gaia2Prop(public val id: String, public val getVendor: Int?, public val get: Int?, public val setVendor: Int?, public val set: Int?, public val values: Map<String, Int>)")
+        out.appendLine()
+        out.appendLine("public class Gaia2Model(public val name: String, public val form: io.github.omegadestroyer.pairfree.protocol.Form, public val names: List<String>, public val ble: Boolean, public val eq: Boolean, public val props: Map<String, Gaia2Prop>)")
+        out.appendLine()
+        out.appendLine("internal val GAIA2_MODELS: List<Gaia2Model> = listOf(")
+        @Suppress("UNCHECKED_CAST")
+        for (p in gaia2.getValue("products") as List<Map<String, Any?>>) {
+            val form = if (p["kind"] == "earbuds") "EARBUDS" else "HEADPHONES"
+            @Suppress("UNCHECKED_CAST")
+            val props = (p["properties"] as Map<String, Map<String, Any?>>).entries.joinToString(", ") { (id, e) ->
+                @Suppress("UNCHECKED_CAST")
+                val g = e["get"] as Map<String, Any?>?
+                @Suppress("UNCHECKED_CAST")
+                val st = e["set"] as Map<String, Any?>?
+                @Suppress("UNCHECKED_CAST")
+                val values = (e["values"] as Map<String, Any?>?)?.entries?.joinToString(", ") { "${str(it.key)} to ${(it.value as Number).toInt()}" } ?: ""
+                "${str(id)} to Gaia2Prop(${str(id)}, ${g?.let { hex(it["vendor"]) } ?: "null"}, ${g?.let { hex(it["command"]) } ?: "null"}, ${st?.let { hex(it["vendor"]) } ?: "null"}, ${st?.let { hex(it["command"]) } ?: "null"}, mapOf($values))"
+            }
+            out.appendLine("    Gaia2Model(${str(p["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(p["names"])}, ${p["transport"] == "ble"}, ${p["eq"] == true}, mapOf(")
+            out.appendLine("            $props,")
+            out.appendLine("    )),")
+        }
+        out.appendLine(")")
+        out.appendLine()
         out.appendLine("/** Every model in data/sennheiser/devices.json. */")
         out.appendLine("internal val SENNHEISER_MODELS: List<SennheiserModel> = listOf(")
         for (d in devices) {
@@ -2344,6 +2384,7 @@ val generateSennheiserTables = tasks.register<GenerateSennheiserTables>("generat
     devicesJson = rootProject.layout.projectDirectory.file("../data/sennheiser/devices.json")
     eqJson = rootProject.layout.projectDirectory.file("../data/sennheiser/eq.json")
     touchJson = rootProject.layout.projectDirectory.file("../data/sennheiser/touch.json")
+    gaia2Json = rootProject.layout.projectDirectory.file("../data/sennheiser/gaia2.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.sennheiser"
     outputDir = layout.buildDirectory.dir("generated/sennheiser")
 }

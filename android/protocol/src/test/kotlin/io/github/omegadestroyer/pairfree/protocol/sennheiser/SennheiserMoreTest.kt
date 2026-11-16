@@ -165,12 +165,18 @@ class SennheiserMoreTest {
         s.feed(reply(0x2a22, "00"))
         assertEquals(Setting.Action(SennheiserSession.KEY_AURACAST_SCAN, false), s.row(SennheiserSession.KEY_AURACAST_SCAN))
         assertEquals(listOf("2a23:0005"), words(s.change(SettingChange.Press(SennheiserSession.KEY_AURACAST_SCAN))!!))
+        assertEquals(Setting.Action(SennheiserSession.KEY_AURACAST_SCAN, true), s.row(SennheiserSession.KEY_AURACAST_SCAN))
+        assertEquals(listOf("2a25:"), words(s.takeReadBacks()))
         // A broadcast the earbuds found: signal, name length and name, address type and address, set, id and the encryption flag, then the rest.
         val name = "Cafe".toByteArray().joinToString("") { "%02x".format(it) }
         val open = "c8" + "04" + name + "00" + "aabbccddeeff" + "01" + "010203" + "00" + "0000" + "01" + "00000001"
         val locked = "c0" + "04" + "4c6f636b" + "00" + "112233445566" + "02" + "040506" + "01" + "0000" + "01" + "00000001"
         s.feed(event(0x2a20, open))
         s.feed(event(0x2a20, locked))
+        // The scan runs out by itself: the status event says it stopped.
+        s.feed(event(0x2a25, "00"))
+        assertEquals(Setting.Action(SennheiserSession.KEY_AURACAST_SCAN, false), s.row(SennheiserSession.KEY_AURACAST_SCAN))
+        assertEquals(listOf("2a24:"), words(run { s.feed(event(0x2a25, "01")); s.change(SettingChange.Press(SennheiserSession.KEY_AURACAST_SCAN))!! }))
         val add = s.row(SennheiserSession.KEY_AURACAST_ADD) as Setting.Choice
         assertEquals(listOf("Cafe"), add.options, "a broadcast that needs a code is not offered")
         // The app's AddSource: type, address, set, broadcast id, synchronise without past info, interval unknown, one subgroup that takes every stream, no metadata.

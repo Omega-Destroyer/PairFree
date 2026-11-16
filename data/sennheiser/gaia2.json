@@ -1,0 +1,2243 @@
+{
+ "_about": "Sennheiser's GAIA v2 products as Smart Control 4.9.4's product files define them (docs/sennheiser/PROTOCOL.md section 4.9): a frame is FF, 01, flags, the payload's length, a vendor (0494 Sennheiser's, 000A Qualcomm's), a command and the payload; a response is the command + 8000 and starts with a status byte (0 is success). transport says how Android opens the product (spp: the serial port, ble: Bluetooth LE only). Written by tools/import_sennheiser_app.py.",
+ "transport": {
+  "spp_uuid": "a2129ff3-081b-4c45-8afe-469d9c4842eb",
+  "vendor": "0494",
+  "qualcomm_vendor": "000A"
+ },
+ "products": [
+  {
+   "name": "CX 350BT",
+   "kind": "headband",
+   "names": [
+    "CX 350BT"
+   ],
+   "transport": "spp",
+   "source": "Smart Control 4.9.4 cx350.json",
+   "eq": true,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "battery_charging": {
+     "values": {
+      "DISCONNECTED": 0,
+      "NORMAL_CHARGING": 1,
+      "CHARGING_COMPLETE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0185",
+      "params": [],
+      "reply": "8185",
+      "reply_params": [
+       [
+        "UINT8",
+        "left earbud"
+       ],
+       [
+        "UINT8",
+        "right earbud"
+       ]
+      ]
+     }
+    },
+    "audio_mode": {
+     "values": {
+      "USEREQ": 1,
+      "SPEECHMODE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0786",
+      "params": [],
+      "reply": "8786",
+      "reply_params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0706",
+      "params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ],
+      "reply": "8706",
+      "reply_params": []
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0280",
+      "params": [],
+      "reply": "8280",
+      "reply_params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "HD 250BT",
+   "kind": "headband",
+   "names": [
+    "HD 250BT"
+   ],
+   "transport": "spp",
+   "source": "Smart Control 4.9.4 hd250.json",
+   "eq": true,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "battery_charging": {
+     "values": {
+      "DISCONNECTED": 0,
+      "NORMAL_CHARGING": 1,
+      "CHARGING_COMPLETE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0185",
+      "params": [],
+      "reply": "8185",
+      "reply_params": [
+       [
+        "UINT8",
+        "left earbud"
+       ],
+       [
+        "UINT8",
+        "right earbud"
+       ]
+      ]
+     }
+    },
+    "audio_mode": {
+     "values": {
+      "USEREQ": 1,
+      "SPEECHMODE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0786",
+      "params": [],
+      "reply": "8786",
+      "reply_params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0706",
+      "params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ],
+      "reply": "8706",
+      "reply_params": []
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0280",
+      "params": [],
+      "reply": "8280",
+      "reply_params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "HD 350BT",
+   "kind": "headband",
+   "names": [
+    "HD 350BT"
+   ],
+   "transport": "spp",
+   "source": "Smart Control 4.9.4 hd350.json",
+   "eq": true,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "battery_charging": {
+     "values": {
+      "DISCONNECTED": 0,
+      "NORMAL_CHARGING": 1,
+      "CHARGING_COMPLETE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0185",
+      "params": [],
+      "reply": "8185",
+      "reply_params": [
+       [
+        "UINT8",
+        "left earbud"
+       ],
+       [
+        "UINT8",
+        "right earbud"
+       ]
+      ]
+     }
+    },
+    "audio_mode": {
+     "values": {
+      "USEREQ": 1,
+      "SPEECHMODE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0786",
+      "params": [],
+      "reply": "8786",
+      "reply_params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0706",
+      "params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ],
+      "reply": "8706",
+      "reply_params": []
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "sidetone": {
+     "values": {
+      "OFF": 0,
+      "MIN": 1,
+      "MAX": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0787",
+      "params": [],
+      "reply": "8787",
+      "reply_params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0707",
+      "params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ],
+      "reply": "8707",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0280",
+      "params": [],
+      "reply": "8280",
+      "reply_params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "HD 450BT",
+   "kind": "headband",
+   "names": [
+    "HD 450BT"
+   ],
+   "transport": "spp",
+   "source": "Smart Control 4.9.4 hd450.json",
+   "eq": true,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "battery_charging": {
+     "values": {
+      "DISCONNECTED": 0,
+      "NORMAL_CHARGING": 1,
+      "CHARGING_COMPLETE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0185",
+      "params": [],
+      "reply": "8185",
+      "reply_params": [
+       [
+        "UINT8",
+        "left earbud"
+       ],
+       [
+        "UINT8",
+        "right earbud"
+       ]
+      ]
+     }
+    },
+    "audio_mode": {
+     "values": {
+      "USEREQ": 1,
+      "SPEECHMODE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0786",
+      "params": [],
+      "reply": "8786",
+      "reply_params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0706",
+      "params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ],
+      "reply": "8706",
+      "reply_params": []
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "sidetone": {
+     "values": {
+      "OFF": 0,
+      "MIN": 1,
+      "MAX": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0787",
+      "params": [],
+      "reply": "8787",
+      "reply_params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0707",
+      "params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ],
+      "reply": "8707",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0280",
+      "params": [],
+      "reply": "8280",
+      "reply_params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "HD 450SE",
+   "kind": "headband",
+   "names": [
+    "HD 450SE"
+   ],
+   "transport": "spp",
+   "source": "Smart Control 4.9.4 hd450se.json",
+   "eq": true,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "battery_charging": {
+     "values": {
+      "DISCONNECTED": 0,
+      "NORMAL_CHARGING": 1,
+      "CHARGING_COMPLETE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0185",
+      "params": [],
+      "reply": "8185",
+      "reply_params": [
+       [
+        "UINT8",
+        "left earbud"
+       ],
+       [
+        "UINT8",
+        "right earbud"
+       ]
+      ]
+     }
+    },
+    "audio_mode": {
+     "values": {
+      "USEREQ": 1,
+      "SPEECHMODE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0786",
+      "params": [],
+      "reply": "8786",
+      "reply_params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0706",
+      "params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ],
+      "reply": "8706",
+      "reply_params": []
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "sidetone": {
+     "values": {
+      "OFF": 0,
+      "MIN": 1,
+      "MAX": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0787",
+      "params": [],
+      "reply": "8787",
+      "reply_params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0707",
+      "params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ],
+      "reply": "8707",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0280",
+      "params": [],
+      "reply": "8280",
+      "reply_params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "HD 458BT",
+   "kind": "headband",
+   "names": [
+    "HD 458BT"
+   ],
+   "transport": "spp",
+   "source": "Smart Control 4.9.4 hd458.json",
+   "eq": false,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "battery_charging": {
+     "values": {
+      "DISCONNECTED": 0,
+      "NORMAL_CHARGING": 1,
+      "CHARGING_COMPLETE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0185",
+      "params": [],
+      "reply": "8185",
+      "reply_params": [
+       [
+        "UINT8",
+        "left earbud"
+       ],
+       [
+        "UINT8",
+        "right earbud"
+       ]
+      ]
+     }
+    },
+    "audio_mode": {
+     "values": {
+      "USEREQ": 1,
+      "SPEECHMODE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0786",
+      "params": [],
+      "reply": "8786",
+      "reply_params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0706",
+      "params": [
+       [
+        "UINT16",
+        "audiomode"
+       ]
+      ],
+      "reply": "8706",
+      "reply_params": []
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "sidetone": {
+     "values": {
+      "OFF": 0,
+      "MIN": 1,
+      "MAX": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0787",
+      "params": [],
+      "reply": "8787",
+      "reply_params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0707",
+      "params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ],
+      "reply": "8707",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0280",
+      "params": [],
+      "reply": "8280",
+      "reply_params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "IE 80S BT",
+   "kind": "headband",
+   "names": [
+    "IE 80S BT"
+   ],
+   "transport": "spp",
+   "source": "Smart Control 4.9.4 ie80.json",
+   "eq": false,
+   "properties": {
+    "prompt_mode": {
+     "values": {
+      "toneVoiceOff": 0,
+      "toneOn": 1,
+      "toneVoiceOn": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0781",
+      "params": [],
+      "reply": "8781",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0701",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8701",
+      "reply_params": []
+     }
+    },
+    "auto_call": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0684",
+      "params": [],
+      "reply": "8684",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0604",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8604",
+      "reply_params": []
+     }
+    },
+    "smart_pause": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0682",
+      "params": [],
+      "reply": "8682",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0602",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8602",
+      "reply_params": []
+     }
+    },
+    "codec": {
+     "values": {
+      "SBC": 0,
+      "AAC": 1,
+      "aptX": 2,
+      "aptX-LL": 3,
+      "MP3": 4,
+      "aptX-HD": 5,
+      "FastStream": 6,
+      "LHDC": 7,
+      "aptX adaptive": 8,
+      "": 255
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0184",
+      "params": [],
+      "reply": "8184",
+      "reply_params": [
+       [
+        "UINT8",
+        "codec type"
+       ]
+      ]
+     }
+    },
+    "auto_off": {
+     "get": {
+      "vendor": "000A",
+      "command": "0189",
+      "params": [
+       [
+        "UINT8",
+        "Timer number"
+       ]
+      ],
+      "reply": "8189",
+      "reply_params": [
+       [
+        "UINT8",
+        "Timer number"
+       ],
+       [
+        "UINT16",
+        "Timer value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "000A",
+      "command": "0109",
+      "params": [
+       [
+        "UINT8",
+        "Timer number"
+       ],
+       [
+        "UINT16",
+        "Timer value"
+       ]
+      ],
+      "reply": "8109",
+      "reply_params": []
+     }
+    },
+    "multi_function": {
+     "values": {
+      "VoiceAssistant": 0,
+      "EQModes": 1
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0186",
+      "params": [],
+      "reply": "8186",
+      "reply_params": [
+       [
+        "UINT8",
+        "Button Preset"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0106",
+      "params": [
+       [
+        "UINT8",
+        "Button Preset"
+       ]
+      ],
+      "reply": "8106",
+      "reply_params": []
+     }
+    },
+    "prompt_language": {
+     "values": {
+      "ENGLISH": 0,
+      "GERMAN": 1,
+      "CHINESE": 2,
+      "JAPANESE": 3,
+      "KOREAN": 4
+     },
+     "get": {
+      "vendor": "000A",
+      "command": "0292",
+      "params": [],
+      "reply": "8292",
+      "reply_params": [
+       [
+        "UINT8",
+        "A number representing the language"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "000A",
+      "command": "0212",
+      "params": [
+       [
+        "UINT8",
+        "A number representing the language"
+       ]
+      ],
+      "reply": "8212",
+      "reply_params": []
+     }
+    }
+   }
+  },
+  {
+   "name": "CX 400BT True Wireless",
+   "kind": "earbuds",
+   "names": [
+    "CX TW",
+    "CX 400BT TW"
+   ],
+   "transport": "ble",
+   "source": "Smart Control 4.9.4 cx400.json",
+   "eq": true,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "sidetone": {
+     "values": {
+      "OFF": 0,
+      "ON": 1
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0787",
+      "params": [],
+      "reply": "8787",
+      "reply_params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0707",
+      "params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ],
+      "reply": "8707",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0280",
+      "params": [],
+      "reply": "8280",
+      "reply_params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ]
+     }
+    },
+    "prompt_mode": {
+     "values": {
+      "toneVoiceOff": 0,
+      "toneOn": 1,
+      "toneVoiceOn": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0781",
+      "params": [],
+      "reply": "8781",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0701",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8701",
+      "reply_params": []
+     }
+    },
+    "auto_call": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0684",
+      "params": [],
+      "reply": "8684",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0604",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8604",
+      "reply_params": []
+     }
+    },
+    "smart_pause": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0682",
+      "params": [],
+      "reply": "8682",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0602",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8602",
+      "reply_params": []
+     }
+    },
+    "prompt_language": {
+     "values": {
+      "ENGLISH": 0,
+      "GERMAN": 1,
+      "CHINESE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0783",
+      "params": [],
+      "reply": "8783",
+      "reply_params": [
+       [
+        "UINT8",
+        "language code"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0703",
+      "params": [
+       [
+        "UINT8",
+        ""
+       ]
+      ],
+      "reply": "8703",
+      "reply_params": []
+     }
+    },
+    "touch_lock": {
+     "values": {
+      "OFF": 0,
+      "ON": 1
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0681",
+      "params": [],
+      "reply": "8681",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0601",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8601",
+      "reply_params": []
+     }
+    },
+    "transparency_status": {
+     "values": {
+      "off": 0,
+      "low": 1,
+      "mid": 2,
+      "high": 3
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0785",
+      "params": [],
+      "reply": "8785",
+      "reply_params": [
+       [
+        "UINT8",
+        "status"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0705",
+      "params": [
+       [
+        "UINT8",
+        "status"
+       ]
+      ],
+      "reply": "8705",
+      "reply_params": []
+     }
+    },
+    "anc_state": {
+     "values": {
+      "OFF": 0,
+      "ON": 1,
+      "ADAPTIVE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0788",
+      "params": [],
+      "reply": "8788",
+      "reply_params": [
+       [
+        "UINT16",
+        "state"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0708",
+      "params": [
+       [
+        "UINT16",
+        "state"
+       ]
+      ],
+      "reply": "8708",
+      "reply_params": [
+       [
+        "UINT16",
+        "status"
+       ]
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "Momentum True Wireless",
+   "kind": "earbuds",
+   "names": [
+    "MOMENTUM TW"
+   ],
+   "transport": "ble",
+   "source": "Smart Control 4.9.4 tw1.json",
+   "eq": true,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0281",
+      "params": [],
+      "reply": "8281",
+      "reply_params": [
+       [
+        "UINT8",
+        "leftMajor"
+       ],
+       [
+        "UINT8",
+        "leftMinor"
+       ],
+       [
+        "UINT8",
+        "leftPatch"
+       ]
+      ]
+     }
+    },
+    "prompt_mode": {
+     "values": {
+      "toneVoiceOff": 0,
+      "toneOn": 1,
+      "toneVoiceOn": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0781",
+      "params": [],
+      "reply": "8781",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0701",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8701",
+      "reply_params": []
+     }
+    },
+    "auto_call": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0684",
+      "params": [],
+      "reply": "8684",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0604",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8604",
+      "reply_params": []
+     }
+    },
+    "smart_pause": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0682",
+      "params": [],
+      "reply": "8682",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0602",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8602",
+      "reply_params": []
+     }
+    },
+    "prompt_language": {
+     "values": {
+      "ENGLISH": 0,
+      "GERMAN": 1,
+      "CHINESE": 2
+     },
+     "get": {
+      "vendor": "000A",
+      "command": "0292",
+      "params": [],
+      "reply": "8292",
+      "reply_params": [
+       [
+        "UINT8",
+        "A number representing the language"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "000A",
+      "command": "0212",
+      "params": [
+       [
+        "UINT8",
+        "A number representing the language"
+       ]
+      ],
+      "reply": "8212",
+      "reply_params": []
+     }
+    },
+    "transparency_status": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0785",
+      "params": [],
+      "reply": "8785",
+      "reply_params": [
+       [
+        "UINT8",
+        "status"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0705",
+      "params": [
+       [
+        "UINT8",
+        "status"
+       ]
+      ],
+      "reply": "8705",
+      "reply_params": []
+     }
+    }
+   }
+  },
+  {
+   "name": "Momentum True Wireless 2",
+   "kind": "earbuds",
+   "names": [
+    "MOMENTUM TW 2"
+   ],
+   "transport": "ble",
+   "source": "Smart Control 4.9.4 tw2.json",
+   "eq": true,
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "vendor": "0494",
+      "command": "0182",
+      "params": [],
+      "reply": "8182",
+      "reply_params": [
+       [
+        "UINT8",
+        ""
+       ],
+       [
+        "UINT8",
+        ""
+       ]
+      ]
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "vendor": "0494",
+      "command": "0685",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": "8685",
+      "reply_params": [
+       [
+        "UINT16",
+        "Value"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0605",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": "8605",
+      "reply_params": []
+     }
+    },
+    "eq_params": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "sidetone": {
+     "values": {
+      "OFF": 0,
+      "ON": 1
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0787",
+      "params": [],
+      "reply": "8787",
+      "reply_params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0707",
+      "params": [
+       [
+        "UINT8",
+        "sidetone state"
+       ]
+      ],
+      "reply": "8707",
+      "reply_params": []
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "vendor": "0494",
+      "command": "0280",
+      "params": [],
+      "reply": "8280",
+      "reply_params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ]
+     }
+    },
+    "prompt_mode": {
+     "values": {
+      "toneVoiceOff": 0,
+      "toneOn": 1,
+      "toneVoiceOn": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0781",
+      "params": [],
+      "reply": "8781",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0701",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8701",
+      "reply_params": []
+     }
+    },
+    "auto_call": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0684",
+      "params": [],
+      "reply": "8684",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0604",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8604",
+      "reply_params": []
+     }
+    },
+    "smart_pause": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0682",
+      "params": [],
+      "reply": "8682",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0602",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8602",
+      "reply_params": []
+     }
+    },
+    "prompt_language": {
+     "values": {
+      "ENGLISH": 0,
+      "GERMAN": 1,
+      "CHINESE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0783",
+      "params": [],
+      "reply": "8783",
+      "reply_params": [
+       [
+        "UINT8",
+        "language code"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0703",
+      "params": [
+       [
+        "UINT8",
+        ""
+       ]
+      ],
+      "reply": "8703",
+      "reply_params": []
+     }
+    },
+    "touch_lock": {
+     "values": {
+      "OFF": 0,
+      "ON": 1
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0681",
+      "params": [],
+      "reply": "8681",
+      "reply_params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0601",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": "8601",
+      "reply_params": []
+     }
+    },
+    "transparency_status": {
+     "values": {
+      "off": 0,
+      "low": 1
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0785",
+      "params": [],
+      "reply": "8785",
+      "reply_params": [
+       [
+        "UINT8",
+        "status"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0705",
+      "params": [
+       [
+        "UINT8",
+        "status"
+       ]
+      ],
+      "reply": "8705",
+      "reply_params": []
+     }
+    },
+    "anc_state": {
+     "values": {
+      "OFF": 0,
+      "ON": 1,
+      "ADAPTIVE": 2
+     },
+     "get": {
+      "vendor": "0494",
+      "command": "0788",
+      "params": [],
+      "reply": "8788",
+      "reply_params": [
+       [
+        "UINT16",
+        "state"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "0494",
+      "command": "0708",
+      "params": [
+       [
+        "UINT16",
+        "state"
+       ]
+      ],
+      "reply": "8708",
+      "reply_params": [
+       [
+        "UINT16",
+        "status"
+       ]
+      ]
+     }
+    }
+   }
+  }
+ ]
+}

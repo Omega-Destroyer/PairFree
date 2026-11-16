@@ -2794,6 +2794,49 @@
      ]
     }
    }
+  },
+  {
+   "id": "auracast_scan_status",
+   "open": false,
+   "app_property": "Auracast_StatusSourceScan",
+   "values": {
+    "STOPPED": 0,
+    "STARTED": 1,
+    "IN_PROGRESS": 2,
+    "TIMEOUT": 3,
+    "FAILED": 4
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2A25",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2B25",
+     "notification": "2AA5",
+     "error": "2BA5",
+     "params": [
+      [
+       "UINT8",
+       "Scanstate"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "2B25",
+     "notification": "2AA5",
+     "error": "2BA5",
+     "params": [
+      [
+       "UINT8",
+       "Scanstate"
+      ]
+     ]
+    }
+   }
   }
  ],
  "never_send": [

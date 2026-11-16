@@ -18,7 +18,7 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * been answered. [model] is the product when its name is known (its product file lists which properties it has); with none, every property is read.
  * Never sent: anything that is not in data/sennheiser/commands.json (factory reset, firmware update, the panic log...); [allowed] is a closed list.
  */
-public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk<ByteArray>() {
+public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk<ByteArray>(), SennheiserEqSource {
     private var current: EarbudState = EarbudState()
     override val state: EarbudState get() = current
     override val pacing: Pacing = Pacing(replyMs = REPLY_MS, gapMs = GAP_MS)
@@ -159,6 +159,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     private var sensorsOn: Boolean? = null
     private var moreOutbox = emptyList<ByteArray>()
     private var auracastKnown = false
+    private var auracastScanning = false
     private val auracastStates = mutableMapOf<Int, AuracastSource>()
     private val auracastScan = linkedMapOf<String, AuracastBroadcast>()
 
@@ -261,6 +262,14 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 auracastKnown = true
                 if (auracastStates[st.sourceId]?.same(st) == true) return false
                 auracastStates[st.sourceId] = st
+                return true
+            }
+            SennheiserCommands.AURACAST_SCAN_STATUS -> {
+                // 0 stopped, 1 started, 2 in progress, 3 timeout, 4 failed (`Auracast_StatusSourceScan`).
+                val state = payload.firstOrNull()?.toInt()?.and(0xFF) ?: return false
+                val scanning = state == 1 || state == 2
+                if (scanning == auracastScanning) return false
+                auracastScanning = scanning
                 return true
             }
             SennheiserCommands.AURACAST_RESULT -> {
@@ -440,7 +449,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 }
             }))
             if (auracastKnown) add(SettingGroup("sh_auracast", SettingTab.DEVICE, buildList {
-                add(Setting.Action(KEY_AURACAST_SCAN))
+                add(Setting.Action(KEY_AURACAST_SCAN, auracastScanning))
                 val added = auracastStates.values.map { it.addressKey }.toSet()
                 val offered = auracastScan.values.filter { !it.encrypted && it.addressKey !in added }
                 if (offered.isNotEmpty()) add(Setting.Choice(KEY_AURACAST_ADD, null, offered.map { it.label }))
@@ -632,7 +641,14 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 // The earbuds scan themselves, for five seconds as the app asks (`AURACAST_SCANNING_TIME_SECS`); the results come as events.
                 val c = command(SennheiserCommands.AURACAST_SCAN) ?: return null
                 if (!auracastKnown) return null
+                if (auracastScanning) {
+                    val stop = command(SennheiserCommands.AURACAST_SCAN_STOP) ?: return null
+                    auracastScanning = false
+                    return listOf(frameOf(stop.vendor, stop.set!!, ByteArray(0)))
+                }
                 auracastScan.clear()
+                auracastScanning = true
+                readBacks += read(command(SennheiserCommands.AURACAST_SCAN_STATUS)!!)
                 return listOf(frameOf(c.vendor, c.set!!, u16(AURACAST_SCAN_SECONDS)))
             }
             KEY_PERSONALIZED_RESET -> {
@@ -815,7 +831,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         private set
 
     /** The band gains the earbuds hold (or this phone last sent), in dB. */
-    public var eqGains: List<Double>? = null
+    override var eqGains: List<Double>? = null
         private set
 
     /** Bass boost, the app's `bassBoostEnabled` (user-eq-2's sub-mode 1; the knob's flag on the older two). */
@@ -972,7 +988,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     }
 
     /** The bands in Hz the Sound tab draws, for the equalizer the earbuds answered as; empty while none did. */
-    public val eqBandsHz: List<Int>
+    override val eqBandsHz: List<Int>
         get() = when (eqKind) {
             SennheiserEqKind.GEN2 -> if (gen2Bands == SennheiserEqTables.GEN2_HZ.size) SennheiserEqTables.GEN2_HZ else List(gen2Bands) { it + 1 }
             SennheiserEqKind.GEN1 -> shelf?.hz.orEmpty()
@@ -981,16 +997,16 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         }
 
     /** The range of one band in dB: the earbuds' own for the newest equalizer, the app's six for the others. */
-    public val eqMaxDb: Double
+    override val eqMaxDb: Double
         get() = when (eqKind) {
             SennheiserEqKind.GEN2 -> gen2Max
             SennheiserEqKind.GEN1 -> (shelf?.rangeDb ?: 6).toDouble()
             else -> SennheiserEqTables.THREE_BAND_RANGE_DB.toDouble()
         }
-    public val eqMinDb: Double get() = if (eqKind == SennheiserEqKind.GEN2) gen2Min else -eqMaxDb
+    override val eqMinDb: Double get() = if (eqKind == SennheiserEqKind.GEN2) gen2Min else -eqMaxDb
 
     /** The presets the app offers the product, as curves over [eqBandsHz]. */
-    public val eqPresets: List<Pair<String, List<Double>>>
+    override val eqPresets: List<Pair<String, List<Double>>>
         get() {
             val m = model?.eq ?: return emptyList()
             val key = if (eqKind == SennheiserEqKind.THREE_BAND) "default3" else m.presets
@@ -998,7 +1014,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         }
 
     /** Whether the earbuds answered as an equalizer whose gains are known. */
-    public val eqKnown: Boolean get() = eqKind != null && eqGains != null
+    override val eqKnown: Boolean get() = eqKind != null && eqGains != null
 
     private fun setAudioMode(): List<ByteArray> {
         val audio = command(SennheiserCommands.AUDIO_MODE) ?: return emptyList()
@@ -1011,7 +1027,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     }
 
     /** The messages that set the band [gains] (dB), or null while the earbuds have not said which equalizer they have. */
-    public fun eqCurve(gains: List<Double>): List<ByteArray>? {
+    override fun eqCurve(gains: List<Double>): List<ByteArray>? {
         val kind = eqKind ?: return null
         if (gains.size != eqBandsHz.size) return null
         val m = model?.eq ?: return null

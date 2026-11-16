@@ -76,6 +76,75 @@ SC_MODELS = {
     "tw4.json": ("Momentum True Wireless 4", "earbuds", ["MOMENTUM TW 4", "MTW4", "MTW4 Black", "MTW4 Black Copper", "MTW4 Black Graphite", "MTW4 Copper", "MTW4 Denim", "MTW4 Graphite", "MTW4 JD", "MTW4 Silver", "MTW4 White", "MTW4 White Silver"]),
 }
 
+# The older GAIA v2 products Smart Control 4.9.4 defines (docs/sennheiser/PROTOCOL.md section 4.9): their product file, the app's name, the kind, the
+# Bluetooth names the app maps to them, and whether Android opens them over the serial port (`DeviceConfig`) or only over Bluetooth LE. `three_band` is the gain
+# limit of the app's three-band equalizer (`get3BandParametersForDevice`: 4 for all of these), `eq` whether the product's class writes the knobs.
+GAIA2_MODELS = {
+    "cx350.json": ("CX 350BT", "headband", ["CX 350BT"], "spp", True),
+    "hd250.json": ("HD 250BT", "headband", ["HD 250BT"], "spp", True),
+    "hd350.json": ("HD 350BT", "headband", ["HD 350BT"], "spp", True),
+    "hd450.json": ("HD 450BT", "headband", ["HD 450BT"], "spp", True),
+    "hd450se.json": ("HD 450SE", "headband", ["HD 450SE"], "spp", True),
+    "hd458.json": ("HD 458BT", "headband", ["HD 458BT"], "spp", False),
+    "ie80.json": ("IE 80S BT", "headband", ["IE 80S BT"], "spp", False),
+    "cx400.json": ("CX 400BT True Wireless", "earbuds", ["CX TW", "CX 400BT TW"], "ble", True),
+    "tw1.json": ("Momentum True Wireless", "earbuds", ["MOMENTUM TW"], "ble", True),
+    "tw2.json": ("Momentum True Wireless 2", "earbuds", ["MOMENTUM TW 2"], "ble", True),
+}
+GAIA2_PROPS = {
+    "Battery_Percent": "battery_percent",
+    "Battery_ChargingStatus": "battery_charging",
+    "Battery_ChargerEvent": "battery_charging",
+    "AudioMode": "audio_mode",
+    "Sound_CustomEQKnobX": "eq_knob",
+    "Sound_SetCustomEQ": "eq_params",
+    "SidetoneState": "sidetone",
+    "Service_SystemReleaseVersion": "firmware_version",
+    "Setting_AudioPromptMode": "prompt_mode",
+    "Setting_AutoCall": "auto_call",
+    "Setting_SmartPause": "smart_pause",
+    "Sound_CodecUsed": "codec",
+    "Config_GetTimer": "auto_off",
+    "Config_SetTimer": "auto_off",
+    "Setting_MultiFunctionButton": "multi_function",
+    "VoicePrompt_Language": "prompt_language",
+    "Setting_AutoLockMode": "touch_lock",
+    "TransparentHearing": "transparency_status",
+    "Sound_AdaptiveNoiseCancelationState": "anc_state",
+}
+
+
+def gaia2_side(cmd, rsp):
+    """A GAIA v2 command (`gaia` object) and its response as PairFree keeps them."""
+    if not isinstance(cmd, dict) or "gaia" not in cmd:
+        return None
+    g = cmd["gaia"]
+    out = {"vendor": hexid(g["vendor_ID"]), "command": hexid(g["GAIA_command_ID"]), "params": [[p["type"], p["name"]] for p in cmd.get("parameter", [])]}
+    if isinstance(rsp, dict) and "gaia" in rsp:
+        out["reply"] = hexid(rsp["gaia"]["GAIA_command_ID"])
+        out["reply_params"] = [[p["type"], p["name"]] for p in rsp.get("parameter", [])]
+    return out
+
+
+def gaia2_product(prop):
+    entry = {}
+    val = prop.get("Value", {})
+    if val.get("map"):
+        entry["values"] = val["map"]
+    for key, where in (("Get", "get"), ("Set", "set")):
+        blk = prop.get(key)
+        if blk:
+            side_ = gaia2_side(blk.get("Command"), blk.get("Response"))
+            if side_:
+                entry[where] = side_
+    if "Invocation" in prop:
+        inv = prop["Invocation"]
+        side_ = gaia2_side(inv.get("Command"), prop.get("Result", {}).get("Response"))
+        if side_:
+            entry["set" if "Set" in inv["Command"]["PI_command_name"] else "get"] = side_
+    return entry
+
+
 # Models only Smart Control Plus 1.6.3 lists (its `cKd` enum), all on Qualcomm's GAIA 3 ("herakles"): no product file, so what they answer decides what shows.
 SCP_MODELS = [
     ("Momentum 5 Wireless", "headband", ["M5AEBT", "MOMENTUM 5"], "800078"),
@@ -213,6 +282,7 @@ ACTIONS = [
     ("auracast-1", "Auracast_StartSourceScan", "auracast_scan", "set"),
     ("auracast-1", "Auracast_StopSourceScan", "auracast_scan_stop", "set"),
     ("auracast-1", "Auracast_ScanResultEvent", "auracast_result", "event"),
+    ("auracast-1", "Auracast_StatusSourceScan", "auracast_scan_status", "sides"),
 ]
 # Which product files carry a shared feature file (with the firmware its entry names), as the products' `features` say.
 FEATURE_FILES = ("find-device-1", "sound-personalization-1", "sound-personalization-2", "audio-mode-1", "audio-mode-2", "auracast-1")
@@ -363,6 +433,30 @@ def main(assets):
                 continue
             if how == "get" or "get" in entry or "set" in entry:
                 commands[pid] = {**entry, "open": False}
+    legacy = []
+    for fname, (name, klass, names, transport, eq) in GAIA2_MODELS.items():
+        d = json.loads((assets / fname).read_text(encoding="utf-8"))
+        assert d["protocol"] == "GAIA", fname
+        P = {p["name"]: p for p in d["properties"]}
+        props = {}
+        for app_name, pid in GAIA2_PROPS.items():
+            if app_name not in P:
+                continue
+            entry = gaia2_product(P[app_name])
+            if not entry.get("get") and not entry.get("set"):
+                continue
+            if pid in props:
+                for key in ("get", "set"):
+                    if key in entry and key not in props[pid]:
+                        props[pid][key] = entry[key]
+                continue
+            props[pid] = entry
+        legacy.append({"name": name, "kind": klass, "names": names, "transport": transport, "source": "Smart Control 4.9.4 " + fname, "eq": eq and "eq_knob" in props, "properties": props})
+    (OUT / "gaia2.json").write_text(json.dumps({
+        "_about": "Sennheiser's GAIA v2 products as Smart Control 4.9.4's product files define them (docs/sennheiser/PROTOCOL.md section 4.9): a frame is FF, 01, flags, the payload's length, a vendor (0494 Sennheiser's, 000A Qualcomm's), a command and the payload; a response is the command + 8000 and starts with a status byte (0 is success). transport says how Android opens the product (spp: the serial port, ble: Bluetooth LE only). Written by tools/import_sennheiser_app.py.",
+        "transport": {"spp_uuid": "a2129ff3-081b-4c45-8afe-469d9c4842eb", "vendor": "0494", "qualcomm_vendor": "000A"},
+        "products": legacy,
+    }, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     reg = products["m4.json"]["RegisterNotification_ANC"]["Invocation"]["Command"]["gaiaV3"]
     data = {
         "_about": "Sennheiser's GAIA v3 commands, read from Smart Control 4.9.4's product files (docs/sennheiser/PROTOCOL.md). A command is a vendor id (0495 Sennheiser's own, 001D Qualcomm's) and a command word; its reply is the word + 0100 and its error + 0180. send/reply list each parameter's type and the app's name for it; values is the app's map of names to numbers. Written by tools/import_sennheiser_app.py; PairFree builds only what is listed here (the app's other properties are in the research notes).",

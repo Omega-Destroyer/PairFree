@@ -177,6 +177,40 @@ Some app flags describe features newer than a bundled form snapshot: for example
 
 Next useful validation is a whole-app virtual peer for representative GNP and GAIA devices, followed by filtered vendor-app recordings from real devices. Virtual acceptance only proves the fake peer and app agree; it cannot prove firmware applies EQ, persistence, ANC behavior, routing or button actions. Extend the research with those findings rather than relabeling all models tested after a shared encoder check.
 
+## PairFree's GNP session (2026-11-16)
+
+`JabraSession` (`protocol/jabra`, one `Talk`, no adapter) is written from this document and checked against the native encoder's vectors (`data/jabra/research/test_vectors.json`) and replies built
+from the app's own layouts. No Jabra product has been tried. `tools/import_jabra_app.py` turns the research files into the three tables the build reads (`data/jabra/commands.json`, `settings.json`,
+`devices.json`); `tools/gen_jabra_strings.py` writes the words of the rows.
+
+**Opening.** A read of the product id (`02/11`, low byte first), of the firmware (`02/03`, a length byte and ASCII) and of the battery (`12/02`). The id picks the model's variant, the version the firmware
+snapshot (the exact one, else the nearest older, else the oldest); the snapshot's form lists the settings, each read once (the sidetone's two settings share one read) and shown once it answered. The
+equalizer, ambience, loop, Spotify, spatial sound and language reads follow from the snapshot's capabilities (`music_equalizer`, `ambiencemodes`, `spotifytap`, `spatialsound*`).
+
+**Option codes.** The forms leave some codes blank or give both options of a switch the same code (`Off=00, On=00`). The command's layout names the real ones (`GNP_CONFIG_HEARTHROUGH_ON` 01,
+`Enabled` 00 and `Disabled` 01 for the sidetone, which the form lists as "On=00, Off=01"); the importer takes them by name. The older noise form's four options map by name to `13/87`'s codes (off 0,
+ANC 1, HearThrough 2, HearThrough with music 3). One setting (the boom arm's rotation) has no code in either place and is left out.
+
+**Battery** (`12/02`: flags, local level, two ADC bytes, the extra-unit count, then address, reserved byte and level for each). Read from `GNBatteryStatus::LoadPayloadInfo` (native, 0x3db4a8): bit 0 of the
+flags is charging, bit 1 low; an extra unit with address 0x15 is the case, 4 the right earbud and 5 the left. The Java side (`BatteryStatusSimple`) puts the local level on the side the phone's link
+event names and the first extra unit on the other. blocked: which earbud holds the link, so PairFree places the local level opposite the extra unit's address; checked: the native parser, the SDK's
+`BatteryStatusSimple` and `EarbudConnectionState`, whose input is the `LinkConnectionEvent` (`JabraDevice::OnLinkConnectionEvent`, native 0x3a83f0) which PairFree leaves out. Confirm with a report.
+
+**Noise control** has three forms by snapshot: the ambience command `13/BE` (`ambiencemodes`), the older `13/87`, or only HearThrough's switch in `13/76` (on and off, with a mode byte for the music mix, kept
+when the switch is written). The ambience command's levels run strongest first on the wire (0 is the maximum); the screen shows 1 as the weakest. The loop is `13/BF` in the SDK's ordinals.
+
+**Equalizer.** Written whole as the native setter writes it (the vectors in `test_vectors.json`, cases two and three, are in `JabraSessionTest`): count, parameter 0, the master gain kept, and each band's
+frequency, gain (float times 60, truncated toward zero) and Q kept; a gain beyond a band's maximum sends nothing. The enable byte (`13/7E`) is sent first, 1 for a curve and 0 for a flat one: inferred from the
+Sound+ handler, which names a neutral-curve check and `setEqualizerEnabled` but whose body did not decompile (`JabraDeviceEqualizerHandler`).
+
+**Language.** The voice language is written inside the configuration mode: a read of `0D/11` (answered 1 when entered), the write of `13/08` with the id as two bytes, low first, and the write of `0D/12`.
+Only languages the earbuds list (`02/08`) are offered. No firmware language pack is touched.
+
+**Left out, with the reason.** The pairing list (`GET_DB_RECORD`), renaming (`BLUETOOTH_NAME`, `AUDIO_NAME`), the speed-dial number and the firmware lock are not built: they hold other devices' addresses,
+a name or contact data, or are firmware traffic (hard rules, and the owner's no-renaming decision of 2026-11-04); checked: `data/jabra/settings.json` `left_out`.
+blocked: the three-byte spatial sound reply (`SPATIAL_SOUND`: call, media and Dolby bytes) and the call tone setting (`CONFIG_EQUALIZER`, handled by the app itself); checked: both layouts in
+`research/gnp_commands.json`, which name the fields but give no code table. The one-byte reply (VSS mode, codes 0 to 4) is built.
+
 ## Checks for this research commit
 
 The repository Python suite passed: **141 tests** (`python -m unittest discover -s tools`). A separate read-only research validator checked all JSON, every profile/catalog/setting reference against the decoded forms, model coverage, command ranges, the 12 native framing fixtures and four native EQ cases, and documentation links. Its script is `E:\Builds\research\jabra-2026-11-09\validate_research.py`. These checks validate the documentation/data and encoder observations; they are not device acceptance tests. No Android production code changed, so no Android build is claimed.

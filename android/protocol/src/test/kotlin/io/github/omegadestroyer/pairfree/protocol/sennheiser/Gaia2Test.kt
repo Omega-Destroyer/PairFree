@@ -83,7 +83,8 @@ class Gaia2Test {
         assertEquals("0494:0605:0000%04x".format(x), sent[2])
         assertEquals("0494:0605:0001%04x".format(y), sent[3])
         assertNull(s.eqCurve(listOf(1.0)))
-        assertNull(Gaia2Session(model("HD 458BT")).eqCurve(listOf(0.0, 0.0, 0.0)), "the HD 458's equalizer is another one")
+        assertNotNull(Gaia2Session(model("HD 458BT")).eqCurve(listOf(0.0, 0.0, 0.0)), "the HD 458 has the same three bands")
+        assertNull(Gaia2Session(model("IE 80S BT")).eqCurve(listOf(0.0, 0.0, 0.0)), "the IE 80 has five")
     }
 
     @Test
@@ -113,5 +114,32 @@ class Gaia2Test {
         assertTrue(Gaia2Models.ALL.filter { it.ble }.map { it.name }.containsAll(listOf("CX 400BT True Wireless", "Momentum True Wireless 2")))
         assertNotNull(Gaia2Models.fromName("hd 450bt"))
         assertEquals(7, Gaia2Models.ALL.count { !it.ble })
+    }
+
+    @Test
+    fun theIe80HasFiveBandsSetUpByTheAppsOwnWrites() {
+        val s = Gaia2Session(model("IE 80S BT"))
+        val start = words(s.start())
+        assertTrue("000a:0294:" in start, start.toString())
+        assertEquals(listOf("000a:029a:0112", "000a:029a:0122", "000a:029a:0132", "000a:029a:0142", "000a:029a:0152"), start.filter { it.startsWith("000a:029a") })
+        s.feed(response(0x000a, 0x0294, "0001"))
+        // Each answer is the parameter id and a value in sixtieths of a dB, a step above the band below: 2, 2, 1, 4 and 4 dB.
+        for ((id, v) in listOf("0112" to 120, "0122" to 0, "0132" to 0xFFC4, "0142" to 240, "0152" to 0xFF4C)) s.feed(response(0x000a, 0x029a, "00" + id + "%04x".format(v)))
+        assertTrue(s.eqKnown)
+        // The app turns a 16 bit negative into a number with 65535, not 65536 (`r > 32767 && (r -= 65535)`): minus one dB reads as minus 59 sixtieths, and PairFree keeps that.
+        val held = s.eqGains!!
+        assertEquals(listOf(2.0, 2.0), held.take(2))
+        assertEquals(2.0 - 59 / 60.0, held[2], 1e-9)
+        assertEquals(listOf(63, 250, 1000, 4000, 16000), s.eqBandsHz)
+        val sent = words(s.eqCurve(listOf(2.0, 0.0, -1.0, 3.0, 0.0))!!)
+        // The first curve sets each band's filter, Q and frequency (15 writes), then the group (numbers from a port of calculateEqParams) and the store.
+        assertEquals("000a:021a:0110000500", sent[0])
+        assertEquals("000a:021a:01130b5000", sent[1])
+        assertEquals("000a:021a:0111006000", sent[2])
+        assertEquals("000a:021b:0006" + "0101fe57" + "01120078" + "0122ff88" + "0132ffc4" + "014200f0" + "0152ff4c" + "0000", sent[15])
+        assertEquals("0494:0606:", sent[16])
+        assertEquals(17, sent.size)
+        // A later curve does not set the filters up again.
+        assertEquals(2, words(s.eqCurve(listOf(0.0, 0.0, 0.0, 0.0, 0.0))!!).size)
     }
 }

@@ -85,7 +85,7 @@ GAIA2_MODELS = {
     "hd350.json": ("HD 350BT", "headband", ["HD 350BT"], "spp", True),
     "hd450.json": ("HD 450BT", "headband", ["HD 450BT"], "spp", True),
     "hd450se.json": ("HD 450SE", "headband", ["HD 450SE"], "spp", True),
-    "hd458.json": ("HD 458BT", "headband", ["HD 458BT"], "spp", False),
+    "hd458.json": ("HD 458BT", "headband", ["HD 458BT"], "spp", True),
     "ie80.json": ("IE 80S BT", "headband", ["IE 80S BT"], "spp", False),
     "cx400.json": ("CX 400BT True Wireless", "earbuds", ["CX TW", "CX 400BT TW"], "ble", True),
     "tw1.json": ("Momentum True Wireless", "earbuds", ["MOMENTUM TW"], "ble", True),
@@ -111,6 +111,11 @@ GAIA2_PROPS = {
     "Setting_AutoLockMode": "touch_lock",
     "TransparentHearing": "transparency_status",
     "Sound_AdaptiveNoiseCancelationState": "anc_state",
+    "Sound_SetCustomEQParam": "eq5_param",
+    "Sound_GetCustomEQParam": "eq5_param",
+    "Sound_SetEQParamGroup": "eq5_group",
+    "Sound_StoreEqSettings": "eq5_store",
+    "Sound_EQControl": "eq_control",
 }
 
 
@@ -168,6 +173,14 @@ NAUTILUS_PROPS = {
     "Service_SystemReleaseVersion": "firmware_version",
     "Service_SoftwareVersion": "software_version",
     "Sound_Preset": "sound_preset",
+    "Sound_SetCustomEQ": "eq_params",
+    "Sound_CustomEQKnobX": "eq_knob",
+    "Sound_AdaptiveNoiseCancelationLevel": "anc_level",
+    "Voice_Assistant_Mode": "assistant",
+    "Sound_GetBoost": "boost", "Sound_SetBoost": "boost",
+    "Sound_GetReverb": "reverb", "Sound_SetReverb": "reverb",
+    "Sound_GetDLC": "dlc", "Sound_SetDLC": "dlc",
+    "Sound_GetVirtualSpeakerPosition": "spatial", "Sound_SetVirtualSpeakerPosition": "spatial",
 }
 
 
@@ -532,9 +545,14 @@ def main(assets):
             if "Invocation" in prop:
                 got = nautilus_side(prop["Invocation"].get("Command"), prop.get("Result", {}).get("Response"))
                 if got:
-                    entry["set"] = got
+                    entry["get" if "Get" in prop["Invocation"]["Command"]["PI_command_name"] else "set"] = got
             if entry.get("get") or entry.get("set"):
-                props[pid] = entry
+                if pid in props:
+                    for k2 in ("get", "set"):
+                        if k2 in entry:
+                            props[pid][k2] = entry[k2]
+                else:
+                    props[pid] = entry
         naut.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": props})
     (OUT / "nautilus.json").write_text(json.dumps({
         "_about": "Sennheiser's Nautilus headphones (Momentum 3, PXC 550, PXC 550-II) as Smart Control 4.9.4's product files define them (docs/sennheiser/PROTOCOL.md section 4.10): a packet is EB FE 01 00 01 00 00 00, the length of what follows the checksum (two bytes, little-endian), a CRC-8 (polynomial 07, initial FF; two bytes, little-endian) and the header (module, optional submodule, command; each two bytes little-endian) with the parameters; on the serial port each packet is wrapped in 2A and 2A and the bytes 2A and 3F are escaped. Written by tools/import_sennheiser_app.py.",

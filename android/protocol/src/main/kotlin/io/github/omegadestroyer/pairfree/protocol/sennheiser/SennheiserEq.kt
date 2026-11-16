@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.sennheiser
 
+import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10
 import kotlin.math.max
@@ -158,6 +159,93 @@ public object SennheiserEq {
         fun gain(o: Int) = (if (o > 128) o - 256 else o) / 127.0 * max
         fun two(v: Double) = round(v * 100) / 100
         return listOf(two(gain(x and 255)), two(gain((x shr 8) and 255)), two(gain(n and 255))) to bass
+    }
+
+    /** `EqKnobValuesCoder.encode` with the Momentum 3's peak filter flag (high-end sound tuning) in place of the bass boost. */
+    public fun threeKnobsPeak(gains: List<Double>, peak: Boolean): Pair<Int, Int> {
+        val (x, y) = threeKnobs(gains, false)
+        return x to (if (peak) y or PEAK_FILTER else y)
+    }
+
+    /** `EqKnobValuesCoder.decode` for the Momentum 3: the gains and the peak filter flag; an older storage reads as flat (`resetEQ`). */
+    public fun threeKnobsPeakState(x: Int, y: Int): Pair<List<Double>, Boolean> {
+        val got = threeFromKnobs(x, y) ?: return listOf(0.0, 0.0, 0.0) to false
+        return got.first to ((y and NEW_STORAGE.inv() and PEAK_FILTER) == PEAK_FILTER)
+    }
+
+    private fun lowShelf(f: Double, gainDb: Double, q: Double, fs: Double): DoubleArray {
+        val a = 2 * Math.PI * f / fs
+        val o = Math.pow(10.0, gainDb / 40)
+        val s = StrictMath.sin(a) / (2 * q)
+        val c = o * (o + 1 - (o - 1) * StrictMath.cos(a) + 2 * Math.sqrt(o) * s)
+        val d = 2 * o * (o - 1 - (o + 1) * StrictMath.cos(a))
+        val l = o * (o + 1 - (o - 1) * StrictMath.cos(a) - 2 * Math.sqrt(o) * s)
+        val u = o + 1 + (o - 1) * StrictMath.cos(a) + 2 * Math.sqrt(o) * s
+        val v = -2 * (o - 1 + (o + 1) * StrictMath.cos(a))
+        val p = o + 1 + (o - 1) * StrictMath.cos(a) - 2 * Math.sqrt(o) * s
+        return doubleArrayOf(c / u, d / u, l / u, v / u, p / u)
+    }
+
+    private fun highShelf(f: Double, gainDb: Double, q: Double, fs: Double): DoubleArray {
+        val a = 2 * Math.PI * f / fs
+        val o = Math.pow(10.0, gainDb / 40)
+        val s = StrictMath.sin(a) / (2 * q)
+        val c = o * (o + 1 + (o - 1) * StrictMath.cos(a) + 2 * Math.sqrt(o) * s)
+        val d = -2 * o * (o - 1 + (o + 1) * StrictMath.cos(a))
+        val l = o * (o + 1 + (o - 1) * StrictMath.cos(a) - 2 * Math.sqrt(o) * s)
+        val u = o + 1 - (o - 1) * StrictMath.cos(a) + 2 * Math.sqrt(o) * s
+        val v = 2 * (o - 1 - (o + 1) * StrictMath.cos(a))
+        val p = o + 1 - (o - 1) * StrictMath.cos(a) - 2 * Math.sqrt(o) * s
+        return doubleArrayOf(c / u, d / u, l / u, v / u, p / u)
+    }
+
+    private fun peakFilter(f: Double, gainDb: Double, q: Double, fs: Double): DoubleArray {
+        val a = 2 * Math.PI * f / fs
+        val o = Math.pow(10.0, gainDb / 40)
+        val s = StrictMath.sin(a) / (2 * q)
+        val c = 1 + s * o
+        val d = -2 * StrictMath.cos(a)
+        val l = 1 - s * o
+        val u = 1 + s / o
+        val p = 1 - s / o
+        return doubleArrayOf(c / u, d / u, l / u, d / u, p / u)
+    }
+
+    /**
+     * The three parameter groups the Momentum 3's equalizer writes (`Eq3BandM3.send`): the high shelf, the low shelf and the master gain, each as three bytes (index, no commit, type)
+     * and five 32-bit numbers, the coefficients scaled by 2^30 as `x * 2**30 | 0` does. [gains] are the clipped band gains in dB; [peak] the high-end sound tuning.
+     */
+    public fun m3Groups(gains: List<Double>, peak: Boolean): List<List<Long>> {
+        val t = threeSmooth(gains, 4)
+        val n: DoubleArray
+        if (peak) {
+            val a = peakFilter(50.0, -4.0, 0.5, 44100.0)
+            val b = peakFilter(500.0, 3.0, 1.0, 44100.0)
+            var i = 1.0
+            while (maxOf(abs(a[0]), abs(a[1]), abs(a[2])) > 1.9) { a[0] *= .5; a[1] *= .5; a[2] *= .5; i *= 2 }
+            while (maxOf(abs(b[0]), abs(b[1]), abs(b[2])) > 1.9) { b[0] *= .5; b[1] *= .5; b[2] *= .5; i *= 2 }
+            n = a + b + doubleArrayOf(i)
+        } else {
+            val lo = lowShelf(SennheiserEqTables.THREE_BAND_LOWER_MID_FREQUENCY.toDouble(), t[0] - t[1], Math.sqrt(.5), 44100.0)
+            val hi = highShelf(SennheiserEqTables.THREE_BAND_UPPER_MID_FREQUENCY.toDouble(), t[2] - t[1], Math.sqrt(.5), 44100.0)
+            n = lo + hi + doubleArrayOf(Math.pow(10.0, t[1] / 20))
+        }
+        val low = n.copyOfRange(0, 5)
+        val high = n.copyOfRange(5, 10)
+        var master = n[10]
+        var o = maxOf(abs(low[0]), abs(low[1]), abs(low[2]))
+        var s = maxOf(abs(high[0]), abs(high[1]), abs(high[2]))
+        while (o > 1.9) { low[0] *= .5; low[1] *= .5; low[2] *= .5; master *= 2; o = maxOf(abs(low[0]), abs(low[1]), abs(low[2])) }
+        while (s > 1.9) { high[0] *= .5; high[1] *= .5; high[2] *= .5; master *= 2; s = maxOf(abs(high[0]), abs(high[1]), abs(high[2])) }
+        val scale = Math.pow(2.0, 30.0)
+        fun int32(x: Double): Long = truncate(x).toLong().toInt().toLong()
+        var c = 1
+        while (master >= 1.9) { c += 1; master *= .5 }
+        return listOf(
+            listOf(1L, 1L, 0L) + high.map { int32(it * scale) },
+            listOf(0L, 1L, 0L) + low.map { int32(it * scale) },
+            listOf(0L, 0L, 3L, int32(master * scale), c.toLong(), 2L, 0L, 0L),
+        )
     }
 
     private const val NEW_STORAGE = 16384

@@ -131,7 +131,20 @@ public class Gaia2Session(public val model: Gaia2Model, private val ble: Boolean
         for (id in READ_ON_OPEN) read(id)?.let { add(it) }
         if (prop(PROP_AUTO_OFF)?.get != null) read(PROP_AUTO_OFF, byteArrayOf(0))?.let { add(it) }
         if (model.eq && prop(PROP_EQ_KNOB)?.get != null) addAll(knobReads())
+        if (eq5) {
+            read(PROP_EQ_CONTROL)?.let { add(it) }
+            for (n in 0..4) read(PROP_EQ5_PARAM, u16(eq5Id(n, 2)))?.let { add(it) }.also { bandQueue.addLast(n) }
+        }
     }
+
+    /** The IE 80S BT's equalizer: five bands, each filter set up by the app's own parameter writes (docs/sennheiser/PROTOCOL.md section 4.9). */
+    private val eq5: Boolean get() = prop(PROP_EQ5_GROUP)?.set != null && prop(PROP_EQ5_PARAM)?.get != null
+    private val bandQueue = ArrayDeque<Int>()
+    private val bandDb = DoubleArray(5)
+    private var bandsRead = 0
+    private var eq5Ready = false
+
+    private fun eq5Id(band: Int, kind: Int): Int = ("1" + (band + 1) + kind).toInt(16)
 
     private fun knobReads(): List<ByteArray> = (0..1).mapNotNull { index ->
         read(PROP_EQ_KNOB, u16(index))?.also { knobQueue.addLast(index) }
@@ -178,6 +191,18 @@ public class Gaia2Session(public val model: Gaia2Model, private val ble: Boolean
                 if (data.size < 2) return false
                 knobs[index] = ((data[0].toInt() and 0xFF) shl 8) or (data[1].toInt() and 0xFF)
                 return decodeKnobs()
+            }
+            PROP_EQ5_PARAM -> {
+                // The answer to the read of one band's gain: the parameter id and its value, a difference to the band below (`getEqBandValues`).
+                val n = bandQueue.removeFirstOrNull() ?: return false
+                if (data.size < 4) return false
+                var r = ((data[2].toInt() and 0xFF) shl 8) or (data[3].toInt() and 0xFF)
+                if (r > 32767) r -= 65535
+                bandDb[n] = if (n > 0) r / 60.0 + bandDb[n - 1] else r / 60.0
+                bandsRead++
+                if (bandsRead < 5) return false
+                gains = bandDb.toList()
+                return true
             }
             PROP_AUTO_OFF -> {
                 // The timer's number, then its value in seconds.
@@ -317,11 +342,11 @@ public class Gaia2Session(public val model: Gaia2Model, private val ble: Boolean
     public val eqBass: Boolean get() = eqBassFlag
 
     override val eqGains: List<Double>? get() = gains
-    override val eqKnown: Boolean get() = model.eq && gains != null
-    override val eqBandsHz: List<Int> get() = if (model.eq) SennheiserEqTables.THREE_BAND_HZ else emptyList()
+    override val eqKnown: Boolean get() = (model.eq || eq5) && gains != null
+    override val eqBandsHz: List<Int> get() = if (eq5) EQ5_HZ else if (model.eq) SennheiserEqTables.THREE_BAND_HZ else emptyList()
     override val eqMaxDb: Double get() = SennheiserEqTables.THREE_BAND_RANGE_DB.toDouble()
     override val eqMinDb: Double get() = -eqMaxDb
-    override val eqPresets: List<Pair<String, List<Double>>> get() = if (model.eq) SennheiserEqTables.PRESETS["default3"].orEmpty() else emptyList()
+    override val eqPresets: List<Pair<String, List<Double>>> get() = if (model.eq && !eq5) SennheiserEqTables.PRESETS["default3"].orEmpty() else emptyList()
 
     override val eq: Any? get() = if (eqKnown) gains to eqBassFlag else null
 
@@ -341,7 +366,48 @@ public class Gaia2Session(public val model: Gaia2Model, private val ble: Boolean
     }
 
     /** The messages that set the band [gains] (dB), or null while the earbuds have not said what they hold or the product has no equalizer. */
+    private fun eq5Curve(gains: List<Double>): List<ByteArray>? {
+        val param = prop(PROP_EQ5_PARAM) ?: return null
+        val group = prop(PROP_EQ5_GROUP) ?: return null
+        if (gains.size != 5) return null
+        val clipped = gains.map { it.coerceIn(eqMinDb, eqMaxDb) }
+        val out = mutableListOf<ByteArray>()
+        if (!eq5Ready) {
+            // The app sets each band's filter type, Q and frequency when it opens the equalizer.
+            for (n in 0..4) {
+                for ((id, value) in listOf(eq5Id(n, 0) to (if (n < 2) 5 else 11), eq5Id(n, 3) to 2896, eq5Id(n, 1) to 3 * EQ5_FILTER_HZ[n])) {
+                    out += frame(param.setVendor ?: return null, param.set ?: return null, u16(id) + u16(value) + byteArrayOf(0))
+                }
+            }
+            eq5Ready = true
+        }
+        // The equalizer must be on (`Sound_EQControl` 1).
+        if (u8(PROP_EQ_CONTROL) != 1) prop(PROP_EQ_CONTROL)?.let { c ->
+            values[PROP_EQ_CONTROL] = byteArrayOf(1)
+            out += frame(c.setVendor ?: return null, c.set ?: return null, byteArrayOf(1))
+        }
+        val values5 = eq5Params(clipped)
+        out += frame(group.setVendor ?: return null, group.set ?: return null, u16(values5.size / 2) + shortList(values5) + u16(0))
+        prop(PROP_EQ5_STORE)?.let { st -> out += frame(st.setVendor ?: return null, st.set ?: return null) }
+        this.gains = clipped
+        return out
+    }
+
+    /** `Eq5BandIE80.calculateEqParams`: the pre-gain (loudness weighted, kept under the clipping threshold) and each band's step above the one below, in sixtieths of a dB. */
+    private fun eq5Params(g: List<Double>): List<Int> {
+        val weights = listOf(-28.3, -10.8, -2.9, -4.1, -18.1)
+        val t = -20 * Math.log10(Math.sqrt((0..4).sumOf { Math.pow(10.0, (weights[it] + g[it]) / 10) }))
+        val n = maxOf(g[0], g[1], g[2])
+        val i = EQ5_PRE_GAIN + t
+        val r = i + n
+        val o = if (r > 1) i + 1 - r else i
+        fun toInteger(x: Double): Int = (if (x < 0) Math.ceil(x) else Math.floor(x)).toInt()
+        val actual = listOf(g[0], g[1] - g[0], g[2] - g[1], g[3] - g[2], g[4] - g[3])
+        return listOf(257, toInteger(60 * o)) + (0..4).flatMap { listOf(eq5Id(it, 2), toInteger(60 * actual[it]) and 0xFFFF) }
+    }
+
     override fun eqCurve(gains: List<Double>): List<ByteArray>? {
+        if (eq5) return eq5Curve(gains)
         if (!model.eq || gains.size != 3) return null
         val params = prop(PROP_EQ_PARAMS) ?: return null
         val knob = prop(PROP_EQ_KNOB) ?: return null
@@ -386,6 +452,17 @@ public class Gaia2Session(public val model: Gaia2Model, private val ble: Boolean
         private const val PROP_LANGUAGE = "prompt_language"
         private const val PROP_EQ_KNOB = "eq_knob"
         private const val PROP_EQ_PARAMS = "eq_params"
+        private const val PROP_EQ5_PARAM = "eq5_param"
+        private const val PROP_EQ5_GROUP = "eq5_group"
+        private const val PROP_EQ5_STORE = "eq5_store"
+        private const val PROP_EQ_CONTROL = "eq_control"
+
+        /** The IE 80S BT's bands as Smart Control labels them (62.5, 250, 1000, 4000, 16000 Hz) and the filter frequencies it sets (32, 125, 500, 2000, 8000). */
+        private val EQ5_HZ = listOf(63, 250, 1000, 4000, 16000)
+        private val EQ5_FILTER_HZ = listOf(32, 125, 500, 2000, 8000)
+
+        /** The pre-gain of the firmware from 0.9.0 (`preGainNeutral`); the older firmware uses -2, which the product files do not let PairFree tell apart. */
+        private const val EQ5_PRE_GAIN = -6.0
         private const val AUDIO_USER_EQ = 1
         private const val AUDIO_SPEECH = 2
 

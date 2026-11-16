@@ -400,6 +400,130 @@
        ]
       }
      }
+    },
+    "eq_params": {
+     "set": {
+      "module": "000A",
+      "command": "000D",
+      "params": [
+       [
+        "UINT8",
+        "Index"
+       ],
+       [
+        "UINT8",
+        "NoCommit"
+       ],
+       [
+        "UINT8",
+        "Type"
+       ],
+       [
+        "INT32",
+        "b0"
+       ],
+       [
+        "INT32",
+        "b1"
+       ],
+       [
+        "INT32",
+        "b2"
+       ],
+       [
+        "INT32",
+        "a0"
+       ],
+       [
+        "INT32",
+        "a1"
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "000D",
+       "params": []
+      }
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "module": "000A",
+      "command": "000F",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "000F",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "000E",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "000E",
+       "params": []
+      }
+     }
+    },
+    "assistant": {
+     "values": {
+      "STANDARD": 0,
+      "GOOGLE_BISTO": 1,
+      "BAIDUS_DUEROS": 2,
+      "ALEXA": 3
+     },
+     "get": {
+      "module": "0006",
+      "command": "0042",
+      "params": [],
+      "reply": {
+       "module": "0006",
+       "command": "0042",
+       "params": [
+        [
+         "UINT8",
+         "mode"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0006",
+      "command": "0041",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": {
+       "module": "0006",
+       "command": "0041",
+       "params": []
+      }
+     }
     }
    }
   },
@@ -794,6 +918,223 @@
        "module": "000A",
        "command": "0007",
        "params": []
+      }
+     }
+    },
+    "anc_level": {
+     "get": {
+      "module": "0017",
+      "command": "0006",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0006",
+       "params": [
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0005",
+      "params": [
+       [
+        "UINT16",
+        "status"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0005",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "boost": {
+     "get": {
+      "module": "000A",
+      "command": "0008",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0008",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0007",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0007",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "reverb": {
+     "get": {
+      "module": "000A",
+      "command": "0004",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0004",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0003",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0003",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "dlc": {
+     "get": {
+      "module": "000A",
+      "command": "000A",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "000A",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0009",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0009",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "spatial": {
+     "get": {
+      "module": "000A",
+      "command": "0002",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0002",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0001",
+       "params": [],
+       "submodule": "00FF"
       }
      }
     }
@@ -1279,6 +1620,261 @@
        "module": "000A",
        "command": "0007",
        "params": []
+      }
+     }
+    },
+    "anc_level": {
+     "get": {
+      "module": "0017",
+      "command": "0006",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0006",
+       "params": [
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0005",
+      "params": [
+       [
+        "UINT16",
+        "status"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0005",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "assistant": {
+     "values": {
+      "STANDARD": 0,
+      "GOOGLE_BISTO": 1,
+      "BAIDUS_DUEROS": 2,
+      "ALEXA": 3
+     },
+     "get": {
+      "module": "0006",
+      "command": "0042",
+      "params": [],
+      "reply": {
+       "module": "0006",
+       "command": "0042",
+       "params": [
+        [
+         "UINT8",
+         "mode"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0006",
+      "command": "0041",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": {
+       "module": "0006",
+       "command": "0041",
+       "params": []
+      }
+     }
+    },
+    "boost": {
+     "get": {
+      "module": "000A",
+      "command": "0008",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0008",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0007",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0007",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "reverb": {
+     "get": {
+      "module": "000A",
+      "command": "0004",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0004",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0003",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0003",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "dlc": {
+     "get": {
+      "module": "000A",
+      "command": "000A",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "000A",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0009",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0009",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "spatial": {
+     "get": {
+      "module": "000A",
+      "command": "0002",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0002",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0001",
+       "params": [],
+       "submodule": "00FF"
       }
      }
     }

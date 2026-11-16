@@ -139,7 +139,7 @@ public object NautilusModels {
  * carrying the module and command of the command's answer in the product file. The rows are the ones Smart Control's classes for these products set up: battery,
  * noise cancelling (and the Momentum 3's ambient audio), smart pause, voice prompts, call enhancement and the sound presets. Not tried on headphones.
  */
-public class NautilusSession(public val model: NautilusModel) : SessionTalk<ByteArray>() {
+public class NautilusSession(public val model: NautilusModel) : SessionTalk<ByteArray>(), SennheiserEqSource {
     private var current: EarbudState = EarbudState()
     override val state: EarbudState get() = current
     override val pacing: Pacing = Pacing(replyMs = 3_000L, gapMs = 50L)
@@ -174,12 +174,19 @@ public class NautilusSession(public val model: NautilusModel) : SessionTalk<Byte
     private fun read(id: String): ByteArray? {
         val p = prop(id) ?: return null
         val get = p.get ?: return null
-        // The smart pause's read is its write with the mode STATUS (2).
-        val payload = if (id == PROXIMITY) u16(PROXIMITY_STATUS) else ByteArray(0)
+        // The smart pause's read is its write with the mode STATUS (2); the director mode's settings are read at index 4.
+        val payload = if (id == PROXIMITY) u16(PROXIMITY_STATUS) else if (id in DIRECTOR_SETTINGS) u16(DIRECTOR_INDEX) else ByteArray(0)
         return send(get, payload)
     }
 
-    override fun start(): List<ByteArray> = READ_ON_OPEN.mapNotNull { read(it) }
+    override fun start(): List<ByteArray> = READ_ON_OPEN.mapNotNull { read(it) } + (if (hasEq) knobReads() else emptyList())
+
+    private val knobQueue = ArrayDeque<Int>()
+    private val knobs = mutableMapOf<Int, Int>()
+
+    private fun knobReads(): List<ByteArray> = (0..1).mapNotNull { index ->
+        prop(EQ_KNOB)?.get?.let { send(it, u16(index)) }?.also { knobQueue.addLast(index) }
+    }
 
     override fun poll(): List<ByteArray> = listOfNotNull(read(if (prop(BATTERY_PERCENT)?.get?.command == 0x03) BATTERY_PERCENT else BATTERY_LEVEL))
 
@@ -252,6 +259,17 @@ public class NautilusSession(public val model: NautilusModel) : SessionTalk<Byte
     }
 
     private fun decode(p: NautilusProp, data: ByteArray): Boolean {
+        if (p.id == EQ_KNOB) {
+            val index = knobQueue.removeFirstOrNull() ?: return false
+            if (data.size < 2) return false
+            knobs[index] = (data[0].toInt() and 0xFF) or ((data[1].toInt() and 0xFF) shl 8)
+            val x = knobs[0] ?: return false
+            val y = knobs[1] ?: return false
+            val (g, peak) = SennheiserEq.threeKnobsPeakState(x, y)
+            gains = g
+            highEnd = peak
+            return true
+        }
         val before = values[p.id]
         if (before != null && before.contentEquals(data)) return false
         values[p.id] = data.copyOf()
@@ -289,13 +307,32 @@ public class NautilusSession(public val model: NautilusModel) : SessionTalk<Byte
                 le16(ANC_STATE)?.let { s -> prop(ANC_STATE)?.values?.entries?.firstOrNull { it.value == s }?.let { add(Setting.Choice(KEY_ANC_STATE, it.key.lowercase(), prop(ANC_STATE)!!.values.keys.map { k -> k.lowercase() })) } }
                 u8(ANC_MIDDLE)?.let { s -> prop(ANC_MIDDLE)?.values?.entries?.firstOrNull { it.value == s }?.let { add(Setting.Choice(KEY_ANC_MIDDLE, it.key, prop(ANC_MIDDLE)!!.values.keys.toList())) } }
             }
+            // The adaptive strength: the app's slider runs 0 to 8 and is used while the state is adaptive.
+            le16(ANC_LEVEL)?.let { v -> add(SettingGroup("noise_level", SettingTab.HOME, listOf(Setting.Level(KEY_ANC_LEVEL, v.coerceIn(0, ANC_LEVEL_MAX), 0, ANC_LEVEL_MAX, enabled = le16(ANC_STATE) == ADAPTIVE)))) }
             if (noise.isNotEmpty()) add(SettingGroup("noise", SettingTab.HOME, noise))
-            le16(SOUND_PRESET)?.let { s -> prop(SOUND_PRESET)?.values?.entries?.firstOrNull { it.value == s }?.let { add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Choice(KEY_PRESET, it.key, prop(SOUND_PRESET)!!.values.keys.toList())))) } }
+            if (eqKnown) add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Toggle(KEY_HIGH_END, highEnd))))
+            le16(SOUND_PRESET)?.let { s ->
+                prop(SOUND_PRESET)?.values?.entries?.firstOrNull { it.value == s }?.let {
+                    add(SettingGroup("sound_preset", SettingTab.SOUND, buildList {
+                        add(Setting.Choice(KEY_PRESET, it.key, prop(SOUND_PRESET)!!.values.keys.toList()))
+                        // The director preset (4) has four more settings.
+                        if (s == DIRECTOR_INDEX) for ((id, options) in DIRECTOR_SETTINGS) le16(id)?.let { v -> add(Setting.Choice("sh_nautilus_$id", options.getOrNull(v), options)) }
+                    }))
+                }
+            }
             val other = buildList<Setting> {
                 u8(PROXIMITY)?.let { add(Setting.Toggle(SennheiserSession.KEY_SMART_PAUSE, it == PROXIMITY_ENABLED)) }
                 le16(CALL_ENHANCEMENT)?.let { add(Setting.Toggle(KEY_CALL_ENHANCEMENT, it == 1)) }
+                u8(ASSISTANT)?.let { add(Setting.Toggle(KEY_ASSISTANT, it == ALEXA)) }
                 u8(PROMPT_MODE)?.let { m -> PROMPTS.entries.firstOrNull { it.value == m }?.let { add(Setting.Choice(SennheiserSession.KEY_PROMPTS, it.key, PROMPTS.keys.toList())) } }
-                le16(PROMPT_LANGUAGE)?.let { l -> prop(PROMPT_LANGUAGE)?.values?.entries?.firstOrNull { it.value == l }?.let { add(Setting.Information(SennheiserSession.KEY_PROMPT_LANGUAGE, it.key.lowercase().replaceFirstChar { c -> c.uppercase() })) } }
+                le16(PROMPT_LANGUAGE)?.let { l ->
+                    val names = prop(PROMPT_LANGUAGE)?.values.orEmpty()
+                    val title = { k: String -> k.lowercase().replaceFirstChar { c -> c.uppercase() } }
+                    names.entries.firstOrNull { it.value == l }?.let { e ->
+                        if (prop(PROMPT_LANGUAGE)?.set != null) add(Setting.Choice(SennheiserSession.KEY_PROMPT_LANGUAGE, title(e.key), names.keys.map(title)))
+                        else add(Setting.Information(SennheiserSession.KEY_PROMPT_LANGUAGE, title(e.key)))
+                    }
+                }
                 u8(CODEC)?.let { c -> prop(CODEC)?.values?.entries?.firstOrNull { it.value == c }?.let { add(Setting.Information(SennheiserSession.KEY_CODEC, it.key.removePrefix("CODEC_"))) } }
             }
             if (other.isNotEmpty()) add(SettingGroup("other", SettingTab.DEVICE, other))
@@ -310,6 +347,38 @@ public class NautilusSession(public val model: NautilusModel) : SessionTalk<Byte
 
     override fun change(change: SettingChange): List<ByteArray>? {
         when {
+            change is SettingChange.Level && change.key == KEY_ANC_LEVEL -> {
+                if (le16(ANC_STATE) != ADAPTIVE) return null
+                val v = change.value.coerceIn(0, ANC_LEVEL_MAX)
+                values[ANC_LEVEL] = u16(v)
+                return write(ANC_LEVEL, u16(v))
+            }
+            change is SettingChange.Toggle && change.key == KEY_ASSISTANT -> {
+                if (values[ASSISTANT] == null) return null
+                val v = if (change.on) ALEXA else 0
+                values[ASSISTANT] = byteArrayOf(v.toByte())
+                return write(ASSISTANT, byteArrayOf(v.toByte()), ASSISTANT)
+            }
+            change is SettingChange.Choice && change.key == SennheiserSession.KEY_PROMPT_LANGUAGE -> {
+                val v = prop(PROMPT_LANGUAGE)?.values?.entries?.firstOrNull { it.key.equals(change.option, ignoreCase = true) }?.value ?: return null
+                if (prop(PROMPT_LANGUAGE)?.set == null) return null
+                values[PROMPT_LANGUAGE] = u16(v)
+                return write(PROMPT_LANGUAGE, u16(v))
+            }
+            change is SettingChange.Choice && change.key.startsWith("sh_nautilus_") && DIRECTOR_SETTINGS.containsKey(change.key.removePrefix("sh_nautilus_")) -> {
+                val id = change.key.removePrefix("sh_nautilus_")
+                val v = DIRECTOR_SETTINGS.getValue(id).indexOf(change.option)
+                val p = prop(id) ?: return null
+                if (v < 0 || p.set == null || le16(SOUND_PRESET) != DIRECTOR_INDEX) return null
+                values[id] = u16(v)
+                p.get?.let { g -> read(id)?.let { readBacks += it } }
+                return listOf(send(p.set, u16(DIRECTOR_INDEX) + u16(v)))
+            }
+            change is SettingChange.Toggle && change.key == KEY_HIGH_END -> {
+                val g = gains ?: return null
+                highEnd = change.on
+                return eqCurve(g)
+            }
             change is SettingChange.Choice && change.key == KEY_ANC -> {
                 val mode = ANC_MODES[change.option] ?: return null
                 if (u8(ANC_CONTROL) == 0) return null
@@ -364,7 +433,41 @@ public class NautilusSession(public val model: NautilusModel) : SessionTalk<Byte
         return null
     }
 
+    // The Momentum 3's equalizer (docs/sennheiser/PROTOCOL.md section 4.10): three parameter groups of biquad coefficients, then the two knobs ----------------
+
+    private val hasEq: Boolean get() = prop(EQ_PARAMS)?.set != null && prop(EQ_KNOB)?.get != null
+    private var gains: List<Double>? = null
+    private var highEnd = false
+
+    override val eqGains: List<Double>? get() = gains
+    override val eqKnown: Boolean get() = hasEq && gains != null
+    override val eqBandsHz: List<Int> get() = if (hasEq) SennheiserEqTables.THREE_BAND_HZ else emptyList()
+    override val eqMaxDb: Double get() = SennheiserEqTables.THREE_BAND_RANGE_DB.toDouble()
+    override val eqMinDb: Double get() = -eqMaxDb
+    override val eqPresets: List<Pair<String, List<Double>>> get() = if (hasEq) SennheiserEqTables.PRESETS["default3"].orEmpty() else emptyList()
+    override val eq: Any? get() = if (eqKnown) gains to highEnd else null
+
+    private fun le32(v: Long) = byteArrayOf(v.toByte(), (v shr 8).toByte(), (v shr 16).toByte(), (v shr 24).toByte())
+
+    override fun eqCurve(gains: List<Double>): List<ByteArray>? {
+        if (!hasEq || gains.size != 3) return null
+        val params = prop(EQ_PARAMS)!!.set!!
+        val knob = prop(EQ_KNOB)!!.set ?: return null
+        val clipped = gains.map { it.coerceIn(eqMinDb, eqMaxDb) }
+        val out = SennheiserEq.m3Groups(clipped, highEnd).map { g ->
+            send(params, byteArrayOf(g[0].toByte(), g[1].toByte(), g[2].toByte()) + g.drop(3).fold(ByteArray(0)) { acc, v -> acc + le32(v) })
+        }.toMutableList()
+        val (x, y) = SennheiserEq.threeKnobsPeak(clipped, highEnd)
+        out += send(knob, u16(0) + u16(x))
+        out += send(knob, u16(1) + u16(y))
+        this.gains = clipped
+        return out
+    }
+
     public companion object {
+        public const val KEY_HIGH_END: String = "sh_high_end"
+        public const val KEY_ANC_LEVEL: String = "sh_nautilus_anc_level"
+        public const val KEY_ASSISTANT: String = "sh_assistant"
         public const val KEY_ANC: String = "sh_nautilus_anc"
         public const val KEY_AMBIENT: String = "sh_nautilus_ambient"
         public const val KEY_ANC_STATE: String = "sh_nautilus_anc_state"
@@ -372,6 +475,24 @@ public class NautilusSession(public val model: NautilusModel) : SessionTalk<Byte
         public const val KEY_PRESET: String = "sh_nautilus_preset"
         public const val KEY_CALL_ENHANCEMENT: String = "sh_call_enhancement"
 
+        private const val ANC_LEVEL = "anc_level"
+        private const val ASSISTANT = "assistant"
+        private const val ANC_LEVEL_MAX = 8
+        private const val ADAPTIVE = 2
+        private const val ALEXA = 3
+
+        /** The director preset's number (`Sound_Preset` DIRECTOR), at which the boost, reverb, dynamic loudness and virtual speaker position are read and set. */
+        private const val DIRECTOR_INDEX = 4
+
+        /** The choices of each director setting, in the app's order (`getOptionsBoost` and the others): the answer is an index into them. */
+        private val DIRECTOR_SETTINGS = linkedMapOf(
+            "boost" to listOf("off", "rumble", "thump", "voice"),
+            "spatial" to listOf("off", "near", "medium", "far"),
+            "reverb" to listOf("off", "low", "medium", "high"),
+            "dlc" to listOf("off", "on"),
+        )
+        private const val EQ_PARAMS = "eq_params"
+        private const val EQ_KNOB = "eq_knob"
         private const val BATTERY_PERCENT = "battery_percent"
         private const val BATTERY_LEVEL = "battery_level"
         private const val ANC_MODE = "anc_mode"
@@ -400,6 +521,6 @@ public class NautilusSession(public val model: NautilusModel) : SessionTalk<Byte
         /** `Setting_AudioPromptMode`: all disabled 0, voice 1, tone 2 (the app's `ED`). */
         private val PROMPTS = linkedMapOf("tone_voice_off" to 0, "tone_voice_on" to 1, "tone_on" to 2)
 
-        private val READ_ON_OPEN = listOf(BATTERY_PERCENT, BATTERY_LEVEL, ANC_CONTROL, ANC_MODE, AMBIENT_AUDIO, ANC_STATE, ANC_MIDDLE, PROXIMITY, PROMPT_MODE, PROMPT_LANGUAGE, CODEC, CALL_ENHANCEMENT, SOUND_PRESET, FIRMWARE, SOFTWARE)
+        private val READ_ON_OPEN = listOf(ANC_LEVEL, ASSISTANT, "boost", "spatial", "reverb", "dlc", BATTERY_PERCENT, BATTERY_LEVEL, ANC_CONTROL, ANC_MODE, AMBIENT_AUDIO, ANC_STATE, ANC_MIDDLE, PROXIMITY, PROMPT_MODE, PROMPT_LANGUAGE, CODEC, CALL_ENHANCEMENT, SOUND_PRESET, FIRMWARE, SOFTWARE)
     }
 }

@@ -162,9 +162,14 @@ the battery and switches them off again.
 The product files of CX 350BT, HD 250BT, HD 350BT, HD 450BT, HD 450SE, HD 458BT and IE 80S BT (`data/sennheiser/gaia2.json`): battery (`0182`) and charging (`0185`), the audio mode (`0786`/`0706`: user equalizer 1, speech 2: the podcast
 mode), sidetone (`0787`/`0707`: off, min, max), the three-band equalizer (the parameter group `EQ_UserParameterGroup_Set`, Qualcomm's vendor `000A` command `021B`, and the two knobs `0685`/`0605`, as the
 newer products' three knobs of section 4.1, with the gain limit 4), and on the IE 80S BT the answer-call and smart-pause switches, the voice prompt mode (`0781`/`0701`), language (`000A:0292`/`0212`), codec (`0184`), the automatic power off
-timer (`000A:0189`/`0109`) and the multi-function button (`0186`/`0106`: voice assistant or the equalizer modes). Everything is read when the channel opens and the battery again on a timer. The HD 458BT's equalizer, the IE 80S BT's equalizer and the HD 450SE's voice assistant (`Voice_Assistant_Mode`, `0583`/`0503`, Alexa) are not
-built, and the earbuds' events are not used; checked: the events (`000A:4003`, answered `C003`) are not registered by any command of the product files, so PairFree re-reads instead; the HD 458BT's class sends
-`Sound_SetEQParamGroup` and `Sound_StoreEqSettings` through `Sound_EQControl`, the IE 80S BT's uses `Sound_EQControl` and `Sound_EqStatus`, and neither layout is in the product files.
+timer (`000A:0189`/`0109`) and the multi-function button (`0186`/`0106`: voice assistant or the equalizer modes). Everything is read when the channel opens and the battery again on a timer. The HD 458BT has the same three-band equalizer as the others (its class does not use the five-band one). The IE 80S BT has the app's
+five-band equalizer (`Eq5BandIE80`, bands labelled 62.5, 250, 1000, 4000 and 16000 Hz with filters at 32, 125, 500, 2000 and 8000 Hz, plus or minus 6 dB): the first curve of a session sets each band's filter type (5 for the two
+lowest, 11 for the others), Q (2896) and frequency (`Sound_SetCustomEQParam` `000A:021A`, parameter `0x1n0`, `0x1n3`, `0x1n1`), turns `Sound_EQControl` (`0214`) on if it is not, writes the pre-gain and each band's step above the one
+below in sixtieths of a dB as one group (`Sound_SetEQParamGroup` `021B`: the count, twelve numbers, a zero) and stores it (`0494:0606`); the bands are read back one by one (`029A`, parameter `0x1n2`; the app turns a 16 bit negative
+into a number with 65535 and PairFree does the same). Two differences from the app: its fade (gains move in steps of at most 2 dB every 300 ms) is left out, so a large change goes at once, and the pre-gain uses the firmware 0.9.0 value
+(-6; the older firmware's is -2), because the product file lists no firmware command for this product. The earbuds' events and the HD 450SE's voice assistant (`Voice_Assistant_Mode`, `0583`/`0503`, Alexa) are not built; checked:
+the events (`000A:4003`, answered `C003`) are not registered by any command of the product files, so PairFree re-reads instead, and the HD 450SE's switch needs the Alexa app's set-up state (`Voice_Assistant_Config_Status`, `018A`),
+whose answer layout the product file gives only as two bytes.
 
 ### 4.10 Nautilus headphones
 
@@ -175,9 +180,11 @@ against a port of the app's `accumulateCrc8` run outside the repo. Shown: the ba
 mode (`ANC_ActiveMode` `17:08`/`17:09`: off 0, airplane 1, outdoor 3, home 4; only while the control type `17:10` says the switch is on), transparent hearing (`ANC_ToggleAmbientMode` `17:11`) and whether it pauses music
 (`17:0A`/`17:0B`), the PXC 550s' noise cancelling state (`17:03`/`17:04`: off, on, adaptive), the PXC 550-II's middle position of the switch (`17:12`/`17:13`), smart pause (`Input_Proximity_Mode`, module `08` submodule `EF` command `01`:
 a write of the mode, and a read is the same command with 2), the voice prompts (`07:01`/`07:05`), the prompt language (read), the codec (`0A:10`), call enhancement (`0A:03`/`0A:04`), the sound presets (`0A:07`/`0A:08`) and the
-version. The Momentum 3's equalizer, the PXC 550s' adaptive noise cancelling level, their boost, reverb, dynamic loudness and virtual speaker positions and the voice assistant are not built;
-checked: the Momentum 3's `Eq3BandM3` writes three parameter groups with the knobs (`0A:0E`/`0F`), the level (`17:05`/`17:06`) has its range in the app's code and not in the product files, the acoustical settings
-(`0A/FF:07`/`08`) take a preset number 4, and the voice assistant is `06:41`/`06:42`.
+version. The Momentum 3's equalizer is `Eq3BandM3`: the gains are smoothed (gain limit 4), then written as three parameter groups (`0A:0D`: index, no commit, type, five 32-bit numbers): the high shelf at 1600 Hz, the low shelf at 280 Hz
+and the master gain, each biquad coefficient times 2^30 (halved while above 1.9, the master doubling for each halving); with the high-end sound tuning on, two peak filters (50 Hz -4 dB, 500 Hz +3 dB) replace the shelves; then the knobs
+(`0A:0E`/`0A:0F`: index 0 the first two gains, index 1 the third gain and the flags, the tuning being the bit `0x800`). `SennheiserEqTest` pins the groups against a port of the app's JavaScript. The PXC 550s have the adaptive strength (`17:05`/`17:06`,
+0 to 8, used while the state is adaptive) and, under the director preset (4), boost, virtual speaker distance, reverb and dynamic loudness (`0A/FF:07` to `0A/FF:0A`, index 4 and the position in the app's list). The voice prompt language is
+settable (`07:02`) and the voice assistant switch is Alexa or the standard one (`06:41`/`06:42`).
 
 ### 4.11 Auracast
 
@@ -197,8 +204,11 @@ broadcast (BASS): `Auracast_AddSource` (`2A02`: the address type and address, th
 Each says what was read.
 
 - **The Accentum Clip (Airoha RACE)**: not built: checked: Smart Control Plus sends it, and only it, to its Airoha platform; its sixteen RACE feature variants exist as classes (`AutoPowerOffRaceFeatureVariant`,
-  `BatteryRaceFeatureVariant`, `Equalizer2RaceFeatureVariant`, `TouchControlsRaceFeatureVariant`...) but their constructors hold only the feature name and id (the auto power off is feature `0x12`); the commands they
-  send are in `RaceClient` methods that were not traced, and the Java side only wraps Airoha's SDK. The next step is to trace each variant to its RACE command with `dartx.py` and port PairFree's own RACE code (`protocol.airoha`).
+  `Equalizer2RaceFeatureVariant`, `TouchControlsRaceFeatureVariant`...) whose constructors hold only the feature name and an id (the auto power off is `0x12`). The Plus app holds the command numbers of Sennheiser's own commands for
+  these products as enums: battery level `011A`, battery type `0120`, battery protection `0130`/`0131`, eco mode `0132`/`0133`, in-case state `011F`, codec `0117`, voice prompt `0136`/`0137`, auto answer `013B`/`013C`, bass boost
+  `0141`/`0140`, touch lock `0119`/`0118`, gesture config `012C`/`012B`, default gestures `012F`/`012E`, available functions `012D`, play sound `0122`/`0123`/`0124`, paired devices `0110` to `0116` and `010D`, serial `0106`, hardware
+  `0108`, firmware `011B`, reboot both earbuds `0152`, the Airoha agent query `0CD4`. No payload layout was found: the classes that parse them are named only in their `toString`, and tracing each one is the next step (the
+  numbers differ from Smart Control's, so the Momentum 5 and Momentum True Wireless 5 may use this set rather than Smart Control's, which a device report would show).
 - **Personalised sound's listening test**: blocked: it plays the app's own music stems (`bass.ogg`, `brk.ogg`, `full.ogg`, `rhythm.ogg`, `treble.ogg` in `res/raw`, 0.5 to 2 MB each) that the library's fitting presets and
   fader maths are made for, and vendor audio cannot go in the repo (Hard rules); checked: section 4.5, the stems' names and sizes, and the library's exports.
 - **Auracast broadcast codes**: built (a text line for the source that asks for one, `Auracast_SetBroadcastCode` `2A04`, up to 16 characters padded with zero bytes).
@@ -206,7 +216,6 @@ Each says what was read.
   configuration reply but no command in the product files names or applies them; the Plus-only products have no product file.
 - **The voice assistant** (`VoiceUI_Selected_Assistant`) and **renaming** (`renameDeviceMinFwVersion`): checked: every product file sets `voiceAssistant_MinFwVersion` and `renameDeviceMinFwVersion` to 99.99.99, so the app
   itself never offers them.
-- **The IE 80S BT's and HD 458BT's equalizers, the Nautilus equalizer and acoustical settings**: section 4.9 and 4.10.
 - **The soundbars (Elmar, Wi-Fi)**: held back with the other speakers (owner, 2026-10-30); checked: the AMBEO Soundbar's product file (`sb01.json`, 77 properties, one-byte commands with a `0xFF` separator over `63331377/78`).
 
 ## 7. Open questions

@@ -620,6 +620,13 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_wear_left" -> stringResource(R.string.setting_sh_wear_left)
     "sh_wear_right" -> stringResource(R.string.setting_sh_wear_right)
     "sh_podcast" -> stringResource(R.string.setting_sh_podcast)
+    "sh_high_end" -> stringResource(R.string.setting_sh_high_end)
+    "sh_nautilus_anc_level" -> stringResource(R.string.setting_sh_nautilus_anc_level)
+    "sh_assistant" -> stringResource(R.string.setting_sh_assistant)
+    "sh_nautilus_boost" -> stringResource(R.string.setting_sh_nautilus_boost)
+    "sh_nautilus_spatial" -> stringResource(R.string.setting_sh_nautilus_spatial)
+    "sh_nautilus_reverb" -> stringResource(R.string.setting_sh_nautilus_reverb)
+    "sh_nautilus_dlc" -> stringResource(R.string.setting_sh_nautilus_dlc)
     "sh_nautilus_anc" -> stringResource(R.string.setting_sh_nautilus_anc)
     "sh_nautilus_ambient" -> stringResource(R.string.setting_sh_nautilus_ambient)
     "sh_nautilus_anc_state" -> stringResource(R.string.setting_sh_nautilus_anc_state)
@@ -1002,6 +1009,10 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     key == "sh_nautilus_anc" -> getString(when (option) { "off" -> R.string.action_off; "airplane" -> R.string.setting_sh_nautilus_airplane; "outdoor" -> R.string.setting_sh_nautilus_outdoor; else -> R.string.setting_sh_nautilus_home })
     key == "sh_nautilus_anc_state" -> getString(when (option) { "off" -> R.string.action_off; "on" -> R.string.setting_anc; else -> R.string.setting_sh_adaptive_anc })
     key == "sh_multi_function" -> getString(if (option == "EQModes") R.string.setting_sh_multi_eq else R.string.action_voice_assistant)
+    key.startsWith("sh_nautilus_") && key != "sh_nautilus_anc" && key != "sh_nautilus_anc_state" && key != "sh_nautilus_preset" && key != "sh_nautilus_anc_middle" -> getString(when (option) {
+        "off" -> R.string.action_off; "on" -> R.string.setting_sh_nautilus_on; "low" -> R.string.setting_level_low; "medium" -> R.string.setting_level_medium; "high" -> R.string.setting_level_high
+        "near" -> R.string.setting_sh_nautilus_near; "far" -> R.string.setting_sh_nautilus_far; "rumble" -> R.string.setting_sh_nautilus_rumble; "thump" -> R.string.setting_sh_nautilus_thump; else -> R.string.setting_sh_nautilus_voice
+    })
     key == "sh_auto_off" -> if (option == "0") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
     key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> getString(when (option) { "low" -> R.string.setting_level_low; "mid", "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_high })
     key == "sh_auracast_source" -> getString(when (option) { "receiving" -> R.string.setting_sh_auracast_receiving; "synced" -> R.string.setting_sh_auracast_synced; "code_required" -> R.string.setting_sh_auracast_code; "bad_code" -> R.string.setting_sh_auracast_bad_code; "failed" -> R.string.setting_sh_auracast_failed; else -> R.string.setting_sh_auracast_not_synced })

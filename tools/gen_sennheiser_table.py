@@ -47,11 +47,13 @@ GAIA2_LABELS = {
     "battery_percent": "battery", "audio_mode": "podcast mode", "eq_knob": "equalizer (bass, mid, treble)", "sidetone": "sidetone", "prompt_mode": "voice prompts",
     "auto_call": "answer calls automatically", "smart_pause": "smart pause", "codec": "codec in use", "auto_off": "automatic power off", "multi_function": "multi-function button",
     "prompt_language": "voice prompt language", "touch_lock": "lock the touch controls", "transparency_status": "transparent hearing", "anc_state": "noise cancelling",
+    "eq5_group": "equalizer (five bands)",
 }
 NAUTILUS_LABELS = {
     "battery_percent": "battery", "battery_level": "battery", "anc_mode": "noise cancelling modes", "anc_state": "noise cancelling", "ambient_toggle": "transparent hearing",
     "ambient_audio": "pause music in transparency", "proximity": "smart pause", "prompt_mode": "voice prompts", "prompt_language": "voice prompt language", "codec": "codec in use",
-    "call_enhancement": "call enhancement", "sound_preset": "sound presets", "anc_middle": "middle position of the switch",
+    "call_enhancement": "call enhancement", "sound_preset": "sound presets", "anc_middle": "middle position of the switch", "eq_params": "equalizer (bass, mid, treble)",
+    "anc_level": "adaptive strength", "assistant": "Amazon Alexa", "boost": "director settings (boost, reverb, speaker distance, dynamic loudness)",
 }
 
 

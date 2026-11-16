@@ -883,7 +883,7 @@
    "transport": "spp",
    "ble": null,
    "source": "Smart Control 4.9.4 hd458.json",
-   "eq": false,
+   "eq": true,
    "properties": {
     "battery_percent": {
      "get": {
@@ -1287,6 +1287,115 @@
        ]
       ],
       "reply": "8212",
+      "reply_params": []
+     }
+    },
+    "eq5_param": {
+     "set": {
+      "vendor": "000A",
+      "command": "021A",
+      "params": [
+       [
+        "UINT16",
+        "Parameter ID"
+       ],
+       [
+        "UINT16",
+        "Parameter Value"
+       ],
+       [
+        "UINT8",
+        "recalculation control"
+       ]
+      ],
+      "reply": "821A",
+      "reply_params": []
+     },
+     "get": {
+      "vendor": "000A",
+      "command": "029A",
+      "params": [
+       [
+        "UINT16",
+        "Parameter ID"
+       ]
+      ],
+      "reply": "829A",
+      "reply_params": [
+       [
+        "UINT16",
+        "Parameter ID"
+       ],
+       [
+        "UINT16",
+        "Parameter Value"
+       ]
+      ]
+     }
+    },
+    "eq5_group": {
+     "set": {
+      "vendor": "000A",
+      "command": "021B",
+      "params": [
+       [
+        "UINT16",
+        "param1"
+       ],
+       [
+        "UINT16",
+        "param2"
+       ],
+       [
+        "UINT16",
+        "param3"
+       ],
+       [
+        "UINT16",
+        "param4"
+       ]
+      ],
+      "reply": "821B",
+      "reply_params": []
+     }
+    },
+    "eq5_store": {
+     "set": {
+      "vendor": "0494",
+      "command": "0606",
+      "params": [],
+      "reply": "8606",
+      "reply_params": []
+     }
+    },
+    "eq_control": {
+     "values": {
+      "on": 1,
+      "off": 2,
+      "off_old": 0
+     },
+     "get": {
+      "vendor": "000A",
+      "command": "0294",
+      "params": [],
+      "reply": "8294",
+      "reply_params": [
+       [
+        "UINT8",
+        "Equalizer Bank number"
+       ]
+      ]
+     },
+     "set": {
+      "vendor": "000A",
+      "command": "0214",
+      "params": [
+       [
+        "UINT8",
+        "Equalizer Bank number"
+       ]
+      ],
+      "reply": "8214",
       "reply_params": []
      }
     }

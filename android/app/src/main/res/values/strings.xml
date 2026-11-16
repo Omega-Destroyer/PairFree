@@ -1108,6 +1108,7 @@
     <string name="setting_ca_tones">Tones only</string>
     <string name="setting_ca_celebrity">Celebrity voice</string>
     <string name="setting_ca_never">Never</string>
+    <string name="eq_sennheiser">Pick a preset or drag the bands. The Sennheiser app sets the same equalizer; the earbuds are switched to their user equalizer mode when a curve is sent.</string>
     <string name="eq_cambridge_connect">Pick a preset or drag the bands. The earbuds report their own band frequencies; Melomania Connect lets each band go down to -9 dB and up to +3 dB, so PairFree holds anything higher to +3 dB.</string>
     <string name="setting_ca_balance">Left and right balance</string>
     <string name="setting_ca_pairing_mode_control">Pairing mode control</string>
@@ -1185,6 +1186,7 @@
     <string name="setting_sh_prompts_tones">Tones only</string>
     <string name="setting_sh_prompts_voice">Tones and voice</string>
     <string name="setting_sh_codec">Codec in use</string>
+    <string name="setting_sh_bass_boost">Bass boost</string>
 
     <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
     <string name="setting_a3959_nc_mode">Noise cancelling type</string>
@@ -1282,7 +1284,6 @@
     <string name="vendor_hip_hop_3">Hip-Hop</string>
     <string name="vendor_hits">Hits</string>
     <string name="vendor_metal">Metal</string>
-    <string name="vendor_natural">Natural</string>
     <string name="vendor_r_and_b">R&amp;B</string>
     <string name="vendor_soul">Soul</string>
     <string name="vendor_treble_boost_1">Treble Boost 1</string>
@@ -1293,11 +1294,13 @@
     <string name="vendor_treble_reducer_3">Treble Reducer 3</string>
     <string name="vendor_vocal_attenuation">Vocal Attenuation</string>
     <string name="vendor_vocal_enhancement">Vocal Enhancement</string>
-    <!-- EarFun, JBL, SOUNDPEATS, Sony, Soundcore -->
+    <!-- EarFun, JBL, SOUNDPEATS, Sennheiser, Sony, Soundcore -->
     <string name="vendor_rock">Rock</string>
-    <!-- EarFun, JBL, Sony, Soundcore -->
+    <!-- EarFun, JBL, Sennheiser, Sony, Soundcore -->
     <string name="vendor_jazz">Jazz</string>
-    <!-- EarFun, Sony, Soundcore -->
+    <!-- EarFun, Sennheiser -->
+    <string name="vendor_natural">Natural</string>
+    <!-- EarFun, Sennheiser, Sony, Soundcore -->
     <string name="vendor_dance">Dance</string>
     <!-- EarFun, Soundcore -->
     <string name="vendor_latin">Latin</string>
@@ -1366,13 +1369,16 @@
     <string name="vendor_folk">Folk</string>
     <string name="vendor_hifi">HIFI</string>
     <string name="vendor_hightone_enhancement">Hightone enhancement</string>
-    <string name="vendor_hip_hop_2">Hip hop</string>
     <string name="vendor_popular">Popular</string>
     <string name="vendor_popularity">Popularity</string>
     <string name="vendor_qq_music_premium">QQ Music Premium</string>
     <string name="vendor_rock_and_roll">Rock&amp;roll</string>
     <string name="vendor_truefree_classic">TRUEFREE Classic</string>
     <string name="vendor_treble_enhancement">Treble enhancement</string>
+    <!-- SOUNDPEATS, Sennheiser -->
+    <string name="vendor_hip_hop_2">Hip hop</string>
+    <!-- Sennheiser -->
+    <string name="vendor_movie">Movie</string>
     <!-- Sony -->
     <string name="vendor_artist_collaboration_1">Artist collaboration 1</string>
     <string name="vendor_artist_collaboration_10">Artist collaboration 10</string>

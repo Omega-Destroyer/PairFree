@@ -29,6 +29,7 @@
  "commands": [
   {
    "id": "battery_percent",
+   "open": true,
    "app_property": "Battery_Percent",
    "get": {
     "send": {
@@ -72,6 +73,7 @@
   },
   {
    "id": "battery_charging",
+   "open": true,
    "app_property": "Battery_ChargingStatus",
    "values": {
     "DISCONNECTED": 0,
@@ -120,6 +122,7 @@
   },
   {
    "id": "codec",
+   "open": true,
    "app_property": "Sound_CodecUsed",
    "values": {
     "SBC": 0,
@@ -169,6 +172,7 @@
   },
   {
    "id": "firmware_version",
+   "open": true,
    "app_property": "Service_SystemReleaseVersion",
    "get": {
     "send": {
@@ -199,6 +203,7 @@
   },
   {
    "id": "model_id",
+   "open": true,
    "app_property": "Versions_ModelId",
    "get": {
     "send": {
@@ -221,6 +226,7 @@
   },
   {
    "id": "anc_status",
+   "open": true,
    "app_property": "ANC_Status",
    "values": {
     "OFF": 0,
@@ -278,6 +284,7 @@
   },
   {
    "id": "anc_mode",
+   "open": true,
    "app_property": "ANC",
    "get": {
     "send": {
@@ -375,6 +382,7 @@
   },
   {
    "id": "transparency_status",
+   "open": true,
    "app_property": "TransparentHearing_Status",
    "values": {
     "on": 1,
@@ -432,6 +440,7 @@
   },
   {
    "id": "transparency_pause",
+   "open": true,
    "app_property": "TransparentHearingMode",
    "values": {
     "on": 1,
@@ -476,6 +485,7 @@
   },
   {
    "id": "on_head",
+   "open": true,
    "app_property": "Setting_OnHeadDetection",
    "values": {
     "on": 1,
@@ -520,6 +530,7 @@
   },
   {
    "id": "smart_pause",
+   "open": true,
    "app_property": "Setting_SmartPause",
    "values": {
     "on": 1,
@@ -564,6 +575,7 @@
   },
   {
    "id": "auto_call",
+   "open": true,
    "app_property": "Setting_AutoCall",
    "values": {
     "on": 1,
@@ -608,6 +620,7 @@
   },
   {
    "id": "comfort_call",
+   "open": true,
    "app_property": "Setting_ComfortCall",
    "values": {
     "on": 1,
@@ -652,6 +665,7 @@
   },
   {
    "id": "low_latency",
+   "open": true,
    "app_property": "LowLatencyMode",
    "values": {
     "OFF": 0,
@@ -709,6 +723,7 @@
   },
   {
    "id": "touch_lock",
+   "open": true,
    "app_property": "Setting_AutoLockMode",
    "values": {
     "OFF": 0,
@@ -753,6 +768,7 @@
   },
   {
    "id": "eco_mode",
+   "open": true,
    "app_property": "Power_EcoMode",
    "values": {
     "on": 1,
@@ -797,6 +813,7 @@
   },
   {
    "id": "battery_protection",
+   "open": true,
    "app_property": "Power_BatteryProtectionMode",
    "values": {
     "on": 1,
@@ -841,6 +858,7 @@
   },
   {
    "id": "prompt_mode",
+   "open": true,
    "app_property": "Setting_AudioPromptMode",
    "values": {
     "toneVoiceOff": 0,
@@ -880,6 +898,347 @@
      "vendor": "0495",
      "command": "0901",
      "error": "0981",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "audio_mode",
+   "open": true,
+   "app_property": "AudioMode",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0804",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0904",
+     "notification": "0884",
+     "error": "0984",
+     "params": [
+      [
+       "UINT16",
+       "audiomode"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "0904",
+     "notification": "0884",
+     "error": "0984",
+     "params": [
+      [
+       "UINT16",
+       "audiomode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0803",
+     "params": [
+      [
+       "UINT16",
+       "audiomode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0903",
+     "error": "0983",
+     "params": []
+    }
+   },
+   "values": {
+    "OFF": 0,
+    "USEREQ": 1,
+    "SPEECHMODE": 2,
+    "PERSONALIZED_SOUND": 3
+   }
+  },
+  {
+   "id": "eq2_config",
+   "open": true,
+   "app_property": "UserEQ_GetConfiguration",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1000",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1100",
+     "error": "1180",
+     "params": [
+      [
+       "UINT8",
+       "bands"
+      ],
+      [
+       "INT8",
+       "minRange"
+      ],
+      [
+       "INT8",
+       "maxRange"
+      ],
+      [
+       "UINT8",
+       "selectablePreset"
+      ],
+      [
+       "UINT8",
+       "userPresets"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "eq2_slider",
+   "open": false,
+   "app_property": "UserEQ_SetSliderGain",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1001",
+     "params": [
+      [
+       "UINT8",
+       "bandIndex"
+      ],
+      [
+       "INT8",
+       "gain"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1101",
+     "notification": "1082",
+     "error": "1181",
+     "params": []
+    }
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1002",
+     "params": [
+      [
+       "UINT8",
+       "bandIndex"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1102",
+     "error": "1182",
+     "params": [
+      [
+       "INT8",
+       "gain"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "eq_submode",
+   "open": true,
+   "app_property": "User_EQ_SubMode",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1009",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1109",
+     "notification": "1089",
+     "error": "1189",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "1109",
+     "notification": "1089",
+     "error": "1189",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1008",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1108",
+     "error": "1188",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "eq1_knob",
+   "open": false,
+   "app_property": "Sound_CustomEQKnobY",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1005",
+     "params": [
+      [
+       "UINT16",
+       "Index"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1105",
+     "error": "1185",
+     "params": [
+      [
+       "UINT16",
+       "Value"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1004",
+     "params": [
+      [
+       "UINT16",
+       "Index"
+      ],
+      [
+       "UINT16",
+       "Value"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1104",
+     "error": "1184",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "eq1_params",
+   "open": false,
+   "app_property": "Sound_SetCustomEQ",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1002",
+     "params": [
+      [
+       "INT16",
+       "param"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1102",
+     "error": "1182",
+     "params": []
+    }
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1003",
+     "params": [
+      [
+       "INT16",
+       "params"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1103",
+     "error": "1183",
+     "params": [
+      [
+       "INT16",
+       "data"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "eq1_level_shift",
+   "open": true,
+   "app_property": "Sound_LevelShift",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1007",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1107",
+     "error": "1187",
+     "params": [
+      [
+       "INT8",
+       "shift"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1006",
+     "params": [
+      [
+       "INT8",
+       "shift"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1106",
+     "error": "1186",
      "params": []
     }
    }

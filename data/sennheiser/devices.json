@@ -35,7 +35,16 @@
     "low_latency",
     "touch_lock",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": true,
+    "gen1": [
+     "accentum",
+     "2.12.0"
+    ],
+    "three_band": 4,
+    "presets": "accentum"
+   }
   },
   {
    "name": "Accentum Plus",
@@ -69,7 +78,16 @@
     "low_latency",
     "touch_lock",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": true,
+    "gen1": [
+     "accentum",
+     "2.12.0"
+    ],
+    "three_band": 4,
+    "presets": "accentum"
+   }
   },
   {
    "name": "Accentum True Wireless",
@@ -101,7 +119,16 @@
     "eco_mode",
     "battery_protection",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": true,
+    "gen1": [
+     "accentum_tw",
+     "2.10.5"
+    ],
+    "three_band": 4,
+    "presets": "mtw3"
+   }
   },
   {
    "name": "CX 200 True Wireless",
@@ -122,7 +149,13 @@
     "model_id",
     "touch_lock",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": false,
+    "gen1": null,
+    "three_band": 4,
+    "presets": "default3"
+   }
   },
   {
    "name": "CX Sport True Wireless",
@@ -141,7 +174,13 @@
     "model_id",
     "touch_lock",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": false,
+    "gen1": null,
+    "three_band": 0,
+    "presets": "default3"
+   }
   },
   {
    "name": "CX Plus True Wireless",
@@ -171,7 +210,13 @@
     "auto_call",
     "touch_lock",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": false,
+    "gen1": null,
+    "three_band": 4,
+    "presets": "default3"
+   }
   },
   {
    "name": "CX 500BT True Wireless",
@@ -196,7 +241,13 @@
     "auto_call",
     "touch_lock",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": false,
+    "gen1": null,
+    "three_band": 4,
+    "presets": "default3"
+   }
   },
   {
    "name": "Momentum 4 Wireless",
@@ -235,7 +286,16 @@
     "low_latency",
     "touch_lock",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": true,
+    "gen1": [
+     "momentum4",
+     "2.12.0"
+    ],
+    "three_band": 2,
+    "presets": "momentum4"
+   }
   },
   {
    "name": "Momentum Sport",
@@ -271,7 +331,16 @@
     "eco_mode",
     "battery_protection",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": true,
+    "gen1": [
+     "momentum_sport",
+     "0.0.0"
+    ],
+    "three_band": 4,
+    "presets": "momentum_sport"
+   }
   },
   {
    "name": "Momentum True Wireless 3",
@@ -299,7 +368,16 @@
     "low_latency",
     "touch_lock",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": false,
+    "gen1": [
+     "mtw3",
+     "2.10.5"
+    ],
+    "three_band": 4,
+    "presets": "mtw3"
+   }
   },
   {
    "name": "Momentum True Wireless 4",
@@ -336,7 +414,16 @@
     "eco_mode",
     "battery_protection",
     "prompt_mode"
-   ]
+   ],
+   "eq": {
+    "gen2": true,
+    "gen1": [
+     "mtw4",
+     "0.0.0"
+    ],
+    "three_band": 4,
+    "presets": "mtw3"
+   }
   },
   {
    "name": "Momentum 5 Wireless",
@@ -347,7 +434,8 @@
    ],
    "article": "800078",
    "source": "Smart Control Plus 1.6.3 (cKd), no product file",
-   "properties": null
+   "properties": null,
+   "eq": null
   },
   {
    "name": "Momentum True Wireless 5",
@@ -361,7 +449,8 @@
    ],
    "article": "700350",
    "source": "Smart Control Plus 1.6.3 (cKd), no product file",
-   "properties": null
+   "properties": null,
+   "eq": null
   },
   {
    "name": "HDB 630",
@@ -372,7 +461,8 @@
    ],
    "article": "700445",
    "source": "Smart Control Plus 1.6.3 (cKd), no product file",
-   "properties": null
+   "properties": null,
+   "eq": null
   },
   {
    "name": "HDR 275 / 255",
@@ -386,7 +476,8 @@
    ],
    "article": "700438",
    "source": "Smart Control Plus 1.6.3 (cKd), no product file",
-   "properties": null
+   "properties": null,
+   "eq": null
   }
  ]
 }

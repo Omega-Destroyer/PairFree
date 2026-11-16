@@ -109,6 +109,7 @@ internal object VendorNames {
         "Metal" to R.string.vendor_metal,
         "More bass" to R.string.preset_name_more_bass,
         "More treble" to R.string.preset_name_more_treble,
+        "Movie" to R.string.vendor_movie,
         "Natural" to R.string.vendor_natural,
         "Natural Inspiration" to R.string.vendor_natural_inspiration,
         "Nature Balance" to R.string.vendor_nature_balance,

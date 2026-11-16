@@ -1,0 +1,76 @@
+{
+  "research_date": "2026-11-09",
+  "application": "Jabra Sound+",
+  "package": "com.jabra.moments",
+  "version": "5.22.0.0.11632.985318146",
+  "artifacts": [
+    {
+      "name": "com.jabra.moments.apk",
+      "size": 84063753,
+      "sha256": "b85e972a59ce642b2ac0d593a1470fd670ec393167a2f0f72d989a6a3feb3a70"
+    },
+    {
+      "name": "config.arm64_v8a.apk",
+      "size": 30741564,
+      "sha256": "41d9b915a1e3cbf8d7b3aae5471ba9188047d8249ffba773c98b1288d2a592f5"
+    },
+    {
+      "name": "config.en.apk",
+      "size": 147865,
+      "sha256": "c6607d25d5b105a2cfdfe4a2f25cbd41689848fa90153cbfe7e140c621190bb2"
+    },
+    {
+      "name": "config.hdpi.apk",
+      "size": 11553772,
+      "sha256": "f52527de9174ae0ee75c90948e81508234bb57099ee36f9f4d8507a4c8a88633"
+    },
+    {
+      "name": "libjabralib.so",
+      "size": 7130872,
+      "sha256": "0e931960535ea637ad46316bae8dc1f02bfa9583f7e760ae62bfa4af7ef26371"
+    },
+    {
+      "name": "device_info.zip",
+      "size": 28155334,
+      "sha256": "d22d0cb4bb96d503be47f33705952a1f6cca331d914feb30eca843ddebf974f2"
+    }
+  ],
+  "external_workspace": "E:\\Builds\\research\\jabra-2026-11-09",
+  "decompiled_source": "E:\\Builds\\research\\decompiled\\jabra-5.22.0",
+  "oss_checks": [
+    {
+      "version": "14.7.1",
+      "license": "Apache-2.0",
+      "url": "https://registry.npmjs.org/@gnaudio/jabra-properties-definition/-/jabra-properties-definition-14.7.1.tgz",
+      "sha256": "7340998ba489f88b040ef0eaa1deb2822b20d56d18767ee24fd1deba81bac708"
+    },
+    {
+      "repository": "https://github.com/nvaert1986/plasma-jabra-headphone-support",
+      "commit": "467309a93a55d317ec47de94ec2d1090dc22472b",
+      "license": "MIT",
+      "use": "framing facts checked; no code copied; USB routing differs from Sound+ Bluetooth"
+    }
+  ],
+  "bundle": {
+    "filename": "com.jabra.moments_5.22.0.0.11632.985318146.xapk",
+    "sha256": "5d55859c0592c503e292eb841bf4e9c6bc26a10214febb034a077ba0a1d5bd57"
+  },
+  "local_configuration_decoding": {
+    "snapshots": 46,
+    "files": 138,
+    "method": "APK-bundled data decoded locally following ManifestFile::DecryptCloudFile; AES material neither printed nor persisted",
+    "public_manifest_attempts": [
+      {
+        "variant": "synthetic",
+        "status": 404
+      },
+      {
+        "product": "2E46",
+        "variant": "01-92",
+        "firmware": "1.2.4",
+        "status": 404
+      }
+    ],
+    "authenticated_requests": 0
+  }
+}

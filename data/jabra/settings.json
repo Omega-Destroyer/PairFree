@@ -1,0 +1,9973 @@
+{
+ "_about": "Jabra's settings as the Sound+ forms list them, one entry per variant (research/gnp_settings.json). `pos` is the value's position in the command's payload after the subcommand byte, counting from 1; `selectors` are the bytes of its read; a `shared` payload holds several values and is read before one is changed. Written by tools/import_jabra_app.py.",
+ "left_out": {
+  "_about": "settings the research lists that PairFree does not build, by id, with the command",
+  "b3a89daae358ced4": "BLUETOOTH_NAME",
+  "6ba4dcc046aa3df3": "BLUETOOTH_NAME",
+  "81b2c75077d878d5": "BLUETOOTH_NAME",
+  "5193880f64f261d5": "FIRMWARE_UPGRADE_LOCK",
+  "3997309db57125ed": "BLUETOOTH_NAME",
+  "529a9a10c54fbef4": "GET_DB_RECORD",
+  "2de0bfb741b50a44": "FIRMWARE_UPGRADE_LOCK",
+  "844ecf29fedd3ffe": "AUDIO_NAME",
+  "c28ffb0a868ee354": "GET_DB_RECORD",
+  "509b814dda7e041e": "AUDIO_NAME",
+  "375166c6d5e597da": "GET_DB_RECORD",
+  "b398763d1ef823aa": "BLUETOOTH_NAME",
+  "5715aad203a0a2ba": "GET_DB_RECORD",
+  "8cf084ea3721f29a": "SPEED_NUMBER",
+  "101837638e041dfe": "FIRMWARE_UPGRADE_LOCK",
+  "043a3958629c133b": "GET_DB_RECORD",
+  "338d1ec39fe69aca": "FIRMWARE_UPGRADE_LOCK",
+  "fb20e4ae099ba42c": "FIRMWARE_UPGRADE_LOCK",
+  "6f94a6f82c791657": "GET_DB_RECORD"
+ },
+ "settings": {
+  "0726f83bc05b7a34": {
+   "name": "Sleep_delay",
+   "group": "headset",
+   "dest": 4,
+   "command": "INACTIVITY_INTERVAL",
+   "widget": "list",
+   "options": [
+    [
+     "Sleep_1",
+     "03"
+    ],
+    [
+     "Sleep_2",
+     "06"
+    ],
+    [
+     "Sleep_3",
+     "0C"
+    ],
+    [
+     "Sleep_4",
+     "18"
+    ],
+    [
+     "Sleep_off",
+     "000"
+    ]
+   ],
+   "main": 19,
+   "sub": 144,
+   "pos": 1,
+   "width": 1
+  },
+  "25bec4f5cfdd489c": {
+   "name": "Auto_pause_resume_music",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTO_PAUSE_MUSIC",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 142,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "32f0f4a5db5f02ea": {
+   "name": "Voice_announcements_language",
+   "group": "headset",
+   "dest": 4,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English_(US)",
+     "0409"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "2475a0daaf7cfd37": {
+   "name": "Audio_announcements",
+   "group": "headset",
+   "dest": 4,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "list",
+   "options": [
+    [
+     "Audio_announcements_Tones",
+     "00"
+    ],
+    [
+     "Audio_announcements_Voice",
+     "01"
+    ],
+    [
+     "Audio_announcements_Off",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "0327d0f2247233ca": {
+   "name": "Mute_reminder_tone",
+   "group": "headset",
+   "dest": 4,
+   "command": "MUTE_REMINDER_INTERVAL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "14"
+    ]
+   ],
+   "main": 19,
+   "sub": 30,
+   "pos": 1,
+   "width": 1,
+   "range_value": true
+  },
+  "63568bed73a45ff8": {
+   "name": "Music_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "58e9cc8fd4a6a052": {
+   "name": "Music_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "d5f3c4a15f1bc535": {
+   "name": "Music_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "a862ffff8bf61ca9": {
+   "name": "Music_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "96e3d3601bd5e50a": {
+   "name": "Music_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "ea9eb136a78655ec": {
+   "name": "Music_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "b5d7263196366f3a": {
+   "name": "Call_incoming_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "168415532da83653": {
+   "name": "Call_incoming_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "215c27c6a95e74b7": {
+   "name": "Call_incoming_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "321ec5fabdd0c84a": {
+   "name": "Call_incoming_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "80fd9ad8d822cf1e": {
+   "name": "Call_incoming_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "173929db07ae7fe6": {
+   "name": "Call_incoming_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "bca7379f6befd9fd": {
+   "name": "Ongoing_call_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "89596c4c4f9d89aa": {
+   "name": "Ongoing_call_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "d012224f0d20aeff": {
+   "name": "Ongoing_call_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "d25b4ab42ea3080b": {
+   "name": "Ongoing_call_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "d25db1bad6decea2": {
+   "name": "Ongoing_call_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "75bcea89e7843246": {
+   "name": "Ongoing_call_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "2d8a8b6a15e895b6": {
+   "name": "SideTone",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "dccf8b2522fa9ab6": {
+   "name": "SideTone_level",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "06"
+    ],
+    [
+     "SideTone_level4",
+     "03"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FD"
+    ],
+    [
+     "SideTone_level1",
+     "FA"
+    ],
+    [
+     "SideTone_level0",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "5fe23019694e8e19": {
+   "name": "In-callaudio",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "SOUND_MODE",
+   "widget": "list",
+   "options": [
+    [
+     "Enhance_clarity",
+     "02"
+    ],
+    [
+     "Normal",
+     "00"
+    ],
+    [
+     "Enhance_bass",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 21,
+   "pos": 1,
+   "width": 1
+  },
+  "5e27dc602654d4ad": {
+   "name": "Head_detection",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "ON_HEAD_DETECTION",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 146,
+   "pos": 1,
+   "width": 1
+  },
+  "0cd5d440c2e1e06d": {
+   "name": "Auto_answer_call",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "AUTO_ANSWER_CALL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 145,
+   "selectors": [
+    [
+     1,
+     "01"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "fc4f10bb9e25fc02": {
+   "name": "Mute_call",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "AUTO_MUTE_CALL_AUDIO",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 143,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "133071203e1b4339": {
+   "name": "HearThrough",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "8269c983222ca9bb": {
+   "name": "Firmware_version",
+   "group": "firmware",
+   "dest": 8,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "36194f02551c62c3": {
+   "name": "Language",
+   "group": "firmware",
+   "dest": 8,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "400aca56ccf3c45f": {
+   "name": "Part_number",
+   "group": "product_information",
+   "dest": 8,
+   "command": "SKU_ID",
+   "widget": "static",
+   "options": [
+    [
+     "Part_number_Default",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 29,
+   "pos": 1,
+   "width": 1
+  },
+  "85385d8165ff98dd": {
+   "name": "HearThrough_for_mono",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTO_HT_FOR_SINGLE_EARBUD",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 240,
+   "pos": 1,
+   "width": 1
+  },
+  "34614b2c95404634": {
+   "name": "auto_volume_adjustment",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTO_VOLUME_CONTROL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 241,
+   "pos": 1,
+   "width": 1
+  },
+  "f2c13b5a6b08d35f": {
+   "name": "wind_noise_reduction",
+   "group": "headset",
+   "dest": 4,
+   "command": "WIND_ADAPTIVE",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 239,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "636a3344d65f47a8": {
+   "name": "Tone_setting",
+   "group": "headset",
+   "dest": 8,
+   "command": "CONFIG_EQUALIZER",
+   "widget": "list",
+   "options": [
+    [
+     "Tone_setting_Normal",
+     "00"
+    ],
+    [
+     "Tone_setting_Bass",
+     "01"
+    ],
+    [
+     "Tone_setting_Treble",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 56,
+   "selectors": [
+    [
+     1,
+     "01"
+    ]
+   ],
+   "pos": 2,
+   "width": 1,
+   "special": true
+  },
+  "e7adc0d22379b057": {
+   "name": "Voice_guidance",
+   "group": "headset",
+   "dest": 8,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "f005c8f1828ce87d": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "3ee9fac1e786c506": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level_+6dB",
+     "06"
+    ],
+    [
+     "SideTone_level_+3dB",
+     "03"
+    ],
+    [
+     "SideTone_level_0dB_(Nominal)",
+     "00"
+    ],
+    [
+     "SideTone_level_-3dB",
+     "FD"
+    ],
+    [
+     "SideTone_level_-6dB",
+     "FA"
+    ],
+    [
+     "SideTone_level_-9dB",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "c7e6332d7fb87802": {
+   "name": "Device_vibration",
+   "group": "headset",
+   "dest": 8,
+   "command": "VIBRA",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 88,
+   "pos": 1,
+   "width": 1
+  },
+  "61452916f9be63e6": {
+   "name": "ANC",
+   "group": "headset",
+   "dest": 8,
+   "command": "ANC",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 135,
+   "pos": 1,
+   "width": 1
+  },
+  "6bfb5350e80524dd": {
+   "name": "DEDICATED_CALL",
+   "group": "headset",
+   "dest": 8,
+   "command": "DEDICATED_CALL",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 136,
+   "pos": 1,
+   "width": 1
+  },
+  "088675566dda4110": {
+   "name": "HearThrough",
+   "group": "headset",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "fb1c817412393395": {
+   "name": "Firmware_version",
+   "group": "firmware",
+   "dest": 8,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "83cf32906c9fdc99": {
+   "name": "Language",
+   "group": "firmware",
+   "dest": 8,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "57eaa5a1a6d48e09": {
+   "name": "Firmware_version",
+   "group": "product_information",
+   "dest": 8,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1,
+   "depends": [
+    "VERSION1"
+   ]
+  },
+  "0f4eb6da31954720": {
+   "name": "Headphone_readouts",
+   "group": "headphone_readouts",
+   "dest": 8,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "a3e93d0cf0f7ab9a": {
+   "name": "Incoming_call_ID",
+   "group": "headphone_readouts",
+   "dest": 8,
+   "command": "CALL_ID_PROMPT",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 119,
+   "pos": 1,
+   "width": 1
+  },
+  "b6c70fc7ed059169": {
+   "name": "HearThrough",
+   "group": "hearthrough",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "d66feaddcd6c84c7": {
+   "name": "HearThrough_mode",
+   "group": "hearthrough",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "list",
+   "options": [
+    [
+     "Music_surroundings",
+     "00"
+    ],
+    [
+     "Surroundings_only",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "f113113cf3ad547c": {
+   "name": "HearThrough_level",
+   "group": "hearthrough",
+   "dest": 8,
+   "command": "HEAR_THROUGH_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "HearThrough_level5",
+     "04"
+    ],
+    [
+     "HearThrough_level4",
+     "02"
+    ],
+    [
+     "HearThrough_level3",
+     "00"
+    ],
+    [
+     "HearThrough_level2",
+     "FE"
+    ],
+    [
+     "HearThrough_level1",
+     "FC"
+    ],
+    [
+     "HearThrough_level0",
+     "FA"
+    ]
+   ],
+   "main": 19,
+   "sub": 129,
+   "pos": 1,
+   "width": 1
+  },
+  "466e8389bc87a03a": {
+   "name": "SideTone",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "6f54ebd90b28ce41": {
+   "name": "SideTone_level",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "04"
+    ],
+    [
+     "SideTone_level4",
+     "02"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FE"
+    ],
+    [
+     "SideTone_level1",
+     "FC"
+    ],
+    [
+     "SideTone_level0",
+     "FA"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "8da57ca73576491f": {
+   "name": "Control_for_pause_and_resume_music",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "NFMI_AUTO_PAUSE_AND_RESUME",
+   "widget": "bool",
+   "options": [
+    [
+     "Enable",
+     "00"
+    ],
+    [
+     "Disable",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 131,
+   "pos": 1,
+   "width": 1
+  },
+  "26e8f85304efd83f": {
+   "name": "SideTone",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "4a25f291fe19ad00": {
+   "name": "SideTone_level",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level_+6dB",
+     "06"
+    ],
+    [
+     "SideTone_level_+3dB",
+     "03"
+    ],
+    [
+     "SideTone_level_0dB_(Nominal)",
+     "00"
+    ],
+    [
+     "SideTone_level_-3dB",
+     "FD"
+    ],
+    [
+     "SideTone_level_-6dB",
+     "FA"
+    ],
+    [
+     "SideTone_level_-9dB",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "2ef56cf141af9f63": {
+   "name": "In-callaudio",
+   "group": "headset",
+   "dest": 4,
+   "command": "SOUND_MODE",
+   "widget": "list",
+   "options": [
+    [
+     "Enhance_clarity",
+     "02"
+    ],
+    [
+     "Normal",
+     "00"
+    ],
+    [
+     "Enhance_bass",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 21,
+   "pos": 1,
+   "width": 1
+  },
+  "600c9553d539a377": {
+   "name": "Accept_reject_by_voice",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTOMATIC_SPEECH_RECOGNITION",
+   "widget": "bool",
+   "options": [
+    [
+     "on",
+     "01"
+    ],
+    [
+     "off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 149,
+   "pos": 1,
+   "width": 1
+  },
+  "5e351286522fc654": {
+   "name": "ANC_hearthrough",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC",
+   "widget": "list",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "NoiseCancelling",
+     "00"
+    ],
+    [
+     "Surroundings_only",
+     "00"
+    ],
+    [
+     "Music_surroundings",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 135,
+   "pos": 1,
+   "width": 1
+  },
+  "9a301ca2250165ec": {
+   "name": "HearThrough_level",
+   "group": "headset",
+   "dest": 4,
+   "command": "HEAR_THROUGH_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "HearThrough_level6",
+     "F4"
+    ],
+    [
+     "HearThrough_level5",
+     "F6"
+    ],
+    [
+     "HearThrough_level4",
+     "F8"
+    ],
+    [
+     "HearThrough_level3",
+     "FA"
+    ],
+    [
+     "HearThrough_level2",
+     "FC"
+    ],
+    [
+     "HearThrough_level1",
+     "FE"
+    ],
+    [
+     "HearThrough_level0",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 129,
+   "pos": 1,
+   "width": 1
+  },
+  "b9caeeb4bba18c57": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "8927c18902b5ab9c": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "06"
+    ],
+    [
+     "SideTone_level4",
+     "03"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FD"
+    ],
+    [
+     "SideTone_level1",
+     "FA"
+    ],
+    [
+     "SideTone_level0",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "7cb6bbcb02887109": {
+   "name": "Voice_guidance",
+   "group": "headset",
+   "dest": 4,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "0cb61d312037d548": {
+   "name": "Mute_reminder",
+   "group": "headset",
+   "dest": 4,
+   "command": "MUTE_REMINDER_INTERVAL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "14"
+    ]
+   ],
+   "main": 19,
+   "sub": 30,
+   "pos": 1,
+   "width": 1,
+   "range_value": true
+  },
+  "fbca6efa939d0434": {
+   "name": "Head_detection",
+   "group": "headset",
+   "dest": 4,
+   "command": "ON_HEAD_DETECTION",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 146,
+   "pos": 1,
+   "width": 1
+  },
+  "7c40b476fa853c1a": {
+   "name": "Hold_call_when_removed",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTO_MUTE_CALL_AUDIO",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 143,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "36bcd9b916bbb3c7": {
+   "name": "Auto_answer_call",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTO_ANSWER_CALL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 145,
+   "selectors": [
+    [
+     1,
+     "01"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "f18bb4bbcd46540b": {
+   "name": "Sleep_delay",
+   "group": "headset",
+   "dest": 4,
+   "command": "INACTIVITY_INTERVAL",
+   "widget": "list",
+   "options": [
+    [
+     "Sleep_1",
+     "03"
+    ],
+    [
+     "Sleep_2",
+     "06"
+    ],
+    [
+     "Sleep_3",
+     "0C"
+    ],
+    [
+     "Sleep_4",
+     "18"
+    ],
+    [
+     "Sleep_5",
+     "30"
+    ],
+    [
+     "Sleep_6",
+     "48"
+    ],
+    [
+     "Sleep_7",
+     "60"
+    ],
+    [
+     "Sleep_off",
+     "000"
+    ]
+   ],
+   "main": 19,
+   "sub": 144,
+   "pos": 1,
+   "width": 1
+  },
+  "56b76d4e1cfecb15": {
+   "name": "Language",
+   "group": "product_information",
+   "dest": 4,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "a3c2f980352bb56e": {
+   "name": "Firmware_version",
+   "group": "product_information",
+   "dest": 4,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "4f482cbf380b287a": {
+   "name": "Part_number",
+   "group": "product_information",
+   "dest": 4,
+   "command": "SKU_ID",
+   "widget": "static",
+   "options": [
+    [
+     "Part_number_Default",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 29,
+   "pos": 1,
+   "width": 1
+  },
+  "7bda277e6236dd97": {
+   "name": "Audio_protection",
+   "group": "headset",
+   "dest": 8,
+   "command": "INTELLITONE_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "Audio_protection_Basic_PeakStop_protection",
+     "00"
+    ],
+    [
+     "Audio_protection_IntelliTone_average_daily_audio_exposure",
+     "03"
+    ],
+    [
+     "Audio_protection_Australian_acoustic_safety_guideline_(G.616)",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 1,
+   "pos": 1,
+   "width": 1
+  },
+  "bde463f6df180a61": {
+   "name": "Auto_answer_call",
+   "group": "headset",
+   "dest": 8,
+   "command": "HALL_SENSOR",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 134,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "5365d7589bb86215": {
+   "name": "Auto_reject_call",
+   "group": "headset",
+   "dest": 8,
+   "command": "AUTO_REJECT_BG_WAITING",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 60,
+   "pos": 1,
+   "width": 1
+  },
+  "d706a240b0f1058f": {
+   "name": "Button_sounds_setting",
+   "group": "headset",
+   "dest": 8,
+   "command": "BUTTON_SOUNDS",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "FF"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 63,
+   "pos": 1,
+   "width": 1
+  },
+  "e8f0563c7e575477": {
+   "name": "In-callaudio",
+   "group": "headset",
+   "dest": 8,
+   "command": "SOUND_MODE",
+   "widget": "list",
+   "options": [
+    [
+     "Enhance_clarity",
+     "02"
+    ],
+    [
+     "Normal",
+     "00"
+    ],
+    [
+     "Enhance_bass",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 21,
+   "pos": 1,
+   "width": 1
+  },
+  "094533f44c95adfa": {
+   "name": "Headset_busylight",
+   "group": "headset",
+   "dest": 8,
+   "command": "BUSYLIGHT",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 57,
+   "pos": 1,
+   "width": 1
+  },
+  "7e980e38cb296015": {
+   "name": "HearThrough",
+   "group": "headset",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "736fa52b8cc02366": {
+   "name": "HearThrough_level",
+   "group": "headset",
+   "dest": 8,
+   "command": "HEAR_THROUGH_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "HearThrough_level6",
+     "F4"
+    ],
+    [
+     "HearThrough_level5",
+     "F6"
+    ],
+    [
+     "HearThrough_level4",
+     "F8"
+    ],
+    [
+     "HearThrough_level3",
+     "FA"
+    ],
+    [
+     "HearThrough_level2",
+     "FC"
+    ],
+    [
+     "HearThrough_level1",
+     "FE"
+    ],
+    [
+     "HearThrough_level0",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 129,
+   "pos": 1,
+   "width": 1
+  },
+  "46933e3056f38a6c": {
+   "name": "HearThrough_mode",
+   "group": "headset",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "list",
+   "options": [
+    [
+     "Music_surroundings",
+     "00"
+    ],
+    [
+     "Surroundings_only",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "bc427579316b8b27": {
+   "name": "Mute_reminder",
+   "group": "headset",
+   "dest": 8,
+   "command": "MUTE_REMINDER_INTERVAL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "14"
+    ]
+   ],
+   "main": 19,
+   "sub": 30,
+   "pos": 1,
+   "width": 1,
+   "range_value": true
+  },
+  "8c45ef5d39386f9e": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "ae43ca466fe6194e": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "06"
+    ],
+    [
+     "SideTone_level4",
+     "03"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FD"
+    ],
+    [
+     "SideTone_level1",
+     "FA"
+    ],
+    [
+     "SideTone_level0",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "4b551b714552b533": {
+   "name": "Headphone_readouts",
+   "group": "headset",
+   "dest": 8,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "3709ced3cf823265": {
+   "name": "vibration",
+   "group": "headset",
+   "dest": 8,
+   "command": "VIBRA",
+   "widget": "list",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Incoming_call",
+     "02"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 88,
+   "pos": 1,
+   "width": 1
+  },
+  "130582d78b5c7d88": {
+   "name": "Prioritize_bluetooth_device_with_call",
+   "group": "headset",
+   "dest": 8,
+   "command": "DEDICATED_CALL",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 136,
+   "pos": 1,
+   "width": 1
+  },
+  "32b8ec3ed91aa21d": {
+   "name": "Prioritize_Computer_Audio",
+   "group": "headset",
+   "dest": 8,
+   "command": "STREAM_PRIORITY",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 153,
+   "pos": 1,
+   "width": 1
+  },
+  "dbbe78cec6e545fe": {
+   "name": "Optimize_for_Microsoft_Teams",
+   "group": "headset",
+   "dest": 8,
+   "command": "MSTEAMS_FEATURE",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 151,
+   "pos": 1,
+   "width": 1
+  },
+  "889fc5ccf9699e6a": {
+   "name": "Language",
+   "group": "productinfo",
+   "dest": 8,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "59fb5ba5d9129dcc": {
+   "name": "Firmware_version",
+   "group": "productinfo",
+   "dest": 8,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "1397ada35888ff84": {
+   "name": "Part_number",
+   "group": "productinfo",
+   "dest": 8,
+   "command": "SKU_ID",
+   "widget": "static",
+   "options": [
+    [
+     "Part_number_Default",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 29,
+   "pos": 1,
+   "width": 1
+  },
+  "b744babf1541f149": {
+   "name": "SideTone_level",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "06"
+    ],
+    [
+     "SideTone_level4",
+     "03"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FD"
+    ],
+    [
+     "SideTone_level1",
+     "FA"
+    ],
+    [
+     "SideTone_level0",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "d397722a4037d11d": {
+   "name": "Voice_guidance",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "6f74c4aebc57cd46": {
+   "name": "Equalizer_mode_for_calls",
+   "group": "headset",
+   "dest": 4,
+   "command": "SOUND_MODE",
+   "widget": "list",
+   "options": [
+    [
+     "Equalizer_mode_for_calls_Normal",
+     "00"
+    ],
+    [
+     "Equalizer_mode_for_calls_Bass",
+     "01"
+    ],
+    [
+     "Equalizer_mode_for_calls_Treble",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 21,
+   "pos": 1,
+   "width": 1
+  },
+  "0e26a13a1b4b862b": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "7324921133c55792": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "04"
+    ],
+    [
+     "SideTone_level4",
+     "02"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FE"
+    ],
+    [
+     "SideTone_level1",
+     "FC"
+    ],
+    [
+     "SideTone_level0",
+     "FA"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "8ef7916b36514ba8": {
+   "name": "HearThrough",
+   "group": "headset",
+   "dest": 4,
+   "command": "HEAR_THROUGH",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "05aa6ebe76371e47": {
+   "name": "HearThrough_mode",
+   "group": "headset",
+   "dest": 4,
+   "command": "HEAR_THROUGH",
+   "widget": "list",
+   "options": [
+    [
+     "Music_surroundings",
+     "00"
+    ],
+    [
+     "Surroundings_only",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "325bfa2ad6d7f71e": {
+   "name": "HearThrough_level",
+   "group": "headset",
+   "dest": 4,
+   "command": "HEAR_THROUGH_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "HearThrough_level_6",
+     "04"
+    ],
+    [
+     "HearThrough_level_5",
+     "02"
+    ],
+    [
+     "HearThrough_level_4",
+     "00"
+    ],
+    [
+     "HearThrough_level_3",
+     "FE"
+    ],
+    [
+     "HearThrough_level_2",
+     "FC"
+    ],
+    [
+     "HearThrough_level_1",
+     "FA"
+    ]
+   ],
+   "main": 19,
+   "sub": 129,
+   "pos": 1,
+   "width": 1
+  },
+  "500c12b502ea7583": {
+   "name": "Incoming_call_ID",
+   "group": "headset",
+   "dest": 4,
+   "command": "CALL_ID_PROMPT",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 119,
+   "pos": 1,
+   "width": 1
+  },
+  "7429fdf5338fcd09": {
+   "name": "DEDICATED_CALL",
+   "group": "headset",
+   "dest": 4,
+   "command": "DEDICATED_CALL",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 136,
+   "pos": 1,
+   "width": 1
+  },
+  "0cfd1ad9292164ce": {
+   "name": "Control_for_pause_and_resume_music",
+   "group": "headset",
+   "dest": 4,
+   "command": "NFMI_AUTO_PAUSE_AND_RESUME",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 131,
+   "pos": 1,
+   "width": 1
+  },
+  "a9db2b3ffce2c6a9": {
+   "name": "Prioritize_Computer_Audio",
+   "group": "headset",
+   "dest": 4,
+   "command": "STREAM_PRIORITY",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 153,
+   "pos": 1,
+   "width": 1
+  },
+  "c3eebefaab434b1a": {
+   "name": "Optimize_for_Microsoft_Teams",
+   "group": "headset",
+   "dest": 4,
+   "command": "MSTEAMS_FEATURE",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 151,
+   "pos": 1,
+   "width": 1
+  },
+  "97d58d21536e26de": {
+   "name": "Language",
+   "group": "product_information",
+   "dest": 4,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "f7a4e058f81b5a84": {
+   "name": "Answer_call_by_rotating_boom_arm",
+   "group": "headset",
+   "dest": 8,
+   "command": "BOOMARM_ROTATION_ACTION",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 152,
+   "pos": 1,
+   "width": 1
+  },
+  "ee5f944417f46f29": {
+   "name": "Boom_arm_mute",
+   "group": "headset",
+   "dest": 8,
+   "command": "BOOMARM_ROTATION_ACTION",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 152,
+   "pos": 1,
+   "width": 1
+  },
+  "1787eac4e1f5e1a6": {
+   "name": "Boom_arm_guidance",
+   "group": "headset",
+   "dest": 8,
+   "command": "CALL_ACCEPTED_SOUND",
+   "widget": "list",
+   "options": [
+    [
+     "Sound_fx",
+     "00"
+    ],
+    [
+     "Prompts",
+     "01"
+    ],
+    [
+     "Off",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 188,
+   "pos": 1,
+   "width": 1
+  },
+  "9e7ee4d078bb35c1": {
+   "name": "Audio_announcements",
+   "group": "headset",
+   "dest": 8,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "list",
+   "options": [
+    [
+     "Audio_announcements_Tones",
+     "00"
+    ],
+    [
+     "Audio_announcements_Voice",
+     "01"
+    ],
+    [
+     "Audio_announcements_Off",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "e8fdeced899e41bf": {
+   "name": "Audio_protection_setting",
+   "group": "headset",
+   "dest": 8,
+   "command": "INTELLITONE_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "Audio_protection_setting_Basic_protection",
+     "00"
+    ],
+    [
+     "Audio_protection_setting_IntelliTone_average_daily_audio_exposure",
+     "03"
+    ],
+    [
+     "Audio_protection_setting_Australian_acoustic_safety_guideline_G_616",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 1,
+   "pos": 1,
+   "width": 1
+  },
+  "32397f4410bd8c28": {
+   "name": "Auto_reject_call",
+   "group": "headset",
+   "dest": 8,
+   "command": "AUTO_REJECT_BG_WAITING",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 60,
+   "pos": 1,
+   "width": 1
+  },
+  "bb1c5e889406d6fd": {
+   "name": "Auto_sleep",
+   "group": "headset",
+   "dest": 8,
+   "command": "INACTIVITY_INTERVAL",
+   "widget": "list",
+   "options": [
+    [
+     "Sleep_1",
+     "03"
+    ],
+    [
+     "Sleep_2",
+     "06"
+    ],
+    [
+     "Sleep_3",
+     "0C"
+    ],
+    [
+     "Sleep_4",
+     "18"
+    ],
+    [
+     "Sleep_5",
+     "30"
+    ],
+    [
+     "Sleep_6",
+     "48"
+    ],
+    [
+     "Sleep_7",
+     "60"
+    ],
+    [
+     "Sleep_off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 144,
+   "pos": 1,
+   "width": 1
+  },
+  "42a3b3f3aa484664": {
+   "name": "Button_sounds_setting",
+   "group": "headset",
+   "dest": 8,
+   "command": "BUTTON_SOUNDS",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "FF"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 63,
+   "pos": 1,
+   "width": 1
+  },
+  "dc5c5cb13edfef51": {
+   "name": "Headset_busylight",
+   "group": "headset",
+   "dest": 8,
+   "command": "BUSYLIGHT",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 57,
+   "pos": 1,
+   "width": 1
+  },
+  "be05b59bce1a1863": {
+   "name": "Mute_reminder_tone",
+   "group": "headset",
+   "dest": 8,
+   "command": "MUTE_REMINDER_INTERVAL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "14"
+    ]
+   ],
+   "main": 19,
+   "sub": 30,
+   "pos": 1,
+   "width": 1,
+   "range_value": true
+  },
+  "50cdb3d592d689bd": {
+   "name": "Auto_resume_audio_by_motion_detection",
+   "group": "headset",
+   "dest": 8,
+   "command": "AUTO_PAUSE_MUSIC",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 142,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "5aa09a31ad1de4d2": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "3a107c90f0c6ccd4": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "Sidetone_6dB_(high)",
+     "06"
+    ],
+    [
+     "Sidetone_3dB",
+     "03"
+    ],
+    [
+     "Sidetone_0dB_(normal)",
+     "00"
+    ],
+    [
+     "Sidetone_-3dB",
+     "FD"
+    ],
+    [
+     "Sidetone_-6dB",
+     "FA"
+    ],
+    [
+     "Sidetone_-9dB_(low)",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "3834fa05a71e2c4d": {
+   "name": "Tone_setting",
+   "group": "headset",
+   "dest": 8,
+   "command": "SOUND_MODE",
+   "widget": "list",
+   "options": [
+    [
+     "Tone_setting_Normal",
+     "00"
+    ],
+    [
+     "Tone_setting_Bass",
+     "01"
+    ],
+    [
+     "Tone_setting_Treble",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 21,
+   "pos": 1,
+   "width": 1
+  },
+  "e55e14898b5bc8a9": {
+   "name": "Call_control_with_softphone",
+   "group": "softphone",
+   "dest": 8,
+   "command": "SOFTPHONE_INTEGRATION",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 76,
+   "pos": 1,
+   "width": 1
+  },
+  "96bba8670f44119a": {
+   "name": "Ringtone_in_headset",
+   "group": "softphone",
+   "dest": 8,
+   "command": "HS_RINGER",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 19,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "9e30a1ff5ed54223": {
+   "name": "Prioritize_Computer_Audio",
+   "group": "softphone",
+   "dest": 8,
+   "command": "STREAM_PRIORITY",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 153,
+   "pos": 1,
+   "width": 1
+  },
+  "4c6128bf3d97b930": {
+   "name": "Voice_announcements_language",
+   "group": "product_information",
+   "dest": 8,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English_(US)",
+     "0409"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "5ed33211192da6dd": {
+   "name": "Firmware_version",
+   "group": "product_information",
+   "dest": 8,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "4be8d6c70d82828a": {
+   "name": "Mute_reminder",
+   "group": "headset",
+   "dest": 8,
+   "command": "MUTE_REMINDER_INTERVAL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "14"
+    ]
+   ],
+   "main": 19,
+   "sub": 30,
+   "pos": 1,
+   "width": 1,
+   "range_value": true
+  },
+  "373c8e8d5e341dac": {
+   "name": "Power_Off_Timer",
+   "group": "headset",
+   "dest": 8,
+   "command": "INACTIVITY_INTERVAL",
+   "widget": "list",
+   "options": [
+    [
+     "Sleep_1",
+     "03"
+    ],
+    [
+     "Sleep_2",
+     "06"
+    ],
+    [
+     "Sleep_3",
+     "0C"
+    ],
+    [
+     "Sleep_4",
+     "18"
+    ],
+    [
+     "Sleep_off",
+     "000"
+    ]
+   ],
+   "main": 19,
+   "sub": 144,
+   "pos": 1,
+   "width": 1
+  },
+  "79df601a01ef9841": {
+   "name": "Equalizer_mode_for_calls",
+   "group": "headset",
+   "dest": 8,
+   "command": "SOUND_MODE",
+   "widget": "list",
+   "options": [
+    [
+     "Equalizer_mode_for_calls_Normal",
+     "00"
+    ],
+    [
+     "Equalizer_mode_for_calls_Bass",
+     "01"
+    ],
+    [
+     "Equalizer_mode_for_calls_Treble",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 21,
+   "pos": 1,
+   "width": 1
+  },
+  "0eafc9c54314ff81": {
+   "name": "DEDICATED_CALL",
+   "group": "headset",
+   "dest": 4,
+   "command": "DEDICATED_CALL",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 136,
+   "pos": 1,
+   "width": 1
+  },
+  "af099fb67eabcb45": {
+   "name": "Music_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "22378cd756a19eea": {
+   "name": "Music_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "2f5c4147e5c6d957": {
+   "name": "Music_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "7df5510216c04c6d": {
+   "name": "Music_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "4aeb86390b9787d0": {
+   "name": "Music_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "dec07043844258e3": {
+   "name": "Music_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "03428ee0fdd2dbff": {
+   "name": "Call_incoming_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "104fb53da4c5c285": {
+   "name": "Call_incoming_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "21ae7e7477dec3ce": {
+   "name": "Call_incoming_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "e44faaa44bd5dc19": {
+   "name": "Call_incoming_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "79ee20a1c58bf9e1": {
+   "name": "Call_incoming_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "1cc0364f8d15793c": {
+   "name": "Call_incoming_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "9d7fe6f58aad39cb": {
+   "name": "Ongoing_call_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "23e8e3e65ebd4475": {
+   "name": "Ongoing_call_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "72b84f728a2534fa": {
+   "name": "Ongoing_call_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "c3d67bb356dd792d": {
+   "name": "Ongoing_call_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "b0f27856028fba2f": {
+   "name": "Ongoing_call_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "dd75bc30d95011bd": {
+   "name": "Ongoing_call_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "46ba06c9c7b927ec": {
+   "name": "HearThrough",
+   "group": "hearthrough",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "89b039b3b52864bc": {
+   "name": "HearThrough_mode",
+   "group": "hearthrough",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "list",
+   "options": [
+    [
+     "Music_surroundings",
+     "00"
+    ],
+    [
+     "Surroundings_only",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "155ef144b23e32b5": {
+   "name": "HearThrough_level",
+   "group": "hearthrough",
+   "dest": 8,
+   "command": "HEAR_THROUGH_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "HearThrough_level5",
+     "04"
+    ],
+    [
+     "HearThrough_level4",
+     "02"
+    ],
+    [
+     "HearThrough_level3",
+     "00"
+    ],
+    [
+     "HearThrough_level2",
+     "FE"
+    ],
+    [
+     "HearThrough_level1",
+     "FC"
+    ],
+    [
+     "HearThrough_level0",
+     "FA"
+    ]
+   ],
+   "main": 19,
+   "sub": 129,
+   "pos": 1,
+   "width": 1
+  },
+  "4428fae347955716": {
+   "name": "SideTone",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "5fda64424c6ba8f4": {
+   "name": "SideTone_level",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "04"
+    ],
+    [
+     "SideTone_level4",
+     "02"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FE"
+    ],
+    [
+     "SideTone_level1",
+     "FC"
+    ],
+    [
+     "SideTone_level0",
+     "FA"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "dd91ae4156c0c598": {
+   "name": "Control_for_pause_and_resume_music",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "NFMI_AUTO_PAUSE_AND_RESUME",
+   "widget": "bool",
+   "options": [
+    [
+     "Enable",
+     "00"
+    ],
+    [
+     "Disable",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 131,
+   "pos": 1,
+   "width": 1
+  },
+  "a83a35eb6d1b36d3": {
+   "name": "Language",
+   "group": "firmware",
+   "dest": 8,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "f5ae499827e153ef": {
+   "name": "Answer_call_by_rotating_boom_arm",
+   "group": "headset",
+   "dest": 4,
+   "command": "BOOMARM_ROTATION_ACTION",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 152,
+   "pos": 1,
+   "width": 1
+  },
+  "f9a2312fca3345c9": {
+   "name": "Mute_call",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTO_MUTE_CALL_AUDIO",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 143,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "8afec65bf93f664f": {
+   "name": "Audio_protection_setting",
+   "group": "headset",
+   "dest": 4,
+   "command": "INTELLITONE_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "Audio_protection_setting_Basic_protection",
+     "00"
+    ],
+    [
+     "Audio_protection_setting_IntelliTone_average_daily_audio_exposure",
+     "03"
+    ],
+    [
+     "Audio_protection_setting_Australian_acoustic_safety_guideline_G_616",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 1,
+   "pos": 1,
+   "width": 1
+  },
+  "73156352cff404ae": {
+   "name": "Auto_reject_call",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTO_REJECT_BG_WAITING",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 60,
+   "pos": 1,
+   "width": 1
+  },
+  "dceb65b477df01fb": {
+   "name": "Auto_sleep",
+   "group": "headset",
+   "dest": 4,
+   "command": "INACTIVITY_INTERVAL",
+   "widget": "list",
+   "options": [
+    [
+     "Sleep_1",
+     "03"
+    ],
+    [
+     "Sleep_2",
+     "06"
+    ],
+    [
+     "Sleep_3",
+     "0C"
+    ],
+    [
+     "Sleep_4",
+     "18"
+    ],
+    [
+     "Sleep_5",
+     "30"
+    ],
+    [
+     "Sleep_6",
+     "48"
+    ],
+    [
+     "Sleep_7",
+     "60"
+    ],
+    [
+     "Sleep_off",
+     "000"
+    ]
+   ],
+   "main": 19,
+   "sub": 144,
+   "pos": 1,
+   "width": 1
+  },
+  "fc3cec227b2fce81": {
+   "name": "Button_sounds_setting",
+   "group": "headset",
+   "dest": 4,
+   "command": "BUTTON_SOUNDS",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "FF"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 63,
+   "pos": 1,
+   "width": 1
+  },
+  "cdb015f7a4fb84fc": {
+   "name": "Boom_arm_guidance",
+   "group": "headset",
+   "dest": 4,
+   "command": "CALL_ACCEPTED_SOUND",
+   "widget": "list",
+   "options": [
+    [
+     "Sound_fx",
+     "00"
+    ],
+    [
+     "Prompts",
+     "01"
+    ],
+    [
+     "Off",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 188,
+   "pos": 1,
+   "width": 1
+  },
+  "498aa7b98150800f": {
+   "name": "Headset_busylight",
+   "group": "headset",
+   "dest": 4,
+   "command": "BUSYLIGHT",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 57,
+   "pos": 1,
+   "width": 1
+  },
+  "2a6c117da39d038b": {
+   "name": "ANC_hearthrough",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC",
+   "widget": "list",
+   "options": [
+    [
+     "NoiseCancelling",
+     "00"
+    ],
+    [
+     "Surroundings_only",
+     "00"
+    ],
+    [
+     "Music_surroundings",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 135,
+   "pos": 1,
+   "width": 1
+  },
+  "79e6471d41781eb3": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "ccd5167de6f82ccf": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "06"
+    ],
+    [
+     "SideTone_level4",
+     "03"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FD"
+    ],
+    [
+     "SideTone_level1",
+     "FA"
+    ],
+    [
+     "SideTone_level0",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "ddba826278a73b02": {
+   "name": "Tone_setting",
+   "group": "headset",
+   "dest": 4,
+   "command": "SOUND_MODE",
+   "widget": "list",
+   "options": [
+    [
+     "Tone_setting_Normal",
+     "00"
+    ],
+    [
+     "Tone_setting_Bass",
+     "01"
+    ],
+    [
+     "Tone_setting_Treble",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 21,
+   "pos": 1,
+   "width": 1
+  },
+  "fa9811adda2dec05": {
+   "name": "Earcup_microphone",
+   "group": "headset",
+   "dest": 4,
+   "command": "EARCUP_MICS",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 172,
+   "pos": 1,
+   "width": 1
+  },
+  "e7da8528f434e37e": {
+   "name": "Call_control_with_softphone",
+   "group": "softphone",
+   "dest": 4,
+   "command": "SOFTPHONE_INTEGRATION",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 76,
+   "pos": 1,
+   "width": 1
+  },
+  "41067314e7f92bb4": {
+   "name": "Ringtone_in_headset",
+   "group": "softphone",
+   "dest": 4,
+   "command": "HS_RINGER",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 19,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "bbede92a249722cb": {
+   "name": "Prioritize_Computer_Audio",
+   "group": "softphone",
+   "dest": 4,
+   "command": "STREAM_PRIORITY",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 153,
+   "pos": 1,
+   "width": 1
+  },
+  "6a7d4560fd604686": {
+   "name": "Voice_announcements_language",
+   "group": "product_information",
+   "dest": 4,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "1c76271b5f3bc2fe": {
+   "name": "Dedicated_call",
+   "group": "headset",
+   "dest": 4,
+   "command": "DEDICATED_CALL",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 136,
+   "pos": 1,
+   "width": 1
+  },
+  "0d43bbe90fbb6b58": {
+   "name": "Music_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "d9497e4e3a5b70e8": {
+   "name": "Music_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "7cfbdec8ae42d826": {
+   "name": "Music_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "17c7d340319b9c73": {
+   "name": "Music_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "230ffd8aefde123c": {
+   "name": "Music_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "181bd69a75dc3849": {
+   "name": "Music_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "c2f9c6bfc35bc213": {
+   "name": "Call_incoming_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "da12c9134f9fc87d": {
+   "name": "Call_incoming_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "ad094f61369dcc52": {
+   "name": "Call_incoming_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "78a644dfa0facc6d": {
+   "name": "Call_incoming_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "b4555670a03db515": {
+   "name": "Call_incoming_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "fbeea73a538fcbf0": {
+   "name": "Call_incoming_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "c023e806dfd8e285": {
+   "name": "Ongoing_call_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "e57a66e106e456b0": {
+   "name": "Ongoing_call_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "8f6513e8cdd27bb8": {
+   "name": "Ongoing_call_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "3f9ea53b751bef53": {
+   "name": "Ongoing_call_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "03a37ce0e6ea2978": {
+   "name": "Ongoing_call_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "1aaeaa4d39058bbc": {
+   "name": "Ongoing_call_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "bc99fc079dd01958": {
+   "name": "SideTone",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "a76de8bafc460ad9": {
+   "name": "SideTone_level",
+   "group": "call_experience",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "06"
+    ],
+    [
+     "SideTone_level4",
+     "03"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FD"
+    ],
+    [
+     "SideTone_level1",
+     "FA"
+    ],
+    [
+     "SideTone_level0",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "0437d84b0c595a77": {
+   "name": "Firmware_version",
+   "group": "firmware",
+   "dest": 8,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "a6ff4b59f525368f": {
+   "name": "ANC_hearthrough",
+   "group": "headset",
+   "dest": 8,
+   "command": "ANC",
+   "widget": "list",
+   "options": [
+    [
+     "NoiseCancelling",
+     "00"
+    ],
+    [
+     "Surroundings_only",
+     "00"
+    ],
+    [
+     "Music_surroundings",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 135,
+   "pos": 1,
+   "width": 1
+  },
+  "ea6a6477c99a960b": {
+   "name": "HT_Level",
+   "group": "headset",
+   "dest": 8,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0002",
+   "widget": "list",
+   "options": [
+    [
+     "HT_Level4",
+     "00"
+    ],
+    [
+     "HT_Level3",
+     "01"
+    ],
+    [
+     "HT_Level2",
+     "02"
+    ],
+    [
+     "HT_Level1",
+     "03"
+    ],
+    [
+     "HT_Level0",
+     "04"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0002"
+  },
+  "bb19120b028d0dbb": {
+   "name": "Head_detection",
+   "group": "headset",
+   "dest": 8,
+   "command": "ON_HEAD_DETECTION",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 146,
+   "pos": 1,
+   "width": 1
+  },
+  "bf4eec10cf2fd4a3": {
+   "name": "Auto_pause_resume_music",
+   "group": "headset",
+   "dest": 8,
+   "command": "AUTO_PAUSE_MUSIC",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 142,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "9786db573e5c0ee3": {
+   "name": "Mute_call",
+   "group": "headset",
+   "dest": 8,
+   "command": "AUTO_MUTE_CALL_AUDIO",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 143,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "824aa55639e7b1db": {
+   "name": "Earcup_microphones_enable",
+   "group": "headset",
+   "dest": 8,
+   "command": "EARCUP_MICS",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 172,
+   "pos": 1,
+   "width": 1
+  },
+  "7904c01a57b547d9": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "42c821288bef883a": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 8,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "Sidetone_6dB_(high)",
+     "06"
+    ],
+    [
+     "Sidetone_3dB",
+     "03"
+    ],
+    [
+     "Sidetone_0dB_(normal)",
+     "00"
+    ],
+    [
+     "Sidetone_-3dB",
+     "FD"
+    ],
+    [
+     "Sidetone_-6dB",
+     "FA"
+    ],
+    [
+     "Sidetone_-9dB_(low)",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "f7d47e156047db34": {
+   "name": "Firmware_version",
+   "group": "product_information",
+   "dest": 8,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "acfa3d03c8500301": {
+   "name": "HearThrough",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "c0bd80a301928b5f": {
+   "name": "HearThrough_mode",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "HEAR_THROUGH",
+   "widget": "list",
+   "options": [
+    [
+     "Music_surroundings",
+     "00"
+    ],
+    [
+     "Surroundings_only",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 118,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "2202a13be78ccd84": {
+   "name": "HearThrough_level",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "HEAR_THROUGH_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "HearThrough_level5",
+     "04"
+    ],
+    [
+     "HearThrough_level4",
+     "02"
+    ],
+    [
+     "HearThrough_level3",
+     "00"
+    ],
+    [
+     "HearThrough_level2",
+     "FE"
+    ],
+    [
+     "HearThrough_level1",
+     "FC"
+    ],
+    [
+     "HearThrough_level0",
+     "FA"
+    ]
+   ],
+   "main": 19,
+   "sub": 129,
+   "pos": 1,
+   "width": 1
+  },
+  "424a86fe30570e95": {
+   "name": "HearThrough_level",
+   "group": "sound_and_volume",
+   "dest": 8,
+   "command": "HEAR_THROUGH_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "HearThrough_level6",
+     "F4"
+    ],
+    [
+     "HearThrough_level5",
+     "F6"
+    ],
+    [
+     "HearThrough_level4",
+     "F8"
+    ],
+    [
+     "HearThrough_level3",
+     "FA"
+    ],
+    [
+     "HearThrough_level2",
+     "FC"
+    ],
+    [
+     "HearThrough_level1",
+     "FE"
+    ],
+    [
+     "HearThrough_level0",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 129,
+   "pos": 1,
+   "width": 1
+  },
+  "886e02d9c5e147a8": {
+   "name": "Bluetooth_support",
+   "group": "speakerphone",
+   "dest": 8,
+   "command": "RADIO",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 99,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "02f1d6617319790d": {
+   "name": "Shared_use",
+   "group": "speakerphone",
+   "dest": 8,
+   "command": "PUBLIC_MODE",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 94,
+   "pos": 1,
+   "width": 1
+  },
+  "bde0992bf8b2f6c4": {
+   "name": "Voice_guidance",
+   "group": "speakerphone",
+   "dest": 8,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "list",
+   "options": [
+    [
+     "Voice",
+     "01"
+    ],
+    [
+     "Tone",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "c30c8231c2c1b226": {
+   "name": "Voice_Indicator",
+   "group": "speakerphone",
+   "dest": 8,
+   "command": "VOICE_INDICATOR",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "03"
+    ]
+   ],
+   "main": 19,
+   "sub": 227,
+   "pos": 1,
+   "width": 1
+  },
+  "71a21eddf2a3d138": {
+   "name": "Auto_reject_call",
+   "group": "speakerphone",
+   "dest": 8,
+   "command": "AUTO_REJECT_BG_WAITING",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 60,
+   "pos": 1,
+   "width": 1
+  },
+  "bee2399c4371b3a1": {
+   "name": "Sleep_delay",
+   "group": "speakerphone",
+   "dest": 8,
+   "command": "INACTIVITY_INTERVAL",
+   "widget": "list",
+   "options": [
+    [
+     "Sleep_1",
+     "03"
+    ],
+    [
+     "Sleep_2",
+     "06"
+    ],
+    [
+     "Sleep_3",
+     "0C"
+    ],
+    [
+     "Sleep_4",
+     "18"
+    ],
+    [
+     "Sleep_5",
+     "30"
+    ],
+    [
+     "Sleep_6",
+     "48"
+    ],
+    [
+     "Sleep_7",
+     "60"
+    ],
+    [
+     "Sleep_off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 144,
+   "pos": 1,
+   "width": 1
+  },
+  "d06c7d0ac5aa69f9": {
+   "name": "Softphone_integration",
+   "group": "softphone_(pc)",
+   "dest": 8,
+   "command": "SOFTPHONE_INTEGRATION",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 76,
+   "pos": 1,
+   "width": 1
+  },
+  "76b32d41d3616931": {
+   "name": "Prioritize_Computer_Audio",
+   "group": "softphone_(pc)",
+   "dest": 8,
+   "command": "STREAM_PRIORITY",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 153,
+   "pos": 1,
+   "width": 1
+  },
+  "41291edbd98ab219": {
+   "name": "Programmable_button_tap_action",
+   "group": "button_configuration",
+   "dest": 8,
+   "command": "BUTTON_FUNCTION",
+   "widget": "list",
+   "options": [
+    [
+     "PlayPause",
+     "00"
+    ],
+    [
+     "Start_voice_instruction",
+     "00"
+    ],
+    [
+     "Speed_dial",
+     "00"
+    ],
+    [
+     "No_function",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 39,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ]
+   ],
+   "pos": 3,
+   "width": 1
+  },
+  "b54179c8bb250f7b": {
+   "name": "Voice_guidance_language",
+   "group": "product_information",
+   "dest": 8,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ],
+    [
+     "Modern_Spanish",
+     "0C0A"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "49e94890b9316787": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "7c0a94fc2e963834": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "Sidetone_6dB_(high)",
+     "06"
+    ],
+    [
+     "Sidetone_3dB",
+     "03"
+    ],
+    [
+     "Sidetone_0dB_(normal)",
+     "00"
+    ],
+    [
+     "Sidetone_-3dB",
+     "FD"
+    ],
+    [
+     "Sidetone_-6dB",
+     "FA"
+    ],
+    [
+     "Sidetone_-9dB_(low)",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "8cfba986b91a7f77": {
+   "name": "ANC_HT_Mode",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0001",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "01"
+    ],
+    [
+     "On",
+     "04"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0001"
+  },
+  "de98a23c67b75d52": {
+   "name": "Boom_arm_mute",
+   "group": "headset",
+   "dest": 4,
+   "command": "BOOMARM_ROTATION_ACTION",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "01"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 152,
+   "pos": 1,
+   "width": 1
+  },
+  "7695a892eeada612": {
+   "name": "Answer_call_by_rotating_boom_arm",
+   "group": "headset",
+   "dest": 4,
+   "command": "BOOMARM_ROTATION_ACTION",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 152,
+   "pos": 1,
+   "width": 1
+  },
+  "4ac9d4bd06025b7f": {
+   "name": "Call_answered_by_boom_arm_audio_announcement",
+   "group": "headset",
+   "dest": 4,
+   "command": "CALL_ACCEPTED_SOUND",
+   "widget": "list",
+   "options": [
+    [
+     "Sound_fx",
+     "00"
+    ],
+    [
+     "Prompts",
+     "01"
+    ],
+    [
+     "Off",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 188,
+   "pos": 1,
+   "width": 1
+  },
+  "e4d2fd5cbad3857e": {
+   "name": "Accept_incoming_call_on_undock",
+   "group": "headset",
+   "dest": 4,
+   "command": "ACCEPT_CALL_ON_UNDOCK",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 69,
+   "pos": 1,
+   "width": 1
+  },
+  "57f6e99647e0f21e": {
+   "name": "Auto_sleep",
+   "group": "headset",
+   "dest": 4,
+   "command": "INACTIVITY_INTERVAL",
+   "widget": "list",
+   "options": [
+    [
+     "Sleep_1",
+     "03"
+    ],
+    [
+     "Sleep_2",
+     "06"
+    ],
+    [
+     "Sleep_3",
+     "0C"
+    ],
+    [
+     "Sleep_4",
+     "18"
+    ],
+    [
+     "Sleep_5",
+     "30"
+    ],
+    [
+     "Sleep_6",
+     "48"
+    ],
+    [
+     "Sleep_7",
+     "60"
+    ],
+    [
+     "Sleep_off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 144,
+   "pos": 1,
+   "width": 1
+  },
+  "569a491630d67657": {
+   "name": "Firmware_version",
+   "group": "product_information",
+   "dest": 4,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "aca302a108cf201d": {
+   "name": "Voice_announcements_language",
+   "group": "product_information",
+   "dest": 4,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English_(US)",
+     "0409"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "f35f7cb79d7b43de": {
+   "name": "SideTone",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "bool",
+   "options": [
+    [
+     "On",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 1,
+   "width": 1
+  },
+  "21ed3384abdf8462": {
+   "name": "SideTone_level",
+   "group": "headset",
+   "dest": 4,
+   "command": "DSP_SIDETONE",
+   "widget": "list",
+   "options": [
+    [
+     "SideTone_level5",
+     "06"
+    ],
+    [
+     "SideTone_level4",
+     "03"
+    ],
+    [
+     "SideTone_level3",
+     "00"
+    ],
+    [
+     "SideTone_level2",
+     "FD"
+    ],
+    [
+     "SideTone_level1",
+     "FA"
+    ],
+    [
+     "SideTone_level0",
+     "F7"
+    ]
+   ],
+   "main": 19,
+   "sub": 124,
+   "shared": true,
+   "pos": 2,
+   "width": 1
+  },
+  "cd4b12d5b4159443": {
+   "name": "Sound_Mode_Loop",
+   "group": "headset",
+   "dest": 4,
+   "command": "SOUND_MODE_LOOP_SPECIAL_CMD_0001",
+   "widget": "list",
+   "options": [
+    [
+     "HT_ANC",
+     "00"
+    ],
+    [
+     "HT_ANC_Off",
+     "00"
+    ],
+    [
+     "HT_Off",
+     "00"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0001"
+  },
+  "3ad2bd5bd8f109b4": {
+   "name": "HT_Mixed",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0004",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0004"
+  },
+  "3819f863e7cac4a0": {
+   "name": "HT_Level",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0002",
+   "widget": "list",
+   "options": [
+    [
+     "HT_Level4",
+     "00"
+    ],
+    [
+     "HT_Level3",
+     "01"
+    ],
+    [
+     "HT_Level2",
+     "02"
+    ],
+    [
+     "HT_Level1",
+     "03"
+    ],
+    [
+     "HT_Level0",
+     "04"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0002"
+  },
+  "332591281a853bd8": {
+   "name": "ANC_Level",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0003",
+   "widget": "list",
+   "options": [
+    [
+     "ANC_Level4",
+     "00"
+    ],
+    [
+     "ANC_Level3",
+     "01"
+    ],
+    [
+     "ANC_Level2",
+     "02"
+    ],
+    [
+     "ANC_Level1",
+     "03"
+    ],
+    [
+     "ANC_Level0",
+     "04"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0003"
+  },
+  "e0b7c5e6aed7d2b6": {
+   "name": "Audio_announcements",
+   "group": "headset",
+   "dest": 4,
+   "command": "HS_VOICE_PROMPTS",
+   "widget": "list",
+   "options": [
+    [
+     "Audio_announcements_Voice",
+     "01"
+    ],
+    [
+     "Audio_announcements_Tones",
+     "00"
+    ],
+    [
+     "Audio_announcements_Off",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 58,
+   "pos": 1,
+   "width": 1
+  },
+  "66ef4e989c82b0c3": {
+   "name": "In-callaudio",
+   "group": "headset",
+   "dest": 4,
+   "command": "SOUND_MODE",
+   "widget": "list",
+   "options": [
+    [
+     "Normal",
+     "00"
+    ],
+    [
+     "Enhance_bass",
+     "01"
+    ],
+    [
+     "Enhance_clarity",
+     "02"
+    ]
+   ],
+   "main": 19,
+   "sub": 21,
+   "pos": 1,
+   "width": 1
+  },
+  "a9693030ffa78c74": {
+   "name": "Audio_protection",
+   "group": "headset",
+   "dest": 4,
+   "command": "INTELLITONE_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "Audio_protection_Basic_PeakStop_protection",
+     "00"
+    ],
+    [
+     "Audio_protection_IntelliTone_average_daily_audio_exposure",
+     "03"
+    ],
+    [
+     "Audio_protection_Australian_acoustic_safety_guideline_(G.616)",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 1,
+   "pos": 1,
+   "width": 1
+  },
+  "c0ca2d3d514f08e1": {
+   "name": "Sleep_delay",
+   "group": "headset",
+   "dest": 4,
+   "command": "INACTIVITY_INTERVAL",
+   "widget": "list",
+   "options": [
+    [
+     "Sleep_1",
+     "03"
+    ],
+    [
+     "Sleep_2",
+     "06"
+    ],
+    [
+     "Sleep_3",
+     "0C"
+    ],
+    [
+     "Sleep_4",
+     "18"
+    ],
+    [
+     "Sleep_5",
+     "30"
+    ],
+    [
+     "Sleep_6",
+     "48"
+    ],
+    [
+     "Sleep_7",
+     "60"
+    ],
+    [
+     "Sleep_off",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 144,
+   "pos": 1,
+   "width": 1
+  },
+  "b45f93e2b476afea": {
+   "name": "Head_detection",
+   "group": "automatic_detection",
+   "dest": 4,
+   "command": "ON_HEAD_DETECTION",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 146,
+   "pos": 1,
+   "width": 1
+  },
+  "5b8201ae5a2f44b9": {
+   "name": "Auto_pause_resume_music",
+   "group": "automatic_detection",
+   "dest": 4,
+   "command": "AUTO_PAUSE_MUSIC",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 142,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "4b390778ec262381": {
+   "name": "Mute_call",
+   "group": "automatic_detection",
+   "dest": 4,
+   "command": "AUTO_MUTE_CALL_AUDIO",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 143,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "f182729537451538": {
+   "name": "Auto_answer_call",
+   "group": "automatic_detection",
+   "dest": 4,
+   "command": "AUTO_ANSWER_CALL",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 145,
+   "selectors": [
+    [
+     1,
+     "01"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "9b78254c115073dd": {
+   "name": "Music_context_left_button_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Sound_Modes",
+     "05"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "02d5982eafa7853b": {
+   "name": "Music_context_left_button_double_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Sound_Modes",
+     "05"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "73a68e4512b3336e": {
+   "name": "Music_context_left_button_triple_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Sound_Modes",
+     "05"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "f46f5e46ac3023cf": {
+   "name": "Call_incoming_context_left_button_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "c4d869e434c91452": {
+   "name": "Call_incoming_context_left_button_double_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "3f19a8886e8b2beb": {
+   "name": "Call_incoming_context_left_button_triple_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "b3f26ac6f4a79952": {
+   "name": "Ongoing_call_context_left_button_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "32bc8397b4b377d0": {
+   "name": "Ongoing_call_context_left_button_double_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "eda153bf47e7da79": {
+   "name": "Ongoing_call_context_left_button_triple_tap_action",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "d0f56d29cb380400": {
+   "name": "Music_context_right_button_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Sound_Modes",
+     "05"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "ba6bec487746e477": {
+   "name": "Music_context_right_button_double_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Sound_Modes",
+     "05"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "ec051701759a0c8d": {
+   "name": "Music_context_right_button_triple_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Sound_Modes",
+     "05"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "ffcc23f448b36651": {
+   "name": "Call_incoming_context_right_button_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "ebdbd52fb6cf92a9": {
+   "name": "Call_incoming_context_right_button_double_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "c60f8bf5af8a48d8": {
+   "name": "Call_incoming_context_right_button_triple_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "c1c0254394c706d0": {
+   "name": "Ongoing_call_context_right_button_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "43b0135b1368ec16": {
+   "name": "Ongoing_call_context_right_button_double_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "3d17d82d6986cf5b": {
+   "name": "Ongoing_call_context_right_button_triple_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ],
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "70eb82343bcad841": {
+   "name": "Firmware_version",
+   "group": "product_information",
+   "dest": 4,
+   "command": "VERSION",
+   "widget": "static",
+   "options": [],
+   "main": 2,
+   "sub": 3,
+   "pos": 1,
+   "width": 1
+  },
+  "4431e5d80fa6276a": {
+   "name": "Part_number",
+   "group": "product_information",
+   "dest": 4,
+   "command": "SKU_ID",
+   "widget": "static",
+   "options": [
+    [
+     "Part_number_Default",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 29,
+   "pos": 1,
+   "width": 1
+  },
+  "7c9bf3712f604d93": {
+   "name": "Language",
+   "group": "product_information",
+   "dest": 4,
+   "command": "CURRENT_LANGUAGE",
+   "widget": "static",
+   "options": [
+    [
+     "English",
+     "0409"
+    ],
+    [
+     "German",
+     "0407"
+    ],
+    [
+     "French",
+     "040C"
+    ],
+    [
+     "Chinese",
+     "0804"
+    ],
+    [
+     "Japanese",
+     "0411"
+    ],
+    [
+     "Korean",
+     "0412"
+    ]
+   ],
+   "main": 19,
+   "sub": 8,
+   "config_mode": [
+    "write"
+   ],
+   "pos": 1,
+   "width": 2,
+   "special": true,
+   "depends": [
+    "AVAILABLE_LANGUAGES"
+   ]
+  },
+  "2e5148b9e21730bb": {
+   "name": "Automatic_UI_Swap",
+   "group": "left_bud",
+   "dest": 4,
+   "command": "AUTOMATIC_UI_SWAP",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 219,
+   "pos": 1,
+   "width": 1
+  },
+  "605601cfa6d25054": {
+   "name": "Music_context_right_button_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Teams",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "de6bcdb09028659f": {
+   "name": "Music_context_right_button_double_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Sound_Modes",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "21f16955799f51de": {
+   "name": "Music_context_right_button_triple_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "42de4869380005e9": {
+   "name": "Call_incoming_context_right_button_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Accept_End",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "45bc443477b2ebf9": {
+   "name": "Call_incoming_context_right_button_double_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Reject",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "e575658072ef4dff": {
+   "name": "Call_incoming_context_right_button_triple_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "70f1a732d55040c6": {
+   "name": "Ongoing_call_context_right_button_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_Mute",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "10133f7ac99417c2": {
+   "name": "Ongoing_call_context_right_button_double_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_End_Resume",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "093d16e75a901692": {
+   "name": "Ongoing_call_context_right_button_triple_tap_action",
+   "group": "right_bud",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "32b9729c6f85ed2e": {
+   "name": "Music_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "7822449becbaccf2": {
+   "name": "Music_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "b2e571b51c1ade86": {
+   "name": "Music_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "740cba1b312bdc55": {
+   "name": "Music_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "1998454d9c46b56e": {
+   "name": "Music_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "a3f6c38d35c415f7": {
+   "name": "Music_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Play_Pause",
+     "01"
+    ],
+    [
+     "Action_Next_Track",
+     "02"
+    ],
+    [
+     "Action_Prev_Track",
+     "03"
+    ],
+    [
+     "Action_Voice_Assistant",
+     "04"
+    ],
+    [
+     "Action_Sound_Modes",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "00"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "4765ae75c6688df7": {
+   "name": "Call_incoming_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "c7ebd8db6cb1817e": {
+   "name": "Call_incoming_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "a8916c9d01ff0e67": {
+   "name": "Call_incoming_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "04ea558fbb0c8a84": {
+   "name": "Call_incoming_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "de9a104084b46f3a": {
+   "name": "Call_incoming_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "a547cb19345b805d": {
+   "name": "Call_incoming_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_Reject",
+     "06"
+    ],
+    [
+     "Action_Accept_End",
+     "07"
+    ],
+    [
+     "Action_Accept_Hold",
+     "08"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "01"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "dc324ecee526fd19": {
+   "name": "Ongoing_call_context_left_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "58d0a5efbcf4d0db": {
+   "name": "Ongoing_call_context_left_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "e4fda0afa78166f8": {
+   "name": "Ongoing_call_context_left_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "00"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "7c62ccd654fb6081": {
+   "name": "Ongoing_call_context_right_button_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "00"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "5cda7cfbde076ef0": {
+   "name": "Ongoing_call_context_right_button_double_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "01"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "99b912239a1e1933": {
+   "name": "Ongoing_call_context_right_button_triple_tap_action",
+   "group": "headset",
+   "dest": 4,
+   "command": "USER_BUTTONS",
+   "widget": "list",
+   "options": [
+    [
+     "Action_None",
+     "00"
+    ],
+    [
+     "Action_End_Resume",
+     "09"
+    ],
+    [
+     "Action_Hold_Resume",
+     "0A"
+    ],
+    [
+     "Action_Mute",
+     "0B"
+    ],
+    [
+     "Action_Sidetone",
+     "0C"
+    ]
+   ],
+   "main": 19,
+   "sub": 154,
+   "selectors": [
+    [
+     1,
+     "02"
+    ],
+    [
+     2,
+     "01"
+    ],
+    [
+     3,
+     "02"
+    ]
+   ],
+   "pos": 4,
+   "width": 1
+  },
+  "d848eb5527e99ba1": {
+   "name": "Sound_Mode_Loop",
+   "group": "headset",
+   "dest": 4,
+   "command": "SOUND_MODE_LOOP_SPECIAL_CMD_0001",
+   "widget": "list",
+   "options": [
+    [
+     "HT_ANC",
+     "F9"
+    ],
+    [
+     "HT_ANC_Off",
+     "E4"
+    ],
+    [
+     "HT_Off",
+     "F4"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0001"
+  },
+  "1678619b4513901b": {
+   "name": "ANC_HT_Mode",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0001",
+   "widget": "list",
+   "options": [
+    [
+     "ActiveNoiseCancelling",
+     "04"
+    ],
+    [
+     "HearThrough",
+     "02"
+    ],
+    [
+     "Off",
+     "01"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0001"
+  },
+  "fe0781f6ed6349bf": {
+   "name": "HT_Level",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0002",
+   "widget": "list",
+   "options": [
+    [
+     "HT_LevelHighest",
+     "00"
+    ],
+    [
+     "HT_LevelHigh",
+     "01"
+    ],
+    [
+     "HT_LevelMedium",
+     "02"
+    ],
+    [
+     "HT_LevelLow",
+     "03"
+    ],
+    [
+     "HT_LevelLowest",
+     "04"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0002"
+  },
+  "02eacf5f8fae0500": {
+   "name": "ANC_Level",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0003",
+   "widget": "list",
+   "options": [
+    [
+     "ANC_LevelHighest",
+     "00"
+    ],
+    [
+     "ANC_LevelHigh",
+     "01"
+    ],
+    [
+     "ANC_LevelMedium",
+     "02"
+    ],
+    [
+     "ANC_LevelLow",
+     "03"
+    ],
+    [
+     "ANC_LevelLowest",
+     "04"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0003"
+  },
+  "4c56248f691f71aa": {
+   "name": "Audio_protection",
+   "group": "headset",
+   "dest": 4,
+   "command": "INTELLITONE_LEVEL",
+   "widget": "list",
+   "options": [
+    [
+     "PeakStop",
+     "00"
+    ],
+    [
+     "IntelliTone",
+     "03"
+    ],
+    [
+     "G616",
+     "05"
+    ]
+   ],
+   "main": 19,
+   "sub": 1,
+   "pos": 1,
+   "width": 1
+  },
+  "33bb016b1e749b3f": {
+   "name": "Auto_pause_resume_music",
+   "group": "headset",
+   "dest": 4,
+   "command": "AUTO_PAUSE_MUSIC",
+   "widget": "bool",
+   "options": [
+    [
+     "Off",
+     "00"
+    ],
+    [
+     "On",
+     "01"
+    ]
+   ],
+   "main": 19,
+   "sub": 142,
+   "selectors": [
+    [
+     1,
+     "00"
+    ]
+   ],
+   "pos": 2,
+   "width": 1
+  },
+  "c268a70b5b31db1f": {
+   "name": "ANC_HT_Mode",
+   "group": "headset",
+   "dest": 4,
+   "command": "ANC_HT_SOUND_SETTINGS_SPECIAL_CMD_0001",
+   "widget": "list",
+   "options": [
+    [
+     "ActiveNoiseCancelling",
+     "00"
+    ],
+    [
+     "HearThrough",
+     "00"
+    ],
+    [
+     "Off",
+     "00"
+    ]
+   ],
+   "pos": 1,
+   "width": 1,
+   "special": true,
+   "virtual": "0001"
+  }
+ }
+}

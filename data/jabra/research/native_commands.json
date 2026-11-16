@@ -1,0 +1,188 @@
+{
+  "commands": [
+    {
+      "method": "GetAmbienceMode",
+      "main": 19,
+      "payload": "be 01",
+      "native_callsite": "0x3c36cc",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "SetAmbienceMode",
+      "main": 19,
+      "payload": "be 01 01",
+      "native_callsite": "0x3c3a7c",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "SetAmbienceMode",
+      "main": 19,
+      "payload": "be 01 02",
+      "native_callsite": "0x3c3a7c",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "SetAmbienceMode",
+      "main": 19,
+      "payload": "be 01 04",
+      "native_callsite": "0x3c3a7c",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetAmbienceModeLevel",
+      "main": 19,
+      "payload": "be 02",
+      "native_callsite": "0x3c4c94",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetAmbienceModeLevel",
+      "main": 19,
+      "payload": "be 03",
+      "native_callsite": "0x3c4c94",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "SetAmbienceModeLevel",
+      "main": 19,
+      "payload": "be 03 03",
+      "native_callsite": "0x3c5090",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetAmbienceModeBalance",
+      "main": 19,
+      "payload": "be 06",
+      "native_callsite": "0x3c56a8",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "SetAmbienceModeBalance",
+      "main": 19,
+      "payload": "be 06 fe",
+      "native_callsite": "0x3c5aa4",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetSubmode",
+      "main": 19,
+      "payload": "be 04",
+      "native_callsite": "0x3c4650",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetSubmode",
+      "main": 19,
+      "payload": "be 05",
+      "native_callsite": "0x3c4650",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "SetSubmode",
+      "main": 19,
+      "payload": "be 05 20",
+      "native_callsite": "0x3c42a0",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetAmbienceModeLoop",
+      "main": 19,
+      "payload": "bf",
+      "native_callsite": "0x3c6b38",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "SetAmbienceModeLoop",
+      "main": 19,
+      "payload": "bf 03 00 01 02",
+      "native_callsite": "0x3c6f00",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetAmbienceModeSupportedData",
+      "main": 19,
+      "payload": "be 00",
+      "native_callsite": "0x3c32f4",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetEqualizerData",
+      "main": 19,
+      "payload": "7d 00",
+      "native_callsite": "0x3aea40",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "EnableEqualizer",
+      "main": 19,
+      "payload": "7e 01",
+      "native_callsite": "0x3ae6fc",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetEqualizerStatus",
+      "main": 19,
+      "payload": "7e",
+      "native_callsite": "0x3ae3d0",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetUserButtons",
+      "main": 19,
+      "payload": "9a 00",
+      "native_callsite": "0x3be7ac",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetSpotifyEnabled",
+      "main": 19,
+      "payload": "e5",
+      "native_callsite": "0x3a2a8c",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "SetSpotifyEnabled",
+      "main": 19,
+      "payload": "e5 01",
+      "native_callsite": "0x3a2e2c",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetOnHeadDetectionEnabled",
+      "main": 19,
+      "payload": "59",
+      "native_callsite": "0x3c7b5c",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    },
+    {
+      "method": "GetSpatialSoundConfiguration",
+      "main": 19,
+      "payload": "e4",
+      "native_callsite": "0x3a31b4",
+      "evidence": "original_native_function_executed_until_transport_call",
+      "note": "synthetic arguments; model support checks forced true; no Bluetooth sent"
+    }
+  ]
+}

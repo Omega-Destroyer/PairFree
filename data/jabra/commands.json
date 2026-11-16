@@ -1,0 +1,796 @@
+{
+ "_about": "Commands PairFree's Jabra session sends by name, from docs/jabra/PROTOCOL.md (research 2026-11-09, Jabra Sound+ 5.22.0). Written by tools/import_jabra_app.py.",
+ "wire": {
+  "spp_uuid": "00001101-0000-1000-8000-00805F9B34FB",
+  "destination": 4,
+  "source": 9,
+  "max_frame": 63,
+  "attributes": {
+   "event": 0,
+   "read": 1,
+   "write": 2,
+   "reply": 3
+  },
+  "addresses": {
+   "headset": 4,
+   "dsp": 8,
+   "mobile": 9
+  }
+ },
+ "named": {
+  "pid": {
+   "family": "IDENT",
+   "main": 2,
+   "sub": 17
+  },
+  "type": {
+   "family": "IDENT",
+   "main": 2,
+   "sub": 2
+  },
+  "version": {
+   "family": "IDENT",
+   "main": 2,
+   "sub": 3
+  },
+  "available_languages": {
+   "family": "IDENT",
+   "main": 2,
+   "sub": 8
+  },
+  "battery": {
+   "family": "STATUS",
+   "main": 18,
+   "sub": 2
+  },
+  "ambience_noise_level": {
+   "family": "STATUS",
+   "main": 18,
+   "sub": 13
+  },
+  "config_mode_enter": {
+   "family": "DEVICE",
+   "main": 13,
+   "sub": 17
+  },
+  "config_mode_end": {
+   "family": "DEVICE",
+   "main": 13,
+   "sub": 18
+  },
+  "ambience": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 190
+  },
+  "sound_mode_loop": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 191
+  },
+  "equalizer": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 125
+  },
+  "equalizer_enable": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 126
+  },
+  "buttons": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 154
+  },
+  "buttons_default": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 173
+  },
+  "spatial": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 228
+  },
+  "spotify": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 229
+  },
+  "mysound": {
+   "family": "CONFIG",
+   "main": 19,
+   "sub": 156
+  }
+ },
+ "never_send": {
+  "families": {
+   "DFU": 7,
+   "FWU": 15,
+   "HWTEST": 4,
+   "HW_TEST": 4,
+   "BT_PROD_TEST": 12,
+   "DEBUG": 6,
+   "FLASH": 25,
+   "AUTOMATED_TEST": 29,
+   "LOG": 35,
+   "SYSMON": 34
+  },
+  "commands": {
+   "factory_default": {
+    "main": 13,
+    "sub": 19
+   },
+   "factory_default_no_boot": {
+    "main": 13,
+    "sub": 23
+   },
+   "prepare_restart": {
+    "main": 13,
+    "sub": 22
+   },
+   "enter_mode": {
+    "main": 13,
+    "sub": 21
+   },
+   "modify_db_record": {
+    "main": 13,
+    "sub": 51
+   },
+   "delete_db_record": {
+    "main": 13,
+    "sub": 42
+   },
+   "get_bt_addr_and_linkkey": {
+    "main": 13,
+    "sub": 56
+   }
+  },
+  "note": "Production tests, firmware and debug families, factory default, restart preparation, pairing database writes and link keys. Never sent; restart goes only from a confirmed action."
+ },
+ "eq_presets": [
+  {
+   "name": "JABRA_DEFAULT",
+   "gain_percent": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "VOICE",
+   "gain_percent": [
+    -60,
+    0,
+    0,
+    17,
+    -20
+   ]
+  },
+  {
+   "name": "BASS_BOOST",
+   "gain_percent": [
+    60,
+    -33,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "TREBLE_BOOST",
+   "gain_percent": [
+    -20,
+    -33,
+    0,
+    33,
+    40
+   ]
+  },
+  {
+   "name": "SMOOTH",
+   "gain_percent": [
+    0,
+    33,
+    0,
+    -33,
+    0
+   ]
+  },
+  {
+   "name": "ENERGIZE",
+   "gain_percent": [
+    40,
+    0,
+    -33,
+    -17,
+    30
+   ]
+  }
+ ],
+ "gaia": {
+  "vendor_id": 103,
+  "scope": "Sound+ Jabra vendor extensions; standard Qualcomm plugins are separate",
+  "features": [
+   {
+    "feature": "BATTERY_STATUS",
+    "feature_id": 5,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3BatteryStatusPlugin.java",
+    "commands": [
+     {
+      "name": "GET_BATTERY_STATUS",
+      "id": 1
+     }
+    ],
+    "notifications": [
+     {
+      "name": "BATTERY_STATUS_CHANGED",
+      "id": 1
+     }
+    ]
+   },
+   {
+    "feature": "BUTTON_CONTROL",
+    "feature_id": 9,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3ButtonControlPlugin.java",
+    "commands": [
+     {
+      "name": "GET_CURRENT_STATE",
+      "id": 1
+     },
+     {
+      "name": "SET_CURRENT_STATE",
+      "id": 2
+     }
+    ],
+    "notifications": []
+   },
+   {
+    "feature": "GRAPHICS_EQUALIZER",
+    "feature_id": 11,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3GraphicsEqualizerPlugin.java",
+    "commands": [
+     {
+      "name": "GET_GRAPHICS_EQUALIZER_STATUS",
+      "id": 1
+     }
+    ],
+    "notifications": []
+   },
+   {
+    "feature": "HEARTHROUGH",
+    "feature_id": 4,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3HearThroughPlugin.java",
+    "commands": [
+     {
+      "name": "DUMMY",
+      "id": 0
+     },
+     {
+      "name": "GET_CURRENT_STATE",
+      "id": 1
+     },
+     {
+      "name": "SET_CURRENT_STATE",
+      "id": 2
+     },
+     {
+      "name": "GET_MIX_MODE",
+      "id": 5
+     },
+     {
+      "name": "SET_MIX_MODE",
+      "id": 6
+     },
+     {
+      "name": "GET_CURRENT_LEVEL",
+      "id": 3
+     },
+     {
+      "name": "SET_CURRENT_LEVEL",
+      "id": 4
+     },
+     {
+      "name": "GET_MAX_LEVEL",
+      "id": 7
+     }
+    ],
+    "notifications": [
+     {
+      "name": "CURRENT_STATE_CHANGED",
+      "id": 1
+     },
+     {
+      "name": "CURRENT_LEVEL_CHANGED",
+      "id": 2
+     },
+     {
+      "name": "MIX_MODE_CHANGED",
+      "id": 3
+     }
+    ]
+   },
+   {
+    "feature": "IN_EAR_DETECTION",
+    "feature_id": 16,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3InEarDetectionPlugin.java",
+    "commands": [
+     {
+      "name": "GET_CURRENT_STATE",
+      "id": 1
+     },
+     {
+      "name": "SET_CURRENT_STATE",
+      "id": 2
+     },
+     {
+      "name": "GET_AUTO_CALL_STATE",
+      "id": 3
+     },
+     {
+      "name": "SET_AUTO_CALL_STATE",
+      "id": 4
+     },
+     {
+      "name": "GET_AUTO_MUTE_STATE",
+      "id": 5
+     },
+     {
+      "name": "SET_AUTO_MUTE_STATE",
+      "id": 6
+     },
+     {
+      "name": "GET_AUTO_PAUSE_MUSIC_STATE",
+      "id": 7
+     },
+     {
+      "name": "SET_AUTO_PAUSE_MUSIC_STATE",
+      "id": 8
+     },
+     {
+      "name": "GET_MUTE_REMINDER_STATE",
+      "id": 9
+     },
+     {
+      "name": "SET_MUTE_REMINDER_STATE",
+      "id": 10
+     },
+     {
+      "name": "GET_EARBUD_IN_EAR_STATUS",
+      "id": 11
+     }
+    ],
+    "notifications": [
+     {
+      "name": "EARBUD_IN_EAR_DETECTION_NOTIFICATION",
+      "id": 1
+     },
+     {
+      "name": "EARBUD_IN_EAR_STATUS_NOTIFICATION",
+      "id": 11
+     },
+     {
+      "name": "AUTO_ANSWER_CALL_NOTIFICATION",
+      "id": 3
+     },
+     {
+      "name": "AUTO_MUTE_NOTIFICATION",
+      "id": 5
+     },
+     {
+      "name": "AUTO_PAUSE_MUSIC_NOTIFICATION",
+      "id": 7
+     }
+    ]
+   },
+   {
+    "feature": "NOTIFICATION_REGISTRATION",
+    "feature_id": 2,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3JabraPlugin.java",
+    "commands": [
+     {
+      "name": "REGISTER_NOTIFICATION",
+      "id": 1
+     },
+     {
+      "name": "UNREGISTER_NOTIFICATION",
+      "id": 2
+     }
+    ],
+    "notifications": []
+   },
+   {
+    "feature": "LEVELED_ANC",
+    "feature_id": 12,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3LeveledANCPlugin.java",
+    "commands": [
+     {
+      "name": "GET_MAX_ANC_LEVEL",
+      "id": 1
+     },
+     {
+      "name": "GET_CURRENT_ANC_LEVEL",
+      "id": 2
+     },
+     {
+      "name": "SET_CURRENT_ANC_LEVEL",
+      "id": 3
+     }
+    ],
+    "notifications": [
+     {
+      "name": "ANC_LEVEL_CHANGED",
+      "id": 2
+     }
+    ]
+   },
+   {
+    "feature": "MAX_GAINS",
+    "feature_id": 7,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3MaxGainsPlugin.java",
+    "commands": [
+     {
+      "name": "SET_MAX_GAINS",
+      "id": 1
+     },
+     {
+      "name": "GET_MAX_GAINS",
+      "id": 2
+     }
+    ],
+    "notifications": []
+   },
+   {
+    "feature": "MY_CONTROLS",
+    "feature_id": 13,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3MyControlsPlugin.java",
+    "commands": [
+     {
+      "name": "GET_CURRENT_MY_CONTROL_TABLE",
+      "id": 1
+     },
+     {
+      "name": "SET_CURRENT_MY_CONTROL_TABLE",
+      "id": 2
+     },
+     {
+      "name": "GET_DEFAULT_MY_CONTROL_TABLE",
+      "id": 3
+     },
+     {
+      "name": "GET_SUPPORTED_ACTIONS_LIST",
+      "id": 4
+     }
+    ],
+    "notifications": [
+     {
+      "name": "MY_CONTROLS_DEFAULT_SETTING_CHANGE_NOTIFICATION",
+      "id": 1
+     }
+    ]
+   },
+   {
+    "feature": "SECONDARY_STATUS",
+    "feature_id": 6,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3SecondaryStatusPlugin.java",
+    "commands": [
+     {
+      "name": "GET_SECONDARY_STATUS",
+      "id": 1
+     }
+    ],
+    "notifications": [
+     {
+      "name": "SECONDARY_STATUS_CHANGED",
+      "id": 1
+     }
+    ]
+   },
+   {
+    "feature": "SIDE_TONE",
+    "feature_id": 3,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3SideTonePlugin.java",
+    "commands": [
+     {
+      "name": "GET_SIDE_TONE_STATUS",
+      "id": 1
+     },
+     {
+      "name": "SET_SIDE_TONE_STATUS",
+      "id": 2
+     },
+     {
+      "name": "SET_SIDE_TONE_LEVEL",
+      "id": 3
+     },
+     {
+      "name": "GET_SIDE_TONE_LEVEL",
+      "id": 4
+     },
+     {
+      "name": "GET_SIDE_TONE_MAX_LEVEL",
+      "id": 5
+     }
+    ],
+    "notifications": [
+     {
+      "name": "SIDE_TONE_STATUS_CHANGED",
+      "id": 1
+     },
+     {
+      "name": "SIDE_TONE_LEVEL_CHANGED",
+      "id": 4
+     }
+    ]
+   },
+   {
+    "feature": "SOUND_MODES",
+    "feature_id": 10,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3SoundModesPlugin.java",
+    "commands": [
+     {
+      "name": "GET_FF_ANC_MAX_VALUES",
+      "id": 1
+     },
+     {
+      "name": "GET_FF_ANC_CONFIGURATION",
+      "id": 2
+     },
+     {
+      "name": "SET_FF_ANC_CONFIGURATION",
+      "id": 3
+     },
+     {
+      "name": "GET_SOUND_MODE",
+      "id": 4
+     },
+     {
+      "name": "SET_SOUND_MODE",
+      "id": 5
+     },
+     {
+      "name": "GET_SOUND_MODE_LOOP",
+      "id": 6
+     },
+     {
+      "name": "SET_SOUND_MODE_LOOP",
+      "id": 7
+     },
+     {
+      "name": "GET_FF_ANC_ONBOARDING_STATUS",
+      "id": 8
+     },
+     {
+      "name": "SET_FF_ANC_ONBOARDING_STATUS",
+      "id": 9
+     }
+    ],
+    "notifications": [
+     {
+      "name": "SOUND_MODE_CHANGE",
+      "id": 1
+     },
+     {
+      "name": "ANC_ONBOARD_STATUS",
+      "id": 2
+     },
+     {
+      "name": "ANC_LEVEL_CHANGE",
+      "id": 3
+     },
+     {
+      "name": "SOUND_MODE_LOOP",
+      "id": 4
+     }
+    ]
+   },
+   {
+    "feature": "VOICE_ASSISTANT",
+    "feature_id": 14,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3VoiceAssistantPlugin.java",
+    "commands": [
+     {
+      "name": "GET_SPECIFIED_VOICE_ASSISTANT_CONNECTION_STATUS",
+      "id": 1
+     },
+     {
+      "name": "GET_VOICE_ASSISTANT_WAKEWORD_STATUS",
+      "id": 2
+     },
+     {
+      "name": "SET_VOICE_ASSISTANT_WAKEWORD",
+      "id": 3
+     }
+    ],
+    "notifications": [
+     {
+      "name": "VOICE_ASSISTANT_CONNECTION_STATUS_NOTIFICATION",
+      "id": 1
+     },
+     {
+      "name": "VOICE_ASSISTANT_WAKEWORD_NOTIFICATION",
+      "id": 2
+     }
+    ]
+   },
+   {
+    "feature": "VOICE_LANGUAGE",
+    "feature_id": 8,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/V3VoiceLanguagePlugin.java",
+    "commands": [
+     {
+      "name": "GET_CURRENT_STATE",
+      "id": 1
+     }
+    ],
+    "notifications": []
+   },
+   {
+    "feature": "FEATURES",
+    "feature_id": 1,
+    "source": "com/jabra/moments/gaialib/vendor/jabracore/plugins/JabraFeatureFetcher.java",
+    "commands": [
+     {
+      "name": "GET_SUPPORTED_FEATURES",
+      "id": 1
+     }
+    ],
+    "notifications": []
+   }
+  ],
+  "value_tables": {
+   "ControlActions": {
+    "NO_FUNCTIONALITY_FOR_MEDIA": 0,
+    "PLAY_PAUSE": 1,
+    "NEXT_TRACK": 2,
+    "PREVIOUS_TRACK": 3,
+    "VOICE_ASSISTANT": 4,
+    "SOUND_MODES": 5,
+    "NO_FUNCTIONALITY_INCOMING_CALLS": 6,
+    "REJECT_INCOMING_CALL": 7,
+    "ACCEPT_INCOMING_CALL": 8,
+    "ACCEPT_INCOMING_CALL_AND_HOLD": 9,
+    "MUTE_UNMUTE_MICROPHONE": 10,
+    "SIDETONE_ON_OFF_INCOMING_CALL": 11,
+    "NO_FUNCTIONALITY_ACTIVE_CALLS": 12,
+    "END_ACTIVE_CALL": 13,
+    "HOLD_ACTIVE_CALL": 14,
+    "MUTE_UNMUTE_ONGOING_CALL": 15,
+    "SIDETONE_ON_OFF_ACTIVE_CALL": 16
+   },
+   "ControlType": {
+    "INCOMING_CALLS": 0,
+    "ACTIVE_CALLS": 1,
+    "MEDIA_CONTROL": 2
+   },
+   "SoundMode": {
+    "OFF": 0,
+    "ANC": 1,
+    "HEARTHROUGH": 2
+   },
+   "AncOnboardingStatus": {
+    "ONBOARD": 1,
+    "NOT_ONBOARD": 2
+   },
+   "AutoAnswerCallState": {
+    "NOT_SUPPORTED": 0,
+    "ENABLED": 1,
+    "DISABLED": 2
+   },
+   "AutoMuteMicState": {
+    "NOT_SUPPORTED": 0,
+    "ENABLED": 1,
+    "DISABLED": 2
+   },
+   "AutoPauseMusicState": {
+    "NOT_SUPPORTED": 0,
+    "ENABLED": 1,
+    "DISABLED": 2
+   },
+   "ButtonControlState": {
+    "VOICE_ASSISTANT": 0,
+    "DISABLED": 1,
+    "SPOTIFY_ONE_TOUCH": 2
+   },
+   "Status": {
+    "NOT_SUPPORTED": 0,
+    "ON": 1,
+    "OFF": 2
+   },
+   "HearThroughMixMode": {
+    "NOT_SUPPORTED": 0,
+    "MIX": 1,
+    "NO_MIX": 2
+   },
+   "HearThroughState": {
+    "NOT_SUPPORTED": 0,
+    "ON": 1,
+    "OFF": 2
+   },
+   "InEarDetectionState": {
+    "NOT_SUPPORTED": 0,
+    "ENABLED": 1,
+    "DISABLED": 2
+   },
+   "JabraFeature": {
+    "FEATURES": 1,
+    "NOTIFICATION_REGISTRATION": 2,
+    "BATTERY_STATUS": 5,
+    "BUTTON_CONTROL": 9,
+    "VOICE_LANGUAGE": 8,
+    "HEARTHROUGH": 4,
+    "SIDE_TONE": 3,
+    "SECONDARY_STATUS": 6,
+    "MAX_GAINS": 7,
+    "SOUND_MODES": 10,
+    "GRAPHICS_EQUALIZER": 11,
+    "LEVELED_ANC": 12,
+    "MY_CONTROLS": 13,
+    "VOICE_ASSISTANT": 14,
+    "IN_EAR_DETECTION": 16
+   },
+   "MuteReminderState": {
+    "NOT_SUPPORTED": 0,
+    "ENABLED": 1,
+    "DISABLED": 2
+   },
+   "Role": {
+    "LEFT_IS_SECONDARY": 1,
+    "RIGHT_IS_SECONDARY": 2
+   },
+   "SideToneState": {
+    "UNSUPPORTED": 0,
+    "SIDETONE_ENABLED": 1,
+    "SIDETONE_DISABLED": 2
+   }
+  },
+  "wire": {
+   "start": 255,
+   "header": [
+    "start:u8",
+    "version:u8",
+    "flags:u8",
+    "payload_length:u8_or_u16be",
+    "vendor:u16be",
+    "packed_command:u16be"
+   ],
+   "length_excludes_vendor_and_command": true,
+   "checksum": "optional XOR, flag bit 0; Sound+ sender normally disables",
+   "packed_command": "feature << 9 | packet_type << 7 | operation",
+   "packet_types": {
+    "command": 0,
+    "notification": 1,
+    "response": 2,
+    "error": 3
+   }
+  },
+  "qualcomm_music": {
+   "vendor_id": 29,
+   "feature_id": 5,
+   "source": [
+    "defpackage/r9d.java",
+    "defpackage/g80.java",
+    "defpackage/w9d.java"
+   ],
+   "operations": {
+    "0": "EQ state response",
+    "1": "available preset list response",
+    "2": "selected preset response",
+    "4": "band count response",
+    "5": "read band configurations: start:u8,end:u8",
+    "6": "write gains: start:u8,end:u8,gain:s16be repeated"
+   },
+   "gain_scale": 60,
+   "gain_conversion": "truncate toward zero",
+   "band_reply_record": [
+    "frequency:u16be_Hz",
+    "Q:u16be_div4096",
+    "filter_type:u8",
+    "gain:s16be_div60"
+   ]
+  }
+ }
+}

@@ -37,7 +37,7 @@ class IdentifyTest {
                     Maker.PIXEL -> assertEquals(model, PixelModels.fromName(name)?.name, name)
                     Maker.EARFUN -> assertEquals(model, EarfunModels.fromName(name)?.name, name)
                     Maker.CAMBRIDGE -> assertEquals(model, CambridgeModels.fromName(name)?.name, name)
-                    Maker.SENNHEISER -> assertEquals(model, SennheiserModels.fromName(name)?.name, name)
+                    Maker.SENNHEISER -> assertEquals(model, SennheiserModels.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Models.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusModels.fromName(name)?.name, name)
                     else -> error("no model check for $want")
                 }
             }

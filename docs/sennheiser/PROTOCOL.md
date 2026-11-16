@@ -1,14 +1,15 @@
 # Sennheiser
 
-Sennheiser's control protocols, read from the company's two apps (decompiled outside the repo on 2026-11-15) and built for the products on **GAIA v3**. No Sennheiser product has
-been tried with PairFree.
+Sennheiser's control protocols, read from the company's two apps (decompiled outside the repo on 2026-11-15) and built for the products on **GAIA v3** and, over the serial port, the older **GAIA v2** and
+**Nautilus** headphones. No Sennheiser product has been tried with PairFree.
 
 ## 1. Sources
 
 - **Sennheiser Smart Control 4.9.4** (`com.sennheiser.control`, versionCode 175297). A NativeScript app whose protocol is plain JavaScript and JSON: every product has a product file
   (`assets/app/<model>.json`) listing its protocol, its shared feature files (`assets/app/features/`) and its *properties*: each one a thing the app can read, write or hear, with the commands
-  that do it, their ids and typed parameters. `data/sennheiser/commands.json` and `devices.json` keep the facts PairFree builds from them (`tools/import_sennheiser_app.py`); the app's files are
-  not in the repo.
+  that do it, their ids and typed parameters. `data/sennheiser/commands.json`, `devices.json`, `gaia2.json`, `nautilus.json`, `touch.json` and `eq.json` keep the facts PairFree builds from them
+  (`tools/import_sennheiser_app.py`); the app's files are not in the repo. The app's JavaScript is read for what each product's class sets up (`createProductFeatures`, `mapToFeature`,
+  `sendFeatureToDevice`), which is what decides the rows and the values written.
 - **Sennheiser Smart Control Plus 1.6.3** (`com.sonova.chb.control`). A Flutter app (Dart 3.10.8 AOT, obfuscated; its arm64 build was read with Blutter and a small annotating disassembler). It
   names the newer products and which platform each is on (section 2) and uses the same GAIA v3 implementation (its frame handler accepts exactly the vendors `0x001D` and `0x0495`, versions 3 and
   4, no checksum).
@@ -20,27 +21,33 @@ The two apps use four control protocols between them:
 
 | Protocol | Products | PairFree |
 |----------|----------|----------|
-| **GAIA v3** (Qualcomm's framework; vendors `0x001D` Qualcomm's and `0x0495` Sennheiser's own) | Accentum, Accentum Plus, Accentum True Wireless, CX 200, CX 200 Sports, CX Plus True Wireless (CX400II), CX 500, Momentum 4, Momentum Sport, Momentum True Wireless 3 and 4 (Smart Control); Momentum 5, Momentum True Wireless 5, HDB 630, HDR 275 / 255 (Smart Control Plus) | built (sections 3 to 6) |
-| GAIA v2 (vendors `0x0494` and Qualcomm's `0x000A`) | CX 350, CX 400, HD 250, HD 350, HD 450, HD 450SE, HD 458, IE 80, Momentum True Wireless 1 and 2 | blocked: nobody to try it on; checked: Smart Control's product files (`cx350.json`, `tw2.json`...) define its commands completely (the same property catalogue, other ids), so it is a table and a framing version away |
-| Nautilus (Sennheiser's own frame, CRC-8) | Momentum 3, PXC 550, PXC 550-II | blocked: nobody to try it on; checked: `m3.json`, `pxc550.json`, `pxc550II.json` define its commands; the frame is in `NautilusCommand` (`EB FE 01 00 01 00 00 00`, length and CRC-8 poly `0x07` init `0xFF`, little-endian module and command) |
-| Airoha RACE | Accentum Clip (AOWS1) | blocked: nobody to try it on; checked: Smart Control Plus's Dart code (`aows1` is the only product its platform table sends to Airoha) and PairFree's own RACE code from the JBL work |
+| **GAIA v3** (Qualcomm's framework; vendors `0x001D` Qualcomm's and `0x0495` Sennheiser's own) | Accentum, Accentum Plus, Accentum True Wireless, CX 200, CX 200 Sports, CX Plus True Wireless (CX400II), CX 500, Momentum 4, Momentum Sport, Momentum True Wireless 3 and 4 (Smart Control); Momentum 5, Momentum True Wireless 5, HDB 630, HDR 275 / 255 (Smart Control Plus) | built (sections 3 to 4.8, 4.11); the CX 200, CX 200 Sports, CX Plus and CX 500 only over Bluetooth LE (section 6) |
+| **GAIA v2** (vendors `0x0494` and Qualcomm's `0x000A`) | CX 350BT, HD 250BT, HD 350BT, HD 450BT, HD 450SE, HD 458BT, IE 80S BT (the serial port); CX 400BT, Momentum True Wireless 1 and 2, CX 150 (Bluetooth LE only) | built for the serial ones (section 4.9); the LE ones are in the table and cannot be opened (section 6) |
+| **Nautilus** (Sennheiser's own frame, CRC-8) | Momentum 3, PXC 550, PXC 550-II | built (section 4.10) |
+| Airoha RACE | Accentum Clip (AOWS1) | not built (section 6); checked: Smart Control Plus's Dart code sends only this product to its Airoha platform, and its RACE feature variants were found but their commands not traced |
 | Soundbars (Elmar over BLE; Wi-Fi) and the HDW 960 | AMBEO Soundbar | speakers are held back (owner, 2026-10-30) |
 
 How the platform is known: Smart Control Plus identifies a product from Sonova's advertisement data and a jump table in its Dart code sends every product to "herakles" (Qualcomm GAIA 3) except
 the Accentum Clip and an unknown Airoha product ("airoha") and the HDW 960 and the soundbars ("sue"). So the **Momentum 5 and Momentum True Wireless 5 are GAIA v3**, as the Momentum 5 report
 in issue #47 suggests (`00 04 06 07 0c 0d` is a GAIA 3 feature list). Smart Control sends the Momentum 5/6, True Wireless 5/6, HDB 630, HDR 275, BTA1, AOWS1 and others to the Plus app.
 
+Which transport Android opens for each product is in Smart Control's `DeviceConfig`: the serial port for the Accentum family, Momentum 4, Momentum Sport, Momentum True Wireless 3 and 4 (GAIA v3), for the
+GAIA v2 headphones named above and for the Nautilus ones; Bluetooth LE only for the CX 200, CX 200 Sports, CX Plus, CX 500, CX 400, CX 150 and Momentum True Wireless 1 and 2.
+
 ## 3. Transport and framing
 
-- **Classic Bluetooth:** RFCOMM service `a2129ff3-081b-4c45-8afe-469d9c4842ec` (Sennheiser's own: it is what PairFree identifies a Sennheiser device by besides its name). Smart Control prefers it on
-  Android for the Accentum, Momentum 4, Momentum Sport and Momentum True Wireless 3 and 4; the CX 200, CX Plus and CX 500 are BLE only (service `FCFE` Sonova, `FDCE` Sennheiser; characteristics `6333133B`
-  write, `6333133C` read). PairFree opens RFCOMM only.
+- **GAIA v3, classic Bluetooth:** RFCOMM service `a2129ff3-081b-4c45-8afe-469d9c4842ec` (Sennheiser's own: it is what PairFree identifies a Sennheiser device by besides its name). The LE ones use service `FCFE`
+  (Sonova) or `FDCE` (Sennheiser), characteristics `6333133B` write and `6333133C` read, with no frame (vendor, word and payload only).
 - **Frame:** `FF`, version `03`, flags (bit 0: an XOR byte follows; bit 1: two length bytes), the payload's length, the vendor (u16), the command word (u16), the payload; big-endian throughout.
   PairFree sends no checksum and one length byte (what `SPPGaiaFramer` writes), and accepts both from the earbuds.
 - **Command word:** feature << 9 | type << 7 | command. Type 0 is a command, 1 a notification, 2 a reply (the command + `0100`), 3 an error (+ `0180`). The Sennheiser features are registered with `0495:0007`
-  and a feature id: core 0, device 2, battery 3, generic audio 4, user EQ 8, versions 9, device management 10, MMI 11, transparent hearing 12, ANC 13.
+  and a feature id: core 0, device 2, battery 3, generic audio 4, user EQ 8, versions 9, device management 10, MMI 11, transparent hearing 12, ANC 13, fit test 15, personalised sound 16, Auracast 21,
+  find device 22.
 - A reply and a notification of the same property carry the same bytes (the product file's `Event` is its `Response`). One command goes out at a time, each answered by its reply or an error; Smart Control
   waits 3 s and tries again.
+- **GAIA v2:** `FF`, version `01`, flags, the payload's length (no command header), the vendor (`0494`, or Qualcomm's `000A` for a few), the command and the payload; a response is the command with bit 15 set and
+  its payload starts with a status byte (0 is success). The serial UUID is `a2129ff3-081b-4c45-8afe-469d9c4842eb` (the last letter differs from GAIA v3's).
+- **Nautilus:** see section 4.10.
 
 ## 4. Built
 
@@ -57,7 +64,6 @@ Each is a property of the product files (`data/sennheiser/commands.json`), read 
 | lock the touch controls, eco mode, battery protection | `Setting_AutoLockMode` (`1607`/`1606`; the app: "to turn touch control on/off"), `Power_EcoMode` (`0609`/`0608`), `Power_BatteryProtectionMode` (`060B`/`060A`) | |
 | voice prompts and tones | `Setting_AudioPromptMode` (`0802`/`0801`): 0 off, 1 tones, 2 tones and voice | |
 | codec in use; firmware; model number; charging | `Sound_CodecUsed` (`0800`), `Service_SystemReleaseVersion` (`1201`: three u16), `Versions_ModelId` (`1206`), `Battery_ChargingStatus` (`0602`) | read only; the last two are in the device report |
-
 | equalizer | three generations, picked by what the product answers (section 4.1) | `eq2_*`, `eq1_*`: vendor `0495`, feature 8 (`1000` to `1109`), and `audio_mode` (`0804`/`0803`) |
 
 The status of every write is read back a moment later. `SennheiserTest` pins the frames and the rebuilt bytes of the writes.
@@ -81,27 +87,126 @@ gen 2's slider read and gen 1's parameter write), so the session decodes a featu
 run outside the repo, and the frames each generation sends. checked: the app's `EqKnobValuesCoder` was read for its bit layout; the Plus-only products (Momentum 5, Momentum True Wireless 5, HDB 630, HDR 275)
 have no product file in either app, so PairFree asks them nothing about the equalizer.
 
+### 4.2 Settings the product classes set up
+
+Each product's class in the app's JavaScript (`createProductFeatures`) says which of these it offers; PairFree reads a property only for the products whose screen uses it.
+
+| PairFree row | Property and words | Notes |
+|--------------|--------------------|-------|
+| sidetone (your own voice on calls) | `SidetoneState` (`0806`/`0805`, one byte): 0 is off | the highest level is `phoneCallsMaxValue`: 4 on the Accentum Plus and Momentum 4, 2 on the others; the CX models name 0, 1, 2 off, min, max |
+| automatic power off | `Config_GetTimer` (`0601`, timer 0) / `Config_SetTimer` (`0600`, timer 0 and seconds) | the app's choices are never, 15, 30 and 60 minutes (`defaultAutoPowerOff`) |
+| Bluetooth compatibility mode | `BluetoothCompatibilityMode` (`0406`/`0405`): 1 better compatibility, 0 better audio | Momentum 4, Momentum Sport, Momentum True Wireless 3 and 4 |
+| transparency level, Accentum Plus and Momentum 4 | `ANC_Transparency` (`1A03`/`1A02`, 0 to 100): the app's `slider` | between transparency (0) and noise cancelling (100); shown beside the three-way noise control (section 7) |
+| transparency level, the earbuds | `TransparentHearing` (`1803`/`1802`) | the app writes 1, 50 or 100 (`transparent_hearing_slider_low`, `mid`, `high`) |
+| tap sensitivity | `TapDetection` (`2601`/`2600`): low 2, mid 1, high 0 | Momentum Sport |
+| open ear tip support, hold to disable the touch area | `Sound_OpenEartip` (`0811`/`0810`), `Touch_Locked` (`1609`/`1608`) | CX Sport, Momentum Sport |
+| aptX Lossless | `AptXLosslessSupport` (`0408`/`0407`) | Momentum True Wireless 4 |
+| wear state, sample rate, voice prompt language | `PhysicalDevice_State` (`0402`), `Sound_Sample_Rate` (`081A`), `VoicePrompt_Language` (`0807`) | read only; checked: the language's Set names a command without any id in every product file, so the app cannot write it either |
+| restart | `Reboot` (`060F`) | an action the screen confirms (owner, 2026-11-03); the app restarts the earbuds after an eco mode change |
+
+### 4.3 Touch and button functions
+
+Smart Control's class for each product lists the functions its screen offers (`availableActions`), with the gestures each is allowed on (`constrainedTo`, none listed meaning any). The app reads each earbud's four gestures
+(`GetMMIConfig` `1601` with the button, 0 right and 1 left, and the gesture, 1 single, 2 double, 3 triple, 4 long press) and shows a gesture when the answer's function is one of the product's. A write is
+`SetMMIConfig` (`1600`, button, gesture, function); `SetDefaultMMIConfig` (`1604`) restores the product's own, and `IsDefaultMMIConfig` (`1605`) says whether they are. The functions' numbers (`data/sennheiser/touch.json`):
+play or pause 1, next 2, previous 3, volume up 4, volume down 5, transparent hearing 6, voice assistant 7, noise cancelling 9, lock or unlock 13, sound mode toggle 15, open ear tip 16, noise cancelling and
+transparency toggle 18, bass boost 21. Volume functions are allowed on a long press only; the Momentum Sport's are double and triple taps. Functions a class adds for newer firmware (CX Sport: open ear tip and lock from 2.9.5;
+Momentum Sport: bass boost and the sound mode from 3.17.3) wait for the firmware the earbuds report. The Accentum, Accentum Plus and Momentum 4 offer none: their `availableActions` is empty, so the app only shows their fixed
+gestures, and so does PairFree (the lock switch of section 4 stays).
+
+### 4.4 Find device
+
+`FindDeviceRingSeparateDevice` (`2C02`, the side: 0 right, 1 left), `FindDeviceStopRinging` (`2C01`) and `FindDeviceIsDeviceRinging` (`2C03`, a side; the answer is the notification `2C83` naming whether it rings and which side).
+Feature 22 is registered. Accentum True Wireless, Momentum Sport and Momentum True Wireless 4, from the firmware their product files name.
+
+### 4.5 Personalised sound and podcast mode
+
+`AudioMode` (`0804`/`0803`): 1 the user equalizer, 2 speech (the app's podcast mode, which locks the equalizer) and 3 the personalised sound. The personalised sound has two generations (`sound-personalization-1` and `-2`):
+the first holds its state in `PersonalizedSound_Mode` (`2001`/`2000`; 0 not set up, 1 disabled, 2 standby, 3 enabled, 4 calibrating) and is switched on with mode 3 and off with the audio mode user equalizer; the second
+is the audio mode 3 itself (mode: 0 not set up, 1 calibrating, 2 calibrated, 3 activation inhibited). PairFree picks the generation from the firmware against each file's version, shows the switch only once a personalisation
+exists, and offers `PersonalizedSound_Reset` (`2009`) as an action the screen confirms. The personalisation itself (the listening test that works out the thresholds, ratios and gains) is not built (section 6);
+checked: it runs in a native library of the app, `libmusic_fit_native-lib.so` (67 KB, Fraunhofer IDMT's MusicFit and SurfaceFit: its exports are the fitting presets `preset_N_M`, `adaptPresetsToResults`,
+`fit_sequenced`, `compute_fader_offset`), which was listed but not disassembled.
+
+### 4.6 Fit test
+
+`FitTest_CheckPrecondition` (`1E01`) then `FitTest_Check` (`1E00`), each answered by a notification with the left and right earbud (feature 15 registered): the precondition is 1 for a ready earbud; the result is 0 to 29 bad, 30 to 59
+acceptable, 60 to 100 good, 254 invalid, 255 none. checked: the app plays its own 10 second music clip (`fit_test.ogg`, 44.1 kHz stereo, bass-heavy, loudest in the middle) in a loop above a target volume while the earbuds measure;
+PairFree cannot include the file, so the screen asks for music at a medium or higher volume, and the result may then be invalid. Accentum True Wireless, Momentum Sport, Momentum True Wireless 3 and 4.
+
+### 4.7 Paired devices (multipoint)
+
+`DeviceList_GetPairedDeviceListSize` (`1400`), `GetOwnDeviceIndex` (`1407`), `GetDeviceInfo` (`1401`, index; the answer is index, priority, status and name), `Connect` (`1402`), `Disconnect` (`1403`) and `GetConnectionStatus` (`1404`;
+its notification `1484`). The status is 0 disconnected, 1 classic, 2 LE, 3 both, 128 a flag, 254 and 255 no device. The app reads from index 0 up to eight entries. PairFree offers connecting and disconnecting the devices that are
+not the phone itself, so the connection it holds is never cut. Deleting an entry (`1405`, `1406`) is not offered; checked: both commands exist in the product files and remove a pairing from the earbuds' list (section 6).
+
+### 4.8 The Momentum Sport's sensors
+
+`Sensor_SetSensorEnable` (`2201`, the sensor and 1 or 0), `Sensor_GetSensorEnable` (`2202`) and `Sensor_SensorData` (`2200`; the notification `2280`): sensor 0 is the heart rate (the second byte of the data, in beats per minute),
+sensor 1 the body temperature (the data's bytes 2 and 3 as a number, times ten to the signed byte 4, celsius when the flags say so; `parseBodyTemperatureSensorData`). PairFree switches both on only when asked, reads them with
+the battery and switches them off again.
+
+### 4.9 GAIA v2 headphones
+
+The product files of CX 350BT, HD 250BT, HD 350BT, HD 450BT, HD 450SE, HD 458BT and IE 80S BT (`data/sennheiser/gaia2.json`): battery (`0182`) and charging (`0185`), the audio mode (`0786`/`0706`: user equalizer 1, speech 2: the podcast
+mode), sidetone (`0787`/`0707`: off, min, max), the three-band equalizer (the parameter group `EQ_UserParameterGroup_Set`, Qualcomm's vendor `000A` command `021B`, and the two knobs `0685`/`0605`, as the
+newer products' three knobs of section 4.1, with the gain limit 4), and on the IE 80S BT the answer-call and smart-pause switches, the voice prompt mode (`0781`/`0701`), language (`000A:0292`/`0212`), codec (`0184`), the automatic power off
+timer (`000A:0189`/`0109`) and the multi-function button (`0186`/`0106`: voice assistant or the equalizer modes). Everything is read when the channel opens and the battery again on a timer. The HD 458BT's equalizer, the IE 80S BT's equalizer and the HD 450SE's voice assistant (`Voice_Assistant_Mode`, `0583`/`0503`, Alexa) are not
+built, and the earbuds' events are not used; checked: the events (`000A:4003`, answered `C003`) are not registered by any command of the product files, so PairFree re-reads instead; the HD 458BT's class sends
+`Sound_SetEQParamGroup` and `Sound_StoreEqSettings` through `Sound_EQControl`, the IE 80S BT's uses `Sound_EQControl` and `Sound_EqStatus`, and neither layout is in the product files.
+
+### 4.10 Nautilus headphones
+
+The Momentum 3, PXC 550 and PXC 550-II (`data/sennheiser/nautilus.json`). A packet is `EB FE 01 00 01 00 00 00`, the length of the header and payload (two bytes, little-endian), a CRC-8 over them (polynomial `07`, initial
+`FF`, most significant bit first, two bytes little-endian) and the header: module, optional submodule and command, each two bytes little-endian, then the payload; a string is UTF-16. On the serial port
+(`1ddce62a-ecb1-4455-8153-0743c87aec9f`) each packet goes between two `2A` and the bytes `2A` and `3F` are escaped as `3F 2F` and `3F 3F`. The answer carries the header of the answer's own definition. `NautilusTest` pins the packets
+against a port of the app's `accumulateCrc8` run outside the repo. Shown: the battery (the Momentum 3 answers a percentage, `12:03`; the PXC 550s a voltage and a level of five steps, `12:01`), the Momentum 3's noise cancelling
+mode (`ANC_ActiveMode` `17:08`/`17:09`: off 0, airplane 1, outdoor 3, home 4; only while the control type `17:10` says the switch is on), transparent hearing (`ANC_ToggleAmbientMode` `17:11`) and whether it pauses music
+(`17:0A`/`17:0B`), the PXC 550s' noise cancelling state (`17:03`/`17:04`: off, on, adaptive), the PXC 550-II's middle position of the switch (`17:12`/`17:13`), smart pause (`Input_Proximity_Mode`, module `08` submodule `EF` command `01`:
+a write of the mode, and a read is the same command with 2), the voice prompts (`07:01`/`07:05`), the prompt language (read), the codec (`0A:10`), call enhancement (`0A:03`/`0A:04`), the sound presets (`0A:07`/`0A:08`) and the
+version. The Momentum 3's equalizer, the PXC 550s' adaptive noise cancelling level, their boost, reverb, dynamic loudness and virtual speaker positions and the voice assistant are not built;
+checked: the Momentum 3's `Eq3BandM3` writes three parameter groups with the knobs (`0A:0E`/`0F`), the level (`17:05`/`17:06`) has its range in the app's code and not in the product files, the acoustical settings
+(`0A/FF:07`/`08`) take a preset number 4, and the voice assistant is `06:41`/`06:42`.
+
+### 4.11 Auracast
+
+The earbuds scan for broadcasts themselves (`Auracast_StartSourceScan` `2A23`, five seconds as the app asks; `StopSourceScan` `2A24`; the results are the notification `2AA0`; the status `2A25`) and are an assistant for the
+broadcast (BASS): `Auracast_AddSource` (`2A02`: the address type and address, the advertising set, the broadcast id, synchronise without past info, an unknown interval, one subgroup taking every stream and no metadata, as
+`BassAddSourceOperation` builds it), `RemoveSource` (`2A05`), `GetSourceIds` (`2A22`) and `GetReceiveState` (`2A21`, with the notification `2AA1`). Feature 21 is registered. Accentum True Wireless and Momentum True Wireless 4 from firmware
+5.13.1. PairFree lists broadcasts that need no code. `SennheiserMoreTest` builds each message from the app's own layout.
+
 ## 5. Never sent
 
-`SennheiserSession.allowed` is a closed list: only the reads and writes of section 4's properties and the notification registration go out. Everything else stays unsent, in particular the factory reset
-(`0495:0040`), firmware update (the `Upgrade_*` / VMUP commands), the panic log erase and the raw device storage, and `SetMMIConfig`.
+`SennheiserSession.allowed` is a closed list: only the reads and writes of the tables' properties and the notification registration go out. Everything else stays unsent, in particular the factory reset
+(`0495:0040`), firmware update (the `Upgrade_*` / VMUP commands and `Upgrade_EnterDfuMode`), the panic log erase, the raw device storage, the statistics, the serial number and the pairing list's deletions.
+`Reboot` and `PersonalizedSound_Reset` go only from an action the user confirms on the screen. The GAIA v2 and Nautilus sessions send only the commands of their products' tables, each checked as the GAIA v3 session's are.
 
-## 6. To build next
+## 6. What remains
 
 Each says what was read.
 
-- The equalizer's user presets that live on the earbuds (`selectablePreset`, `userPresets` of `UserEQ_GetConfiguration`) and the Plus app's equalizer for its own products: checked: the first are counted in the
+- **Bluetooth LE only products** (the CX 200, CX 200 Sports, CX Plus and CX 500 of the table, GAIA v2's CX 400BT, Momentum True Wireless 1 and 2, and the CX 150): blocked: PairFree opens only the serial port, and these need Bluetooth LE
+  with a scan permission (`BLUETOOTH_SCAN`) the owner has allowed only for JBL and QCY, and the app's own bonding over the characteristic `63331379` (`RESET_REQ`, `USER_ACTION_REQUIRED_REQ`, the buttons pressed on the earbuds,
+  `DISABLE_CTKD`: the app turns cross-transport key derivation off, so the classic pairing gives no LE bond); checked: `DeviceConfig` (which products use which service, `FCFE` or `FDCE`), `BlePairingScreenService`
+  and the product files. A decision for the owner: allow the scan for Sennheiser.
+- **The Accentum Clip (Airoha RACE)**: not built: checked: Smart Control Plus sends it, and only it, to its Airoha platform; its sixteen RACE feature variants exist as classes (`AutoPowerOffRaceFeatureVariant`,
+  `BatteryRaceFeatureVariant`, `Equalizer2RaceFeatureVariant`, `TouchControlsRaceFeatureVariant`...) but their constructors hold only the feature name and id (the auto power off is feature `0x12`); the commands they
+  send are in `RaceClient` methods that were not traced, and the Java side only wraps Airoha's SDK. The next step is to trace each variant to its RACE command with `dartx.py` and port PairFree's own RACE code (`protocol.airoha`).
+- **Personalised sound's listening test**: not built: checked: section 4.5.
+- **Auracast broadcasts that need a code**: not built: checked: `Auracast_SetBroadcastCode` (`2A04`) takes a code of up to 16 characters the user types; PairFree's rows have no text field.
+- **The equalizer presets stored on the earbuds** (`selectablePreset`, `userPresets` of `UserEQ_GetConfiguration`) and the Plus app's equalizer for its own products: checked: the first are counted in the
   configuration reply but no command in the product files names or applies them; the Plus-only products have no product file.
-- Touch and button configuration (`GetMMIConfig`, `SetMMIConfig`, `SetDefaultMMIConfig`, `ApplyMMIConfig`): checked: the commands are in the product files and the action list in Smart Control Plus has 55
-  values (`kEa` in the Dart dump, each with its number).
-- Transparent hearing's level (`TransparentHearing` / `ANC_Transparency`, 0 to 100 on the Momentum 4 and Momentum Sport): checked: the commands (`1803`/`1802`, `1A03`/`1A02`) and the slider's range (`min: 0, max: 100`) are in the product files; not built until a product's behaviour is known.
-- Sidetone (`SidetoneState`), find device (`features/find-device-1.json`), personalised sound (`features/sound-personalization-*.json`), audio mode (`features/audio-mode-*.json`), the fit test, multipoint
-  (`PairedDevices*`), Auracast (`features/auracast-1.json`), voice assistant selection, voice prompt language and the Momentum Sport's sensors: checked: all are in the product files with their ids and types;
-  none is built.
+- **Deleting a paired device** (`1405`, `1406`): not built: checked: both commands exist in the product files; PairFree's screens confirm only the power actions, and a confirmation for these is to be added.
+- **The voice assistant** (`VoiceUI_Selected_Assistant`) and **renaming** (`renameDeviceMinFwVersion`): checked: every product file sets `voiceAssistant_MinFwVersion` and `renameDeviceMinFwVersion` to 99.99.99, so the app
+  itself never offers them.
+- **The IE 80S BT's and HD 458BT's equalizers, the Nautilus equalizer and acoustical settings**: section 4.9 and 4.10.
+- **The soundbars (Elmar, Wi-Fi)**: held back with the other speakers (owner, 2026-10-30); checked: the AMBEO Soundbar's product file (`sb01.json`, 77 properties, one-byte commands with a `0xFF` separator over `63331377/78`).
 
 ## 7. Open questions
 
 - Which GAIA v3 properties the Momentum 5 and Momentum True Wireless 5 have: checked: neither has a product file in either app; PairFree asks for all of them and shows what answers, so a device report
   settles it.
-- Whether the 3-way noise control matches the product's behaviour on the models with a combined slider (Momentum 4: `ANC_Transparency`): checked: the Momentum 4's product code uses `ANC` and the slider,
-  not `ANC_Status`, in its noise screen; PairFree's three-way control writes `ANC_Status` and `TransparentHearing_Status`, which the Momentum 4's file also lists. A report from a Momentum 4 will say.
+- Whether the three-way noise control matches the Momentum 4's and Accentum Plus's behaviour: checked: the Momentum 4's class writes only `ANC_Transparency` (the slider), `ANC` and `TransparentHearingMode` in its noise
+  screen and never `ANC_Status` or `TransparentHearing_Status`, which its product file lists; PairFree's three-way control writes those two, and the slider of section 4.2 is the app's own control. A report from a
+  Momentum 4 will say which the headphones follow.
+- The fit test's music (section 4.6), the Nautilus and GAIA v2 headphones' replies, and the whole of this document: no product was available; each is a reading of the apps.

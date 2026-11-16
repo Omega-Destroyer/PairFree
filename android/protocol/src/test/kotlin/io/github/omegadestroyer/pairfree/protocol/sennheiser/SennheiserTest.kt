@@ -172,7 +172,8 @@ class SennheiserTest {
         // The factory reset (0495:0040) and anything else not in the table.
         assertFalse(s.allowed(Gaia3Packet(0x0495, 0x0040).bytes()))
         assertFalse(s.allowed(Gaia3Packet(0x001D, 0x0006).bytes()))
-        assertFalse(s.allowed(Gaia3Packet(0x0495, 0x1A02, byteArrayOf(50)).bytes()))
+        assertFalse(s.allowed(Gaia3Packet(0x0495, 0x0200).bytes()), "entering the firmware update mode")
+        assertFalse(s.allowed(Gaia3Packet(0x0495, 0x0201, byteArrayOf(0, 0, 0, 1)).bytes()), "the size of an update file")
         assertFalse(s.allowed(byteArrayOf(1, 2, 3)))
     }
 }

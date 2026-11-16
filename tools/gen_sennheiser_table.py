@@ -13,8 +13,54 @@ LABELS = {
     "battery_percent": "battery", "anc_status": "noise cancelling", "transparency_status": "transparency", "anc_mode": "anti-wind, adaptive noise cancelling",
     "transparency_pause": "pause in full transparency", "on_head": "on-head detection", "smart_pause": "smart pause", "auto_call": "answer calls automatically",
     "comfort_call": "comfort call", "low_latency": "low latency mode", "touch_lock": "lock the touch controls", "eco_mode": "eco mode",
-    "battery_protection": "battery protection", "prompt_mode": "voice prompts", "codec": "codec in use",
+    "battery_protection": "battery protection", "prompt_mode": "voice prompts", "codec": "codec in use", "bt_compat": "Bluetooth compatibility mode",
+    "auto_off": "automatic power off", "tap_sensitivity": "tap sensitivity", "open_eartip": "open ear tip support", "lossless": "aptX Lossless",
+    "physical_state": "wear state", "sample_rate": "sample rate", "prompt_language": "voice prompt language", "touch_area": "touch area",
 }
+FEATURES = {
+    "find-device-1": "find device", "sound-personalization-1": "personalised sound", "sound-personalization-2": "personalised sound", "audio-mode-1": "podcast mode",
+    "auracast-1": "Auracast", "reboot": "restart",
+}
+
+
+def shown(m):
+    """What the page lists for a model of Smart Control's GAIA v3 files."""
+    out = [LABELS[p] for p in m["properties"] if p in LABELS]
+    if m.get("sidetone_max"):
+        out.append("sidetone")
+    if m.get("transparency"):
+        out.append("transparency level")
+    if m.get("eq"):
+        out.append("equalizer")
+    if m.get("touch"):
+        out.append("touch and button functions")
+    for key, label in FEATURES.items():
+        if key in m.get("features", {}) and label not in out:
+            out.append(label)
+    for key, label in (("peers", "paired devices (connect, disconnect)"), ("fit_test", "fit test"), ("sensors", "heart rate and body temperature")):
+        if m.get(key):
+            out.append(label)
+    return ", ".join(dict.fromkeys(out))
+
+
+GAIA2_LABELS = {
+    "battery_percent": "battery", "audio_mode": "podcast mode", "eq_knob": "equalizer (bass, mid, treble)", "sidetone": "sidetone", "prompt_mode": "voice prompts",
+    "auto_call": "answer calls automatically", "smart_pause": "smart pause", "codec": "codec in use", "auto_off": "automatic power off", "multi_function": "multi-function button",
+    "prompt_language": "voice prompt language", "touch_lock": "lock the touch controls", "transparency_status": "transparent hearing", "anc_state": "noise cancelling",
+}
+NAUTILUS_LABELS = {
+    "battery_percent": "battery", "battery_level": "battery", "anc_mode": "noise cancelling modes", "anc_state": "noise cancelling", "ambient_toggle": "transparent hearing",
+    "ambient_audio": "pause music in transparency", "proximity": "smart pause", "prompt_mode": "voice prompts", "prompt_language": "voice prompt language", "codec": "codec in use",
+    "call_enhancement": "call enhancement", "sound_preset": "sound presets", "anc_middle": "middle position of the switch",
+}
+
+
+def gaia2():
+    return json.loads((device_pages.ROOT / "data/sennheiser/gaia2.json").read_text(encoding="utf-8"))["products"]
+
+
+def nautilus():
+    return json.loads((device_pages.ROOT / "data/sennheiser/nautilus.json").read_text(encoding="utf-8"))["products"]
 
 
 def models():
@@ -23,19 +69,28 @@ def models():
 
 def summary():
     tested = [m["name"] for m in models() if any((device_pages.ROOT / r).exists() for r in m.get("reports", []))]
-    return {"brand": "Sennheiser", "models": len(models()), "tested": tested}
+    return {"brand": "Sennheiser", "models": len(models()) + len(gaia2()) + len(nautilus()), "tested": tested}
 
 
 def table():
     rows = []
+    ble = "Not tested. Bluetooth LE only: PairFree cannot open it yet"
     for m in models():
         if m["properties"] is None:
-            shown = "everything the product answers (no product file in either app)"
+            text = "everything the product answers (no product file in either app)"
         else:
-            shown = ", ".join(LABELS[p] for p in m["properties"] if p in LABELS)
-        status = "Tried: device report" if any((device_pages.ROOT / r).exists() for r in m.get("reports", [])) else "Not tested"
+            text = shown(m)
+        status = "Tried: device report" if any((device_pages.ROOT / r).exists() for r in m.get("reports", [])) else ("Not tested. Bluetooth LE only: PairFree cannot open it yet" if m.get("ble_only") else "Not tested")
         names = ", ".join(m["names"][:4]) + ("…" if len(m["names"]) > 4 else "")
-        rows.append(f"<tr><td>{escape(m['name'])}</td><td>{escape(names)}</td><td>{escape(shown)}</td><td>{status}</td></tr>")
+        rows.append(f"<tr><td>{escape(m['name'])}</td><td>{escape(names)}</td><td>{escape(text)}</td><td>{status}</td></tr>")
+    for p in gaia2():
+        text = ", ".join(dict.fromkeys(GAIA2_LABELS[k] for k in p["properties"] if k in GAIA2_LABELS))
+        if not p["eq"] and "eq_knob" in p["properties"]:
+            text = text.replace("equalizer (bass, mid, treble), ", "").replace("equalizer (bass, mid, treble)", "")
+        rows.append(f"<tr><td>{escape(p['name'])} (GAIA v2)</td><td>{escape(', '.join(p['names']))}</td><td>{escape(text)}</td><td>{ble if p['transport'] == 'ble' else 'Not tested'}</td></tr>")
+    for p in nautilus():
+        text = ", ".join(dict.fromkeys(NAUTILUS_LABELS[k] for k in p["properties"] if k in NAUTILUS_LABELS))
+        rows.append(f"<tr><td>{escape(p['name'])} (Nautilus)</td><td>{escape(', '.join(p['names']))}</td><td>{escape(text)}</td><td>Not tested</td></tr>")
     return "\n".join([START, "<table>", "<tr><th>Model</th><th>Bluetooth names</th><th>Shown</th><th>Status</th></tr>", *rows, "</table>", END])
 
 

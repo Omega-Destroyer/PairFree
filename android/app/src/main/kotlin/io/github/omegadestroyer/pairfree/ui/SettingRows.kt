@@ -86,7 +86,15 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Text(settingTitle(setting.key), Modifier.weight(1f))
-                        Text(if (setting.key == "a3959_wind_detected") stringResource(if (setting.value == "yes") R.string.yes else R.string.no) else setting.value, color = Studio.colors.secondaryText)
+                        Text(
+                            when {
+                                setting.key == "a3959_wind_detected" -> stringResource(if (setting.value == "yes") R.string.yes else R.string.no)
+                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") -> optionName(setting.key, setting.value)
+                                setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
+                                else -> setting.value
+                            },
+                            color = Studio.colors.secondaryText,
+                        )
                     }
                 }
             }
@@ -96,7 +104,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
     confirming?.let { key ->
         ConfirmDialog(
             title = stringResource(actionStart(key)),
-            body = stringResource(if (key == "power_off") R.string.setting_power_off_body else R.string.setting_restart_body),
+            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; else -> R.string.setting_restart_body }),
             confirm = stringResource(actionStart(key)),
             onConfirm = { onChange(SettingChange.Press(key)) },
             onDismiss = { confirming = null },
@@ -166,7 +174,7 @@ private const val SEND_AFTER_MS = 300L
 private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
-private val CONFIRM_KEYS = setOf("restart", "power_off")
+private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
 private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find")
@@ -191,7 +199,10 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_right" -> R.string.setting_group_touch_right
         "touch_case" -> R.string.setting_group_touch_case
         "touch_dial" -> R.string.setting_group_touch_dial
-        "touch_buttons" -> R.string.touch_controls
+        "touch_buttons", "touch_default" -> R.string.touch_controls
+        "sh_fit" -> R.string.setting_group_sh_fit
+        "sh_auracast" -> R.string.setting_group_sh_auracast
+        "sh_sensors" -> R.string.setting_group_sh_sensors
         "sleep" -> R.string.setting_group_sleep
         "sleep_sound" -> R.string.setting_group_sleep_sound
         "attention" -> R.string.setting_group_attention
@@ -215,6 +226,8 @@ private fun groupTitle(key: String): String = stringResource(
 private fun groupNote(key: String): String? = when (key) {
     "ef_cycle" -> stringResource(R.string.setting_group_ef_cycle_note)
     "find" -> stringResource(R.string.setting_find_note)
+    "sh_fit" -> stringResource(R.string.setting_sh_fit_note)
+    "sh_auracast" -> stringResource(R.string.setting_sh_auracast_note)
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
@@ -541,6 +554,40 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_prompts" -> stringResource(R.string.setting_sh_prompts)
     "sh_codec" -> stringResource(R.string.setting_sh_codec)
     "sh_bass_boost" -> stringResource(R.string.setting_sh_bass_boost)
+    "sh_sidetone" -> stringResource(R.string.setting_sh_sidetone)
+    "sh_touch_area" -> stringResource(R.string.setting_sh_touch_area)
+    "sh_auto_off" -> stringResource(R.string.setting_sh_auto_off)
+    "sh_bt_compat" -> stringResource(R.string.setting_sh_bt_compat)
+    "sh_transparency_slider" -> stringResource(R.string.setting_sh_transparency_slider)
+    "sh_transparency_level" -> stringResource(R.string.setting_sh_transparency_level)
+    "sh_tap_sensitivity" -> stringResource(R.string.setting_sh_tap_sensitivity)
+    "sh_open_eartip" -> stringResource(R.string.setting_sh_open_eartip)
+    "sh_lossless" -> stringResource(R.string.setting_sh_lossless)
+    "sh_sample_rate" -> stringResource(R.string.setting_sh_sample_rate)
+    "sh_prompt_language" -> stringResource(R.string.setting_sh_prompt_language)
+    "sh_wear" -> stringResource(R.string.setting_sh_wear)
+    "sh_wear_left" -> stringResource(R.string.setting_sh_wear_left)
+    "sh_wear_right" -> stringResource(R.string.setting_sh_wear_right)
+    "sh_podcast" -> stringResource(R.string.setting_sh_podcast)
+    "sh_nautilus_anc" -> stringResource(R.string.setting_sh_nautilus_anc)
+    "sh_nautilus_ambient" -> stringResource(R.string.setting_sh_nautilus_ambient)
+    "sh_nautilus_anc_state" -> stringResource(R.string.setting_sh_nautilus_anc_state)
+    "sh_nautilus_anc_middle" -> stringResource(R.string.setting_sh_nautilus_anc_middle)
+    "sh_nautilus_preset" -> stringResource(R.string.setting_sh_nautilus_preset)
+    "sh_call_enhancement" -> stringResource(R.string.setting_sh_call_enhancement)
+    "sh_multi_function" -> stringResource(R.string.setting_sh_multi_function)
+    "sh_personalized" -> stringResource(R.string.setting_sh_personalized)
+    "sh_fit_test" -> stringResource(R.string.setting_sh_fit_test)
+    "sh_fit_left" -> stringResource(R.string.setting_sh_fit_left)
+    "sh_fit_right" -> stringResource(R.string.setting_sh_fit_right)
+    "sh_peer_connect" -> stringResource(R.string.setting_sh_peer_connect)
+    "sh_peer_disconnect" -> stringResource(R.string.setting_sh_peer_disconnect)
+    "sh_sensors" -> stringResource(R.string.setting_sh_sensors)
+    "sh_heart_rate" -> stringResource(R.string.setting_sh_heart_rate)
+    "sh_body_temperature" -> stringResource(R.string.setting_sh_body_temperature)
+    "sh_auracast_add" -> stringResource(R.string.setting_sh_auracast_add)
+    "sh_auracast_remove" -> stringResource(R.string.setting_sh_auracast_remove)
+    "sh_auracast_source" -> stringResource(R.string.setting_sh_auracast_source)
     "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
     "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
     "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
@@ -899,6 +946,14 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "sh_nautilus_anc" -> getString(when (option) { "off" -> R.string.action_off; "airplane" -> R.string.setting_sh_nautilus_airplane; "outdoor" -> R.string.setting_sh_nautilus_outdoor; else -> R.string.setting_sh_nautilus_home })
+    key == "sh_nautilus_anc_state" -> getString(when (option) { "off" -> R.string.action_off; "on" -> R.string.setting_anc; else -> R.string.setting_sh_adaptive_anc })
+    key == "sh_multi_function" -> getString(if (option == "EQModes") R.string.setting_sh_multi_eq else R.string.action_voice_assistant)
+    key == "sh_auto_off" -> if (option == "0") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
+    key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> getString(when (option) { "low" -> R.string.setting_level_low; "mid", "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_high })
+    key == "sh_auracast_source" -> getString(when (option) { "receiving" -> R.string.setting_sh_auracast_receiving; "synced" -> R.string.setting_sh_auracast_synced; "code_required" -> R.string.setting_sh_auracast_code; "bad_code" -> R.string.setting_sh_auracast_bad_code; "failed" -> R.string.setting_sh_auracast_failed; else -> R.string.setting_sh_auracast_not_synced })
+    key.startsWith("sh_fit_") -> getString(when (option) { "bad" -> R.string.setting_sh_fit_bad; "acceptable" -> R.string.setting_sh_fit_acceptable; "good" -> R.string.setting_sh_fit_good; "invalid" -> R.string.setting_sh_fit_invalid; "not_ready" -> R.string.setting_sh_fit_not_ready; else -> R.string.unknown })
+    key.startsWith("sh_wear") -> getString(when (option) { "in_case" -> R.string.setting_sh_wear_in_case; "not_on_head" -> R.string.setting_sh_wear_off; "on_head" -> R.string.setting_sh_wear_on; else -> R.string.unknown })
     key == "sh_prompts" -> getString(when (option) { "tone_voice_off" -> R.string.action_off; "tone_on" -> R.string.setting_sh_prompts_tones; else -> R.string.setting_sh_prompts_voice })
     key == "a3959_nc_mode" -> getString(when (option) { "manual" -> R.string.a3959_manual; "adaptive" -> R.string.a3959_adaptive; else -> R.string.a3959_multi_scene })
     key == "a3959_scene" -> getString(when (option) { "transport" -> R.string.a3959_transport; "outdoor" -> R.string.a3959_outdoor; else -> R.string.a3959_indoor })
@@ -1143,6 +1198,12 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     (key.startsWith("touch_") && isTouchRow(key)) || key.startsWith("ef_button_") -> getString(
         when (option) {
             "none" -> R.string.action_none
+            "sh_anc" -> R.string.setting_anc
+            "sh_transparency" -> R.string.anc_transparency
+            "sh_lock" -> R.string.setting_sh_touch_lock
+            "sh_open_ear_tip" -> R.string.setting_sh_open_eartip
+            "sh_anc_transparency" -> R.string.setting_sh_anc_transparency
+            "sh_sound_mode" -> R.string.setting_sh_sound_mode
             "play_pause" -> R.string.action_play_pause
             "previous" -> R.string.action_previous
             "next" -> R.string.action_next
@@ -1414,11 +1475,19 @@ private fun actionStart(key: String): Int = when (key) {
     "nc_optimizer" -> R.string.setting_nc_optimizer_start
     "restart" -> R.string.setting_restart
     "power_off" -> R.string.setting_power_off
+    "sh_touch_default" -> R.string.setting_sh_touch_default
+    "sh_personalized_reset" -> R.string.setting_sh_personalized_reset
+    "sh_find_left" -> R.string.setting_sh_find_left
+    "sh_find_right" -> R.string.setting_sh_find_right
+    "sh_fit_test" -> R.string.setting_sh_fit_start
+    "sh_auracast_scan" -> R.string.setting_sh_auracast_scan
     else -> R.string.setting_action_start
 }
 
 private fun actionStop(key: String): Int = when (key) {
     "find" -> R.string.setting_find_stop
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
+    "sh_find_left", "sh_find_right" -> R.string.setting_find_stop
+    "sh_fit_test" -> R.string.setting_sh_fit_cancel
     else -> R.string.setting_action_stop
 }

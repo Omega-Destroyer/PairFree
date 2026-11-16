@@ -1,0 +1,40 @@
+{
+ "_about": "Sennheiser's touch and button configuration as Smart Control 4.9.4 uses it (docs/sennheiser/PROTOCOL.md section 4.3): the numbers of the functions, gestures and buttons, the gestures it reads from each earbud, and the auto power-off and transparency choices. Each model's functions are in devices.json. Written by tools/import_sennheiser_app.py.",
+ "actions": {
+  "none": 0,
+  "play_pause": 1,
+  "next_song": 2,
+  "previous_song": 3,
+  "volume_up": 4,
+  "volume_down": 5,
+  "transparent_hearing": 6,
+  "voice_assistant": 7,
+  "anc": 9,
+  "toggle_lock": 13,
+  "toggle_open_ear_tip": 16,
+  "anc_th_toggle": 18,
+  "toggle_bass_boost": 21,
+  "sound_mode_toggle": 15
+ },
+ "gestures": {
+  "single": 1,
+  "double": 2,
+  "triple": 3,
+  "long_press": 4
+ },
+ "buttons": {
+  "right": 0,
+  "left": 1
+ },
+ "auto_off_seconds": [
+  0,
+  900,
+  1800,
+  3600
+ ],
+ "transparency_levels": [
+  1,
+  50,
+  100
+ ]
+}

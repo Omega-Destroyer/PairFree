@@ -1,0 +1,24 @@
+{
+ "name": "CX Plus True Wireless",
+ "names": [
+  "CX 400BT TW2",
+  "CX 400iiBT TW",
+  "CX Plus SE True Wireless",
+  "CX Plus True Wireless",
+  "CX400TW2",
+  "CXPLUSTW1 Black",
+  "CXPLUSTW1 SE",
+  "CXPLUSTW1 White"
+ ],
+ "codes": [],
+ "source": "Traced from the render Smart Control Plus bundles (cx_plus_tw, black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "221,107 259,108 273,114 279,123 294,170 296,209 311,222 320,240 320,253 316,264 302,277 282,281 267,276 257,269 248,256 226,253 207,245 196,235 191,225 187,212 186,185 196,133 203,118 210,112",
+  "axis": [
+   252.8,
+   194.2
+  ]
+ },
+ "case": "generic"
+}

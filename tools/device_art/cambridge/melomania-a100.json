@@ -1,0 +1,18 @@
+{
+ "name": "Melomania A100 / Melomania A100 SE",
+ "names": [
+  "Melomania A100",
+  "Melomania A100 SE"
+ ],
+ "codes": [],
+ "source": "Traced from the render Melomania Connect bundles (ic_product_image_a100_black, the left bud; the A100 SE has the same form), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "188,173 205,173 225,176 241,182 256,191 268,202 279,218 287,235 290,252 288,284 276,313 257,338 228,363 224,369 223,487 221,476 208,478 133,478 130,464 129,418 124,417 99,423 82,424 63,421 45,413 29,401 15,385 5,364 2,348 1,333 5,310 16,288 29,272 49,255 69,245 97,214 122,196 156,180",
+  "axis": [
+   145.7,
+   330.1
+  ]
+ },
+ "case": "generic"
+}

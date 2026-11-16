@@ -1,0 +1,17 @@
+{
+ "name": "Melomania Touch",
+ "names": [
+  "Melomania Touch"
+ ],
+ "codes": [],
+ "source": "Traced from the render the older Melomania app bundles (earphone_touch, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "203,259 220,262 229,274 230,287 224,311 223,320 247,371 250,374 279,380 301,395 312,414 313,438 305,456 289,470 264,479 232,478 216,502 205,511 187,520 165,521 150,516 134,503 111,477 89,447 74,414 70,389 71,379 79,352 98,328 115,315 140,301 161,278 173,269 189,261",
+  "axis": [
+   191.3,
+   390.1
+  ]
+ },
+ "case": "generic"
+}

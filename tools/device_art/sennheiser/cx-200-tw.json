@@ -1,0 +1,22 @@
+{
+ "name": "CX 200 True Wireless",
+ "names": [
+  "CX 200 True Wireless",
+  "CX 200BT TW",
+  "CX True Wireless",
+  "CX200TW1",
+  "CX200TW1 Black",
+  "CX200TW1 White"
+ ],
+ "codes": [],
+ "source": "Traced from the render Smart Control Plus bundles (cx200_tw, black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "222,77 242,78 258,83 274,93 287,107 296,136 296,169 291,196 277,220 259,232 234,238 212,238 189,248 166,247 150,237 142,226 137,209 139,195 148,179 164,165 166,127 175,106 195,87",
+  "axis": [
+   216.7,
+   162.9
+  ]
+ },
+ "case": "generic"
+}

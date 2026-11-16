@@ -1,0 +1,18 @@
+{
+ "name": "Melomania M100",
+ "names": [
+  "Melomania M100",
+  "Melomania T100"
+ ],
+ "codes": [],
+ "source": "Traced from the render Melomania Connect bundles (ic_product_image_m100, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "105,275 139,277 168,288 194,307 218,336 258,325 278,326 298,332 314,343 325,357 331,372 332,390 328,392 230,392 34,392 7,390 6,375 10,354 19,333 33,313 44,302 62,289 83,280",
+  "axis": [
+   169.2,
+   333.9
+  ]
+ },
+ "case": "generic"
+}

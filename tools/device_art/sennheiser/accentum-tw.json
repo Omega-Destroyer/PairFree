@@ -1,0 +1,24 @@
+{
+ "name": "Accentum True Wireless",
+ "names": [
+  "ACCENTUM TW",
+  "ATW1",
+  "ATW1 Black",
+  "ATW1 Blue",
+  "ATW1 SE",
+  "ATW1 White",
+  "Accentum TW",
+  "Accentum True Wireless"
+ ],
+ "codes": [],
+ "source": "Traced from the render Smart Control Plus bundles (acc_tw1, black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "246,107 267,109 285,117 294,125 299,138 303,156 301,205 319,225 324,246 322,256 316,268 306,277 293,282 282,284 267,281 249,266 220,254 203,238 191,215 193,187 202,147 209,132 216,121 225,114",
+  "axis": [
+   257.7,
+   195.7
+  ]
+ },
+ "case": "generic"
+}

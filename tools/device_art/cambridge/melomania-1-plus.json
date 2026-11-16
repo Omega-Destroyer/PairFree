@@ -1,0 +1,17 @@
+{
+ "name": "Melomania 1+",
+ "names": [
+  "Melomania 1+"
+ ],
+ "codes": [],
+ "source": "Traced from the render the older Melomania app bundles (earphone_m1, the left bud (marked L)), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "210,197 220,197 238,202 245,210 277,323 281,356 278,405 283,414 291,439 299,479 296,506 283,536 272,543 244,552 211,560 201,557 184,545 167,527 158,513 145,477 138,448 111,415 92,378 54,265 56,258 69,244 101,227 161,207",
+  "axis": [
+   176.5,
+   378.6
+  ]
+ },
+ "case": "generic"
+}

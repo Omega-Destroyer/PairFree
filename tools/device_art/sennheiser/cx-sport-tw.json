@@ -1,0 +1,20 @@
+{
+ "name": "CX Sport True Wireless",
+ "names": [
+  "CX Sport True Wireless",
+  "CX200TW1 S",
+  "CX200TW1 S Black",
+  "Sport True Wireless"
+ ],
+ "codes": [],
+ "source": "Traced from the render Smart Control Plus bundles (cx200tw1_sport, black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "376,38 394,39 417,50 443,75 462,86 469,98 467,123 456,163 439,177 416,188 388,189 350,179 337,184 324,182 308,174 299,158 300,141 311,126 327,120 336,119 346,122 350,120 357,96 363,84 384,64 383,60 370,46 371,41",
+  "axis": [
+   383.6,
+   113.5
+  ]
+ },
+ "case": "generic"
+}

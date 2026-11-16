@@ -1,0 +1,18 @@
+{
+ "name": "Momentum True Wireless",
+ "names": [
+  "MOMENTUM TW",
+  "Momentum True Wireless"
+ ],
+ "codes": [],
+ "source": "Traced from the render Smart Control bundles for its older products (unsupported/mtw, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "183,210 198,210 225,216 245,226 258,236 273,254 283,274 288,294 289,313 284,336 277,351 261,375 240,399 211,418 195,422 171,424 154,421 134,414 104,394 80,368 55,336 48,320 45,300 52,277 68,260 86,253 110,251 128,233 147,220 169,213",
+  "axis": [
+   167.0,
+   317.0
+  ]
+ },
+ "case": "generic"
+}

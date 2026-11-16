@@ -15,6 +15,7 @@ import io.github.omegadestroyer.pairfree.protocol.jabra.JabraSession
 import io.github.omegadestroyer.pairfree.protocol.jabra.fromName
 import io.github.omegadestroyer.pairfree.protocol.jabra.gnp
 import io.github.omegadestroyer.pairfree.protocol.jabra.model
+import io.github.omegadestroyer.pairfree.protocol.jabra.noise
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 
 /**
@@ -39,8 +40,9 @@ object JabraSpec : BrandSpec(Brand.JABRA) {
     /** Off, cancelling and hear-through as the model's definition lists its loop; the earbuds' replies then say more. */
     override fun noiseOffline(device: Paired): List<NoiseChoice>? {
         val v = JabraModels.fromName(device.model ?: device.name)?.variants?.firstOrNull() ?: return emptyList()
-        val anc = "anc" in v.noiseLoop || v.has("ffanc")
-        val transparent = "hearThrough" in v.noiseLoop || v.has("adjustable_ambience_mode")
+        val noise = v.noise()
+        val anc = noise.anc
+        val transparent = noise.transparency
         return when {
             anc && transparent -> three()
             transparent -> listOf(OFF, NoiseChoice("transparency"))

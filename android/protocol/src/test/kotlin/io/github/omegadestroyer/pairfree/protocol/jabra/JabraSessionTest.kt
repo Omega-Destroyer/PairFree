@@ -184,4 +184,37 @@ class JabraSessionTest {
         assertEquals(false, (noise.single { it.key == "jb_ht_mix" } as Setting.Toggle).on)
         assertEquals("be0421", s.change(SettingChange.Toggle("jb_ht_mix", true))!!.single().payload.hex())
     }
+    @Test
+    fun theOlderNoiseCommandCarriesOffCancellingAndHearThrough() {
+        // The Elite 85h (product id 0x248B) has no ambience command: its form's noise command is 13/87 with the layout's own codes (0 off, 1 ANC, 2 HearThrough, 3 with music).
+        val s = JabraSession(JabraModels.ALL.single { it.name == "Jabra Elite 85h" })
+        s.start()
+        s.feed(reply(0x02, 0x11, 0x8B, 0x24))
+        s.feed(reply(0x02, 0x03, 5, '1'.code, '.'.code, '6'.code, '.'.code, '3'.code))
+        val reads = s.takeOutbox()
+        assertTrue(reads.none { it.sub == 0xBE })
+        assertTrue(reads.any { it.main == 0x13 && it.sub == 0x87 })
+        s.feed(reply(0x13, 0x87, 1))
+        assertEquals(Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key, s.state.number(Command.ANC_MODE))
+        val transparency = Command.ANC_MODE.labels.entries.first { it.value == "transparency" }.key
+        assertEquals("8702", s.set(Command.ANC_MODE, transparency)!!.single().payload.hex())
+        assertEquals(transparency, s.state.number(Command.ANC_MODE))
+        // With music mixed in, HearThrough keeps the mix.
+        s.feed(reply(0x13, 0x87, 3))
+        assertEquals("8703", s.set(Command.ANC_MODE, transparency)!!.single().payload.hex())
+    }
+
+    @Test
+    fun hearThroughsSwitchOfTheEarlierEarbudsUsesTheLayoutsCodes() {
+        // The Elite 65t has HearThrough as a switch and a mode in one payload (13/76) and no cancelling.
+        val s = JabraSession(JabraModels.ALL.single { it.name == "Jabra Elite 75t" })
+        s.start()
+        s.feed(reply(0x02, 0x11, 0x7E, 0x24))
+        s.feed(reply(0x02, 0x03, 6, '2'.code, '.'.code, '4'.code, '0'.code, '.'.code, '1'.code))
+        s.takeOutbox()
+        s.feed(reply(0x13, 0x76, 0, 1))
+        assertEquals(Command.ANC_MODE.labels.entries.first { it.value == "off" }.key, s.state.number(Command.ANC_MODE))
+        val on = Command.ANC_MODE.labels.entries.first { it.value == "transparency" }.key
+        assertEquals("760101", s.set(Command.ANC_MODE, on)!!.single().payload.hex())
+    }
 }

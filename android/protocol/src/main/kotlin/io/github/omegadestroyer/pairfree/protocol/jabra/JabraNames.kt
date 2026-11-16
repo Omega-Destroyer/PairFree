@@ -22,5 +22,18 @@ public fun JabraModels.model(name: String): Model? = fromName(name)?.let { m ->
     Model(m.name, listOf(m.name), "Jabra", fitKeepsAnc = false, form = if (m.kind == "headset") Form.HEADPHONES else Form.EARBUDS)
 }
 
+/** Which noise modes a variant's firmware snapshot offers: cancelling and HearThrough. */
+public class JabraNoise(public val anc: Boolean, public val transparency: Boolean)
+
+/** From the snapshots' forms: the ambience command (named in the loop), the older noise command (`13/87`) or only HearThrough's switch (`13/76`); none for the rest. */
+public fun JabraVariant.noise(): JabraNoise {
+    val profiles = JabraProfiles.ALL.filter { it.snapshot in snapshots }
+    val settings = profiles.flatMap { p -> p.settings.mapNotNull { JabraSettings.BY_ID[it] } }
+    if (profiles.any { "ambiencemodes" in it.caps }) return JabraNoise(anc = "anc" in noiseLoop || has("ffanc"), transparency = "hearThrough" in noiseLoop || has("adjustable_ambience_mode"))
+    val anc = settings.firstOrNull { it.command == "ANC" && it.main == 0x13 && it.virtual == null }
+    if (anc != null) return JabraNoise(true, anc.options.any { it.code == 2 || it.code == 3 })
+    return JabraNoise(false, settings.any { it.command == "HEAR_THROUGH" && it.widget == JabraWidget.BOOL })
+}
+
 /** The products PairFree can talk to over GNP (the others speak GAIA, which comes later). */
 public val JabraModel.gnp: Boolean get() = variants.any { it.protocol == "gnp" }

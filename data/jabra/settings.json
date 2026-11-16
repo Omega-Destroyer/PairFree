@@ -17,6 +17,7 @@
   "5715aad203a0a2ba": "GET_DB_RECORD",
   "8cf084ea3721f29a": "SPEED_NUMBER",
   "101837638e041dfe": "FIRMWARE_UPGRADE_LOCK",
+  "7695a892eeada612": "BOOMARM_ROTATION_ACTION (option codes not resolvable)",
   "043a3958629c133b": "GET_DB_RECORD",
   "338d1ec39fe69aca": "FIRMWARE_UPGRADE_LOCK",
   "fb20e4ae099ba42c": "FIRMWARE_UPGRADE_LOCK",
@@ -54,7 +55,7 @@
    "main": 19,
    "sub": 144,
    "pos": 1,
-   "width": 1
+   "width": 2
   },
   "25bec4f5cfdd489c": {
    "name": "Auto_pause_resume_music",
@@ -1241,7 +1242,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -1458,7 +1459,7 @@
     ],
     [
      "Off",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -1670,7 +1671,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -1712,7 +1713,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -1793,7 +1794,7 @@
     ],
     [
      "Off",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -1980,15 +1981,15 @@
     ],
     [
      "NoiseCancelling",
-     "00"
+     "01"
     ],
     [
      "Surroundings_only",
-     "00"
+     "02"
     ],
     [
      "Music_surroundings",
-     "00"
+     "03"
     ]
    ],
    "main": 19,
@@ -2153,7 +2154,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -2258,7 +2259,7 @@
    "main": 19,
    "sub": 144,
    "pos": 1,
-   "width": 1
+   "width": 2
   },
   "56b76d4e1cfecb15": {
    "name": "Language",
@@ -2486,7 +2487,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -2593,7 +2594,7 @@
     ],
     [
      "Off",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -2915,7 +2916,7 @@
     ],
     [
      "Off",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -2975,7 +2976,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -3471,7 +3472,7 @@
    "options": [
     [
      "Off",
-     "00"
+     "01"
     ],
     [
      "On",
@@ -3560,7 +3561,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -3725,7 +3726,7 @@
    "main": 19,
    "sub": 144,
    "pos": 1,
-   "width": 1
+   "width": 2
   },
   "79df601a01ef9841": {
    "name": "Equalizer_mode_for_calls",
@@ -4680,7 +4681,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -5010,7 +5011,7 @@
    "main": 19,
    "sub": 144,
    "pos": 1,
-   "width": 1
+   "width": 2
   },
   "fc3cec227b2fce81": {
    "name": "Button_sounds_setting",
@@ -5088,15 +5089,15 @@
    "options": [
     [
      "NoiseCancelling",
-     "00"
+     "01"
     ],
     [
      "Surroundings_only",
-     "00"
+     "02"
     ],
     [
      "Music_surroundings",
-     "00"
+     "03"
     ],
     [
      "Off",
@@ -5121,7 +5122,7 @@
     ],
     [
      "Off",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -5227,7 +5228,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -6323,15 +6324,15 @@
    "options": [
     [
      "NoiseCancelling",
-     "00"
+     "01"
     ],
     [
      "Surroundings_only",
-     "00"
+     "02"
     ],
     [
      "Music_surroundings",
-     "00"
+     "03"
     ],
     [
      "Off",
@@ -6389,7 +6390,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -6481,7 +6482,7 @@
    "options": [
     [
      "Off",
-     "00"
+     "01"
     ],
     [
      "On",
@@ -6557,7 +6558,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -6679,7 +6680,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -6706,7 +6707,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -6873,15 +6874,11 @@
    "options": [
     [
      "PlayPause",
-     "00"
-    ],
-    [
-     "Start_voice_instruction",
-     "00"
+     "14"
     ],
     [
      "Speed_dial",
-     "00"
+     "0C"
     ],
     [
      "No_function",
@@ -6960,7 +6957,7 @@
    "options": [
     [
      "Off",
-     "00"
+     "01"
     ],
     [
      "On",
@@ -7042,27 +7039,6 @@
     [
      "On",
      "01"
-    ],
-    [
-     "Off",
-     "00"
-    ]
-   ],
-   "main": 19,
-   "sub": 152,
-   "pos": 1,
-   "width": 1
-  },
-  "7695a892eeada612": {
-   "name": "Answer_call_by_rotating_boom_arm",
-   "group": "headset",
-   "dest": 4,
-   "command": "BOOMARM_ROTATION_ACTION",
-   "widget": "bool",
-   "options": [
-    [
-     "On",
-     "00"
     ],
     [
      "Off",
@@ -7234,7 +7210,7 @@
     ],
     [
      "Off",
-     "00"
+     "01"
     ]
    ],
    "main": 19,
@@ -7526,7 +7502,7 @@
     ],
     [
      "On",
-     "00"
+     "01"
     ]
    ],
    "main": 19,

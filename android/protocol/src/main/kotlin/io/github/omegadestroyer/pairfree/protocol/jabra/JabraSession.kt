@@ -49,6 +49,11 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
 
     private fun hasAmbience(): Boolean = profile?.caps?.contains("ambiencemodes") == true
 
+    /** The older noise form (`13/87`) and the HearThrough switch (`13/76`) of the firmware that has no ambience command. */
+    private fun legacyAnc(): JabraSetting? = settings().firstOrNull { it.command == "ANC" && it.main == CONFIG_MAIN && it.virtual == null }
+
+    private fun legacyHearThrough(): JabraSetting? = settings().firstOrNull { it.command == "HEAR_THROUGH" && it.widget == JabraWidget.BOOL && switchCodes(it) != null }
+
     private fun hasEqualizer(): Boolean = profile?.caps?.contains("music_equalizer") == true
     private fun settings(): List<JabraSetting> = profile?.settings?.mapNotNull { JabraSettings.BY_ID[it] }.orEmpty()
 
@@ -297,15 +302,24 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
             put(Command.BATTERY_RIGHT, levels.right?.let { Value.Number(it) })
             put(Command.BATTERY_CASE, levels.cradle?.let { Value.Number(it) })
         }
-        ambience(1)?.let { code ->
-            val name = when (code) {
+        val mode: String? = when {
+            hasAmbience() -> when (ambience(1)) {
                 AMBIENCE_ANC -> "anc"
                 AMBIENCE_HEARTHROUGH -> "transparency"
                 AMBIENCE_OFF -> "off"
                 else -> null
             }
-            put(Command.ANC_MODE, name?.let { n -> Value.Number(Command.ANC_MODE.labels.entries.first { it.value == n }.key) })
+            // The older forms: one command for noise cancelling and HearThrough (`13/87`: off 0, ANC 1, HearThrough 2, with music 3) or only HearThrough's on and off.
+            legacyAnc() != null -> when (valueOf(legacyAnc()!!)) {
+                0 -> "off"
+                1 -> "anc"
+                2, 3 -> "transparency"
+                else -> null
+            }
+            legacyHearThrough() != null -> valueOf(legacyHearThrough()!!)?.let { if (it == switchCodes(legacyHearThrough()!!)?.first) "transparency" else "off" }
+            else -> null
         }
+        put(Command.ANC_MODE, mode?.let { n -> Value.Number(Command.ANC_MODE.labels.entries.first { it.value == n }.key) })
         current = current.copy(values = next)
     }
 
@@ -415,7 +429,8 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
     // ---- changes -----------------------------------------------------------------------------------------------------------------------------------------
 
     override fun set(command: Command, value: Int): List<JabraPacket>? {
-        if (command != Command.ANC_MODE || !hasAmbience()) return null
+        if (command != Command.ANC_MODE) return null
+        if (!hasAmbience()) return setLegacy(Command.ANC_MODE.labels[value] ?: return null)
         val code = when (Command.ANC_MODE.labels[value]) {
             "off" -> AMBIENCE_OFF
             "anc" -> AMBIENCE_ANC
@@ -426,6 +441,23 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         refresh()
         readBacks = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, 1))
         return listOf(packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.AMBIENCE, 1, code))
+    }
+
+    /** Noise control on the older forms: the one noise command's code, or HearThrough's switch. HearThrough keeps the music mix the earbuds last had. */
+    private fun setLegacy(mode: String): List<JabraPacket>? {
+        legacyAnc()?.let { s ->
+            val held = valueOf(s)
+            val code = when (mode) {
+                "off" -> 0
+                "anc" -> 1
+                else -> if (held == 3) 3 else 2
+            }
+            if (s.option(code) == null) return null
+            return write(s, code)
+        }
+        val s = legacyHearThrough() ?: return null
+        val (on, off) = switchCodes(s) ?: return null
+        return write(s, if (mode == "transparency") on else off)
     }
 
     override fun change(change: SettingChange): List<JabraPacket>? {

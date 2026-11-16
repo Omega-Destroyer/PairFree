@@ -79,6 +79,51 @@ def width_of(options, field_shape):
     return max(1, (max(sizes) + 1) // 2)
 
 
+POSITIVE = ("enabled", "enable", "on", "unmuted")
+NEGATIVE = ("disabled", "disable", "off", "muted")
+
+# Options of the older noise form (`13/87`), by the layout's own code names.
+ANC_CODES = {"Off": "GNP_CONFIG_ANC_OFF", "NoiseCancelling": "GNP_CONFIG_ANC_ON", "Surroundings_only": "GNP_CONFIG_ANC_HT_NOTMIXED", "Music_surroundings": "GNP_CONFIG_ANC_HT_MIXED"}
+# The programmable button's choices by the layout's names (the form's "Start_voice_instruction" has no code there).
+BUTTON_CODES = {"PlayPause": "Play/pause", "Speed_dial": "Speed dial", "No_function": "No Function"}
+
+
+def tail(name):
+    n = name.lower().replace("-", "_").replace("/", "_")
+    for word in POSITIVE:
+        if n == word or n.endswith("_" + word):
+            return "on"
+    for word in NEGATIVE:
+        if n == word or n.endswith("_" + word):
+            return "off"
+    return None
+
+
+def resolve_codes(setting, layout_codes):
+    """The form leaves some options with no code, or one shared by both; the command's layout names the real codes. Returns the options, or None when they cannot be resolved."""
+    opts = setting["options"]
+    codes = [o[1] for o in opts]
+    if len(set(codes)) == len(codes) and all(codes):
+        return opts
+    by_name = {n: h for n, h in layout_codes}
+    resolved = []
+    for name, _ in opts:
+        code = None
+        if setting["command"] == "ANC":
+            code = by_name.get(ANC_CODES.get(name, ""))
+        elif setting["command"] == "BUTTON_FUNCTION":
+            code = by_name.get(BUTTON_CODES.get(name, ""))
+        else:
+            want = tail(name)
+            matches = [h for n, h in layout_codes if want and tail(n) == want]
+            code = matches[0] if len(matches) == 1 else None
+        if code is not None:
+            resolved.append([name, hexbyte(code)])
+    if len(resolved) < 2 or len({c for _, c in resolved}) != len(resolved):
+        return None
+    return resolved
+
+
 def main():
     settings_in = json.loads((RES / "gnp_settings.json").read_text(encoding="utf-8"))["settings"]
     defs = {d["definition_id"]: d for d in json.loads((RES / "gnp_commands.json").read_text(encoding="utf-8"))["definitions"]}
@@ -96,6 +141,22 @@ def main():
             continue
         d = defs[s["command_definitions"][0]]
         virtual = cmd.startswith(VIRTUAL)
+        if virtual:
+            pass
+        elif s["widget"] in ("listsettingvalue", "boolsettingvalue") and s.get("options"):
+            fields = d["layouts"].get("write") or d["layouts"].get("reply") or []
+            value_pos = int(s["value_position"]) if s.get("shared_payload") else None
+            if value_pos is None:
+                selp = {int(x["position"]) for x in s.get("selectors", [])}
+                free = [f for f in d["layouts"].get("reply", fields) if int(f["position"]) not in selp]
+                value_pos = int(free[0]["position"]) if free else 1
+            field = [f for f in fields if int(f["position"]) == value_pos]
+            layout_codes = [(c["name"], c["hex"]) for r in (field[0].get("ranges", []) if field else []) for c in r.get("codes", [])]
+            fixed = resolve_codes({"command": cmd, "options": [[o["name"], hexbyte(o["hex"]) if o["hex"] else ""] for o in s["options"]]}, layout_codes)
+            if fixed is None:
+                left_out[s["setting_id"]] = cmd + " (option codes not resolvable)"
+                continue
+            s = dict(s, options=[{"name": n, "hex": h} for n, h in fixed])
         reply = d["layouts"].get("reply", [])
         sel = [[int(x["position"]), x["hex"].upper().zfill(2)] for x in s.get("selectors", [])]
         selpos = {p for p, _ in sel}

@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol
 
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserModels
 
 import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
@@ -36,6 +37,7 @@ class IdentifyTest {
                     Maker.PIXEL -> assertEquals(model, PixelModels.fromName(name)?.name, name)
                     Maker.EARFUN -> assertEquals(model, EarfunModels.fromName(name)?.name, name)
                     Maker.CAMBRIDGE -> assertEquals(model, CambridgeModels.fromName(name)?.name, name)
+                    Maker.SENNHEISER -> assertEquals(model, SennheiserModels.fromName(name)?.name, name)
                     else -> error("no model check for $want")
                 }
             }

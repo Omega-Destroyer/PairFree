@@ -527,6 +527,19 @@ private fun settingTitle(key: String): String = when (key) {
     "bass_level" -> stringResource(R.string.setting_bass_level)
     "spatial_audio" -> stringResource(R.string.setting_spatial_audio)
     "a3954_spatial_mode" -> stringResource(R.string.setting_a3954_spatial_mode)
+    "sh_anti_wind" -> stringResource(R.string.setting_wind_reduction)
+    "sh_adaptive_anc" -> stringResource(R.string.setting_sh_adaptive_anc)
+    "sh_pause_transparent" -> stringResource(R.string.setting_sh_pause_transparent)
+    "sh_auto_call" -> stringResource(R.string.setting_auto_answer)
+    "sh_comfort_call" -> stringResource(R.string.setting_sh_comfort_call)
+    "sh_on_head" -> stringResource(R.string.setting_sh_on_head)
+    "sh_smart_pause" -> stringResource(R.string.setting_sh_smart_pause)
+    "sh_low_latency" -> stringResource(R.string.setting_sh_low_latency)
+    "sh_touch_lock" -> stringResource(R.string.setting_sh_touch_lock)
+    "sh_eco_mode" -> stringResource(R.string.setting_sh_eco_mode)
+    "sh_battery_protection" -> stringResource(R.string.setting_sh_battery_protection)
+    "sh_prompts" -> stringResource(R.string.setting_sh_prompts)
+    "sh_codec" -> stringResource(R.string.setting_sh_codec)
     "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
     "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
     "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
@@ -885,6 +898,7 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "sh_prompts" -> getString(when (option) { "tone_voice_off" -> R.string.action_off; "tone_on" -> R.string.setting_sh_prompts_tones; else -> R.string.setting_sh_prompts_voice })
     key == "a3959_nc_mode" -> getString(when (option) { "manual" -> R.string.a3959_manual; "adaptive" -> R.string.a3959_adaptive; else -> R.string.a3959_multi_scene })
     key == "a3959_scene" -> getString(when (option) { "transport" -> R.string.a3959_transport; "outdoor" -> R.string.a3959_outdoor; else -> R.string.a3959_indoor })
     key == "a3954_spatial_mode" -> option.replace('_', ' ').replaceFirstChar { it.uppercase() }

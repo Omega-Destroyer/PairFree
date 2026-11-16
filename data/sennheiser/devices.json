@@ -1,0 +1,392 @@
+{
+ "_about": "Sennheiser models PairFree controls, all on Qualcomm's GAIA v3 (docs/sennheiser/PROTOCOL.md). names are the Bluetooth names Smart Control maps to the model; properties lists the PairFree properties (commands.json ids) the app's own product file has, or null for a model with no product file in the apps: PairFree reads each property and shows what answers. reports lists device reports.",
+ "models": [
+  {
+   "name": "Accentum",
+   "kind": "headband",
+   "names": [
+    "AC1",
+    "AC1 BLACK",
+    "AC1 WHITE",
+    "ACAEBT",
+    "ACAEBT Black",
+    "ACAEBT R",
+    "ACAEBT SE",
+    "ACAEBT White",
+    "ACCENTUM",
+    "VENUS",
+    "VENUS Black",
+    "VENUS White"
+   ],
+   "source": "Smart Control 4.9.4 ac1.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "on_head",
+    "auto_call",
+    "comfort_call",
+    "low_latency",
+    "touch_lock",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "Accentum Plus",
+   "kind": "headband",
+   "names": [
+    "ACCENTUM Plus",
+    "ACP1",
+    "ACP1 BLACK",
+    "ACP1 WHITE",
+    "ACPAEBT Black",
+    "ACPAEBT White",
+    "APHRODITE",
+    "APHRODITE Black",
+    "APHRODITE White"
+   ],
+   "source": "Smart Control 4.9.4 acp1.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "on_head",
+    "smart_pause",
+    "auto_call",
+    "comfort_call",
+    "low_latency",
+    "touch_lock",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "Accentum True Wireless",
+   "kind": "earbuds",
+   "names": [
+    "ACCENTUM TW",
+    "ATW1",
+    "ATW1 Black",
+    "ATW1 Blue",
+    "ATW1 SE",
+    "ATW1 White",
+    "Accentum TW"
+   ],
+   "source": "Smart Control 4.9.4 atw1.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "smart_pause",
+    "auto_call",
+    "low_latency",
+    "touch_lock",
+    "eco_mode",
+    "battery_protection",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "CX 200 True Wireless",
+   "kind": "earbuds",
+   "names": [
+    "CX 200BT TW",
+    "CX True Wireless",
+    "CX200TW1",
+    "CX200TW1 Black",
+    "CX200TW1 White"
+   ],
+   "source": "Smart Control 4.9.4 cx200.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "touch_lock",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "CX Sport True Wireless",
+   "kind": "earbuds",
+   "names": [
+    "CX200TW1 S",
+    "CX200TW1 S Black",
+    "Sport True Wireless"
+   ],
+   "source": "Smart Control 4.9.4 cx200sports.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "touch_lock",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "CX Plus True Wireless",
+   "kind": "earbuds",
+   "names": [
+    "CX 400BT TW2",
+    "CX 400iiBT TW",
+    "CX Plus SE True Wireless",
+    "CX Plus True Wireless",
+    "CX400TW2",
+    "CXPLUSTW1 Black",
+    "CXPLUSTW1 SE",
+    "CXPLUSTW1 White"
+   ],
+   "source": "Smart Control 4.9.4 cx400II.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "smart_pause",
+    "auto_call",
+    "touch_lock",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "CX 500BT True Wireless",
+   "kind": "earbuds",
+   "names": [
+    "CX 500BT",
+    "CX500BT1",
+    "CX500BT1 Grey"
+   ],
+   "source": "Smart Control 4.9.4 cx500.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "smart_pause",
+    "auto_call",
+    "touch_lock",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "Momentum 4 Wireless",
+   "kind": "headband",
+   "names": [
+    "M4AEBT",
+    "M4AEBT Black",
+    "M4AEBT Denim",
+    "M4AEBT Graphite",
+    "M4AEBT JD",
+    "M4AEBT Olive",
+    "M4AEBT PRIDE",
+    "M4AEBT SE",
+    "M4AEBT White",
+    "MARS",
+    "MARS Black",
+    "MARS White",
+    "MOMENTUM 4",
+    "Mars"
+   ],
+   "source": "Smart Control 4.9.4 m4.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "on_head",
+    "smart_pause",
+    "auto_call",
+    "comfort_call",
+    "low_latency",
+    "touch_lock",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "Momentum Sport",
+   "kind": "earbuds",
+   "names": [
+    "MOMENTUM SPORT",
+    "MOMENTUM SPORT1",
+    "MOMENTUM Sport",
+    "MSPORT1",
+    "MSPORT1 Black",
+    "MSPORT1 Graphite",
+    "MSPORT1 Olive",
+    "Magnum",
+    "Magnum Black",
+    "Magnum Graphite",
+    "Magnum Olive"
+   ],
+   "source": "Smart Control 4.9.4 msport1.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "smart_pause",
+    "auto_call",
+    "low_latency",
+    "touch_lock",
+    "eco_mode",
+    "battery_protection",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "Momentum True Wireless 3",
+   "kind": "earbuds",
+   "names": [
+    "MOMENTUM TW 3",
+    "MTW3",
+    "MTW3 Black",
+    "MTW3 Graphite",
+    "MTW3 White"
+   ],
+   "source": "Smart Control 4.9.4 tw3.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "smart_pause",
+    "auto_call",
+    "low_latency",
+    "touch_lock",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "Momentum True Wireless 4",
+   "kind": "earbuds",
+   "names": [
+    "MOMENTUM TW 4",
+    "MTW4",
+    "MTW4 Black",
+    "MTW4 Black Copper",
+    "MTW4 Black Graphite",
+    "MTW4 Copper",
+    "MTW4 Denim",
+    "MTW4 Graphite",
+    "MTW4 JD",
+    "MTW4 Silver",
+    "MTW4 White",
+    "MTW4 White Silver"
+   ],
+   "source": "Smart Control 4.9.4 tw4.json",
+   "properties": [
+    "battery_percent",
+    "battery_charging",
+    "codec",
+    "firmware_version",
+    "model_id",
+    "anc_status",
+    "anc_mode",
+    "transparency_status",
+    "transparency_pause",
+    "smart_pause",
+    "auto_call",
+    "low_latency",
+    "touch_lock",
+    "eco_mode",
+    "battery_protection",
+    "prompt_mode"
+   ]
+  },
+  {
+   "name": "Momentum 5 Wireless",
+   "kind": "headband",
+   "names": [
+    "M5AEBT",
+    "MOMENTUM 5"
+   ],
+   "article": "800078",
+   "source": "Smart Control Plus 1.6.3 (cKd), no product file",
+   "properties": null
+  },
+  {
+   "name": "Momentum True Wireless 5",
+   "kind": "earbuds",
+   "names": [
+    "MOMENTUM TW 5",
+    "MTW5",
+    "PHOBOS",
+    "Phobos",
+    "phobos"
+   ],
+   "article": "700350",
+   "source": "Smart Control Plus 1.6.3 (cKd), no product file",
+   "properties": null
+  },
+  {
+   "name": "HDB 630",
+   "kind": "headband",
+   "names": [
+    "HDB 630",
+    "HDBT"
+   ],
+   "article": "700445",
+   "source": "Smart Control Plus 1.6.3 (cKd), no product file",
+   "properties": null
+  },
+  {
+   "name": "HDR 275 / 255",
+   "kind": "headband",
+   "names": [
+    "HDR 275",
+    "HDR275",
+    "HDR275 Black",
+    "Venus TVL",
+    "VENUS TVL"
+   ],
+   "article": "700438",
+   "source": "Smart Control Plus 1.6.3 (cKd), no product file",
+   "properties": null
+  }
+ ]
+}

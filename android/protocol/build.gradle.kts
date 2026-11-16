@@ -2154,8 +2154,124 @@ val generateOneplusModels = tasks.register<GenerateOneplusModels>("generateOnepl
     outputDir = layout.buildDirectory.dir("generated/oneplus-models")
 }
 
+/** Writes Sennheiser's GAIA v3 commands and models from data/sennheiser. */
+abstract class GenerateSennheiserTables : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val commandsJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:Input
+    abstract val packageName: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val commands = JsonSlurper().parse(commandsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("models") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
+        fun hex(v: Any?) = "0x" + (v as String).uppercase()
+        fun strings(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { str(it) }
+
+        val out = StringBuilder()
+        out.appendLine("// Generated from data/sennheiser by the generateSennheiserTables task. Do not edit.")
+        out.appendLine("package ${packageName.get()}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val transport = commands.getValue("transport") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val register = commands.getValue("register_notification") as Map<String, Any?>
+        out.appendLine("/** The transport and the notification registration (data/sennheiser/commands.json). */")
+        out.appendLine("public object SennheiserWire {")
+        out.appendLine("    /** The RFCOMM service of Sennheiser's GAIA 3 products. */")
+        out.appendLine("    public const val CLASSIC_UUID: String = ${str(transport["classic_uuid"])}")
+        out.appendLine("    /** Sennheiser's own vendor id, and Qualcomm's. */")
+        out.appendLine("    public const val VENDOR: Int = 0x0495")
+        out.appendLine("    public const val QUALCOMM_VENDOR: Int = 0x001D")
+        out.appendLine("    public const val REGISTER_VENDOR: Int = ${hex(register["vendor"])}")
+        out.appendLine("    public const val REGISTER_COMMAND: Int = ${hex(register["command"])}")
+        @Suppress("UNCHECKED_CAST")
+        val features = register.getValue("features") as Map<String, Any?>
+        out.appendLine("    /** The Sennheiser feature ids a registration names. */")
+        out.appendLine("    public val FEATURES: Map<String, Int> = mapOf(${features.entries.joinToString(", ") { "${str(it.key)} to ${(it.value as Number).toInt()}" }})")
+        out.appendLine("}")
+        out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val list = commands.getValue("commands") as List<Map<String, Any?>>
+        out.appendLine("/** One property: its read and its write, as command words (data/sennheiser/commands.json). */")
+        out.appendLine("public class SennheiserCommand(")
+        out.appendLine("    public val id: String,")
+        out.appendLine("    public val vendor: Int,")
+        out.appendLine("    public val get: Int?,")
+        out.appendLine("    public val replyParams: List<String>,")
+        out.appendLine("    public val notification: Int?,")
+        out.appendLine("    public val set: Int?,")
+        out.appendLine("    public val setParams: List<String>,")
+        out.appendLine("    public val values: Map<String, Int>,")
+        out.appendLine(")")
+        out.appendLine()
+        out.appendLine("public object SennheiserCommands {")
+        out.appendLine("    public val ALL: List<SennheiserCommand> = listOf(")
+        @Suppress("UNCHECKED_CAST")
+        fun send(m: Map<String, Any?>?) = m?.get("send") as Map<String, Any?>?
+        @Suppress("UNCHECKED_CAST")
+        fun reply(m: Map<String, Any?>?) = m?.get("reply") as Map<String, Any?>?
+        @Suppress("UNCHECKED_CAST")
+        fun types(m: Map<String, Any?>?) = ((m?.get("params") as List<List<String>>?) ?: emptyList()).map { it[0] }
+        for (c in list) {
+            @Suppress("UNCHECKED_CAST")
+            val get = c["get"] as Map<String, Any?>?
+            @Suppress("UNCHECKED_CAST")
+            val set = c["set"] as Map<String, Any?>?
+            val vendor = (send(get) ?: send(set))!!.getValue("vendor")
+            @Suppress("UNCHECKED_CAST")
+            val values = (c["values"] as Map<String, Any?>?)?.entries?.joinToString(", ") { "${str(it.key)} to ${(it.value as Number).toInt()}" } ?: ""
+            val notification = reply(get)?.get("notification")
+            out.appendLine("        SennheiserCommand(")
+            out.appendLine("            ${str(c["id"])}, ${hex(vendor)}, ${send(get)?.let { hex(it["command"]) } ?: "null"}, ${strings(types(reply(get)))}, ${notification?.let { hex(it) } ?: "null"},")
+            out.appendLine("            ${send(set)?.let { hex(it["command"]) } ?: "null"}, ${strings(types(send(set)))}, mapOf($values),")
+            out.appendLine("        ),")
+        }
+        out.appendLine("    )")
+        for (c in list) out.appendLine("    public const val ${(c["id"] as String).uppercase()}: String = ${str(c["id"])}")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** Every model in data/sennheiser/devices.json. */")
+        out.appendLine("internal val SENNHEISER_MODELS: List<SennheiserModel> = listOf(")
+        for (d in devices) {
+            val form = when (d["kind"]) {
+                "earbuds" -> "EARBUDS"
+                "headband" -> "HEADPHONES"
+                else -> error("unknown kind ${d["kind"]}")
+            }
+            val props = if (d["properties"] == null) "null" else "setOf(" + (d["properties"] as List<*>).joinToString(", ") { str(it) } + ")"
+            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props),")
+        }
+        out.appendLine(")")
+
+        val dir = outputDir.get().asFile.resolve(packageName.get().replace('.', '/'))
+        dir.mkdirs()
+        dir.resolve("SennheiserTables.kt").writeText(out.toString())
+    }
+}
+
+val generateSennheiserTables = tasks.register<GenerateSennheiserTables>("generateSennheiserTables") {
+    commandsJson = rootProject.layout.projectDirectory.file("../data/sennheiser/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/sennheiser/devices.json")
+    packageName = "io.github.omegadestroyer.pairfree.protocol.sennheiser"
+    outputDir = layout.buildDirectory.dir("generated/sennheiser")
+}
+
 kotlin.sourceSets.main {
     kotlin.srcDir(generateCambridgeTables)
+    kotlin.srcDir(generateSennheiserTables)
     kotlin.srcDir(generateOneplusTables)
     kotlin.srcDir(generateOneplusModels)
     kotlin.srcDir(generateHearingTables)
@@ -2196,6 +2312,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/apple")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/oneplus")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/nothing")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/sennheiser")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/pixel")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/qcy")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/1more")).withPathSensitivity(PathSensitivity.RELATIVE)

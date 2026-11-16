@@ -1,0 +1,908 @@
+{
+ "_about": "Sennheiser's GAIA v3 commands, read from Smart Control 4.9.4's product files (docs/sennheiser/PROTOCOL.md). A command is a vendor id (0495 Sennheiser's own, 001D Qualcomm's) and a command word; its reply is the word + 0100 and its error + 0180. send/reply list each parameter's type and the app's name for it; values is the app's map of names to numbers. Written by tools/import_sennheiser_app.py; PairFree builds only what is listed here (the app's other properties are in the research notes).",
+ "transport": {
+  "classic_uuid": "a2129ff3-081b-4c45-8afe-469d9c4842ec",
+  "ble_services": [
+   "FCFE",
+   "FDCE"
+  ],
+  "ble_write": "6333133B-23C1-11E5-B696-FEFF819CDC9F",
+  "ble_read": "6333133C-23C1-11E5-B696-FEFF819CDC9F",
+  "company_id": "0BA3"
+ },
+ "register_notification": {
+  "vendor": "0495",
+  "command": "0007",
+  "features": {
+   "core": 0,
+   "device": 2,
+   "battery": 3,
+   "generic_audio": 4,
+   "user_eq": 8,
+   "versions": 9,
+   "device_management": 10,
+   "mmi": 11,
+   "transparent_hearing": 12,
+   "anc": 13
+  }
+ },
+ "commands": [
+  {
+   "id": "battery_percent",
+   "app_property": "Battery_Percent",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0603",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0703",
+     "notification": "0683",
+     "error": "0783",
+     "params": [
+      [
+       "UINT8",
+       ""
+      ],
+      [
+       "UINT8",
+       ""
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "0703",
+     "notification": "0683",
+     "error": "0783",
+     "params": [
+      [
+       "UINT8",
+       ""
+      ],
+      [
+       "UINT8",
+       ""
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "battery_charging",
+   "app_property": "Battery_ChargingStatus",
+   "values": {
+    "DISCONNECTED": 0,
+    "NORMAL_CHARGING": 1,
+    "CHARGING_COMPLETE": 2
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0602",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0702",
+     "notification": "0682",
+     "error": "0782",
+     "params": [
+      [
+       "UINT8",
+       "left earbud"
+      ],
+      [
+       "UINT8",
+       "right earbud"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "0702",
+     "notification": "0682",
+     "error": "0782",
+     "params": [
+      [
+       "UINT8",
+       "left earbud"
+      ],
+      [
+       "UINT8",
+       "right earbud"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "codec",
+   "app_property": "Sound_CodecUsed",
+   "values": {
+    "SBC": 0,
+    "AAC": 1,
+    "aptX": 2,
+    "aptX-LL": 3,
+    "MP3": 4,
+    "aptX-HD": 5,
+    "Faststream": 6,
+    "LHDC": 7,
+    "aptX adaptive": 8,
+    "aptX Lossless": 9,
+    "LC3": 10,
+    "": 255
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0800",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0900",
+     "notification": "0880",
+     "error": "0980",
+     "params": [
+      [
+       "UINT8",
+       "codec type"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "0900",
+     "notification": "0880",
+     "error": "0980",
+     "params": [
+      [
+       "UINT8",
+       "codec type"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "firmware_version",
+   "app_property": "Service_SystemReleaseVersion",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1201",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1301",
+     "error": "1381",
+     "params": [
+      [
+       "UINT16",
+       "Major"
+      ],
+      [
+       "UINT16",
+       "Minor"
+      ],
+      [
+       "UINT16",
+       "Patch"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "model_id",
+   "app_property": "Versions_ModelId",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1206",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1306",
+     "error": "1386",
+     "params": [
+      [
+       "STRING",
+       "model number string"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "anc_status",
+   "app_property": "ANC_Status",
+   "values": {
+    "OFF": 0,
+    "ON": 1
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1A05",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1B05",
+     "notification": "1A85",
+     "error": "1B85",
+     "params": [
+      [
+       "UINT8",
+       "activation"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "1B05",
+     "notification": "1A85",
+     "error": "1B85",
+     "params": [
+      [
+       "UINT8",
+       "activation"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1A04",
+     "params": [
+      [
+       "UINT8",
+       "activation"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1B04",
+     "error": "1B84",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "anc_mode",
+   "app_property": "ANC",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1A01",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1B01",
+     "notification": "1A81",
+     "error": "1B81",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ],
+      [
+       "UINT8",
+       "state"
+      ],
+      [
+       "UINT8",
+       "mode"
+      ],
+      [
+       "UINT8",
+       "state"
+      ],
+      [
+       "UINT8",
+       "mode"
+      ],
+      [
+       "UINT8",
+       "state"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "1B01",
+     "notification": "1A81",
+     "error": "1B81",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ],
+      [
+       "UINT8",
+       "state"
+      ],
+      [
+       "UINT8",
+       "mode"
+      ],
+      [
+       "UINT8",
+       "state"
+      ],
+      [
+       "UINT8",
+       "mode"
+      ],
+      [
+       "UINT8",
+       "state"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1A00",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ],
+      [
+       "UINT8",
+       "state"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1B00",
+     "error": "1B80",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "transparency_status",
+   "app_property": "TransparentHearing_Status",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1805",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1905",
+     "notification": "1885",
+     "error": "1985",
+     "params": [
+      [
+       "UINT8",
+       "status"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "1905",
+     "notification": "1885",
+     "error": "1985",
+     "params": [
+      [
+       "UINT8",
+       "status"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1804",
+     "params": [
+      [
+       "UINT8",
+       "status"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1904",
+     "error": "1984",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "transparency_pause",
+   "app_property": "TransparentHearingMode",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1801",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1901",
+     "error": "1981",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1800",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1900",
+     "error": "1980",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "on_head",
+   "app_property": "Setting_OnHeadDetection",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0401",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0501",
+     "error": "0581",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0400",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0500",
+     "error": "0580",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "smart_pause",
+   "app_property": "Setting_SmartPause",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "080D",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "090D",
+     "error": "098D",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "080C",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "090C",
+     "error": "098C",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "auto_call",
+   "app_property": "Setting_AutoCall",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "080B",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "090B",
+     "error": "098B",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "080A",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "090A",
+     "error": "098A",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "comfort_call",
+   "app_property": "Setting_ComfortCall",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0815",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0915",
+     "error": "0995",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0814",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0914",
+     "error": "0994",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "low_latency",
+   "app_property": "LowLatencyMode",
+   "values": {
+    "OFF": 0,
+    "ON": 1
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0818",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0918",
+     "notification": "0898",
+     "error": "0998",
+     "params": [
+      [
+       "UINT8",
+       "LowLatencymode"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "0918",
+     "notification": "0898",
+     "error": "0998",
+     "params": [
+      [
+       "UINT8",
+       "LowLatencymode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0817",
+     "params": [
+      [
+       "UINT8",
+       "LowLatencymode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0917",
+     "error": "0997",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "touch_lock",
+   "app_property": "Setting_AutoLockMode",
+   "values": {
+    "OFF": 0,
+    "ON": 1
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1607",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1707",
+     "error": "1787",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1606",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1706",
+     "error": "1786",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "eco_mode",
+   "app_property": "Power_EcoMode",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0609",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0709",
+     "error": "0789",
+     "params": [
+      [
+       "UINT8",
+       "EcoModeIsSet"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0608",
+     "params": [
+      [
+       "UINT8",
+       "EcoMode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0708",
+     "error": "0788",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "battery_protection",
+   "app_property": "Power_BatteryProtectionMode",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "060B",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "070B",
+     "error": "078B",
+     "params": [
+      [
+       "UINT8",
+       "BatteryProtectionModeIsSet"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "060A",
+     "params": [
+      [
+       "UINT8",
+       "BatteryProtectionMode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "070A",
+     "error": "078A",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "prompt_mode",
+   "app_property": "Setting_AudioPromptMode",
+   "values": {
+    "toneVoiceOff": 0,
+    "toneOn": 1,
+    "toneVoiceOn": 2
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "0802",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0902",
+     "error": "0982",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "0801",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "0901",
+     "error": "0981",
+     "params": []
+    }
+   }
+  }
+ ],
+ "never_send": [
+  {
+   "app_property": "Service_FactoryReset",
+   "vendor": "0495",
+   "command": "0040",
+   "why": "factory reset"
+  },
+  {
+   "app_property": "Debug_ErasePanicLog",
+   "why": "erases the earbuds' panic log"
+  },
+  {
+   "app_property": "Upgrade_*",
+   "why": "firmware update (the VMUP commands)"
+  },
+  {
+   "app_property": "SetMMIConfig, SetDefaultMMIConfig",
+   "why": "not built yet"
+  }
+ ]
+}

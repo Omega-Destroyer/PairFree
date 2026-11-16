@@ -414,7 +414,7 @@ object Brands {
     val ALL: List<BrandSpec> by lazy {
         listOf(
             SoundpeatsSpec, SoundcoreSpec, SamsungSpec, SonySpec, BoseSpec, JblSpec, AppleSpec, NothingSpec, PixelSpec,
-            QcySpec, OneMoreSpec, EarfunSpec, CambridgeSpec, OneplusSpec,
+            QcySpec, OneMoreSpec, EarfunSpec, CambridgeSpec, OneplusSpec, SennheiserSpec,
         )
     }
 

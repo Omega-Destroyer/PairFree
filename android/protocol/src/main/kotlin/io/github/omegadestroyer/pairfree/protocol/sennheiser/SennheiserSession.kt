@@ -54,16 +54,35 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     private fun read(c: SennheiserCommand): ByteArray = frame(c.vendor, c.get!!)
 
     override fun start(): List<ByteArray> = buildList {
-        for (feature in REGISTERED) SennheiserWire.FEATURES[feature]?.let { add(frame(SennheiserWire.REGISTER_VENDOR, SennheiserWire.REGISTER_COMMAND, it)) }
+        for (feature in registered()) SennheiserWire.FEATURES[feature]?.let { add(frame(SennheiserWire.REGISTER_VENDOR, SennheiserWire.REGISTER_COMMAND, it)) }
         for (c in commands) if (c.get != null) add(read(c))
         addAll(eqStart())
         addAll(moreStart())
     }
 
+    /** The notifications to register: the common ones, and those of the features this product has (the app registers each feature as it sets it up). */
+    private fun registered(): List<String> = buildList {
+        addAll(REGISTERED)
+        if (model?.peers == true) add("device_management")
+        if (model?.fitTest == true) add("fit_test")
+        if (hasFeature("find-device-1")) add("find_device")
+    }
+
+    private fun hasFeature(name: String): Boolean = model?.properties != null && model.features.containsKey(name)
+
     /** The reads that need a payload: the auto power-off timer (timer 0) and, where the product has them, each touch gesture. */
     private fun moreStart(): List<ByteArray> = buildList {
         if (has(SennheiserCommands.AUTO_OFF)) add(readWith(SennheiserCommands.AUTO_OFF, byteArrayOf(0)))
         addAll(touchReads())
+        // The audio mode (podcast, personalised sound) is read for every product that has the equalizer's reads already.
+        if (hasFeature("audio-mode-1") && Gaia3Packet.keyOf(SennheiserWire.VENDOR, command(SennheiserCommands.AUDIO_MODE)!!.get!!) !in asked) add(read(command(SennheiserCommands.AUDIO_MODE)!!))
+        if (hasFeature("find-device-1")) for (side in 0..1) add(readWith(SennheiserCommands.FIND_QUERY, byteArrayOf(side.toByte())))
+        if (hasFeature("sound-personalization-1") || hasFeature("sound-personalization-2")) add(read(command(SennheiserCommands.PERSONALIZED_MODE)!!))
+        if (model?.peers == true && model.properties != null) {
+            add(read(command(SennheiserCommands.PEER_COUNT)!!))
+            add(read(command(SennheiserCommands.PEER_OWN)!!))
+        }
+        if (model?.sensors == true && model.properties != null) add(readWith(SennheiserCommands.SENSOR_STATE, byteArrayOf(SENSOR_HEART_RATE.toByte())))
     }
 
     /** One read per gesture of each earbud, and whether they are the defaults. */
@@ -80,7 +99,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         return frameOf(c.vendor, c.get!!, payload)
     }
 
-    override fun poll(): List<ByteArray> = command(SennheiserCommands.BATTERY_PERCENT)?.let { listOf(read(it)) } ?: emptyList()
+    override fun poll(): List<ByteArray> = (command(SennheiserCommands.BATTERY_PERCENT)?.let { listOf(read(it)) } ?: emptyList()) + (if (sensorsOn == true) sensorReads() else emptyList())
 
     /** Only the commands of data/sennheiser/commands.json go out: the reads and the writes of its properties, and the notification registration. */
     override fun allowed(message: ByteArray): Boolean {
@@ -96,7 +115,10 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
 
     override fun takeReadBacks(): List<ByteArray> = readBacks.also { readBacks = emptyList() }
 
-    override fun takeOutbox(): List<ByteArray> = eqOutbox.also { eqOutbox = emptyList() }
+    override fun takeOutbox(): List<ByteArray> = (eqOutbox + moreOutbox).also {
+        eqOutbox = emptyList()
+        moreOutbox = emptyList()
+    }
 
     override fun feed(bytes: ByteArray): Fed {
         var changed = false
@@ -120,6 +142,29 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
 
     private val values = mutableMapOf<String, ByteArray>()
     private val touchState = mutableMapOf<Pair<Int, Int>, Int>()
+    private val findRinging = mutableMapOf<Int, Boolean>()
+    private var findKnown = false
+    private var fitStage = 0
+    private var fitLeft: Int? = null
+    private var fitRight: Int? = null
+    private var fitNotReady = false
+    private val peers = mutableMapOf<Int, SennheiserPeer>()
+    private var peerCount: Int? = null
+    private var peerOwn: Int? = null
+    private val sensorData = mutableMapOf<Int, ByteArray>()
+    private var sensorsOn: Boolean? = null
+    private var moreOutbox = emptyList<ByteArray>()
+
+    private fun markFind(): Boolean {
+        if (findKnown) return false
+        findKnown = true
+        return true
+    }
+
+    private fun sensorReads(): List<ByteArray> = listOf(SENSOR_HEART_RATE, SENSOR_BODY_TEMPERATURE).map { readWith(SennheiserCommands.SENSOR_DATA, byteArrayOf(it.toByte())) }
+
+    /** The listed paired devices (multipoint): index, connection status and the name each reports. */
+    public val pairedDevices: List<SennheiserPeer> get() = peers.values.sortedBy { it.index }
     private var autoOffSeconds: Int? = null
 
     /** Takes one property's bytes; true when what the screens show changed. */
@@ -132,6 +177,82 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             if (touchState[at] == function) return false
             touchState[at] = function
             return true
+        }
+        when (c.id) {
+            SennheiserCommands.FIND_QUERY -> {
+                // The answer to a question about one earbud is an event naming it: whether it is ringing, then which.
+                if (payload.size < 2) return markFind()
+                findRinging[payload[1].toInt() and 0xFF] = payload[0].toInt() != 0
+                findKnown = true
+                return true
+            }
+            SennheiserCommands.FIT_PRECONDITION -> {
+                if (payload.size < 2 || fitStage != 1) return false
+                // 1 is a ready earbud; the test then starts (`FitTester.onPreconditionResults`).
+                if ((payload[0].toInt() and 0xFF) == 1 && (payload[1].toInt() and 0xFF) == 1) {
+                    fitStage = 2
+                    moreOutbox += frameOf(c.vendor, command(SennheiserCommands.FIT_CHECK)!!.get!!, ByteArray(0))
+                } else {
+                    fitStage = 0
+                    fitNotReady = true
+                }
+                return true
+            }
+            SennheiserCommands.FIT_CHECK -> {
+                if (payload.size < 2 || fitStage != 2) return false
+                fitLeft = payload[0].toInt() and 0xFF
+                fitRight = payload[1].toInt() and 0xFF
+                fitStage = 3
+                return true
+            }
+            SennheiserCommands.PEER_COUNT -> {
+                if (payload.size < 2) return false
+                val n = ((payload[0].toInt() and 0xFF) shl 8) or (payload[1].toInt() and 0xFF)
+                if (peerCount == n) return false
+                peerCount = n
+                // The app reads the entries from the product's start index (0) until it has them all, at most `defaultListSize` (8) of them.
+                for (i in 0 until minOf(8, maxOf(n, 1) + 1)) moreOutbox += readWith(SennheiserCommands.PEER_INFO, byteArrayOf(i.toByte()))
+                return true
+            }
+            SennheiserCommands.PEER_OWN -> {
+                peerOwn = payload.firstOrNull()?.toInt()?.and(0xFF)
+                return true
+            }
+            SennheiserCommands.PEER_INFO -> {
+                if (payload.size < 3) return false
+                val index = payload[0].toInt() and 0xFF
+                val status = payload[2].toInt() and 0xFF
+                if (status == PEER_NO_DEVICE || status == PEER_PAIRING_CANCELLED) return peers.remove(index) != null
+                val name = String(payload.copyOfRange(3, payload.size).filter { it.toInt() in 0x20..0x7E || it.toInt() < 0 }.toByteArray(), Charsets.UTF_8).trim()
+                peers[index] = SennheiserPeer(index, status, name.ifEmpty { "#$index" })
+                return true
+            }
+            SennheiserCommands.PEER_STATUS -> {
+                if (payload.size < 2) return false
+                val index = payload[0].toInt() and 0xFF
+                val known = peers[index]
+                val status = payload[1].toInt() and 0xFF
+                if (known == null) {
+                    moreOutbox += readWith(SennheiserCommands.PEER_INFO, byteArrayOf(index.toByte()))
+                    return false
+                }
+                if (known.status == status) return false
+                peers[index] = SennheiserPeer(index, status, known.name)
+                return true
+            }
+            SennheiserCommands.SENSOR_STATE -> {
+                if (payload.size < 2) return false
+                val on = payload[1].toInt() != 0
+                if (sensorsOn == on) return false
+                sensorsOn = on
+                if (on) moreOutbox += sensorReads()
+                return true
+            }
+            SennheiserCommands.SENSOR_DATA -> {
+                if (payload.size < 2) return false
+                sensorData[payload[0].toInt() and 0xFF] = payload.copyOfRange(1, payload.size)
+                return true
+            }
         }
         if (c.id == SennheiserCommands.AUTO_OFF) {
             // The answer to the read of timer 0: the timer's number, then its value in seconds.
@@ -241,7 +362,12 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 }
             }
             if (noise.isNotEmpty()) add(SettingGroup("noise", SettingTab.HOME, noise))
-            if (eqKnown) add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Toggle(KEY_BASS_BOOST, eqBass))))
+            val sound = buildList<Setting> {
+                if (eqKnown) add(Setting.Toggle(KEY_BASS_BOOST, eqBass))
+                audioMode()?.let { add(Setting.Toggle(KEY_PODCAST, it == AUDIO_SPEECH)) }
+                personalizedOn()?.let { add(Setting.Toggle(KEY_PERSONALIZED, it)); add(Setting.Action(KEY_PERSONALIZED_RESET)) }
+            }
+            if (sound.isNotEmpty()) add(SettingGroup("sound", SettingTab.SOUND, sound))
             val calls = buildList<Setting> {
                 on(SennheiserCommands.AUTO_CALL)?.let { add(Setting.Toggle(KEY_AUTO_CALL, it)) }
                 on(SennheiserCommands.COMFORT_CALL)?.let { add(Setting.Toggle(KEY_COMFORT_CALL, it)) }
@@ -270,7 +396,85 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             }
             if (other.isNotEmpty()) add(SettingGroup("other", SettingTab.DEVICE, other))
             addAll(touchGroups())
+            if (findKnown) add(SettingGroup("find", SettingTab.DEVICE, listOf(
+                Setting.Action(KEY_FIND_LEFT, findRinging[SIDE_LEFT] == true),
+                Setting.Action(KEY_FIND_RIGHT, findRinging[SIDE_RIGHT] == true),
+            )))
+            if (model?.fitTest == true && model.properties != null) add(SettingGroup("sh_fit", SettingTab.DEVICE, buildList {
+                add(Setting.Action(KEY_FIT_TEST, fitStage in 1..2))
+                if (fitNotReady) add(Setting.Information(KEY_FIT_LEFT, "not_ready"))
+                else if (fitStage == 3) {
+                    add(Setting.Information(KEY_FIT_LEFT, fitWord(fitLeft)))
+                    add(Setting.Information(KEY_FIT_RIGHT, fitWord(fitRight)))
+                }
+            }))
+            val others = pairedDevices.filter { it.index != peerOwn }
+            if (others.isNotEmpty()) {
+                fun label(p: SennheiserPeer) = if (others.count { it.name == p.name } > 1) "${p.name} (${p.index})" else p.name
+                val off = others.filter { it.status and 0x7F == PEER_DISCONNECTED }.map(::label)
+                val on = others.filter { it.status and 0x7F != PEER_DISCONNECTED }.map(::label)
+                add(SettingGroup("connection", SettingTab.DEVICE, buildList {
+                    if (off.isNotEmpty()) add(Setting.Choice(KEY_PEER_CONNECT, null, off))
+                    if (on.isNotEmpty()) add(Setting.Choice(KEY_PEER_DISCONNECT, null, on))
+                }))
+            }
+            if (model?.sensors == true && sensorsOn != null) add(SettingGroup("sh_sensors", SettingTab.DEVICE, buildList {
+                add(Setting.Toggle(KEY_SENSORS, sensorsOn == true))
+                if (sensorsOn == true) {
+                    heartRate()?.let { add(Setting.Information(KEY_HEART_RATE, "$it")) }
+                    bodyTemperature()?.let { add(Setting.Information(KEY_BODY_TEMPERATURE, it)) }
+                }
+            }))
         }
+
+    /** The current audio mode (`AudioMode`: 1 user equalizer, 2 speech, 3 flat or personalised sound), or null while unread. */
+    private fun audioMode(): Int? {
+        val b = values[SennheiserCommands.AUDIO_MODE] ?: return null
+        return if (b.size >= 2) ((b[0].toInt() and 0xFF) shl 8) or (b[1].toInt() and 0xFF) else b.firstOrNull()?.toInt()?.and(0xFF)
+    }
+
+    /**
+     * The generation of personalised sound the product's firmware has: 2 when the firmware reaches the second feature file's version, else 1 when it
+     * reaches the first's (the product files' `sound-personalization-1` and `-2`), or null while the firmware is not known.
+     */
+    private fun personalizedVersion(): Int? {
+        val m = model ?: return null
+        val have = SennheiserEq.version(firmware) ?: return null
+        fun reaches(name: String) = m.features[name]?.let { v -> SennheiserEq.version(v)?.let { SennheiserEq.atLeast(have, it) } } == true
+        return when {
+            reaches("sound-personalization-2") -> 2
+            reaches("sound-personalization-1") -> 1
+            else -> null
+        }
+    }
+
+    /** Whether personalised sound is on, once the earbuds hold a personalisation; null when the product has none or has none set up. */
+    private fun personalizedOn(): Boolean? {
+        val version = personalizedVersion() ?: return null
+        val mode = u8(SennheiserCommands.PERSONALIZED_MODE) ?: return null
+        if (mode == 0) return null
+        return if (version == 1) mode == PERSONALIZED_V1_ENABLED else audioMode() == AUDIO_PERSONALIZED
+    }
+
+    private fun fitWord(v: Int?): String = when {
+        v == null || v == 255 -> "none"
+        v == 254 -> "invalid"
+        v <= 29 -> "bad"
+        v <= 59 -> "acceptable"
+        else -> "good"
+    }
+
+    /** The heart rate sensor's value in beats per minute (the second byte of its data, as the app reads it). */
+    private fun heartRate(): Int? = sensorData[SENSOR_HEART_RATE]?.getOrNull(1)?.toInt()?.and(0xFF)?.takeIf { it in 1..254 }
+
+    /** The body temperature as the app reads it (`parseBodyTemperatureSensorData`): a value with a power of ten, celsius or fahrenheit by the flags. */
+    private fun bodyTemperature(): String? {
+        val d = sensorData[SENSOR_BODY_TEMPERATURE] ?: return null
+        if (d.size < 5 || (d[3].toInt() and 0xFF) == 255) return null
+        val celsius = (5 and d[0].toInt().inv()) != 0
+        val value = (((d[2].toInt() and 0xFF) shl 8) + (d[3].toInt() and 0xFF)) * Math.pow(10.0, d[4].toInt().toDouble())
+        return "%.1f %s".format(java.util.Locale.ROOT, value, if (celsius) "°C" else "°F")
+    }
 
     private fun sampleRate(): Int? = values[SennheiserCommands.SAMPLE_RATE]?.takeIf { it.size >= 4 }?.fold(0L) { acc, b -> (acc shl 8) or (b.toLong() and 0xFF) }?.takeIf { it in 1..1_000_000 }?.toInt()
 
@@ -349,6 +553,91 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         return out
     }
 
+    private fun audioModeFrame(mode: Int): ByteArray? {
+        val audio = command(SennheiserCommands.AUDIO_MODE) ?: return null
+        values[SennheiserCommands.AUDIO_MODE] = u16(mode)
+        readBacks += read(audio)
+        return frameOf(audio.vendor, audio.set!!, u16(mode))
+    }
+
+    private fun press(key: String): List<ByteArray>? {
+        when (key) {
+            KEY_FIND_LEFT, KEY_FIND_RIGHT -> {
+                if (!findKnown) return null
+                val side = if (key == KEY_FIND_LEFT) SIDE_LEFT else SIDE_RIGHT
+                val ring = command(SennheiserCommands.FIND_RING) ?: return null
+                val stop = command(SennheiserCommands.FIND_STOP) ?: return null
+                val wasRinging = findRinging[side] == true
+                readBacks += readWith(SennheiserCommands.FIND_QUERY, byteArrayOf(side.toByte()))
+                if (wasRinging) {
+                    findRinging.keys.toList().forEach { findRinging[it] = false }
+                    return listOf(frameOf(stop.vendor, stop.set!!, ByteArray(0)))
+                }
+                findRinging[side] = true
+                return listOf(frameOf(ring.vendor, ring.set!!, byteArrayOf(side.toByte())))
+            }
+            KEY_FIT_TEST -> {
+                if (model?.fitTest != true) return null
+                if (fitStage in 1..2) {
+                    fitStage = 0
+                    return emptyList()
+                }
+                fitStage = 1
+                fitLeft = null
+                fitRight = null
+                fitNotReady = false
+                val c = command(SennheiserCommands.FIT_PRECONDITION) ?: return null
+                return listOf(frameOf(c.vendor, c.get!!, ByteArray(0)))
+            }
+            KEY_PERSONALIZED_RESET -> {
+                val c = command(SennheiserCommands.PERSONALIZED_RESET) ?: return null
+                readBacks += read(command(SennheiserCommands.PERSONALIZED_MODE)!!)
+                return listOf(frameOf(c.vendor, c.set!!, ByteArray(0)))
+            }
+        }
+        return null
+    }
+
+    private fun toggleMore(change: SettingChange.Toggle): List<ByteArray>? {
+        when (change.key) {
+            KEY_PODCAST -> {
+                if (audioMode() == null) return null
+                return audioModeFrame(if (change.on) AUDIO_SPEECH else AUDIO_USER_EQ)?.let { listOf(it) }
+            }
+            KEY_PERSONALIZED -> {
+                val version = personalizedVersion() ?: return null
+                if (version == 2) return audioModeFrame(if (change.on) AUDIO_PERSONALIZED else AUDIO_USER_EQ)?.let { listOf(it) }
+                // The first generation: on is the mode `enabled`; off sends the user equalizer back (`SoundPersonalizationImpl.send_v1`).
+                if (change.on) {
+                    val c = command(SennheiserCommands.PERSONALIZED_MODE) ?: return null
+                    values[SennheiserCommands.PERSONALIZED_MODE] = byteArrayOf(PERSONALIZED_V1_ENABLED.toByte())
+                    readBacks += read(c)
+                    return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(PERSONALIZED_V1_ENABLED.toByte())))
+                }
+                return audioModeFrame(AUDIO_USER_EQ)?.let { listOf(it) }?.also { values[SennheiserCommands.PERSONALIZED_MODE] = byteArrayOf(PERSONALIZED_V1_STANDBY.toByte()) }
+            }
+            KEY_SENSORS -> {
+                val c = command(SennheiserCommands.SENSOR_ENABLE) ?: return null
+                if (sensorsOn == null) return null
+                sensorsOn = change.on
+                val flag = if (change.on) 1 else 0
+                val frames = listOf(SENSOR_HEART_RATE, SENSOR_BODY_TEMPERATURE).map { frameOf(c.vendor, c.set!!, byteArrayOf(it.toByte(), flag.toByte())) }
+                if (change.on) moreOutbox += sensorReads()
+                return frames
+            }
+        }
+        return null
+    }
+
+    private fun peerChange(change: SettingChange.Choice): List<ByteArray>? {
+        val others = pairedDevices.filter { it.index != peerOwn }
+        val target = others.firstOrNull { it.name == change.option || "${it.name} (${it.index})" == change.option } ?: return null
+        val connect = change.key == KEY_PEER_CONNECT
+        val c = command(if (connect) SennheiserCommands.PEER_CONNECT else SennheiserCommands.PEER_DISCONNECT) ?: return null
+        readBacks += readWith(SennheiserCommands.PEER_STATUS, byteArrayOf(target.index.toByte()))
+        return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(target.index.toByte())))
+    }
+
     private fun write(id: String, vararg payload: Int): List<ByteArray>? {
         val c = command(id) ?: return null
         val set = c.set ?: return null
@@ -376,6 +665,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
     private fun concat(a: List<ByteArray>?, b: List<ByteArray>?): List<ByteArray>? = if (a == null || b == null) null else a + b
 
     override fun change(change: SettingChange): List<ByteArray>? {
+        if (change is SettingChange.Toggle && change.key in setOf(KEY_PODCAST, KEY_PERSONALIZED, KEY_SENSORS)) return toggleMore(change)
         if (change is SettingChange.Toggle) {
             val flag = if (change.on) 1 else 0
             if (change.key == KEY_BASS_BOOST) return eqBassBoost(change.on)
@@ -410,6 +700,8 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             return write(id, v)
         }
         if (change is SettingChange.Press && change.key == KEY_TOUCH_DEFAULT) return restoreTouch()
+        if (change is SettingChange.Press) return press(change.key)
+        if (change is SettingChange.Choice && (change.key == KEY_PEER_CONNECT || change.key == KEY_PEER_DISCONNECT)) return peerChange(change)
         if (change is SettingChange.Choice && change.key.startsWith("touch_")) return changeTouch(change)
         if (change is SettingChange.Choice && change.key == KEY_AUTO_OFF) {
             val minutes = change.option.toIntOrNull() ?: return null
@@ -724,6 +1016,38 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         public const val KEY_WEAR_LEFT: String = "sh_wear_left"
         public const val KEY_WEAR_RIGHT: String = "sh_wear_right"
         public const val KEY_TOUCH_DEFAULT: String = "sh_touch_default"
+        public const val KEY_PODCAST: String = "sh_podcast"
+        public const val KEY_PERSONALIZED: String = "sh_personalized"
+        public const val KEY_PERSONALIZED_RESET: String = "sh_personalized_reset"
+        public const val KEY_FIND_LEFT: String = "sh_find_left"
+        public const val KEY_FIND_RIGHT: String = "sh_find_right"
+        public const val KEY_FIT_TEST: String = "sh_fit_test"
+        public const val KEY_FIT_LEFT: String = "sh_fit_left"
+        public const val KEY_FIT_RIGHT: String = "sh_fit_right"
+        public const val KEY_PEER_CONNECT: String = "sh_peer_connect"
+        public const val KEY_PEER_DISCONNECT: String = "sh_peer_disconnect"
+        public const val KEY_SENSORS: String = "sh_sensors"
+        public const val KEY_HEART_RATE: String = "sh_heart_rate"
+        public const val KEY_BODY_TEMPERATURE: String = "sh_body_temperature"
+
+        /** `AudioMode` values (`audio-mode-1` and `-2`): 2 is speech (the app's podcast mode), 3 the personalised sound. */
+        private const val AUDIO_SPEECH = 2
+        private const val AUDIO_PERSONALIZED = 3
+        private const val PERSONALIZED_V1_ENABLED = 3
+        private const val PERSONALIZED_V1_STANDBY = 2
+
+        /** `FindDeviceRingSeparateDevice`'s sides ("Right Earbud - 0, Left Earbud - 1"). */
+        private const val SIDE_RIGHT = 0
+        private const val SIDE_LEFT = 1
+
+        /** The app's sensor types (`Sensor_SensorData`). */
+        private const val SENSOR_HEART_RATE = 0
+        private const val SENSOR_BODY_TEMPERATURE = 1
+
+        /** The connection status values of a paired device (`DISCONNECTED` 0, classic 1, LE 2, both 3; 128 is a flag; 254 and 255 no device). */
+        private const val PEER_DISCONNECTED = 0
+        private const val PEER_PAIRING_CANCELLED = 254
+        private const val PEER_NO_DEVICE = 255
 
         /** The feature id of the equalizers (Sennheiser's `user_eq`). */
         internal const val FEATURE_USER_EQ: Int = 8
@@ -778,3 +1102,6 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         private val PROMPTS = linkedMapOf("tone_voice_off" to 0, "tone_on" to 1, "tone_voice_on" to 2)
     }
 }
+
+/** One entry of the earbuds' paired devices list: its index, the connection status the earbuds report (0 disconnected, 1 classic, 2 LE, 3 both) and its name. */
+public class SennheiserPeer(public val index: Int, public val status: Int, public val name: String)

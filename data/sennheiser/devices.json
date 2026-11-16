@@ -59,6 +59,13 @@
    },
    "sidetone_max": 2,
    "transparency": null,
+   "features": {
+    "audio-mode-1": "0.0.0",
+    "audio-mode-2": "3.16.4"
+   },
+   "peers": true,
+   "fit_test": false,
+   "sensors": false,
    "touch": null
   },
   {
@@ -117,6 +124,15 @@
    },
    "sidetone_max": 4,
    "transparency": "slider",
+   "features": {
+    "audio-mode-1": "0.0.0",
+    "audio-mode-2": "3.16.4",
+    "sound-personalization-1": "2.12.0",
+    "sound-personalization-2": "3.16.4"
+   },
+   "peers": true,
+   "fit_test": false,
+   "sensors": false,
    "touch": null
   },
   {
@@ -173,6 +189,15 @@
    },
    "sidetone_max": 2,
    "transparency": "levels",
+   "features": {
+    "audio-mode-1": "0.0.0",
+    "audio-mode-2": "5.0.26",
+    "find-device-1": "5.8.17",
+    "auracast-1": "5.13.1"
+   },
+   "peers": true,
+   "fit_test": true,
+   "sensors": false,
    "touch": [
     {
      "action": "none",
@@ -272,6 +297,12 @@
    },
    "sidetone_max": 2,
    "transparency": null,
+   "features": {
+    "audio-mode-1": "0.0.0"
+   },
+   "peers": true,
+   "fit_test": false,
+   "sensors": false,
    "touch": [
     {
      "action": "none",
@@ -355,6 +386,12 @@
    },
    "sidetone_max": 2,
    "transparency": null,
+   "features": {
+    "audio-mode-1": "0.0.0"
+   },
+   "peers": true,
+   "fit_test": false,
+   "sensors": false,
    "touch": [
     {
      "action": "none",
@@ -461,6 +498,12 @@
    },
    "sidetone_max": 2,
    "transparency": null,
+   "features": {
+    "audio-mode-1": "0.0.0"
+   },
+   "peers": true,
+   "fit_test": false,
+   "sensors": false,
    "touch": [
     {
      "action": "none",
@@ -558,6 +601,12 @@
    },
    "sidetone_max": 2,
    "transparency": null,
+   "features": {
+    "audio-mode-1": "0.0.0"
+   },
+   "peers": true,
+   "fit_test": false,
+   "sensors": false,
    "touch": [
     {
      "action": "none",
@@ -674,6 +723,13 @@
    },
    "sidetone_max": 4,
    "transparency": "slider",
+   "features": {
+    "audio-mode-1": "0.0.0",
+    "sound-personalization-1": "2.12.0"
+   },
+   "peers": true,
+   "fit_test": false,
+   "sensors": false,
    "touch": null
   },
   {
@@ -736,6 +792,14 @@
    },
    "sidetone_max": 2,
    "transparency": "levels",
+   "features": {
+    "audio-mode-1": "0.0.0",
+    "audio-mode-2": "3.16.4",
+    "find-device-1": "3.18.30"
+   },
+   "peers": true,
+   "fit_test": true,
+   "sensors": true,
    "touch": [
     {
      "action": "none",
@@ -864,6 +928,13 @@
    },
    "sidetone_max": null,
    "transparency": "levels",
+   "features": {
+    "audio-mode-1": "0.0.0",
+    "sound-personalization-1": "2.12.0"
+   },
+   "peers": true,
+   "fit_test": true,
+   "sensors": false,
    "touch": [
     {
      "action": "none",
@@ -979,6 +1050,17 @@
    },
    "sidetone_max": 2,
    "transparency": "levels",
+   "features": {
+    "audio-mode-1": "0.0.0",
+    "audio-mode-2": "5.0.0",
+    "sound-personalization-1": "0.0.0",
+    "sound-personalization-2": "5.0.0",
+    "find-device-1": "5.8.17",
+    "auracast-1": "5.13.1"
+   },
+   "peers": true,
+   "fit_test": true,
+   "sensors": false,
    "touch": [
     {
      "action": "none",
@@ -1054,7 +1136,11 @@
    "eq": null,
    "sidetone_max": null,
    "transparency": null,
-   "touch": null
+   "touch": null,
+   "features": {},
+   "peers": false,
+   "fit_test": false,
+   "sensors": false
   },
   {
    "name": "Momentum True Wireless 5",
@@ -1072,7 +1158,11 @@
    "eq": null,
    "sidetone_max": null,
    "transparency": null,
-   "touch": null
+   "touch": null,
+   "features": {},
+   "peers": false,
+   "fit_test": false,
+   "sensors": false
   },
   {
    "name": "HDB 630",
@@ -1087,7 +1177,11 @@
    "eq": null,
    "sidetone_max": null,
    "transparency": null,
-   "touch": null
+   "touch": null,
+   "features": {},
+   "peers": false,
+   "fit_test": false,
+   "sensors": false
   },
   {
    "name": "HDR 275 / 255",
@@ -1105,7 +1199,11 @@
    "eq": null,
    "sidetone_max": null,
    "transparency": null,
-   "touch": null
+   "touch": null,
+   "features": {},
+   "peers": false,
+   "fit_test": false,
+   "sensors": false
   }
  ]
 }

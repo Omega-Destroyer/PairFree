@@ -57,7 +57,7 @@ NOT_ON_OPEN = {"auto_off", "mmi", "mmi_default", "mmi_is_default"}
 
 # The Sennheiser vendor id's notification registration (RegisterNotification_* in the product files; `Additional_Values` is the feature id).
 FEATURES = {"core": 0, "device": 2, "battery": 3, "generic_audio": 4, "user_eq": 8, "versions": 9, "device_management": 10, "mmi": 11,
-            "transparent_hearing": 12, "anc": 13}
+            "transparent_hearing": 12, "anc": 13, "fit_test": 15, "find_device": 22}
 
 # The products Smart Control 4.9.4 defines as GAIAV3 (its product file, the app's name), with the Bluetooth names the app maps to them
 # (DeviceType.getDeviceTypeByManufacturerName and deviceTypeByBluetoothNameMap) and what kind of product it is.
@@ -184,6 +184,42 @@ FEATURE_PROPS = {
 }
 
 
+# Commands that are not a plain read or write of a value (docs/sennheiser/PROTOCOL.md sections 4.4 to 4.8): (where it lives, the app's property, PairFree's id, how it is used).
+# "get": a command whose answer (a reply, or an event with the same command number) is read; "set": a command that does something; "sides": a property with a read and a write.
+# `where` is a product file (the same property on every product that has it) or a shared feature file of `assets/app/features`.
+ACTIONS = [
+    ("find-device-1", "FindDeviceRingSeparateDevice", "find_ring", "set"),
+    ("find-device-1", "FindDeviceStopRinging", "find_stop", "set"),
+    ("find-device-1", "FindDeviceIsDeviceRinging", "find_query", "get"),
+    ("sound-personalization-1", "PersonalizedSound_Mode", "personalized_mode", "sides"),
+    ("sound-personalization-1", "PersonalizedSound_Reset", "personalized_reset", "set"),
+    ("product", "FitTestCheckPrecondition", "fit_precondition", "get"),
+    ("product", "FitTestCheck", "fit_check", "get"),
+    ("product", "PairedDevicesListSize", "peer_count", "get"),
+    ("product", "PairedDevicesGetDeviceInfo", "peer_info", "get"),
+    ("product", "PairedDevicesOwnDeviceIndex", "peer_own", "get"),
+    ("product", "PairedDevicesConnectDevice", "peer_connect", "set"),
+    ("product", "PairedDevicesDisconnectDevice", "peer_disconnect", "set"),
+    ("product", "PairedDevicesGetConnectionStatus", "peer_status", "get"),
+    ("product", "Sensor_SensorData", "sensor_data", "get"),
+    ("product", "Sensor_SetSensorEnable", "sensor_enable", "set"),
+    ("product", "Sensor_GetSensorEnable", "sensor_state", "get"),
+]
+# Which product files carry a shared feature file (with the firmware its entry names), as the products' `features` say.
+FEATURE_FILES = ("find-device-1", "sound-personalization-1", "sound-personalization-2", "audio-mode-1", "audio-mode-2", "auracast-1")
+
+
+def invoke_block(prop):
+    """The command and reply of a property written as an Invocation, whatever its name says."""
+    inv = prop.get("Invocation", {})
+    cmd = inv.get("Command")
+    rsp = prop.get("Result", {}).get("Response")
+    block = {"send": command(cmd)}
+    if isinstance(rsp, dict) and "gaiaV3" in rsp:
+        block["reply"] = command(rsp)
+    return block
+
+
 def invocation(prop):
     """A property written as an Invocation (a command with its result): its command and reply, as read or write by its name."""
     inv = prop.get("Invocation", {})
@@ -282,6 +318,38 @@ def main(assets):
                 entry[where] = blk
         if p.get("Value", {}).get("map"):
             entry["values"] = p["Value"]["map"]
+    shared = {name: {p["name"]: p for p in json.loads((assets / "features" / (name + ".json")).read_text(encoding="utf-8"))["properties"]} for name in FEATURE_FILES}
+    for where, app_name, pid, how in ACTIONS:
+        sources = [shared[where]] if where != "product" else [products[f] for f in SC_MODELS]
+        for src in sources:
+            p = src.get(app_name)
+            if not p:
+                continue
+            entry = {"app_property": app_name}
+            if how == "sides":
+                if p.get("Value", {}).get("map"):
+                    entry["values"] = p["Value"]["map"]
+                for key in ("Get", "Set"):
+                    blk = side(p, key)
+                    if blk:
+                        entry["get" if key == "Get" else "set"] = blk
+            elif "Invocation" in p:
+                entry[how] = invoke_block(p)
+            elif "Get" in p and "Event" in p["Get"]:
+                # An event only (`PairedDevicesGetConnectionStatus` is also a command; this form is the notification alone).
+                entry[how] = {"send": command(p["Get"]["Event"])}
+            else:
+                blk = side(p, "Get")
+                if blk:
+                    entry[how] = blk
+            if pid in commands:
+                old = commands[pid]
+                for key in ("get", "set"):
+                    if key in entry and key in old:
+                        assert old[key]["send"]["command"] == entry[key]["send"]["command"], (pid, key)
+                continue
+            if how == "get" or "get" in entry or "set" in entry:
+                commands[pid] = {**entry, "open": False}
     reg = products["m4.json"]["RegisterNotification_ANC"]["Invocation"]["Command"]["gaiaV3"]
     data = {
         "_about": "Sennheiser's GAIA v3 commands, read from Smart Control 4.9.4's product files (docs/sennheiser/PROTOCOL.md). A command is a vendor id (0495 Sennheiser's own, 001D Qualcomm's) and a command word; its reply is the word + 0100 and its error + 0180. send/reply list each parameter's type and the app's name for it; values is the app's map of names to numbers. Written by tools/import_sennheiser_app.py; PairFree builds only what is listed here (the app's other properties are in the research notes).",
@@ -293,7 +361,7 @@ def main(assets):
             "company_id": "0BA3",
         },
         "register_notification": {"vendor": hexid(reg["vendor_ID"]), "command": hexid(reg["GAIA_command_ID"]), "features": FEATURES},
-        "commands": [{"id": pid, "open": commands[pid].get("open", pid not in NOT_ON_OPEN), **{k: v for k, v in commands[pid].items() if k != "open"}} for pid in dict.fromkeys(list(PROPS.values()) + [v[0] for v in FEATURE_PROPS.values()]) if pid in commands],
+        "commands": [{"id": pid, "open": commands[pid].get("open", pid not in NOT_ON_OPEN), **{k: v for k, v in commands[pid].items() if k != "open"}} for pid in dict.fromkeys(list(PROPS.values()) + [v[0] for v in FEATURE_PROPS.values()] + [a[2] for a in ACTIONS]) if pid in commands],
         "never_send": [
             {"app_property": "Service_FactoryReset", "vendor": "0495", "command": "0040", "why": "factory reset"},
             {"app_property": "Debug_ErasePanicLog", "why": "erases the earbuds' panic log"},
@@ -304,10 +372,12 @@ def main(assets):
     for fname, (name, klass, names) in SC_MODELS.items():
         have = [pid for app_name, pid in PROPS.items() if app_name in products[fname]]
         touch = TOUCH.get(fname)
+        feats = {f["name"]: f.get("minVersion", "0.0.0") for f in json.loads((assets / fname).read_text(encoding="utf-8"))["features"]}
         models.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": have, "eq": EQ_MODELS[fname], **EXTRAS[fname],
+                       "features": {k: v for k, v in feats.items() if k in FEATURE_FILES}, "peers": "PairedDevicesListSize" in products[fname], "fit_test": "FitTestCheck" in products[fname], "sensors": "Sensor_SensorData" in products[fname],
                        "touch": None if touch is None else [{"action": a[0], "gestures": a[1], **({"min_firmware": a[2]} if len(a) > 2 else {})} for a in touch]})
     for name, klass, names, article in SCP_MODELS:
-        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None, "sidetone_max": None, "transparency": None, "touch": None})
+        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None, "sidetone_max": None, "transparency": None, "touch": None, "features": {}, "peers": False, "fit_test": False, "sensors": False})
     OUT.mkdir(parents=True, exist_ok=True)
     eq = {
         "_about": "Sennheiser's equalizers as Smart Control 4.9.4 computes them (docs/sennheiser/PROTOCOL.md section 6): gen2 (the earbuds hold five band gains in tenths of a dB), gen1 (a five band shelf filter set the app calculates: bass boost, loudness weights, headroom, Q, band frequencies) and the older three-band bass, mid and treble; presets in dB per band. Written by tools/import_sennheiser_app.py.",

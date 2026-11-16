@@ -2317,6 +2317,11 @@ abstract class GenerateSennheiserTables : DefaultTask() {
                 val g1 = eqm["gen1"] as List<Any?>?
                 "SennheiserModelEq(${eqm["gen2"]}, ${if (g1 == null) "null" else str(g1[0])}, ${if (g1 == null) "null" else str(g1[1])}, ${(eqm["three_band"] as Number).toInt()}, ${str(eqm["presets"])})"
             }
+            fun featuresText(m: Map<String, Any?>): String {
+                @Suppress("UNCHECKED_CAST")
+                val f = (m["features"] as Map<String, Any?>?) ?: emptyMap()
+                return f.entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${str(it.value)}" }
+            }
             @Suppress("UNCHECKED_CAST")
             val touchList = d["touch"] as List<Map<String, Any?>>?
             val touchText = if (touchList == null) "null" else touchList.joinToString(", ", "listOf(", ")") {
@@ -2324,7 +2329,7 @@ abstract class GenerateSennheiserTables : DefaultTask() {
             }
             val sidetone = (d["sidetone_max"] as Number?)?.toInt()?.toString() ?: "null"
             val transparency = (d["transparency"] as String?)?.let { str(it) } ?: "null"
-            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props, $eqText, $sidetone, $transparency, $touchText),")
+            out.appendLine("    SennheiserModel(${str(d["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.$form, ${strings(d["names"])}, $props, $eqText, $sidetone, $transparency, $touchText, ${featuresText(d)}, ${d["peers"] == true}, ${d["fit_test"] == true}, ${d["sensors"] == true}),")
         }
         out.appendLine(")")
 

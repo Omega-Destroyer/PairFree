@@ -89,7 +89,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(
                             when {
                                 setting.key == "a3959_wind_detected" -> stringResource(if (setting.value == "yes") R.string.yes else R.string.no)
-                                setting.key.startsWith("sh_wear") -> optionName(setting.key, setting.value)
+                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") -> optionName(setting.key, setting.value)
                                 else -> setting.value
                             },
                             color = Studio.colors.secondaryText,
@@ -103,7 +103,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
     confirming?.let { key ->
         ConfirmDialog(
             title = stringResource(actionStart(key)),
-            body = stringResource(if (key == "power_off") R.string.setting_power_off_body else R.string.setting_restart_body),
+            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; else -> R.string.setting_restart_body }),
             confirm = stringResource(actionStart(key)),
             onConfirm = { onChange(SettingChange.Press(key)) },
             onDismiss = { confirming = null },
@@ -173,7 +173,7 @@ private const val SEND_AFTER_MS = 300L
 private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
-private val CONFIRM_KEYS = setOf("restart", "power_off")
+private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
 private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find")
@@ -199,6 +199,8 @@ private fun groupTitle(key: String): String = stringResource(
         "touch_case" -> R.string.setting_group_touch_case
         "touch_dial" -> R.string.setting_group_touch_dial
         "touch_buttons", "touch_default" -> R.string.touch_controls
+        "sh_fit" -> R.string.setting_group_sh_fit
+        "sh_sensors" -> R.string.setting_group_sh_sensors
         "sleep" -> R.string.setting_group_sleep
         "sleep_sound" -> R.string.setting_group_sleep_sound
         "attention" -> R.string.setting_group_attention
@@ -222,6 +224,7 @@ private fun groupTitle(key: String): String = stringResource(
 private fun groupNote(key: String): String? = when (key) {
     "ef_cycle" -> stringResource(R.string.setting_group_ef_cycle_note)
     "find" -> stringResource(R.string.setting_find_note)
+    "sh_fit" -> stringResource(R.string.setting_sh_fit_note)
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
@@ -561,6 +564,16 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_wear" -> stringResource(R.string.setting_sh_wear)
     "sh_wear_left" -> stringResource(R.string.setting_sh_wear_left)
     "sh_wear_right" -> stringResource(R.string.setting_sh_wear_right)
+    "sh_podcast" -> stringResource(R.string.setting_sh_podcast)
+    "sh_personalized" -> stringResource(R.string.setting_sh_personalized)
+    "sh_fit_test" -> stringResource(R.string.setting_sh_fit_test)
+    "sh_fit_left" -> stringResource(R.string.setting_sh_fit_left)
+    "sh_fit_right" -> stringResource(R.string.setting_sh_fit_right)
+    "sh_peer_connect" -> stringResource(R.string.setting_sh_peer_connect)
+    "sh_peer_disconnect" -> stringResource(R.string.setting_sh_peer_disconnect)
+    "sh_sensors" -> stringResource(R.string.setting_sh_sensors)
+    "sh_heart_rate" -> stringResource(R.string.setting_sh_heart_rate)
+    "sh_body_temperature" -> stringResource(R.string.setting_sh_body_temperature)
     "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
     "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
     "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
@@ -921,6 +934,7 @@ private fun isTouchRow(key: String): Boolean {
 internal fun Context.optionLabel(key: String, option: String): String = when {
     key == "sh_auto_off" -> if (option == "0") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
     key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> getString(when (option) { "low" -> R.string.setting_level_low; "mid", "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_high })
+    key.startsWith("sh_fit_") -> getString(when (option) { "bad" -> R.string.setting_sh_fit_bad; "acceptable" -> R.string.setting_sh_fit_acceptable; "good" -> R.string.setting_sh_fit_good; "invalid" -> R.string.setting_sh_fit_invalid; "not_ready" -> R.string.setting_sh_fit_not_ready; else -> R.string.unknown })
     key.startsWith("sh_wear") -> getString(when (option) { "in_case" -> R.string.setting_sh_wear_in_case; "not_on_head" -> R.string.setting_sh_wear_off; "on_head" -> R.string.setting_sh_wear_on; else -> R.string.unknown })
     key == "sh_prompts" -> getString(when (option) { "tone_voice_off" -> R.string.action_off; "tone_on" -> R.string.setting_sh_prompts_tones; else -> R.string.setting_sh_prompts_voice })
     key == "a3959_nc_mode" -> getString(when (option) { "manual" -> R.string.a3959_manual; "adaptive" -> R.string.a3959_adaptive; else -> R.string.a3959_multi_scene })
@@ -1444,11 +1458,17 @@ private fun actionStart(key: String): Int = when (key) {
     "restart" -> R.string.setting_restart
     "power_off" -> R.string.setting_power_off
     "sh_touch_default" -> R.string.setting_sh_touch_default
+    "sh_personalized_reset" -> R.string.setting_sh_personalized_reset
+    "sh_find_left" -> R.string.setting_sh_find_left
+    "sh_find_right" -> R.string.setting_sh_find_right
+    "sh_fit_test" -> R.string.setting_sh_fit_start
     else -> R.string.setting_action_start
 }
 
 private fun actionStop(key: String): Int = when (key) {
     "find" -> R.string.setting_find_stop
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
+    "sh_find_left", "sh_find_right" -> R.string.setting_find_stop
+    "sh_fit_test" -> R.string.setting_sh_fit_cancel
     else -> R.string.setting_action_stop
 }

@@ -23,7 +23,9 @@
    "device_management": 10,
    "mmi": 11,
    "transparent_hearing": 12,
-   "anc": 13
+   "anc": 13,
+   "fit_test": 15,
+   "find_device": 22
   }
  },
  "commands": [
@@ -1874,6 +1876,442 @@
      "command": "1106",
      "error": "1186",
      "params": []
+    }
+   }
+  },
+  {
+   "id": "find_ring",
+   "open": false,
+   "app_property": "FindDeviceRingSeparateDevice",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2C02",
+     "params": [
+      [
+       "UINT8",
+       "EarbudSide"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2D02",
+     "error": "2D82",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "find_stop",
+   "open": false,
+   "app_property": "FindDeviceStopRinging",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2C01",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2D01",
+     "error": "2D81",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "find_query",
+   "open": false,
+   "app_property": "FindDeviceIsDeviceRinging",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2C03",
+     "params": [
+      [
+       "UINT8",
+       "EarbudSide"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2D03",
+     "error": "2D83",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "personalized_mode",
+   "open": false,
+   "app_property": "PersonalizedSound_Mode",
+   "values": {
+    "not_parameterized": 0,
+    "disabled": 1,
+    "standby": 2,
+    "enabled": 3,
+    "calibrating": 4
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2001",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2101",
+     "notification": "2081",
+     "error": "2181",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "event": {
+     "vendor": "0495",
+     "command": "2101",
+     "notification": "2081",
+     "error": "2181",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2000",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2100",
+     "error": "2180",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "personalized_reset",
+   "open": false,
+   "app_property": "PersonalizedSound_Reset",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2009",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2109",
+     "error": "2189",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "fit_precondition",
+   "open": false,
+   "app_property": "FitTestCheckPrecondition",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1E01",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1F01",
+     "error": "1F81",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "fit_check",
+   "open": false,
+   "app_property": "FitTestCheck",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1E00",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1F00",
+     "error": "1F80",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "peer_count",
+   "open": false,
+   "app_property": "PairedDevicesListSize",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1400",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1500",
+     "error": "1580",
+     "params": [
+      [
+       "UINT16",
+       "nOfEntries"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "peer_info",
+   "open": false,
+   "app_property": "PairedDevicesGetDeviceInfo",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1401",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1501",
+     "error": "1581",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ],
+      [
+       "UINT8",
+       "connectionPriority"
+      ],
+      [
+       "UINT8",
+       "connectionStatus"
+      ],
+      [
+       "STRING",
+       "name"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "peer_own",
+   "open": false,
+   "app_property": "PairedDevicesOwnDeviceIndex",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1407",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1507",
+     "error": "1587",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "peer_connect",
+   "open": false,
+   "app_property": "PairedDevicesConnectDevice",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1402",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1502",
+     "error": "1582",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "peer_disconnect",
+   "open": false,
+   "app_property": "PairedDevicesDisconnectDevice",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1403",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1503",
+     "error": "1583",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "peer_status",
+   "open": false,
+   "app_property": "PairedDevicesGetConnectionStatus",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1404",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1504",
+     "notification": "1484",
+     "error": "1584",
+     "params": [
+      [
+       "UINT8",
+       "deviceIndex"
+      ],
+      [
+       "UINT8",
+       "connectionStatus"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "sensor_data",
+   "open": false,
+   "app_property": "Sensor_SensorData",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2200",
+     "params": [
+      [
+       "UINT8",
+       "Sensor Type"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2300",
+     "notification": "2280",
+     "error": "2380",
+     "params": [
+      [
+       "UINT8",
+       "Sensor Type"
+      ],
+      [
+       "UINT8",
+       "Sensor value (varying length depending on Sensor Type)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "id": "sensor_enable",
+   "open": false,
+   "app_property": "Sensor_SetSensorEnable",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "2201",
+     "params": [
+      [
+       "UINT8",
+       "Sensor Type"
+      ],
+      [
+       "UINT8",
+       "enabled"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2301",
+     "error": "2381",
+     "params": []
+    }
+   }
+  },
+  {
+   "id": "sensor_state",
+   "open": false,
+   "app_property": "Sensor_GetSensorEnable",
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "2202",
+     "params": [
+      [
+       "UINT8",
+       "Sensor Type"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "2302",
+     "error": "2382",
+     "params": [
+      [
+       "UINT8",
+       "Sensor Type"
+      ],
+      [
+       "UINT8",
+       "enabled"
+      ]
+     ]
     }
    }
   }

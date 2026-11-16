@@ -19,6 +19,12 @@ public class SennheiserModel(
     public val transparency: String? = null,
     /** The touch and button functions the product's class offers (`availableActions`), or null when it offers none. */
     public val touch: List<SennheiserTouchAction>? = null,
+    /** The shared feature files the product lists (`find-device-1`, `sound-personalization-2`, `audio-mode-2`...) with the firmware each needs. */
+    public val features: Map<String, String> = emptyMap(),
+    /** The product's file has the paired devices commands (multipoint), the fit test, the sport sensors. */
+    public val peers: Boolean = false,
+    public val fitTest: Boolean = false,
+    public val sensors: Boolean = false,
 )
 
 /** A function a product's touch controls can be set to, the gestures it is allowed on (none listed: any) and the firmware it needs where its class says so. */

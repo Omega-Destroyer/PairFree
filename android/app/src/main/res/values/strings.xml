@@ -1206,6 +1206,30 @@
     <string name="setting_sh_anc_transparency">Switch between noise cancelling and transparency</string>
     <string name="setting_sh_sound_mode">Switch the sound mode</string>
     <string name="setting_sh_touch_default">Restore the default touch controls</string>
+    <string name="setting_sh_podcast">Podcast mode (speech)</string>
+    <string name="setting_sh_personalized">Personalised sound</string>
+    <string name="setting_sh_personalized_reset">Reset personalised sound</string>
+    <string name="setting_sh_personalized_reset_body">The earbuds forget the sound profile made from your hearing test. You can make a new one in Sennheiser\'s app.</string>
+    <string name="setting_sh_find_left">Play a sound in the left earbud</string>
+    <string name="setting_sh_find_right">Play a sound in the right earbud</string>
+    <string name="setting_group_sh_fit">Fit test</string>
+    <string name="setting_sh_fit_test">Fit test</string>
+    <string name="setting_sh_fit_start">Start the fit test</string>
+    <string name="setting_sh_fit_cancel">Stop waiting for the result</string>
+    <string name="setting_sh_fit_left">Left earbud</string>
+    <string name="setting_sh_fit_right">Right earbud</string>
+    <string name="setting_sh_fit_good">Good fit</string>
+    <string name="setting_sh_fit_acceptable">Acceptable fit</string>
+    <string name="setting_sh_fit_bad">Bad fit</string>
+    <string name="setting_sh_fit_invalid">No usable result</string>
+    <string name="setting_sh_fit_not_ready">Not ready: wear both earbuds</string>
+    <string name="setting_sh_fit_note">Wear both earbuds and play music on the phone at a medium or higher volume, then start. The earbuds measure for about 25 seconds. Sennheiser\'s app plays its own music clip for this, which PairFree cannot include.</string>
+    <string name="setting_sh_peer_connect">Connect a paired device</string>
+    <string name="setting_sh_peer_disconnect">Disconnect a device</string>
+    <string name="setting_group_sh_sensors">Sport sensors</string>
+    <string name="setting_sh_sensors">Measure heart rate and body temperature</string>
+    <string name="setting_sh_heart_rate">Heart rate (beats per minute)</string>
+    <string name="setting_sh_body_temperature">Body temperature</string>
 
     <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
     <string name="setting_a3959_nc_mode">Noise cancelling type</string>

@@ -1380,6 +1380,51 @@
    }
   },
   {
+   "id": "touch_area",
+   "open": true,
+   "app_property": "Touch_Locked",
+   "values": {
+    "on": 1,
+    "off": 0
+   },
+   "get": {
+    "send": {
+     "vendor": "0495",
+     "command": "1609",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1709",
+     "error": "1789",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    }
+   },
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "1608",
+     "params": [
+      [
+       "UINT8",
+       "mode"
+      ]
+     ]
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "1708",
+     "error": "1788",
+     "params": []
+    }
+   }
+  },
+  {
    "id": "auto_off",
    "open": false,
    "app_property": "Config_GetTimer",
@@ -2314,6 +2359,24 @@
        "enabled"
       ]
      ]
+    }
+   }
+  },
+  {
+   "id": "reboot",
+   "open": false,
+   "app_property": "Reboot",
+   "set": {
+    "send": {
+     "vendor": "0495",
+     "command": "060F",
+     "params": []
+    },
+    "reply": {
+     "vendor": "0495",
+     "command": "070F",
+     "error": "078F",
+     "params": []
     }
    }
   },

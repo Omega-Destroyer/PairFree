@@ -555,6 +555,7 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_codec" -> stringResource(R.string.setting_sh_codec)
     "sh_bass_boost" -> stringResource(R.string.setting_sh_bass_boost)
     "sh_sidetone" -> stringResource(R.string.setting_sh_sidetone)
+    "sh_touch_area" -> stringResource(R.string.setting_sh_touch_area)
     "sh_auto_off" -> stringResource(R.string.setting_sh_auto_off)
     "sh_bt_compat" -> stringResource(R.string.setting_sh_bt_compat)
     "sh_transparency_slider" -> stringResource(R.string.setting_sh_transparency_slider)

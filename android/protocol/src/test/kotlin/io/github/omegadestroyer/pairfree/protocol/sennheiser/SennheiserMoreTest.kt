@@ -183,4 +183,20 @@ class SennheiserMoreTest {
         assertEquals(Setting.Information(SennheiserSession.KEY_AURACAST_SOURCE, "receiving:Cafe"), s.row(SennheiserSession.KEY_AURACAST_SOURCE))
         assertEquals(listOf("2a05:02"), words(s.change(SettingChange.Choice(SennheiserSession.KEY_AURACAST_REMOVE, "Cafe"))!!))
     }
+
+    @Test
+    fun theMomentumSportsTouchAreaAndTheRestartTheAppOffers() {
+        val s = SennheiserSession(model("Momentum Sport"))
+        s.start()
+        s.feed(reply(0x1609, "01"))
+        assertEquals(Setting.Toggle(SennheiserSession.KEY_TOUCH_AREA, true), s.row(SennheiserSession.KEY_TOUCH_AREA))
+        assertEquals(listOf("1608:00"), words(s.change(SettingChange.Toggle(SennheiserSession.KEY_TOUCH_AREA, false))!!))
+        // The restart is an action the screen confirms; only the products whose file has `Reboot` offer it.
+        assertEquals(Setting.Action(io.github.omegadestroyer.pairfree.protocol.PowerActions.RESTART), s.row(io.github.omegadestroyer.pairfree.protocol.PowerActions.RESTART))
+        assertEquals(listOf("060f:"), words(s.change(SettingChange.Press(io.github.omegadestroyer.pairfree.protocol.PowerActions.RESTART))!!))
+        val m4 = SennheiserSession(model("Momentum 4 Wireless"))
+        m4.start()
+        assertNull(m4.row(io.github.omegadestroyer.pairfree.protocol.PowerActions.RESTART))
+        assertNull(m4.change(SettingChange.Press(io.github.omegadestroyer.pairfree.protocol.PowerActions.RESTART)))
+    }
 }

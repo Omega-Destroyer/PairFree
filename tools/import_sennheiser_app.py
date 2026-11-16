@@ -44,6 +44,7 @@ PROPS = {
     "AptXLosslessSupport": "lossless",
     "PhysicalDevice_State": "physical_state",
     "Sound_Sample_Rate": "sample_rate",
+    "Touch_Locked": "touch_area",
     # A write and a read that are two properties in the files (each an Invocation), kept as one id.
     "Config_GetTimer": "auto_off",
     "Config_SetTimer": "auto_off",
@@ -204,6 +205,7 @@ ACTIONS = [
     ("product", "Sensor_SensorData", "sensor_data", "get"),
     ("product", "Sensor_SetSensorEnable", "sensor_enable", "set"),
     ("product", "Sensor_GetSensorEnable", "sensor_state", "get"),
+    ("product", "Reboot", "reboot", "set"),
     ("auracast-1", "Auracast_AddSource", "auracast_add", "set"),
     ("auracast-1", "Auracast_RemoveSource", "auracast_remove", "set"),
     ("auracast-1", "Auracast_GetSourceIds", "auracast_ids", "sides"),
@@ -385,7 +387,7 @@ def main(assets):
         touch = TOUCH.get(fname)
         feats = {f["name"]: f.get("minVersion", "0.0.0") for f in json.loads((assets / fname).read_text(encoding="utf-8"))["features"]}
         models.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": have, "eq": EQ_MODELS[fname], **EXTRAS[fname],
-                       "features": {k: v for k, v in feats.items() if k in FEATURE_FILES}, "peers": "PairedDevicesListSize" in products[fname], "fit_test": "FitTestCheck" in products[fname], "sensors": "Sensor_SensorData" in products[fname],
+                       "features": {**{k: v for k, v in feats.items() if k in FEATURE_FILES}, **({"reboot": "0.0.0"} if "Reboot" in products[fname] else {})}, "peers": "PairedDevicesListSize" in products[fname], "fit_test": "FitTestCheck" in products[fname], "sensors": "Sensor_SensorData" in products[fname],
                        "touch": None if touch is None else [{"action": a[0], "gestures": a[1], **({"min_firmware": a[2]} if len(a) > 2 else {})} for a in touch]})
     for name, klass, names, article in SCP_MODELS:
         models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None, "sidetone_max": None, "transparency": None, "touch": None, "features": {}, "peers": False, "fit_test": False, "sensors": False})

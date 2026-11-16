@@ -4,6 +4,7 @@ import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Fed
 import io.github.omegadestroyer.pairfree.protocol.Pacing
+import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.SessionTalk
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -415,6 +416,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
                 autoOffSeconds?.let { sec -> add(Setting.Choice(KEY_AUTO_OFF, (sec / 60).toString(), SennheiserTouchTables.AUTO_OFF_SECONDS.map { (it / 60).toString() })) }
                 on(SennheiserCommands.BT_COMPAT)?.let { add(Setting.Toggle(KEY_BT_COMPAT, it)) }
                 on(SennheiserCommands.OPEN_EARTIP)?.let { add(Setting.Toggle(KEY_OPEN_EARTIP, it)) }
+                on(SennheiserCommands.TOUCH_AREA)?.let { add(Setting.Toggle(KEY_TOUCH_AREA, it)) }
                 on(SennheiserCommands.LOSSLESS)?.let { add(Setting.Toggle(KEY_LOSSLESS, it)) }
                 u8(SennheiserCommands.TAP_SENSITIVITY)?.let { v -> command(SennheiserCommands.TAP_SENSITIVITY)?.values?.entries?.firstOrNull { it.value == v }?.let { e -> add(Setting.Choice(KEY_TAP_SENSITIVITY, e.key.lowercase(), TAP_OPTIONS)) } }
                 codec()?.let { add(Setting.Information(KEY_CODEC, it)) }
@@ -424,6 +426,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             }
             if (other.isNotEmpty()) add(SettingGroup("other", SettingTab.DEVICE, other))
             addAll(touchGroups())
+            if (model?.features?.containsKey("reboot") == true && model.properties != null) add(SettingGroup(PowerActions.GROUP, SettingTab.DEVICE, listOf(Setting.Action(PowerActions.RESTART))))
             if (findKnown) add(SettingGroup("find", SettingTab.DEVICE, listOf(
                 Setting.Action(KEY_FIND_LEFT, findRinging[SIDE_LEFT] == true),
                 Setting.Action(KEY_FIND_RIGHT, findRinging[SIDE_RIGHT] == true),
@@ -760,6 +763,12 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             return write(id, v)
         }
         if (change is SettingChange.Press && change.key == KEY_TOUCH_DEFAULT) return restoreTouch()
+        if (change is SettingChange.Press && change.key == PowerActions.RESTART) {
+            // The app restarts the earbuds after some settings (eco mode) with `Reboot`; the screen confirms first.
+            if (model?.features?.containsKey("reboot") != true) return null
+            val c = command(SennheiserCommands.REBOOT) ?: return null
+            return listOf(frameOf(c.vendor, c.set!!, ByteArray(0)))
+        }
         if (change is SettingChange.Press) return press(change.key)
         if (change is SettingChange.Choice && (change.key == KEY_PEER_CONNECT || change.key == KEY_PEER_DISCONNECT)) return peerChange(change)
         if (change is SettingChange.Choice && (change.key == KEY_AURACAST_ADD || change.key == KEY_AURACAST_REMOVE)) return auracastChange(change)
@@ -1071,6 +1080,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
         public const val KEY_TAP_SENSITIVITY: String = "sh_tap_sensitivity"
         public const val KEY_OPEN_EARTIP: String = "sh_open_eartip"
         public const val KEY_LOSSLESS: String = "sh_lossless"
+        public const val KEY_TOUCH_AREA: String = "sh_touch_area"
         public const val KEY_SAMPLE_RATE: String = "sh_sample_rate"
         public const val KEY_PROMPT_LANGUAGE: String = "sh_prompt_language"
         public const val KEY_WEAR: String = "sh_wear"
@@ -1146,6 +1156,7 @@ public class SennheiserSession(public val model: SennheiserModel?) : SessionTalk
             KEY_BATTERY_PROTECTION to SennheiserCommands.BATTERY_PROTECTION,
             KEY_BT_COMPAT to SennheiserCommands.BT_COMPAT,
             KEY_OPEN_EARTIP to SennheiserCommands.OPEN_EARTIP,
+            KEY_TOUCH_AREA to SennheiserCommands.TOUCH_AREA,
             KEY_LOSSLESS to SennheiserCommands.LOSSLESS,
         )
 

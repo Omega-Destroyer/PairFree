@@ -1188,6 +1188,7 @@
     <string name="setting_sh_codec">Codec in use</string>
     <string name="setting_sh_bass_boost">Bass boost</string>
     <string name="setting_sh_sidetone">Sidetone (hear your own voice on calls)</string>
+    <string name="setting_sh_touch_area">Hold to disable the touch area</string>
     <string name="setting_sh_auto_off">Automatic power off</string>
     <string name="setting_sh_bt_compat">Bluetooth compatibility mode</string>
     <string name="setting_sh_transparency_slider">Transparency and noise cancelling</string>

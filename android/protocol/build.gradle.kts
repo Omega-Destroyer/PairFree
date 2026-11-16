@@ -2176,6 +2176,10 @@ abstract class GenerateSennheiserTables : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val gaia2Json: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val nautilusJson: RegularFileProperty
+
     @get:Input
     abstract val packageName: Property<String>
 
@@ -2190,6 +2194,8 @@ abstract class GenerateSennheiserTables : DefaultTask() {
         val touch = JsonSlurper().parse(touchJson.get().asFile) as Map<String, Any?>
         @Suppress("UNCHECKED_CAST")
         val gaia2 = JsonSlurper().parse(gaia2Json.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val nautilus = JsonSlurper().parse(nautilusJson.get().asFile) as Map<String, Any?>
         @Suppress("UNCHECKED_CAST")
         val devices = (JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>).getValue("models") as List<Map<String, Any?>>
         @Suppress("UNCHECKED_CAST")
@@ -2341,6 +2347,41 @@ abstract class GenerateSennheiserTables : DefaultTask() {
         }
         out.appendLine(")")
         out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val ntransport = nautilus.getValue("transport") as Map<String, Any?>
+        out.appendLine("/** The Nautilus headphones (data/sennheiser/nautilus.json): their serial service. */")
+        out.appendLine("public object NautilusWire {")
+        out.appendLine("    public const val SPP_UUID: String = ${str(ntransport["spp_uuid"])}")
+        out.appendLine("}")
+        out.appendLine()
+        out.appendLine("/** A Nautilus command: module, optional submodule, command, and the same of the answer (the answer's module and command are the app's own). */")
+        out.appendLine("public class NautilusCmd(public val module: Int, public val submodule: Int?, public val command: Int, public val replyModule: Int?, public val replySubmodule: Int?, public val replyCommand: Int?)")
+        out.appendLine()
+        out.appendLine("public class NautilusProp(public val id: String, public val get: NautilusCmd?, public val set: NautilusCmd?, public val values: Map<String, Int>)")
+        out.appendLine()
+        out.appendLine("public class NautilusModel(public val name: String, public val form: io.github.omegadestroyer.pairfree.protocol.Form, public val names: List<String>, public val props: Map<String, NautilusProp>)")
+        out.appendLine()
+        fun nint(v: Any?) = "0x" + (v as String).uppercase()
+        @Suppress("UNCHECKED_CAST")
+        fun ncmd(m: Map<String, Any?>?): String {
+            if (m == null) return "null"
+            val r = m["reply"] as Map<String, Any?>?
+            return "NautilusCmd(${nint(m["module"])}, ${m["submodule"]?.let { nint(it) } ?: "null"}, ${nint(m["command"])}, ${r?.let { nint(it["module"]) } ?: "null"}, ${r?.get("submodule")?.let { nint(it) } ?: "null"}, ${r?.let { nint(it["command"]) } ?: "null"})"
+        }
+        out.appendLine("internal val NAUTILUS_MODELS: List<NautilusModel> = listOf(")
+        @Suppress("UNCHECKED_CAST")
+        for (p in nautilus.getValue("products") as List<Map<String, Any?>>) {
+            @Suppress("UNCHECKED_CAST")
+            val props = (p["properties"] as Map<String, Map<String, Any?>>).entries.joinToString(", ") { (id, e) ->
+                @Suppress("UNCHECKED_CAST")
+                val values = (e["values"] as Map<String, Any?>?)?.entries?.joinToString(", ") { "${str(it.key)} to ${(it.value as Number).toInt()}" } ?: ""
+                @Suppress("UNCHECKED_CAST")
+                "${str(id)} to NautilusProp(${str(id)}, ${ncmd(e["get"] as Map<String, Any?>?)}, ${ncmd(e["set"] as Map<String, Any?>?)}, mapOf($values))"
+            }
+            out.appendLine("    NautilusModel(${str(p["name"])}, io.github.omegadestroyer.pairfree.protocol.Form.HEADPHONES, ${strings(p["names"])}, mapOf($props)),")
+        }
+        out.appendLine(")")
+        out.appendLine()
         out.appendLine("/** Every model in data/sennheiser/devices.json. */")
         out.appendLine("internal val SENNHEISER_MODELS: List<SennheiserModel> = listOf(")
         for (d in devices) {
@@ -2385,6 +2426,7 @@ val generateSennheiserTables = tasks.register<GenerateSennheiserTables>("generat
     eqJson = rootProject.layout.projectDirectory.file("../data/sennheiser/eq.json")
     touchJson = rootProject.layout.projectDirectory.file("../data/sennheiser/touch.json")
     gaia2Json = rootProject.layout.projectDirectory.file("../data/sennheiser/gaia2.json")
+    nautilusJson = rootProject.layout.projectDirectory.file("../data/sennheiser/nautilus.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.sennheiser"
     outputDir = layout.buildDirectory.dir("generated/sennheiser")
 }

@@ -19,7 +19,7 @@ Each model shows only the settings it has:
 
 ## Sennheiser models
 
-PairFree knows 15 Sennheiser models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 28 Sennheiser models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
 
 Sennheiser support is read from Sennheiser Smart Control 4.9.4 and Smart Control Plus 1.6.3. It has not been tried with PairFree on any product yet. The older models on other protocols (Momentum 3, PXC 550, HD 450 and others) are not covered.
 

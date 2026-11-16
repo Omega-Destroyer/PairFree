@@ -145,6 +145,47 @@ def gaia2_product(prop):
     return entry
 
 
+# The Nautilus headphones (docs/sennheiser/PROTOCOL.md section 4.10): module, optional submodule and command ids instead of vendor words.
+NAUTILUS_MODELS = {
+    "m3.json": ("Momentum 3 Wireless", "headband", ["MOMENTUM 3"]),
+    "pxc550.json": ("PXC 550", "headband", ["PXC 550"]),
+    "pxc550II.json": ("PXC 550-II", "headband", ["PXC 550-II"]),
+}
+NAUTILUS_PROPS = {
+    "Battery_Percent": "battery_percent",
+    "Battery_VoltageLevel": "battery_level",
+    "ANC_ActiveMode": "anc_mode",
+    "ANC_AmbientAudio": "ambient_audio",
+    "ANC_ControlType": "anc_control",
+    "ANC_ToggleAmbientMode": "ambient_toggle",
+    "Input_Proximity_Mode": "proximity",
+    "Setting_AudioPromptMode": "prompt_mode",
+    "VoicePrompt_Language": "prompt_language",
+    "System_CurrentCodec": "codec",
+    "Sound_AdaptiveNoiseCancelationState": "anc_state",
+    "Sound_CallEnhancement": "call_enhancement",
+    "ANC_SwitchMiddlePositionState": "anc_middle",
+    "Service_SystemReleaseVersion": "firmware_version",
+    "Service_SoftwareVersion": "software_version",
+    "Sound_Preset": "sound_preset",
+}
+
+
+def nautilus_side(cmd, rsp):
+    if not isinstance(cmd, dict) or "nautilus" not in cmd:
+        return None
+    g = cmd["nautilus"]
+    out = {"module": hexid(g["Nautilus_module_ID"]), "command": hexid(g["Nautilus_command_ID"]), "params": [[p["type"], p["name"]] for p in cmd.get("parameter", [])]}
+    if g.get("Nautilus_submodule_ID"):
+        out["submodule"] = hexid(g["Nautilus_submodule_ID"])
+    if isinstance(rsp, dict) and "nautilus" in rsp:
+        r = rsp["nautilus"]
+        out["reply"] = {"module": hexid(r["Nautilus_module_ID"]), "command": hexid(r["Nautilus_command_ID"]), "params": [[p["type"], p["name"]] for p in rsp.get("parameter", [])]}
+        if r.get("Nautilus_submodule_ID"):
+            out["reply"]["submodule"] = hexid(r["Nautilus_submodule_ID"])
+    return out
+
+
 # Models only Smart Control Plus 1.6.3 lists (its `cKd` enum), all on Qualcomm's GAIA 3 ("herakles"): no product file, so what they answer decides what shows.
 SCP_MODELS = [
     ("Momentum 5 Wireless", "headband", ["M5AEBT", "MOMENTUM 5"], "800078"),
@@ -203,10 +244,10 @@ EXTRAS = {
     "ac1.json": {"sidetone_max": 2, "transparency": None},
     "acp1.json": {"sidetone_max": 4, "transparency": "slider"},
     "atw1.json": {"sidetone_max": 2, "transparency": "levels"},
-    "cx200.json": {"sidetone_max": 2, "transparency": None},
-    "cx200sports.json": {"sidetone_max": 2, "transparency": None},
-    "cx400II.json": {"sidetone_max": 2, "transparency": None},
-    "cx500.json": {"sidetone_max": 2, "transparency": None},
+    "cx200.json": {"ble_only": True, "sidetone_max": 2, "transparency": None},
+    "cx200sports.json": {"ble_only": True, "sidetone_max": 2, "transparency": None},
+    "cx400II.json": {"ble_only": True, "sidetone_max": 2, "transparency": None},
+    "cx500.json": {"ble_only": True, "sidetone_max": 2, "transparency": None},
     "m4.json": {"sidetone_max": 4, "transparency": "slider"},
     "msport1.json": {"sidetone_max": 2, "transparency": "levels"},
     "tw3.json": {"sidetone_max": None, "transparency": "levels"},
@@ -457,6 +498,37 @@ def main(assets):
         "transport": {"spp_uuid": "a2129ff3-081b-4c45-8afe-469d9c4842eb", "vendor": "0494", "qualcomm_vendor": "000A"},
         "products": legacy,
     }, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    naut = []
+    for fname, (name, klass, names) in NAUTILUS_MODELS.items():
+        d = json.loads((assets / fname).read_text(encoding="utf-8"))
+        assert d["protocol"] == "Nautilus", fname
+        P = {p["name"]: p for p in d["properties"]}
+        props = {}
+        for app_name, pid in NAUTILUS_PROPS.items():
+            if app_name not in P:
+                continue
+            prop = P[app_name]
+            entry = {}
+            if prop.get("Value", {}).get("map"):
+                entry["values"] = prop["Value"]["map"]
+            for key, where in (("Get", "get"), ("Set", "set")):
+                blk = prop.get(key)
+                if blk:
+                    got = nautilus_side(blk.get("Command"), blk.get("Response"))
+                    if got:
+                        entry[where] = got
+            if "Invocation" in prop:
+                got = nautilus_side(prop["Invocation"].get("Command"), prop.get("Result", {}).get("Response"))
+                if got:
+                    entry["set"] = got
+            if entry.get("get") or entry.get("set"):
+                props[pid] = entry
+        naut.append({"name": name, "kind": klass, "names": names, "source": "Smart Control 4.9.4 " + fname, "properties": props})
+    (OUT / "nautilus.json").write_text(json.dumps({
+        "_about": "Sennheiser's Nautilus headphones (Momentum 3, PXC 550, PXC 550-II) as Smart Control 4.9.4's product files define them (docs/sennheiser/PROTOCOL.md section 4.10): a packet is EB FE 01 00 01 00 00 00, the length of what follows the checksum (two bytes, little-endian), a CRC-8 (polynomial 07, initial FF; two bytes, little-endian) and the header (module, optional submodule, command; each two bytes little-endian) with the parameters; on the serial port each packet is wrapped in 2A and 2A and the bytes 2A and 3F are escaped. Written by tools/import_sennheiser_app.py.",
+        "transport": {"spp_uuid": "1ddce62a-ecb1-4455-8153-0743c87aec9f"},
+        "products": naut,
+    }, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8")
     reg = products["m4.json"]["RegisterNotification_ANC"]["Invocation"]["Command"]["gaiaV3"]
     data = {
         "_about": "Sennheiser's GAIA v3 commands, read from Smart Control 4.9.4's product files (docs/sennheiser/PROTOCOL.md). A command is a vendor id (0495 Sennheiser's own, 001D Qualcomm's) and a command word; its reply is the word + 0100 and its error + 0180. send/reply list each parameter's type and the app's name for it; values is the app's map of names to numbers. Written by tools/import_sennheiser_app.py; PairFree builds only what is listed here (the app's other properties are in the research notes).",

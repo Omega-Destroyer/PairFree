@@ -1207,6 +1207,17 @@
     <string name="setting_sh_anc_transparency">Switch between noise cancelling and transparency</string>
     <string name="setting_sh_sound_mode">Switch the sound mode</string>
     <string name="setting_sh_touch_default">Restore the default touch controls</string>
+    <string name="setting_sh_nautilus_anc">Noise cancelling</string>
+    <string name="setting_sh_nautilus_airplane">Airplane</string>
+    <string name="setting_sh_nautilus_outdoor">Outdoor</string>
+    <string name="setting_sh_nautilus_home">Home</string>
+    <string name="setting_sh_nautilus_ambient">Transparent hearing</string>
+    <string name="setting_sh_nautilus_anc_state">Noise cancelling</string>
+    <string name="setting_sh_nautilus_anc_middle">Middle position of the switch</string>
+    <string name="setting_sh_nautilus_preset">Sound preset</string>
+    <string name="setting_sh_call_enhancement">Call enhancement</string>
+    <string name="setting_sh_multi_function">Multi-function button</string>
+    <string name="setting_sh_multi_eq">Equalizer modes</string>
     <string name="setting_sh_podcast">Podcast mode (speech)</string>
     <string name="setting_sh_personalized">Personalised sound</string>
     <string name="setting_sh_personalized_reset">Reset personalised sound</string>

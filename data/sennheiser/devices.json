@@ -296,6 +296,7 @@
     "three_band": 4,
     "presets": "default3"
    },
+   "ble_only": true,
    "sidetone_max": 2,
    "transparency": null,
    "features": {
@@ -385,6 +386,7 @@
     "three_band": 0,
     "presets": "default3"
    },
+   "ble_only": true,
    "sidetone_max": 2,
    "transparency": null,
    "features": {
@@ -497,6 +499,7 @@
     "three_band": 4,
     "presets": "default3"
    },
+   "ble_only": true,
    "sidetone_max": 2,
    "transparency": null,
    "features": {
@@ -600,6 +603,7 @@
     "three_band": 4,
     "presets": "default3"
    },
+   "ble_only": true,
    "sidetone_max": 2,
    "transparency": null,
    "features": {

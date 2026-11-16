@@ -569,6 +569,13 @@ private fun settingTitle(key: String): String = when (key) {
     "sh_wear_left" -> stringResource(R.string.setting_sh_wear_left)
     "sh_wear_right" -> stringResource(R.string.setting_sh_wear_right)
     "sh_podcast" -> stringResource(R.string.setting_sh_podcast)
+    "sh_nautilus_anc" -> stringResource(R.string.setting_sh_nautilus_anc)
+    "sh_nautilus_ambient" -> stringResource(R.string.setting_sh_nautilus_ambient)
+    "sh_nautilus_anc_state" -> stringResource(R.string.setting_sh_nautilus_anc_state)
+    "sh_nautilus_anc_middle" -> stringResource(R.string.setting_sh_nautilus_anc_middle)
+    "sh_nautilus_preset" -> stringResource(R.string.setting_sh_nautilus_preset)
+    "sh_call_enhancement" -> stringResource(R.string.setting_sh_call_enhancement)
+    "sh_multi_function" -> stringResource(R.string.setting_sh_multi_function)
     "sh_personalized" -> stringResource(R.string.setting_sh_personalized)
     "sh_fit_test" -> stringResource(R.string.setting_sh_fit_test)
     "sh_fit_left" -> stringResource(R.string.setting_sh_fit_left)
@@ -939,6 +946,9 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key == "sh_nautilus_anc" -> getString(when (option) { "off" -> R.string.action_off; "airplane" -> R.string.setting_sh_nautilus_airplane; "outdoor" -> R.string.setting_sh_nautilus_outdoor; else -> R.string.setting_sh_nautilus_home })
+    key == "sh_nautilus_anc_state" -> getString(when (option) { "off" -> R.string.action_off; "on" -> R.string.setting_anc; else -> R.string.setting_sh_adaptive_anc })
+    key == "sh_multi_function" -> getString(if (option == "EQModes") R.string.setting_sh_multi_eq else R.string.action_voice_assistant)
     key == "sh_auto_off" -> if (option == "0") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
     key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> getString(when (option) { "low" -> R.string.setting_level_low; "mid", "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_high })
     key == "sh_auracast_source" -> getString(when (option) { "receiving" -> R.string.setting_sh_auracast_receiving; "synced" -> R.string.setting_sh_auracast_synced; "code_required" -> R.string.setting_sh_auracast_code; "bad_code" -> R.string.setting_sh_auracast_bad_code; "failed" -> R.string.setting_sh_auracast_failed; else -> R.string.setting_sh_auracast_not_synced })

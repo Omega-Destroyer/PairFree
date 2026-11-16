@@ -17,6 +17,8 @@ import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Models
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Wire
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusModels
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusWire
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserModels
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserWire
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
@@ -78,7 +80,7 @@ public object Identify {
             Maker.ONEPLUS -> OneplusWire.SPP_UUID.lowercase() in list
             Maker.PIXEL -> PixelModels.hasService(list)
             // Sennheiser's GAIA 3 serial service (its own UUID, not Qualcomm's) and the one that differs in its last letter for GAIA v2: Smart Control opens them.
-            Maker.SENNHEISER -> SennheiserWire.CLASSIC_UUID.lowercase() in list || Gaia2Wire.SPP_UUID.lowercase() in list
+            Maker.SENNHEISER -> SennheiserWire.CLASSIC_UUID.lowercase() in list || Gaia2Wire.SPP_UUID.lowercase() in list || NautilusWire.SPP_UUID.lowercase() in list
             // The standard serial service, and Airoha's and JieLi's, which other brands' earbuds offer too.
             Maker.SOUNDPEATS, Maker.JBL, Maker.QCY, Maker.ONEMORE, Maker.EARFUN, Maker.CAMBRIDGE -> false
         }
@@ -96,7 +98,7 @@ public object Identify {
         Maker.EARFUN -> EarfunModels.fromName(name) != null
         Maker.CAMBRIDGE -> CambridgeModels.fromName(name) != null
         Maker.ONEPLUS -> OneplusModels.fromName(name) != null
-        Maker.SENNHEISER -> SennheiserModels.fromName(name) != null || Gaia2Models.fromName(name) != null
+        Maker.SENNHEISER -> SennheiserModels.fromName(name) != null || Gaia2Models.fromName(name) != null || NautilusModels.fromName(name) != null
         // Galaxy Buds names hold "Galaxy"; Bose's "Bose"; the Beats that speak B2P are known by name.
         Maker.APPLE -> AppleModels.b2p(name) != null || AppleModels.bcd(name) != null
         Maker.SAMSUNG, Maker.BOSE -> false

@@ -13,6 +13,9 @@ import io.github.omegadestroyer.pairfree.protocol.SessionTalk
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Models
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Session
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Wire
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusModels
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusSession
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusWire
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserCommands
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserEqSource
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserModels
@@ -33,15 +36,17 @@ object SennheiserSpec : BrandSpec(Brand.SENNHEISER) {
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         SennheiserModels.fromName(name)?.let { Paired(address, name, Brand.SENNHEISER, SennheiserWire.CLASSIC_UUID, it.name) }
             ?: Gaia2Models.fromName(name)?.let { Paired(address, name, Brand.SENNHEISER, Gaia2Wire.SPP_UUID, it.name) }
+            ?: NautilusModels.fromName(name)?.let { Paired(address, name, Brand.SENNHEISER, NautilusWire.SPP_UUID, it.name) }
             ?: uuids.firstOrNull { it.equals(SennheiserWire.CLASSIC_UUID, ignoreCase = true) }?.let { Paired(address, name, Brand.SENNHEISER, SennheiserWire.CLASSIC_UUID, null) }
 
     override fun model(device: Paired, state: EarbudState): Model? = SennheiserModels.model(device.name) ?: SennheiserModels.ALL.firstOrNull { it.name == device.model }?.let { SennheiserModels.model(it.names.first()) }
         ?: Gaia2Models.model(device.name) ?: Gaia2Models.ALL.firstOrNull { it.name == device.model }?.let { Gaia2Models.model(it.names.first()) }
+        ?: NautilusModels.model(device.name) ?: NautilusModels.ALL.firstOrNull { it.name == device.model }?.let { NautilusModels.model(it.names.first()) }
 
     override fun driver(device: Paired, host: DriverHost): BrandDriver = SennheiserDriver(host, device)
 
     /** A model with a product file in Smart Control has noise control by what the file lists; one without (the Momentum 5...) only by what it answers. */
-    override fun noiseOffline(device: Paired): List<NoiseChoice>? = if (Gaia2Models.ALL.any { it.name == device.model }) emptyList() else SennheiserModels.ALL.firstOrNull { it.name == device.model }?.let { m ->
+    override fun noiseOffline(device: Paired): List<NoiseChoice>? = if (Gaia2Models.ALL.any { it.name == device.model } || NautilusModels.ALL.any { it.name == device.model }) emptyList() else SennheiserModels.ALL.firstOrNull { it.name == device.model }?.let { m ->
         val properties = m.properties ?: return null
         if (SennheiserCommands.ANC_STATUS in properties && SennheiserCommands.TRANSPARENCY_STATUS in properties) three() else emptyList()
     }
@@ -58,9 +63,12 @@ class SennheiserDriver(host: DriverHost, private val device: Paired) : TalkDrive
 
     private val legacy get() = Gaia2Models.ALL.firstOrNull { it.name == device.model } ?: Gaia2Models.fromName(device.name)
 
+    private val nautilus get() = NautilusModels.ALL.firstOrNull { it.name == device.model } ?: NautilusModels.fromName(device.name)
+
     override fun talk(opened: ControlLink): SessionTalk<ByteArray> {
         val v3 = SennheiserModels.ALL.firstOrNull { it.name == device.model } ?: SennheiserModels.fromName(device.name)
         if (v3 == null) legacy?.let { return Gaia2Session(it) }
+        if (v3 == null) nautilus?.let { return NautilusSession(it) }
         return SennheiserSession(v3)
     }
 
@@ -84,6 +92,18 @@ class SennheiserDriver(host: DriverHost, private val device: Paired) : TalkDrive
             return buildString {
                 reportHead(info)
                 appendLine("Brand:           Sennheiser (GAIA v2)")
+                appendLine("Model:           ${old.model.name}")
+                appendLine("Firmware:        ${old.firmware ?: "unknown"}")
+                reportApp(info)
+                appendLine()
+                appendLine("The last answer to each property PairFree read (name: payload as hex):")
+                reportReplies(old.replies)
+            }
+        }
+        (talk as? NautilusSession)?.let { old ->
+            return buildString {
+                reportHead(info)
+                appendLine("Brand:           Sennheiser (Nautilus)")
                 appendLine("Model:           ${old.model.name}")
                 appendLine("Firmware:        ${old.firmware ?: "unknown"}")
                 reportApp(info)

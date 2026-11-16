@@ -600,8 +600,11 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
   write (`A3954CmdService.M0`) is five bytes: the mode (0 to 3), the slider (1 to 11), the automatic pressure update, wind noise suppression, and 0xFF. The
   limit-high-volume write is three bytes (switch, dB, third byte). The slider's direction is not in the restored code (the screen's view model is native
-  code that the restoration leaves empty); OpenSCQ30 reads 1 to 5 as noise cancelling (strongest at 1) and 7 to 11 as transparency, and PairFree follows it
-  until a recording of the app settles it.
+  code that the restoration leaves empty). A real pair settles it (Onlineraider's Liberty 4 Pro, firmware 04.29, pull request 42 and issue #50): 1 to 5
+  is transparency, 6 normal and 7 to 11 noise cancelling, as on the Soundcore app's own slider. OpenSCQ30 reads it the other way round, and PairFree
+  0.12.1 followed it: the earbuds then moved each slider value PairFree sent back to its mode's side, and the level row, shown only for a slider on
+  the side PairFree expected, vanished about two seconds after each change (the issue's screen recording). The level row now shows whenever its mode is
+  on. Not confirmed: which end of each side is the strongest; PairFree takes the slider's ends (1 and 11).
 - **P30i (A3959) and R50i NC, recorded from the official app (issue #45).** The sound modes block is seven bytes: the mode (0 noise cancelling, 1 transparency,
   2 normal), the manual strength (high nibble, 1 to 5) and adaptive level (low nibble, read only), a byte the app leaves 0, the kind of noise cancelling
   (0 manual, 1 adaptive, 2 multi-scene), wind noise (bit 0 suppression, bit 1 detected), the adaptive sensitivity (0 to 10; `FF` unset) and the multi-scene
@@ -610,8 +613,9 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   auto power off durations (`01 86`: switch and index, 10, 20, 30, 60 minutes) and the fit test (`09 01`, answered with 14 bytes after about nine seconds, 0 or 1 for a good fit). The sensitivity slider's range is OpenSCQ30's (the recording never moves it).
 
 - **Pull request 42** (Onlineraider, merged with its commits and corrected): its layout fix and its writes for spatial audio, easy chat, the case's
-  features and language, and the auto power off durations match the vendor's code and OpenSCQ30. Corrected: it read the noise slider the wrong way round
-  against OpenSCQ30 (low half transparency, high half noise cancelling), wrote the limit-high-volume setting without its third byte, sent an air pressure
+  features and language, and the auto power off durations match the vendor's code and OpenSCQ30. Its noise slider (low half transparency, high half noise
+  cancelling) differs from OpenSCQ30's reading and was changed to OpenSCQ30's in 0.12.1, wrongly: it was tried on a real pair and is restored (issue #50,
+  above). Corrected: it wrote the limit-high-volume setting without its third byte, sent an air pressure
   update command (`16 81`) that neither the app's constants nor OpenSCQ30 hold (removed: no source), kept wind noise's detection bit in the write, and
   showed the wearing detection, low battery prompt, sound leak compensation and spatial audio switches a second time beside the shared rows.
 - **Legacy A3909 family.** The restored `A3909DeviceManager` parsers agree with the layouts taken from 2.9.9: the HearID block is 21 bytes (switch, eight

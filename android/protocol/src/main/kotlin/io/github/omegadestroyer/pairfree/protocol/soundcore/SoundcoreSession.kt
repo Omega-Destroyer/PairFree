@@ -147,6 +147,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 val ambient = ambientFor(value) ?: return null
                 val changed = modes.copyOf().also {
                     it[0] = ambient.value.toByte()
+                    // The Liberty 4 Pro's slider goes with its mode, from the widget and the notification too.
+                    if (model == "A3954" && it.size >= 2) it[1] = a3954Slider(it.u8(0), it.u8(1)).toByte()
                     // The P30i family's sensitivity byte is 0xFF until set; the official app writes 0 (recording, issue #45).
                     if (A3959_MODES in l.features && it.size >= 7 && it[5] == 0xFF.toByte()) it[5] = 0
                 }
@@ -186,10 +188,20 @@ public class SoundcoreSession(public val model: String) : FitTest {
 
     /**
      * The Liberty 4 Pro's noise control (OpenSCQ30's a3954 module, checked against the 5.0.35 app's reply parser and its sound modes write, which
-     * send the same five bytes): the mode, a slider from 1 to 11 with 6 the middle (1 to 5 noise cancelling, strongest at 1; 7 to 11 transparency,
-     * strongest at 11), airplane mode's update setting, and wind noise suppression. Which way the slider runs is OpenSCQ30's reading; the app's own
-     * screen code is not recoverable (docs/soundcore/PROTOCOL.md, section 14), so a recording of the Soundcore app settles it.
+     * send the same five bytes): the mode, a slider from 1 to 11 with 6 the middle, airplane mode's update setting, and wind noise suppression.
+     * The slider runs as a Liberty 4 Pro takes it (Onlineraider's pair, pull request 42 and issue #50): 1 to 5 is transparency and 7 to 11 noise
+     * cancelling, the other way round from OpenSCQ30's reading (docs/UPSTREAM.md). 0.12.1 followed OpenSCQ30, so the earbuds moved each slider
+     * PairFree sent back to its mode's own side and the level row vanished. A level row now shows whenever its mode is on, whatever the slider
+     * holds. Which end of each side is the strongest is not confirmed: PairFree takes the slider's two ends (1 and 11) as the strongest.
      */
+    /** The Liberty 4 Pro's slider for [mode]: [slider] where it is on that mode's side, else the step next to the middle on that side. */
+    private fun a3954Slider(mode: Int, slider: Int): Int = when (mode) {
+        0 -> if (slider in 7..11) slider else 7
+        1 -> if (slider in 1..5) slider else 5
+        2 -> 6
+        else -> slider
+    }
+
     private fun a3954SoundRows(s: SoundcoreState): List<Setting>? {
         if (model != "A3954") return null
         val b = s.field("sound_modes") ?: return null
@@ -198,8 +210,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
         val modeOption = when (mode) { 0 -> "anc"; 1 -> "transparency"; 2 -> "normal"; 3 -> "airplane"; else -> null }
         return listOfNotNull(
             Setting.Choice("a3954_ambient_mode", modeOption, listOf("transparency", "normal", "anc", "airplane")),
-            if (mode == 0 && slider in 1..5) Setting.Level("a3954_anc_strength", 6 - slider, 1, 5) else null,
-            if (mode == 1 && slider in 7..11) Setting.Level("a3954_transparency_strength", slider - 6, 1, 5) else null,
+            if (mode == 0) Setting.Level("a3954_anc_strength", (slider - 6).coerceIn(1, 5), 1, 5) else null,
+            if (mode == 1) Setting.Level("a3954_transparency_strength", (6 - slider).coerceIn(1, 5), 1, 5) else null,
             if (mode == 3) Setting.Choice("a3954_airplane_mode", listOf("manual", "automatic").getOrNull(b.u8(2)), listOf("manual", "automatic")) else null,
             if (mode == 3) s.field("air_pressure")?.let { Setting.Information("a3954_air_pressure", "${it.u8(0) / 100}.${(it.u8(0) % 100).toString().padStart(2, '0')} atm") } else null,
             Setting.Toggle("a3954_wind_noise", b.u8(3) and 1 != 0),
@@ -416,8 +428,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 val v = selected
                 bytes[f.index] = v.toByte()
                 if (change.key == "a3954_ambient_mode") {
-                    // A mode goes to the slider's own side of the middle (OpenSCQ30: 5, 7 and 6); airplane mode keeps the slider.
-                    bytes[1] = when (bytes.u8(0)) { 0 -> 5; 1 -> 7; 2 -> 6; else -> bytes.u8(1) }.toByte()
+                    // A mode goes with a slider on its own side of the middle; airplane mode keeps the slider.
+                    bytes[1] = a3954Slider(bytes.u8(0), bytes.u8(1)).toByte()
                 }
                 lastState = s.with(f.field, bytes)
                 if (f.field == "sound_modes") soundModes = bytes.copyOf()
@@ -458,8 +470,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
             val bytes = s.field("sound_modes") ?: return null
             val v = change.value.coerceIn(1, 5)
             val slider = when {
-                change.key == "a3954_anc_strength" && bytes.u8(0) == 0 -> 6 - v
-                change.key == "a3954_transparency_strength" && bytes.u8(0) == 1 -> 6 + v
+                change.key == "a3954_anc_strength" && bytes.u8(0) == 0 -> 6 + v
+                change.key == "a3954_transparency_strength" && bytes.u8(0) == 1 -> 6 - v
                 else -> return null
             }
             bytes[1] = slider.toByte()

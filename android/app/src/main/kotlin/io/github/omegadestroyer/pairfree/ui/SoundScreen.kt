@@ -155,21 +155,26 @@ internal fun SoundScreen(
 
         val editable = eq.preset == null && eq.target.hasCustom
         if (editable || eq.target.presetCurves) {
+            // The curve and the band buttons run from low to high pitch going right in every language.
             Panel {
-                EqGraph(eq, selected, editable, onSelect = { band = it }) { b, g ->
-                    band = b
-                    actions.setGain(b, g)
+                Physical {
+                    EqGraph(eq, selected, editable, onSelect = { band = it }) { b, g ->
+                        band = b
+                        actions.setGain(b, g)
+                    }
                 }
             }
         }
 
         if (editable) {
             // One button per band, with its gain.
-            Row(
-                Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                eq.layout.bands.forEachIndexed { i, b -> BandButton(bandShort(b), gains[i], i == selected) { band = i } }
+            Physical {
+                Row(
+                    Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    eq.layout.bands.forEachIndexed { i, b -> BandButton(bandShort(b), gains[i], i == selected) { band = i } }
+                }
             }
 
             Panel {
@@ -179,12 +184,14 @@ internal fun SoundScreen(
                     Text(bandName(eq.layout.bands[selected]), Modifier.weight(1f), style = Studio.type.heading)
                     Text(dbText(gain), style = Studio.type.number, color = Studio.colors.accent)
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StepButton(plus = false, { actions.setGain(selected, gain - step) }, enabled = gain > -r)
-                    // The slider counts steps (whole dB, or half dB where the earbuds take them).
-                    val steps = (r / step).roundToInt()
-                    StudioSlider((gain / step).roundToInt(), -steps..steps, { actions.setGain(selected, it * step) }, Modifier.weight(1f), bandName(eq.layout.bands[selected]), origin = 0)
-                    StepButton(plus = true, { actions.setGain(selected, gain + step) }, enabled = gain < r)
+                Physical {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        StepButton(plus = false, { actions.setGain(selected, gain - step) }, enabled = gain > -r)
+                        // The slider counts steps (whole dB, or half dB where the earbuds take them).
+                        val steps = (r / step).roundToInt()
+                        StudioSlider((gain / step).roundToInt(), -steps..steps, { actions.setGain(selected, it * step) }, Modifier.weight(1f), bandName(eq.layout.bands[selected]), origin = 0)
+                        StepButton(plus = true, { actions.setGain(selected, gain + step) }, enabled = gain < r)
+                    }
                 }
             }
         } else {
@@ -200,9 +207,13 @@ internal fun SoundScreen(
             val preamp = eq.setting.preampDb
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(stringResource(R.string.preamp), Modifier.weight(1f))
-                StepButton(plus = false, { actions.setPreamp(preamp - 1) }, enabled = preamp > Equalizer.PREAMP_MIN_DB)
-                Text(dbText(preamp), Modifier.width(56.dp), style = Studio.type.number, color = Studio.colors.accent, textAlign = TextAlign.Center)
-                StepButton(plus = true, { actions.setPreamp(preamp + 1) }, enabled = preamp < 0)
+                Physical {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        StepButton(plus = false, { actions.setPreamp(preamp - 1) }, enabled = preamp > Equalizer.PREAMP_MIN_DB)
+                        Text(dbText(preamp), Modifier.width(56.dp), style = Studio.type.number, color = Studio.colors.accent, textAlign = TextAlign.Center)
+                        StepButton(plus = true, { actions.setPreamp(preamp + 1) }, enabled = preamp < 0)
+                    }
+                }
             }
         }
 
@@ -306,8 +317,8 @@ internal fun dbText(db: Double): String {
     return stringResource(
         R.string.db,
         when {
-            db > 0 -> "+$number"
-            db < 0 -> "−$number"
+            db > 0 -> signed("+$number")
+            db < 0 -> signed("−$number")
             else -> "0"
         },
     )
@@ -373,8 +384,8 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
             val y = geo.y(db.toDouble())
             drawLine(if (db == 0) c.label else c.hairline, Offset(geo.left, y), Offset(size.width, y), hairline)
             val text = when {
-                db > 0 -> "+$db"
-                db < 0 -> "−${-db}"
+                db > 0 -> signed("+$db")
+                db < 0 -> signed("−${-db}")
                 else -> "0"
             }
             val t = measurer.measure(text, axis)

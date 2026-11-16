@@ -274,8 +274,11 @@ private fun HomeScreen(
         } else {
             Panel {
                 Label(stringResource(R.string.battery))
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    for (b in batteries) BatteryItem(b, Modifier.weight(1f))
+                // The left earbud on the left and the right one on the right, in every language.
+                Physical {
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        for (b in batteries) BatteryItem(b, Modifier.weight(1f))
+                    }
                 }
             }
         }
@@ -294,7 +297,7 @@ private data class Battery(@StringRes val label: Int, val reading: BatteryLevel?
  * steps (fifths on the Space A40) one bar per step and no number, as their own app shows it.
  */
 @Composable
-private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) {
+private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) = Reading {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (battery.drawing != null) {
             Image(

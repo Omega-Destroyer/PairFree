@@ -48,6 +48,24 @@ The last part is generated and has two sections:
   example).
 - The documentation, the web site and the store description, for now.
 
+## Right-to-left languages (Persian, Arabic, Hebrew, Urdu)
+
+The app mirrors itself for a right-to-left language by itself: rows, tabs, back and forward arrows. What stays as it is
+on purpose (`ui/Direction.kt`, `Physical`): the **left earbud on the left** and the right one on the right (battery card,
+fit test, the controls' picker), and anything that runs from low to high going right: the sliders with their minus and plus
+buttons, the equalizer's curve and band buttons. If you find something that should flip and does not, or the other way
+round, say so in an issue with a screenshot (the Persian translation's first review, issue #44, found all of these).
+
+What a translator can do in the file, since the app cannot guess it:
+
+- **A number with a sign** (`+17`): the sign must come first when it is read from the left. Put `&#8206;` (the invisible
+  left-to-right mark) right before the plus or minus, as in `setting_balance_left` of `values-fa`. The signs the app builds
+  itself already carry it.
+- **A percentage**: `percent`, `setting_percent` and `sleep_upload_sending` hold `%%%1$d` in Persian so that the sign
+  shows to the left of the digits; use whatever your language writes.
+- **Units in charts**: `db`, `hz` and `khz` are on the equalizer's graph labels and buttons. A language that does not
+  write the unit there (Persian leaves it out, since the digits sit on a chart) can use `%1$s` alone.
+
 ## Choosing the language in the app
 
 With more than one language in the app, a **Language** button shows on the first screens (asking for Bluetooth access,

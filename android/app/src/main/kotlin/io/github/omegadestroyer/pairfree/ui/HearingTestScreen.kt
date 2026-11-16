@@ -127,7 +127,7 @@ internal fun HearingTestScreen(
                     test.results.forEach { r ->
                         Row {
                             Text(stringResource(R.string.hearing_test_tone, r.hz.roundToInt()), Modifier.weight(1f))
-                            Text(stringResource(R.string.db, "%+d".format(r.gainDb.roundToInt())), style = Studio.type.number, color = c.accent)
+                            Text(stringResource(R.string.db, signed("%+d".format(r.gainDb.roundToInt()))), style = Studio.type.number, color = c.accent)
                         }
                     }
                 }

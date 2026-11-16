@@ -96,9 +96,11 @@ internal fun FitTestScreen(
         }
 
         Panel {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Earbud(R.string.left, art.bud, mirrored = false, result?.left, testing, Modifier.weight(1f))
-                Earbud(R.string.right, art.bud, mirrored = true, result?.right, testing, Modifier.weight(1f))
+            Physical {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Earbud(R.string.left, art.bud, mirrored = false, result?.left, testing, Modifier.weight(1f))
+                    Earbud(R.string.right, art.bud, mirrored = true, result?.right, testing, Modifier.weight(1f))
+                }
             }
             if (testing) {
                 LevelBar((progress.value * 100).toInt())
@@ -130,7 +132,7 @@ internal fun FitTestScreen(
 }
 
 @Composable
-private fun Earbud(@StringRes side: Int, drawing: Int, mirrored: Boolean, fit: FitResult.Fit?, testing: Boolean, modifier: Modifier) {
+private fun Earbud(@StringRes side: Int, drawing: Int, mirrored: Boolean, fit: FitResult.Fit?, testing: Boolean, modifier: Modifier) = Reading {
     val c = Studio.colors
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Image(

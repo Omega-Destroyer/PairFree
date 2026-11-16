@@ -84,8 +84,10 @@ internal fun ControlsScreen(
             Text(stringResource(R.string.no_controls), color = Studio.colors.secondaryText)
         }
         if (hasKeys) {
-            PairDrawing(deviceArt(state.firmware?.code, device.name).bud, side)
-            Segmented(Side.entries, side, { sideName(it) }, { side = it })
+            Physical {
+                PairDrawing(deviceArt(state.firmware?.code, device.name).bud, side)
+                Physical { Segmented(Side.entries, side, { sideName(it) }, { side = it }) }
+            }
             val gestures = GestureKind.entries.mapNotNull { kind ->
                 gesture(kind, side)?.takeIf { it in keys }?.let { kind to it }
             }

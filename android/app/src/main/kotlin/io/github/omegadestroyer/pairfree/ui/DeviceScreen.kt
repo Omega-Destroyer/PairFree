@@ -166,7 +166,7 @@ internal fun DeviceScreen(
             Panel {
                 Label(stringResource(R.string.find_earbuds))
                 Text(stringResource(R.string.find_warning), style = Studio.type.small, color = c.secondaryText)
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Physical { Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     for ((command, side) in finds) {
                         val beeping = state.switch(command) == true
                         StudioButton(
@@ -176,7 +176,7 @@ internal fun DeviceScreen(
                             primary = beeping,
                         )
                     }
-                }
+                } }
             }
         }
 
@@ -266,11 +266,13 @@ private fun PromptVolume(state: EarbudState, actions: EarbudsActions) {
             Text(title, Modifier.weight(1f))
             Text(current?.toString() ?: stringResource(R.string.unknown), style = Studio.type.number, color = Studio.colors.accent)
         }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            val value = current ?: 0
-            StepButton(plus = false, { pending = (value - 1).coerceAtLeast(0) }, enabled = value > 0)
-            StudioSlider(value, 0..100, { pending = it }, Modifier.weight(1f), description = title)
-            StepButton(plus = true, { pending = (value + 1).coerceAtMost(100) }, enabled = value < 100)
+        Physical {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                val value = current ?: 0
+                StepButton(plus = false, { pending = (value - 1).coerceAtLeast(0) }, enabled = value > 0)
+                StudioSlider(value, 0..100, { pending = it }, Modifier.weight(1f), description = title)
+                StepButton(plus = true, { pending = (value + 1).coerceAtMost(100) }, enabled = value < 100)
+            }
         }
     }
 }

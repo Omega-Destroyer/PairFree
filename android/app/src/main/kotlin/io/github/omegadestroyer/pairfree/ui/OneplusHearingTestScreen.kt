@@ -81,7 +81,7 @@ internal fun OneplusHearingTestScreen(test: OneplusHearingTest, send: (List<Byte
                             0..OneplusHearingTest.LEVELS_DB.size - 1,
                             { send(test.setLevel(it)); tick++ },
                             Modifier.fillMaxWidth(),
-                            stringResource(R.string.db, "%+d".format(OneplusHearingTest.LEVELS_DB[test.level])),
+                            stringResource(R.string.db, signed("%+d".format(OneplusHearingTest.LEVELS_DB[test.level]))),
                         )
                     }
                 }

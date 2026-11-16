@@ -54,6 +54,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
@@ -408,7 +409,9 @@ fun Chip(text: String, selected: Boolean, onClick: () -> Unit) {
 @Composable
 fun Chevron() {
     val color = Studio.colors.label
-    Canvas(Modifier.size(width = 8.dp, height = 14.dp)) {
+    // Points the way forward: right on a left-to-right screen, left on a right-to-left one.
+    val flip = if (isRtl()) -1f else 1f
+    Canvas(Modifier.size(width = 8.dp, height = 14.dp).graphicsLayer(scaleX = flip)) {
         val w = 1.5.dp.toPx()
         drawLine(color, Offset(w, w), Offset(size.width - w, size.height / 2), w, StrokeCap.Round)
         drawLine(color, Offset(size.width - w, size.height / 2), Offset(w, size.height - w), w, StrokeCap.Round)

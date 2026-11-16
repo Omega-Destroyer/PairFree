@@ -205,10 +205,12 @@ private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) 
             Text(levelName(setting.key, current, setting.max), style = Studio.type.number, color = Studio.colors.accent)
         }
         if (note != null && open) Text(note, style = Studio.type.small, color = Studio.colors.secondaryText)
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StepButton(plus = false, { pending = (current - 1).coerceAtLeast(setting.min) }, enabled = current > setting.min)
-            StudioSlider(current, setting.min..setting.max, { pending = it }, Modifier.weight(1f), description = title, origin = levelOrigin(setting))
-            StepButton(plus = true, { pending = (current + 1).coerceAtMost(setting.max) }, enabled = current < setting.max)
+        Physical {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                StepButton(plus = false, { pending = (current - 1).coerceAtLeast(setting.min) }, enabled = current > setting.min)
+                StudioSlider(current, setting.min..setting.max, { pending = it }, Modifier.weight(1f), description = title, origin = levelOrigin(setting))
+                StepButton(plus = true, { pending = (current + 1).coerceAtMost(setting.max) }, enabled = current < setting.max)
+            }
         }
     }
 }
@@ -1514,7 +1516,7 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
             else -> stringResource(R.string.setting_balance_middle)
         }
     }
-    "clear_bass", "eq_bass", "eq_low_mid", "eq_mid", "eq_high_mid", "eq_treble" -> if (value > 0) "+$value" else value.toString()
+    "clear_bass", "eq_bass", "eq_low_mid", "eq_mid", "eq_high_mid", "eq_treble" -> if (value > 0) signed("+$value") else if (value < 0) signed(value.toString()) else value.toString()
     "ambient_custom_tone" -> when (value - max / 2) {
         -2 -> stringResource(R.string.setting_tone_softer)
         -1 -> stringResource(R.string.setting_tone_soft)

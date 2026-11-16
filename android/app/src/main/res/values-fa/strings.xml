@@ -49,7 +49,7 @@
     <string name="case_label">کیس</string>
     <string name="headphones">هدفون</string>
     <string name="speaker">بلندگو</string>
-    <string name="percent">%1$d%%</string>
+    <string name="percent">%%%1$d</string>
     <plurals name="battery_bars">
         <item quantity="one">%1$d از %2$d خط</item>
         <item quantity="other">%1$d از %2$d خط</item>
@@ -115,9 +115,9 @@
     <string name="eq_preset_fixed">پریست‌ها منحنی‌های ثابتی هستند. برای تنظیم تک‌به‌تک باندها، گزینه «پیش‌فرض کارخانه»، «جدید» یا یکی از پروفایل‌های خودتان را انتخاب کنید.</string>
     <string name="eq_edited">%1$s، ویرایش‌شده</string>
     <string name="eq_graph_description">منحنی اکولایزر. برای تغییر، یکی از باندهای زیر را انتخاب کنید.</string>
-    <string name="hz">%1$s هرتز</string>
-    <string name="khz">%1$s کیلوهرتز</string>
-    <string name="db">%1$s دسی‌بل</string>
+    <string name="hz">%1$s</string>
+    <string name="khz">%1$sk</string>
+    <string name="db">%1$s</string>
     <string name="preamp">پری‌امپ (پیش‌تقویت)</string>
     <string name="eq_save">ذخیره پروفایل</string>
     <string name="eq_name_hint">نام</string>
@@ -242,8 +242,8 @@
     <string name="setting_voice_detect_wait">بازگشت به حالت عادی پس از</string>
     <string name="setting_seconds">%1$d ثانیه</string>
     <string name="setting_balance">توازن صدای چپ و راست</string>
-    <string name="setting_balance_left">چپ +%1$d</string>
-    <string name="setting_balance_right">راست +%1$d</string>
+    <string name="setting_balance_left">چپ &#8206;+%1$d</string>
+    <string name="setting_balance_right">راست &#8206;+%1$d</string>
     <string name="setting_balance_middle">وسط</string>
     <string name="setting_ambient_custom">شخصی‌سازی صدای محیط</string>
     <string name="setting_ambient_custom_left">سطح ایرباد چپ</string>
@@ -972,7 +972,7 @@
     <string name="setting_ef_ambient_full">کامل</string>
     <string name="setting_ef_ambient_natural">طبیعی</string>
     <string name="setting_ef_prompt_volume">بلندی اعلان‌های صوتی</string>
-    <string name="setting_percent">%1$d %%</string>
+    <string name="setting_percent">%%%1$d</string>
     <string name="setting_ef_db">%1$d دسی‌بل</string>
     <string name="setting_ef_hearing_protection_note">صدا را پایین‌تر از این سطح نگه می‌دارد.</string>
     <string name="setting_ef_touch_lock">خاموش کردن کنترل‌های لمسی</string>
@@ -1197,7 +1197,7 @@
     <string name="sleep_upload_confirm_yes">ارسال</string>
     <string name="sleep_upload_preparing">در حال آماده‌سازی صدا…</string>
     <string name="sleep_upload_connecting">در حال باز کردن کانال صدای ایربادها…</string>
-    <string name="sleep_upload_sending">در حال ارسال: %1$d%%</string>
+    <string name="sleep_upload_sending">در حال ارسال: %%%1$d</string>
     <string name="sleep_upload_done">ارسال شد: %1$d ثانیه صدا. برای پخش آن، ایربادها را به حالت محلی (Local) ببرید (زبانهٔ دستگاه).</string>
     <string name="sleep_upload_clipped">صدا بیش از ۶۰ ثانیه بود، پس کوتاه شد.</string>
     <string name="sleep_upload_slot_holds">صدای %1$d: %2$s</string>

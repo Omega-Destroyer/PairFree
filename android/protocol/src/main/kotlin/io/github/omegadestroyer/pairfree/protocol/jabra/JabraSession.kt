@@ -54,6 +54,41 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
 
     private fun legacyHearThrough(): JabraSetting? = settings().firstOrNull { it.command == "HEAR_THROUGH" && it.widget == JabraWidget.BOOL && switchCodes(it) != null }
 
+    private fun caps(): Set<String> = profile?.caps.orEmpty()
+
+    /** Spotify's one tap button, on the firmware whose snapshot lists it and the products whose definition offers it on Android. */
+    private fun spotifyOffered(): Boolean = "spotifytap" in caps() && variant?.spotify == true
+
+    /**
+     * Spatial sound's mode (`13/E4` with one byte, the VSS mode: 0 off, 1 in calls, 2 in music, 3 in both, 4 with head tracking), by what the snapshot says the
+     * firmware has. The three-byte reply of other schema revisions (call, media and Dolby bytes) has no code table in the app's schema and is not shown.
+     */
+    private fun spatialOptions(): List<String> {
+        val c = caps()
+        val media = "spatialsoundformediasupport" in c
+        val call = "spatialsoundforcommunicationsupport" in c
+        val head = "spatialsoundheadtrackingformediasupport" in c || "spatialsoundheadtrackingforcommunicationsupport" in c
+        return buildList {
+            if (!media && !call && !head) return@buildList
+            add("spatial_off")
+            if (call) add("spatial_voice")
+            if (media) add("spatial_music")
+            if (call && media) add("spatial_both")
+            if (head) add("spatial_head_tracking")
+        }
+    }
+
+    /** The voice prompt language setting the firmware's form lists, if any: the one among the settings whose command is the current language. */
+    private fun language(): JabraSetting? = settings().firstOrNull { it.command == "CURRENT_LANGUAGE" && it.main != null && it.options.isNotEmpty() }
+
+    /** The language ids the earbuds hold (`02/08`: a count, then each as two bytes, low first), or null before they answered. */
+    private fun availableLanguages(): Set<Int>? {
+        val b = replies["02/08"] ?: return null
+        val n = b.firstOrNull()?.toInt()?.and(0xFF) ?: return null
+        if (b.size < 1 + 2 * n) return null
+        return (0 until n).map { (b[1 + 2 * it].toInt() and 0xFF) or ((b[2 + 2 * it].toInt() and 0xFF) shl 8) }.toSet()
+    }
+
     private fun hasEqualizer(): Boolean = profile?.caps?.contains("music_equalizer") == true
     private fun settings(): List<JabraSetting> = profile?.settings?.mapNotNull { JabraSettings.BY_ID[it] }.orEmpty()
 
@@ -104,6 +139,12 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
             out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.EQUALIZER, 0)
             out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.EQUALIZER_ENABLE)
         }
+        if (spotifyOffered()) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.SPOTIFY.main, JabraCommands.SPOTIFY.sub, ByteArray(0))
+        if (spatialOptions().size > 1) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.SPATIAL.main, JabraCommands.SPATIAL.sub, ByteArray(0))
+        if (language() != null) {
+            out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AVAILABLE_LANGUAGES.main, JabraCommands.AVAILABLE_LANGUAGES.sub, ByteArray(0))
+            out += read(language()!!)
+        }
         if (hasAmbience()) {
             for (selector in AMBIENCE_READS) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, selector)
             if (variant?.has("ambience_mode_loop") == true) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.SOUND_MODE_LOOP.main, JabraCommands.SOUND_MODE_LOOP.sub, ByteArray(0))
@@ -136,7 +177,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         if (message.main in JabraCommands.NEVER_SEND_GROUPS) return false
         val sub = message.sub ?: return false
         if (JabraCommands.NEVER_SEND.any { it.first == message.main && it.second == sub }) return false
-        if (message.isWrite) return message.main == CONFIG_MAIN
+        if (message.isWrite) return message.main == CONFIG_MAIN || (message.main == JabraCommands.CONFIG_MODE_END.main && sub == JabraCommands.CONFIG_MODE_END.sub)
         return message.isRead
     }
 
@@ -363,6 +404,8 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
                 val group = if (tab == SettingTab.CONTROLS) BUTTON_GROUPS[s.selectors.firstOrNull()?.second] ?: "buttons" else s.group
                 byGroup.getOrPut(group to tab) { mutableListOf() }.let { if (it.none { r -> r.key == row.key }) it += row }
             }
+            val extra = extraRows()
+            if (extra.isNotEmpty()) out += SettingGroup("jb_extra", SettingTab.DEVICE, extra)
             for ((k, rows) in byGroup) out += SettingGroup("jb_${k.first.lowercase()}", k.second, rows)
             return out
         }
@@ -415,6 +458,25 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         return if (on == off) null else on to off
     }
 
+    /** The rows that are not a form entry of the snapshot: Spotify, spatial sound and the voice language. */
+    private fun extraRows(): List<Setting> = buildList {
+        u8("13/e5", 0)?.takeIf { spotifyOffered() }?.let { add(Setting.Toggle("jb_spotify", it != 0)) }
+        val options = spatialOptions()
+        val vss = replies["13/e4"]
+        if (options.size > 1 && vss != null && vss.size == 1) {
+            val current = SPATIAL_CODES.getOrNull(vss[0].toInt() and 0xFF)
+            add(Setting.Choice("jb_spatial", current, options))
+        }
+        val lang = language()
+        val available = availableLanguages()
+        val body = lang?.let { replies[keyOf(it.main!!, it.sub!!, ByteArray(0), 0)] }
+        if (lang != null && available != null && body != null && body.size >= 2) {
+            val offered = lang.options.filter { it.code in available }
+            val current = (body[0].toInt() and 0xFF) or ((body[1].toInt() and 0xFF) shl 8)
+            if (offered.size > 1) add(Setting.Choice("jb_${lang.id}", lang.option(current)?.name, offered.map { it.name }))
+        }
+    }
+
     private fun row(s: JabraSetting): Setting? {
         if (s.virtual != null || s.special || s.main == null) return null
         val v = valueOf(s) ?: return null
@@ -462,6 +524,33 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
 
     override fun change(change: SettingChange): List<JabraPacket>? {
         when (change.key) {
+            "jb_spotify" -> {
+                val on = (change as? SettingChange.Toggle)?.on ?: return null
+                replies["13/e5"] = byteArrayOf(if (on) 1 else 0)
+                readBacks = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.SPOTIFY.main, JabraCommands.SPOTIFY.sub, ByteArray(0)))
+                return listOf(packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.SPOTIFY.main, JabraCommands.SPOTIFY.sub, byteArrayOf(if (on) 1 else 0)))
+            }
+            "jb_spatial" -> {
+                val option = (change as? SettingChange.Choice)?.option ?: return null
+                val code = SPATIAL_CODES.indexOf(option).takeIf { it >= 0 && option in spatialOptions() } ?: return null
+                replies["13/e4"] = byteArrayOf(code.toByte())
+                readBacks = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.SPATIAL.main, JabraCommands.SPATIAL.sub, ByteArray(0)))
+                return listOf(packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.SPATIAL.main, JabraCommands.SPATIAL.sub, byteArrayOf(code.toByte())))
+            }
+            "jb_${language()?.id}" -> {
+                // Languages already on the earbuds: the configuration mode is entered (`0D/11`), the language written (two bytes, low first) and the mode ended (`0D/12`).
+                val lang = language() ?: return null
+                val option = (change as? SettingChange.Choice)?.option ?: return null
+                val code = lang.options.firstOrNull { it.name == option }?.code?.takeIf { it in (availableLanguages() ?: emptySet()) } ?: return null
+                val body = byteArrayOf(code.toByte(), (code shr 8).toByte())
+                replies[keyOf(lang.main!!, lang.sub!!, ByteArray(0), 0)] = body
+                readBacks = listOf(read(lang))
+                return listOf(
+                    packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.CONFIG_MODE_ENTER.main, JabraCommands.CONFIG_MODE_ENTER.sub, ByteArray(0)),
+                    packet(lang.destination, JabraPacket.WRITE, lang.main!!, lang.sub!!, body),
+                    packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.CONFIG_MODE_END.main, JabraCommands.CONFIG_MODE_END.sub, ByteArray(0)),
+                )
+            }
             "jb_loop" -> {
                 val option = (change as? SettingChange.Choice)?.option ?: return null
                 val modes = LOOP_CHOICES.firstOrNull { it.joinToString("_") == option } ?: return null
@@ -527,6 +616,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
 
         /** The loops the Sound+ app offers: HearThrough and ANC, with or without off, and HearThrough and off. */
         private val LOOP_CHOICES = listOf(listOf("HT", "ANC"), listOf("HT", "ANC", "Off"), listOf("HT", "Off"))
+        private val SPATIAL_CODES = listOf("spatial_off", "spatial_voice", "spatial_music", "spatial_both", "spatial_head_tracking")
         private val BUTTON_GROUPS = mapOf(0 to "buttons_music", 1 to "buttons_call_incoming", 2 to "buttons_call_ongoing")
         private const val AMBIENCE_OFF = 0x01
         private const val AMBIENCE_HEARTHROUGH = 0x02

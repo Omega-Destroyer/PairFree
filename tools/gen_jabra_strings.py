@@ -174,8 +174,13 @@ GROUPS = {
     "sound_and_volume": "Sound",
     "speakerphone": "Speakerphone",
     "noise": "Noise control",
+    "extra": "More settings",
 }
-FIXED_TITLES = {"jb_ht_level": "HearThrough level", "jb_anc_level": "Noise cancelling level", "jb_ht_mix": "Hear music with HearThrough", "jb_loop": "Modes on the button"}
+# Options the session makes up (spatial sound's modes).
+EXTRA_OPTIONS = {
+    "spatial_off": "Off", "spatial_voice": "In calls", "spatial_music": "In music", "spatial_both": "In calls and music", "spatial_head_tracking": "With head tracking",
+}
+FIXED_TITLES = {"jb_spotify": "Spotify one tap", "jb_spatial": "Spatial sound", "jb_ht_level": "HearThrough level", "jb_anc_level": "Noise cancelling level", "jb_ht_mix": "Hear music with HearThrough", "jb_loop": "Modes on the button"}
 
 
 def slug(text):
@@ -222,6 +227,7 @@ def build():
     for s in S.values():
         for o, _ in s["options"]:
             options[o] = OPTIONS.get(o) or humanize(re.sub(r"^(Action|Audio_announcements|Audio_protection_setting|Audio_protection|Tone_setting|Equalizer_mode_for_calls)_", "", o))
+    options.update(EXTRA_OPTIONS)
     lines = [BEGIN]
     seen = {}
     for n in sorted(titles):

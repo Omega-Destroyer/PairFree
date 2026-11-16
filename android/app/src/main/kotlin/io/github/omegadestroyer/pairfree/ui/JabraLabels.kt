@@ -429,6 +429,11 @@ internal object JabraLabels {
         "Voice" to R.string.jb_opt_voice,
         "off" to R.string.jb_opt_off,
         "on" to R.string.jb_opt_on,
+        "spatial_both" to R.string.jb_opt_spatial_both,
+        "spatial_head_tracking" to R.string.jb_opt_spatial_head_tracking,
+        "spatial_music" to R.string.jb_opt_spatial_music,
+        "spatial_off" to R.string.jb_opt_spatial_off,
+        "spatial_voice" to R.string.jb_opt_spatial_voice,
     )
 
     val GROUP: Map<String, Int> = mapOf(
@@ -438,6 +443,7 @@ internal object JabraLabels {
         "buttons_call_ongoing" to R.string.jb_group_buttons_call_ongoing,
         "buttons_music" to R.string.jb_group_buttons_music,
         "call_experience" to R.string.jb_group_call_experience,
+        "extra" to R.string.jb_group_extra,
         "firmware" to R.string.jb_group_firmware,
         "headphone_readouts" to R.string.jb_group_headphone_readouts,
         "headset" to R.string.jb_group_headset,
@@ -458,5 +464,7 @@ internal object JabraLabels {
         "jb_ht_level" to R.string.jb_ht_level,
         "jb_ht_mix" to R.string.jb_ht_mix,
         "jb_loop" to R.string.jb_loop,
+        "jb_spatial" to R.string.jb_spatial,
+        "jb_spotify" to R.string.jb_spotify,
     )
 }

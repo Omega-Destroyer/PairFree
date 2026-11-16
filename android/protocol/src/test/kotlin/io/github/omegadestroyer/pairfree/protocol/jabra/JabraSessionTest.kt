@@ -217,4 +217,40 @@ class JabraSessionTest {
         val on = Command.ANC_MODE.labels.entries.first { it.value == "transparency" }.key
         assertEquals("760101", s.set(Command.ANC_MODE, on)!!.single().payload.hex())
     }
+    @Test
+    fun theLanguageIsWrittenInsideTheConfigurationMode() {
+        val (s, reads) = opened()
+        assertTrue(reads.any { it.main == 0x02 && it.sub == 0x08 })
+        val lang = setting(s, "Voice_announcements_language")
+        // Two languages on the earbuds (English 0409 and German 0407, two bytes each, low first); English now.
+        s.feed(reply(0x02, 0x08, 2, 0x09, 0x04, 0x07, 0x04))
+        s.feed(reply(0x13, 0x08, 0x09, 0x04))
+        val row = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().single { it.key == "jb_${lang.id}" }
+        assertEquals(2, row.options.size)
+        val out = s.change(SettingChange.Choice(row.key, row.options.first { it != row.value }))!!
+        assertEquals(listOf("0d/11", "13/08", "0d/12"), out.map { "%02x/%02x".format(it.main, it.sub) })
+        // German is 0x0407: the low byte first.
+        assertEquals("080704", out[1].payload.hex())
+        // The end of the mode is the one write outside the settings command that goes out.
+        assertTrue(out.all { s.allowed(it) })
+        // A language the earbuds do not hold is not written.
+        assertNull(s.change(SettingChange.Choice(row.key, "Korean")))
+    }
+
+    @Test
+    fun spotifyAndSpatialSoundAreOfferedByTheSnapshotsCapabilities() {
+        val (s, reads) = opened()
+        assertTrue(reads.any { it.main == 0x13 && it.sub == 0xE5 } && reads.any { it.main == 0x13 && it.sub == 0xE4 })
+        s.feed(reply(0x13, 0xE5, 1))
+        s.feed(reply(0x13, 0xE4, 2))
+        val rows = s.groups.flatMap { it.settings }
+        assertEquals(true, (rows.single { it.key == "jb_spotify" } as Setting.Toggle).on)
+        // The Elite 10's snapshot has spatial sound for media and head tracking, not for calls.
+        val spatial = rows.single { it.key == "jb_spatial" } as Setting.Choice
+        assertEquals("spatial_music", spatial.value)
+        assertEquals(listOf("spatial_off", "spatial_music", "spatial_head_tracking"), spatial.options)
+        assertEquals("e404", s.change(SettingChange.Choice("jb_spatial", "spatial_head_tracking"))!!.single().payload.hex())
+        assertNull(s.change(SettingChange.Choice("jb_spatial", "spatial_voice")))
+        assertEquals("e500", s.change(SettingChange.Toggle("jb_spotify", false))!!.single().payload.hex())
+    }
 }

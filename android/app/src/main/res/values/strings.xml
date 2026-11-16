@@ -1732,6 +1732,11 @@
     <string name="jb_opt_tone_setting_normal">Normal</string>
     <string name="jb_opt_tone_setting_treble">More treble</string>
     <string name="jb_opt_voice">Voice</string>
+    <string name="jb_opt_spatial_both">In calls and music</string>
+    <string name="jb_opt_spatial_head_tracking">With head tracking</string>
+    <string name="jb_opt_spatial_music">In music</string>
+    <string name="jb_opt_spatial_off">Off</string>
+    <string name="jb_opt_spatial_voice">In calls</string>
     <string name="jb_fixed_off">Off</string>
     <string name="jb_fixed_min">%1$d minutes</string>
     <string name="jb_fixed_db">%1$s dB</string>
@@ -1741,6 +1746,7 @@
     <string name="jb_group_buttons_call_ongoing">Buttons during a call</string>
     <string name="jb_group_buttons_music">Buttons while playing music</string>
     <string name="jb_group_call_experience">Calls</string>
+    <string name="jb_group_extra">More settings</string>
     <string name="jb_group_firmware">Firmware</string>
     <string name="jb_group_headphone_readouts">Readouts</string>
     <string name="jb_group_headset">Settings</string>
@@ -1754,6 +1760,8 @@
     <string name="jb_group_softphone_pc">Softphone</string>
     <string name="jb_group_sound_and_volume">Sound</string>
     <string name="jb_group_speakerphone">Speakerphone</string>
+    <string name="jb_spotify">Spotify one tap</string>
+    <string name="jb_spatial">Spatial sound</string>
     <string name="jb_ht_level">HearThrough level</string>
     <string name="jb_anc_level">Noise cancelling level</string>
     <string name="jb_ht_mix">Hear music with HearThrough</string>

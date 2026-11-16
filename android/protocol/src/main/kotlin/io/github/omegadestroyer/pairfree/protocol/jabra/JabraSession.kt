@@ -260,9 +260,10 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
             for (s in settings()) {
                 val row = row(s) ?: continue
                 val tab = if (s.command == "USER_BUTTONS") SettingTab.CONTROLS else SettingTab.DEVICE
-                byGroup.getOrPut((if (tab == SettingTab.CONTROLS) "buttons" else s.group) to tab) { mutableListOf() }.let { if (it.none { r -> r.key == row.key }) it += row }
+                val group = if (tab == SettingTab.CONTROLS) BUTTON_GROUPS[s.selectors.firstOrNull()?.second] ?: "buttons" else s.group
+                byGroup.getOrPut(group to tab) { mutableListOf() }.let { if (it.none { r -> r.key == row.key }) it += row }
             }
-            for ((k, rows) in byGroup) out += SettingGroup("jb_${k.first}", k.second, rows)
+            for ((k, rows) in byGroup) out += SettingGroup("jb_${k.first.lowercase()}", k.second, rows)
             return out
         }
 
@@ -285,6 +286,16 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         return v
     }
 
+    /**
+     * What a choice calls an option on the screens: the vendor's name, except where the code is itself the value, the idle timer in units of five minutes and the
+     * sidetone level in dB (a signed byte), which the screens write as numbers.
+     */
+    private fun optionKey(s: JabraSetting, o: JabraOption): String = when {
+        s.command == "INACTIVITY_INTERVAL" -> if (o.code == 0) "off" else "min_${o.code * 5}"
+        s.command == "DSP_SIDETONE" && s.pos == 2 -> "db_${o.code.toByte()}"
+        else -> o.name
+    }
+
     /** The two codes of a switch: the option called on and the one called off; null when the form gives both the same code. */
     private fun switchCodes(s: JabraSetting): Pair<Int, Int>? {
         val on = s.options.firstOrNull { it.name.lowercase() in ON_NAMES }?.code ?: return null
@@ -298,7 +309,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         val key = "jb_${s.id}"
         return when (s.widget) {
             JabraWidget.BOOL -> switchCodes(s)?.let { (on, _) -> Setting.Toggle(key, v == on) }
-            JabraWidget.LIST -> if (s.options.isEmpty()) null else Setting.Choice(key, s.option(v)?.name, s.options.map { it.name })
+            JabraWidget.LIST -> if (s.options.isEmpty()) null else Setting.Choice(key, s.option(v)?.let { optionKey(s, it) }, s.options.map { optionKey(s, it) })
             else -> null
         }
     }
@@ -335,7 +346,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         val s = settings().firstOrNull { "jb_${it.id}" == change.key } ?: return null
         val code = when (change) {
             is SettingChange.Toggle -> switchCodes(s)?.let { if (change.on) it.first else it.second }
-            is SettingChange.Choice -> s.options.firstOrNull { it.name == change.option }?.code
+            is SettingChange.Choice -> s.options.firstOrNull { optionKey(s, it) == change.option }?.code
             else -> null
         } ?: return null
         return write(s, code)
@@ -365,6 +376,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         private const val CONFIG_MAIN = 0x13
         private const val ADDRESS_RIGHT = 4
         private const val ADDRESS_CRADLE = 0x15
+        private val BUTTON_GROUPS = mapOf(0 to "buttons_music", 1 to "buttons_call_incoming", 2 to "buttons_call_ongoing")
         private const val AMBIENCE_OFF = 0x01
         private const val AMBIENCE_HEARTHROUGH = 0x02
         private const val AMBIENCE_ANC = 0x04

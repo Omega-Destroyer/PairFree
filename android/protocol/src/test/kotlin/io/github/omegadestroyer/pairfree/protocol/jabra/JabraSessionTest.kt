@@ -116,7 +116,7 @@ class JabraSessionTest {
         assertEquals("7c00f7", write.payload.hex())
         // The level choice keeps the switch as the earbuds last said it.
         val level = setting(s, "SideTone_level")
-        val write2 = s.change(SettingChange.Choice("jb_${level.id}", "SideTone_level5"))!!.single()
+        val write2 = s.change(SettingChange.Choice("jb_${level.id}", "db_6"))!!.single()
         assertEquals("7c0006", write2.payload.hex())
     }
 
@@ -125,7 +125,7 @@ class JabraSessionTest {
         val (s, _) = opened()
         val tap = setting(s, "Music_context_left_button_tap_action")
         s.feed(reply(0x13, 0x9A, 0, 0, 0, 1))
-        val row = s.groups.first { it.key == "jb_buttons" }.settings.filterIsInstance<Setting.Choice>().single { it.key == "jb_${tap.id}" }
+        val row = s.groups.first { it.key == "jb_buttons_music" }.settings.filterIsInstance<Setting.Choice>().single { it.key == "jb_${tap.id}" }
         assertEquals("Action_Play_Pause", row.value)
         val write = s.change(SettingChange.Choice(row.key, "Action_Next_Track"))!!.single()
         assertEquals("9a00000002", write.payload.hex())

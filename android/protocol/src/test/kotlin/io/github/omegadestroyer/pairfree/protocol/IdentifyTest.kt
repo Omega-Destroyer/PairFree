@@ -4,6 +4,8 @@ import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserModels
 
 import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
+import io.github.omegadestroyer.pairfree.protocol.jabra.JabraModels
+import io.github.omegadestroyer.pairfree.protocol.jabra.fromName
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
 import kotlinx.serialization.json.Json
@@ -37,6 +39,7 @@ class IdentifyTest {
                     Maker.PIXEL -> assertEquals(model, PixelModels.fromName(name)?.name, name)
                     Maker.EARFUN -> assertEquals(model, EarfunModels.fromName(name)?.name, name)
                     Maker.CAMBRIDGE -> assertEquals(model, CambridgeModels.fromName(name)?.name, name)
+                    Maker.JABRA -> assertEquals(model, JabraModels.fromName(name)?.name, name)
                     Maker.SENNHEISER -> assertEquals(model, SennheiserModels.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Models.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusModels.fromName(name)?.name, name)
                     else -> error("no model check for $want")
                 }

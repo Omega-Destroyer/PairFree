@@ -281,3 +281,39 @@ class SennheiserBandEq(private val session: io.github.omegadestroyer.pairfree.pr
         return BandEqReport(preset, held.map { it.roundToInt() }, held.map { (it * 2).roundToInt() / 2.0 })
     }
 }
+
+/**
+ * Jabra's music equalizer (docs/jabra/PROTOCOL.md, Music EQ and presets): the bands the earbuds describe, each with a maximum of its own (the screen's range is
+ * the smallest), written whole as the Sound+ app's native setter writes them. The six presets are the app's percentages of each band's maximum, applied as a curve.
+ */
+class JabraBandEq(private val session: io.github.omegadestroyer.pairfree.protocol.jabra.JabraEqSource) : BandEq {
+    private val presets: List<Pair<String, List<Double>>> = session.eqPresets.map { (name, gains) -> (PRESET_NAMES[name] ?: name) to gains }
+    override val eqBandsHz: List<Int> = session.eqBandsHz
+    override val eqRangeDb: Int = kotlin.math.floor(session.eqMaxDb).toInt()
+    override val eqPresetNames: List<String> = presets.map { it.first }
+    override val eqPresetGains: Map<String, List<Double>> = if (eqBandsHz.isEmpty()) emptyMap() else presets.toMap()
+    override val eqReport: BandEqReport? = null
+
+    override fun eqPresetFrames(name: String): List<ByteArray>? = presets.firstOrNull { it.first == name }?.let { session.eqCurve(it.second) }
+
+    override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = if (eqBandsHz.isEmpty()) null else session.eqCurve(gains.map(Int::toDouble))
+
+    /** The wire holds sixtieths of a dB, so half steps go through. */
+    override val eqGainStepDb: Double = 0.5
+
+    override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? = if (eqBandsHz.isEmpty()) null else session.eqCurve(gains)
+
+    /** What the earbuds hold: the preset whose gains they have (to a twentieth of a dB), else the curve. */
+    fun report(): BandEqReport? {
+        val held = session.eqGains ?: return null
+        val preset = presets.firstOrNull { (_, gains) -> gains.size == held.size && gains.indices.all { abs(gains[it] - held[it]) < 0.05 } }?.first
+        return BandEqReport(preset, held.map { it.roundToInt() }, held.map { (it * 2).roundToInt() / 2.0 })
+    }
+
+    private companion object {
+        val PRESET_NAMES = mapOf(
+            "JABRA_DEFAULT" to "Jabra default", "VOICE" to "Voice", "BASS_BOOST" to "Bass boost",
+            "TREBLE_BOOST" to "Treble boost", "SMOOTH" to "Smooth", "ENERGIZE" to "Energize",
+        )
+    }
+}

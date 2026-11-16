@@ -17,7 +17,7 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * lists the model's settings; each of them is then read once, and a row shows when its read answered. Noise control is the ambience command's (`13/BE`) where the
  * firmware has it. Not tried on any Jabra product.
  */
-public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacket>() {
+public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacket>(), JabraEqSource {
     private var current: EarbudState = EarbudState()
     override val state: EarbudState get() = current
     override val pacing: Pacing = Pacing(replyMs = REPLY_MS, gapMs = GAP_MS)
@@ -48,6 +48,8 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
     private val selectorCounts = HashMap<Int, Int>()
 
     private fun hasAmbience(): Boolean = profile?.caps?.contains("ambiencemodes") == true
+
+    private fun hasEqualizer(): Boolean = profile?.caps?.contains("music_equalizer") == true
     private fun settings(): List<JabraSetting> = profile?.settings?.mapNotNull { JabraSettings.BY_ID[it] }.orEmpty()
 
     // ---- messages -------------------------------------------------------------------------------------------------------------------------------------
@@ -92,6 +94,10 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
             if (s.main == null || s.sub == null) continue
             val k = (s.main shl 8) or s.sub
             selectorCounts[k] = maxOf(selectorCounts[k] ?: 0, s.selectors.size)
+        }
+        if (hasEqualizer()) {
+            out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.EQUALIZER, 0)
+            out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.EQUALIZER_ENABLE)
         }
         if (hasAmbience()) for (selector in AMBIENCE_READS) out += packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, selector)
         for (s in settings()) {
@@ -146,7 +152,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
                     val body = packet.body
                     val key = keyOf(packet.main, sub, body, selectorCounts[(packet.main shl 8) or sub] ?: 0)
                     if (packet.isReply) answers += key
-                    changed = handle(packet.main, sub, body, key) || changed
+                    changed = handle(packet.main, sub, body, key, packet.isReply) || changed
                 }
             }
         }
@@ -155,7 +161,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
     }
 
     /** True when the answer changed what the screens show. */
-    private fun handle(main: Int, sub: Int, body: ByteArray, key: String): Boolean {
+    private fun handle(main: Int, sub: Int, body: ByteArray, key: String, reply: Boolean): Boolean {
         when {
             main == JabraCommands.PID.main && sub == JabraCommands.PID.sub -> {
                 if (body.size >= 2) {
@@ -173,7 +179,82 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
             }
         }
         replies[key] = body
+        if (reply && main == JabraCommands.EQUALIZER.main && sub == JabraCommands.EQUALIZER.sub) parseEqualizer(body)
+        if (main == JabraCommands.EQUALIZER_ENABLE.main && sub == JabraCommands.EQUALIZER_ENABLE.sub) eqOn = body.firstOrNull()?.toInt()?.let { it != 0 }
         return true
+    }
+
+    // ---- the music equalizer ---------------------------------------------------------------------------------------------------------------------------
+
+    /** A band as the earbuds describe it: its centre in Hz, the most gain they take either way in dB, the gain now, and Q as the wire holds it (times 4096). */
+    private class EqBand(val hz: Int, val maxDb: Double, val gainDb: Double, val q: Int, val freqRaw: Int)
+
+    private var bands: List<EqBand>? = null
+    private var masterRaw = 0
+    private var eqOn: Boolean? = null
+
+    /**
+     * `13/7D` read of all bands: the band count, the master gain (a signed 16-bit value in 1/60 dB), then per band a maximum gain byte in quarter dB, the
+     * frequency times three, the gain in 1/60 dB and Q times 4096, each 16 bits high byte first (docs/jabra/PROTOCOL.md, Music EQ and presets).
+     */
+    private fun parseEqualizer(body: ByteArray) {
+        val count = body.firstOrNull()?.toInt()?.and(0xFF) ?: return
+        if (count == 0 || body.size < 3 + 7 * count) return
+        fun u16(i: Int) = ((body[i].toInt() and 0xFF) shl 8) or (body[i + 1].toInt() and 0xFF)
+        masterRaw = u16(1).toShort().toInt()
+        bands = List(count) { b ->
+            val at = 3 + 7 * b
+            val freq = u16(at + 1)
+            EqBand(freq / 3, (body[at].toInt() and 0xFF) / 4.0, u16(at + 3).toShort().toInt() / 60.0, u16(at + 5), freq)
+        }
+    }
+
+    override val eqKnown: Boolean get() = bands != null
+    override val eqBandsHz: List<Int> get() = bands?.map { it.hz }.orEmpty()
+    override val eqGains: List<Double>? get() = bands?.map { it.gainDb }
+
+    /** What every band takes either way: the smallest of the bands' maxima, so one range fits the whole graph. */
+    override val eqMaxDb: Double get() = bands?.minOfOrNull { it.maxDb } ?: 0.0
+
+    /** The app's six presets: each band's own maximum times the preset's percentage (the app converts them the same way). */
+    override val eqPresets: List<Pair<String, List<Double>>>
+        get() {
+            val b = bands ?: return emptyList()
+            return JabraPresets.ALL.filter { it.percent.size == b.size }.map { p -> p.name to b.indices.map { b[it].maxDb * p.percent[it] / 100.0 } }
+        }
+
+    /**
+     * The frames that set the gains of every band: the equalizer on (off when the curve is flat, as the app's neutral check does; an inference from the app's
+     * handler, which names the check but whose body did not decompile), then `13/7D` with the count, parameter 0 for all bands, the master gain kept, and each
+     * band's frequency, gain (float times 60, truncated toward zero, as the native setter does) and Q kept. A gain beyond a band's maximum sends nothing.
+     */
+    override fun eqCurve(gains: List<Double>): List<ByteArray>? {
+        val b = bands ?: return null
+        if (gains.size != b.size || gains.indices.any { kotlin.math.abs(gains[it]) > b[it].maxDb + 1e-9 }) return null
+        val body = ByteArray(4 + 6 * b.size)
+        body[0] = b.size.toByte()
+        body[1] = 0
+        body[2] = (masterRaw shr 8).toByte()
+        body[3] = masterRaw.toByte()
+        for ((i, band) in b.withIndex()) {
+            val at = 4 + 6 * i
+            val g = (gains[i].toFloat() * 60f).toInt()
+            body[at] = (band.freqRaw shr 8).toByte()
+            body[at + 1] = band.freqRaw.toByte()
+            body[at + 2] = (g shr 8).toByte()
+            body[at + 3] = g.toByte()
+            body[at + 4] = (band.q shr 8).toByte()
+            body[at + 5] = band.q.toByte()
+        }
+        val out = mutableListOf<ByteArray>()
+        val flat = gains.all { it == 0.0 }
+        if (eqOn != !flat) {
+            eqOn = !flat
+            out += packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.EQUALIZER_ENABLE, if (flat) 0 else 1).bytes()
+        }
+        out += packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.EQUALIZER.main, JabraCommands.EQUALIZER.sub, body).bytes()
+        bands = b.mapIndexed { i, band -> EqBand(band.hz, band.maxDb, (gains[i].toFloat() * 60f).toInt() / 60.0, band.q, band.freqRaw) }
+        return out
     }
 
     override fun unanswered(sent: JabraPacket): Boolean {
@@ -224,6 +305,8 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         }
         current = current.copy(values = next)
     }
+
+    override val eq: Any? get() = bands?.map { it.gainDb }
 
     private class Levels(val left: Int?, val right: Int?, val cradle: Int?)
 

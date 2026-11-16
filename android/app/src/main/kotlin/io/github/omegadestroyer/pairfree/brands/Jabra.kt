@@ -3,10 +3,14 @@ package io.github.omegadestroyer.pairfree.brands
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
+import io.github.omegadestroyer.pairfree.eq.EqSource
+import io.github.omegadestroyer.pairfree.eq.JabraBandEq
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.jabra.JabraModels
 import io.github.omegadestroyer.pairfree.protocol.jabra.JabraPacket
+import io.github.omegadestroyer.pairfree.protocol.jabra.JabraParser
 import io.github.omegadestroyer.pairfree.protocol.jabra.JabraSession
 import io.github.omegadestroyer.pairfree.protocol.jabra.fromName
 import io.github.omegadestroyer.pairfree.protocol.jabra.gnp
@@ -52,6 +56,22 @@ class JabraDriver(host: DriverHost, private val device: Paired) : TalkDriver<Jab
     val session: JabraSession? get() = talk
 
     override fun talk(opened: ControlLink): JabraSession? = JabraModels.fromName(device.model ?: device.name)?.takeIf { it.gnp }?.let { JabraSession(it) }
+
+    /** The equalizer's frames are packets the session built; they go out through the talk's queue, one after another. */
+    override fun sendEq(frames: List<ByteArray>) {
+        val talk = talk ?: return
+        if (!host.connected) return
+        val parser = JabraParser()
+        if (send(talk, frames.flatMap { parser.feed(it) })) publish(talk)
+    }
+
+    /** The Sound tab opens over the bands the earbuds described. */
+    override fun eqSource(device: Paired, model: Model?): EqSource? {
+        val session = talk?.takeIf { it.eqKnown } ?: return null
+        val band = JabraBandEq(session)
+        val target = BandEqTarget(band)
+        return EqSource(session to band.eqBandsHz, target.layout, target) { current -> band.report()?.let { target.reportedAs(it, current) } }
+    }
 
     override fun report(info: ReportInfo): String? {
         val s = session ?: return null

@@ -46,8 +46,8 @@ class JabraSessionTest {
         assertEquals(11846, s.pid)
         assertEquals("1.2.4", s.firmware)
         assertEquals("11846_01-92_1.2.4", s.profile?.snapshot)
-        // The ambience command's four reads come first, then each setting's read once; the sidetone's two settings share one read at the DSP's address.
-        assertEquals(listOf("13/be/00", "13/be/01", "13/be/02", "13/be/03"), reads.take(4).map { "%02x/%02x/%02x".format(it.main, it.sub, it.payload[1]) })
+        // The ambience command's four reads, then each setting's read once; the sidetone's two settings share one read at the DSP's address.
+        assertEquals(listOf("00", "01", "02", "03"), reads.filter { it.main == 0x13 && it.sub == 0xBE }.map { "%02x".format(it.payload[1]) })
         assertEquals(1, reads.count { it.main == 0x13 && it.sub == 0x7C && it.destination == JabraWire.DSP })
         // Six buttons' gestures in three contexts: eighteen reads of one command, each with its three selector bytes.
         val buttons = reads.filter { it.main == 0x13 && it.sub == 0x9A }
@@ -142,5 +142,30 @@ class JabraSessionTest {
         assertTrue(s.allowed(JabraPacket.of(4, 1, JabraPacket.READ, 0x13, 0xBE, 0x01)))
         assertNotNull(s.start().firstOrNull())
         assertNull(s.set(Command.BATTERY_LEFT, 1))
+    }
+    private fun hexBytes(text: String): ByteArray = text.replace(" ", "").chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+
+    @Test
+    fun theEqualizerIsWrittenAsTheNativeSetterWritesIt() {
+        val (s, reads) = opened()
+        assertTrue(reads.any { it.main == 0x13 && it.sub == 0x7D } && reads.any { it.main == 0x13 && it.sub == 0x7E })
+        // The descriptor of the native test (research/test_vectors.json): five bands, 6 dB each way, 60 Hz to 7.6 kHz, Q 1.
+        val descriptor = hexBytes("05 00 00 18 00 b4 00 00 10 00 18 02 ee 00 00 10 00 18 0b b8 00 00 10 00 18 2e e0 00 00 10 00 18 59 10 00 00 10 00")
+        s.feed(JabraPacket(9, 4, 1, JabraPacket.REPLY, 0x13, byteArrayOf(0x7D) + descriptor).bytes())
+        assertEquals(listOf(60, 250, 1000, 4000, 7600), s.eqBandsHz)
+        assertEquals(6.0, s.eqMaxDb, 0.0)
+        // Bass boost is 60 % and -33 % of 6 dB on the first two bands: the second case of the native vectors.
+        val bass = s.eqPresets.single { it.first == "BASS_BOOST" }.second
+        assertEquals(3.6, bass[0], 1e-9)
+        val frames = s.eqCurve(listOf(3.6, -1.98, 0.0, 0.0, 0.0))!!
+        // The equalizer is switched on first, then the bands go as the native setter wrote them.
+        assertEquals("7e01", JabraParser().feed(frames[0]).single().payload.hex())
+        assertEquals("7d05000000" + "00b400d8" + "1000" + "02eeff8a" + "1000" + "0bb8" + "0000" + "1000" + "2ee0" + "0000" + "1000" + "5910" + "0000" + "1000", JabraParser().feed(frames[1]).single().payload.hex())
+        val second = s.eqCurve(listOf(-3.6, 0.0, 0.0, 1.02, -1.2))!!.single()
+        assertEquals("7d05000000" + "00b4ff28" + "1000" + "02ee0000" + "1000" + "0bb80000" + "1000" + "2ee0003d" + "1000" + "5910ffb8" + "1000", JabraParser().feed(second).single().payload.hex())
+        // More than a band's maximum sends nothing.
+        assertNull(s.eqCurve(listOf(7.0, 0.0, 0.0, 0.0, 0.0)))
+        // A flat curve switches the equalizer off.
+        assertEquals("7e00", JabraParser().feed(s.eqCurve(listOf(0.0, 0.0, 0.0, 0.0, 0.0))!!.first()).single().payload.hex())
     }
 }

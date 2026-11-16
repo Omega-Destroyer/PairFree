@@ -45,7 +45,7 @@ These came from the owner and are not up for trade.
   alone, `BLUETOOTH_SCAN` with `neverForLocation` (owner, 2026-10-15): most JBL models take
   their settings over Bluetooth LE, and when their LE side does not answer on the paired
   address, the only way to find it is its advert (`docs/jbl/PROTOCOL.md` section 3). It is
-  asked for only when the user opens a JBL model, the scan lasts at most 10 s and keeps
+  asked for only when the user opens a JBL model (and, since the owner's 2026-11-15 answer that Bluetooth LE may be used for any vendor whenever its app needs it, a Sennheiser model that Smart Control opens only over LE), the scan lasts at most 10 s and keeps
   nothing, and connecting goes ahead without it where the direct way works. The owner allowed the
   same for QCY on 2026-10-18 ("still related to a Bluetooth permission"): QCY's earbuds are
   controlled over Bluetooth LE, and their advert names both the model and the LE side to connect to

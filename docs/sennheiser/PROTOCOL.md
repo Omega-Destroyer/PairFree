@@ -21,8 +21,8 @@ The two apps use four control protocols between them:
 
 | Protocol | Products | PairFree |
 |----------|----------|----------|
-| **GAIA v3** (Qualcomm's framework; vendors `0x001D` Qualcomm's and `0x0495` Sennheiser's own) | Accentum, Accentum Plus, Accentum True Wireless, CX 200, CX 200 Sports, CX Plus True Wireless (CX400II), CX 500, Momentum 4, Momentum Sport, Momentum True Wireless 3 and 4 (Smart Control); Momentum 5, Momentum True Wireless 5, HDB 630, HDR 275 / 255 (Smart Control Plus) | built (sections 3 to 4.8, 4.11); the CX 200, CX 200 Sports, CX Plus and CX 500 only over Bluetooth LE (section 6) |
-| **GAIA v2** (vendors `0x0494` and Qualcomm's `0x000A`) | CX 350BT, HD 250BT, HD 350BT, HD 450BT, HD 450SE, HD 458BT, IE 80S BT (the serial port); CX 400BT, Momentum True Wireless 1 and 2, CX 150 (Bluetooth LE only) | built for the serial ones (section 4.9); the LE ones are in the table and cannot be opened (section 6) |
+| **GAIA v3** (Qualcomm's framework; vendors `0x001D` Qualcomm's and `0x0495` Sennheiser's own) | Accentum, Accentum Plus, Accentum True Wireless, CX 200, CX 200 Sports, CX Plus True Wireless (CX400II), CX 500, Momentum 4, Momentum Sport, Momentum True Wireless 3 and 4 (Smart Control); Momentum 5, Momentum True Wireless 5, HDB 630, HDR 275 / 255 (Smart Control Plus) | built (sections 3 to 4.8, 4.11); the CX 200, CX 200 Sports, CX Plus and CX 500 over Bluetooth LE (section 3.1) |
+| **GAIA v2** (vendors `0x0494` and Qualcomm's `0x000A`) | CX 350BT, HD 250BT, HD 350BT, HD 450BT, HD 450SE, HD 458BT, IE 80S BT (the serial port); CX 400BT, Momentum True Wireless 1 and 2, CX 150 (Bluetooth LE only) | built (section 4.9); the CX 400BT and Momentum True Wireless 1 and 2 over Bluetooth LE (section 3.1) |
 | **Nautilus** (Sennheiser's own frame, CRC-8) | Momentum 3, PXC 550, PXC 550-II | built (section 4.10) |
 | Airoha RACE | Accentum Clip (AOWS1) | not built (section 6); checked: Smart Control Plus's Dart code sends only this product to its Airoha platform, and its RACE feature variants were found but their commands not traced |
 | Soundbars (Elmar over BLE; Wi-Fi) and the HDW 960 | AMBEO Soundbar | speakers are held back (owner, 2026-10-30) |
@@ -48,6 +48,16 @@ GAIA v2 headphones named above and for the Nautilus ones; Bluetooth LE only for 
 - **GAIA v2:** `FF`, version `01`, flags, the payload's length (no command header), the vendor (`0494`, or Qualcomm's `000A` for a few), the command and the payload; a response is the command with bit 15 set and
   its payload starts with a status byte (0 is success). The serial UUID is `a2129ff3-081b-4c45-8afe-469d9c4842eb` (the last letter differs from GAIA v3's).
 - **Nautilus:** see section 4.10.
+
+### 3.1 Bluetooth LE
+
+Owner, 2026-11-15: Bluetooth LE may be used for any vendor whenever its app needs it. The products Smart Control's `DeviceConfig` opens only over LE (CX 200, CX 200 Sports, CX Plus, CX 500, CX 400BT, Momentum True Wireless 1 and 2)
+use the service `FDCE` (the Momentum True Wireless 1: `63331337-23C1-11E5-B696-FEFF819CDC9F`) with the characteristics `63331338` write and `63331339` notify (the CX 200, CX 200 Sports, CX 400BT, Momentum True Wireless 1 and 2)
+or `6333133B` and `6333133C` (CX Plus and CX 500), all `-23C1-11E5-B696-FEFF819CDC9F`; `data/sennheiser/devices.json` and `gaia2.json` keep each. A packet is the vendor, the command word and the payload with no `FF` frame
+(`GattLink` carries it; the sessions add and take away the frame). PairFree connects to the classic address first and scans (`SennheiserFinder`: the services `FDCE`, `FCFE` and `63331337`, ten seconds, `BLUETOOTH_SCAN` asked when the user opens
+such a model) when that fails. The app's own bonding steps run when the device is not bonded: `RESET_REQ` (0) then `USER_ACTION_REQUIRED_REQ` (1) to the pairing characteristic `63331379`, the user presses the earbuds' buttons
+as the app's screen shows, and the encrypted data characteristic (`6333133D` or `6333133A`) is read every second until Android reports the bond, for a minute at most. checked: the order and the codes are the app's
+(`BlePairingScreenService.startBonding`, `BondingBLEEffects`); the earbuds' own answers on `63331379` (`PAIRING_ENABLED_TIMEOUT`, `BLE_PAIRING_DISABLED`...) are not acted on, and none of it has met a product.
 
 ## 4. Built
 
@@ -139,7 +149,7 @@ Accentum True Wireless, Momentum Sport, Momentum True Wireless 3 and 4.
 
 `DeviceList_GetPairedDeviceListSize` (`1400`), `GetOwnDeviceIndex` (`1407`), `GetDeviceInfo` (`1401`, index; the answer is index, priority, status and name), `Connect` (`1402`), `Disconnect` (`1403`) and `GetConnectionStatus` (`1404`;
 its notification `1484`). The status is 0 disconnected, 1 classic, 2 LE, 3 both, 128 a flag, 254 and 255 no device. The app reads from index 0 up to eight entries. PairFree offers connecting and disconnecting the devices that are
-not the phone itself, so the connection it holds is never cut. Deleting an entry (`1405`, `1406`) is not offered; checked: both commands exist in the product files and remove a pairing from the earbuds' list (section 6).
+not the phone itself, so the connection it holds is never cut. Deleting an entry (`1405`) is offered behind a confirmation, never the phone's own; the whole list (`1406`) is not offered; checked: it removes every pairing from the earbuds' list, and no screen of the app needs it.
 
 ### 4.8 The Momentum Sport's sensors
 
@@ -174,7 +184,7 @@ checked: the Momentum 3's `Eq3BandM3` writes three parameter groups with the kno
 The earbuds scan for broadcasts themselves (`Auracast_StartSourceScan` `2A23`, five seconds as the app asks; `StopSourceScan` `2A24`; the results are the notification `2AA0`; the status `2A25`) and are an assistant for the
 broadcast (BASS): `Auracast_AddSource` (`2A02`: the address type and address, the advertising set, the broadcast id, synchronise without past info, an unknown interval, one subgroup taking every stream and no metadata, as
 `BassAddSourceOperation` builds it), `RemoveSource` (`2A05`), `GetSourceIds` (`2A22`) and `GetReceiveState` (`2A21`, with the notification `2AA1`). Feature 21 is registered. Accentum True Wireless and Momentum True Wireless 4 from firmware
-5.13.1. PairFree lists broadcasts that need no code. `SennheiserMoreTest` builds each message from the app's own layout.
+5.13.1. A source that asks for a code gets a text line (`SetBroadcastCode` `2A04`: the source id and sixteen bytes). `SennheiserMoreTest` builds each message from the app's own layout.
 
 ## 5. Never sent
 
@@ -186,18 +196,14 @@ broadcast (BASS): `Auracast_AddSource` (`2A02`: the address type and address, th
 
 Each says what was read.
 
-- **Bluetooth LE only products** (the CX 200, CX 200 Sports, CX Plus and CX 500 of the table, GAIA v2's CX 400BT, Momentum True Wireless 1 and 2, and the CX 150): blocked: PairFree opens only the serial port, and these need Bluetooth LE
-  with a scan permission (`BLUETOOTH_SCAN`) the owner has allowed only for JBL and QCY, and the app's own bonding over the characteristic `63331379` (`RESET_REQ`, `USER_ACTION_REQUIRED_REQ`, the buttons pressed on the earbuds,
-  `DISABLE_CTKD`: the app turns cross-transport key derivation off, so the classic pairing gives no LE bond); checked: `DeviceConfig` (which products use which service, `FCFE` or `FDCE`), `BlePairingScreenService`
-  and the product files. A decision for the owner: allow the scan for Sennheiser.
 - **The Accentum Clip (Airoha RACE)**: not built: checked: Smart Control Plus sends it, and only it, to its Airoha platform; its sixteen RACE feature variants exist as classes (`AutoPowerOffRaceFeatureVariant`,
   `BatteryRaceFeatureVariant`, `Equalizer2RaceFeatureVariant`, `TouchControlsRaceFeatureVariant`...) but their constructors hold only the feature name and id (the auto power off is feature `0x12`); the commands they
   send are in `RaceClient` methods that were not traced, and the Java side only wraps Airoha's SDK. The next step is to trace each variant to its RACE command with `dartx.py` and port PairFree's own RACE code (`protocol.airoha`).
-- **Personalised sound's listening test**: not built: checked: section 4.5.
-- **Auracast broadcasts that need a code**: not built: checked: `Auracast_SetBroadcastCode` (`2A04`) takes a code of up to 16 characters the user types; PairFree's rows have no text field.
+- **Personalised sound's listening test**: blocked: it plays the app's own music stems (`bass.ogg`, `brk.ogg`, `full.ogg`, `rhythm.ogg`, `treble.ogg` in `res/raw`, 0.5 to 2 MB each) that the library's fitting presets and
+  fader maths are made for, and vendor audio cannot go in the repo (Hard rules); checked: section 4.5, the stems' names and sizes, and the library's exports.
+- **Auracast broadcast codes**: built (a text line for the source that asks for one, `Auracast_SetBroadcastCode` `2A04`, up to 16 characters padded with zero bytes).
 - **The equalizer presets stored on the earbuds** (`selectablePreset`, `userPresets` of `UserEQ_GetConfiguration`) and the Plus app's equalizer for its own products: checked: the first are counted in the
   configuration reply but no command in the product files names or applies them; the Plus-only products have no product file.
-- **Deleting a paired device** (`1405`, `1406`): not built: checked: both commands exist in the product files; PairFree's screens confirm only the power actions, and a confirmation for these is to be added.
 - **The voice assistant** (`VoiceUI_Selected_Assistant`) and **renaming** (`renameDeviceMinFwVersion`): checked: every product file sets `voiceAssistant_MinFwVersion` and `renameDeviceMinFwVersion` to 99.99.99, so the app
   itself never offers them.
 - **The IE 80S BT's and HD 458BT's equalizers, the Nautilus equalizer and acoustical settings**: section 4.9 and 4.10.

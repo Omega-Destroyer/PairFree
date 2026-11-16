@@ -74,13 +74,13 @@ def summary():
 
 def table():
     rows = []
-    ble = "Not tested. Bluetooth LE only: PairFree cannot open it yet"
+    ble = "Not tested. Bluetooth LE only"
     for m in models():
         if m["properties"] is None:
             text = "everything the product answers (no product file in either app)"
         else:
             text = shown(m)
-        status = "Tried: device report" if any((device_pages.ROOT / r).exists() for r in m.get("reports", [])) else ("Not tested. Bluetooth LE only: PairFree cannot open it yet" if m.get("ble_only") else "Not tested")
+        status = "Tried: device report" if any((device_pages.ROOT / r).exists() for r in m.get("reports", [])) else ("Not tested. Bluetooth LE only" if m.get("ble_only") else "Not tested")
         names = ", ".join(m["names"][:4]) + ("…" if len(m["names"]) > 4 else "")
         rows.append(f"<tr><td>{escape(m['name'])}</td><td>{escape(names)}</td><td>{escape(text)}</td><td>{status}</td></tr>")
     for p in gaia2():

@@ -1238,7 +1238,7 @@
     <string name="setting_sh_fit_note">Wear both earbuds and start. PairFree plays a steady low tone from the phone while the earbuds measure for about 25 seconds; keep the phone volume at a comfortable medium level and stay quiet.</string>
     <string name="setting_sh_peer_connect">Connect a paired device</string>
     <string name="setting_sh_peer_delete">Forget a paired device</string>
-    <string name="setting_sh_peer_delete_body">%1$s is removed from the earbuds' list of paired devices. Pair it again to use it.</string>
+    <string name="setting_sh_peer_delete_body">%1$s is removed from the list of paired devices that the earbuds keep. Pair it again to use it.</string>
     <string name="setting_sh_peer_delete_confirm">Forget</string>
     <string name="setting_sh_auracast_code_title">Broadcast code</string>
     <string name="setting_sh_auracast_code_send">Send the code</string>

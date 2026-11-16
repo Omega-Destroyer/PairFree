@@ -204,11 +204,15 @@ broadcast (BASS): `Auracast_AddSource` (`2A02`: the address type and address, th
 Each says what was read.
 
 - **The Accentum Clip (Airoha RACE)**: not built: checked: Smart Control Plus sends it, and only it, to its Airoha platform; its sixteen RACE feature variants exist as classes (`AutoPowerOffRaceFeatureVariant`,
-  `Equalizer2RaceFeatureVariant`, `TouchControlsRaceFeatureVariant`...) whose constructors hold only the feature name and an id (the auto power off is `0x12`). The Plus app holds the command numbers of Sennheiser's own commands for
-  these products as enums: battery level `011A`, battery type `0120`, battery protection `0130`/`0131`, eco mode `0132`/`0133`, in-case state `011F`, codec `0117`, voice prompt `0136`/`0137`, auto answer `013B`/`013C`, bass boost
+  `Equalizer2RaceFeatureVariant`, `TouchControlsRaceFeatureVariant`...) whose constructors hold only the feature name and an id (the auto power off is `0x12`). The Plus app holds the command numbers of Sennheiser's own commands
+  for these products as enums: battery level `011A`, battery type `0120`, battery protection `0130`/`0131`, eco mode `0132`/`0133`, in-case state `011F`, codec `0117`, voice prompt `0136`/`0137`, auto answer `013B`/`013C`, bass boost
   `0141`/`0140`, touch lock `0119`/`0118`, gesture config `012C`/`012B`, default gestures `012F`/`012E`, available functions `012D`, play sound `0122`/`0123`/`0124`, paired devices `0110` to `0116` and `010D`, serial `0106`, hardware
-  `0108`, firmware `011B`, reboot both earbuds `0152`, the Airoha agent query `0CD4`. No payload layout was found: the classes that parse them are named only in their `toString`, and tracing each one is the next step (the
-  numbers differ from Smart Control's, so the Momentum 5 and Momentum True Wireless 5 may use this set rather than Smart Control's, which a device report would show).
+  `0108`, firmware `011B`, reboot both earbuds `0152`, the Airoha agent query `0CD4`, factory reset `9500` (never sent). These are Airoha RACE command numbers, not GAIA words: as GAIA words their type bits would make `011A` a reply,
+  and `0CD4` is RACE's own range, so they do not belong to the Momentum 5 or Momentum True Wireless 5, which stay on GAIA v3 (their feature list in issue #47 is GAIA 3's). What was read of their payloads: a response parser exists per
+  command group (touch `D24EC8`, `D250F4`, `D25320`, `12C2904`, `12C2D1C`; peers `D231B8` to `D237FC`; firmware, hardware and serial `D22840`, `D22988`, `D22DCC`; battery, eco and protection `D25408` to `D259FC`), and the battery
+  protection and eco mode parsers take a response of at least two bytes (the first is the command's echo or status, the second the value, 0 off and 1 on) and fail with "Unexpected payload length" otherwise; the request builders
+  wrap the command in a generic object with a 0xFF response mask, and the RACE frame itself is built in a shared layer. The next step is to finish tracing those functions (the Dart code is obfuscated, Blutter left their bodies
+  empty, and `E:\Buildsesearch\sennheiser	ools	race.py` and `uses.py` summarise a function's strings, constants and calls) until each command's request and response bytes are known; building from the numbers alone would invent layouts.
 - **Personalised sound's listening test**: blocked: it plays the app's own music stems (`bass.ogg`, `brk.ogg`, `full.ogg`, `rhythm.ogg`, `treble.ogg` in `res/raw`, 0.5 to 2 MB each) that the library's fitting presets and
   fader maths are made for, and vendor audio cannot go in the repo (Hard rules); checked: section 4.5, the stems' names and sizes, and the library's exports.
 - **Auracast broadcast codes**: built (a text line for the source that asks for one, `Auracast_SetBroadcastCode` `2A04`, up to 16 characters padded with zero bytes).

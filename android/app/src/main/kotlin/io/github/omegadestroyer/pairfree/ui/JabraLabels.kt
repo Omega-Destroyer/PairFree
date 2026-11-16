@@ -427,6 +427,8 @@ internal object JabraLabels {
         "Tone_setting_Normal" to R.string.jb_opt_tone_setting_normal,
         "Tone_setting_Treble" to R.string.jb_opt_tone_setting_treble,
         "Voice" to R.string.jb_opt_voice,
+        "assistant" to R.string.jb_opt_assistant,
+        "disabled" to R.string.jb_opt_disabled,
         "off" to R.string.jb_opt_off,
         "on" to R.string.jb_opt_on,
         "spatial_both" to R.string.jb_opt_spatial_both,
@@ -434,6 +436,7 @@ internal object JabraLabels {
         "spatial_music" to R.string.jb_opt_spatial_music,
         "spatial_off" to R.string.jb_opt_spatial_off,
         "spatial_voice" to R.string.jb_opt_spatial_voice,
+        "spotify" to R.string.jb_opt_spotify,
     )
 
     val GROUP: Map<String, Int> = mapOf(
@@ -461,6 +464,13 @@ internal object JabraLabels {
 
     val FIXED_TITLE: Map<String, Int> = mapOf(
         "jb_anc_level" to R.string.jb_anc_level,
+        "jb_gaia_auto_answer" to R.string.jb_gaia_auto_answer,
+        "jb_gaia_auto_mute" to R.string.jb_gaia_auto_mute,
+        "jb_gaia_auto_pause" to R.string.jb_gaia_auto_pause,
+        "jb_gaia_button" to R.string.jb_gaia_button,
+        "jb_gaia_in_ear" to R.string.jb_gaia_in_ear,
+        "jb_gaia_sidetone" to R.string.jb_gaia_sidetone,
+        "jb_gaia_sidetone_level" to R.string.jb_gaia_sidetone_level,
         "jb_ht_level" to R.string.jb_ht_level,
         "jb_ht_mix" to R.string.jb_ht_mix,
         "jb_loop" to R.string.jb_loop,

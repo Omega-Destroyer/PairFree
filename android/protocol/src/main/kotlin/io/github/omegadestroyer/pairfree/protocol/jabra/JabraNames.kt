@@ -27,6 +27,8 @@ public class JabraNoise(public val anc: Boolean, public val transparency: Boolea
 
 /** From the snapshots' forms: the ambience command (named in the loop), the older noise command (`13/87`) or only HearThrough's switch (`13/76`); none for the rest. */
 public fun JabraVariant.noise(): JabraNoise {
+    // The GAIA models have no snapshot: the definition's flags and loop say what they have.
+    if (protocol == "gaia") return JabraNoise(anc = has("ffanc") || "anc" in noiseLoop, transparency = has("adjustable_ambience_mode") || "hearThrough" in noiseLoop)
     val profiles = JabraProfiles.ALL.filter { it.snapshot in snapshots }
     val settings = profiles.flatMap { p -> p.settings.mapNotNull { JabraSettings.BY_ID[it] } }
     if (profiles.any { "ambiencemodes" in it.caps }) return JabraNoise(anc = "anc" in noiseLoop || has("ffanc"), transparency = "hearThrough" in noiseLoop || has("adjustable_ambience_mode"))

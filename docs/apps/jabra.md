@@ -19,9 +19,9 @@ Each model shows only the settings it has:
 
 ## Jabra models
 
-PairFree knows 27 Jabra models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 34 Jabra models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
 
-Jabra support is read from Jabra Sound+ 5.22.0. It has not been tried with PairFree on any product yet. The models Sound+ drives through Qualcomm's GAIA (Elite 2, 3, 4, 5 and Connect 5t) are not covered yet.
+Jabra support is read from Jabra Sound+ 5.22.0. It has not been tried with PairFree on any product yet.
 
 The [full model list for Jabra on GitHub](https://github.com/Omega-Destroyer/PairFree/blob/main/docs/devices/jabra.md) shows what works on each one. If your model is not marked as tried, a device report from you adds it: see [how to help](https://github.com/Omega-Destroyer/PairFree#help-add-your-model).
 

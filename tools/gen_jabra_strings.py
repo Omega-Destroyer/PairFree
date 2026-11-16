@@ -178,9 +178,13 @@ GROUPS = {
 }
 # Options the session makes up (spatial sound's modes).
 EXTRA_OPTIONS = {
+    "assistant": "Voice assistant", "disabled": "Off", "spotify": "Spotify",
     "spatial_off": "Off", "spatial_voice": "In calls", "spatial_music": "In music", "spatial_both": "In calls and music", "spatial_head_tracking": "With head tracking",
 }
-FIXED_TITLES = {"jb_spotify": "Spotify one tap", "jb_spatial": "Spatial sound", "jb_ht_level": "HearThrough level", "jb_anc_level": "Noise cancelling level", "jb_ht_mix": "Hear music with HearThrough", "jb_loop": "Modes on the button"}
+FIXED_TITLES = {
+    "jb_gaia_in_ear": "On-head detection", "jb_gaia_auto_answer": "Answer when put on", "jb_gaia_auto_mute": "Mute when taken off", "jb_gaia_auto_pause": "Pause music when taken off",
+    "jb_gaia_sidetone": "Sidetone", "jb_gaia_sidetone_level": "Sidetone level", "jb_gaia_button": "Button",
+"jb_spotify": "Spotify one tap", "jb_spatial": "Spatial sound", "jb_ht_level": "HearThrough level", "jb_anc_level": "Noise cancelling level", "jb_ht_mix": "Hear music with HearThrough", "jb_loop": "Modes on the button"}
 
 
 def slug(text):

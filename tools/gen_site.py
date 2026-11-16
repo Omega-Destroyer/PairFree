@@ -192,7 +192,7 @@ BRANDS = [
             "Noise control (off, noise cancelling, HearThrough) with its levels, and the modes the button cycles through.",
             "The equalizer with Sound+'s presets, the button functions, sidetone and the voice prompt language.",
         ],
-        notes="Jabra support is read from Jabra Sound+ 5.22.0. It has not been tried with PairFree on any product yet. The models Sound+ drives through Qualcomm's GAIA (Elite 2, 3, 4, 5 and Connect 5t) are not covered yet.",
+        notes="Jabra support is read from Jabra Sound+ 5.22.0. It has not been tried with PairFree on any product yet.",
     ),
     dict(
         slug="oneplus", page="oneplus", name="OnePlus and OPPO", app="HeyMelody",

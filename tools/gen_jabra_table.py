@@ -35,7 +35,7 @@ def gnp(m):
 
 
 def summary():
-    return {"brand": "Jabra", "models": sum(1 for m in models() if gnp(m)), "tested": []}
+    return {"brand": "Jabra", "models": len(models()), "tested": []}
 
 
 def shown(m):
@@ -66,13 +66,24 @@ def shown(m):
     return ", ".join(dict.fromkeys(out))
 
 
+def shown_gaia(m):
+    """The models Sound+ drives through Qualcomm's GAIA: what the plugins offer, by the definition's flags."""
+    flags = set(m["variants"][0]["flags"])
+    out = ["battery"]
+    if "ffanc" in flags or "adjustable_ambience_mode" in flags:
+        out.append("noise control")
+    if "ambience_mode_loop" in flags:
+        out.append("modes on the button")
+    if "customize_equalizer" in flags:
+        out.append("equalizer")
+    out += ["sidetone", "on-head detection", "answer, mute and pause when put on or taken off", "button"]
+    return ", ".join(out)
+
+
 def table():
     rows = []
     for m in models():
-        if gnp(m):
-            text, status = shown(m), "Not tested"
-        else:
-            text, status = "Not covered yet (Qualcomm's GAIA, not Jabra's own protocol)", "Not covered"
+        text, status = (shown(m) if gnp(m) else shown_gaia(m)), "Not tested"
         pids = ", ".join(str(v["pid"]) for v in m["variants"])
         rows.append(f"<tr><td>{escape(m['name'])}</td><td>{m['kind']}</td><td>{pids}</td><td>{escape(text)}</td><td>{status}</td></tr>")
     return "\n".join([START, "<table>", "<tr><th>Model</th><th>Kind</th><th>Product id</th><th>Shown</th><th>Status</th></tr>", *rows, "</table>", END])

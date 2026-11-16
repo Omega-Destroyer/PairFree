@@ -46,7 +46,7 @@ public class Gaia3Packet(public val vendor: Int, public val word: Int, public va
  * Cuts what the channel gives into [Gaia3Packet]s of the two vendors Smart Control accepts (the app drops anything else, as it drops versions other than 3 and 4
  * and flags other than the checksum and length bits). Fragmented and joined frames, a checksum when the flag says so, and resynchronising after bad data.
  */
-public class Gaia3Parser {
+public class Gaia3Parser(private val vendors: Set<Int> = setOf(0x0495, 0x001D)) {
     private var pending = ByteArray(0)
 
     public fun feed(bytes: ByteArray): List<Gaia3Packet> {
@@ -82,7 +82,7 @@ public class Gaia3Parser {
             val at = 3 + lengthBytes
             val vendor = ((pending[at].toInt() and 0xFF) shl 8) or (pending[at + 1].toInt() and 0xFF)
             val word = ((pending[at + 2].toInt() and 0xFF) shl 8) or (pending[at + 3].toInt() and 0xFF)
-            if (vendor == 0x0495 || vendor == 0x001D) out += Gaia3Packet(vendor, word, pending.copyOfRange(head, head + length))
+            if (vendor in vendors) out += Gaia3Packet(vendor, word, pending.copyOfRange(head, head + length))
             skip(size)
         }
         return out

@@ -211,6 +211,17 @@ a name or contact data, or are firmware traffic (hard rules, and the owner's no-
 blocked: the three-byte spatial sound reply (`SPATIAL_SOUND`: call, media and Dolby bytes) and the call tone setting (`CONFIG_EQUALIZER`, handled by the app itself); checked: both layouts in
 `research/gnp_commands.json`, which name the fields but give no code table. The one-byte reply (VSS mode, codes 0 to 4) is built.
 
+**GAIA session (2026-11-16).** `JabraGaiaSession` covers the seven GAIA models from the plugins' own parsers (Sound+ 5.22.0, `V3*Plugin`). The conversation opens with feature `01/01` (a flag byte, then a feature id and
+version for each); the notification registration (`02/01` with the feature id) follows for the battery, sound modes, HearThrough, sidetone and in-ear detection, and each feature present is read once. Battery
+is `[left, right]` or `[left, right, case]` (the case only when 0 to 100). Sound mode `0A/04` is off 0, ANC 1, HearThrough 2; the loop `0A/06` is one to three distinct ids of those, not the GNP's ordinals.
+HearThrough's reads carry a dummy byte; its levels run strongest first (the plugin maps a level L to the wire value 4 minus L), its mix is 1 mix, 2 no mix. The equalizer reads the maximum gains (`07/02`: first
+band, last band, one gain in dB for each) and then the bands from Qualcomm's music plugin (`001D`, feature 5, command 5, same range, seven bytes a band) and writes gains with command 6 (signed 16 bits in 1/60 dB,
+float times 60 truncated toward zero), as the plugin classes do. The mute reminder is not written: blocked: the plugin's own setter calls the auto-mute operation (6) instead of operation 10; checked:
+`V3InEarDetectionPlugin.setMuteReminderState`, `gaia_commands.json`. blocked: the framing version and any checksum for Jabra's GAIA channel (PairFree sends version 3, no checksum, as the other GAIA v3 brands do); checked:
+the research notes on `zi4`/`d3a`, which say the sender normally disables the checksum and that version 4 allows extended payloads, and no recording. blocked: the leveled noise cancelling's direction (is 0 the strongest, as
+on GNP?), FF ANC's gain and balance (`0A/02` and `0A/03`), MyControls' table (`0D`) and the voice language and assistant plugins; checked: the plugins' parsers, which give the bytes but no meaning for the values, and
+`GaiaDeviceAmbienceModeHandler`, whose body did not decompile. The Sound tab's presets are the six Sound+ percentages of each band's own maximum.
+
 ## Checks for this research commit
 
 The repository Python suite passed: **141 tests** (`python -m unittest discover -s tools`). A separate read-only research validator checked all JSON, every profile/catalog/setting reference against the decoded forms, model coverage, command ranges, the 12 native framing fixtures and four native EQ cases, and documentation links. Its script is `E:\Builds\research\jabra-2026-11-09\validate_research.py`. These checks validate the documentation/data and encoder observations; they are not device acceptance tests. No Android production code changed, so no Android build is claimed.

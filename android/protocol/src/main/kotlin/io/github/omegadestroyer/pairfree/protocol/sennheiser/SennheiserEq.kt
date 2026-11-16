@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.sennheiser
 
+import io.github.omegadestroyer.pairfree.protocol.PMath
+
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10
@@ -44,10 +46,10 @@ public class SennheiserShelfEq(
 
 /**
  * Smart Control 4.9.4's equalizer arithmetic, ported line by line from its JavaScript (`Eq5BandGen1`, `Eq3Band`, `EqKnobValuesCoder`): what the earbuds are told for a
- * set of band gains, and what the earbuds' answers say the gains are. JavaScript's rounding (`Math.round` is half up) and truncation (`| 0`, the 16-bit setters) are kept.
+ * set of band gains, and what the earbuds' answers say the gains are. JavaScript's rounding (`PMath.round` is half up) and truncation (`| 0`, the 16-bit setters) are kept.
  */
 public object SennheiserEq {
-    /** `Math.round`. */
+    /** `PMath.round`. */
     private fun round(x: Double): Double = floor(x + 0.5)
 
     /** What `Eq5BandGen1.getGainConfiguration` gives: the level shift in dB, the master gain and the four shelf gains. */
@@ -174,37 +176,37 @@ public object SennheiserEq {
     }
 
     private fun lowShelf(f: Double, gainDb: Double, q: Double, fs: Double): DoubleArray {
-        val a = 2 * Math.PI * f / fs
-        val o = Math.pow(10.0, gainDb / 40)
-        val s = StrictMath.sin(a) / (2 * q)
-        val c = o * (o + 1 - (o - 1) * StrictMath.cos(a) + 2 * Math.sqrt(o) * s)
-        val d = 2 * o * (o - 1 - (o + 1) * StrictMath.cos(a))
-        val l = o * (o + 1 - (o - 1) * StrictMath.cos(a) - 2 * Math.sqrt(o) * s)
-        val u = o + 1 + (o - 1) * StrictMath.cos(a) + 2 * Math.sqrt(o) * s
-        val v = -2 * (o - 1 + (o + 1) * StrictMath.cos(a))
-        val p = o + 1 + (o - 1) * StrictMath.cos(a) - 2 * Math.sqrt(o) * s
+        val a = 2 * PMath.PI * f / fs
+        val o = PMath.pow(10.0, gainDb / 40)
+        val s = PMath.sin(a) / (2 * q)
+        val c = o * (o + 1 - (o - 1) * PMath.cos(a) + 2 * PMath.sqrt(o) * s)
+        val d = 2 * o * (o - 1 - (o + 1) * PMath.cos(a))
+        val l = o * (o + 1 - (o - 1) * PMath.cos(a) - 2 * PMath.sqrt(o) * s)
+        val u = o + 1 + (o - 1) * PMath.cos(a) + 2 * PMath.sqrt(o) * s
+        val v = -2 * (o - 1 + (o + 1) * PMath.cos(a))
+        val p = o + 1 + (o - 1) * PMath.cos(a) - 2 * PMath.sqrt(o) * s
         return doubleArrayOf(c / u, d / u, l / u, v / u, p / u)
     }
 
     private fun highShelf(f: Double, gainDb: Double, q: Double, fs: Double): DoubleArray {
-        val a = 2 * Math.PI * f / fs
-        val o = Math.pow(10.0, gainDb / 40)
-        val s = StrictMath.sin(a) / (2 * q)
-        val c = o * (o + 1 + (o - 1) * StrictMath.cos(a) + 2 * Math.sqrt(o) * s)
-        val d = -2 * o * (o - 1 + (o + 1) * StrictMath.cos(a))
-        val l = o * (o + 1 + (o - 1) * StrictMath.cos(a) - 2 * Math.sqrt(o) * s)
-        val u = o + 1 - (o - 1) * StrictMath.cos(a) + 2 * Math.sqrt(o) * s
-        val v = 2 * (o - 1 - (o + 1) * StrictMath.cos(a))
-        val p = o + 1 - (o - 1) * StrictMath.cos(a) - 2 * Math.sqrt(o) * s
+        val a = 2 * PMath.PI * f / fs
+        val o = PMath.pow(10.0, gainDb / 40)
+        val s = PMath.sin(a) / (2 * q)
+        val c = o * (o + 1 + (o - 1) * PMath.cos(a) + 2 * PMath.sqrt(o) * s)
+        val d = -2 * o * (o - 1 + (o + 1) * PMath.cos(a))
+        val l = o * (o + 1 + (o - 1) * PMath.cos(a) - 2 * PMath.sqrt(o) * s)
+        val u = o + 1 - (o - 1) * PMath.cos(a) + 2 * PMath.sqrt(o) * s
+        val v = 2 * (o - 1 - (o + 1) * PMath.cos(a))
+        val p = o + 1 - (o - 1) * PMath.cos(a) - 2 * PMath.sqrt(o) * s
         return doubleArrayOf(c / u, d / u, l / u, v / u, p / u)
     }
 
     private fun peakFilter(f: Double, gainDb: Double, q: Double, fs: Double): DoubleArray {
-        val a = 2 * Math.PI * f / fs
-        val o = Math.pow(10.0, gainDb / 40)
-        val s = StrictMath.sin(a) / (2 * q)
+        val a = 2 * PMath.PI * f / fs
+        val o = PMath.pow(10.0, gainDb / 40)
+        val s = PMath.sin(a) / (2 * q)
         val c = 1 + s * o
-        val d = -2 * StrictMath.cos(a)
+        val d = -2 * PMath.cos(a)
         val l = 1 - s * o
         val u = 1 + s / o
         val p = 1 - s / o
@@ -226,9 +228,9 @@ public object SennheiserEq {
             while (maxOf(abs(b[0]), abs(b[1]), abs(b[2])) > 1.9) { b[0] *= .5; b[1] *= .5; b[2] *= .5; i *= 2 }
             n = a + b + doubleArrayOf(i)
         } else {
-            val lo = lowShelf(SennheiserEqTables.THREE_BAND_LOWER_MID_FREQUENCY.toDouble(), t[0] - t[1], Math.sqrt(.5), 44100.0)
-            val hi = highShelf(SennheiserEqTables.THREE_BAND_UPPER_MID_FREQUENCY.toDouble(), t[2] - t[1], Math.sqrt(.5), 44100.0)
-            n = lo + hi + doubleArrayOf(Math.pow(10.0, t[1] / 20))
+            val lo = lowShelf(SennheiserEqTables.THREE_BAND_LOWER_MID_FREQUENCY.toDouble(), t[0] - t[1], PMath.sqrt(.5), 44100.0)
+            val hi = highShelf(SennheiserEqTables.THREE_BAND_UPPER_MID_FREQUENCY.toDouble(), t[2] - t[1], PMath.sqrt(.5), 44100.0)
+            n = lo + hi + doubleArrayOf(PMath.pow(10.0, t[1] / 20))
         }
         val low = n.copyOfRange(0, 5)
         val high = n.copyOfRange(5, 10)
@@ -237,7 +239,7 @@ public object SennheiserEq {
         var s = maxOf(abs(high[0]), abs(high[1]), abs(high[2]))
         while (o > 1.9) { low[0] *= .5; low[1] *= .5; low[2] *= .5; master *= 2; o = maxOf(abs(low[0]), abs(low[1]), abs(low[2])) }
         while (s > 1.9) { high[0] *= .5; high[1] *= .5; high[2] *= .5; master *= 2; s = maxOf(abs(high[0]), abs(high[1]), abs(high[2])) }
-        val scale = Math.pow(2.0, 30.0)
+        val scale = PMath.pow(2.0, 30.0)
         fun int32(x: Double): Long = truncate(x).toLong().toInt().toLong()
         var c = 1
         while (master >= 1.9) { c += 1; master *= .5 }

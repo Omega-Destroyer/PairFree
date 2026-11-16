@@ -72,7 +72,7 @@ public class OneplusHearingTest(private val frame: (command: Int, payload: IntAr
             data += LEVELS_DB[levels[i]] and 0xFF
         }
         for (shift in intArrayOf(24, 16, 8, 0)) data += (uid ushr shift) and 0xFF
-        data += name.toByteArray().map { it.toInt() and 0xFF }
+        data += name.encodeToByteArray().map { it.toInt() and 0xFF }
         return listOf(
             frame(DETECT, intArrayOf(MODE_PAUSE)),
             frame(DETECT, data.toIntArray()),

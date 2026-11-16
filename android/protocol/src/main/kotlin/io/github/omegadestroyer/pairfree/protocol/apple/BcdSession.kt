@@ -1,5 +1,8 @@
 package io.github.omegadestroyer.pairfree.protocol.apple
 
+import io.github.omegadestroyer.pairfree.protocol.toHex2
+import io.github.omegadestroyer.pairfree.protocol.toHex
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -25,7 +28,7 @@ public class BcdFrame(public val sequence: Int, public val command: Int, public 
 
     override fun hashCode(): Int = ((sequence * 31 + command) * 31 + ack.hashCode()) * 31 + payload.contentHashCode()
 
-    override fun toString(): String = if (ack) "BcdFrame(ack $sequence)" else "BcdFrame(seq $sequence, ${command.toString(16).padStart(4, '0')}, ${payload.joinToString("") { "%02x".format(it) }})"
+    override fun toString(): String = if (ack) "BcdFrame(ack $sequence)" else "BcdFrame(seq $sequence, ${command.toString(16).padStart(4, '0')}, ${payload.joinToString("") { it.toHex2() }})"
 
     public companion object {
         /** SAE J1850 CRC-8 as the library computes it: table lookup, polynomial 1D, start 0, no final inversion. */
@@ -152,7 +155,7 @@ public class BcdSession(override val model: AppleModel?) : BeatsControl {
 
     override val answers: Map<String, Int?> get() = mapOf("listening_mode" to listening, "auto_answer" to autoAnswer)
 
-    override val reportLines: List<String> get() = listOf("Product id:      ${productId?.let { "%04x".format(it) } ?: "unknown"}")
+    override val reportLines: List<String> get() = listOf("Product id:      ${productId?.let { it.toHex(4) } ?: "unknown"}")
 
     private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 

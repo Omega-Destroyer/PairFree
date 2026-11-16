@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.bose
 
+import io.github.omegadestroyer.pairfree.protocol.sortedValues
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
@@ -60,7 +62,7 @@ public class BoseSession : FitTest {
     private var spatial: Int? = null
     private var currentMode: Int? = null
     private var settingsConfig: ByteArray? = null
-    private val modes = sortedMapOf<Int, Mode>()
+    private val modes = mutableMapOf<Int, Mode>()
     private val outbox = mutableListOf<BosePacket>()
     private val flags = mutableMapOf<String, Boolean>()
     private var alerts: Int? = null
@@ -328,7 +330,7 @@ public class BoseSession : FitTest {
         )
 
     private fun noiseRows(): List<Setting> = buildList {
-        val listed = modes.values.filter { it.listed }
+        val listed = modes.sortedValues().filter { it.listed }
         val current = currentMode
         if (listed.isNotEmpty() && current != null) {
             add(Setting.Choice("audio_mode", listed.firstOrNull { it.index == current }?.let(::optionOf), listed.map(::optionOf)))
@@ -363,7 +365,7 @@ public class BoseSession : FitTest {
     private fun actionName(id: Int): String = ACTIONS[id] ?: "other_$id"
 
     /** A mode as a choice: its name, with its index where two share a name. */
-    private fun optionOf(m: Mode): String = if (modes.values.count { it.listed && it.name == m.name } > 1) "${m.name} (${m.index})" else m.name
+    private fun optionOf(m: Mode): String = if (modes.sortedValues().count { it.listed && it.name == m.name } > 1) "${m.name} (${m.index})" else m.name
 
     private fun group(key: String, tab: SettingTab, settings: List<Setting>) = settings.takeIf { it.isNotEmpty() }?.let { SettingGroup(key, tab, it) }
 
@@ -451,12 +453,12 @@ public class BoseSession : FitTest {
                         BosePacket.setGet(BoseFunction.SETTINGS_TEAMS_BUTTON_MODE, v)
                     }
                     "bose_default_mode" -> {
-                        val mode = modes.values.firstOrNull { it.listed && optionOf(it) == change.option } ?: return null
+                        val mode = modes.sortedValues().firstOrNull { it.listed && optionOf(it) == change.option } ?: return null
                         defaultMode = mode.index
                         BosePacket.setGet(BoseFunction.AUDIO_MODES_DEFAULT_MODE, mode.index)
                     }
                     "audio_mode" -> {
-                        val mode = modes.values.firstOrNull { it.listed && optionOf(it) == change.option } ?: return null
+                        val mode = modes.sortedValues().firstOrNull { it.listed && optionOf(it) == change.option } ?: return null
                         currentMode = mode.index
                         // The mode, then no voice prompt.
                         BosePacket.start(BoseFunction.AUDIO_MODES_CURRENT_MODE, mode.index, 0)

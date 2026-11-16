@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.qcy
 
+import io.github.omegadestroyer.pairfree.protocol.sortedByKey
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.GattEnvelope
@@ -291,13 +293,14 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
                 }
                 JieliWire.ADV_KEY_SETTINGS -> {
                     // Triples of earbud (1 left, 2 right), gesture (1 tap, 2 double, 3 triple, 4, 5 hold) and action (127 is none), as QCY's key numbers.
-                    val table = sortedMapOf<Int, Int>()
+                    val unsorted = mutableMapOf<Int, Int>()
                     for (at in 0 until v.size / 3) {
                         val side = v[at * 3].toInt() and 0xFF
                         val gesture = v[at * 3 + 1].toInt() and 0xFF
                         val action = v[at * 3 + 2].toInt() and 0xFF
-                        if (side in 1..2 && gesture in 1..5) table[gesture * 2 - 2 + side] = if (action == KEY_NONE) 0 else action
+                        if (side in 1..2 && gesture in 1..5) unsorted[gesture * 2 - 2 + side] = if (action == KEY_NONE) 0 else action
                     }
+                    val table = unsorted.sortedByKey()
                     keyTable = keyTable + table
                     entries += QcyEntry(QcyItem.KEY_FUNCTION, table.flatMap { (k, a) -> listOf(k.toByte(), a.toByte()) }.toByteArray())
                 }

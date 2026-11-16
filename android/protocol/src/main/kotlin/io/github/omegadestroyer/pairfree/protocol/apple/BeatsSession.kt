@@ -1,5 +1,8 @@
 package io.github.omegadestroyer.pairfree.protocol.apple
 
+import io.github.omegadestroyer.pairfree.protocol.toHex2
+import io.github.omegadestroyer.pairfree.protocol.toHex
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -85,9 +88,9 @@ public class BeatsSession(override val model: AppleModel?) : BeatsControl {
 
     override val reportLines: List<String>
         get() = listOf(
-            "Product id:      ${productId?.let { "%04x".format(it) } ?: "unknown"}",
+            "Product id:      ${productId?.let { it.toHex(4) } ?: "unknown"}",
             "Battery reply (5 bytes), as hex:",
-            "  ${batteryData?.joinToString(" ") { "%02x".format(it) } ?: "none yet"}",
+            "  ${batteryData?.joinToString(" ") { it.toHex2() } ?: "none yet"}",
         )
 
     /** Reads again the values the Beats announce changes of. */

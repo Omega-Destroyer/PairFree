@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.soundcore
 
+import io.github.omegadestroyer.pairfree.protocol.toHex2
+
 /**
  * What PairFree remembers on the phone about the sounds it has prepared for a Sleep A30 (issue #23): a catalogue of prepared sounds, each with the media ID
  * written in its file, and which sound each earbud slot was last given. Two files with the same encoded audio and sound type are the same sound: they share
@@ -107,7 +109,7 @@ internal object Sha256 {
         0x748f82ee.toInt(), 0x78a5636f.toInt(), 0x84c87814.toInt(), 0x8cc70208.toInt(), 0x90befffa.toInt(), 0xa4506ceb.toInt(), 0xbef9a3f7.toInt(), 0xc67178f2.toInt(),
     )
 
-    fun hex(data: ByteArray): String = digest(data).joinToString("") { "%02x".format(it) }
+    fun hex(data: ByteArray): String = digest(data).joinToString("") { it.toHex2() }
 
     fun digest(data: ByteArray): ByteArray {
         val h = intArrayOf(0x6a09e667.toInt(), 0xbb67ae85.toInt(), 0x3c6ef372.toInt(), 0xa54ff53a.toInt(), 0x510e527f.toInt(), 0x9b05688c.toInt(), 0x1f83d9ab.toInt(), 0x5be0cd19.toInt())

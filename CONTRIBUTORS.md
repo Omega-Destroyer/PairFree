@@ -39,7 +39,7 @@ The project's own readings come from its owner's SOUNDPEATS H3 and Air5 Pro+ and
 
 | Who | What |
 |-----|------|
-| [@Onlineraider](https://github.com/Onlineraider) | The Soundcore Liberty 4 Pro (A3954) settings: its sound modes, spatial audio, easy chat, case features and language, auto power off and volume limit rows ([pull request #42](https://github.com/Omega-Destroyer/PairFree/pull/42), merged with the author's commits and corrected against the Soundcore app) |
+| [@Onlineraider](https://github.com/Onlineraider) | The Soundcore Liberty 4 Pro (A3954) settings: its sound modes, spatial audio, easy chat, case features and language, auto power off and volume limit rows ([pull request #42](https://github.com/Omega-Destroyer/PairFree/pull/42), merged with the author's commits and corrected against the Soundcore app); the noise slider's direction on a real pair, with a screen recording ([#50](https://github.com/Omega-Destroyer/PairFree/issues/50)) |
 | [@azmifaisal01](https://github.com/azmifaisal01) | Said the Soundcore Life Dot 3i works ([#7](https://github.com/Omega-Destroyer/PairFree/issues/7)); counted as tried once a device report arrives |
 | [@thomas2403](https://github.com/thomas2403) | The Sony WF-1000XM5 crash on connecting ([#2](https://github.com/Omega-Destroyer/PairFree/issues/2)), fixed in 0.4.0 and confirmed |
 | [@upt8543-eng](https://github.com/upt8543-eng) | The request for a 2x1 widget ([#12](https://github.com/Omega-Destroyer/PairFree/issues/12)), which became the home screen widget in 0.8.0 |

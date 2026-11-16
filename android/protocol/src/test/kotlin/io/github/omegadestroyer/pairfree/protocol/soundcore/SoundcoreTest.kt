@@ -630,14 +630,22 @@ class SoundcoreModelSessionTest {
         assertNotNull(rows["sc_wearing_detection"])
 
         fun body(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
-        // Noise cancelling is the low half of the slider, strongest at 1; the app writes five bytes (the last is 0xFF).
-        assertEquals("0681:00050000", body(SettingChange.Choice("a3954_ambient_mode", "anc")))
-        assertEquals("0681:00040000", body(SettingChange.Level("a3954_anc_strength", 2)))
-        assertEquals("0681:01070000", body(SettingChange.Choice("a3954_ambient_mode", "transparency")))
-        assertEquals("0681:010b0000", body(SettingChange.Level("a3954_transparency_strength", 5)))
-        assertEquals("0681:010b0001", body(SettingChange.Toggle("a3954_wind_noise", true)))
+        // Noise cancelling is the high half of the slider and transparency the low half, as a real pair takes them (issue #50); the
+        // app writes five bytes (the last is 0xFF).
+        assertEquals("0681:00070000", body(SettingChange.Choice("a3954_ambient_mode", "anc")))
+        assertEquals("0681:00080000", body(SettingChange.Level("a3954_anc_strength", 2)))
+        assertEquals("0681:01050000", body(SettingChange.Choice("a3954_ambient_mode", "transparency")))
+        assertEquals("0681:01010000", body(SettingChange.Level("a3954_transparency_strength", 5)))
+        assertEquals("0681:01010001", body(SettingChange.Toggle("a3954_wind_noise", true)))
         val frame = session.frames(session.change(SettingChange.Toggle("a3954_wind_noise", true))!!).single()
-        assertEquals("010b0001ff", frame.copyOfRange(9, 14).hex(), "the app's fifth byte")
+        assertEquals("01010001ff", frame.copyOfRange(9, 14).hex(), "the app's fifth byte")
+        // The level row stays while its mode is on, whatever slider the earbuds report (issue #50: it vanished when they moved it).
+        fun level(key: String) = session.groups.flatMap { it.settings }.firstOrNull { it.key == key }
+        assertEquals(Setting.Level("a3954_transparency_strength", 5, 1, 5), level("a3954_transparency_strength"))
+        session.receive(SoundcorePacket(SoundcoreCommand.SOUND_MODES, byteArrayOf(1, 9, 0, 0)))
+        assertNotNull(level("a3954_transparency_strength"), "shown even with the slider on the other side")
+        session.receive(SoundcorePacket(SoundcoreCommand.SOUND_MODES, byteArrayOf(1, 3, 0, 0)))
+        assertEquals(Setting.Level("a3954_transparency_strength", 3, 1, 5), level("a3954_transparency_strength"))
         // The limit goes with its third byte as reported; the switch and the wait time keep the byte next to them.
         assertEquals("2082:015500", body(SettingChange.Level("a3954_volume_limit_db", 85)))
         assertEquals("2082:005500", body(SettingChange.Toggle("a3954_volume_limit", false)))

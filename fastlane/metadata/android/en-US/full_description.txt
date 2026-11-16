@@ -6,7 +6,7 @@ Why PairFree:
 • Nothing leaves your phone unless you share it yourself, such as a device report or an equalizer profile. No ads, no analytics, no crash reports
 • One app for every brand: the same screens, instead of one vendor app each
 • Few permissions: Bluetooth for earbuds you have already paired, and notifications for the optional status notification. For some LE-only models (JBL, QCY, Sennheiser), finding nearby devices, asked for only when you open one and never used for your location. No location, no contacts
-• Small and quick: about 3 MB
+• Small and quick: about 6 MB
 • Open source (GPL-3.0), with every protocol documented and tested in its repository
 • Your equalizer as files: save, export and share your own curves
 • Translations: a language picker, and a new language is one file added by pull request (right-to-left languages are mirrored)

@@ -1,0 +1,42 @@
+{
+  "_about": "Sketchbook (docs/DESIGN.md, Looks): light, friendly, hand-drawn. The first look that changes more than colours: its own fonts, 2 px outlines with corners that are never quite alike, a hard shadow under panels and buttons, chosen secondary choices filled with peach, and the device drawings as cartoons, a flat teal fill set off from a heavier line.",
+  "name": "Sketchbook",
+  "order": 4,
+  "light": {
+    "background": "#EEF3EF",
+    "panel": "#FBFCFA",
+    "raised": "#FFFFFF",
+    "hairline": "#C5D5CF",
+    "text": "#33423F",
+    "secondary_text": "#5B6B67",
+    "label": "#5B6B67",
+    "accent": "#2B7670",
+    "on_accent": "#FFFFFF",
+    "destructive": "#A4472E",
+    "outline": "#4F625E",
+    "shadow": "#C5D5CF",
+    "highlight": "#F2B8A0",
+    "art_fill": "#D6E9E5",
+    "art_accent": "#F2B8A0"
+  },
+  "type": {
+    "text": "nunito",
+    "headings": "fredoka",
+    "numbers": "nunito",
+    "label_caps": false
+  },
+  "shape": {
+    "hairline": 2,
+    "corner": 14,
+    "small_corner": 10,
+    "panel_border": true,
+    "uneven": 0.3,
+    "shadow": 3,
+    "selected_fill": true
+  },
+  "art": {
+    "style": "cartoon",
+    "stroke": 1.5,
+    "offset": 2.5
+  }
+}

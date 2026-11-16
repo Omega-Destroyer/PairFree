@@ -29,7 +29,7 @@ import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
 import io.github.omegadestroyer.pairfree.protocol.offers
 import io.github.omegadestroyer.pairfree.status.StatusUi
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
 
 /** Wait this long after the last change of a slider or stepper before sending it. */
@@ -55,11 +55,11 @@ internal fun DeviceScreen(
     var ldacDialog by remember { mutableStateOf(false) }
     var copied by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val c = Studio.colors
+    val c = Look.colors
 
     TabContent {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(device.name, style = Studio.type.title)
+            Text(device.name, style = Look.type.title)
             state.firmware?.let {
                 Label(stringResource(R.string.firmware, it.version))
                 Label(it.text)
@@ -95,7 +95,7 @@ internal fun DeviceScreen(
                     )
                 }
                 if (model?.ldacOrMultipoint == true) {
-                    Text(stringResource(R.string.ldac_or_multipoint), style = Studio.type.small, color = c.secondaryText)
+                    Text(stringResource(R.string.ldac_or_multipoint), style = Look.type.small, color = c.secondaryText)
                 }
             }
         }
@@ -103,8 +103,8 @@ internal fun DeviceScreen(
         if (onSleepSounds != null) {
             Panel {
                 Label(stringResource(R.string.sleep_upload_title))
-                Text(stringResource(R.string.sleep_upload_about), style = Studio.type.small, color = c.secondaryText)
-                StudioButton(stringResource(R.string.sleep_upload_open), onSleepSounds, Modifier.fillMaxWidth())
+                Text(stringResource(R.string.sleep_upload_about), style = Look.type.small, color = c.secondaryText)
+                AppButton(stringResource(R.string.sleep_upload_open), onSleepSounds, Modifier.fillMaxWidth())
             }
         }
 
@@ -112,16 +112,16 @@ internal fun DeviceScreen(
             // Earbuds without a fit test of their own can still use JBL's tone check (PairFree's version, for every brand).
             Panel {
                 Label(stringResource(R.string.ear_tips))
-                Text(stringResource(R.string.seal_check_about), style = Studio.type.small, color = c.secondaryText)
-                StudioButton(stringResource(R.string.seal_check_open), onSealCheck, Modifier.fillMaxWidth())
+                Text(stringResource(R.string.seal_check_about), style = Look.type.small, color = c.secondaryText)
+                AppButton(stringResource(R.string.seal_check_open), onSealCheck, Modifier.fillMaxWidth())
             }
         }
 
         if (state.hasFitTest) {
             Panel {
                 Label(stringResource(R.string.ear_tips))
-                Text(stringResource(R.string.fit_test_about), style = Studio.type.small, color = c.secondaryText)
-                StudioButton(stringResource(R.string.fit_test_open), onFitTest, Modifier.fillMaxWidth())
+                Text(stringResource(R.string.fit_test_about), style = Look.type.small, color = c.secondaryText)
+                AppButton(stringResource(R.string.fit_test_open), onFitTest, Modifier.fillMaxWidth())
             }
         }
 
@@ -131,10 +131,10 @@ internal fun DeviceScreen(
                 val draining = state.switch(Command.WATER_DRAIN) == true
                 Text(
                     stringResource(if (draining) R.string.water_draining else R.string.water_drain_about),
-                    style = Studio.type.small,
+                    style = Look.type.small,
                     color = c.secondaryText,
                 )
-                StudioButton(
+                AppButton(
                     stringResource(R.string.water_drain_start),
                     { actions.set(Command.WATER_DRAIN, 1) },
                     Modifier.fillMaxWidth(),
@@ -165,11 +165,11 @@ internal fun DeviceScreen(
         if (finds.isNotEmpty()) {
             Panel {
                 Label(stringResource(R.string.find_earbuds))
-                Text(stringResource(R.string.find_warning), style = Studio.type.small, color = c.secondaryText)
+                Text(stringResource(R.string.find_warning), style = Look.type.small, color = c.secondaryText)
                 Physical { Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     for ((command, side) in finds) {
                         val beeping = state.switch(command) == true
-                        StudioButton(
+                        AppButton(
                             stringResource(if (beeping) R.string.stop_beep else R.string.beep, sideName(side)),
                             { actions.set(command, numberOf(command, if (beeping) "stop" else "beep")) },
                             Modifier.weight(1f),
@@ -187,7 +187,7 @@ internal fun DeviceScreen(
         Panel {
             Label(stringResource(R.string.maintenance))
             val copyReport = stringResource(R.string.copy_report)
-            StudioButton(
+            AppButton(
                 copyReport,
                 {
                     val clipboard = context.getSystemService(ClipboardManager::class.java)
@@ -196,19 +196,20 @@ internal fun DeviceScreen(
                 },
                 Modifier.fillMaxWidth(),
             )
-            if (copied) Text(stringResource(R.string.report_copied), style = Studio.type.small, color = c.secondaryText)
-            StudioButton(stringResource(R.string.capture_open), actions::openCapture, Modifier.fillMaxWidth())
+            if (copied) Text(stringResource(R.string.report_copied), style = Look.type.small, color = c.secondaryText)
+            AppButton(stringResource(R.string.capture_open), actions::openCapture, Modifier.fillMaxWidth())
             LanguageButton(Modifier.fillMaxWidth())
+            LookButton(Modifier.fillMaxWidth())
             // Factory reset is known for SoundPEATS only so far.
             if (Brands[device.brand].hasFactoryReset) {
-                StudioButton(stringResource(R.string.factory_reset), { confirmReset = true }, Modifier.fillMaxWidth(), destructive = true)
+                AppButton(stringResource(R.string.factory_reset), { confirmReset = true }, Modifier.fillMaxWidth(), destructive = true)
             }
         }
 
         Text(
             stringResource(R.string.privacy_line),
             Modifier.fillMaxWidth(),
-            style = Studio.type.small,
+            style = Look.type.small,
             color = c.label,
             textAlign = TextAlign.Center,
         )
@@ -264,13 +265,13 @@ private fun PromptVolume(state: EarbudState, actions: EarbudsActions) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(title, Modifier.weight(1f))
-            Text(current?.toString() ?: stringResource(R.string.unknown), style = Studio.type.number, color = Studio.colors.accent)
+            Text(current?.toString() ?: stringResource(R.string.unknown), style = Look.type.number, color = Look.colors.accent)
         }
         Physical {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 val value = current ?: 0
                 StepButton(plus = false, { pending = (value - 1).coerceAtLeast(0) }, enabled = value > 0)
-                StudioSlider(value, 0..100, { pending = it }, Modifier.weight(1f), description = title)
+                AppSlider(value, 0..100, { pending = it }, Modifier.weight(1f), description = title)
                 StepButton(plus = true, { pending = (value + 1).coerceAtMost(100) }, enabled = value < 100)
             }
         }

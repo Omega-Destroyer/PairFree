@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.hearing.TonePlayer
 import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungHearingTest
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
 
 /**
@@ -62,7 +62,7 @@ internal fun SamsungHearingTestScreen(legacy: Boolean, send: (List<ByteArray>) -
             send(test.again())
         }
     }
-    val c = Studio.colors
+    val c = Look.colors
     Column(
         Modifier
             .fillMaxSize()
@@ -71,14 +71,14 @@ internal fun SamsungHearingTestScreen(legacy: Boolean, send: (List<ByteArray>) -
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.hearing_test), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), close)
+            Text(stringResource(R.string.hearing_test), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), close)
         }
         when {
             !started -> {
                 Text(stringResource(R.string.samsung_hearing_intro), color = c.secondaryText)
                 if (busy) Text(stringResource(R.string.hearing_test_music), color = c.destructive)
-                StudioButton(
+                AppButton(
                     stringResource(R.string.hearing_test_start),
                     {
                         if (TonePlayer(context).musicActive) {
@@ -97,13 +97,13 @@ internal fun SamsungHearingTestScreen(legacy: Boolean, send: (List<ByteArray>) -
                 val tone = test.current
                 Panel {
                     val side = if (tone?.left == true) R.string.samsung_hearing_left else R.string.samsung_hearing_right
-                    Text(stringResource(R.string.samsung_hearing_tone, stringResource(side)), style = Studio.type.number)
+                    Text(stringResource(R.string.samsung_hearing_tone, stringResource(side)), style = Look.type.number)
                     LevelBar((test.progress * 100).toInt())
-                    Text(stringResource(R.string.samsung_hearing_listen), style = Studio.type.small, color = c.secondaryText)
+                    Text(stringResource(R.string.samsung_hearing_listen), style = Look.type.small, color = c.secondaryText)
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     for (heard in listOf(true, false)) {
-                        StudioButton(
+                        AppButton(
                             stringResource(if (heard) R.string.samsung_hearing_yes else R.string.samsung_hearing_no),
                             {
                                 send(test.stop())
@@ -122,11 +122,11 @@ internal fun SamsungHearingTestScreen(legacy: Boolean, send: (List<ByteArray>) -
                     SamsungHearingTest.FREQUENCIES.forEachIndexed { i, hz ->
                         Row {
                             Text(stringResource(R.string.hearing_test_tone, hz), Modifier.weight(1f))
-                            Text("${test.left[i]} / ${test.right[i]}", style = Studio.type.number, color = c.accent)
+                            Text("${test.left[i]} / ${test.right[i]}", style = Look.type.number, color = c.accent)
                         }
                     }
                 }
-                StudioButton(stringResource(R.string.capture_close), close, Modifier.fillMaxWidth(), primary = true)
+                AppButton(stringResource(R.string.capture_close), close, Modifier.fillMaxWidth(), primary = true)
             }
         }
     }

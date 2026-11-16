@@ -39,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -67,8 +66,7 @@ import io.github.omegadestroyer.pairfree.brands.Brands
 import io.github.omegadestroyer.pairfree.brands.OwnHearingTest
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
 import io.github.omegadestroyer.pairfree.status.StatusUi
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
-import io.github.omegadestroyer.pairfree.ui.theme.StudioShape
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 
 internal enum class Tab(@StringRes val title: Int) {
     HOME(R.string.tab_home),
@@ -228,19 +226,19 @@ private fun HomeScreen(
         // Model name and connection state, and a button to switch earbuds.
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(device.name, style = Studio.type.title)
+                Text(device.name, style = Look.type.title)
                 val firmware = state.firmware?.let { stringResource(R.string.firmware, it.version) }
                 val link = stringResource(if (live) R.string.connected else R.string.reconnecting)
-                Label(listOfNotNull(link, firmware).joinToString("  ·  "), color = if (live) Studio.colors.label else Studio.colors.accent)
+                Label(listOfNotNull(link, firmware).joinToString("  ·  "), color = if (live) Look.colors.label else Look.colors.accent)
             }
-            StudioButton(stringResource(R.string.switch_earbuds), actions::switchEarbuds)
+            AppButton(stringResource(R.string.switch_earbuds), actions::switchEarbuds)
         }
 
         // Soundcore earbuds PairFree knows by name and number only: ask for a report rather than show a guess.
         if (model?.reportOnly == true || Brands[device.brand].reportOnlyWhenUnknown && model == null) {
             Panel {
-                Text(stringResource(R.string.report_only_title), style = Studio.type.heading)
-                Text(stringResource(R.string.report_only_note), style = Studio.type.small, color = Studio.colors.secondaryText)
+                Text(stringResource(R.string.report_only_title), style = Look.type.heading)
+                Text(stringResource(R.string.report_only_note), style = Look.type.small, color = Look.colors.secondaryText)
             }
         }
 
@@ -301,7 +299,7 @@ private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) = Readi
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (battery.drawing != null) {
             Image(
-                painterResource(battery.drawing),
+                deviceArtPainter(battery.drawing),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -316,7 +314,7 @@ private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) = Readi
             val percent = reading?.percent
             Text(
                 percent?.let { stringResource(R.string.percent, it) } ?: stringResource(R.string.unknown),
-                style = Studio.type.bigNumber,
+                style = Look.type.bigNumber,
             )
             LevelBar(percent)
         } else {
@@ -328,7 +326,7 @@ private fun BatteryItem(battery: Battery, modifier: Modifier = Modifier) = Readi
                     .clearAndSetSemantics { contentDescription = bars },
                 contentAlignment = Alignment.Center,
             ) {
-                Text("0", style = Studio.type.bigNumber, color = Color.Transparent)
+                Text("0", style = Look.type.bigNumber, color = Color.Transparent)
                 StepBar(level, reading.levels)
             }
             Spacer(Modifier.height(4.dp))
@@ -418,16 +416,14 @@ private fun SwitchTile(
     modifier: Modifier = Modifier,
     onTurnedOn: () -> Unit = {},
 ) {
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.smallCorner)
+    val c = Look.colors
+    val shape = Look.shape.control
     val on = state.switch(command) == true
     val blocked = state.blockedByLdac(command, model)
     Column(
         modifier
             .fillMaxHeight()
-            .clip(shape)
-            .background(c.raised)
-            .border(StudioShape.hairline, if (on && !blocked) c.accent else c.hairline, shape)
+            .surface(shape, c.raised, if (on && !blocked) c.accent else c.outline, raised = !blocked)
             .toggleable(value = on, enabled = !blocked, role = Role.Switch) {
                 actions.set(command, if (it) 1 else 0)
                 if (it) onTurnedOn()
@@ -445,7 +441,7 @@ private fun SwitchTile(
                 on -> stringResource(R.string.on)
                 else -> stringResource(R.string.off)
             },
-            style = Studio.type.small,
+            style = Look.type.small,
             color = c.secondaryText,
         )
     }
@@ -458,12 +454,12 @@ private fun SwitchTile(
  */
 @Composable
 private fun TabBar(selected: Tab, onSelect: (Tab) -> Unit) {
-    val c = Studio.colors
+    val c = Look.colors
     Column(Modifier.background(c.panel)) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(StudioShape.hairline)
+                .height(Look.shape.hairline)
                 .background(c.hairline),
         )
         Row(Modifier.fillMaxWidth()) {

@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.sleep.SleepUploadUi
 import io.github.omegadestroyer.pairfree.sleep.SleepUploader
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 
 /**
  * Puts a sound from the phone on the Soundcore Sleep A30 for its local mode (issue #23, docs/soundcore/PROTOCOL.md section 14). Untested on an A30, which the
@@ -44,7 +44,7 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
     // What the confirmation dialog will send: the sound's name and the action.
     var pending by remember { mutableStateOf<Pair<String, () -> Unit>?>(null) }
     val catalogue by uploader.catalogue.collectAsState()
-    val c = Studio.colors
+    val c = Look.colors
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
             picked = uri
@@ -61,8 +61,8 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-            Text(stringResource(R.string.sleep_upload_title), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), onClose)
+            Text(stringResource(R.string.sleep_upload_title), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), onClose)
         }
         Text(stringResource(R.string.sleep_upload_intro), color = c.secondaryText)
 
@@ -74,19 +74,19 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
 
         Panel {
             Label(stringResource(R.string.sleep_upload_sound))
-            StudioButton(stringResource(if (picked == null) R.string.sleep_upload_pick else R.string.sleep_upload_pick_again), { picker.launch(arrayOf("audio/*")) }, Modifier.fillMaxWidth(), enabled = !busy)
+            AppButton(stringResource(if (picked == null) R.string.sleep_upload_pick else R.string.sleep_upload_pick_again), { picker.launch(arrayOf("audio/*")) }, Modifier.fillMaxWidth(), enabled = !busy)
             if (picked != null) Text(name, color = c.text)
             Label(stringResource(R.string.sleep_upload_slot))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                StudioButton(stringResource(R.string.sleep_upload_slot_n, 1), { slot = 0 }, Modifier.weight(1f), primary = slot == 0, enabled = !busy)
-                StudioButton(stringResource(R.string.sleep_upload_slot_n, 2), { slot = 1 }, Modifier.weight(1f), primary = slot == 1, enabled = !busy)
+                AppButton(stringResource(R.string.sleep_upload_slot_n, 1), { slot = 0 }, Modifier.weight(1f), primary = slot == 0, enabled = !busy)
+                AppButton(stringResource(R.string.sleep_upload_slot_n, 2), { slot = 1 }, Modifier.weight(1f), primary = slot == 1, enabled = !busy)
             }
             Text(
                 (0..1).map { n ->
                     val held = catalogue.slots.firstOrNull { it.address == address && it.slot == n }?.let { s -> catalogue.entries.firstOrNull { it.hash == s.hash } }
                     stringResource(R.string.sleep_upload_slot_holds, n + 1, held?.name ?: stringResource(R.string.sleep_upload_slot_unknown))
                 }.joinToString("\n"),
-                style = Studio.type.small,
+                style = Look.type.small,
                 color = c.secondaryText,
             )
             SwitchRow(stringResource(R.string.sleep_upload_quality), high, { high = it }, note = stringResource(R.string.sleep_upload_quality_note), enabled = !busy)
@@ -102,24 +102,24 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
             }
             is SleepUploadUi.Done -> Panel {
                 Text(stringResource(R.string.sleep_upload_done, s.seconds), color = c.accent)
-                if (s.clipped) Text(stringResource(R.string.sleep_upload_clipped), style = Studio.type.small, color = c.secondaryText)
-                Text(stringResource(R.string.sleep_upload_next), style = Studio.type.small, color = c.secondaryText)
+                if (s.clipped) Text(stringResource(R.string.sleep_upload_clipped), style = Look.type.small, color = c.secondaryText)
+                Text(stringResource(R.string.sleep_upload_next), style = Look.type.small, color = c.secondaryText)
             }
             is SleepUploadUi.AlreadyThere -> Panel {
                 Text(stringResource(R.string.sleep_upload_already, s.name, s.slot + 1), color = c.accent)
-                Text(stringResource(R.string.sleep_upload_already_note), style = Studio.type.small, color = c.secondaryText)
-                StudioButton(stringResource(R.string.sleep_upload_send_anyway), { pending = s.name to { uploader.reset(); picked?.let { u -> uploader.start(address, u, slot, high, force = true) } } }, Modifier.fillMaxWidth(), enabled = picked != null)
+                Text(stringResource(R.string.sleep_upload_already_note), style = Look.type.small, color = c.secondaryText)
+                AppButton(stringResource(R.string.sleep_upload_send_anyway), { pending = s.name to { uploader.reset(); picked?.let { u -> uploader.start(address, u, slot, high, force = true) } } }, Modifier.fillMaxWidth(), enabled = picked != null)
             }
             is SleepUploadUi.Failed -> Panel {
                 Text(stringResource(R.string.sleep_upload_failed, s.reason), color = c.destructive)
-                Text(stringResource(R.string.sleep_upload_failed_next), style = Studio.type.small, color = c.secondaryText)
+                Text(stringResource(R.string.sleep_upload_failed_next), style = Look.type.small, color = c.secondaryText)
             }
         }
 
         if (busy) {
-            StudioButton(stringResource(R.string.cancel), uploader::cancel, Modifier.fillMaxWidth(), destructive = true)
+            AppButton(stringResource(R.string.cancel), uploader::cancel, Modifier.fillMaxWidth(), destructive = true)
         } else {
-            StudioButton(
+            AppButton(
                 stringResource(R.string.sleep_upload_start),
                 { pending = name to { uploader.reset(); picked?.let { u -> uploader.start(address, u, slot, high) } } },
                 Modifier.fillMaxWidth(),
@@ -131,7 +131,7 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
         if (catalogue.entries.isNotEmpty()) {
             Panel {
                 Label(stringResource(R.string.sleep_upload_catalogue))
-                Text(stringResource(R.string.sleep_upload_catalogue_note, slot + 1), style = Studio.type.small, color = c.secondaryText)
+                Text(stringResource(R.string.sleep_upload_catalogue_note, slot + 1), style = Look.type.small, color = c.secondaryText)
                 catalogue.entries.forEachIndexed { i, entry ->
                     if (i > 0) Divider()
                     val on = catalogue.slots.filter { it.address == address && it.hash == entry.hash }.map { it.slot + 1 }.sorted()
@@ -139,17 +139,17 @@ internal fun SleepSoundScreen(address: String, uploader: SleepUploader, onClose:
                         Text(entry.name, color = c.text)
                         Text(
                             stringResource(R.string.sleep_upload_entry, entry.seconds) + if (on.isEmpty()) "" else "  ·  " + stringResource(R.string.sleep_upload_entry_on, on.joinToString(", ")),
-                            style = Studio.type.small,
+                            style = Look.type.small,
                             color = c.secondaryText,
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            StudioButton(
+                            AppButton(
                                 stringResource(R.string.sleep_upload_entry_send, slot + 1),
                                 { pending = entry.name to { uploader.reset(); uploader.startFromCatalogue(address, entry.hash, slot) } },
                                 Modifier.weight(1f),
                                 enabled = understood && !busy,
                             )
-                            StudioButton(stringResource(R.string.sleep_upload_entry_forget), { uploader.forget(entry.hash) }, Modifier.weight(1f), destructive = true, enabled = !busy)
+                            AppButton(stringResource(R.string.sleep_upload_entry_forget), { uploader.forget(entry.hash) }, Modifier.weight(1f), destructive = true, enabled = !busy)
                         }
                     }
                 }

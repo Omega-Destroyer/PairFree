@@ -1,0 +1,32 @@
+{
+  "_about": "The Studio look (docs/DESIGN.md, Looks): dark, precise, made to feel like audio equipment. The app's first look and its default. docs/LOOKS.md explains every field; the build turns each file in this folder into the app's list of looks.",
+  "name": "Studio",
+  "order": 1,
+  "dark": {
+    "background": "#101214",
+    "panel": "#181B1F",
+    "raised": "#1F2328",
+    "hairline": "#2B3037",
+    "text": "#E8E6E1",
+    "secondary_text": "#A0A5AD",
+    "label": "#8A9099",
+    "accent": "#E6A23C",
+    "on_accent": "#101214",
+    "destructive": "#E88868"
+  },
+  "type": {
+    "text": "plex_sans",
+    "numbers": "plex_mono",
+    "label_caps": true
+  },
+  "shape": {
+    "hairline": 1,
+    "corner": 6,
+    "small_corner": 4,
+    "panel_border": true
+  },
+  "art": {
+    "style": "line",
+    "stroke": 1.0
+  }
+}

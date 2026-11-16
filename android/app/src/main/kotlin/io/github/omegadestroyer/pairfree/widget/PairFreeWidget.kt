@@ -160,6 +160,9 @@ class PairFreeWidget : AppWidgetProvider() {
 
         private fun setupViews(context: Context, id: Int): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget)
+            val look = WidgetLook(context)
+            look.fill(views, R.id.widget_root) { it.panel }
+            look.text(views, R.id.widget_setup) { it.text }
             views.setViewVisibility(R.id.widget_row_1, View.GONE)
             views.setViewVisibility(R.id.widget_row_2, View.GONE)
             views.setViewVisibility(R.id.widget_setup, View.VISIBLE)
@@ -184,6 +187,8 @@ class PairFreeWidget : AppWidgetProvider() {
             eqNames: Map<String, String>,
         ): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget)
+            val look = WidgetLook(context)
+            look.fill(views, R.id.widget_root) { it.panel }
             views.setViewVisibility(R.id.widget_row_2, if (rows >= 2) View.VISIBLE else View.GONE)
             val visible = WidgetGrid.visibleSlots(cols, rows)
             for (i in 0 until WidgetGrid.SLOTS) {
@@ -224,9 +229,11 @@ class PairFreeWidget : AppWidgetProvider() {
                 }
                 views.setTextViewText(cell[1], caption)
                 views.setTextViewText(cell[2], label)
-                views.setInt(cell[0], "setBackgroundResource", if (active) R.drawable.widget_button_active else R.drawable.widget_button)
-                views.setTextColor(cell[2], context.getColor(if (active) R.color.widget_on_accent else R.color.widget_text))
-                views.setTextColor(cell[1], context.getColor(if (active) R.color.widget_on_accent else R.color.widget_secondary))
+                // The chosen button is filled with the accent; the others are a raised fill inside a hairline edge.
+                look.fill(views, cell[0]) { if (active) it.accent else it.outline }
+                look.fill(views, cell[3]) { if (active) it.accent else it.raised }
+                look.text(views, cell[2]) { if (active) it.onAccent else it.text }
+                look.text(views, cell[1]) { if (active) it.onAccent else it.secondaryText }
                 views.setFloat(cell[0], "setAlpha", if (live || slot == WidgetSlot.Empty) 1f else DIMMED)
                 if (slot != WidgetSlot.Empty) {
                     views.setContentDescription(cell[0], context.getString(R.string.widget_slot_description, caption, label))
@@ -238,16 +245,16 @@ class PairFreeWidget : AppWidgetProvider() {
             return views
         }
 
-        /** The ids of each slot's cell, caption and label in the layout. */
+        /** The ids of each slot's cell (its edge), caption, label and fill in the layout. */
         private val CELLS = listOf(
-            intArrayOf(R.id.widget_slot_0, R.id.widget_caption_0, R.id.widget_label_0),
-            intArrayOf(R.id.widget_slot_1, R.id.widget_caption_1, R.id.widget_label_1),
-            intArrayOf(R.id.widget_slot_2, R.id.widget_caption_2, R.id.widget_label_2),
-            intArrayOf(R.id.widget_slot_3, R.id.widget_caption_3, R.id.widget_label_3),
-            intArrayOf(R.id.widget_slot_4, R.id.widget_caption_4, R.id.widget_label_4),
-            intArrayOf(R.id.widget_slot_5, R.id.widget_caption_5, R.id.widget_label_5),
-            intArrayOf(R.id.widget_slot_6, R.id.widget_caption_6, R.id.widget_label_6),
-            intArrayOf(R.id.widget_slot_7, R.id.widget_caption_7, R.id.widget_label_7),
+            intArrayOf(R.id.widget_slot_0, R.id.widget_caption_0, R.id.widget_label_0, R.id.widget_fill_0),
+            intArrayOf(R.id.widget_slot_1, R.id.widget_caption_1, R.id.widget_label_1, R.id.widget_fill_1),
+            intArrayOf(R.id.widget_slot_2, R.id.widget_caption_2, R.id.widget_label_2, R.id.widget_fill_2),
+            intArrayOf(R.id.widget_slot_3, R.id.widget_caption_3, R.id.widget_label_3, R.id.widget_fill_3),
+            intArrayOf(R.id.widget_slot_4, R.id.widget_caption_4, R.id.widget_label_4, R.id.widget_fill_4),
+            intArrayOf(R.id.widget_slot_5, R.id.widget_caption_5, R.id.widget_label_5, R.id.widget_fill_5),
+            intArrayOf(R.id.widget_slot_6, R.id.widget_caption_6, R.id.widget_label_6, R.id.widget_fill_6),
+            intArrayOf(R.id.widget_slot_7, R.id.widget_caption_7, R.id.widget_label_7, R.id.widget_fill_7),
         )
     }
 }

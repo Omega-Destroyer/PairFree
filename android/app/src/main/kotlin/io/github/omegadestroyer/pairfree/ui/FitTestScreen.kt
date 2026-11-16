@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,7 +36,7 @@ import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.Models
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
 
 /**
@@ -77,7 +76,7 @@ internal fun FitTestScreen(
         timedOut = true
     }
     val art = deviceArt(state.firmware?.code, device.name)
-    val c = Studio.colors
+    val c = Look.colors
 
     Column(
         Modifier
@@ -87,12 +86,12 @@ internal fun FitTestScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.fit_test), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), onClose)
+            Text(stringResource(R.string.fit_test), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), onClose)
         }
         Text(stringResource(R.string.fit_test_intro), color = c.secondaryText)
         if (ancOn || (testing && switchingAnc)) {
-            Text(stringResource(R.string.fit_anc_note), style = Studio.type.small, color = c.secondaryText)
+            Text(stringResource(R.string.fit_anc_note), style = Look.type.small, color = c.secondaryText)
         }
 
         Panel {
@@ -104,7 +103,7 @@ internal fun FitTestScreen(
             }
             if (testing) {
                 LevelBar((progress.value * 100).toInt())
-                Text(stringResource(R.string.fit_testing), style = Studio.type.small, color = c.secondaryText)
+                Text(stringResource(R.string.fit_testing), style = Look.type.small, color = c.secondaryText)
             }
         }
 
@@ -116,7 +115,7 @@ internal fun FitTestScreen(
             timedOut && run > 0 -> Text(stringResource(R.string.fit_no_result), color = c.destructive)
         }
 
-        StudioButton(
+        AppButton(
             stringResource(if (run == 0) R.string.fit_start else R.string.fit_again),
             {
                 timedOut = false
@@ -133,10 +132,10 @@ internal fun FitTestScreen(
 
 @Composable
 private fun Earbud(@StringRes side: Int, drawing: Int, mirrored: Boolean, fit: FitResult.Fit?, testing: Boolean, modifier: Modifier) = Reading {
-    val c = Studio.colors
+    val c = Look.colors
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Image(
-            painterResource(drawing),
+            deviceArtPainter(drawing),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -151,7 +150,7 @@ private fun Earbud(@StringRes side: Int, drawing: Int, mirrored: Boolean, fit: F
             fit == FitResult.Fit.UNKNOWN -> stringResource(R.string.fit_unknown) to c.secondaryText
             else -> stringResource(R.string.fit_not_tested) to c.label
         }
-        Text(text, style = Studio.type.heading, color = color, textAlign = TextAlign.Center)
+        Text(text, style = Look.type.heading, color = color, textAlign = TextAlign.Center)
     }
 }
 

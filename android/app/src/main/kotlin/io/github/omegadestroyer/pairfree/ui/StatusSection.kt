@@ -24,7 +24,7 @@ import io.github.omegadestroyer.pairfree.status.CompanionLink
 import io.github.omegadestroyer.pairfree.status.StatusChoice
 import io.github.omegadestroyer.pairfree.status.StatusPrompt
 import io.github.omegadestroyer.pairfree.status.StatusUi
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 
 /**
  * The Device tab's choice of battery notification (docs/DESIGN.md, Notification): PairFree's,
@@ -33,20 +33,20 @@ import io.github.omegadestroyer.pairfree.ui.theme.Studio
 @Composable
 internal fun StatusSection(status: StatusUi, actions: EarbudsActions) {
     val context = LocalContext.current
-    val c = Studio.colors
+    val c = Look.colors
     val notify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { actions.statusChanged() }
     val link = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { actions.statusChanged() }
     Panel {
         Label(stringResource(R.string.status_title))
         Segmented(status.options, status.choice, { stringResource(optionName(it)) }, actions::chooseStatus, primary = false)
-        Text(stringResource(note(status.choice)), style = Studio.type.small, color = c.secondaryText)
+        Text(stringResource(note(status.choice)), style = Look.type.small, color = c.secondaryText)
         if (status.choice == StatusChoice.PAIRFREE && !status.canNotify) {
-            Text(stringResource(R.string.status_needs_permission), style = Studio.type.small, color = c.secondaryText)
-            StudioButton(stringResource(R.string.status_allow), { askNotifications(context) { notify.launch(it) } }, Modifier.fillMaxWidth())
+            Text(stringResource(R.string.status_needs_permission), style = Look.type.small, color = c.secondaryText)
+            AppButton(stringResource(R.string.status_allow), { askNotifications(context) { notify.launch(it) } }, Modifier.fillMaxWidth())
         }
         if (status.choice == StatusChoice.PAIRFREE && status.canNotify && !status.linked) {
-            Text(stringResource(R.string.status_link_note), style = Studio.type.small, color = c.secondaryText)
-            StudioButton(
+            Text(stringResource(R.string.status_link_note), style = Look.type.small, color = c.secondaryText)
+            AppButton(
                 stringResource(R.string.status_link),
                 { CompanionLink.associate(context, status.address, { link.launch(IntentSenderRequest.Builder(it).build()) }, actions::statusChanged) },
                 Modifier.fillMaxWidth(),
@@ -54,8 +54,8 @@ internal fun StatusSection(status: StatusUi, actions: EarbudsActions) {
         }
         // PairFree cannot hide Google's notification; it can only open where the user turns it off.
         if (status.fastPair && status.choice != StatusChoice.FAST_PAIR) {
-            Text(stringResource(R.string.status_google_also), style = Studio.type.small, color = c.secondaryText)
-            StudioButton(stringResource(R.string.status_google_settings), { openGoogleNotificationSettings(context) }, Modifier.fillMaxWidth())
+            Text(stringResource(R.string.status_google_also), style = Look.type.small, color = c.secondaryText)
+            AppButton(stringResource(R.string.status_google_settings), { openGoogleNotificationSettings(context) }, Modifier.fillMaxWidth())
         }
     }
 }
@@ -75,11 +75,11 @@ internal fun StatusPrompts(prompt: StatusPrompt?, address: String, onDone: (Stat
         if (prompt == StatusPrompt.NOTIFICATIONS && !askNotifications(context) { notify.launch(it) }) onDone(StatusPrompt.NOTIFICATIONS)
     }
     if (prompt == StatusPrompt.LINK) {
-        StudioDialog(stringResource(R.string.status_link_title), { onDone(StatusPrompt.LINK) }) {
-            Text(stringResource(R.string.status_link_body), color = Studio.colors.secondaryText)
+        AppDialog(stringResource(R.string.status_link_title), { onDone(StatusPrompt.LINK) }) {
+            Text(stringResource(R.string.status_link_body), color = Look.colors.secondaryText)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                StudioButton(stringResource(R.string.status_link_later), { onDone(StatusPrompt.LINK) }, Modifier.weight(1f))
-                StudioButton(
+                AppButton(stringResource(R.string.status_link_later), { onDone(StatusPrompt.LINK) }, Modifier.weight(1f))
+                AppButton(
                     stringResource(R.string.status_link_continue),
                     { CompanionLink.associate(context, address, { link.launch(IntentSenderRequest.Builder(it).build()) }) { onDone(StatusPrompt.LINK) } },
                     Modifier.weight(1f),

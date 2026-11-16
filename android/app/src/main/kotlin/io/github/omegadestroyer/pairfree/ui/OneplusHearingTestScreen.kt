@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusHearingTest
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 
 /**
  * HeyMelody's hearing enhancement test on OnePlus and OPPO earbuds (docs/oneplus/PROTOCOL.md section 12): the earbuds play a tone for each of 12 points (six
@@ -41,7 +41,7 @@ internal fun OneplusHearingTestScreen(test: OneplusHearingTest, send: (List<Byte
     }
     BackHandler(onBack = close)
     DisposableEffect(Unit) { onDispose { if (started && !done) send(test.cancel()) } }
-    val c = Studio.colors
+    val c = Look.colors
     Column(
         Modifier
             .fillMaxSize()
@@ -50,13 +50,13 @@ internal fun OneplusHearingTestScreen(test: OneplusHearingTest, send: (List<Byte
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.hearing_test), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), close)
+            Text(stringResource(R.string.hearing_test), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), close)
         }
         when {
             !started -> {
                 Text(stringResource(R.string.oneplus_hearing_intro), color = c.secondaryText)
-                StudioButton(
+                AppButton(
                     stringResource(R.string.hearing_test_start),
                     {
                         send(test.start() + test.tone())
@@ -73,10 +73,10 @@ internal fun OneplusHearingTestScreen(test: OneplusHearingTest, send: (List<Byte
                 tick.let {
                     Panel {
                         val side = if (point?.left == true) R.string.samsung_hearing_left else R.string.samsung_hearing_right
-                        Text(stringResource(R.string.oneplus_hearing_point, stringResource(side), point?.type ?: 0, OneplusHearingTest.TYPES), style = Studio.type.heading)
+                        Text(stringResource(R.string.oneplus_hearing_point, stringResource(side), point?.type ?: 0, OneplusHearingTest.TYPES), style = Look.type.heading)
                         LevelBar((test.progress * 100).toInt())
-                        Text(stringResource(R.string.oneplus_hearing_listen), style = Studio.type.small, color = c.secondaryText)
-                        StudioSlider(
+                        Text(stringResource(R.string.oneplus_hearing_listen), style = Look.type.small, color = c.secondaryText)
+                        AppSlider(
                             test.level,
                             0..OneplusHearingTest.LEVELS_DB.size - 1,
                             { send(test.setLevel(it)); tick++ },
@@ -85,7 +85,7 @@ internal fun OneplusHearingTestScreen(test: OneplusHearingTest, send: (List<Byte
                         )
                     }
                 }
-                StudioButton(
+                AppButton(
                     stringResource(if (last) R.string.oneplus_hearing_finish else R.string.oneplus_hearing_next),
                     {
                         send(test.next())
@@ -101,7 +101,7 @@ internal fun OneplusHearingTestScreen(test: OneplusHearingTest, send: (List<Byte
             }
             else -> {
                 Text(stringResource(R.string.oneplus_hearing_done), color = c.secondaryText)
-                StudioButton(stringResource(R.string.capture_close), close, Modifier.fillMaxWidth(), primary = true)
+                AppButton(stringResource(R.string.capture_close), close, Modifier.fillMaxWidth(), primary = true)
             }
         }
     }

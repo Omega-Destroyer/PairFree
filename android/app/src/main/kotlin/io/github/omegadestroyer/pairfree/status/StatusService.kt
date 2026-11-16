@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.status
 
 import io.github.omegadestroyer.pairfree.Languages
+import io.github.omegadestroyer.pairfree.look.Looks
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -362,6 +363,7 @@ internal object StatusNotification {
         val nextNoise = action(context, StatusService.ACTION_NEXT_NOISE)
         val toggleGame = action(context, StatusService.ACTION_GAME_MODE)
 
+        val look = Looks.chosen(context)
         val small = RemoteViews(packageName, R.layout.status_notification).apply {
             setTextViewText(R.id.status_title, title)
             setTextViewText(R.id.status_battery, line)
@@ -389,6 +391,8 @@ internal object StatusNotification {
         val open = PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
         NotificationCompat.Builder(context, StatusService.CHANNEL)
             .setSmallIcon(R.drawable.ic_status)
+            // The look's accent on the icon. The rest stays in the system's own notification styles, which every look sits on.
+            .setColor(look.palette(Looks.night(context)).accent.resolve(context))
             // The plain title and text stay for screen readers, the lock screen and the status bar's summaries.
             .setContentTitle(title)
             .setContentText(listOfNotNull(line, noise).joinToString("  ·  "))
@@ -403,7 +407,7 @@ internal object StatusNotification {
             .setShowWhen(false)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-            .addExtras(Bundle().apply { putString(SHOWS, listOf(title, line, noise, game, gameBlocked).joinToString("|")) })
+            .addExtras(Bundle().apply { putString(SHOWS, listOf(title, line, noise, game, gameBlocked, look.id).joinToString("|")) })
             .build()
     }
 

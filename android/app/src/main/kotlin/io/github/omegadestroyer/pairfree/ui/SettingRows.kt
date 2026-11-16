@@ -28,7 +28,7 @@ import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
 
 /**
@@ -73,7 +73,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                     }
                     is Setting.Action -> {
                     if (setting.key == "sh_fit_test") FitTone(setting.active)
-                    StudioButton(
+                    AppButton(
                         stringResource(if (setting.active) actionStop(setting.key) else actionStart(setting.key)),
                         {
                             val link = LINKS[setting.key]
@@ -105,12 +105,12 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
                             },
-                            color = Studio.colors.secondaryText,
+                            color = Look.colors.secondaryText,
                         )
                     }
                 }
             }
-            groupNote(group.key)?.let { Text(it, style = Studio.type.small, color = Studio.colors.secondaryText) }
+            groupNote(group.key)?.let { Text(it, style = Look.type.small, color = Look.colors.secondaryText) }
         }
     }
     confirming?.let { key ->
@@ -184,7 +184,7 @@ private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) 
                 Text(title)
                 if (note != null) InfoButton(open) { open = !open }
             }
-            if (note != null && open) Text(note, style = Studio.type.small, color = Studio.colors.secondaryText)
+            if (note != null && open) Text(note, style = Look.type.small, color = Look.colors.secondaryText)
             Segmented(steps, setting.value, { levelName(setting.key, it, setting.max) }, { onChange(SettingChange.Level(setting.key, it)) }, primary = false)
         }
         return
@@ -202,13 +202,13 @@ private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) 
             Text(title, Modifier.weight(1f, fill = false))
             if (note != null) InfoButton(open) { open = !open }
             Spacer(Modifier.weight(1f))
-            Text(levelName(setting.key, current, setting.max), style = Studio.type.number, color = Studio.colors.accent)
+            Text(levelName(setting.key, current, setting.max), style = Look.type.number, color = Look.colors.accent)
         }
-        if (note != null && open) Text(note, style = Studio.type.small, color = Studio.colors.secondaryText)
+        if (note != null && open) Text(note, style = Look.type.small, color = Look.colors.secondaryText)
         Physical {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 StepButton(plus = false, { pending = (current - 1).coerceAtLeast(setting.min) }, enabled = current > setting.min)
-                StudioSlider(current, setting.min..setting.max, { pending = it }, Modifier.weight(1f), description = title, origin = levelOrigin(setting))
+                AppSlider(current, setting.min..setting.max, { pending = it }, Modifier.weight(1f), description = title, origin = levelOrigin(setting))
                 StepButton(plus = true, { pending = (current + 1).coerceAtMost(setting.max) }, enabled = current < setting.max)
             }
         }

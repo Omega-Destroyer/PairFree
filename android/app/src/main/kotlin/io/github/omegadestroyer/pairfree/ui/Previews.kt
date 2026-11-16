@@ -13,14 +13,15 @@ import io.github.omegadestroyer.pairfree.protocol.SoundpeatsBandEq
 import io.github.omegadestroyer.pairfree.eq.EqSetting
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.look.Looks
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Frame
 import io.github.omegadestroyer.pairfree.protocol.Gaia
 import io.github.omegadestroyer.pairfree.protocol.Models
 import io.github.omegadestroyer.pairfree.protocol.Wire
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
-import io.github.omegadestroyer.pairfree.ui.theme.StudioTheme
+import io.github.omegadestroyer.pairfree.ui.theme.Look
+import io.github.omegadestroyer.pairfree.ui.theme.LookTheme
 
 // The connected screens as they look with an H3 attached, tab bar included. Every reply
 // below was recorded from an H3 (data/soundpeats/reports/S5_0.4.9.txt); ANC mode is 1 as after the
@@ -65,10 +66,10 @@ private val H3_EQ: EqState = run {
 }
 
 @Composable
-private fun Connected(tab: Tab, eq: EqState = H3_EQ) {
-    StudioTheme {
+private fun Connected(tab: Tab, eq: EqState = H3_EQ, look: String = Looks.DEFAULT) {
+    LookTheme(Looks.ALL.first { it.id == look }) {
         // Padded for the system bars as in PairFreeApp, so a preview run on a device matches the app.
-        Box(Modifier.background(Studio.colors.background).safeDrawingPadding()) {
+        Box(Modifier.background(Look.colors.background).safeDrawingPadding()) {
             ConnectedScreen(H3, H3_STATE, NoActions, eq, NoEqActions, tab)
         }
     }
@@ -98,9 +99,39 @@ private fun DevicePreview() = Connected(Tab.DEVICE)
 @Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFF101214, showBackground = true)
 @Composable
 private fun FitTestPreview() {
-    StudioTheme {
-        Box(Modifier.background(Studio.colors.background).safeDrawingPadding()) {
+    LookTheme {
+        Box(Modifier.background(Look.colors.background).safeDrawingPadding()) {
             FitTestScreen(H3, H3_FITTED, NoActions, onClose = {}, initialRun = 1)
         }
     }
 }
+
+// The other looks (data/looks), on the two screens that show the most of a look: the drawings and the equalizer.
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFFF4F2ED, showBackground = true)
+@Composable
+private fun HomeStudioLightPreview() = Connected(Tab.HOME, look = "studio-light")
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFFF4F2ED, showBackground = true)
+@Composable
+private fun SoundStudioLightPreview() = Connected(Tab.SOUND, look = "studio-light")
+
+@Preview(widthDp = 390, heightDp = 844, showBackground = true)
+@Composable
+private fun HomeMaterialYouPreview() = Connected(Tab.HOME, look = "material-you")
+
+@Preview(widthDp = 390, heightDp = 844, showBackground = true)
+@Composable
+private fun SoundMaterialYouPreview() = Connected(Tab.SOUND, look = "material-you")
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFFEEF3EF, showBackground = true)
+@Composable
+private fun HomeSketchbookPreview() = Connected(Tab.HOME, look = "sketchbook")
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFFEEF3EF, showBackground = true)
+@Composable
+private fun SoundSketchbookPreview() = Connected(Tab.SOUND, look = "sketchbook")
+
+@Preview(widthDp = 390, heightDp = 844, backgroundColor = 0xFFEEF3EF, showBackground = true)
+@Composable
+private fun ControlsSketchbookPreview() = Connected(Tab.CONTROLS, look = "sketchbook")

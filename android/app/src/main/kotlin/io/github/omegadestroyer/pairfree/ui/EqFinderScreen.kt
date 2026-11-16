@@ -23,7 +23,7 @@ import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.protocol.hearing.EqFinder
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlin.math.roundToInt
 
 /**
@@ -47,7 +47,7 @@ internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String,
         onClose()
     }
     BackHandler(onBack = close)
-    val c = Studio.colors
+    val c = Look.colors
     Column(
         Modifier
             .fillMaxSize()
@@ -56,13 +56,13 @@ internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.finder_title), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), close)
+            Text(stringResource(R.string.finder_title), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), close)
         }
         when {
             !started -> {
                 Text(stringResource(R.string.finder_intro), color = c.secondaryText)
-                StudioButton(
+                AppButton(
                     stringResource(R.string.hearing_test_start),
                     {
                         started = true
@@ -77,13 +77,13 @@ internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String,
                 // `step` makes this recompose after an answer, since the finder holds its own state.
                 step.let {
                     Panel {
-                        Text(stringResource(R.string.finder_round, finder.answered + 1, EqFinder.MAX_TRIALS), style = Studio.type.heading)
+                        Text(stringResource(R.string.finder_round, finder.answered + 1, EqFinder.MAX_TRIALS), style = Look.type.heading)
                         LevelBar((finder.progress * 100).toInt())
-                        Text(stringResource(R.string.finder_listen), style = Studio.type.small, color = c.secondaryText)
+                        Text(stringResource(R.string.finder_listen), style = Look.type.small, color = c.secondaryText)
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StudioButton(
+                    AppButton(
                         stringResource(R.string.finder_a),
                         {
                             listeningB = false
@@ -92,7 +92,7 @@ internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String,
                         Modifier.weight(1f),
                         primary = !listeningB,
                     )
-                    StudioButton(
+                    AppButton(
                         stringResource(R.string.finder_b),
                         {
                             listeningB = true
@@ -102,7 +102,7 @@ internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String,
                         primary = listeningB,
                     )
                 }
-                StudioButton(
+                AppButton(
                     stringResource(R.string.finder_keep),
                     {
                         finder.choose(listeningB)
@@ -117,7 +117,7 @@ internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String,
             }
             else -> {
                 Text(stringResource(R.string.finder_done), color = c.secondaryText)
-                StudioButton(
+                AppButton(
                     stringResource(R.string.finder_save, resultName),
                     {
                         actions.applyCurve(resultName, finder.best)
@@ -127,7 +127,7 @@ internal fun EqFinderScreen(eq: EqState, actions: EqActions, resultName: String,
                     Modifier.fillMaxWidth(),
                     primary = true,
                 )
-                StudioButton(stringResource(R.string.finder_discard), close, Modifier.fillMaxWidth())
+                AppButton(stringResource(R.string.finder_discard), close, Modifier.fillMaxWidth())
             }
         }
     }

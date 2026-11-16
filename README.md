@@ -33,6 +33,10 @@ directly over Bluetooth.
 - **Reproducible builds.** The published APK can be rebuilt from the source and checked byte
   for byte, apart from the signature.
 - **Your equalizer, as files.** Save your own curves, and export and share them.
+- **Your choice of look.** Four are built in: Studio (dark), Studio Light, Material You (your
+  phone's own colours, light or dark) and Sketchbook (hand-drawn). The screens, the device
+  drawings and the home screen widget all follow it, and a new look is one file added by pull
+  request ([docs/LOOKS.md](docs/LOOKS.md)).
 - **Grows with its users.** Anyone can help add a new model by sending in a device report
   (see [Help add your model](#help-add-your-model)). The people who already have are thanked in
   [CONTRIBUTORS.md](CONTRIBUTORS.md).
@@ -147,7 +151,8 @@ Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<b
 
 | Path                      | What it is                                                        |
 |---------------------------|-------------------------------------------------------------------|
-| `docs/DESIGN.md`          | The app design: requirements, the Studio look, screens            |
+| `docs/DESIGN.md`          | The app design: requirements, the looks, screens                  |
+| `docs/LOOKS.md`           | The looks, and how to add one as a file in `data/looks/`          |
 | `docs/UPSTREAM.md`        | Where the brands' own apps or recordings differ from other open-source projects |
 | `docs/devices/`           | One page per brand: every model PairFree knows and what works on each |
 | `docs/<brand>/PROTOCOL.md` | The brand's protocol: transport, frames, commands, EQ and more  |
@@ -334,7 +339,7 @@ cd android
   app.
 - [Quicky](https://github.com/hui1601/Quicky) by hui1601: QCY's product list and the features of each
   model, and its protocol notes. Facts only; it has no licence, and none of its code is in PairFree.
-- [IBM Plex](https://github.com/IBM/plex) fonts (SIL Open Font License 1.1).
+- [IBM Plex](https://github.com/IBM/plex) fonts, and for the Sketchbook look [Fredoka](https://github.com/hafontia/Fredoka-One) and [Nunito](https://github.com/googlefonts/nunito) (all SIL Open Font License 1.1).
 
 ## License
 

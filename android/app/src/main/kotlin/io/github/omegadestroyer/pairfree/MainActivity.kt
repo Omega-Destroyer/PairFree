@@ -2,17 +2,16 @@ package io.github.omegadestroyer.pairfree
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.content.IntentCompat
 import io.github.omegadestroyer.pairfree.ui.PairFreeApp
-import io.github.omegadestroyer.pairfree.ui.theme.StudioTheme
+import io.github.omegadestroyer.pairfree.ui.theme.LookSystemBars
+import io.github.omegadestroyer.pairfree.ui.theme.LookTheme
 
 class MainActivity : ComponentActivity() {
     private val vm: AppViewModel by viewModels()
@@ -22,13 +21,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) shared(intent)
-        // Studio is dark, so the system bars get light icons whatever the phone's theme
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
-        )
+        enableEdgeToEdge()
         setContent {
-            StudioTheme { PairFreeApp(vm) }
+            LookTheme {
+                // Light icons on a dark look, dark ones on a light look, whatever the phone's theme
+                LookSystemBars()
+                PairFreeApp(vm)
+            }
         }
     }
 

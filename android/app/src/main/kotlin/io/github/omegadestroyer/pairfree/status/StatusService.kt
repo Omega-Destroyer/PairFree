@@ -34,7 +34,7 @@ import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
-import io.github.omegadestroyer.pairfree.ui.modelOf
+import io.github.omegadestroyer.pairfree.brands.modelOf
 import io.github.omegadestroyer.pairfree.ui.numberOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

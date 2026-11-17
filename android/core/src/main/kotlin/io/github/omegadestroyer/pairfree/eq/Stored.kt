@@ -24,7 +24,7 @@ internal class BadJson(message: String) : IllegalArgumentException(message)
  * the code became shared with the desktop apps: a number may be written as a string and a string as a number, and a
  * missing optional value has a default. A parse that fails throws an IllegalArgumentException ([BadJson] or the library's own).
  */
-internal object Stored {
+object Stored {
     private val lenient = Json { isLenient = true }
     private val pretty = Json { prettyPrint = true; prettyPrintIndent = "  " }
 

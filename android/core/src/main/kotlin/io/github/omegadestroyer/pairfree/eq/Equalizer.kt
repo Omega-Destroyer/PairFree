@@ -409,7 +409,7 @@ class Equalizer(
 
     // Storage: one JSON value per model for saved profiles, one per pair of earbuds for the setting.
 
-    internal fun loadProfiles(code: String, layout: EqLayout): List<EqProfile> = try {
+    fun loadProfiles(code: String, layout: EqLayout): List<EqProfile> = try {
         Stored.arrayOf(prefs.get(KEY_PROFILES + code) ?: "[]").objects().mapNotNull { o ->
             val gains = o.array("gains").doubles()
             if (gains.size != layout.bands.size) null else EqProfile(EqProfile.USER + o.string("name"), o.string("name"), gains)

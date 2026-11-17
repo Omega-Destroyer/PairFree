@@ -24,7 +24,7 @@ import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
 import io.github.omegadestroyer.pairfree.protocol.widget.WidgetCycle
 import io.github.omegadestroyer.pairfree.protocol.widget.WidgetSlot
-import io.github.omegadestroyer.pairfree.ui.modelOf
+import io.github.omegadestroyer.pairfree.brands.modelOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -205,6 +205,7 @@ android {
 
 dependencies {
     implementation(project(":protocol"))
+    implementation(project(":core"))
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui)

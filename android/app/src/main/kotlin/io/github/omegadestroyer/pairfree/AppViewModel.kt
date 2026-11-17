@@ -43,7 +43,7 @@ import io.github.omegadestroyer.pairfree.status.StatusUi
 import io.github.omegadestroyer.pairfree.status.canNotify
 import io.github.omegadestroyer.pairfree.ui.CaptureActions
 import io.github.omegadestroyer.pairfree.ui.EarbudsActions
-import io.github.omegadestroyer.pairfree.ui.modelOf
+import io.github.omegadestroyer.pairfree.brands.modelOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

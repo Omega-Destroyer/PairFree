@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -26,7 +25,7 @@ import io.github.omegadestroyer.pairfree.protocol.widget.Sub
 object NothingSpec : BrandSpec(Brand.NOTHING) {
     override val officialApp = "Nothing X"
 
-    override fun eqNote(device: Paired): Int = R.string.eq_nothing
+    override fun eqNote(device: Paired): EqNote = EqNote.NOTHING
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired =
         Paired(address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)

@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.bluetooth.GattLink
 import io.github.omegadestroyer.pairfree.bluetooth.SennheiserFinder
@@ -96,7 +95,7 @@ object SennheiserSpec : BrandSpec(Brand.SENNHEISER) {
 
     override val mayHaveNoise: Boolean get() = true
 
-    override fun eqNote(device: Paired): Int = R.string.eq_sennheiser
+    override fun eqNote(device: Paired): EqNote = EqNote.SENNHEISER
 }
 
 /** Sennheiser products ([SennheiserSession] on GAIA v3, [Gaia2Session] on GAIA v2): one command at a time over RFCOMM, each row once its read answered. */

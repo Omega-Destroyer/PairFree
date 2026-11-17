@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.EnvelopeGattLink
@@ -42,7 +41,7 @@ object QcySpec : BrandSpec(Brand.QCY) {
     /** QCY's earbuds are always found by a scan (docs/qcy/PROTOCOL.md section 2). */
     override val needsScan: Boolean get() = true
 
-    override fun eqNote(device: Paired): Int = R.string.eq_qcy
+    override fun eqNote(device: Paired): EqNote = EqNote.QCY
 
     // QCY's model is known for sure from the advert's vendor id, once PairFree looks for it (docs/qcy/PROTOCOL.md).
     override fun paired(address: String, name: String, uuids: List<String>): Paired =

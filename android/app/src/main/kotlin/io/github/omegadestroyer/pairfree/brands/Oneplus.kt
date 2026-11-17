@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -17,7 +16,7 @@ import io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusWire
 object OneplusSpec : BrandSpec(Brand.ONEPLUS) {
     override val officialApp = "HeyMelody"
 
-    override fun eqNote(device: Paired): Int = R.string.eq_oneplus
+    override fun eqNote(device: Paired): EqNote = EqNote.ONEPLUS
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         OneplusModels.fromName(name)?.let { Paired(address, name, Brand.ONEPLUS, OneplusWire.SPP_UUID, it.id) }

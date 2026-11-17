@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -17,7 +16,7 @@ import io.github.omegadestroyer.pairfree.protocol.bose.BoseTalk
 object BoseSpec : BrandSpec(Brand.BOSE) {
     override val officialApp = "Bose"
 
-    override fun eqNote(device: Paired): Int = R.string.eq_bose
+    override fun eqNote(device: Paired): EqNote = EqNote.BOSE
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired = Paired(address, name, Brand.BOSE)
 

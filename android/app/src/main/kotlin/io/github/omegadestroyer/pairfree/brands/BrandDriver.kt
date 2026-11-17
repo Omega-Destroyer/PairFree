@@ -4,9 +4,6 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import android.os.Build
-import androidx.annotation.StringRes
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
@@ -69,6 +66,22 @@ interface DriverHost {
 
     /** Whether the phone's digital assistant is Google's (Samsung's touch-and-hold option asks). */
     fun assistantIsGoogle(): Boolean
+
+    /** The system PairFree runs on. */
+    val platform: PlatformInfo
+}
+
+/**
+ * What the brands and the reports need to know about the system PairFree runs on, in words of its own: [os] for a device
+ * report ("Android 16 (API 36)"), [osAndDevice] with the maker and build where a report asks for the phone,
+ * [madeBySamsung] and [androidSdk] (0 off Android) for the Galaxy Buds, whose settings differ on Samsung's own phones.
+ */
+class PlatformInfo(val os: String, val osAndDevice: String, val madeBySamsung: Boolean, val androidSdk: Int)
+
+/** What the Sound tab says while a brand's earbuds have no equalizer to show; each has a text of its own in the language file (`eq_<name>`). */
+enum class EqNote {
+    UNAVAILABLE, APPLE, BEATS, BOSE, CAMBRIDGE, CAMBRIDGE_CONNECT, EARFUN, JBL, NOTHING, ONEMORE, ONEPLUS, PIXEL, QCY, SENNHEISER, SONY_NONE,
+    SOUNDCORE_UNCHECKED,
 }
 
 /** What changed about the earbuds' EQ, for [io.github.omegadestroyer.pairfree.eq.EqOpener]. */
@@ -84,10 +97,10 @@ enum class EqEvent {
 }
 
 /** What a device report starts with, the same for every brand. */
-class ReportInfo(val device: Paired?, val version: String?, val date: String, val issues: String) {
+class ReportInfo(val device: Paired?, val version: String?, val date: String, val issues: String, platform: PlatformInfo) {
     val name: String get() = ReportPrivacy.name(device?.name.orEmpty())
-    val os: String get() = "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})"
-    val osAndPhone: String get() = "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})"
+    val os: String = platform.os
+    val osAndPhone: String = platform.osAndDevice
 }
 
 /** Bytes as the reports print them: two hex digits each, a space between. */
@@ -350,8 +363,7 @@ abstract class BrandSpec(val brand: Brand) {
     open val offersRecording: Boolean get() = true
 
     /** What the Sound tab says while there is no equalizer to show. */
-    @StringRes
-    open fun eqNote(device: Paired): Int = R.string.eq_unavailable
+    open fun eqNote(device: Paired): EqNote = EqNote.UNAVAILABLE
 
     /** The paired device as this brand's earbuds, or null when PairFree cannot control it. */
     abstract fun paired(address: String, name: String, uuids: List<String>): Paired?

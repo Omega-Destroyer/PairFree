@@ -164,7 +164,7 @@ internal fun ConnectedScreen(
                 // With no equalizer to offer yet, a recording from the official app adds it.
                 Tab.SOUND -> SoundScreen(
                     eq, eqActions, if (Brands[device.brand].offersRecording) actions::openCapture else null, settings, actions::changeSetting,
-                    unavailableNote = Brands[device.brand].eqNote(device),
+                    unavailableNote = Brands[device.brand].eqNote(device).text,
                     onHearingTest = if (samsungHearing || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
                     onFinder = if (eq != null && eq.target.hasCustom) ({ finder = true }) else null,
                 )

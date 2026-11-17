@@ -279,7 +279,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         val version = app.packageManager.getPackageInfo(app.packageName, 0).versionName
         val device = (connection.status.value as? LinkStatus.Connected)?.device
         val date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'").format(LocalDateTime.now(ZoneOffset.UTC))
-        val info = ReportInfo(device, version, date, ISSUES)
+        val info = ReportInfo(device, version, date, ISSUES, connection.platform)
         return connection.driver?.report(info) ?: SoundpeatsDriver.plainReport(info, connection.lastReplies, connection.state.value)
     }
 

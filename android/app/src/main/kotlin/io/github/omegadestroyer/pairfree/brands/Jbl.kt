@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.GattLink
@@ -43,7 +42,7 @@ object JblSpec : BrandSpec(Brand.JBL) {
     /** JBL's LE models may need a scan to be found (docs/jbl/PROTOCOL.md section 3). */
     override val needsScan: Boolean get() = true
 
-    override fun eqNote(device: Paired): Int = R.string.eq_jbl
+    override fun eqNote(device: Paired): EqNote = EqNote.JBL
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         JblModels.fromName(name)?.let { Paired(address, name, Brand.JBL, model = it.name) }

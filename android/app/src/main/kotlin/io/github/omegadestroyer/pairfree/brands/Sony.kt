@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -21,7 +20,7 @@ import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 object SonySpec : BrandSpec(Brand.SONY) {
     override val officialApp = "Sony | Sound Connect"
 
-    override fun eqNote(device: Paired): Int = R.string.eq_sony_none
+    override fun eqNote(device: Paired): EqNote = EqNote.SONY_NONE
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         SonyModels.identify(name, uuids)?.let { Paired(address, name, Brand.SONY, it.service, it.model?.name) }

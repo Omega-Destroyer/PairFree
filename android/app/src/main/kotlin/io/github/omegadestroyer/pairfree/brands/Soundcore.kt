@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
@@ -36,7 +35,7 @@ object SoundcoreSpec : BrandSpec(Brand.SOUNDCORE) {
     /** The Sleep A30 (D1301): its sounds go over a second serial channel (docs/soundcore/PROTOCOL.md section 14). Untested on one. */
     override fun offersSleepSounds(device: Paired): Boolean = device.model == "D1301"
 
-    override fun eqNote(device: Paired): Int = R.string.eq_soundcore_unchecked
+    override fun eqNote(device: Paired): EqNote = EqNote.SOUNDCORE_UNCHECKED
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         SoundcoreModels.identify(name, uuids)?.let { Paired(address, name, Brand.SOUNDCORE, it.service, it.model) }

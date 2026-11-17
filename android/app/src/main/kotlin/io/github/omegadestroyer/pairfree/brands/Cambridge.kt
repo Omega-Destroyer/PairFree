@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -22,8 +21,8 @@ object CambridgeSpec : BrandSpec(Brand.CAMBRIDGE) {
 
     override val offersRecording: Boolean get() = false
 
-    override fun eqNote(device: Paired): Int =
-        if (CambridgeModels.fromName(device.model ?: device.name)?.connect == true) R.string.eq_cambridge_connect else R.string.eq_cambridge
+    override fun eqNote(device: Paired): EqNote =
+        if (CambridgeModels.fromName(device.model ?: device.name)?.connect == true) EqNote.CAMBRIDGE_CONNECT else EqNote.CAMBRIDGE
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         CambridgeModels.fromName(name)?.let { Paired(address, name, Brand.CAMBRIDGE, service = CambridgeModels.service(uuids), model = it.name) }

@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import android.os.Build
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -59,9 +58,8 @@ class SamsungDriver(host: DriverHost, private val device: Paired) : TalkDriver<B
 
     override fun talk(opened: ControlLink): SamsungTalk? {
         val model = SamsungModels.of(device.model) ?: return null
-        val phoneIsSamsung = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
         curves = emptyList()
-        return SamsungTalk(SamsungSession(model, phoneIsSamsung = phoneIsSamsung, androidSdk = Build.VERSION.SDK_INT, assistantIsGoogle = host.assistantIsGoogle()))
+        return SamsungTalk(SamsungSession(model, phoneIsSamsung = host.platform.madeBySamsung, androidSdk = host.platform.androidSdk, assistantIsGoogle = host.assistantIsGoogle()))
     }
 
     override fun publish(talk: SamsungTalk) {

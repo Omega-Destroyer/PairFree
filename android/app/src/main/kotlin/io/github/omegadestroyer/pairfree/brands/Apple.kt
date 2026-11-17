@@ -2,7 +2,6 @@ package io.github.omegadestroyer.pairfree.brands
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.AppleLink
 import io.github.omegadestroyer.pairfree.bluetooth.AppleSupport
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
@@ -29,8 +28,8 @@ object AppleSpec : BrandSpec(Brand.APPLE) {
     /** AirPods have no official app on Android to close (issue #3). */
     override val officialApp = ""
 
-    override fun eqNote(device: Paired): Int =
-        if (AppleModels.b2p(device.name) != null || AppleModels.bcd(device.name) != null) R.string.eq_beats else R.string.eq_apple
+    override fun eqNote(device: Paired): EqNote =
+        if (AppleModels.b2p(device.name) != null || AppleModels.bcd(device.name) != null) EqNote.BEATS else EqNote.APPLE
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired = Paired(address, name, Brand.APPLE)
 

@@ -15,6 +15,7 @@ import io.github.omegadestroyer.pairfree.brands.EqEvent
 import io.github.omegadestroyer.pairfree.brands.NeedsNewerAndroid
 import io.github.omegadestroyer.pairfree.brands.NotFound
 import io.github.omegadestroyer.pairfree.brands.OpenEnv
+import io.github.omegadestroyer.pairfree.brands.PlatformInfo
 import io.github.omegadestroyer.pairfree.brands.ScanNotAllowed
 import io.github.omegadestroyer.pairfree.brands.SoundpeatsDriver
 import io.github.omegadestroyer.pairfree.protocol.Command
@@ -94,6 +95,8 @@ class EarbudsConnection(
     private val context: Context? = null,
     private val log: ((String) -> Unit)? = null,
     private val assistantIsGoogle: () -> Boolean = { true },
+    /** The system PairFree runs on, for the brands and the reports. */
+    val platform: PlatformInfo = androidPlatform(),
 ) {
     private val _status = MutableStateFlow<LinkStatus>(LinkStatus.Idle)
     val status: StateFlow<LinkStatus> = _status.asStateFlow()
@@ -149,6 +152,7 @@ class EarbudsConnection(
             _eqEvents.tryEmit(event)
         }
         override fun assistantIsGoogle(): Boolean = this@EarbudsConnection.assistantIsGoogle()
+        override val platform: PlatformInfo get() = this@EarbudsConnection.platform
     }
 
     /** What opening a channel may use of this connection. */

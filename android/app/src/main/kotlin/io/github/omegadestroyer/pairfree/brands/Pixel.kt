@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -23,7 +22,7 @@ import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 object PixelSpec : BrandSpec(Brand.PIXEL) {
     override val officialApp = "Pixel Buds"
 
-    override fun eqNote(device: Paired): Int = R.string.eq_pixel
+    override fun eqNote(device: Paired): EqNote = EqNote.PIXEL
 
     /** The service the earbuds list picks the transport, else the model their name gives (docs/pixel/PROTOCOL.md section 1). */
     override fun paired(address: String, name: String, uuids: List<String>): Paired {

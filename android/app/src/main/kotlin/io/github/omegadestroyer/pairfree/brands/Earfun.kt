@@ -1,6 +1,5 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
@@ -21,7 +20,7 @@ import io.github.omegadestroyer.pairfree.protocol.widget.Sub
 object EarfunSpec : BrandSpec(Brand.EARFUN) {
     override val officialApp = "EarFun Audio"
 
-    override fun eqNote(device: Paired): Int = R.string.eq_earfun
+    override fun eqNote(device: Paired): EqNote = EqNote.EARFUN
 
     // EarFun's models on chips whose protocol PairFree does not cover yet drop out (docs/earfun/PROTOCOL.md section 9).
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =

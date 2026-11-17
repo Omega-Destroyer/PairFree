@@ -16,7 +16,7 @@ import io.github.omegadestroyer.pairfree.protocol.apple.BcdSession
 import io.github.omegadestroyer.pairfree.protocol.apple.BeatsControl
 import io.github.omegadestroyer.pairfree.protocol.apple.BeatsTalk
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
-import java.io.IOException
+import kotlinx.io.IOException
 
 /** AirPods and the Beats on Apple's chips (docs/apple/PROTOCOL.md, docs/apple/B2P.md). */
 object AppleSpec : BrandSpec(Brand.APPLE) {

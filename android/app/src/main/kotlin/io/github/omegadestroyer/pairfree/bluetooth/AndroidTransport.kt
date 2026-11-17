@@ -33,6 +33,38 @@ class AndroidTransport(private val context: Context?, private val adapter: Bluet
 
     private fun contextForLe(): Context = context ?: throw IOException("no context for Bluetooth LE")
 
+    override val isOn: Boolean get() = adapter?.isEnabled == true
+
+    override fun notPermitted(failure: Throwable): Boolean = failure is SecurityException
+
+    override fun hiddenBySystem(failure: Throwable): Boolean = failure is ConstructorsHidden
+
+    override fun deviceFacts(address: String): List<Pair<String, String>> {
+        val remote = adapter?.getRemoteDevice(address)
+        fun known(read: () -> String): String = try { read() } catch (e: SecurityException) { "not allowed to read" }
+        val type = remote?.let { r ->
+            known {
+                when (r.type) {
+                    BluetoothDevice.DEVICE_TYPE_CLASSIC -> "classic"
+                    BluetoothDevice.DEVICE_TYPE_LE -> "LE only"
+                    BluetoothDevice.DEVICE_TYPE_DUAL -> "classic and LE"
+                    else -> "unknown"
+                }
+            }
+        } ?: "unknown"
+        val bond = remote?.let { r ->
+            known {
+                when (r.bondState) {
+                    BluetoothDevice.BOND_BONDED -> "paired"
+                    BluetoothDevice.BOND_BONDING -> "pairing"
+                    else -> "not paired"
+                }
+            }
+        } ?: "unknown"
+        val services = remote?.let { r -> known { r.uuids?.joinToString(", ") { it.toString() } ?: "none cached" } } ?: "unknown"
+        return listOf("Device" to "$type, $bond", "Its services" to services)
+    }
+
     override val hasLe: Boolean get() = context != null
 
     override val mayScan: Boolean

@@ -22,7 +22,7 @@ import io.github.omegadestroyer.pairfree.protocol.TalkWire
 import io.github.omegadestroyer.pairfree.protocol.Wire
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
-import java.io.IOException
+import kotlinx.io.IOException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -69,9 +69,10 @@ interface DriverHost {
 /**
  * What the brands and the reports need to know about the system PairFree runs on, in words of its own: [os] for a device
  * report ("Android 16 (API 36)"), [osAndDevice] with the maker and build where a report asks for the phone,
- * [madeBySamsung] and [androidSdk] (0 off Android) for the Galaxy Buds, whose settings differ on Samsung's own phones.
+ * [madeBySamsung] and [androidSdk] (0 off Android) for the Galaxy Buds, whose settings differ on Samsung's own phones,
+ * and [host], the phone or computer itself as a connection report's line named [hostLabel] ("Phone") gives it.
  */
-class PlatformInfo(val os: String, val osAndDevice: String, val madeBySamsung: Boolean, val androidSdk: Int)
+class PlatformInfo(val os: String, val osAndDevice: String, val madeBySamsung: Boolean, val androidSdk: Int, val hostLabel: String, val host: String)
 
 /** What the Sound tab says while a brand's earbuds have no equalizer to show; each has a text of its own in the language file (`eq_<name>`). */
 enum class EqNote {

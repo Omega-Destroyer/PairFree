@@ -1,13 +1,5 @@
 package io.github.omegadestroyer.pairfree.bluetooth
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.content.Context
-import android.os.Build
-import android.os.SystemClock
-import androidx.annotation.RequiresPermission
 import io.github.omegadestroyer.pairfree.brands.BrandDriver
 import io.github.omegadestroyer.pairfree.brands.Brands
 import io.github.omegadestroyer.pairfree.brands.DriverHost
@@ -25,7 +17,8 @@ import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Maker
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
-import java.io.IOException
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -37,6 +30,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.io.IOException
 import kotlinx.coroutines.launch
 
 /**
@@ -87,17 +82,16 @@ sealed interface LinkStatus {
  * [io.github.omegadestroyer.pairfree.brands.BrandSpec] says, keeps it open (a drop is followed by a few retries, with the
  * last state kept on screen), and hands it to the brand's [BrandDriver], which speaks the brand's protocol and turns
  * what the earbuds say into [state] and [settings]. Nothing here knows any one brand: the brands are in the `brands`
- * package. [log], when set, gets a line for every frame and for the channel opening and closing. [context] opens LE
- * connections.
+ * package. Nor any one system: [transport] is its Bluetooth and [platform] what the reports say about it. [log], when
+ * set, gets a line for every frame and for the channel opening and closing.
  */
 class EarbudsConnection(
     private val scope: CoroutineScope,
-    private val adapter: BluetoothAdapter?,
-    private val context: Context? = null,
+    private val transport: Transport,
+    /** The system PairFree runs on, for the brands and the reports. */
+    val platform: PlatformInfo,
     private val log: ((String) -> Unit)? = null,
     private val assistantIsGoogle: () -> Boolean = { true },
-    /** The system PairFree runs on, for the brands and the reports. */
-    val platform: PlatformInfo = androidPlatform(),
 ) {
     private val _status = MutableStateFlow<LinkStatus>(LinkStatus.Idle)
     val status: StateFlow<LinkStatus> = _status.asStateFlow()
@@ -131,13 +125,14 @@ class EarbudsConnection(
 
     // What the current attempt tried, for the connection report: the steps from [note], timed from [startedAt],
     // and the device it is for. The links' own lines count only while a channel is opening ([opening]).
-    private val steps = mutableListOf<String>()
-    private var startedAt = 0L
+    // The links add their lines from their own threads, so the list is replaced whole each time.
+    private val steps = MutableStateFlow<List<String>>(emptyList())
+    private var startedAt: TimeMark = TimeSource.Monotonic.markNow()
     private var opening = false
-    private var reportDevice: BluetoothDevice? = null
 
     private fun note(step: String) {
-        synchronized(steps) { steps += "+${SystemClock.elapsedRealtime() - startedAt} $step" }
+        val line = "+${startedAt.elapsedNow().inWholeMilliseconds} $step"
+        steps.update { it + line }
     }
 
     /** What a driver may use of this connection. */
@@ -158,7 +153,7 @@ class EarbudsConnection(
 
     /** What opening a channel may use of this connection. */
     private val env = object : OpenEnv {
-        override val transport: Transport = AndroidTransport(context, adapter)
+        override val transport: Transport get() = this@EarbudsConnection.transport
         override val log: ((String) -> Unit)? get() = this@EarbudsConnection.log
 
         /** [log], and while a channel opens, the links' lines as steps of the report too. */
@@ -173,22 +168,20 @@ class EarbudsConnection(
     /** The last raw reply to each of SOUNDPEATS' GETs, for the device report and a recording's own reads. Empty for other brands. */
     val lastReplies: Map<Command, ByteArray> get() = (driver as? SoundpeatsDriver)?.replies ?: emptyMap()
 
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    /** Opens the control channel to [device]. On Android the caller holds the Bluetooth permission. */
     fun connect(device: Paired) {
         disconnect()
         _state.value = EarbudState()
         _settings.value = emptyList()
         _extra.value = null
-        val remote = adapter?.takeIf { it.isEnabled }?.getRemoteDevice(device.address)
-        if (remote == null) {
+        if (!transport.isOn) {
             _status.value = LinkStatus.Failed(device, LinkStatus.Reason.BLUETOOTH_OFF)
             return
         }
         val token = Any()
         attempt = token
-        synchronized(steps) { steps.clear() }
-        startedAt = SystemClock.elapsedRealtime()
-        reportDevice = remote
+        steps.value = emptyList()
+        startedAt = TimeSource.Monotonic.markNow()
         val spec = Brands[device.brand]
         val driver = spec.driver(device, host)
         this.driver = driver
@@ -217,7 +210,7 @@ class EarbudsConnection(
                 } catch (e: IOException) {
                     log?.invoke("could not open: ${e.message}")
                     note("failed: ${ConnectionReport.describe(e)}")
-                    if (e is ConstructorsHidden && !everOpen) {
+                    if (transport.hiddenBySystem(e) && !everOpen) {
                         fail(token, device, LinkStatus.Reason.HIDDEN_BY_ANDROID)
                         return@launch
                     }
@@ -231,13 +224,14 @@ class EarbudsConnection(
                     }
                     fail(token, device, if (everOpen) LinkStatus.Reason.LOST else LinkStatus.Reason.COULD_NOT_OPEN)
                     return@launch
-                } catch (e: SecurityException) {
-                    note("failed: ${ConnectionReport.describe(e)}")
-                    fail(token, device, LinkStatus.Reason.NO_PERMISSION)
-                    return@launch
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: RuntimeException) {
+                    if (transport.notPermitted(e)) {
+                        note("failed: ${ConnectionReport.describe(e)}")
+                        fail(token, device, LinkStatus.Reason.NO_PERMISSION)
+                        return@launch
+                    }
                     // A fault in one brand's opening is a channel that did not open, not a crash.
                     log?.invoke("could not open: $e")
                     note("failed: ${ConnectionReport.describe(e)}")
@@ -250,7 +244,7 @@ class EarbudsConnection(
                 _status.value = LinkStatus.Connected(device)
                 log?.invoke("open")
                 note("open")
-                val openedAt = SystemClock.elapsedRealtime()
+                val openedAt = TimeSource.Monotonic.markNow()
                 try {
                     driver.serve(opened)
                 } catch (e: CancellationException) {
@@ -261,10 +255,10 @@ class EarbudsConnection(
                     note("stopped: ${ConnectionReport.describe(e)}")
                 }
                 log?.invoke("closed")
-                note("closed after ${(SystemClock.elapsedRealtime() - openedAt) / 1000} s")
+                note("closed after ${openedAt.elapsedNow().inWholeSeconds} s")
                 opened.close()
                 // A channel that keeps closing straight away does not earn fresh retries.
-                if (SystemClock.elapsedRealtime() - openedAt >= STABLE_MS) retries = 0
+                if (openedAt.elapsedNow().inWholeMilliseconds >= STABLE_MS) retries = 0
                 if (attempt !== token) return@launch
                 if (retries >= RECONNECT_DELAYS_MS.size) {
                     fail(token, device, LinkStatus.Reason.LOST)
@@ -325,40 +319,14 @@ class EarbudsConnection(
     }
 
     /** What the failed attempt tried, with the facts that tell one phone and device from another (no serial, no full address). */
-    @SuppressLint("MissingPermission") // only after connecting, which needs the permission; a refusal is caught
     private fun attemptReport(device: Paired, reason: LinkStatus.Reason): ConnectionReport.Attempt {
-        val remote = reportDevice
-        fun known(read: () -> String): String = try { read() } catch (e: SecurityException) { "not allowed to read" }
-        val type = remote?.let { r ->
-            known {
-                when (r.type) {
-                    BluetoothDevice.DEVICE_TYPE_CLASSIC -> "classic"
-                    BluetoothDevice.DEVICE_TYPE_LE -> "LE only"
-                    BluetoothDevice.DEVICE_TYPE_DUAL -> "classic and LE"
-                    else -> "unknown"
-                }
-            }
-        } ?: "unknown"
-        val bond = remote?.let { r ->
-            known {
-                when (r.bondState) {
-                    BluetoothDevice.BOND_BONDED -> "paired"
-                    BluetoothDevice.BOND_BONDING -> "pairing"
-                    else -> "not paired"
-                }
-            }
-        } ?: "unknown"
-        val services = remote?.let { r -> known { r.uuids?.joinToString(", ") { it.toString() } ?: "none cached" } } ?: "unknown"
         val facts = listOf(
             "Brand" to device.brand.name.lowercase(),
             "Model" to (device.model ?: "not known before the channel opens"),
             "Service" to (device.service ?: "the brand's default"),
             "Failure" to reason.name.lowercase().replace('_', ' '),
-            "Device" to "$type, $bond",
-            "Its services" to services,
-            "Phone" to "${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}), build ${Build.ID}",
-        )
-        return ConnectionReport.Attempt(device.name, facts, synchronized(steps) { steps.toList() })
+        ) + transport.deviceFacts(device.address) + (platform.hostLabel to platform.host)
+        return ConnectionReport.Attempt(device.name, facts, steps.value)
     }
 
     companion object {

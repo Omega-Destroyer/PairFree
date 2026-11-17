@@ -22,7 +22,7 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblTalk
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
-import java.io.IOException
+import kotlinx.io.IOException
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 

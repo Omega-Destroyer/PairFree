@@ -25,7 +25,7 @@ import io.github.omegadestroyer.pairfree.protocol.qcy.QcyTalk
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyWire
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
-import java.io.IOException
+import kotlinx.io.IOException
 
 /** QCY (docs/qcy/PROTOCOL.md), and SOUNDPEATS' QCY-built models, which come here from [SoundpeatsSpec] with `soldAs`. */
 object QcySpec : BrandSpec(Brand.QCY) {

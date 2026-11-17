@@ -21,7 +21,7 @@ import io.github.omegadestroyer.pairfree.protocol.SoundpeatsTalk
 import io.github.omegadestroyer.pairfree.protocol.qcy.Capsule
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
-import java.io.IOException
+import kotlinx.io.IOException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update

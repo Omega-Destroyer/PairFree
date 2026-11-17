@@ -9,4 +9,6 @@ fun androidPlatform(): PlatformInfo = PlatformInfo(
     osAndDevice = "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})",
     madeBySamsung = Build.MANUFACTURER.equals("samsung", ignoreCase = true),
     androidSdk = Build.VERSION.SDK_INT,
+    hostLabel = "Phone",
+    host = "${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}), build ${Build.ID}",
 )

@@ -2,7 +2,7 @@ package io.github.omegadestroyer.pairfree.brands
 
 import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserBle
-import java.io.IOException
+import kotlinx.io.IOException
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import io.github.omegadestroyer.pairfree.bluetooth.Brand

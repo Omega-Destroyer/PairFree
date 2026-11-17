@@ -61,6 +61,21 @@ class QcyFound(val target: LeTarget, val advert: QcyAdvert)
  * ([OpenEnv.hold]) and then connects, so a disconnect can abort it. Opening fails with an IOException.
  */
 interface Transport {
+    /** True when the system has Bluetooth and it is switched on. */
+    val isOn: Boolean
+
+    /** True when [failure] is the system refusing something PairFree has no permission for. */
+    fun notPermitted(failure: Throwable): Boolean
+
+    /** True when [failure] is the system hiding from apps what the AirPods' channel needs (Android's hidden-API rules). */
+    fun hiddenBySystem(failure: Throwable): Boolean
+
+    /**
+     * What the system knows of the device paired at [address], as lines of a connection report ("Device", "Its services"):
+     * its kind, whether it is paired, the services it lists. No serial number and no full address.
+     */
+    fun deviceFacts(address: String): List<Pair<String, String>>
+
     /** True when Bluetooth LE channels can be opened at all. */
     val hasLe: Boolean
 

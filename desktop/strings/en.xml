@@ -6,5 +6,7 @@
       desktop/strings/<language tag>.xml. For a language, its own desktop wording comes first, then its main file, then English's
       desktop wording and then English.
     -->
+    <!-- On a computer the look that takes the phone's colours takes the system's: its accent colour and its dark or light mode. -->
+    <string name="look_material_you">System</string>
     <string name="app_language_system">Same as the computer</string>
 </resources>

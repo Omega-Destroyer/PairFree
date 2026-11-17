@@ -214,6 +214,7 @@ dependencies {
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.coroutines.android)
     implementation(libs.kotlinx.io.core)
+    implementation(libs.kotlinx.serialization.json)
     // Switches Android's hidden-API protection off for BluetoothSocket only, to open the AirPods' channel (Apache-2.0; docs/apple/PROTOCOL.md section 7).
     implementation(libs.hiddenapibypass)
     debugImplementation(libs.compose.ui.tooling)

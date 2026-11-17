@@ -23,6 +23,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.androidPlatform
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.EqOpener
+import io.github.omegadestroyer.pairfree.eq.PrefsTextStore
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Identify
@@ -97,7 +98,7 @@ class Hub(private val app: Application) {
     val audio = AudioLinks(app, adapter)
 
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
-    val equalizer = Equalizer(prefs, scope, { frames -> connection.sendEq(frames) }, { app.getString(R.string.eq_imported_name) })
+    val equalizer = Equalizer(PrefsTextStore(prefs), scope, { frames -> connection.sendEq(frames) }, { app.getString(R.string.eq_imported_name) })
 
     /** Opens [equalizer] for the connected earbuds of any brand; the Sound tab and the home screen widget share it. */
     val eqOpener = EqOpener(connection, equalizer, scope)

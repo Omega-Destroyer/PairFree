@@ -1,7 +1,12 @@
 package io.github.omegadestroyer.pairfree.eq
 
-import android.content.SharedPreferences
-import androidx.core.content.edit
+import io.github.omegadestroyer.pairfree.eq.Stored.array
+import io.github.omegadestroyer.pairfree.eq.Stored.doubles
+import io.github.omegadestroyer.pairfree.eq.Stored.ints
+import io.github.omegadestroyer.pairfree.eq.Stored.objects
+import io.github.omegadestroyer.pairfree.eq.Stored.optInt
+import io.github.omegadestroyer.pairfree.eq.Stored.optString
+import io.github.omegadestroyer.pairfree.eq.Stored.string
 import io.github.omegadestroyer.pairfree.protocol.EqBand
 import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.EqPreset
@@ -14,9 +19,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 /**
  * Something the Sound tab can put on the earbuds: user gains, one per band in dB (whole, or half steps where the brand takes them) on
@@ -156,7 +165,7 @@ interface EqActions {
  * ([channelOpened]), since another app may have changed the EQ in between.
  */
 class Equalizer(
-    private val prefs: SharedPreferences,
+    private val prefs: TextStore,
     private val scope: CoroutineScope,
     private val send: (List<ByteArray>) -> Unit,
     /** The name an imported profile gets when its file gives none, in the app's language. */
@@ -170,8 +179,8 @@ class Equalizer(
     /** The profile the EQ of the earbuds at [address] is on: the open EQ's, else the one this phone last set (null if none). */
     fun profileOf(address: String): String? =
         if (this.address == address) _state.value?.selected?.id else try {
-            prefs.getString(KEY_SETTING + address, null)?.let { JSONObject(it).optString("profile").ifEmpty { null } }
-        } catch (_: JSONException) {
+            prefs.get(KEY_SETTING + address)?.let { Stored.objectOf(it).optString("profile").ifEmpty { null } }
+        } catch (_: IllegalArgumentException) {
             null
         }
 
@@ -181,7 +190,7 @@ class Equalizer(
     private var pending: Job? = null
     private var reopened: String? = null   // earbuds whose channel opened and whose EQ has not gone back yet
     private var restoring: String? = null  // earbuds whose EQ is waiting out RESTORE_AFTER_MS before it goes back
-    private var sentAt = 0L                 // when this phone last sent an EQ, for [reported]
+    private var sentAt: TimeMark? = null    // when this phone last sent an EQ, for [reported]
 
     /**
      * Loads what this phone last sent to [address], and the profiles saved for [model]. Null [model]
@@ -219,7 +228,7 @@ class Equalizer(
     fun reported(profileId: String?, gains: List<Double>) {
         val s = _state.value ?: return
         if (!s.target.reportsEq || gains.size != s.layout.bands.size) return
-        if (pending?.isActive == true || System.currentTimeMillis() - sentAt < SETTLE_MS) return
+        if (pending?.isActive == true || sentAt?.let { it.elapsedNow().inWholeMilliseconds < SETTLE_MS } == true) return
         // A custom curve that matches the profile it came from keeps that profile's name.
         val id = profileId ?: s.setting.profileId?.takeIf { id -> s.profiles.any { it.id == id && it.preset == null && it.gains == gains } }
         val setting = s.setting.copy(profileId = id, gains = gains)
@@ -239,7 +248,7 @@ class Equalizer(
         if (s.profiles.firstOrNull { it.id == saved.profileId }?.preset != null) return
         _state.value = s.copy(setting = saved, known = true)
         send(s.target.frames(s.layout, saved, null))
-        sentAt = System.currentTimeMillis()
+        sentAt = TimeSource.Monotonic.markNow()
     }
 
     /**
@@ -276,7 +285,7 @@ class Equalizer(
             delay(RESTORE_AFTER_MS)
             restoring = null
             _state.value?.let { send(framesOf(it, it.setting)) }
-            sentAt = System.currentTimeMillis()
+            sentAt = TimeSource.Monotonic.markNow()
         }
     }
 
@@ -345,26 +354,28 @@ class Equalizer(
     override fun exportJson(): String {
         val s = _state.value ?: return ""
         val name = s.basis?.takeIf { !it.builtIn }?.name ?: "PairFree EQ"
-        return JSONObject()
-            .put("format", FORMAT)
-            .put("version", 1)
-            .put("model", s.model.code)
-            .put("name", name)
-            .put("bands_hz", JSONArray(s.layout.bands.map { it.hz }))
-            .put("gains_db", JSONArray(s.setting.gains))
-            .put("preamp_db", s.setting.preampDb)
-            .toString(2)
+        return Stored.printed(
+            buildJsonObject {
+                put("format", FORMAT)
+                put("version", 1)
+                put("model", s.model.code)
+                put("name", name)
+                put("bands_hz", JsonArray(s.layout.bands.map { JsonPrimitive(it.hz) }))
+                put("gains_db", JsonArray(s.setting.gains.map(Stored::number)))
+                put("preamp_db", s.setting.preampDb)
+            },
+        )
     }
 
     override fun importJson(text: String): Boolean {
         val s = _state.value ?: return false
         return try {
-            val json = JSONObject(text)
+            val json = Stored.objectOf(text)
             if (json.optString("format") !in FORMATS || json.optInt("version") != 1) return false
-            val hz = json.getJSONArray("bands_hz").let { a -> List(a.length()) { a.getInt(it) } }
+            val hz = json.array("bands_hz").ints()
             if (hz != s.layout.bands.map { it.hz }) return false
             val range = -s.layout.userRangeDb..s.layout.userRangeDb
-            val gains = json.getJSONArray("gains_db").let { a -> List(a.length()) { snap(a.getDouble(it), s.target.gainStepDb, range.last) } }
+            val gains = json.array("gains_db").doubles().map { snap(it, s.target.gainStepDb, range.last) }
             // One gain per band: a file with fewer or more would break the curve the screen draws.
             if (gains.size != hz.size) return false
             val name = json.optString("name").trim().take(MAX_NAME).ifEmpty { importedName().take(MAX_NAME) }
@@ -374,7 +385,7 @@ class Equalizer(
             storeProfiles(s.model.code, profiles)
             apply(EqSetting(profile.id, gains, json.optInt("preamp_db", 0).coerceIn(PREAMP_MIN_DB, 0)))
             true
-        } catch (_: JSONException) {
+        } catch (_: IllegalArgumentException) {
             false
         }
     }
@@ -389,7 +400,7 @@ class Equalizer(
         pending = scope.launch {
             delay(SEND_AFTER_MS)
             send(framesOf(s, setting))
-            sentAt = System.currentTimeMillis()
+            sentAt = TimeSource.Monotonic.markNow()
         }
     }
 
@@ -399,29 +410,29 @@ class Equalizer(
     // Storage: one JSON value per model for saved profiles, one per pair of earbuds for the setting.
 
     internal fun loadProfiles(code: String, layout: EqLayout): List<EqProfile> = try {
-        val array = JSONArray(prefs.getString(KEY_PROFILES + code, "[]"))
-        List(array.length()) { array.getJSONObject(it) }.mapNotNull { o ->
-            val gains = o.getJSONArray("gains").let { a -> List(a.length()) { a.getDouble(it) } }
-            if (gains.size != layout.bands.size) null else EqProfile(EqProfile.USER + o.getString("name"), o.getString("name"), gains)
+        Stored.arrayOf(prefs.get(KEY_PROFILES + code) ?: "[]").objects().mapNotNull { o ->
+            val gains = o.array("gains").doubles()
+            if (gains.size != layout.bands.size) null else EqProfile(EqProfile.USER + o.string("name"), o.string("name"), gains)
         }
-    } catch (_: JSONException) {
+    } catch (_: IllegalArgumentException) {
         emptyList()
     }
 
     private fun storeProfiles(code: String, profiles: List<EqProfile>) {
-        val array = JSONArray()
-        for (p in profiles.filter { !it.builtIn }) array.put(JSONObject().put("name", p.name).put("gains", JSONArray(p.gains)))
-        prefs.edit { putString(KEY_PROFILES + code, array.toString()) }
+        val array = buildJsonArray {
+            for (p in profiles.filter { !it.builtIn }) add(buildJsonObject { put("name", p.name); put("gains", JsonArray(p.gains.map(Stored::number))) })
+        }
+        prefs.put(KEY_PROFILES + code, array.toString())
     }
 
     private fun loadSetting(address: String, layout: EqLayout): EqSetting? = try {
-        prefs.getString(KEY_SETTING + address, null)?.let { text ->
-            val o = JSONObject(text)
-            val gains = o.getJSONArray("gains").let { a -> List(a.length()) { a.getDouble(it) } }
+        prefs.get(KEY_SETTING + address)?.let { text ->
+            val o = Stored.objectOf(text)
+            val gains = o.array("gains").doubles()
             if (gains.size != layout.bands.size) null
             else EqSetting(o.optString("profile").ifEmpty { null }, gains, o.optInt("preamp", 0))
         }
-    } catch (_: JSONException) {
+    } catch (_: IllegalArgumentException) {
         null
     }
 
@@ -429,11 +440,12 @@ class Equalizer(
     private fun storeSetting() {
         val a = address ?: return
         val setting = _state.value?.takeIf { it.known }?.setting ?: return
-        val o = JSONObject()
-            .put("profile", setting.profileId ?: "")
-            .put("gains", JSONArray(setting.gains))
-            .put("preamp", setting.preampDb)
-        prefs.edit { putString(KEY_SETTING + a, o.toString()) }
+        val o = buildJsonObject {
+            put("profile", setting.profileId ?: "")
+            put("gains", JsonArray(setting.gains.map(Stored::number)))
+            put("preamp", setting.preampDb)
+        }
+        prefs.put(KEY_SETTING + a, o.toString())
     }
 
     companion object {

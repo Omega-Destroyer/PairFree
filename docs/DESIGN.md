@@ -146,6 +146,9 @@ Light, friendly, hand-drawn.
 
 ## Screens
 
+These are the phone's screens. The Windows and macOS apps show the same things in a layout made for a window and a mouse:
+`docs/DESKTOP.md`, section 2.
+
 Four tabs along the bottom: Home, Sound, Controls, Device. One more screen shows
 when nothing is connected.
 

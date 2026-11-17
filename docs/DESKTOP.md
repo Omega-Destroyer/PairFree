@@ -68,17 +68,39 @@ desktop/spike     phase 0's EXE, kept until desktop/windows replaces it
 ### 2. Desktop UI
 
 Redesigned for a window and a mouse, **one implementation in Kotlin for both systems**: a small retained toolkit in `desktop/ui` (panel, button,
-choice, switch, slider, list, text field, dialog, EQ graph) drawn through a `Canvas` interface that Windows backs with Direct2D/DirectWrite and Mac
-with CoreGraphics/CoreText. Drawing it ourselves is what the looks require anyway (hairlines, Sketchbook's shadows and uneven corners); the look's
-`shape` and `type` tokens are honoured in the toolkit as they are in `ui/Components.kt`.
+choice, switch, slider, list, text field, dialog, EQ graph) drawn through a `Canvas` interface that Windows and Mac each back with their own
+drawing calls. Drawing it ourselves is what the looks require anyway (hairlines, Sketchbook's shadows and uneven corners); the look's `shape` and
+`type` tokens are honoured in the toolkit as they are in `ui/Components.kt`.
 
-- Layout: device list and tabs in a left sidebar, content at the right; EQ with draggable points, mouse wheel and arrow keys; right-click menus;
-  keyboard focus and tab order; tooltips; per-monitor DPI.
-- Looks: Studio, Studio Light, Sketchbook as they are. Material You's file becomes "System" on desktop: Windows' accent colour and dark/light mode
-  (macOS' accent likewise), through `SystemColors`.
-- Persian and other right-to-left languages: DirectWrite and CoreText shape the text; the toolkit mirrors as `ui/Direction.kt` does.
+**The layout the owner approved from mock-ups on 2026-11-16** (eight boards: the four screens, nothing connected, the tray, and Home in Studio
+Light and Sketchbook):
+
+- **Window:** 840 by 720 to start with, resizable, with the system's title bar buttons and PairFree's icon (the Android launcher icon's dot and
+  two arcs, also the tray icon).
+- **Sidebar, 216 wide, on every screen:** the paired devices PairFree supports, each a button with its state on one line ("Connected") and its
+  batteries on the next, never wrapping: `L 100%  R 100%  C 84%`, with a percent sign where the model reports percent and step bars where it
+  reports fifths or tenths. Under them the connected device's four screens (Home, Sound, Controls, Device) in place of Android's bottom tabs.
+  At the foot: Look, Language ("Same as Windows" first) and the version with the update state.
+- **Home:** two columns. Left: the battery panel (left, case, right with their drawings, percent and bar) and noise control (Off, Cancelling,
+  Transparency as one control; the scenes or levels under it in **one row** of equal buttons). Right: the sound profile with a small curve and
+  "Open equalizer", and the quick switches. Keys 1, 2 and 3 switch the noise mode while the window is in front.
+- **Sound:** the profile chips; the graph across the full width with the band buttons under it; under that, side by side, the selected band
+  (gain, slider, minus and plus) and the preamp. Hearing test, Import file, Export file and Save profile are buttons at the top right. A point is
+  dragged, or moved with the wheel over its band, or with the arrow keys; right-click resets it.
+- **Controls:** left and right earbud **side by side** in two columns, a row per gesture with a drop-down in each column, so there is no
+  left/right switch; groups (Taps, Slides, During calls) and rows come from the model as on Android, one column for one-sided headphones. Touch
+  controls on/off under it, Reset gestures at the top right.
+- **Device:** two columns of panels. Left: the earbuds' settings (connection, prompts and power, find and fit, and the brand's rows). Right: This
+  app (what the close button does, minimise to the tray, start with Windows, low battery notice), Updates (the check at start, Check now, where
+  the settings file is) and Maintenance (device report, factory reset behind its confirmation).
+- **Nothing connected:** the open case drawing, the paired devices with Connect buttons, a model that cannot work on this system listed as "Not
+  supported" with one line of why (AirPods on Windows), Bluetooth settings, and the privacy line.
+- **Tray:** the icon's tooltip is the batteries; its menu has the device and batteries, Noise control, Sound profile, Disconnect, Open PairFree
+  and Exit. A low-battery notice shows once per charge.
+- **Looks:** Studio, Studio Light and Sketchbook as on Android; Material You's file becomes "System" (Windows' accent colour and dark or light
+  mode, macOS' likewise), through `SystemColors`. System was listed in the mock-ups but not drawn.
+- Persian and other right-to-left languages mirror as `ui/Direction.kt` does; the system shapes the text.
 - Screen readers: UI Automation on Windows needs its own provider code. Planned after the first release; said openly until then.
-- A design section for the desktop goes into `docs/DESIGN.md` with mock-ups for the owner **before** the screens are built (end of phase 1).
 
 ### 3. Windows shell (requirements 1, 3, 4)
 
@@ -150,7 +172,7 @@ what a platform lacks (AirPods on Windows).
 0. **Spike, the go/no-go**: done 2026-11-16, go (`desktop/spike/RESULTS.md`). Drawing was done with GDI+, whose bindings Kotlin/Native ships;
    Direct2D or GDI+ is decided in phase 2 after trying Persian text and the equalizer graph.
 1. **Shared modules**: the desktop build compiles `protocol` (done 2026-11-16); `core` extracted from `android/app` with no change in the Android app's behaviour
-   (all tests, lint, a 0.14.0 comparison on the emulator). Desktop design section and mock-ups for approval.
+   (all tests, lint, a 0.14.0 comparison on the emulator). The desktop layout was approved from mock-ups on 2026-11-16 (section 2).
 2. **Windows shell**: toolkit, looks, strings, TOML settings, tray, window behaviour, single instance.
 3. **Windows, serial brands**: every screen for the brands on classic serial channels, tried on the H3, Air5 Pro+ and Space A40; EQ, profiles,
    controls, device report, hearing and fit tests.

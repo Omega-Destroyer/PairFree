@@ -113,6 +113,7 @@ private fun readBattery(address: Long): String = memScoped {
  * thread and shows it.
  */
 fun main(args: Array<String>) {
+    if (args.firstOrNull() == "--gatt") return gattServices(args.getOrNull(1)?.replace(":", "")?.toLongOrNull(16) ?: return)
     val address = args.firstOrNull()?.replace(":", "")?.toLongOrNull(16)
     linkedLine = linkAll()
     if (address == null) statusLine = "No address given"

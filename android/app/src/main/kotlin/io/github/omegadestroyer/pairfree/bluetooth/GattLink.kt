@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothStatusCodes
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresPermission
+import io.github.omegadestroyer.pairfree.brands.GattChannel
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
@@ -43,7 +44,7 @@ class GattLink(
     private val uuids: Uuids = HARMAN,
     /** Sennheiser's Bluetooth LE bonding (docs/sennheiser/PROTOCOL.md section 6), for a device that is not bonded yet: null for every other brand. */
     private val pairing: Pairing? = null,
-) : ControlLink {
+) : GattChannel {
     /** The characteristic Sennheiser's pairing steps are written to, and the encrypted one whose read provokes the bond. */
     class Pairing(val characteristic: UUID, val encrypted: UUID)
 
@@ -60,7 +61,7 @@ class GattLink(
     @Volatile private var closed = false
 
     /** The MTU the phone and device agreed on; 23 (the least) until they do. */
-    @Volatile var mtu: Int = MIN_MTU
+    @Volatile override var mtu: Int = MIN_MTU
         private set
 
     /** Where the opening sequence is: through the raw characteristic's extra steps, or the main subscription. */

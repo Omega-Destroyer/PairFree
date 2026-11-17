@@ -1,14 +1,9 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import android.annotation.SuppressLint
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.content.Context
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
-import io.github.omegadestroyer.pairfree.bluetooth.SppLink
 import io.github.omegadestroyer.pairfree.eq.BandEqTarget
 import io.github.omegadestroyer.pairfree.eq.EqSource
 import io.github.omegadestroyer.pairfree.eq.EqTarget
@@ -294,8 +289,8 @@ abstract class TalkDriver<M, T : Talk<M>>(host: DriverHost) : BrandDriver(host) 
 
 /** What opening a channel may use of the connection ([BrandSpec.open]). */
 interface OpenEnv {
-    val context: Context?
-    val adapter: BluetoothAdapter?
+    /** The system's Bluetooth, which makes the channels. */
+    val transport: Transport
 
     /** The debug log; null in release builds. */
     val log: ((String) -> Unit)?
@@ -377,11 +372,10 @@ abstract class BrandSpec(val brand: Brand) {
     abstract fun driver(device: Paired, host: DriverHost): BrandDriver
 
     /** Opens the control channel: by default the serial channel on the device's service, else the standard serial port. */
-    @SuppressLint("MissingPermission") // only called while connecting, which needs the permission
-    open suspend fun open(env: OpenEnv, remote: BluetoothDevice, device: Paired, driver: BrandDriver): ControlLink {
+    open suspend fun open(env: OpenEnv, device: Paired, driver: BrandDriver): ControlLink {
         val uuid = device.service ?: Wire.SPP_UUID
         env.note("serial channel $uuid")
-        return env.hold(SppLink(remote, env.linkLog, uuid)).apply { connect() }
+        return env.hold(env.transport.serial(device.address, uuid, env.linkLog)).apply { connect() }
     }
 
     /** The widget's noise choices as the brand's tables give them, or null where only the earbuds' replies say. Empty: the model has none. */

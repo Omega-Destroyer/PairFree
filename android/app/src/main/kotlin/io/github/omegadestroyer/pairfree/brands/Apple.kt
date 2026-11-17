@@ -1,13 +1,8 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
-import io.github.omegadestroyer.pairfree.bluetooth.AppleLink
-import io.github.omegadestroyer.pairfree.bluetooth.AppleSupport
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
-import io.github.omegadestroyer.pairfree.bluetooth.SppLink
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Form
@@ -45,20 +40,19 @@ object AppleSpec : BrandSpec(Brand.APPLE) {
      * it is not tried: what a refused channel does to the AirPods' sound there is not known, and the user
      * is told Android 17 is needed instead, as the owner chose (2026-10-15) and as LibrePods does by default.
      */
-    @SuppressLint("MissingPermission") // only called while connecting, which needs the permission
-    override suspend fun open(env: OpenEnv, remote: BluetoothDevice, device: Paired, driver: BrandDriver): ControlLink {
+    override suspend fun open(env: OpenEnv, device: Paired, driver: BrandDriver): ControlLink {
+        val transport = env.transport
         if (AppleModels.beatsSession(device.name) != null) {
             // Apple's Beats app opens the plain serial channel to these Beats (docs/apple/B2P.md): no Android version matters.
             env.note("serial channel ${Wire.SPP_UUID} (${if (AppleModels.b2p(device.name) != null) "B2P" else "BCD"})")
-            return env.hold(SppLink(remote, env.linkLog, Wire.SPP_UUID)).apply { connect() }
+            return env.hold(transport.serial(device.address, Wire.SPP_UUID, env.linkLog)).apply { connect() }
         }
-        if (!AppleSupport.opensChannel()) {
+        if (!transport.opensAppleChannel) {
             env.note("not tried: this phone's Bluetooth stack is not on LibrePods' list")
             throw NeedsNewerAndroid()
         }
-        val a = env.adapter ?: throw IOException("no Bluetooth adapter")
-        env.note("L2CAP PSM 0x%04x".format(AppleWire.PSM))
-        return env.hold(AppleLink(a, remote, env.linkLog)).apply { connect() }
+        env.note("L2CAP PSM 0x" + AppleWire.PSM.toString(16).padStart(4, '0'))
+        return env.hold(transport.appleChannel(device.address, env.linkLog)).apply { connect() }
     }
 
     /** AirPods say only in their replies. */

@@ -18,6 +18,7 @@ import io.github.omegadestroyer.pairfree.brands.OpenEnv
 import io.github.omegadestroyer.pairfree.brands.PlatformInfo
 import io.github.omegadestroyer.pairfree.brands.ScanNotAllowed
 import io.github.omegadestroyer.pairfree.brands.SoundpeatsDriver
+import io.github.omegadestroyer.pairfree.brands.Transport
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
@@ -157,8 +158,7 @@ class EarbudsConnection(
 
     /** What opening a channel may use of this connection. */
     private val env = object : OpenEnv {
-        override val context: Context? get() = this@EarbudsConnection.context
-        override val adapter: BluetoothAdapter? get() = this@EarbudsConnection.adapter
+        override val transport: Transport = AndroidTransport(context, adapter)
         override val log: ((String) -> Unit)? get() = this@EarbudsConnection.log
 
         /** [log], and while a channel opens, the links' lines as steps of the report too. */
@@ -205,7 +205,7 @@ class EarbudsConnection(
                 opening = true
                 val opened = try {
                     // Each link is [link] while it opens, so [disconnect] can abort it.
-                    spec.open(env, remote, device, driver)
+                    spec.open(env, device, driver)
                 } catch (_: ScanNotAllowed) {
                     note("stopped: no permission to scan for it")
                     fail(token, device, LinkStatus.Reason.NO_SCAN_PERMISSION)

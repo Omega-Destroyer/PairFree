@@ -1,13 +1,6 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
 import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
-import io.github.omegadestroyer.pairfree.bluetooth.GattLink
-import io.github.omegadestroyer.pairfree.bluetooth.SennheiserFinder
 import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserBle
 import java.io.IOException
 import kotlinx.coroutines.currentCoroutineContext
@@ -52,25 +45,23 @@ object SennheiserSpec : BrandSpec(Brand.SENNHEISER) {
      * The serial port, or for the products Smart Control opens only over Bluetooth LE a GATT channel: first on the classic address, else on the device a scan finds
      * (docs/sennheiser/PROTOCOL.md section 6). The link runs Sennheiser's own bonding steps when the earbuds are not bonded for LE.
      */
-    @SuppressLint("MissingPermission") // only called while connecting, which needs the permission; the scan's is checked here
-    override suspend fun open(env: OpenEnv, remote: BluetoothDevice, device: Paired, driver: BrandDriver): ControlLink {
+    override suspend fun open(env: OpenEnv, device: Paired, driver: BrandDriver): ControlLink {
         val ble = bleOf(device)
-        val ctx = env.context
-        if (ble == null || ctx == null) return super.open(env, remote, device, driver)
-        val uuids = GattLink.Uuids(java.util.UUID.fromString(ble.service), java.util.UUID.fromString(ble.notify), java.util.UUID.fromString(ble.write), 517)
-        val pairing = GattLink.Pairing(java.util.UUID.fromString(ble.pairing), java.util.UUID.fromString(ble.data))
-        fun gatt(d: BluetoothDevice) = env.hold(GattLink(ctx, d, env.linkLog, uuids = uuids, pairing = pairing))
+        val transport = env.transport
+        if (ble == null || !transport.hasLe) return super.open(env, device, driver)
+        val spec = GattSpec(GattUuids(ble.service, ble.notify, ble.write, 517), pairing = GattPairing(ble.pairing, ble.data))
+        fun gatt(target: LeTarget) = env.hold(transport.gatt(target, spec, env.linkLog))
         try {
             env.note("LE (GATT) on the classic address")
-            return gatt(remote).apply { connect() }
+            return gatt(transport.at(device.address)).apply { connect() }
         } catch (e: IOException) {
             env.log?.invoke("LE on the classic address: ${e.message}")
             env.note("failed: ${ConnectionReport.describe(e)}")
         }
         currentCoroutineContext().ensureActive()
-        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
+        if (!transport.mayScan) throw ScanNotAllowed()
         val names = (SennheiserModels.ALL.firstOrNull { it.name == device.model }?.names ?: Gaia2Models.ALL.firstOrNull { it.name == device.model }?.names).orEmpty() + device.name
-        val found = env.adapter?.let { SennheiserFinder(it, env.linkLog).find(names, device.address) } ?: throw NotFound()
+        val found = transport.findSennheiser(names, device.address, env.linkLog) ?: throw NotFound()
         env.note("LE (GATT) on the address the scan found")
         return gatt(found).apply { connect() }
     }

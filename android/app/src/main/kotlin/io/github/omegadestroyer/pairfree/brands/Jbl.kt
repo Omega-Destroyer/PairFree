@@ -1,17 +1,8 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
-import io.github.omegadestroyer.pairfree.bluetooth.GattLink
-import io.github.omegadestroyer.pairfree.bluetooth.JblFinder
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
-import io.github.omegadestroyer.pairfree.bluetooth.SppLink
 import io.github.omegadestroyer.pairfree.eq.BandEqTarget
 import io.github.omegadestroyer.pairfree.eq.EqSource
 import io.github.omegadestroyer.pairfree.eq.EqTarget
@@ -58,51 +49,45 @@ object JblSpec : BrandSpec(Brand.JBL) {
      * The classic serial channel, or for JBL's LE models GATT, first on the classic address, where the Tune Flex 2's LE
      * side answers (JblTray), else on the LE device a scan finds (docs/jbl/PROTOCOL.md section 3).
      */
-    @SuppressLint("MissingPermission") // only called while connecting, which needs the permission; the scan's is checked here
-    override suspend fun open(env: OpenEnv, remote: BluetoothDevice, device: Paired, driver: BrandDriver): ControlLink {
+    override suspend fun open(env: OpenEnv, device: Paired, driver: BrandDriver): ControlLink {
         val model = modelOf(device)
-        val ctx = env.context
+        val transport = env.transport
         // JBL's Airoha models have Airoha's own serial channel and LE service (docs/jbl/PROTOCOL.md section 10).
         val airoha = model?.family == JblModel.Family.AIROHA
         // Airoha earbuds paired over LE Audio are an LE device: JBL's app reaches them over Airoha's LE service at that
         // address, whatever the model's usual connection (docs/jbl/PROTOCOL.md section 10).
-        if (airoha && ctx != null && remote.type == BluetoothDevice.DEVICE_TYPE_LE) {
+        if (airoha && transport.hasLe && transport.isLeOnly(device.address)) {
             env.note("Airoha's LE service on the LE address")
-            return env.hold(GattLink(ctx, remote, env.linkLog, uuids = GattLink.AIROHA)).apply { connect() }
+            return env.hold(transport.gatt(transport.at(device.address), GattSpec(GattUuids.AIROHA), env.linkLog)).apply { connect() }
         }
-        if (model?.gatt != true || ctx == null) {
+        if (model?.gatt != true || !transport.hasLe) {
             val uuid = if (airoha) JblRace.SPP_UUID else device.service ?: Wire.SPP_UUID
             env.note("serial channel $uuid")
-            return env.hold(SppLink(remote, env.linkLog, uuid)).apply { connect() }
+            return env.hold(transport.serial(device.address, uuid, env.linkLog)).apply { connect() }
         }
         // JBL's protocol 4 security modes add connection steps (docs/jbl/PROTOCOL.md section 7); modes 1 and 3 use
         // the raw characteristic, and mode 3 writes the phone's name checksum to it first.
         val rawNotify = model.security == 1 || model.security == 3
-        val preamble = if (model.security == 3) hostNameCrc(env.adapter) else null
-        val uuids = if (airoha) GattLink.AIROHA else GattLink.HARMAN
-        fun gatt(d: BluetoothDevice) = env.hold(GattLink(ctx, d, env.linkLog, rawNotify = rawNotify, rawPreamble = preamble, uuids = uuids))
+        val preamble = if (model.security == 3) hostNameCrc(transport.hostName()) else null
+        val spec = GattSpec(if (airoha) GattUuids.AIROHA else GattUuids.HARMAN, rawNotify = rawNotify, rawPreamble = preamble)
+        fun gatt(target: LeTarget) = env.hold(transport.gatt(target, spec, env.linkLog))
         try {
             env.note("LE (GATT) on the classic address, security mode ${model.security}")
-            return gatt(remote).apply { connect() }
+            return gatt(transport.at(device.address)).apply { connect() }
         } catch (e: IOException) {
             env.log?.invoke("LE on the classic address: ${e.message}")
             env.note("failed: ${ConnectionReport.describe(e)}")
         }
         currentCoroutineContext().ensureActive()   // not after a disconnect closed the first try
-        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
-        val found = env.adapter?.let { JblFinder(it, env.linkLog).find(model, device.address) } ?: throw IOException("not found over LE")
+        if (!transport.mayScan) throw ScanNotAllowed()
+        val found = transport.findJbl(model, device.address, env.linkLog) ?: throw IOException("not found over LE")
         env.note("LE (GATT) on the address the scan found")
         return gatt(found).apply { connect() }
     }
 
     /** The checksum of this phone's Bluetooth name, as JBL's security mode 3 writes it (JblAdvert's CRC-16/ARC, low byte first). */
-    @SuppressLint("MissingPermission") // only called with the permission
-    private fun hostNameCrc(adapter: BluetoothAdapter?): ByteArray? {
-        val name = try {
-            adapter?.name
-        } catch (_: SecurityException) {
-            null
-        } ?: return null
+    private fun hostNameCrc(name: String?): ByteArray? {
+        if (name == null) return null
         val crc = JblAdvert.crc16(name.encodeToByteArray())
         return JblP4Packet.set(JblP4.FEATURE_HOST_NAME_CRC to byteArrayOf(crc.toByte(), (crc shr 8).toByte())).bytes()
     }
@@ -120,7 +105,7 @@ class JblDriver(host: DriverHost, private val device: Paired) : TalkDriver<JblFr
     val session: JblSession? get() = talk?.session
 
     override fun talk(opened: ControlLink): JblTalk? =
-        JblSpec.modelOf(device)?.let { JblTalk(it, notifications = opened is GattLink, mtu = (opened as? GattLink)?.mtu) }
+        JblSpec.modelOf(device)?.let { JblTalk(it, notifications = opened is GattChannel, mtu = (opened as? GattChannel)?.mtu) }
 
     /**
      * JBL's EQ target has its session build the write; its frames go through the talk's queue as the session built

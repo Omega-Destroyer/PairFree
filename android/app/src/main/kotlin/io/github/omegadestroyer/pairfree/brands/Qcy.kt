@@ -1,15 +1,8 @@
 package io.github.omegadestroyer.pairfree.brands
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
-import io.github.omegadestroyer.pairfree.bluetooth.EnvelopeGattLink
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
-import io.github.omegadestroyer.pairfree.bluetooth.QcyFinder
 import io.github.omegadestroyer.pairfree.eq.BandEqTarget
 import io.github.omegadestroyer.pairfree.eq.EqSource
 import io.github.omegadestroyer.pairfree.eq.EqTarget
@@ -59,22 +52,22 @@ object QcySpec : BrandSpec(Brand.QCY) {
      * the model and the LE side to connect to. A scan that already found them is used again on a reconnect.
      * Models on JieLi's chips take their settings through JieLi's service (section 6), the others QCY's own.
      */
-    @SuppressLint("MissingPermission") // only called while connecting, which needs the permission; the scan's is checked here
-    override suspend fun open(env: OpenEnv, remote: BluetoothDevice, device: Paired, driver: BrandDriver): ControlLink {
+    override suspend fun open(env: OpenEnv, device: Paired, driver: BrandDriver): ControlLink {
         driver as QcyDriver
-        val ctx = env.context ?: throw IOException("no context for Bluetooth LE")
+        val transport = env.transport
+        if (!transport.hasLe) throw IOException("no context for Bluetooth LE")
         val found = driver.found ?: run {
-            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) throw ScanNotAllowed()
+            if (!transport.mayScan) throw ScanNotAllowed()
             env.note("scanning for QCY's advert")
             // SOUNDPEATS' QCY-built models advertise under SOUNDPEATS' company id.
             val company = if (device.soldAs == Brand.SOUNDPEATS) CapsuleWire.COMPANY else QcyWire.COMPANY
-            env.adapter?.let { QcyFinder(it, env.linkLog, company).find(device.address) } ?: throw NotFound()
+            transport.findQcy(company, device.address, env.linkLog) ?: throw NotFound()
         }
         driver.found = found
         val jieli = QcyModels.of(found.advert.vendorId)?.protocol.let { it == QcyProtocol.JIELI || it == QcyProtocol.JIELI_CUSTOM }
         val service = if (jieli) JieliWire.SERVICE else QcyWire.SERVICE
         env.note("LE (GATT) service $service")
-        return env.hold(EnvelopeGattLink(ctx, found.device, java.util.UUID.fromString(service), env.linkLog)).apply { connect() }
+        return env.hold(transport.envelopeGatt(found.target, service, env.linkLog)).apply { connect() }
     }
 
     override fun noiseOffline(device: Paired): List<NoiseChoice>? =
@@ -105,7 +98,7 @@ class QcyDriver(host: DriverHost, private val device: Paired) : TalkDriver<ByteA
     val session: QcyControl? get() = talk?.session
 
     /** What the scan found before the channel opened; used again on a reconnect. */
-    internal var found: QcyFinder.Found? = null
+    internal var found: QcyFound? = null
 
     override fun talk(opened: ControlLink): QcyTalk {
         val found = found

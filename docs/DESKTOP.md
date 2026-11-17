@@ -38,23 +38,31 @@ Phase 0 is a spike that must pass before anything else is built. Fallback if it 
 
 ### 1. Modules (requirement 10)
 
+Two Gradle builds over one set of sources (decided when phase 1 began, 2026-11-16). The Android build is what F-Droid reproduces, so it stays a
+plain Android build: making its modules multiplatform would bring the Kotlin/Native toolchain into it. The desktop build is its own
+(`desktop/`, run with Android's wrapper: `gradlew.bat -p ..\desktop <task>`) and compiles the same source folders; nothing is copied.
+
 ```
-shared/protocol   (moved from android/protocol)  Kotlin Multiplatform: common code; targets jvm (Android uses it), mingwX64, macos
-shared/core       new: everything about the app that is not a screen or an OS call
+android/protocol  the protocol sources and tests (JVM, as before); tables.gradle.kts holds the generate*Tables tasks for both builds
+android/core      to come: everything about the app that is not a screen or an OS call, plain Kotlin (JVM here)
 android/app       Compose screens + Android's Bluetooth, widget, notification
-desktop/ui        new: the desktop screens and PairFree's own small drawing toolkit, common to Windows and Mac
-desktop/windows   new: Win32 window, tray, Direct2D/DirectWrite, Bluetooth, audio, updater
-desktop/macos     new: AppKit window, menu bar item, CoreGraphics/CoreText, IOBluetooth/CoreBluetooth
+desktop/protocol  the same protocol sources built for Windows (Kotlin Multiplatform, mingwX64; macOS later)
+desktop/core      to come: the same core sources
+desktop/ui        to come: the desktop screens and PairFree's own small drawing toolkit, common to Windows and Mac
+desktop/windows   to come: Win32 window, tray, drawing, Bluetooth, audio, updater
+desktop/macos     to come: AppKit window, menu bar item, CoreGraphics/CoreText, IOBluetooth/CoreBluetooth
+desktop/spike     phase 0's EXE, kept until desktop/windows replaces it
 ```
 
-- `shared/core` takes, from `android/app`: `brands/` (specs and drivers; `BrandSpec.open` returns a description of the channel instead of opening an
+- `core` takes, from `android/app`: `brands/` (specs and drivers; `BrandSpec.open` returns a description of the channel instead of opening an
   Android socket), `eq/`, `capture/`, `ControlLink`, `EarbudsConnection` and `Hub` minus their Android calls, profiles, settings keys, report
   privacy, look specs, the device art table, and the string table. It defines the few interfaces each OS fills in: `Transport` (serial channel by
-  service UUID, GATT, L2CAP, scan, paired list), `SettingsStore`, `TonePlayer`, `Clipboard/Files`, `SystemColors`.
-- The generators stay the single source: `generate*Tables` move with the protocol; `generateLooks` writes a common `LookSpec`; `tools/gen_device_art.py`
-  gains a second output, a compact path table in `shared/core` that the desktop toolkit draws with the look's seven role colours (Android keeps
-  its drawables); a new `generateStrings` turns `strings.xml` into a Kotlin table for desktop.
-- Tests stay on the JVM target (JUnit as now); a handful of smoke tests also run natively.
+  service UUID, GATT, scan, paired list), `SettingsStore`, `TonePlayer`, `Clipboard/Files`, `SystemColors`.
+- The generators stay the single source: `tables.gradle.kts` is applied by both builds; `generateLooks` writes a common `LookSpec`;
+  `tools/gen_device_art.py` gains a second output, a compact path table in `core` that the desktop toolkit draws with the look's seven role colours
+  (Android keeps its drawables); a new `generateStrings` turns `strings.xml` into a Kotlin table for desktop.
+- Tests stay on the JVM (JUnit, in the Android build); the desktop build's `:protocol:compileKotlinMingwX64` is the check that the shared sources
+  hold no JVM-only call, and a handful of smoke tests run natively.
 - A new brand after this: its `protocol` package, one `brands/` file, its data and strings. No per-OS code unless it needs a new kind of transport.
 
 ### 2. Desktop UI
@@ -141,7 +149,7 @@ what a platform lacks (AirPods on Windows).
 
 0. **Spike, the go/no-go**: done 2026-11-16, go (`desktop/spike/RESULTS.md`). Drawing was done with GDI+, whose bindings Kotlin/Native ships;
    Direct2D or GDI+ is decided in phase 2 after trying Persian text and the equalizer graph.
-1. **Shared modules**: `protocol` becomes multiplatform; `shared/core` extracted from `android/app` with no change in the Android app's behaviour
+1. **Shared modules**: the desktop build compiles `protocol` (done 2026-11-16); `core` extracted from `android/app` with no change in the Android app's behaviour
    (all tests, lint, a 0.14.0 comparison on the emulator). Desktop design section and mock-ups for approval.
 2. **Windows shell**: toolkit, looks, strings, TOML settings, tray, window behaviour, single instance.
 3. **Windows, serial brands**: every screen for the brands on classic serial channels, tried on the H3, Air5 Pro+ and Space A40; EQ, profiles,

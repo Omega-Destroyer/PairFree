@@ -1,8 +1,7 @@
-// The spike compiles the protocol module's sources, as they are, for Windows with Kotlin/Native, and links one EXE.
-// The generated tables are read from the protocol module's build folder: run :protocol:compileKotlin in android/ first.
+// The phase 0 spike (RESULTS.md): one EXE that links the protocol module, opens a window and reads earbuds over Windows' Bluetooth.
 
 plugins {
-    kotlin("multiplatform") version "2.4.21"
+    alias(libs.plugins.kotlin.multiplatform)
 }
 
 kotlin {
@@ -19,10 +18,8 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin.srcDir("../../android/protocol/src/main/kotlin")
-            kotlin.srcDir("../../android/protocol/build/generated")
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+                implementation(project(":protocol"))
             }
         }
     }

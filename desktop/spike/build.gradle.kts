@@ -19,7 +19,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":protocol"))
+                implementation(project(":windows"))
             }
         }
     }

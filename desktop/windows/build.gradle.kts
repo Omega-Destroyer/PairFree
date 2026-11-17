@@ -11,7 +11,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":shell"))
+                api(project(":ui"))
             }
         }
     }

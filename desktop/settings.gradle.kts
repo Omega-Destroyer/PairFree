@@ -22,4 +22,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "PairFreeDesktop"
-include(":protocol", ":core", ":shell", ":windows", ":spike")
+include(":protocol", ":core", ":shell", ":ui", ":windows", ":app", ":spike")

@@ -40,6 +40,8 @@
     <string name="connect_hint">Pick your earbuds. Close the official app (PeatsAudio, Soundcore) first: only one app can hold the controls.</string>
     <string name="connect">Connect</string>
     <string name="connecting">Connecting…</string>
+    <!-- Desktop apps only (Windows, macOS): the Android app does not show it. -->
+    <string name="try_again">Try again</string>
     <string name="no_paired">No supported earbuds paired. Pair them in the Bluetooth settings first.</string>
     <string name="bluetooth_off">Bluetooth is off.</string>
     <string name="bluetooth_settings">Bluetooth settings</string>

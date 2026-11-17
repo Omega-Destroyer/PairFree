@@ -5,11 +5,14 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
 }
 
+apply(from = "tables.gradle.kts")
+
 kotlin {
     mingwX64()
 
     sourceSets {
         commonMain {
+            kotlin.srcDir(files(layout.buildDirectory.dir("generated/strings")).builtBy("generateStrings"))
             dependencies {
                 api(project(":core"))
             }

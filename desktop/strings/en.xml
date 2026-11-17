@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      The desktop apps' own wording (docs/DESKTOP.md): only entries whose text differs on a computer, under the same name as in
+      android/app/src/main/res/values/strings.xml, which the desktop apps use for every other entry. A language's file is
+      desktop/strings/<language tag>.xml. For a language, its own desktop wording comes first, then its main file, then English's
+      desktop wording and then English.
+    -->
+    <string name="app_language_system">Same as the computer</string>
+</resources>

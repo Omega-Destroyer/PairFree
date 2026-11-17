@@ -9,4 +9,5 @@
     <!-- On a computer the look that takes the phone's colours takes the system's: its accent colour and its dark or light mode. -->
     <string name="look_material_you">System</string>
     <string name="app_language_system">Same as the computer</string>
+    <string name="no_paired">No supported earbuds paired. Pair them in Windows' Bluetooth settings first.</string>
 </resources>

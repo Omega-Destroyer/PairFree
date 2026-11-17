@@ -70,6 +70,11 @@ class DesktopSettings(private val path: Path, private val header: String = DEFAU
         get() = doc["app", "language"]?.takeIf { it.isNotBlank() && it != "system" }
         set(value) = change { it.set("app", "language", value ?: "system") }
 
+    /** The address of the earbuds shown last, opened again the next time they are there. */
+    var lastDevice: String?
+        get() = doc["app", "last_device"]?.takeIf { it.isNotBlank() }
+        set(value) = change { if (value == null) it.remove("app", "last_device") else it.set("app", "last_device", value) }
+
     /** The look's id ("studio", "studio-light", "sketchbook", "system"). */
     var look: String
         get() = doc["app", "look"] ?: "studio"

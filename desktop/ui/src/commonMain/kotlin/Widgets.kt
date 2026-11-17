@@ -334,3 +334,28 @@ class Stack(private val children: List<Widget>) : Widget() {
         children.forEach { it.collect(into) }
     }
 }
+
+/** A clickable card holding other widgets: an earbuds entry in the sidebar. The selected one has the accent outline. */
+class Card(private val child: Widget, key: String, private val selected: Boolean, onClick: () -> Unit) : Clickable(key, true, onClick) {
+    private val pad = 12f
+
+    override fun height(ctx: Ctx, width: Float) = child.height(ctx, width - 2 * pad) + 2 * pad
+
+    override fun place(ctx: Ctx, x: Float, y: Float, width: Float) {
+        super.place(ctx, x, y, width)
+        child.place(ctx, x + pad, y + pad, width - 2 * pad)
+    }
+
+    override fun draw(ctx: Ctx) {
+        val t = ctx.theme
+        val hot = ctx.hover == key
+        ctx.canvas.fillRoundRect(x, y, w, h, t.corner, if (hot) t.highlight else t.raised)
+        ctx.canvas.strokeRoundRect(x + 0.5f, y + 0.5f, w - 1f, h - 1f, t.corner, if (selected) t.accent else t.outline, if (selected) 1.5f else t.look.hairline)
+        child.draw(ctx)
+    }
+
+    override fun collect(into: MutableList<Widget>) {
+        into += this
+        child.collect(into)
+    }
+}

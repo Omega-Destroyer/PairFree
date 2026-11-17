@@ -4,9 +4,11 @@ import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.shell.APP_VERSION
 import io.github.omegadestroyer.pairfree.shell.BUILT_IN_LOOKS
+import io.github.omegadestroyer.pairfree.shell.CloseAction
 import io.github.omegadestroyer.pairfree.shell.DesktopLook
 import io.github.omegadestroyer.pairfree.shell.DesktopSettings
 import io.github.omegadestroyer.pairfree.shell.DesktopStrings
@@ -17,7 +19,31 @@ import kotlin.math.min
 /** What the system says about its colours: its accent colour (opaque ARGB) and whether it is in dark mode. */
 data class SystemColors(val accent: Int, val night: Boolean)
 
-enum class Tab(val titleKey: String) { HOME("tab_home"), SOUND("tab_sound"), CONTROLS("tab_controls"), DEVICE("tab_device") }
+enum class Tab(val titleKey: String) { HOME("tab_home"), SOUND("tab_sound"), CONTROLS("tab_controls"), DEVICE("tab_device"), SETTINGS("desktop_settings") }
+
+/** What only the system can do for the app. */
+interface Host {
+    fun openBluetoothSettings()
+
+    /** Brings the window back from the tray or the taskbar. */
+    fun showWindow()
+
+    /** Ends the program. */
+    fun exit()
+
+    /** Where the settings file is, for the settings screen to say. */
+    val settingsPath: String
+}
+
+/** An entry of the tray icon's menu, which the system draws. */
+sealed interface TrayItem {
+    class Action(val text: String, val checked: Boolean = false, val enabled: Boolean = true, val run: () -> Unit) : TrayItem
+
+    /** A line that only shows something (the earbuds' battery). */
+    class Info(val text: String) : TrayItem
+
+    data object Separator : TrayItem
+}
 
 /**
  * The desktop app's window content, the same on every system: the sidebar (the earbuds, the tabs, the look and the version) and the
@@ -26,8 +52,8 @@ enum class Tab(val titleKey: String) { HOME("tab_home"), SOUND("tab_sound"), CON
  */
 class DesktopApp(
     private val connection: EarbudsConnection,
-    private val device: Paired,
     val settings: DesktopSettings,
+    private val host: Host,
     private val system: () -> SystemColors,
     private val invalidate: () -> Unit,
     /** Runs a call on the connection where it lives: its own thread, since the connection is not thread safe. */
@@ -43,12 +69,47 @@ class DesktopApp(
     private var pressed: String? = null
     private var hits: List<Clickable> = emptyList()
 
-    /** Strings and the look follow the settings; changing either asks for a new frame. */
+    @kotlin.concurrent.Volatile
+    private var devices: List<Paired> = emptyList()
+
+    @kotlin.concurrent.Volatile
+    private var device: Paired? = null
+
+    @kotlin.concurrent.Volatile
+    private var scanned = false
+
+    /** Strings follow the settings. */
     private var strings = DesktopStrings(settings.language)
 
     private fun theme(): Theme {
         val sys = system()
         return Theme(DesktopLook.byId(settings.look), sys.night, SystemTones(sys.accent))
+    }
+
+    /**
+     * The earbuds Windows has paired, as the system last listed them. The earbuds shown stay while they are in the list; with none shown,
+     * the ones used last are opened, else the first. Called from any thread.
+     */
+    fun setDevices(list: List<Paired>) {
+        devices = list
+        scanned = true
+        val current = device
+        if (current == null || list.none { it.address == current.address }) {
+            val next = list.firstOrNull { it.address.equals(settings.lastDevice, ignoreCase = true) } ?: list.firstOrNull()
+            device = next
+            if (next != null) act { connect(next) } else act { disconnect() }
+        }
+        invalidate()
+    }
+
+    private fun select(d: Paired) {
+        if (d.address == device?.address) return
+        device = d
+        settings.lastDevice = d.address
+        tab = Tab.HOME
+        scroll = 0f
+        act { connect(d) }
+        invalidate()
     }
 
     fun render(canvas: Canvas, width: Float, height: Float) {
@@ -75,7 +136,6 @@ class DesktopApp(
         canvas.pushClip(sideWidth, 0f, width - sideWidth, height)
         content.draw(ctx)
         canvas.popClip()
-        // Only what shows takes the pointer.
         content.collect(all)
         hits = all.filterIsInstance<Clickable>().filter { it.enabled }
         if (contentHeight > viewHeight) scrollbar(canvas, theme, width, height)
@@ -88,44 +148,32 @@ class DesktopApp(
         canvas.fillRoundRect(width - 8f, top, 4f, thumb, 2f, theme.withAlpha(theme.label, 0.5f))
     }
 
+    private fun linkLine(status: LinkStatus): String = when (status) {
+        is LinkStatus.Connected -> strings.text("connected")
+        is LinkStatus.Reconnecting -> strings.text("reconnecting")
+        is LinkStatus.Failed -> strings.text("failed_lost", status.device.name)
+        else -> strings.text("connecting")
+    }
+
     private fun sidebar(theme: Theme): Widget {
+        val s = strings
         val state = connection.state.value
         val status = connection.status.value
-        val s = strings
-        val live = status is LinkStatus.Connected
-        val line = when (status) {
-            is LinkStatus.Connected -> s.text("connected")
-            is LinkStatus.Reconnecting -> s.text("reconnecting")
-            is LinkStatus.Failed -> s.text("failed_lost", device.name)
-            else -> s.text("connecting")
+        val current = device
+        val cards = devices.map { d ->
+            val selected = d.address == current?.address
+            val lines = mutableListOf<Widget>(Label(d.name, theme.heading))
+            if (selected) {
+                lines += Label(linkLine(status), theme.labelFont, if (status is LinkStatus.Connected) theme.label else theme.accent, caps = true)
+                batteryLine(state)?.let { lines += Label(it, theme.small, theme.secondaryText) }
+            }
+            Card(Column(lines, 4f), "device_${d.address}", selected) { select(d) } as Widget
         }
-        val batteries = batteryLine(state)
-        val deviceCard = Panel(
-            Column(
-                listOfNotNull(
-                    Label(device.name, theme.heading),
-                    Label(line, theme.labelFont, if (live) theme.label else theme.accent, caps = true),
-                    batteries?.let { Label(it, theme.small, theme.secondaryText) },
-                ),
-                4f,
-            ),
-            pad = 12f,
-        )
-        val tabs = Tab.entries.map { t -> Button(s.text(t.titleKey), "tab_${t.name}", primary = t == tab) { tab = t; scroll = 0f; invalidate() } as Widget }
-        val look = DesktopLook.byId(settings.look)
-        val lookButton = Button(s.text(look.nameKey), "look", false) { nextLook() }
+        val tabs = Tab.entries.map { t ->
+            Button(s.text(t.titleKey), "tab_${t.name}", primary = t == tab, enabled = current != null || t == Tab.SETTINGS) { tab = t; scroll = 0f; invalidate() } as Widget
+        }
         return Column(
-            listOf(
-                Label("PairFree", theme.title),
-                Spacer(8f),
-                deviceCard,
-                Spacer(8f),
-                Column(tabs, 6f),
-                Spacer(16f),
-                Label(s.text("app_look_title"), theme.labelFont, theme.label, caps = true),
-                lookButton,
-                Label("v$APP_VERSION", theme.labelFont, theme.label),
-            ),
+            listOf(Label("PairFree", theme.title), Spacer(8f), Column(cards, 8f), Spacer(8f), Column(tabs, 6f), Spacer(8f), Label("v$APP_VERSION", theme.labelFont, theme.label)),
             6f,
         )
     }
@@ -135,30 +183,122 @@ class DesktopApp(
         return listOfNotNull(part("L", state.batteryLeft), part("R", state.batteryRight), part("C", state.batteryCase)).takeIf { it.isNotEmpty() }?.joinToString("  ")
     }
 
-    private fun nextLook() {
-        val i = BUILT_IN_LOOKS.indexOfFirst { it.id == settings.look }
-        settings.look = BUILT_IN_LOOKS[(i + 1) % BUILT_IN_LOOKS.size].id
-        invalidate()
-    }
-
     private fun content(theme: Theme, wide: Boolean): Widget {
+        val s = strings
+        if (tab == Tab.SETTINGS) return settingsScreen(theme)
+        val current = device
+        if (current == null) {
+            if (!scanned) return Label(s.text("connecting"), theme.heading)
+            return Panel(
+                Column(listOf(Label(s.text("no_paired"), theme.body), Button(s.text("bluetooth_settings"), "bt_settings", true) { host.openBluetoothSettings() }), 12f),
+            )
+        }
         val status = connection.status.value
         val state = connection.state.value
-        val s = strings
         if (status is LinkStatus.Failed) {
             val reason = when (status.reason) {
                 LinkStatus.Reason.BLUETOOTH_OFF -> s.text("failed_bluetooth_off")
-                LinkStatus.Reason.LOST -> s.text("failed_lost", device.name)
-                else -> s.text("failed_could_not_open", device.name, Brands[device.brand].officialApp)
+                LinkStatus.Reason.LOST -> s.text("failed_lost", current.name)
+                else -> s.text("failed_could_not_open", current.name, Brands[current.brand].officialApp)
             }
-            return Panel(Column(listOf(Label(reason, theme.body), Button(s.text("try_again"), "retry", true) { act { connect(device) } }), 12f))
+            return Panel(Column(listOf(Label(reason, theme.body), Button(s.text("try_again"), "retry", true) { act { connect(current) } }), 12f))
         }
         if (status !is LinkStatus.Connected && status !is LinkStatus.Reconnecting) return Label(s.text("connecting"), theme.heading)
         return when (tab) {
-            Tab.HOME -> HomeScreen(::act, device, state, status is LinkStatus.Connected, s, theme).build(wide)
+            Tab.HOME -> HomeScreen(::act, current, state, status is LinkStatus.Connected, s, theme).build(wide)
             else -> Label(s.text(tab.titleKey), theme.title)
         }
     }
+
+    private fun settingsScreen(theme: Theme): Widget {
+        val s = strings
+        fun label(text: String) = Label(text, theme.labelFont, theme.label, caps = true)
+        val tags = DesktopStrings.languages
+        val languageNames = tags.map { s.text("language_" + it.replace('-', '_')) }
+        val currentTag = settings.language?.let { DesktopStrings.resolve(it) }
+        val looks = BUILT_IN_LOOKS
+        val closeChoices = listOf(CloseAction.ASK to "desktop_close_ask", CloseAction.TRAY to "desktop_close_tray", CloseAction.EXIT to "desktop_close_exit")
+        fun toggle(key: String, titleKey: String, on: Boolean, set: (Boolean) -> Unit) =
+            Button(s.text("desktop_on_off", s.text(titleKey), s.text(if (on) "on" else "off")), key, primary = on) { set(!on); invalidate() }
+        return Column(
+            listOf(
+                Label(s.text("desktop_settings"), theme.title),
+                Panel(
+                    Column(
+                        listOf(
+                            label(s.text("app_language_title")),
+                            segmented("lang", listOf(s.text("app_language_system")) + languageNames, if (currentTag == null) 0 else tags.indexOf(currentTag) + 1, primary = false, perRow = 3) {
+                                settings.language = if (it == 0) null else tags[it - 1]
+                                strings = DesktopStrings(settings.language)
+                                invalidate()
+                            },
+                            label(s.text("app_look_title")),
+                            segmented("look", looks.map { s.text(it.nameKey) }, looks.indexOfFirst { it.id == settings.look }.takeIf { it >= 0 }, primary = false, perRow = 2) {
+                                settings.look = looks[it].id
+                                invalidate()
+                            },
+                        ),
+                        10f,
+                    ),
+                ),
+                Panel(
+                    Column(
+                        listOf(
+                            label(s.text("desktop_close_title")),
+                            segmented("close", closeChoices.map { s.text(it.second) }, closeChoices.indexOfFirst { it.first == settings.closeAction }, primary = false) {
+                                settings.closeAction = closeChoices[it].first
+                                invalidate()
+                            },
+                            toggle("min_tray", "desktop_minimize_to_tray", settings.minimizeToTray) { settings.minimizeToTray = it },
+                            toggle("start_min", "desktop_start_minimized", settings.startMinimized) { settings.startMinimized = it },
+                        ),
+                        10f,
+                    ),
+                ),
+                Label(s.text("desktop_settings_file", host.settingsPath), theme.small, theme.secondaryText),
+            ),
+            16f,
+        )
+    }
+
+    // ---- the tray ----
+
+    /** The tray icon's tooltip: the earbuds and their batteries. */
+    fun trayTip(): String {
+        val d = device ?: return "PairFree"
+        return listOfNotNull(d.name, batteryLine(connection.state.value)).joinToString(" · ")
+    }
+
+    /** The tray icon's menu, built from what the earbuds report now. */
+    fun trayItems(): List<TrayItem> {
+        val s = strings
+        val items = mutableListOf<TrayItem>()
+        val d = device
+        val state = connection.state.value
+        if (d != null) {
+            items += TrayItem.Info(d.name)
+            batteryLine(state)?.let { items += TrayItem.Info(it) }
+            if (state.supports(Command.ANC_MODE)) {
+                items += TrayItem.Separator
+                items += TrayItem.Info(s.text("desktop_tray_noise"))
+                val current = state.number(Command.ANC_MODE)
+                for ((name, key) in listOf("off" to "anc_off", "anc" to "anc_cancelling", "transparency" to "anc_transparency")) {
+                    val value = Command.ANC_MODE.labels.entries.first { it.value == name }.key
+                    items += TrayItem.Action(s.text(key), checked = current == value) { act { set(Command.ANC_MODE, value) } }
+                }
+            }
+            items += TrayItem.Separator
+            if (connection.status.value is LinkStatus.Connected) items += TrayItem.Action(s.text("desktop_tray_disconnect")) { act { disconnect() } }
+            else items += TrayItem.Action(s.text("connect")) { act { connect(d) } }
+            items += TrayItem.Separator
+        }
+        items += TrayItem.Action(s.text("desktop_tray_open")) { host.showWindow() }
+        items += TrayItem.Action(s.text("desktop_tray_exit")) { host.exit() }
+        return items
+    }
+
+    /** The question asked the first time the window is closed (settings.closeAction is [CloseAction.ASK]). */
+    val closeQuestion: String get() = strings.text("desktop_close_question")
 
     // ---- the pointer ----
 

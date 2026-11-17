@@ -132,7 +132,7 @@ class JblDriver(host: DriverHost, private val device: Paired) : TalkDriver<JblFr
         return buildString {
             reportHead(info)
             appendLine("Brand:           JBL")
-            val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
+            val id = session.productId?.let { it.hexText(4, upper = true) } ?: "unknown"
             appendLine("Model:           ${session.model.name} (product $id, ${if (session.model.gatt) "Bluetooth LE" else "serial channel"})")
             appendLine("Firmware:        ${session.firmware ?: "unknown"}")
             if (session.model.family == JblModel.Family.AIROHA) {

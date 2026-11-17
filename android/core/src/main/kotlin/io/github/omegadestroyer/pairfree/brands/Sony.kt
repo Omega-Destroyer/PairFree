@@ -86,7 +86,7 @@ class SonyDriver(host: DriverHost, private val device: Paired) : TalkDriver<Sony
             appendLine()
             val names = if (session.tableSet == 1) SonyFunction.Set1.NAMES else SonyFunction.Set2.NAMES
             appendLine("Functions the earbuds list (data/sony/functions.json):")
-            session.functions.sorted().forEach { appendLine("  %02x %s".format(it, names[it] ?: "unknown")) }
+            session.functions.sorted().forEach { appendLine("  ${it.hexText(2)} ${names[it] ?: "unknown"}") }
             appendLine()
             appendLine("The last message of each kind they sent (table, command, type: payload as hex):")
             reportReplies(session.replies)

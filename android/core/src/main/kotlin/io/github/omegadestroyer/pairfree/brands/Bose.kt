@@ -47,7 +47,7 @@ class BoseDriver(host: DriverHost) : TalkDriver<BosePacket, BoseTalk>(host) {
         return buildString {
             reportHead(info)
             appendLine("Brand:           Bose")
-            val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
+            val id = session.productId?.let { it.hexText(4, upper = true) } ?: "unknown"
             appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product $id, variant ${session.variant ?: "?"})")
             appendLine("Firmware:        ${session.firmware ?: "unknown"}")
             reportApp(info)

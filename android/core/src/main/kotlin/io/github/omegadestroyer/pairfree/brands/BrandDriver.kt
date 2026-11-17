@@ -99,6 +99,9 @@ class ReportInfo(val device: Paired?, val version: String?, val date: String, va
     val osAndPhone: String = platform.osAndDevice
 }
 
+/** A number as the reports print it in hex: small digits, zero-filled to [width] ("%02x" in Java; a negative number as its 32 bits). */
+internal fun Int.hexText(width: Int, upper: Boolean = false): String = toUInt().toString(16).padStart(width, '0').let { if (upper) it.uppercase() else it }
+
 /** Bytes as the reports print them: two hex digits each, a space between. */
 internal fun ByteArray.reportHex(): String = joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
 

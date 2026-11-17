@@ -83,7 +83,7 @@ class AirPodsDriver(host: DriverHost) : TalkDriver<ByteArray, AppleTalk>(host) {
             appendLine("Battery (count, then component, 01, level, status, 01 each), as hex:")
             appendLine("  ${session.batteryData?.reportHex() ?: "none yet"}")
             appendLine("Settings the AirPods reported (control command id: value, as hex):")
-            session.controls.forEach { (id, value) -> appendLine("  %02x: %s".format(id, value.reportHex())) }
+            session.controls.forEach { (id, value) -> appendLine("  ${id.hexText(2)}: ${value.reportHex()}") }
         }
     }
 }
@@ -105,7 +105,7 @@ class BeatsDriver(host: DriverHost, private val device: Paired) : TalkDriver<Byt
             appendLine()
             session.reportLines.forEach { appendLine(it) }
             appendLine("Reads answered (value, or none):")
-            session.answers.forEach { (key, value) -> appendLine("  $key: ${value?.let { "%02x".format(it) } ?: "none"}") }
+            session.answers.forEach { (key, value) -> appendLine("  $key: ${value?.let { it.hexText(2) } ?: "none"}") }
         }
     }
 }

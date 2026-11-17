@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.math.floor
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 import kotlinx.serialization.json.JsonArray
@@ -462,7 +463,7 @@ class Equalizer(
         const val PREAMP_MIN_DB = -6
 
         /** [db] on the grid of [step] dB, within plus or minus [range]. */
-        fun snap(db: Double, step: Double, range: Int): Double = (Math.round(db / step) * step).coerceIn(-range.toDouble(), range.toDouble())
+        fun snap(db: Double, step: Double, range: Int): Double = (floor(db / step + 0.5) * step).coerceIn(-range.toDouble(), range.toDouble())
 
         const val FORMAT = "pairfree-eq"
 

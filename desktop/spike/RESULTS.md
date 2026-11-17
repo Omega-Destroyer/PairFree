@@ -21,3 +21,6 @@ must be written `kotlin.Unit` in a file that imports `platform.gdiplus.*`; Winso
 
 Not checked: a PC without Performance Log Users membership, Windows 10, ARM PCs, a GATT read, write or notification, and the Sennheiser equalizer's
 test vectors on the native build (its sine and cosine now come from Kotlin's maths, not Java's StrictMath).
+
+Decisions the owner took from these results (2026-11-16): no link to the MagicAAP driver, AirPods and Beats are listed as not supported on Windows;
+no codec panel. Both stay possible later if a cleaner way appears (`docs/DESKTOP.md`, 4.1 and 4.2).

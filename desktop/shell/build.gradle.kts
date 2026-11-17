@@ -7,6 +7,7 @@ plugins {
 
 apply(from = "tables.gradle.kts")
 apply(from = "looks.gradle.kts")
+apply(from = "art.gradle.kts")
 
 kotlin {
     mingwX64()
@@ -15,6 +16,7 @@ kotlin {
         commonMain {
             kotlin.srcDir(files(layout.buildDirectory.dir("generated/strings")).builtBy("generateStrings"))
             kotlin.srcDir(files(layout.buildDirectory.dir("generated/looks")).builtBy("generateDesktopLooks"))
+            kotlin.srcDir(files(layout.buildDirectory.dir("generated/art")).builtBy("generateDeviceArt"))
             dependencies {
                 api(project(":core"))
             }

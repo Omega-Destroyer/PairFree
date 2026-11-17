@@ -24,3 +24,9 @@ test vectors on the native build (its sine and cosine now come from Kotlin's mat
 
 Decisions the owner took from these results (2026-11-16): no link to the MagicAAP driver, AirPods and Beats are listed as not supported on Windows;
 no codec panel. Both stay possible later if a cleaner way appears (`docs/DESKTOP.md`, 4.1 and 4.2).
+
+## 2026-11-17: shared connection verified on the H3
+
+`PairFreeSpike.exe 9880BB4192E1` with the H3 connected to Windows: the shared `EarbudsConnection` and SoundPEATS driver, over `WindowsTransport`
+(Winsock RFCOMM), showed "L 100%  R 100%  Case 84%" at the first attempt. An earlier run failed with Windows error 10060 only because the H3
+was not connected to the PC at that moment.

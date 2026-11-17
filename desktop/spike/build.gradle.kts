@@ -11,6 +11,8 @@ kotlin {
             executable {
                 entryPoint = "io.github.omegadestroyer.pairfree.spike.main"
                 baseName = "PairFreeSpike"
+                // A window program: no console opens with it.
+                linkerOpts("-Wl,--subsystem,windows")
             }
         }
     }

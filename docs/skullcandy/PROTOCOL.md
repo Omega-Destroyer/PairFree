@@ -290,3 +290,15 @@ followed by `OK`:
 `data/skullcandy/devices.json` (from `tools/import_skullcandy_manifest.py`) now holds all 56 products: id, model names, Android connection types, chip, SDK configuration where one exists, each firmware's
 feature list and the button settings. Of the Airoha models, the features by count are the defined equaliser (34), custom equaliser (33), multipoint toggle (26), clear voice (24), custom buttons (21),
 stay-aware level (20), personal sound (19), voice assistant (19), Tile (16), bass boost (16), low latency (15), noise-cancelling level (10) and sidetone (10).
+
+## 11. The app's RACE command classes (read 2026-11-18)
+
+The Flutter code holds 58 RACE command classes (`utils/race_commands/`: ANC, battery saver, charge-out protection, Crusher bass boost and EQ volume, feedback sounds, button and gesture
+settings, LED colour/brightness/mode, Mimi user id, multipoint, party mode, wear detect, serial number and SKU reads, SG200 EQ mapping, speaker bass boost, THX spatial audio and head
+tracking, capacitive touch, voice control). `tools/import_skullcandy_race.py` writes the byte strings each writes or checks to `data/skullcandy/race_commands.json`: requests are RACE
+`05 5A <length u16 LE> <command id u16 LE> <payload>`, replies `05 5B` with the same id and a status byte (`00` is success: `RaceCommandBasBoostSet` checks the byte at offset 12 against `00`),
+notifications `05 5D`. Some commands are Airoha's own (`05 5A 05 00 06 0E 00 22` for the adaptive ANC, `05 5A 06 00 00 0A ...` for the SKU read) and some are Skullcandy's custom ones
+in the `2C xx` range (`D0 2C` Crusher EQ volume set, `D1 2C` get, `D7 2C` bass boost set, `D8 2C` get, `81 2C` feedback sounds, `82 2C` multipoint) or NV key reads and writes (`0A 00` with a
+key id such as `F4 03`, `F4 05`, `F4 02`). The values each command writes are built at run time; reading them class by class is the next step (the response offsets are in each
+`decodeResponse`). JBL's Airoha RACE code (`RacePacket`, `RaceParser`, `JblRace`) already speaks the framing, so this brand reuses it; the NV writes follow the owner's rule for
+vendor-exact NV writes (2026-11-04).

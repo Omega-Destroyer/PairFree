@@ -1,0 +1,343 @@
+{
+  "_about": "Skullcandy 5.0.6: the RACE command classes of the app's Flutter code (utils/race_commands), by tools/import_skullcandy_race.py. Only the byte strings the code writes literally are here; request values built at run time are to be read from each class (docs/skullcandy/PROTOCOL.md section 11).",
+  "commands": [
+    {
+      "file": "anc/race_command_adaptive_anc_get",
+      "class": "RaceCommandAdaptiveAncGet",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B060001091F0000"
+      ]
+    },
+    {
+      "file": "anc/race_command_adaptive_anc_set",
+      "class": "RaceCommandAdaptiveAncSet",
+      "request_literals": [
+        "05 5A 05 00 06 0E 00 22 "
+      ],
+      "reply_prefixes": [
+        "055B0500060E"
+      ]
+    },
+    {
+      "file": "battery_saver/get_battery_saver_status_race_command",
+      "class": "GetBatterySaverStatusRaceCommand",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0300230001",
+        "055B0300230000"
+      ]
+    },
+    {
+      "file": "battery_saver/set_battery_saver_status_race_command",
+      "class": "SetBatterySaverStatusRaceCommand",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0300230000"
+      ]
+    },
+    {
+      "file": "charge_out_protection/get_charge_out_protection_status_race_command",
+      "class": "GetChargeOutProtectionStatusRaceCommand",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0500000A010000",
+        "055B0500000A010001"
+      ]
+    },
+    {
+      "file": "charge_out_protection/set_charge_out_protection_status_race_command",
+      "class": "SetChargeOutProtectionStatusRaceCommand",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B040003F40000",
+        "055B040003F40001"
+      ]
+    },
+    {
+      "file": "crusher/race_command_bass_boost_get",
+      "class": "RaceCommandBasBoostGet",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055D0400D82C"
+      ]
+    },
+    {
+      "file": "crusher/race_command_bass_boost_set",
+      "class": "RaceCommandBasBoostSet",
+      "request_literals": [
+        "05 5A 03 00 D7 2C "
+      ],
+      "reply_prefixes": [
+        "055B0300D72C"
+      ]
+    },
+    {
+      "file": "crusher/race_command_crusher_eq_volume_get",
+      "class": "RaceCommandCrusherEqVolumeGet",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0400D12C"
+      ]
+    },
+    {
+      "file": "crusher/race_command_crusher_eq_volume_set",
+      "class": "RaceCommandCrusherEqVolumeSet",
+      "request_literals": [
+        "05 5A 03 00 D0 2C "
+      ],
+      "reply_prefixes": [
+        "055B0300D02C"
+      ]
+    },
+    {
+      "file": "feedback_sounds/get_feedback_sounds_status_race_command",
+      "class": "GetFeedbackSoundsStatusRaceCommand",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0500000A010000",
+        "055B0500000A010001",
+        "055B0400812C0001",
+        "055B0400812C0000"
+      ]
+    },
+    {
+      "file": "feedback_sounds/set_feedback_sounds_status_race_command",
+      "class": "SetFeedbackSoundsStatusRaceCommand",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B040005F40000",
+        "055B040005F40001",
+        "055B0400812C00FF"
+      ]
+    },
+    {
+      "file": "gestures/bragiOS/race_command_bragi_button_settings_get",
+      "class": "RaceCommandBragiButtonSettingsGet",
+      "request_literals": [
+        "05 5A 03 00 07 00 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "gestures/bragiOS/race_command_bragi_button_settings_set",
+      "class": "RaceCommandBragiButtonSettingsSet",
+      "request_literals": [
+        "05 5a "
+      ],
+      "reply_prefixes": [
+        "055B0300030000"
+      ]
+    },
+    {
+      "file": "gestures/set_gestures_race_command",
+      "class": "SetGesturesRaceCommand",
+      "request_literals": [
+        "D6 F2"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "led/set_led_brightness_race_command",
+      "class": "SetLEDBrightnessRaceCommand",
+      "request_literals": [
+        "FF FF FF"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "mimi/get_mimi_user_id_race_command",
+      "class": "GetMimiUserIdRaceCommand",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B2300010100"
+      ]
+    },
+    {
+      "file": "mimi/set_mimi_user_id_race_command",
+      "class": "SetMimiUserIdRaceCommand",
+      "request_literals": [
+        "05 5A 23 00 00 01 00 "
+      ],
+      "reply_prefixes": [
+        "055B040000010000"
+      ]
+    },
+    {
+      "file": "multipoint_pairing/race_command_multipoint_pairing_set",
+      "class": "RaceCommandMultipointPairingSet",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0300011400",
+        "055B0300011100",
+        "055B0500822C001000"
+      ]
+    },
+    {
+      "file": "race_command_wear_detect_status_get",
+      "class": "RaceCommandWearDetectStatusGet",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0500000A010000",
+        "055B0500000A010001"
+      ]
+    },
+    {
+      "file": "race_command_wear_detect_status_set",
+      "class": "RaceCommandWearDetectStatusSet",
+      "request_literals": [
+        "05 5A 03 00 02 F4 "
+      ],
+      "reply_prefixes": [
+        "055B030002F400"
+      ]
+    },
+    {
+      "file": "sg200_eq/race_command_sg200_set_eq_mapping",
+      "class": "SG200SetEqMapping",
+      "request_literals": [
+        "05 5A 09 00 01 0A 70 F6 01 02 03 04 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "sg200_eq/race_command_sg200_store_eq_array_index",
+      "class": "SG200StoreEqArrayIndex",
+      "request_literals": [
+        "05 5A 05 00 01 0A 71 F6 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "sku/read_sku_race_command",
+      "class": "ReadSkuRaceCommand",
+      "request_literals": [
+        "05 5A 06 00 00 0A "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "speaker_bass_boost/race_command_speaker_bass_boost_get",
+      "class": "RaceCommandSpeakerBassBoostGet",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0300220001",
+        "055B0300220000"
+      ]
+    },
+    {
+      "file": "speaker_bass_boost/race_command_speaker_bass_boost_set",
+      "class": "RaceCommandSpeakerBassBoostSet",
+      "request_literals": [
+        "05 5A 03 00 22 00 "
+      ],
+      "reply_prefixes": [
+        "055B0300220000"
+      ]
+    },
+    {
+      "file": "thx/read_thx_head_tracking_race_command",
+      "class": "ReadThxHeadTrackingRaceCommand",
+      "request_literals": [
+        "00 0F"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "thx/read_thx_spatial_audio_intensity_race_command",
+      "class": "ReadThxSpatialAudioIntensityRaceCommand",
+      "request_literals": [
+        "00 11"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "thx/read_thx_spatial_audio_race_command",
+      "class": "ReadThxSpatialAudioRaceCommand",
+      "request_literals": [
+        "00 0C"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "thx/set_thx_head_tracking_race_command",
+      "class": "SetThxHeadTrackingRaceCommand",
+      "request_literals": [
+        "00 0D",
+        "00 0E"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "thx/set_thx_spatial_audio_intensity_race_command",
+      "class": "SetThxSpatialAudioIntensityRaceCommand",
+      "request_literals": [
+        "00 10"
+      ],
+      "reply_prefixes": [
+        "0001"
+      ]
+    },
+    {
+      "file": "thx/set_thx_spatial_audio_race_command",
+      "class": "SetThxSpatialAudioRaceCommand",
+      "request_literals": [
+        "00 0A",
+        "00 0B"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "touch/race_command_cap_touch_s1_get",
+      "class": "RaceCommandCapTouchS1Get",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B2700000A2300"
+      ]
+    },
+    {
+      "file": "touch/race_command_cap_touch_s1_set",
+      "class": "RaceCommandCapTouchS1Set",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B0300070000"
+      ]
+    },
+    {
+      "file": "touch/race_command_cap_touch_s2_get",
+      "class": "RaceCommandCapTouchS2Get",
+      "request_literals": [],
+      "reply_prefixes": [
+        "055B2700000A2300"
+      ]
+    },
+    {
+      "file": "touch/race_command_cap_touch_s2_set",
+      "class": "RaceCommandCapTouchS2Set",
+      "request_literals": [
+        "05 5A 03 00 08 00 "
+      ],
+      "reply_prefixes": [
+        "055B0300080000"
+      ]
+    },
+    {
+      "file": "voice_control/race_command_voice_contro_audio_stream_command",
+      "class": "RaceCommandVoiceControlAudioStream",
+      "request_literals": [
+        "05 5A 03 00 01 00 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "voice_control/race_command_voice_control_state_set",
+      "class": "RaceCommandVoiceControlStateSet",
+      "request_literals": [
+        "05 5A 03 00 01 00 "
+      ],
+      "reply_prefixes": [
+        "055B0300010000"
+      ]
+    }
+  ]
+}

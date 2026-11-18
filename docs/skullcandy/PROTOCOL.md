@@ -314,3 +314,8 @@ vendor-exact NV writes (2026-11-04).
   mappable actions is `mappable_buttons` in `data/skullcandy/devices.json`.
 - Voice (`AT.UIVOICE`): `?`, `=enable`, `=disable`, `=mode[,<mode>]`, `=start,<type>` (`spp` for the phone's assistant) and `=stop`. Gaming mode: `AT.LATENCY?` and `AT.LATENCY=gaming_mode,<on|off>`.
   Language: `AT.UILANGUAGE?` and `AT.UILANGUAGE=language,<value>`. Feature table: `AT.FEATURE=count`, `=info,0,<n>`, `=enable,<n>[,<m>]`.
+The write form of the button map (`api/ui/data/at/h.java`): `AT.UI=set,<side>,<key>.<gesture>[,<event>[,<event>...]]`, the events being the firmware's names (`HEvents.fwName`, else the enum name in lower case with its
+first underscore turned into a dot: `ancat.toggle`, `media.play_toggle`, `volume.up`, `telephony.take_end`, `assistant.toggle`, `bt.pairing`, `device.power_off` ...). The earbuds answer a physical press with an
+unasked `.UI:notify,<side>,<key>.<gesture>[,<event>]` line, and `AT.UI=notify,off|pair` switches those notices. The HEvents list: none, ancat toggle, remote notify/up/down/center, telephony take/reject/end/
+reject-end/take-end/switch-call/mute-toggle, media play-toggle/next/prev/play/pause/reject, volume up/down/repeat-start, ancat anc-toggle and at-toggle, assistant play-sound/toggle/alexa-toggle, bt pairing and
+passcode accept/reject, PTT toggle/start/stop, recording toggle/start/stop, device power on/off.

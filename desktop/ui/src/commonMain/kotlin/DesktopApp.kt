@@ -103,6 +103,9 @@ enum class Key { BACKSPACE, DELETE, LEFT, RIGHT, HOME, END, ENTER, ESCAPE }
 sealed interface TrayItem {
     class Action(val text: String, val checked: Boolean = false, val enabled: Boolean = true, val run: () -> Unit) : TrayItem
 
+    /** An entry that opens another menu beside it. */
+    class Submenu(val text: String, val items: List<Action>) : TrayItem
+
     /** A line that only shows something (the earbuds' battery). */
     class Info(val text: String) : TrayItem
 
@@ -474,7 +477,7 @@ class DesktopApp(
                     confirm = rowCallbacks.confirm,
                     copyReport = { host.copyText(deviceReport()); reportCopied = true; invalidate() },
                     factoryReset = { act { factoryResetConfirmedByUser() } },
-                    openFit = { openPage(FitTestPage(current, strings, theme(), { keep -> act { startFitTest(keep) } }, { invalidate() }, { closePage() })) },
+                    openFit = { openPage(FitTestPage(current, strings, theme(), host.tones, { keep -> act { startFitTest(keep) } }, { invalidate() }, { closePage() })) },
                     openSeal = { openPage(SealCheckPage(strings, theme(), host.tones, { invalidate() }, { closePage() })) },
                     changed = { invalidate() },
                 ),
@@ -526,7 +529,7 @@ class DesktopApp(
         val languageNames = tags.map { s.text("language_" + it.replace('-', '_')) }
         val currentTag = settings.language?.let { DesktopStrings.resolve(it) }
         val looks = BUILT_IN_LOOKS
-        val closeChoices = listOf(CloseAction.ASK to "desktop_close_ask", CloseAction.TRAY to "desktop_close_tray", CloseAction.EXIT to "desktop_close_exit")
+        val closeChoices = listOf(CloseAction.TRAY to "desktop_close_tray", CloseAction.EXIT to "desktop_close_exit")
         fun toggle(key: String, titleKey: String, on: Boolean, set: (Boolean) -> Unit) =
             Button(s.text("desktop_on_off", s.text(titleKey), s.text(if (on) "on" else "off")), key, primary = on) { set(!on); invalidate() }
         return Column(
@@ -554,11 +557,15 @@ class DesktopApp(
                     Column(
                         listOf(
                             label(s.text("desktop_close_title")),
-                            segmented("close", closeChoices.map { s.text(it.second) }, closeChoices.indexOfFirst { it.first == settings.closeAction }, primary = false) {
+                            segmented("close", closeChoices.map { s.text(it.second) }, closeChoices.indexOfFirst { it.first == settings.closeAction }.takeIf { it >= 0 }, primary = false, perRow = 2) {
                                 settings.closeAction = closeChoices[it].first
                                 invalidate()
                             },
-                            toggle("min_tray", "desktop_minimize_to_tray", settings.minimizeToTray) { settings.minimizeToTray = it },
+                            label(s.text("desktop_minimize_title")),
+                            segmented("minimize", listOf(s.text("desktop_minimize_tray"), s.text("desktop_minimize_taskbar")), if (settings.minimizeToTray) 0 else 1, primary = false, perRow = 2) {
+                                settings.minimizeToTray = it == 0
+                                invalidate()
+                            },
                             toggle("start_min", "desktop_start_minimized", settings.startMinimized) { settings.startMinimized = it },
                         ),
                         10f,
@@ -636,6 +643,12 @@ class DesktopApp(
                     items += TrayItem.Action(s.text(key), checked = current == value) { act { set(Command.ANC_MODE, value) } }
                 }
             }
+            equalizer.state.value?.let { eq ->
+                if (eq.profiles.isNotEmpty()) {
+                    items += TrayItem.Separator
+                    items += TrayItem.Submenu(s.text("desktop_tray_sound"), eq.profiles.map { p -> TrayItem.Action(profileLabel(p), checked = eq.selected == p) { eqActions.select(p) } })
+                }
+            }
             items += TrayItem.Separator
             if (connection.status.value is LinkStatus.Connected) items += TrayItem.Action(s.text("desktop_tray_disconnect")) { act { disconnect() } }
             else items += TrayItem.Action(s.text("connect")) { act { connect(d) } }
@@ -646,7 +659,14 @@ class DesktopApp(
         return items
     }
 
-    /** The question asked the first time the window is closed (settings.closeAction is [CloseAction.ASK]). */
+    /** An equalizer profile's name in this language. */
+    private fun profileLabel(p: EqProfile): String = when {
+        p.id == EqProfile.STOCK -> strings.text("eq_stock")
+        p.preset != null -> strings.presetLabel(p.name)
+        else -> p.name
+    }
+
+    /** The question asked the first time the window is closed (settings.closeAction is null until then). */
     val closeQuestion: String get() = strings.text("desktop_close_question")
 
     // ---- the pointer ----

@@ -42,6 +42,7 @@ internal class FitTestPage(
     private val device: Paired,
     s: DesktopStrings,
     theme: Theme,
+    private val tones: TonePlayer,
     private val start: (keepAnc: Boolean) -> Unit,
     private val invalidate: () -> Unit,
     onClose: () -> Unit,
@@ -51,7 +52,20 @@ internal class FitTestPage(
 
     private val testing get() = runStarted?.let { it.elapsedNow().inWholeMilliseconds < NO_RESULT_MS } == true && !gotResult
     private var gotResult = false
-    override val animating: Boolean get() = runStarted != null && testing
+    /** Whether sound was playing the last time it was asked (every half second), so the warning shows as soon as something starts. */
+    private var soundPlaying = false
+    private var soundAsked: kotlin.time.TimeMark? = null
+
+    private fun pollSound() {
+        val asked = soundAsked
+        if (asked == null || asked.elapsedNow().inWholeMilliseconds > 500) {
+            soundPlaying = runStarted == null && tones.musicActive
+            soundAsked = TimeSource.Monotonic.markNow()
+        }
+    }
+
+    /** The page keeps drawing while a test runs, and before one starts to follow the sound on the computer. */
+    override val animating: Boolean get() = runStarted == null || testing
 
     override fun build(state: EarbudState): Widget {
         val model = modelOf(device, state)
@@ -77,6 +91,8 @@ internal class FitTestPage(
             )
         }
         val parts = mutableListOf<Widget>(head("fit_test"), Label(s.text("fit_test_intro"), theme.body, theme.secondaryText))
+        pollSound()
+        if (run == null) parts += if (soundPlaying) Label(s.text("desktop_fit_sound_playing"), theme.body, theme.destructive) else note(s.text("desktop_fit_quiet"))
         if (ancOn || (busy && switchingAnc)) parts += note(s.text("fit_anc_note"))
         val panel = mutableListOf<Widget>(Row(listOf(bud("left", false, result?.left), bud("right", true, result?.right)), 12f))
         if (busy) {

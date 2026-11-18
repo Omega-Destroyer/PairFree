@@ -20,12 +20,13 @@ import platform.gdiplus.*
  * The toolkit's canvas on GDI+: what the first Windows build draws with. Created for one paint, over a [graphics] whose transform
  * already holds the display's scale; the fonts live as long as the program.
  */
-internal class GdiCanvas(private val graphics: COpaquePointer?) : Canvas {
+internal class GdiCanvas(private val graphics: COpaquePointer?, private val scale: Float = 1f) : Canvas {
     private val saved = ArrayList<UInt>()
 
     init {
         GdipSetSmoothingMode(graphics, SmoothingModeAntiAlias)
-        GdipSetTextRenderingHint(graphics, TextRenderingHintAntiAliasGridFit)
+        // Windows' own text look: hinted glyphs with ClearType, drawn at whole pixels (see [text]), as every other Windows program's text is.
+        GdipSetTextRenderingHint(graphics, TextRenderingHintClearTypeGridFit)
         GdipSetPixelOffsetMode(graphics, PixelOffsetModeHalf)
     }
 
@@ -92,15 +93,21 @@ internal class GdiCanvas(private val graphics: COpaquePointer?) : Canvas {
         withBrush(color) { GdipFillEllipse(graphics, it, cx - r, cy - r, r * 2, r * 2) }
     }
 
+    /**
+     * Text is drawn in device pixels, not through the display's scale: the font is a whole number of pixels tall and the first glyph sits on a
+     * whole pixel, so the hinting has something to work with. A font scaled by a transform, or placed between pixels, comes out thin and blurred.
+     */
     override fun text(text: String, x: Float, y: Float, font: Font, color: Int) {
         if (text.isEmpty()) return
         memScoped {
             val box = alloc<RectF>()
-            box.X = x
-            box.Y = y
+            box.X = kotlin.math.round(x * scale)
+            box.Y = kotlin.math.round(y * scale)
             box.Width = 0f
             box.Height = 0f
-            withBrush(color) { GdipDrawString(graphics, text.wcstr.ptr, -1, Fonts.of(font), box.ptr, Fonts.format, it) }
+            GdipResetWorldTransform(graphics)
+            withBrush(color) { GdipDrawString(graphics, text.wcstr.ptr, -1, Fonts.of(font, scale), box.ptr, Fonts.format, it) }
+            GdipScaleWorldTransform(graphics, scale, scale, MatrixOrderPrepend)
         }
     }
 
@@ -110,8 +117,10 @@ internal class GdiCanvas(private val graphics: COpaquePointer?) : Canvas {
             val layout = alloc<RectF>()
             layout.X = 0f; layout.Y = 0f; layout.Width = 100000f; layout.Height = 100000f
             val bounds = alloc<RectF>()
-            GdipMeasureString(graphics, text.wcstr.ptr, -1, Fonts.of(font), layout.ptr, Fonts.format, bounds.ptr, null, null)
-            bounds.Width
+            GdipResetWorldTransform(graphics)
+            GdipMeasureString(graphics, text.wcstr.ptr, -1, Fonts.of(font, scale), layout.ptr, Fonts.format, bounds.ptr, null, null)
+            GdipScaleWorldTransform(graphics, scale, scale, MatrixOrderPrepend)
+            bounds.Width / scale
         }
     }
 
@@ -157,7 +166,7 @@ internal class GdiCanvas(private val graphics: COpaquePointer?) : Canvas {
 
 /** The fonts, made once. The look's own typefaces come with the toolkit's fonts; until then Segoe UI and Consolas stand in. */
 internal object Fonts {
-    private val cache = HashMap<Font, COpaquePointer?>()
+    private val cache = HashMap<Pair<Font, Int>, COpaquePointer?>()
     private var families = HashMap<String, COpaquePointer?>()
 
     val format: COpaquePointer? by lazy {
@@ -180,12 +189,16 @@ internal object Fonts {
         }
     }
 
-    fun of(font: Font): COpaquePointer? = cache.getOrPut(font) {
-        memScoped {
-            val out = alloc<COpaquePointerVar>()
-            val style = if (font.bold) 1 else 0
-            GdipCreateFont(family(if (font.mono) "Consolas" else "Segoe UI"), font.size, style, UnitWorld, out.ptr)
-            out.value
+    /** The font at [scale] times its size, in whole pixels. */
+    fun of(font: Font, scale: Float): COpaquePointer? {
+        val pixels = kotlin.math.round(font.size * scale).toInt().coerceAtLeast(1)
+        return cache.getOrPut(font to pixels) {
+            memScoped {
+                val out = alloc<COpaquePointerVar>()
+                val style = if (font.bold) 1 else 0
+                GdipCreateFont(family(if (font.mono) "Consolas" else "Segoe UI"), pixels.toFloat(), style, UnitPixel, out.ptr)
+                out.value
+            }
         }
     }
 }

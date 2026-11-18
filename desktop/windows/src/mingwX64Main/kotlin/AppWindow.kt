@@ -31,6 +31,7 @@ import kotlinx.cinterop.set
 import kotlinx.cinterop.sizeOf
 import kotlinx.cinterop.staticCFunction
 import kotlinx.cinterop.toCPointer
+import kotlinx.cinterop.toLong
 import kotlinx.cinterop.value
 import kotlinx.cinterop.wcstr
 import platform.gdiplus.GdipCreateFromHDC
@@ -109,7 +110,7 @@ private fun paint(window: HWND?) = memScoped {
     val g = alloc<COpaquePointerVar>()
     GdipCreateFromHDC(memory, g.ptr)
     GdipScaleWorldTransform(g.value, State.scale, State.scale, MatrixOrderPrepend)
-    app.render(GdiCanvas(g.value), w / State.scale, h / State.scale)
+    app.render(GdiCanvas(g.value, State.scale), w / State.scale, h / State.scale)
     GdipDeleteGraphics(g.value)
     BitBlt(dc, 0, 0, w, h, memory, 0, 0, SRCCOPY.convert())
     SelectObject(memory, old)
@@ -148,23 +149,32 @@ private fun updateTray() {
     }
 }
 
-private fun showMenu(window: HWND?) = memScoped {
-    val items = State.app?.trayItems() ?: return@memScoped
-    val menu = CreatePopupMenu()
-    val actions = HashMap<Int, () -> Unit>()
-    var id = 1
+/** Fills [menu] from [items]; a submenu becomes a popup that opens beside its entry. Each action gets a number, kept in [actions]. */
+private fun fillMenu(menu: HMENU?, items: List<TrayItem>, actions: HashMap<Int, () -> Unit>) {
     for (item in items) when (item) {
         is TrayItem.Action -> {
             var flags = MF_STRING
             if (item.checked) flags = flags or MF_CHECKED
             if (!item.enabled) flags = flags or MF_GRAYED
+            val id = actions.size + 1
             actions[id] = item.run
             AppendMenuW(menu, flags.convert(), id.convert(), item.text)
-            id++
+        }
+        is TrayItem.Submenu -> {
+            val sub = CreatePopupMenu()
+            fillMenu(sub, item.items, actions)
+            AppendMenuW(menu, (MF_STRING or MF_POPUP).convert(), sub.toLong().toULong(), item.text)
         }
         is TrayItem.Info -> { AppendMenuW(menu, (MF_STRING or MF_GRAYED).convert(), 0u, item.text) }
         TrayItem.Separator -> { AppendMenuW(menu, MF_SEPARATOR.convert(), 0u, null) }
     }
+}
+
+private fun showMenu(window: HWND?) = memScoped {
+    val items = State.app?.trayItems() ?: return@memScoped
+    val menu = CreatePopupMenu()
+    val actions = HashMap<Int, () -> Unit>()
+    fillMenu(menu, items, actions)
     val at = alloc<POINT>()
     GetCursorPos(at.ptr)
     // The menu closes when it loses the focus, which a program that is not in front never has: take it first (Microsoft's documented way).
@@ -196,7 +206,7 @@ private fun saveBounds(window: HWND?) {
 private fun onClose(window: HWND?) {
     val settings = State.settings
     var action = settings?.closeAction ?: CloseAction.EXIT
-    if (action == CloseAction.ASK) {
+    if (settings != null && settings.closeAction == null) {
         val answer = MessageBoxW(window, State.app?.closeQuestion ?: "", "PairFree", (MB_YESNOCANCEL or MB_ICONQUESTION).convert())
         when (answer) {
             IDYES -> { action = CloseAction.TRAY; settings?.closeAction = CloseAction.TRAY }
@@ -298,6 +308,7 @@ private fun windowProc(window: HWND?, message: UInt, w: WPARAM, l: LPARAM): LRES
  * call from any thread).
  */
 fun runAppWindow(settings: DesktopSettings, settingsPath: String, create: (io.github.omegadestroyer.pairfree.ui.Host, invalidate: () -> Unit) -> DesktopApp) = memScoped {
+    SetLastError(0u)
     val mutex = CreateMutexW(null, 1, "Local\\PairFree-single-instance")
     if (GetLastError() == ERROR_ALREADY_EXISTS.toUInt()) {
         val other = FindWindowW(CLASS_NAME, null)

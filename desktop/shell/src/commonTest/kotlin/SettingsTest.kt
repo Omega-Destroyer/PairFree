@@ -50,7 +50,7 @@ class SettingsTest {
         val s = DesktopSettings(Path(folder("fresh"), "PairFree.toml"))
         assertEquals("studio", s.look)
         assertNull(s.language)
-        assertEquals(CloseAction.ASK, s.closeAction)
+        assertNull(s.closeAction)
         assertNull(s.checkForUpdates)
         assertNull(s.windowBounds)
         assertNull(s.get("anything"))

@@ -7,8 +7,8 @@ import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readString
 import kotlinx.io.writeString
 
-/** What the window does when its close button is pressed. */
-enum class CloseAction { ASK, TRAY, EXIT }
+/** What the window does when its close button is pressed: goes to the tray, or the program ends. Asked the first time (the setting is null until then). */
+enum class CloseAction { TRAY, EXIT }
 
 /**
  * The desktop apps' settings: one readable file (`PairFree.toml`, beside the program). `[app]` holds the choices the settings
@@ -80,9 +80,9 @@ class DesktopSettings(private val path: Path, private val header: String = DEFAU
         get() = doc["app", "look"] ?: "studio"
         set(value) = change { it.set("app", "look", value) }
 
-    var closeAction: CloseAction
-        get() = doc["app", "close"]?.let { v -> CloseAction.entries.firstOrNull { it.name.equals(v, ignoreCase = true) } } ?: CloseAction.ASK
-        set(value) = change { it.set("app", "close", value.name.lowercase()) }
+    var closeAction: CloseAction?
+        get() = doc["app", "close"]?.let { v -> CloseAction.entries.firstOrNull { it.name.equals(v, ignoreCase = true) } }
+        set(value) = change { if (value == null) it.remove("app", "close") else it.set("app", "close", value.name.lowercase()) }
 
     /** Whether the window goes to the tray when minimised, instead of the taskbar. */
     var minimizeToTray: Boolean
@@ -117,7 +117,7 @@ class DesktopSettings(private val path: Path, private val header: String = DEFAU
 
         const val DEFAULT_HEADER = "PairFree's settings. You may edit this file while PairFree is closed; PairFree writes it whole, so comments are not kept.\n" +
             "[app]: language (a tag such as en or pt-BR, or system), look (studio, studio-light, sketchbook, system),\n" +
-            "close (ask, tray, exit), minimize_to_tray, start_minimized, check_for_updates.\n" +
+            "close (tray, exit; asked the first time), minimize_to_tray (true: the minimise button goes to the tray, false: to the taskbar), start_minimized, check_for_updates.\n" +
             "[store]: texts PairFree keeps for its equalizer; delete a line to forget it."
     }
 }

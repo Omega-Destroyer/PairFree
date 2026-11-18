@@ -50,6 +50,21 @@ music mix `08/06 01`, and Bass boost as `001D 0A 06 00 04` followed by five sign
 - The Elite 8 Active's form lists a plain **HearThrough** switch (`13/76`) next to its noise control; PairFree shows it because the vendor form lists it, and cannot say
   whether Sound+ hides it on models with ambience modes.
 
+## Sound+ itself against the peer (2026-11-18, stopped at the handshake)
+
+Sound+ 5.22.0 (all four splits, unmodified) was installed on the same emulator and given the Elite 8 Active peer, offline. It found the paired peer, opened the SPP
+channel and sent its opening reads, which is the first look at what the vendor app does on connecting. In order (destination 4, source 9, all reads unless noted):
+
+`02/08` available languages, `02/11` product id, `02/03` firmware version, `02/02` type, `22/00` SYSMON supported-get, `22/05` SYSMON supported-subscribe, then `02/11`
+and `02/03` again, `22/01 00` SYSMON get, `02/00` name, `02/01` id, `02/03`, `0D/4C` DEVICE events (read), and a **write** of `0D/4C` with a four-byte mask: with the peer
+answering `FFFFFFFF` the app wrote `00000003`, with `00000000` it wrote `00000000`, so it writes the supported events it wants (bits 0 and 1) back.
+
+PairFree's own opening is shorter (`02/11`, `02/03`, `12/02`, then the settings) and never asks for the type, the name, the SYSMON group (a never-send family in
+PairFree) or the event mask. Whether the earbuds push changes only after that mask is written is not known; the profile snapshots list a `settingschangenotification`
+capability, which would fit. No frame beyond that was seen: after the mask write Sound+ stayed on its "Select your device" list and sent no battery or setting read, so
+the exact reads of its Home and settings screens were **not captured**. What the peer answered was invented (`22/00` and the zero-filled replies built from the schema
+for `22/05`, `22/01`, `02/01`), and the app may be waiting for an answer it does not accept. Not a result about any firmware.
+
 ## About the peers
 
 Two Bumble peers at once on one emulator, or a peer that answers a connection too quickly, left the phone's Bluetooth stuck after the link came up (no audio or

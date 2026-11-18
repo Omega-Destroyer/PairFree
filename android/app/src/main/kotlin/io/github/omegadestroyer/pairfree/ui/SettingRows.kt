@@ -100,7 +100,6 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(settingTitle(setting.key), Modifier.weight(1f))
                         Text(
                             when {
-                                setting.key == "a3959_wind_detected" -> stringResource(if (setting.value == "yes") R.string.yes else R.string.no)
                                 setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") -> optionName(setting.key, setting.value)
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
@@ -653,10 +652,8 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
     "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
     "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
-    "a3959_sensitivity" -> stringResource(R.string.setting_a3959_sensitivity)
     "a3959_scene" -> stringResource(R.string.setting_a3959_scene)
     "a3959_wind_noise" -> stringResource(R.string.setting_wind_reduction)
-    "a3959_wind_detected" -> stringResource(R.string.setting_a3959_wind_detected)
     "sc_surround_sound" -> stringResource(R.string.setting_sc_surround_sound)
     "a3954_easy_chat" -> stringResource(R.string.setting_speak_to_chat)
     "a3954_easy_chat_wait" -> stringResource(R.string.setting_voice_detect_wait)

@@ -100,7 +100,6 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(settingTitle(setting.key), Modifier.weight(1f))
                         Text(
                             when {
-                                setting.key == "a3959_wind_detected" -> stringResource(if (setting.value == "yes") R.string.yes else R.string.no)
                                 setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") -> optionName(setting.key, setting.value)
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
@@ -234,7 +233,7 @@ private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find")
 
 @Composable
 private fun groupTitle(key: String): String = stringResource(
-    when (key) {
+    if (key.startsWith("jb_")) JabraLabels.GROUP[key.removePrefix("jb_")] ?: R.string.setting_group_other else when (key) {
         "noise" -> R.string.setting_group_noise
         "ef_cycle" -> R.string.setting_group_ef_cycle
         "sound" -> R.string.setting_group_sound
@@ -317,7 +316,7 @@ private fun efCycleTitle(key: String): String {
 }
 
 @Composable
-private fun settingTitle(key: String): String = when (key) {
+private fun settingTitle(key: String): String = if (key.startsWith("jb_")) stringResource(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: R.string.unknown) else when (key) {
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
     "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
     "op_custom_eq" -> stringResource(R.string.setting_op_custom_eq)
@@ -653,10 +652,8 @@ private fun settingTitle(key: String): String = when (key) {
     "a3959_nc_mode" -> stringResource(R.string.setting_a3959_nc_mode)
     "a3959_manual_strength" -> stringResource(R.string.setting_anc_level)
     "a3959_adaptive_level" -> stringResource(R.string.setting_a3959_adaptive_level)
-    "a3959_sensitivity" -> stringResource(R.string.setting_a3959_sensitivity)
     "a3959_scene" -> stringResource(R.string.setting_a3959_scene)
     "a3959_wind_noise" -> stringResource(R.string.setting_wind_reduction)
-    "a3959_wind_detected" -> stringResource(R.string.setting_a3959_wind_detected)
     "sc_surround_sound" -> stringResource(R.string.setting_sc_surround_sound)
     "a3954_easy_chat" -> stringResource(R.string.setting_speak_to_chat)
     "a3954_easy_chat_wait" -> stringResource(R.string.setting_voice_detect_wait)
@@ -1008,6 +1005,12 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    key.startsWith("jb_") -> when {
+        option == "off" -> getString(R.string.action_off)
+        option.startsWith("min_") -> getString(R.string.setting_power_off_timer_minutes, option.removePrefix("min_").toInt())
+        option.startsWith("db_") -> getString(R.string.jb_fixed_db, option.removePrefix("db_"))
+        else -> JabraLabels.OPTION[option]?.let { getString(it) } ?: option.replace('_', ' ')
+    }
     key == "sh_nautilus_anc" -> getString(when (option) { "off" -> R.string.action_off; "airplane" -> R.string.setting_sh_nautilus_airplane; "outdoor" -> R.string.setting_sh_nautilus_outdoor; else -> R.string.setting_sh_nautilus_home })
     key == "sh_nautilus_anc_state" -> getString(when (option) { "off" -> R.string.action_off; "on" -> R.string.setting_anc; else -> R.string.setting_sh_adaptive_anc })
     key == "sh_multi_function" -> getString(if (option == "EQModes") R.string.setting_sh_multi_eq else R.string.action_voice_assistant)

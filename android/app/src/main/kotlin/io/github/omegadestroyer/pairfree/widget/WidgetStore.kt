@@ -56,6 +56,7 @@ object WidgetStore {
         is WidgetSlot.NoiseCycle -> JSONObject().put("type", "noise_cycle").put("choices", JSONArray(slot.choices.map(::choiceJson)))
         is WidgetSlot.Eq -> JSONObject().put("type", "eq").put("profile", slot.profileId)
         is WidgetSlot.EqCycle -> JSONObject().put("type", "eq_cycle").put("profiles", JSONArray(slot.profileIds))
+        WidgetSlot.UseForSound -> JSONObject().put("type", "use_for_sound")
     }
 
     private fun choiceJson(c: NoiseChoice): JSONObject {
@@ -102,6 +103,7 @@ object WidgetStore {
                 val ids = List(a?.length() ?: 0) { a!!.optString(it) }.filter { it.isNotEmpty() }
                 if (ids.size >= 2) WidgetSlot.EqCycle(ids) else WidgetSlot.Empty
             }
+            "use_for_sound" -> WidgetSlot.UseForSound
             else -> WidgetSlot.Empty
         }
     } catch (_: JSONException) {

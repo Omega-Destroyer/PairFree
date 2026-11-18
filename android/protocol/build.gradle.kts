@@ -28,6 +28,7 @@ val dataDir: Directory = rootProject.layout.projectDirectory.dir("../data/soundp
 kotlin.sourceSets.main {
     kotlin.srcDir(tasks.named("generateCambridgeTables"))
     kotlin.srcDir(tasks.named("generateSennheiserTables"))
+    kotlin.srcDir(tasks.named("generateJabraTables"))
     kotlin.srcDir(tasks.named("generateOneplusTables"))
     kotlin.srcDir(tasks.named("generateOneplusModels"))
     kotlin.srcDir(tasks.named("generateHearingTables"))
@@ -69,6 +70,7 @@ tasks.test {
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/oneplus")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/nothing")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/sennheiser")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(rootProject.layout.projectDirectory.dir("../data/jabra")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/pixel")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/qcy")).withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(rootProject.layout.projectDirectory.dir("../data/1more")).withPathSensitivity(PathSensitivity.RELATIVE)

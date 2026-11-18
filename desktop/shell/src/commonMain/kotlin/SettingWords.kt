@@ -14,7 +14,7 @@ class SettingWords(private val strings: DesktopStrings) {
     private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
     fun groupTitle(key: String): String = t(
-        when (key) {
+        if (key.startsWith("jb_")) JabraLabels.GROUP[key.removePrefix("jb_")] ?: "setting_group_other" else when (key) {
             "noise" -> "setting_group_noise"
             "ef_cycle" -> "setting_group_ef_cycle"
             "sound" -> "setting_group_sound"
@@ -93,7 +93,7 @@ class SettingWords(private val strings: DesktopStrings) {
         return t("setting_ef_cycle_row", t(side), t(mode))
     }
 
-    fun settingTitle(key: String): String = when (key) {
+    fun settingTitle(key: String): String = if (key.startsWith("jb_")) t(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: "unknown") else when (key) {
         "op_eq_preset" -> t("setting_op_eq_preset")
         "op_noise_level" -> t("setting_op_noise_level")
         "op_custom_eq" -> t("setting_op_custom_eq")
@@ -429,10 +429,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "a3959_nc_mode" -> t("setting_a3959_nc_mode")
         "a3959_manual_strength" -> t("setting_anc_level")
         "a3959_adaptive_level" -> t("setting_a3959_adaptive_level")
-        "a3959_sensitivity" -> t("setting_a3959_sensitivity")
         "a3959_scene" -> t("setting_a3959_scene")
         "a3959_wind_noise" -> t("setting_wind_reduction")
-        "a3959_wind_detected" -> t("setting_a3959_wind_detected")
         "sc_surround_sound" -> t("setting_sc_surround_sound")
         "a3954_easy_chat" -> t("setting_speak_to_chat")
         "a3954_easy_chat_wait" -> t("setting_voice_detect_wait")
@@ -777,6 +775,12 @@ class SettingWords(private val strings: DesktopStrings) {
 
     /** The screens' words for a brand row's [option]. */
     fun optionLabel(key: String, option: String): String = when {
+        key.startsWith("jb_") -> when {
+            option == "off" -> t("action_off")
+            option.startsWith("min_") -> t("setting_power_off_timer_minutes", option.removePrefix("min_").toInt())
+            option.startsWith("db_") -> t("jb_fixed_db", option.removePrefix("db_"))
+            else -> JabraLabels.OPTION[option]?.let { t(it) } ?: option.replace('_', ' ')
+        }
         key == "sh_nautilus_anc" -> t(when (option) { "off" -> "action_off"; "airplane" -> "setting_sh_nautilus_airplane"; "outdoor" -> "setting_sh_nautilus_outdoor"; else -> "setting_sh_nautilus_home" })
         key == "sh_nautilus_anc_state" -> t(when (option) { "off" -> "action_off"; "on" -> "setting_anc"; else -> "setting_sh_adaptive_anc" })
         key == "sh_multi_function" -> t(if (option == "EQModes") "setting_sh_multi_eq" else "action_voice_assistant")

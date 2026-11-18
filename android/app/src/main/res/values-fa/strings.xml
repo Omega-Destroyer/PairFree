@@ -1165,9 +1165,7 @@
     <string name="setting_sc_max_volume">حد صدا</string>
     <string name="setting_a3959_nc_mode">نوع حذف نویز</string>
     <string name="setting_a3959_adaptive_level">سطح تطبیقی</string>
-    <string name="setting_a3959_sensitivity">حساسیت تطبیقی</string>
     <string name="setting_a3959_scene">محیط</string>
-    <string name="setting_a3959_wind_detected">باد شناسایی شد</string>
     <string name="setting_sc_surround_sound">صدای فراگیر (Surround)</string>
     <string name="yes">بله</string>
     <string name="no">خیر</string>

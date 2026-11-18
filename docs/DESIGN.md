@@ -552,7 +552,8 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
   cancelling, transparency) with an optional fixed sub-mode, such as Cancelling in its Adaptive scene: a tap sets the mode and
   then that sub-mode and nothing else. A toggle steps only through the choices the user ticked, in the order ticked (Off then
   Cancelling in Adaptive, for example); with none of its choices on, it starts at the first. An EQ profile is a preset, Stock or
-  one of the user's saved curves.
+  one of the user's saved curves. **Use for sound** (issue #48, owner 2026-11-18) asks Android to play through these earbuds, the same request as the Sound card's button on Home; it needs no channel to the
+  earbuds and no sound link, so it works while they are only paired, and its button is never dimmed.
 - **Several earbuds:** one widget keeps a layout of buttons for each pair of paired earbuds and shows the layout of whichever is
   connected: the pair the channel is open to, else one the phone has connected for sound, else the last one shown, dimmed.
 - **Setup** lists the paired earbuds PairFree can control, like the connect screen; a tap opens one pair's eight buttons. Nothing

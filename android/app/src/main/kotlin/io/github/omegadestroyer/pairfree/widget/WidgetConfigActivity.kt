@@ -188,6 +188,7 @@ class WidgetConfigActivity : ComponentActivity() {
         is WidgetSlot.NoiseCycle -> R.string.widget_type_noise_cycle
         is WidgetSlot.Eq -> R.string.widget_type_eq
         is WidgetSlot.EqCycle -> R.string.widget_type_eq_cycle
+        WidgetSlot.UseForSound -> R.string.widget_type_use_for_sound
     }
 
     private fun describe(context: Context, slot: WidgetSlot, options: WidgetChoices): String {
@@ -199,6 +200,7 @@ class WidgetConfigActivity : ComponentActivity() {
             is WidgetSlot.NoiseCycle -> slot.choices.joinToString(" → ") { WidgetLabels.noise(context, it) }
             is WidgetSlot.Eq -> profile(slot.profileId)
             is WidgetSlot.EqCycle -> slot.profileIds.joinToString(" → ") { profile(it) }
+            WidgetSlot.UseForSound -> context.getString(R.string.widget_type_use_for_sound)
         }
     }
 
@@ -208,6 +210,7 @@ class WidgetConfigActivity : ComponentActivity() {
         NOISE_CYCLE(R.string.widget_type_noise_cycle),
         EQ(R.string.widget_type_eq),
         EQ_CYCLE(R.string.widget_type_eq_cycle),
+        USE_FOR_SOUND(R.string.widget_type_use_for_sound),
     }
 
     /** Edits one button: its kind, then the choice, or for a toggle the choices to step through in the order ticked. */
@@ -215,7 +218,7 @@ class WidgetConfigActivity : ComponentActivity() {
     private fun SlotDialog(context: Context, options: WidgetChoices, slot: WidgetSlot, onDismiss: () -> Unit, onPick: (WidgetSlot) -> Unit) {
         val kinds = Kind.entries.filter {
             when (it) {
-                Kind.EMPTY -> true
+                Kind.EMPTY, Kind.USE_FOR_SOUND -> true
                 Kind.NOISE, Kind.NOISE_CYCLE -> options.noise.isNotEmpty()
                 Kind.EQ, Kind.EQ_CYCLE -> options.eq.isNotEmpty()
             }
@@ -228,6 +231,7 @@ class WidgetConfigActivity : ComponentActivity() {
                     is WidgetSlot.NoiseCycle -> Kind.NOISE_CYCLE
                     is WidgetSlot.Eq -> Kind.EQ
                     is WidgetSlot.EqCycle -> Kind.EQ_CYCLE
+                    WidgetSlot.UseForSound -> Kind.USE_FOR_SOUND
                 },
             )
         }
@@ -241,7 +245,7 @@ class WidgetConfigActivity : ComponentActivity() {
                     is WidgetSlot.NoiseCycle -> slot.choices.mapNotNull { c -> options.noise.indexOf(c).takeIf { it >= 0 } }
                     is WidgetSlot.Eq -> listOfNotNull(options.eq.indexOfFirst { it.first == slot.profileId }.takeIf { it >= 0 })
                     is WidgetSlot.EqCycle -> slot.profileIds.mapNotNull { id -> options.eq.indexOfFirst { it.first == id }.takeIf { it >= 0 } }
-                    WidgetSlot.Empty -> emptyList()
+                    WidgetSlot.Empty, WidgetSlot.UseForSound -> emptyList()
                 },
             )
         }
@@ -249,10 +253,10 @@ class WidgetConfigActivity : ComponentActivity() {
         val labels = when (kind) {
             Kind.NOISE, Kind.NOISE_CYCLE -> noiseLabels
             Kind.EQ, Kind.EQ_CYCLE -> eqLabels
-            Kind.EMPTY -> emptyList()
+            Kind.EMPTY, Kind.USE_FOR_SOUND -> emptyList()
         }
         val valid = when (kind) {
-            Kind.EMPTY -> true
+            Kind.EMPTY, Kind.USE_FOR_SOUND -> true
             Kind.NOISE, Kind.EQ -> ticked.size == 1
             else -> ticked.size >= 2
         }
@@ -291,6 +295,7 @@ class WidgetConfigActivity : ComponentActivity() {
                         onPick(
                             when (kind) {
                                 Kind.EMPTY -> WidgetSlot.Empty
+                                Kind.USE_FOR_SOUND -> WidgetSlot.UseForSound
                                 Kind.NOISE -> WidgetSlot.Noise(options.noise[ticked.single()])
                                 Kind.NOISE_CYCLE -> WidgetSlot.NoiseCycle(ticked.map { options.noise[it] })
                                 Kind.EQ -> WidgetSlot.Eq(options.eq[ticked.single()].first)

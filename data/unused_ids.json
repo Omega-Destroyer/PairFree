@@ -611,5 +611,8 @@
   "PixelWire.CODE_SETUP_ACTION": "never sent or private: the earbuds' setup gestures during first-time setup (SubscribeToOobeActions), a stream from the earbuds PairFree does not subscribe to; checked: docs/pixel/PROTOCOL.md (message table, setup rows marked never)"
  },
  "apple": {},
- "cambridge": {}
+ "cambridge": {},
+ "jabra": {
+  "JabraWire.DSP": "explained: the address of Jabra's DSP chip (8); settings.json holds it as each setting's dest number, and JabraSession reads the setting's own dest, so no code names the constant; checked: data/jabra/settings.json dest values, JabraSession.packet"
+ }
 }

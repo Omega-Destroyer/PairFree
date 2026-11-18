@@ -607,10 +607,25 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   on. Not confirmed: which end of each side is the strongest; PairFree takes the slider's ends (1 and 11).
 - **P30i (A3959) and R50i NC, recorded from the official app (issue #45).** The sound modes block is seven bytes: the mode (0 noise cancelling, 1 transparency,
   2 normal), the manual strength (high nibble, 1 to 5) and adaptive level (low nibble, read only), a byte the app leaves 0, the kind of noise cancelling
-  (0 manual, 1 adaptive, 2 multi-scene), wind noise (bit 0 suppression, bit 1 detected), the adaptive sensitivity (0 to 10; `FF` unset) and the multi-scene
-  setting (0 transport, 1 outdoor, 2 indoor). The recording shows each as a `06 81` write of those seven bytes, which PairFree now offers
+  (0 manual, 1 adaptive, 2 multi-scene), wind noise (bit 0 suppression, bit 1 detected), a byte and the multi-scene
+  setting (0 transport, 1 outdoor, 2 indoor). **Corrected 2026-11-18 from the app's own code** (Soundcore 5.0.35, `A3958AnalysisService.y3` and
+  `A3958CmdService.M0`, for the A3958 and A3959 family): the third byte is the transparency option (0 to 2, `j()` clamps it) and the sixth byte is
+  `isEnvironmentDetection` (1 means on; the app reads `1 == byte` and writes 1 or 0), not an "adaptive sensitivity" from 0 to 10, which is OpenSCQ30's reading. No screen of the
+  official app shows either as a slider: its ANC page for this family (`A3955AncActivity`, shared with the D1202 family) offers the kind (manual, adaptive,
+  multi-scene), the manual level, the multi-scene list and the personalised ANC switch; the wind switch is on the home panel. "Wind detected" (bit 1) is parsed
+  but no screen shows it. So PairFree 0.16.0 offers neither the slider (a user's R50i NC set it and it came back as 0: the earbuds keep the byte as a switch, and
+  any other value reads as off, issue #43) nor the detection row, and writes the block as the app does: the wind byte as the suppression switch alone, the
+  transparency byte as read (0 to 2), the sixth byte as 1 or 0. checked: the whole `a3958`, `d1202` and `a3955` packages and the `a3958` activities and view models (no
+  sensitivity or detection control, only the model's own fields). The recording shows each as a `06 81` write of those seven bytes, which PairFree now offers
   (`a3959SoundRows`, pinned by `theP30iFamilyReadsAndWritesItsNoiseControl`). Also in the recording and now offered: surround sound (`02 86`, state byte after the dual connection switch), the
   auto power off durations (`01 86`: switch and index, 10, 20, 30, 60 minutes) and the fit test (`09 01`, answered with 14 bytes after about nine seconds, 0 or 1 for a good fit). The sensitivity slider's range is OpenSCQ30's (the recording never moves it).
+
+- **P31i (D1202) and R60i NC (D1202C), from the app (2026-11-18).** The sound mode block is eight bytes (`D1202AnalysisService.y3`, `D1202CmdService.M0`):
+  the mode, the manual (high nibble) and adaptive (low nibble) level, the side tone switch (1 or 0), the kind of noise cancelling, wind noise (bit 0 suppression,
+  bit 1 detected), a byte the app carries as the adaptive sensitivity level and no screen shows, the multi-scene setting and a "real-time adaptive ANC" byte
+  the app also only carries. The app drives the same ANC page as the P30i's (`A3955AncActivity`), so PairFree shows the same rows (kind, manual strength, adaptive
+  level, scene, wind noise) and writes the block back as the app does: the side tone as 1 or 0, the wind byte as the suppression switch alone, the carried bytes as the
+  earbuds reported them. Not tried on the earbuds.
 
 - **Pull request 42** (Onlineraider, merged with its commits and corrected): its layout fix and its writes for spatial audio, easy chat, the case's
   features and language, and the auto power off durations match the vendor's code and OpenSCQ30. Its noise slider (low half transparency, high half noise

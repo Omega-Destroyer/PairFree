@@ -20,7 +20,7 @@ BRANDS = [
     dict(
         slug="soundpeats", page="soundpeats", name="SOUNDPEATS", app="PeatsAudio (the SOUNDPEATS app)",
         title="Open-source SOUNDPEATS app (a PeatsAudio alternative)",
-        lead="PairFree is a free, open-source Android app for SOUNDPEATS earbuds. It does what PeatsAudio, the official app, does, without an account or internet access.",
+        lead="PairFree is a free, open-source Android and Windows app for SOUNDPEATS earbuds. It does what PeatsAudio, the official app, does, without an account or internet access.",
         does=[
             "Battery for each earbud and the case.",
             "Noise control: off, noise cancelling and transparency, with their scenes and levels where the model has them.",
@@ -33,7 +33,7 @@ BRANDS = [
     dict(
         slug="soundcore", page="soundcore", name="Soundcore", app="the Soundcore app",
         title="Open-source Soundcore app (for Anker Soundcore earbuds)",
-        lead="PairFree is a free, open-source Android app that controls Soundcore (Anker) earbuds and headphones without the Soundcore app: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls Soundcore (Anker) earbuds and headphones without the Soundcore app: no account, no internet access.",
         does=[
             "Battery for each earbud and the case, and noise control (sound modes).",
             "The equalizer: Soundcore's presets and your own curves, on every model that has an equalizer.",
@@ -45,7 +45,7 @@ BRANDS = [
     dict(
         slug="bose", page="bose", name="Bose", app="the Bose Music app",
         title="Open-source Bose app (a Bose Music alternative)",
-        lead="PairFree is a free, open-source Android app that controls Bose headphones and earbuds without the Bose Music app. It never signs in to Bose and never contacts Bose's servers.",
+        lead="PairFree is a free, open-source Android and Windows app that controls Bose headphones and earbuds without the Bose Music app. It never signs in to Bose and never contacts Bose's servers.",
         does=[
             "Battery for each earbud and the case, or for the headphones.",
             "Listening modes (Quiet, Aware and the modes you set up in Bose's app) and the noise cancelling level.",
@@ -57,7 +57,7 @@ BRANDS = [
     dict(
         slug="jbl", page="jbl", name="JBL", app="the JBL Headphones app",
         title="Open-source JBL Headphones app alternative",
-        lead="PairFree is a free, open-source Android app that controls JBL earbuds and headphones without the JBL Headphones app: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls JBL earbuds and headphones without the JBL Headphones app: no account, no internet access.",
         does=[
             "Battery, and noise control: noise cancelling, Ambient Aware and TalkThru, with adaptive noise cancelling where the model has it.",
             "The equalizer for every model, with JBL's presets and a curve of your own on ten bands.",
@@ -69,7 +69,7 @@ BRANDS = [
     dict(
         slug="sony", page="sony", name="Sony", app="the Sony | Sound Connect app",
         title="Open-source Sony headphones app (a Sound Connect alternative)",
-        lead="PairFree is a free, open-source Android app that controls Sony earbuds and headphones without Sony | Sound Connect: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls Sony earbuds and headphones without Sony | Sound Connect: no account, no internet access.",
         does=[
             "Battery, and noise control: noise cancelling and ambient sound, with the ambient level, voice focus and speak-to-chat.",
             "The equalizer, with the model's presets and, where it allows one, a curve of your own; Clear Bass and DSEE upscaling.",
@@ -81,7 +81,7 @@ BRANDS = [
     dict(
         slug="galaxy-buds", page="samsung", name="Samsung Galaxy Buds", app="Galaxy Wearable",
         title="Open-source Galaxy Buds app (without Galaxy Wearable)",
-        lead="PairFree is a free, open-source Android app that controls Samsung Galaxy Buds without Galaxy Wearable, and on any Android phone: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls Samsung Galaxy Buds without Galaxy Wearable, and on any Android phone: no account, no internet access.",
         does=[
             "Battery and noise control (noise cancelling and ambient sound).",
             "The equalizer: Samsung's presets on every model, and a nine-band custom curve on the Buds3 and later.",
@@ -93,7 +93,7 @@ BRANDS = [
     dict(
         slug="airpods-beats", page="apple", name="AirPods and Beats", app="", close=False,
         title="Open-source AirPods app for Android (noise control and settings)",
-        lead="PairFree is a free, open-source Android app for the settings of AirPods and Beats on Apple's chips, built from the LibrePods project's work: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app for the settings of AirPods and Beats on Apple's chips, built from the LibrePods project's work: no account, no internet access.",
         does=[
             "Battery for each AirPod and the case.",
             "Listening modes: off, noise cancelling, transparency and adaptive, and Conversation Awareness.",
@@ -104,7 +104,7 @@ BRANDS = [
     dict(
         slug="nothing", page="nothing", name="Nothing and CMF", app="the Nothing X app",
         title="Open-source Nothing X app alternative (Nothing Ear and CMF Buds)",
-        lead="PairFree is a free, open-source Android app that controls Nothing and CMF earbuds and headphones without the Nothing X app: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls Nothing and CMF earbuds and headphones without the Nothing X app: no account, no internet access.",
         does=[
             "Battery, noise control (off, noise cancelling and transparency) and the noise cancelling strength.",
             "The equalizer: presets and a curve of your own; bass boost, spatial audio and head tracking on the headphones.",
@@ -116,7 +116,7 @@ BRANDS = [
     dict(
         slug="pixel-buds", page="pixel", name="Google Pixel Buds", app="the Pixel Buds app",
         title="Open-source Pixel Buds app (for Android phones that are not Pixels)",
-        lead="PairFree is a free, open-source Android app for Google Pixel Buds: no account, no internet access, and it does not need a Pixel phone.",
+        lead="PairFree is a free, open-source Android and Windows app for Google Pixel Buds: no account, no internet access, and it does not need a Pixel phone.",
         does=[
             "Battery for each earbud and the case.",
             "Noise control on the Pixel Buds Pro, Pro 2 and 2a, and adaptive noise control on the Pro 2.",
@@ -128,7 +128,7 @@ BRANDS = [
     dict(
         slug="qcy", page="qcy", name="QCY", app="the QCY app",
         title="Open-source QCY app alternative",
-        lead="PairFree is a free, open-source Android app that controls QCY earbuds and headphones without the QCY app: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls QCY earbuds and headphones without the QCY app: no account, no internet access.",
         does=[
             "Battery for each earbud and the case, and noise control with its scenes and strength.",
             "The equalizer, as a curve of your own over the bands the earbuds report.",
@@ -140,7 +140,7 @@ BRANDS = [
     dict(
         slug="1more", page="1more", name="1MORE", app="1MORE's own app",
         title="Open-source 1MORE app alternative",
-        lead="PairFree is a free, open-source Android app that controls 1MORE earbuds and headphones without 1MORE's app: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls 1MORE earbuds and headphones without 1MORE's app: no account, no internet access.",
         does=[
             "Battery for each earbud and the case, and noise control: the kind of noise cancelling and of transparency.",
             "The equalizer: the model's preset sounds and, on models with one, a curve of your own; spatial audio.",
@@ -152,7 +152,7 @@ BRANDS = [
     dict(
         slug="earfun", page="earfun", name="EarFun", app="the EarFun Audio app",
         title="Open-source EarFun app alternative (EarFun Audio)",
-        lead="PairFree is a free, open-source Android app that controls EarFun earbuds and headphones without the EarFun Audio app: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls EarFun earbuds and headphones without the EarFun Audio app: no account, no internet access.",
         does=[
             "Battery for each earbud and the case, and noise control: the kind of noise cancelling and of ambient sound.",
             "The equalizer: EarFun's presets and a curve of your own.",
@@ -164,7 +164,7 @@ BRANDS = [
     dict(
         slug="cambridge", page="cambridge", name="Cambridge Audio", app="the Melomania app",
         title="Open-source Cambridge Audio Melomania app alternative",
-        lead="PairFree is a free, open-source Android app that controls Cambridge Audio's Melomania 1+ and Melomania Touch earbuds without the Melomania app: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls Cambridge Audio's Melomania 1+ and Melomania Touch earbuds without the Melomania app: no account, no internet access.",
         does=[
             "Battery for each earbud, and on the Touch ambient sound and its level.",
             "The equalizer: six presets and five gain bands from -6 to +6 dB.",
@@ -175,7 +175,7 @@ BRANDS = [
     dict(
         slug="sennheiser", page="sennheiser", name="Sennheiser", app="Sennheiser Smart Control",
         title="Open-source Sennheiser Smart Control alternative",
-        lead="PairFree is a free, open-source Android app that controls Sennheiser's Momentum, Accentum and CX earbuds and headphones that speak GAIA v3 without Smart Control: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls Sennheiser's Momentum, Accentum and CX earbuds and headphones that speak GAIA v3 without Smart Control: no account, no internet access.",
         does=[
             "Battery for each earbud and the case.",
             "Noise control (off, noise cancelling, transparency), anti-wind and adaptive noise cancelling.",
@@ -184,9 +184,20 @@ BRANDS = [
         notes="Sennheiser support is read from Sennheiser Smart Control 4.9.4 and Smart Control Plus 1.6.3. It has not been tried with PairFree on any product yet. The older models on other protocols (Momentum 3, PXC 550, HD 450 and others) are not covered.",
     ),
     dict(
+        slug="jabra", page="jabra", name="Jabra", app="Jabra Sound+",
+        title="Open-source Jabra Sound+ alternative",
+        lead="PairFree is a free, open-source Android and Windows app that controls Jabra's Elite and Evolve2 earbuds and headphones that speak Jabra's own protocol without Sound+: no account, no internet access.",
+        does=[
+            "Battery for each earbud and the case.",
+            "Noise control (off, noise cancelling, HearThrough) with its levels, and the modes the button cycles through.",
+            "The equalizer with Sound+'s presets, the button functions, sidetone and the voice prompt language.",
+        ],
+        notes="Jabra support is read from Jabra Sound+ 5.22.0. It has not been tried with PairFree on any product yet.",
+    ),
+    dict(
         slug="oneplus", page="oneplus", name="OnePlus and OPPO", app="HeyMelody",
         title="Open-source HeyMelody alternative for OnePlus and OPPO earbuds",
-        lead="PairFree is a free, open-source Android app that controls OnePlus and OPPO earbuds without HeyMelody: no account, no internet access.",
+        lead="PairFree is a free, open-source Android and Windows app that controls OnePlus and OPPO earbuds without HeyMelody: no account, no internet access.",
         does=[
             "Battery for each earbud and the case.",
             "Noise control: off, noise cancelling and transparency, on the models that have them.",
@@ -201,7 +212,7 @@ QUESTIONS = [
         "Is there an open-source app for my earbuds?",
         "Yes, for the brands above. PairFree is one open-source app (GPL-3.0) that talks directly to the earbuds over Bluetooth, "
         "so one app can replace the Soundcore, Bose Music, JBL Headphones, Sony Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio, "
-        "QCY, 1MORE, EarFun and Melomania apps.",
+        "QCY, 1MORE, EarFun, Melomania, Sennheiser Smart Control, Jabra Sound+ and HeyMelody apps, on Android and on Windows.",
     ),
     (
         "Does it work without an account or internet?",
@@ -219,18 +230,24 @@ QUESTIONS = [
         "Not at the same time: only one app can hold the control connection to a pair of earbuds. Close the brand's own app first.",
     ),
     (
-        "Which phones does it need?",
-        "Android 12 or later. AirPods need Android 17, or one of the few phones on Android 16 that already open their settings channel.",
+        "Is there a Windows app for my earbuds?",
+        "Almost none of these brands makes one, and PairFree for Windows is a small portable program that fills the gap: noise cancelling, the equalizer, "
+        "touch controls and the rest, from a window with a tray icon. It needs Windows 10 (1809) or 11, 64-bit, and every brand is there except AirPods "
+        "and the Beats on Apple's chips, which Windows gives programs no way to reach.",
+    ),
+    (
+        "Which phones and PCs does it need?",
+        "Android 12 or later, or Windows 10 (version 1809) or 11. AirPods need Android 17, or one of the few phones on Android 16 that already open their settings channel.",
     ),
     (
         "Where do I get it?",
-        "From F-Droid or from the GitHub releases page. Both are the same APK, signed with the same key.",
+        "The Android app is on F-Droid and on the GitHub releases page (the same APK, signed with the same key). The Windows program, PairFree.exe, is on the GitHub releases page.",
     ),
 ]
 
 NOT_AFFILIATED = (
     "PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, "
-    "Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, OnePlus or OPPO; the names are used to say which earbuds it works with."
+    "Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, OnePlus or OPPO; the names are used to say which earbuds it works with."
 )
 
 
@@ -241,6 +258,28 @@ def summary():
     for m in re.finditer(r"^\| \[[^\]]+\]\(docs/devices/([\w]+)\.md\) \| (\d+) \| (.+?) \|$", text, re.M):
         rows[m.group(1)] = (int(m.group(2)), m.group(3).strip())
     return rows
+
+
+def features_table(page):
+    """The brand's table from its device page (what works on each model), with its links made absolute for the site."""
+    text = (ROOT / "docs" / "devices" / f"{page}.md").read_text(encoding="utf-8").replace("\r\n", "\n")
+    m = re.search(r"<!-- \S+-table:start[^>]*-->\n(.*?)<!-- \S+-table:end", text, re.S)
+    table = re.sub(r'href="(?:\.\./)+', f'href="{REPO}/blob/main/', m.group(1).strip())
+    return f'<div style="overflow-x:auto">\n{table}\n</div>'
+
+
+def shots(*names):
+    imgs = " ".join(f'<img src="{SITE}/screenshots/{n}.png" width="{w}" alt="{alt}">' for n, w, alt in names)
+    return f"<p>{imgs}</p>"
+
+
+WINDOWS_BLURB = (
+    "Almost none of these brands makes a Windows app, so on a PC their earbuds are plain Bluetooth audio. PairFree for Windows is one small portable program "
+    "(no installer) with the same settings as the Android app, in a window made for a mouse and with a tray icon for the battery and quick switches. "
+    "It needs Windows 10 (version 1809) or 11, 64-bit, with the earbuds paired in Windows' Bluetooth settings."
+)
+
+WINDOWS_NOT_APPLE = "AirPods and the Beats on Apple's chips are not on Windows: Windows gives programs no way to open their settings channel."
 
 
 def url(slug):
@@ -258,6 +297,10 @@ def brand_page(b, models, tried):
         f"so close {b['app']} first.\n\n" if b.get("close", True) else ""
     )
     other = "\n".join(f"- [{o['name']}]({url(o['slug'])})" for o in BRANDS if o is not b)
+    windows = WINDOWS_BLURB + (" " + WINDOWS_NOT_APPLE if b["slug"] == "airpods-beats" else f" {b['name']} is covered.")
+    pics = shots(("android-home", 250, "PairFree on Android: Home"), ("android-sound", 250, "PairFree on Android: Sound"),
+                 ("windows-home", 420, "PairFree on Windows: Home"))
+    table = features_table(b["page"])
     return f"""---
 layout: page
 title: "{b['title']}"
@@ -273,24 +316,37 @@ Each model shows only the settings it has:
 
 {bullets}
 
+## On Windows too
+
+{windows}
+
+{pics}
+
 ## {b['name']} models
 
 PairFree knows {models} {b['name']} models. {status}
 
 {b['notes']}
 
-The [full model list for {b['name']} on GitHub]({REPO}/blob/main/docs/devices/{b['page']}.md) shows what works on each one. If your model is not marked as tried, a device report from you adds it: see [how to help]({REPO}#help-add-your-model).
+If your model is not marked as tried, a device report from you adds it: see [how to help]({REPO}#help-add-your-model).
+
+## What works on each {b['name']} model
+
+{table}
+
+The same list is on [GitHub]({REPO}/blob/main/docs/devices/{b['page']}.md).
 
 ## Why use PairFree
 
 - **No account and no internet.** The app has no internet permission, so it cannot go online.
 - **One app for several brands.** The same screens for every brand, instead of one app per pair of earbuds.
 - **Open source.** GPL-3.0; the protocol is documented in the repository with tests, so anyone can check what the app sends to the earbuds.
-- **Small and quick,** about 3 MB, and reproducible: the published APK can be rebuilt from the source.
+- **Small and quick:** about 6 MB on Android and 16 MB on Windows, and reproducible: the published APK can be rebuilt from the source.
+- **On Windows as well as Android,** where most of these brands have no app at all.
 
 ## Get PairFree
 
-PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) and on the [GitHub releases page]({REPO}/releases/latest). It needs Android 12 or later.
+On Android, PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) and on the [GitHub releases page]({REPO}/releases/latest); it needs Android 12 or later. On Windows 10 or 11, download `PairFree.exe` from the same releases page and run it.
 
 ## Other brands
 
@@ -312,12 +368,26 @@ def home(rows):
     faq = "\n\n".join(f"### {q}\n\n{a}" for q, a in QUESTIONS)
     return f"""---
 layout: page
-title: "PairFree: open-source earbuds and headphones app for Android"
-description: "A free, open-source Android app that controls earbuds and headphones of many brands from one app: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, 1MORE, EarFun, Cambridge Audio. No account, no internet."
+title: "PairFree: open-source earbud and headphone app for Android and Windows"
+description: "A free, open-source app for Android and Windows that controls earbuds and headphones of many brands: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, Jabra, Sennheiser and more. No account, no internet."
 permalink: /
 ---
 
-PairFree is a free, open-source Android app that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
+PairFree is a free, open-source app for **Android and Windows** that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
+
+## Now on Windows
+
+{WINDOWS_BLURB} {WINDOWS_NOT_APPLE}
+
+{shots(("windows-home", 420, "PairFree on Windows: Home"), ("windows-sound", 420, "PairFree on Windows: Sound"))}
+
+## On Android
+
+{shots(("android-home", 250, "PairFree on Android: Home"), ("android-sound", 250, "PairFree on Android: Sound"), ("widget", 400, "The home screen widget"), ("notification", 400, "The status notification"))}
+
+The screens, the device drawings and the widget follow the look you choose:
+
+{shots(("look-studio-light", 250, "The Studio Light look"), ("look-material-you", 250, "The Material You look"), ("look-sketchbook", 250, "The Sketchbook look"))}
 
 It covers {total} models from {len(BRANDS)} brands. Pick yours:
 
@@ -329,7 +399,7 @@ Each model shows only what it has: the battery of each earbud and the case, nois
 
 ## Why PairFree
 
-- **No account, no internet.** The app does not have the internet permission, so it cannot go online.
+- **No account, no internet.** The Android app does not have the internet permission, so it cannot go online.
 - **One app to replace a drawer full of them.** Every brand gets the same screens.
 - **Open source** (GPL-3.0), with every protocol documented in the repository and tested.
 - **Reproducible builds:** the published APK can be rebuilt from the source and checked byte for byte.
@@ -337,7 +407,7 @@ Each model shows only what it has: the battery of each earbud and the case, nois
 
 ## Get PairFree
 
-PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) and on the [GitHub releases page]({REPO}/releases/latest). The source is at [github.com/Omega-Destroyer/PairFree]({REPO}).
+On Android, PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) and on the [GitHub releases page]({REPO}/releases/latest). On Windows 10 or 11, download `PairFree.exe` from the same page and run it. The source is at [github.com/Omega-Destroyer/PairFree]({REPO}).
 
 ## Questions
 

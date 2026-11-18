@@ -24,7 +24,7 @@ class Version(unittest.TestCase):
         text = GRADLE.read_text(encoding="utf-8")
         name = re.search(r'versionName = "([\d.]+)"', text).group(1)
         readme = (GRADLE.parent.parent.parent / "README.md").read_text(encoding="utf-8")
-        self.assertIn(f"Released (v{name})", readme, "bump the README's Released (vX.Y.Z) with versionName")
+        self.assertIn(f"Latest release: v{name}", readme, "bump the README's Latest release: vX.Y.Z with versionName")
 
 
 if __name__ == "__main__":

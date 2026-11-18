@@ -149,8 +149,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
                     it[0] = ambient.value.toByte()
                     // The Liberty 4 Pro's slider goes with its mode, from the widget and the notification too.
                     if (model == "A3954" && it.size >= 2) it[1] = a3954Slider(it.u8(0), it.u8(1)).toByte()
-                    // The P30i family's sensitivity byte is 0xFF until set; the official app writes 0 (recording, issue #45).
-                    if (A3959_MODES in l.features && it.size >= 7 && it[5] == 0xFF.toByte()) it[5] = 0
+                    // The P30i and P31i families' blocks go back as the official app writes them (its M0 of both families).
+                    if (hasModesBlock(l.features)) normalizeModes(it, l.features)
                 }
                 soundModes = changed
                 lastState = shown.with("sound_modes", changed)
@@ -225,7 +225,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
      * multi-scene setting (transport, outdoor, indoor).
      */
     private fun a3959SoundRows(s: SoundcoreState): List<Setting>? {
-        if (A3959_MODES !in s.layout.features) return null
+        if (!hasModesBlock(s.layout.features)) return null
         val b = s.field("sound_modes")?.takeIf { it.size >= 7 } ?: return null
         val ambient = b.u8(0)
         val kind = b.u8(3)
@@ -234,16 +234,14 @@ public class SoundcoreSession(public val model: String) : FitTest {
             if (anc) Setting.Choice("a3959_nc_mode", A3959_KINDS.getOrNull(kind), A3959_KINDS) else null,
             if (anc && kind == 0) Setting.Level("a3959_manual_strength", (b.u8(1) shr 4).coerceIn(1, 5), 1, 5) else null,
             if (anc && kind == 1) Setting.Information("a3959_adaptive_level", "${(b.u8(1) and 15).coerceIn(0, 5)}/5") else null,
-            if (anc && kind == 1) Setting.Level("a3959_sensitivity", b.u8(5).let { if (it == 0xFF) 0 else it }.coerceIn(0, 10), 0, 10) else null,
             if (anc && kind == 2) Setting.Choice("a3959_scene", A3959_SCENES.getOrNull(b.u8(6)), A3959_SCENES) else null,
             if (ambient <= 1) Setting.Toggle("a3959_wind_noise", b.u8(4) and 1 != 0) else null,
-            if (ambient <= 1) Setting.Information("a3959_wind_detected", if (b.u8(4) and 2 != 0) "yes" else "no") else null,
         )
     }
 
     /** The write for a change to one of [a3959SoundRows]: the seven bytes as the earbuds reported them with the one field changed. */
     private fun a3959Change(s: SoundcoreState, change: SettingChange): List<SoundcorePacket>? {
-        if (A3959_MODES !in s.layout.features || !change.key.startsWith("a3959_")) return null
+        if (!hasModesBlock(s.layout.features) || !change.key.startsWith("a3959_")) return null
         val bytes = s.field("sound_modes")?.takeIf { it.size >= 7 } ?: return null
         when (change) {
             is SettingChange.Choice -> when (change.key) {
@@ -253,17 +251,35 @@ public class SoundcoreSession(public val model: String) : FitTest {
             }
             is SettingChange.Level -> when (change.key) {
                 "a3959_manual_strength" -> bytes[1] = ((change.value.coerceIn(1, 5) shl 4) or (bytes.u8(1) and 15)).toByte()
-                "a3959_sensitivity" -> bytes[5] = change.value.coerceIn(0, 10).toByte()
                 else -> return null
             }
             is SettingChange.Toggle -> if (change.key == "a3959_wind_noise") bytes[4] = (if (change.on) 1 else 0).toByte() else return null
             else -> return null
         }
-        // The app writes the sensitivity byte as 0 where the earbuds report 0xFF (unset), as the recording shows.
-        if (bytes.u8(5) == 0xFF) bytes[5] = 0
+        normalizeModes(bytes, s.layout.features)
         lastState = s.with("sound_modes", bytes)
         soundModes = bytes.copyOf()
         return listOf(SoundcorePacket(SoundcoreCommand.SET_SOUND_MODES, bytes))
+    }
+
+    /** Whether the model's sound mode block is the P30i family's (seven bytes) or the P31i family's (eight), the two the official app's ANC page drives alike. */
+    private fun hasModesBlock(features: Set<String>) = A3959_MODES in features || D1202_MODES in features
+
+    /**
+     * The bytes the official app writes back (docs/soundcore/PROTOCOL.md, section 14; `A3958CmdService.M0`, `D1202CmdService.M0` of Soundcore 5.0.35):
+     * the wind byte holds only the suppression switch (bit 0; bit 1, "wind detected", is the earbuds' and the app never sends it); the P30i family's
+     * byte 2 is the transparency option (0 to 2) and its byte 5 the environment detection switch (1 or 0), so an unset 0xFF goes back as 0; the P31i
+     * family's byte 2 is the side tone switch (1 or 0), and its sensitivity and real-time adaptive bytes (5 and 7) go back as the earbuds reported them.
+     * The "adaptive sensitivity 0 to 10" slider OpenSCQ30 offers is in neither family's screens in the official app, which only carries the byte.
+     */
+    private fun normalizeModes(bytes: ByteArray, features: Set<String>) {
+        bytes[4] = (bytes.u8(4) and 1).toByte()
+        if (A3959_MODES in features) {
+            bytes[2] = bytes.u8(2).coerceIn(0, 2).toByte()
+            bytes[5] = (if (bytes.u8(5) == 1) 1 else 0).toByte()
+        } else {
+            bytes[2] = (if (bytes.u8(2) == 1) 1 else 0).toByte()
+        }
     }
 
     /** The P30i family's power-off durations (10, 20, 30 or 60 minutes, as the recording of the official app shows). */
@@ -534,6 +550,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
          * byte (auto power off: switch and duration index; spatial audio: switch, effect and mode) is written back with the other bytes as reported.
          */
         private const val A3959_MODES = "a3959_sound_modes"
+        private const val D1202_MODES = "d1202_sound_modes"
         private val A3959_KINDS = listOf("manual", "adaptive", "multi_scene")
         private val A3959_SCENES = listOf("transport", "outdoor", "indoor")
         private const val MAX_VOLUME = "sc_max_volume"

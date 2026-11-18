@@ -691,8 +691,12 @@ class SoundcoreModelSessionTest {
 
         notice("00550001000000")
         assertEquals(Setting.Information("a3959_adaptive_level", "5/5"), rows()["a3959_adaptive_level"])
-        assertEquals(Setting.Level("a3959_sensitivity", 0, 0, 10), rows()["a3959_sensitivity"])
-        assertEquals("0681:00550001000700", body(SettingChange.Level("a3959_sensitivity", 7)))
+        // No sensitivity slider: the official app's byte 5 is the environment detection switch, which the earbuds keep as 1 or 0 and the app writes back so.
+        assertNull(rows()["a3959_sensitivity"])
+        notice("00550001000100")
+        assertEquals("0681:00550001000100", body(SettingChange.Choice("a3959_nc_mode", "adaptive")))
+        notice("00550001000700")
+        assertEquals("0681:00550001000000", body(SettingChange.Choice("a3959_nc_mode", "adaptive")))
         notice("00550001000000")
         assertEquals("0681:00550002000000", body(SettingChange.Choice("a3959_nc_mode", "multi_scene")))
 
@@ -702,9 +706,9 @@ class SoundcoreModelSessionTest {
         notice("00550002000000")
         assertEquals("0681:00550002000002", body(SettingChange.Choice("a3959_scene", "indoor")))
 
-        // Transparency has wind noise but no noise cancelling kind; the detection bit is the earbuds' own.
+        // Transparency has wind noise but no noise cancelling kind; the "wind detected" bit is the earbuds' own and never goes back (the app writes the switch alone).
         notice("01550001020000")
-        assertEquals(Setting.Information("a3959_wind_detected", "yes"), rows()["a3959_wind_detected"])
+        assertNull(rows()["a3959_wind_detected"])
         assertNull(rows()["a3959_nc_mode"])
         assertEquals("0681:01550001010000", body(SettingChange.Toggle("a3959_wind_noise", true)))
 
@@ -712,6 +716,28 @@ class SoundcoreModelSessionTest {
         assertEquals("0186:0001", body(SettingChange.Choice("a3954_auto_power_off_duration", "off")))
         assertEquals("0286:01", body(SettingChange.Toggle("sc_surround_sound", true)))
         assertEquals("0901", session.startFitTest()!!.single().copyOfRange(5, 7).hex(), "the fit test the official app runs")
+    }
+
+    /** The P31i and R60i NC's eight-byte block, read from Soundcore 5.0.35 (`D1202AnalysisService.y3`, `D1202CmdService.M0`): the same ANC page as the P30i's. */
+    @Test
+    fun theP31iFamilyReadsAndWritesItsNoiseControlAsTheOfficialAppDoes() {
+        // The state's fields up to the sound mode block are 119 bytes (data/soundcore/devices.json), then the block, then 12 bytes.
+        fun state(modes: String) = "00".repeat(119) + modes + "00".repeat(13)
+        val session = SoundcoreSession("D1202").also { assertTrue(it.receive(SoundcorePacket(SoundcoreCommand.STATE, state("00550001000000ff").hexBytes()))) }
+        fun rows() = session.groups.flatMap { it.settings }.associateBy { it.key }
+        fun notice(hex: String) = session.receive(SoundcorePacket(SoundcoreCommand.SOUND_MODES, hex.hexBytes()))
+        fun body(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
+
+        assertEquals(Setting.Choice("a3959_nc_mode", "adaptive", listOf("manual", "adaptive", "multi_scene")), rows()["a3959_nc_mode"])
+        assertNull(rows()["a3959_sensitivity"])
+        assertNull(rows()["a3959_wind_detected"])
+        // Side tone (byte 2) goes back as 1 or 0, the wind byte as the suppression switch alone, the sensitivity (5) and real-time adaptive (7) bytes as reported.
+        notice("0055010103040200")
+        assertEquals("0681:0055010001040200", body(SettingChange.Choice("a3959_nc_mode", "manual")))
+        notice("0055010103040200")
+        assertEquals("0681:0055010101040200", body(SettingChange.Toggle("a3959_wind_noise", true)))
+        notice("0055020103040200")
+        assertEquals("0681:0055000001040200", body(SettingChange.Choice("a3959_nc_mode", "manual")))
     }
 }
 

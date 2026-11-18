@@ -1,0 +1,3637 @@
+{
+ "_about": "Jabra's production models (research/devices.json) with the firmware snapshots the app bundles. Pick the variant by the product id the earbuds report, the snapshot by firmware (the nearest earlier one when none matches). Written by tools/import_jabra_app.py.",
+ "profiles": {
+  "11846_01-92_1.2.4": {
+   "pid": 11846,
+   "variant": "01-92",
+   "firmware": "1.2.4",
+   "caps": [
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "settingschangenotification",
+    "spatialsoundformediasupport",
+    "spatialsoundheadtrackingformediasupport",
+    "spotifytap",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "63568bed73a45ff8",
+    "58e9cc8fd4a6a052",
+    "d5f3c4a15f1bc535",
+    "a862ffff8bf61ca9",
+    "96e3d3601bd5e50a",
+    "ea9eb136a78655ec",
+    "b5d7263196366f3a",
+    "168415532da83653",
+    "215c27c6a95e74b7",
+    "321ec5fabdd0c84a",
+    "80fd9ad8d822cf1e",
+    "173929db07ae7fe6",
+    "bca7379f6befd9fd",
+    "89596c4c4f9d89aa",
+    "d012224f0d20aeff",
+    "d25b4ab42ea3080b",
+    "d25db1bad6decea2",
+    "75bcea89e7843246",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "133071203e1b4339",
+    "8269c983222ca9bb",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "11847_01-91_1.2.4": {
+   "pid": 11847,
+   "variant": "01-91",
+   "firmware": "1.2.4",
+   "caps": [
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "settingschangenotification",
+    "spatialsoundformediasupport",
+    "spotifytap",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "63568bed73a45ff8",
+    "58e9cc8fd4a6a052",
+    "d5f3c4a15f1bc535",
+    "a862ffff8bf61ca9",
+    "96e3d3601bd5e50a",
+    "ea9eb136a78655ec",
+    "b5d7263196366f3a",
+    "168415532da83653",
+    "215c27c6a95e74b7",
+    "321ec5fabdd0c84a",
+    "80fd9ad8d822cf1e",
+    "173929db07ae7fe6",
+    "bca7379f6befd9fd",
+    "89596c4c4f9d89aa",
+    "d012224f0d20aeff",
+    "d25b4ab42ea3080b",
+    "d25db1bad6decea2",
+    "75bcea89e7843246",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "133071203e1b4339",
+    "8269c983222ca9bb",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "11865_01-8F_1.0.8": {
+   "pid": 11865,
+   "variant": "01-8F",
+   "firmware": "1.0.8",
+   "caps": [
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "settingschangenotification",
+    "spatialsoundformediasupport",
+    "spatialsoundheadtrackingformediasupport",
+    "spotifytap",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "63568bed73a45ff8",
+    "58e9cc8fd4a6a052",
+    "d5f3c4a15f1bc535",
+    "a862ffff8bf61ca9",
+    "96e3d3601bd5e50a",
+    "ea9eb136a78655ec",
+    "b5d7263196366f3a",
+    "168415532da83653",
+    "215c27c6a95e74b7",
+    "321ec5fabdd0c84a",
+    "80fd9ad8d822cf1e",
+    "173929db07ae7fe6",
+    "bca7379f6befd9fd",
+    "89596c4c4f9d89aa",
+    "d012224f0d20aeff",
+    "d25b4ab42ea3080b",
+    "d25db1bad6decea2",
+    "75bcea89e7843246",
+    "85385d8165ff98dd",
+    "34614b2c95404634",
+    "f2c13b5a6b08d35f",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "133071203e1b4339",
+    "8269c983222ca9bb",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "11865_01-8F_1.1.4": {
+   "pid": 11865,
+   "variant": "01-8F",
+   "firmware": "1.1.4",
+   "caps": [
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "settingschangenotification",
+    "spatialsoundformediasupport",
+    "spatialsoundheadtrackingformediasupport",
+    "spotifytap",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "63568bed73a45ff8",
+    "58e9cc8fd4a6a052",
+    "d5f3c4a15f1bc535",
+    "a862ffff8bf61ca9",
+    "96e3d3601bd5e50a",
+    "ea9eb136a78655ec",
+    "b5d7263196366f3a",
+    "168415532da83653",
+    "215c27c6a95e74b7",
+    "321ec5fabdd0c84a",
+    "80fd9ad8d822cf1e",
+    "173929db07ae7fe6",
+    "bca7379f6befd9fd",
+    "89596c4c4f9d89aa",
+    "d012224f0d20aeff",
+    "d25b4ab42ea3080b",
+    "d25db1bad6decea2",
+    "75bcea89e7843246",
+    "85385d8165ff98dd",
+    "34614b2c95404634",
+    "f2c13b5a6b08d35f",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "133071203e1b4339",
+    "8269c983222ca9bb",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "11866_01-8E_1.0.8": {
+   "pid": 11866,
+   "variant": "01-8E",
+   "firmware": "1.0.8",
+   "caps": [
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "settingschangenotification",
+    "spatialsoundformediasupport",
+    "spotifytap",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "63568bed73a45ff8",
+    "58e9cc8fd4a6a052",
+    "d5f3c4a15f1bc535",
+    "a862ffff8bf61ca9",
+    "96e3d3601bd5e50a",
+    "ea9eb136a78655ec",
+    "b5d7263196366f3a",
+    "168415532da83653",
+    "215c27c6a95e74b7",
+    "321ec5fabdd0c84a",
+    "80fd9ad8d822cf1e",
+    "173929db07ae7fe6",
+    "bca7379f6befd9fd",
+    "89596c4c4f9d89aa",
+    "d012224f0d20aeff",
+    "d25b4ab42ea3080b",
+    "d25db1bad6decea2",
+    "75bcea89e7843246",
+    "85385d8165ff98dd",
+    "34614b2c95404634",
+    "f2c13b5a6b08d35f",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "133071203e1b4339",
+    "8269c983222ca9bb",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "13655_01-51_2.25.0": {
+   "pid": 13655,
+   "variant": "01-51",
+   "firmware": "2.25.0",
+   "caps": [
+    "customersupport",
+    "factorydefault",
+    "music_equalizer",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "636a3344d65f47a8",
+    "e7adc0d22379b057",
+    "f005c8f1828ce87d",
+    "3ee9fac1e786c506",
+    "c7e6332d7fb87802",
+    "61452916f9be63e6",
+    "6bfb5350e80524dd",
+    "088675566dda4110",
+    "fb1c817412393395",
+    "83cf32906c9fdc99",
+    "57eaa5a1a6d48e09",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9342_01-4C_2.40.1": {
+   "pid": 9342,
+   "variant": "01-4C",
+   "firmware": "2.40.1",
+   "caps": [
+    "customersupport",
+    "earbud_interconnection_status",
+    "factorydefault",
+    "music_equalizer",
+    "needstobeputincradletocompletefwu",
+    "remotemmmisupport",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0f4eb6da31954720",
+    "a3e93d0cf0f7ab9a",
+    "b6c70fc7ed059169",
+    "d66feaddcd6c84c7",
+    "f113113cf3ad547c",
+    "466e8389bc87a03a",
+    "6f54ebd90b28ce41",
+    "5fe23019694e8e19",
+    "8da57ca73576491f",
+    "fb1c817412393395",
+    "83cf32906c9fdc99",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9347_01-57_1.28.0": {
+   "pid": 9347,
+   "variant": "01-57",
+   "firmware": "1.28.0",
+   "caps": [
+    "customersupport",
+    "factorydefault",
+    "music_equalizer",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0f4eb6da31954720",
+    "a3e93d0cf0f7ab9a",
+    "5fe23019694e8e19",
+    "26e8f85304efd83f",
+    "4a25f291fe19ad00",
+    "fb1c817412393395",
+    "83cf32906c9fdc99",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9353_01-56_2.40.1": {
+   "pid": 9353,
+   "variant": "01-56",
+   "firmware": "2.40.1",
+   "caps": [
+    "customersupport",
+    "earbud_interconnection_status",
+    "factorydefault",
+    "music_equalizer",
+    "needstobeputincradletocompletefwu",
+    "remotemmmisupport",
+    "step_rate",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0f4eb6da31954720",
+    "a3e93d0cf0f7ab9a",
+    "b6c70fc7ed059169",
+    "d66feaddcd6c84c7",
+    "f113113cf3ad547c",
+    "466e8389bc87a03a",
+    "6f54ebd90b28ce41",
+    "5fe23019694e8e19",
+    "8da57ca73576491f",
+    "fb1c817412393395",
+    "83cf32906c9fdc99",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9355_01-50_1.6.3": {
+   "pid": 9355,
+   "variant": "01-50",
+   "firmware": "1.6.3",
+   "caps": [
+    "audiostreaming",
+    "customersupport",
+    "factorydefault",
+    "music_equalizer",
+    "onheaddetection",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "2ef56cf141af9f63",
+    "600c9553d539a377",
+    "5e351286522fc654",
+    "9a301ca2250165ec",
+    "b9caeeb4bba18c57",
+    "8927c18902b5ab9c",
+    "7cb6bbcb02887109",
+    "0cb61d312037d548",
+    "fbca6efa939d0434",
+    "7c40b476fa853c1a",
+    "36bcd9b916bbb3c7",
+    "25bec4f5cfdd489c",
+    "f18bb4bbcd46540b",
+    "56b76d4e1cfecb15",
+    "a3c2f980352bb56e",
+    "4f482cbf380b287a"
+   ]
+  },
+  "9358_01-58_2.29.0": {
+   "pid": 9358,
+   "variant": "01-58",
+   "firmware": "2.29.0",
+   "caps": [
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "music_equalizer",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "7bda277e6236dd97",
+    "bde463f6df180a61",
+    "5365d7589bb86215",
+    "d706a240b0f1058f",
+    "e8f0563c7e575477",
+    "094533f44c95adfa",
+    "7e980e38cb296015",
+    "736fa52b8cc02366",
+    "46933e3056f38a6c",
+    "bc427579316b8b27",
+    "8c45ef5d39386f9e",
+    "ae43ca466fe6194e",
+    "4b551b714552b533",
+    "3709ced3cf823265",
+    "130582d78b5c7d88",
+    "32b8ec3ed91aa21d",
+    "dbbe78cec6e545fe",
+    "889fc5ccf9699e6a",
+    "59fb5ba5d9129dcc",
+    "1397ada35888ff84"
+   ]
+  },
+  "9362_01-5A_2.22.0": {
+   "pid": 9362,
+   "variant": "01-5A",
+   "firmware": "2.22.0",
+   "caps": [
+    "customersupport",
+    "factorydefault",
+    "music_equalizer",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "26e8f85304efd83f",
+    "b744babf1541f149",
+    "5fe23019694e8e19",
+    "d397722a4037d11d",
+    "fb1c817412393395",
+    "83cf32906c9fdc99",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9367_01-5D_2.40.1": {
+   "pid": 9367,
+   "variant": "01-5D",
+   "firmware": "2.40.1",
+   "caps": [
+    "customersupport",
+    "earbud_interconnection_status",
+    "factorydefault",
+    "music_equalizer",
+    "needstobeputincradletocompletefwu",
+    "remotemmmisupport",
+    "voiceassistant"
+   ],
+   "settings": [
+    "6f74c4aebc57cd46",
+    "0e26a13a1b4b862b",
+    "7324921133c55792",
+    "7cb6bbcb02887109",
+    "8ef7916b36514ba8",
+    "05aa6ebe76371e47",
+    "325bfa2ad6d7f71e",
+    "500c12b502ea7583",
+    "7429fdf5338fcd09",
+    "0cfd1ad9292164ce",
+    "a9db2b3ffce2c6a9",
+    "c3eebefaab434b1a",
+    "a3c2f980352bb56e",
+    "97d58d21536e26de",
+    "4f482cbf380b287a"
+   ]
+  },
+  "9379_01-63_2.6.0": {
+   "pid": 9379,
+   "variant": "01-63",
+   "firmware": "2.6.0",
+   "caps": [
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f7a4e058f81b5a84",
+    "ee5f944417f46f29",
+    "1787eac4e1f5e1a6",
+    "9e7ee4d078bb35c1",
+    "e8fdeced899e41bf",
+    "32397f4410bd8c28",
+    "bb1c5e889406d6fd",
+    "42a3b3f3aa484664",
+    "dc5c5cb13edfef51",
+    "be05b59bce1a1863",
+    "50cdb3d592d689bd",
+    "5aa09a31ad1de4d2",
+    "3a107c90f0c6ccd4",
+    "3834fa05a71e2c4d",
+    "e55e14898b5bc8a9",
+    "96bba8670f44119a",
+    "9e30a1ff5ed54223",
+    "4c6128bf3d97b930",
+    "5ed33211192da6dd",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9381_01-65_2.3.9": {
+   "pid": 9381,
+   "variant": "01-65",
+   "firmware": "2.3.9",
+   "caps": [
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "music_equalizer",
+    "mysound",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "9e7ee4d078bb35c1",
+    "42a3b3f3aa484664",
+    "4be8d6c70d82828a",
+    "373c8e8d5e341dac",
+    "5aa09a31ad1de4d2",
+    "3a107c90f0c6ccd4",
+    "79df601a01ef9841",
+    "4c6128bf3d97b930",
+    "5ed33211192da6dd",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9383_01-60_2.0.0": {
+   "pid": 9383,
+   "variant": "01-60",
+   "firmware": "2.0.0",
+   "caps": [
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "ffancsupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "0eafc9c54314ff81",
+    "7cb6bbcb02887109",
+    "0327d0f2247233ca",
+    "af099fb67eabcb45",
+    "22378cd756a19eea",
+    "2f5c4147e5c6d957",
+    "7df5510216c04c6d",
+    "4aeb86390b9787d0",
+    "dec07043844258e3",
+    "03428ee0fdd2dbff",
+    "104fb53da4c5c285",
+    "21ae7e7477dec3ce",
+    "e44faaa44bd5dc19",
+    "79ee20a1c58bf9e1",
+    "1cc0364f8d15793c",
+    "9d7fe6f58aad39cb",
+    "23e8e3e65ebd4475",
+    "72b84f728a2534fa",
+    "c3d67bb356dd792d",
+    "b0f27856028fba2f",
+    "dd75bc30d95011bd",
+    "46ba06c9c7b927ec",
+    "89b039b3b52864bc",
+    "155ef144b23e32b5",
+    "4428fae347955716",
+    "5fda64424c6ba8f4",
+    "5fe23019694e8e19",
+    "dd91ae4156c0c598",
+    "fb1c817412393395",
+    "a83a35eb6d1b36d3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9395_01-64_2.6.0": {
+   "pid": 9395,
+   "variant": "01-64",
+   "firmware": "2.6.0",
+   "caps": [
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f7a4e058f81b5a84",
+    "ee5f944417f46f29",
+    "1787eac4e1f5e1a6",
+    "9e7ee4d078bb35c1",
+    "e8fdeced899e41bf",
+    "32397f4410bd8c28",
+    "bb1c5e889406d6fd",
+    "42a3b3f3aa484664",
+    "dc5c5cb13edfef51",
+    "be05b59bce1a1863",
+    "50cdb3d592d689bd",
+    "5aa09a31ad1de4d2",
+    "3a107c90f0c6ccd4",
+    "3834fa05a71e2c4d",
+    "e55e14898b5bc8a9",
+    "96bba8670f44119a",
+    "9e30a1ff5ed54223",
+    "4c6128bf3d97b930",
+    "5ed33211192da6dd",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9397_01-64_2.6.0": {
+   "pid": 9397,
+   "variant": "01-64",
+   "firmware": "2.6.0",
+   "caps": [
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f7a4e058f81b5a84",
+    "ee5f944417f46f29",
+    "1787eac4e1f5e1a6",
+    "9e7ee4d078bb35c1",
+    "e8fdeced899e41bf",
+    "32397f4410bd8c28",
+    "bb1c5e889406d6fd",
+    "42a3b3f3aa484664",
+    "dc5c5cb13edfef51",
+    "be05b59bce1a1863",
+    "50cdb3d592d689bd",
+    "5aa09a31ad1de4d2",
+    "3a107c90f0c6ccd4",
+    "3834fa05a71e2c4d",
+    "e55e14898b5bc8a9",
+    "96bba8670f44119a",
+    "9e30a1ff5ed54223",
+    "4c6128bf3d97b930",
+    "5ed33211192da6dd",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9399_01-63_2.6.0": {
+   "pid": 9399,
+   "variant": "01-63",
+   "firmware": "2.6.0",
+   "caps": [
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f7a4e058f81b5a84",
+    "ee5f944417f46f29",
+    "1787eac4e1f5e1a6",
+    "9e7ee4d078bb35c1",
+    "e8fdeced899e41bf",
+    "32397f4410bd8c28",
+    "bb1c5e889406d6fd",
+    "42a3b3f3aa484664",
+    "dc5c5cb13edfef51",
+    "be05b59bce1a1863",
+    "50cdb3d592d689bd",
+    "5aa09a31ad1de4d2",
+    "3a107c90f0c6ccd4",
+    "3834fa05a71e2c4d",
+    "e55e14898b5bc8a9",
+    "96bba8670f44119a",
+    "9e30a1ff5ed54223",
+    "4c6128bf3d97b930",
+    "5ed33211192da6dd",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9401_01-67_1.3.8": {
+   "pid": 9401,
+   "variant": "01-67",
+   "firmware": "1.3.8",
+   "caps": [
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "onheaddetection",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f5ae499827e153ef",
+    "fbca6efa939d0434",
+    "25bec4f5cfdd489c",
+    "f9a2312fca3345c9",
+    "2475a0daaf7cfd37",
+    "8afec65bf93f664f",
+    "73156352cff404ae",
+    "dceb65b477df01fb",
+    "fc3cec227b2fce81",
+    "cdb015f7a4fb84fc",
+    "498aa7b98150800f",
+    "2a6c117da39d038b",
+    "9a301ca2250165ec",
+    "0cb61d312037d548",
+    "79e6471d41781eb3",
+    "ccd5167de6f82ccf",
+    "ddba826278a73b02",
+    "fa9811adda2dec05",
+    "e7da8528f434e37e",
+    "41067314e7f92bb4",
+    "bbede92a249722cb",
+    "6a7d4560fd604686",
+    "a3c2f980352bb56e",
+    "4f482cbf380b287a"
+   ]
+  },
+  "9403_01-67_1.3.8": {
+   "pid": 9403,
+   "variant": "01-67",
+   "firmware": "1.3.8",
+   "caps": [
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "onheaddetection",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f5ae499827e153ef",
+    "fbca6efa939d0434",
+    "25bec4f5cfdd489c",
+    "f9a2312fca3345c9",
+    "2475a0daaf7cfd37",
+    "8afec65bf93f664f",
+    "73156352cff404ae",
+    "dceb65b477df01fb",
+    "cdb015f7a4fb84fc",
+    "fc3cec227b2fce81",
+    "498aa7b98150800f",
+    "2a6c117da39d038b",
+    "9a301ca2250165ec",
+    "0cb61d312037d548",
+    "79e6471d41781eb3",
+    "ccd5167de6f82ccf",
+    "ddba826278a73b02",
+    "fa9811adda2dec05",
+    "e7da8528f434e37e",
+    "41067314e7f92bb4",
+    "bbede92a249722cb",
+    "6a7d4560fd604686",
+    "a3c2f980352bb56e",
+    "4f482cbf380b287a"
+   ]
+  },
+  "9420_01-61_2.0.0": {
+   "pid": 9420,
+   "variant": "01-61",
+   "firmware": "2.0.0",
+   "caps": [
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "ffancsupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "0eafc9c54314ff81",
+    "7cb6bbcb02887109",
+    "0327d0f2247233ca",
+    "af099fb67eabcb45",
+    "22378cd756a19eea",
+    "2f5c4147e5c6d957",
+    "7df5510216c04c6d",
+    "4aeb86390b9787d0",
+    "dec07043844258e3",
+    "03428ee0fdd2dbff",
+    "104fb53da4c5c285",
+    "21ae7e7477dec3ce",
+    "e44faaa44bd5dc19",
+    "79ee20a1c58bf9e1",
+    "1cc0364f8d15793c",
+    "9d7fe6f58aad39cb",
+    "23e8e3e65ebd4475",
+    "72b84f728a2534fa",
+    "c3d67bb356dd792d",
+    "b0f27856028fba2f",
+    "dd75bc30d95011bd",
+    "46ba06c9c7b927ec",
+    "89b039b3b52864bc",
+    "155ef144b23e32b5",
+    "4428fae347955716",
+    "5fda64424c6ba8f4",
+    "5fe23019694e8e19",
+    "dd91ae4156c0c598",
+    "fb1c817412393395",
+    "a83a35eb6d1b36d3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9421_01-68_2.0.0": {
+   "pid": 9421,
+   "variant": "01-68",
+   "firmware": "2.0.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "remotemmmisupport",
+    "sealingtest",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "1c76271b5f3bc2fe",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "0d43bbe90fbb6b58",
+    "d9497e4e3a5b70e8",
+    "7cfbdec8ae42d826",
+    "17c7d340319b9c73",
+    "230ffd8aefde123c",
+    "181bd69a75dc3849",
+    "c2f9c6bfc35bc213",
+    "da12c9134f9fc87d",
+    "ad094f61369dcc52",
+    "78a644dfa0facc6d",
+    "b4555670a03db515",
+    "fbeea73a538fcbf0",
+    "c023e806dfd8e285",
+    "e57a66e106e456b0",
+    "8f6513e8cdd27bb8",
+    "3f9ea53b751bef53",
+    "03a37ce0e6ea2978",
+    "1aaeaa4d39058bbc",
+    "bc99fc079dd01958",
+    "a76de8bafc460ad9",
+    "5fe23019694e8e19",
+    "dd91ae4156c0c598",
+    "0437d84b0c595a77",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9433_01-6D_1.7.4": {
+   "pid": 9433,
+   "variant": "01-6D",
+   "firmware": "1.7.4",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "ambiencemodesincall",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "onheaddetection",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f7a4e058f81b5a84",
+    "ee5f944417f46f29",
+    "1787eac4e1f5e1a6",
+    "9e7ee4d078bb35c1",
+    "e8fdeced899e41bf",
+    "32397f4410bd8c28",
+    "bb1c5e889406d6fd",
+    "42a3b3f3aa484664",
+    "dc5c5cb13edfef51",
+    "a6ff4b59f525368f",
+    "ea6a6477c99a960b",
+    "be05b59bce1a1863",
+    "bb19120b028d0dbb",
+    "bf4eec10cf2fd4a3",
+    "9786db573e5c0ee3",
+    "824aa55639e7b1db",
+    "7904c01a57b547d9",
+    "42c821288bef883a",
+    "3834fa05a71e2c4d",
+    "e55e14898b5bc8a9",
+    "96bba8670f44119a",
+    "9e30a1ff5ed54223",
+    "4c6128bf3d97b930",
+    "f7d47e156047db34",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9433_01-6D_1.8.5": {
+   "pid": 9433,
+   "variant": "01-6D",
+   "firmware": "1.8.5",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "ambiencemodesincall",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "onheaddetection",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f7a4e058f81b5a84",
+    "ee5f944417f46f29",
+    "1787eac4e1f5e1a6",
+    "9e7ee4d078bb35c1",
+    "e8fdeced899e41bf",
+    "32397f4410bd8c28",
+    "bb1c5e889406d6fd",
+    "42a3b3f3aa484664",
+    "dc5c5cb13edfef51",
+    "a6ff4b59f525368f",
+    "ea6a6477c99a960b",
+    "be05b59bce1a1863",
+    "bb19120b028d0dbb",
+    "bf4eec10cf2fd4a3",
+    "9786db573e5c0ee3",
+    "824aa55639e7b1db",
+    "7904c01a57b547d9",
+    "42c821288bef883a",
+    "3834fa05a71e2c4d",
+    "e55e14898b5bc8a9",
+    "96bba8670f44119a",
+    "9e30a1ff5ed54223",
+    "4c6128bf3d97b930",
+    "f7d47e156047db34",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9435_01-6D_1.7.4": {
+   "pid": 9435,
+   "variant": "01-6D",
+   "firmware": "1.7.4",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "ambiencemodesincall",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "nativebluetoothteamscertified",
+    "onheaddetection",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f7a4e058f81b5a84",
+    "ee5f944417f46f29",
+    "1787eac4e1f5e1a6",
+    "9e7ee4d078bb35c1",
+    "e8fdeced899e41bf",
+    "32397f4410bd8c28",
+    "bb1c5e889406d6fd",
+    "42a3b3f3aa484664",
+    "dc5c5cb13edfef51",
+    "a6ff4b59f525368f",
+    "ea6a6477c99a960b",
+    "be05b59bce1a1863",
+    "bb19120b028d0dbb",
+    "bf4eec10cf2fd4a3",
+    "9786db573e5c0ee3",
+    "824aa55639e7b1db",
+    "7904c01a57b547d9",
+    "42c821288bef883a",
+    "3834fa05a71e2c4d",
+    "e55e14898b5bc8a9",
+    "96bba8670f44119a",
+    "9e30a1ff5ed54223",
+    "4c6128bf3d97b930",
+    "f7d47e156047db34",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9435_01-6D_1.8.5": {
+   "pid": 9435,
+   "variant": "01-6D",
+   "firmware": "1.8.5",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "ambiencemodesincall",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "nativebluetoothteamscertified",
+    "onheaddetection",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f7a4e058f81b5a84",
+    "ee5f944417f46f29",
+    "1787eac4e1f5e1a6",
+    "9e7ee4d078bb35c1",
+    "e8fdeced899e41bf",
+    "32397f4410bd8c28",
+    "bb1c5e889406d6fd",
+    "42a3b3f3aa484664",
+    "dc5c5cb13edfef51",
+    "a6ff4b59f525368f",
+    "ea6a6477c99a960b",
+    "be05b59bce1a1863",
+    "bb19120b028d0dbb",
+    "bf4eec10cf2fd4a3",
+    "9786db573e5c0ee3",
+    "824aa55639e7b1db",
+    "7904c01a57b547d9",
+    "42c821288bef883a",
+    "3834fa05a71e2c4d",
+    "e55e14898b5bc8a9",
+    "96bba8670f44119a",
+    "9e30a1ff5ed54223",
+    "4c6128bf3d97b930",
+    "f7d47e156047db34",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9439_01-6E_2.2.0": {
+   "pid": 9439,
+   "variant": "01-6E",
+   "firmware": "2.2.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "ffancsupport",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "remotemmmisupport",
+    "sealingtest",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "0d43bbe90fbb6b58",
+    "d9497e4e3a5b70e8",
+    "7cfbdec8ae42d826",
+    "17c7d340319b9c73",
+    "230ffd8aefde123c",
+    "181bd69a75dc3849",
+    "c2f9c6bfc35bc213",
+    "da12c9134f9fc87d",
+    "ad094f61369dcc52",
+    "78a644dfa0facc6d",
+    "b4555670a03db515",
+    "fbeea73a538fcbf0",
+    "c023e806dfd8e285",
+    "e57a66e106e456b0",
+    "8f6513e8cdd27bb8",
+    "3f9ea53b751bef53",
+    "03a37ce0e6ea2978",
+    "1aaeaa4d39058bbc",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "acfa3d03c8500301",
+    "c0bd80a301928b5f",
+    "2202a13be78ccd84",
+    "0437d84b0c595a77",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9447_01-6E_2.2.0": {
+   "pid": 9447,
+   "variant": "01-6E",
+   "firmware": "2.2.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "ffancsupport",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "remotemmmisupport",
+    "sealingtest",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "0d43bbe90fbb6b58",
+    "d9497e4e3a5b70e8",
+    "7cfbdec8ae42d826",
+    "17c7d340319b9c73",
+    "230ffd8aefde123c",
+    "181bd69a75dc3849",
+    "c2f9c6bfc35bc213",
+    "da12c9134f9fc87d",
+    "ad094f61369dcc52",
+    "78a644dfa0facc6d",
+    "b4555670a03db515",
+    "fbeea73a538fcbf0",
+    "c023e806dfd8e285",
+    "e57a66e106e456b0",
+    "8f6513e8cdd27bb8",
+    "3f9ea53b751bef53",
+    "03a37ce0e6ea2978",
+    "1aaeaa4d39058bbc",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "acfa3d03c8500301",
+    "c0bd80a301928b5f",
+    "424a86fe30570e95",
+    "0437d84b0c595a77",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9455_08-0B_1.1.6": {
+   "pid": 9455,
+   "variant": "08-0B",
+   "firmware": "1.1.6",
+   "caps": [
+    "customersupport",
+    "factorydefault",
+    "music_equalizer",
+    "pairinglistsupport",
+    "productregistration",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "886e02d9c5e147a8",
+    "02f1d6617319790d",
+    "bde0992bf8b2f6c4",
+    "c30c8231c2c1b226",
+    "71a21eddf2a3d138",
+    "bee2399c4371b3a1",
+    "d06c7d0ac5aa69f9",
+    "76b32d41d3616931",
+    "41291edbd98ab219",
+    "f7d47e156047db34",
+    "400aca56ccf3c45f",
+    "b54179c8bb250f7b"
+   ]
+  },
+  "9457_08-0B_1.1.6": {
+   "pid": 9457,
+   "variant": "08-0B",
+   "firmware": "1.1.6",
+   "caps": [
+    "customersupport",
+    "factorydefault",
+    "music_equalizer",
+    "pairinglistsupport",
+    "productregistration",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "886e02d9c5e147a8",
+    "02f1d6617319790d",
+    "bde0992bf8b2f6c4",
+    "c30c8231c2c1b226",
+    "71a21eddf2a3d138",
+    "bee2399c4371b3a1",
+    "d06c7d0ac5aa69f9",
+    "76b32d41d3616931",
+    "41291edbd98ab219",
+    "f7d47e156047db34",
+    "400aca56ccf3c45f",
+    "b54179c8bb250f7b"
+   ]
+  },
+  "9459_01-76_1.1.6": {
+   "pid": 9459,
+   "variant": "01-76",
+   "firmware": "1.1.6",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "8afec65bf93f664f",
+    "8cfba986b91a7f77",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "de98a23c67b75d52",
+    "4ac9d4bd06025b7f",
+    "0327d0f2247233ca",
+    "e4d2fd5cbad3857e",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "aca302a108cf201d"
+   ]
+  },
+  "9461_01-76_1.1.6": {
+   "pid": 9461,
+   "variant": "01-76",
+   "firmware": "1.1.6",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "nativebluetoothteamscertified",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "8afec65bf93f664f",
+    "8cfba986b91a7f77",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "de98a23c67b75d52",
+    "4ac9d4bd06025b7f",
+    "0327d0f2247233ca",
+    "e4d2fd5cbad3857e",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "aca302a108cf201d"
+   ]
+  },
+  "9462_01-77_1.1.6": {
+   "pid": 9462,
+   "variant": "01-77",
+   "firmware": "1.1.6",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "8afec65bf93f664f",
+    "8cfba986b91a7f77",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "de98a23c67b75d52",
+    "4ac9d4bd06025b7f",
+    "0327d0f2247233ca",
+    "e4d2fd5cbad3857e",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "aca302a108cf201d"
+   ]
+  },
+  "9464_01-77_1.1.6": {
+   "pid": 9464,
+   "variant": "01-77",
+   "firmware": "1.1.6",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "nativebluetoothteamscertified",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "8afec65bf93f664f",
+    "8cfba986b91a7f77",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "de98a23c67b75d52",
+    "4ac9d4bd06025b7f",
+    "0327d0f2247233ca",
+    "e4d2fd5cbad3857e",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "aca302a108cf201d"
+   ]
+  },
+  "9483_01-80_1.1.0": {
+   "pid": 9483,
+   "variant": "01-80",
+   "firmware": "1.1.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "ffancsupport",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "remotemmmisupport",
+    "sealingtest",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f35f7cb79d7b43de",
+    "21ed3384abdf8462",
+    "cd4b12d5b4159443",
+    "3ad2bd5bd8f109b4",
+    "3819f863e7cac4a0",
+    "332591281a853bd8",
+    "e0b7c5e6aed7d2b6",
+    "66ef4e989c82b0c3",
+    "0327d0f2247233ca",
+    "a9693030ffa78c74",
+    "c0ca2d3d514f08e1",
+    "b45f93e2b476afea",
+    "5b8201ae5a2f44b9",
+    "4b390778ec262381",
+    "f182729537451538",
+    "9b78254c115073dd",
+    "02d5982eafa7853b",
+    "73a68e4512b3336e",
+    "f46f5e46ac3023cf",
+    "c4d869e434c91452",
+    "3f19a8886e8b2beb",
+    "b3f26ac6f4a79952",
+    "32bc8397b4b377d0",
+    "eda153bf47e7da79",
+    "d0f56d29cb380400",
+    "ba6bec487746e477",
+    "ec051701759a0c8d",
+    "ffcc23f448b36651",
+    "ebdbd52fb6cf92a9",
+    "c60f8bf5af8a48d8",
+    "c1c0254394c706d0",
+    "43b0135b1368ec16",
+    "3d17d82d6986cf5b",
+    "70eb82343bcad841",
+    "4431e5d80fa6276a",
+    "7c9bf3712f604d93"
+   ]
+  },
+  "9484_01-80_1.1.0": {
+   "pid": 9484,
+   "variant": "01-80",
+   "firmware": "1.1.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "ffancsupport",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "remotemmmisupport",
+    "sealingtest",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "f35f7cb79d7b43de",
+    "21ed3384abdf8462",
+    "cd4b12d5b4159443",
+    "3ad2bd5bd8f109b4",
+    "3819f863e7cac4a0",
+    "332591281a853bd8",
+    "e0b7c5e6aed7d2b6",
+    "66ef4e989c82b0c3",
+    "0327d0f2247233ca",
+    "a9693030ffa78c74",
+    "c0ca2d3d514f08e1",
+    "b45f93e2b476afea",
+    "5b8201ae5a2f44b9",
+    "4b390778ec262381",
+    "f182729537451538",
+    "9b78254c115073dd",
+    "02d5982eafa7853b",
+    "73a68e4512b3336e",
+    "f46f5e46ac3023cf",
+    "c4d869e434c91452",
+    "3f19a8886e8b2beb",
+    "b3f26ac6f4a79952",
+    "32bc8397b4b377d0",
+    "eda153bf47e7da79",
+    "2e5148b9e21730bb",
+    "605601cfa6d25054",
+    "de6bcdb09028659f",
+    "21f16955799f51de",
+    "42de4869380005e9",
+    "45bc443477b2ebf9",
+    "e575658072ef4dff",
+    "70f1a732d55040c6",
+    "10133f7ac99417c2",
+    "093d16e75a901692",
+    "70eb82343bcad841",
+    "4431e5d80fa6276a",
+    "7c9bf3712f604d93"
+   ]
+  },
+  "9490_01-76_1.1.6": {
+   "pid": 9490,
+   "variant": "01-76",
+   "firmware": "1.1.6",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "8afec65bf93f664f",
+    "8cfba986b91a7f77",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "de98a23c67b75d52",
+    "4ac9d4bd06025b7f",
+    "0327d0f2247233ca",
+    "e4d2fd5cbad3857e",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "aca302a108cf201d"
+   ]
+  },
+  "9492_01-76_1.1.6": {
+   "pid": 9492,
+   "variant": "01-76",
+   "firmware": "1.1.6",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "8afec65bf93f664f",
+    "8cfba986b91a7f77",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "de98a23c67b75d52",
+    "4ac9d4bd06025b7f",
+    "0327d0f2247233ca",
+    "e4d2fd5cbad3857e",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "aca302a108cf201d"
+   ]
+  },
+  "9494_01-83_2.3.0": {
+   "pid": 9494,
+   "variant": "01-83",
+   "firmware": "2.3.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "ffancsupport",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "remotemmmisupport",
+    "sealingtest",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "32b9729c6f85ed2e",
+    "7822449becbaccf2",
+    "b2e571b51c1ade86",
+    "740cba1b312bdc55",
+    "1998454d9c46b56e",
+    "a3f6c38d35c415f7",
+    "4765ae75c6688df7",
+    "c7ebd8db6cb1817e",
+    "a8916c9d01ff0e67",
+    "04ea558fbb0c8a84",
+    "de9a104084b46f3a",
+    "a547cb19345b805d",
+    "dc324ecee526fd19",
+    "58d0a5efbcf4d0db",
+    "e4fda0afa78166f8",
+    "7c62ccd654fb6081",
+    "5cda7cfbde076ef0",
+    "99b912239a1e1933",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "acfa3d03c8500301",
+    "c0bd80a301928b5f",
+    "424a86fe30570e95",
+    "8269c983222ca9bb",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9494_01-83_2.4.0": {
+   "pid": 9494,
+   "variant": "01-83",
+   "firmware": "2.4.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "customersupport",
+    "factorydefault",
+    "ffancsupport",
+    "googlebistosupport",
+    "loopmodessupport",
+    "music_equalizer",
+    "mysound",
+    "needstobeputincradletocompletefwu",
+    "onheaddetection",
+    "remotemmmisupport",
+    "sealingtest",
+    "settingschangenotification",
+    "uiconfigurablebuttons",
+    "voiceassistant"
+   ],
+   "settings": [
+    "0726f83bc05b7a34",
+    "25bec4f5cfdd489c",
+    "32f0f4a5db5f02ea",
+    "2475a0daaf7cfd37",
+    "0327d0f2247233ca",
+    "32b9729c6f85ed2e",
+    "7822449becbaccf2",
+    "b2e571b51c1ade86",
+    "740cba1b312bdc55",
+    "1998454d9c46b56e",
+    "a3f6c38d35c415f7",
+    "4765ae75c6688df7",
+    "c7ebd8db6cb1817e",
+    "a8916c9d01ff0e67",
+    "04ea558fbb0c8a84",
+    "de9a104084b46f3a",
+    "a547cb19345b805d",
+    "dc324ecee526fd19",
+    "58d0a5efbcf4d0db",
+    "e4fda0afa78166f8",
+    "7c62ccd654fb6081",
+    "5cda7cfbde076ef0",
+    "99b912239a1e1933",
+    "2d8a8b6a15e895b6",
+    "dccf8b2522fa9ab6",
+    "5fe23019694e8e19",
+    "5e27dc602654d4ad",
+    "0cd5d440c2e1e06d",
+    "fc4f10bb9e25fc02",
+    "acfa3d03c8500301",
+    "c0bd80a301928b5f",
+    "424a86fe30570e95",
+    "8269c983222ca9bb",
+    "36194f02551c62c3",
+    "400aca56ccf3c45f"
+   ]
+  },
+  "9495_01-82_1.1.0": {
+   "pid": 9495,
+   "variant": "01-82",
+   "firmware": "1.1.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "d848eb5527e99ba1",
+    "1678619b4513901b",
+    "3ad2bd5bd8f109b4",
+    "fe0781f6ed6349bf",
+    "02eacf5f8fae0500",
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "4c56248f691f71aa",
+    "33bb016b1e749b3f",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "e4d2fd5cbad3857e",
+    "4ac9d4bd06025b7f",
+    "de98a23c67b75d52",
+    "0327d0f2247233ca",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "6a7d4560fd604686"
+   ]
+  },
+  "9497_01-82_1.1.0": {
+   "pid": 9497,
+   "variant": "01-82",
+   "firmware": "1.1.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "nativebluetoothteamscertified",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant",
+    "wukongsupport"
+   ],
+   "settings": [
+    "d848eb5527e99ba1",
+    "1678619b4513901b",
+    "3ad2bd5bd8f109b4",
+    "fe0781f6ed6349bf",
+    "02eacf5f8fae0500",
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "4c56248f691f71aa",
+    "33bb016b1e749b3f",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "e4d2fd5cbad3857e",
+    "4ac9d4bd06025b7f",
+    "de98a23c67b75d52",
+    "0327d0f2247233ca",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "6a7d4560fd604686"
+   ]
+  },
+  "9507_01-82_1.1.0": {
+   "pid": 9507,
+   "variant": "01-82",
+   "firmware": "1.1.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "d848eb5527e99ba1",
+    "1678619b4513901b",
+    "3ad2bd5bd8f109b4",
+    "fe0781f6ed6349bf",
+    "02eacf5f8fae0500",
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "4c56248f691f71aa",
+    "33bb016b1e749b3f",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "e4d2fd5cbad3857e",
+    "4ac9d4bd06025b7f",
+    "de98a23c67b75d52",
+    "0327d0f2247233ca",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "6a7d4560fd604686"
+   ]
+  },
+  "9509_01-82_1.1.0": {
+   "pid": 9509,
+   "variant": "01-82",
+   "firmware": "1.1.0",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "nativebluetoothteamscertified",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "d848eb5527e99ba1",
+    "1678619b4513901b",
+    "3ad2bd5bd8f109b4",
+    "fe0781f6ed6349bf",
+    "02eacf5f8fae0500",
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "4c56248f691f71aa",
+    "33bb016b1e749b3f",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "e4d2fd5cbad3857e",
+    "4ac9d4bd06025b7f",
+    "de98a23c67b75d52",
+    "0327d0f2247233ca",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "6a7d4560fd604686"
+   ]
+  },
+  "9520_01-82_1.2.12": {
+   "pid": 9520,
+   "variant": "01-82",
+   "firmware": "1.2.12",
+   "caps": [
+    "amasupport",
+    "ambiencemodes",
+    "busylightsupport",
+    "customersupport",
+    "factorydefault",
+    "loggingsupport",
+    "loopmodessupport",
+    "manualbusylightsupport",
+    "music_equalizer",
+    "mysound",
+    "nativebluetooth",
+    "remotemmmisupport",
+    "settingschangenotification",
+    "voiceassistant"
+   ],
+   "settings": [
+    "d848eb5527e99ba1",
+    "c268a70b5b31db1f",
+    "3ad2bd5bd8f109b4",
+    "fe0781f6ed6349bf",
+    "02eacf5f8fae0500",
+    "49e94890b9316787",
+    "7c0a94fc2e963834",
+    "4c56248f691f71aa",
+    "33bb016b1e749b3f",
+    "2475a0daaf7cfd37",
+    "ddba826278a73b02",
+    "498aa7b98150800f",
+    "e4d2fd5cbad3857e",
+    "4ac9d4bd06025b7f",
+    "de98a23c67b75d52",
+    "0327d0f2247233ca",
+    "73156352cff404ae",
+    "57f6e99647e0f21e",
+    "fc3cec227b2fce81",
+    "e7da8528f434e37e",
+    "bbede92a249722cb",
+    "41067314e7f92bb4",
+    "569a491630d67657",
+    "4f482cbf380b287a",
+    "6a7d4560fd604686"
+   ]
+  }
+ },
+ "models": [
+  {
+   "name": "Jabra Connect 5t",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9501,
+     "definition": "9501_serin",
+     "protocol": "gaia",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEarNoResume",
+     "snapshots": [],
+     "my_controls": true,
+     "assistants": [
+      "siri",
+      "bisto",
+      "amaAlexa"
+     ],
+     "spotify": true
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 10",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 11846,
+     "definition": "11846_stella",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "automatic_volume_adjustment",
+      "customize_equalizer",
+      "hear_through_for_mono",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required",
+      "wind_mode"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "11846_01-92_1.2.4"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "forced_noise": {
+      "call": "anc"
+     },
+     "my_controls": true,
+     "spatial": {
+      "is_media_supported": true
+     },
+     "assistants": [
+      "siri",
+      "bisto"
+     ],
+     "spotify": true,
+     "le_audio_firmware": "4.2.0"
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 10 Gen 2",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 11865,
+     "definition": "11865_stella_refresh",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "automatic_volume_adjustment",
+      "customize_equalizer",
+      "hear_through_for_mono",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required",
+      "wind_mode"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "11865_01-8F_1.0.8",
+      "11865_01-8F_1.1.4"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "forced_noise": {
+      "call": "anc"
+     },
+     "my_controls": true,
+     "spatial": {
+      "is_media_supported": true,
+      "ishrtf_toggle_supported": true
+     },
+     "assistants": [
+      "siri",
+      "bisto"
+     ],
+     "spotify": true,
+     "le_audio_firmware": "2.2.0"
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 2",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9441,
+     "definition": "9441_flamingo",
+     "protocol": "gaia",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "hidden_language_code",
+      "in_call_settings",
+      "pairing_guide",
+      "supported_in_production"
+     ],
+     "battery": "dual",
+     "wear": "none",
+     "snapshots": [],
+     "assistants": [],
+     "spotify": true
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 3",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9442,
+     "definition": "9442_peacock",
+     "protocol": "gaia",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "hidden_language_code",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "supported_in_production"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "none",
+     "snapshots": [],
+     "assistants": [],
+     "spotify": true
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 3 Active",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9493,
+     "definition": "9493_woodpecker",
+     "protocol": "gaia",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "hidden_language_code",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [],
+     "assistants": [
+      "siri"
+     ],
+     "spotify": true
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 4",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 11848,
+     "definition": "11848_swan",
+     "protocol": "gaia",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "hidden_language_code",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dual",
+     "wear": "inEar",
+     "snapshots": [],
+     "assistants": [
+      "siri"
+     ],
+     "spotify": true
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 4 Active",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9446,
+     "definition": "9446_toucan",
+     "protocol": "gaia",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "anc_ht_loop_mode",
+      "customize_equalizer",
+      "ffanc",
+      "hidden_language_code",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "none",
+     "snapshots": [],
+     "assistants": [],
+     "spotify": true
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 45e",
+   "kind": "neckband",
+   "variants": [
+    {
+     "pid": 9347,
+     "definition": "9347_jack",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9347_01-57_1.28.0"
+     ],
+     "assistants": [
+      "siri",
+      "alexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 45h",
+   "kind": "headset",
+   "variants": [
+    {
+     "pid": 9381,
+     "definition": "9381_emma",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9381_01-65_2.3.9"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 5",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9458,
+     "definition": "9458_canary",
+     "protocol": "gaia",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEarNoResume",
+     "snapshots": [],
+     "my_controls": true,
+     "assistants": [
+      "siri",
+      "bisto",
+      "amaAlexa"
+     ],
+     "spotify": true
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 65e",
+   "kind": "neckband",
+   "variants": [
+    {
+     "pid": 13655,
+     "definition": "13655_ivy",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "inEar",
+     "snapshots": [
+      "13655_01-51_2.25.0"
+     ],
+     "assistants": [
+      "siri",
+      "alexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 65t",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9342,
+     "definition": "9342_bezos",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "dual",
+     "wear": "none",
+     "snapshots": [
+      "9342_01-4C_2.40.1"
+     ],
+     "assistants": [
+      "siri",
+      "alexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 7 Active",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9447,
+     "definition": "9447_astraActive",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "adjustable_valueanc",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "renaming",
+      "sealing_test",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "9447_01-6E_2.2.0"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "my_controls": true,
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "bisto",
+      "amaAlexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 7 Pro",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9439,
+     "definition": "9439_astraPro",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "adjustable_valueanc",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "renaming",
+      "sealing_test",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "9439_01-6E_2.2.0"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "my_controls": true,
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "bisto",
+      "amaAlexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 7 Sport",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9494,
+     "definition": "9494_comet",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "adjustable_valueanc",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "renaming",
+      "sealing_test",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "9494_01-83_2.3.0",
+      "9494_01-83_2.4.0"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "my_controls": true,
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "bisto",
+      "amaAlexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 75t",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9383,
+     "definition": "9383_titan",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "none",
+     "snapshots": [
+      "9383_01-60_2.0.0"
+     ],
+     "noise_loop": [
+      "off",
+      "hearThrough"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 8 Active",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 11847,
+     "definition": "11847_pelican",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "automatic_volume_adjustment",
+      "customize_equalizer",
+      "hear_through_for_mono",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required",
+      "wind_mode"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "11847_01-91_1.2.4"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "forced_noise": {
+      "call": "anc"
+     },
+     "my_controls": true,
+     "spatial": {
+      "is_media_supported": true
+     },
+     "assistants": [
+      "siri",
+      "bisto"
+     ],
+     "spotify": true,
+     "le_audio_firmware": "4.2.0"
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 8 Active Gen 2",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 11866,
+     "definition": "11866_pelican_refresh",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "automatic_volume_adjustment",
+      "customize_equalizer",
+      "hear_through_for_mono",
+      "in_call_settings",
+      "mono_earbud",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required",
+      "wind_mode"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "11866_01-8E_1.0.8"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "forced_noise": {
+      "call": "anc"
+     },
+     "my_controls": true,
+     "spatial": {
+      "is_media_supported": true,
+      "ishrtf_toggle_supported": true
+     },
+     "assistants": [
+      "siri",
+      "bisto"
+     ],
+     "spotify": true,
+     "le_audio_firmware": "2.2.0"
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 85h",
+   "kind": "headset",
+   "variants": [
+    {
+     "pid": 9355,
+     "definition": "9355_tor",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "smart_sound",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9355_01-50_1.6.3"
+     ],
+     "assistants": [
+      "siri",
+      "alexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite 85t",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9421,
+     "definition": "9421_vostok",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "anc_ht_loop_mode",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "renaming",
+      "sealing_test",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "none",
+     "snapshots": [
+      "9421_01-68_2.0.0"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite Active 45e",
+   "kind": "neckband",
+   "variants": [
+    {
+     "pid": 9362,
+     "definition": "9362_lightning",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9362_01-5A_2.22.0"
+     ],
+     "assistants": [
+      "siri",
+      "alexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite Active 65t",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9353,
+     "definition": "9353_bezosActive",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "dual",
+     "wear": "none",
+     "snapshots": [
+      "9353_01-56_2.40.1"
+     ],
+     "assistants": [
+      "siri",
+      "alexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite Active 75t",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9420,
+     "definition": "9420_titanActive",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "none",
+     "snapshots": [
+      "9420_01-61_2.0.0"
+     ],
+     "noise_loop": [
+      "off",
+      "hearThrough"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Elite Flex",
+   "kind": "headset",
+   "variants": [
+    {
+     "pid": 9520,
+     "definition": "9520_palm",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "firmware_update_emphasized",
+      "in_call_settings",
+      "manual_busy_light",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onHead",
+     "snapshots": [
+      "9520_01-82_1.2.12"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Evolve 65e",
+   "kind": "neckband",
+   "variants": [
+    {
+     "pid": 9358,
+     "definition": "9358_poker",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9358_01-58_2.29.0"
+     ],
+     "assistants": [
+      "siri",
+      "alexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Evolve 65t",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9367,
+     "definition": "9367_bezosPro",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "dual",
+     "wear": "none",
+     "snapshots": [
+      "9367_01-5D_2.40.1"
+     ],
+     "assistants": [
+      "siri",
+      "alexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Evolve2 55",
+   "kind": "headset",
+   "variants": [
+    {
+     "pid": 9459,
+     "definition": "9459_willowUC",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "anc_ht_loop_mode",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9459_01-76_1.1.6"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9461,
+     "definition": "9461_willowMS",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "anc_ht_loop_mode",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9461_01-76_1.1.6"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9462,
+     "definition": "9462_willowMonoUC",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "anc_ht_loop_mode",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9462_01-77_1.1.6"
+     ],
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9464,
+     "definition": "9464_willowMonoMS",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "anc_ht_loop_mode",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9464_01-77_1.1.6"
+     ],
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9490,
+     "definition": "9490_willowSecureAudioUC",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "anc_ht_loop_mode",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9490_01-76_1.1.6"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9492,
+     "definition": "9492_willowSecureAudioMS",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "anc_ht_loop_mode",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9492_01-76_1.1.6"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Evolve2 65",
+   "kind": "headset",
+   "variants": [
+    {
+     "pid": 9379,
+     "definition": "9379_charlesUC",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9379_01-63_2.6.0"
+     ],
+     "assistants": [
+      "siri"
+     ]
+    },
+    {
+     "pid": 9395,
+     "definition": "9395_charlesMonoUC",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "pairing_guide",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9395_01-64_2.6.0"
+     ],
+     "assistants": [
+      "siri"
+     ]
+    },
+    {
+     "pid": 9397,
+     "definition": "9397_charlesMonoMS",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9397_01-64_2.6.0"
+     ],
+     "assistants": [
+      "siri"
+     ]
+    },
+    {
+     "pid": 9399,
+     "definition": "9399_charlesMS",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9399_01-63_2.6.0"
+     ],
+     "assistants": [
+      "siri"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Evolve2 65 Flex",
+   "kind": "headset",
+   "variants": [
+    {
+     "pid": 9495,
+     "definition": "9495_cypressUC",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "firmware_update_emphasized",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onHead",
+     "snapshots": [
+      "9495_01-82_1.1.0"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9497,
+     "definition": "9497_cypressMS",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "firmware_update_emphasized",
+      "in_call_settings",
+      "manual_busy_light",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onHead",
+     "snapshots": [
+      "9497_01-82_1.1.0"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9507,
+     "definition": "9507_cypressSecureAudioUC",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "firmware_update_emphasized",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onHead",
+     "snapshots": [
+      "9507_01-82_1.1.0"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9509,
+     "definition": "9509_cypressSecureAudioMS",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "firmware_update_emphasized",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onHead",
+     "snapshots": [
+      "9509_01-82_1.1.0"
+     ],
+     "mysound": true,
+     "spatial": {
+      "is_media_supported": true
+     },
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Evolve2 75",
+   "kind": "headset",
+   "variants": [
+    {
+     "pid": 9433,
+     "definition": "9433_erasmusUC",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onHead",
+     "snapshots": [
+      "9433_01-6D_1.7.4",
+      "9433_01-6D_1.8.5"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9435,
+     "definition": "9435_erasmusMS",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "onHead",
+     "snapshots": [
+      "9435_01-6D_1.7.4",
+      "9435_01-6D_1.8.5"
+     ],
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Evolve2 85",
+   "kind": "headset",
+   "variants": [
+    {
+     "pid": 9401,
+     "definition": "9401_lokiUC",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "renaming",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9401_01-67_1.3.8"
+     ],
+     "assistants": [
+      "siri"
+     ]
+    },
+    {
+     "pid": 9403,
+     "definition": "9403_lokiMS",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "customize_equalizer",
+      "in_call_settings",
+      "manual_busy_light",
+      "pairing_guide",
+      "renaming",
+      "soundscape",
+      "supported_in_production"
+     ],
+     "battery": "single",
+     "wear": "onEar",
+     "snapshots": [
+      "9403_01-67_1.3.8"
+     ],
+     "assistants": [
+      "siri"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Evolve2 Buds",
+   "kind": "earbuds",
+   "variants": [
+    {
+     "pid": 9483,
+     "definition": "9483_hazelUC",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "adjustable_valueanc",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "mono_earbud",
+      "renaming",
+      "sealing_test",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "9483_01-80_1.1.0"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "my_controls": true,
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    },
+    {
+     "pid": 9484,
+     "definition": "9484_hazelMS",
+     "protocol": "gnp",
+     "flags": [
+      "adjustable_ambience_mode",
+      "adjustable_valueanc",
+      "advanced_equalizer",
+      "ambience_mode_loop",
+      "customize_equalizer",
+      "ffanc",
+      "in_call_settings",
+      "mono_earbud",
+      "ms_teams_lock",
+      "pairing_guide",
+      "renaming",
+      "sealing_test",
+      "soundscape",
+      "supported_in_production",
+      "swiftuiqsg_required",
+      "voice_assistant_locked_in_my_controls"
+     ],
+     "battery": "dualWithCradle",
+     "wear": "inEar",
+     "snapshots": [
+      "9484_01-80_1.1.0"
+     ],
+     "noise_loop": [
+      "hearThrough",
+      "anc"
+     ],
+     "my_controls": true,
+     "mysound": true,
+     "assistants": [
+      "siri",
+      "amaAlexa"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Jabra Speak2 75",
+   "kind": "speaker",
+   "variants": [
+    {
+     "pid": 9455,
+     "definition": "9455_samwiseUC",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "connection_mode",
+      "customize_equalizer",
+      "mic_quality_indicator",
+      "renaming",
+      "smart_button",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9455_08-0B_1.1.6"
+     ],
+     "assistants": [
+      "siri"
+     ]
+    },
+    {
+     "pid": 9457,
+     "definition": "9457_samwiseMS",
+     "protocol": "gnp",
+     "flags": [
+      "advanced_equalizer",
+      "connection_mode",
+      "customize_equalizer",
+      "mic_quality_indicator",
+      "pairing_guide",
+      "renaming",
+      "smart_button",
+      "supported_in_production",
+      "swiftuiqsg_required"
+     ],
+     "battery": "single",
+     "wear": "none",
+     "snapshots": [
+      "9457_08-0B_1.1.6"
+     ],
+     "assistants": [
+      "siri"
+     ]
+    }
+   ]
+  }
+ ]
+}

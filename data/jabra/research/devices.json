@@ -1,0 +1,4195 @@
+{
+  "schema_version": 1,
+  "status": "research_only_not_integrated",
+  "source": "Sound+ 5.22.0.0.11632.985318146",
+  "models": [
+    {
+      "product_id": 11846,
+      "product_id_hex": "2E46",
+      "name": "Jabra Elite 10",
+      "definition": "11846_stella",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": true,
+        "automatic_volume_adjustment": true,
+        "hear_through_for_mono": true
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": true,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "le_audio": {
+        "can_update_tole_audio": false,
+        "firstle_audio_firmware": "4.2.0"
+      },
+      "forced_noise_modes": {
+        "media": null,
+        "incomingCall": null,
+        "call": "anc"
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": true,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": true
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/11846_stella.json",
+      "firmware_profiles": [
+        "11846_01-92_1.2.4"
+      ]
+    },
+    {
+      "product_id": 11847,
+      "product_id_hex": "2E47",
+      "name": "Jabra Elite 8 Active",
+      "definition": "11847_pelican",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": true,
+        "automatic_volume_adjustment": true,
+        "hear_through_for_mono": true
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": true,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "le_audio": {
+        "can_update_tole_audio": false,
+        "firstle_audio_firmware": "4.2.0"
+      },
+      "forced_noise_modes": {
+        "media": null,
+        "incomingCall": null,
+        "call": "anc"
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": true,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": true
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/11847_pelican.json",
+      "firmware_profiles": [
+        "11847_01-91_1.2.4"
+      ]
+    },
+    {
+      "product_id": 11848,
+      "product_id_hex": "2E48",
+      "name": "Jabra Elite 4",
+      "definition": "11848_swan",
+      "kind": "earbuds",
+      "protocol": "gaia",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": true,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": false,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dual",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "inEar",
+      "spotify_platforms": [
+        "android"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": {
+            "value": "but_config_double_press",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_l_earbud_lowercase",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/11848_swan.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 11860,
+      "product_id_hex": "2E54",
+      "name": "Jabra Elite 4 Gen 2",
+      "definition": "11860_florence_wl",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": false,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": false,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": true,
+        "automatic_volume_adjustment": true,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": null,
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "forced_noise_modes": {
+        "media": null,
+        "incomingCall": null,
+        "call": "anc"
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": false,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": true
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/11860_florence_wl.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 11861,
+      "product_id_hex": "2E55",
+      "name": "Jabra Elite 4 Active Gen 2",
+      "definition": "11861_florence_active",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": false,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": false,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": true,
+        "automatic_volume_adjustment": true,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": null,
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "forced_noise_modes": {
+        "media": null,
+        "incomingCall": null,
+        "call": "anc"
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": false,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": true
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/11861_florence_active.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 11865,
+      "product_id_hex": "2E59",
+      "name": "Jabra Elite 10 Gen 2",
+      "definition": "11865_stella_refresh",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": true,
+        "automatic_volume_adjustment": true,
+        "hear_through_for_mono": true
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": true,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": true
+      },
+      "le_audio": {
+        "can_update_tole_audio": false,
+        "firstle_audio_firmware": "2.2.0"
+      },
+      "forced_noise_modes": {
+        "media": null,
+        "incomingCall": null,
+        "call": "anc"
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": true,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": true
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/11865_stella_refresh.json",
+      "firmware_profiles": [
+        "11865_01-8F_1.0.8",
+        "11865_01-8F_1.1.4"
+      ]
+    },
+    {
+      "product_id": 11866,
+      "product_id_hex": "2E5A",
+      "name": "Jabra Elite 8 Active Gen 2",
+      "definition": "11866_pelican_refresh",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": true,
+        "automatic_volume_adjustment": true,
+        "hear_through_for_mono": true
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": true,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": true
+      },
+      "le_audio": {
+        "can_update_tole_audio": false,
+        "firstle_audio_firmware": "2.2.0"
+      },
+      "forced_noise_modes": {
+        "media": null,
+        "incomingCall": null,
+        "call": "anc"
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": true,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": true
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/11866_pelican_refresh.json",
+      "firmware_profiles": [
+        "11866_01-8E_1.0.8"
+      ]
+    },
+    {
+      "product_id": 13655,
+      "product_id_hex": "3557",
+      "name": "Jabra Elite 65e",
+      "definition": "13655_ivy",
+      "kind": "neckband",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "inEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraIvyDev",
+          "productionId": "JabraIvy"
+        },
+        "cycleTakeOverButton": {
+          "name": "takeover"
+        }
+      },
+      "source": "assets/Device/Definition/JSON/13655_ivy.json",
+      "firmware_profiles": [
+        "13655_01-51_2.25.0"
+      ]
+    },
+    {
+      "product_id": 9342,
+      "product_id_hex": "247E",
+      "name": "Jabra Elite 65t",
+      "definition": "9342_bezos",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dual",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": {
+          "developmentId": "JabraBezosDev",
+          "productionId": "JabraBezos"
+        },
+        "cycleTakeOverButton": {
+          "name": "multiFunction"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_r_earbud_lowercase",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9342_bezos.json",
+      "firmware_profiles": [
+        "9342_01-4C_2.40.1"
+      ]
+    },
+    {
+      "product_id": 9347,
+      "product_id_hex": "2483",
+      "name": "Jabra Elite 45e",
+      "definition": "9347_jack",
+      "kind": "neckband",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": {
+          "developmentId": "JabraJackDev",
+          "productionId": "JabraJack"
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/9347_jack.json",
+      "firmware_profiles": [
+        "9347_01-57_1.28.0"
+      ]
+    },
+    {
+      "product_id": 9353,
+      "product_id_hex": "2489",
+      "name": "Jabra Elite Active 65t",
+      "definition": "9353_bezosActive",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dual",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": {
+          "developmentId": "JabraBezosActiveDev",
+          "productionId": "JabraBezosActive"
+        },
+        "cycleTakeOverButton": {
+          "name": "multiFunction"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_r_earbud_lowercase",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9353_bezosActive.json",
+      "firmware_profiles": [
+        "9353_01-56_2.40.1"
+      ]
+    },
+    {
+      "product_id": 9355,
+      "product_id_hex": "248B",
+      "name": "Jabra Elite 85h",
+      "definition": "9355_tor",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": true,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraTorDev",
+          "productionId": "JabraTor"
+        },
+        "cycleTakeOverButton": {
+          "name": "anc"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9355_tor.json",
+      "firmware_profiles": [
+        "9355_01-50_1.6.3"
+      ]
+    },
+    {
+      "product_id": 9358,
+      "product_id_hex": "248E",
+      "name": "Jabra Evolve 65e",
+      "definition": "9358_poker",
+      "kind": "neckband",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa"
+        ],
+        "buttonFunctionalityChangeImage": "qsg_dongle_link_370",
+        "buttonFunctionalityChangeTitle": {
+          "value": "qsg_dongle_370_hdr",
+          "isLocalized": true
+        },
+        "buttonFunctionalityChangeInstruction": {
+          "value": "qsg_dongle_370_expl",
+          "isLocalized": true
+        },
+        "alexaConfiguration": {
+          "developmentId": "JabraPokerDev",
+          "productionId": "JabraPoker"
+        },
+        "cycleTakeOverButton": {
+          "name": "mute"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9358_poker.json",
+      "firmware_profiles": [
+        "9358_01-58_2.29.0"
+      ]
+    },
+    {
+      "product_id": 9362,
+      "product_id_hex": "2492",
+      "name": "Jabra Elite Active 45e",
+      "definition": "9362_lightning",
+      "kind": "neckband",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": {
+          "developmentId": "JabraLightningDev",
+          "productionId": "JabraLightning"
+        },
+        "cycleTakeOverButton": {
+          "name": "mute"
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9362_lightning.json",
+      "firmware_profiles": [
+        "9362_01-5A_2.22.0"
+      ]
+    },
+    {
+      "product_id": 9367,
+      "product_id_hex": "2497",
+      "name": "Jabra Evolve 65t",
+      "definition": "9367_bezosPro",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dual",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa"
+        ],
+        "buttonFunctionalityChangeImage": "qsg_dongle_link_370",
+        "buttonFunctionalityChangeTitle": {
+          "value": "qsg_dongle_370_hdr",
+          "isLocalized": true
+        },
+        "buttonFunctionalityChangeInstruction": {
+          "value": "qsg_dongle_370_expl",
+          "isLocalized": true
+        },
+        "alexaConfiguration": {
+          "developmentId": "JabraBezosProDev",
+          "productionId": "JabraBezosPro"
+        },
+        "cycleTakeOverButton": {
+          "name": "multiFunction"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_r_earbud_lowercase",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9367_bezosPro.json",
+      "firmware_profiles": [
+        "9367_01-5D_2.40.1"
+      ]
+    },
+    {
+      "product_id": 9379,
+      "product_id_hex": "24A3",
+      "name": "Jabra Evolve2 65",
+      "definition": "9379_charlesUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraCharlesDev",
+          "productionId": "JabraCharles"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9379_charlesUC.json",
+      "firmware_profiles": [
+        "9379_01-63_2.6.0"
+      ]
+    },
+    {
+      "product_id": 9381,
+      "product_id_hex": "24A5",
+      "name": "Jabra Elite 45h",
+      "definition": "9381_emma",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "personalization_firmware": "2.2.0",
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraEmmaDev",
+          "productionId": "JabraEmma"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9381_emma.json",
+      "firmware_profiles": [
+        "9381_01-65_2.3.9"
+      ]
+    },
+    {
+      "product_id": 9383,
+      "product_id_hex": "24A7",
+      "name": "Jabra Elite 75t",
+      "definition": "9383_titan",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": [
+        "off",
+        "hearThrough"
+      ],
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": {
+          "developmentId": "JabraTitanDev",
+          "productionId": "JabraTitan"
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/9383_titan.json",
+      "firmware_profiles": [
+        "9383_01-60_2.0.0"
+      ]
+    },
+    {
+      "product_id": 9395,
+      "product_id_hex": "24B3",
+      "name": "Jabra Evolve2 65",
+      "definition": "9395_charlesMonoUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraCharlesDev",
+          "productionId": "JabraCharles"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9395_charlesMonoUC.json",
+      "firmware_profiles": [
+        "9395_01-64_2.6.0"
+      ]
+    },
+    {
+      "product_id": 9397,
+      "product_id_hex": "24B5",
+      "name": "Jabra Evolve2 65",
+      "definition": "9397_charlesMonoMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": false,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraCharlesDev",
+          "productionId": "JabraCharles"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9397_charlesMonoMS.json",
+      "firmware_profiles": [
+        "9397_01-64_2.6.0"
+      ]
+    },
+    {
+      "product_id": 9399,
+      "product_id_hex": "24B7",
+      "name": "Jabra Evolve2 65",
+      "definition": "9399_charlesMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": false,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraCharlesDev",
+          "productionId": "JabraCharles"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9399_charlesMS.json",
+      "firmware_profiles": [
+        "9399_01-63_2.6.0"
+      ]
+    },
+    {
+      "product_id": 9401,
+      "product_id_hex": "24B9",
+      "name": "Jabra Evolve2 85",
+      "definition": "9401_lokiUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": false,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": {
+          "developmentId": "JabraLokiDev",
+          "productionId": "JabraLoki"
+        },
+        "cycleTakeOverButton": {
+          "name": "mute"
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9401_lokiUC.json",
+      "firmware_profiles": [
+        "9401_01-67_1.3.8"
+      ]
+    },
+    {
+      "product_id": 9403,
+      "product_id_hex": "24BB",
+      "name": "Jabra Evolve2 85",
+      "definition": "9403_lokiMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": {
+          "developmentId": "JabraLokiDev",
+          "productionId": "JabraLoki"
+        },
+        "cycleTakeOverButton": {
+          "name": "mute"
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9403_lokiMS.json",
+      "firmware_profiles": [
+        "9403_01-67_1.3.8"
+      ]
+    },
+    {
+      "product_id": 9420,
+      "product_id_hex": "24CC",
+      "name": "Jabra Elite Active 75t",
+      "definition": "9420_titanActive",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": [
+        "off",
+        "hearThrough"
+      ],
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": {
+          "developmentId": "JabraTitanActiveDev",
+          "productionId": "JabraTitanActive"
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/9420_titanActive.json",
+      "firmware_profiles": [
+        "9420_01-61_2.0.0"
+      ]
+    },
+    {
+      "product_id": 9421,
+      "product_id_hex": "24CD",
+      "name": "Jabra Elite 85t",
+      "definition": "9421_vostok",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "anc_ht_loop_mode": true,
+        "connection_mode": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "mic_quality_indicator": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": true,
+        "smart_button": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraVostok",
+          "productionId": "JabraVostok"
+        },
+        "isAlexaWakewordSupported": false
+      },
+      "source": "assets/Device/Definition/JSON/9421_vostok.json",
+      "firmware_profiles": [
+        "9421_01-68_2.0.0"
+      ]
+    },
+    {
+      "product_id": 9433,
+      "product_id_hex": "24D9",
+      "name": "Jabra Evolve2 75",
+      "definition": "9433_erasmusUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": false,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onHead",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/9433_erasmusUC.json",
+      "firmware_profiles": [
+        "9433_01-6D_1.7.4",
+        "9433_01-6D_1.8.5"
+      ]
+    },
+    {
+      "product_id": 9435,
+      "product_id_hex": "24DB",
+      "name": "Jabra Evolve2 75",
+      "definition": "9435_erasmusMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onHead",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/9435_erasmusMS.json",
+      "firmware_profiles": [
+        "9435_01-6D_1.7.4",
+        "9435_01-6D_1.8.5"
+      ]
+    },
+    {
+      "product_id": 9439,
+      "product_id_hex": "24DF",
+      "name": "Jabra Elite 7 Pro",
+      "definition": "9439_astraPro",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": true,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": true,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": true,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": false,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": false
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/9439_astraPro.json",
+      "firmware_profiles": [
+        "9439_01-6E_2.2.0"
+      ]
+    },
+    {
+      "product_id": 9441,
+      "product_id_hex": "24E1",
+      "name": "Jabra Elite 2",
+      "definition": "9441_flamingo",
+      "kind": "earbuds",
+      "protocol": "gaia",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": true,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": false,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dual",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [
+        "android"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": null,
+          "buttonText": null
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9441_flamingo.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9442,
+      "product_id_hex": "24E2",
+      "name": "Jabra Elite 3",
+      "definition": "9442_peacock",
+      "kind": "earbuds",
+      "protocol": "gaia",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": false,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": false,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "hidden_language_code": true,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": false,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [
+        "android"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [],
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": {
+            "value": "but_config_double_press",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_l_earbud_lowercase",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9442_peacock.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9446,
+      "product_id_hex": "24E6",
+      "name": "Jabra Elite 4 Active",
+      "definition": "9446_toucan",
+      "kind": "earbuds",
+      "protocol": "gaia",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "anc_ht_loop_mode": true,
+        "connection_mode": false,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": true,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "mic_quality_indicator": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_button": false,
+        "smart_sound": false,
+        "soundscape": false,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [
+        "android"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "but_config_double_press",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_l_earbud_lowercase",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9446_toucan.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9447,
+      "product_id_hex": "24E7",
+      "name": "Jabra Elite 7 Active",
+      "definition": "9447_astraActive",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": true,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": true,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": true,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": false,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": false
+        },
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/9447_astraActive.json",
+      "firmware_profiles": [
+        "9447_01-6E_2.2.0"
+      ]
+    },
+    {
+      "product_id": 9455,
+      "product_id_hex": "24EF",
+      "name": "Jabra Speak2 75",
+      "definition": "9455_samwiseUC",
+      "kind": "speaker",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": true,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": false,
+        "ffanc": false,
+        "anc_ht_loop_mode": false,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": false,
+        "pairing_guide": false,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": false,
+        "smart_sound": false,
+        "manual_busy_light": false,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": true,
+        "smart_button": true,
+        "mic_quality_indicator": true,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": null,
+          "buttonText": null
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9455_samwiseUC.json",
+      "firmware_profiles": [
+        "9455_08-0B_1.1.6"
+      ]
+    },
+    {
+      "product_id": 9457,
+      "product_id_hex": "24F1",
+      "name": "Jabra Speak2 75",
+      "definition": "9457_samwiseMS",
+      "kind": "speaker",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": true,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": false,
+        "ffanc": false,
+        "anc_ht_loop_mode": false,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": false,
+        "pairing_guide": true,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": false,
+        "smart_sound": false,
+        "manual_busy_light": false,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": true,
+        "smart_button": true,
+        "mic_quality_indicator": true,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": null,
+          "buttonText": null
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9457_samwiseMS.json",
+      "firmware_profiles": [
+        "9457_08-0B_1.1.6"
+      ]
+    },
+    {
+      "product_id": 9458,
+      "product_id_hex": "24F2",
+      "name": "Jabra Elite 5",
+      "definition": "9458_canary",
+      "kind": "earbuds",
+      "protocol": "gaia",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": true,
+      "default_noise_loop": null,
+      "wear_detection": "inEarNoResume",
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "amaAlexaConfiguration": {
+          "wakewordSupported": true
+        },
+        "bistoConfiguration": {
+          "wakewordSupported": true,
+          "rebootActivationSupported": true,
+          "deepLinkActivationSupported": false
+        },
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": null,
+          "buttonText": null
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9458_canary.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9459,
+      "product_id_hex": "24F3",
+      "name": "Jabra Evolve2 55",
+      "definition": "9459_willowUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": true,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": false,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9459_willowUC.json",
+      "firmware_profiles": [
+        "9459_01-76_1.1.6"
+      ]
+    },
+    {
+      "product_id": 9461,
+      "product_id_hex": "24F5",
+      "name": "Jabra Evolve2 55",
+      "definition": "9461_willowMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": true,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": true,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9461_willowMS.json",
+      "firmware_profiles": [
+        "9461_01-76_1.1.6"
+      ]
+    },
+    {
+      "product_id": 9462,
+      "product_id_hex": "24F6",
+      "name": "Jabra Evolve2 55",
+      "definition": "9462_willowMonoUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": true,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": false,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9462_willowMonoUC.json",
+      "firmware_profiles": [
+        "9462_01-77_1.1.6"
+      ]
+    },
+    {
+      "product_id": 9464,
+      "product_id_hex": "24F8",
+      "name": "Jabra Evolve2 55",
+      "definition": "9464_willowMonoMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": true,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": true,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9464_willowMonoMS.json",
+      "firmware_profiles": [
+        "9464_01-77_1.1.6"
+      ]
+    },
+    {
+      "product_id": 9483,
+      "product_id_hex": "250B",
+      "name": "Jabra Evolve2 Buds",
+      "definition": "9483_hazelUC",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": true,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": false,
+        "renaming": true,
+        "sealing_test": true,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": true,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null
+      },
+      "source": "assets/Device/Definition/JSON/9483_hazelUC.json",
+      "firmware_profiles": [
+        "9483_01-80_1.1.0"
+      ]
+    },
+    {
+      "product_id": 9484,
+      "product_id_hex": "250C",
+      "name": "Jabra Evolve2 Buds",
+      "definition": "9484_hazelMS",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": true,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": true,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": true,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": true,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": true,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_l_earbud_lowercase",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9484_hazelMS.json",
+      "firmware_profiles": [
+        "9484_01-80_1.1.0"
+      ]
+    },
+    {
+      "product_id": 9490,
+      "product_id_hex": "2512",
+      "name": "Jabra Evolve2 55",
+      "definition": "9490_willowSecureAudioUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": true,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": false,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9490_willowSecureAudioUC.json",
+      "firmware_profiles": [
+        "9490_01-76_1.1.6"
+      ]
+    },
+    {
+      "product_id": 9492,
+      "product_id_hex": "2514",
+      "name": "Jabra Evolve2 55",
+      "definition": "9492_willowSecureAudioMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": true,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": false,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9492_willowSecureAudioMS.json",
+      "firmware_profiles": [
+        "9492_01-76_1.1.6"
+      ]
+    },
+    {
+      "product_id": 9493,
+      "product_id_hex": "2515",
+      "name": "Jabra Elite 3 Active",
+      "definition": "9493_woodpecker",
+      "kind": "earbuds",
+      "protocol": "gaia",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": true,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": false,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "inEar",
+      "spotify_platforms": [
+        "android"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": null,
+          "buttonText": null
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9493_woodpecker.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9494,
+      "product_id_hex": "2516",
+      "name": "Jabra Elite 7 Sport",
+      "definition": "9494_comet",
+      "kind": "earbuds",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": true,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": true,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": true,
+      "my_controls_onboarding": true,
+      "default_noise_loop": [
+        "hearThrough",
+        "anc"
+      ],
+      "wear_detection": "inEar",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "bistoConfiguration": {
+          "wakewordSupported": false,
+          "rebootActivationSupported": false,
+          "deepLinkActivationSupported": false
+        },
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": null,
+          "buttonText": null
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9494_comet.json",
+      "firmware_profiles": [
+        "9494_01-83_2.3.0",
+        "9494_01-83_2.4.0"
+      ]
+    },
+    {
+      "product_id": 9495,
+      "product_id_hex": "2517",
+      "name": "Jabra Evolve2 65 Flex",
+      "definition": "9495_cypressUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "firmware_update_emphasized": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": false,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onHead",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraCypressDev",
+          "productionId": "JabraCypress"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9495_cypressUC.json",
+      "firmware_profiles": [
+        "9495_01-82_1.1.0"
+      ]
+    },
+    {
+      "product_id": 9497,
+      "product_id_hex": "2519",
+      "name": "Jabra Evolve2 65 Flex",
+      "definition": "9497_cypressMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "firmware_update_emphasized": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onHead",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraCypressDev",
+          "productionId": "JabraCypress"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9497_cypressMS.json",
+      "firmware_profiles": [
+        "9497_01-82_1.1.0"
+      ]
+    },
+    {
+      "product_id": 9501,
+      "product_id_hex": "251D",
+      "name": "Jabra Connect 5t",
+      "definition": "9501_serin",
+      "kind": "earbuds",
+      "protocol": "gaia",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": false,
+        "pairing_guide": true,
+        "renaming": false,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": true,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "dualWithCradle",
+      "hearing_personalization": false,
+      "my_controls_onboarding": true,
+      "default_noise_loop": null,
+      "wear_detection": "inEarNoResume",
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "bisto",
+          "amaAlexa"
+        ],
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "amaAlexaConfiguration": {
+          "wakewordSupported": true
+        },
+        "bistoConfiguration": {
+          "wakewordSupported": true,
+          "rebootActivationSupported": true,
+          "deepLinkActivationSupported": false
+        },
+        "cycleTakeOverButton": null,
+        "activation": {
+          "gestureText": null,
+          "buttonText": null
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9501_serin.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9507,
+      "product_id_hex": "2523",
+      "name": "Jabra Evolve2 65 Flex",
+      "definition": "9507_cypressSecureAudioUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "firmware_update_emphasized": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": false,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onHead",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraCypressDev",
+          "productionId": "JabraCypress"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9507_cypressSecureAudioUC.json",
+      "firmware_profiles": [
+        "9507_01-82_1.1.0"
+      ]
+    },
+    {
+      "product_id": 9509,
+      "product_id_hex": "2525",
+      "name": "Jabra Evolve2 65 Flex",
+      "definition": "9509_cypressSecureAudioMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "firmware_update_emphasized": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": false,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onHead",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": true,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraCypressDev",
+          "productionId": "JabraCypress"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9509_cypressSecureAudioMS.json",
+      "firmware_profiles": [
+        "9509_01-82_1.1.0"
+      ]
+    },
+    {
+      "product_id": 9520,
+      "product_id_hex": "2530",
+      "name": "Jabra Elite Flex",
+      "definition": "9520_palm",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": true,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": false,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": false,
+        "firmware_update_emphasized": true,
+        "hidden_language_code": false,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": true,
+        "renaming": true,
+        "sealing_test": false,
+        "smart_sound": false,
+        "soundscape": true,
+        "ms_teams_lock": false,
+        "supported_in_production": true,
+        "swiftuiqsg_required": true,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "onHead",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "JabraPalmDev",
+          "productionId": "JabraPalm"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9520_palm.json",
+      "firmware_profiles": [
+        "9520_01-82_1.2.12"
+      ]
+    },
+    {
+      "product_id": 9522,
+      "product_id_hex": "2532",
+      "name": "Jabra Fuxi Stereo Audio",
+      "definition": "9522_fuxiUC",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": false,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": false,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": false,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9522_fuxiUC.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9523,
+      "product_id_hex": "2533",
+      "name": "Jabra Fuxi Stereo Data",
+      "definition": "9523_fuxiData",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": false,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": false,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": false,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9523_fuxiData.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9524,
+      "product_id_hex": "2534",
+      "name": "Jabra Fuxi Stereo Audio MS",
+      "definition": "9524_fuxiMS",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": false,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "supported_in_production": false,
+        "sealing_test": false,
+        "renaming": true,
+        "customize_equalizer": true,
+        "adjustable_ambience_mode": true,
+        "ffanc": false,
+        "anc_ht_loop_mode": true,
+        "adjustable_valueanc": false,
+        "swiftuiqsg_required": true,
+        "soundscape": true,
+        "pairing_guide": false,
+        "hidden_language_code": false,
+        "advanced_equalizer": true,
+        "in_call_settings": true,
+        "smart_sound": false,
+        "manual_busy_light": true,
+        "ms_teams_lock": false,
+        "ambience_mode_loop": false,
+        "connection_mode": false,
+        "smart_button": false,
+        "mic_quality_indicator": false,
+        "voice_assistant_locked_in_my_controls": false,
+        "mono_earbud": false,
+        "wind_mode": false,
+        "automatic_volume_adjustment": false,
+        "hear_through_for_mono": false
+      },
+      "battery_layout": "single",
+      "hearing_personalization": false,
+      "my_controls_onboarding": false,
+      "default_noise_loop": null,
+      "wear_detection": "none",
+      "spotify_platforms": [],
+      "spatial": {
+        "is_media_supported": false,
+        "is_communication_supported": false,
+        "ishrtf_toggle_supported": false
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "amaAlexa"
+        ],
+        "instructionsImage": null,
+        "alexaLeadInInstructionsImage": null,
+        "buttonFunctionalityChangeImage": null,
+        "buttonFunctionalityChangeTitle": null,
+        "buttonFunctionalityChangeInstruction": null,
+        "alexaConfiguration": null,
+        "cycleTakeOverButton": null,
+        "isAlexaWakewordSupported": false,
+        "activation": {
+          "gestureText": {
+            "value": "common_press_hold",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "common_sound_mode_button",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/9524_fuxiMS.json",
+      "firmware_profiles": []
+    },
+    {
+      "product_id": 9355,
+      "product_id_hex": "248B",
+      "name": "Developer Board",
+      "definition": "developer_board",
+      "kind": "headset",
+      "protocol": "gnp",
+      "production": false,
+      "evidence": "bundled_definition_only",
+      "virtual_device_tested": false,
+      "hardware_tested": false,
+      "capability_flags": {
+        "adjustable_ambience_mode": true,
+        "adjustable_valueanc": true,
+        "advanced_equalizer": true,
+        "ambience_mode_loop": true,
+        "customize_equalizer": true,
+        "ffanc": true,
+        "hidden_language_code": true,
+        "in_call_settings": true,
+        "manual_busy_light": true,
+        "pairing_guide": false,
+        "renaming": true,
+        "sealing_test": true,
+        "smart_sound": true,
+        "soundscape": true,
+        "ms_teams_lock": true,
+        "supported_in_production": false,
+        "swiftuiqsg_required": true,
+        "connection_mode": true,
+        "smart_button": true,
+        "mic_quality_indicator": true,
+        "voice_assistant_locked_in_my_controls": true,
+        "mono_earbud": true,
+        "wind_mode": true,
+        "automatic_volume_adjustment": true,
+        "hear_through_for_mono": true
+      },
+      "battery_layout": "single",
+      "hearing_personalization": true,
+      "my_controls_onboarding": false,
+      "default_noise_loop": [
+        "off",
+        "hearThrough"
+      ],
+      "wear_detection": "onEar",
+      "spotify_platforms": [
+        "android",
+        "iOS"
+      ],
+      "spatial": {
+        "is_media_supported": true,
+        "is_communication_supported": true,
+        "ishrtf_toggle_supported": true
+      },
+      "assistants": {
+        "preferredVoiceAssistant": "siri",
+        "supportedVoiceAssistants": [
+          "siri",
+          "alexa",
+          "amaAlexa"
+        ],
+        "alexaConfiguration": {
+          "developmentId": "TestDevice",
+          "productionId": "TestDevice"
+        },
+        "cycleTakeOverButton": {
+          "name": "anc"
+        },
+        "activation": {
+          "gestureText": {
+            "value": "common_press_lowercase",
+            "isLocalized": true
+          },
+          "buttonText": {
+            "value": "qsg_voice_button_hdr",
+            "isLocalized": true
+          }
+        }
+      },
+      "source": "assets/Device/Definition/JSON/developer_board.json",
+      "firmware_profiles": []
+    }
+  ]
+}

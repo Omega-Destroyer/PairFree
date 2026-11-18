@@ -108,7 +108,6 @@ internal class SettingRows(
     }
 
     private fun information(setting: Setting.Information): String = when {
-        setting.key == "a3959_wind_detected" -> s.text(if (setting.value == "yes") "yes" else "no")
         setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") -> words.optionLabel(setting.key, setting.value)
         setting.key == "sh_auracast_source" -> words.optionLabel(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
         else -> setting.value

@@ -348,3 +348,10 @@ From `data/skullcandy/devices.json` (the manifest's firmware feature lists) and 
 - **JieLi (1): Smokin' Buds 3, and Actions (3): the Terrain speakers.** The manifest gives them only a product FAQ, no setting, so there is nothing to control; the speakers are held back in any case.
 
 So the settings a Skullcandy owner can change come from 41 Airoha models, 5 BES models and 6 older Qualcomm BLE ones (preset equaliser, ambient mode); the Airoha work comes first because it holds most of them.
+
+### 12.1 BES: the TOTA command classes (2026-11-18)
+
+The Flutter code has 20 BES TOTA command classes (`utils/tota_commands/`), written to `data/skullcandy/tota_commands.json` by `tools/import_skullcandy_race.py --tota`. Each request starts `09 63 <length u16 LE> <command u16 LE>` for a read
+and `08 63 <length> <command> <value>` for a write; the command numbers: 1 battery, 2 equaliser mode, 3 custom equaliser (a write is `08 63 21 00 03 00` and 30 bytes of bands), 4 button settings, 5 multipoint, 6 low latency, 7 serial
+number (private), 8 firmware version, 9 hearing mode, `10` sidetone, `11` touch control, `12` TWS status (the last three written in hexadecimal by the app: `10 00`, `11 00`, `12 00`). The reply validation (`_validateTotaResponse`,
+`_cleanTotaResponse`, `_getCommandDataLength` in `api/besapi.dart`) and the optional encryption (`BES_TOTA_ENCRYPTION_KEY`) still have to be read before the framing counts as known.

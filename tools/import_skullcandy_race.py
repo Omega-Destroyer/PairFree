@@ -4,7 +4,9 @@ RACE `05 5A` header the app prepends: `05 5A <length u16 LE> <command id u16 LE>
 answers, `05 5D` notifications). Only the literal strings are taken; values the code builds at run time (the setting being written) are
 not in the file and are to be read from the class itself.
 
-    python tools/import_skullcandy_race.py PATH_TO_blutter_out [--check]
+    python tools/import_skullcandy_race.py PATH_TO_blutter_out [--tota] [--check]
+
+With --tota it reads the app's BES TOTA command classes (`utils/tota_commands`) into data/skullcandy/tota_commands.json instead.
 """
 import collections
 import glob
@@ -16,6 +18,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "skullcandy" / "race_commands.json"
 SUB = "asm/skullcandy_app/utils/race_commands"
+if "--tota" in sys.argv:
+    # BES's TOTA commands (the app's utils/tota_commands), same method, own file
+    OUT = ROOT / "data" / "skullcandy" / "tota_commands.json"
+    SUB = "asm/skullcandy_app/utils/tota_commands"
 
 
 def load_build(path):

@@ -335,3 +335,16 @@ With the byte strings in full (literals the code loads into any register, and th
   `2C D0`/`D1` Crusher EQ volume, `2C D7`/`D8` bass boost; and Skullcandy's THX group at `F4 01`. Which form a model gets can depend on the model: the multipoint switch is the NV form
   `05 5A 03 00 01 14 <0|1>` on the Hesh 360, Crusher Evo and Crusher 540 Active classic twins and the Session 360 and 540; `05 5A 04 00 01 11 BB|BC 00` on the Dime Evo, Dime 360, Rail, Rail ANC and
   Session 720; and the custom `2C 82` form on the rest.
+
+## 12. What the non-Airoha routes hold (2026-11-18)
+
+From `data/skullcandy/devices.json` (the manifest's firmware feature lists) and `data/skullcandy/chips.json`:
+
+- **Qualcomm, Bluetooth LE only (6): Crusher ANC, Crusher Evo (0x02), Indy Fuel, Indy Evo, Push Ultra, Crusher 540 Active (0x2C).** Their features are a preset equaliser and its toggle, ambient mode on the two Indy models, personal sound and
+  Tile. The Crusher Evo (0x02) and Crusher 540 Active (0x2C) have classic twins on Airoha (0x30, 0x31: `airohaProductId` in the manifest). The BLE protocol is the oldest and the one nothing in the Bragi SDK covers.
+- **BES, classic (5): Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open.** The richest of the non-Airoha models: custom and preset equalisers, bass boost, multipoint, low latency, custom buttons,
+  stay-aware and sidetone levels, and on the Dime 540 ANC adjustable noise cancelling and personal sound. The app's `bes` package carries BES's TOTA transport (SPP or BLE) with an optional encryption layer the app switches on
+  with a `BES_TOTA_ENCRYPTION_KEY` flag (a Boolean read from the app's configuration, defaulting on; the cipher object itself is in `bessdk/service/base/b.java`): to be read in full before it counts as covered.
+- **JieLi (1): Smokin' Buds 3, and Actions (3): the Terrain speakers.** The manifest gives them only a product FAQ, no setting, so there is nothing to control; the speakers are held back in any case.
+
+So the settings a Skullcandy owner can change come from 41 Airoha models, 5 BES models and 6 older Qualcomm BLE ones (preset equaliser, ambient mode); the Airoha work comes first because it holds most of them.

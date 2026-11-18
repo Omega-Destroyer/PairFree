@@ -369,3 +369,7 @@ Checked: `app/skullcandy/bes/i.java` (the connection handler), `bessdk/service/b
 
 So BES TOTA is implementable from public behaviour, with no vendor key or credential. What remains is the exact byte layout of the handshake messages and of the frames around the payload (`d.java` `a` builds a frame, `b` reads
 one, both seen only in part), to be written down before the BES session is built.
+
+The TOTA v2 frame (`d.java` `a` writes, `b` reads), as the code builds it: `HEAD` (the ASCII marker), the payload length as four bytes little endian, the payload, the payload's CRC-32 as four bytes little endian, `TAIL`. A frame that fails
+its CRC is dropped (the reader returns a one-byte `01`). With encryption on, the payload is the AES-CBC ciphertext of the zero-padded content. The 20 command classes (section 12.1) supply the payloads: `09 63 02 00 <cmd> 00` to read and
+`08 63 <length> 00 <cmd> 00 <value>` to write.

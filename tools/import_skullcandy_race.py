@@ -1,4 +1,4 @@
-"""Writes data/skullcandy/race_commands.json from Skullcandy's own app (5.0.6): the 58 RACE command classes of its Flutter code
+"""Writes data/skullcandy/race_commands.json from Skullcandy's own app (5.0.6): the RACE command classes of its Flutter code (58 files, 38 with literal byte strings)
 (`utils/race_commands/**`, Blutter output outside the repo). For each class, the byte strings its code writes (the request, with the
 RACE `05 5A` header the app prepends: `05 5A <length u16 LE> <command id u16 LE> <payload>`) and the reply prefixes it checks (`05 5B`
 answers, `05 5D` notifications). Only the literal strings are taken; values the code builds at run time (the setting being written) are

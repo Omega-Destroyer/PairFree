@@ -293,7 +293,7 @@ stay-aware level (20), personal sound (19), voice assistant (19), Tile (16), bas
 
 ## 11. The app's RACE command classes (read 2026-11-18)
 
-The Flutter code holds 58 RACE command classes (`utils/race_commands/`: ANC, battery saver, charge-out protection, Crusher bass boost and EQ volume, feedback sounds, button and gesture
+The Flutter code holds 58 files of RACE command classes and helpers (`utils/race_commands/`; 38 of them write or check literal byte strings: ANC, battery saver, charge-out protection, Crusher bass boost and EQ volume, feedback sounds, button and gesture
 settings, LED colour/brightness/mode, Mimi user id, multipoint, party mode, wear detect, serial number and SKU reads, SG200 EQ mapping, speaker bass boost, THX spatial audio and head
 tracking, capacitive touch, voice control). `tools/import_skullcandy_race.py` writes the byte strings each writes or checks to `data/skullcandy/race_commands.json`: requests are RACE
 `05 5A <length u16 LE> <command id u16 LE> <payload>`, replies `05 5B` with the same id and a status byte (`00` is success: `RaceCommandBasBoostSet` checks the byte at offset 12 against `00`),

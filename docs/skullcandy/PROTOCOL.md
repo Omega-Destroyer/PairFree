@@ -355,3 +355,17 @@ The Flutter code has 20 BES TOTA command classes (`utils/tota_commands/`), writt
 and `08 63 <length> <command> <value>` for a write; the command numbers: 1 battery, 2 equaliser mode, 3 custom equaliser (a write is `08 63 21 00 03 00` and 30 bytes of bands), 4 button settings, 5 multipoint, 6 low latency, 7 serial
 number (private), 8 firmware version, 9 hearing mode, `10` sidetone, `11` touch control, `12` TWS status (the last three written in hexadecimal by the app: `10 00`, `11 00`, `12 00`). The reply validation (`_validateTotaResponse`,
 `_cleanTotaResponse`, `_getCommandDataLength` in `api/besapi.dart`) and the optional encryption (`BES_TOTA_ENCRYPTION_KEY`) still have to be read before the framing counts as known.
+
+### 12.2 BES TOTA encryption: a handshake, no key held by the app (read 2026-11-18)
+
+Checked: `app/skullcandy/bes/i.java` (the connection handler), `bessdk/service/base/d.java` (framing and cipher) and `bessdk/connect/`. The optional layer is not a key the app carries. When TOTA encryption is on
+(a Boolean the app reads from its configuration, `BES_TOTA_ENCRYPTION_KEY`, default on; the configuration file itself, `secrets`, is not read) the two sides derive a fresh key at connect:
+
+- Each side sends a buffer of its own (the host's is `dVar.b`, the earbuds' arrives in a `02 10 <length u16 LE>` message). The two buffers are combined byte by byte, the operation chosen by the index modulo 6: add,
+  multiply, AND, OR, XOR, and the sum of both squares (a sixth case gives 0), each as a byte.
+- The key is the SHA-256 of the combined bytes; the 16 bytes at the even positions of the hash (0, 2, ... 30) are the AES-128 key. The cipher is AES/CBC without padding (data padded with zeros to 16 bytes) and the fixed
+  initialisation vector `00 01 02 ... 0F`; the frames also carry a CRC-32 (little endian) and the markers `HEAD` and `TAIL`.
+- The host confirms with `03 10 21 00 20` and the 32-byte hash; the earbuds answer `02`/`10` ... with the ASCII `suc` at offset 12 when it holds, after which encryption is on (the app sets its flag in `h()`).
+
+So BES TOTA is implementable from public behaviour, with no vendor key or credential. What remains is the exact byte layout of the handshake messages and of the frames around the payload (`d.java` `a` builds a frame, `b` reads
+one, both seen only in part), to be written down before the BES session is built.

@@ -293,7 +293,7 @@ stay-aware level (20), personal sound (19), voice assistant (19), Tile (16), bas
 
 ## 11. The app's RACE command classes (read 2026-11-18)
 
-The Flutter code holds 58 files of RACE command classes and helpers (`utils/race_commands/`; 38 of them write or check literal byte strings: ANC, battery saver, charge-out protection, Crusher bass boost and EQ volume, feedback sounds, button and gesture
+The Flutter code holds 58 files of RACE command classes and helpers (`utils/race_commands/`; 46 of them write or check literal byte strings: ANC, battery saver, charge-out protection, Crusher bass boost and EQ volume, feedback sounds, button and gesture
 settings, LED colour/brightness/mode, Mimi user id, multipoint, party mode, wear detect, serial number and SKU reads, SG200 EQ mapping, speaker bass boost, THX spatial audio and head
 tracking, capacitive touch, voice control). `tools/import_skullcandy_race.py` writes the byte strings each writes or checks to `data/skullcandy/race_commands.json`: requests are RACE
 `05 5A <length u16 LE> <command id u16 LE> <payload>`, replies `05 5B` with the same id and a status byte (`00` is success: `RaceCommandBasBoostSet` checks the byte at offset 12 against `00`),
@@ -319,3 +319,17 @@ first underscore turned into a dot: `ancat.toggle`, `media.play_toggle`, `volume
 unasked `.UI:notify,<side>,<key>.<gesture>[,<event>]` line, and `AT.UI=notify,off|pair` switches those notices. The HEvents list: none, ancat toggle, remote notify/up/down/center, telephony take/reject/end/
 reject-end/take-end/switch-call/mute-toggle, media play-toggle/next/prev/play/pause/reject, volume up/down/repeat-start, ancat anc-toggle and at-toggle, assistant play-sound/toggle/alexa-toggle, bt pairing and
 passcode accept/reject, PTT toggle/start/stop, recording toggle/start/stop, device power on/off.
+
+### 11.1 What the RACE commands are (2026-11-18)
+
+With the byte strings in full (literals the code loads into any register, and the `buildCommand` of each class run for each of the 56 models by `tools/import_skullcandy_race.py`; the file's
+`built_by_model` groups the models by the bytes they get), the commands fall into three kinds, in the `05 5A <len u16 LE> <id u16 LE> <payload>` framing:
+
+- **Airoha's own RACE** commands: `05 5A 05 00 06 0E ...` (adaptive ANC), `05 5A 04 00 01 09 1F 00` (adaptive ANC read), `05 5A 02 00 41 00` and `43 00` (serial number and SKU, never reported).
+- **NV key access** (`0A 00` read, `0A 01` write; the payload is the key id little endian, then a length): the Skullcandy keys read in the files are `F4 01`/`F4 02`/`F4 03`/`F4 05`/`F4 09`,
+  `F5 00`, `F5 14` and `F5 23`; for example wear detect is `...00 0A 02 F4 01 00` to read and `01 14` style writes, feedback sounds `05 F4`, charge-out protection `03 F4`, party mode `09 F4`.
+  These are the vendor's own NV writes, which the owner allowed for JBL's Airoha work (2026-11-04) when they are exactly what the vendor's app sends.
+- **Skullcandy's custom commands**: `2C 81` feedback sounds, `2C 82` multipoint (`05 5A 05 00 82 2C 10 00 <0|1>`), `2C 83` LED state, `2C 85` LED mode, `2C 86` LED brightness, `2C 88` LED customiser,
+  `2C D0`/`D1` Crusher EQ volume, `2C D7`/`D8` bass boost; and Skullcandy's THX group at `F4 01`. Which form a model gets can depend on the model: the multipoint switch is the NV form
+  `05 5A 03 00 01 14 <0|1>` on the Hesh 360, Crusher Evo and Crusher 540 Active classic twins and the Session 360 and 540; `05 5A 04 00 01 11 BB|BC 00` on the Dime Evo, Dime 360, Rail, Rail ANC and
+  Session 720; and the custom `2C 82` form on the rest.

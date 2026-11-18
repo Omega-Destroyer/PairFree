@@ -54,7 +54,7 @@ Each model shows only what it has: the battery of each earbud and the case, nois
 
 ## Get PairFree
 
-On Android, PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) and on the [GitHub releases page](https://github.com/Omega-Destroyer/PairFree/releases/latest). On Windows 10 or 11, download `PairFree-X.Y.Z.exe` from the same page and run it. The source is at [github.com/Omega-Destroyer/PairFree](https://github.com/Omega-Destroyer/PairFree).
+On Android, PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) and on the [GitHub releases page](https://github.com/Omega-Destroyer/PairFree/releases/latest). On Windows 10 or 11, download `PairFree.exe` from the same page and run it. The source is at [github.com/Omega-Destroyer/PairFree](https://github.com/Omega-Destroyer/PairFree).
 
 ## Questions
 
@@ -84,7 +84,7 @@ Android 12 or later, or Windows 10 (version 1809) or 11. AirPods need Android 17
 
 ### Where do I get it?
 
-The Android app is on F-Droid and on the GitHub releases page (the same APK, signed with the same key). The Windows program, PairFree-X.Y.Z.exe, is on the GitHub releases page.
+The Android app is on F-Droid and on the GitHub releases page (the same APK, signed with the same key). The Windows program, PairFree.exe, is on the GitHub releases page.
 
 ---
 

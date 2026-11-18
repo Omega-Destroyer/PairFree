@@ -1,6 +1,6 @@
 # PairFree for Windows
 
-PairFree for Windows is one portable program, `PairFree-X.Y.Z.exe`, about 16 MB. There is no installer and nothing is written to the registry. It does what the
+PairFree for Windows is one portable program, `PairFree.exe`, about 16 MB. There is no installer and nothing is written to the registry. It does what the
 Android app does for your earbuds, in a window made for a mouse. It is under development and **has not been released yet**; this page says what it will be.
 
 ## Needs
@@ -15,7 +15,7 @@ you, delete the file to start over. You may edit it while PairFree is closed. If
 settings in memory for that session.
 
 Windows may show a blue **Windows protected your PC** window the first time, because the program is not signed with a paid certificate. Choose **More info**,
-then **Run anyway**. Release notes list the file's SHA-256 checksum; check it if you like (`Get-FileHash PairFree-X.Y.Z.exe` in PowerShell).
+then **Run anyway**. Release notes list the file's SHA-256 checksum; check it if you like (`Get-FileHash PairFree.exe` in PowerShell).
 
 ## What it does
 

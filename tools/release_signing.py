@@ -9,6 +9,8 @@ ECDSA with P-256 and SHA-256, through the `openssl` command line. The private ke
         writes PairFree-0.15.0.exe.sig (64 bytes, r then s); upload both to the release.
 """
 import argparse
+import os
+import shutil
 import pathlib
 import subprocess
 import sys
@@ -18,8 +20,24 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 KEY_FILE = ROOT / "desktop" / "shell" / "src" / "commonMain" / "kotlin" / "UpdateKeyData.kt"
 
 
+def find_openssl() -> str:
+    """The openssl command: on the PATH, else the copy Git for Windows ships (which a plain PowerShell does not have on its PATH)."""
+    found = shutil.which("openssl")
+    if found:
+        return found
+    for base in (os.environ.get("ProgramFiles", r"C:\Program Files"), os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)")):
+        for rel in (r"Git\usr\bin\openssl.exe", r"Git\mingw64\bin\openssl.exe"):
+            candidate = pathlib.Path(base) / rel
+            if candidate.exists():
+                return str(candidate)
+    raise SystemExit("openssl was not found: install Git for Windows (it ships one) or put openssl on the PATH")
+
+
 def openssl(*args, **kw):
-    return subprocess.run(["openssl", *args], check=True, capture_output=True, **kw)
+    try:
+        return subprocess.run([find_openssl(), *args], check=True, capture_output=True, **kw)
+    except subprocess.CalledProcessError as e:
+        raise SystemExit("openssl failed: " + e.stderr.decode(errors="replace").strip())
 
 
 def public_coordinates(private: pathlib.Path):

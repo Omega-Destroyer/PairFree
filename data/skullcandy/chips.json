@@ -1,0 +1,292 @@
+{
+  "_about": "Skullcandy 5.0.6: the chip family of each of the app's 56 product models, read from SKDYProductModelInfo.chip() in the Flutter code (Blutter output), by tools/import_skullcandy_dart.py. `model` is the app's own enum name; the manifest's product ids are joined by name in data/skullcandy/devices.json.",
+  "chips": [
+    "qualcomm",
+    "airoha",
+    "bes",
+    "actions",
+    "jieli"
+  ],
+  "models": [
+    {
+      "index": 0,
+      "model": "crusherANC",
+      "chip": "qualcomm"
+    },
+    {
+      "index": 1,
+      "model": "crusherEvo",
+      "chip": "qualcomm"
+    },
+    {
+      "index": 2,
+      "model": "indyANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 3,
+      "model": "indyFuel",
+      "chip": "qualcomm"
+    },
+    {
+      "index": 4,
+      "model": "indyFuelRC",
+      "chip": "airoha"
+    },
+    {
+      "index": 5,
+      "model": "indyEvo",
+      "chip": "qualcomm"
+    },
+    {
+      "index": 6,
+      "model": "indyEvoRC",
+      "chip": "airoha"
+    },
+    {
+      "index": 7,
+      "model": "pushUltra",
+      "chip": "qualcomm"
+    },
+    {
+      "index": 8,
+      "model": "jibTrueXT2",
+      "chip": "airoha"
+    },
+    {
+      "index": 9,
+      "model": "dime2",
+      "chip": "airoha"
+    },
+    {
+      "index": 10,
+      "model": "dimeXT2",
+      "chip": "airoha"
+    },
+    {
+      "index": 11,
+      "model": "dimeEvo",
+      "chip": "airoha"
+    },
+    {
+      "index": 12,
+      "model": "dime360",
+      "chip": "airoha"
+    },
+    {
+      "index": 13,
+      "model": "seshANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 14,
+      "model": "mod",
+      "chip": "airoha"
+    },
+    {
+      "index": 15,
+      "model": "riffWireless2",
+      "chip": "airoha"
+    },
+    {
+      "index": 16,
+      "model": "plyr",
+      "chip": "airoha"
+    },
+    {
+      "index": 17,
+      "model": "slyrProXbox",
+      "chip": "airoha"
+    },
+    {
+      "index": 18,
+      "model": "slyrPro",
+      "chip": "airoha"
+    },
+    {
+      "index": 19,
+      "model": "hanc",
+      "chip": "airoha"
+    },
+    {
+      "index": 20,
+      "model": "tanc",
+      "chip": "airoha"
+    },
+    {
+      "index": 21,
+      "model": "iconANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 22,
+      "model": "aviatorANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 23,
+      "model": "hesh360",
+      "chip": "airoha"
+    },
+    {
+      "index": 24,
+      "model": "hesh540ANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 25,
+      "model": "crusherPlyr",
+      "chip": "airoha"
+    },
+    {
+      "index": 26,
+      "model": "crusherPlyrXbox",
+      "chip": "airoha"
+    },
+    {
+      "index": 27,
+      "model": "crusher540Active",
+      "chip": "qualcomm"
+    },
+    {
+      "index": 28,
+      "model": "push720open",
+      "chip": "airoha"
+    },
+    {
+      "index": 29,
+      "model": "icon180",
+      "chip": "bes"
+    },
+    {
+      "index": 30,
+      "model": "push540Open",
+      "chip": "airoha"
+    },
+    {
+      "index": 31,
+      "model": "crusherEvoRC",
+      "chip": "airoha"
+    },
+    {
+      "index": 32,
+      "model": "crusher540ActiveRC",
+      "chip": "airoha"
+    },
+    {
+      "index": 33,
+      "model": "crusher720",
+      "chip": "airoha"
+    },
+    {
+      "index": 34,
+      "model": "crusher1080ANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 35,
+      "model": "smokinBuds3",
+      "chip": "jieli"
+    },
+    {
+      "index": 36,
+      "model": "terrain",
+      "chip": "actions"
+    },
+    {
+      "index": 37,
+      "model": "terrainMini",
+      "chip": "actions"
+    },
+    {
+      "index": 38,
+      "model": "terrainXL",
+      "chip": "actions"
+    },
+    {
+      "index": 39,
+      "model": "pushActive",
+      "chip": "airoha"
+    },
+    {
+      "index": 40,
+      "model": "grind",
+      "chip": "airoha"
+    },
+    {
+      "index": 41,
+      "model": "grindFuel",
+      "chip": "airoha"
+    },
+    {
+      "index": 42,
+      "model": "rail",
+      "chip": "airoha"
+    },
+    {
+      "index": 43,
+      "model": "railANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 44,
+      "model": "crusherANC2",
+      "chip": "airoha"
+    },
+    {
+      "index": 45,
+      "model": "method360ANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 46,
+      "model": "method540ANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 47,
+      "model": "session360",
+      "chip": "airoha"
+    },
+    {
+      "index": 48,
+      "model": "session540",
+      "chip": "airoha"
+    },
+    {
+      "index": 49,
+      "model": "session720",
+      "chip": "airoha"
+    },
+    {
+      "index": 50,
+      "model": "session900",
+      "chip": "airoha"
+    },
+    {
+      "index": 51,
+      "model": "dime540ANC",
+      "chip": "bes"
+    },
+    {
+      "index": 52,
+      "model": "smokingBuds360Hanger",
+      "chip": "bes"
+    },
+    {
+      "index": 53,
+      "model": "smokingBuds360Stick",
+      "chip": "bes"
+    },
+    {
+      "index": 54,
+      "model": "crusher900ANC",
+      "chip": "airoha"
+    },
+    {
+      "index": 55,
+      "model": "push180Open",
+      "chip": "bes"
+    }
+  ]
+}

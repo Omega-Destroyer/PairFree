@@ -245,3 +245,19 @@ its boundary and an error is `ERROR`. The app's 81 AT strings, grouped: `AT.UIAU
 Never send `AT.FACTORY_RESET`, `AT.BLUETOOTH=pdlreset` (clears the paired devices), `AT.IMU=calibration`, `AT.TIME`, `AT.LOCATION`, `AT.IDAM` (device ids) or `AT.UI=inject` and
 `invoke` (they run arbitrary UI commands). The full literal list is in `E:\Builds\research\skullcandy-at-strings.txt` (outside the repo); the argument values per command are
 still to be read from their callers (`api/ui/data/at`, `api/audio/data/at` and the `anc`, `ancFilter`, `transparency` mappers).
+
+## 10. The other routes: the app's own chip table (read 2026-11-18)
+
+The Flutter code (the Dart snapshot `libapp.so`, run through Blutter outside the repo; Dart 3.11.5, not obfuscated, so class and function names survive) holds the model-to-chip map in
+`SKDYProductModelInfo.chip()`, a jump table over the model enum; `tools/import_skullcandy_dart.py` writes it to `data/skullcandy/chips.json`. The chip enum is `SKDYProductChip`
+(qualcomm, airoha, bes, actions, jieli, notSupported). Of the 56 models:
+
+- **Airoha, 41**: all the Dime, Sesh, Mod, Riff, PLYR, SLYR, Icon, Aviator, Hesh, Crusher PLYR, Push 540/720 Open, Crusher 720/1080/900, Session and Method models, the Rail, Grind and
+  Push Active, Crusher ANC 2, and the BLE+Classic twins (`indyANC`, `indyFuelRC`, `indyEvoRC`, `crusherEvoRC`, `crusher540ActiveRC`). The app drives them through a native channel
+  (`com.skullcandy.api/airoha`: `SKDYAirohaApi.runATCommand`, `runRaceCommandEncoded`, the Mimi calls) into the Bragi SDK's AT, RACE and, on the newest, BOS-RPC transports (section 9).
+- **Qualcomm, 6**: `crusherANC`, `crusherEvo` (the BLE entries), `indyFuel`, `indyEvo`, `pushUltra`, `crusher540Active` (BLE): the older models, controlled over Bluetooth LE.
+- **BES, 5**: `icon180`, `dime540ANC`, both Smokin' Buds 360 (hanger, stick) and `push180Open` (the app's `bes` package and the BES SDK).
+- **JieLi, 1**: Smokin' Buds 3. **Actions, 3**: the Terrain speakers (speakers are held back).
+
+So the work divides by chip, not by model: one Airoha implementation (AT dialect plus RACE for the equaliser, multipoint and similar, plus BOS-RPC for the newest) covers most of the
+catalogue, once the AT arguments and the per-model feature lists are read; the manifest's per-model features (`MODELS.md`) say what each shows.

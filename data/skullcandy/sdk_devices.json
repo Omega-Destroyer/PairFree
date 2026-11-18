@@ -1,0 +1,1608 @@
+{
+  "_about": "Skullcandy 5.0.6's Bragi SDK device configurations (com.bragi.sdk.android.device.config.c), imported by tools/import_skullcandy_app.py. Each feature names its transport (BOS_AT, BOS_RPC, AIROHA_RACE, AIROHA_RACE_CUSTOM, PLUGIN). Only these ten products have a config in the SDK; the app's other models go through other routes (docs/skullcandy/PROTOCOL.md).",
+  "devices": [
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "AUDIO",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "BOS_AT",
+          "attributes": [
+            {
+              "attribute": "FilterIdAttribute",
+              "args": [
+                [
+                  4
+                ],
+                0,
+                2,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TRANSPARENCY_PRESET",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "EQ",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                {
+                  "1": "Music",
+                  "2": "Podcast",
+                  "3": "Movie"
+                }
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                -12.0,
+                12.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "AUTO_EQ",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "AUDIOLOOP",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "SYSTEM",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE_INFO",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TWS_API",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "UI",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "SINGLE_SIDE_MODE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "GESTURE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "CALIBRATION",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "VOICE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "FEATURE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "MIMI",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "AUTO_MUTE",
+          "service": "BOS_AT"
+        }
+      ],
+      "services": {
+        "control": "ed0e95a6-8ab5-4642-8654-6c744a37c99b",
+        "secondary": "351178d6-76dd-4ec3-b939-43f9a11e3617"
+      },
+      "ble_model_id": {
+        "modelId": [
+          9
+        ]
+      },
+      "model": {
+        "names": [
+          "Grind",
+          "Sesh Boost"
+        ],
+        "type": "deviceType",
+        "chipset": "AB1565",
+        "key": "GRIND"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "AUDIO",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "BOS_AT",
+          "attributes": [
+            {
+              "attribute": "FilterIdAttribute",
+              "args": [
+                [
+                  4
+                ],
+                0,
+                2,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TRANSPARENCY_PRESET",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "EQ",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                {
+                  "1": "Music",
+                  "2": "Podcast",
+                  "3": "Movie"
+                }
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                -12.0,
+                12.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "AUTO_EQ",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "AUDIOLOOP",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "SYSTEM",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE_INFO",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TWS_API",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "UI",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "SINGLE_SIDE_MODE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "GESTURE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "CALIBRATION",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "VOICE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "FEATURE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "MIMI",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "AUTO_MUTE",
+          "service": "BOS_AT"
+        }
+      ],
+      "services": {
+        "control": "ed0e95a6-8ab5-4642-8654-6c744a37c99b",
+        "secondary": "351178d6-76dd-4ec3-b939-43f9a11e3617"
+      },
+      "ble_model_id": {
+        "modelId": [
+          16
+        ]
+      },
+      "model": {
+        "names": [
+          "Grind Fuel",
+          "Sesh Boost Costco"
+        ],
+        "type": "deviceType",
+        "chipset": "AB1565",
+        "key": "GRIND_FUEL"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "AUDIO",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "BOS_AT",
+          "attributes": [
+            {
+              "attribute": "FilterIdAttribute",
+              "args": [
+                [
+                  4
+                ],
+                0,
+                2,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TRANSPARENCY_PRESET",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "EQ",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                {
+                  "1": "Music",
+                  "2": "Podcast",
+                  "3": "Movie"
+                }
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                -12.0,
+                12.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "AUTO_EQ",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "AUDIOLOOP",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "SYSTEM",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE_INFO",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TWS_API",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "UI",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "SINGLE_SIDE_MODE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "GESTURE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "CALIBRATION",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "VOICE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "FEATURE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "MIMI",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "AUTO_MUTE",
+          "service": "BOS_AT"
+        }
+      ],
+      "services": {
+        "control": "ed0e95a6-8ab5-4642-8654-6c744a37c99b",
+        "secondary": "351178d6-76dd-4ec3-b939-43f9a11e3617"
+      },
+      "ble_model_id": {
+        "modelId": [
+          8
+        ]
+      },
+      "model": {
+        "names": [
+          "Push Active",
+          "Oppactive",
+          "Opp active"
+        ],
+        "type": "deviceType",
+        "chipset": "AB1565",
+        "key": "PUSH_ACTIVE"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "AUDIO",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "BOS_AT",
+          "attributes": [
+            {
+              "attribute": "FilterIdAttribute",
+              "args": [
+                [
+                  4
+                ],
+                0,
+                2,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "ANC",
+          "service": "BOS_AT",
+          "attributes": [
+            {
+              "attribute": "FilterIdAttribute",
+              "args": [
+                [
+                  1
+                ],
+                0,
+                2,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ANC_GAIN",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "ANC_FILTER",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "EQ",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                {
+                  "1": "Music",
+                  "2": "Podcast",
+                  "3": "Movie"
+                }
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                -12.0,
+                12.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "AUTO_EQ",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "AUDIOLOOP",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "SYSTEM",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE_INFO",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "MULTIPOINT",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "TWS_API",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "UI",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "GESTURE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "VOICE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "FEATURE",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "MIMI",
+          "service": "BOS_AT"
+        },
+        {
+          "type": "BASS",
+          "service": "BOS_AT"
+        }
+      ],
+      "services": {
+        "control": "ed0e95a6-8ab5-4642-8654-6c744a37c99b",
+        "secondary": "351178d6-76dd-4ec3-b939-43f9a11e3617"
+      },
+      "ble_model_id": {
+        "modelId": [
+          22
+        ]
+      },
+      "model": {
+        "names": [
+          "CHP200",
+          "S6CAW"
+        ],
+        "type": "deviceType2",
+        "chipset": "AB1568",
+        "key": "CHP200"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "DEVICE",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "DEVICE_INFO",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "TWS_API",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "EQ",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                {
+                  "1": "Music",
+                  "2": "Bass Boost",
+                  "3": "Podcast"
+                }
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                -12.0,
+                12.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "AUDIO",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "FilterIdAttribute",
+              "args": [
+                [
+                  4
+                ],
+                0,
+                2,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "ANC",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "FilterIdAttribute",
+              "args": [
+                [
+                  3
+                ],
+                0,
+                2,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ANC_GAIN",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "ANC_FILTER",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "VOICE",
+          "service": "AIROHA_RACE_CUSTOM",
+          "attributes": [
+            {
+              "attribute": "VoiceNoVoiceMode"
+            }
+          ]
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "UI",
+          "service": "AIROHA_RACE_CUSTOM",
+          "attributes": [
+            {
+              "attribute": "UiSupportedAncAtCommandsAttribute",
+              "args": [
+                [
+                  "ANCAT_TOGGLE"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "LATENCY",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "SYSTEM",
+          "service": "AIROHA_RACE_CUSTOM",
+          "attributes": [
+            {
+              "attribute": "TimeNotSupportedAttribute"
+            },
+            {
+              "attribute": "LanguageUpdateNotSupportedAttribute"
+            }
+          ]
+        },
+        {
+          "type": "FEATURE",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "MULTIPOINT",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "MIMI",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "SIDE_TONE",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "LAST_FOTA_STATUS_CHECK",
+          "service": "AIROHA_RACE"
+        }
+      ],
+      "services": {
+        "control": null,
+        "secondary": "351178d6-76dd-4ec3-b939-43f9a11e3617",
+        "race": null
+      },
+      "ble_model_id": {
+        "modelId": [
+          21
+        ]
+      },
+      "model": {
+        "names": [
+          "T80+",
+          "S2IPW-P740",
+          "railanc"
+        ],
+        "type": "deviceType",
+        "chipset": "AB1562",
+        "key": "T80_PLUS"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "FOTA",
+          "service": "PLUGIN"
+        },
+        {
+          "type": "CUSTOM_COMMAND",
+          "service": "PLUGIN",
+          "attributes": [
+            {
+              "attribute": "HiddenFeature"
+            }
+          ]
+        },
+        {
+          "type": "DEVICE",
+          "service": "PLUGIN"
+        },
+        {
+          "type": "DEVICE_INFO",
+          "service": "PLUGIN"
+        },
+        {
+          "type": "UI",
+          "service": "PLUGIN",
+          "attributes": [
+            {
+              "attribute": "UiAssignSingleCommandOnly"
+            },
+            {
+              "attribute": "UiNoDefaultInfo"
+            }
+          ]
+        },
+        {
+          "type": "SESSION",
+          "service": "PLUGIN"
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "PLUGIN"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "PLUGIN"
+        },
+        {
+          "type": "DISCOVER_ACCESSORIES",
+          "service": "PLUGIN"
+        }
+      ],
+      "services": {
+        "control": null,
+        "secondary": null
+      },
+      "ble_model_id": {},
+      "model": {
+        "names": [
+          "Skullcandy P6"
+        ],
+        "type": "SPEAKER",
+        "chipset": "JL7012",
+        "key": "P6"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "DEVICE",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "DEVICE_INFO",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "TWS_API",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "EQ",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                "mapMapOf2"
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                -12.0,
+                12.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "AUDIO",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "FilterIdAttribute",
+              "args": [
+                [
+                  4
+                ],
+                0,
+                2,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "UI",
+          "service": "AIROHA_RACE_CUSTOM",
+          "attributes": [
+            {
+              "attribute": "UiSupportedAncAtCommandsAttribute",
+              "args": [
+                [
+                  "ANCAT_AT_TOGGLE"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "VOICE",
+          "service": "AIROHA_RACE_CUSTOM",
+          "attributes": [
+            {
+              "attribute": "VoiceNoVoiceMode"
+            }
+          ]
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "LATENCY",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "SYSTEM",
+          "service": "AIROHA_RACE_CUSTOM",
+          "attributes": [
+            {
+              "attribute": "TimeNotSupportedAttribute"
+            },
+            {
+              "attribute": "LanguageUpdateNotSupportedAttribute"
+            }
+          ]
+        },
+        {
+          "type": "FEATURE",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "MULTIPOINT",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "MIMI",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "SIDE_TONE",
+          "service": "AIROHA_RACE_CUSTOM"
+        },
+        {
+          "type": "LAST_FOTA_STATUS_CHECK",
+          "service": "AIROHA_RACE"
+        }
+      ],
+      "services": {
+        "control": "FFEEDDCC-BBAA-9988-7766-554433221100",
+        "secondary": "351178d6-76dd-4ec3-b939-43f9a11e3617",
+        "race": "FFEEDDCC-BBAA-9988-7766-554433221100"
+      },
+      "ble_model_id": {
+        "modelId": [
+          33
+        ]
+      },
+      "model": {
+        "names": [
+          "T70",
+          "S2RLW-Q740",
+          "rail"
+        ],
+        "type": "deviceType",
+        "chipset": "AB1562",
+        "key": "T70"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "DEVICE_INFO",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "DEVICE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "UI",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "UiKeymapAttribute",
+              "args": [
+                {
+                  "POWER": "power",
+                  "CONTROL": "control",
+                  "CENTR": "centr",
+                  "ROCKR": "rockr",
+                  "ROTOR": "rotor",
+                  "LOWER": "lower",
+                  "UPPER": "upper"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FEATURE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "AUDIO",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "CUSTOM_COMMAND",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "HiddenFeature"
+            }
+          ]
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC_FILTER",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC_GAIN",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "SIDE_TONE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "TWS_API",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "VOICE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "LATENCY",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "LowLatencySupportsPermanentModeAttribute"
+            }
+          ]
+        },
+        {
+          "type": "MULTIPOINT",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "EQ",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "EqRequiresTwsConnectedAttribute"
+            },
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                "mapMapOf2"
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                -6.0,
+                6.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SYSTEM",
+          "service": "BOS_RPC"
+        }
+      ],
+      "services": {
+        "control": "54C5BF4C-C52F-4635-98DC-EEBF97C6726F",
+        "secondary": "EA4F0F8F-89AF-4914-9DFF-AA14E4185810",
+        "race": "A4602B24-F9F1-4AC3-988C-228D764B97A6"
+      },
+      "ble_model_id": {
+        "modelId": [
+          29
+        ]
+      },
+      "model": {
+        "names": [
+          "Method 360 ANC",
+          "Skullcandy Method 360 ANC"
+        ],
+        "type": "deviceType",
+        "chipset": "AB1585",
+        "key": "T99_PLUS"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "DEVICE_INFO",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "DEVICE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "UI",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "UiKeymapAttribute",
+              "args": [
+                {
+                  "POWER": "power",
+                  "CONTROL": "control",
+                  "CENTR": "centr",
+                  "ROCKR": "rockr",
+                  "ROTOR": "rotor",
+                  "LOWER": "lower",
+                  "UPPER": "upper"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FEATURE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "AUDIO",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "CUSTOM_COMMAND",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "HiddenFeature"
+            }
+          ]
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "MIMI",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC_FILTER",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC_GAIN",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "SIDE_TONE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "TWS_API",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "VOICE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "LATENCY",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "LowLatencySupportsPermanentModeAttribute"
+            }
+          ]
+        },
+        {
+          "type": "MULTIPOINT",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "EQ",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                "mapMapOf2"
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                -6.0,
+                6.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SYSTEM",
+          "service": "BOS_RPC"
+        }
+      ],
+      "services": {
+        "control": "54C5BF4C-C52F-4635-98DC-EEBF97C6726F",
+        "secondary": "EA4F0F8F-89AF-4914-9DFF-AA14E4185810",
+        "race": "A4602B24-F9F1-4AC3-988C-228D764B97A6"
+      },
+      "ble_model_id": {
+        "modelId": [
+          45
+        ]
+      },
+      "model": {
+        "names": [
+          "Method 540 ANC",
+          "Skullcandy Method 540 ANC"
+        ],
+        "type": "deviceType",
+        "chipset": "AB1585",
+        "key": "T120"
+      }
+    },
+    {
+      "service_type": "SPP",
+      "features": [
+        {
+          "type": "DEVICE_INFO",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "DEVICE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "UI",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "UiKeymapAttribute",
+              "args": [
+                null
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FEATURE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "DEVICE_ID",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "AUDIO",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "BASS",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "BassModesAttribute",
+              "args": [
+                [
+                  "HIGH",
+                  "MEDIUM",
+                  "LOW"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TRANSPARENCY",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "TRANSPARENCY_GAIN",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "CUSTOM_COMMAND",
+          "service": "AIROHA_RACE",
+          "attributes": [
+            {
+              "attribute": "WhitelistCommandsAttribute",
+              "args": [
+                [
+                  [
+                    5,
+                    90,
+                    2,
+                    0,
+                    65,
+                    0
+                  ],
+                  [
+                    5,
+                    90,
+                    2,
+                    0,
+                    67,
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "VOLUME_CONTROL",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "VOICE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "VOICE_STREAMING",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "SPATIAL_AUDIO",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "CALIBRATION",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC_FILTER",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "ANC_GAIN",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "CALL_STATE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "SIDE_TONE",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "FOTA",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "TWS_API",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "LATENCY",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "LowLatencySupportsPermanentModeAttribute"
+            }
+          ]
+        },
+        {
+          "type": "MULTIPOINT",
+          "service": "AIROHA_RACE"
+        },
+        {
+          "type": "EQ",
+          "service": "BOS_RPC",
+          "attributes": [
+            {
+              "attribute": "EqPresetNamesAttribute",
+              "args": [
+                "mapMapOf"
+              ]
+            },
+            {
+              "attribute": "GainRangeAttribute",
+              "args": [
+                0.0,
+                20.0,
+                "null",
+                "null",
+                12,
+                "null"
+              ]
+            },
+            {
+              "attribute": "EqCanObserveActivePresetAttribute"
+            }
+          ]
+        },
+        {
+          "type": "SYSTEM",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "WEAR_DETECTION",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "MIMI",
+          "service": "BOS_RPC"
+        },
+        {
+          "type": "AURACAST_RECEIVER",
+          "service": "AIROHA_RACE"
+        }
+      ],
+      "services": {
+        "control": "54C5BF4C-C52F-4635-98DC-EEBF97C6726F",
+        "secondary": "EA4F0F8F-89AF-4914-9DFF-AA14E4185810",
+        "race": "A4602B24-F9F1-4AC3-988C-228D764B97A6"
+      },
+      "ble_model_id": {
+        "modelId": [
+          52
+        ]
+      },
+      "model": {
+        "names": [
+          "CHP300",
+          "Skullcandy CRUSHER 1080 ANC"
+        ],
+        "type": "deviceType2",
+        "chipset": "AB1595",
+        "key": "CHP300"
+      }
+    }
+  ]
+}

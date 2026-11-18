@@ -1,6 +1,6 @@
 # Builds PairFree for Windows from this repo, in the E: mirror (Gradle 9 refuses to build on the NAS), and puts the program in
-# desktop\dist\PairFree-X.Y.Z.exe in the mirror, with its SHA-256. With -Key (the private release key, outside the repo) it also writes
-# PairFree-X.Y.Z.exe.sig; upload both to the release (docs/DESKTOP.md, section 7).
+# desktop\dist\PairFree.exe in the mirror, with its SHA-256. With -Key (the private release key, outside the repo) it also writes
+# PairFree.exe.sig; upload both to the release (docs/DESKTOP.md, section 7).
 #
 #   powershell -NoProfile -ExecutionPolicy Bypass -File desktop\build-windows.ps1 [-Key E:\Builds\releases\pairfree-update.pem]
 #
@@ -28,7 +28,7 @@ try {
 }
 $dist = Join-Path $build "desktop\dist"
 New-Item -ItemType Directory -Force $dist | Out-Null
-$exe = Join-Path $dist "PairFree-$version.exe"
+$exe = Join-Path $dist "PairFree.exe"
 Copy-Item (Join-Path $build "desktop\app\build\bin\mingwX64\releaseExecutable\PairFree.exe") $exe -Force
 if ($Key -ne "") {
     & python (Join-Path $repo "tools\release_signing.py") sign $exe --private $Key

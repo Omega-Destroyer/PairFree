@@ -5,8 +5,8 @@ ECDSA with P-256 and SHA-256, through the `openssl` command line. The private ke
 (never commit it); the public half goes into desktop/shell/.../UpdateKeyData.kt, which the program carries.
 
     python tools/release_signing.py keygen --private E:\\Builds\\releases\\pairfree-update.pem
-    python tools/release_signing.py sign PairFree-0.15.0.exe --private E:\\Builds\\releases\\pairfree-update.pem
-        writes PairFree-0.15.0.exe.sig (64 bytes, r then s); upload both to the release.
+    python tools/release_signing.py sign PairFree.exe --private E:\\Builds\\releases\\pairfree-update.pem
+        writes PairFree.exe.sig (64 bytes, r then s); upload both to the release.
 """
 import argparse
 import os

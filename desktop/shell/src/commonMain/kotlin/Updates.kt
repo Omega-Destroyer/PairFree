@@ -27,8 +27,8 @@ object Updates {
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
-    /** The desktop program's file name in a release: `PairFree-0.15.0.exe` on Windows. */
-    fun programName(version: String, extension: String = "exe") = "PairFree-$version.$extension"
+    /** The desktop program's file name in a release: `PairFree.exe` on Windows, the same name in every release (the version is in the program and in the release's tag). */
+    fun programName(extension: String = "exe") = "PairFree.$extension"
 
     /** Reads GitHub's answer for the latest release, or null when it is not one. [extension] is the program's file type on this system. */
     fun parseLatest(text: String, extension: String = "exe"): ReleaseInfo? {
@@ -43,7 +43,7 @@ object Updates {
         val page = (root["html_url"] as? JsonPrimitive)?.content ?: "https://github.com/Omega-Destroyer/PairFree/releases/latest"
         val assets = (root["assets"] as? JsonArray).orEmpty().mapNotNull { it as? JsonObject }
         fun urlOf(name: String) = assets.firstOrNull { (it["name"] as? JsonPrimitive)?.content == name }?.let { (it["browser_download_url"] as? JsonPrimitive)?.content }
-        val name = programName(version, extension)
+        val name = programName(extension)
         return ReleaseInfo(version, page, urlOf(name), urlOf("$name.sig"))
     }
 

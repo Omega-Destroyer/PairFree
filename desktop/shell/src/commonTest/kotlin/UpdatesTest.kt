@@ -10,8 +10,8 @@ class UpdatesTest {
     private val release = """
         {"tag_name":"v0.15.0","html_url":"https://github.com/Omega-Destroyer/PairFree/releases/tag/v0.15.0","name":"x","assets":[
           {"name":"PairFree-0.15.0.apk","browser_download_url":"https://example/apk"},
-          {"name":"PairFree-0.15.0.exe","browser_download_url":"https://example/exe"},
-          {"name":"PairFree-0.15.0.exe.sig","browser_download_url":"https://example/sig"}]}
+          {"name":"PairFree.exe","browser_download_url":"https://example/exe"},
+          {"name":"PairFree.exe.sig","browser_download_url":"https://example/sig"}]}
     """.trimIndent()
 
     @Test

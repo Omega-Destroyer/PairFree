@@ -162,7 +162,7 @@ key exists in the main file, and a string that names the phone or Android must h
 
 ### 7. Releases (requirement 7)
 
-One version number for all three. The tag builds the APK as now (F-Droid unchanged), `PairFree-X.Y.Z.exe` on Windows, and the Mac app
+One version number for all three. The tag builds the APK as now (F-Droid unchanged), `PairFree.exe` on Windows (the same file name in every release: the version is in the program's About and in the release's tag), and the Mac app
 (`PairFree.app`, zipped: macOS needs a bundle for the Bluetooth permission text; unsigned, so users right-click > Open) on a GitHub Actions Mac
 runner. `tools/test_version.py` covers the desktop version constant. README, site and F-Droid text name the platforms; device pages say per brand
 what a platform lacks (AirPods on Windows).

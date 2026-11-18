@@ -365,3 +365,67 @@ class Card(private val child: Widget, key: String, private val selected: Boolean
         child.collect(into)
     }
 }
+
+/** [left] takes the width that [right] leaves, [right] a fixed [rightWidth]; both centred on the taller one's line. */
+class Split(private val left: Widget, private val right: Widget, private val rightWidth: Float, private val gap: Float = 12f) : Widget() {
+    override fun height(ctx: Ctx, width: Float) = max(left.height(ctx, width - rightWidth - gap), right.height(ctx, rightWidth))
+
+    override fun place(ctx: Ctx, x: Float, y: Float, width: Float) {
+        super.place(ctx, x, y, width)
+        val lw = width - rightWidth - gap
+        left.place(ctx, x, y + (h - left.height(ctx, lw)) / 2f, lw)
+        right.place(ctx, x + width - rightWidth, y + (h - right.height(ctx, rightWidth)) / 2f, rightWidth)
+    }
+
+    override fun draw(ctx: Ctx) {
+        left.draw(ctx)
+        right.draw(ctx)
+    }
+
+    override fun collect(into: MutableList<Widget>) {
+        into += this
+        left.collect(into)
+        right.collect(into)
+    }
+}
+
+/** A switch's pill: on is the accent colour with the knob at the end. */
+class SwitchMark(private val on: Boolean, private val enabled: Boolean = true) : Widget() {
+    override fun height(ctx: Ctx, width: Float) = 22f
+
+    override fun draw(ctx: Ctx) {
+        val t = ctx.theme
+        val c = ctx.canvas
+        val track = if (on) t.accent else t.raised
+        c.fillRoundRect(x + w - 40f, y, 40f, h, 11f, if (enabled) track else t.withAlpha(track, 0.4f))
+        if (!on) c.strokeRoundRect(x + w - 39.5f, y + 0.5f, 39f, h - 1f, 11f, t.outline, t.look.hairline)
+        c.fillCircle(x + w - (if (on) 11f else 29f), y + h / 2f, 7f, if (on) t.onAccent else t.label)
+    }
+}
+
+/** A whole row that can be pressed, holding other widgets; the line under the pointer lights up. */
+class Tappable(private val child: Widget, key: String, enabled: Boolean = true, onClick: () -> Unit) : Clickable(key, enabled, onClick) {
+    override fun height(ctx: Ctx, width: Float) = child.height(ctx, width - 16f) + 16f
+
+    override fun place(ctx: Ctx, x: Float, y: Float, width: Float) {
+        super.place(ctx, x, y, width)
+        child.place(ctx, x + 8f, y + 8f, width - 16f)
+    }
+
+    override fun draw(ctx: Ctx) {
+        if (enabled && ctx.hover == key) ctx.canvas.fillRoundRect(x, y, w, h, ctx.theme.smallCorner, ctx.theme.highlight)
+        child.draw(ctx)
+    }
+
+    override fun collect(into: MutableList<Widget>) {
+        into += this
+        child.collect(into)
+    }
+}
+
+/** A hairline between rows. */
+class Divider : Widget() {
+    override fun height(ctx: Ctx, width: Float) = 1f
+
+    override fun draw(ctx: Ctx) = ctx.canvas.line(x, y + 0.5f, x + w, y + 0.5f, ctx.theme.hairline, 1f)
+}

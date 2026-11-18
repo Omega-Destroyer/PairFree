@@ -28,13 +28,13 @@ internal class HomeScreen(
 
     private fun mode(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
-    fun build(wide: Boolean): Widget {
+    fun build(wide: Boolean, extra: List<Widget> = emptyList()): Widget {
         val header = header()
         val battery = battery()
         val noise = if (state.supports(Command.ANC_MODE) && model?.code != "A3954") noiseControl() else null
         val switches = quickSwitches()
         val left = listOfNotNull(battery)
-        val right = listOfNotNull(noise, switches)
+        val right = listOfNotNull(noise, switches) + extra
         val body: Widget = if (wide && left.isNotEmpty() && right.isNotEmpty()) {
             Row(listOf(Column(left, 16f), Column(right, 16f)), gap = 16f, weights = listOf(1f, 1f))
         } else {

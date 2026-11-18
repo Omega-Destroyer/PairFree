@@ -14,6 +14,8 @@ import kotlinx.cinterop.COpaquePointerVar
 import kotlinx.cinterop.CPointed
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.UIntVar
+import kotlinx.cinterop.UShortVar
+import kotlinx.cinterop.get
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.invoke
@@ -323,6 +325,25 @@ fun runAppWindow(settings: DesktopSettings, settingsPath: String, create: (io.gi
         override fun openTextFile(): String? = FileDialogs.openText(window)
 
         override fun saveTextFile(name: String, text: String): Boolean = FileDialogs.saveText(window, name, text)
+
+        override fun copyText(text: String) {
+            if (OpenClipboard(window) == 0) return
+            EmptyClipboard()
+            val bytes = (text.length + 1) * 2
+            val memory = GlobalAlloc(GMEM_MOVEABLE.convert(), bytes.convert())
+            val target = GlobalLock(memory)?.reinterpret<UShortVar>()
+            if (target != null) {
+                for ((i, c) in text.withIndex()) target[i] = c.code.toUShort()
+                target[text.length] = 0u
+                GlobalUnlock(memory)
+                SetClipboardData(13u /* CF_UNICODETEXT */, memory)
+            }
+            CloseClipboard()
+        }
+
+        override fun openUrl(url: String) {
+            ShellExecuteW(null, "open", url, null, null, SW_SHOWNORMAL)
+        }
     }
     State.app = create(host) { PostMessageW(window, WM_REDRAW, 0u, 0) }
     ShowWindow(window, if (settings.startMinimized) (if (settings.minimizeToTray) SW_HIDE else SW_SHOWMINNOACTIVE) else SW_SHOW)

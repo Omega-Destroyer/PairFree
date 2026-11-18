@@ -10,6 +10,16 @@ import io.github.omegadestroyer.pairfree.eq.EqOpener
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.brands.ReportInfo
+import io.github.omegadestroyer.pairfree.brands.SoundcoreDriver
+import io.github.omegadestroyer.pairfree.brands.SoundpeatsDriver
+import io.github.omegadestroyer.pairfree.brands.modelOf
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
+import io.github.omegadestroyer.pairfree.shell.Side
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
+import io.github.omegadestroyer.pairfree.shell.SettingWords
 import io.github.omegadestroyer.pairfree.shell.APP_VERSION
 import io.github.omegadestroyer.pairfree.shell.BUILT_IN_LOOKS
 import io.github.omegadestroyer.pairfree.shell.CloseAction
@@ -43,6 +53,12 @@ interface Host {
 
     /** Lets the user choose where to save [text], suggesting [name]; false when none was chosen or it could not be written. */
     fun saveTextFile(name: String, text: String): Boolean
+
+    /** Opens a web page in the user's browser. */
+    fun openUrl(url: String)
+
+    /** Puts [text] on the clipboard. */
+    fun copyText(text: String)
 }
 
 /** Keys the app acts on besides characters. */
@@ -96,11 +112,31 @@ class DesktopApp(
     val currentDevice: Paired? get() = device
 
     private var eqBand = 0
+    private var controlsSide = Side.LEFT
+    private var reportCopied = false
+    private val rowState = RowState()
+    private val rowCallbacks = RowCallbacks(
+        change = { change -> act { changeSetting(change) } },
+        confirm = { title, body, confirm, onConfirm ->
+            dialog = Dialog(title, body, confirm, false, "") { onConfirm() }
+            invalidate()
+        },
+        askText = { title, hint, max, confirm, onDone ->
+            dialog = Dialog(title, null, confirm, true, "", hint, max) { onDone(it) }
+            invalidate()
+        },
+        openUrl = { host.openUrl(it) },
+        changed = { invalidate() },
+    )
+
+    /** The brand's own settings for [tab], as panels. */
+    private fun rows(tab: SettingTab, theme: Theme): List<Widget> =
+        SettingRows(connection.settings.value, tab, SettingWords(strings), strings, theme, rowState, rowCallbacks).panels()
     private var eqMessage: String? = null
     private var dialog: Dialog? = null
 
     /** A question over the window: a name to type, or a confirmation. */
-    private class Dialog(val title: String, val body: String?, val confirm: String, val field: Boolean, var text: String, val onConfirm: (String) -> Unit) {
+    private class Dialog(val title: String, val body: String?, val confirm: String, val field: Boolean, var text: String, val hint: String = "", val max: Int = 24, val onConfirm: (String) -> Unit) {
         var caret = text.length
     }
 
@@ -190,7 +226,7 @@ class DesktopApp(
         ctx.canvas.fillRoundRect(0f, 0f, width, height, 0f, t.withAlpha(t.background, 0.75f))
         val parts = mutableListOf<Widget>(Label(d.title, t.heading))
         d.body?.let { parts += Label(it, t.body, t.secondaryText) }
-        if (d.field) parts += TextField(d.text, d.caret, s.text("eq_name_hint"), true, "dialog_field") {}
+        if (d.field) parts += TextField(d.text, d.caret, d.hint, true, "dialog_field") {}
         parts += Row(listOf(Button(s.text("cancel"), "dialog_cancel") { closeDialog() }, Button(d.confirm, "dialog_ok", primary = true) { confirmDialog() }), 8f)
         val box = Panel(Column(parts, 14f), 20f)
         val w = min(420f, width - 48f)
@@ -219,7 +255,7 @@ class DesktopApp(
     /** A typed character; only a dialog's text box takes them. */
     fun keyChar(c: Char) {
         val d = dialog ?: return
-        if (!d.field || c.code < 32 || c.code == 127 || d.text.length >= 24) return
+        if (!d.field || c.code < 32 || c.code == 127 || d.text.length >= d.max) return
         d.text = d.text.substring(0, d.caret) + c + d.text.substring(d.caret)
         d.caret++
         invalidate()
@@ -304,8 +340,29 @@ class DesktopApp(
         }
         if (status !is LinkStatus.Connected && status !is LinkStatus.Reconnecting) return Label(s.text("connecting"), theme.heading)
         return when (tab) {
-            Tab.HOME -> HomeScreen(::act, current, state, status is LinkStatus.Connected, s, theme).build(wide)
-            Tab.SOUND -> SoundScreen(equalizer.state.value, eqActions, eqBand, eqMessage, s, theme, soundCallbacks).build()
+            Tab.HOME -> HomeScreen(::act, current, state, status is LinkStatus.Connected, s, theme).build(wide, rows(SettingTab.HOME, theme))
+            Tab.SOUND -> Column(listOf(SoundScreen(equalizer.state.value, eqActions, eqBand, eqMessage, s, theme, soundCallbacks).build()) + rows(SettingTab.SOUND, theme), 16f)
+            Tab.CONTROLS -> ControlsTab(
+                current, state, (connection.extra.value as? SoundcoreState)?.let(SoundcoreTouch::of), rows(SettingTab.CONTROLS, theme), controlsSide, rowState, s, theme,
+                ControlsCallbacks(
+                    set = { command, payload -> act { set(command, *payload) } },
+                    changeTouch = { make -> act { (driver as? SoundcoreDriver)?.changeTouch(make) } },
+                    resetTouch = { act { (driver as? SoundcoreDriver)?.resetTouch() } },
+                    confirm = rowCallbacks.confirm,
+                    selectSide = { controlsSide = it; invalidate() },
+                    changed = { invalidate() },
+                ),
+            ).build()
+            Tab.DEVICE -> DeviceTab(
+                current, state, modelOf(current, state), rows(SettingTab.DEVICE, theme), reportCopied, rowState, s, theme,
+                DeviceCallbacks(
+                    set = { command, payload -> act { set(command, *payload) } },
+                    confirm = rowCallbacks.confirm,
+                    copyReport = { host.copyText(deviceReport()); reportCopied = true; invalidate() },
+                    factoryReset = { act { factoryResetConfirmedByUser() } },
+                    changed = { invalidate() },
+                ),
+            ).build()
             else -> Label(s.text(tab.titleKey), theme.title)
         }
     }
@@ -313,7 +370,7 @@ class DesktopApp(
     private val soundCallbacks = SoundCallbacks(
         selectBand = { eqBand = it; invalidate() },
         askSave = { suggested ->
-            dialog = Dialog(strings.text("eq_save"), null, strings.text("save"), true, suggested) { name -> if (name.isNotBlank()) eqActions.save(name.trim().take(24)) }
+            dialog = Dialog(strings.text("eq_save"), null, strings.text("save"), true, suggested, strings.text("eq_name_hint")) { name -> if (name.isNotBlank()) eqActions.save(name.trim().take(24)) }
             invalidate()
         },
         askDelete = { p ->
@@ -382,6 +439,15 @@ class DesktopApp(
             ),
             16f,
         )
+    }
+
+    /** The report to paste into an issue: what the earbuds answered, as their brand's driver writes it. */
+    private fun deviceReport(): String {
+        val now = kotlin.time.Clock.System.now().toString()
+        val date = now.take(16).replace('T', ' ') + " UTC"
+        val d = (connection.status.value as? LinkStatus.Connected)?.device
+        val info = ReportInfo(d, APP_VERSION, date, "https://github.com/Omega-Destroyer/PairFree/issues", connection.platform)
+        return connection.driver?.report(info) ?: SoundpeatsDriver.plainReport(info, connection.lastReplies, connection.state.value)
     }
 
     // ---- the tray ----
@@ -459,6 +525,12 @@ class DesktopApp(
         val k = pressed
         pressed = null
         if (k != null && hitAt(x, y) == k) hits.lastOrNull { it.key == k }?.onClick?.invoke()
+        // A level dragged with the pointer goes to the earbuds once it is let go.
+        if (rowState.pending.isNotEmpty()) {
+            val sent = rowState.pending.toMap()
+            rowState.pending.clear()
+            for ((key, value) in sent) rowState.senders[key]?.invoke(value)
+        }
         invalidate()
     }
 

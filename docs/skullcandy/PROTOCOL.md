@@ -326,9 +326,11 @@ With the byte strings in full (literals the code loads into any register, and th
 `built_by_model` groups the models by the bytes they get), the commands fall into three kinds, in the `05 5A <len u16 LE> <id u16 LE> <payload>` framing:
 
 - **Airoha's own RACE** commands: `05 5A 05 00 06 0E ...` (adaptive ANC), `05 5A 04 00 01 09 1F 00` (adaptive ANC read), `05 5A 02 00 41 00` and `43 00` (serial number and SKU, never reported).
-- **NV key access** (`0A 00` read, `0A 01` write; the payload is the key id little endian, then a length): the Skullcandy keys read in the files are `F4 01`/`F4 02`/`F4 03`/`F4 05`/`F4 09`,
-  `F5 00`, `F5 14` and `F5 23`; for example wear detect is `...00 0A 02 F4 01 00` to read and `01 14` style writes, feedback sounds `05 F4`, charge-out protection `03 F4`, party mode `09 F4`.
-  These are the vendor's own NV writes, which the owner allowed for JBL's Airoha work (2026-11-04) when they are exactly what the vendor's app sends.
+- **NV key reads and keyed writes.** A read is the NV read command, `05 5A 06 00 00 0A <key u16 LE> 01 00` (command id `0A 00`, then the key and a length of one), and its answer comes back as a
+  `05 5B` frame; the keys read in the files are `F4 02` (wear detect), `F4 03` (charge-out protection), `F4 05` (feedback sounds), `F4 09` (party mode), `F5 00` (multipoint, the
+  `F5 00` form) and `F5 14` and `F5 23` (the capacitive touch controls). A write is a direct command whose id is the key: wear detect `05 5A 03 00 02 F4 <v>`, charge-out protection `03 F4 <v>`,
+  feedback sounds `05 F4 <v>`, battery saver `05 5A 03 00 23 00 <v>`, speaker bass boost `22 00 <v>`, touch `07 00` and `08 00`, voice control `01 00`. These keyed commands are the vendor's own
+  and fall under the owner's rule for vendor-exact NV writes (2026-11-04) once each is confirmed against its class.
 - **Skullcandy's custom commands**: `2C 81` feedback sounds, `2C 82` multipoint (`05 5A 05 00 82 2C 10 00 <0|1>`), `2C 83` LED state, `2C 85` LED mode, `2C 86` LED brightness, `2C 88` LED customiser,
   `2C D0`/`D1` Crusher EQ volume, `2C D7`/`D8` bass boost; and Skullcandy's THX group at `F4 01`. Which form a model gets can depend on the model: the multipoint switch is the NV form
   `05 5A 03 00 01 14 <0|1>` on the Hesh 360, Crusher Evo and Crusher 540 Active classic twins and the Session 360 and 540; `05 5A 04 00 01 11 BB|BC 00` on the Dime Evo, Dime 360, Rail, Rail ANC and

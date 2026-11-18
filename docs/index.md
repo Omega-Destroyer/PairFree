@@ -1,11 +1,25 @@
 ---
 layout: page
-title: "PairFree: open-source earbuds and headphones app for Android"
-description: "A free, open-source Android app that controls earbuds and headphones of many brands from one app: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, 1MORE, EarFun, Cambridge Audio. No account, no internet."
+title: "PairFree: open-source earbud and headphone app for Android and Windows"
+description: "A free, open-source app for Android and Windows that controls earbuds and headphones of many brands: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, Jabra, Sennheiser and more. No account, no internet."
 permalink: /
 ---
 
-PairFree is a free, open-source Android app that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
+PairFree is a free, open-source app for **Android and Windows** that replaces the brand-specific apps for wireless earbuds and headphones with one light, fast one. It talks to your earbuds directly over Bluetooth to set noise cancelling, the equalizer, touch controls and more. It has no account, no internet access and no ads.
+
+## Now on Windows
+
+Almost none of these brands makes a Windows app, so on a PC their earbuds are plain Bluetooth audio. PairFree for Windows is one small portable program (no installer) with the same settings as the Android app, in a window made for a mouse and with a tray icon for the battery and quick switches. It needs Windows 10 (version 1809) or 11, 64-bit, with the earbuds paired in Windows' Bluetooth settings. AirPods and the Beats on Apple's chips are not on Windows: Windows gives programs no way to open their settings channel.
+
+<p><img src="https://omega-destroyer.github.io/PairFree/screenshots/windows-home.png" width="420" alt="PairFree on Windows: Home"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/windows-sound.png" width="420" alt="PairFree on Windows: Sound"></p>
+
+## On Android
+
+<p><img src="https://omega-destroyer.github.io/PairFree/screenshots/android-home.png" width="250" alt="PairFree on Android: Home"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/android-sound.png" width="250" alt="PairFree on Android: Sound"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/widget.png" width="400" alt="The home screen widget"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/notification.png" width="400" alt="The status notification"></p>
+
+The screens, the device drawings and the widget follow the look you choose:
+
+<p><img src="https://omega-destroyer.github.io/PairFree/screenshots/look-studio-light.png" width="250" alt="The Studio Light look"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/look-material-you.png" width="250" alt="The Material You look"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/look-sketchbook.png" width="250" alt="The Sketchbook look"></p>
 
 It covers 781 models from 16 brands. Pick yours:
 
@@ -32,7 +46,7 @@ Each model shows only what it has: the battery of each earbud and the case, nois
 
 ## Why PairFree
 
-- **No account, no internet.** The app does not have the internet permission, so it cannot go online.
+- **No account, no internet.** The Android app does not have the internet permission, so it cannot go online.
 - **One app to replace a drawer full of them.** Every brand gets the same screens.
 - **Open source** (GPL-3.0), with every protocol documented in the repository and tested.
 - **Reproducible builds:** the published APK can be rebuilt from the source and checked byte for byte.
@@ -40,13 +54,13 @@ Each model shows only what it has: the battery of each earbud and the case, nois
 
 ## Get PairFree
 
-PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) and on the [GitHub releases page](https://github.com/Omega-Destroyer/PairFree/releases/latest). The source is at [github.com/Omega-Destroyer/PairFree](https://github.com/Omega-Destroyer/PairFree).
+On Android, PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) and on the [GitHub releases page](https://github.com/Omega-Destroyer/PairFree/releases/latest). On Windows 10 or 11, download `PairFree-X.Y.Z.exe` from the same page and run it. The source is at [github.com/Omega-Destroyer/PairFree](https://github.com/Omega-Destroyer/PairFree).
 
 ## Questions
 
 ### Is there an open-source app for my earbuds?
 
-Yes, for the brands above. PairFree is one open-source app (GPL-3.0) that talks directly to the earbuds over Bluetooth, so one app can replace the Soundcore, Bose Music, JBL Headphones, Sony Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio, QCY, 1MORE, EarFun and Melomania apps.
+Yes, for the brands above. PairFree is one open-source app (GPL-3.0) that talks directly to the earbuds over Bluetooth, so one app can replace the Soundcore, Bose Music, JBL Headphones, Sony Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio, QCY, 1MORE, EarFun, Melomania, Sennheiser Smart Control, Jabra Sound+ and HeyMelody apps, on Android and on Windows.
 
 ### Does it work without an account or internet?
 
@@ -60,14 +74,18 @@ It lists every model its sources describe, and each model shows only the setting
 
 Not at the same time: only one app can hold the control connection to a pair of earbuds. Close the brand's own app first.
 
-### Which phones does it need?
+### Is there a Windows app for my earbuds?
 
-Android 12 or later. AirPods need Android 17, or one of the few phones on Android 16 that already open their settings channel.
+Almost none of these brands makes one, and PairFree for Windows is a small portable program that fills the gap: noise cancelling, the equalizer, touch controls and the rest, from a window with a tray icon. It needs Windows 10 (1809) or 11, 64-bit, and every brand is there except AirPods and the Beats on Apple's chips, which Windows gives programs no way to reach.
+
+### Which phones and PCs does it need?
+
+Android 12 or later, or Windows 10 (version 1809) or 11. AirPods need Android 17, or one of the few phones on Android 16 that already open their settings channel.
 
 ### Where do I get it?
 
-From F-Droid or from the GitHub releases page. Both are the same APK, signed with the same key.
+The Android app is on F-Droid and on the GitHub releases page (the same APK, signed with the same key). The Windows program, PairFree-X.Y.Z.exe, is on the GitHub releases page.
 
 ---
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, OnePlus or OPPO; the names are used to say which earbuds it works with.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, OnePlus or OPPO; the names are used to say which earbuds it works with.

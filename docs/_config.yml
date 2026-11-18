@@ -31,19 +31,22 @@ exclude:
   - devices
   - earfun
   - huawei
+  - jabra
   - jbl
   - nothing
   - oneplus
   - pixel
   - qcy
   - samsung
-  - screenshots
   - sennheiser
   - skullcandy
   - sony
   - soundcore
   - soundpeats
   - DESIGN.md
+  - DESKTOP.md
+  - DEVELOPMENT.md
+  - WINDOWS.md
   - EXISTING_VENDOR_VIRTUAL_AUDIT.md
   - FIT_AND_HEARING_TESTS.md
   - LOOKS.md

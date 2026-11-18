@@ -311,6 +311,15 @@ left/right switch.
 - **146, touch and hold:** the left and right codes, then each side's assistant: 1 Google,
   2 another, 0 when the option is not the assistant. Codes: 1 Bixby, 2 noise control, 3 the
   digital assistant, 6 volume, 5 anything else.
+- **Touch and hold with an app (issue #54, read 2026-11-18, not built).** The earbuds only report that a hold happened; which app then opens is the phone's choice, kept in
+  the plugin's own preferences. The plugin (`MsgTouchAndHoldReceive`) does not launch apps the user picks: it has special cases (Bixby, Samsung's interpreter app, Samsung Health's
+  mindfulness deep link, Spotify through Spotify's SpotOn service with a client id Samsung holds) and, for every other app, a broadcast
+  `com.samsung.accessory.earbuds.action.SEND_PUI_EVENT` to that package, or a foreground service in it. The apps offered are the ones that declare a receiver for that action with
+  `menu_name`, `description` and an `autho_key` meta-data the plugin checks, which only partners Samsung has authorised pass. So there is no
+  "open any app" in Samsung's design, and what PairFree could add is different: its own hold handler that starts an activity. blocked: Android (10 and later) does not let an app start an
+  activity from the background without the special "display over other apps" permission or a visible window, and offering a list of the user's apps needs package visibility;
+  owner, 2026-11-18: no additional permissions. checked: the whole `a1/c4.java` hold handler and `fn/g.java` (`TouchAndHoldUtil.getThirdPartyApps`) of the plugin, and the manifest
+  permissions PairFree holds. A partner-style broadcast to an app that listens for it needs no permission, but needs the app's own opt-in.
 - **175, seamless connection:** 1 for on.
 - **134 and 137, the custom curve:** it is equalizer number 6 (Balanced 0, then bass boost,
   smooth, dynamic, clear, treble boost, custom). The plugin selects 6, then sends the bands.

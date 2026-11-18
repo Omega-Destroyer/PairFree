@@ -1,5 +1,8 @@
 package io.github.omegadestroyer.pairfree.protocol.sennheiser
 
+import io.github.omegadestroyer.pairfree.protocol.toHex2
+import io.github.omegadestroyer.pairfree.protocol.toHex
+
 /**
  * Sennheiser's GAIA v3 frames, as Smart Control 4.9.4 and Smart Control Plus 1.6.3 send them (docs/sennheiser/PROTOCOL.md section 3): `FF`, version 3,
  * flags (bit 0: an XOR byte follows, bit 1: two length bytes), the payload's length, the vendor id (`0495` Sennheiser's own, `001D` Qualcomm's), the
@@ -26,7 +29,7 @@ public class Gaia3Packet(public val vendor: Int, public val word: Int, public va
 
     override fun hashCode(): Int = (vendor * 31 + word) * 31 + payload.contentHashCode()
 
-    override fun toString(): String = "Gaia3Packet(%04x:%04x %s)".format(vendor, word, payload.joinToString("") { "%02x".format(it) })
+    override fun toString(): String = "Gaia3Packet(${vendor.toHex(4)}:${word.toHex(4)} ${payload.joinToString("") { it.toHex2() }})"
 
     public companion object {
         public const val START: Int = 0xFF

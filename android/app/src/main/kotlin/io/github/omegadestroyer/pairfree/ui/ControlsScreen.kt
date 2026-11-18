@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.ui
 
+import io.github.omegadestroyer.pairfree.brands.modelOf
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

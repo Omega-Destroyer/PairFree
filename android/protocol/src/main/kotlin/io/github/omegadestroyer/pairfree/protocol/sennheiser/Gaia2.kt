@@ -1,5 +1,8 @@
 package io.github.omegadestroyer.pairfree.protocol.sennheiser
 
+import io.github.omegadestroyer.pairfree.protocol.PMath
+import io.github.omegadestroyer.pairfree.protocol.toHex2
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Fed
@@ -172,7 +175,7 @@ public class Gaia2Session(public val model: Gaia2Model, private val ble: Boolean
         val keys = mutableListOf<Any>()
         val framed = if (ble && bytes.size >= 4) byteArrayOf(0xFF.toByte(), 1, 0, (bytes.size - 4).toByte()) + bytes else bytes
         for (packet in parser.feed(framed)) guarded {
-            log?.invoke("recv ${packet.vendor.toString(16)}:${packet.command.toString(16)} ${packet.payload.joinToString("") { "%02x".format(it) }}")
+            log?.invoke("recv ${packet.vendor.toString(16)}:${packet.command.toString(16)} ${packet.payload.joinToString("") { it.toHex2() }}")
             if (!packet.isResponse) return@guarded
             if (packet.key !in asked) return@guarded
             keys += packet.key
@@ -396,12 +399,12 @@ public class Gaia2Session(public val model: Gaia2Model, private val ble: Boolean
     /** `Eq5BandIE80.calculateEqParams`: the pre-gain (loudness weighted, kept under the clipping threshold) and each band's step above the one below, in sixtieths of a dB. */
     private fun eq5Params(g: List<Double>): List<Int> {
         val weights = listOf(-28.3, -10.8, -2.9, -4.1, -18.1)
-        val t = -20 * Math.log10(Math.sqrt((0..4).sumOf { Math.pow(10.0, (weights[it] + g[it]) / 10) }))
+        val t = -20 * PMath.log10(PMath.sqrt((0..4).sumOf { PMath.pow(10.0, (weights[it] + g[it]) / 10) }))
         val n = maxOf(g[0], g[1], g[2])
         val i = EQ5_PRE_GAIN + t
         val r = i + n
         val o = if (r > 1) i + 1 - r else i
-        fun toInteger(x: Double): Int = (if (x < 0) Math.ceil(x) else Math.floor(x)).toInt()
+        fun toInteger(x: Double): Int = (if (x < 0) PMath.ceil(x) else PMath.floor(x)).toInt()
         val actual = listOf(g[0], g[1] - g[0], g[2] - g[1], g[3] - g[2], g[4] - g[3])
         return listOf(257, toInteger(60 * o)) + (0..4).flatMap { listOf(eq5Id(it, 2), toInteger(60 * actual[it]) and 0xFFFF) }
     }

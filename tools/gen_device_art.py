@@ -718,6 +718,27 @@ write(KT,
     f"internal val GENERIC_SPEAKER_ART: DeviceArt = {art_ref(SOUNDPEATS_DEVICES, '', 'generic-speaker')}\n",
 )
 
+# The same lookup for the desktop build (docs/DESKTOP.md), as drawing names: desktop/shell's build turns this and the drawables
+# into its own table. Written beside the Android one, so a change to a model's drawings reaches both.
+_REF = re.compile(r"DeviceArt\(R\.drawable\.(\w+), (?:R\.drawable\.(\w+)|null)\)")
+
+
+def _names(ref):
+    m = _REF.fullmatch(ref)
+    return [m.group(1), m.group(2)]
+
+
+write(_ROOT / "data" / "device_art_index.json", json.dumps({
+    "_about": "Which drawings (android/app/src/main/res/drawable/<name>.xml) each model uses: [earbud or product, case or null], by lower-case Bluetooth name and by per-brand code. Written by tools/gen_device_art.py; the desktop build reads it.",
+    "by_name": {n: _names(v) for n, v in sorted(by_name.items())},
+    "by_code": {c: _names(v) for c, v in sorted(by_code.items())},
+    "generic": {
+        "earbuds": _names(art_ref(SOUNDPEATS_DEVICES, "", "generic")),
+        "headphones": _names(art_ref(SOUNDPEATS_DEVICES, "", "generic-headphones")),
+        "speaker": _names(art_ref(SOUNDPEATS_DEVICES, "", "generic-speaker")),
+    },
+}, indent=1, ensure_ascii=False) + "\n")
+
 if ARGS.sheet:
     def big(s, w):
         return s.replace('width="96" height="96"', f'width="{w}" height="{w}"').replace(

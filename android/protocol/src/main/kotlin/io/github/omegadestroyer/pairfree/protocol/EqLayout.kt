@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol
 
+import kotlin.jvm.JvmName
+
 import kotlin.math.roundToInt
 import kotlin.math.sign
 
@@ -14,7 +16,7 @@ public data class EqPreset(val name: String, val bands: List<EqBand>)
 
 /** True when [a] and [b] are the same curve: the same frequencies and Qs, and gains equal to the hundredth of a dB. */
 public fun sameCurve(a: List<EqBand>, b: List<EqBand>): Boolean =
-    a.size == b.size && a.zip(b).all { (x, y) -> x.hz == y.hz && x.q == y.q && Math.round(x.gainDb * 100) == Math.round(y.gainDb * 100) }
+    a.size == b.size && a.zip(b).all { (x, y) -> x.hz == y.hz && x.q == y.q && PMath.round(x.gainDb * 100) == PMath.round(y.gainDb * 100) }
 
 /**
  * The EQ a model expects, as the official app writes it (docs/soundpeats/PROTOCOL.md section 4):

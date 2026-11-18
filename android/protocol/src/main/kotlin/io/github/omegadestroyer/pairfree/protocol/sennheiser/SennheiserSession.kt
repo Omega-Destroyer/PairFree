@@ -1,5 +1,9 @@
 package io.github.omegadestroyer.pairfree.protocol.sennheiser
 
+import io.github.omegadestroyer.pairfree.protocol.PMath
+import io.github.omegadestroyer.pairfree.protocol.toHex2
+import io.github.omegadestroyer.pairfree.protocol.oneDecimal
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Fed
@@ -233,7 +237,7 @@ public class SennheiserSession(public val model: SennheiserModel?, private val b
                 val index = payload[0].toInt() and 0xFF
                 val status = payload[2].toInt() and 0xFF
                 if (status == PEER_NO_DEVICE || status == PEER_PAIRING_CANCELLED) return peers.remove(index) != null
-                val name = String(payload.copyOfRange(3, payload.size).filter { it.toInt() in 0x20..0x7E || it.toInt() < 0 }.toByteArray(), Charsets.UTF_8).trim()
+                val name = payload.copyOfRange(3, payload.size).filter { it.toInt() in 0x20..0x7E || it.toInt() < 0 }.toByteArray().decodeToString().trim()
                 peers[index] = SennheiserPeer(index, status, name.ifEmpty { "#$index" })
                 return true
             }
@@ -349,7 +353,7 @@ public class SennheiserSession(public val model: SennheiserModel?, private val b
     }
 
     /** The model number string the product reports (`Versions_GetModelId`), for the device report. */
-    public val modelId: String? get() = values[SennheiserCommands.MODEL_ID]?.let { b -> String(b.filter { it.toInt() in 0x20..0x7E }.toByteArray(), Charsets.US_ASCII).trim().ifEmpty { null } }
+    public val modelId: String? get() = values[SennheiserCommands.MODEL_ID]?.let { b -> b.filter { it.toInt() in 0x20..0x7E }.toByteArray().decodeToString().trim().ifEmpty { null } }
 
     /** The charging state of each earbud (0 not, 1 charging, 2 complete; `Battery_ChargingStatus`), for the device report. */
     public val charging: List<Int> get() = values[SennheiserCommands.BATTERY_CHARGING]?.map { it.toInt() and 0xFF }.orEmpty()
@@ -525,8 +529,8 @@ public class SennheiserSession(public val model: SennheiserModel?, private val b
         val d = sensorData[SENSOR_BODY_TEMPERATURE] ?: return null
         if (d.size < 5 || (d[3].toInt() and 0xFF) == 255) return null
         val celsius = (5 and d[0].toInt().inv()) != 0
-        val value = (((d[2].toInt() and 0xFF) shl 8) + (d[3].toInt() and 0xFF)) * Math.pow(10.0, d[4].toInt().toDouble())
-        return "%.1f %s".format(java.util.Locale.ROOT, value, if (celsius) "°C" else "°F")
+        val value = (((d[2].toInt() and 0xFF) shl 8) + (d[3].toInt() and 0xFF)) * PMath.pow(10.0, d[4].toInt().toDouble())
+        return value.oneDecimal() + " " + (if (celsius) "°C" else "°F")
     }
 
     private fun sampleRate(): Int? = values[SennheiserCommands.SAMPLE_RATE]?.takeIf { it.size >= 4 }?.fold(0L) { acc, b -> (acc shl 8) or (b.toLong() and 0xFF) }?.takeIf { it in 1..1_000_000 }?.toInt()
@@ -717,7 +721,7 @@ public class SennheiserSession(public val model: SennheiserModel?, private val b
     private fun auracastCode(code: String): List<ByteArray>? {
         val target = auracastStates.values.firstOrNull { it.state == "code_required" || it.state == "bad_code" } ?: return null
         val c = command(SennheiserCommands.AURACAST_CODE) ?: return null
-        val bytes = code.toByteArray(Charsets.UTF_8).take(AURACAST_CODE_LENGTH).toByteArray()
+        val bytes = code.encodeToByteArray().take(AURACAST_CODE_LENGTH).toByteArray()
         if (bytes.isEmpty()) return null
         readBacks += readWith(SennheiserCommands.AURACAST_STATE, byteArrayOf(target.sourceId.toByte()))
         return listOf(frameOf(c.vendor, c.set!!, byteArrayOf(target.sourceId.toByte()) + bytes + ByteArray(AURACAST_CODE_LENGTH - bytes.size)))
@@ -1064,7 +1068,7 @@ public class SennheiserSession(public val model: SennheiserModel?, private val b
             SennheiserEqKind.GEN2 -> {
                 out += eqFrame(command(SennheiserCommands.EQ_SUBMODE)!!, true, byteArrayOf(if (eqBass) 1 else 0))
                 val slider = command(SennheiserCommands.EQ2_SLIDER)!!
-                clipped.forEachIndexed { i, g -> out += eqFrame(slider, true, byteArrayOf(i.toByte(), Math.round(g * 10).toInt().toByte())) }
+                clipped.forEachIndexed { i, g -> out += eqFrame(slider, true, byteArrayOf(i.toByte(), PMath.round(g * 10).toInt().toByte())) }
             }
             SennheiserEqKind.GEN1 -> {
                 val p = shelf ?: return null
@@ -1236,7 +1240,7 @@ public class SennheiserPeer(public val index: Int, public val status: Int, publi
  * The layout is the app's: the signal strength, the name's length and bytes, the address type, six address bytes, the set, three id bytes and the encryption flag.
  */
 public class AuracastBroadcast(public val name: String, public val addressType: Int, public val address: ByteArray, public val advSid: Int, public val broadcastId: ByteArray, public val encrypted: Boolean) {
-    public val addressKey: String get() = address.joinToString(":") { "%02X".format(it) }
+    public val addressKey: String get() = address.joinToString(":") { it.toHex2().uppercase() }
     public val label: String get() = name.ifEmpty { addressKey }
 
     public companion object {
@@ -1244,7 +1248,7 @@ public class AuracastBroadcast(public val name: String, public val addressType: 
             if (p.size < 2) return null
             val len = p[1].toInt() and 0xFF
             if (p.size < 14 + len) return null
-            val name = String(p.copyOfRange(2, 2 + len), Charsets.UTF_8)
+            val name = p.copyOfRange(2, 2 + len).decodeToString()
             return AuracastBroadcast(name, p[2 + len].toInt() and 0xFF, p.copyOfRange(3 + len, 9 + len), p[9 + len].toInt() and 0xFF, p.copyOfRange(10 + len, 13 + len), (p[13 + len].toInt() and 0xFF) != 0)
         }
     }
@@ -1252,7 +1256,7 @@ public class AuracastBroadcast(public val name: String, public val addressType: 
 
 /** A source the earbuds receive a broadcast from (`BassReceiveState`): its id, the broadcaster's address and the synchronisation and encryption states. */
 public class AuracastSource(public val sourceId: Int, public val address: ByteArray, public val paSync: Int, public val encryption: Int, public val playing: Boolean) {
-    public val addressKey: String get() = address.joinToString(":") { "%02X".format(it) }
+    public val addressKey: String get() = address.joinToString(":") { it.toHex2().uppercase() }
 
     /** The state as a key for the screens: receiving, synced, not synced, code required or bad code. */
     public val state: String get() = when {

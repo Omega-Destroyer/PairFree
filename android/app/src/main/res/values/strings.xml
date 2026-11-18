@@ -40,6 +40,42 @@
     <string name="connect_hint">Pick your earbuds. Close the official app (PeatsAudio, Soundcore) first: only one app can hold the controls.</string>
     <string name="connect">Connect</string>
     <string name="connecting">Connecting…</string>
+    <!-- Desktop apps only (Windows, macOS): the Android app does not show it. -->
+    <string name="try_again">Try again</string>
+    <string name="desktop_settings">Settings</string>
+    <string name="desktop_close_title">Close button</string>
+    <string name="desktop_close_tray">Minimise to the tray</string>
+    <string name="desktop_close_exit">Close the app</string>
+    <string name="desktop_minimize_title">Minimise button</string>
+    <string name="desktop_minimize_tray">To the tray</string>
+    <string name="desktop_minimize_taskbar">To the taskbar</string>
+    <string name="desktop_start_minimized">Start minimised</string>
+    <string name="desktop_on_off">%1$s: %2$s</string>
+    <string name="desktop_settings_file">Settings file: %1$s</string>
+    <string name="desktop_close_question">What should the close button do? Yes minimises PairFree to the tray, where it keeps running; No closes the app. You can change this in Settings.</string>
+    <string name="desktop_tray_open">Open PairFree</string>
+    <string name="desktop_tray_exit">Exit</string>
+    <string name="desktop_tray_disconnect">Disconnect</string>
+    <string name="desktop_tray_noise">Noise control</string>
+    <string name="desktop_tray_sound">Sound profile</string>
+    <string name="desktop_fit_quiet">Before you start, stop any other sound playing on this computer (music, video, a call): the test is spoiled by it.</string>
+    <string name="desktop_fit_sound_playing">Sound is playing on this computer right now. Stop it before you start the test.</string>
+    <string name="desktop_update_title">Updates</string>
+    <string name="desktop_update_toggle">Check for a newer version when PairFree starts</string>
+    <string name="desktop_update_question_title">Check for updates?</string>
+    <string name="desktop_update_question">PairFree can check for a newer version on GitHub when it starts. It asks only GitHub\'s release page, and sends nothing about you or your earbuds. You can change this in Settings.</string>
+    <string name="desktop_update_yes">Check for updates</string>
+    <string name="desktop_update_no">Do not check</string>
+    <string name="desktop_update_check_now">Check now</string>
+    <string name="desktop_update_checking">Checking…</string>
+    <string name="desktop_update_latest">PairFree is up to date.</string>
+    <string name="desktop_update_available">Version %1$s is available.</string>
+    <string name="desktop_update_install">Install and restart</string>
+    <string name="desktop_update_installing">Downloading and checking the new version…</string>
+    <string name="desktop_update_failed">Could not check for or install an update: %1$s</string>
+    <string name="desktop_update_open_page">Open the release page</string>
+    <string name="desktop_update_no_key">This copy of PairFree has no key to check downloads with, so it cannot install an update itself.</string>
+    <string name="desktop_update_sidebar">Update available</string>
     <string name="no_paired">No supported earbuds paired. Pair them in the Bluetooth settings first.</string>
     <string name="bluetooth_off">Bluetooth is off.</string>
     <string name="bluetooth_settings">Bluetooth settings</string>
@@ -291,7 +327,7 @@
     <string name="setting_cycle_anc_off">Noise cancelling and off</string>
     <string name="setting_cycle_ambient_off">Ambient sound and off</string>
     <string name="setting_edge_double_tap">Double tap the edge for volume</string>
-    <string name="setting_edge_double_tap_note">Double tap the edge of the left earbud for volume down, of the right for volume up.</string>
+    <string name="setting_edge_double_tap_note">Double tap the edge of the left earbud for volume down, or the right for volume up.</string>
     <string name="setting_extra_clear_call">Extra clear calls</string>
     <string name="setting_sidetone">Ambient sound during calls</string>
     <string name="setting_sidetone_note">Hear your own voice more clearly on calls.</string>
@@ -323,6 +359,7 @@
     <string name="language_ja" translatable="false">日本語</string>
     <string name="language_fr" translatable="false">Français</string>
     <string name="language_es" translatable="false">Español</string>
+    <string name="language_fa" translatable="false">فارسی</string>
     <string name="language_it" translatable="false">Italiano</string>
     <string name="language_ko" translatable="false">한국어</string>
     <string name="find_earbuds">Find my earbuds</string>

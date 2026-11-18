@@ -302,3 +302,15 @@ in the `2C xx` range (`D0 2C` Crusher EQ volume set, `D1 2C` get, `D7 2C` bass b
 key id such as `F4 03`, `F4 05`, `F4 02`). The values each command writes are built at run time; reading them class by class is the next step (the response offsets are in each
 `decodeResponse`). JBL's Airoha RACE code (`RacePacket`, `RaceParser`, `JblRace`) already speaks the framing, so this brand reuses it; the NV writes follow the owner's rule for
 vendor-exact NV writes (2026-11-04).
+
+### 9.3 The AT button map and the other groups (read 2026-11-18)
+
+- Button and gesture assignments (`api/ui/data/at/h.java`): `AT.UI=info` (what the earbuds offer), `AT.UI=get,<side>,<key>.<gesture>` and `AT.UI=set,<side>,<key>.<gesture>,<command>`,
+  `AT.UI=default,<side>,<key>.<gesture>` (restore), `AT.UI=used,<side>,<key>.<gesture>` (is it assigned). Keys: `CONTROL`, `POWER`, `CENTR`, `UPPER`, `LOWER`, `ROCKR`, `ROTOR`, `BUTTON0` to
+  `BUTTON5` (each model's configuration maps its own names, e.g. `BUTTON0` to `swt_c` on the Crusher 1080 ANC); gestures: `UP`, `CLICK`, `CLICK2`, `CLICK3`, `CLICK4`, `HOLD`, `HOLD2`, `HOLD3`,
+  `CLICK_HOLD`, `CLICK2_HOLD`, `HOLDN`, `DOWN`, `HOLD_UP`, `HOLD2_UP`, `HOLD3_UP`, `CLICK_HOLD_UP`. The commands are the SDK's `Command` list (about 100: `ANCAT_TOGGLE`, `ANCAT_ANC_ON`,
+  `MEDIA_PLAY_TOGGLE`, `VOLUME_UP`, `ASSISTANT_TOGGLE`, `SPOTIFY_ONE_TOUCH`, `BT_PAIRING`, `CRUSHER_TOGGLE`, `SIDE_TONE_TOGGLE`, `SPATIAL_TOGGLE`, `EQ_CYCLE` and others; never `DEVICE_FACTORY_RESET`,
+  `BT_PDL_RESET`, `DEVICE_POWER_OFF` without a confirmation). The command-to-AT-name table is in a lambda switch (`api/ui/data/at/mapper/a.java`), still to be read; each model's own list of
+  mappable actions is `mappable_buttons` in `data/skullcandy/devices.json`.
+- Voice (`AT.UIVOICE`): `?`, `=enable`, `=disable`, `=mode[,<mode>]`, `=start,<type>` (`spp` for the phone's assistant) and `=stop`. Gaming mode: `AT.LATENCY?` and `AT.LATENCY=gaming_mode,<on|off>`.
+  Language: `AT.UILANGUAGE?` and `AT.UILANGUAGE=language,<value>`. Feature table: `AT.FEATURE=count`, `=info,0,<n>`, `=enable,<n>[,<m>]`.

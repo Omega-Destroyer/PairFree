@@ -261,3 +261,15 @@ The Flutter code (the Dart snapshot `libapp.so`, run through Blutter outside the
 
 So the work divides by chip, not by model: one Airoha implementation (AT dialect plus RACE for the equaliser, multipoint and similar, plus BOS-RPC for the newest) covers most of the
 catalogue, once the AT arguments and the per-model feature lists are read; the manifest's per-model features (`MODELS.md`) say what each shows.
+
+### 9.1 AT framing and the first commands read (2026-11-18)
+
+Read from the SDK's shared AT helpers and the audio request providers (`api/audio/data/*/requestProvider`):
+
+- A request is the text line plus CR LF (`AT.UIAUDIO=anc,on\r\n`), UTF-8, over the serial service. A reply is read up to its boundary, split at `\n` (a trailing `\r` is dropped) and
+  accepted when it contains `OK`; `ERROR` is a failure, and `NO CARRIER` means the device is gone. A value is the text after the first `:` of a reply line. The exact reply line shapes for
+  each group are still to be read (only the notification literals `.UIAUDIO:trackinfo`, `.UI:notify`, `.UIVOICE:` and `.AUTOMUTE:` were found as strings).
+- Noise cancelling: read `AT.UIAUDIO=anc`, write `AT.UIAUDIO=anc,on|off` (the SDK's state enum is `ON`, `OFF`, written lower case). ANC filter strength: read `AT.UIAUDIO=anc_filter`, write
+  `AT.UIAUDIO=anc_filter,<n>` (`off` for off). Transparency: read `AT.UIAUDIO=transparency`, write `AT.UIAUDIO=transparency,on|off`, and its level as a percent, `AT.UIAUDIO=transparency,,<0 to 100>`
+  (the SDK multiplies its 0 to 1 gain by 100). Volume: `AT.VOLUME=up,<steps>` and `AT.VOLUME=down,<steps>`. Not read yet: the gesture and key map (`AT.UI=get|set|default|used`), language, voice, gaming
+  mode, auto mute, Crusher and Mimi values.

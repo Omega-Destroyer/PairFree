@@ -291,7 +291,7 @@
     <string name="setting_cycle_anc_off">Noise cancelling and off</string>
     <string name="setting_cycle_ambient_off">Ambient sound and off</string>
     <string name="setting_edge_double_tap">Double tap the edge for volume</string>
-    <string name="setting_edge_double_tap_note">Double tap the edge of the left earbud for volume down, of the right for volume up.</string>
+    <string name="setting_edge_double_tap_note">Double tap the edge of the left earbud for volume down, or the right for volume up.</string>
     <string name="setting_extra_clear_call">Extra clear calls</string>
     <string name="setting_sidetone">Ambient sound during calls</string>
     <string name="setting_sidetone_note">Hear your own voice more clearly on calls.</string>

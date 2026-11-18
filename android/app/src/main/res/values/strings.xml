@@ -1080,6 +1080,7 @@
     <string name="widget_set_up">Tap to set up PairFree\'s widget</string>
     <string name="widget_caption_noise">Noise</string>
     <string name="widget_caption_eq">EQ</string>
+    <string name="widget_caption_sound">Sound</string>
     <string name="widget_profile_missing">Removed</string>
     <string name="widget_channel">Widget actions</string>
     <string name="widget_working">Changing %1$s…</string>
@@ -1100,6 +1101,7 @@
     <string name="widget_type_noise_cycle">Noise control toggle</string>
     <string name="widget_type_eq">Equalizer</string>
     <string name="widget_type_eq_cycle">Equalizer toggle</string>
+    <string name="widget_type_use_for_sound">Use for sound</string>
     <string name="widget_cycle_hint">Tick the choices to step through, in the order you tick them. Pick at least two.</string>
     <string name="widget_slot_description">%1$s: %2$s. Double tap to change.</string>
     <string name="widget_save">Save</string>
@@ -1328,9 +1330,7 @@
     <!-- Soundcore P30i / R50i NC noise control (issue #43, #45) -->
     <string name="setting_a3959_nc_mode">Noise cancelling type</string>
     <string name="setting_a3959_adaptive_level">Adaptive level</string>
-    <string name="setting_a3959_sensitivity">Adaptive sensitivity</string>
     <string name="setting_a3959_scene">Scene</string>
-    <string name="setting_a3959_wind_detected">Wind detected</string>
     <string name="setting_sc_surround_sound">Surround sound</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>

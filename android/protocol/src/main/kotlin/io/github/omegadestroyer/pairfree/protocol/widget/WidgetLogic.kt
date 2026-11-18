@@ -39,6 +39,9 @@ public sealed interface WidgetSlot {
     public data class NoiseCycle(val choices: List<NoiseChoice>) : WidgetSlot
     public data class Eq(val profileId: String) : WidgetSlot
     public data class EqCycle(val profileIds: List<String>) : WidgetSlot
+
+    /** Asks Android to play through the earbuds (issue 48): no channel to the earbuds is needed, so it works while they are only paired. */
+    public data object UseForSound : WidgetSlot
 }
 
 /** The widget's grid: eight slots, slots 0 to 3 the first row and 4 to 7 the second. */

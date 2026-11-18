@@ -220,6 +220,10 @@ class PairFreeWidget : AppWidgetProvider() {
                         label = eqNames[slot.profileId] ?: context.getString(R.string.widget_profile_missing)
                         active = selectedEq == slot.profileId
                     }
+                    WidgetSlot.UseForSound -> {
+                        caption = context.getString(R.string.widget_caption_sound)
+                        label = context.getString(R.string.widget_type_use_for_sound)
+                    }
                     is WidgetSlot.EqCycle -> {
                         caption = context.getString(R.string.widget_caption_eq)
                         val now = slot.profileIds.firstOrNull { it == selectedEq }
@@ -234,7 +238,7 @@ class PairFreeWidget : AppWidgetProvider() {
                 look.fill(views, cell[3]) { if (active) it.accent else it.raised }
                 look.text(views, cell[2]) { if (active) it.onAccent else it.text }
                 look.text(views, cell[1]) { if (active) it.onAccent else it.secondaryText }
-                views.setFloat(cell[0], "setAlpha", if (live || slot == WidgetSlot.Empty) 1f else DIMMED)
+                views.setFloat(cell[0], "setAlpha", if (live || slot == WidgetSlot.Empty || slot == WidgetSlot.UseForSound) 1f else DIMMED)
                 if (slot != WidgetSlot.Empty) {
                     views.setContentDescription(cell[0], context.getString(R.string.widget_slot_description, caption, label))
                     // Earbuds that are not connected: the button is dimmed, and a tap does nothing but redraw (WidgetService checks).

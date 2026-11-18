@@ -95,6 +95,12 @@ class WidgetService : Service() {
         if (tap.slot == SYNC) return sync(device)
         val slot = WidgetStore.load(hub.prefs, tap.widgetId)?.devices?.get(tap.address)?.let(WidgetStore::padded)?.getOrNull(tap.slot) ?: return
         if (slot == WidgetSlot.Empty) return
+        // Use for sound asks Android alone (the same request its Bluetooth settings make); it is for earbuds that are paired but not playing,
+        // so it does not wait for the sound link or open a channel.
+        if (slot == WidgetSlot.UseForSound) {
+            hub.audio.useForSound(tap.address)
+            return PairFreeWidget.requestRefresh(this)
+        }
         val connection = hub.connection
         val onIt = (connection.status.value as? LinkStatus.Connected)?.device?.address == tap.address
         // Earbuds that are not connected to the phone: nothing to change, and nothing to open a channel to.
@@ -119,7 +125,7 @@ class WidgetService : Service() {
             }
             is WidgetSlot.Eq -> selectEq(device, slot.profileId, null)
             is WidgetSlot.EqCycle -> selectEq(device, null, slot.profileIds)
-            WidgetSlot.Empty -> Unit
+            WidgetSlot.Empty, WidgetSlot.UseForSound -> Unit
         }
         PairFreeWidget.requestRefresh(this)
     }

@@ -173,7 +173,7 @@ GROUPS = {
     "softphone_(pc)": "Softphone",
     "sound_and_volume": "Sound",
     "speakerphone": "Speakerphone",
-    "noise": "Noise control",
+    "noise": "Noise levels and modes",
     "extra": "More settings",
 }
 # Options the session makes up (spatial sound's modes).

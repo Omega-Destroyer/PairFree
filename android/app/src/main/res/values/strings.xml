@@ -343,7 +343,7 @@
     <string name="hearing_test_done">Done. Each pitch gets the gain for the quietest tone you heard.</string>
     <string name="hearing_test_apply">Save as %1$s and use it</string>
     <string name="seal_check">Seal check</string>
-    <string name="seal_check_about">No fit test of its own on these earbuds: PairFree can check the seal with low tones from the phone, one earbud at a time, as JBL\'s app does.</string>
+    <string name="seal_check_about">No fit test of its own on these earbuds: PairFree can check the seal with low tones from the phone, one earbud at a time.</string>
     <string name="seal_check_open">Check the seal with tones</string>
     <string name="seal_check_intro">A low tone is only heard well when the ear tip seals your ear canal. PairFree plays a low tone in one earbud at a time, normal and then softer, and you say whether you hear it. Put both earbuds in, find a quiet place and stop any music or video first. The phone\'s media volume goes to the top for the check and back after.</string>
     <string name="seal_check_normal">A tone is playing in the %1$s earbud</string>
@@ -1755,7 +1755,7 @@
     <string name="jb_group_headset">Settings</string>
     <string name="jb_group_hearthrough">HearThrough</string>
     <string name="jb_group_left_bud">Left earbud</string>
-    <string name="jb_group_noise">Noise control</string>
+    <string name="jb_group_noise">Noise levels and modes</string>
     <string name="jb_group_product_information">Product information</string>
     <string name="jb_group_productinfo">Product information</string>
     <string name="jb_group_right_bud">Right earbud</string>

@@ -25,7 +25,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.io.buffered
 import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.writeString
 import platform.windows.GetModuleFileNameW
 import platform.windows.WCHARVar
 
@@ -36,7 +39,20 @@ private fun programFolder(): String = memScoped {
     buffer.toKString().substringBeforeLast('\\', ".")
 }
 
-fun main() {
+fun main(args: Array<String>) {
+    if (args.firstOrNull() == "--le-probe") {
+        // A developer's check of Windows' Bluetooth LE side; writes le-probe.txt beside the program.
+        val text = try {
+            kotlinx.coroutines.runBlocking { io.github.omegadestroyer.pairfree.windows.leProbe(args.getOrNull(1)?.replace(":", "")?.chunked(2)?.joinToString(":") ?: "") { step ->
+                val f = platform.posix.fopen(programFolder() + "\\le-probe-steps.txt", "a")
+                if (f != null) { platform.posix.fputs(step + "\n", f); platform.posix.fclose(f) }
+            } }
+        } catch (e: Throwable) {
+            "failed: $e"
+        }
+        SystemFileSystem.sink(Path(programFolder(), "le-probe.txt")).buffered().use { it.writeString(text) }
+        return
+    }
     val settingsPath = Path(programFolder(), DesktopSettings.FILE_NAME)
     val settings = DesktopSettings(settingsPath)
     runAppWindow(settings, settingsPath.toString()) { host, invalidate ->

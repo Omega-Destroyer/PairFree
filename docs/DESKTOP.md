@@ -183,7 +183,17 @@ Built and tried on a real SoundPEATS H3 under Windows 11:
   `tools/gen_setting_words.py` and `tools/gen_label_words.py`.
 - Shell: tray icon with battery tooltip and a menu (noise control, disconnect, open, exit), close button asks once (tray or exit), minimise to the
   tray, start minimised, single instance, the app icon drawn from the launcher icon's shapes, window position kept.
-- Not yet: Bluetooth LE brands and AirPods (the transport opens serial channels only), tones for the fit test, seal check and hearing tests,
+- Tests with tones (2026-11-17): the fit test (the earbuds run it; tried on the H3), the seal check and the hearing test (tones through waveOut; the
+  system volume goes to the top for the test and back, read and set through the audio endpoint interfaces; a test does not start while sound
+  plays). The tones themselves have not been listened to by anyone yet.
+- Bluetooth LE (2026-11-17): the Windows Runtime's GATT and advertisement APIs called as plain COM from Kotlin (`WinRt.kt`, `WinRtGatt.kt`,
+  `WinRtScan.kt`), behind the same `Transport` the Android app uses. Tried on the H3's LE side with `PairFree.exe --le-probe ADDRESS`: services and
+  characteristics listed, a read (device name, battery), a subscription whose events arrived (the H3 answered a GAIA frame written to its command
+  characteristic), and an advertisement scan (5 devices with names and manufacturer data). No LE brand has been tried: JBL's, QCY's and Sennheiser's
+  link classes and finders are written from the Android ones and untested; Sennheiser's bonding relies on Windows pairing when an encrypted
+  characteristic is read. Windows lists only classic devices when asked for paired ones, so an LE-only pairing (JBL's LE Audio models) does not show in the
+  sidebar yet.
+- Not yet: AirPods (Windows gives programs no L2CAP),
   the A30 sleep upload, the brands' touch controls beyond SOUNDPEATS and Soundcore (they come as rows), right-to-left mirroring, the
   look's own fonts, the updater and the release pipeline, macOS.
 

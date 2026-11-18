@@ -1,3 +1,5 @@
+@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+
 package io.github.omegadestroyer.pairfree.windows
 
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
@@ -8,12 +10,17 @@ import io.github.omegadestroyer.pairfree.brands.PlatformInfo
 import io.github.omegadestroyer.pairfree.brands.QcyFound
 import io.github.omegadestroyer.pairfree.brands.Transport
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.allocArray
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.toKString
+import kotlinx.cinterop.value
 import kotlinx.io.IOException
 
 /**
- * Windows' Bluetooth as the brands open their channels through it. So far the classic serial channel (most brands); Bluetooth LE
- * and the AirPods' channel are not here yet (docs/DESKTOP.md, phase 4, and the AirPods decision), and a brand that asks for them
- * fails to open as a channel that could not be opened.
+ * Windows' Bluetooth as the brands open their channels through it: the classic serial channel (Winsock) and Bluetooth LE (the Windows
+ * Runtime's GATT and advertisement APIs). The AirPods' channel is not here (docs/DESKTOP.md): Windows gives programs no L2CAP.
  */
 class WindowsTransport : Transport {
     override val isOn: Boolean get() = true
@@ -24,31 +31,31 @@ class WindowsTransport : Transport {
 
     override fun deviceFacts(address: String): List<Pair<String, String>> = emptyList()
 
-    override val hasLe: Boolean get() = false
+    override val hasLe: Boolean get() = true
 
-    override val mayScan: Boolean get() = false
+    override val mayScan: Boolean get() = true
 
     override val opensAppleChannel: Boolean get() = false
 
     override fun isLeOnly(address: String): Boolean = false
 
-    override fun hostName(): String? = null
+    override fun hostName(): String? = computerName()
 
-    override fun at(address: String): LeTarget = throw IOException("Bluetooth LE is not available yet on Windows")
+    override fun at(address: String): LeTarget = WinLeTarget(address)
 
     override fun serial(address: String, uuid: String, log: (String) -> Unit): ControlLink = WinsockLink(address, uuid, log)
 
-    override fun gatt(target: LeTarget, spec: GattSpec, log: (String) -> Unit): GattChannel = throw IOException("Bluetooth LE is not available yet on Windows")
+    override fun gatt(target: LeTarget, spec: GattSpec, log: (String) -> Unit): GattChannel = WinRtGattChannel(target.address, spec, log)
 
-    override fun envelopeGatt(target: LeTarget, service: String, log: (String) -> Unit): ControlLink = throw IOException("Bluetooth LE is not available yet on Windows")
+    override fun envelopeGatt(target: LeTarget, service: String, log: (String) -> Unit): ControlLink = WinRtEnvelopeLink(target.address, service, log)
 
     override fun appleChannel(address: String, log: (String) -> Unit): ControlLink = throw IOException("AirPods are not supported on Windows")
 
-    override suspend fun findJbl(model: JblModel, address: String, log: (String) -> Unit): LeTarget? = null
+    override suspend fun findJbl(model: JblModel, address: String, log: (String) -> Unit): LeTarget? = LeScan.findJbl(model, address, hostName(), log)
 
-    override suspend fun findQcy(company: Int, address: String, log: (String) -> Unit): QcyFound? = null
+    override suspend fun findQcy(company: Int, address: String, log: (String) -> Unit): QcyFound? = LeScan.findQcy(company, address, log)
 
-    override suspend fun findSennheiser(names: List<String>, address: String, log: (String) -> Unit): LeTarget? = null
+    override suspend fun findSennheiser(names: List<String>, address: String, log: (String) -> Unit): LeTarget? = LeScan.findSennheiser(names, address, log)
 
     companion object {
         /** What the connection and the reports say about this computer. */
@@ -61,4 +68,12 @@ class WindowsTransport : Transport {
             host = "Windows",
         )
     }
+}
+
+/** This computer's name, which JBL's earbuds advertise a checksum of while connected to it. */
+private fun computerName(): String? = memScoped {
+    val buffer = allocArray<platform.windows.WCHARVar>(256)
+    val size = alloc<kotlinx.cinterop.UIntVar>()
+    size.value = 256u
+    if (platform.windows.GetComputerNameW(buffer, size.ptr) != 0) buffer.toKString() else null
 }

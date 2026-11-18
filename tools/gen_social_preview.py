@@ -39,7 +39,7 @@ def main():
         draw.rounded_rectangle([x, y, x + w, y + 52], radius=8, fill=PANEL, outline="#2B3037", width=2)
         draw.text((x + pad, y + 7), name, font=chip_font, fill=TEXT)
         x += w + gap
-    draw.text((88, 548), "Android  ·  Open source (GPL-3.0)  ·  No account  ·  No internet", font=font("arialbd.ttf", 34), fill=ACCENT)
+    draw.text((88, 548), "Android and Windows  ·  Open source (GPL-3.0)  ·  No account", font=font("arialbd.ttf", 34), fill=ACCENT)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     image.save(OUT, optimize=True)
     print(OUT, OUT.stat().st_size, "bytes")

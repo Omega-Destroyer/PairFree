@@ -26,6 +26,8 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.shell.SettingWords
 import io.github.omegadestroyer.pairfree.shell.APP_VERSION
+import io.github.omegadestroyer.pairfree.shell.ReleaseInfo
+import io.github.omegadestroyer.pairfree.shell.Updates
 import io.github.omegadestroyer.pairfree.shell.BUILT_IN_LOOKS
 import io.github.omegadestroyer.pairfree.shell.CloseAction
 import io.github.omegadestroyer.pairfree.shell.DesktopLook
@@ -67,6 +69,31 @@ interface Host {
 
     /** Plays the tests' tones. */
     val tones: TonePlayer
+
+    /** Runs [work] off the window's thread; it hands its result back through [runOnUi]. */
+    fun background(work: () -> Unit)
+
+    /** Runs [work] on the window's thread. */
+    fun runOnUi(work: () -> Unit)
+
+    /** True when this copy has a key to check a downloaded update with, so it may install one. */
+    val canInstallUpdates: Boolean
+
+    /** Asks GitHub for the latest release ([Updates.LATEST_URL]); null when it could not be read. Blocks: call from [background]. */
+    fun fetchLatestRelease(): ReleaseInfo?
+
+    /** Downloads, checks and installs [release] and restarts the program; returns why not (text for the screen), or null when it is restarting. Blocks. */
+    fun installUpdate(release: ReleaseInfo): String?
+}
+
+/** Where the update check is. */
+sealed interface UpdateState {
+    data object Idle : UpdateState
+    data object Checking : UpdateState
+    data object UpToDate : UpdateState
+    data class Available(val release: ReleaseInfo) : UpdateState
+    data object Installing : UpdateState
+    data class Failed(val why: String) : UpdateState
 }
 
 /** Keys the app acts on besides characters. */
@@ -120,6 +147,57 @@ class DesktopApp(
     val currentDevice: Paired? get() = device
 
     private var eqBand = 0
+
+    @kotlin.concurrent.Volatile
+    private var update: UpdateState = UpdateState.Idle
+
+    /** Looks for a newer release on GitHub, in the background. Only when the user allowed it or pressed Check now. */
+    fun checkForUpdate() {
+        if (update == UpdateState.Checking || update == UpdateState.Installing) return
+        update = UpdateState.Checking
+        invalidate()
+        host.background {
+            val release = host.fetchLatestRelease()
+            host.runOnUi {
+                update = when {
+                    release == null -> UpdateState.Failed("GitHub")
+                    Updates.isNewer(release.version, APP_VERSION) -> UpdateState.Available(release)
+                    else -> UpdateState.UpToDate
+                }
+                invalidate()
+            }
+        }
+    }
+
+    private fun installUpdate(release: ReleaseInfo) {
+        update = UpdateState.Installing
+        invalidate()
+        host.background {
+            val why = host.installUpdate(release)
+            host.runOnUi {
+                if (why != null) update = UpdateState.Failed(why)
+                invalidate()
+            }
+        }
+    }
+
+    /** Called once when the window is up: asks the question on the first run, else checks if the user said so. */
+    fun started() {
+        when (settings.checkForUpdates) {
+            null -> {
+                dialog = Dialog(
+                    strings.text("desktop_update_question_title"), strings.text("desktop_update_question"), strings.text("desktop_update_yes"), false, "",
+                    cancel = strings.text("desktop_update_no"), onCancel = { settings.checkForUpdates = false },
+                ) {
+                    settings.checkForUpdates = true
+                    checkForUpdate()
+                }
+                invalidate()
+            }
+            true -> checkForUpdate()
+            false -> Unit
+        }
+    }
     private var page: Page? = null
 
     /** True while a screen shows something that moves with time. */
@@ -168,7 +246,7 @@ class DesktopApp(
     private var dialog: Dialog? = null
 
     /** A question over the window: a name to type, or a confirmation. */
-    private class Dialog(val title: String, val body: String?, val confirm: String, val field: Boolean, var text: String, val hint: String = "", val max: Int = 24, val onConfirm: (String) -> Unit) {
+    private class Dialog(val title: String, val body: String?, val confirm: String, val field: Boolean, var text: String, val hint: String = "", val max: Int = 24, val cancel: String? = null, val onCancel: () -> Unit = {}, val onConfirm: (String) -> Unit) {
         var caret = text.length
     }
 
@@ -261,7 +339,7 @@ class DesktopApp(
         val parts = mutableListOf<Widget>(Label(d.title, t.heading))
         d.body?.let { parts += Label(it, t.body, t.secondaryText) }
         if (d.field) parts += TextField(d.text, d.caret, d.hint, true, "dialog_field") {}
-        parts += Row(listOf(Button(s.text("cancel"), "dialog_cancel") { closeDialog() }, Button(d.confirm, "dialog_ok", primary = true) { confirmDialog() }), 8f)
+        parts += Row(listOf(Button(d.cancel ?: s.text("cancel"), "dialog_cancel") { d.onCancel(); closeDialog() }, Button(d.confirm, "dialog_ok", primary = true) { confirmDialog() }), 8f)
         val box = Panel(Column(parts, 14f), 20f)
         val w = min(420f, width - 48f)
         box.place(ctx, (width - w) / 2f, 0f, w)
@@ -298,7 +376,7 @@ class DesktopApp(
     fun keyDown(key: Key) {
         val d = dialog ?: return
         when (key) {
-            Key.ESCAPE -> { closeDialog(); return }
+            Key.ESCAPE -> { d.onCancel(); closeDialog(); return }
             Key.ENTER -> { confirmDialog(); return }
             Key.BACKSPACE -> if (d.caret > 0) { d.text = d.text.removeRange(d.caret - 1, d.caret); d.caret-- }
             Key.DELETE -> if (d.caret < d.text.length) d.text = d.text.removeRange(d.caret, d.caret + 1)
@@ -342,7 +420,8 @@ class DesktopApp(
             Button(s.text(t.titleKey), "tab_${t.name}", primary = t == tab, enabled = current != null || t == Tab.SETTINGS) { tab = t; scroll = 0f; invalidate() } as Widget
         }
         return Column(
-            listOf(Label("PairFree", theme.title), Spacer(8f), Column(cards, 8f), Spacer(8f), Column(tabs, 6f), Spacer(8f), Label("v$APP_VERSION", theme.labelFont, theme.label)),
+            listOf(Label("PairFree", theme.title), Spacer(8f), Column(cards, 8f), Spacer(8f), Column(tabs, 6f), Spacer(8f), Label("v$APP_VERSION", theme.labelFont, theme.label)) +
+                (if (update is UpdateState.Available) listOf<Widget>(Button(s.text("desktop_update_sidebar"), "sidebar_update", primary = true) { tab = Tab.SETTINGS; scroll = 0f; invalidate() }) else emptyList()),
             6f,
         )
     }
@@ -485,6 +564,7 @@ class DesktopApp(
                         10f,
                     ),
                 ),
+                updatesPanel(theme),
                 Label(s.text("desktop_settings_file", host.settingsPath), theme.small, theme.secondaryText),
             ),
             16f,
@@ -498,6 +578,36 @@ class DesktopApp(
         val d = (connection.status.value as? LinkStatus.Connected)?.device
         val info = ReportInfo(d, APP_VERSION, date, "https://github.com/Omega-Destroyer/PairFree/issues", connection.platform)
         return connection.driver?.report(info) ?: SoundpeatsDriver.plainReport(info, connection.lastReplies, connection.state.value)
+    }
+
+    private fun updatesPanel(theme: Theme): Widget {
+        val s = strings
+        val checking = update == UpdateState.Checking || update == UpdateState.Installing
+        val rows = mutableListOf<Widget>(
+            Label(s.text("desktop_update_title"), theme.labelFont, theme.label, caps = true),
+            Button(s.text("desktop_on_off", s.text("desktop_update_toggle"), s.text(if (settings.checkForUpdates == true) "on" else "off")), "check_updates", primary = settings.checkForUpdates == true) {
+                settings.checkForUpdates = settings.checkForUpdates != true
+                if (settings.checkForUpdates == true) checkForUpdate() else invalidate()
+            },
+            Button(s.text("desktop_update_check_now"), "check_now", enabled = !checking) { checkForUpdate() },
+        )
+        when (val u = update) {
+            UpdateState.Idle -> Unit
+            UpdateState.Checking -> rows += Label(s.text("desktop_update_checking"), theme.small, theme.secondaryText)
+            UpdateState.UpToDate -> rows += Label(s.text("desktop_update_latest"), theme.small, theme.secondaryText)
+            UpdateState.Installing -> rows += Label(s.text("desktop_update_installing"), theme.small, theme.secondaryText)
+            is UpdateState.Failed -> rows += Label(s.text("desktop_update_failed", u.why), theme.small, theme.destructive)
+            is UpdateState.Available -> {
+                rows += Label(s.text("desktop_update_available", u.release.version), theme.body, theme.accent)
+                if (host.canInstallUpdates && u.release.programUrl != null && u.release.signatureUrl != null) {
+                    rows += Button(s.text("desktop_update_install"), "install_update", primary = true) { installUpdate(u.release) }
+                } else if (!host.canInstallUpdates) {
+                    rows += Label(s.text("desktop_update_no_key"), theme.small, theme.secondaryText)
+                }
+                rows += Button(s.text("desktop_update_open_page"), "update_page") { host.openUrl(u.release.pageUrl) }
+            }
+        }
+        return Panel(Column(rows, 10f))
     }
 
     // ---- the tray ----

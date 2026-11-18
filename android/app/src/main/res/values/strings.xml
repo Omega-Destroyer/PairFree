@@ -56,6 +56,22 @@
     <string name="desktop_tray_exit">Exit</string>
     <string name="desktop_tray_disconnect">Disconnect</string>
     <string name="desktop_tray_noise">Noise control</string>
+    <string name="desktop_update_title">Updates</string>
+    <string name="desktop_update_toggle">Look for a newer version when PairFree starts</string>
+    <string name="desktop_update_question_title">Look for updates?</string>
+    <string name="desktop_update_question">PairFree can look for a newer version on GitHub when it starts. It asks only GitHub\'s release page, and sends nothing about you or your earbuds. You can change this in Settings.</string>
+    <string name="desktop_update_yes">Look for updates</string>
+    <string name="desktop_update_no">Do not look</string>
+    <string name="desktop_update_check_now">Check now</string>
+    <string name="desktop_update_checking">Checking…</string>
+    <string name="desktop_update_latest">PairFree is up to date.</string>
+    <string name="desktop_update_available">Version %1$s is available.</string>
+    <string name="desktop_update_install">Install and restart</string>
+    <string name="desktop_update_installing">Downloading and checking the new version…</string>
+    <string name="desktop_update_failed">Could not look for or install an update: %1$s</string>
+    <string name="desktop_update_open_page">Open the release page</string>
+    <string name="desktop_update_no_key">This copy of PairFree has no key to check downloads with, so it cannot install an update itself.</string>
+    <string name="desktop_update_sidebar">Update available</string>
     <string name="no_paired">No supported earbuds paired. Pair them in the Bluetooth settings first.</string>
     <string name="bluetooth_off">Bluetooth is off.</string>
     <string name="bluetooth_settings">Bluetooth settings</string>
@@ -339,6 +355,7 @@
     <string name="language_ja" translatable="false">日本語</string>
     <string name="language_fr" translatable="false">Français</string>
     <string name="language_es" translatable="false">Español</string>
+    <string name="language_fa" translatable="false">فارسی</string>
     <string name="language_it" translatable="false">Italiano</string>
     <string name="language_ko" translatable="false">한국어</string>
     <string name="find_earbuds">Find my earbuds</string>

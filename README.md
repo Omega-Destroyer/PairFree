@@ -91,7 +91,8 @@ and from reports their owners send in. Each brand's page shows which models have
 | Android app           | Released (v0.14.0) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats, Nothing and CMF, Google Pixel Buds, QCY, 1MORE, EarFun, Cambridge Audio, OnePlus and OPPO, and Sennheiser. |
 | Tried on real earbuds | By the project's owner: SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40. From users' device reports: SOUNDPEATS C30 and TRUEFREE Clip C10, Soundcore AeroClip, Q20i and Sleep A20, JBL Live Buds 3, Sony WF-1000XM5 and WF-1000XM6, Google Pixel Buds Pro, AirPods Pro 3, QCY H3 Pro and T13 ANC2, OnePlus Buds 4, SOUNDPEATS T3 Pro. The table below is kept up to date from each brand's page. |
 | Protocols             | One document, data set and test suite per brand, in `docs/<brand>/` and `data/<brand>/` |
-| iOS and Windows apps  | Planned, after Android |
+| Windows app           | In development: one portable `PairFree.exe`, the same brands as Android except AirPods and Apple-chip Beats, which Windows cannot reach. See [docs/WINDOWS.md](docs/WINDOWS.md). Not released yet. |
+| iOS and macOS apps    | Planned; macOS follows Windows |
 | Firmware update       | Planned for Qualcomm-based models, opt-in |
 
 ## Supported brands

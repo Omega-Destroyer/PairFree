@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, DelicateCoroutinesApi::class)
 
 package io.github.omegadestroyer.pairfree.windows
 
@@ -9,6 +9,10 @@ import io.github.omegadestroyer.pairfree.ui.Key
 import io.github.omegadestroyer.pairfree.ui.SystemColors
 import io.github.omegadestroyer.pairfree.ui.TrayItem
 import kotlinx.cinterop.CFunction
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.COpaquePointerVar
 import kotlinx.cinterop.CPointed
@@ -365,11 +369,30 @@ fun runAppWindow(settings: DesktopSettings, settingsPath: String, create: (io.gi
 
         override val tones = WaveOutPlayer { run -> runOnUi(run) }
 
+        override fun background(work: () -> Unit) {
+            GlobalScope.launch(Dispatchers.Default) { work() }
+        }
+
+        override fun runOnUi(work: () -> Unit) = io.github.omegadestroyer.pairfree.windows.runOnUi(work)
+
+        override val canInstallUpdates: Boolean get() = io.github.omegadestroyer.pairfree.shell.UpdateKey.present
+
+        override fun fetchLatestRelease() =
+            SelfUpdate.get(io.github.omegadestroyer.pairfree.shell.Updates.LATEST_URL, "application/vnd.github+json")?.decodeToString()?.let { io.github.omegadestroyer.pairfree.shell.Updates.parseLatest(it) }
+
+        override fun installUpdate(release: io.github.omegadestroyer.pairfree.shell.ReleaseInfo): String? {
+            val why = SelfUpdate.install(release.programUrl ?: return "no program in the release", release.signatureUrl)
+            // Installed and started: this copy ends.
+            if (why == null) PostMessageW(window, WM_QUIT_APP, 0u, 0)
+            return why
+        }
+
         override fun openUrl(url: String) {
             ShellExecuteW(null, "open", url, null, null, SW_SHOWNORMAL)
         }
     }
     State.app = create(host) { PostMessageW(window, WM_REDRAW, 0u, 0) }
+    State.app?.started()
     ShowWindow(window, if (settings.startMinimized) (if (settings.minimizeToTray) SW_HIDE else SW_SHOWMINNOACTIVE) else SW_SHOW)
     UpdateWindow(window)
     val msg = alloc<MSG>()

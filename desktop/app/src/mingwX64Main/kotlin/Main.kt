@@ -53,6 +53,7 @@ fun main(args: Array<String>) {
         SystemFileSystem.sink(Path(programFolder(), "le-probe.txt")).buffered().use { it.writeString(text) }
         return
     }
+    io.github.omegadestroyer.pairfree.windows.afterUpdateCleanUp("--restarted" in args)
     val settingsPath = Path(programFolder(), DesktopSettings.FILE_NAME)
     val settings = DesktopSettings(settingsPath)
     runAppWindow(settings, settingsPath.toString()) { host, invalidate ->

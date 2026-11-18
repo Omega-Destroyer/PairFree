@@ -9,6 +9,11 @@ kotlin {
     mingwX64()
 
     sourceSets {
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
         commonMain {
             dependencies {
                 api(project(":ui"))

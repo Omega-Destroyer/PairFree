@@ -22,6 +22,18 @@ class SleepSoundTest {
     }
 
     @Test
+    fun noInputIsEverLongerThanTheAppsLimit() {
+        // Issue 23: a very long source (ten minutes here) is cut at 60 seconds, so what is sent never passes the app's 1,024,000-byte limit,
+        // for either sound type.
+        for (type in listOf(2, 3)) {
+            val rate = SleepSound.sampleRate(type)
+            val sound = SleepSound.prepare(tone(rate, 600.0, 440.0), 1, "Long", type)
+            assertTrue(sound.clipped)
+            assertTrue(sound.file.size <= SleepSound.SIZE_LIMIT, "type $type: ${sound.file.size} bytes")
+        }
+    }
+
+    @Test
     fun soundTypeThreeIsThirtyTwoKilohertz() {
         val sound = SleepSound.prepare(tone(32000, 2.0, 1000.0), 5, "Hum", SleepSound.soundType(true))
         assertEquals(3, sound.file[16].toInt())

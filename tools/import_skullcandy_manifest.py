@@ -46,6 +46,7 @@ def main():
     manifest = json.loads((Path(args[0]) / MANIFEST).read_text(encoding="utf-8"))
     chips = {m["model"]: m["chip"] for m in json.loads((DATA / "chips.json").read_text(encoding="utf-8"))["models"]}
     sdk = json.loads((DATA / "sdk_devices.json").read_text(encoding="utf-8"))["devices"]
+    sdk_names = {d["model"]["key"]: d["model"]["names"] for d in sdk}
     sdk_by_id = {}
     for d in sdk:
         for i in d["ble_model_id"].get("modelId", []):
@@ -59,6 +60,7 @@ def main():
         entry = {
             "id": pid, "name": p["productName"], "enum": enum, "models": p["modelId"], "alternate_names": p.get("alternateProductNames") or [],
             "android": p["connectionTypeAndroid"], "chip": chips[enum], "sdk": sdk_by_id.get(int(pid, 16)) or SDK_BY_NAME.get(pid),
+            "sdk_names": sdk_names.get(sdk_by_id.get(int(pid, 16)) or SDK_BY_NAME.get(pid), []),
             "airoha_product_id": p.get("airohaProductId"), "ota_supported": p.get("otaSupported", False),
             "firmware": firmwares, "features": union,
         }

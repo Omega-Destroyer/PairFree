@@ -27,6 +27,7 @@
       ],
       "chip": "qualcomm",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": false,
       "firmware": [
@@ -63,6 +64,7 @@
       ],
       "chip": "qualcomm",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": "0x30",
       "ota_supported": false,
       "firmware": [
@@ -114,6 +116,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -179,6 +182,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -238,6 +242,7 @@
       ],
       "chip": "qualcomm",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": "0xB",
       "ota_supported": false,
       "firmware": [
@@ -279,6 +284,7 @@
       ],
       "chip": "qualcomm",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": "0xA",
       "ota_supported": false,
       "firmware": [
@@ -320,6 +326,7 @@
       ],
       "chip": "qualcomm",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": false,
       "firmware": [
@@ -372,6 +379,11 @@
       ],
       "chip": "airoha",
       "sdk": "PUSH_ACTIVE",
+      "sdk_names": [
+        "Push Active",
+        "Oppactive",
+        "Opp active"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -570,6 +582,10 @@
       ],
       "chip": "airoha",
       "sdk": "GRIND",
+      "sdk_names": [
+        "Grind",
+        "Sesh Boost"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -768,6 +784,10 @@
       ],
       "chip": "airoha",
       "sdk": "GRIND_FUEL",
+      "sdk_names": [
+        "Grind Fuel",
+        "Sesh Boost Costco"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -969,6 +989,10 @@
       ],
       "chip": "airoha",
       "sdk": "CHP200",
+      "sdk_names": [
+        "CHP200",
+        "S6CAW"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -1141,6 +1165,11 @@
       ],
       "chip": "airoha",
       "sdk": "T70",
+      "sdk_names": [
+        "T70",
+        "S2RLW-Q740",
+        "rail"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -1278,6 +1307,11 @@
       ],
       "chip": "airoha",
       "sdk": "T80_PLUS",
+      "sdk_names": [
+        "T80+",
+        "S2IPW-P740",
+        "railanc"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -1401,6 +1435,10 @@
       ],
       "chip": "airoha",
       "sdk": "T99_PLUS",
+      "sdk_names": [
+        "Method 360 ANC",
+        "Skullcandy Method 360 ANC"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -1538,6 +1576,10 @@
       ],
       "chip": "airoha",
       "sdk": "T120",
+      "sdk_names": [
+        "Method 540 ANC",
+        "Skullcandy Method 540 ANC"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -1677,6 +1719,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": false,
       "firmware": [
@@ -1707,6 +1750,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": false,
       "firmware": [
@@ -1750,6 +1794,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": false,
       "firmware": [
@@ -1792,6 +1837,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": false,
       "firmware": [
@@ -1821,6 +1867,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -1857,6 +1904,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -1928,6 +1976,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -2044,6 +2093,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": false,
       "firmware": [
@@ -2104,6 +2154,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -2330,6 +2381,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -2496,6 +2548,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -2663,6 +2716,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -2932,6 +2986,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -3208,6 +3263,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -3354,6 +3410,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -3625,6 +3682,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -3932,6 +3990,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -3991,6 +4050,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -4255,6 +4315,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -4509,6 +4570,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -4741,6 +4803,7 @@
       ],
       "chip": "qualcomm",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": "0x31",
       "ota_supported": false,
       "firmware": [
@@ -4783,6 +4846,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -4829,6 +4893,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -5006,6 +5071,7 @@
       ],
       "chip": "bes",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -5154,6 +5220,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -5297,6 +5364,7 @@
       ],
       "chip": "actions",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -5332,6 +5400,7 @@
       ],
       "chip": "actions",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -5367,6 +5436,7 @@
       ],
       "chip": "actions",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -5400,6 +5470,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -5551,6 +5622,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -5674,6 +5746,10 @@
       ],
       "chip": "airoha",
       "sdk": "CHP300",
+      "sdk_names": [
+        "CHP300",
+        "Skullcandy CRUSHER 1080 ANC"
+      ],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6089,6 +6165,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6186,6 +6263,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6288,6 +6366,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6378,6 +6457,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6511,6 +6591,7 @@
       ],
       "chip": "jieli",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": false,
       "firmware": [
@@ -6538,6 +6619,7 @@
       ],
       "chip": "bes",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6604,6 +6686,7 @@
       ],
       "chip": "bes",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6662,6 +6745,7 @@
       ],
       "chip": "bes",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6719,6 +6803,7 @@
       ],
       "chip": "airoha",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [
@@ -6826,6 +6911,7 @@
       ],
       "chip": "bes",
       "sdk": null,
+      "sdk_names": [],
       "airoha_product_id": null,
       "ota_supported": true,
       "firmware": [

@@ -2616,3 +2616,57 @@ val generateSkullcandyTables = tasks.register<GenerateSkullcandyTables>("generat
     sourceJson = rootProject.layout.projectDirectory.file("../data/skullcandy/commands.json")
     outputDir = layout.buildDirectory.dir("generated/skullcandy")
 }
+
+/** Writes the Skullcandy product table from data/skullcandy/devices.json (the app's manifest joined to its chip table). */
+abstract class GenerateSkullcandyProducts : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val data = JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val products = data.getValue("products") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
+        fun strings(v: Any?) = ((v as List<*>?) ?: emptyList<Any?>()).joinToString(", ", "listOf<String>(", ")") { str(it) }
+        val out = StringBuilder("// Generated from data/skullcandy/devices.json by the generateSkullcandyProducts task. Do not edit.\n")
+        out.appendLine("package io.github.omegadestroyer.pairfree.protocol.skullcandy")
+        out.appendLine()
+        out.appendLine("/** One product of Skullcandy's app (5.0.6), by its product id, with the chip family the app puts it on and the features its firmware lists. */")
+        out.appendLine("public class SkullcandyProduct(")
+        out.appendLine("    public val id: Int,")
+        out.appendLine("    public val name: String,")
+        out.appendLine("    public val enumName: String,")
+        out.appendLine("    public val modelIds: List<String>,")
+        out.appendLine("    public val alternateNames: List<String>,")
+        out.appendLine("    public val sdkNames: List<String>,")
+        out.appendLine("    public val android: List<String>,")
+        out.appendLine("    public val chip: String,")
+        out.appendLine("    public val sdk: String?,")
+        out.appendLine("    public val features: Set<String>,")
+        out.appendLine(")")
+        out.appendLine()
+        out.appendLine("public object SkullcandyProducts {")
+        out.appendLine("    public val ALL: List<SkullcandyProduct> = listOf(")
+        for (p in products) {
+            val id = Integer.decode(p["id"] as String)
+            val sdk = (p["sdk"] as String?)?.let { str(it) } ?: "null"
+            out.appendLine("        SkullcandyProduct($id, ${str(p["name"])}, ${str(p["enum"])}, ${strings(p["models"])}, ${strings(p["alternate_names"])}, ${strings(p["sdk_names"])}, ${strings(p["android"])}, ${str(p["chip"])}, $sdk, ${strings(p["features"])}.toSet()),")
+        }
+        out.appendLine("    )")
+        out.appendLine("}")
+        val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/skullcandy/SkullcandyProducts.kt")
+        target.parentFile.mkdirs()
+        target.writeText(out.toString())
+    }
+}
+
+val generateSkullcandyProducts = tasks.register<GenerateSkullcandyProducts>("generateSkullcandyProducts") {
+    devicesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/devices.json")
+    outputDir = layout.buildDirectory.dir("generated/skullcandyProducts")
+}

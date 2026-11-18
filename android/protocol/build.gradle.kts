@@ -30,6 +30,7 @@ kotlin.sourceSets.main {
     kotlin.srcDir(tasks.named("generateSennheiserTables"))
     kotlin.srcDir(tasks.named("generateJabraTables"))
     kotlin.srcDir(tasks.named("generateSkullcandyTables"))
+    kotlin.srcDir(tasks.named("generateSkullcandyProducts"))
     kotlin.srcDir(tasks.named("generateOneplusTables"))
     kotlin.srcDir(tasks.named("generateOneplusModels"))
     kotlin.srcDir(tasks.named("generateHearingTables"))

@@ -1,7 +1,7 @@
 # PairFree for Windows
 
 PairFree for Windows is one portable program, `PairFree.exe`, about 16 MB. There is no installer and nothing is written to the registry. It does what the
-Android app does for your earbuds, in a window made for a mouse. It is under development and **has not been released yet**; this page says what it will be.
+Android app does for your earbuds, in a window made for a mouse. It is new in PairFree 0.16.0: it was tried against recorded earbuds and virtual ones, and not yet by many people, so please report what does not work.
 
 ## Needs
 

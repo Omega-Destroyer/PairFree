@@ -273,3 +273,20 @@ Read from the SDK's shared AT helpers and the audio request providers (`api/audi
   `AT.UIAUDIO=anc_filter,<n>` (`off` for off). Transparency: read `AT.UIAUDIO=transparency`, write `AT.UIAUDIO=transparency,on|off`, and its level as a percent, `AT.UIAUDIO=transparency,,<0 to 100>`
   (the SDK multiplies its 0 to 1 gain by 100). Volume: `AT.VOLUME=up,<steps>` and `AT.VOLUME=down,<steps>`. Not read yet: the gesture and key map (`AT.UI=get|set|default|used`), language, voice, gaming
   mode, auto mute, Crusher and Mimi values.
+
+### 9.2 Reply shapes read so far (2026-11-18)
+
+Replies are lines of `<prefix>:<value>` (the prefixes the SDK recognises include `.DEVINFO`, `.UI`, `.SYSINFO`, `.SYSTEM`, `.EAUDIO`, `.MODE`, `.BLUETOOTH`, `.FEATURE`, `.LICENSE`, `.LOCATION`)
+followed by `OK`:
+
+- Noise cancelling (`AT.UIAUDIO=anc`): the text after the colon is `on` or `off`.
+- ANC filter (`AT.UIAUDIO=anc_filter`): a line containing `off`, else the number after the colon.
+- Transparency (`AT.UIAUDIO=transparency`): `on|off` and, after a comma, the level as an integer percent.
+- Battery (`AT.SYSINFO=battery`): the first line after its colon is split at tab characters into `single:`, `local:`, `right:` and `left:` fields (an integer each); `single` is used, else `local`,
+  for the case-less or one-earbud models (the SDK keeps left, right and single/local).
+- Language (`AT.UILANGUAGE?` and `=language,<value>`), time (`AT.TIME`, never sent), gaming mode (`AT.LATENCY?`, `=gaming_mode,<on|off>`), Crusher (`AT.CRUSHER?`, `=<on|off>`,
+  `=level,<n>`) and auto mute (`AT.AUTOMUTE?`, `=<on|off>`, `=mute_timer,<n>`, `=sound,<x>`) follow the same shapes; their exact value sets are still to be read.
+
+`data/skullcandy/devices.json` (from `tools/import_skullcandy_manifest.py`) now holds all 56 products: id, model names, Android connection types, chip, SDK configuration where one exists, each firmware's
+feature list and the button settings. Of the Airoha models, the features by count are the defined equaliser (34), custom equaliser (33), multipoint toggle (26), clear voice (24), custom buttons (21),
+stay-aware level (20), personal sound (19), voice assistant (19), Tile (16), bass boost (16), low latency (15), noise-cancelling level (10) and sidetone (10).

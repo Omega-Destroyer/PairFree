@@ -50,6 +50,18 @@ private const val WM_SHOW_APP: UInt = 0x8004u
 
 private const val CLASS_NAME = "PairFreeWindow"
 
+/** Functions other threads ask the window's thread to run, and the message that tells it to. */
+private const val WM_RUN: UInt = 0x8005u
+private val pendingRuns = kotlin.concurrent.AtomicReference<List<() -> Unit>>(emptyList())
+
+private fun runOnUi(block: () -> Unit) {
+    while (true) {
+        val old = pendingRuns.value
+        if (pendingRuns.compareAndSet(old, old + block)) break
+    }
+    PostMessageW(State.window, WM_RUN, 0u, 0)
+}
+
 /** The window's state: Windows calls back into plain functions, so what they need is kept here. */
 private object State {
     var app: DesktopApp? = null
@@ -255,6 +267,15 @@ private fun windowProc(window: HWND?, message: UInt, w: WPARAM, l: LPARAM): LRES
             }
             if (key != null) { app?.keyDown(key); return 0 }
         }
+        WM_RUN -> {
+            val runs = pendingRuns.getAndSet(emptyList())
+            runs.forEach { it() }
+            return 0
+        }
+        WM_TIMER.toUInt() -> {
+            if (app?.animating == true) InvalidateRect(window, null, 0)
+            return 0
+        }
         WM_SHOW_APP -> { showWindow(window); return 0 }
         WM_QUIT_APP -> { saveBounds(window); DestroyWindow(window); return 0 }
         WM_CLOSE.toUInt() -> { onClose(window); return 0 }
@@ -306,6 +327,7 @@ fun runAppWindow(settings: DesktopSettings, settingsPath: String, create: (io.gi
     val window = CreateWindowExW(0u, name, "PairFree".wcstr.ptr, WS_OVERLAPPEDWINDOW.toUInt(), wx, wy, ww, wh, null, null, instance, null)
     State.window = window
     State.settings = settings
+    SetTimer(window, 1u, 50u, null)
     trayCall(NIM_ADD.convert())
     val host = object : io.github.omegadestroyer.pairfree.ui.Host {
         override fun openBluetoothSettings() {
@@ -340,6 +362,8 @@ fun runAppWindow(settings: DesktopSettings, settingsPath: String, create: (io.gi
             }
             CloseClipboard()
         }
+
+        override val tones = WaveOutPlayer { run -> runOnUi(run) }
 
         override fun openUrl(url: String) {
             ShellExecuteW(null, "open", url, null, null, SW_SHOWNORMAL)

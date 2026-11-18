@@ -17,6 +17,11 @@ import io.github.omegadestroyer.pairfree.brands.modelOf
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.pairfree.shell.Side
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
+import io.github.omegadestroyer.pairfree.protocol.SoundpeatsBandEq
+import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
+import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTables
+import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.shell.SettingWords
@@ -59,6 +64,9 @@ interface Host {
 
     /** Puts [text] on the clipboard. */
     fun copyText(text: String)
+
+    /** Plays the tests' tones. */
+    val tones: TonePlayer
 }
 
 /** Keys the app acts on besides characters. */
@@ -112,6 +120,30 @@ class DesktopApp(
     val currentDevice: Paired? get() = device
 
     private var eqBand = 0
+    private var page: Page? = null
+
+    /** True while a screen shows something that moves with time. */
+    val animating: Boolean get() = page?.animating == true
+
+    private fun openPage(p: Page) {
+        page?.stop()
+        page = p
+        scroll = 0f
+        invalidate()
+    }
+
+    private fun closePage() {
+        page = null
+        invalidate()
+    }
+
+    /** The hearing test PairFree runs for [d], where its brand's app has one that becomes an EQ (SOUNDPEATS'), or any custom curve of three bands or more. */
+    private fun hearingTable(d: Paired, eq: EqState?): HearingTable? = when {
+        eq == null -> null
+        d.brand == io.github.omegadestroyer.pairfree.protocol.Maker.SOUNDPEATS && (eq.target as? BandEqTarget)?.source is SoundpeatsBandEq -> HearingTables.SOUNDPEATS
+        eq.target.hasCustom && eq.layout.bands.size >= 3 -> HearingTables.SOUNDPEATS
+        else -> null
+    }
     private var controlsSide = Side.LEFT
     private var reportCopied = false
     private val rowState = RowState()
@@ -181,6 +213,8 @@ class DesktopApp(
 
     private fun select(d: Paired) {
         if (d.address == device?.address) return
+        page?.stop()
+        page = null
         device = d
         settings.lastDevice = d.address
         tab = Tab.HOME
@@ -339,9 +373,10 @@ class DesktopApp(
             return Panel(Column(listOf(Label(reason, theme.body), Button(s.text("try_again"), "retry", true) { act { connect(current) } }), 12f))
         }
         if (status !is LinkStatus.Connected && status !is LinkStatus.Reconnecting) return Label(s.text("connecting"), theme.heading)
+        page?.let { return it.build(state) }
         return when (tab) {
             Tab.HOME -> HomeScreen(::act, current, state, status is LinkStatus.Connected, s, theme).build(wide, rows(SettingTab.HOME, theme))
-            Tab.SOUND -> Column(listOf(SoundScreen(equalizer.state.value, eqActions, eqBand, eqMessage, s, theme, soundCallbacks).build()) + rows(SettingTab.SOUND, theme), 16f)
+            Tab.SOUND -> Column(listOf(SoundScreen(equalizer.state.value, eqActions, eqBand, eqMessage, s, theme, soundCallbacks, hearingOpener(current)).build()) + rows(SettingTab.SOUND, theme), 16f)
             Tab.CONTROLS -> ControlsTab(
                 current, state, (connection.extra.value as? SoundcoreState)?.let(SoundcoreTouch::of), rows(SettingTab.CONTROLS, theme), controlsSide, rowState, s, theme,
                 ControlsCallbacks(
@@ -360,10 +395,25 @@ class DesktopApp(
                     confirm = rowCallbacks.confirm,
                     copyReport = { host.copyText(deviceReport()); reportCopied = true; invalidate() },
                     factoryReset = { act { factoryResetConfirmedByUser() } },
+                    openFit = { openPage(FitTestPage(current, strings, theme(), { keep -> act { startFitTest(keep) } }, { invalidate() }, { closePage() })) },
+                    openSeal = { openPage(SealCheckPage(strings, theme(), host.tones, { invalidate() }, { closePage() })) },
                     changed = { invalidate() },
                 ),
             ).build()
             else -> Label(s.text(tab.titleKey), theme.title)
+        }
+    }
+
+    private fun hearingOpener(d: Paired): (() -> Unit)? {
+        val eq = equalizer.state.value ?: return null
+        val table = hearingTable(d, eq) ?: return null
+        return {
+            openPage(
+                HearingTestPage(
+                    eq, table, (eq.target as? BandEqTarget)?.source is SoundpeatsBandEq, strings, theme(), host.tones,
+                    apply = { name, gains -> eqActions.applyCurve(name, gains) }, invalidate = { invalidate() }, onClose = { closePage() },
+                ),
+            )
         }
     }
 

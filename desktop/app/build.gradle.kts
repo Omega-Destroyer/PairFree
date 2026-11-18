@@ -11,7 +11,7 @@ kotlin {
                 entryPoint = "io.github.omegadestroyer.pairfree.app.main"
                 baseName = "PairFree"
                 // A window program: no console opens with it.
-                linkerOpts("-Wl,--subsystem,windows")
+                linkerOpts("-Wl,--subsystem,windows", "-lwinmm", "-lole32")
             }
         }
     }

@@ -201,6 +201,7 @@ class Button(
         val hot = enabled && ctx.hover == key
         val down = enabled && ctx.pressed == key
         val fill = when {
+            primary && !enabled -> t.withAlpha(t.accent, 0.35f)
             primary -> if (down) t.withAlpha(t.accent, 0.8f) else t.accent
             down -> t.highlight
             hot -> t.highlight
@@ -211,7 +212,7 @@ class Button(
         c.fillRoundRect(x, y, w, h, t.smallCorner, fill)
         if (!primary) c.strokeRoundRect(x + 0.5f, y + 0.5f, w - 1f, h - 1f, t.smallCorner, if (hot) t.accent else t.outline, t.look.hairline)
         val color = when {
-            !enabled -> t.secondaryText
+            !enabled -> if (primary) t.text else t.secondaryText
             primary -> t.onAccent
             else -> t.text
         }
@@ -265,7 +266,7 @@ fun segmented(prefix: String, items: List<String>, selected: Int?, primary: Bool
 }
 
 /** A level as a bar: [fraction] 0..1, or null while unknown. */
-class LevelBar(private val fraction: Float?) : Widget() {
+class LevelBar(private val fraction: Float?, private val warnWhenLow: Boolean = false) : Widget() {
     override fun height(ctx: Ctx, width: Float) = 6f
 
     override fun draw(ctx: Ctx) {
@@ -273,7 +274,7 @@ class LevelBar(private val fraction: Float?) : Widget() {
         ctx.canvas.fillRoundRect(x, y, w, h, 3f, t.raised)
         if (fraction != null) {
             val f = min(1f, max(0f, fraction))
-            val low = fraction < 0.2f
+            val low = warnWhenLow && fraction < 0.2f
             ctx.canvas.fillRoundRect(x, y, max(h, w * f), h, 3f, if (low) t.destructive else t.accent)
         }
     }

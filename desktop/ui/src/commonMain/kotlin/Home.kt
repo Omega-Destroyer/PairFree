@@ -80,7 +80,7 @@ internal class HomeScreen(
         if (reading == null || level == null || reading.isPercent) {
             val percent = reading?.percent
             number = Label(percent?.let { s.text("percent", it) } ?: s.text("unknown"), theme.bigNumber, align = Align.CENTER)
-            bar = LevelBar(percent?.let { it / 100f })
+            bar = LevelBar(percent?.let { it / 100f }, warnWhenLow = true)
         } else {
             number = Spacer(0f)
             bar = StepBar(level, reading.levels)

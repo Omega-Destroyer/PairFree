@@ -30,6 +30,7 @@ internal class SoundScreen(
     private val s: DesktopStrings,
     private val theme: Theme,
     private val call: SoundCallbacks,
+    private val onHearingTest: (() -> Unit)? = null,
 ) {
     private fun label(text: String) = Label(text, theme.labelFont, theme.label, caps = true)
 
@@ -92,6 +93,7 @@ internal class SoundScreen(
             if (i < eq.profiles.size) actions.select(eq.profiles[i]) else actions.startNew()
         }
         parts += label(s.text("eq_on_earbuds", currentName(eq)))
+        if (onHearingTest != null) parts += Button(s.text("hearing_test"), "hearing_open") { onHearingTest() }
         if (!eq.known) parts += note(s.text(if (eq.target.reportsEq) "eq_reading" else "eq_unknown_hint"))
         if (!eq.target.confirmed) parts += note(s.text("eq_unconfirmed"))
 

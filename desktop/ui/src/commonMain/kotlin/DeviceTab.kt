@@ -17,6 +17,8 @@ internal class DeviceCallbacks(
     val confirm: (title: String, body: String, confirm: String, onConfirm: () -> Unit) -> Unit,
     val copyReport: () -> Unit,
     val factoryReset: () -> Unit,
+    val openFit: () -> Unit,
+    val openSeal: () -> Unit,
     val changed: () -> Unit,
 )
 
@@ -68,6 +70,18 @@ internal class DeviceTab(
             if (model?.ldacOrMultipoint == true) out += note(s.text("ldac_or_multipoint"))
             parts += Panel(Column(out, 8f))
         }
+
+        // Earbuds without a fit test of their own can still use the tone check (PairFree's version, for every brand).
+        parts += Panel(
+            Column(
+                listOf(
+                    label(s.text("ear_tips")),
+                    note(s.text(if (state.hasFitTest) "fit_test_about" else "seal_check_about")),
+                    if (state.hasFitTest) Button(s.text("fit_test_open"), "fit_open") { call.openFit() } else Button(s.text("seal_check_open"), "seal_open") { call.openSeal() },
+                ),
+                8f,
+            ),
+        )
 
         if (state.supports(Command.WATER_DRAIN)) {
             val draining = state.switch(Command.WATER_DRAIN) == true

@@ -1,0 +1,20 @@
+{
+ "name": "Jabra Elite 8 Active Gen 2",
+ "names": [
+  "Elite 8 Active Gen 2",
+  "Jabra Elite 8 Active Gen 2"
+ ],
+ "codes": [
+  "Jabra Elite 8 Active Gen 2"
+ ],
+ "source": "Traced from the render Jabra Sound+ bundles of the left earbud (elite_8_active_g2_navy), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "170,75 189,76 209,80 226,88 243,99 258,115 272,133 283,155 291,179 296,184 378,183 417,188 444,195 470,206 495,220 521,242 537,260 556,292 568,324 573,357 572,397 564,430 549,462 531,487 506,511 470,533 426,548 372,554 305,552 247,542 207,528 173,508 145,480 130,455 119,424 103,299 98,290 76,270 63,252 54,229 51,203 56,176 65,151 77,129 90,112 108,95 128,84 148,77",
+  "axis": [
+   312.4,
+   314.4
+  ]
+ },
+ "case": "generic"
+}

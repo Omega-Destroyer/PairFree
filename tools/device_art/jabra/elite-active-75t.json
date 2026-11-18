@@ -1,0 +1,20 @@
+{
+ "name": "Jabra Elite Active 75t",
+ "names": [
+  "Elite Active 75t",
+  "Jabra Elite Active 75t"
+ ],
+ "codes": [
+  "Jabra Elite Active 75t"
+ ],
+ "source": "Traced from the render Jabra Sound+ shows in its device list (elite_active_75t_navy, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "248,321 281,322 313,333 341,352 357,371 369,392 376,419 376,455 366,486 353,510 325,546 300,568 277,579 265,583 236,587 184,579 144,568 130,559 121,550 91,500 52,491 37,481 25,468 15,451 9,432 7,415 12,393 27,370 42,359 55,353 78,349 96,350 121,358 140,370 145,371 207,334 234,323",
+  "axis": [
+   191.6,
+   454.2
+  ]
+ },
+ "case": "generic"
+}

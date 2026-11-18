@@ -1,0 +1,20 @@
+{
+ "name": "Jabra Elite Active 65t",
+ "names": [
+  "Elite Active 65t",
+  "Jabra Elite Active 65t"
+ ],
+ "codes": [
+  "Jabra Elite Active 65t"
+ ],
+ "source": "Traced from the render Jabra Sound+ shows in its device list (elite_active_65t_copper_blue, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "115,289 138,289 156,295 168,302 187,322 193,325 220,319 252,316 281,319 306,326 343,345 362,361 375,378 390,404 399,435 402,458 399,494 390,523 375,551 354,577 330,597 306,611 276,622 233,627 206,625 168,615 126,589 31,560 18,553 9,545 0,515 0,474 5,460 15,453 69,454 74,452 76,448 73,430 53,405 46,387 44,366 50,343 60,325 76,307 92,296",
+  "axis": [
+   201.0,
+   457.8
+  ]
+ },
+ "case": "generic"
+}

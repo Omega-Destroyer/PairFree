@@ -1,0 +1,23 @@
+{
+ "name": "Jabra Elite Active 45e",
+ "names": [
+  "Elite Active 45e",
+  "Jabra Elite Active 45e"
+ ],
+ "codes": [
+  "Jabra Elite Active 45e"
+ ],
+ "source": "Traced from the render Jabra Sound+ shows in its device list (elite_active_45e_black, the left earpiece and its neckband), not in the repo.",
+ "bud": {
+  "kind": "neckband",
+  "body": "157,140 175,143 190,150 199,162 206,181 209,216 208,239 205,276 191,352 195,360 213,379 220,391 223,405 223,427 215,451 203,465 184,475 151,480 142,487 122,554 106,627 102,633 92,634 87,632 86,626 98,567 120,487 117,467 111,462 93,466 80,466 61,458 48,446 12,402 8,397 8,389 16,362 22,351 35,340 46,307 64,279 110,183 134,151 146,143",
+  "holes": [
+   "157,196 160,199 160,230 151,295 148,311 145,313 116,293 113,288 136,228 150,204"
+  ],
+  "axis": [
+   115.6,
+   386.9
+  ]
+ },
+ "case": null
+}

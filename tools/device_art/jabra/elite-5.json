@@ -1,0 +1,20 @@
+{
+ "name": "Jabra Elite 5",
+ "names": [
+  "Elite 5",
+  "Jabra Elite 5"
+ ],
+ "codes": [
+  "Jabra Elite 5"
+ ],
+ "source": "Traced from the render Jabra Sound+ shows in its device list (elite_5_gold_beige, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "102,282 120,284 146,294 164,309 184,334 197,333 245,321 267,319 287,320 304,324 318,331 340,350 350,367 360,395 365,427 365,447 361,473 353,495 342,514 324,533 305,547 281,557 228,566 200,566 163,560 137,550 117,534 105,518 99,504 82,434 77,428 58,417 44,403 35,386 32,368 38,334 52,308 76,289",
+  "axis": [
+   198.5,
+   424.2
+  ]
+ },
+ "case": "generic"
+}

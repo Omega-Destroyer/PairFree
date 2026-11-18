@@ -1,0 +1,23 @@
+{
+ "name": "Jabra Elite 4 / Jabra Elite 4 Active",
+ "names": [
+  "Elite 4",
+  "Elite 4 Active",
+  "Jabra Elite 4",
+  "Jabra Elite 4 Active"
+ ],
+ "codes": [
+  "Jabra Elite 4",
+  "Jabra Elite 4 Active"
+ ],
+ "source": "Traced from the render Jabra Sound+ bundles of the left earbud (elite_4_active_navy; the Elite 4, which no Sound+ render shows, shares it), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "151,126 183,129 215,143 243,166 266,197 273,201 292,199 370,178 416,173 442,176 469,185 494,200 514,219 534,248 549,289 557,335 557,385 549,426 537,457 521,484 494,513 461,536 421,552 375,561 309,564 260,559 223,550 193,534 166,510 154,492 145,472 116,362 111,356 81,340 60,320 45,294 38,261 39,236 45,209 54,188 69,166 85,150 106,136 130,128",
+  "axis": [
+   297.2,
+   344.8
+  ]
+ },
+ "case": "generic"
+}

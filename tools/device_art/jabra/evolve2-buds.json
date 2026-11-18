@@ -1,0 +1,20 @@
+{
+ "name": "Jabra Evolve2 Buds",
+ "names": [
+  "Evolve2 Buds",
+  "Jabra Evolve2 Buds"
+ ],
+ "codes": [
+  "Jabra Evolve2 Buds"
+ ],
+ "source": "Traced from the render Jabra Sound+ bundles of the left earbud (evolve2_buds_ms_titanium_black), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "130,151 160,151 192,160 220,177 245,203 252,207 267,203 328,181 351,176 384,174 412,177 442,185 469,197 493,212 518,235 537,261 551,290 559,321 561,353 556,388 545,417 527,447 499,477 466,500 428,518 378,531 323,537 272,534 228,524 209,516 190,505 169,485 151,457 143,439 125,377 119,372 86,359 64,343 45,318 35,288 33,266 36,242 43,217 54,197 70,179 88,165 109,155",
+  "axis": [
+   297.1,
+   343.8
+  ]
+ },
+ "case": "generic"
+}

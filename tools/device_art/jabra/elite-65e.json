@@ -1,0 +1,20 @@
+{
+ "name": "Jabra Elite 65e",
+ "names": [
+  "Elite 65e",
+  "Jabra Elite 65e"
+ ],
+ "codes": [
+  "Jabra Elite 65e"
+ ],
+ "source": "Traced from the render Jabra Sound+ shows in its device list (elite_65e_titanium_black, the left earpiece and its cable), not in the repo.",
+ "bud": {
+  "kind": "neckband",
+  "body": "117,57 130,57 140,59 147,65 148,73 141,81 119,90 105,99 97,113 99,123 127,150 152,182 161,181 178,165 189,168 235,213 241,223 244,234 243,251 237,276 229,294 219,306 203,310 138,312 134,315 144,395 139,446 160,603 160,616 152,621 134,620 128,614 108,459 92,424 83,398 65,295 59,287 33,273 20,258 8,234 0,204 0,186 8,158 42,97 55,82 74,70 90,63",
+  "axis": [
+   121.9,
+   338.7
+  ]
+ },
+ "case": null
+}

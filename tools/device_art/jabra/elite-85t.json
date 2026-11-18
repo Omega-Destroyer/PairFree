@@ -1,0 +1,20 @@
+{
+ "name": "Jabra Elite 85t",
+ "names": [
+  "Elite 85t",
+  "Jabra Elite 85t"
+ ],
+ "codes": [
+  "Jabra Elite 85t"
+ ],
+ "source": "Traced from the render Jabra Sound+ shows in its device list (elite_85t_titanium_black, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "235,306 264,305 294,313 322,328 343,347 361,375 370,408 370,435 363,463 351,485 335,504 318,516 300,525 281,531 178,555 159,556 138,551 125,543 115,531 105,498 90,495 80,489 63,471 51,453 43,435 40,422 46,393 60,369 81,350 93,346 108,345 151,352 175,330 190,320 216,309",
+  "axis": [
+   205.2,
+   430.5
+  ]
+ },
+ "case": "generic"
+}

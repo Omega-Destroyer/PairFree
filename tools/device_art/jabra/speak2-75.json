@@ -1,0 +1,20 @@
+{
+ "name": "Jabra Speak2 75",
+ "names": [
+  "Jabra Speak2 75",
+  "Speak2 75"
+ ],
+ "codes": [
+  "Jabra Speak2 75"
+ ],
+ "source": "Traced from the render Jabra Sound+ shows in its device list (speak2_75_ms_dark_grey), not in the repo.",
+ "bud": {
+  "kind": "headphones",
+  "body": "295,159 384,162 430,168 477,177 517,189 554,205 583,222 602,240 615,259 619,275 615,369 608,386 586,416 575,440 554,463 535,477 511,490 452,510 380,523 310,526 228,519 163,504 107,481 84,466 67,450 59,439 47,414 26,386 19,366 16,274 20,258 28,245 46,227 72,209 127,186 206,167 252,162",
+  "axis": [
+   317.3,
+   342.7
+  ]
+ },
+ "case": null
+}

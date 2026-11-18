@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.soundcore
 
+import kotlin.jvm.JvmName
+
 import io.github.omegadestroyer.pairfree.protocol.EqBand
 import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.EqPreset

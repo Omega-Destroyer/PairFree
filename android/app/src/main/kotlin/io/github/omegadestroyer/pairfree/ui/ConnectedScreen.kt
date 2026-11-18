@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.ui
 
+import io.github.omegadestroyer.pairfree.brands.modelOf
+
 
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTables
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
@@ -164,7 +166,7 @@ internal fun ConnectedScreen(
                 // With no equalizer to offer yet, a recording from the official app adds it.
                 Tab.SOUND -> SoundScreen(
                     eq, eqActions, if (Brands[device.brand].offersRecording) actions::openCapture else null, settings, actions::changeSetting,
-                    unavailableNote = Brands[device.brand].eqNote(device),
+                    unavailableNote = Brands[device.brand].eqNote(device).text,
                     onHearingTest = if (samsungHearing || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
                     onFinder = if (eq != null && eq.target.hasCustom) ({ finder = true }) else null,
                 )
@@ -193,7 +195,6 @@ private fun hearingTable(device: Paired, eq: EqState?): HearingTable? = when {
 private const val HEARING_MIN_BANDS = 3
 
 /** The model's table entry, as its brand finds it from the name and what the earbuds have answered so far. */
-internal fun modelOf(device: Paired, state: EarbudState): Model? = Brands[device.brand].model(device, state)
 
 /** A tab's content: scrolls if it must, 16 px gutters, 16 px between blocks. */
 @Composable

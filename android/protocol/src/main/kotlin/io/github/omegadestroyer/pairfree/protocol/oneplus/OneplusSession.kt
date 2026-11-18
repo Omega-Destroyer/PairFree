@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.oneplus
 
+import io.github.omegadestroyer.pairfree.protocol.toHex2
+
 import io.github.omegadestroyer.pairfree.protocol.BandEq
 import io.github.omegadestroyer.pairfree.protocol.BandEqReport
 import io.github.omegadestroyer.pairfree.protocol.Command
@@ -136,7 +138,7 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq, FitTest {
         when (p.id) {
             OneplusCommand.CAPABILITIES -> capabilities = OneplusReads.capabilityBits(p)
             OneplusCommand.BATTERY -> OneplusBattery.of(p)?.let(::battery)
-            OneplusCommand.PRODUCT -> if (d.size >= PRODUCT_SIZE) productId = "%02X%02X%02X".format(d[3].toInt() and 0xFF, d[2].toInt() and 0xFF, d[1].toInt() and 0xFF)
+            OneplusCommand.PRODUCT -> if (d.size >= PRODUCT_SIZE) productId = listOf(d[3], d[2], d[1]).joinToString("") { it.toHex2().uppercase() }
             OneplusCommand.TYPED_NOISE -> noise(d)
             OneplusCommand.EQ_PRESET -> if (d.size >= 2) presetIndex = d[1].toInt() and 0xFF
             OneplusCommand.SWITCHES -> switches(d)
@@ -343,7 +345,8 @@ public class OneplusSession(public val model: OneplusModel?) : BandEq, FitTest {
     private fun peerNames(list: List<Peer>): List<Pair<String, Peer>> {
         val seen = mutableMapOf<String, Int>()
         return list.map { p ->
-            val n = seen.merge(p.name, 1, Int::plus)!!
+            val n = (seen[p.name] ?: 0) + 1
+            seen[p.name] = n
             (if (n == 1) p.name else "${p.name} ($n)") to p
         }
     }

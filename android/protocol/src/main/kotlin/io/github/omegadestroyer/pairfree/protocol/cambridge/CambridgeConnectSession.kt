@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.cambridge
 
+import io.github.omegadestroyer.pairfree.protocol.PMath
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -133,7 +135,7 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
                     CambridgeConnectMisc.GET_FIND_HEADPHONES_ALERT, CambridgeConnectMisc.SET_FIND_HEADPHONES_ALERT -> on()?.let { flags["ca_find_alert"] = it }
                     CambridgeConnectMisc.GET_DEVICES -> if (p.size >= 26) {
                         if (peersFresh) { peers.clear(); peersFresh = false }
-                        val name = String(p.subList(1, 21).takeWhile { it != 0 }.map { it.toByte() }.toByteArray(), Charsets.UTF_8)
+                        val name = p.subList(1, 21).takeWhile { it != 0 }.map { it.toByte() }.toByteArray().decodeToString()
                         peers[p[0]] = name to p[25]
                     }
                     CambridgeConnectMisc.GET_LEFT_RIGHT_BALANCE, CambridgeConnectMisc.SET_LEFT_RIGHT_BALANCE -> if (p.size >= 2 && p[1] in 0..100) {
@@ -259,7 +261,7 @@ public class CambridgeConnectSession(public val model: CambridgeModel) {
         if (bandCount == 0 || gains.size != bandCount) return null
         val clamped = gains.map { it.coerceIn(config.eqMinDb, config.eqMaxDb) }
         val payload = intArrayOf(0, bandCount - 1) + clamped.flatMap { g ->
-            val raw = Math.round(g * CambridgeConnectMusic.GAIN_FACTOR).toInt()
+            val raw = PMath.round(g * CambridgeConnectMusic.GAIN_FACTOR).toInt()
             listOf((raw shr 8) and 0xff, raw and 0xff)
         }
         bands = bands?.mapIndexed { i, b -> b.first to clamped[i] }

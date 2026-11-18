@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "PairFree"
-include(":app", ":protocol")
+include(":app", ":protocol", ":core")

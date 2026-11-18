@@ -125,7 +125,7 @@ public object VendorRecording {
             if (unknown.isNotEmpty()) {
                 out += "Soundcore transfer/research diagnostics (unknown IDs are not identified as uploads):"
                 for ((key, packets) in unknown.groupBy { Triple(it.id, it.fromEarbuds, it.channel) }) {
-                    val sizes = packets.groupingBy { it.payload.size }.eachCount().toSortedMap()
+                    val sizes = packets.groupingBy { it.payload.size }.eachCount().sortedByKey()
                     out += "${if (key.second) "buds" else "app"} ${idText(earbuds.brand, key.first)} channel=${key.third} " +
                         "packets=${packets.size} payload_bytes=${packets.sumOf { it.payload.size.toLong() }} " +
                         "sizes=${sizes.entries.joinToString(",") { "${it.key}x${it.value}" }} " +

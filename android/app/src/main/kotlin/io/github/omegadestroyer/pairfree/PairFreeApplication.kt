@@ -17,10 +17,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import io.github.omegadestroyer.pairfree.bluetooth.AudioLinks
 import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.bluetooth.AndroidTransport
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
+import io.github.omegadestroyer.pairfree.bluetooth.androidPlatform
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.EqOpener
+import io.github.omegadestroyer.pairfree.eq.PrefsTextStore
 import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Identify
@@ -74,8 +77,8 @@ class Hub(private val app: Application) {
     /** Debug builds log every frame to Logcat under the tag `PairFree`; release builds log nothing. */
     val connection = EarbudsConnection(
         scope,
-        adapter,
-        context = app,
+        AndroidTransport(app, adapter),
+        androidPlatform(),
         log = if (app.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) { line -> Log.d(LOG_TAG, line) } else null,
         assistantIsGoogle = ::assistantIsGoogle,
     )
@@ -95,7 +98,7 @@ class Hub(private val app: Application) {
     val audio = AudioLinks(app, adapter)
 
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
-    val equalizer = Equalizer(prefs, scope, { frames -> connection.sendEq(frames) }, { app.getString(R.string.eq_imported_name) })
+    val equalizer = Equalizer(PrefsTextStore(prefs), scope, { frames -> connection.sendEq(frames) }, { app.getString(R.string.eq_imported_name) })
 
     /** Opens [equalizer] for the connected earbuds of any brand; the Sound tab and the home screen widget share it. */
     val eqOpener = EqOpener(connection, equalizer, scope)

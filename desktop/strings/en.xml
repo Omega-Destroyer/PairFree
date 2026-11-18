@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      The desktop apps' own wording (docs/DESKTOP.md): only entries whose text differs on a computer, under the same name as in
+      android/app/src/main/res/values/strings.xml, which the desktop apps use for every other entry. A language's file is
+      desktop/strings/<language tag>.xml. For a language, its own desktop wording comes first, then its main file, then English's
+      desktop wording and then English.
+    -->
+    <!-- On a computer the look that takes the phone's colours takes the system's: its accent colour and its dark or light mode. -->
+    <string name="look_material_you">System</string>
+    <string name="app_language_system">Same as the computer</string>
+    <string name="no_paired">No supported earbuds paired. Pair them in Windows' Bluetooth settings first.</string>
+    <string name="privacy_line">No account. No internet. Nothing leaves this computer.</string>
+    <string name="ldac_phone_note">Windows picks the codec, and it has no LDAC of its own; this setting only changes what the earbuds offer.</string>
+    <string name="eq_unknown_hint">These earbuds cannot report their EQ, and this computer has not set one on them yet. Pick a profile or move a band to set it.</string>
+    <string name="eq_delete_body">The profile is removed from this computer. The earbuds keep the sound they have now.</string>
+    <string name="eq_note">0 dB on every band is the earbuds' own tuning. The earbuds cannot report their EQ, so each time PairFree connects it puts back the one this computer last set, as the official app does.</string>
+    <string name="setting_call_path_note">Calls play through the earbuds while they are in your ears, and through the computer when they are not.</string>
+    <string name="le_audio_note">Uses Bluetooth LE Audio where the computer supports it. The earbuds restart to switch and reconnect by themselves.</string>
+    <string name="setting_jbl_touch_assistant">Voice assistant: hold to talk to the voice assistant of the device they are connected to</string>
+    <string name="setting_codec_note">Windows picks the codec when the earbuds connect. Reconnect them for a change to take effect.</string>
+    <string name="setting_sleep_listening_mode_note">Bluetooth plays from your computer. Local plays the sounds held on the earbuds, which lasts longer on a charge.</string>
+    <string name="factory_reset_body">Every setting on the earbuds goes back to how it left the factory. They may also forget this computer; then pair them again in Windows' Bluetooth settings.</string>
+    <string name="setting_sony_connection_priority_note">Sound quality lets the earbuds offer LDAC; a stable connection drops out less in crowded places.</string>
+    <string name="setting_bose_le_audio_note">Uses LE Audio, the newer Bluetooth audio, where your computer supports it. The headphones reconnect when you change this, so the connection drops for a moment.</string>
+    <string name="setting_ef_codec_in_use_note">The Bluetooth audio codec the earbuds report using right now. Windows chooses it; PairFree only shows it.</string>
+    <string name="setting_connection_mode_note">Game mode lowers the delay of the sound; LDAC raises its quality where the computer supports it. Windows still picks the codec when the earbuds connect.</string>
+    <string name="setting_ca_codec_note">Language and codec changes require both earbuds. A codec preference changes what the earbuds offer; Windows chooses the active codec. Changing it may reconnect the earbuds.</string>
+    <string name="setting_sh_fit_note">Wear both earbuds and start. PairFree plays a steady low tone from the computer while the earbuds measure for about 25 seconds; keep the volume at a comfortable medium level and stay quiet.</string>
+</resources>

@@ -15,7 +15,7 @@ import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
-import io.github.omegadestroyer.pairfree.ui.modelOf
+import io.github.omegadestroyer.pairfree.brands.modelOf
 
 /**
  * What a widget button can be set to for one pair of earbuds. [noise] and [eq] may be empty; [needsConnection] says the

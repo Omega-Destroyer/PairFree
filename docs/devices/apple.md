@@ -4,6 +4,11 @@ PairFree is growing into one app for earbuds of several brands, with the same sc
 each. AirPods support is new and has not been tried with PairFree yet: nobody on the project
 owns a pair, so every model relies on reports from people who do.
 
+## Windows and macOS
+
+AirPods and the Beats on Apple's chips are **not supported on Windows**: their settings channel needs a kind of Bluetooth connection (L2CAP) that Windows gives
+programs no way to open without a driver of its own, and PairFree does not install drivers. The desktop apps list them as not supported.
+
 ## Which phones
 
 This section is about AirPods. The Beats on Apple's chips (see the note under the table) use an ordinary serial

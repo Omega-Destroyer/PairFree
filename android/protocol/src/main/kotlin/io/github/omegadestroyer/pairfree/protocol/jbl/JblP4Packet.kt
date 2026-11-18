@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.jbl
 
+import io.github.omegadestroyer.pairfree.protocol.sortedValues
+
 /** A frame to or from JBL earbuds: Harman's AA commands ([JblPacket]) or protocol 4's ([JblP4Packet]). */
 public interface JblFrame {
     public fun bytes(): ByteArray
@@ -104,7 +106,7 @@ public class JblP4Packet(
  * length does not match is dropped.
  */
 public class JblP4Parser {
-    private val parts = sortedMapOf<Int, ByteArray>()
+    private val parts = mutableMapOf<Int, ByteArray>()
     private var expected = 0
 
     public fun feed(bytes: ByteArray): List<JblP4Packet> {
@@ -122,7 +124,7 @@ public class JblP4Parser {
         }
         parts[index] = bytes.copyOfRange(HEADER, bytes.size)
         if (parts.size < count) return emptyList()
-        val payload = parts.values.fold(ByteArray(0)) { acc, p -> acc + p }
+        val payload = parts.sortedValues().fold(ByteArray(0)) { acc, p -> acc + p }
         parts.clear()
         return listOf(JblP4Packet(command, payload, identifier))
     }

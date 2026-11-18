@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.qcy
 
+import io.github.omegadestroyer.pairfree.protocol.sortedByKey
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Form
@@ -535,7 +537,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         val gestureSide = key.removePrefix("touch_")
         val id = QcyKeys.KEYS.entries.firstOrNull { it.value == gestureSide }?.key ?: return null
         val action = (model?.touch?.table ?: QcyKeys.ACTIONS).entries.firstOrNull { it.value == option }?.key ?: return null
-        val next = (table + (id to action)).toSortedMap()
+        val next = (table + (id to action)).sortedByKey()
         keys = next
         readBacks += GattEnvelope.read(QcyWire.KEYS_SHORT)
         return GattEnvelope.write(QcyWire.KEYS_SHORT, next.flatMap { (k, a) -> listOf(k.toByte(), a.toByte()) }.toByteArray())

@@ -209,3 +209,39 @@ trust/secure-session transcript; per-firmware action/EQ/preset choices; native c
 Start with the model's complete configuration and safe reads, then validate with actual recordings or
 hardware. Neither public reference virtual tests nor a valid checksum justifies marking a product as
 tried. No hard-rule blocker was established for reading ordinary local settings.
+
+## 9. The Bragi SDK's own device configurations and its AT dialect (read 2026-11-18)
+
+Source: Skullcandy 5.0.6, `com/bragi/sdk/android/device/config/c.java` (decompiled outside the repo), imported by `tools/import_skullcandy_app.py` into
+`data/skullcandy/sdk_devices.json`. **Only ten products have a configuration in the SDK**; the app's other catalogue entries go through other routes (section 10).
+Each configuration names the model, its chipset, its serial services and, per feature, the transport that carries it (`FeatureServiceType`: `BOS_AT`, `BOS_RPC`,
+`AIROHA_RACE`, `AIROHA_RACE_CUSTOM`, `PLUGIN`; the enum also lists `QCOMM_GAIA`, `BOS_RPC_GAIA` and `PROPRIETARY`, which no config of the ten uses).
+
+| SDK key | Names the app matches | Chipset | Catalogue id (BLE model id) | Features come over |
+|---|---|---|---|---|
+| GRIND | Grind, Sesh Boost | AB1565 | 0x09 | AT (21 features), Airoha RACE (3: EQ, TWS, update) |
+| GRIND_FUEL | Grind Fuel, Sesh Boost Costco | AB1565 | 16 (the catalogue lists 0x63) | the same |
+| PUSH_ACTIVE | Push Active, Oppactive | AB1565 | 0x08 | the same |
+| CHP200 | CHP200, S6CAW (Crusher ANC 2) | AB1568 | 0x16 | AT (19), RACE (6, with multipoint and the ANC gain) |
+| T70 | T70, S2RLW-Q740 (Rail) | AB1562 | 0x21 | RACE (7) and RACE custom (14) |
+| T80_PLUS | T80+, S2IPW-P740 (Rail ANC) | AB1562 | 0x15 | RACE (10) and RACE custom (14) |
+| T99_PLUS | Method 360 ANC | AB1585 | 0x1D | BOS-RPC (protobuf, 20), RACE (3) |
+| T120 | Method 540 ANC | AB1585 | 0x2D | BOS-RPC (21), RACE (3) |
+| CHP300 | CHP300, Crusher 1080 ANC | AB1595 | 0x34 | BOS-RPC (25), RACE (4) |
+| P6 | Skullcandy P6 (a speaker) | JL7012 | none | JieLi plugin (9) |
+
+The serial services: Grind, Grind Fuel, Push Active and the Crusher ANC 2 use the SDK's `b.a` (`ed0e95a6-8ab5-4642-8654-6c744a37c99b`) with a second service
+`b.b` (`351178d6-76dd-4ec3-b939-43f9a11e3617`); the Rail and Rail ANC use Airoha's own (`FFEEDDCC-BBAA-9988-7766-554433221100` on the Rail); the Method 360 and 540
+and the Crusher 1080 ANC use `54C5BF4C-C52F-4635-98DC-EEBF97C6726F` (Bragi's RPC service), `EA4F0F8F-89AF-4914-9DFF-AA14E4185810` and, for Airoha RACE,
+`A4602B24-F9F1-4AC3-988C-228D764B97A6`. Both ids were computed from the byte arrays in `b.java` (two bytes of each are constants of JieLi's `AttrAndFunCode`, 14 and 17, 21).
+The importer leaves the Rail ANC's control service empty where the decompiler wrote it as a variable; that is to be read by hand.
+
+**The AT dialect** (`transport/at`): plain text lines over the serial service, `AT.<GROUP>=<args>` to set and `AT.<GROUP>?` to read, ending with CR LF; a reply is read up to
+its boundary and an error is `ERROR`. The app's 81 AT strings, grouped: `AT.UIAUDIO=` (`anc`, `anc_filter`, `transparency`, `atoncall`, `atonpause`, `trackinfo`),
+`AT.UI=` (`info`, `get`, `set`, `default`, `used`, `inject`, `invoke`, `notify`, `single_side_mode`: the button/gesture key map), `AT.UIGESTURE`, `AT.UILANGUAGE`,
+`AT.UIVOICE=` (`enable`, `disable`, `mode`, `start`, `stop`), `AT.VOLUME=`, `AT.VOLUMEGESTURE`, `AT.AUTOMUTE=` (`sound`, `mute_timer`), `AT.CRUSHER` (`level`), `AT.LATENCY=gaming_mode`,
+`AT.MIMI=` (personalisation: `state`, `intensity`, `preset`, `userid`, `version`, `clear`), `AT.FEATURE=` (`count`, `info`, `enable`), `AT.SYSINFO=battery`, `AT.DEVINFO?`,
+`AT.TIME`, `AT.LOCATION`, `AT.IMU=calibration`, `AT.BLUETOOTH=` (`advcachedname`, `advcustomname`, `pdlreset`), `AT.IDAM=` (`did`, `peer_did`) and `AT.FACTORY_RESET=default`.
+Never send `AT.FACTORY_RESET`, `AT.BLUETOOTH=pdlreset` (clears the paired devices), `AT.IMU=calibration`, `AT.TIME`, `AT.LOCATION`, `AT.IDAM` (device ids) or `AT.UI=inject` and
+`invoke` (they run arbitrary UI commands). The full literal list is in `E:\Builds\research\skullcandy-at-strings.txt` (outside the repo); the argument values per command are
+still to be read from their callers (`api/ui/data/at`, `api/audio/data/at` and the `anc`, `ancFilter`, `transparency` mappers).

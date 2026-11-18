@@ -39,7 +39,13 @@ abstract class Widget {
 }
 
 /** A widget the pointer can press. [key] names it from one frame to the next. */
-abstract class Clickable(val key: String, var enabled: Boolean = true, val onClick: () -> Unit) : Widget()
+abstract class Clickable(val key: String, var enabled: Boolean = true, val onClick: () -> Unit) : Widget() {
+    /** The pointer is down on this widget at ([px], [py]) and moves: a slider or a graph follows it. Called on the press too. */
+    open fun drag(px: Float, py: Float) = Unit
+
+    /** The pointer went down on this widget; by default the same as a move. */
+    open fun press(px: Float, py: Float) = drag(px, py)
+}
 
 class Spacer(private val size: Float) : Widget() {
     override fun height(ctx: Ctx, width: Float) = size

@@ -34,7 +34,18 @@ class DesktopStrings(tag: String?) {
         return format(raw, if (args.isEmpty()) arrayOf<Any?>(count) else args)
     }
 
+    /**
+     * An EQ preset's name in this language: its entry where the language file has one (the names PairFree gives the vendors' presets,
+     * `preset_name_*`, and the vendors' own wording, `vendor_*`), else the English wording, which stays the preset's name in the code.
+     */
+    fun presetLabel(name: String): String = presetKeys[name]?.let { text(it) } ?: name
+
     companion object {
+        /** English preset name to its key in the strings table, read once from the English file. */
+        private val presetKeys: Map<String, String> by lazy {
+            StringTables.load("en")!!.first.strings.filterKeys { it.startsWith("preset_name_") || it.startsWith("vendor_") }.entries.associate { (k, v) -> v to k }
+        }
+
         /** The languages built in, as tags, English first. */
         val languages: List<String> get() = StringTables.tags
 

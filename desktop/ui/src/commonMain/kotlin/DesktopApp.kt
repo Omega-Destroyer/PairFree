@@ -4,6 +4,10 @@ import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.eq.EqActions
+import io.github.omegadestroyer.pairfree.eq.EqProfile
+import io.github.omegadestroyer.pairfree.eq.EqOpener
+import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.shell.APP_VERSION
@@ -33,7 +37,16 @@ interface Host {
 
     /** Where the settings file is, for the settings screen to say. */
     val settingsPath: String
+
+    /** Lets the user pick a text file and returns its text, or null when none was picked or it cannot be read. */
+    fun openTextFile(): String?
+
+    /** Lets the user choose where to save [text], suggesting [name]; false when none was chosen or it could not be written. */
+    fun saveTextFile(name: String, text: String): Boolean
 }
+
+/** Keys the app acts on besides characters. */
+enum class Key { BACKSPACE, DELETE, LEFT, RIGHT, HOME, END, ENTER, ESCAPE }
 
 /** An entry of the tray icon's menu, which the system draws. */
 sealed interface TrayItem {
@@ -52,6 +65,7 @@ sealed interface TrayItem {
  */
 class DesktopApp(
     private val connection: EarbudsConnection,
+    private val equalizer: Equalizer,
     val settings: DesktopSettings,
     private val host: Host,
     private val system: () -> SystemColors,
@@ -77,6 +91,33 @@ class DesktopApp(
 
     @kotlin.concurrent.Volatile
     private var scanned = false
+
+    /** The earbuds shown, for the code that opens their equalizer. */
+    val currentDevice: Paired? get() = device
+
+    private var eqBand = 0
+    private var eqMessage: String? = null
+    private var dialog: Dialog? = null
+
+    /** A question over the window: a name to type, or a confirmation. */
+    private class Dialog(val title: String, val body: String?, val confirm: String, val field: Boolean, var text: String, val onConfirm: (String) -> Unit) {
+        var caret = text.length
+    }
+
+    /** The equalizer's actions, run where the connection lives. */
+    private val eqActions = object : EqActions {
+        override fun select(profile: EqProfile) = onConnection { equalizer.select(profile) }
+        override fun startNew() = onConnection { equalizer.startNew() }
+        override fun setGain(band: Int, db: Double) = onConnection { equalizer.setGain(band, db) }
+        override fun setPreamp(db: Int) = onConnection { equalizer.setPreamp(db) }
+        override fun save(name: String) = onConnection { equalizer.save(name) }
+        override fun applyCurve(name: String, gains: List<Int>) = onConnection { equalizer.applyCurve(name, gains) }
+        override fun preview(gains: List<Int>) = onConnection { equalizer.preview(gains) }
+        override fun previewDb(gains: List<Double>) = onConnection { equalizer.previewDb(gains) }
+        override fun delete(profile: EqProfile) = onConnection { equalizer.delete(profile) }
+        override fun exportJson(): String = equalizer.exportJson()
+        override fun importJson(text: String): Boolean = false
+    }
 
     /** Strings follow the settings. */
     private var strings = DesktopStrings(settings.language)
@@ -139,6 +180,64 @@ class DesktopApp(
         content.collect(all)
         hits = all.filterIsInstance<Clickable>().filter { it.enabled }
         if (contentHeight > viewHeight) scrollbar(canvas, theme, width, height)
+        dialog?.let { hits = drawDialog(ctx, it, width, height) }
+    }
+
+    /** The open dialog over a dimmed window; returns what can be pressed while it is open. */
+    private fun drawDialog(ctx: Ctx, d: Dialog, width: Float, height: Float): List<Clickable> {
+        val t = ctx.theme
+        val s = strings
+        ctx.canvas.fillRoundRect(0f, 0f, width, height, 0f, t.withAlpha(t.background, 0.75f))
+        val parts = mutableListOf<Widget>(Label(d.title, t.heading))
+        d.body?.let { parts += Label(it, t.body, t.secondaryText) }
+        if (d.field) parts += TextField(d.text, d.caret, s.text("eq_name_hint"), true, "dialog_field") {}
+        parts += Row(listOf(Button(s.text("cancel"), "dialog_cancel") { closeDialog() }, Button(d.confirm, "dialog_ok", primary = true) { confirmDialog() }), 8f)
+        val box = Panel(Column(parts, 14f), 20f)
+        val w = min(420f, width - 48f)
+        box.place(ctx, (width - w) / 2f, 0f, w)
+        box.place(ctx, (width - w) / 2f, max(24f, (height - box.h) / 2f), w)
+        box.draw(ctx)
+        val all = mutableListOf<Widget>()
+        box.collect(all)
+        return all.filterIsInstance<Clickable>()
+    }
+
+    private fun closeDialog() {
+        dialog = null
+        invalidate()
+    }
+
+    private fun confirmDialog() {
+        val d = dialog ?: return
+        dialog = null
+        d.onConfirm(d.text)
+        invalidate()
+    }
+
+    // ---- the keyboard ----
+
+    /** A typed character; only a dialog's text box takes them. */
+    fun keyChar(c: Char) {
+        val d = dialog ?: return
+        if (!d.field || c.code < 32 || c.code == 127 || d.text.length >= 24) return
+        d.text = d.text.substring(0, d.caret) + c + d.text.substring(d.caret)
+        d.caret++
+        invalidate()
+    }
+
+    fun keyDown(key: Key) {
+        val d = dialog ?: return
+        when (key) {
+            Key.ESCAPE -> { closeDialog(); return }
+            Key.ENTER -> { confirmDialog(); return }
+            Key.BACKSPACE -> if (d.caret > 0) { d.text = d.text.removeRange(d.caret - 1, d.caret); d.caret-- }
+            Key.DELETE -> if (d.caret < d.text.length) d.text = d.text.removeRange(d.caret, d.caret + 1)
+            Key.LEFT -> d.caret = max(0, d.caret - 1)
+            Key.RIGHT -> d.caret = min(d.text.length, d.caret + 1)
+            Key.HOME -> d.caret = 0
+            Key.END -> d.caret = d.text.length
+        }
+        invalidate()
     }
 
     private fun scrollbar(canvas: Canvas, theme: Theme, width: Float, height: Float) {
@@ -206,9 +305,33 @@ class DesktopApp(
         if (status !is LinkStatus.Connected && status !is LinkStatus.Reconnecting) return Label(s.text("connecting"), theme.heading)
         return when (tab) {
             Tab.HOME -> HomeScreen(::act, current, state, status is LinkStatus.Connected, s, theme).build(wide)
+            Tab.SOUND -> SoundScreen(equalizer.state.value, eqActions, eqBand, eqMessage, s, theme, soundCallbacks).build()
             else -> Label(s.text(tab.titleKey), theme.title)
         }
     }
+
+    private val soundCallbacks = SoundCallbacks(
+        selectBand = { eqBand = it; invalidate() },
+        askSave = { suggested ->
+            dialog = Dialog(strings.text("eq_save"), null, strings.text("save"), true, suggested) { name -> if (name.isNotBlank()) eqActions.save(name.trim().take(24)) }
+            invalidate()
+        },
+        askDelete = { p ->
+            dialog = Dialog(strings.text("eq_delete_title", p.name), strings.text("eq_delete_body"), strings.text("delete"), false, "") { eqActions.delete(p) }
+            invalidate()
+        },
+        importFile = {
+            val text = host.openTextFile()
+            if (text != null) onConnection {
+                eqMessage = strings.text(if (equalizer.importJson(text)) "eq_imported" else "eq_import_wrong")
+                invalidate()
+            }
+        },
+        exportFile = { name ->
+            eqMessage = strings.text(if (host.saveTextFile(name, equalizer.exportJson())) "eq_exported" else "eq_export_failed")
+            invalidate()
+        },
+    )
 
     private fun settingsScreen(theme: Theme): Widget {
         val s = strings
@@ -305,6 +428,11 @@ class DesktopApp(
     private fun hitAt(x: Float, y: Float): String? = hits.lastOrNull { it.contains(x, y) }?.key
 
     fun pointerMoved(x: Float, y: Float) {
+        pressed?.let { k ->
+            hits.lastOrNull { it.key == k }?.drag(x, y)
+            invalidate()
+            return
+        }
         val h = hitAt(x, y)
         if (h != hover) {
             hover = h
@@ -321,7 +449,9 @@ class DesktopApp(
     }
 
     fun pointerDown(x: Float, y: Float) {
-        pressed = hitAt(x, y)
+        val hit = hits.lastOrNull { it.contains(x, y) }
+        pressed = hit?.key
+        hit?.press(x, y)
         invalidate()
     }
 

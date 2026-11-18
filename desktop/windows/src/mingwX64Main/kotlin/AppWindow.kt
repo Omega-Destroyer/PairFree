@@ -5,6 +5,7 @@ package io.github.omegadestroyer.pairfree.windows
 import io.github.omegadestroyer.pairfree.shell.CloseAction
 import io.github.omegadestroyer.pairfree.shell.DesktopSettings
 import io.github.omegadestroyer.pairfree.ui.DesktopApp
+import io.github.omegadestroyer.pairfree.ui.Key
 import io.github.omegadestroyer.pairfree.ui.SystemColors
 import io.github.omegadestroyer.pairfree.ui.TrayItem
 import kotlinx.cinterop.CFunction
@@ -237,6 +238,21 @@ private fun windowProc(window: HWND?, message: UInt, w: WPARAM, l: LPARAM): LRES
             }
             return 0
         }
+        WM_CHAR.toUInt() -> { app?.keyChar(w.toInt().toChar()); return 0 }
+        WM_KEYDOWN.toUInt() -> {
+            val key = when (w.toInt()) {
+                VK_BACK -> Key.BACKSPACE
+                VK_DELETE -> Key.DELETE
+                VK_LEFT -> Key.LEFT
+                VK_RIGHT -> Key.RIGHT
+                VK_HOME -> Key.HOME
+                VK_END -> Key.END
+                VK_RETURN -> Key.ENTER
+                VK_ESCAPE -> Key.ESCAPE
+                else -> null
+            }
+            if (key != null) { app?.keyDown(key); return 0 }
+        }
         WM_SHOW_APP -> { showWindow(window); return 0 }
         WM_QUIT_APP -> { saveBounds(window); DestroyWindow(window); return 0 }
         WM_CLOSE.toUInt() -> { onClose(window); return 0 }
@@ -303,6 +319,10 @@ fun runAppWindow(settings: DesktopSettings, settingsPath: String, create: (io.gi
         }
 
         override val settingsPath: String = settingsPath
+
+        override fun openTextFile(): String? = FileDialogs.openText(window)
+
+        override fun saveTextFile(name: String, text: String): Boolean = FileDialogs.saveText(window, name, text)
     }
     State.app = create(host) { PostMessageW(window, WM_REDRAW, 0u, 0) }
     ShowWindow(window, if (settings.startMinimized) (if (settings.minimizeToTray) SW_HIDE else SW_SHOWMINNOACTIVE) else SW_SHOW)

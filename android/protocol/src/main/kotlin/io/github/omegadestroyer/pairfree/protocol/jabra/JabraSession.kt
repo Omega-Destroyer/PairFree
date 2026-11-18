@@ -109,7 +109,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
     }
 
     private fun keyOf(main: Int, sub: Int, body: ByteArray, selectors: Int): String =
-        "%02x/%02x".format(main, sub) + (0 until selectors).joinToString("") { "/%02x".format(body.getOrElse(it) { 0 }) }
+        hex2(main) + "/" + hex2(sub) + (0 until selectors).joinToString("") { "/" + hex2(body.getOrElse(it) { 0 }.toInt()) }
 
     private fun read(setting: JabraSetting): JabraPacket = packet(setting.destination, JabraPacket.READ, setting.main!!, setting.sub!!, setting.selectorBytes)
 
@@ -321,14 +321,14 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
         if (body.isEmpty()) return ""
         val n = body[0].toInt() and 0xFF
         val chars = if (n in 1 until body.size) body.copyOfRange(1, 1 + minOf(n, body.size - 1)) else body.copyOfRange(1, body.size)
-        return String(chars.takeWhile { it.toInt() != 0 }.toByteArray(), Charsets.US_ASCII).trim()
+        return chars.takeWhile { it.toInt() != 0 }.toByteArray().decodeToString().trim()
     }
 
     // ---- state ----------------------------------------------------------------------------------------------------------------------------------------
 
     private fun u8(key: String, at: Int): Int? = replies[key]?.getOrNull(at)?.toInt()?.and(0xFF)
 
-    private fun ambience(selector: Int): Int? = u8("13/be/%02x".format(selector), 1)
+    private fun ambience(selector: Int): Int? = u8("13/be/" + hex2(selector), 1)
 
     private fun refresh() {
         val next = current.values.toMutableMap()
@@ -573,7 +573,7 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
                 val max = u8("13/be/00", if (ht) 2 else 3) ?: return null
                 val raw = (max + 1 - value).coerceIn(0, max)
                 val selector = if (ht) 2 else 3
-                replies["13/be/%02x".format(selector)] = byteArrayOf(selector.toByte(), raw.toByte())
+                replies["13/be/" + hex2(selector)] = byteArrayOf(selector.toByte(), raw.toByte())
                 readBacks = listOf(packet(JabraWire.DESTINATION, JabraPacket.READ, JabraCommands.AMBIENCE, selector))
                 return listOf(packet(JabraWire.DESTINATION, JabraPacket.WRITE, JabraCommands.AMBIENCE, selector, raw))
             }

@@ -32,7 +32,7 @@ public class JabraGaiaSession(public val model: JabraModel) : SessionTalk<Gaia3P
 
     /** Each answer by feature and command (a notification under the command it reports), the payload: the whole state, and the device report's. */
     private val values = LinkedHashMap<Int, ByteArray>()
-    public val answered: Map<String, ByteArray> get() = values.mapKeys { "%02x/%02x".format(it.key shr 8, it.key and 0xFF) }
+    public val answered: Map<String, ByteArray> get() = values.mapKeys { hex2(it.key shr 8) + "/" + hex2(it.key and 0xFF) }
     public val featureIds: Set<Int> get() = features?.keys.orEmpty()
 
     private fun has(feature: Int): Boolean = features?.containsKey(feature) == true

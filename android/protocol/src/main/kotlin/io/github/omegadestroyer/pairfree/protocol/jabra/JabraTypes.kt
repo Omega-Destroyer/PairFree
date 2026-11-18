@@ -81,3 +81,6 @@ public class JabraProfile(
 
 /** The six equalizer presets of the Sound+ app: slider percentages for the five bands, low to high. */
 public class JabraPreset(public val name: String, public val percent: List<Int>)
+
+/** Two lower-case hex digits of a byte value (no String.format: this module also builds for Windows). */
+internal fun hex2(v: Int): String = (v and 0xFF).toString(16).padStart(2, '0')

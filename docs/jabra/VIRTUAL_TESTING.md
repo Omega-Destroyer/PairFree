@@ -62,7 +62,10 @@ answering `FFFFFFFF` the app wrote `00000003`, with `00000000` it wrote `0000000
 PairFree's own opening is shorter (`02/11`, `02/03`, `12/02`, then the settings) and never asks for the type, the name, the SYSMON group (a never-send family in
 PairFree) or the event mask. Whether the earbuds push changes only after that mask is written is not known; the profile snapshots list a `settingschangenotification`
 capability, which would fit. No frame beyond that was seen: after the mask write Sound+ stayed on its "Select your device" list and sent no battery or setting read, so
-the exact reads of its Home and settings screens were **not captured**. What the peer answered was invented (`22/00` and the zero-filled replies built from the schema
+the exact reads of its Home and settings screens were **not captured**. A second attempt answered the name read with the product's name and pushed the events a device would send after the mask write (audio ready, a configuration change and
+a battery status, all invented); Sound+ then left the picker for its connection guide ("Checking for connection: the app is checking if the headset is connected to your
+phone") and sent nothing more in two minutes. Its Android-side check probably wants a headset profile connection (the peer offers only an audio sink), which was not
+built; that is a guess, not something read from the app. What the peer answered was invented (`22/00` and the zero-filled replies built from the schema
 for `22/05`, `22/01`, `02/01`), and the app may be waiting for an answer it does not accept. Not a result about any firmware.
 
 ## About the peers

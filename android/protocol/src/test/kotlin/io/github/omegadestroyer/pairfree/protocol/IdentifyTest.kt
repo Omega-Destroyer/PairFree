@@ -40,11 +40,20 @@ class IdentifyTest {
                     Maker.EARFUN -> assertEquals(model, EarfunModels.fromName(name)?.name, name)
                     Maker.CAMBRIDGE -> assertEquals(model, CambridgeModels.fromName(name)?.name, name)
                     Maker.JABRA -> assertEquals(model, JabraModels.fromName(name)?.name, name)
+                    Maker.SKULLCANDY -> assertEquals(model, io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyModels.fromName(name)?.name, name)
                     Maker.SENNHEISER -> assertEquals(model, SennheiserModels.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Models.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusModels.fromName(name)?.name, name)
                     else -> error("no model check for $want")
                 }
             }
         }
+    }
+
+    /** Every Skullcandy product, with the brand word in front, is Skullcandy's (its own names are too generic to stand alone: Mod, Rail, Dime). */
+    @Test
+    fun everySkullcandyProductWithItsBrandWord() {
+        val wrong = io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyProducts.ALL
+            .filter { Identify.maker("Skullcandy " + it.name, emptyList()) != Maker.SKULLCANDY }.map { it.name }
+        assertEquals(emptyList<String>(), wrong)
     }
 
     /** Every name a brand's own table gives its models must come out as that brand, with no list of services. */

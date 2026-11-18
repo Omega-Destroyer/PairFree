@@ -34,7 +34,7 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
     private var readBacks: List<String> = emptyList()
 
     /** The last reply lines to each line the session sent, for the device report: the line, then what came back. */
-    public val replies: MutableMap<String, List<String>> = LinkedHashMap()
+    public val replies: MutableMap<String, ByteArray> = LinkedHashMap()
 
     override fun start(): List<String> = buildList {
         add(SkullcandyAt.BATTERY)
@@ -65,7 +65,7 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
             log?.invoke("reply ${reply.lines} ok=${reply.ok} error=${reply.error}")
             guarded {
                 val line = pending
-                if (line != null) replies[line] = reply.lines
+                if (line != null) replies[line] = reply.lines.joinToString(" | ").encodeToByteArray()
                 if (reply.ok && line != null) changed = apply(line, reply.lines) || changed
             }
             answers += reply

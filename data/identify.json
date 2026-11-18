@@ -16,7 +16,8 @@
     "CAMBRIDGE": [],
     "ONEPLUS": ["OnePlus", "OPPO"],
     "SENNHEISER": ["Sennheiser"],
-    "JABRA": ["Jabra"]
+    "JABRA": ["Jabra"],
+    "SKULLCANDY": ["Skullcandy"]
   },
   "not_ours": ["Pixel Watch", "OnePlus Watch", "OnePlus Nord Watch", "OPPO Watch", "Redmi Buds", "Galaxy Watch", "SOUNDPEATS Watch", "Nothing Phone", "CMF Watch"],
   "names": [
@@ -103,6 +104,12 @@
     {"name": "EarFun Air Pro 4+", "brand": "EARFUN", "model": "EarFun Air Pro 4+"},
     {"name": "EarFun Wave Pro", "brand": "EARFUN", "model": "EarFun Wave Pro", "note": "a BES model PairFree finds but does not cover yet"},
     {"name": "ATVEL Tune S5 ProX", "brand": "EARFUN", "model": "ATVEL Tune S5 ProX", "note": "made by EarFun, set up in EarFun's app"},
+    {"name": "Skullcandy Crusher ANC 2", "brand": "SKULLCANDY", "model": "Crusher ANC 2"},
+    {"name": "Skullcandy CRUSHER 1080 ANC", "brand": "SKULLCANDY", "model": "Crusher 1080 ANC"},
+    {"name": "Skullcandy Method 360 ANC", "brand": "SKULLCANDY", "model": "Method 360 ANC"},
+    {"name": "Push Active", "brand": "SKULLCANDY", "model": "Push Active"},
+    {"name": "Oppactive", "brand": "SKULLCANDY", "model": "Push Active"},
+    {"name": "S2IPW-P740", "brand": "SKULLCANDY", "model": "Rail ANC"},
     {"name": "Jabra Connect 5t", "brand": "JABRA", "model": "Jabra Connect 5t"},
     {"name": "Jabra Elite 10", "brand": "JABRA", "model": "Jabra Elite 10"},
     {"name": "Jabra Elite 10 Gen 2", "brand": "JABRA", "model": "Jabra Elite 10 Gen 2"},

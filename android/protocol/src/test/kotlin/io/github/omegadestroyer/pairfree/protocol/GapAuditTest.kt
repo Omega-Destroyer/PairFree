@@ -34,6 +34,8 @@ class GapAuditTest {
         Brand("apple", "apple", listOf("AppleControl", "AppleOpcode"), "apple", listOf("Apple")),
         Brand("cambridge", "cambridge", listOf("CambridgeCommand"), "cambridge", listOf("Cambridge")),
         Brand("sennheiser", "sennheiser", listOf("SennheiserCommands"), "sennheiser", listOf("Sennheiser")),
+        // Jabra's settings are data (settings.json), every one drawn by the generic rows; the table's constants are its wire values.
+        Brand("jabra", "jabra", listOf("JabraWire"), "jabra", listOf("Jabra")),
     )
 
     private val listed: JsonObject = Json.parseToJsonElement(repoFile("data/unused_ids.json").readText()).jsonObject

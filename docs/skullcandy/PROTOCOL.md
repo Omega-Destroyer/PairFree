@@ -384,3 +384,12 @@ scale of 25 to 75 (`SKDYProductAncUtils.convertPercentageToScale`), which is the
 PairFree's session carries the AT lines of the 32 Airoha models that have no SDK configuration this way (`SkullcandyAtSession` with `viaRace`, the frame built with JBL's `RacePacket`); the answer text is read from
 `05 5D` notifications of the tunnel command, with or without the two-byte tag, as `E()` and `G()` in the same file suggest (the `05 5B` reply to the tunnel command is its acknowledgement, status `00` last). That reply
 path is the part to confirm against a capture of the official app. The serial service it opens is the first of `A4602B24-...` (Bragi's Airoha one) and `FFEEDDCC-...` (Airoha's) that the device lists.
+
+## 13. The equaliser on the Airoha models (read so far, 2026-11-18)
+
+The Bragi SDK drives the equaliser through Airoha's own PEQ control (`api/equalizer/data/protocol/airoha`: `PEQControl.setEQSetting(categoryId, payload, ...)`, `getAllEQSettings`, `getRunningEQSetting`),
+so the presets are categories the earbuds hold (the SDK names them per product: `{1 Music, 2 Podcast, 3 Movie}` on the Grind, Grind Fuel, Push Active, Crusher ANC 2 and Rail, and `{1 Music, 2 Bass Boost, 3 Podcast}` on the Rail ANC; each with a
+gain range of -12 to +12 dB) and the custom curve is category 0 written with a payload. This is the same mechanism JBL's Airoha earbuds use (`protocol.airoha.AirohaPeq`, `JblAirohaEq`), whose coefficients PairFree computes from a port of Airoha's
+`libnative-peq.so`; the Skullcandy app carries that library too (`libnative-peq.so`, SHA-256 `ffa603fe...`), so the same port is the candidate for Skullcandy's custom curve. To settle before the equaliser is built: the band
+counts and frequencies per model (the app's `SKDYProductModelInfo.ceqRange`, `customEqualizer4x` on the Crusher PLYR 720), the preset category numbers of the models the SDK has no configuration for, and whether the library's output for Skullcandy's
+parameters equals the JBL port's (compare the two library binaries before reusing the port).

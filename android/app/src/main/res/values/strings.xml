@@ -711,6 +711,7 @@
     <!-- Skullcandy -->
     <string name="setting_sk_transparency_level">Transparency level</string>
     <string name="setting_sk_gaming_mode">Gaming mode (low latency)</string>
+    <string name="setting_sk_wear_detect">Wear detection (pause when taken off)</string>
     <string name="setting_sleep_timer">Sleep timer</string>
     <string name="setting_sleep_timer_note">The earbuds stop the audio after the time chosen.</string>
     <string name="setting_group_touch_dial_note">Double press and hold the dial to lock or unlock it.</string>

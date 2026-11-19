@@ -28,6 +28,9 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
     override val groups: List<SettingGroup> get() = buildList {
         transparencyPercent?.takeIf { hasTransparency }?.let { add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(TRANSPARENCY_LEVEL, (it + 5) / 10, 0, 10)))) }
         gamingMode?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(GAMING_MODE, it)))) }
+        multipoint?.let { add(SettingGroup("connection", SettingTab.DEVICE, listOf(Setting.Toggle(MULTIPOINT, it)))) }
+        wearDetect?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(WEAR_DETECT, it)))) }
+        bassBoost?.let { add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Toggle(BASS_BOOST, it)))) }
     }
 
     /** True when the manifest lists noise cancelling for the model. */
@@ -40,10 +43,23 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
     private var transparencyOn: Boolean? = null
     private var transparencyPercent: Int? = null
     private var gamingMode: Boolean? = null
+    private var multipoint: Boolean? = null
+    private var wearDetect: Boolean? = null
+    private var bassBoost: Boolean? = null
+
+    /** Skullcandy's own RACE commands, which only the RACE channel carries. */
+    public val hasMultipoint: Boolean = viaRace && ("multipointPairingToggle" in product.features || "multipointPairing" in product.features)
+    public val hasWearDetect: Boolean = viaRace && "wearDetect" in product.features
+    public val hasBassBoost: Boolean = viaRace && "crusherBassBoost" in product.features
+    private val raceKinds = LinkedHashMap<String, String>()
+
+    private fun raceMessage(kind: String, hex: String): String = ("RACE:" + hex).also { raceKinds[it] = kind }
 
     /** True when the manifest lists a gaming (low latency) mode. */
     public val hasGamingMode: Boolean = "lowLatencyMode" in product.features || "gamingMode" in product.features
     private var pending: String? = null
+    private var raceChanged = false
+    private val racePackets = mutableListOf<RacePacket>()
     private val buffer = StringBuilder()
     private var readBacks: List<String> = emptyList()
 
@@ -55,14 +71,19 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
         if (hasAnc) add(SkullcandyAt.ANC)
         if (hasTransparency) add(SkullcandyAt.TRANSPARENCY)
         if (hasGamingMode) add(SkullcandyAt.LATENCY)
+        if (hasMultipoint) add(raceMessage("multipoint", SkullcandyRace.multipointGet(product.enumName)))
+        if (hasWearDetect) add(raceMessage("wear", SkullcandyRace.WEAR_DETECT_GET))
+        if (hasBassBoost) add(raceMessage("bass", SkullcandyRace.BASS_BOOST_GET))
     }
 
     override fun poll(): List<String> = listOf(SkullcandyAt.BATTERY)
 
-    override fun allowed(message: String): Boolean = SkullcandyAt.isAllowed(message)
+    override fun allowed(message: String): Boolean =
+        if (message.startsWith("RACE:")) viaRace && SkullcandyRace.isAllowed(message.removePrefix("RACE:")) else SkullcandyAt.isAllowed(message)
 
     override fun bytes(message: String): ByteArray {
         pending = message
+        if (message.startsWith("RACE:")) return SkullcandyRace.bytes(message.removePrefix("RACE:"))
         val line = SkullcandyAt.line(message)
         // Over Airoha RACE the line travels as the payload of the tunnel command, behind the two-byte tag (docs/skullcandy/PROTOCOL.md section 9.4).
         return if (viaRace) RacePacket(TUNNEL_ID, TAG + line, TYPE_REQUEST).bytes() else line
@@ -74,15 +95,27 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
         if (viaRace) {
             // The tunnel's own acknowledgement (type 5B) carries no text; the answer text comes in notifications (5D) of the same command, with or without the tag.
             for (p in race.feed(bytes)) {
-                if (p.id != TUNNEL_ID || p.type != TYPE_NOTIFICATION) continue
+                if (p.id != TUNNEL_ID) {
+                    // One of Skullcandy's own commands: a read's answer ends in the value, a write's in the status.
+                    val asked = pending
+                    val kind = asked?.let { raceKinds[it] }
+                    if (kind != null && (p.type == 0x5B || p.type == TYPE_NOTIFICATION) && p.payload.isNotEmpty()) {
+                        raceChanged = applyRace(kind, p.payload.last().toInt() == 1) || raceChanged
+                        racePackets += p
+                    }
+                    continue
+                }
+                if (p.type != TYPE_NOTIFICATION) continue
                 val body = if (p.payload.size >= 2 && p.payload[0] == TAG[0] && p.payload[1] == TAG[1]) p.payload.copyOfRange(2, p.payload.size) else p.payload
                 buffer.append(body.decodeToString())
             }
         } else {
             buffer.append(bytes.decodeToString())
         }
-        var changed = false
-        val answers = mutableListOf<Any>()
+        var changed = raceChanged
+        raceChanged = false
+        val answers = mutableListOf<Any>(*racePackets.toTypedArray())
+        racePackets.clear()
         while (true) {
             val end = completeAt(buffer.toString()) ?: break
             val text = buffer.substring(0, end)
@@ -99,7 +132,18 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
         return Fed(changed, answers)
     }
 
-    override fun answers(sent: String, got: Any): Boolean = got is SkullcandyAt.Reply
+    override fun answers(sent: String, got: Any): Boolean = if (sent.startsWith("RACE:")) got is RacePacket else got is SkullcandyAt.Reply
+
+    /** Applies a read's value; a write's answer (its status) is left to the read-back. */
+    private fun applyRace(kind: String, on: Boolean): Boolean {
+        val before = Triple(multipoint, wearDetect, bassBoost)
+        when (kind) {
+            "multipoint" -> multipoint = on
+            "wear" -> wearDetect = on
+            "bass" -> bassBoost = on
+        }
+        return before != Triple(multipoint, wearDetect, bassBoost)
+    }
 
     override fun takeReadBacks(): List<String> = readBacks.also { readBacks = emptyList() }
 
@@ -201,6 +245,21 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
             readBacks = listOf(SkullcandyAt.LATENCY)
             listOf(SkullcandyAt.setGamingMode(change.on))
         }
+        change is SettingChange.Toggle && change.key == MULTIPOINT && hasMultipoint -> {
+            multipoint = change.on
+            readBacks = listOf(raceMessage("multipoint", SkullcandyRace.multipointGet(product.enumName)))
+            listOf(raceMessage("multipoint_set", SkullcandyRace.multipointSet(product.enumName, change.on)))
+        }
+        change is SettingChange.Toggle && change.key == WEAR_DETECT && hasWearDetect -> {
+            wearDetect = change.on
+            readBacks = listOf(raceMessage("wear", SkullcandyRace.WEAR_DETECT_GET))
+            listOf(raceMessage("wear_set", SkullcandyRace.wearDetectSet(change.on)))
+        }
+        change is SettingChange.Toggle && change.key == BASS_BOOST && hasBassBoost -> {
+            bassBoost = change.on
+            readBacks = listOf(raceMessage("bass", SkullcandyRace.BASS_BOOST_GET))
+            listOf(raceMessage("bass_set", SkullcandyRace.bassBoostSet(change.on)))
+        }
         else -> null
     }
 
@@ -212,5 +271,8 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
         private val TAG: ByteArray = byteArrayOf(0x05, 0xFF.toByte())
         public const val TRANSPARENCY_LEVEL: String = "sk_transparency_level"
         public const val GAMING_MODE: String = "sk_gaming_mode"
+        public const val MULTIPOINT: String = "multipoint"
+        public const val WEAR_DETECT: String = "sk_wear_detect"
+        public const val BASS_BOOST: String = "bass_boost"
     }
 }

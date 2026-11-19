@@ -2190,7 +2190,6 @@
               "jibTrueXT2",
               "dime2",
               "dimeXT2",
-              "dime360",
               "seshANC",
               "mod",
               "riffWireless2",
@@ -2201,7 +2200,6 @@
               "tanc",
               "iconANC",
               "aviatorANC",
-              "hesh360",
               "hesh540ANC",
               "crusherPlyr",
               "crusherPlyrXbox",
@@ -2209,8 +2207,6 @@
               "push720open",
               "icon180",
               "push540Open",
-              "crusherEvoRC",
-              "crusher540ActiveRC",
               "crusher720",
               "crusher1080ANC",
               "smokinBuds3",
@@ -2220,14 +2216,9 @@
               "pushActive",
               "grind",
               "grindFuel",
-              "rail",
-              "railANC",
               "crusherANC2",
               "method360ANC",
               "method540ANC",
-              "session360",
-              "session540",
-              "session720",
               "session900",
               "dime540ANC",
               "smokingBuds360Hanger",
@@ -2239,7 +2230,26 @@
           {
             "bytes": "05 5A 06 00 00 0A 01 E3 01 00",
             "models": [
-              "dimeEvo"
+              "dimeEvo",
+              "dime360",
+              "railANC",
+              "session360",
+              "session540",
+              "session720"
+            ]
+          },
+          {
+            "bytes": "05 5A 06 00 00 0A 00 F5 01 00",
+            "models": [
+              "hesh360",
+              "crusherEvoRC",
+              "crusher540ActiveRC"
+            ]
+          },
+          {
+            "bytes": "05 5A 02 00 14 00",
+            "models": [
+              "rail"
             ]
           }
         ],
@@ -2258,7 +2268,6 @@
               "jibTrueXT2",
               "dime2",
               "dimeXT2",
-              "dime360",
               "seshANC",
               "mod",
               "riffWireless2",
@@ -2269,7 +2278,6 @@
               "tanc",
               "iconANC",
               "aviatorANC",
-              "hesh360",
               "hesh540ANC",
               "crusherPlyr",
               "crusherPlyrXbox",
@@ -2277,8 +2285,6 @@
               "push720open",
               "icon180",
               "push540Open",
-              "crusherEvoRC",
-              "crusher540ActiveRC",
               "crusher720",
               "crusher1080ANC",
               "smokinBuds3",
@@ -2288,14 +2294,9 @@
               "pushActive",
               "grind",
               "grindFuel",
-              "rail",
-              "railANC",
               "crusherANC2",
               "method360ANC",
               "method540ANC",
-              "session360",
-              "session540",
-              "session720",
               "session900",
               "dime540ANC",
               "smokingBuds360Hanger",
@@ -2307,7 +2308,26 @@
           {
             "bytes": "05 5A 06 00 00 0A 01 E3 01 00",
             "models": [
-              "dimeEvo"
+              "dimeEvo",
+              "dime360",
+              "railANC",
+              "session360",
+              "session540",
+              "session720"
+            ]
+          },
+          {
+            "bytes": "05 5A 06 00 00 0A 00 F5 01 00",
+            "models": [
+              "hesh360",
+              "crusherEvoRC",
+              "crusher540ActiveRC"
+            ]
+          },
+          {
+            "bytes": "05 5A 02 00 14 00",
+            "models": [
+              "rail"
             ]
           }
         ]

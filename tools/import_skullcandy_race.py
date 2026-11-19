@@ -38,7 +38,7 @@ def load_build(path):
 
 def run(ins, idx, flag):
     addr_i = {a: i for i, (a, _) in enumerate(ins)}
-    regs = {"x3": idx, "w0": None}
+    regs = {"w0": None}
     fl = None
     i = 0
     steps = 0
@@ -76,6 +76,11 @@ def run(ins, idx, flag):
         if mm and regs.get("bool") is not None:
             tgt = int(mm.group(1), 16)
             i = addr_i[tgt] if not regs["bool"] else i + 1  # bit 4 set means false
+            continue
+        mm = re.match(r"LoadField: r(\d+) = r0->field_7$", s)
+        if mm:
+            regs["x" + mm.group(1)] = idx
+            i += 1
             continue
         if re.match(r"LoadField: r0 = r2->field_b", s):
             regs["bool"] = flag

@@ -3,13 +3,51 @@ package io.github.omegadestroyer.pairfree.protocol.skullcandy
 /** Protobuf field data, preserving order and unknown fields for later schema-specific decoding. Not for raw logging. */
 public data class BragiField(val number: Int, val wireType: Int, val data: ByteArray) {
     public fun unsigned(): ULong? = if (wireType == 0) BragiProto.readVarint(data, 0)?.takeIf { it.second == data.size }?.first else null
+
+    /** The field as a whole number, or null when it is not a varint. */
+    public fun int(): Int? = unsigned()?.toInt()
+
+    /** The field as a boolean (a varint of 0 or 1), or null. */
+    public fun bool(): Boolean? = when (unsigned()) { 0uL -> false; 1uL -> true; else -> null }
+
+    /** The field as text (a length-delimited field of UTF-8), or null. */
+    public fun text(): String? = if (wireType == 2) data.decodeToString() else null
+
+    /** The field as a 32-bit float (a fixed32 field), or null. */
+    public fun float(): Float? = if (wireType == 5 && data.size == 4) {
+        Float.fromBits((data[0].toInt() and 0xFF) or ((data[1].toInt() and 0xFF) shl 8) or ((data[2].toInt() and 0xFF) shl 16) or ((data[3].toInt() and 0xFF) shl 24))
+    } else null
+
+    /** The field as a nested message, or null when it is not one. */
+    public fun message(): List<BragiField>? = if (wireType == 2) BragiProto.parse(data) else null
 }
+
+/** The first field numbered [number], or null. */
+public fun List<BragiField>.field(number: Int): BragiField? = firstOrNull { it.number == number }
+
+/** Every field numbered [number], in order (a repeated field). */
+public fun List<BragiField>.fields(number: Int): List<BragiField> = filter { it.number == number }
 
 /** Small independently written protobuf wire reader; no vendor schema sources or generated vendor classes. */
 public object BragiProto {
     public fun unsigned(field: Int, value: ULong): ByteArray {
         require(field in 1..0x1fffffff)
         return varint(field.toULong() shl 3) + varint(value)
+    }
+
+    /** A boolean field (written even when false: the schemas' optional fields need explicit presence). */
+    public fun bool(field: Int, value: Boolean): ByteArray = unsigned(field, if (value) 1uL else 0uL)
+
+    /** A length-delimited field holding [bytes] (a nested message, text or raw bytes). */
+    public fun bytes(field: Int, bytes: ByteArray): ByteArray = varint(((field.toULong() shl 3) or 2uL)) + varint(bytes.size.toULong()) + bytes
+
+    /** A text field. */
+    public fun text(field: Int, value: String): ByteArray = bytes(field, value.encodeToByteArray())
+
+    /** A 32-bit float field. */
+    public fun float(field: Int, value: Float): ByteArray {
+        val bits = value.toRawBits()
+        return varint(((field.toULong() shl 3) or 5uL)) + ByteArray(4) { (bits ushr (8 * it)).toByte() }
     }
 
     public fun parse(bytes: ByteArray): List<BragiField>? {

@@ -323,6 +323,17 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sk_wear_detect" -> stringResource(R.string.setting_sk_wear_detect)
     "sk_sidetone" -> stringResource(R.string.setting_sk_sidetone)
     "sk_touch_control" -> stringResource(R.string.setting_sk_touch_control)
+    "sk_anc_profile" -> stringResource(R.string.setting_sk_anc_profile)
+    "sk_transparency_profile" -> stringResource(R.string.setting_sk_transparency_profile)
+    "sk_sidetone_level" -> stringResource(R.string.setting_sk_sidetone_level)
+    "sk_wear_transparency" -> stringResource(R.string.setting_sk_wear_transparency)
+    "sk_crusher_active" -> stringResource(R.string.setting_sk_crusher_active)
+    "sk_crusher_intensity" -> stringResource(R.string.setting_sk_crusher_intensity)
+    "sk_crusher_mode" -> stringResource(R.string.setting_sk_crusher_mode)
+    "sk_spatial" -> stringResource(R.string.setting_sk_spatial)
+    "sk_reduced_prompts" -> stringResource(R.string.setting_sk_reduced_prompts)
+    "sk_battery_prompt" -> stringResource(R.string.setting_sk_battery_prompt)
+    "sk_language" -> stringResource(R.string.setting_sk_language)
     "sk_button_single" -> stringResource(R.string.setting_sk_button_single)
     "sk_button_double" -> stringResource(R.string.setting_sk_button_double)
     "sk_button_triple" -> stringResource(R.string.setting_sk_button_triple)
@@ -1028,6 +1039,9 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "off" -> R.string.action_off; "on" -> R.string.setting_sh_nautilus_on; "low" -> R.string.setting_level_low; "medium" -> R.string.setting_level_medium; "high" -> R.string.setting_level_high
         "near" -> R.string.setting_sh_nautilus_near; "far" -> R.string.setting_sh_nautilus_far; "rumble" -> R.string.setting_sh_nautilus_rumble; "thump" -> R.string.setting_sh_nautilus_thump; else -> R.string.setting_sh_nautilus_voice
     })
+    key == "sk_crusher_mode" -> getString(when (option) { "high" -> R.string.setting_level_high; "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_low })
+    key == "sk_spatial" -> getString(when (option) { "off" -> R.string.action_off; "fixed_to_head" -> R.string.setting_sk_spatial_head; else -> R.string.setting_sk_spatial_room })
+    key == "sk_language" -> option
     key.startsWith("sk_button_") -> getString(when (option) {
         "play_pause" -> R.string.setting_sk_action_play_pause
         "track_back" -> R.string.setting_sk_action_track_back

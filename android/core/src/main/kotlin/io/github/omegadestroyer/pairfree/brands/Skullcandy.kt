@@ -17,6 +17,10 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.RaceParser
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.RACE_SERVICES
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyAtSession
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.BesMessage
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.BragiRpc
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRpcBandEq
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRpcTalk
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesRpc
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBandEq
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBesBandEq
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBesTalk
@@ -48,7 +52,13 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
     override fun model(device: Paired, state: EarbudState): Model? = SkullcandyModels.model(device.model ?: device.name)
 
     override fun driver(device: Paired, host: DriverHost): BrandDriver =
-        if (SkullcandyModels.fromName(device.model ?: device.name)?.usesBes == true) SkullcandyBesDriver(host, device) else SkullcandyDriver(host, device)
+        SkullcandyModels.fromName(device.model ?: device.name).let { p ->
+            when {
+                p?.usesBes == true -> SkullcandyBesDriver(host, device)
+                p?.usesRpc == true -> SkullcandyRpcDriver(host, device)
+                else -> SkullcandyDriver(host, device)
+            }
+        }
 
     /**
      * The AT channel, and for the models with settings that only Skullcandy's RACE channel carries (multipoint, wear detection, bass boost, the custom equaliser) a second serial channel
@@ -56,10 +66,10 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
      */
     override suspend fun open(env: OpenEnv, device: Paired, driver: BrandDriver): ControlLink {
         val main = super.open(env, device, driver)
-        val d = driver as? SkullcandyDriver ?: return main
+        val d = driver as? RaceSide ?: return main
         val product = SkullcandyModels.fromName(device.model ?: device.name) ?: return main
-        // only the models the AT conversation serves get a RACE one beside it (the Rail, the RPC models and the rest have no session yet)
-        if (!(product.usesAt || product.usesAtSerial) || !SkullcandyRaceTalk(product).hasRaceFeatures) return main
+        // only the models the AT and RPC conversations serve get a RACE one beside it (the Rail and the rest have no session yet)
+        if (!(product.usesAt || product.usesAtSerial || product.usesRpc) || !SkullcandyRaceTalk(product).hasRaceFeatures) return main
         for (uuid in RACE_SERVICES) {
             try {
                 env.note("RACE channel $uuid")
@@ -76,11 +86,16 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
 }
 
 /** The AT conversation ([SkullcandyAtSession]) and, beside it, the RACE one ([SkullcandyRaceTalk]); the models no session speaks yet get no talk, so the channel stays quiet. */
-class SkullcandyDriver(host: DriverHost, private val device: Paired) : TalkDriver<String, SkullcandyAtSession>(host) {
+/** A driver that keeps a second serial channel beside its own, for Skullcandy's Airoha RACE commands ([SkullcandySpec.open] fills it). */
+interface RaceSide {
+    var raceLink: ControlLink?
+}
+
+class SkullcandyDriver(host: DriverHost, private val device: Paired) : TalkDriver<String, SkullcandyAtSession>(host), RaceSide {
     val session: SkullcandyAtSession? get() = talk
 
     /** The second serial channel, for Skullcandy's custom RACE commands and the equaliser; set by [SkullcandySpec.open], null when the model has none or it did not open. */
-    var raceLink: ControlLink? = null
+    override var raceLink: ControlLink? = null
     private var raceTalk: SkullcandyRaceTalk? = null
     private var raceConversation: Conversation<RacePacket>? = null
     private val raceKeys = setOf(SkullcandyRaceTalk.MULTIPOINT, SkullcandyRaceTalk.WEAR_DETECT, SkullcandyRaceTalk.BASS_BOOST, SkullcandyRaceTalk.ANC_LEVEL)

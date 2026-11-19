@@ -100,6 +100,17 @@ class SettingWords(private val strings: DesktopStrings) {
         "sk_wear_detect" -> t("setting_sk_wear_detect")
         "sk_sidetone" -> t("setting_sk_sidetone")
         "sk_touch_control" -> t("setting_sk_touch_control")
+        "sk_anc_profile" -> t("setting_sk_anc_profile")
+        "sk_transparency_profile" -> t("setting_sk_transparency_profile")
+        "sk_sidetone_level" -> t("setting_sk_sidetone_level")
+        "sk_wear_transparency" -> t("setting_sk_wear_transparency")
+        "sk_crusher_active" -> t("setting_sk_crusher_active")
+        "sk_crusher_intensity" -> t("setting_sk_crusher_intensity")
+        "sk_crusher_mode" -> t("setting_sk_crusher_mode")
+        "sk_spatial" -> t("setting_sk_spatial")
+        "sk_reduced_prompts" -> t("setting_sk_reduced_prompts")
+        "sk_battery_prompt" -> t("setting_sk_battery_prompt")
+        "sk_language" -> t("setting_sk_language")
         "sk_button_single" -> t("setting_sk_button_single")
         "sk_button_double" -> t("setting_sk_button_double")
         "sk_button_triple" -> t("setting_sk_button_triple")
@@ -798,6 +809,9 @@ class SettingWords(private val strings: DesktopStrings) {
             "off" -> "action_off"; "on" -> "setting_sh_nautilus_on"; "low" -> "setting_level_low"; "medium" -> "setting_level_medium"; "high" -> "setting_level_high"
             "near" -> "setting_sh_nautilus_near"; "far" -> "setting_sh_nautilus_far"; "rumble" -> "setting_sh_nautilus_rumble"; "thump" -> "setting_sh_nautilus_thump"; else -> "setting_sh_nautilus_voice"
         })
+        key == "sk_crusher_mode" -> t(when (option) { "high" -> "setting_level_high"; "medium" -> "setting_level_medium"; else -> "setting_level_low" })
+        key == "sk_spatial" -> t(when (option) { "off" -> "action_off"; "fixed_to_head" -> "setting_sk_spatial_head"; else -> "setting_sk_spatial_room" })
+        key == "sk_language" -> option
         key.startsWith("sk_button_") -> t(when (option) {
             "play_pause" -> "setting_sk_action_play_pause"
             "track_back" -> "setting_sk_action_track_back"

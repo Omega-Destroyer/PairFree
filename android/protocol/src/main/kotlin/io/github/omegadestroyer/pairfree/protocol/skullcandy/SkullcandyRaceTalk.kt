@@ -51,12 +51,15 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     public var mode: () -> String? = { null }
 
     private val airoha = product.chip == "airoha"
+
+    /** True for the Crusher 1080 ANC, whose wear detection and equaliser are Bragi RPC's ([SkullcandyRpcTalk]); the other RPC models' equaliser is this channel's. */
+    private val equaliserOverRpc = product.sdk == "CHP300"
     public val hasMultipoint: Boolean = airoha && ("multipointPairingToggle" in product.features || "multipointPairing" in product.features)
-    public val hasWearDetect: Boolean = airoha && "wearDetect" in product.features
+    public val hasWearDetect: Boolean = airoha && !product.usesRpc && "wearDetect" in product.features
     public val hasBassBoost: Boolean = airoha && "crusherBassBoost" in product.features
 
     /** True when the model has a custom equaliser the app sets through Airoha's PEQ. */
-    public val hasCustomEq: Boolean = airoha && "customEqualizer" in product.features
+    public val hasCustomEq: Boolean = airoha && !equaliserOverRpc && "customEqualizer" in product.features
 
     /** True when the strength of the hearing mode in force is an Airoha RACE gain: the Crusher ANC 2, whose SDK configuration lists both gains over RACE. */
     public val hasGain: Boolean = product.sdk == "CHP200"

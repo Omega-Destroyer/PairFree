@@ -478,3 +478,29 @@ Built as `SkullcandyBesTalk` (the conversation), `BesTota` (frame, handshake, ke
   `06` voice assistant (the `SKDYAction` indices 2 to 8). *Inference:* the manifest lists only `none` as mappable for these three models, so which actions the app's screen offers for each gesture could not be read from the data; PairFree offers the seven the writer
   can encode, for the gestures the earbuds report.
 - **Never sent:** the serial number's read, any write but the ones above (`BesCommand.WRITABLE`); there is no firmware command in the app's TOTA classes.
+
+## 15. Bragi protobuf RPC: the Method 360 and 540 ANC and the Crusher 1080 ANC (built 2026-11-18)
+
+The SDK's own configurations for these three (`T99_PLUS`, `T120`, `CHP300`; `data/skullcandy/sdk_devices.json`) put their settings on `BOS_RPC`: RFCOMM service `54C5BF4C-...`, frames as sections 3 and 4, the schemas the app bundles (`bos_*.proto`, read outside the repo; the field
+numbers and enum values below are theirs). Built as `SkullcandyRpcTalk` (the conversation), `BosRpc` (the ids and the list of what may be sent), `SkullcandyRpcBandEq` and the extra helpers in `BragiProto`; the driver is `SkullcandyRpcDriver`, which opens the RACE channel beside it for what is
+Airoha's (multipoint on all three, the Method models' custom equaliser).
+
+- **Secure session: not needed to start.** `device.dev_info` field 12 says whether the earbuds want it; the SDK's `secureSession()` failure path logs "degrading to an unsecure connection: services requiring authenticated_access will not work until this succeeds" and carries on. PairFree
+  does the same: it never starts service 25, reads field 12 into the device report, and records any request answered with status 41 ("service access denied") there; a row whose request was refused does not appear. Which services need the secure session is not written in the schemas; the first
+  device report of each model will show it.
+- **Status codes** (the SDK's `rpc/l`): 0 success, 33 no such service, 34 no such procedure, 35 request decode failed, 41 access denied, 64 subscription replaced by a newer one.
+- **Hearing** (service 4): `mode_info` (3) gives each mode's maximum preset and gain; `mode_read` (1, subscribed) streams the active mode (1 off, 2 noise cancelling, 3 transparency) with each mode's preset and gain; `mode_configure` (2) is mode, `activate`, and optionally preset and gain (off with neither).
+  PairFree writes the mode alone for the mode buttons and the gain or the preset alone for the strength and profile rows of the mode in force. Sidetone: `sidetone_info` (12) the maximum volume, `sidetone_read` (10) and `sidetone_configure` (11, optional enabled and volume).
+- **Low latency** (8): normal 1, permanent 3, temporary 4; the switch writes 1 or 3 (the SDK lists `LowLatencySupportsPermanentModeAttribute` for all three) and reads 3 or 4 as on.
+- **Wear detection** (Crusher 1080 ANC, service 12): `trigger_get`/`trigger_set` with two flags, `play_pause` (the app's "pause when taken off") and `transparency` (switch to transparency on removal); the schema defaults both to true.
+- **Crusher** (23): `config_get` (maximum intensity, whether it is read-only, an optional mode count), `state_get` (subscribed) and `state_set` (optional active, intensity, mode: 0 high, 1 medium, 2 low). The intensity row is greyed out when the earbuds say it is read-only.
+- **Spatial audio** (17): `info_get` (subscribed: availability and the mode), `audio_source_mode_set` (1 off, 2 fixed to the head, 3 fixed to the room); the row appears when the earbuds say it is available.
+- **Voice prompts** (22) and **language** (6): `options_get`/`options_set` (fewer prompts, the battery prompt at power-on) and `lang_info`/`lang_configure` (the locale codes the earbuds list); the language row shows the codes as the earbuds give them.
+- **Equaliser:** the Method models' is the Airoha PEQ of section 13 (`EqPresetNamesAttribute` Music, Bass Boost, Podcast; the SDK notes `EqRequiresTwsConnected` for the 360). The Crusher 1080 ANC's is the earbuds' own parametric one (`peq_info` 6, `peq_read_state` 4, `peq_read_conf` 5, `peq_configure` 7): the
+  presets are the filters that are not editable (picked by their id, activated and persisted), the curve is the editable filter's bands (each keeps its frequency and Q; the gain is a float). *Inference:* the SDK's gain range for it is 0 to +20 (`GainRangeAttribute`), which PairFree shows around the middle,
+  minus 10 to plus 10, and sends as the value plus 10; checked: the SDK's configuration, the schema and the manifest, which give only that range; the app's Dart screen for it was not opened.
+- **Never sent:** the secure session (25), calibration (18), data streams (14), diagnostics (100), feature provisioning (9), time (2.6), device name (7), voice streaming (5), Mimi (10), the Dolby spatial controls (19), media (15), the audio-out mode (21: no SDK configuration lists it) and the action-button
+  injection and invocation (3.4, 3.5). `BosRpc.isAllowed` lets through only the requests listed in the code.
+- **Still open, each with what was read:** the button actions (service 3: the earbuds list their own keys, gestures and actions through `get_info_v2`, and the SDK maps the app's actions to strings of its own; the data-driven rows are the next piece), the Auracast receiver and the two RACE reads the
+  Crusher 1080 ANC's configuration whitelists (`05 5A 02 00 41 00` and `05 5A 02 00 43 00`), and the Mimi personal sound (an account feature).
+

@@ -15,7 +15,38 @@ AT_SDK = {"GRIND", "GRIND_FUEL", "PUSH_ACTIVE", "CHP200"}
 AT_LEVEL = {"GRIND", "GRIND_FUEL", "PUSH_ACTIVE"}
 
 
+RPC_SDK = {"T99_PLUS", "T120", "CHP300"}
+
+
+def rpc_rows(p, modes):
+    f = set(p["features"])
+    out = ["battery"]
+    if f & {"adjustableNoiseCancellation", "boseQuietControlANC", "adjustableStayAwareMode"}:
+        out.append("noise mode + strength + profile")
+    if "adjustableSidetoneMode" in f:
+        out.append("sidetone")
+    if "lowLatencyMode" in f:
+        out.append("gaming mode")
+    if "wearDetect" in f:
+        out.append("wear detection (RPC)")
+    if f & {"crusherTechnologyDial", "crusherTechnologyProfiles"}:
+        out.append("Crusher intensity and mode")
+    if f & {"boseTrueSpatialMotion", "boseTrueSpatialStill"}:
+        out.append("spatial audio")
+    out += ["voice prompts", "prompt language"]
+    if f & {"multipointPairingToggle", "multipointPairing"}:
+        out.append("multipoint (RACE)")
+    if "boseEqualizer" in f:
+        out.append("equalizer (the earbuds' own: presets and custom)")
+    elif "customEqualizer" in f:
+        presets = [m for m, n in modes.get(p["enum"], {}).items() if 1 <= n <= 99]
+        out.append("equalizer (RACE: custom" + (f" + {len(presets)} presets" if presets else "") + ")")
+    return out
+
+
 def session(p):
+    if p["sdk"] in RPC_SDK:
+        return "Bragi RPC (unsecured)"
     if p["chip"] == "bes":
         return "BES TOTA (AES-128 handshake)"
     if p["chip"] == "airoha" and p["sdk"] in AT_SDK:
@@ -47,6 +78,8 @@ def bes_rows(p, modes):
 
 
 def rows(p, modes):
+    if p["sdk"] in RPC_SDK:
+        return rpc_rows(p, modes)
     if p["chip"] == "bes":
         return bes_rows(p, modes)
     f = set(p["features"])
@@ -90,7 +123,7 @@ def main():
             counts[p["chip"] if p["sdk"] is None or p["chip"] != "airoha" else "airoha (SDK, other protocol)"] = counts.get(p["chip"] if p["sdk"] is None or p["chip"] != "airoha" else "airoha (SDK, other protocol)", 0) + 1
         lines.append(f"| {p['name']} | {p['id']} | {p['chip']}{' (SDK ' + p['sdk'] + ')' if p['sdk'] else ''} | {s or 'found only (no session yet)'} | {', '.join(r) or ''} |")
     lines += ["", "Not covered yet, by group:", "",
-              "- **Airoha with an SDK configuration on another protocol**: Rail and Rail ANC (Airoha RACE, custom commands), Method 360 and 540 ANC and Crusher 1080 ANC (Bragi's protobuf RPC, which may need a secure session).",
+              "- **Airoha with an SDK configuration on another protocol**: Rail and Rail ANC (Airoha RACE, custom commands). The Method 360 and 540 ANC and the Crusher 1080 ANC are built over Bragi's protobuf RPC, unsecured; their button actions are the one setting left.",
               "- **BES** (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open): BES's TOTA protocol, built (`SkullcandyBesTalk`): every setting the app offers the five models is built, the buttons included.",
               "- **Qualcomm Bluetooth LE** (Crusher ANC, Crusher Evo, Indy Fuel, Indy Evo, Push Ultra, Crusher 540 Active): preset equaliser and ambient mode only.",
               "- **Speakers**: the four Session speakers are found and held back (speakers wait, owner 2026-10-30).",

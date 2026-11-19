@@ -15,8 +15,13 @@ public val SkullcandyProduct.usesAtSerial: Boolean get() = chip == "airoha" && s
 /** True for the five BES models (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open), whose app speaks BES's TOTA protocol over a serial service of its own (docs/skullcandy/PROTOCOL.md section 12). */
 public val SkullcandyProduct.usesBes: Boolean get() = chip == "bes"
 
+/** True for the three products whose SDK configuration puts the settings over Bragi's own protobuf RPC (Method 360 ANC `T99_PLUS`, Method 540 ANC `T120`, Crusher 1080 ANC `CHP300`; docs/skullcandy/PROTOCOL.md section 15). */
+public val SkullcandyProduct.usesRpc: Boolean get() = sdk in RPC_SDK_KEYS
+
+private val RPC_SDK_KEYS = setOf("T99_PLUS", "T120", "CHP300")
+
 /** The serial service PairFree opens for the product, or null while no session of ours speaks its protocol (docs/skullcandy/PROTOCOL.md sections 9 to 12). */
-public val SkullcandyProduct.service: String? get() = if (usesAt) SkullcandyServices.AT else if (usesBes) BesTota.SERVICE else null
+public val SkullcandyProduct.service: String? get() = if (usesAt) SkullcandyServices.AT else if (usesBes) BesTota.SERVICE else if (usesRpc) SkullcandyServices.RPC else null
 
 /** The serial services Skullcandy's Airoha RACE channel may list (for the models' custom commands, which need a second channel of their own): Bragi's and Airoha's. */
 public val RACE_SERVICES: List<String> = listOf(SkullcandyServices.RACE, "FFEEDDCC-BBAA-9988-7766-554433221100")

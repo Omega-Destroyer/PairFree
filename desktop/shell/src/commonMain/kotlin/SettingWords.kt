@@ -98,6 +98,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "sk_anc_level" -> t("setting_sk_anc_level")
         "sk_gaming_mode" -> t("setting_sk_gaming_mode")
         "sk_wear_detect" -> t("setting_sk_wear_detect")
+        "sk_sidetone" -> t("setting_sk_sidetone")
+        "sk_touch_control" -> t("setting_sk_touch_control")
         "op_eq_preset" -> t("setting_op_eq_preset")
         "op_noise_level" -> t("setting_op_noise_level")
         "op_custom_eq" -> t("setting_op_custom_eq")

@@ -321,6 +321,8 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sk_anc_level" -> stringResource(R.string.setting_sk_anc_level)
     "sk_gaming_mode" -> stringResource(R.string.setting_sk_gaming_mode)
     "sk_wear_detect" -> stringResource(R.string.setting_sk_wear_detect)
+    "sk_sidetone" -> stringResource(R.string.setting_sk_sidetone)
+    "sk_touch_control" -> stringResource(R.string.setting_sk_touch_control)
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
     "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
     "op_custom_eq" -> stringResource(R.string.setting_op_custom_eq)

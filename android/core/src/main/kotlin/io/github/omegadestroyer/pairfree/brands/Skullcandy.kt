@@ -16,13 +16,17 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.RacePacket
 import io.github.omegadestroyer.pairfree.protocol.jbl.RaceParser
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.RACE_SERVICES
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyAtSession
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.BesMessage
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBandEq
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBesBandEq
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBesTalk
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyModels
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRaceTalk
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.model
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.service
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAt
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAtSerial
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesBes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.io.IOException
@@ -43,7 +47,8 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
 
     override fun model(device: Paired, state: EarbudState): Model? = SkullcandyModels.model(device.model ?: device.name)
 
-    override fun driver(device: Paired, host: DriverHost): BrandDriver = SkullcandyDriver(host, device)
+    override fun driver(device: Paired, host: DriverHost): BrandDriver =
+        if (SkullcandyModels.fromName(device.model ?: device.name)?.usesBes == true) SkullcandyBesDriver(host, device) else SkullcandyDriver(host, device)
 
     /**
      * The AT channel, and for the models with settings that only Skullcandy's RACE channel carries (multipoint, wear detection, bass boost, the custom equaliser) a second serial channel
@@ -159,6 +164,45 @@ class SkullcandyDriver(host: DriverHost, private val device: Paired) : TalkDrive
             appendLine()
             appendLine("The last answer to each line PairFree sent (line, then the reply lines):")
             reportReplies(s.replies)
+        }
+    }
+}
+
+/** The BES models' TOTA conversation ([SkullcandyBesTalk]) over their serial service: the handshake, then the model's own settings and its equaliser, which the earbuds report. */
+class SkullcandyBesDriver(host: DriverHost, private val device: Paired) : TalkDriver<BesMessage, SkullcandyBesTalk>(host) {
+    override fun talk(opened: ControlLink): SkullcandyBesTalk? =
+        SkullcandyModels.fromName(device.model ?: device.name)?.takeIf { it.usesBes }?.let { SkullcandyBesTalk(it) }
+
+    override fun publish(talk: SkullcandyBesTalk) {
+        show(talk.state, talk.groups)
+        eqIs(talk.eq)
+    }
+
+    /** An equaliser write: payloads the talk built, each sent as a message of its own, a newer curve replacing an older one still waiting. */
+    override fun sendEq(frames: List<ByteArray>) {
+        val talk = talk ?: return
+        send(talk, frames.map { talk.messageOf(it) }, reads = emptyList(), replaces = EQ_WRITE)
+    }
+
+    /** The equaliser once the earbuds have reported their custom curve's bands (or at once for a model with presets only). */
+    override fun eqSource(device: Paired, model: Model?): EqSource? {
+        val talk = talk?.takeIf { it.hasEq && it.curveKnown } ?: return null
+        val band = SkullcandyBesBandEq(talk)
+        val target = BandEqTarget(band)
+        return EqSource(talk to band.eqBandsHz, target.layout, target) { current -> band.eqReport?.let { target.reportedAs(it, current) } }
+    }
+
+    override fun report(info: ReportInfo): String? {
+        val t = talk ?: return null
+        return buildString {
+            reportHead(info)
+            appendLine("Brand:           Skullcandy (BES TOTA)")
+            appendLine("Model:           ${t.product.name}")
+            appendLine("Key agreed:      ${if (t.secured) "yes" else if (t.refused) "refused" else "no"}")
+            reportApp(info)
+            appendLine()
+            appendLine("The last decrypted reply to each command PairFree sent (command, then the reply):")
+            reportReplies(t.replies)
         }
     }
 }

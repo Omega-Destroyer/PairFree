@@ -713,6 +713,8 @@
     <string name="setting_sk_anc_level">Noise cancelling strength</string>
     <string name="setting_sk_gaming_mode">Gaming mode (low latency)</string>
     <string name="setting_sk_wear_detect">Wear detection (pause when taken off)</string>
+    <string name="setting_sk_sidetone">Sidetone (hear your own voice on calls)</string>
+    <string name="setting_sk_touch_control">Touch controls</string>
     <string name="setting_sleep_timer">Sleep timer</string>
     <string name="setting_sleep_timer_note">The earbuds stop the audio after the time chosen.</string>
     <string name="setting_group_touch_dial_note">Double press and hold the dial to lock or unlock it.</string>

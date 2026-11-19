@@ -16,6 +16,8 @@ AT_LEVEL = {"GRIND", "GRIND_FUEL", "PUSH_ACTIVE"}
 
 
 def session(p):
+    if p["chip"] == "bes":
+        return "BES TOTA (AES-128 handshake)"
     if p["chip"] == "airoha" and p["sdk"] in AT_SDK:
         return "AT on Skullcandy's serial service"
     if p["chip"] == "airoha" and p["sdk"] is None and not p["name"].startswith("Session "):
@@ -23,7 +25,28 @@ def session(p):
     return None
 
 
+def bes_rows(p, modes):
+    f = set(p["features"])
+    out = ["battery"]
+    if f & {"adjustableNoiseCancellation", "activeNoiseCancellation", "stayAwareMode", "adjustableStayAwareMode"}:
+        out.append("noise mode" + (" + level" if "advancedHearingModes" in f else ""))
+    if f & {"definedEqualizer", "definedEqualizerToggle", "customEqualizer"}:
+        presets = [m for m, n in modes.get(p["enum"], {}).items() if 1 <= n <= 99] if f & {"definedEqualizer", "definedEqualizerToggle"} else []
+        out.append("equalizer (" + ("custom" if "customEqualizer" in f else "") + (" + " if presets and "customEqualizer" in f else "") + (f"{len(presets)} presets" if presets else "") + ")")
+    if f & {"multipointPairingToggle", "multipointPairing"}:
+        out.append("multipoint")
+    if f & {"lowLatencyMode", "gamingMode"}:
+        out.append("gaming mode")
+    if "adjustableSidetoneMode" in f:
+        out.append("sidetone")
+    if "capTouchControl" in f:
+        out.append("touch controls")
+    return out
+
+
 def rows(p, modes):
+    if p["chip"] == "bes":
+        return bes_rows(p, modes)
     f = set(p["features"])
     out = []
     if session(p):
@@ -66,7 +89,7 @@ def main():
         lines.append(f"| {p['name']} | {p['id']} | {p['chip']}{' (SDK ' + p['sdk'] + ')' if p['sdk'] else ''} | {s or 'found only (no session yet)'} | {', '.join(r) or ''} |")
     lines += ["", "Not covered yet, by group:", "",
               "- **Airoha with an SDK configuration on another protocol**: Rail and Rail ANC (Airoha RACE, custom commands), Method 360 and 540 ANC and Crusher 1080 ANC (Bragi's protobuf RPC, which may need a secure session).",
-              "- **BES** (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open): BES's TOTA protocol with its encryption handshake.",
+              "- **BES** (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open): BES's TOTA protocol, built (`SkullcandyBesTalk`): the button actions (command 4) are the one setting still to build.",
               "- **Qualcomm Bluetooth LE** (Crusher ANC, Crusher Evo, Indy Fuel, Indy Evo, Push Ultra, Crusher 540 Active): preset equaliser and ambient mode only.",
               "- **Speakers**: the four Session speakers are found and held back (speakers wait, owner 2026-10-30).",
               "- **JieLi, Actions**: the app shows no setting for these (Smokin' Buds 3, the three Terrain speakers).", ""]

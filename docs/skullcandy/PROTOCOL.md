@@ -405,3 +405,9 @@ From `app/skullcandy/s2.java` (`setCustomEQBands`) and the Dart `SKDYProduct` (t
 The gain range (`SKDYProductModelInfo.ceqRange`) is -12 to +12 dB for most models and -6 to +6 for the rest (one model's is 0 to +20). The presets are the categories the earbuds hold (the SDK's names `Music`, `Podcast`, `Movie`, or `Music`, `Bass Boost`, `Podcast`, by number from 1).
 The write flow is Airoha's own (JBL's, section 11.2 of its doc): the code of `JblAirohaEq` (internal to the protocol module) writes it for the chips AB155x, AB1562, AB1568 and AB158x once it takes the PEQ library's variant as a parameter (`AirohaPeq.Library.SERIALIZE` for Skullcandy:
 the band's third value is the Q, and the comparator is strict) and the category 101, the first custom slot. The chip is read from the earbuds over RACE, as JBL's session does.
+
+### 13.2 What PairFree builds of it (2026-11-18)
+
+`SkullcandyRaceTalk` (the RACE channel's conversation: the chip read, Skullcandy's custom commands and the curve's write, with the steps of `JblAirohaEq` taking `AirohaPeq.Library.SERIALIZE`), `SkullcandyEq` (bands, range, Q 0.91, category 101) and `SkullcandyBandEq` (the Sound tab's
+bands, five, seven or ten, with the app's gain range: 12 dB on the models the SDK configures and the gaming headsets, 6 dB on the rest). The curve is shown once the earbuds have named their chip. PairFree offers the custom curve; the earbuds' own presets (categories 1 to 3) and a read of the curve they hold
+come next, and until then the screen shows what PairFree last wrote. The Crusher 1080 ANC's equaliser (a Bose curve, range 0 to +20) goes with its RPC session, to do.

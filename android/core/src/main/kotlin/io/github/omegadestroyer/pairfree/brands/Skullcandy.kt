@@ -52,7 +52,8 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
         val main = super.open(env, device, driver)
         val d = driver as? SkullcandyDriver ?: return main
         val product = SkullcandyModels.fromName(device.model ?: device.name) ?: return main
-        if (!SkullcandyRaceTalk(product).hasRaceFeatures) return main
+        // only the models the AT conversation serves get a RACE one beside it (the Rail, the RPC models and the rest have no session yet)
+        if (!(product.usesAt || product.usesAtSerial) || !SkullcandyRaceTalk(product).hasRaceFeatures) return main
         for (uuid in RACE_SERVICES) {
             try {
                 env.note("RACE channel $uuid")

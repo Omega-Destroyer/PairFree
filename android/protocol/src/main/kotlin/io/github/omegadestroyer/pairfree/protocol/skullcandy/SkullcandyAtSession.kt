@@ -5,7 +5,10 @@ import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Fed
 import io.github.omegadestroyer.pairfree.protocol.Pacing
 import io.github.omegadestroyer.pairfree.protocol.SessionTalk
+import io.github.omegadestroyer.pairfree.protocol.Setting
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Value
 
 /**
@@ -19,7 +22,10 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
 
     private var current = EarbudState()
     override val state: EarbudState get() = current
-    override val groups: List<SettingGroup> get() = emptyList()
+    override val groups: List<SettingGroup> get() = buildList {
+        transparencyPercent?.takeIf { hasTransparency }?.let { add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(TRANSPARENCY_LEVEL, (it + 5) / 10, 0, 10)))) }
+        gamingMode?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(GAMING_MODE, it)))) }
+    }
 
     /** True when the manifest lists noise cancelling for the model. */
     public val hasAnc: Boolean = "adjustableNoiseCancellation" in product.features || "activeNoiseCancellation" in product.features
@@ -29,6 +35,11 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
 
     private var ancOn: Boolean? = null
     private var transparencyOn: Boolean? = null
+    private var transparencyPercent: Int? = null
+    private var gamingMode: Boolean? = null
+
+    /** True when the manifest lists a gaming (low latency) mode. */
+    public val hasGamingMode: Boolean = "lowLatencyMode" in product.features || "gamingMode" in product.features
     private var pending: String? = null
     private val buffer = StringBuilder()
     private var readBacks: List<String> = emptyList()
@@ -40,6 +51,7 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
         add(SkullcandyAt.BATTERY)
         if (hasAnc) add(SkullcandyAt.ANC)
         if (hasTransparency) add(SkullcandyAt.TRANSPARENCY)
+        if (hasGamingMode) add(SkullcandyAt.LATENCY)
     }
 
     override fun poll(): List<String> = listOf(SkullcandyAt.BATTERY)
@@ -103,7 +115,15 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
                 return replace(next)
             }
             SkullcandyAt.ANC -> ancOn = SkullcandyAt.onOffOf(first) ?: return false
-            SkullcandyAt.TRANSPARENCY -> transparencyOn = SkullcandyAt.transparencyOf(first).on
+            SkullcandyAt.TRANSPARENCY -> {
+                val t = SkullcandyAt.transparencyOf(first)
+                transparencyOn = t.on
+                if (t.percent != null) transparencyPercent = t.percent
+            }
+            SkullcandyAt.LATENCY -> {
+                gamingMode = SkullcandyAt.onOffOf(first) ?: return false
+                return true
+            }
             else -> return false
         }
         return refreshMode()
@@ -154,5 +174,24 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
             if (hasTransparency) add(SkullcandyAt.TRANSPARENCY)
         }
         return lines
+    }
+
+    override fun change(change: SettingChange): List<String>? = when {
+        change is SettingChange.Level && change.key == TRANSPARENCY_LEVEL && hasTransparency -> {
+            transparencyPercent = (change.value * 10).coerceIn(0, 100)
+            readBacks = listOf(SkullcandyAt.TRANSPARENCY)
+            listOf(SkullcandyAt.setTransparencyLevel(transparencyPercent!!))
+        }
+        change is SettingChange.Toggle && change.key == GAMING_MODE && hasGamingMode -> {
+            gamingMode = change.on
+            readBacks = listOf(SkullcandyAt.LATENCY)
+            listOf(SkullcandyAt.setGamingMode(change.on))
+        }
+        else -> null
+    }
+
+    public companion object {
+        public const val TRANSPARENCY_LEVEL: String = "sk_transparency_level"
+        public const val GAMING_MODE: String = "sk_gaming_mode"
     }
 }

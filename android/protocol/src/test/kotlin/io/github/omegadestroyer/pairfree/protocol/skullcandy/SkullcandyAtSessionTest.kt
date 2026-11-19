@@ -1,6 +1,8 @@
 package io.github.omegadestroyer.pairfree.protocol.skullcandy
 
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.Setting
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -75,5 +77,22 @@ class SkullcandyAtSessionTest {
         assertFalse(fed.changed)
         assertEquals(1, fed.answers.size)
         assertNull(s.state.number(Command.ANC_MODE))
+    }
+
+    @Test
+    fun theTransparencyLevelAndGamingModeAreRowsOnceTheyAnswer() {
+        val s = session("Crusher ANC 2")
+        assertTrue(s.groups.isEmpty())
+        answer(s, SkullcandyAt.TRANSPARENCY, "+UIAUDIO:on,40\r\nOK\r\n")
+        val level = s.groups.single { it.key == "noise" }.settings.single() as Setting.Level
+        assertEquals(4, level.value)
+        assertEquals(listOf("AT.UIAUDIO=transparency,,70"), s.change(SettingChange.Level(SkullcandyAtSession.TRANSPARENCY_LEVEL, 7)))
+        assertEquals(listOf(SkullcandyAt.TRANSPARENCY), s.takeReadBacks())
+        if (s.hasGamingMode) {
+            assertTrue(SkullcandyAt.LATENCY in s.start())
+            answer(s, SkullcandyAt.LATENCY, "+LATENCY:off\r\nOK\r\n")
+            assertEquals(listOf("AT.LATENCY=gaming_mode,on"), s.change(SettingChange.Toggle(SkullcandyAtSession.GAMING_MODE, true)))
+        }
+        assertNull(s.change(SettingChange.Toggle("sp_other", true)))
     }
 }

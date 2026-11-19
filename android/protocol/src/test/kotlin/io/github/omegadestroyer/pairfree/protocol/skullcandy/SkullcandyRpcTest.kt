@@ -197,4 +197,42 @@ class SkullcandyRpcTest {
         assertTrue(SkullcandyModels.fromName("Crusher 1080 ANC")!!.usesRpc)
         assertEquals(SkullcandyServices.RPC, SkullcandyModels.fromName("Crusher 1080 ANC")!!.service)
     }
+
+    @Test
+    fun theButtonsAreAskedForOnlyWhatTheEarbudsListAndOnlyTheirActionsAreOffered() {
+        val talk = method()
+        val sent = talk.start()
+        val info = sent.first { it.service == 3 && it.method == 7 }
+        fun item(field: Int, name: String) = BragiProto.bytes(1, BragiProto.bytes(field, BragiProto.text(1, name)))
+        talk.feed(
+            response(
+                info,
+                item(1, "left") + item(1, "right") + item(2, "power") + item(3, "click") + item(3, "click2") + item(3, "click3") + item(3, "hold_up") +
+                    item(5, "media.play_pause") + item(5, "media.next") + item(5, "volume.up") + item(5, "device.no_action"),
+            ),
+        )
+        val asks = talk.takeOutbox()
+        // two earbuds and four gestures of the power key
+        assertEquals(8, asks.size)
+        assertTrue(asks.all { it.service == 3 && it.method == 2 && talk.allowed(it) })
+        val left = asks.first { String(BragiProto.parse(it.body)!!.field(1)!!.data) == "left" && String(BragiProto.parse(it.body)!!.field(3)!!.data) == "power.click2" }
+        talk.feed(response(left, BragiProto.text(1, "left") + u(2, 1) + BragiProto.text(3, "power.click2") + BragiProto.bytes(4, BragiProto.text(1, "media.next"))))
+        val row = talk.groups.flatMap { it.settings }.first { it.key == "sk_rbutton_left_double" } as Setting.Choice
+        assertEquals("track_forward", row.value)
+        // only the actions the earbuds list are offered, of the model's own
+        assertEquals(listOf("play_pause", "track_forward", "volume_up", "none"), row.options)
+        val out = talk.change(SettingChange.Choice("sk_rbutton_left_double", "volume_up"))!!.single()
+        assertTrue(talk.allowed(out))
+        val m = BragiProto.parse(out.body)!!
+        assertEquals("left", String(m.field(1)!!.data))
+        assertEquals("power.click2", String(m.field(2)!!.data))
+        assertEquals("volume.up", String(m.field(3)!!.message()!!.field(1)!!.data))
+        // an action the earbuds do not list is not sent
+        assertNull(talk.change(SettingChange.Choice("sk_rbutton_left_double", "take_photo")))
+        // the Crusher's joystick has its own key, and no single press
+        val crusher = SkullcandyRpcTalk(SkullcandyModels.fromName("Crusher 1080 ANC")!!)
+        assertEquals("centr", RpcButtons.keyOf(crusher.product))
+        assertEquals(listOf("double", "triple", "hold"), RpcButtons.gesturesOf(crusher.product).map { it.first })
+    }
 }
+

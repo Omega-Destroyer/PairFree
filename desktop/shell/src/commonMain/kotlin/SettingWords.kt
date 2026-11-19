@@ -42,6 +42,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "ef_quality" -> "setting_group_sound_quality"
             "power" -> "setting_group_power"
             "ef_buttons", "sk_buttons" -> "setting_group_buttons"
+            "sk_voice" -> "setting_sk_voice_group"
             "ca_eq" -> "setting_ca_eq"
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
@@ -111,6 +112,15 @@ class SettingWords(private val strings: DesktopStrings) {
         "sk_reduced_prompts" -> t("setting_sk_reduced_prompts")
         "sk_battery_prompt" -> t("setting_sk_battery_prompt")
         "sk_language" -> t("setting_sk_language")
+        "sk_rbutton_left_single" -> t("setting_sk_rbutton_left_single")
+        "sk_rbutton_left_double" -> t("setting_sk_rbutton_left_double")
+        "sk_rbutton_left_triple" -> t("setting_sk_rbutton_left_triple")
+        "sk_rbutton_left_hold" -> t("setting_sk_rbutton_left_hold")
+        "sk_rbutton_right_single" -> t("setting_sk_rbutton_right_single")
+        "sk_rbutton_right_double" -> t("setting_sk_rbutton_right_double")
+        "sk_rbutton_right_triple" -> t("setting_sk_rbutton_right_triple")
+        "sk_rbutton_right_hold" -> t("setting_sk_rbutton_right_hold")
+        "sk_voice_language" -> t("setting_sk_voice_language")
         "sk_button_single" -> t("setting_sk_button_single")
         "sk_button_double" -> t("setting_sk_button_double")
         "sk_button_triple" -> t("setting_sk_button_triple")
@@ -812,7 +822,11 @@ class SettingWords(private val strings: DesktopStrings) {
         key == "sk_crusher_mode" -> t(when (option) { "high" -> "setting_level_high"; "medium" -> "setting_level_medium"; else -> "setting_level_low" })
         key == "sk_spatial" -> t(when (option) { "off" -> "action_off"; "fixed_to_head" -> "setting_sk_spatial_head"; else -> "setting_sk_spatial_room" })
         key == "sk_language" -> option
-        key.startsWith("sk_button_") -> t(when (option) {
+        key.startsWith("sk_button_") || key.startsWith("sk_rbutton_") -> t(when (option) {
+            "stay_aware" -> "setting_sk_action_stay_aware"
+            "spotify" -> "setting_sk_action_spotify"
+            "none" -> "setting_sk_action_none"
+            "spatial" -> "setting_sk_action_spatial"
             "play_pause" -> "setting_sk_action_play_pause"
             "track_back" -> "setting_sk_action_track_back"
             "track_forward" -> "setting_sk_action_track_forward"
@@ -1352,6 +1366,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_right" -> "setting_sh_find_right"
         "sh_fit_test" -> "setting_sh_fit_start"
         "sh_auracast_scan" -> "setting_sh_auracast_scan"
+        "sk_voice_on" -> "setting_sk_voice_on"
+        "sk_voice_off" -> "setting_sk_voice_off"
         else -> "setting_action_start"
     }
 

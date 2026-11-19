@@ -501,8 +501,11 @@ Airoha's (multipoint on all three, the Method models' custom equaliser).
   minus 10 to plus 10, and sends as the value plus 10; checked: the SDK's configuration, the schema and the manifest, which give only that range; the app's Dart screen for it was not opened.
 - **Never sent:** the secure session (25), calibration (18), data streams (14), diagnostics (100), feature provisioning (9), time (2.6), device name (7), voice streaming (5), Mimi (10), the Dolby spatial controls (19), media (15), the audio-out mode (21: no SDK configuration lists it) and the action-button
   injection and invocation (3.4, 3.5). `BosRpc.isAllowed` lets through only the requests listed in the code.
-- **Still open, each with what was read:** the button actions (service 3: the earbuds list their own keys, gestures and actions through `get_info_v2`, and the SDK maps the app's actions to strings of its own; the data-driven rows are the next piece), the Auracast receiver and the two RACE reads the
-  Crusher 1080 ANC's configuration whitelists (`05 5A 02 00 41 00` and `05 5A 02 00 43 00`), and the Mimi personal sound (an account feature).
+- **Button actions** (service 3): the app's bridge (`n9.b0`, `c0`, `d0`, `Z`) turns each setting into `setCommands(side, key, gesture, [command])`: the side 0 left, 1 right (a headset: `HEADSET`), the key `POWER` for the earbuds' power button and `CENTR` for the Crusher's joystick, the gestures
+  0 `CLICK`, 1 `CLICK2`, 2 `CLICK3`, 3 `HOLD_UP`, and the action id the Dart enum carries (0 Spotify one-touch, 1 transparency toggle, 2 play/pause, 3 previous, 4 next, 5 volume down, 6 volume up, 7 take a photo, 8 assistant, 9 none, 10 spatial toggle: the manifest's lists for the models are the
+  ten actions of the Method models and play/pause, assistant, spatial toggle and none for the Crusher 1080 ANC). The RPC transport sends it as `set_action(config, "<key>.<gesture>", [action])`. PairFree asks the earbuds for their own list (`get_info_v2`: configurations, keys, gestures, actions), reads each wanted
+  `key.gesture` with `get_action`, and offers only the actions of the manifest that the earbuds list. *Inference:* the action strings follow the SDK's naming (`media.play_pause`, `media.next`, `volume.up`, `ancat.toggle`, `spotify.onetouch`, `assistant.toggle`, `spatial.toggle`, `device.no_action`, `remote.hid_volume_down`), which the check against the earbuds' own list guards.
+- **Still open, each with what was read:** the Auracast receiver and the two RACE reads the Crusher 1080 ANC's configuration whitelists (`05 5A 02 00 41 00` and `43 00`, the serial number and SKU, which PairFree never reads), and the Mimi personal sound (an account feature).
 
 ## 16. The Rail and Rail ANC: Airoha RACE alone (built 2026-11-18)
 
@@ -515,8 +518,12 @@ taken to be the same). Built as the primary mode of `SkullcandyRaceTalk` (`prima
 - **Batteries:** the Airoha SDK's own reads, as JBL's Airoha models do them: the push of changes on (`06 00 01`), which earbud the phone talks to, the agent's battery and the case's, and the other earbud's battery as an unasked indication; the screens show the two earbuds by which one the phone talks to.
   The Skullcandy configuration's `DEVICE_INFO` is a wrapper that hands the battery to the same Airoha provider.
 - **Multipoint** (the NV forms of section 11), **the chip read and the equaliser** (section 13: Music, Bass Boost, Podcast and the custom curve) go through the same talk.
-- **Still open, each with what was read:** the button actions (the Dart classes under `gestures/` and `touch/` and the NV keys `F5 14` and `F5 23`; the gesture key map is Airoha's, as JBL's `JblAirohaGesture`), the voice-control rows (`voiceControl`, `voiceLanguage`: the classes `race_command_voice_control_state_set` and
-  `get_current_language`, whose byte layouts were not traced), Tile, Mimi and Share Audio (account or Auracast features).
+- **Buttons** (`customButtonActions`): the key map of each earbud, as `RaceCommandBragiButtonSettingsGet` and `Set` build it. A read is `05 5A 03 00 07 00 <side>` (01 left, 02 right); the answer is entries of eight bytes: the gesture's type (00 single press, 05 double, 06 triple, 02 press and hold), the key
+  (0 is the power button), the event as two bytes little endian and four bytes of state. A write is `05 5A <length> 03 00 <side>` and the entries (the app writes the earbud's four gestures whole): the events of the app's ten actions (`_actionToBytes`) are 60 play/pause, 94 transparency toggle, 5A next, 5B previous,
+  0A volume up, 0B volume down, BE Spotify one-touch, C0 take a photo, 33 voice assistant and 00 none; the state is 0E for the double press and 08 for the others; the earbuds acknowledge with `05 5B 03 00 03 00 00`. The rows are one per earbud and gesture.
+- **Voice control** (`voiceControl`, `voiceLanguage`): `05 5A 03 00 01 00 10` turns it on and `... 00` off (the app has no read of the state, so PairFree offers two buttons, not a switch); `05 5A 03 00 09 00 01` reads the language as text, shown as information. Choosing another language installs a voice pack the app downloads from
+  Skullcandy's servers, which PairFree never contacts (hard rule), so there is no language row. The audio stream command of the same class (`01 00 21`) starts voice streaming to the phone and is not a setting.
+- **Still open, each with what was read:** Tile, Mimi and Share Audio (account or Auracast features).
 
 ## 17. The six older Qualcomm models: C-Chip frames over Bluetooth LE (built 2026-11-18)
 

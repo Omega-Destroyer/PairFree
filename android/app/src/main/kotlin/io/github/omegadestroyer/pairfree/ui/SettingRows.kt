@@ -261,6 +261,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ef_quality" -> R.string.setting_group_sound_quality
         "power" -> R.string.setting_group_power
         "ef_buttons", "sk_buttons" -> R.string.setting_group_buttons
+        "sk_voice" -> R.string.setting_sk_voice_group
         "ca_eq" -> R.string.setting_ca_eq
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
@@ -334,6 +335,15 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sk_reduced_prompts" -> stringResource(R.string.setting_sk_reduced_prompts)
     "sk_battery_prompt" -> stringResource(R.string.setting_sk_battery_prompt)
     "sk_language" -> stringResource(R.string.setting_sk_language)
+    "sk_rbutton_left_single" -> stringResource(R.string.setting_sk_rbutton_left_single)
+    "sk_rbutton_left_double" -> stringResource(R.string.setting_sk_rbutton_left_double)
+    "sk_rbutton_left_triple" -> stringResource(R.string.setting_sk_rbutton_left_triple)
+    "sk_rbutton_left_hold" -> stringResource(R.string.setting_sk_rbutton_left_hold)
+    "sk_rbutton_right_single" -> stringResource(R.string.setting_sk_rbutton_right_single)
+    "sk_rbutton_right_double" -> stringResource(R.string.setting_sk_rbutton_right_double)
+    "sk_rbutton_right_triple" -> stringResource(R.string.setting_sk_rbutton_right_triple)
+    "sk_rbutton_right_hold" -> stringResource(R.string.setting_sk_rbutton_right_hold)
+    "sk_voice_language" -> stringResource(R.string.setting_sk_voice_language)
     "sk_button_single" -> stringResource(R.string.setting_sk_button_single)
     "sk_button_double" -> stringResource(R.string.setting_sk_button_double)
     "sk_button_triple" -> stringResource(R.string.setting_sk_button_triple)
@@ -1042,7 +1052,11 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     key == "sk_crusher_mode" -> getString(when (option) { "high" -> R.string.setting_level_high; "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_low })
     key == "sk_spatial" -> getString(when (option) { "off" -> R.string.action_off; "fixed_to_head" -> R.string.setting_sk_spatial_head; else -> R.string.setting_sk_spatial_room })
     key == "sk_language" -> option
-    key.startsWith("sk_button_") -> getString(when (option) {
+    key.startsWith("sk_button_") || key.startsWith("sk_rbutton_") -> getString(when (option) {
+        "stay_aware" -> R.string.setting_sk_action_stay_aware
+        "spotify" -> R.string.setting_sk_action_spotify
+        "none" -> R.string.setting_sk_action_none
+        "spatial" -> R.string.setting_sk_action_spatial
         "play_pause" -> R.string.setting_sk_action_play_pause
         "track_back" -> R.string.setting_sk_action_track_back
         "track_forward" -> R.string.setting_sk_action_track_forward
@@ -1583,6 +1597,8 @@ private fun actionStart(key: String): Int = when (key) {
     "sh_find_right" -> R.string.setting_sh_find_right
     "sh_fit_test" -> R.string.setting_sh_fit_start
     "sh_auracast_scan" -> R.string.setting_sh_auracast_scan
+    "sk_voice_on" -> R.string.setting_sk_voice_on
+    "sk_voice_off" -> R.string.setting_sk_voice_off
     else -> R.string.setting_action_start
 }
 

@@ -94,4 +94,48 @@ class SkullcandyRailTest {
         assertNull(t.set(Command.ANC_MODE, number("anc")))
         assertTrue(t.poll().isEmpty())
     }
+
+    private fun entry(type: Int, event: Int) = intArrayOf(type, 0, event and 0xFF, event shr 8, 0x08, 0, 0, 0)
+
+    @Test
+    fun theKeyMapIsReadPerEarbudAndWrittenAsTheAppWritesIt() {
+        val t = anc()
+        val reads = t.start().filter { it.id == RailButtons.READ_ID }
+        assertEquals(listOf("05 5A 03 00 07 00 01", "05 5A 03 00 07 00 02"), reads.map { hex(it.bytes()) })
+        assertTrue(reads.all { t.allowed(it) })
+        // the left earbud: single play/pause, double next, triple transparency, hold Spotify
+        t.bytes(reads[0])
+        t.feed(response(RailButtons.READ_ID, *(entry(0, 0x60) + entry(5, 0x5A) + entry(6, 0x94) + entry(2, 0xBE)), type = JblRace.TYPE_RESPONSE))
+        val rows = t.groups.single { it.key == "sk_buttons" }.settings.map { it as io.github.omegadestroyer.pairfree.protocol.Setting.Choice }
+        assertEquals(listOf("sk_rbutton_left_single", "sk_rbutton_left_double", "sk_rbutton_left_triple", "sk_rbutton_left_hold"), rows.map { it.key })
+        assertEquals(listOf("play_pause", "track_forward", "stay_aware", "spotify"), rows.map { it.value })
+        val out = t.change(io.github.omegadestroyer.pairfree.protocol.SettingChange.Choice("sk_rbutton_left_double", "volume_up"))!!.single()
+        assertEquals(
+            "05 5A 23 00 03 00 01 " + "00 00 60 00 08 00 00 00 " + "05 00 0A 00 0E 00 00 00 " + "06 00 94 00 08 00 00 00 " + "02 00 BE 00 08 00 00 00",
+            hex(out.bytes()),
+        )
+        assertTrue(t.allowed(out))
+        assertNull(t.change(io.github.omegadestroyer.pairfree.protocol.SettingChange.Choice("sk_rbutton_right_single", "volume_up")))
+        // an action the app does not write is not sent
+        assertFalse(t.allowed(RacePacket.of(RailButtons.WRITE_ID, 1, 0, 0, 0x99, 0, 8, 0, 0, 0)))
+    }
+
+    @Test
+    fun voiceControlIsSwitchedAndItsLanguageRead() {
+        val t = anc()
+        val read = t.start().first { it.id == 0x0009 }
+        assertEquals("05 5A 03 00 09 00 01", hex(read.bytes()))
+        t.bytes(read)
+        t.feed(response(0x0009, *("en".encodeToByteArray().map { it.toInt() }.toIntArray() + 0)))
+        val rows = t.groups.single { it.key == "sk_voice" }.settings
+        assertEquals(io.github.omegadestroyer.pairfree.protocol.Setting.Information("sk_voice_language", "en"), rows.first())
+        val on = t.change(io.github.omegadestroyer.pairfree.protocol.SettingChange.Press("sk_voice_on"))!!.single()
+        assertEquals("05 5A 03 00 01 00 10", hex(on.bytes()))
+        assertEquals("05 5A 03 00 01 00 00", hex(t.change(io.github.omegadestroyer.pairfree.protocol.SettingChange.Press("sk_voice_off"))!!.single().bytes()))
+        assertTrue(t.allowed(on))
+        // a model without voice control has neither
+        val other = SkullcandyRaceTalk(SkullcandyModels.fromName("Method 540 ANC")!!)
+        assertNull(other.change(io.github.omegadestroyer.pairfree.protocol.SettingChange.Press("sk_voice_on")))
+    }
 }
+

@@ -45,18 +45,22 @@ public object BosRpc {
     public const val CRUSHER_CONFIG: Int = 1
     public const val CRUSHER_STATE_GET: Int = 2
     public const val CRUSHER_STATE_SET: Int = 3
+    public const val BUTTONS: Int = 3
+    public const val BUTTON_GET_ACTION: Int = 2
+    public const val BUTTON_SET_ACTION: Int = 3
+    public const val BUTTON_INFO_V2: Int = 7
 
     /** The services PairFree writes to: nothing else is ever built (the calibration, data streams, diagnostics, feature provisioning, time, device name and the secure session are not). */
     public val WRITABLE: Set<Pair<Int, Int>> = setOf(
         HEARING to MODE_CONFIGURE, HEARING to PEQ_CONFIGURE, HEARING to SIDETONE_CONFIGURE, LANGUAGE to LANG_CONFIGURE, LOW_LATENCY to 2, INSERTION to TRIGGER_SET,
-        SPATIAL to SPATIAL_SET, SOUNDS to 2, CRUSHER to CRUSHER_STATE_SET,
+        SPATIAL to SPATIAL_SET, SOUNDS to 2, CRUSHER to CRUSHER_STATE_SET, BUTTONS to BUTTON_SET_ACTION,
     )
 
     /** The reads: every request the session builds goes through [isAllowed]. */
     public val READABLE: Set<Pair<Int, Int>> = setOf(
         DEVICE to DEV_INFO, DEVICE to BATT_INFO, HEARING to MODE_READ, HEARING to MODE_INFO, HEARING to PEQ_READ_STATE, HEARING to PEQ_READ_CONF, HEARING to PEQ_INFO,
         HEARING to SIDETONE_READ, HEARING to SIDETONE_INFO, LANGUAGE to LANG_INFO, LOW_LATENCY to 1, INSERTION to TRIGGER_GET, SPATIAL to SPATIAL_INFO, SOUNDS to 1,
-        CRUSHER to CRUSHER_CONFIG, CRUSHER to CRUSHER_STATE_GET,
+        CRUSHER to CRUSHER_CONFIG, CRUSHER to CRUSHER_STATE_GET, BUTTONS to BUTTON_GET_ACTION, BUTTONS to BUTTON_INFO_V2,
     )
 
     public fun isAllowed(rpc: BragiRpc): Boolean = rpc.type == SkullcandyRpc.REQUEST && ((rpc.service to rpc.method) in READABLE || (rpc.service to rpc.method) in WRITABLE)
@@ -83,6 +87,17 @@ public class SkullcandyRpcTalk(public val product: SkullcandyProduct) : SessionT
     private val hasCrusher = "crusherTechnologyDial" in f || "crusherTechnologyProfiles" in f
     private val hasSpatial = "boseTrueSpatialMotion" in f || "boseTrueSpatialStill" in f
     private val hasRpcEq = "boseEqualizer" in f
+
+    private val hasButtons = "customButtonActions" in f
+    private val outbox = ArrayList<BragiRpc>()
+
+    // the button map: what the earbuds list (their configurations, keys, gestures and actions) and what each wanted key and gesture holds now
+    private val configs = ArrayList<String>()
+    private val controls = ArrayList<String>()
+    private val gestureNames = ArrayList<String>()
+    private val actionNames = LinkedHashSet<String>()
+    private val asked = HashSet<Triple<String, String, String>>()
+    private val buttonValues = LinkedHashMap<Triple<String, String, String>, String?>()
 
     private var tag = 0
     private val parser = BragiParser()
@@ -198,6 +213,16 @@ public class SkullcandyRpcTalk(public val product: SkullcandyProduct) : SessionT
         crusherMode?.let { m -> crusherModes?.takeIf { it > 0 }?.let { crusher += Setting.Choice(CRUSHER_MODE, CRUSHER_MODE_NAMES.getOrNull(m), CRUSHER_MODE_NAMES.take(it)) } }
         if (crusher.isNotEmpty()) add(SettingGroup("sound", SettingTab.SOUND, crusher))
         if (spatialAvailable == true) spatialMode?.let { add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Choice(SPATIAL_MODE, SPATIAL_NAMES.getOrNull(it - 1), SPATIAL_NAMES)))) }
+        if (hasButtons) {
+            val rows = ArrayList<Setting>()
+            for ((k, v) in buttonValues) {
+                val (config, _, gesture) = k
+                val short = RpcButtons.GESTURES.firstOrNull { it.second == gesture }?.first ?: continue
+                val key = if (config.equals("left", true) || config.equals("right", true)) "sk_rbutton_${config.lowercase()}_$short" else "sk_button_$short"
+                rows += Setting.Choice(key, RpcButtons.optionOf(v), offeredActions())
+            }
+            if (rows.isNotEmpty()) add(SettingGroup("sk_buttons", SettingTab.CONTROLS, rows))
+        }
         val prompts = ArrayList<Setting>()
         reducedPrompts?.let { prompts += Setting.Toggle(REDUCED_PROMPTS, it) }
         batteryPrompt?.let { prompts += Setting.Toggle(BATTERY_PROMPT, it) }
@@ -223,6 +248,7 @@ public class SkullcandyRpcTalk(public val product: SkullcandyProduct) : SessionT
             add(subscribe(BosRpc.CRUSHER, BosRpc.CRUSHER_STATE_GET))
         }
         if (hasSpatial) add(subscribe(BosRpc.SPATIAL, BosRpc.SPATIAL_INFO))
+        if (hasButtons) add(request(BosRpc.BUTTONS, BosRpc.BUTTON_INFO_V2))
         add(request(BosRpc.SOUNDS, 1))
         add(request(BosRpc.LANGUAGE, BosRpc.LANG_INFO))
         if (hasRpcEq) {
@@ -243,6 +269,44 @@ public class SkullcandyRpcTalk(public val product: SkullcandyProduct) : SessionT
     override fun answers(sent: BragiRpc, got: Any): Boolean = (got as? BragiRpc)?.matches(sent) == true
 
     override fun takeReadBacks(): List<BragiRpc> = readBacks.also { readBacks = emptyList() }
+
+    override fun takeOutbox(): List<BragiRpc> = outbox.toList().also { outbox.clear() }
+
+    /** The actions the model's manifest lists and the earbuds' own list of actions holds, by their option names. */
+    private fun offeredActions(): List<String> = RpcButtons.mappable(product).filter { o -> RpcButtons.ACTIONS[o]?.let { it in actionNames } == true }
+
+    private fun askButtons() {
+        val key = RpcButtons.keyOf(product)
+        if (controls.none { it.equals(key, true) }) return
+        for (config in configs) for ((_, gesture) in RpcButtons.gesturesOf(product)) {
+            if (gestureNames.none { it.equals(gesture, true) }) continue
+            val k = Triple(config, key, gesture)
+            if (!asked.add(k)) continue
+            outbox += request(BosRpc.BUTTONS, BosRpc.BUTTON_GET_ACTION, BragiProto.text(1, config) + BragiProto.unsigned(2, 1uL) + BragiProto.text(3, "$key.$gesture"))
+        }
+    }
+
+    private fun buttonInfo(m: List<BragiField>): Boolean {
+        for (info in m.fields(1)) {
+            val i = info.message() ?: continue
+            i.field(1)?.message()?.field(1)?.text()?.let { if (it !in configs) configs += it }
+            i.field(2)?.message()?.field(1)?.text()?.let { if (it !in controls) controls += it }
+            i.field(3)?.message()?.field(1)?.text()?.let { if (it !in gestureNames) gestureNames += it }
+            i.field(5)?.message()?.field(1)?.text()?.let { actionNames += it }
+        }
+        askButtons()
+        return true
+    }
+
+    private fun buttonAction(m: List<BragiField>): Boolean {
+        val config = m.field(1)?.text() ?: return false
+        val ekg = m.field(3)?.text() ?: return false
+        val dot = ekg.indexOf('.')
+        if (dot < 0) return false
+        val first = m.fields(4).firstNotNullOfOrNull { it.message()?.field(1)?.text() }
+        buttonValues[Triple(config, ekg.substring(0, dot), ekg.substring(dot + 1))] = first
+        return true
+    }
 
     override fun feed(bytes: ByteArray): Fed {
         var changed = false
@@ -308,6 +372,8 @@ public class SkullcandyRpcTalk(public val product: SkullcandyProduct) : SessionT
                 locales = m.fields(2).mapNotNull { it.message()?.field(1)?.text() }
                 true
             }
+            BosRpc.BUTTONS to BosRpc.BUTTON_INFO_V2 -> buttonInfo(m)
+            BosRpc.BUTTONS to BosRpc.BUTTON_GET_ACTION -> buttonAction(m)
             BosRpc.HEARING to BosRpc.PEQ_INFO -> { peqMinGain = m.field(4)?.float(); peqMaxGain = m.field(5)?.float(); true }
             BosRpc.HEARING to BosRpc.PEQ_READ_STATE -> { peqEnabled = m.field(1)?.bool() ?: false; peqCurrent = m.field(2)?.int(); true }
             BosRpc.HEARING to BosRpc.PEQ_READ_CONF -> {
@@ -433,6 +499,7 @@ public class SkullcandyRpcTalk(public val product: SkullcandyProduct) : SessionT
             }
             is SettingChange.Choice -> {
                 val option = change.option
+                if (hasButtons && (change.key.startsWith("sk_rbutton_") || change.key.startsWith("sk_button_"))) return buttonChange(change.key, option)
                 return when (change.key) {
                     CRUSHER_MODE -> {
                         val mode = CRUSHER_MODE_NAMES.indexOf(option).takeIf { it >= 0 && hasCrusher } ?: return null
@@ -456,6 +523,18 @@ public class SkullcandyRpcTalk(public val product: SkullcandyProduct) : SessionT
             }
             else -> return null
         }
+    }
+
+    private fun buttonChange(key: String, option: String): List<BragiRpc>? {
+        val action = RpcButtons.ACTIONS[option] ?: return null
+        if (option !in offeredActions()) return null
+        val parts = key.removePrefix("sk_rbutton_").removePrefix("sk_button_").split('_')
+        val (side, short) = if (key.startsWith("sk_rbutton_")) parts.getOrNull(0) to parts.getOrNull(1) else null to parts.getOrNull(0)
+        val gesture = RpcButtons.GESTURES.firstOrNull { it.first == short }?.second ?: return null
+        val k = buttonValues.keys.firstOrNull { it.third == gesture && (side == null || it.first.equals(side, true)) } ?: return null
+        buttonValues[k] = action
+        readBacks = listOf(request(BosRpc.BUTTONS, BosRpc.BUTTON_GET_ACTION, BragiProto.text(1, k.first) + BragiProto.unsigned(2, 1uL) + BragiProto.text(3, "${k.second}.${k.third}")))
+        return listOf(request(BosRpc.BUTTONS, BosRpc.BUTTON_SET_ACTION, BragiProto.text(1, k.first) + BragiProto.text(2, "${k.second}.${k.third}") + BragiProto.bytes(3, BragiProto.text(1, action))))
     }
 
     /** The write that makes the preset [name] the active filter, as the RPC bytes of one request. */
@@ -529,4 +608,35 @@ public class SkullcandyRpcBandEq(private val talk: SkullcandyRpcTalk) : BandEq {
 
     override val eqReport: BandEqReport?
         get() = talk.eqPresetName?.let { BandEqReport(it, null) } ?: talk.eqGains?.let { BandEqReport(null, it) }
+}
+
+
+/**
+ * The button actions of the RPC models (docs/skullcandy/PROTOCOL.md section 15): the app's bridge converts each action to an SDK command (`n9.Z`) and calls `setCommands(side, key, gesture, [command])`, which the RPC transport sends as
+ * `set_action(config, "<key>.<gesture>", [action])`. The key of each model's button, the gestures and the actions are the app's own; the strings of the actions are the SDK's, checked against the list the earbuds report.
+ */
+public object RpcButtons {
+    /** The gestures the app maps for these models, as the SDK names them (`n9.c0`): click, click2, click3 and hold (`HOLD_UP`). */
+    public val GESTURES: List<Pair<String, String>> = listOf("single" to "click", "double" to "click2", "triple" to "click3", "hold" to "hold_up")
+
+    /** The actions by option name and the SDK's string for each command. *Inference:* the strings follow the SDK's naming (the command's name in lower case, its first underscore a dot, and the three it names explicitly); each is offered only when the earbuds list it. */
+    public val ACTIONS: Map<String, String> = linkedMapOf(
+        "play_pause" to "media.play_pause", "stay_aware" to "ancat.toggle", "track_forward" to "media.next", "track_back" to "media.prev", "volume_up" to "volume.up",
+        "volume_down" to "volume.down", "spotify" to "spotify.onetouch", "take_photo" to "remote.hid_volume_down", "voice_assistant" to "assistant.toggle",
+        "none" to "device.no_action", "spatial" to "spatial.toggle",
+    )
+
+    /** The option of an action string the earbuds report, or null for one PairFree does not name. */
+    public fun optionOf(action: String?): String? = ACTIONS.entries.firstOrNull { it.value == action }?.key
+
+    /** The model's mappable actions from the manifest (`mappableButtonActions`), by option name. */
+    public fun mappable(product: SkullcandyProduct): List<String> =
+        if (product.sdk == "CHP300") listOf("play_pause", "voice_assistant", "spatial", "none")
+        else listOf("play_pause", "stay_aware", "track_forward", "track_back", "volume_up", "volume_down", "spotify", "take_photo", "voice_assistant", "none")
+
+    /** The key of the button the app maps: the power button of the earbuds, the joystick of the Crusher 1080 ANC (the SDK's `POWER` and `CENTR`). */
+    public fun keyOf(product: SkullcandyProduct): String = if (product.sdk == "CHP300") "centr" else "power"
+
+    /** The gestures the manifest's defaults list for the model: all four on the earbuds, double and triple press and the hold on the Crusher's joystick. */
+    public fun gesturesOf(product: SkullcandyProduct): List<Pair<String, String>> = if (product.sdk == "CHP300") GESTURES.filter { it.first != "single" } else GESTURES
 }

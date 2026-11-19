@@ -36,6 +36,11 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     private val hasTransparencyMode = primary && ("adjustableStayAwareMode" in product.features || "stayAwareMode" in product.features)
     private val own = HashSet<RacePacket>()
     private var railMode: String? = null
+
+    /** The key map the earbuds hold, by side (1 left, 2 right): the entries of the power button. */
+    private val buttons = LinkedHashMap<Int, List<RailButtons.Entry>>()
+    private var voiceLanguage: String? = null
+    private val hasButtons = primary && "customButtonActions" in product.features
     private var agentRight = false
 
     private val parser = RaceParser()
@@ -105,6 +110,23 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     public val eqWritten: Boolean get() = write?.done == true
 
     override val groups: List<SettingGroup> get() = buildList {
+        if (primary && buttons.isNotEmpty()) {
+            val rows = ArrayList<Setting>()
+            for ((side, entries) in buttons.toSortedMap()) {
+                for (g in RailButtons.GESTURES) {
+                    val e = entries.firstOrNull { it.type == g.first } ?: continue
+                    rows += Setting.Choice("sk_rbutton_${if (side == 1) "left" else "right"}_${g.second}", RailButtons.nameOf(e.event), RailButtons.OPTIONS)
+                }
+            }
+            if (rows.isNotEmpty()) add(SettingGroup("sk_buttons", SettingTab.CONTROLS, rows))
+        }
+        if (primary && "voiceControl" in product.features) {
+            val rows = ArrayList<Setting>()
+            voiceLanguage?.let { rows += Setting.Information(VOICE_LANGUAGE, it) }
+            rows += Setting.Action(VOICE_ON)
+            rows += Setting.Action(VOICE_OFF)
+            add(SettingGroup("sk_voice", SettingTab.DEVICE, rows))
+        }
         multipoint?.let { add(SettingGroup("connection", SettingTab.DEVICE, listOf(Setting.Toggle(MULTIPOINT, it)))) }
         wearDetect?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(WEAR_DETECT, it)))) }
         bassBoost?.let { add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Toggle(BASS_BOOST, it)))) }
@@ -131,6 +153,8 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             add(own(RacePacket.of(JblRace.BATTERY, 0)))
             add(own(RacePacket.of(JblRace.CASE_BATTERY)))
             if (hasNoise) add(own(RacePacket.mmiGet(JblRace.MMI_ANC)))
+            if (hasButtons) for (side in 1..2) add(own(packet(RailButtons.readHex(side), "buttons$side")))
+            if ("voiceControl" in product.features) add(own(packet(RailButtons.VOICE_LANGUAGE_GET, "voice_language")))
         }
         if (hasCustomEq) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
         if (hasMultipoint) add(packet(SkullcandyRace.multipointGet(product.enumName), "multipoint"))
@@ -148,7 +172,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     override fun poll(): List<RacePacket> = if (primary) listOf(own(RacePacket.of(JblRace.BATTERY, 0)), own(RacePacket.of(JblRace.CASE_BATTERY))) else emptyList()
 
     override fun allowed(message: RacePacket): Boolean =
-        message == chipRead || message in own || write?.sent?.contains(message) == true || SkullcandyRace.isAllowed(message.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
+        message == chipRead || message in own || write?.sent?.contains(message) == true || (primary && RailButtons.isAllowed(message)) || SkullcandyRace.isAllowed(message.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
 
     override fun bytes(message: RacePacket): ByteArray {
         pending = message
@@ -261,6 +285,19 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         }
         val kind = kinds[asked] ?: return false
         if (p.type != 0x5B && p.type != 0x5D || p.payload.isEmpty()) return false
+        if (kind.startsWith("buttons")) {
+            val side = kind.removePrefix("buttons").toInt()
+            val entries = RailButtons.parse(p.payload) ?: return false
+            buttons[side] = entries
+            return true
+        }
+        if (kind == "voice_language") {
+            // the text of the answer, less its last byte (the app's decoder drops it)
+            val text = p.payload.copyOfRange(0, (p.payload.size - 1).coerceAtLeast(0)).decodeToString().trim { it <= ' ' }
+            if (text.isEmpty() || text.any { it < ' ' || it > '~' }) return false
+            voiceLanguage = text
+            return true
+        }
         if (kind == "gain") {
             // the status, the sub-command 0D, then the gain
             if (p.payload.size < 4 || p.payload[0].toInt() != 0 || p.payload[1].toInt() != 0x0D) return false
@@ -284,7 +321,24 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
 
     override fun takeReadBacks(): List<RacePacket> = readBacks.also { readBacks = emptyList() }
 
+    private fun railButtonChange(change: SettingChange.Choice): List<RacePacket>? {
+        if (!hasButtons || !change.key.startsWith("sk_rbutton_")) return null
+        val parts = change.key.removePrefix("sk_rbutton_").split('_')
+        val side = when (parts.firstOrNull()) { "left" -> 1; "right" -> 2; else -> return null }
+        val gesture = RailButtons.GESTURES.firstOrNull { it.second == parts.getOrNull(1) }?.first ?: return null
+        val event = RailButtons.EVENTS.firstOrNull { it.second == change.option }?.first ?: return null
+        val now = buttons[side] ?: return null
+        if (now.none { it.type == gesture }) return null
+        val next = now.map { if (it.type == gesture) RailButtons.Entry(it.type, it.key, event) else it }
+        buttons[side] = next
+        readBacks = listOf(own(packet(RailButtons.readHex(side), "buttons$side")))
+        return listOf(own(RailButtons.write(side, next)))
+    }
+
     override fun change(change: SettingChange): List<RacePacket>? = when {
+        change is SettingChange.Choice && change.key.startsWith("sk_rbutton_") -> railButtonChange(change)
+        change is SettingChange.Press && primary && "voiceControl" in product.features && (change.key == VOICE_ON || change.key == VOICE_OFF) ->
+            listOf(own(packet(RailButtons.voiceSet(change.key == VOICE_ON), "voice_set")))
         change is SettingChange.Toggle && change.key == MULTIPOINT && hasMultipoint -> {
             multipoint = change.on
             readBacks = listOf(packet(SkullcandyRace.multipointGet(product.enumName), "multipoint"))
@@ -348,6 +402,9 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         public const val MULTIPOINT: String = "multipoint"
         public const val WEAR_DETECT: String = "sk_wear_detect"
         public const val BASS_BOOST: String = "bass_boost"
+        public const val VOICE_ON: String = "sk_voice_on"
+        public const val VOICE_OFF: String = "sk_voice_off"
+        public const val VOICE_LANGUAGE: String = "sk_voice_language"
         public const val ANC_LEVEL: String = "sk_anc_level"
         public const val TRANSPARENCY_LEVEL: String = "sk_transparency_level"
         private const val CHIP_NV_LENGTH = 1000

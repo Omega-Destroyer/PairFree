@@ -442,3 +442,15 @@ Two forms, by the SDK configuration of the product (`com/bragi/sdk/android/api/a
   whose RACE frames are Airoha's own ANC commands.
 
 PairFree offers the AT level where the SDK lists it, and the RACE gain on the Crusher ANC 2 (`SkullcandyGain`, `SkullcandyRaceTalk`): a row for the strength of the mode in force, read again when the mode changes, in steps of a tenth of the slider. The other models' Airoha ANC frames (Airoha's SDK `setANCSettings`) come with their own sessions.
+
+### 12.3 BES TOTA: the channel, the handshake and the replies (read 2026-11-18)
+
+From `app/skullcandy/bes/` (`i.java`, `bessdk/service/base/b.java`, `d.java`, `bessdk/b.java`) and the Dart `utils/tota_commands/` classes.
+
+- **Channel:** the serial service `66666666-6666-6666-6666-666666666666` (the BES SDK's default; classic Bluetooth, SPP). The BLE path of the SDK throws `BLE not implemented`.
+- **Handshake** (frames as section 12.2 describes, unencrypted until it ends): the host sends `01 10 <n u16 LE> <m> <m random bytes>` with m random between 16 and 127 and n = m + 1; the earbuds answer `02 10 <len u16 LE> <len byte> <their buffer>`; the host mixes the two buffers
+  (the byte-wise operation by index modulo 6, section 12.2), takes the SHA-256, keeps the 16 even-position bytes as the AES key, and confirms with `03 10 21 00 20 <the 32-byte hash>`; the earbuds answer with `00 10 ...` holding the ASCII `suc` at offset 12 when it holds. The app waits 10 s for the answer and drops the link otherwise.
+- **Data** after the handshake: each command is an AES-CBC (zero-padded, IV `00 01 .. 0F`) payload in a TOTA frame (`HEAD`, length, payload, CRC-32, `TAIL`), behind `9F <frame length u32 LE>`; replies come the same way (`9F` and four length bytes stripped first). The `BES_TOTA_ENCRYPTION_KEY` flag can turn the AES layer off; the app's default is on.
+- **Commands:** a read is `09 63 02 00 <command> 00`, a write `08 63 03 00 <command> 00 <value>`; the replies start `0B 63` (to a read) or `0A 63` (to a write), then the length, the command and a status byte, with the data from the eighth byte on. Battery: two bytes, left then right. EQ mode, low latency,
+  multipoint, sidetone, touch control and TWS: the last byte (`01` is on); the EQ mode's value goes through the same mode table as the Airoha models (section 13.3: Music 1, Podcast 2, Bass Boost 3, custom 101 on the BES models). The hearing mode and the button settings carry more; the custom equaliser's bands use the
+  constants `00`, `FF`, `00 80` and `FF 7F` of `tota_custom_eq_utils` (a signed 16-bit range); their layouts are the next reading.

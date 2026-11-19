@@ -149,10 +149,16 @@ actions without the assistant, and hearing your own voice and the volume limit (
 
 ## 6. Not yet
 
-- **PistonBuds PRO Q30 (EC305), issues #58 and #63 (2026-11-19):** two users' earbuds connect over the serial channel and never answer a read. blocked: the 2.0.0 and 2.1.3 apps carry no
-  name mapping for the Q30 (`HeadsetKt` maps names to codes up to the PistonBuds Pro EC302) and open the standard serial UUID like the other models, so nothing in them says why the
-  Q30 stays silent; the reporters name 1MORE's other app, `com.onemore.life` 5.0.1, as the one that controls the Q30 and say the Music app does not find it;
-  checked: `BluetoothService` (UUIDs, `isAndroid`), `BluetoothManager`, `HeadsetKt`, the product list entry for EC305. Needs that app's APK.
+- **PistonBuds PRO Q30 (EC305), issues #58 and #63 (2026-11-19):** two users' earbuds connect over the serial channel and never answer a read. blocked: 1MORE Life 5.0.3 (`com.onemore.life`, read 2026-11-19) controls the Q30 over the same
+  channel and frame as PairFree and shows no step PairFree lacks; checked: the app's serial connector (`com.bitaxon.n2.k.a`: `getUuids()` first, then a secure `createRfcommSocketToServiceRecord(00001101-…)`, a plain
+  reader), its frame builder (`com.bitaxon.n2.c.f`: `11`, a flag byte that is 1 for the Q30, command, length, sequence, XOR, payload), its first requests on connecting (the battery read `004E`, then the model's list; the
+  handshake `004D 01` comes later, on its own event), its command table (`com.onemore.life.c.a.a`, the same numbers as `commands.json`), its name mapping (`1MORE PistonBuds PRO`, `1MORE Pistonbuds PRO Q30` and `... PRO Q30`
+  all map to EC305) and the EC305 handlers (the battery reply carries one more byte, `[11]`, which no other model of the app's reads; the custom EQ's reply is offset by a per-model table). Nothing there explains
+  silence, so the cause is on the channel (a secure socket after `getUuids()`, which PairFree 0.16.1 now also tries, then insecure and channel 1) or in the earbuds' state; waiting for a connection report from 0.16.1.
+
+- **Models in 1MORE Life 5.0.3 that the Music app's product list lacks** (their name mapping, `DeviceFactoryImpl`): ComfoBuds 2 (ES303), ComfoBuds Pro (ES901, ES901 EQ), ColorBuds 2 (ES602), PistonBuds Pro (EC302), SonoFlow (HC905),
+  SonoFlow SE (HC306), Fit (EF906), Fit SE (EF606), S31 (S31, S31B), QuietLace, and the older Bluetooth LE families (E1001, E1004, E1020, E1022, E1026, S1001, ESS3001T, ECS3001T). Its per-model feature flags
+  (`com.bitaxon.n2.d.a.*`, one class per model) and command numbers are the source for adding them (the next piece of work on this brand).
 
 - **EQ:** the music and sleep styles (`003B`/`003C`), the HQ60's THX preset, and 1MORE's finer gain steps. 1MORE's
   app 2.0.0 declares the styles (`BluetoothOrderConstents`) but never sends them, so nothing shows their payloads. **Corrected 2026-11-12: 1MORE 2.1.3 does send them** (`HeadsetActivity`: `sendSppSetEQMode(0)` music and `(1)` sleep; `SetTimeActivity`: `sendSppSetPlayTime((i + 1) * 2)`, or 0 for no timer; `ShortcutActionsActivity`: `sendSppSetVocalEnhancement`), so the layouts can be built from 2.1.3.

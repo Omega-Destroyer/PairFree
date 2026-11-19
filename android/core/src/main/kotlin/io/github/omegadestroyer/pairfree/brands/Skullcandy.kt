@@ -6,10 +6,12 @@ import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyAtSession
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.RACE_SERVICES
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyModels
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.model
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.service
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAt
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAtOverRace
 
 /**
  * Skullcandy's earbuds and headphones, from Skullcandy's own app (5.0.6, docs/skullcandy/PROTOCOL.md). The products are told by their Bluetooth name; the chip family and
@@ -22,7 +24,10 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
     override val offersRecording: Boolean get() = false
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
-        SkullcandyModels.fromName(name)?.let { p -> Paired(address, name, Brand.SKULLCANDY, service = p.service, model = p.name) }
+        SkullcandyModels.fromName(name)?.let { p ->
+            val service = p.service ?: if (p.usesAtOverRace) RACE_SERVICES.firstOrNull { s -> uuids.any { it.equals(s, ignoreCase = true) } } else null
+            Paired(address, name, Brand.SKULLCANDY, service = service, model = p.name)
+        }
 
     override fun model(device: Paired, state: EarbudState): Model? = SkullcandyModels.model(device.model ?: device.name)
 
@@ -35,7 +40,7 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
 class SkullcandyDriver(host: DriverHost, private val device: Paired) : TalkDriver<String, SkullcandyAtSession>(host) {
     val session: SkullcandyAtSession? get() = talk
 
-    override fun talk(opened: ControlLink): SkullcandyAtSession? = SkullcandyModels.fromName(device.model ?: device.name)?.takeIf { it.usesAt }?.let { SkullcandyAtSession(it) }
+    override fun talk(opened: ControlLink): SkullcandyAtSession? = SkullcandyModels.fromName(device.model ?: device.name)?.takeIf { it.usesAt || it.usesAtOverRace }?.let { SkullcandyAtSession(it, viaRace = it.usesAtOverRace) }
 
     override fun report(info: ReportInfo): String? {
         val s = session ?: return null

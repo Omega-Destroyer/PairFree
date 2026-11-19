@@ -10,6 +10,8 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Value
+import io.github.omegadestroyer.pairfree.protocol.jbl.RacePacket
+import io.github.omegadestroyer.pairfree.protocol.jbl.RaceParser
 
 /**
  * The conversation with a Skullcandy product that Skullcandy's own app drives with AT lines over the serial service (docs/skullcandy/PROTOCOL.md section 9: Grind,
@@ -17,7 +19,8 @@ import io.github.omegadestroyer.pairfree.protocol.Value
  * do not tell noise cancelling from transparency, so what a reply means is what the line before it asked: the session keeps the last line it sent and reads the
  * answer against it, as the app's SDK does.
  */
-public class SkullcandyAtSession(public val product: SkullcandyProduct) : SessionTalk<String>() {
+public class SkullcandyAtSession(public val product: SkullcandyProduct, public val viaRace: Boolean = false) : SessionTalk<String>() {
+    private val race = RaceParser()
     override val pacing: Pacing = Pacing(replyMs = 1500, gapMs = 150, startGapMs = 150, pollMs = Pacing.POLL_MS, resends = 1)
 
     private var current = EarbudState()
@@ -60,13 +63,24 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
 
     override fun bytes(message: String): ByteArray {
         pending = message
-        return SkullcandyAt.line(message)
+        val line = SkullcandyAt.line(message)
+        // Over Airoha RACE the line travels as the payload of the tunnel command, behind the two-byte tag (docs/skullcandy/PROTOCOL.md section 9.4).
+        return if (viaRace) RacePacket(TUNNEL_ID, TAG + line, TYPE_REQUEST).bytes() else line
     }
 
     override fun describe(message: String): String = message
 
     override fun feed(bytes: ByteArray): Fed {
-        buffer.append(bytes.decodeToString())
+        if (viaRace) {
+            // The tunnel's own acknowledgement (type 5B) carries no text; the answer text comes in notifications (5D) of the same command, with or without the tag.
+            for (p in race.feed(bytes)) {
+                if (p.id != TUNNEL_ID || p.type != TYPE_NOTIFICATION) continue
+                val body = if (p.payload.size >= 2 && p.payload[0] == TAG[0] && p.payload[1] == TAG[1]) p.payload.copyOfRange(2, p.payload.size) else p.payload
+                buffer.append(body.decodeToString())
+            }
+        } else {
+            buffer.append(bytes.decodeToString())
+        }
         var changed = false
         val answers = mutableListOf<Any>()
         while (true) {
@@ -191,6 +205,11 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
     }
 
     public companion object {
+        /** The RACE command that carries Bragi's AT lines: `01 0D` on the wire, as a little endian id. */
+        public const val TUNNEL_ID: Int = 0x0D01
+        private const val TYPE_REQUEST: Int = 0x5A
+        private const val TYPE_NOTIFICATION: Int = 0x5D
+        private val TAG: ByteArray = byteArrayOf(0x05, 0xFF.toByte())
         public const val TRANSPARENCY_LEVEL: String = "sk_transparency_level"
         public const val GAMING_MODE: String = "sk_gaming_mode"
     }

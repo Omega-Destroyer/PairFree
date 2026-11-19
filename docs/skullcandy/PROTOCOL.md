@@ -390,3 +390,18 @@ so the presets are categories the earbuds hold (the SDK names them per product: 
 gain range of -12 to +12 dB) and the custom curve is category 0 written with a payload. This is the same mechanism JBL's Airoha earbuds use (`protocol.airoha.AirohaPeq`, `JblAirohaEq`), whose coefficients PairFree computes from a port of Airoha's
 `libnative-peq.so`; the Skullcandy app carries that library too (`libnative-peq.so`, SHA-256 `ffa603fe...`), so the same flow (NV keys, relay, subsets) is the candidate for Skullcandy's custom curve. **The library is a different build from JBL's, but it computes what the port's second variant computes** (checked 2026-11-18): Skullcandy's (SHA-256 `ffa603fe...`) takes the Q itself as the band's third value (JBL's takes a bandwidth in Hz) and its first comparator is strict (`compare1` is `-1`, `0`, `1` by an exact comparison of the gains, where JBL's truncates the difference to an int), which is `libnative-peq-serialize.so`'s behaviour, i.e. `AirohaPeq.Library.SERIALIZE`. Run under the same emulator (`E:\Buildsesearch\jbl-native`, `PEQ_LIB=libnative-peq-skullcandy.so`), `peqport.generate(..., q_given=True, strict=True)` equals the library's `getCofeParam` shorts on 60 of 60 random ten-band curves (44.1 and 48 kHz, random master gains, plain arithmetic). The coefficients of Skullcandy's custom curve therefore need no new port: `AirohaPeq.coefficients(fs, bands, masterDb, Library.SERIALIZE)`. What remains for the equaliser is the write flow per chip (NV keys, relay, subsets: JBL's `JblAirohaEq` is the model), the band layout per model and the preset categories.
 counts and frequencies per model (the app's `SKDYProductModelInfo.ceqRange`, `customEqualizer4x` on the Crusher PLYR 720), the preset category numbers of the models the SDK has no configuration for.
+
+### 13.1 The custom curve, as the app sends it (read 2026-11-18)
+
+From `app/skullcandy/s2.java` (`setCustomEQBands`) and the Dart `SKDYProduct` (the custom equaliser index defaults to **101**): the Flutter side hands the native side a list of gains, the index (101), a save flag and a master gain; the native side builds Airoha's
+`AirohaEQPayload` and calls `setEQSetting(index, payload, save, callback)`: **band type `BAND_PASS` (Airoha's peak), Q 0.91 for every band, sample rates 44100 and 48000, the master gain as given**. The bands' frequencies by model:
+
+| Bands | Frequencies (Hz) | Models |
+|---|---|---|
+| 5 | 60, 250, 1000, 4000, 12000 | every other model |
+| 7 | 60, 150, 400, 1000, 2500, 6000, 15000 | Session 720 and 900 (speakers) |
+| 10 | 32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000 | PLYR, both SLYR Pro, Crusher PLYR 720 and its Xbox model |
+
+The gain range (`SKDYProductModelInfo.ceqRange`) is -12 to +12 dB for most models and -6 to +6 for the rest (one model's is 0 to +20). The presets are the categories the earbuds hold (the SDK's names `Music`, `Podcast`, `Movie`, or `Music`, `Bass Boost`, `Podcast`, by number from 1).
+The write flow is Airoha's own (JBL's, section 11.2 of its doc): the code of `JblAirohaEq` (internal to the protocol module) writes it for the chips AB155x, AB1562, AB1568 and AB158x once it takes the PEQ library's variant as a parameter (`AirohaPeq.Library.SERIALIZE` for Skullcandy:
+the band's third value is the Q, and the comparator is strict) and the category 101, the first custom slot. The chip is read from the earbuds over RACE, as JBL's session does.

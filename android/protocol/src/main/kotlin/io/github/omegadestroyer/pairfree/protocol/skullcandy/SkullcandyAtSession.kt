@@ -48,9 +48,9 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
     private var bassBoost: Boolean? = null
 
     /** Skullcandy's own RACE commands, which only the RACE channel carries. */
-    public val hasMultipoint: Boolean = withRace && ("multipointPairingToggle" in product.features || "multipointPairing" in product.features)
-    public val hasWearDetect: Boolean = withRace && "wearDetect" in product.features
-    public val hasBassBoost: Boolean = withRace && "crusherBassBoost" in product.features
+    public val hasMultipoint: Boolean = withRace && product.chip == "airoha" && ("multipointPairingToggle" in product.features || "multipointPairing" in product.features)
+    public val hasWearDetect: Boolean = withRace && product.chip == "airoha" && "wearDetect" in product.features
+    public val hasBassBoost: Boolean = withRace && product.chip == "airoha" && "crusherBassBoost" in product.features
     private val raceKinds = LinkedHashMap<String, String>()
 
     /** True when the model has a setting only Skullcandy's RACE commands carry. */

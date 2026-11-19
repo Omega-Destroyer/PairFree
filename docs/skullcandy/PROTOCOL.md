@@ -429,3 +429,16 @@ and the app picks one with `setEQSetting(number, null)`:
 | Crusher 1080 ANC | Music 16, Podcast 17, Movie 18 (its Bose modes), custom 0 |
 
 PairFree picks a preset with `JblAirohaEq`'s group step (`selectOnly`: the PEQ audio path and subset are read, then the group whose category is the number is selected) on any chip; the custom curve goes to 101. The Crusher PLYR 720's three extra custom slots stay unused: PairFree writes the first.
+
+## 14. Noise cancelling and transparency strength (read 2026-11-18)
+
+Two forms, by the SDK configuration of the product (`com/bragi/sdk/android/api/audio/data`):
+
+- **AT**, for the transparency level of the Grind, Grind Fuel and Push Active (their configurations list `TRANSPARENCY_GAIN` over `BOS_AT`): `AT.UIAUDIO=transparency,,<percent>`, read back as `on,<percent>` (section 9.1).
+- **Airoha RACE**, for the Crusher ANC 2's transparency gain and for the noise cancelling gain of every model that has one (`ANC_GAIN` and `TRANSPARENCY_GAIN` over `AIROHA_RACE`; the ANC filter itself is `AT.UIAUDIO=anc_filter` on the Crusher ANC 2): the command `0E06`, read as
+  `05 5A 04 00 06 0E 00 0D` and written as `05 5A 0C 00 06 0E 00 0E <g> <g> <g> <g>`, the same gain four times, each two bytes big endian of the gain in hundredths of a dB (a short of dB x 100). One command serves the mode in force: the slider's 0 to 1
+  maps to dB as `10 log10(x * (10^(max/10) - 10^(min/10)) + 10^(min/10))`, with the range -20 to 0 dB for noise cancelling and -90 to +6 dB for transparency (`GainRange`, `di/o.java` and `di/p.java`); the read answers with the status at byte 6, the sub-command `0D` at byte 7
+  and the gain in bytes 8 and 9. The Flutter app's sliders convert percent to the same -20 to 0 dB (`convertPercentageToAirohaGain`). The models without an SDK configuration set the ANC state with AT (`SetAncStateAtCommand`) and the gain through Airoha's SDK (`setANCSettings`),
+  whose RACE frames are Airoha's own ANC commands.
+
+PairFree offers the AT level where the SDK lists it. The RACE gain is the next build (it needs the mode in force, which the AT conversation holds, and the other models' Airoha ANC frames).

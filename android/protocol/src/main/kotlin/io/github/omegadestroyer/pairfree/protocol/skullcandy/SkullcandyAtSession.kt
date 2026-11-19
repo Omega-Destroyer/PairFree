@@ -23,7 +23,7 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
     private var current = EarbudState()
     override val state: EarbudState get() = current
     override val groups: List<SettingGroup> get() = buildList {
-        transparencyPercent?.takeIf { hasTransparency }?.let { add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(TRANSPARENCY_LEVEL, (it + 5) / 10, 0, 10)))) }
+        transparencyPercent?.takeIf { hasTransparencyLevel }?.let { add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(TRANSPARENCY_LEVEL, (it + 5) / 10, 0, 10)))) }
         gamingMode?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(GAMING_MODE, it)))) }
     }
 
@@ -32,6 +32,12 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
 
     /** True when it lists the stay-aware (transparency) mode. */
     public val hasTransparency: Boolean = "adjustableStayAwareMode" in product.features || "stayAwareMode" in product.features || "ambientMode" in product.features
+
+    /**
+     * True when the transparency level goes as an AT line (`AT.UIAUDIO=transparency,,<percent>`): the three SDK configurations whose gain is an AT feature, the Grind, Grind Fuel and Push Active.
+     * The Crusher ANC 2's gain, and the noise cancelling strength of every model, is an Airoha RACE command of the second channel (docs/skullcandy/PROTOCOL.md section 14).
+     */
+    public val hasTransparencyLevel: Boolean = hasTransparency && product.sdk in setOf("GRIND", "GRIND_FUEL", "PUSH_ACTIVE")
 
     /** True when the manifest lists a gaming (low latency) mode. */
     public val hasGamingMode: Boolean = "lowLatencyMode" in product.features || "gamingMode" in product.features
@@ -177,7 +183,7 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
     }
 
     override fun change(change: SettingChange): List<String>? = when {
-        change is SettingChange.Level && change.key == TRANSPARENCY_LEVEL && hasTransparency -> {
+        change is SettingChange.Level && change.key == TRANSPARENCY_LEVEL && hasTransparencyLevel -> {
             transparencyPercent = (change.value * 10).coerceIn(0, 100)
             readBacks = listOf(SkullcandyAt.TRANSPARENCY)
             listOf(SkullcandyAt.setTransparencyLevel(transparencyPercent!!))

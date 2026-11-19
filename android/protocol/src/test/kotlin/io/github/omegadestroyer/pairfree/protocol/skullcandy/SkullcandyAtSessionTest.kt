@@ -81,7 +81,7 @@ class SkullcandyAtSessionTest {
 
     @Test
     fun theTransparencyLevelAndGamingModeAreRowsOnceTheyAnswer() {
-        val s = session("Crusher ANC 2")
+        val s = session("Grind")
         assertTrue(s.groups.isEmpty())
         answer(s, SkullcandyAt.TRANSPARENCY, "+UIAUDIO:on,40\r\nOK\r\n")
         val level = s.groups.single { it.key == "noise" }.settings.single() as Setting.Level

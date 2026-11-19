@@ -537,6 +537,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "voice_guidance_volume" -> t("setting_voice_guidance_volume")
         // EarFun (EarfunSession)
         "ef_anc_mode" -> t("setting_ef_anc_mode")
+        "ef_anc_level" -> t("setting_anc_scene_level")
         "ef_ambient_mode" -> t("setting_transparency_mode")
         "ef_prompt_volume", "prompt_volume" -> t("setting_ef_prompt_volume")
         "ef_hearing_protection" -> t("setting_hearing_protection")
@@ -1079,7 +1080,8 @@ class SettingWords(private val strings: DesktopStrings) {
             },
         )
         key == "voice_detect_wait" -> t("setting_seconds", option.toIntOrNull() ?: 0)
-        key == "ef_anc_mode" -> when (option) {
+        key == "ef_anc_level" || key == "ef_anc_mode" -> when (option) {
+            "manual" -> t("setting_ef_manual")
             "level1", "level2", "level3", "level4" -> t("scene_level", option.last().digitToInt())
             "anc1" -> t("setting_ef_anc_number", 1)
             "anc2" -> t("setting_ef_anc_number", 2)

@@ -760,6 +760,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "voice_guidance_volume" -> stringResource(R.string.setting_voice_guidance_volume)
     // EarFun (EarfunSession)
     "ef_anc_mode" -> stringResource(R.string.setting_ef_anc_mode)
+    "ef_anc_level" -> stringResource(R.string.setting_anc_scene_level)
     "ef_ambient_mode" -> stringResource(R.string.setting_transparency_mode)
     "ef_prompt_volume", "prompt_volume" -> stringResource(R.string.setting_ef_prompt_volume)
     "ef_hearing_protection" -> stringResource(R.string.setting_hearing_protection)
@@ -1309,7 +1310,8 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         },
     )
     key == "voice_detect_wait" -> getString(R.string.setting_seconds, option.toIntOrNull() ?: 0)
-    key == "ef_anc_mode" -> when (option) {
+    key == "ef_anc_level" || key == "ef_anc_mode" -> when (option) {
+        "manual" -> getString(R.string.setting_ef_manual)
         "level1", "level2", "level3", "level4" -> getString(R.string.scene_level, option.last().digitToInt())
         "anc1" -> getString(R.string.setting_ef_anc_number, 1)
         "anc2" -> getString(R.string.setting_ef_anc_number, 2)

@@ -149,6 +149,11 @@ actions without the assistant, and hearing your own voice and the volume limit (
 
 ## 6. Not yet
 
+- **PistonBuds PRO Q30 (EC305), issues #58 and #63 (2026-11-19):** two users' earbuds connect over the serial channel and never answer a read. blocked: the 2.0.0 and 2.1.3 apps carry no
+  name mapping for the Q30 (`HeadsetKt` maps names to codes up to the PistonBuds Pro EC302) and open the standard serial UUID like the other models, so nothing in them says why the
+  Q30 stays silent; the reporters name 1MORE's other app, `com.onemore.life` 5.0.1, as the one that controls the Q30 and say the Music app does not find it;
+  checked: `BluetoothService` (UUIDs, `isAndroid`), `BluetoothManager`, `HeadsetKt`, the product list entry for EC305. Needs that app's APK.
+
 - **EQ:** the music and sleep styles (`003B`/`003C`), the HQ60's THX preset, and 1MORE's finer gain steps. 1MORE's
   app 2.0.0 declares the styles (`BluetoothOrderConstents`) but never sends them, so nothing shows their payloads. **Corrected 2026-11-12: 1MORE 2.1.3 does send them** (`HeadsetActivity`: `sendSppSetEQMode(0)` music and `(1)` sleep; `SetTimeActivity`: `sendSppSetPlayTime((i + 1) * 2)`, or 0 for no timer; `ShortcutActionsActivity`: `sendSppSetVocalEnhancement`), so the layouts can be built from 2.1.3.
 - **Built 2026-11-13 from 2.1.3:** the music and sleep modes (`003B` write, `003C` read, one byte, 0 music and 1 sleep; on the four models whose product entry has

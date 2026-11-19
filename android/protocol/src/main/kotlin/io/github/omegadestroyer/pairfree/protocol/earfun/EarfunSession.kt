@@ -44,6 +44,7 @@ public class EarfunSession(public val model: EarfunModel) {
     private var noise: Int? = null
     private var cancellingTop: String? = null       // the cancelling mode to go back to, where the noise mode itself has several
     private var cancelMode: String? = null
+    private var manualLevel: String? = null      // the fixed level last chosen, which "Manual" returns to
     private var ambientMode: String? = null
     private var game: Boolean? = null
     private var multipoint: Boolean? = null
@@ -423,7 +424,19 @@ public class EarfunSession(public val model: EarfunModel) {
         val tops = cancellingTops
         if (name != OFF && name != AMBIENT) {
             if (tops.size > 1) add(Setting.Choice(ANC_MODE_KEY, name, tops))
-            n.cancelling?.let { c -> cancelMode?.let { add(Setting.Choice(ANC_MODE_KEY, it, c.options)) } }
+            n.cancelling?.let { c ->
+                cancelMode?.let { mode ->
+                    // The fixed levels sit under one "Manual" choice, a second row holding the level (EarFun's own screen groups them so).
+                    val levels = c.options.filter { it in LEVELS }
+                    if (levels.size > 1) {
+                        val shown = c.options.mapNotNull { if (it !in LEVELS) it else if (it == levels.first()) MANUAL else null }
+                        add(Setting.Choice(ANC_MODE_KEY, if (mode in LEVELS) MANUAL else mode, shown))
+                        if (mode in LEVELS) add(Setting.Choice(ANC_LEVEL_KEY, mode, levels.sortedBy { it.last() }))
+                    } else {
+                        add(Setting.Choice(ANC_MODE_KEY, mode, c.options))
+                    }
+                }
+            }
         }
         if (name == AMBIENT) n.ambient?.let { a -> ambientMode?.let { add(Setting.Choice(AMBIENT_MODE_KEY, it, a.options)) } }
     }
@@ -527,7 +540,9 @@ public class EarfunSession(public val model: EarfunModel) {
                 toggle(change.key, change.on) ?: return null
             }
             is SettingChange.Choice -> {
-                if (setting !is Setting.Choice || change.option !in setting.options) return null
+                if (setting !is Setting.Choice) return null
+                // The widget and the key cycle name a fixed level on the mode row, which shows them under Manual.
+                if (change.option !in setting.options && !(change.key == ANC_MODE_KEY && change.option in cancellingChoices)) return null
                 choice(change.key, change.option) ?: return null
             }
             is SettingChange.Level -> {
@@ -679,14 +694,17 @@ public class EarfunSession(public val model: EarfunModel) {
     }
 
     private fun choice(key: String, option: String): List<ByteArray>? = when (key) {
-        ANC_MODE_KEY -> {
+        ANC_MODE_KEY, ANC_LEVEL_KEY -> {
             val n = model.noise ?: return null
-            if (option in cancellingTops && n.values.containsKey(option)) {
-                listOf(noiseWrite(option))
+            // "Manual" goes back to the level last chosen, else the first one the model lists.
+            val chosen = if (option == MANUAL) (manualLevel ?: n.cancelling?.options?.firstOrNull { it in LEVELS } ?: return null) else option
+            if (chosen in LEVELS) manualLevel = chosen
+            if (chosen in cancellingTops && n.values.containsKey(chosen)) {
+                listOf(noiseWrite(chosen))
             } else {
                 val c = n.cancelling ?: return null
-                val v = EarfunValues.NOISE_CANCEL_MODE[c.table]?.get(option) ?: return null
-                cancelMode = option
+                val v = EarfunValues.NOISE_CANCEL_MODE[c.table]?.get(chosen) ?: return null
+                cancelMode = chosen
                 readBacks += read(EarfunQcc.GET_NOISE_CANCEL_MODE, EarfunCommand.GET_NOISE_CANCEL_MODE)
                 listOf(if (qualcomm) qcc(EarfunQcc.SET_NOISE_CANCEL_MODE, v) else ef(EarfunCommand.SET_NOISE_CANCEL_MODE, v))
             }
@@ -872,6 +890,9 @@ public class EarfunSession(public val model: EarfunModel) {
         private const val EF_OFF = 1
 
         public const val ANC_MODE_KEY: String = "ef_anc_mode"
+        public const val ANC_LEVEL_KEY: String = "ef_anc_level"
+        private const val MANUAL = "manual"
+        private val LEVELS = setOf("level1", "level2", "level3", "level4")
         public const val AMBIENT_MODE_KEY: String = "ef_ambient_mode"
         private const val LOCK_KEY = "ef_touch_lock"
         private const val LOCK_LEFT_KEY = "ef_touch_lock_left"

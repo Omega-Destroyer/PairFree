@@ -401,6 +401,7 @@ class DesktopApp(
     private fun linkLine(status: LinkStatus): String = when (status) {
         is LinkStatus.Connected -> strings.text("connected")
         is LinkStatus.Reconnecting -> strings.text("reconnecting")
+        is LinkStatus.Idle -> strings.text("disconnected")
         is LinkStatus.Failed -> strings.text("failed_lost", status.device.name)
         else -> strings.text("connecting")
     }
@@ -453,6 +454,9 @@ class DesktopApp(
                 else -> s.text("failed_could_not_open", current.name, Brands[current.brand].officialApp)
             }
             return Panel(Column(listOf(Label(reason, theme.body), Button(s.text("try_again"), "retry", true) { act { connect(current) } }), 12f))
+        }
+        if (status is LinkStatus.Idle) {
+            return Panel(Column(listOf(Label(s.text("disconnected"), theme.body), Button(s.text("connect"), "connect_again", true) { act { connect(current) } }), 12f))
         }
         if (status !is LinkStatus.Connected && status !is LinkStatus.Reconnecting) return Label(s.text("connecting"), theme.heading)
         page?.let { return it.build(state) }

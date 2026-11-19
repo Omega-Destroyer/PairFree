@@ -19,7 +19,7 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.RaceParser
  * do not tell noise cancelling from transparency, so what a reply means is what the line before it asked: the session keeps the last line it sent and reads the
  * answer against it, as the app's SDK does.
  */
-public class SkullcandyAtSession(public val product: SkullcandyProduct, public val viaRace: Boolean = false) : SessionTalk<String>() {
+public class SkullcandyAtSession(public val product: SkullcandyProduct, public val withRace: Boolean = false) : SessionTalk<String>() {
     private val race = RaceParser()
     override val pacing: Pacing = Pacing(replyMs = 1500, gapMs = 150, startGapMs = 150, pollMs = Pacing.POLL_MS, resends = 1)
 
@@ -48,9 +48,9 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
     private var bassBoost: Boolean? = null
 
     /** Skullcandy's own RACE commands, which only the RACE channel carries. */
-    public val hasMultipoint: Boolean = viaRace && ("multipointPairingToggle" in product.features || "multipointPairing" in product.features)
-    public val hasWearDetect: Boolean = viaRace && "wearDetect" in product.features
-    public val hasBassBoost: Boolean = viaRace && "crusherBassBoost" in product.features
+    public val hasMultipoint: Boolean = withRace && ("multipointPairingToggle" in product.features || "multipointPairing" in product.features)
+    public val hasWearDetect: Boolean = withRace && "wearDetect" in product.features
+    public val hasBassBoost: Boolean = withRace && "crusherBassBoost" in product.features
     private val raceKinds = LinkedHashMap<String, String>()
 
     private fun raceMessage(kind: String, hex: String): String = ("RACE:" + hex).also { raceKinds[it] = kind }
@@ -79,35 +79,26 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
     override fun poll(): List<String> = listOf(SkullcandyAt.BATTERY)
 
     override fun allowed(message: String): Boolean =
-        if (message.startsWith("RACE:")) viaRace && SkullcandyRace.isAllowed(message.removePrefix("RACE:")) else SkullcandyAt.isAllowed(message)
+        if (message.startsWith("RACE:")) withRace && SkullcandyRace.isAllowed(message.removePrefix("RACE:")) else SkullcandyAt.isAllowed(message)
 
     override fun bytes(message: String): ByteArray {
         pending = message
         if (message.startsWith("RACE:")) return SkullcandyRace.bytes(message.removePrefix("RACE:"))
-        val line = SkullcandyAt.line(message)
-        // Over Airoha RACE the line travels as the payload of the tunnel command, behind the two-byte tag (docs/skullcandy/PROTOCOL.md section 9.4).
-        return if (viaRace) RacePacket(TUNNEL_ID, TAG + line, TYPE_REQUEST).bytes() else line
+        return SkullcandyAt.line(message)
     }
 
     override fun describe(message: String): String = message
 
     override fun feed(bytes: ByteArray): Fed {
-        if (viaRace) {
-            // The tunnel's own acknowledgement (type 5B) carries no text; the answer text comes in notifications (5D) of the same command, with or without the tag.
+        if (withRace) {
+            // The RACE channel carries Skullcandy's own commands only: a read's answer ends in the value, a write's in the status.
             for (p in race.feed(bytes)) {
-                if (p.id != TUNNEL_ID) {
-                    // One of Skullcandy's own commands: a read's answer ends in the value, a write's in the status.
-                    val asked = pending
-                    val kind = asked?.let { raceKinds[it] }
-                    if (kind != null && (p.type == 0x5B || p.type == TYPE_NOTIFICATION) && p.payload.isNotEmpty()) {
-                        raceChanged = applyRace(kind, p.payload.last().toInt() == 1) || raceChanged
-                        racePackets += p
-                    }
-                    continue
+                val asked = pending
+                val kind = asked?.let { raceKinds[it] }
+                if (kind != null && (p.type == 0x5B || p.type == 0x5D) && p.payload.isNotEmpty()) {
+                    raceChanged = applyRace(kind, p.payload.last().toInt() == 1) || raceChanged
+                    racePackets += p
                 }
-                if (p.type != TYPE_NOTIFICATION) continue
-                val body = if (p.payload.size >= 2 && p.payload[0] == TAG[0] && p.payload[1] == TAG[1]) p.payload.copyOfRange(2, p.payload.size) else p.payload
-                buffer.append(body.decodeToString())
             }
         } else {
             buffer.append(bytes.decodeToString())
@@ -264,11 +255,6 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
     }
 
     public companion object {
-        /** The RACE command that carries Bragi's AT lines: `01 0D` on the wire, as a little endian id. */
-        public const val TUNNEL_ID: Int = 0x0D01
-        private const val TYPE_REQUEST: Int = 0x5A
-        private const val TYPE_NOTIFICATION: Int = 0x5D
-        private val TAG: ByteArray = byteArrayOf(0x05, 0xFF.toByte())
         public const val TRANSPARENCY_LEVEL: String = "sk_transparency_level"
         public const val GAMING_MODE: String = "sk_gaming_mode"
         public const val MULTIPOINT: String = "multipoint"

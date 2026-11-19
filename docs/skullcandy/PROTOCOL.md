@@ -374,16 +374,14 @@ The TOTA v2 frame (`d.java` `a` writes, `b` reads), as the code builds it: `HEAD
 its CRC is dropped (the reader returns a one-byte `01`). With encryption on, the payload is the AES-CBC ciphertext of the zero-padded content. The 20 command classes (section 12.1) supply the payloads: `09 63 02 00 <cmd> 00` to read and
 `08 63 <length> 00 <cmd> 00 <value>` to write.
 
-### 9.4 AT and RPC through Airoha RACE (read 2026-11-18)
+### 9.4 How the app reaches the Airoha models without an SDK configuration (corrected 2026-11-18)
 
-The Airoha models without the serial AT service reach the same Bragi payloads through RACE (`com/bragi/sdk/android/transport/race/a.java`, `v`): the request (an AT line or an RPC message) is carried as
-`05 5A <length u16 LE> 01 0D 05 FF <request>` (the length counts the request plus four: command id `01 0D`, the two-byte tag `05 FF` and the request; the id's second byte is the value 13 of a constant the app's
-code names `SYS_INFO_ATTR_CURRENT_NOISE_MODE`), and the answers come back as `05 5B` or `05 5D` frames carrying the same tag. The RACE transport waits up to 8 s for an answer. So one AT/RPC implementation serves both
-the serial-service models and the RACE-only ones, wrapped as the transport needs; Skullcandy's other custom commands (section 11) sit beside it in the same RACE channel. The Dart code converts the app's ANC strength percent to a
-scale of 25 to 75 (`SKDYProductAncUtils.convertPercentageToScale`), which is the range the adjustable noise cancelling slider writes; which command it feeds is to be traced before an ANC level row is built.
-PairFree's session carries the AT lines of the 32 Airoha models that have no SDK configuration this way (`SkullcandyAtSession` with `viaRace`, the frame built with JBL's `RacePacket`); the answer text is read from
-`05 5D` notifications of the tunnel command, with or without the two-byte tag, as `E()` and `G()` in the same file suggest (the `05 5B` reply to the tunnel command is its acknowledgement, status `00` last). That reply
-path is the part to confirm against a capture of the official app. The serial service it opens is the first of `A4602B24-...` (Bragi's Airoha one) and `FFEEDDCC-...` (Airoha's) that the device lists.
+An earlier version of this section said the Bragi AT lines travel inside the RACE command `01 0D`. That was wrong: `0D01` is Airoha's RACE *relay* command (it carries a whole RACE frame to the other earbud, as JBL's
+Airoha work shows), and the SDK's RACE transport (`transport/race/a.java`, `v`) wraps RACE frames for it, never AT lines. What the app's code shows instead (`app/skullcandy/bragi/h.java`, `j.java`, the Dart `SKDYAirohaApi.runATCommand`):
+the app has an AT client of its own, which opens the **standard serial port** (`00001101-0000-1000-8000-00805F9B34FB`) of the earbuds and sends the AT lines (logged as `ATCommandsApi`); a reply is split at CR LF, LF and tab, blank pieces
+dropped, and counts as successful when its last piece is `OK` or, when the caller gave a response key, when a piece contains that key. The Airoha SDK (`com.airoha.sdk`, RACE) is a second, separate channel the app uses for the equaliser and
+Skullcandy's custom commands (section 11). So for the 32 Airoha models that have no SDK configuration PairFree speaks AT on the standard serial port, and the custom RACE commands and the equaliser need a channel of their own (the Airoha serial
+service, `A4602B24-...` or `FFEEDDCC-...`, whichever the device lists), as the Soundcore Sleep A30's second channel does.
 
 ## 13. The equaliser on the Airoha models (read so far, 2026-11-18)
 

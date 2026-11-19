@@ -55,7 +55,7 @@ class SkullcandyRaceTest {
     @Test
     fun aMultipointReadAndWriteGoThroughTheRaceChannel() {
         val product = SkullcandyModels.fromName("Hesh 360")!!
-        val s = SkullcandyAtSession(product, viaRace = true)
+        val s = SkullcandyAtSession(product, withRace = true)
         assertTrue(s.hasMultipoint)
         val read = s.start().first { it.startsWith("RACE:") }
         assertEquals("RACE:05 5A 06 00 00 0A 00 F5 01 00", read)
@@ -73,7 +73,7 @@ class SkullcandyRaceTest {
 
     @Test
     fun theSerialAtChannelNeverSendsRaceMessages() {
-        val s = SkullcandyAtSession(SkullcandyModels.fromName("Crusher ANC 2")!!, viaRace = false)
+        val s = SkullcandyAtSession(SkullcandyModels.fromName("Crusher ANC 2")!!, withRace = false)
         assertFalse(s.hasMultipoint)
         assertFalse(s.allowed("RACE:05 5A 03 00 02 F4 01"))
         assertNotNull(s.start().firstOrNull())

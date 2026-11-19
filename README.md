@@ -113,8 +113,8 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Cambridge Audio](docs/devices/cambridge.md) | 8 | — |
 | [OnePlus and OPPO](docs/devices/oneplus.md) | 53 | OnePlus Buds 4 |
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | — |
-| [Jabra](docs/devices/jabra.md) | 34 | — |
-| **Total: 16 brands** | **781** | **19 tried** |
+| [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
+| **Total: 16 brands** | **781** | **20 tried** |
 <!-- devices-summary:end -->
 
 ## Help add your model

@@ -2883,6 +2883,7 @@
   {
    "name": "Jabra Elite Active 75t",
    "kind": "earbuds",
+   "reports": ["data/jabra/reports/9420_01-61_2.0.0.txt"],
    "variants": [
     {
      "pid": 9420,

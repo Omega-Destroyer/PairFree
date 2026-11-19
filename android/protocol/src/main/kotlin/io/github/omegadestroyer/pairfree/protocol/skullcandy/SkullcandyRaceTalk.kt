@@ -1,6 +1,8 @@
 package io.github.omegadestroyer.pairfree.protocol.skullcandy
 
+import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.Value
 import io.github.omegadestroyer.pairfree.protocol.Fed
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Pacing
@@ -25,7 +27,16 @@ import kotlin.math.roundToInt
  */
 public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : SessionTalk<RacePacket>() {
     override val pacing: Pacing = Pacing(replyMs = 1500, gapMs = 100, startGapMs = 100, resends = 1)
-    override val state: EarbudState = EarbudState()
+    private var current = EarbudState()
+    override val state: EarbudState get() = current
+
+    /** True for the Rail and Rail ANC, whose SDK configurations put everything over this RACE channel: it is then the session's main one, with the battery and the hearing mode (section 16). */
+    public val primary: Boolean = product.usesRail
+    private val hasAncMode = primary && ("adjustableNoiseCancellation" in product.features || "activeNoiseCancellation" in product.features)
+    private val hasTransparencyMode = primary && ("adjustableStayAwareMode" in product.features || "stayAwareMode" in product.features)
+    private val own = HashSet<RacePacket>()
+    private var railMode: String? = null
+    private var agentRight = false
 
     private val parser = RaceParser()
     private var pending: RacePacket? = null
@@ -61,11 +72,20 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     /** True when the model has a custom equaliser the app sets through Airoha's PEQ. */
     public val hasCustomEq: Boolean = airoha && !equaliserOverRpc && "customEqualizer" in product.features
 
-    /** True when the strength of the hearing mode in force is an Airoha RACE gain: the Crusher ANC 2, whose SDK configuration lists both gains over RACE. */
-    public val hasGain: Boolean = product.sdk == "CHP200"
+    /** True when the strength of the hearing mode in force is an Airoha RACE gain: the Crusher ANC 2, whose SDK configuration lists both gains over RACE, and the Rail models. */
+    public val hasGain: Boolean = product.sdk == "CHP200" || (primary && (hasAncMode || hasTransparencyMode))
+
+    /** True when the model has hearing modes this channel carries (the Rail models). */
+    public val hasNoise: Boolean = hasAncMode || hasTransparencyMode
 
     /** True when the model has anything this channel carries. */
-    public val hasRaceFeatures: Boolean get() = hasMultipoint || hasWearDetect || hasBassBoost || hasCustomEq || hasGain
+    public val hasRaceFeatures: Boolean get() = hasMultipoint || hasWearDetect || hasBassBoost || hasCustomEq || hasGain || primary
+
+    init {
+        if (primary) mode = { railMode }
+    }
+
+    override val eq: Any? get() = chip
 
     /** The equaliser's bands in Hz and the gain range, for the Sound tab. */
     public val eqBandsHz: List<Int> = SkullcandyEq.bandsHz(product.enumName)
@@ -101,7 +121,17 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         return p
     }
 
+    private fun own(p: RacePacket): RacePacket = p.also { own += it }
+
     override fun start(): List<RacePacket> = buildList {
+        if (primary) {
+            // the batteries as the Airoha SDK reads them, and which earbud the phone talks to (the same reads JBL's Airoha models start with)
+            add(own(RacePacket.of(JblRace.PUSH_STATUS, 1)))
+            add(own(RacePacket.of(JblRace.AGENT_CHANNEL)))
+            add(own(RacePacket.of(JblRace.BATTERY, 0)))
+            add(own(RacePacket.of(JblRace.CASE_BATTERY)))
+            if (hasNoise) add(own(RacePacket.mmiGet(JblRace.MMI_ANC)))
+        }
         if (hasCustomEq) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
         if (hasMultipoint) add(packet(SkullcandyRace.multipointGet(product.enumName), "multipoint"))
         if (hasWearDetect) add(packet(SkullcandyRace.WEAR_DETECT_GET, "wear"))
@@ -115,10 +145,10 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         return packet(SkullcandyRace.GAIN_GET, "gain")
     }
 
-    override fun poll(): List<RacePacket> = emptyList()
+    override fun poll(): List<RacePacket> = if (primary) listOf(own(RacePacket.of(JblRace.BATTERY, 0)), own(RacePacket.of(JblRace.CASE_BATTERY))) else emptyList()
 
     override fun allowed(message: RacePacket): Boolean =
-        message == chipRead || write?.sent?.contains(message) == true || SkullcandyRace.isAllowed(message.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
+        message == chipRead || message in own || write?.sent?.contains(message) == true || SkullcandyRace.isAllowed(message.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
 
     override fun bytes(message: RacePacket): ByteArray {
         pending = message
@@ -136,6 +166,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
                 if (eq != null && !eq.done && !eq.failed && eq.receive(p) { outbox += it }) {
                     if (eq.done || eq.failed) changed = true
                 } else {
+                    changed = (primary && railApply(p)) || changed
                     changed = apply(p) || changed
                 }
             }
@@ -145,6 +176,77 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     }
 
     override fun answers(sent: RacePacket, got: Any): Boolean = got is RacePacket
+
+    private fun u8(d: ByteArray, at: Int): Int = d[at].toInt() and 0xFF
+
+    /**
+     * What the Rail models' own reads and indications say (docs/skullcandy/PROTOCOL.md section 16): which earbud the phone talks to, the batteries, and the hearing mode. The mode byte of the
+     * module read is the SDK's: 1 to 4 is noise cancelling on, 9 to 11 transparency on, anything else off.
+     */
+    private fun railApply(p: RacePacket): Boolean {
+        if (p.type != 0x5B && p.type != 0x5D) return false
+        val d = p.data
+        when (p.id) {
+            JblRace.AGENT_CHANNEL -> if (p.status == 0 && d.isNotEmpty()) { agentRight = u8(d, 0) == 1; return false }
+            JblRace.BATTERY -> if (p.status == 0 && d.size >= 2) return battery(u8(d, 0), u8(d, 1))
+            JblRace.CASE_BATTERY -> if (p.status == 0 && d.isNotEmpty()) return caseBattery(u8(d, 0))
+            JblRace.MMI_GET -> if (p.status == 0 && d.isNotEmpty()) {
+                return when (p.module) {
+                    JblRace.MMI_ANC -> hearing(u8(d, 0))
+                    JblRace.NOTIFY_AGENT_BATTERY -> { if (d.size >= 2) agentRight = u8(d, 1) == 1; battery(0, u8(d, 0)) }
+                    JblRace.NOTIFY_PARTNER_BATTERY -> battery(1, u8(d, 0))
+                    JblRace.NOTIFY_CASE_BATTERY -> caseBattery(u8(d, 0))
+                    else -> false
+                }
+            }
+        }
+        return false
+    }
+
+    private fun battery(role: Int, level: Int): Boolean {
+        if (level !in 0..100) return false
+        val c = if ((role == 0) == agentRight) Command.BATTERY_RIGHT else Command.BATTERY_LEFT
+        return replace(current.values + (c to Value.Number(level)))
+    }
+
+    private fun caseBattery(level: Int): Boolean = replace(current.values + (Command.BATTERY_CASE to Value.Number(level.takeIf { it in 1..100 })))
+
+    private fun hearing(byte: Int): Boolean {
+        if (!hasNoise) return false
+        val label = when {
+            hasAncMode && byte in 1..4 -> "anc"
+            hasTransparencyMode && byte in 9..11 -> "transparency"
+            else -> "off"
+        }
+        val before = railMode
+        railMode = label
+        // the strength belongs to the mode in force: read it again when the mode changed
+        if (hasGain && label != before && (label == "anc" || label == "transparency")) outbox += gainRead()
+        replace(current.values + (Command.ANC_MODE to Value.Number(Command.ANC_MODE.labels.entries.first { it.value == label }.key)))
+        return true
+    }
+
+    private fun replace(next: Map<Command, Value>): Boolean {
+        if (next == current.values) return false
+        current = current.copy(values = next)
+        return true
+    }
+
+    override fun set(command: Command, value: Int): List<RacePacket>? {
+        if (!primary || command != Command.ANC_MODE || !hasNoise) return null
+        val label = Command.ANC_MODE.labels[value] ?: return null
+        val packet = when (label) {
+            // the SDK's AB1562 forms: on is 00 0A <filter> <type> 01, off 00 0B 01 (filter 3 for noise cancelling, 4 for transparency)
+            "off" -> RacePacket.of(JblRace.ANC, 0, JblRace.ANC_OFF, 1)
+            "anc" -> if (hasAncMode) RacePacket.of(JblRace.ANC, 0, JblRace.ANC_ON, ANC_FILTER, JblRace.ANC_MODE_ANC, 1) else return null
+            "transparency" -> if (hasTransparencyMode) RacePacket.of(JblRace.ANC, 0, JblRace.ANC_ON, TRANSPARENCY_FILTER, JblRace.ANC_MODE_PASSTHROUGH, 1) else return null
+            else -> return null
+        }
+        railMode = label
+        replace(current.values + (Command.ANC_MODE to Value.Number(value)))
+        readBacks = listOf(own(RacePacket.mmiGet(JblRace.MMI_ANC)))
+        return listOf(own(packet))
+    }
 
     /** What an answer means: the chip name, or the value of the read that was asked. */
     private fun apply(p: RacePacket): Boolean {
@@ -249,5 +351,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         public const val ANC_LEVEL: String = "sk_anc_level"
         public const val TRANSPARENCY_LEVEL: String = "sk_transparency_level"
         private const val CHIP_NV_LENGTH = 1000
+        private const val ANC_FILTER = 3
+        private const val TRANSPARENCY_FILTER = 4
     }
 }

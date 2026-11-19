@@ -504,3 +504,17 @@ Airoha's (multipoint on all three, the Method models' custom equaliser).
 - **Still open, each with what was read:** the button actions (service 3: the earbuds list their own keys, gestures and actions through `get_info_v2`, and the SDK maps the app's actions to strings of its own; the data-driven rows are the next piece), the Auracast receiver and the two RACE reads the
   Crusher 1080 ANC's configuration whitelists (`05 5A 02 00 41 00` and `05 5A 02 00 43 00`), and the Mimi personal sound (an account feature).
 
+## 16. The Rail and Rail ANC: Airoha RACE alone (built 2026-11-18)
+
+The SDK's configurations for these two (`T70`, `T80_PLUS`) put every feature on Airoha's RACE (`AIROHA_RACE`) or Skullcandy's custom RACE (`AIROHA_RACE_CUSTOM`), with no AT and no RPC. The Rail's serial service is Airoha's own, `FFEEDDCC-BBAA-9988-7766-554433221100` (the Rail ANC's entry holds a variable the decompiler lost; it is
+taken to be the same). Built as the primary mode of `SkullcandyRaceTalk` (`primary`, `usesRail`) and `SkullcandyRailDriver`.
+
+- **Hearing mode, read from the SDK** (`api/audio/data/anc/requestProvider/c.java`, `transparency/requestProvider/c.java`, the constants of `common/o.java`): the command is `06 0E`; noise cancelling on is `00 0A <filter> <type> 01` with filter 3 and type 0 (the hybrid default), transparency on is `00 0A 04 04 01` (filter 4, type 4), off is `00 0B 01`.
+  These are the AB1562 forms of JBL's Airoha code (`RacePacket.of(ANC, 0, ANC_ON, filter, mode, 1)`). The state is the module read `01 09` of module 5: the first data byte 1 to 4 is noise cancelling on, 9 to 11 transparency on, anything else off. The Rail has transparency only (its configuration lists no `ANC`).
+- **Strength:** the gain commands of section 14 (`ANC_GAIN` on the Rail ANC, `TRANSPARENCY_GAIN` on both), read again when the mode changes.
+- **Batteries:** the Airoha SDK's own reads, as JBL's Airoha models do them: the push of changes on (`06 00 01`), which earbud the phone talks to, the agent's battery and the case's, and the other earbud's battery as an unasked indication; the screens show the two earbuds by which one the phone talks to.
+  The Skullcandy configuration's `DEVICE_INFO` is a wrapper that hands the battery to the same Airoha provider.
+- **Multipoint** (the NV forms of section 11), **the chip read and the equaliser** (section 13: Music, Bass Boost, Podcast and the custom curve) go through the same talk.
+- **Still open, each with what was read:** the button actions (the Dart classes under `gestures/` and `touch/` and the NV keys `F5 14` and `F5 23`; the gesture key map is Airoha's, as JBL's `JblAirohaGesture`), the voice-control rows (`voiceControl`, `voiceLanguage`: the classes `race_command_voice_control_state_set` and
+  `get_current_language`, whose byte layouts were not traced), Tile, Mimi and Share Audio (account or Auracast features).
+

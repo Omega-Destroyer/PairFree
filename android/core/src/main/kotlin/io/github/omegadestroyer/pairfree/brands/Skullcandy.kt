@@ -20,6 +20,7 @@ import io.github.omegadestroyer.pairfree.protocol.skullcandy.BesMessage
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.BragiRpc
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRpcBandEq
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRpcTalk
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesRail
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesRpc
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBandEq
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBesBandEq
@@ -56,6 +57,7 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
             when {
                 p?.usesBes == true -> SkullcandyBesDriver(host, device)
                 p?.usesRpc == true -> SkullcandyRpcDriver(host, device)
+                p?.usesRail == true -> SkullcandyRailDriver(host, device)
                 else -> SkullcandyDriver(host, device)
             }
         }

@@ -16,6 +16,22 @@ AT_LEVEL = {"GRIND", "GRIND_FUEL", "PUSH_ACTIVE"}
 
 
 RPC_SDK = {"T99_PLUS", "T120", "CHP300"}
+RAIL_SDK = {"T70", "T80_PLUS"}
+
+
+def rail_rows(p, modes):
+    f = set(p["features"])
+    out = ["battery (both earbuds and the case)"]
+    if "adjustableNoiseCancellation" in f:
+        out.append("noise mode + strength")
+    elif "adjustableStayAwareMode" in f:
+        out.append("transparency + strength")
+    if f & {"multipointPairingToggle", "multipointPairing"}:
+        out.append("multipoint")
+    if "customEqualizer" in f:
+        presets = [m for m, n in modes.get(p["enum"], {}).items() if 1 <= n <= 99]
+        out.append("equalizer (custom" + (f" + {len(presets)} presets" if presets else "") + ")")
+    return out
 
 
 def rpc_rows(p, modes):
@@ -45,6 +61,8 @@ def rpc_rows(p, modes):
 
 
 def session(p):
+    if p["sdk"] in RAIL_SDK:
+        return "Airoha RACE on Airoha's service"
     if p["sdk"] in RPC_SDK:
         return "Bragi RPC (unsecured)"
     if p["chip"] == "bes":
@@ -78,6 +96,8 @@ def bes_rows(p, modes):
 
 
 def rows(p, modes):
+    if p["sdk"] in RAIL_SDK:
+        return rail_rows(p, modes)
     if p["sdk"] in RPC_SDK:
         return rpc_rows(p, modes)
     if p["chip"] == "bes":
@@ -123,7 +143,7 @@ def main():
             counts[p["chip"] if p["sdk"] is None or p["chip"] != "airoha" else "airoha (SDK, other protocol)"] = counts.get(p["chip"] if p["sdk"] is None or p["chip"] != "airoha" else "airoha (SDK, other protocol)", 0) + 1
         lines.append(f"| {p['name']} | {p['id']} | {p['chip']}{' (SDK ' + p['sdk'] + ')' if p['sdk'] else ''} | {s or 'found only (no session yet)'} | {', '.join(r) or ''} |")
     lines += ["", "Not covered yet, by group:", "",
-              "- **Airoha with an SDK configuration on another protocol**: Rail and Rail ANC (Airoha RACE, custom commands). The Method 360 and 540 ANC and the Crusher 1080 ANC are built over Bragi's protobuf RPC, unsecured; their button actions are the one setting left.",
+              "- **Airoha with an SDK configuration on another protocol**: the Rail and Rail ANC are built over Airoha RACE on Airoha's own service, the Method 360 and 540 ANC and the Crusher 1080 ANC over Bragi's protobuf RPC, unsecured. The button actions of these five are the one setting left.",
               "- **BES** (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open): BES's TOTA protocol, built (`SkullcandyBesTalk`): every setting the app offers the five models is built, the buttons included.",
               "- **Qualcomm Bluetooth LE** (Crusher ANC, Crusher Evo, Indy Fuel, Indy Evo, Push Ultra, Crusher 540 Active): preset equaliser and ambient mode only.",
               "- **Speakers**: the four Session speakers are found and held back (speakers wait, owner 2026-10-30).",

@@ -20,8 +20,14 @@ public val SkullcandyProduct.usesRpc: Boolean get() = sdk in RPC_SDK_KEYS
 
 private val RPC_SDK_KEYS = setOf("T99_PLUS", "T120", "CHP300")
 
+/** True for the Rail (`T70`) and Rail ANC (`T80_PLUS`), whose SDK configurations put every feature on Airoha's RACE over Airoha's own serial service (docs/skullcandy/PROTOCOL.md section 16). */
+public val SkullcandyProduct.usesRail: Boolean get() = sdk == "T70" || sdk == "T80_PLUS"
+
+/** Airoha's own serial service, the Rail's control and RACE channel (the SDK's configuration of the Rail; the Rail ANC's own entry holds a variable the decompiler lost, so it is taken to be the same). */
+public const val AIROHA_SERVICE: String = "FFEEDDCC-BBAA-9988-7766-554433221100"
+
 /** The serial service PairFree opens for the product, or null while no session of ours speaks its protocol (docs/skullcandy/PROTOCOL.md sections 9 to 12). */
-public val SkullcandyProduct.service: String? get() = if (usesAt) SkullcandyServices.AT else if (usesBes) BesTota.SERVICE else if (usesRpc) SkullcandyServices.RPC else null
+public val SkullcandyProduct.service: String? get() = if (usesAt) SkullcandyServices.AT else if (usesBes) BesTota.SERVICE else if (usesRpc) SkullcandyServices.RPC else if (usesRail) AIROHA_SERVICE else null
 
 /** The serial services Skullcandy's Airoha RACE channel may list (for the models' custom commands, which need a second channel of their own): Bragi's and Airoha's. */
 public val RACE_SERVICES: List<String> = listOf(SkullcandyServices.RACE, "FFEEDDCC-BBAA-9988-7766-554433221100")

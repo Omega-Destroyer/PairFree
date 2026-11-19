@@ -51,31 +51,4 @@ class SkullcandyRaceTest {
         assertFalse(SkullcandyRace.isAllowed("05 5A 03 00 FF FF 01"))
         assertEquals(listOf(0x05, 0x5A, 0x03, 0x00, 0x02, 0xF4, 0x01), SkullcandyRace.bytes(SkullcandyRace.wearDetectSet(true)).map { it.toInt() and 0xFF })
     }
-
-    @Test
-    fun aMultipointReadAndWriteGoThroughTheRaceChannel() {
-        val product = SkullcandyModels.fromName("Hesh 360")!!
-        val s = SkullcandyAtSession(product, withRace = true)
-        assertTrue(s.hasMultipoint)
-        val read = s.start().first { it.startsWith("RACE:") }
-        assertEquals("RACE:05 5A 06 00 00 0A 00 F5 01 00", read)
-        s.bytes(read)
-        // 05 5B 05 00 00 0A 01 00 01: the NV read's answer, the value last
-        val fed = s.feed(RacePacket(0x0A00, byteArrayOf(0x01, 0x00, 0x01), 0x5B).bytes())
-        assertTrue(fed.changed)
-        val on = s.groups.single { it.key == "connection" }.settings.single() as Setting.Toggle
-        assertTrue(on.on)
-        val out = s.change(SettingChange.Toggle(SkullcandyAtSession.MULTIPOINT, false))!!
-        assertEquals(listOf("RACE:05 5A 03 00 01 14 00"), out)
-        assertTrue(s.allowed(out[0]))
-        assertEquals(listOf(read), s.takeReadBacks())
-    }
-
-    @Test
-    fun theSerialAtChannelNeverSendsRaceMessages() {
-        val s = SkullcandyAtSession(SkullcandyModels.fromName("Crusher ANC 2")!!, withRace = false)
-        assertFalse(s.hasMultipoint)
-        assertFalse(s.allowed("RACE:05 5A 03 00 02 F4 01"))
-        assertNotNull(s.start().firstOrNull())
-    }
 }

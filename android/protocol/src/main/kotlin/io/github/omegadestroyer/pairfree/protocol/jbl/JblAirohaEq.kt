@@ -22,6 +22,7 @@ internal class JblAirohaEq private constructor(
     private val category: Int,
     private val bands: List<JblEqBand>,
     private val masterDb: Float,
+    private val library: AirohaPeq.Library = AirohaPeq.Library.PEQ,
 ) {
     /** One step: the command (built when its turn comes, since it may need what earlier steps read) and what to do with the answer. */
     private class Step(val relay: Boolean, val build: () -> RacePacket?, val answer: (RacePacket) -> Boolean)
@@ -64,7 +65,9 @@ internal class JblAirohaEq private constructor(
     /** The SDK's band data (PeqBandInfo): bandwidth = frequency / Q in single precision; the 1568 control enables only the first band of category 1. */
     private class UiBand(val enable: Boolean, val hz: Float, val gain: Float, val bw: Float) {
         val q: Float = hz / bw
-        fun native(): AirohaPeqBand = AirohaPeqBand(hz.toString().toDouble(), gain.toString().toDouble(), bw.toString().toDouble())
+        /** The library's band: its third value is the bandwidth for [AirohaPeq.Library.PEQ] and the Q itself for [AirohaPeq.Library.SERIALIZE]. */
+        fun native(library: AirohaPeq.Library): AirohaPeqBand =
+            AirohaPeqBand(hz.toString().toDouble(), gain.toString().toDouble(), (if (library == AirohaPeq.Library.SERIALIZE) q else bw).toString().toDouble())
     }
 
     private val uiBands: List<UiBand> = List(UI_BANDS) { i ->
@@ -76,7 +79,7 @@ internal class JblAirohaEq private constructor(
         }
     }
 
-    private val enabled: List<AirohaPeqBand> get() = uiBands.filter { it.enable }.map { it.native() }
+    private val enabled: List<AirohaPeqBand> get() = uiBands.filter { it.enable }.map { it.native(library) }
 
     private fun rates(): List<Pair<Int, Double>> = buildList {
         add(RATE_441 to 44100.0)
@@ -89,7 +92,7 @@ internal class JblAirohaEq private constructor(
 
     /** The coefficient blocks (CoefParamStruct): the rate's id, the count of shorts, the shorts, all low byte first; null when the library refuses the curve. */
     private fun coefBlocks(): List<ByteArray>? = rates().map { (id, fs) ->
-        val r = AirohaPeq.coefficients(fs, enabled, masterDb.toDouble())
+        val r = AirohaPeq.coefficients(fs, enabled, masterDb.toDouble(), library)
         val shorts = r.shorts ?: return null
         val out = ByteArray(4 + shorts.size * 2)
         out[0] = id.toByte()
@@ -119,7 +122,7 @@ internal class JblAirohaEq private constructor(
     private fun uiExtData(): ByteArray =
         int(airohaCategory) + int(0) + int(48000) + byteArrayOf(bands.size.toByte(), (bands.size shr 8).toByte()) + int((masterDb.toDouble() * 100.0).toInt())
 
-    private val peak100: Int by lazy { (AirohaPeq.peakDb(enabled, masterDb.toDouble()) * 100.0).toInt() }
+    private val peak100: Int by lazy { (AirohaPeq.peakDb(enabled, masterDb.toDouble(), library) * 100.0).toInt() }
 
     private fun nvWrite(key: Int, data: ByteArray): RacePacket = RacePacket(JblRace.NV_WRITE, byteArrayOf(key.toByte(), (key shr 8).toByte()) + data)
 
@@ -331,8 +334,11 @@ internal class JblAirohaEq private constructor(
          * The write of [bands] under JBL's [category] with the master gain [masterDb] (the curve's left gain) on [chip];
          * [earbuds] relays every write to the other earbud. Null when Airoha's library refuses the curve.
          */
-        fun of(chip: RaceChip, earbuds: Boolean, nvdmVersion: Int?, category: Int, bands: List<JblEqBand>, masterDb: Float): JblAirohaEq? {
-            val w = JblAirohaEq(chip, earbuds, nvdmVersion, category, bands, masterDb)
+        fun of(
+            chip: RaceChip, earbuds: Boolean, nvdmVersion: Int?, category: Int, bands: List<JblEqBand>, masterDb: Float,
+            library: AirohaPeq.Library = AirohaPeq.Library.PEQ,
+        ): JblAirohaEq? {
+            val w = JblAirohaEq(chip, earbuds, nvdmVersion, category, bands, masterDb, library)
             return if (w.plan()) w else null
         }
     }

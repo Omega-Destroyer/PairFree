@@ -20,6 +20,7 @@ import io.github.omegadestroyer.pairfree.protocol.skullcandy.BesMessage
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.BragiRpc
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRpcBandEq
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRpcTalk
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesQualcomm
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesRail
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesRpc
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBandEq
@@ -58,6 +59,9 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
                 p?.usesBes == true -> SkullcandyBesDriver(host, device)
                 p?.usesRpc == true -> SkullcandyRpcDriver(host, device)
                 p?.usesRail == true -> SkullcandyRailDriver(host, device)
+                p?.usesQualcomm == true -> SkullcandyQualcommDriver(host, device)
+                // a name a classic Airoha product and a Qualcomm LE one share: whichever channel opens
+                p != null && SkullcandyModels.leFromName(device.model ?: device.name) != null -> SkullcandyEitherDriver(host, device)
                 else -> SkullcandyDriver(host, device)
             }
         }
@@ -67,7 +71,17 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
      * on the Airoha service the device lists (docs/skullcandy/PROTOCOL.md sections 9.4, 11 and 13). A second channel that does not open leaves the first as it is.
      */
     override suspend fun open(env: OpenEnv, device: Paired, driver: BrandDriver): ControlLink {
-        val main = super.open(env, device, driver)
+        val named = SkullcandyModels.fromName(device.model ?: device.name)
+        val le = SkullcandyModels.leFromName(device.model ?: device.name)
+        if (named?.usesQualcomm == true) return openSkullcandyLe(env, device, listOf(named.name) + named.alternateNames)
+        val main = try {
+            super.open(env, device, driver)
+        } catch (e: IOException) {
+            // the classic channel did not open: a Qualcomm earbud of the same name is controlled over LE
+            if (le == null) throw e
+            env.note("classic channel failed: ${e.message}; trying the LE one")
+            return openSkullcandyLe(env, device, listOf(le.name) + le.alternateNames)
+        }
         val d = driver as? RaceSide ?: return main
         val product = SkullcandyModels.fromName(device.model ?: device.name) ?: return main
         // only the models the AT and RPC conversations serve get a RACE one beside it (the Rail and the rest have no session yet)
@@ -85,6 +99,9 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
     }
 
     override val mayHaveNoise: Boolean get() = true
+
+    /** The six older Qualcomm models are Bluetooth LE only: a scan may be needed to find their LE side (owner, 2026-11-15: LE for any vendor whose app needs it). */
+    override fun needsScan(device: Paired): Boolean = SkullcandyModels.leFromName(device.model ?: device.name) != null
 }
 
 /** The AT conversation ([SkullcandyAtSession]) and, beside it, the RACE one ([SkullcandyRaceTalk]); the models no session speaks yet get no talk, so the channel stays quiet. */

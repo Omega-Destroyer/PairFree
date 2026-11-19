@@ -60,7 +60,19 @@ def rpc_rows(p, modes):
     return out
 
 
+def qualcomm_rows(p, modes):
+    f = set(p["features"])
+    out = ["battery (both earbuds)"]
+    if "ambientMode" in f:
+        out.append("ambient mode")
+    if "definedEqualizer" in f:
+        out.append("equalizer (3 presets)")
+    return out
+
+
 def session(p):
+    if p["chip"] == "qualcomm":
+        return "C-Chip over Bluetooth LE"
     if p["sdk"] in RAIL_SDK:
         return "Airoha RACE on Airoha's service"
     if p["sdk"] in RPC_SDK:
@@ -96,6 +108,8 @@ def bes_rows(p, modes):
 
 
 def rows(p, modes):
+    if p["chip"] == "qualcomm":
+        return qualcomm_rows(p, modes)
     if p["sdk"] in RAIL_SDK:
         return rail_rows(p, modes)
     if p["sdk"] in RPC_SDK:
@@ -145,7 +159,7 @@ def main():
     lines += ["", "Not covered yet, by group:", "",
               "- **Airoha with an SDK configuration on another protocol**: the Rail and Rail ANC are built over Airoha RACE on Airoha's own service, the Method 360 and 540 ANC and the Crusher 1080 ANC over Bragi's protobuf RPC, unsecured. The button actions of these five are the one setting left.",
               "- **BES** (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open): BES's TOTA protocol, built (`SkullcandyBesTalk`): every setting the app offers the five models is built, the buttons included.",
-              "- **Qualcomm Bluetooth LE** (Crusher ANC, Crusher Evo, Indy Fuel, Indy Evo, Push Ultra, Crusher 540 Active): preset equaliser and ambient mode only.",
+              "- **Qualcomm Bluetooth LE** (Crusher ANC, Crusher Evo, Indy Fuel, Indy Evo, Push Ultra, Crusher 540 Active): built over the app's own C-Chip frames (battery, the Indy models' ambient mode, three equaliser presets). Four of them share a name with an Airoha twin, so the classic channel is tried first and the LE one when it fails.",
               "- **Speakers**: the four Session speakers are found and held back (speakers wait, owner 2026-10-30).",
               "- **JieLi, Actions**: the app shows no setting for these (Smokin' Buds 3, the three Terrain speakers).", ""]
     text = "\n".join(lines) + "\n"

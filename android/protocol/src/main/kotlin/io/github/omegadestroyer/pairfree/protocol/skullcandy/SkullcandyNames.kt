@@ -20,6 +20,9 @@ public val SkullcandyProduct.usesRpc: Boolean get() = sdk in RPC_SDK_KEYS
 
 private val RPC_SDK_KEYS = setOf("T99_PLUS", "T120", "CHP300")
 
+/** True for the six older Qualcomm models, which Skullcandy's app drives over Bluetooth LE with its own C-Chip frames (docs/skullcandy/PROTOCOL.md section 17). */
+public val SkullcandyProduct.usesQualcomm: Boolean get() = chip == "qualcomm"
+
 /** True for the Rail (`T70`) and Rail ANC (`T80_PLUS`), whose SDK configurations put every feature on Airoha's RACE over Airoha's own serial service (docs/skullcandy/PROTOCOL.md section 16). */
 public val SkullcandyProduct.usesRail: Boolean get() = sdk == "T70" || sdk == "T80_PLUS"
 

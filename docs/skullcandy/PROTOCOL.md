@@ -518,3 +518,19 @@ taken to be the same). Built as the primary mode of `SkullcandyRaceTalk` (`prima
 - **Still open, each with what was read:** the button actions (the Dart classes under `gestures/` and `touch/` and the NV keys `F5 14` and `F5 23`; the gesture key map is Airoha's, as JBL's `JblAirohaGesture`), the voice-control rows (`voiceControl`, `voiceLanguage`: the classes `race_command_voice_control_state_set` and
   `get_current_language`, whose byte layouts were not traced), Tile, Mimi and Share Audio (account or Auracast features).
 
+## 17. The six older Qualcomm models: C-Chip frames over Bluetooth LE (built 2026-11-18)
+
+Crusher ANC, Crusher Evo, Indy Fuel, Indy Evo, Push Ultra and Crusher 540 Active (the entries the manifest lists as `ble`; section 12). The app's Dart code drives them without any native SDK: `api/bluetooth/skdy_bluetooth.dart` writes a frame to a GATT characteristic and reads the answers from
+a notification, and `api/services/skdyearbudservice.dart` builds the frames. Built as `SkullcandyCChip`, `SkullcandyQualcommTalk` and `SkullcandyQualcommBandEq`, the driver `SkullcandyQualcommDriver`, the LE finders (`SkullcandyFinder` on Android, `LeScan.findSkullcandy` on Windows).
+
+- **Channel:** the GATT service `00001100-D102-11E1-9B23-00025B00A5A5`; frames go to `00001101-...` and answers come as notifications of `00001102-...` (the strings the Dart code passes to `SKDYBT`). The app asks for no particular MTU; PairFree asks for 64, which the longest frame (five bytes) does not need.
+- **Frame** (`SKDYCChipCommand.getData`, `fromData`): the command word `F8 FF` (63743), a type byte, a length byte (the four header bytes plus the payload) and the payload.
+- **Types read from the app's calls:** 1 sets the ambient mode (payload 1 off, 2 on), 2 reads it, 7 sets the equaliser preset (payload 1 Music, 2 Podcast, 3 Movie: the `activateFeature` branches for `musicMode`, `podcastMode` and `movieMode`), 8 reads it, 9 and 10 read the left and right battery and 11 which
+  earbud is connected (the closures `getBatteryLevelLeft`, `getBatteryLevelRight` and `getConnectedEarbudSide`). The ambient mode is the feature at index 20 (`ambientMode`), which the two Indy models have; the Crusher ANC has neither the equaliser nor the ambient mode (only Tile and personal sound, which are
+  account and Mimi features).
+- **Inference:** the app's decoder closures for the answers were not traced, so PairFree takes a reply to a read to mean what the matching write sends (the preset 1 to 3, the ambient 1 or 2, the battery as a percentage) and ignores any other value. The side read (11) is not used.
+  The equaliser toggle (`definedEqualizerToggle`) has no command in the service's `activateFeature`, so it gets no row.
+- **Finding the earbuds:** these earbuds control over LE while their audio is classic, and four of the six share a name with an Airoha twin (Crusher Evo, Crusher 540 Active, Indy Evo, Indy Fuel: section 2). The name cannot tell which hardware a user has, so PairFree tries the classic channel as before
+  and, when it does not open, the LE one: GATT on the classic address, else the device a scan finds (the address itself, or the one device with the model's advertised name; `BLUETOOTH_SCAN`, which the owner allowed for any vendor on 2026-11-15 and which is asked only when the user opens such a model).
+- **Never sent:** only the frames above go out (`SkullcandyQualcommTalk.allowed`).
+

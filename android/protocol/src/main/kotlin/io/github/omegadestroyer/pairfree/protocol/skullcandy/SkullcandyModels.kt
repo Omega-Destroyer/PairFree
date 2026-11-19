@@ -31,5 +31,12 @@ public object SkullcandyModels {
         return if (classic.size == 1 && found.map { it.name }.distinct().size == 1) classic[0] else null
     }
 
+    /**
+     * The Qualcomm Bluetooth LE entry of a name that a classic Airoha product shares (the Crusher Evo, Crusher 540 Active, Indy Evo and Indy Fuel), or of a name only the LE entry has; null otherwise.
+     * Which hardware a user has cannot be told from the name, so the classic channel is tried first and the LE one when it does not open ([fromName]).
+     */
+    public fun leFromName(name: String): SkullcandyProduct? =
+        byName[norm(name)]?.filter { it.chip == "qualcomm" }?.takeIf { list -> list.map { it.name }.distinct().size == 1 }?.firstOrNull()
+
     public fun byId(id: Int): SkullcandyProduct? = SkullcandyProducts.ALL.firstOrNull { it.id == id }
 }

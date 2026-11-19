@@ -53,6 +53,9 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
     public val hasBassBoost: Boolean = withRace && "crusherBassBoost" in product.features
     private val raceKinds = LinkedHashMap<String, String>()
 
+    /** True when the model has a setting only Skullcandy's RACE commands carry. */
+    public val hasRaceFeatures: Boolean get() = hasMultipoint || hasWearDetect || hasBassBoost
+
     private fun raceMessage(kind: String, hex: String): String = ("RACE:" + hex).also { raceKinds[it] = kind }
 
     /** True when the manifest lists a gaming (low latency) mode. */
@@ -67,16 +70,16 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct, public v
     public val replies: MutableMap<String, ByteArray> = LinkedHashMap()
 
     override fun start(): List<String> = buildList {
-        add(SkullcandyAt.BATTERY)
-        if (hasAnc) add(SkullcandyAt.ANC)
-        if (hasTransparency) add(SkullcandyAt.TRANSPARENCY)
-        if (hasGamingMode) add(SkullcandyAt.LATENCY)
+        if (!withRace) add(SkullcandyAt.BATTERY)
+        if (hasAnc && !withRace) add(SkullcandyAt.ANC)
+        if (hasTransparency && !withRace) add(SkullcandyAt.TRANSPARENCY)
+        if (hasGamingMode && !withRace) add(SkullcandyAt.LATENCY)
         if (hasMultipoint) add(raceMessage("multipoint", SkullcandyRace.multipointGet(product.enumName)))
         if (hasWearDetect) add(raceMessage("wear", SkullcandyRace.WEAR_DETECT_GET))
         if (hasBassBoost) add(raceMessage("bass", SkullcandyRace.BASS_BOOST_GET))
     }
 
-    override fun poll(): List<String> = listOf(SkullcandyAt.BATTERY)
+    override fun poll(): List<String> = if (withRace) emptyList() else listOf(SkullcandyAt.BATTERY)
 
     override fun allowed(message: String): Boolean =
         if (message.startsWith("RACE:")) withRace && SkullcandyRace.isAllowed(message.removePrefix("RACE:")) else SkullcandyAt.isAllowed(message)

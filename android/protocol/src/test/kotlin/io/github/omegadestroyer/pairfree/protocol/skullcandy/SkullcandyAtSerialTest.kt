@@ -11,9 +11,10 @@ class SkullcandyAtSerialTest {
     private val product = SkullcandyModels.fromName("Hesh 540 ANC")!!
 
     @Test
-    fun thirtyTwoAirohaModelsUseTheStandardSerialPort() {
+    fun twentyEightAirohaModelsUseTheStandardSerialPort() {
         assertTrue(product.usesAtSerial)
-        assertEquals(32, SkullcandyProducts.ALL.count { it.usesAtSerial })
+        assertEquals(28, SkullcandyProducts.ALL.count { it.usesAtSerial })
+        assertTrue(SkullcandyProducts.ALL.filter { it.name.startsWith("Session") }.none { it.usesAtSerial })
         assertTrue(SkullcandyProducts.ALL.none { it.usesAtSerial && it.usesAt })
         // no vendor service: the channel is the standard serial port
         assertNull(product.service)

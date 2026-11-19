@@ -380,7 +380,7 @@ An earlier version of this section said the Bragi AT lines travel inside the RAC
 Airoha work shows), and the SDK's RACE transport (`transport/race/a.java`, `v`) wraps RACE frames for it, never AT lines. What the app's code shows instead (`app/skullcandy/bragi/h.java`, `j.java`, the Dart `SKDYAirohaApi.runATCommand`):
 the app has an AT client of its own, which opens the **standard serial port** (`00001101-0000-1000-8000-00805F9B34FB`) of the earbuds and sends the AT lines (logged as `ATCommandsApi`); a reply is split at CR LF, LF and tab, blank pieces
 dropped, and counts as successful when its last piece is `OK` or, when the caller gave a response key, when a piece contains that key. The Airoha SDK (`com.airoha.sdk`, RACE) is a second, separate channel the app uses for the equaliser and
-Skullcandy's custom commands (section 11). So for the 32 Airoha models that have no SDK configuration PairFree speaks AT on the standard serial port, and the custom RACE commands and the equaliser need a channel of their own (the Airoha serial
+Skullcandy's custom commands (section 11). So for the 28 Airoha models that have no SDK configuration PairFree speaks AT on the standard serial port, and the custom RACE commands and the equaliser need a channel of their own (the Airoha serial
 service, `A4602B24-...` or `FFEEDDCC-...`, whichever the device lists), as the Soundcore Sleep A30's second channel does.
 
 ## 13. The equaliser on the Airoha models (read so far, 2026-11-18)

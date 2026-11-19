@@ -271,7 +271,7 @@ Read from the SDK's shared AT helpers and the audio request providers (`api/audi
   each group are still to be read (only the notification literals `.UIAUDIO:trackinfo`, `.UI:notify`, `.UIVOICE:` and `.AUTOMUTE:` were found as strings).
 - Noise cancelling: read `AT.UIAUDIO=anc`, write `AT.UIAUDIO=anc,on|off` (the SDK's state enum is `ON`, `OFF`, written lower case). ANC filter strength: read `AT.UIAUDIO=anc_filter`, write
   `AT.UIAUDIO=anc_filter,<n>` (`off` for off). Transparency: read `AT.UIAUDIO=transparency`, write `AT.UIAUDIO=transparency,on|off`, and its level as a percent, `AT.UIAUDIO=transparency,,<0 to 100>`
-  (the SDK multiplies its 0 to 1 gain by 100). Volume: `AT.VOLUME=up,<steps>` and `AT.VOLUME=down,<steps>`. Not read yet: the gesture and key map (`AT.UI=get|set|default|used`), language, voice, gaming
+  (the SDK multiplies its 0 to 1 gain by 100). Volume: `AT.VOLUME=up,<steps>` and `AT.VOLUME=down,<steps>`. The button map, voice, language, gaming mode, auto mute, Crusher and Mimi forms follow in 9.3 and below.
   mode, auto mute, Crusher and Mimi values.
 
 ### 9.2 Reply shapes read so far (2026-11-18)
@@ -359,7 +359,7 @@ number (private), 8 firmware version, 9 hearing mode, `10` sidetone, `11` touch 
 ### 12.2 BES TOTA encryption: a handshake, no key held by the app (read 2026-11-18)
 
 Checked: `app/skullcandy/bes/i.java` (the connection handler), `bessdk/service/base/d.java` (framing and cipher) and `bessdk/connect/`. The optional layer is not a key the app carries. When TOTA encryption is on
-(a Boolean the app reads from its configuration, `BES_TOTA_ENCRYPTION_KEY`, default on; the configuration file itself, `secrets`, is not read) the two sides derive a fresh key at connect:
+(a Boolean the app reads from its configuration, `BES_TOTA_ENCRYPTION_KEY`, default on; the configuration file itself, `secrets`, stays closed by the hard rule) the two sides derive a fresh key at connect:
 
 - Each side sends a buffer of its own (the host's is `dVar.b`, the earbuds' arrives in a `02 10 <length u16 LE>` message). The two buffers are combined byte by byte, the operation chosen by the index modulo 6: add,
   multiply, AND, OR, XOR, and the sum of both squares (a sixth case gives 0), each as a byte.

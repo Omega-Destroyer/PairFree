@@ -78,7 +78,7 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
         while (true) {
             val end = completeAt(buffer.toString()) ?: break
             val text = buffer.substring(0, end)
-            buffer.delete(0, end)
+            buffer.deleteRange(0, end)
             val reply = SkullcandyAt.parse(text)
             log?.invoke("reply ${reply.lines} ok=${reply.ok} error=${reply.error}")
             guarded {

@@ -2638,7 +2638,7 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
         val products = data.getValue("products") as List<Map<String, Any?>>
         fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
         fun strings(v: Any?) = ((v as List<*>?) ?: emptyList<Any?>()).joinToString(", ", "listOf<String>(", ")") { str(it) }
-        val out = StringBuilder("// Generated from data/skullcandy/devices.json by the generateSkullcandyProducts task. Do not edit.\n")
+        val out = StringBuilder("// Generated from data/skullcandy/devices.json by the generateSkullcandyModels task. Do not edit.\n")
         out.appendLine("package io.github.omegadestroyer.pairfree.protocol.skullcandy")
         out.appendLine()
         out.appendLine("/** One product of Skullcandy's app (5.0.6), by its product id, with the chip family the app puts it on and the features its firmware lists. */")
@@ -2681,7 +2681,7 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
     }
 }
 
-val generateSkullcandyProducts = tasks.register<GenerateSkullcandyProducts>("generateSkullcandyProducts") {
+val generateSkullcandyModels = tasks.register<GenerateSkullcandyProducts>("generateSkullcandyModels") {
     devicesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/devices.json")
     modesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/eq_modes.json")
     outputDir = layout.buildDirectory.dir("generated/skullcandyProducts")

@@ -1,0 +1,21 @@
+{
+ "name": "Method 360 ANC / Method 540 ANC",
+ "names": [
+  "Method 360 ANC",
+  "Method 540 ANC"
+ ],
+ "codes": [
+  "Method 360 ANC",
+  "Method 540 ANC"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_method_540_anc, the left bud of the pair; the Method 360 ANC's render is the same shape), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "109,26 128,27 147,33 159,42 173,58 206,75 239,102 251,89 276,81 303,80 331,88 342,95 353,108 368,139 374,163 372,188 360,217 345,238 334,247 324,249 312,244 295,230 289,229 268,241 257,252 255,261 257,277 279,345 279,368 272,390 263,404 252,413 233,420 210,424 191,421 172,413 155,399 127,362 79,289 59,256 43,222 41,210 42,173 47,143 35,99 35,80 38,67 48,51 62,40 83,31",
+  "axis": [
+   204.5,
+   225.2
+  ]
+ },
+ "case": "generic"
+}

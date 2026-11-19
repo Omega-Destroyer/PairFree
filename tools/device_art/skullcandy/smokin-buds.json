@@ -1,0 +1,25 @@
+{
+ "name": "Smokin' Buds 360 / Smokin' Buds 360H / Smokin' Buds 360S",
+ "names": [
+  "Smokin' Buds 360",
+  "Smokin' Buds 360 (H)",
+  "Smokin' Buds 360 (S)",
+  "Smokin' Buds 360H",
+  "Smokin' Buds 360S"
+ ],
+ "codes": [
+  "Smokin' Buds 360",
+  "Smokin' Buds 360H",
+  "Smokin' Buds 360S"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_smokin_buds, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "252,127 264,130 282,143 293,157 298,173 300,212 297,233 291,257 282,270 237,296 213,305 185,305 154,293 152,295 153,308 150,313 114,321 88,319 70,309 55,287 47,261 51,244 63,227 79,214 98,204 105,205 116,218 120,218 134,195 145,185 207,153 241,129",
+  "axis": [
+   173.5,
+   223.8
+  ]
+ },
+ "case": "generic"
+}

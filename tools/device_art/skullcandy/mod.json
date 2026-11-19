@@ -1,0 +1,19 @@
+{
+ "name": "Mod",
+ "names": [
+  "Mod"
+ ],
+ "codes": [
+  "Mod"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_mod_black, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "203,80 222,83 242,97 261,120 279,152 300,208 308,241 309,267 303,288 287,311 256,333 223,372 204,383 190,387 176,387 145,379 122,388 100,392 77,392 54,384 27,364 9,337 5,319 4,306 6,292 13,273 25,254 44,237 65,226 95,221 100,217 110,191 125,126 131,113 139,102 162,87 182,86",
+  "axis": [
+   156.6,
+   235.8
+  ]
+ },
+ "case": "generic"
+}

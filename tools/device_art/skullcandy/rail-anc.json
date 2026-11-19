@@ -1,0 +1,19 @@
+{
+ "name": "Rail ANC",
+ "names": [
+  "Rail ANC"
+ ],
+ "codes": [
+  "Rail ANC"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_rail_anc, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "118,1 142,3 159,6 191,23 204,34 216,50 225,68 231,89 233,109 228,138 219,159 204,179 202,185 232,261 236,287 235,300 230,316 218,332 203,341 187,347 173,348 159,346 137,332 121,312 100,266 67,275 41,271 27,263 15,253 7,240 2,227 0,212 3,192 22,148 18,120 20,96 25,72 31,55 47,33 68,16 89,7",
+  "axis": [
+   118.0,
+   174.7
+  ]
+ },
+ "case": "generic"
+}

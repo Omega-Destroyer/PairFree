@@ -329,6 +329,10 @@
    "device_sennheiser_accentum_tw_bud",
    "device_generic_case"
   ],
+  "aviator 900 anc": [
+   "device_skullcandy_aviator_900_bud",
+   null
+  ],
   "beats fit pro": [
    "device_apple_wingtip_bud",
    "device_generic_case"
@@ -493,6 +497,50 @@
    "device_nothing_cmf_neckband_pro_bud",
    null
   ],
+  "connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
+  "crusher 1080 anc": [
+   "device_skullcandy_crusher_1080_bud",
+   null
+  ],
+  "crusher 540 active": [
+   "device_skullcandy_crusher_540_bud",
+   null
+  ],
+  "crusher 720": [
+   "device_skullcandy_crusher_720_bud",
+   null
+  ],
+  "crusher 900 anc": [
+   "device_skullcandy_crusher_720_bud",
+   null
+  ],
+  "crusher anc": [
+   "device_skullcandy_crusher_anc_bud",
+   null
+  ],
+  "crusher anc 2": [
+   "device_skullcandy_crusher_anc_2_bud",
+   null
+  ],
+  "crusher evo": [
+   "device_skullcandy_crusher_evo_bud",
+   null
+  ],
+  "crusher plyr": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "crusher plyr 720": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "crusher plyr 720 xbox": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
   "ct03": [
    "device_qcy_stem_bud",
    "device_generic_case"
@@ -595,6 +643,26 @@
   ],
   "cxplustw1 white": [
    "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "dime 2": [
+   "device_skullcandy_dime_bud",
+   "device_generic_case"
+  ],
+  "dime 360": [
+   "device_skullcandy_dime_360_bud",
+   "device_generic_case"
+  ],
+  "dime 540 anc": [
+   "device_skullcandy_dime_evo_bud",
+   "device_generic_case"
+  ],
+  "dime evo": [
+   "device_skullcandy_dime_evo_bud",
+   "device_generic_case"
+  ],
+  "dime xt2": [
+   "device_skullcandy_dime_bud",
    "device_generic_case"
   ],
   "dt06": [
@@ -717,6 +785,134 @@
    "device_earfun_wave_pro_x_bud",
    null
   ],
+  "elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "elite 10 gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "elite 3 active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "elite 4 active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "elite 7 active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "elite 7 pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "elite 7 sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "elite 8 active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "elite 8 active gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "elite active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "elite active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "elite active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "elite flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "evolve2 65 flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "evolve2 buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
   "g1": [
    "device_qcy_stem_bud",
    "device_generic_case"
@@ -781,6 +977,14 @@
    "device_pixel_a_series_bud",
    "device_generic_case"
   ],
+  "grind": [
+   "device_skullcandy_grind_bud",
+   "device_generic_case"
+  ],
+  "grind fuel": [
+   "device_skullcandy_grind_bud",
+   "device_generic_case"
+  ],
   "h2": [
    "device_qcy_overear_bud",
    null
@@ -833,9 +1037,21 @@
    "device_sennheiser_hdr_275_bud",
    null
   ],
+  "hesh 360": [
+   "device_skullcandy_hesh_360_bud",
+   null
+  ],
+  "hesh 540 anc": [
+   "device_skullcandy_hesh_540_bud",
+   null
+  ],
   "hi listening": [
    "device_stem_bud",
    "device_stem_case"
+  ],
+  "hi50": [
+   "device_skullcandy_icon_180_bud",
+   null
   ],
   "ht01": [
    "device_qcy_round_bud",
@@ -861,8 +1077,164 @@
    "device_qcy_melobuds_bud",
    "device_generic_case"
   ],
+  "icon 180": [
+   "device_skullcandy_icon_180_bud",
+   null
+  ],
+  "icon anc": [
+   "device_skullcandy_icon_anc_bud",
+   null
+  ],
   "ie 80s bt": [
    "device_sennheiser_ie_80s_bt_bud",
+   null
+  ],
+  "indy anc": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "indy evo": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "indy fuel": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "jabra connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 10 gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 3 active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 4 active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "jabra elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "jabra elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "jabra elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 8 active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 8 active gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "jabra elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "jabra elite active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "jabra evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "jabra evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "jabra evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "jabra evolve2 65 flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "jabra evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "jabra evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "jabra evolve2 buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
+  "jabra speak2 75": [
+   "device_jabra_speak2_75_bud",
    null
   ],
   "jbl club one": [
@@ -1309,6 +1681,10 @@
    "device_jbl_stem_bud",
    "device_jbl_stem_case"
   ],
+  "jib true xt2": [
+   "device_skullcandy_jib_bud",
+   "device_generic_case"
+  ],
   "le-soundpeats mini hs": [
    "device_generic_bud",
    "device_generic_case"
@@ -1456,6 +1832,18 @@
   "melomania x100": [
    "device_cambridge_melomania_x100_bud",
    null
+  ],
+  "method 360 anc": [
+   "device_skullcandy_method_bud",
+   "device_generic_case"
+  ],
+  "method 540 anc": [
+   "device_skullcandy_method_bud",
+   "device_generic_case"
+  ],
+  "mod": [
+   "device_skullcandy_mod_bud",
+   "device_generic_case"
   ],
   "momentum 3": [
    "device_sennheiser_momentum_3_bud",
@@ -1749,6 +2137,10 @@
    "device_oneplus_enco_clip_bud",
    "device_generic_case"
   ],
+  "opeh80": [
+   "device_skullcandy_push_540_open_bud",
+   null
+  ],
   "oppo enco air 3i": [
    "device_oneplus_enco_stem_bud",
    null
@@ -1969,6 +2361,10 @@
    "device_pixel_pro_2_bud",
    "device_generic_case"
   ],
+  "plyr": [
+   "device_skullcandy_plyr_bud",
+   null
+  ],
   "powerbeats fit": [
    "device_apple_wingtip_bud",
    "device_generic_case"
@@ -1987,6 +2383,30 @@
   ],
   "powerbeats4": [
    "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "push 180 open": [
+   "device_skullcandy_push_720_open_bud",
+   "device_generic_case"
+  ],
+  "push 540 open": [
+   "device_skullcandy_push_540_open_bud",
+   null
+  ],
+  "push 720 open": [
+   "device_skullcandy_push_720_open_bud",
+   "device_generic_case"
+  ],
+  "push active": [
+   "device_skullcandy_push_active_bud",
+   "device_generic_case"
+  ],
+  "push anc active": [
+   "device_skullcandy_push_anc_active_bud",
+   "device_generic_case"
+  ],
+  "push ultra": [
+   "device_skullcandy_push_ultra_bud",
    "device_generic_case"
   ],
   "pxc 550": [
@@ -2729,6 +3149,58 @@
    "device_qcy_round_bud",
    "device_generic_case"
   ],
+  "rail": [
+   "device_skullcandy_rail_bud",
+   "device_generic_case"
+  ],
+  "rail anc": [
+   "device_skullcandy_rail_anc_bud",
+   "device_generic_case"
+  ],
+  "riff wireless 2": [
+   "device_skullcandy_riff_bud",
+   null
+  ],
+  "sesh anc": [
+   "device_skullcandy_sesh_bud",
+   "device_generic_case"
+  ],
+  "sesh anc active": [
+   "device_skullcandy_sesh_active_bud",
+   "device_generic_case"
+  ],
+  "sg200-slave": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "sg200x-slave": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "slyr pro wireless": [
+   "device_skullcandy_slyr_pro_bud",
+   null
+  ],
+  "smokin' buds 360": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "smokin' buds 360 (h)": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "smokin' buds 360 (s)": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "smokin' buds 360h": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "smokin' buds 360s": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
   "sony ult": [
    "device_sony_ult_bud",
    null
@@ -3320,6 +3792,10 @@
   "soundpeats wings2": [
    "device_wings2_bud",
    "device_wings2_case"
+  ],
+  "speak2 75": [
+   "device_jabra_speak2_75_bud",
+   null
   ],
   "sport true wireless": [
    "device_sennheiser_cx_sport_tw_bud",
@@ -4535,6 +5011,10 @@
    "device_earfun_air_pro_2_bud",
    null
   ],
+  "AVIATOR 900 ANC": [
+   "device_skullcandy_aviator_900_bud",
+   null
+  ],
   "Air3Pro": [
    "device_generic_bud",
    "device_air3_case"
@@ -4823,6 +5303,42 @@
    "device_earfun_clip_2_bud",
    "device_earfun_clip_2_case"
   ],
+  "Crusher 1080 ANC": [
+   "device_skullcandy_crusher_1080_bud",
+   null
+  ],
+  "Crusher 540 Active": [
+   "device_skullcandy_crusher_540_bud",
+   null
+  ],
+  "Crusher 720": [
+   "device_skullcandy_crusher_720_bud",
+   null
+  ],
+  "Crusher 900 ANC": [
+   "device_skullcandy_crusher_720_bud",
+   null
+  ],
+  "Crusher ANC": [
+   "device_skullcandy_crusher_anc_bud",
+   null
+  ],
+  "Crusher ANC 2": [
+   "device_skullcandy_crusher_anc_2_bud",
+   null
+  ],
+  "Crusher Evo": [
+   "device_skullcandy_crusher_evo_bud",
+   null
+  ],
+  "Crusher PLYR 720": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "Crusher PLYR 720 XBOX": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
   "D1101": [
    "device_soundcore_c50i_bud",
    "device_generic_case"
@@ -4837,6 +5353,26 @@
   ],
   "D1301": [
    "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "DIME 540 ANC": [
+   "device_skullcandy_dime_evo_bud",
+   "device_generic_case"
+  ],
+  "Dime 2": [
+   "device_skullcandy_dime_bud",
+   "device_generic_case"
+  ],
+  "Dime 360": [
+   "device_skullcandy_dime_360_bud",
+   "device_generic_case"
+  ],
+  "Dime Evo": [
+   "device_skullcandy_dime_evo_bud",
+   "device_generic_case"
+  ],
+  "Dime XT2": [
+   "device_skullcandy_dime_bud",
    "device_generic_case"
   ],
   "EC305": [
@@ -4862,6 +5398,14 @@
   "G50": [
    "device_1more_g50_bud",
    null
+  ],
+  "Grind": [
+   "device_skullcandy_grind_bud",
+   "device_generic_case"
+  ],
+  "Grind Fuel": [
+   "device_skullcandy_grind_bud",
+   "device_generic_case"
   ],
   "HC905S": [
    "device_1more_sonoflow_s_bud",
@@ -4910,6 +5454,34 @@
   "HQ60": [
    "device_1more_hq60_bud",
    null
+  ],
+  "Hesh 360": [
+   "device_skullcandy_hesh_360_bud",
+   null
+  ],
+  "Hesh 540 ANC": [
+   "device_skullcandy_hesh_540_bud",
+   null
+  ],
+  "Icon 180": [
+   "device_skullcandy_icon_180_bud",
+   null
+  ],
+  "Icon ANC": [
+   "device_skullcandy_icon_anc_bud",
+   null
+  ],
+  "Indy ANC": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "Indy Evo": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "Indy Fuel": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
   ],
   "JBL CLUB ONE": [
    "device_jbl_overear_bud",
@@ -5391,6 +5963,146 @@
    "device_stem_bud",
    "device_stem_case"
   ],
+  "Jabra Connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 10 Gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 3 Active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 4 Active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "Jabra Elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "Jabra Elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "Jabra Elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 8 Active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 8 Active Gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "Jabra Elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "Jabra Elite Active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "Jabra Evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "Jabra Evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "Jabra Evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "Jabra Evolve2 65 Flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "Jabra Evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "Jabra Evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "Jabra Evolve2 Buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
+  "Jabra Speak2 75": [
+   "device_jabra_speak2_75_bud",
+   null
+  ],
+  "Jib True XT2": [
+   "device_skullcandy_jib_bud",
+   "device_generic_case"
+  ],
   "LinkBuds": [
    "device_sony_lb_bud",
    "device_generic_case"
@@ -5415,6 +6127,18 @@
    "device_sony_lbs_bud",
    "device_generic_case"
   ],
+  "Method 360 ANC": [
+   "device_skullcandy_method_bud",
+   "device_generic_case"
+  ],
+  "Method 540 ANC": [
+   "device_skullcandy_method_bud",
+   "device_generic_case"
+  ],
+  "Mod": [
+   "device_skullcandy_mod_bud",
+   "device_generic_case"
+  ],
   "NEW-WQ7034MXGoFree2": [
    "device_gofree2_bud",
    "device_gofree2_case"
@@ -5434,6 +6158,10 @@
   "OW100_NEW": [
    "device_earfun_openjump_bud",
    "device_earfun_openjump_case"
+  ],
+  "PLYR": [
+   "device_skullcandy_plyr_bud",
+   null
   ],
   "Pixel Buds": [
    "device_pixel_pixel_buds_bud",
@@ -5473,6 +6201,30 @@
   ],
   "Powerbeats4": [
    "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "Push 180 Open": [
+   "device_skullcandy_push_720_open_bud",
+   "device_generic_case"
+  ],
+  "Push 540 Open": [
+   "device_skullcandy_push_540_open_bud",
+   null
+  ],
+  "Push 720 Open": [
+   "device_skullcandy_push_720_open_bud",
+   "device_generic_case"
+  ],
+  "Push ANC Active": [
+   "device_skullcandy_push_anc_active_bud",
+   "device_generic_case"
+  ],
+  "Push Active": [
+   "device_skullcandy_push_active_bud",
+   "device_generic_case"
+  ],
+  "Push Ultra": [
+   "device_skullcandy_push_ultra_bud",
    "device_generic_case"
   ],
   "Q12": [
@@ -5525,6 +6277,18 @@
   ],
   "R1292A7018F": [
    "device_space_bud",
+   null
+  ],
+  "Rail": [
+   "device_skullcandy_rail_bud",
+   "device_generic_case"
+  ],
+  "Rail ANC": [
+   "device_skullcandy_rail_anc_bud",
+   "device_generic_case"
+  ],
+  "Riff Wireless 2": [
+   "device_skullcandy_riff_bud",
    null
   ],
   "S-31": [
@@ -5675,6 +6439,10 @@
    "device_1more_s15_bud",
    "device_generic_case"
   ],
+  "SLYR Pro Wireless": [
+   "device_skullcandy_slyr_pro_bud",
+   null
+  ],
   "SM-R170": [
    "device_samsung_buds_bud",
    "device_generic_case"
@@ -5733,6 +6501,26 @@
   ],
   "SPTS04PRO": [
    "device_generic_bud",
+   "device_generic_case"
+  ],
+  "Sesh ANC": [
+   "device_skullcandy_sesh_bud",
+   "device_generic_case"
+  ],
+  "Sesh ANC Active": [
+   "device_skullcandy_sesh_active_bud",
+   "device_generic_case"
+  ],
+  "Smokin' Buds 360": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "Smokin' Buds 360H": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "Smokin' Buds 360S": [
+   "device_skullcandy_smokin_buds_bud",
    "device_generic_case"
   ],
   "SonoFlow QC30": [

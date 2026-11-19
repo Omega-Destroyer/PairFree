@@ -447,7 +447,7 @@ PairFree offers the AT level where the SDK lists it, and the RACE gain on the Cr
 
 From `app/skullcandy/bes/` (`i.java`, `bessdk/service/base/b.java`, `d.java`, `bessdk/b.java`) and the Dart `utils/tota_commands/` classes.
 
-- **Channel:** the serial service `66666666-6666-6666-6666-666666666666` (the BES SDK's default; classic Bluetooth, SPP). The BLE path of the SDK throws `BLE not implemented`.
+- **Channel:** the serial service `66666666-6666-6666-6666-666666666666` (the BES SDK's default; classic Bluetooth, SPP). The SDK's BLE branch throws an `UnsupportedOperationException`, so the app uses SPP.
 - **Handshake** (frames as section 12.2 describes, unencrypted until it ends): the host sends `01 10 <n u16 LE> <m> <m random bytes>` with m random between 16 and 127 and n = m + 1; the earbuds answer `02 10 <len u16 LE> <len byte> <their buffer>`; the host mixes the two buffers
   (the byte-wise operation by index modulo 6, section 12.2), takes the SHA-256, keeps the 16 even-position bytes as the AES key, and confirms with `03 10 21 00 20 <the 32-byte hash>`; the earbuds answer with `00 10 ...` holding the ASCII `suc` at offset 12 when it holds. The app waits 10 s for the answer and drops the link otherwise.
 - **Data** after the handshake: each command is an AES-CBC (zero-padded, IV `00 01 .. 0F`) payload in a TOTA frame (`HEAD`, length, payload, CRC-32, `TAIL`), behind `9F <frame length u32 LE>`; replies come the same way (`9F` and four length bytes stripped first). The `BES_TOTA_ENCRYPTION_KEY` flag can turn the AES layer off; the app's default is on.

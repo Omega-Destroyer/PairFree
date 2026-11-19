@@ -11,6 +11,16 @@ public object SkullcandyEq {
     /** Every band's Q, as the app writes it. */
     public const val Q: Float = 0.91f
 
+    /** The app's short names of its equalizer modes (its English strings `*_mode_short_label` and `product_*_mode`). */
+    private val MODE_NAMES = mapOf(
+        "musicMode" to "Music", "podcastMode" to "Podcast", "movieMode" to "Movie", "bassBoostMode" to "Bass Boost", "supremeSoundMode" to "Supreme Sound",
+        "fpsMode" to "FPS", "rpgMode" to "RPG", "mmoMode" to "MMO", "signatureSoundMode" to "Signature", "outdoorMode" to "Outdoor", "indoorMode" to "Indoor",
+    )
+
+    /** The presets the earbuds hold for a product, by the app's names and the number each is picked by (1 to 99; the custom curves, 101 and up, are not presets). */
+    public fun presets(enumName: String): List<Pair<String, Int>> =
+        SkullcandyEqModes.BY_ENUM[enumName].orEmpty().filter { it.second in 1..99 }.mapNotNull { (mode, n) -> MODE_NAMES[mode]?.let { it to n } }.sortedBy { it.second }
+
     private val TEN_BANDS = setOf("plyr", "slyrProXbox", "slyrPro", "crusherPlyr", "crusherPlyrXbox")
     private val SEVEN_BANDS = setOf("session720", "session900")
 

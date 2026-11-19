@@ -81,4 +81,31 @@ class SkullcandyRaceTalkTest {
         assertEquals(12, SkullcandyEq.rangeDb("crusherANC2"))
         assertFalse(SkullcandyRaceTalk(SkullcandyModels.fromName("Icon 180")!!).hasRaceFeatures)
     }
+
+    @Test
+    fun thePresetsAreTheAppsModesByTheirNumbers() {
+        assertEquals(listOf("Music" to 1, "Podcast" to 2, "Movie" to 3), SkullcandyEq.presets("grind"))
+        assertEquals(listOf("Supreme Sound" to 1, "FPS" to 2, "RPG" to 3, "Music" to 4), SkullcandyEq.presets("crusherPlyr"))
+        assertEquals(listOf("Music" to 1, "Podcast" to 2, "Bass Boost" to 3), SkullcandyEq.presets("hesh360"))
+        assertEquals(emptyList<Pair<String, Int>>(), SkullcandyEq.presets("terrain"))
+    }
+
+    @Test
+    fun aPresetIsPickedByItsGroupOnAnyChip() {
+        val s = talk("Grind")
+        assertNull(s.eqPreset("Music"))
+        val chipRead = s.start().first()
+        s.bytes(chipRead)
+        s.feed(nvAnswer("AB1568"))
+        assertNull(s.eqPreset("Not a preset"))
+        val frames = s.eqPreset("Podcast")
+        assertNotNull(frames)
+        assertEquals(1, frames!!.size)
+        assertEquals("Podcast", s.eqPresetName)
+        val parser = io.github.omegadestroyer.pairfree.protocol.jbl.RaceParser()
+        for (f in frames) for (p in parser.feed(f)) assertTrue(s.allowed(p), p.toString())
+        // a curve of the user's own takes the preset's place
+        s.eqCurve(listOf(0.0, 1.0, 0.0, 0.0, 0.0))
+        assertNull(s.eqPresetName)
+    }
 }

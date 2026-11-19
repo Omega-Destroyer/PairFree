@@ -2623,6 +2623,10 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val devicesJson: RegularFileProperty
 
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val modesJson: RegularFileProperty
+
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
 
@@ -2660,6 +2664,17 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
         }
         out.appendLine("    )")
         out.appendLine("}")
+        @Suppress("UNCHECKED_CAST")
+        val modes = (JsonSlurper().parse(modesJson.get().asFile) as Map<String, Any?>).getValue("modes") as Map<String, Map<String, Any?>>
+        out.appendLine()
+        out.appendLine("/** The equalizer modes each product offers, by the app's enum name, with the number each is sent as (data/skullcandy/eq_modes.json): 1 to 7 pick a preset the earbuds hold, 101 and up are custom curves. */")
+        out.appendLine("public object SkullcandyEqModes {")
+        out.appendLine("    public val BY_ENUM: Map<String, List<Pair<String, Int>>> = mapOf(")
+        for ((product, row) in modes) {
+            out.appendLine("        ${str(product)} to listOf(" + row.entries.joinToString(", ") { "${str(it.key)} to ${(it.value as Number).toInt()}" } + "),")
+        }
+        out.appendLine("    )")
+        out.appendLine("}")
         val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/skullcandy/SkullcandyProducts.kt")
         target.parentFile.mkdirs()
         target.writeText(out.toString())
@@ -2668,5 +2683,6 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
 
 val generateSkullcandyProducts = tasks.register<GenerateSkullcandyProducts>("generateSkullcandyProducts") {
     devicesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/devices.json")
+    modesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/eq_modes.json")
     outputDir = layout.buildDirectory.dir("generated/skullcandyProducts")
 }

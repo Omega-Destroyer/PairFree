@@ -1450,7 +1450,7 @@
     <string name="vendor_club">Club</string>
     <string name="vendor_diablo_gaming_mode">Diablo gaming mode</string>
     <string name="vendor_extreme_bass">Extreme bass</string>
-    <string name="vendor_fps">Fps</string>
+    <string name="vendor_fps_4">Fps</string>
     <string name="vendor_funk">Funk</string>
     <string name="vendor_high_end_boost">High end boost</string>
     <string name="vendor_long_session">Long session</string>
@@ -1518,8 +1518,18 @@
     <string name="vendor_treble_enhancement">Treble enhancement</string>
     <!-- SOUNDPEATS, Sennheiser -->
     <string name="vendor_hip_hop_2">Hip hop</string>
-    <!-- Sennheiser -->
+    <!-- Sennheiser, Skullcandy -->
     <string name="vendor_movie">Movie</string>
+    <!-- Skullcandy -->
+    <string name="vendor_bass_boost">Bass Boost</string>
+    <string name="vendor_fps">FPS</string>
+    <string name="vendor_indoor">Indoor</string>
+    <string name="vendor_mmo">MMO</string>
+    <string name="vendor_music">Music</string>
+    <string name="vendor_outdoor">Outdoor</string>
+    <string name="vendor_rpg">RPG</string>
+    <string name="vendor_signature">Signature</string>
+    <string name="vendor_supreme_sound">Supreme Sound</string>
     <!-- Sony -->
     <string name="vendor_artist_collaboration_1">Artist collaboration 1</string>
     <string name="vendor_artist_collaboration_10">Artist collaboration 10</string>

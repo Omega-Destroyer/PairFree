@@ -411,3 +411,21 @@ the band's third value is the Q, and the comparator is strict) and the category 
 `SkullcandyRaceTalk` (the RACE channel's conversation: the chip read, Skullcandy's custom commands and the curve's write, with the steps of `JblAirohaEq` taking `AirohaPeq.Library.SERIALIZE`), `SkullcandyEq` (bands, range, Q 0.91, category 101) and `SkullcandyBandEq` (the Sound tab's
 bands, five, seven or ten, with the app's gain range: 12 dB on the models the SDK configures and the gaming headsets, 6 dB on the rest). The curve is shown once the earbuds have named their chip. PairFree offers the custom curve; the earbuds' own presets (categories 1 to 3) and a read of the curve they hold
 come next, and until then the screen shows what PairFree last wrote. The Crusher 1080 ANC's equaliser (a Bose curve, range 0 to +20) goes with its RPC session, to do.
+
+### 13.3 The presets: the app's equaliser modes by number (read 2026-11-18)
+
+The app's own table, `SKDYEqualizerModeUtils.valueForFeature(feature, product)` (the Dart function run for every product by `tools/import_skullcandy_eq_modes.py`, into `data/skullcandy/eq_modes.json`), gives each product the modes it shows and the number each is sent as; the earbuds hold the preset curves as groups
+and the app picks one with `setEQSetting(number, null)`:
+
+| Models | Modes (number) |
+|---|---|
+| Indy ANC, Dime 2, Dime XT2, Sesh ANC, Mod, Riff Wireless 2, Crusher 720, Push Active, Grind, Grind Fuel, Crusher ANC 2 and the classic twins | Music 1, Podcast 2, Movie 3, custom 101 |
+| Dime Evo, Dime 360, Push ANC Active, Sesh ANC Active, Icon ANC, Hesh 360, Hesh 540 ANC, Push 720 and 540 Open and the BES models | Music 1, Podcast 2, Bass Boost 3, custom 101 |
+| Rail, Rail ANC, Method 360 and 540 ANC | Music 1, Bass Boost 2, Podcast 3, custom 101 |
+| Aviator 900 ANC | Music 1, Podcast 2, Movie 3, Bass Boost 4, custom 101 |
+| PLYR, SLYR Pro (both) | Supreme Sound 1, Music 2, Podcast 3, Movie 4, FPS 5, MMO 6, RPG 7, custom 101 |
+| Crusher PLYR 720 (both) | Supreme Sound 1, FPS 2, RPG 3, Music 4, four custom curves 101 to 104 |
+| Session speakers | Signature 1, Outdoor 2, Indoor 3, custom 101 |
+| Crusher 1080 ANC | Music 16, Podcast 17, Movie 18 (its Bose modes), custom 0 |
+
+PairFree picks a preset with `JblAirohaEq`'s group step (`selectOnly`: the PEQ audio path and subset are read, then the group whose category is the number is selected) on any chip; the custom curve goes to 101. The Crusher PLYR 720's three extra custom slots stay unused: PairFree writes the first.

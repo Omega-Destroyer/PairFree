@@ -66,6 +66,10 @@ class VendorNamesTest {
         for (model in OneplusModels.ALL) vendor.add("OnePlus", model.presets.map { it.name })
         // 1MORE preset sounds PairFree has no word for show under the vendor's key.
         for (model in OneMoreModels.ALL) vendor.add("1MORE", OneMoreBandEq(OneMoreSession(model)).eqPresetNames)
+        // Skullcandy's modes, by the app's own names.
+        vendor.add("Skullcandy", io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyProducts.ALL.flatMap { p ->
+            io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyEq.presets(p.enumName).map { it.first }
+        })
         vendor.keys.removeAll(own.keys)
     }
 

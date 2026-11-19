@@ -23,6 +23,7 @@ internal class JblAirohaEq private constructor(
     private val bands: List<JblEqBand>,
     private val masterDb: Float,
     private val library: AirohaPeq.Library = AirohaPeq.Library.PEQ,
+    private val selectOnly: Boolean = false,
 ) {
     /** One step: the command (built when its turn comes, since it may need what earlier steps read) and what to do with the answer. */
     private class Step(val relay: Boolean, val build: () -> RacePacket?, val answer: (RacePacket) -> Boolean)
@@ -136,15 +137,17 @@ internal class JblAirohaEq private constructor(
         steps += Step(false, build, answer)
     }
 
+    /** A preset the earbuds hold, picked by its group: always on the AB155x, and on any chip for a write that only [selectOnly] picks (Skullcandy's presets). */
+    private val presetOnEarbuds: Boolean get() = (chip == RaceChip.AB155X || selectOnly) && airohaCategory in 1..100
+
     private fun plan(): Boolean {
-        val coefs = coefBlocks() ?: return false
+        val coefs = if (selectOnly) emptyList() else (coefBlocks() ?: return false)
         if (chip == RaceChip.AB1568 && nvdmVersion == null) {
             steps += Step(false, { nvRead(JblRace.NV_NVDM_VERSION) }) { p ->
                 nvdmVersion = p.data.firstOrNull()?.toInt()?.and(0xFF) ?: 0
                 true
             }
         }
-        val presetOnEarbuds = chip == RaceChip.AB155X && airohaCategory in 1..100
         if (presetOnEarbuds) {
             readPath(0)
             pickGroup { records.indexOfFirst { it.category == airohaCategory } + 1 }
@@ -245,10 +248,10 @@ internal class JblAirohaEq private constructor(
 
     /** The first frames: the sync of the curve with the firmware (no answer awaited) and the first step. */
     fun start(): List<RacePacket> {
-        val sync = RacePacket(JblRace.PEQ_SYNC_UI, uiData() + int(peak100))
         val first = advance() ?: return emptyList()
-        val presetOnEarbuds = chip == RaceChip.AB155X && airohaCategory in 1..100
-        return (if (presetOnEarbuds) listOf(first) else listOf(sync, first)).onEach { sent += it }
+        if (presetOnEarbuds) return listOf(first).onEach { sent += it }
+        val sync = RacePacket(JblRace.PEQ_SYNC_UI, uiData() + int(peak100))
+        return listOf(sync, first).onEach { sent += it }
     }
 
     /**
@@ -336,9 +339,9 @@ internal class JblAirohaEq private constructor(
          */
         fun of(
             chip: RaceChip, earbuds: Boolean, nvdmVersion: Int?, category: Int, bands: List<JblEqBand>, masterDb: Float,
-            library: AirohaPeq.Library = AirohaPeq.Library.PEQ,
+            library: AirohaPeq.Library = AirohaPeq.Library.PEQ, selectOnly: Boolean = false,
         ): JblAirohaEq? {
-            val w = JblAirohaEq(chip, earbuds, nvdmVersion, category, bands, masterDb, library)
+            val w = JblAirohaEq(chip, earbuds, nvdmVersion, category, bands, masterDb, library, selectOnly)
             return if (w.plan()) w else null
         }
     }

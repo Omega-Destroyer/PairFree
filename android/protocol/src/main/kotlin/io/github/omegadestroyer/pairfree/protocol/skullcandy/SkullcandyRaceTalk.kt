@@ -58,6 +58,9 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     public val eqBandsHz: List<Int> = SkullcandyEq.bandsHz(product.enumName)
     public val eqRangeDb: Int = SkullcandyEq.rangeDb(product.enumName)
 
+    /** The presets the earbuds hold, by the app's names (Music, Podcast, Movie, Bass Boost and the gaming ones). */
+    public val eqPresets: List<Pair<String, Int>> = if (hasCustomEq) SkullcandyEq.presets(product.enumName) else emptyList()
+
     /** True once the earbuds have named their chip, which a curve's write needs. */
     public val chipKnown: Boolean get() = chip != null
 
@@ -177,8 +180,24 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         val w = JblAirohaEq.of(c, earbuds, null, SkullcandyEq.CATEGORY, bands, masterDb.toFloat(), AirohaPeq.Library.SERIALIZE) ?: return null
         write = w
         eqGains = gains
+        eqPresetName = null
         return w.start().map { it.bytes() }
     }
+
+    /** Picks the preset [name] the earbuds hold: the group of its number, as the app's `setEQSetting(category, null)` does. Null for a name the model does not have, or before the chip is known. */
+    public fun eqPreset(name: String): List<ByteArray>? {
+        val number = eqPresets.firstOrNull { it.first == name }?.second ?: return null
+        val c = chip ?: return null
+        // the writer's category 0 to 99 moves up one, so the number is given one less
+        val w = JblAirohaEq.of(c, product.form != Form.HEADPHONES, null, number - 1, emptyList(), 0f, AirohaPeq.Library.SERIALIZE, selectOnly = true) ?: return null
+        write = w
+        eqPresetName = name
+        return w.start().map { it.bytes() }
+    }
+
+    /** The preset last picked in this connection, null after a custom curve or before any. */
+    public var eqPresetName: String? = null
+        private set
 
     public companion object {
         public const val MULTIPOINT: String = "multipoint"

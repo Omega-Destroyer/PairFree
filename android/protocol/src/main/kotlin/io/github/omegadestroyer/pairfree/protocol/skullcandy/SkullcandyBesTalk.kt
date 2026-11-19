@@ -52,6 +52,45 @@ public object BesCommand {
     public fun write(command: Int, vararg value: Int): BesMessage = write(command, ByteArray(value.size) { value[it].toByte() })
 }
 
+/**
+ * The button settings of the BES models that have custom button actions (docs/skullcandy/PROTOCOL.md section 12.4): four entries `02 <gesture> <action u16 LE>` that the earbuds report and the
+ * app writes whole. The names are the app's own codes, read from its builder (`BesGesture.besGestureId`, `BesAction.besActionId`) and its reply decoder.
+ */
+public object BesButtons {
+    /** The gestures: the wire's byte and the row's name (single, double and triple press, and the press and hold). */
+    public val GESTURES: List<Pair<Int, String>> = listOf(0x08 to "single", 0x09 to "double", 0x0A to "triple", 0x06 to "hold")
+
+    /** The actions the app's writer encodes: the wire's code and the option's name. */
+    public val ACTIONS: List<Pair<Int, String>> = listOf(
+        3 to "play_pause", 1 to "track_back", 2 to "track_forward", 5 to "volume_down", 4 to "volume_up", 7 to "take_photo", 6 to "voice_assistant",
+    )
+
+    public val OPTIONS: List<String> = ACTIONS.map { it.second }
+
+    /** One entry of the reply or the write. */
+    public class Entry(public val gesture: Int, public val action: Int)
+
+    /** The entries of a reply's data (a whole number of four-byte entries, whose first byte the app does not use), or null when the data is not that. */
+    public fun parse(data: ByteArray): List<Entry>? {
+        if (data.isEmpty() || data.size % 4 != 0) return null
+        return (0 until data.size / 4).map { i ->
+            Entry(data[4 * i + 1].toInt() and 0xFF, (data[4 * i + 2].toInt() and 0xFF) or ((data[4 * i + 3].toInt() and 0xFF) shl 8))
+        }
+    }
+
+    /** The write of [entries]: `08 63 <length> 00 04 00` and each as `02 <gesture> <action lo> <action hi>`. */
+    public fun write(entries: List<Entry>): BesMessage {
+        val body = ByteArray(entries.size * 4)
+        entries.forEachIndexed { i, e ->
+            body[4 * i] = 0x02
+            body[4 * i + 1] = e.gesture.toByte()
+            body[4 * i + 2] = (e.action and 0xFF).toByte()
+            body[4 * i + 3] = ((e.action shr 8) and 0xFF).toByte()
+        }
+        return BesCommand.write(BesCommand.BUTTONS, body)
+    }
+}
+
 /** The custom equaliser's wire form on BES (docs/skullcandy/PROTOCOL.md section 12.3): a gain as a sign and magnitude over the app's range of minus 5 to plus 5 dB, and the band's frequency and Q. */
 public object BesEq {
     /** The gain range the wire encodes, in dB each way. */
@@ -117,6 +156,7 @@ public class SkullcandyBesTalk(public val product: SkullcandyProduct, private va
     private val hasLatency = "lowLatencyMode" in f || "gamingMode" in f
     private val hasSidetone = "adjustableSidetoneMode" in f
     private val hasTouch = "capTouchControl" in f
+    private val hasButtons = "customButtonActions" in f
 
     private val hostBuffer = BesTota.newBuffer(random)
     private val reader = BesTota.Reader()
@@ -145,6 +185,7 @@ public class SkullcandyBesTalk(public val product: SkullcandyProduct, private va
     private var level: Int? = null
     private var eqMode: Int? = null
     private var curve: List<Pair<Int, Double>>? = null
+    private var buttons: List<BesButtons.Entry>? = null
 
     /** The curve's bands in Hz: what the earbuds reported, else the app's own default. */
     public val eqBandsHz: List<Int> get() = curve?.map { it.first } ?: SkullcandyEq.bandsHz(product.enumName)
@@ -175,6 +216,13 @@ public class SkullcandyBesTalk(public val product: SkullcandyProduct, private va
         if (hasLevel && l != null && (m == 1 || m == 2)) {
             add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(if (m == 2) ANC_LEVEL else TRANSPARENCY_LEVEL, (l + 5) / 10, 0, 10))))
         }
+        buttons?.let { entries ->
+            val rows = entries.mapNotNull { e ->
+                val name = BesButtons.GESTURES.firstOrNull { it.first == e.gesture }?.second ?: return@mapNotNull null
+                Setting.Choice("sk_button_$name", BesButtons.ACTIONS.firstOrNull { it.first == e.action }?.second, BesButtons.OPTIONS)
+            }
+            if (rows.isNotEmpty()) add(SettingGroup("sk_buttons", SettingTab.CONTROLS, rows))
+        }
         multipoint?.let { add(SettingGroup("connection", SettingTab.DEVICE, listOf(Setting.Toggle(MULTIPOINT, it)))) }
         latency?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(GAMING_MODE, it)))) }
         sidetone?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(SIDETONE, it)))) }
@@ -193,6 +241,7 @@ public class SkullcandyBesTalk(public val product: SkullcandyProduct, private va
         if (hasLatency) add(BesCommand.read(BesCommand.LOW_LATENCY))
         if (hasSidetone) add(BesCommand.read(BesCommand.SIDETONE))
         if (hasTouch) add(BesCommand.read(BesCommand.TOUCH))
+        if (hasButtons) add(BesCommand.read(BesCommand.BUTTONS))
         add(BesCommand.read(BesCommand.FIRMWARE))
         add(BesCommand.read(BesCommand.TWS))
     }
@@ -206,7 +255,7 @@ public class SkullcandyBesTalk(public val product: SkullcandyProduct, private va
         val c = p[4].toInt() and 0xFF
         return when (p[0].toInt()) {
             0x09 -> c in BesCommand.READABLE && p.size == 6
-            0x08 -> c in BesCommand.WRITABLE
+            0x08 -> c in BesCommand.WRITABLE && (c != BesCommand.BUTTONS || p.size == 6 + 16)
             else -> false
         }
     }
@@ -316,6 +365,7 @@ public class SkullcandyBesTalk(public val product: SkullcandyProduct, private va
             BesCommand.LOW_LATENCY -> { latency = on; true }
             BesCommand.SIDETONE -> { sidetone = on; true }
             BesCommand.TOUCH -> { touch = on; true }
+            BesCommand.BUTTONS -> BesButtons.parse(d)?.let { buttons = it; true } ?: false
             else -> false
         }
     }
@@ -365,6 +415,16 @@ public class SkullcandyBesTalk(public val product: SkullcandyProduct, private va
             }
             readBacks = listOf(BesCommand.read(cmd))
             return listOf(BesCommand.write(cmd, if (change.on) 1 else 0))
+        }
+        if (change is SettingChange.Choice && change.key.startsWith("sk_button_") && hasButtons) {
+            val gesture = BesButtons.GESTURES.firstOrNull { "sk_button_${it.second}" == change.key }?.first ?: return null
+            val action = BesButtons.ACTIONS.firstOrNull { it.second == change.option }?.first ?: return null
+            val now = buttons ?: return null
+            if (now.none { it.gesture == gesture }) return null
+            // the app writes all four entries each time, the changed one with its new action
+            buttons = now.map { if (it.gesture == gesture) BesButtons.Entry(gesture, action) else it }
+            readBacks = listOf(BesCommand.read(BesCommand.BUTTONS))
+            return listOf(BesButtons.write(buttons!!))
         }
         if (change is SettingChange.Level && (change.key == ANC_LEVEL || change.key == TRANSPARENCY_LEVEL) && hasLevel) {
             val mode = hearing?.takeIf { it == 1 || it == 2 } ?: return null

@@ -41,7 +41,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "attention" -> "setting_group_attention"
             "ef_quality" -> "setting_group_sound_quality"
             "power" -> "setting_group_power"
-            "ef_buttons" -> "setting_group_buttons"
+            "ef_buttons", "sk_buttons" -> "setting_group_buttons"
             "ca_eq" -> "setting_ca_eq"
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
@@ -100,6 +100,10 @@ class SettingWords(private val strings: DesktopStrings) {
         "sk_wear_detect" -> t("setting_sk_wear_detect")
         "sk_sidetone" -> t("setting_sk_sidetone")
         "sk_touch_control" -> t("setting_sk_touch_control")
+        "sk_button_single" -> t("setting_sk_button_single")
+        "sk_button_double" -> t("setting_sk_button_double")
+        "sk_button_triple" -> t("setting_sk_button_triple")
+        "sk_button_hold" -> t("setting_sk_button_hold")
         "op_eq_preset" -> t("setting_op_eq_preset")
         "op_noise_level" -> t("setting_op_noise_level")
         "op_custom_eq" -> t("setting_op_custom_eq")
@@ -793,6 +797,15 @@ class SettingWords(private val strings: DesktopStrings) {
         key.startsWith("sh_nautilus_") && key != "sh_nautilus_anc" && key != "sh_nautilus_anc_state" && key != "sh_nautilus_preset" && key != "sh_nautilus_anc_middle" -> t(when (option) {
             "off" -> "action_off"; "on" -> "setting_sh_nautilus_on"; "low" -> "setting_level_low"; "medium" -> "setting_level_medium"; "high" -> "setting_level_high"
             "near" -> "setting_sh_nautilus_near"; "far" -> "setting_sh_nautilus_far"; "rumble" -> "setting_sh_nautilus_rumble"; "thump" -> "setting_sh_nautilus_thump"; else -> "setting_sh_nautilus_voice"
+        })
+        key.startsWith("sk_button_") -> t(when (option) {
+            "play_pause" -> "setting_sk_action_play_pause"
+            "track_back" -> "setting_sk_action_track_back"
+            "track_forward" -> "setting_sk_action_track_forward"
+            "volume_down" -> "setting_sk_action_volume_down"
+            "volume_up" -> "setting_sk_action_volume_up"
+            "take_photo" -> "setting_sk_action_take_photo"
+            else -> "setting_sk_action_voice_assistant"
         })
         key == "sh_auto_off" -> if (option == "0") t("action_off") else t("setting_power_off_timer_minutes", option.toInt())
         key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> t(when (option) { "low" -> "setting_level_low"; "mid", "medium" -> "setting_level_medium"; else -> "setting_level_high" })

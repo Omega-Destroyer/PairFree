@@ -41,6 +41,8 @@ def bes_rows(p, modes):
         out.append("sidetone")
     if "capTouchControl" in f:
         out.append("touch controls")
+    if "customButtonActions" in f:
+        out.append("button actions")
     return out
 
 
@@ -89,7 +91,7 @@ def main():
         lines.append(f"| {p['name']} | {p['id']} | {p['chip']}{' (SDK ' + p['sdk'] + ')' if p['sdk'] else ''} | {s or 'found only (no session yet)'} | {', '.join(r) or ''} |")
     lines += ["", "Not covered yet, by group:", "",
               "- **Airoha with an SDK configuration on another protocol**: Rail and Rail ANC (Airoha RACE, custom commands), Method 360 and 540 ANC and Crusher 1080 ANC (Bragi's protobuf RPC, which may need a secure session).",
-              "- **BES** (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open): BES's TOTA protocol, built (`SkullcandyBesTalk`): the button actions (command 4) are the one setting still to build.",
+              "- **BES** (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open): BES's TOTA protocol, built (`SkullcandyBesTalk`): every setting the app offers the five models is built, the buttons included.",
               "- **Qualcomm Bluetooth LE** (Crusher ANC, Crusher Evo, Indy Fuel, Indy Evo, Push Ultra, Crusher 540 Active): preset equaliser and ambient mode only.",
               "- **Speakers**: the four Session speakers are found and held back (speakers wait, owner 2026-10-30).",
               "- **JieLi, Actions**: the app shows no setting for these (Smokin' Buds 3, the three Terrain speakers).", ""]

@@ -715,6 +715,17 @@
     <string name="setting_sk_wear_detect">Wear detection (pause when taken off)</string>
     <string name="setting_sk_sidetone">Sidetone (hear your own voice on calls)</string>
     <string name="setting_sk_touch_control">Touch controls</string>
+    <string name="setting_sk_button_single">Single press</string>
+    <string name="setting_sk_button_double">Double press</string>
+    <string name="setting_sk_button_triple">Triple press</string>
+    <string name="setting_sk_button_hold">Press and hold</string>
+    <string name="setting_sk_action_play_pause">Play / pause</string>
+    <string name="setting_sk_action_track_back">Previous track</string>
+    <string name="setting_sk_action_track_forward">Next track</string>
+    <string name="setting_sk_action_volume_down">Volume down</string>
+    <string name="setting_sk_action_volume_up">Volume up</string>
+    <string name="setting_sk_action_take_photo">Take a photo</string>
+    <string name="setting_sk_action_voice_assistant">Voice assistant</string>
     <string name="setting_sleep_timer">Sleep timer</string>
     <string name="setting_sleep_timer_note">The earbuds stop the audio after the time chosen.</string>
     <string name="setting_group_touch_dial_note">Double press and hold the dial to lock or unlock it.</string>

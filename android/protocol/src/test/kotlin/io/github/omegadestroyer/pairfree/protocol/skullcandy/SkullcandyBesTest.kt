@@ -193,6 +193,29 @@ class SkullcandyBesTest {
     }
 
     @Test
+    fun theButtonsAreReadAndWrittenWhole() {
+        val product = SkullcandyModels.fromName("DIME 540 ANC")!!
+        val talk = SkullcandyBesTalk(product, Random(7))
+        val bud = Earbud(talk)
+        handshake(talk, bud)
+        assertTrue(talk.takeOutbox().any { it.command == BesCommand.BUTTONS })
+        // single press play/pause, double next, triple back, hold voice assistant
+        talk.feed(bud.reply(BesCommand.BUTTONS, 2, 0x08, 3, 0, 2, 0x09, 2, 0, 2, 0x0A, 1, 0, 2, 0x06, 6, 0))
+        val rows = talk.groups.single { it.key == "sk_buttons" }.settings.map { it as io.github.omegadestroyer.pairfree.protocol.Setting.Choice }
+        assertEquals(listOf("sk_button_single", "sk_button_double", "sk_button_triple", "sk_button_hold"), rows.map { it.key })
+        assertEquals(listOf("play_pause", "track_forward", "track_back", "voice_assistant"), rows.map { it.value })
+        val out = talk.change(SettingChange.Choice("sk_button_double", "volume_up"))!!.single()
+        assertEquals("08631200" + "0400" + "02080300" + "02090400" + "020a0100" + "02060600", hex(out.payload))
+        assertTrue(talk.allowed(out))
+        assertEquals("volume_up", (talk.groups.single { it.key == "sk_buttons" }.settings[1] as io.github.omegadestroyer.pairfree.protocol.Setting.Choice).value)
+        // a model without custom button actions has no such read
+        val icon = SkullcandyBesTalk(SkullcandyModels.fromName("Icon 180")!!, Random(7))
+        val bud2 = Earbud(icon)
+        handshake(icon, bud2)
+        assertTrue(icon.takeOutbox().none { it.command == BesCommand.BUTTONS })
+    }
+
+    @Test
     fun theSerialNumberIsNeverRead() {
         val product = SkullcandyModels.fromName("DIME 540 ANC")!!
         val talk = SkullcandyBesTalk(product, Random(1))

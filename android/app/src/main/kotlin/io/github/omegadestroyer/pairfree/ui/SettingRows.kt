@@ -260,7 +260,7 @@ private fun groupTitle(key: String): String = stringResource(
         "attention" -> R.string.setting_group_attention
         "ef_quality" -> R.string.setting_group_sound_quality
         "power" -> R.string.setting_group_power
-        "ef_buttons" -> R.string.setting_group_buttons
+        "ef_buttons", "sk_buttons" -> R.string.setting_group_buttons
         "ca_eq" -> R.string.setting_ca_eq
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
@@ -323,6 +323,10 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sk_wear_detect" -> stringResource(R.string.setting_sk_wear_detect)
     "sk_sidetone" -> stringResource(R.string.setting_sk_sidetone)
     "sk_touch_control" -> stringResource(R.string.setting_sk_touch_control)
+    "sk_button_single" -> stringResource(R.string.setting_sk_button_single)
+    "sk_button_double" -> stringResource(R.string.setting_sk_button_double)
+    "sk_button_triple" -> stringResource(R.string.setting_sk_button_triple)
+    "sk_button_hold" -> stringResource(R.string.setting_sk_button_hold)
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
     "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
     "op_custom_eq" -> stringResource(R.string.setting_op_custom_eq)
@@ -1023,6 +1027,15 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     key.startsWith("sh_nautilus_") && key != "sh_nautilus_anc" && key != "sh_nautilus_anc_state" && key != "sh_nautilus_preset" && key != "sh_nautilus_anc_middle" -> getString(when (option) {
         "off" -> R.string.action_off; "on" -> R.string.setting_sh_nautilus_on; "low" -> R.string.setting_level_low; "medium" -> R.string.setting_level_medium; "high" -> R.string.setting_level_high
         "near" -> R.string.setting_sh_nautilus_near; "far" -> R.string.setting_sh_nautilus_far; "rumble" -> R.string.setting_sh_nautilus_rumble; "thump" -> R.string.setting_sh_nautilus_thump; else -> R.string.setting_sh_nautilus_voice
+    })
+    key.startsWith("sk_button_") -> getString(when (option) {
+        "play_pause" -> R.string.setting_sk_action_play_pause
+        "track_back" -> R.string.setting_sk_action_track_back
+        "track_forward" -> R.string.setting_sk_action_track_forward
+        "volume_down" -> R.string.setting_sk_action_volume_down
+        "volume_up" -> R.string.setting_sk_action_volume_up
+        "take_photo" -> R.string.setting_sk_action_take_photo
+        else -> R.string.setting_sk_action_voice_assistant
     })
     key == "sh_auto_off" -> if (option == "0") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
     key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> getString(when (option) { "low" -> R.string.setting_level_low; "mid", "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_high })

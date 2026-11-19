@@ -6,6 +6,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.eq.BandEqTarget
 import io.github.omegadestroyer.pairfree.eq.EqSource
+import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Conversation
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Model
@@ -77,7 +78,11 @@ class SkullcandyDriver(host: DriverHost, private val device: Paired) : TalkDrive
     var raceLink: ControlLink? = null
     private var raceTalk: SkullcandyRaceTalk? = null
     private var raceConversation: Conversation<RacePacket>? = null
-    private val raceKeys = setOf(SkullcandyRaceTalk.MULTIPOINT, SkullcandyRaceTalk.WEAR_DETECT, SkullcandyRaceTalk.BASS_BOOST)
+    private val raceKeys = setOf(SkullcandyRaceTalk.MULTIPOINT, SkullcandyRaceTalk.WEAR_DETECT, SkullcandyRaceTalk.BASS_BOOST, SkullcandyRaceTalk.ANC_LEVEL)
+    private var lastMode: String? = null
+
+    /** The hearing mode in force, from the AT conversation's state. */
+    private fun modeOf(at: SkullcandyAtSession): String? = at.state.number(Command.ANC_MODE)?.let { Command.ANC_MODE.labels[it] }
 
     override fun talk(opened: ControlLink): SkullcandyAtSession? {
         val product = SkullcandyModels.fromName(device.model ?: device.name)?.takeIf { it.usesAt || it.usesAtSerial } ?: return null
@@ -86,6 +91,7 @@ class SkullcandyDriver(host: DriverHost, private val device: Paired) : TalkDrive
         if (link != null) {
             val race = SkullcandyRaceTalk(product)
             raceTalk = race
+            race.mode = { modeOf(at) }
             val wire = object : TalkWire {
                 override suspend fun send(frame: ByteArray) = link.send(frame)
                 override fun reads(): Flow<ByteArray> = link.reads()
@@ -100,11 +106,21 @@ class SkullcandyDriver(host: DriverHost, private val device: Paired) : TalkDrive
 
     /** The AT rows and the RACE rows together. */
     override fun publish(talk: SkullcandyAtSession) {
-        show(talk.state, talk.groups + raceTalk?.groups.orEmpty())
+        val race = raceTalk
+        // The RACE gain is the strength of the mode in force: read it again when the mode changes.
+        val m = modeOf(talk)
+        if (race != null && race.hasGain && m != lastMode && (m == "anc" || m == "transparency")) {
+            lastMode = m
+            raceConversation?.send(listOf(race.gainRead()), null)
+        } else if (m != lastMode) {
+            lastMode = m
+        }
+        show(talk.state, talk.groups + race?.groups.orEmpty())
     }
 
     override fun changeSetting(change: SettingChange) {
-        if (change.key !in raceKeys) return super.changeSetting(change)
+        val toRace = change.key in raceKeys || (change.key == SkullcandyRaceTalk.TRANSPARENCY_LEVEL && talk?.hasTransparencyLevel != true)
+        if (!toRace) return super.changeSetting(change)
         val race = raceTalk ?: return
         val running = raceConversation ?: return
         val out = race.change(change) ?: return

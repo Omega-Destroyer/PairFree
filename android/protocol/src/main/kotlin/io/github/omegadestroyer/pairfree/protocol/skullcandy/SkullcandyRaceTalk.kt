@@ -16,6 +16,7 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import io.github.omegadestroyer.pairfree.protocol.jbl.RaceChip
 import io.github.omegadestroyer.pairfree.protocol.jbl.RacePacket
 import io.github.omegadestroyer.pairfree.protocol.jbl.RaceParser
+import kotlin.math.roundToInt
 
 /**
  * The conversation over Skullcandy's second serial channel, the Airoha RACE one (docs/skullcandy/PROTOCOL.md sections 11 and 13): Skullcandy's own custom commands (multipoint, wear
@@ -42,6 +43,12 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     private var multipoint: Boolean? = null
     private var wearDetect: Boolean? = null
     private var bassBoost: Boolean? = null
+    private var gainSlider: Double? = null
+    private var gainFor: String? = null
+    private var askedFor: String? = null
+
+    /** The hearing mode in force (`anc`, `transparency` or `off`), as the AT conversation holds it; set by the driver. */
+    public var mode: () -> String? = { null }
 
     private val airoha = product.chip == "airoha"
     public val hasMultipoint: Boolean = airoha && ("multipointPairingToggle" in product.features || "multipointPairing" in product.features)
@@ -51,8 +58,11 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     /** True when the model has a custom equaliser the app sets through Airoha's PEQ. */
     public val hasCustomEq: Boolean = airoha && "customEqualizer" in product.features
 
+    /** True when the strength of the hearing mode in force is an Airoha RACE gain: the Crusher ANC 2, whose SDK configuration lists both gains over RACE. */
+    public val hasGain: Boolean = product.sdk == "CHP200"
+
     /** True when the model has anything this channel carries. */
-    public val hasRaceFeatures: Boolean get() = hasMultipoint || hasWearDetect || hasBassBoost || hasCustomEq
+    public val hasRaceFeatures: Boolean get() = hasMultipoint || hasWearDetect || hasBassBoost || hasCustomEq || hasGain
 
     /** The equaliser's bands in Hz and the gain range, for the Sound tab. */
     public val eqBandsHz: List<Int> = SkullcandyEq.bandsHz(product.enumName)
@@ -75,6 +85,11 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         multipoint?.let { add(SettingGroup("connection", SettingTab.DEVICE, listOf(Setting.Toggle(MULTIPOINT, it)))) }
         wearDetect?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(WEAR_DETECT, it)))) }
         bassBoost?.let { add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Toggle(BASS_BOOST, it)))) }
+        val m = mode()
+        val s = gainSlider
+        if (hasGain && s != null && gainFor == m && (m == "anc" || m == "transparency")) {
+            add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(if (m == "anc") ANC_LEVEL else TRANSPARENCY_LEVEL, (s * 10).roundToInt(), 0, 10))))
+        }
     }
 
     private fun packet(hex: String, kind: String): RacePacket {
@@ -88,6 +103,13 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         if (hasMultipoint) add(packet(SkullcandyRace.multipointGet(product.enumName), "multipoint"))
         if (hasWearDetect) add(packet(SkullcandyRace.WEAR_DETECT_GET, "wear"))
         if (hasBassBoost) add(packet(SkullcandyRace.BASS_BOOST_GET, "bass"))
+        if (hasGain) add(gainRead())
+    }
+
+    /** The read of the gain, for the mode in force now: the answer belongs to that mode. */
+    public fun gainRead(): RacePacket {
+        askedFor = mode()
+        return packet(SkullcandyRace.GAIN_GET, "gain")
     }
 
     override fun poll(): List<RacePacket> = emptyList()
@@ -134,6 +156,15 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         }
         val kind = kinds[asked] ?: return false
         if (p.type != 0x5B && p.type != 0x5D || p.payload.isEmpty()) return false
+        if (kind == "gain") {
+            // the status, the sub-command 0D, then the gain
+            if (p.payload.size < 4 || p.payload[0].toInt() != 0 || p.payload[1].toInt() != 0x0D) return false
+            val range = if (askedFor == "anc") SkullcandyGain.ANC else SkullcandyGain.TRANSPARENCY
+            val s = SkullcandyGain.sliderOf(p.payload.copyOfRange(2, 4), range) ?: return false
+            gainSlider = s
+            gainFor = askedFor
+            return true
+        }
         val on = p.payload.last().toInt() == 1
         val before = Triple(multipoint, wearDetect, bassBoost)
         when (kind) {
@@ -163,6 +194,15 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             bassBoost = change.on
             readBacks = listOf(packet(SkullcandyRace.BASS_BOOST_GET, "bass"))
             listOf(packet(SkullcandyRace.bassBoostSet(change.on), "bass_set"))
+        }
+        change is SettingChange.Level && (change.key == ANC_LEVEL || change.key == TRANSPARENCY_LEVEL) && hasGain -> {
+            val m = mode()
+            val range = if (m == "anc") SkullcandyGain.ANC else SkullcandyGain.TRANSPARENCY
+            val slider = (change.value / 10.0).coerceIn(0.0, 1.0)
+            gainSlider = slider
+            gainFor = m
+            readBacks = listOf(gainRead())
+            listOf(packet(SkullcandyRace.gainSet(SkullcandyGain.wire(slider, range)), "gain_set"))
         }
         else -> null
     }
@@ -203,6 +243,8 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         public const val MULTIPOINT: String = "multipoint"
         public const val WEAR_DETECT: String = "sk_wear_detect"
         public const val BASS_BOOST: String = "bass_boost"
+        public const val ANC_LEVEL: String = "sk_anc_level"
+        public const val TRANSPARENCY_LEVEL: String = "sk_transparency_level"
         private const val CHIP_NV_LENGTH = 1000
     }
 }

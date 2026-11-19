@@ -710,6 +710,7 @@
     <string name="setting_sleep_calls_during_bluetooth">Calls ring in Bluetooth mode</string>
     <!-- Skullcandy -->
     <string name="setting_sk_transparency_level">Transparency level</string>
+    <string name="setting_sk_anc_level">Noise cancelling strength</string>
     <string name="setting_sk_gaming_mode">Gaming mode (low latency)</string>
     <string name="setting_sk_wear_detect">Wear detection (pause when taken off)</string>
     <string name="setting_sleep_timer">Sleep timer</string>

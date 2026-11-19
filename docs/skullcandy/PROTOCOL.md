@@ -441,4 +441,4 @@ Two forms, by the SDK configuration of the product (`com/bragi/sdk/android/api/a
   and the gain in bytes 8 and 9. The Flutter app's sliders convert percent to the same -20 to 0 dB (`convertPercentageToAirohaGain`). The models without an SDK configuration set the ANC state with AT (`SetAncStateAtCommand`) and the gain through Airoha's SDK (`setANCSettings`),
   whose RACE frames are Airoha's own ANC commands.
 
-PairFree offers the AT level where the SDK lists it. The RACE gain is the next build (it needs the mode in force, which the AT conversation holds, and the other models' Airoha ANC frames).
+PairFree offers the AT level where the SDK lists it, and the RACE gain on the Crusher ANC 2 (`SkullcandyGain`, `SkullcandyRaceTalk`): a row for the strength of the mode in force, read again when the mode changes, in steps of a tenth of the slider. The other models' Airoha ANC frames (Airoha's SDK `setANCSettings`) come with their own sessions.

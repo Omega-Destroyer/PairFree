@@ -318,6 +318,7 @@ private fun efCycleTitle(key: String): String {
 @Composable
 private fun settingTitle(key: String): String = if (key.startsWith("jb_")) stringResource(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: R.string.unknown) else when (key) {
     "sk_transparency_level" -> stringResource(R.string.setting_sk_transparency_level)
+    "sk_anc_level" -> stringResource(R.string.setting_sk_anc_level)
     "sk_gaming_mode" -> stringResource(R.string.setting_sk_gaming_mode)
     "sk_wear_detect" -> stringResource(R.string.setting_sk_wear_detect)
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)

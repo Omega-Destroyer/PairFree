@@ -95,6 +95,7 @@ class SettingWords(private val strings: DesktopStrings) {
 
     fun settingTitle(key: String): String = if (key.startsWith("jb_")) t(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: "unknown") else when (key) {
         "sk_transparency_level" -> t("setting_sk_transparency_level")
+        "sk_anc_level" -> t("setting_sk_anc_level")
         "sk_gaming_mode" -> t("setting_sk_gaming_mode")
         "sk_wear_detect" -> t("setting_sk_wear_detect")
         "op_eq_preset" -> t("setting_op_eq_preset")

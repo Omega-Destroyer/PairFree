@@ -37,13 +37,21 @@ public object SkullcandyRace {
 
     public fun bassBoostSet(on: Boolean): String = "05 5A 03 00 D7 2C " + (if (on) "01" else "00")
 
+    /** The gain of the hearing mode in force: read, and written four times over (docs/skullcandy/PROTOCOL.md section 14). */
+    public const val GAIN_GET: String = "05 5A 04 00 06 0E 00 0D"
+
+    public fun gainSet(wire: ByteArray): String {
+        val g = wire.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() }
+        return "05 5A 0C 00 06 0E 00 0E $g $g $g $g"
+    }
+
     /** The request bytes of a hex message ("05 5A 03 00 ..."). */
     public fun bytes(hex: String): ByteArray = hex.split(' ').filter { it.isNotEmpty() }.map { it.toInt(16).toByte() }.toByteArray()
 
     /** The requests PairFree sends: reads and the writes of the features above, for any product (the forms checked by the products' own functions). */
     public fun isAllowed(hex: String): Boolean {
         val b = hex.trim()
-        return b == WEAR_DETECT_GET || b == BASS_BOOST_GET || b.startsWith("05 5A 03 00 02 F4 ") || b.startsWith("05 5A 03 00 D7 2C ") ||
+        return b == WEAR_DETECT_GET || b == GAIN_GET || (b.startsWith("05 5A 0C 00 06 0E 00 0E ") && b.split(' ').size == 16) || b == BASS_BOOST_GET || b.startsWith("05 5A 03 00 02 F4 ") || b.startsWith("05 5A 03 00 D7 2C ") ||
             b == "05 5A 04 00 83 2C 10 00" || b == "05 5A 02 00 14 00" || b == "05 5A 06 00 00 0A 01 E3 01 00" || b == "05 5A 06 00 00 0A 00 F5 01 00" ||
             b.startsWith("05 5A 05 00 82 2C 10 00 ") || b.startsWith("05 5A 03 00 01 14 ") || b.startsWith("05 5A 04 00 01 11 ")
     }

@@ -84,6 +84,18 @@ def airoha_sdk_rows(p, modes):
         out.append("button actions (" + ("the app's own key map" if vendor else "Airoha's gesture API") + ")")
     if "voicePrompts" in f:
         out.append("voice prompts")
+    if "adjustableSidetoneMode" in f:
+        out.append("sidetone (state + level)")
+    if "gameChatMix" in f:
+        out.append("game and chat mix")
+    if "adjustableMicGain" in f:
+        out.append("microphone volume")
+    if "capTouchControl" in f:
+        out.append("touch controls")
+    if "adaptiveANCMode" in f:
+        out.append("adaptive noise cancelling")
+    if "crusherTechnology" in f:
+        out.append("Crusher intensity")
     return out
 
 

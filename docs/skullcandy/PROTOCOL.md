@@ -414,6 +414,29 @@ Twelve of the 28 list `customButtonActions` with the presses and actions of the 
 - **Voice prompts** (`voicePrompts`, the two SLYR Pro Wireless): Skullcandy's command `2C 81` from the native side (`s2.W`, `X`, `Y`): `05 5A 04 00 81 2C 02 FF` reads, `... 00 FF` turns them on and
   `... 01 FF` off; the answer's last byte is 1 when they are off, and the earbuds report a change as `05 5D 03 00 81 2C <value>`.
 
+### 9.6 Sidetone, the mixes, touch controls and the rest (built 2026-11-20)
+
+More of the Airoha models' settings are Skullcandy's own RACE commands, carried by the Airoha SDK inside the app (`com.airoha.libmmi.b` and its `libmmi1568` stages) and by the Flutter code's race command classes:
+
+- **The custom pair `2C82` (write) and `2C83` (read)**: a setting number (two bytes, low first) and the value. A read is `05 5A 04 00 83 2C <n> 00`, answered `05 5B <len> 83 2C 00 <n> 00 <value>` (a status byte, the number, the value; a level is a short, low byte first). A write is `05 5A <len> 82 2C <n> 00 <value>`.
+  Settings: 7 sidetone on or off (1 is on; also an unasked notice `05 5D 04 00 83 2C 07 <v>`), 6 the sidetone level, 0B the game and chat mix (`MmiStageSetGameChatMixRatio`), 0C the microphone volume (`MmiStageSetGameMicVolume`), and 10 multipoint (section 11).
+  The app writes the sidetone state and then the level on every change (`doSetSidetoneStatus`), and PairFree does the same. The level is the app's slider (`SKDYSidetoneSettings`): `truncate(percent / 100 * 57) - 40`, so the wire holds -40 to 17; read back, `(level + 40) * 100 / 57`.
+- **Touch controls** (`capTouchControl`, the Push 540 Open): the NV key `F514` (35 bytes) read as `05 5A 06 00 00 0A 14 F5 23 00`. Its first data byte is `00` when the touch controls are on (`RaceCommandCapTouchS2Get`) and the third is `01` when scenario 1 is on (`S1Get`). The app first makes sure scenario 1
+  is on (`_ensureCapTouchScenario1IsEnabled`: `05 5A 03 00 07 00 01` when it is not), then writes scenario 2 as `05 5A 03 00 08 00 <00 on, 01 off>`. PairFree does the read without a write, and the two writes only when the user changes the row.
+- **Adaptive noise cancelling** (`adaptiveANCMode`, the Aviator 900 ANC): the module read `001F` (`05 5A 04 00 01 09 1F 00`, the first data byte 1 is on) and the ANC command `05 5A 05 00 06 0E 00 22 <00|01>`.
+- **The Crusher PLYR's intensity** (`crusherTechnology`): `05 5A 03 00 D0 2C <value>` writes it and `05 5A 02 00 D1 2C` reads it (`05 5B 04 00 D1 2C 00 <value>`). Skullcandy's own bass boost toggle (`D7 2C`) is section 11.
+
+**Inferences, to be confirmed by a first report:** the ranges of the chat mix, the microphone volume and the Crusher intensity (the app's sliders run 0 to 100; PairFree offers tenths of that and writes the percent), which side of the sidetone's notice carries the value, and that `2C82` writes need no
+reply to be taken (the app waits for the status byte).
+
+**Open items for these models (to build; checked: the Airoha SDK's classes and the Flutter feature switch, as each item says):**
+- *The strength of noise cancelling and transparency* (`adjustableNoiseCancellation`, `adjustableStayAwareMode`, `advancedHearingModes`): the app calls the Airoha SDK's `setAncSetting(filter, gain, mode, save)` (`FlutterAirohaApi.setANCSettings`), whose frames the SDK builds per chip family
+  (`com.airoha.libanc` state machines, 2,800 lines; the app's filter numbers are the SDK's `UI_ANC_FILTER` ordinals, ANC1 for most models and ANC3 for the Rail ANC, `SKDYAncMode.ancFilterId`). Not ported yet. The noise mode PairFree writes on these models uses the Rail's filter numbers (3 and 4), which is a
+  guess for the others: the app's own would be ANC1 (1) for most.
+- *THX spatial audio, head tracking and intensity* (`thxSpatialAudio`, `thxHeadTracking`): Skullcandy's command classes `ReadThx*` and `SetThx*` (ids `000A` to `0011` in the race text format, built by `encode`); their payload layout is not traced.
+- *The LED customizer, Crusher technology's dial, wheel and profiles, the Crusher 900 ANC's Bose equalizer, the PLYR's gaming equalizer and its NV key `F510` order, enhanced sound perception, Clear Voice smart mic, bass boost mode, the equalizer on/off switch,
+  the THX gaming equalizer, cap touch's Indy ANC ambient mode:* not traced yet from the app's feature switch (`activateFeature` in `skdyairohaservice.dart`, whose per-feature cases are decoded one at a time).
+
 ## 13. The equaliser on the Airoha models (read so far, 2026-11-18)
 
 The Bragi SDK drives the equaliser through Airoha's own PEQ control (`api/equalizer/data/protocol/airoha`: `PEQControl.setEQSetting(categoryId, payload, ...)`, `getAllEQSettings`, `getRunningEQSetting`),

@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-19",
+  "scope": "Clean end-to-end execution from original APKM plus independent direct-base-APK restoration into new output directories; no Android/account/server/device access",
+  "toolkit_file": "soundcore-unpacker-5.0.35-435.zip",
+  "toolkit_sha256": "abe95f9c77552c092d2c69a59b0b3157ef74e13b1f1084892926de7e3dfb9697",
+  "toolkit_bytes": 59542,
+  "profile": "soundcore-5.0.35-435",
+  "reference_input_apkm_sha256": "b7acfeee5c506879e5870a8215562b8b0cd896a93aaa54cd3eb28c24cdc6e734",
+  "base_apk_sha256": "51bc439ee58d03011d92f995a78b352052915028edf4d10149f53c3ccdf04249",
+  "apkm_run": {
+    "status": "complete_with_jadx_diagnostics",
+    "restored_methods": 297210,
+    "dex_files": 23,
+    "remaining_markers": 0,
+    "all_restored_reference_hashes_match": true,
+    "java_files": 54474,
+    "jadx_exit_code": 3,
+    "jadx_diagnostic_count": 492,
+    "java_decompile_seconds": 112.06,
+    "native_extraction_seconds": 12.38,
+    "resource_apks": 10
+  },
+  "direct_apk_run": {
+    "status": "restored_dex_only",
+    "restored_methods": 297210,
+    "all_restored_reference_hashes_match": true,
+    "output_path_spaces_tested": true
+  },
+  "launcher_rejection_checks": {
+    "cases": [
+      {
+        "case": "unsupported-build",
+        "exit_code": 1,
+        "expected_refusal": "Unsupported APK build"
+      },
+      {
+        "case": "archive-traversal",
+        "exit_code": 1,
+        "expected_refusal": "Unsafe archive member path"
+      },
+      {
+        "case": "git-output-refused",
+        "exit_code": 1,
+        "expected_refusal": "Output must be outside a Git workspace"
+      },
+      {
+        "case": "existing-output-refused",
+        "exit_code": 1,
+        "expected_refusal": "Output directory is not empty"
+      }
+    ],
+    "passed": 4
+  },
+  "network_requests_during_unpack": 0,
+  "android_installation": false,
+  "app_implementation_changed": false,
+  "bundle_contains_vendor_apk_dex_native_or_source": false,
+  "bundle_contains_credentials_or_user_data": false,
+  "bundle_instruction_profile": "Validated non-credential 256-byte instruction permutation; outside Git",
+  "limits": [
+    "Build-specific profile; other APK hashes rejected",
+    "Declared native methods not reconstructed into Java/C",
+    "JADX diagnostics and imperfect source control flow retained",
+    "Not an installable repacked APK",
+    "No arbitrary asset decryption or cloud protocol retrieval"
+  ]
+}

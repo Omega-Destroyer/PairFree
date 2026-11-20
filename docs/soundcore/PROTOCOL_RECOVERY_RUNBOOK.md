@@ -1,5 +1,7 @@
 # Soundcore protocol recovery runbook
 
+**For unpacking from the original APK/APKM, start with the [successful-path guide](UNPACKING_GUIDE.md).** It documents the portable build-checked launcher validated on 2026-11-19. The Android instrumentation sections below explain the original calibration and subsequent runtime protocol experiments; that Android setup is not needed to repeat the supported build's offline recovery.
+
 This records the working 5.0.35-435 investigation. Most mechanical steps are scripted outside Git. It is not an end-to-end unpacker guaranteed to work on every future release: packer layout, ABI helpers, application factory behavior and method protection must be checked again for a new input.
 
 ## Inputs and workspace

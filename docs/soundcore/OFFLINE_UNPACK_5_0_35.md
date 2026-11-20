@@ -1,5 +1,7 @@
 # Soundcore 5.0.35: offline instruction-store recovery
 
+**Reproduction update, 2026-11-19:** Use the [successful-path guide and portable launcher](UNPACKING_GUIDE.md) to repeat this recovery from the original APK/APKM. The new launcher was tested in fresh directories, matches all 23 restored reference DEX hashes and no longer requires the earlier live-capture workspace during normal use. The historical commands below describe the original validation; they are not the recommended new-user entry point.
+
 ## Result (2026-11-15)
 
 The native recovery path now restores **all 297,210 instruction-store methods in 23 DEX files**, including the previously missing **279 marked methods across 44 security/helper classes**. All restored DEX SHA-1 signatures and Adler-32 checksums verify; no instruction-store markers remain. These are analysis files outside Git, not an installed APK.

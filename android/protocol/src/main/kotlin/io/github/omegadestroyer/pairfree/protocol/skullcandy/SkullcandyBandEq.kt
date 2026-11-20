@@ -17,7 +17,7 @@ public class SkullcandyBandEq(private val talk: SkullcandyRaceTalk) : BandEq {
 
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = talk.eqCurve(gains.map { it.toDouble() })
 
-    /** What PairFree last wrote in this connection; the earbuds' own state is not read back. */
+    /** What the earbuds hold (read once the chip is known, docs/skullcandy/PROTOCOL.md section 13.4), or what PairFree last wrote in this connection. */
     override val eqReport: BandEqReport?
         get() = talk.eqPresetName?.let { BandEqReport(it, null) } ?: talk.eqGains?.let { g -> BandEqReport(null, g.map { it.roundToInt() }, g) }
 }

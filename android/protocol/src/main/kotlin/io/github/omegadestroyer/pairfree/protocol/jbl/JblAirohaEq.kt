@@ -43,6 +43,16 @@ internal class JblAirohaEq private constructor(
     /** Every command this write has sent, which [JblSession.allowed] lets through although some are never sent otherwise. */
     val sent: MutableSet<RacePacket> = mutableSetOf()
 
+    /** What [readBack] found the earbuds hold: the category of the running group and, for a custom one, its enabled bands. */
+    internal class Held(val category: Int, val custom: Boolean, val bands: List<JblEqBand>)
+
+    /** Set by a [readBack] once its steps have been answered. */
+    var held: Held? = null
+        private set
+
+    private var reading = false
+    private var runningIndex = 0
+
     /** True once every step has been answered. */
     var done: Boolean = false
         private set
@@ -246,9 +256,49 @@ internal class JblAirohaEq private constructor(
         return c + byteArrayOf(1, 0, 0, 0) + key(coefKey)
     }
 
+    /**
+     * The read of what the earbuds hold, as AirohaPeqMgr reads it (PeqStageReadAudiPath, ReadPeqSubset, GetPeqGrpIdx and, for a custom group, LoadUiData): the PEQ subset's
+     * groups, which one runs (the module read 0901 for module 0 answers its 1-based index), and for a custom group the band data its NV key holds
+     * (PeqUiDataStru: five header bytes, then ten bands of 18 bytes: enable, type, and the frequency, gain, bandwidth and Q as hundredths).
+     */
+    private fun planRead() {
+        if (chip == RaceChip.AB1568 && nvdmVersion == null) {
+            steps += Step(false, { nvRead(JblRace.NV_NVDM_VERSION) }) { p ->
+                nvdmVersion = p.data.firstOrNull()?.toInt()?.and(0xFF) ?: 0
+                true
+            }
+        }
+        readPath(0)
+        steps += Step(false, { RacePacket.mmiGet(0) }) { p ->
+            if (p.status != 0) return@Step false
+            runningIndex = p.data.firstOrNull()?.toInt()?.and(0xFF) ?: 0
+            val r = records.getOrNull(runningIndex - 1) ?: return@Step false
+            if (!r.custom) {
+                held = Held(r.category, false, emptyList())
+            } else {
+                steps += Step(false, { nvRead(JblRace.PEQ_UI_DATA + r.offset) }) { q ->
+                    val d = q.data
+                    val out = ArrayList<JblEqBand>()
+                    var at = 5
+                    while (at + 18 <= d.size) {
+                        if (d[at].toInt() == 1) out += JblEqBand(d[at + 1].toInt() and 0xFF, i32(d, at + 2) / 100f, i32(d, at + 6) / 100f, i32(d, at + 14) / 100f)
+                        at += 18
+                    }
+                    held = Held(r.category, true, out)
+                    true
+                }
+            }
+            true
+        }
+    }
+
+    private fun i32(d: ByteArray, at: Int): Int =
+        (d[at].toInt() and 0xFF) or ((d[at + 1].toInt() and 0xFF) shl 8) or ((d[at + 2].toInt() and 0xFF) shl 16) or ((d[at + 3].toInt() and 0xFF) shl 24)
+
     /** The first frames: the sync of the curve with the firmware (no answer awaited) and the first step. */
     fun start(): List<RacePacket> {
         val first = advance() ?: return emptyList()
+        if (reading) return listOf(first).onEach { sent += it }
         if (presetOnEarbuds) return listOf(first).onEach { sent += it }
         val sync = RacePacket(JblRace.PEQ_SYNC_UI, uiData() + int(peak100))
         return listOf(sync, first).onEach { sent += it }
@@ -337,6 +387,14 @@ internal class JblAirohaEq private constructor(
          * The write of [bands] under JBL's [category] with the master gain [masterDb] (the curve's left gain) on [chip];
          * [earbuds] relays every write to the other earbud. Null when Airoha's library refuses the curve.
          */
+        /** The read of what the earbuds hold, for [chip]; see [planRead]. */
+        fun readBack(chip: RaceChip, earbuds: Boolean, nvdmVersion: Int?, library: AirohaPeq.Library = AirohaPeq.Library.SERIALIZE): JblAirohaEq {
+            val w = JblAirohaEq(chip, earbuds, nvdmVersion, 0, emptyList(), 0f, library, false)
+            w.reading = true
+            w.planRead()
+            return w
+        }
+
         fun of(
             chip: RaceChip, earbuds: Boolean, nvdmVersion: Int?, category: Int, bands: List<JblEqBand>, masterDb: Float,
             library: AirohaPeq.Library = AirohaPeq.Library.PEQ, selectOnly: Boolean = false,

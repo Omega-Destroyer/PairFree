@@ -108,4 +108,48 @@ class SkullcandyRaceTalkTest {
         s.eqCurve(listOf(0.0, 1.0, 0.0, 0.0, 0.0))
         assertNull(s.eqPresetName)
     }
+
+    /** An NV read's answer: the length, then [data]. */
+    private fun nvData(data: ByteArray) = RacePacket(JblRace.NV_READ, byteArrayOf(data.size.toByte(), (data.size shr 8).toByte()) + data, JblRace.TYPE_RESPONSE).bytes()
+
+    private fun le16(v: Int) = byteArrayOf(v.toByte(), (v shr 8).toByte())
+    private fun le32(v: Int) = byteArrayOf(v.toByte(), (v shr 8).toByte(), (v shr 16).toByte(), (v shr 24).toByte())
+
+    /** A PEQ subset of [keys]: the count, then one entry of one record per group. */
+    private fun subset(keys: List<Int>) = le16(keys.size) + keys.flatMap { (le16(1) + le16(0) + le16(it)).toList() }.toByteArray()
+
+    /** Answers what the read-back asks, in order: the audio path, the subset, the running group, and for a custom group its band data. */
+    private fun readBack(s: SkullcandyRaceTalk, keys: List<Int>, running: Int, uiData: ByteArray?, chip: String = "AB1550") {
+        s.bytes(s.start().first())
+        s.feed(nvAnswer(chip))
+        // the read the chip answer starts is one the session lets through
+        s.takeOutbox().forEach { assertTrue(s.allowed(it), it.toString()) }
+        // the AB1568 reads its NVDM version first, which decides the keys
+        if (chip.startsWith("AB1568")) s.feed(nvData(byteArrayOf(1)))
+        s.feed(nvData(ByteArray(4)))
+        s.feed(nvData(subset(keys)))
+        s.feed(RacePacket(JblRace.MMI_GET, byteArrayOf(0, 0, 0, running.toByte()), JblRace.TYPE_RESPONSE).bytes())
+        if (uiData != null) s.feed(nvData(uiData))
+    }
+
+    @Test
+    fun whatTheEarbudsHoldIsReadBackOnceTheChipIsKnown() {
+        // a preset: the second group runs, which is the number 2 (Podcast on a Grind)
+        val custom0 = JblRace.PEQ_COEF_BASE + JblRace.PEQ_CUSTOM_OFFSET
+        val presets = talk("Grind")
+        readBack(presets, listOf(0xF300, 0xF301, 0xF302, custom0), 2, null)
+        assertEquals("Podcast", presets.eqPresetName)
+        val dual = talk("Grind")
+        readBack(dual, listOf(0xF300, 0xF301, 0xF302, custom0), 3, null, "AB1568")
+        assertEquals("Movie", dual.eqPresetName)
+        // the custom curve: the fourth group runs; PeqUiDataStru holds 5 header bytes and 18 per band (enable, type, Hz, gain, bandwidth, Q in hundredths)
+        val curve = talk("Grind")
+        val bands = listOf(60 to 3.0, 250 to 0.0, 1000 to -2.0, 4000 to 1.5, 12000 to 4.0)
+        val ui = byteArrayOf(1, 0, 0, 0, 0) + bands.flatMap { (hz, g) ->
+            (byteArrayOf(1, 2) + le32(hz * 100) + le32((g * 100).toInt()) + le32((hz / 0.91 * 100).toInt()) + le32(91)).toList()
+        }.toByteArray() + ByteArray(5 * 18)
+        readBack(curve, listOf(0xF300, 0xF301, 0xF302, custom0), 4, ui)
+        assertNull(curve.eqPresetName)
+        assertEquals(listOf(3.0, 0.0, -2.0, 1.5, 4.0), curve.eqGains)
+    }
 }

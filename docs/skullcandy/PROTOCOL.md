@@ -408,8 +408,14 @@ the band's third value is the Q, and the comparator is strict) and the category 
 ### 13.2 What PairFree builds of it (2026-11-18)
 
 `SkullcandyRaceTalk` (the RACE channel's conversation: the chip read, Skullcandy's custom commands and the curve's write, with the steps of `JblAirohaEq` taking `AirohaPeq.Library.SERIALIZE`), `SkullcandyEq` (bands, range, Q 0.91, category 101) and `SkullcandyBandEq` (the Sound tab's
-bands, five, seven or ten, with the app's gain range: 12 dB on the models the SDK configures and the gaming headsets, 6 dB on the rest). The curve is shown once the earbuds have named their chip. PairFree offers the custom curve; the earbuds' own presets (categories 1 to 3) and a read of the curve they hold
-come next, and until then the screen shows what PairFree last wrote. The Crusher 1080 ANC's equaliser (a Bose curve, range 0 to +20) goes with its RPC session, to do.
+bands, five, seven or ten, with the app's gain range: 12 dB on the models the SDK configures and the gaming headsets, 6 dB on the rest). The curve is shown once the earbuds have named their chip. PairFree offers the custom curve and the earbuds' own presets (categories 1 to 3), and reads back what they hold (section 13.4). The Crusher 1080 ANC's equaliser (a Bose curve, range 0 to +20) goes with its RPC session, to do.
+
+### 13.4 What the earbuds hold: the read-back (built 2026-11-19)
+
+Airoha's SDK reads the running equaliser (`PEQControl.getRunningEQSetting`, `u0` and `AirohaPeqMgr`) with the stages JBL's write already knows: the audio path and the PEQ subset (NV keys, `PeqStageReadAudiPath`, `PeqStageReadPeqSubset`), the running group (`PeqStageGetPeqGrpIdx`: the module read `0901` for module 0, whose answer
+is the 1-based index of the group in the subset; read from the app's smali, since the decompiler gives up on that method) and, when the group is a custom one (category above 100), the band data of its NV key (`PeqStageLoadUiData`: key `EF00` plus the slot; `PeqUiDataStru`, five header bytes, then ten bands of 18: enable, type, and the frequency,
+gain, bandwidth and Q as hundredths). `JblAirohaEq.readBack` runs those steps once the chip is named, and `SkullcandyRaceTalk` turns the answer into the preset's name (the group's number is the app's mode number) or the curve's gains at PairFree's bands (a band the earbuds do not hold reads 0 dB), shown on the Sound tab and the Home card until PairFree writes
+a curve of its own. Checked against synthetic answers in `SkullcandyRaceTalkTest`, not against earbuds.
 
 ### 13.3 The presets: the app's equaliser modes by number (read 2026-11-18)
 

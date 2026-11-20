@@ -90,7 +90,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         if (primary) mode = { railMode }
     }
 
-    override val eq: Any? get() = chip
+    override val eq: Any? get() = Triple(chip, eqPresetName, eqGains)
 
     /** The equaliser's bands in Hz and the gain range, for the Sound tab. */
     public val eqBandsHz: List<Int> = SkullcandyEq.bandsHz(product.enumName)
@@ -189,6 +189,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
                 val eq = write
                 if (eq != null && !eq.done && !eq.failed && eq.receive(p) { outbox += it }) {
                     if (eq.done || eq.failed) changed = true
+                    if (eq === reader && eq.done) changed = takeHeld(eq) || changed
                 } else {
                     changed = (primary && railApply(p)) || changed
                     changed = apply(p) || changed
@@ -279,6 +280,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             val text = p.data.decodeToString().trimEnd('\u0000')
             if (text.length >= 4 && text.all { it in ' '..'~' }) {
                 chip = RaceChip.of(text)
+                startReadBack()
                 return false
             }
             return false
@@ -392,6 +394,35 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         write = w
         eqPresetName = name
         return w.start().map { it.bytes() }
+    }
+
+    private var reader: JblAirohaEq? = null
+
+    /** Reads what the earbuds hold once the chip is known (docs/skullcandy/PROTOCOL.md section 13.4), unless a write of PairFree's is already going. */
+    private fun startReadBack() {
+        val c = chip ?: return
+        if (!hasCustomEq || write != null) return
+        val r = JblAirohaEq.readBack(c, product.form != Form.HEADPHONES, null)
+        reader = r
+        write = r
+        outbox += r.start()
+    }
+
+    /** The preset or the custom curve the read found, shown unless PairFree has written one since. */
+    private fun takeHeld(r: JblAirohaEq): Boolean {
+        val h = r.held ?: return false
+        if (write !== r) return false
+        write = null
+        if (!h.custom) {
+            val name = eqPresets.firstOrNull { it.second == h.category }?.first ?: return false
+            eqPresetName = name
+            eqGains = null
+            return true
+        }
+        if (h.category != SkullcandyEq.CATEGORY) return false
+        eqGains = eqBandsHz.map { hz -> h.bands.firstOrNull { kotlin.math.abs(it.hz - hz) < 1f }?.gainDb?.toDouble() ?: 0.0 }
+        eqPresetName = null
+        return true
     }
 
     /** The preset last picked in this connection, null after a custom curve or before any. */

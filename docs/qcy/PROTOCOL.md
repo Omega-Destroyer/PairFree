@@ -64,6 +64,17 @@ earbuds by scanning (`BleScanManager`):
   address (either earbud's), then connects to that device. Scanning needs `BLUETOOTH_SCAN`, which the
   owner allowed for QCY on 2026-10-18, as for JBL. It is asked for only when a QCY device is opened,
   declared `neverForLocation`, and the scan ends when the earbuds are found.
+- **Which advert (2026-11-20, issue #67):** QCY's app takes the LE side's address only from an advert that carries
+  an earbud's battery (`EarphoneListManager.updateDeviceBleMac` skips `Devicebind.isNoBattery()`, both earbuds 0 or
+  over 100), and keeps the latest one. PairFree takes an advert with a battery, one without only when no other came
+  in the scan, and scans again after a connection that fails, since the LE address can change.
+- **How it connects** (`QCYConnectManager.connectBLE(mac, z)` = `connectBLE(mac, 3, 10000, z)`, over BluetoothKit's
+  `BleConnectRequest` and `BleConnectWorker`): `connectGatt` with no auto-connect over LE to the scanned device,
+  then a high connection priority; 10 s for each connection and three retries 1 s apart; service discovery 20 s,
+  retried three times; notifications subscribed; and only then an MTU of 512 asked for (`BleChangeMTURequest`).
+  PairFree does the same (`EnvelopeGattLink`). Until 0.17.0 it connected once with 10 s and asked for the MTU before
+  discovery: the MeloBuds Pro of issue #67 (Xiaomi phone, Android 16) never answered that one connection, while the
+  same model answered every read on an Android 17 phone (issue #64).
 - **PeatsAudio's company id:** PeatsAudio's copy of the library notes the company id as `0x522C`,
   but QCY's app uses `0x521C` (`BuildConfig.CompanyID`).
 

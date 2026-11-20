@@ -174,6 +174,10 @@ class QcyTest {
         assertEquals(a.str("other"), advert.otherAddress)
         assertEquals(listOf(60, 96, 43), listOf(advert.left, advert.right, advert.case))
         assertTrue(advert.matches(a.str("other").lowercase()))
+        assertTrue(advert.hasBattery)
+        // Earbuds in their case: no earbud's battery (0, or over 100), as QCY's Devicebind.isNoBattery; the case's own does not count.
+        val inCase = a.str("bytes").hexBytes().also { it[5] = 0; it[6] = 0x80.toByte() }
+        assertFalse(QcyAdvert.parse(inCase)!!.hasBattery)
         assertNull(QcyAdvert.parse(ByteArray(10)))
         // The advert's battery shows before anything is read; the battery characteristic replaces it.
         val s = QcySession(QcyModels.of(advert.vendorId), advert)

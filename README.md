@@ -107,7 +107,7 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [AirPods and Beats](docs/devices/apple.md) | 30 | AirPods Pro 3 |
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | Nothing Ear |
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
-| [QCY](docs/devices/qcy.md) | 194 | QCY H3 Pro, QCY T13 ANC2 |
+| [QCY](docs/devices/qcy.md) | 194 | QCY H3 Pro, QCY MeloBuds Pro, QCY T13 ANC2 |
 | [1MORE](docs/devices/1more.md) | 48 | — |
 | [EarFun](docs/devices/earfun.md) | 26 | — |
 | [Cambridge Audio](docs/devices/cambridge.md) | 8 | — |
@@ -115,7 +115,7 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | — |
 | [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
 | [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
-| **Total: 17 brands** | **846** | **20 tried** |
+| **Total: 17 brands** | **846** | **21 tried** |
 <!-- devices-summary:end -->
 
 ## Help add your model

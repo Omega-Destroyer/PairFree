@@ -69,6 +69,13 @@ public data class QcyAdvert(
     /** True when the advert comes from the earbuds paired at [address]. */
     public fun matches(address: String): Boolean = classicAddress.equals(address, ignoreCase = true) || otherAddress.equals(address, ignoreCase = true)
 
+    /**
+     * False when neither earbud's battery is in the advert. QCY's app takes the LE side to connect to only from an advert
+     * with a battery (`EarphoneListManager.updateDeviceBleMac`, `Devicebind.isNoBattery`); an advert without one comes from
+     * earbuds in their case, which it does not connect to.
+     */
+    public val hasBattery: Boolean get() = left != null || right != null
+
     public companion object {
         private const val MIN_SIZE = 20
         private const val FULL_SIZE = 24

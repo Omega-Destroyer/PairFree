@@ -36,6 +36,9 @@ EAR_RETURN = {"1MORE HQ20"}
 LIGHTS = {"1MORE NANO"}
 # The switch that turns the touch controls off (0074): 1MORE Life 5.0.3 shows it on the ComfoBuds Mini above firmware 1048.
 TOUCH_LOCK = {"1MORE ComfoBuds Mini"}
+# Other Bluetooth names 1MORE Life 5.0.3's DeviceFactoryImpl maps to a model (the app matches names exactly, case included: its
+# "1MORE PistonBuds Pro" is the EC302 and "1MORE PistonBuds PRO" the EC305).
+ALIASES = {"1MORE PistonBuds PRO Q30": ["1MORE PistonBuds PRO"], "1MORE S51": ["1MORE Fit S51"], "1MORE ComfoBuds Mini": ["1MORE ComfoBuds Mi"]}
 # Tuya's AI earbuds (DataKt.aIDeviceList): 1MORE's app reaches them through Tuya's platform, not its serial protocol.
 TUYA = {"1MORE S52", "1MORE S22Ultra"}
 
@@ -66,6 +69,13 @@ BANDS = {
     "1MORE HQ60": {"hz": [76, 260, 680, 1200, 2200, 3200, 4800, 7300, 10000, 13000],
                    "q": [130, 80, 90, 100, 120, 220, 120, 160, 200, 200], "zero": 1500, "whole_db": True},
     "1MORE NANO": {"hz": [85, 105, 225, 315, 1680, 2500, 3900, 6800, 10000, 14000], "q": DEFAULT_Q, "zero": 1500},
+    # 1MORE Life 5.0.3, CustomEQActivity (bands and Qs) and utils/f.a (the offsets each model adds to the raw gain: the Q30's and the SonoFlow SE's list plus 300).
+    "1MORE PistonBuds PRO Q30": {"hz": [20, 65, 160, 360, 800, 2800, 4600, 6000, 8500, 16000], "q": [50, 80, 100, 100, 80, 80, 200, 250, 200, 120],
+                                 "zero": 1200, "offsets": [1100, 700, 100, 300, 650, 1300, 200, -400, 300, 800]},
+    "1MORE SonoFlow": {"hz": [100, 229, 682, 1232, 2570, 3107, 4641, 6749, 9550, 14500], "q": [80, 80, 80, 90, 140, 140, 150, 180, 110, 60],
+                       "zero": 1200, "offsets": [-800, -600, 0, 0, -300, 0, 0, -520, -350, 100]},
+    "1MORE SonoFlow SE": {"hz": [100, 250, 1000, 1475, 2600, 3700, 5500, 6800, 9550, 13000], "q": [40, 120, 100, 180, 140, 60, 100, 300, 100, 60],
+                          "zero": 1200, "offsets": [-800, -300, -100, 700, -300, 1500, -400, 200, -100, 600]},
     "1MORE HQ31": HQ31_BANDS,
     "1MORE SonoFlow S": HQ31_BANDS,
 }
@@ -85,10 +95,10 @@ LIFE = [
     ("1MORE ColorBuds 2", "ES602", "earbuds", ["off", "strong", "transparent"], False, True, True, (CLASSIC, False)),
     ("1MORE PistonBuds Pro", "EC302", "earbuds", ["off", "strong", "wind", "transparent"], True, True, True, (TWELVE, True)),
     ("1MORE ComfoBuds Pro", "ES901", "earbuds", ["off", "strong", "mild", "wind", "transparent"], False, True, True, (CLASSIC, False)),
-    ("1MORE SonoFlow", "HC905", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, False)),
-    ("1MORE SonoFlow SE", "HC306", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, False)),
+    ("1MORE SonoFlow", "HC905", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, True)),
+    ("1MORE SonoFlow SE", "HC306", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, True)),
     ("1MORE Fit", "EF906", "earbuds", [], True, True, True, (TWELVE, False)),
-    ("1MORE Fit SE", "EF606", "earbuds", [], False, False, True, (CLASSIC, False)),
+    ("1MORE Fit SE", "EF606", "earbuds", [], False, False, True, ([], True)),
     ("1MORE S31", "S31", "earbuds", [], False, False, True, (TWELVE, False)),
 ]
 
@@ -107,10 +117,10 @@ def life_device(name, model, kind, modes, game, autoplay, spatial, eq):
         "name": name, "model": model, "tuya": False, "kind": kind, "case": kind == "earbuds", "listen_modes": modes,
         "connection": ["game"] if game else [], "autoplay": autoplay, "spatial_audio": spatial, "sleep_detection": False,
         "dual_device": False, "hot_word": False, "touch": touch, "touch_assistant": assistant,
-        "eq": (["preset"] + (["custom"] if eq[1] else [])) if eq else [],
-        "eq_presets": eq[0] if eq else [], "eq_classic": bool(eq) and eq[0] is CLASSIC, "eq_bands": DEFAULT_BANDS if eq and eq[1] else None,
+        "eq": ((["preset"] if eq[0] else []) + (["custom"] if eq[1] else [])) if eq else [],
+        "eq_presets": eq[0] if eq else [], "eq_classic": bool(eq) and eq[0] is CLASSIC, "eq_bands": BANDS.get(name, DEFAULT_BANDS) if eq and eq[1] else None,
         "ear_return": False, "volume_limit": False, "sleep_mode": False, "voice_enhancement": False, "lights": False,
-        "touch_lock": False, "long_touch": ["strong", "mild", "wind"] if model == "ES901" else [],
+        "aliases": ALIASES.get(name, []), "touch_lock": False, "long_touch": ["strong", "mild", "wind"] if model == "ES901" else [],
         "pictures": [], "reports": [],
     }
 
@@ -173,6 +183,7 @@ def device(r):
         "sleep_mode": on(r, "comfortableMelody"),
         "voice_enhancement": name == "1MORE Q50",
         "lights": name in LIGHTS,
+        "aliases": ALIASES.get(name, []),
         "eq_classic": False,
         "touch_lock": name in TOUCH_LOCK,
         "long_touch": [],

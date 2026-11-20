@@ -1738,7 +1738,7 @@ abstract class GenerateOneMoreTables : DefaultTask() {
             out.appendLine("        autoplay = ${d["autoplay"]}, spatialAudio = ${d["spatial_audio"]}, sleepDetection = ${d["sleep_detection"]}, dualDevice = ${d["dual_device"]}, hotWord = ${d["hot_word"]},")
             out.appendLine("        touch = ${d["touch"]?.let(::str) ?: "null"}, touchAssistant = ${d["touch_assistant"]}, eq = ${strings(d["eq"])},")
             out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]}, lights = ${d["lights"] == true}, sleepMode = ${d["sleep_mode"] == true}, voiceEnhancement = ${d["voice_enhancement"] == true},")
-            out.appendLine("        eqClassic = ${d["eq_classic"] == true}, touchLock = ${d["touch_lock"] == true}, longTouch = ${strings(d["long_touch"] ?: emptyList<String>())},")
+            out.appendLine("        eqClassic = ${d["eq_classic"] == true}, aliases = ${strings(d["aliases"] ?: emptyList<String>())}, touchLock = ${d["touch_lock"] == true}, longTouch = ${strings(d["long_touch"] ?: emptyList<String>())},")
             @Suppress("UNCHECKED_CAST")
             val bands = (d["eq_bands"] as Map<String, Any?>?)?.let { b ->
                 fun ints(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { (it as Number).toInt().toString() }

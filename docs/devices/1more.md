@@ -58,7 +58,7 @@ address or name. Say which settings worked and which did nothing.
 <tr><td>1MORE ComfoBuds Pro</td><td><code>ES901</code></td><td>Earbuds</td><td>ANC (strong, mild, wind), transparency</td><td>spatial audio, pause when taken out, EQ presets, touch controls</td><td>Not tested</td></tr>
 <tr><td>1MORE EVO</td><td><code>EH902</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through, voice enhancement)</td><td>LDAC, two devices, pause when taken out, voice commands, EQ presets, custom EQ, touch controls</td><td>Not tested</td></tr>
 <tr><td>1MORE Fit</td><td><code>EF906</code></td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, pause when taken out, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE Fit SE</td><td><code>EF606</code></td><td>Earbuds</td><td>—</td><td>spatial audio, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE Fit SE</td><td><code>EF606</code></td><td>Earbuds</td><td>—</td><td>spatial audio, custom EQ, touch controls (each earbud)</td><td>Not tested</td></tr>
 <tr><td>1MORE G50</td><td><code>G50</code></td><td>Headphones</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
 <tr><td>1MORE HQ20</td><td><code>HQ20</code></td><td>Headphones</td><td>—</td><td>game mode, two devices, hear your own voice, volume limit, EQ presets, custom EQ</td><td>Not tested</td></tr>
 <tr><td>1MORE HQ31</td><td><code>HQ31</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
@@ -93,10 +93,10 @@ address or name. Say which settings worked and which did nothing.
 <tr><td>1MORE S52</td><td><code>S52</code></td><td>Earbuds</td><td>—</td><td>—</td><td>Not supported (Tuya)</td></tr>
 <tr><td>1MORE S70</td><td><code>S70</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
 <tr><td>1MORE S90</td><td><code>S90</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through, voice enhancement)</td><td>game mode, LDAC, two devices, pause when taken out, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE SonoFlow</td><td><code>HC905</code></td><td>Headphones</td><td>ANC, transparency</td><td>EQ presets</td><td>Not tested</td></tr>
+<tr><td>1MORE SonoFlow</td><td><code>HC905</code></td><td>Headphones</td><td>ANC, transparency</td><td>EQ presets, custom EQ</td><td>Not tested</td></tr>
 <tr><td>1MORE SonoFlow QC30</td><td><code>SonoFlow QC30</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
 <tr><td>1MORE SonoFlow S</td><td><code>HC905S</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
-<tr><td>1MORE SonoFlow SE</td><td><code>HC306</code></td><td>Headphones</td><td>ANC, transparency</td><td>EQ presets</td><td>Not tested</td></tr>
+<tr><td>1MORE SonoFlow SE</td><td><code>HC306</code></td><td>Headphones</td><td>ANC, transparency</td><td>EQ presets, custom EQ</td><td>Not tested</td></tr>
 <tr><td>1MORE Z30</td><td><code>Z30</code></td><td>Earbuds</td><td>—</td><td>—</td><td>Not tested</td></tr>
 </table>
 <!-- 1more-table:end -->

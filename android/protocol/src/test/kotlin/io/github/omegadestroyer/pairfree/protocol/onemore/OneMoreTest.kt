@@ -230,6 +230,12 @@ class OneMoreTest {
         val colour = OneMoreSession(OneMoreModels.fromName("1MORE ColorBuds 2"))
         assertEquals(22, OneMoreModels.fromName("1MORE ColorBuds 2")!!.eqPresets.size)
         assertEquals("0A", hex(colour.eqPreset("vocal_booster")!!.single().payload).uppercase())
+        // Life's other names for a model, matched with the case the app uses first.
+        assertEquals("EC305", OneMoreModels.fromName("1MORE PistonBuds PRO")!!.model)
+        assertEquals("EC302", OneMoreModels.fromName("1MORE PistonBuds Pro")!!.model)
+        assertEquals("EC302", OneMoreModels.fromName("1MORE Pistonbuds Pro")!!.model)
+        assertEquals("EC305", OneMoreModels.fromName("1MORE Pistonbuds PRO Q30")!!.model)
+        assertEquals("S51", OneMoreModels.fromName("1MORE Fit S51")!!.model)
         // The Fit models tap per earbud, the S31 without the assistant; the SonoFlows are headphones.
         assertEquals("each", OneMoreModels.fromName("1MORE Fit")!!.touch)
         assertFalse(OneMoreModels.fromName("1MORE S31")!!.touchAssistant)

@@ -36,6 +36,10 @@ public data class OneMoreModel(
     val sleepMode: Boolean = false,
     /** The voice enhancement switch, which 1MORE's app shows on the Q50 alone (ShortcutActionsActivity). */
     val voiceEnhancement: Boolean = false,
+    /** The switch that turns the touch controls off (1MORE Life 5.0.3: the ComfoBuds Mini). */
+    val touchLock: Boolean = false,
+    /** The noise modes a touch and hold can switch to, per earbud (1MORE Life 5.0.3: the ComfoBuds Pro). */
+    val longTouch: List<String> = emptyList(),
     val eqPresets: List<String> = emptyList(),
     val eqBands: OneMoreEqBands? = null,
 )

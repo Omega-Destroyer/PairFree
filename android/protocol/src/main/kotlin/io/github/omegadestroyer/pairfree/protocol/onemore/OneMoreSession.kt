@@ -51,6 +51,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     private var doubleClick: Int? = null
     private var tripleClick: Int? = null
     private var custom: ByteArray? = null
+    private var touchLock: Boolean? = null
+    private var longTouch: ByteArray? = null
     private var earReturn: Boolean? = null
     private var earReturnDepth: Int? = null
     private var volumeLimit: Int? = null
@@ -88,6 +90,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
         if (m.sleepMode) add(frame(OneMoreCommand.GET_EQ_MODE))
         if (m.voiceEnhancement) add(frame(OneMoreCommand.GET_VOCAL_ENHANCEMENT))
         if (m.hotWord) add(frame(OneMoreCommand.GET_HOT_WORD))
+        if (m.touchLock) add(frame(OneMoreCommand.GET_TOUCH_DISABLE))
+        if (m.longTouch.isNotEmpty()) add(frame(OneMoreCommand.GET_LONG_TOUCH))
         when (m.touch) {
             TOUCH_EACH -> add(frame(OneMoreCommand.GET_ALL_CUSTOM))
             TOUCH_BOTH -> {
@@ -157,6 +161,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.GET_HOT_WORD -> hotWord = v == ON
             OneMoreCommand.GET_DOUBLE_CLICK -> doubleClick = v
             OneMoreCommand.GET_TRIPLE_CLICK -> tripleClick = v
+            OneMoreCommand.GET_TOUCH_DISABLE -> touchLock = v == ON
+            OneMoreCommand.GET_LONG_TOUCH -> if (p.size >= 2) longTouch = p.copyOf(2)
             OneMoreCommand.GET_ALL_CUSTOM -> if (p.size >= CUSTOM_GESTURES) custom = p.copyOf(CUSTOM_GESTURES)
             OneMoreCommand.GET_EAR_RETURN -> earReturn = v == ON
             OneMoreCommand.GET_EAR_RETURN_DEPTH -> earReturnDepth = v
@@ -375,6 +381,10 @@ public class OneMoreSession(public val model: OneMoreModel?) {
      */
     private fun touchGroups(): List<SettingGroup> {
         val m = model ?: return emptyList()
+        return touchActions(m)
+    }
+
+    private fun touchActions(m: OneMoreModel): List<SettingGroup> {
         return when (m.touch) {
             TOUCH_EACH -> {
                 val c = custom ?: return emptyList()
@@ -391,6 +401,14 @@ public class OneMoreSession(public val model: OneMoreModel?) {
                     listOfNotNull(
                         doubleClick?.let { Setting.Choice("touch_double_whole", BOTH_ACTIONS[it] ?: OTHER, BOTH_ACTIONS.values.toList()) },
                         tripleClick?.let { Setting.Choice("touch_triple_whole", BOTH_ACTIONS[it] ?: OTHER, BOTH_ACTIONS.values.toList()) },
+                        longTouch?.takeIf { m.longTouch.isNotEmpty() }?.let { b ->
+                            val options = m.longTouch.mapNotNull { STRENGTH[it] }
+                            Setting.Choice("touch_hold_left", LONG_TOUCH[b.u8(0)] ?: OTHER, options)
+                        },
+                        longTouch?.takeIf { m.longTouch.isNotEmpty() }?.let { b ->
+                            Setting.Choice("touch_hold_right", LONG_TOUCH[b.u8(1)] ?: OTHER, m.longTouch.mapNotNull { STRENGTH[it] })
+                        },
+                        touchLock?.takeIf { m.touchLock }?.let { Setting.Toggle("touch_lock", it) },
                     ),
                 ),
             )
@@ -456,6 +474,11 @@ public class OneMoreSession(public val model: OneMoreModel?) {
                         spatial = on
                         readBacks += frame(OneMoreCommand.GET_SPATIAL_AUDIO)
                         listOf(frame(OneMoreCommand.SET_SPATIAL_AUDIO, b))
+                    }
+                    "touch_lock" -> {
+                        touchLock = on
+                        readBacks += frame(OneMoreCommand.GET_TOUCH_DISABLE)
+                        listOf(frame(OneMoreCommand.SET_TOUCH_DISABLE, b))
                     }
                     "sleep_detection" -> {
                         sleepDetection = on
@@ -544,6 +567,14 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             readBacks += frame(OneMoreCommand.GET_MAX_SOUND_LIMIT)
             listOf(frame(OneMoreCommand.SET_MAX_SOUND_LIMIT, v))
         }
+        "touch_hold_left", "touch_hold_right" -> {
+            val v = LONG_TOUCH.entries.firstOrNull { it.value == option }?.key ?: return null
+            val b = (longTouch ?: byteArrayOf(v.toByte(), v.toByte())).copyOf()
+            b[if (key == "touch_hold_left") 0 else 1] = v.toByte()
+            longTouch = b
+            readBacks += frame(OneMoreCommand.GET_LONG_TOUCH)
+            listOf(frame(OneMoreCommand.SET_LONG_TOUCH, b.u8(0), b.u8(1)))
+        }
         "touch_double_whole", "touch_triple_whole" -> {
             val v = BOTH_ACTIONS.entries.firstOrNull { it.value == option }?.key ?: return null
             if (key == "touch_double_whole") {
@@ -628,6 +659,7 @@ public class OneMoreSession(public val model: OneMoreModel?) {
 
         /** One earbud's actions (clickMonaural) and the order 1MORE's app lists them in; some models lack the assistant (6). */
         private val EACH_ACTIONS = mapOf(0 to "none", 1 to "next", 2 to "previous", 3 to "volume_down", 4 to "volume_up", 5 to "play_pause", 6 to "voice_assistant")
+        private val LONG_TOUCH = mapOf(1 to "high", 2 to "low", 4 to "wind")
         private val EACH_ORDER = listOf(2, 1, 3, 4, 5, 6, 0)
         private const val EACH_ASSISTANT = 6
 
@@ -651,6 +683,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.SET_DOUBLE_CLICK to OneMoreCommand.GET_DOUBLE_CLICK,
             OneMoreCommand.SET_TRIPLE_CLICK to OneMoreCommand.GET_TRIPLE_CLICK,
             OneMoreCommand.SET_CUSTOM to OneMoreCommand.GET_ALL_CUSTOM,
+            OneMoreCommand.SET_TOUCH_DISABLE to OneMoreCommand.GET_TOUCH_DISABLE,
+            OneMoreCommand.SET_LONG_TOUCH to OneMoreCommand.GET_LONG_TOUCH,
             OneMoreCommand.SET_EAR_RETURN to OneMoreCommand.GET_EAR_RETURN,
             OneMoreCommand.SET_EAR_RETURN_DEPTH to OneMoreCommand.GET_EAR_RETURN_DEPTH,
             OneMoreCommand.SET_MAX_SOUND_LIMIT to OneMoreCommand.GET_MAX_SOUND_LIMIT,

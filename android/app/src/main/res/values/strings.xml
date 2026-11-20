@@ -315,6 +315,7 @@
     <string name="setting_touch_double">Double tap</string>
     <string name="setting_touch_triple">Triple tap</string>
     <string name="setting_touch_hold">Touch and hold</string>
+    <string name="setting_touch_lock">Turn off touch controls</string>
     <string name="setting_touch_double_call">Double tap during calls</string>
     <string name="setting_touch_hold_call">Touch and hold during calls</string>
     <string name="setting_hold_side">Touch and hold, %1$s</string>

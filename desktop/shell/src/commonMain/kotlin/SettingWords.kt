@@ -259,6 +259,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "ambient_custom_right" -> t("setting_ambient_custom_right")
         "ambient_custom_tone" -> t("setting_ambient_custom_tone")
         "touch_controls" -> t("touch_controls")
+        "touch_lock" -> t("setting_touch_lock")
         "touch_single" -> t("setting_touch_single")
         "touch_double" -> t("setting_touch_double")
         "touch_triple" -> t("setting_touch_triple")
@@ -1076,6 +1077,10 @@ class SettingWords(private val strings: DesktopStrings) {
                 "switch_device" -> "setting_op_switch_device"
                 "switch_song" -> "action_previous_next"
                 "switch_calls" -> "action_switch_calls"
+                // 1MORE's touch and hold: the noise mode it switches to
+                "high" -> "setting_level_high"
+                "low" -> "setting_level_low"
+                "wind" -> "scene_wind"
                 else -> "action_other"
             },
         )

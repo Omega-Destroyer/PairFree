@@ -482,6 +482,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "ambient_custom_right" -> stringResource(R.string.setting_ambient_custom_right)
     "ambient_custom_tone" -> stringResource(R.string.setting_ambient_custom_tone)
     "touch_controls" -> stringResource(R.string.touch_controls)
+    "touch_lock" -> stringResource(R.string.setting_touch_lock)
     "touch_single" -> stringResource(R.string.setting_touch_single)
     "touch_double" -> stringResource(R.string.setting_touch_double)
     "touch_triple" -> stringResource(R.string.setting_touch_triple)
@@ -1306,6 +1307,10 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "switch_device" -> R.string.setting_op_switch_device
             "switch_song" -> R.string.action_previous_next
             "switch_calls" -> R.string.action_switch_calls
+            // 1MORE's touch and hold: the noise mode it switches to
+            "high" -> R.string.setting_level_high
+            "low" -> R.string.setting_level_low
+            "wind" -> R.string.scene_wind
             else -> R.string.action_other
         },
     )

@@ -34,6 +34,8 @@ NO_ASSISTANT_TOUCH = {"1MORE S-31", "1MORE S51", "1MORE S70", "1MORE HQ20", "1MO
 EAR_RETURN = {"1MORE HQ20"}
 # The light's mode and colour: HeadsetActivity shows them for this name alone.
 LIGHTS = {"1MORE NANO"}
+# The switch that turns the touch controls off (0074): 1MORE Life 5.0.3 shows it on the ComfoBuds Mini above firmware 1048.
+TOUCH_LOCK = {"1MORE ComfoBuds Mini"}
 # Tuya's AI earbuds (DataKt.aIDeviceList): 1MORE's app reaches them through Tuya's platform, not its serial protocol.
 TUYA = {"1MORE S52", "1MORE S22Ultra"}
 
@@ -89,14 +91,24 @@ LIFE = [
 ]
 
 
+# Touch: Life opens OperationSettingActivity (a tap for each earbud: the four gestures of command 0084, the actions 0 none,
+# 1 next, 2 previous, 3 volume down, 4 volume up, 5 play/pause, 6 voice control) for the models of its list K (ES903, EF606, EF906,
+# EC305, S31, S51, S70), which hides the last action on S31, S51 and S70; ES901OperationCustomActivity and OperationCustomActivity
+# (a tap for both earbuds: commands 0064 and 0066) for the others.
+LIFE_TOUCH = {"ES303": ("both", True), "ES602": ("both", True), "EC302": ("both", True), "ES901": ("both", True),
+              "EF606": ("each", True), "EF906": ("each", True), "S31": ("each", False)}
+
+
 def life_device(name, model, kind, modes, game, autoplay, spatial, eq):
+    touch, assistant = LIFE_TOUCH.get(model, (None, False))
     return {
         "name": name, "model": model, "tuya": False, "kind": kind, "case": kind == "earbuds", "listen_modes": modes,
         "connection": ["game"] if game else [], "autoplay": autoplay, "spatial_audio": spatial, "sleep_detection": False,
-        "dual_device": False, "hot_word": False, "touch": None, "touch_assistant": False,
+        "dual_device": False, "hot_word": False, "touch": touch, "touch_assistant": assistant,
         "eq": (["preset"] + (["custom"] if eq[1] else [])) if eq else [],
         "eq_presets": eq[0] if eq else [], "eq_bands": DEFAULT_BANDS if eq and eq[1] else None,
         "ear_return": False, "volume_limit": False, "sleep_mode": False, "voice_enhancement": False, "lights": False,
+        "touch_lock": False, "long_touch": ["strong", "mild", "wind"] if model == "ES901" else [],
         "pictures": [], "reports": [],
     }
 
@@ -159,6 +171,8 @@ def device(r):
         "sleep_mode": on(r, "comfortableMelody"),
         "voice_enhancement": name == "1MORE Q50",
         "lights": name in LIGHTS,
+        "touch_lock": name in TOUCH_LOCK,
+        "long_touch": [],
         "pictures": pictures(r),
         "reports": [],
     }

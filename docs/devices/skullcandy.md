@@ -8,7 +8,8 @@ Skullcandy's products speak five different protocols, which the app tells apart 
 - **Grind, Grind Fuel, Push Active and Crusher ANC 2 (Airoha, AT):** AT lines over Skullcandy's serial service: the battery, noise mode, the transparency level where the SDK lists it, and gaming mode; a second serial channel carries Airoha's own
   commands: multipoint, the strength of noise cancelling and transparency on the Crusher ANC 2, and the equalizer (the earbuds' presets, and a curve of your own).
 - **The other Airoha earbuds and headphones (Dime, Sesh, Mod, Indy, Hesh, PLYR, SLYR, Aviator, Crusher and the rest):** Airoha RACE alone over Airoha's serial service, as Skullcandy's app drives them through Airoha's SDK: the batteries
-  (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, the Crusher PLYR 720's bass boost and the equalizer (the earbuds' presets, and a curve of your own on five, seven or ten bands). Their buttons are not covered yet.
+  (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, the Crusher PLYR 720's bass boost, the equalizer (the earbuds' presets, and a curve of your own on five, seven or ten bands),
+  the button actions of the twelve that have them, and the SLYR Pro Wireless's voice prompts.
 - **Rail and Rail ANC:** Airoha RACE alone: the batteries (both earbuds and the case), noise cancelling or transparency with strength, multipoint, the equalizer, the buttons and voice control.
 - **Method 360 and 540 ANC, Crusher 1080 ANC:** Skullcandy's protobuf RPC, without its optional secure session: noise modes with strength and profile, gaming mode, voice prompts and their language, sidetone, wear detection, the Crusher
   controls, spatial audio, multipoint, button actions and the equalizer; the Crusher 1080 ANC also has an Auracast receiver (scan, pick a broadcast, its code, stop).
@@ -45,30 +46,30 @@ and are marked as such there.
 <tr><td>Dime 2</td><td>Earbuds</td><td>0x0F</td><td>battery (both earbuds and the case), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Dime XT2</td><td>Earbuds</td><td>0x19</td><td>battery (both earbuds and the case), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Sesh ANC</td><td>Earbuds</td><td>0x0C</td><td>battery (both earbuds and the case), noise mode, gaming mode, equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Mod</td><td>Earbuds</td><td>0x12</td><td>battery (both earbuds and the case), noise mode, multipoint, equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Mod</td><td>Earbuds</td><td>0x12</td><td>battery (both earbuds and the case), noise mode, multipoint, equalizer (custom + 3 presets), button actions (Airoha&#x27;s gesture API), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Riff Wireless 2</td><td>Headphones</td><td>0x14</td><td>battery (both earbuds and the case), gaming mode, multipoint, equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>PLYR</td><td>Headphones</td><td>0x11</td><td>battery (both earbuds and the case), equalizer (custom + 7 presets), Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>SLYR Pro Wireless</td><td>Headphones</td><td>0x23</td><td>battery (both earbuds and the case), equalizer (custom + 7 presets)</td><td>Not tested</td></tr>
-<tr><td>SLYR Pro Wireless</td><td>Headphones</td><td>0x24</td><td>battery (both earbuds and the case), equalizer (custom + 7 presets)</td><td>Not tested</td></tr>
-<tr><td>Push ANC Active</td><td>Earbuds</td><td>0x26</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Sesh ANC Active</td><td>Earbuds</td><td>0x25</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Icon ANC</td><td>Headphones</td><td>0x1A</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Dime Evo</td><td>Earbuds</td><td>0x1B</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>AVIATOR 900 ANC</td><td>Headphones</td><td>0x06</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 4 presets)</td><td>Not tested</td></tr>
+<tr><td>SLYR Pro Wireless</td><td>Headphones</td><td>0x23</td><td>battery (both earbuds and the case), equalizer (custom + 7 presets), voice prompts</td><td>Not tested</td></tr>
+<tr><td>SLYR Pro Wireless</td><td>Headphones</td><td>0x24</td><td>battery (both earbuds and the case), equalizer (custom + 7 presets), voice prompts</td><td>Not tested</td></tr>
+<tr><td>Push ANC Active</td><td>Earbuds</td><td>0x26</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets), button actions (Airoha&#x27;s gesture API)</td><td>Not tested</td></tr>
+<tr><td>Sesh ANC Active</td><td>Earbuds</td><td>0x25</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets), button actions (Airoha&#x27;s gesture API)</td><td>Not tested</td></tr>
+<tr><td>Icon ANC</td><td>Headphones</td><td>0x1A</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets), button actions (the app&#x27;s own key map)</td><td>Not tested</td></tr>
+<tr><td>Dime Evo</td><td>Earbuds</td><td>0x1B</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets), button actions (Airoha&#x27;s gesture API)</td><td>Not tested</td></tr>
+<tr><td>AVIATOR 900 ANC</td><td>Headphones</td><td>0x06</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 4 presets), button actions (the app&#x27;s own key map)</td><td>Not tested</td></tr>
 <tr><td>Hesh 360</td><td>Headphones</td><td>0x1E</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Hesh 540 ANC</td><td>Headphones</td><td>0x1F</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Hesh 540 ANC</td><td>Headphones</td><td>0x1F</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 3 presets), button actions (the app&#x27;s own key map)</td><td>Not tested</td></tr>
 <tr><td>Crusher PLYR 720</td><td>Headphones</td><td>0x29</td><td>battery (both earbuds and the case), multipoint, bass boost</td><td>Not tested</td></tr>
 <tr><td>Crusher PLYR 720 XBOX</td><td>Headphones</td><td>0x2A</td><td>battery (both earbuds and the case), multipoint, bass boost</td><td>Not tested</td></tr>
 <tr><td>Crusher 540 Active</td><td>Headphones</td><td>0x2C</td><td>battery (both earbuds), equalizer (3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Crusher 540 Active</td><td>Headphones</td><td>0x31</td><td>battery (both earbuds and the case), multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Push 720 Open</td><td>Earbuds</td><td>0x2F</td><td>battery (both earbuds and the case), gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Push 720 Open</td><td>Earbuds</td><td>0x2F</td><td>battery (both earbuds and the case), gaming mode, multipoint, equalizer (custom + 3 presets), button actions (Airoha&#x27;s gesture API)</td><td>Not tested</td></tr>
 <tr><td>Icon 180</td><td>Headphones</td><td>0x2E</td><td>battery, equalizer (custom + 3 presets), multipoint, gaming mode</td><td>Not tested</td></tr>
-<tr><td>Push 540 Open</td><td>Earbuds</td><td>0x32</td><td>battery (both earbuds and the case), gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Push 540 Open</td><td>Earbuds</td><td>0x32</td><td>battery (both earbuds and the case), gaming mode, multipoint, equalizer (custom + 3 presets), button actions (Airoha&#x27;s gesture API)</td><td>Not tested</td></tr>
 <tr><td>Terrain Mini</td><td>Speaker</td><td>0x736</td><td></td><td>Found only (speakers are held back)</td></tr>
 <tr><td>Terrain</td><td>Speaker</td><td>0x737</td><td></td><td>Found only (speakers are held back)</td></tr>
 <tr><td>Terrain XL</td><td>Speaker</td><td>0x738</td><td></td><td>Found only (speakers are held back)</td></tr>
-<tr><td>Dime 360</td><td>Earbuds</td><td>0x33</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Crusher 720</td><td>Headphones</td><td>0x36</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Dime 360</td><td>Earbuds</td><td>0x33</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets), button actions (Airoha&#x27;s gesture API)</td><td>Not tested</td></tr>
+<tr><td>Crusher 720</td><td>Headphones</td><td>0x36</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 3 presets), button actions (the app&#x27;s own key map)</td><td>Not tested</td></tr>
 <tr><td>Crusher 1080 ANC</td><td>Headphones</td><td>0x34</td><td>battery, noise mode + strength + profile, sidetone, gaming mode, wear detection (RPC), Crusher intensity and mode, spatial audio, voice prompts, prompt language, multipoint (RACE), button actions, equalizer (the earbuds&#x27; own: presets and custom), Auracast receiver (RACE)</td><td>Not tested</td></tr>
 <tr><td>Session 360</td><td>Speaker</td><td>0x37</td><td></td><td>Found only (speakers are held back)</td></tr>
 <tr><td>Session 540</td><td>Speaker</td><td>0x38</td><td></td><td>Found only (speakers are held back)</td></tr>
@@ -78,7 +79,7 @@ and are marked as such there.
 <tr><td>DIME 540 ANC</td><td>Earbuds</td><td>0x45</td><td>battery, noise mode + level, equalizer (custom + 3 presets), multipoint, gaming mode, touch controls, button actions</td><td>Not tested</td></tr>
 <tr><td>Smokin&#x27; Buds 360H</td><td>Earbuds</td><td>0x42</td><td>battery, noise mode, equalizer (custom + 3 presets), multipoint, sidetone, button actions</td><td>Not tested</td></tr>
 <tr><td>Smokin&#x27; Buds 360S</td><td>Earbuds</td><td>0x41</td><td>battery, noise mode, equalizer (custom + 3 presets), multipoint, sidetone, button actions</td><td>Not tested</td></tr>
-<tr><td>Crusher 900 ANC</td><td>Headphones</td><td>0x44</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom)</td><td>Not tested</td></tr>
+<tr><td>Crusher 900 ANC</td><td>Headphones</td><td>0x44</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom), button actions (Airoha&#x27;s gesture API)</td><td>Not tested</td></tr>
 <tr><td>Push 180 Open</td><td>Earbuds</td><td>0x43</td><td>battery, equalizer (custom)</td><td>Not tested</td></tr>
 </table>
 <!-- skullcandy-table:end -->

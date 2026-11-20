@@ -831,6 +831,8 @@ class SettingWords(private val strings: DesktopStrings) {
             "spotify" -> "setting_sk_action_spotify"
             "none" -> "setting_sk_action_none"
             "spatial" -> "setting_sk_action_spatial"
+            "cycle_eq" -> "setting_sk_action_cycle_eq"
+            "head_tracking" -> "setting_sk_action_head_tracking"
             "play_pause" -> "setting_sk_action_play_pause"
             "track_back" -> "setting_sk_action_track_back"
             "track_forward" -> "setting_sk_action_track_forward"

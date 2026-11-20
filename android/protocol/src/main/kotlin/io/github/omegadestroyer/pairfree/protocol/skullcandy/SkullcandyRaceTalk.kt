@@ -48,6 +48,13 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     private var voiceLanguage: String? = null
     private val hasButtons = rail && "customButtonActions" in product.features
 
+    /** The SLYR Pro Wireless's voice prompts, Skullcandy's command `2C 81` (section 9.5). */
+    public val hasVoicePrompts: Boolean = product.usesAirohaSdk && "voicePrompts" in product.features
+    private var voicePrompts: Boolean? = null
+
+    /** The buttons of the Airoha models without an SDK configuration, over Airoha's gesture API or the app's own key map code (section 9.5). */
+    private val airohaButtons = SkullcandyAirohaButtons(product)
+
     /**
      * Gaming (low latency) mode on the models driven by Airoha's SDK alone: the SDK reads it as module 6 of the module read (`libmmi1562.stage.b`, "GetGameMode") and sets it with the key event
      * `A4 00` (on) or `A5 00` (off) (`libmmi1562.c.j`, "SetGameMode"). That the read's first byte is 1 for on and 0 for off is inferred: the SDK's parser of the answer did not decompile.
@@ -145,6 +152,8 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             add(SettingGroup("sk_voice", SettingTab.DEVICE, rows))
         }
         gamingMode?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(SkullcandyAtSession.GAMING_MODE, it)))) }
+        voicePrompts?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(VOICE_PROMPTS, it)))) }
+        airohaButtons.group()?.let { add(it) }
         auracast?.group()?.let { add(it) }
         if (primary) SkullcandyTile.group(product)?.let { add(it) }
         multipoint?.let { add(SettingGroup("connection", SettingTab.DEVICE, listOf(Setting.Toggle(MULTIPOINT, it)))) }
@@ -178,11 +187,21 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             if (rail && "voiceControl" in product.features) add(own(packet(RailButtons.VOICE_LANGUAGE_GET, "voice_language")))
         }
         auracast?.let { add(own(it.readState())) }
-        if (hasCustomEq) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
+        if (hasCustomEq || airohaButtons.generic) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
+        if (airohaButtons.vendor) airohaButtons.start(null)?.let { add(it) }
+        if (hasVoicePrompts) add(packet(SkullcandyRace.VOICE_PROMPTS_GET, "voice_prompts"))
         if (hasMultipoint) add(packet(SkullcandyRace.multipointGet(product.enumName), "multipoint"))
         if (hasWearDetect) add(packet(SkullcandyRace.WEAR_DETECT_GET, "wear"))
         if (hasBassBoost) add(packet(SkullcandyRace.BASS_BOOST_GET, "bass"))
         if (hasGain) add(gainRead())
+    }
+
+    /** Starts the button read once the chip is known and no equaliser flow is under way, so the two never answer each other's steps. */
+    private fun startButtons() {
+        if (!airohaButtons.generic) return
+        val w = write
+        if (w != null && !w.done && !w.failed) return
+        airohaButtons.start(chip)?.let { outbox += it }
     }
 
     /** The read of the gain, for the mode in force now: the answer belongs to that mode. */
@@ -194,7 +213,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     override fun poll(): List<RacePacket> = if (primary) listOf(own(RacePacket.of(JblRace.BATTERY, 0)), own(RacePacket.of(JblRace.CASE_BATTERY))) else emptyList()
 
     override fun allowed(message: RacePacket): Boolean =
-        message == chipRead || message in own || write?.sent?.contains(message) == true || (primary && RailButtons.isAllowed(message)) || SkullcandyRace.isAllowed(message.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
+        message == chipRead || message in own || write?.sent?.contains(message) == true || message in airohaButtons.sent || (rail && RailButtons.isAllowed(message)) || SkullcandyRace.isAllowed(message.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
 
     override fun bytes(message: RacePacket): ByteArray {
         pending = message
@@ -209,9 +228,12 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         for (p in parser.feed(bytes)) {
             guarded {
                 val eq = write
-                if (eq != null && !eq.done && !eq.failed && eq.receive(p) { outbox += it }) {
+                if (airohaButtons.busy && airohaButtons.receive(p) { outbox += it }) {
+                    changed = true
+                } else if (eq != null && !eq.done && !eq.failed && eq.receive(p) { outbox += it }) {
                     if (eq.done || eq.failed) changed = true
                     if (eq === reader && eq.done) changed = takeHeld(eq) || changed
+                    if (eq.done || eq.failed) startButtons()
                 } else {
                     changed = (primary && railApply(p)) || changed
                     changed = apply(p) || changed
@@ -302,16 +324,24 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         if (auracast != null && p.id in SkullcandyAuracast.ID_SCAN..SkullcandyAuracast.ID_CODE && (p.type == JblRace.TYPE_RESPONSE || p.type == JblRace.TYPE_INDICATION)) {
             return auracast.receive(p) { outbox += own(it) }
         }
+        // the voice prompts: a read's answer (status and value) or the earbuds' notification of a change (the value alone); a write's answer is its status alone
+        if (hasVoicePrompts && p.id == SkullcandyRace.VOICE_PROMPTS_ID && (p.type == JblRace.TYPE_RESPONSE && p.payload.size >= 2 || p.type == JblRace.TYPE_INDICATION && p.payload.isNotEmpty())) {
+            val on = (p.payload.last().toInt() and 0xFF) != 1
+            return (voicePrompts != on).also { voicePrompts = on }
+        }
         val asked = pending ?: return false
         if (asked == chipRead && p.id == JblRace.NV_READ) {
             val text = p.data.decodeToString().trimEnd('\u0000')
             if (text.length >= 4 && text.all { it in ' '..'~' }) {
                 chip = RaceChip.of(text)
                 startReadBack()
+                startButtons()
                 return false
             }
             return false
         }
+        // an NV key read answers with the data's length and the data, no status
+        if (asked == airohaButtons.vendorRead && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return airohaButtons.vendorAnswer(p.data)
         val kind = kinds[asked] ?: return false
         if (p.type != 0x5B && p.type != 0x5D || p.payload.isEmpty()) return false
         if (kind.startsWith("buttons")) {
@@ -365,9 +395,16 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     }
 
     override fun change(change: SettingChange): List<RacePacket>? = when {
-        change is SettingChange.Choice && change.key.startsWith("sk_rbutton_") -> railButtonChange(change)
+        change is SettingChange.Choice && rail && change.key.startsWith("sk_rbutton_") -> railButtonChange(change)
+        change is SettingChange.Choice && airohaButtons.has && (change.key.startsWith("sk_rbutton_") || change.key.startsWith("sk_button_")) ->
+            airohaButtons.change(change.key, change.option)?.also { readBacks = airohaButtons.readBack() }
         change is SettingChange.Press && rail && "voiceControl" in product.features && (change.key == VOICE_ON || change.key == VOICE_OFF) ->
             listOf(own(packet(RailButtons.voiceSet(change.key == VOICE_ON), "voice_set")))
+        change is SettingChange.Toggle && change.key == VOICE_PROMPTS && hasVoicePrompts -> {
+            voicePrompts = change.on
+            readBacks = listOf(packet(SkullcandyRace.VOICE_PROMPTS_GET, "voice_prompts"))
+            listOf(packet(SkullcandyRace.voicePromptsSet(change.on), "voice_prompts_set"))
+        }
         change is SettingChange.Toggle && change.key == SkullcandyAtSession.GAMING_MODE && hasGamingMode -> {
             gamingMode = change.on
             readBacks = listOf(own(RacePacket.mmiGet(MMI_GAME_MODE)))
@@ -466,6 +503,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         private set
 
     public companion object {
+        public const val VOICE_PROMPTS: String = "voice_prompts"
         public const val MULTIPOINT: String = "multipoint"
         public const val WEAR_DETECT: String = "sk_wear_detect"
         public const val BASS_BOOST: String = "bass_boost"

@@ -744,6 +744,8 @@
     <string name="setting_sk_action_stay_aware">Switch transparency</string>
     <string name="setting_sk_action_spotify">Spotify one-touch</string>
     <string name="setting_sk_action_spatial">Cycle spatial audio</string>
+    <string name="setting_sk_action_cycle_eq">Cycle equalizer presets</string>
+    <string name="setting_sk_action_head_tracking">Head tracking on / off</string>
     <string name="setting_sk_action_none">No action</string>
     <string name="setting_sk_voice_language">Voice control language</string>
     <string name="setting_sk_voice_group">Voice control</string>

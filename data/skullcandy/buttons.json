@@ -1,0 +1,81 @@
+{
+  "_about": "The button settings of Skullcandy's Airoha models without an SDK configuration (docs/skullcandy/PROTOCOL.md section 9.5), read from Skullcandy 5.0.6 on 2026-11-20. The app hands them to Airoha's SDK (getGestureSettings: getGestureStatus(255); setGestureSettings: setGestureStatus with AirohaGestureSettings(gesture, action)), except on the four products getHasVendorSpecificButtonId names, whose key map it reads as Airoha's NV key F2D6 and parses in Dart (vendor). variants: Airoha's own gesture encoders in that SDK, in the schema of data/jbl/commands.json airoha.gesture but keyed by Airoha's action ids (AirohaGestureSettings): v3 is libmmi158x.Utility.a (NV key F2D6), 1568 and plain are libmmi.Utility.a (NV key F2E7; no Spotify or take photo, and no key type for the long press release, which it writes as type 255), ab1562 is libmmi1562.Utility.a (key map commands 0A0B and 0A0A; the state is libmmi1562.model.a.b's bit mask of the event). An action the SDK reads from none of the rules is 209, the firmware's default. generic: the native side's mapping (FlutterAirohaApi setGestureSettings and s2.C) between the app's presses and actions and Airoha's gesture and action ids. vendor: the Dart side's key types (SKDYButtonSettingsUtils.toKeyGestureStruct) and firmware events (SKDYActionInfo.fwActionId) for those four.",
+  "variants": {
+    "v3": {
+      "key_id": 24, "key_id_from_read": true, "fills_unmatched": true, "unmatched": 209,
+      "key_types": {"1": 1, "2": 1, "3": 2, "4": 2, "5": 5, "6": 5, "7": 3, "8": 3, "9": 14, "10": 14, "11": 10, "12": 10},
+      "write": {
+        "0": [["K", 0, 0]], "1": [["K", 10, 0]], "2": [["K", 11, 0]], "3": [["K", 145, 0]], "5": [["K", 144, 0]], "6": [["K", 90, 0]], "7": [["K", 91, 0]],
+        "8": [["K", 83, 0], ["K", 85, 0]], "10": [["K", 146, 0]], "160": [["K", 32, 0]], "208": [["K", 275, 0]], "210": [["K", 304, 0]], "211": [["K", 305, 0]],
+        "212": [["K", 330, 0]], "240": [["K", -4095, 0]]
+      },
+      "write_overrides": {},
+      "read_order": [1, 2, 5, 3, 14, 10],
+      "read": [
+        [0, [["K", 0]]], [1, [["K", 10]]], [2, [["K", 11]]], [3, [["K", 145]]], [5, [["K", 144]]], [6, [["K", 90]]], [7, [["K", 91]]], [8, [["K", 83], ["K", 85]]],
+        [10, [["K", 146]]], [160, [["K", 32]]], [208, [["K", 275]]], [210, [["K", 304]]], [211, [["K", 305]]], [240, [["K", -4095]]], [212, [["K", 330]]]
+      ]
+    },
+    "1568": {
+      "key_id": 24, "key_id_from_read": true, "fills_unmatched": true, "unmatched": 209,
+      "key_types": {"1": 1, "2": 1, "3": 2, "4": 2, "5": 5, "6": 5, "7": 3, "8": 3, "9": 14, "10": 14, "11": 255, "12": 255},
+      "write": {
+        "0": [["K", 0, 0]], "1": [["K", 10, 0]], "2": [["K", 11, 0]], "3": [["K", 145, 0]], "5": [["K", 144, 0]], "6": [["K", 90, 0]], "7": [["K", 91, 0]],
+        "8": [["K", 83, 0], ["K", 85, 0]], "10": [["K", 146, 0]], "160": [["K", 32, 0]], "208": [["K", 275, 0]], "210": [["K", 304, 0]], "211": [["K", 305, 0]]
+      },
+      "write_overrides": {},
+      "read_order": [1, 2, 5, 3, 14],
+      "read": [
+        [0, [["K", 0]]], [1, [["K", 10]]], [2, [["K", 11]]], [3, [["K", 145]]], [5, [["K", 144]]], [6, [["K", 90]]], [7, [["K", 91]]], [8, [["K", 83], ["K", 85]]],
+        [10, [["K", 146]]], [160, [["K", 32]]], [208, [["K", 275]]], [210, [["K", 304]]], [211, [["K", 305]]]
+      ]
+    },
+    "plain": {
+      "key_id": 24, "key_id_from_read": true, "fills_unmatched": true, "unmatched": 209,
+      "key_types": {"1": 1, "2": 1, "3": 2, "4": 2, "5": 5, "6": 5, "7": 3, "8": 3, "9": 14, "10": 14, "11": 255, "12": 255},
+      "write": {
+        "0": [["K", 0, 0]], "1": [["K", 10, 0]], "2": [["K", 11, 0]], "3": [["K", 145, 0]], "5": [["K", 144, 0]], "6": [["K", 90, 0]], "7": [["K", 91, 0]],
+        "8": [["K", 83, 0], ["K", 85, 0]], "10": [["K", 146, 0]], "160": [["K", 32, 0]], "208": [["K", 275, 0]], "210": [["K", 304, 0]], "211": [["K", 305, 0]]
+      },
+      "write_overrides": {},
+      "read_order": [1, 2, 5, 3, 14],
+      "read": [
+        [0, [["K", 0]]], [1, [["K", 10]]], [2, [["K", 11]]], [3, [["K", 145]]], [5, [["K", 144]]], [6, [["K", 90]]], [7, [["K", 91]]], [8, [["K", 83], ["K", 85]]],
+        [10, [["K", 146]]], [160, [["K", 32]]], [208, [["K", 275]]], [210, [["K", 304]]], [211, [["K", 305]]]
+      ]
+    },
+    "ab1562": {
+      "key_id": 0, "key_id_from_read": true, "fills_unmatched": true, "unmatched": 209,
+      "key_types": {"1": 0, "2": 0, "3": 5, "4": 5, "5": 3, "6": 3, "7": 6, "8": 6, "9": 255, "10": 255, "11": 2, "12": 2},
+      "write": {
+        "0": [["K", 0, -1]], "1": [["K", 10, 16844664]], "2": [["K", 11, 16844664]], "3": [["K", 148, 2046]], "5": [["K", 139, 2046]], "6": [["K", 90, 8]], "7": [["K", 91, 8]],
+        "8": [["K", 83, 8]], "10": [["K", 189, 2046]], "160": [["K", 51, 8]], "208": [["K", 97, 8]], "212": [["K", 190, 16777224]], "240": [["K", 192, 16777224]]
+      },
+      "write_overrides": {},
+      "read_order": [0, 5, 3, 6, 2],
+      "read": [
+        [0, [["K", 0]]], [1, [["K", 10]]], [2, [["K", 11]]], [3, [["K", 148]]], [5, [["K", 139]]], [6, [["K", 90]]], [7, [["K", 91]]], [10, [["K", 189]]], [8, [["K", 83]]],
+        [160, [["K", 51]]], [208, [["K", 97]]], [212, [["K", 190]]], [240, [["K", 192]]]
+      ]
+    }
+  },
+  "generic": {
+    "_about": "Presses (the manifest's default_buttons names) to Airoha's gesture ids, left then right; the Mod's press and hold is the long press (5, 6), every other model's the long press release (11, 12). Actions (the manifest's mappable_buttons names) to Airoha's action ids; the stay-aware switch is 10 (switch noise cancelling and transparency) on the Sesh ANC Active and Push ANC Active (tanc, hanc), else 5. Read back, 5 and 10 are both the stay-aware switch, and 209 is the firmware's default.",
+    "gestures": {"singlePress": [1, 2], "doublePress": [3, 4], "triplePress": [7, 8], "shortPressHold": [11, 12]},
+    "gestures_mod": {"shortPressHold": [5, 6]},
+    "actions": {"oneTouchSpotify": 212, "stayAwareOnOff": 5, "playPause": 8, "trackBack": 7, "trackForward": 6, "volumeDown": 2, "volumeUp": 1, "takePhoto": 240, "voiceAssistant": 160, "none": 0},
+    "stay_aware_switch_models": ["tanc", "hanc"],
+    "stay_aware_switch": 10,
+    "default": 209
+  },
+  "vendor": {
+    "_about": "The four products with a vendor button id (iconANC, aviatorANC, hesh540ANC, crusher720): the key map is NV key F2D6, read as the SDK's own 158x stage reads that key (NV read 0A00, D6 F2, length 100; the app's literal s2.f0, 05 5A 05 00 00 0A D6 F2 00 00, carries a length field one short of its bytes, which PairFree's framing cannot send as it is) and written as the command F2D6 with the entries (SetGesturesRaceCommand). An entry is the key type, the button's key id (the manifest's keyId, hex), the event (two bytes, low first) and four bytes of state 0. One action can be several entries.",
+    "models": ["iconANC", "aviatorANC", "hesh540ANC", "crusher720"],
+    "nv_key": "F2D6",
+    "key_types": {"singlePress": 1, "doublePress": 2, "triplePress": 3, "shortPressHold": 10},
+    "events": {
+      "oneTouchSpotify": [330], "stayAwareOnOff": [146], "playPause": [83, 85], "volumeDown": [11], "volumeUp": [10], "takePhoto": [61441], "voiceAssistant": [33, 35],
+      "none": [0], "cycleEQMode": [544], "headTracking": [62466], "spatialAudio": [62465]
+    }
+  }
+}

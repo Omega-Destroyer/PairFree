@@ -1061,6 +1061,8 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "spotify" -> R.string.setting_sk_action_spotify
         "none" -> R.string.setting_sk_action_none
         "spatial" -> R.string.setting_sk_action_spatial
+        "cycle_eq" -> R.string.setting_sk_action_cycle_eq
+        "head_tracking" -> R.string.setting_sk_action_head_tracking
         "play_pause" -> R.string.setting_sk_action_play_pause
         "track_back" -> R.string.setting_sk_action_track_back
         "track_forward" -> R.string.setting_sk_action_track_forward

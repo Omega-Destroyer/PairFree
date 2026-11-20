@@ -388,8 +388,31 @@ So PairFree drives these 28 models as it drives the Rail (section 16): `Skullcan
 else `FFEEDDCC-...`), with the batteries, the hearing mode (the module read and `0E06`, the AB1562 forms), Skullcandy's custom RACE commands (multipoint, wear detection, bass boost) and the equaliser. Added for them:
 **gaming mode**, as Airoha's SDK does it: read as module 6 of the module read (`0901`; `libmmi1562.stage.b`, "GetGameMode"), set with the key event `1101` and `A4 00` (on) or `A5 00` (off) (`libmmi1562.c.j`, "SetGameMode").
 The answer's parser did not decompile, so that its first data byte is 1 for on and 0 for off is inferred. The Rail's own buttons, voice control and gain stay the Rail's (they come from its SDK configuration).
-Not built for these models yet: the buttons (`getGestureSettings`, Airoha's key map, which JBL's Airoha code writes as `JblAirohaGesture`) and the voice prompts (`getVoicePromptsState`); blocked: not traced yet for Skullcandy's
-products; checked: the channel methods listed above and the game mode stages, 2026-11-20. Nothing here has met a real product; the next report from issue #66 confirms or corrects it.
+The buttons and the voice prompts are section 9.5. Nothing here has met a real product; the next report from issue #66 confirms or corrects it.
+
+### 9.5 Buttons and voice prompts of the Airoha models without an SDK configuration (built 2026-11-20)
+
+Twelve of the 28 list `customButtonActions` with the presses and actions of the manifest (`default_buttons`, `mappable_buttons`). The app's native side has two routes (`FlutterAirohaApi`, methods
+`getGestureSettings`, `setGestureSettings`, `resetGestureSettings`), and `data/skullcandy/buttons.json` holds the tables of both:
+
+- **Airoha's own gesture API**, for the Mod, Push ANC Active, Sesh ANC Active, Dime Evo, Dime 360, Push 720 Open, Push 540 Open and the Crusher 900 ANC: `getGestureStatus(255)` and
+  `setGestureStatus(List<AirohaGestureSettings>)`. The app maps its presses to Airoha's gesture ids (single press 1 and 2, double 3 and 4, triple 7 and 8, press and hold the long press release 11 and 12,
+  on the Mod the long press 5 and 6; odd left, even right) and its actions to Airoha's action ids (Spotify 212, the stay-aware switch 5, or 10 on the Sesh and Push ANC Active, play/pause 8, previous 7, next 6,
+  volume down 2 and up 1, take photo 240, voice assistant 160, none 0; read back, 209 is the firmware's default, shown as the manifest's default for that press). Airoha's SDK then writes the key map as
+  JBL's Airoha models do (`JblAirohaGesture`: NV key `F2D6` on the AB158x, `F2E7` on the older chips, the copy of the other earbud's in `F2EF`, the reload, all relayed to the other earbud; the AB1562's key
+  map commands `0A0B` and `0A0A`), but from Airoha's own encoders, keyed by Airoha's action ids: `libmmi158x.Utility.a` (play/pause 83 and 85, Spotify 330, take photo `F001`, and so on), `libmmi.Utility.a`
+  (the same without Spotify and take photo, for which it has no event, so on those chips the rows list only the actions it writes) and `libmmi1562.Utility.a` (its own events, the tap as key type 0, and a state bit mask
+  per event from `libmmi1562.model.a.b`). The default key id is 24 (18 hex), then the one the read found. The Crusher 900 ANC's manifest also offers cycling the EQ and spatial audio, which have no Airoha
+  action id: the app's own `setGestureSettings` rejects them for this product, so PairFree offers its voice assistant and none.
+- **The app's own key map code**, for the four products `getHasVendorSpecificButtonId` names (Icon ANC, Aviator 900 ANC, Hesh 540 ANC, Crusher 720): the native side reads NV key `F2D6` and hands the
+  bytes to Dart, which takes the entries of the product's button (`keyId` 82 on the Icon ANC, 7E on the others) by key type (single press 1, double 2, triple 3, press and hold 10;
+  `SKDYButtonSettingsUtils.toKeyGestureStruct`) and reads the actions from their events (`SKDYActionInfo.fwActionId`: Spotify 330, the stay-aware switch 146, play/pause 83 and 85, volume 10 and 11,
+  take photo `F001`, voice assistant 33 and 35, none 0, cycle the EQ 220 hex, head tracking `F402`, spatial audio `F401`). The write is the command `F2D6` with the entries (`SetGesturesRaceCommand`,
+  `05 5A <length> D6 F2 <entries>`). PairFree reads the key with the SDK's own NV read (length 100; the app's literal `s2.f0` carries a length field one short of its bytes) and, on a change, replaces only
+  that press's entries of that button and writes every other entry back as it read it. That the app writes these four this way is read from its encoder and the Dart helpers; the call that sends the write
+  was not found in the Dart snapshot (checked: `skdyairohaapi.dart` `setButtonSettings`, which calls the native `setGestureSettings`, and the callers of `SetGesturesRaceCommand`).
+- **Voice prompts** (`voicePrompts`, the two SLYR Pro Wireless): Skullcandy's command `2C 81` from the native side (`s2.W`, `X`, `Y`): `05 5A 04 00 81 2C 02 FF` reads, `... 00 FF` turns them on and
+  `... 01 FF` off; the answer's last byte is 1 when they are off, and the earbuds report a change as `05 5D 03 00 81 2C <value>`.
 
 ## 13. The equaliser on the Airoha models (read so far, 2026-11-18)
 

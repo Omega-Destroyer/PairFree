@@ -79,6 +79,11 @@ def airoha_sdk_rows(p, modes):
     if "customEqualizer" in f:
         presets = [m for m, n in modes.get(p["enum"], {}).items() if 1 <= n <= 99]
         out.append("equalizer (custom" + (f" + {len(presets)} presets" if presets else "") + ")")
+    if "customButtonActions" in f and p.get("default_buttons"):
+        vendor = p["enum"] in {"iconANC", "aviatorANC", "hesh540ANC", "crusher720"}
+        out.append("button actions (" + ("the app's own key map" if vendor else "Airoha's gesture API") + ")")
+    if "voicePrompts" in f:
+        out.append("voice prompts")
     return out
 
 

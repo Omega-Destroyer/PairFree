@@ -45,6 +45,17 @@ public object SkullcandyRace {
         return "05 5A 0C 00 06 0E 00 0E $g $g $g $g"
     }
 
+    /**
+     * The voice prompts of the SLYR Pro Wireless (`voicePrompts`; docs/skullcandy/PROTOCOL.md section 9.5): Skullcandy's custom command `2C 81`, as the app's native side sends it (`s2.W`, `X`, `Y`):
+     * `02 FF` reads, `00 FF` turns the prompts on and `01 FF` off. The answer's last byte is 1 when they are off; the earbuds also report a change with a `05 5D` notification.
+     */
+    public const val VOICE_PROMPTS_GET: String = "05 5A 04 00 81 2C 02 FF"
+
+    public fun voicePromptsSet(on: Boolean): String = "05 5A 04 00 81 2C " + (if (on) "00" else "01") + " FF"
+
+    /** The command id of the voice prompts. */
+    public const val VOICE_PROMPTS_ID: Int = 0x2C81
+
     /** The request bytes of a hex message ("05 5A 03 00 ..."). */
     public fun bytes(hex: String): ByteArray = hex.split(' ').filter { it.isNotEmpty() }.map { it.toInt(16).toByte() }.toByteArray()
 
@@ -53,6 +64,7 @@ public object SkullcandyRace {
         val b = hex.trim()
         return b == WEAR_DETECT_GET || b == GAIN_GET || (b.startsWith("05 5A 0C 00 06 0E 00 0E ") && b.split(' ').size == 16) || b == BASS_BOOST_GET || b.startsWith("05 5A 03 00 02 F4 ") || b.startsWith("05 5A 03 00 D7 2C ") ||
             b == "05 5A 04 00 83 2C 10 00" || b == "05 5A 02 00 14 00" || b == "05 5A 06 00 00 0A 01 E3 01 00" || b == "05 5A 06 00 00 0A 00 F5 01 00" ||
-            b.startsWith("05 5A 05 00 82 2C 10 00 ") || b.startsWith("05 5A 03 00 01 14 ") || b.startsWith("05 5A 04 00 01 11 ")
+            b.startsWith("05 5A 05 00 82 2C 10 00 ") || b.startsWith("05 5A 03 00 01 14 ") || b.startsWith("05 5A 04 00 01 11 ") ||
+            b == VOICE_PROMPTS_GET || b == voicePromptsSet(true) || b == voicePromptsSet(false)
     }
 }

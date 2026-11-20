@@ -21,7 +21,7 @@ The screens, the device drawings and the widget follow the look you choose:
 
 <p><img src="https://omega-destroyer.github.io/PairFree/screenshots/look-studio-light.png" width="250" alt="The Studio Light look"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/look-material-you.png" width="250" alt="The Material You look"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/look-sketchbook.png" width="250" alt="The Sketchbook look"></p>
 
-It covers 781 models from 16 brands. Pick yours:
+It covers 790 models from 16 brands. Pick yours:
 
 - [Open-source SOUNDPEATS app (a PeatsAudio alternative)](https://omega-destroyer.github.io/PairFree/open-source-soundpeats-app/): 88 SOUNDPEATS models
 - [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/): 83 Soundcore models
@@ -33,7 +33,7 @@ It covers 781 models from 16 brands. Pick yours:
 - [Open-source Nothing X app alternative (Nothing Ear and CMF Buds)](https://omega-destroyer.github.io/PairFree/open-source-nothing-app/): 19 Nothing and CMF models
 - [Open-source Pixel Buds app (for Android phones that are not Pixels)](https://omega-destroyer.github.io/PairFree/open-source-pixel-buds-app/): 5 Google Pixel Buds models
 - [Open-source QCY app alternative](https://omega-destroyer.github.io/PairFree/open-source-qcy-app/): 194 QCY models
-- [Open-source 1MORE app alternative](https://omega-destroyer.github.io/PairFree/open-source-1more-app/): 39 1MORE models
+- [Open-source 1MORE app alternative](https://omega-destroyer.github.io/PairFree/open-source-1more-app/): 48 1MORE models
 - [Open-source EarFun app alternative (EarFun Audio)](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/): 26 EarFun models
 - [Open-source Cambridge Audio Melomania app alternative](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/): 8 Cambridge Audio models
 - [Open-source Sennheiser Smart Control alternative](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/): 28 Sennheiser models

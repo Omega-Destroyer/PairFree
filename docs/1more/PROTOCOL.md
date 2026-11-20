@@ -156,9 +156,11 @@ actions without the assistant, and hearing your own voice and the volume limit (
   all map to EC305) and the EC305 handlers (the battery reply carries one more byte, `[11]`, which no other model of the app's reads; the custom EQ's reply is offset by a per-model table). Nothing there explains
   silence, so the cause is on the channel (a secure socket after `getUuids()`, which PairFree 0.16.1 now also tries, then insecure and channel 1) or in the earbuds' state; waiting for a connection report from 0.16.1.
 
-- **Models in 1MORE Life 5.0.3 that the Music app's product list lacks** (their name mapping, `DeviceFactoryImpl`): ComfoBuds 2 (ES303), ComfoBuds Pro (ES901, ES901 EQ), ColorBuds 2 (ES602), PistonBuds Pro (EC302), SonoFlow (HC905),
-  SonoFlow SE (HC306), Fit (EF906), Fit SE (EF606), S31 (S31, S31B), QuietLace, and the older Bluetooth LE families (E1001, E1004, E1020, E1022, E1026, S1001, ESS3001T, ECS3001T). Its per-model feature flags
-  (`com.bitaxon.n2.d.a.*`, one class per model) and command numbers are the source for adding them (the next piece of work on this brand).
+- **Models from 1MORE Life 5.0.3, added 2026-11-19** (`LIFE` in `tools/import_1more_list.py`; the Music app's product list lacks them): ComfoBuds 2 (ES303), ColorBuds 2 (ES602), PistonBuds Pro (EC302), ComfoBuds Pro (ES901),
+  SonoFlow (HC905), SonoFlow SE (HC306), Fit (EF906), Fit SE (EF606) and S31. Source: Life's `DeviceFactoryImpl` (name to model), its per-model classes (`com.bitaxon.n2.d.a`: the requests it sends on connecting, which show
+  autoplay `0063`, game mode `006C` and spatial audio `0083`), its home screen's listen mode buttons per model (values 0 off, 1 strong, 2 mild, 3 transparency, 4 wind; the ColorBuds 2's screen hides its off button, which PairFree
+  keeps because the earbuds' own off is the first mode) and `preset_eq_content` (the twelve presets, for ES303, EC302, S31, EF906 and the SonoFlows; custom curve on ES303 and EC302). None has been tried on earbuds. To do, from Life:
+  the touch controls of these models, the older equalizer list of ES901, ES602 and EF606 (`eq_content`, index bytes), pictures, and the Bluetooth LE families (E1001, E1004, E1020, E1022, E1026, S1001, ESS3001T, ECS3001T) and QuietLace.
 
 - **EQ:** the music and sleep styles (`003B`/`003C`), the HQ60's THX preset, and 1MORE's finer gain steps. 1MORE's
   app 2.0.0 declares the styles (`BluetoothOrderConstents`) but never sends them, so nothing shows their payloads. **Corrected 2026-11-12: 1MORE 2.1.3 does send them** (`HeadsetActivity`: `sendSppSetEQMode(0)` music and `(1)` sleep; `SetTimeActivity`: `sendSppSetPlayTime((i + 1) * 2)`, or 0 for no timer; `ShortcutActionsActivity`: `sendSppSetVocalEnhancement`), so the layouts can be built from 2.1.3.

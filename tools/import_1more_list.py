@@ -68,6 +68,39 @@ BANDS = {
     "1MORE SonoFlow S": HQ31_BANDS,
 }
 
+# Models that 1MORE Life 5.0.3 (com.onemore.life, read 2026-11-19) names and the product list above does not hold. The
+# list comes from the app's DeviceFactoryImpl (Bluetooth name to model), its per-model classes (com.bitaxon.n2.d.a: which
+# of the first requests it sends: autoplay 0063, game mode 006C, spatial audio 0083) and its home screen (fragment d: which
+# listen mode buttons each model shows; the values are 0 off, 1 strong, 4 wind, 3 transparency, 2 mild) and its equalizer
+# screens (preset_eq_content, the twelve presets, for ES303, EC302, S31, EF906 and the SonoFlows). A setting is offered
+# only once its read answers, so a request the model ignores shows nothing. Not read from the app yet: touch controls, the
+# equalizer of the models that use its older list (ES901, ES602, EF606), pictures.
+LIFE = [
+    # name, model, kind, listen modes, game mode, autoplay, spatial audio, equalizer (presets, custom)
+    ("1MORE ComfoBuds 2", "ES303", "earbuds", [], True, True, True, (TWELVE, True)),
+    ("1MORE ColorBuds 2", "ES602", "earbuds", ["off", "strong", "transparent"], False, True, True, None),
+    ("1MORE PistonBuds Pro", "EC302", "earbuds", ["off", "strong", "wind", "transparent"], True, True, True, (TWELVE, True)),
+    ("1MORE ComfoBuds Pro", "ES901", "earbuds", ["off", "strong", "mild", "wind", "transparent"], False, True, True, None),
+    ("1MORE SonoFlow", "HC905", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, False)),
+    ("1MORE SonoFlow SE", "HC306", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, False)),
+    ("1MORE Fit", "EF906", "earbuds", [], True, True, True, (TWELVE, False)),
+    ("1MORE Fit SE", "EF606", "earbuds", [], False, False, True, None),
+    ("1MORE S31", "S31", "earbuds", [], False, False, True, (TWELVE, False)),
+]
+
+
+def life_device(name, model, kind, modes, game, autoplay, spatial, eq):
+    return {
+        "name": name, "model": model, "tuya": False, "kind": kind, "case": kind == "earbuds", "listen_modes": modes,
+        "connection": ["game"] if game else [], "autoplay": autoplay, "spatial_audio": spatial, "sleep_detection": False,
+        "dual_device": False, "hot_word": False, "touch": None, "touch_assistant": False,
+        "eq": (["preset"] + (["custom"] if eq[1] else [])) if eq else [],
+        "eq_presets": eq[0] if eq else [], "eq_bands": DEFAULT_BANDS if eq and eq[1] else None,
+        "ear_return": False, "volume_limit": False, "sleep_mode": False, "voice_enhancement": False, "lights": False,
+        "pictures": [], "reports": [],
+    }
+
+
 
 def on(row, field):
     return row.get(field) == 1
@@ -134,6 +167,9 @@ def device(r):
 def main(dump_path, out_path=OUT):
     rows = json.load(open(dump_path, encoding="utf-8"))["rows"]
     devices = sorted((device(r) for r in rows if (r.get("headphoneName") or "").startswith("1MORE")), key=lambda d: d["name"].lower())
+    have = {d["name"].lower() for d in devices}
+    devices += [life_device(*m) for m in LIFE if m[0].lower() not in have]
+    devices.sort(key=lambda d: d["name"].lower())
     if Path(out_path).exists():
         old = {d["name"]: d for d in json.loads(Path(out_path).read_text(encoding="utf-8"))["devices"]}
         for d in devices:
@@ -144,6 +180,7 @@ def main(dump_path, out_path=OUT):
                   "downloads), fetched once by hand on 2026-10-18 with the owner's OK; PairFree never contacts 1MORE. listen_modes uses "
                   "data/1more/commands.json's names; tuya, kind, case, touch_assistant, ear_return, volume_limit, lights, eq_presets and eq_bands come from 1MORE's app code; tuya marks "
                   "the two models 1MORE's app reaches through Tuya's platform instead, which PairFree does not control. "
+                  "The models of the LIFE list in tools/import_1more_list.py come from 1MORE Life 5.0.3's code instead (no product list entry, no pictures). "
                   "pictures are paths on https://newapp.1more.com/prod-api, per colour, kept for tracing device art.",
         "fetched": "2026-10-18",
         "devices": devices,

@@ -27,6 +27,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "noise_adaptive" -> "setting_group_noise_adaptive"
             "find" -> "find_earbuds"
             "find_hub" -> "setting_group_find_hub"
+            "sk_tile" -> "setting_group_sk_tile"
             "light" -> "setting_group_light"
             "touch_left" -> "setting_group_touch_left"
             "touch_right" -> "setting_group_touch_right"
@@ -41,7 +42,8 @@ class SettingWords(private val strings: DesktopStrings) {
             "attention" -> "setting_group_attention"
             "ef_quality" -> "setting_group_sound_quality"
             "power" -> "setting_group_power"
-            "ef_buttons" -> "setting_group_buttons"
+            "ef_buttons", "sk_buttons" -> "setting_group_buttons"
+            "sk_voice" -> "setting_sk_voice_group"
             "ca_eq" -> "setting_ca_eq"
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
@@ -61,6 +63,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_fit" -> t("setting_sh_fit_note")
         "sh_auracast" -> t("setting_sh_auracast_note")
         "find_hub" -> t("setting_find_hub_note")
+        "sk_tile" -> t("setting_sk_tile_note")
         "touch_dial" -> t("setting_group_touch_dial_note")
         "ef_quality" -> t("setting_ef_quality_note")
         "ca_eq" -> t("setting_ca_eq_note")
@@ -94,6 +97,36 @@ class SettingWords(private val strings: DesktopStrings) {
     }
 
     fun settingTitle(key: String): String = if (key.startsWith("jb_")) t(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: "unknown") else when (key) {
+        "sk_transparency_level" -> t("setting_sk_transparency_level")
+        "sk_anc_level" -> t("setting_sk_anc_level")
+        "sk_gaming_mode" -> t("setting_sk_gaming_mode")
+        "sk_wear_detect" -> t("setting_sk_wear_detect")
+        "sk_sidetone" -> t("setting_sk_sidetone")
+        "sk_touch_control" -> t("setting_sk_touch_control")
+        "sk_anc_profile" -> t("setting_sk_anc_profile")
+        "sk_transparency_profile" -> t("setting_sk_transparency_profile")
+        "sk_sidetone_level" -> t("setting_sk_sidetone_level")
+        "sk_wear_transparency" -> t("setting_sk_wear_transparency")
+        "sk_crusher_active" -> t("setting_sk_crusher_active")
+        "sk_crusher_intensity" -> t("setting_sk_crusher_intensity")
+        "sk_crusher_mode" -> t("setting_sk_crusher_mode")
+        "sk_spatial" -> t("setting_sk_spatial")
+        "sk_reduced_prompts" -> t("setting_sk_reduced_prompts")
+        "sk_battery_prompt" -> t("setting_sk_battery_prompt")
+        "sk_language" -> t("setting_sk_language")
+        "sk_rbutton_left_single" -> t("setting_sk_rbutton_left_single")
+        "sk_rbutton_left_double" -> t("setting_sk_rbutton_left_double")
+        "sk_rbutton_left_triple" -> t("setting_sk_rbutton_left_triple")
+        "sk_rbutton_left_hold" -> t("setting_sk_rbutton_left_hold")
+        "sk_rbutton_right_single" -> t("setting_sk_rbutton_right_single")
+        "sk_rbutton_right_double" -> t("setting_sk_rbutton_right_double")
+        "sk_rbutton_right_triple" -> t("setting_sk_rbutton_right_triple")
+        "sk_rbutton_right_hold" -> t("setting_sk_rbutton_right_hold")
+        "sk_voice_language" -> t("setting_sk_voice_language")
+        "sk_button_single" -> t("setting_sk_button_single")
+        "sk_button_double" -> t("setting_sk_button_double")
+        "sk_button_triple" -> t("setting_sk_button_triple")
+        "sk_button_hold" -> t("setting_sk_button_hold")
         "op_eq_preset" -> t("setting_op_eq_preset")
         "op_noise_level" -> t("setting_op_noise_level")
         "op_custom_eq" -> t("setting_op_custom_eq")
@@ -259,6 +292,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "ambient_custom_right" -> t("setting_ambient_custom_right")
         "ambient_custom_tone" -> t("setting_ambient_custom_tone")
         "touch_controls" -> t("touch_controls")
+        "touch_lock" -> t("setting_touch_lock")
         "touch_single" -> t("setting_touch_single")
         "touch_double" -> t("setting_touch_double")
         "touch_triple" -> t("setting_touch_triple")
@@ -537,6 +571,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "voice_guidance_volume" -> t("setting_voice_guidance_volume")
         // EarFun (EarfunSession)
         "ef_anc_mode" -> t("setting_ef_anc_mode")
+        "ef_anc_level" -> t("setting_anc_scene_level")
         "ef_ambient_mode" -> t("setting_transparency_mode")
         "ef_prompt_volume", "prompt_volume" -> t("setting_ef_prompt_volume")
         "ef_hearing_protection" -> t("setting_hearing_protection")
@@ -787,6 +822,22 @@ class SettingWords(private val strings: DesktopStrings) {
         key.startsWith("sh_nautilus_") && key != "sh_nautilus_anc" && key != "sh_nautilus_anc_state" && key != "sh_nautilus_preset" && key != "sh_nautilus_anc_middle" -> t(when (option) {
             "off" -> "action_off"; "on" -> "setting_sh_nautilus_on"; "low" -> "setting_level_low"; "medium" -> "setting_level_medium"; "high" -> "setting_level_high"
             "near" -> "setting_sh_nautilus_near"; "far" -> "setting_sh_nautilus_far"; "rumble" -> "setting_sh_nautilus_rumble"; "thump" -> "setting_sh_nautilus_thump"; else -> "setting_sh_nautilus_voice"
+        })
+        key == "sk_crusher_mode" -> t(when (option) { "high" -> "setting_level_high"; "medium" -> "setting_level_medium"; else -> "setting_level_low" })
+        key == "sk_spatial" -> t(when (option) { "off" -> "action_off"; "fixed_to_head" -> "setting_sk_spatial_head"; else -> "setting_sk_spatial_room" })
+        key == "sk_language" -> option
+        key.startsWith("sk_button_") || key.startsWith("sk_rbutton_") -> t(when (option) {
+            "stay_aware" -> "setting_sk_action_stay_aware"
+            "spotify" -> "setting_sk_action_spotify"
+            "none" -> "setting_sk_action_none"
+            "spatial" -> "setting_sk_action_spatial"
+            "play_pause" -> "setting_sk_action_play_pause"
+            "track_back" -> "setting_sk_action_track_back"
+            "track_forward" -> "setting_sk_action_track_forward"
+            "volume_down" -> "setting_sk_action_volume_down"
+            "volume_up" -> "setting_sk_action_volume_up"
+            "take_photo" -> "setting_sk_action_take_photo"
+            else -> "setting_sk_action_voice_assistant"
         })
         key == "sh_auto_off" -> if (option == "0") t("action_off") else t("setting_power_off_timer_minutes", option.toInt())
         key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> t(when (option) { "low" -> "setting_level_low"; "mid", "medium" -> "setting_level_medium"; else -> "setting_level_high" })
@@ -1075,11 +1126,16 @@ class SettingWords(private val strings: DesktopStrings) {
                 "switch_device" -> "setting_op_switch_device"
                 "switch_song" -> "action_previous_next"
                 "switch_calls" -> "action_switch_calls"
+                // 1MORE's touch and hold: the noise mode it switches to
+                "high" -> "setting_level_high"
+                "low" -> "setting_level_low"
+                "wind" -> "scene_wind"
                 else -> "action_other"
             },
         )
         key == "voice_detect_wait" -> t("setting_seconds", option.toIntOrNull() ?: 0)
-        key == "ef_anc_mode" -> when (option) {
+        key == "ef_anc_level" || key == "ef_anc_mode" -> when (option) {
+            "manual" -> t("setting_ef_manual")
             "level1", "level2", "level3", "level4" -> t("scene_level", option.last().digitToInt())
             "anc1" -> t("setting_ef_anc_number", 1)
             "anc2" -> t("setting_ef_anc_number", 2)
@@ -1310,6 +1366,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "op_eq_new" -> "setting_op_eq_new"
         "find" -> "setting_find_start"
         "find_hub" -> "setting_find_hub_open"
+        "sk_tile" -> "setting_sk_tile_open"
         "nc_optimizer" -> "setting_nc_optimizer_start"
         "restart" -> "setting_restart"
         "power_off" -> "setting_power_off"
@@ -1319,6 +1376,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_right" -> "setting_sh_find_right"
         "sh_fit_test" -> "setting_sh_fit_start"
         "sh_auracast_scan" -> "setting_sh_auracast_scan"
+        "sk_voice_on" -> "setting_sk_voice_on"
+        "sk_voice_off" -> "setting_sk_voice_off"
         else -> "setting_action_start"
     }
 

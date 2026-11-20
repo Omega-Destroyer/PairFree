@@ -36,6 +36,14 @@ public data class OneMoreModel(
     val sleepMode: Boolean = false,
     /** The voice enhancement switch, which 1MORE's app shows on the Q50 alone (ShortcutActionsActivity). */
     val voiceEnhancement: Boolean = false,
+    /** The switch that turns the touch controls off (1MORE Life 5.0.3: the ComfoBuds Mini). */
+    /** The preset sounds are the older list, sent as their index (1MORE Life 5.0.3, eq_content). */
+    val eqClassic: Boolean = false,
+    /** Other Bluetooth names 1MORE Life 5.0.3 maps to this model. */
+    val aliases: List<String> = emptyList(),
+    val touchLock: Boolean = false,
+    /** The noise modes a touch and hold can switch to, per earbud (1MORE Life 5.0.3: the ComfoBuds Pro). */
+    val longTouch: List<String> = emptyList(),
     val eqPresets: List<String> = emptyList(),
     val eqBands: OneMoreEqBands? = null,
 )
@@ -54,7 +62,9 @@ public object OneMoreModels {
     /** The model a Bluetooth [name] is, as 1MORE's app matches it (the whole name), or null. */
     public fun fromName(name: String): OneMoreModel? {
         val n = name.trim()
-        return ONEMORE_MODELS.firstOrNull { it.name.equals(n, ignoreCase = true) }
+        // The app matches names exactly, case included ("PistonBuds Pro" and "PistonBuds PRO" are two models); a name that differs only in case still finds one.
+        return ONEMORE_MODELS.firstOrNull { n == it.name || n in it.aliases }
+            ?: ONEMORE_MODELS.firstOrNull { it.name.equals(n, ignoreCase = true) || it.aliases.any { a -> a.equals(n, ignoreCase = true) } }
     }
 
     /** The model PairFree controls under a Bluetooth [name], or null: the Tuya models are left out. */

@@ -12,7 +12,7 @@ OUT = ROOT / "docs" / "assets" / "social-preview.png"
 FONTS = Path("C:/Windows/Fonts")
 
 BACKGROUND, PANEL, TEXT, SECONDARY, ACCENT = "#101214", "#181B1F", "#E8E6E1", "#A0A5AD", "#E6A23C"
-BRANDS = ["Soundcore", "Bose", "JBL", "Sony", "Galaxy Buds", "AirPods", "Nothing", "Pixel Buds", "SOUNDPEATS", "QCY", "1MORE", "EarFun", "Cambridge", "Sennheiser", "Jabra", "OnePlus"]
+BRANDS = ["Soundcore", "Bose", "JBL", "Sony", "Galaxy Buds", "AirPods", "Nothing", "Pixel Buds", "SOUNDPEATS", "QCY", "1MORE", "EarFun", "Cambridge", "Sennheiser", "Jabra", "Skullcandy", "OnePlus"]
 
 
 def font(name, size):
@@ -39,7 +39,7 @@ def main():
         draw.rounded_rectangle([x, y, x + w, y + 52], radius=8, fill=PANEL, outline="#2B3037", width=2)
         draw.text((x + pad, y + 7), name, font=chip_font, fill=TEXT)
         x += w + gap
-    draw.text((88, 548), "Android  ·  Open source (GPL-3.0)  ·  No account  ·  No internet", font=font("arialbd.ttf", 34), fill=ACCENT)
+    draw.text((88, 548), "Android and Windows  ·  Open source (GPL-3.0)  ·  No account", font=font("arialbd.ttf", 34), fill=ACCENT)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     image.save(OUT, optimize=True)
     print(OUT, OUT.stat().st_size, "bytes")

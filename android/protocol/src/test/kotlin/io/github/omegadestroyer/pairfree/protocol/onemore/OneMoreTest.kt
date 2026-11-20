@@ -195,6 +195,54 @@ class OneMoreTest {
     }
 
     @Test
+    fun anEqAnswerCountsAsAChange() {
+        // Found with a virtual PistonBuds PRO Q30: the preset and the curve arrive in their own replies and change neither the rows nor
+        // the state, yet the Sound tab follows them, so receive() must say they changed.
+        val q30 = OneMoreSession(OneMoreModels.fromName("1MORE PistonBuds PRO Q30"))
+        assertNull(q30.eq)
+        assertTrue(q30.receive(reply(OneMoreCommand.GET_PRESET_SOUND, "02")))
+        assertEquals("bass_booster", q30.eq!!.preset)
+        assertFalse(q30.receive(reply(OneMoreCommand.GET_PRESET_SOUND, "02")))
+    }
+
+    @Test
+    fun theLifeModelsAndTheirTouchControls() {
+        // 1MORE Life 5.0.3: the ComfoBuds Pro's touch and hold per earbud (006D/006E: 1 strong, 2 mild, 4 wind) and the Mini's touch switch (0074/0075).
+        val pro = OneMoreSession(OneMoreModels.fromName("1MORE ComfoBuds Pro"))
+        assertTrue(OneMoreCommand.GET_LONG_TOUCH in pro.start().map { it.command })
+        pro.receive(reply(OneMoreCommand.GET_DOUBLE_CLICK, "01"))
+        pro.receive(reply(OneMoreCommand.GET_LONG_TOUCH, "0104"))
+        val rows = pro.groups.flatMap { it.settings }
+        assertEquals(Setting.Choice("touch_hold_left", "high", listOf("high", "low", "wind")), rows.first { it.key == "touch_hold_left" })
+        assertEquals(Setting.Choice("touch_hold_right", "wind", listOf("high", "low", "wind")), rows.first { it.key == "touch_hold_right" })
+        val set = pro.change(SettingChange.Choice("touch_hold_left", "low"))!!.single()
+        assertEquals(OneMoreCommand.SET_LONG_TOUCH, set.command)
+        assertEquals("0204", hex(set.payload))
+        val mini = OneMoreSession(OneMoreModels.fromName("1MORE ComfoBuds Mini"))
+        assertTrue(OneMoreCommand.GET_TOUCH_DISABLE in mini.start().map { it.command })
+        mini.receive(reply(OneMoreCommand.GET_DOUBLE_CLICK, "01"))
+        mini.receive(reply(OneMoreCommand.GET_TOUCH_DISABLE, "01"))
+        assertEquals(Setting.Toggle("touch_lock", true), mini.groups.flatMap { it.settings }.first { it.key == "touch_lock" })
+        val off = mini.change(SettingChange.Toggle("touch_lock", false))!!.single()
+        assertEquals(OneMoreCommand.SET_TOUCH_DISABLE, off.command)
+        assertEquals("00", hex(off.payload))
+        // The older equalizer list (Life's eq_content): 22 presets sent as their index.
+        val colour = OneMoreSession(OneMoreModels.fromName("1MORE ColorBuds 2"))
+        assertEquals(22, OneMoreModels.fromName("1MORE ColorBuds 2")!!.eqPresets.size)
+        assertEquals("0A", hex(colour.eqPreset("vocal_booster")!!.single().payload).uppercase())
+        // Life's other names for a model, matched with the case the app uses first.
+        assertEquals("EC305", OneMoreModels.fromName("1MORE PistonBuds PRO")!!.model)
+        assertEquals("EC302", OneMoreModels.fromName("1MORE PistonBuds Pro")!!.model)
+        assertEquals("EC302", OneMoreModels.fromName("1MORE Pistonbuds Pro")!!.model)
+        assertEquals("EC305", OneMoreModels.fromName("1MORE Pistonbuds PRO Q30")!!.model)
+        assertEquals("S51", OneMoreModels.fromName("1MORE Fit S51")!!.model)
+        // The Fit models tap per earbud, the S31 without the assistant; the SonoFlows are headphones.
+        assertEquals("each", OneMoreModels.fromName("1MORE Fit")!!.touch)
+        assertFalse(OneMoreModels.fromName("1MORE S31")!!.touchAssistant)
+        assertEquals(Form.HEADPHONES, OneMoreModels.fromName("1MORE SonoFlow SE")!!.form)
+    }
+
+    @Test
     fun theSoundModeAndTheQ50sVoiceEnhancement() {
         // The music and sleep modes (1MORE 2.1.3, HeadsetActivity) on the models with comfortableMelody; the Q50 alone has voice enhancement.
         val q50 = OneMoreSession(OneMoreModels.fromName("1MORE Q50"))

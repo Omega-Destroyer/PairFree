@@ -1,0 +1,300 @@
+{
+  "_about": "Skullcandy 5.0.6: the RACE command classes of the app's Flutter code (utils/race_commands), by tools/import_skullcandy_race.py. Only the byte strings the code writes literally are here; request values built at run time are to be read from each class (docs/skullcandy/PROTOCOL.md section 11).",
+  "commands": [
+    {
+      "file": "button_settings/tota_get_button_settings",
+      "class": "TotaGetButtonSettings",
+      "request_literals": [
+        "09 63 02 00 04 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "button_settings/tota_set_button_settings",
+      "class": "TotaSetButtonSettings",
+      "request_literals": [
+        "03 00",
+        "01 00",
+        "02 00",
+        "05 00",
+        "04 00",
+        "07 00",
+        "06 00",
+        "08 63 12 00 04 00 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "device_info/tota_get_battery_status",
+      "class": "TotaGetBatteryStatus",
+      "request_literals": [
+        "09 63 02 00 01 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "device_info/tota_get_fw_version",
+      "class": "TotaGetFwVersion",
+      "request_literals": [
+        "09 63 02 00 08 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "device_info/tota_get_serial_number",
+      "class": "TotaGetSerialNumber",
+      "request_literals": [
+        "09 63 02 00 07 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "equalizer/tota_get_custom_eq",
+      "class": "TotaGetCustomEq",
+      "request_literals": [
+        "09 63 02 00 03 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "equalizer/tota_get_eq_mode",
+      "class": "TotaGetEqMode",
+      "request_literals": [
+        "09 63 02 00 02 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "equalizer/tota_set_custom_eq",
+      "class": "TotaSetCustomEq",
+      "request_literals": [
+        "08 63 21 00 03 00 "
+      ],
+      "reply_prefixes": [],
+      "built_by_model": {
+        "on": [
+          {
+            "bytes": "EQ gains must have 5 values",
+            "models": [
+              "crusherANC",
+              "crusherEvo",
+              "indyANC",
+              "indyFuel",
+              "indyFuelRC",
+              "indyEvo",
+              "indyEvoRC",
+              "pushUltra",
+              "jibTrueXT2",
+              "dime2",
+              "dimeXT2",
+              "dimeEvo",
+              "dime360",
+              "seshANC",
+              "mod",
+              "riffWireless2",
+              "plyr",
+              "slyrProXbox",
+              "slyrPro",
+              "hanc",
+              "tanc",
+              "iconANC",
+              "aviatorANC",
+              "hesh360",
+              "hesh540ANC",
+              "crusherPlyr",
+              "crusherPlyrXbox",
+              "crusher540Active",
+              "push720open",
+              "icon180",
+              "push540Open",
+              "crusherEvoRC",
+              "crusher540ActiveRC",
+              "crusher720",
+              "crusher1080ANC",
+              "smokinBuds3",
+              "terrain",
+              "terrainMini",
+              "terrainXL",
+              "pushActive",
+              "grind",
+              "grindFuel",
+              "rail",
+              "railANC",
+              "crusherANC2",
+              "method360ANC",
+              "method540ANC",
+              "session360",
+              "session540",
+              "session720",
+              "session900",
+              "dime540ANC",
+              "smokingBuds360Hanger",
+              "smokingBuds360Stick",
+              "crusher900ANC",
+              "push180Open"
+            ]
+          }
+        ],
+        "off": [
+          {
+            "bytes": "EQ gains must have 5 values",
+            "models": [
+              "crusherANC",
+              "crusherEvo",
+              "indyANC",
+              "indyFuel",
+              "indyFuelRC",
+              "indyEvo",
+              "indyEvoRC",
+              "pushUltra",
+              "jibTrueXT2",
+              "dime2",
+              "dimeXT2",
+              "dimeEvo",
+              "dime360",
+              "seshANC",
+              "mod",
+              "riffWireless2",
+              "plyr",
+              "slyrProXbox",
+              "slyrPro",
+              "hanc",
+              "tanc",
+              "iconANC",
+              "aviatorANC",
+              "hesh360",
+              "hesh540ANC",
+              "crusherPlyr",
+              "crusherPlyrXbox",
+              "crusher540Active",
+              "push720open",
+              "icon180",
+              "push540Open",
+              "crusherEvoRC",
+              "crusher540ActiveRC",
+              "crusher720",
+              "crusher1080ANC",
+              "smokinBuds3",
+              "terrain",
+              "terrainMini",
+              "terrainXL",
+              "pushActive",
+              "grind",
+              "grindFuel",
+              "rail",
+              "railANC",
+              "crusherANC2",
+              "method360ANC",
+              "method540ANC",
+              "session360",
+              "session540",
+              "session720",
+              "session900",
+              "dime540ANC",
+              "smokingBuds360Hanger",
+              "smokingBuds360Stick",
+              "crusher900ANC",
+              "push180Open"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "file": "equalizer/tota_set_eq_mode",
+      "class": "TotaSetEqMode",
+      "request_literals": [
+        "08 63 03 00 02 00 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "hearing_modes/tota_get_hearing_mode",
+      "class": "TotaGetHearingMode",
+      "request_literals": [
+        "09 63 02 00 09 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "hearing_modes/tota_set_hearing_mode",
+      "class": "TotaSetHearingMode",
+      "request_literals": [
+        "08 63 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "low_latency_mode/tota_get_low_latency_state",
+      "class": "TotaGetLowLatencyState",
+      "request_literals": [
+        "09 63 02 00 06 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "low_latency_mode/tota_set_low_latency_state",
+      "class": "TotaSetLowLatencyState",
+      "request_literals": [
+        "08 63 03 00 06 00 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "multipoint_pairing/tota_get_multipoint_pairing_state",
+      "class": "TotaGetMultipointPairingState",
+      "request_literals": [
+        "09 63 02 00 05 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "multipoint_pairing/tota_set_multipoint_pairing_state",
+      "class": "TotaSetMultipointPairingState",
+      "request_literals": [
+        "08 63 03 00 05 00 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "sidetone/tota_get_sidetone_state",
+      "class": "TotaGetSidetoneState",
+      "request_literals": [
+        "09 63 02 00 10 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "sidetone/tota_set_sidetone_state",
+      "class": "TotaSetSidetoneState",
+      "request_literals": [
+        "08 63 03 00 10 00 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "touch_control/tota_get_touch_control_state",
+      "class": "TotaGetTouchControlState",
+      "request_literals": [
+        "09 63 02 00 11 00"
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "touch_control/tota_set_touch_control_state",
+      "class": "TotaSetTouchControlState",
+      "request_literals": [
+        "08 63 03 00 11 00 "
+      ],
+      "reply_prefixes": []
+    },
+    {
+      "file": "tws/tota_get_tws_status",
+      "class": "TotaGetTwsStatus",
+      "request_literals": [
+        "09 63 02 00 12 00"
+      ],
+      "reply_prefixes": []
+    }
+  ]
+}

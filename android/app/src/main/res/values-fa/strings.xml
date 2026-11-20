@@ -636,9 +636,9 @@
     <string name="setting_sleep_default_listening_mode">حالت پیش‌فرض هنگام روشن شدن ایرباد</string>
     <string name="setting_sleep_mode_bluetooth">بلوتوث</string>
     <string name="setting_sleep_mode_local">محلی (Local)</string>
-    <string name="setting_sleep_noise_canceling_prompt">اعلان صوتی برای حذف نویز</string>
-    <string name="setting_sleep_listening_mode_prompt">اعلان صوتی برای حالت شنیداری</string>
-    <string name="setting_sleep_auto_power_off_prompt">اعلان صوتی پیش از خاموش شدن</string>
+    <string name="setting_sleep_noise_canceling_prompt">صدای هشدار هنگام روشن یا خاموش کردن حذف نویز</string>
+    <string name="setting_sleep_listening_mode_prompt">اعلان صوتی هنگام جابه‌جایی بین بلوتوث و حالت محلی</string>
+    <string name="setting_sleep_auto_power_off_prompt">صدای هشدار هنگام خاموش شدن خودکار ایربادها</string>
     <string name="setting_sleep_calls_during_bluetooth">پخش زنگ تماس در حالت بلوتوث</string>
     <string name="setting_sleep_timer">تایمر خواب</string>
     <string name="setting_sleep_timer_note">ایربادها پس از زمان انتخاب‌شده پخش صدا را متوقف می‌کنند.</string>
@@ -1466,7 +1466,7 @@
     <string name="vendor_ultimate_sound">صدای نهایی (Ultimate)</string>
     <string name="vendor_vibrant">پرجنب‌وجوش (Vibrant)</string>
     <!-- OnePlus, Pixel Buds -->
-    <string name="vendor_default">پیش‌فرض</string>
+    <string name="preset_name_default">پیش‌فرض</string>
     <!-- OnePlus, SOUNDPEATS, Soundcore -->
     <string name="vendor_classic">کلاسیک (Classic)</string>
     <!-- Pixel Buds -->

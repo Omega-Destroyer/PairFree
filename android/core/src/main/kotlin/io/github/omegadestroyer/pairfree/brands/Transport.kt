@@ -113,4 +113,7 @@ interface Transport {
 
     /** Scans for a Sennheiser product paired at [address] that advertises one of [names] (docs/sennheiser/PROTOCOL.md section 6). */
     suspend fun findSennheiser(names: List<String>, address: String, log: (String) -> Unit): LeTarget?
+
+    /** Scans for the LE side of a Skullcandy product paired at [address]: the device with that address itself, else the one device that advertises one of [names] (docs/skullcandy/PROTOCOL.md section 17). */
+    suspend fun findSkullcandy(names: List<String>, address: String, log: (String) -> Unit): LeTarget?
 }

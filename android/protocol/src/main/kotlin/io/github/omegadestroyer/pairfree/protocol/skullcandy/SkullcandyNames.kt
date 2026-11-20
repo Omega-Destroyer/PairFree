@@ -1,0 +1,49 @@
+package io.github.omegadestroyer.pairfree.protocol.skullcandy
+
+import io.github.omegadestroyer.pairfree.protocol.Form
+import io.github.omegadestroyer.pairfree.protocol.Model
+
+/** The SDK configurations (`data/skullcandy/sdk_devices.json`) whose features all come over AT lines: [SkullcandyAtSession] talks to these. */
+private val AT_SDK_KEYS = setOf("GRIND", "GRIND_FUEL", "PUSH_ACTIVE", "CHP200")
+
+/** True when Skullcandy's app drives this product with AT lines over the serial service (the Grind, Grind Fuel, Push Active and Crusher ANC 2). */
+public val SkullcandyProduct.usesAt: Boolean get() = sdk in AT_SDK_KEYS
+
+/** True when the app's own AT client reaches this Airoha product over the standard serial port (`00001101-...`): the Airoha models without an SDK configuration, 28 of the 41 once the four Session speakers are left out (docs/skullcandy/PROTOCOL.md section 9.4). */
+public val SkullcandyProduct.usesAtSerial: Boolean get() = chip == "airoha" && sdk == null && enumName !in SPEAKERS
+
+/** True for the five BES models (Icon 180, Dime 540 ANC, Smokin' Buds 360 H and S, Push 180 Open), whose app speaks BES's TOTA protocol over a serial service of its own (docs/skullcandy/PROTOCOL.md section 12). */
+public val SkullcandyProduct.usesBes: Boolean get() = chip == "bes"
+
+/** True for the three products whose SDK configuration puts the settings over Bragi's own protobuf RPC (Method 360 ANC `T99_PLUS`, Method 540 ANC `T120`, Crusher 1080 ANC `CHP300`; docs/skullcandy/PROTOCOL.md section 15). */
+public val SkullcandyProduct.usesRpc: Boolean get() = sdk in RPC_SDK_KEYS
+
+private val RPC_SDK_KEYS = setOf("T99_PLUS", "T120", "CHP300")
+
+/** True for the six older Qualcomm models, which Skullcandy's app drives over Bluetooth LE with its own C-Chip frames (docs/skullcandy/PROTOCOL.md section 17). */
+public val SkullcandyProduct.usesQualcomm: Boolean get() = chip == "qualcomm"
+
+/** True for the Rail (`T70`) and Rail ANC (`T80_PLUS`), whose SDK configurations put every feature on Airoha's RACE over Airoha's own serial service (docs/skullcandy/PROTOCOL.md section 16). */
+public val SkullcandyProduct.usesRail: Boolean get() = sdk == "T70" || sdk == "T80_PLUS"
+
+/** Airoha's own serial service, the Rail's control and RACE channel (the SDK's configuration of the Rail; the Rail ANC's own entry holds a variable the decompiler lost, so it is taken to be the same). */
+public const val AIROHA_SERVICE: String = "FFEEDDCC-BBAA-9988-7766-554433221100"
+
+/** The serial service PairFree opens for the product, or null while no session of ours speaks its protocol (docs/skullcandy/PROTOCOL.md sections 9 to 12). */
+public val SkullcandyProduct.service: String? get() = if (usesAt) SkullcandyServices.AT else if (usesBes) BesTota.SERVICE else if (usesRpc) SkullcandyServices.RPC else if (usesRail) AIROHA_SERVICE else null
+
+/** The serial services Skullcandy's Airoha RACE channel may list (for the models' custom commands, which need a second channel of their own): Bragi's and Airoha's. */
+public val RACE_SERVICES: List<String> = listOf(SkullcandyServices.RACE, "FFEEDDCC-BBAA-9988-7766-554433221100")
+
+/** The Session speakers: speakers are held back (owner, 2026-10-30), so they are found but get no session. */
+private val SPEAKERS = setOf("session360", "session540", "session720", "session900")
+
+private val OVER_EAR = listOf("Crusher", "Hesh", "Aviator", "Riff", "PLYR", "SLYR", "Icon", "Venue", "Cassette")
+
+/** Headphones by the names of the line (the app's manifest does not say); the rest are earbuds. */
+public val SkullcandyProduct.form: Form get() = if (enumName in SPEAKERS) Form.SPEAKER else if (OVER_EAR.any { name.startsWith(it, ignoreCase = true) }) Form.HEADPHONES else Form.EARBUDS
+
+/** The shared screens' model for a Skullcandy product. */
+public fun SkullcandyModels.model(name: String): Model? = fromName(name)?.let { p ->
+    Model(p.name, listOf(p.name) + p.alternateNames, "Skullcandy", fitKeepsAnc = false, form = p.form)
+}

@@ -25,7 +25,7 @@ Almost none of these brands makes a Windows app, so on a PC their earbuds are pl
 
 ## Jabra models
 
-PairFree knows 34 Jabra models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 34 Jabra models. Models that have been tried on real earbuds: Jabra Elite Active 75t.
 
 Jabra support is read from Jabra Sound+ 5.22.0. It has not been tried with PairFree on any product yet.
 
@@ -59,7 +59,7 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td>Jabra Elite 85t</td><td>earbuds</td><td>9421</td><td>battery, noise control, noise levels, modes on the button, equalizer, sidetone, button functions, automatic switch-off, voice prompts, voice language, call sound, mute reminder</td><td>Not tested</td></tr>
 <tr><td>Jabra Elite Active 45e</td><td>neckband</td><td>9362</td><td>battery, equalizer, sidetone, voice prompts, voice language, call sound</td><td>Not tested</td></tr>
 <tr><td>Jabra Elite Active 65t</td><td>earbuds</td><td>9353</td><td>battery, HearThrough, equalizer, sidetone, voice prompts, voice language, call sound, announce the caller</td><td>Not tested</td></tr>
-<tr><td>Jabra Elite Active 75t</td><td>earbuds</td><td>9420</td><td>battery, noise control, noise levels, modes on the button, equalizer, sidetone, button functions, automatic switch-off, voice prompts, voice language, call sound, mute reminder</td><td>Not tested</td></tr>
+<tr><td>Jabra Elite Active 75t</td><td>earbuds</td><td>9420</td><td>battery, noise control, noise levels, modes on the button, equalizer, sidetone, button functions, automatic switch-off, voice prompts, voice language, call sound, mute reminder</td><td>Tested</td></tr>
 <tr><td>Jabra Elite Flex</td><td>headset</td><td>9520</td><td>battery, noise control, noise levels, modes on the button, equalizer, sidetone, automatic switch-off, pause music when taken off, voice prompts, voice language, call sound, mute reminder, busy light, button sounds, reject a waiting call</td><td>Not tested</td></tr>
 <tr><td>Jabra Evolve 65e</td><td>neckband</td><td>9358</td><td>battery, HearThrough, equalizer, sidetone, voice prompts, voice language, call sound, mute reminder, busy light, vibration, button sounds, reject a waiting call</td><td>Not tested</td></tr>
 <tr><td>Jabra Evolve 65t</td><td>earbuds</td><td>9367</td><td>battery, HearThrough, equalizer, sidetone, voice prompts, voice language, call sound, announce the caller</td><td>Not tested</td></tr>
@@ -105,8 +105,9 @@ PairFree controls earbuds of other brands too:
 - [EarFun](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/)
 - [Cambridge Audio](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/)
 - [Sennheiser](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/)
+- [Skullcandy](https://omega-destroyer.github.io/PairFree/open-source-skullcandy-app/)
 - [OnePlus and OPPO](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/)
 
 ---
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, OnePlus or OPPO; the names are used to say which earbuds it works with.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, OnePlus or OPPO; the names are used to say which earbuds it works with.

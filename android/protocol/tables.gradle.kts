@@ -1719,6 +1719,11 @@ abstract class GenerateOneMoreTables : DefaultTask() {
         out.appendLine("/** The preset sounds by the byte 1MORE's app sends for each (data/1more/commands.json, values.preset_sound). */")
         out.appendLine("public val ONEMORE_PRESET_SOUNDS: Map<Int, String> = mapOf(${presets.entries.joinToString(", ") { "${it.key} to ${str(it.value)}" }})")
         out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val classic = (commands.getValue("values") as Map<String, Any?>).getValue("preset_sound_classic") as Map<String, Any?>
+        out.appendLine("/** The older preset sounds, sent as their index (data/1more/commands.json, values.preset_sound_classic). */")
+        out.appendLine("public val ONEMORE_PRESET_SOUNDS_CLASSIC: Map<Int, String> = mapOf(${classic.entries.joinToString(", ") { "${it.key} to ${str(it.value)}" }})")
+        out.appendLine()
         out.appendLine("/** Every model in data/1more/devices.json. */")
         out.appendLine("internal val ONEMORE_MODELS: List<OneMoreModel> = listOf(")
         for (d in devices) {
@@ -1733,6 +1738,7 @@ abstract class GenerateOneMoreTables : DefaultTask() {
             out.appendLine("        autoplay = ${d["autoplay"]}, spatialAudio = ${d["spatial_audio"]}, sleepDetection = ${d["sleep_detection"]}, dualDevice = ${d["dual_device"]}, hotWord = ${d["hot_word"]},")
             out.appendLine("        touch = ${d["touch"]?.let(::str) ?: "null"}, touchAssistant = ${d["touch_assistant"]}, eq = ${strings(d["eq"])},")
             out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]}, lights = ${d["lights"] == true}, sleepMode = ${d["sleep_mode"] == true}, voiceEnhancement = ${d["voice_enhancement"] == true},")
+            out.appendLine("        eqClassic = ${d["eq_classic"] == true}, aliases = ${strings(d["aliases"] ?: emptyList<String>())}, touchLock = ${d["touch_lock"] == true}, longTouch = ${strings(d["long_touch"] ?: emptyList<String>())},")
             @Suppress("UNCHECKED_CAST")
             val bands = (d["eq_bands"] as Map<String, Any?>?)?.let { b ->
                 fun ints(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { (it as Number).toInt().toString() }
@@ -2584,4 +2590,105 @@ val generateJabraTables = tasks.register<GenerateJabraTables>("generateJabraTabl
     devicesJson = rootProject.layout.projectDirectory.file("../data/jabra/devices.json")
     packageName = "io.github.omegadestroyer.pairfree.protocol.jabra"
     outputDir = layout.buildDirectory.dir("generated/jabra")
+}
+
+/** Generated wire constants for skullcandy's protocol-core review draft. */
+abstract class GenerateSkullcandyTables : DefaultTask() {
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val sourceJson: RegularFileProperty
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val sections = JsonSlurper().parse(sourceJson.get().asFile) as Map<String, Any?>
+        val text = StringBuilder("// Generated from data/skullcandy/commands.json; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.skullcandy\n\n")
+        for ((section, raw) in sections.filterKeys { !it.startsWith("_") }) {
+            check(section.matches(Regex("[a-z]+")))
+            text.appendLine("public object Skullcandy${section.replaceFirstChar { it.uppercase() }} {")
+            @Suppress("UNCHECKED_CAST")
+            for ((key, value) in raw as Map<String, Any>) {
+                check(key.matches(Regex("[A-Z_0-9]+")) && (value is String || value is Number))
+                text.appendLine("    public const val $key: ${if (value is String) "String" else "Int"} = ${groovy.json.JsonOutput.toJson(value)}")
+            }
+            text.appendLine("}")
+        }
+        val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/skullcandy/SkullcandyTables.kt")
+        target.parentFile.mkdirs()
+        target.writeText(text.toString())
+    }
+}
+val generateSkullcandyTables = tasks.register<GenerateSkullcandyTables>("generateSkullcandyTables") {
+    sourceJson = rootProject.layout.projectDirectory.file("../data/skullcandy/commands.json")
+    outputDir = layout.buildDirectory.dir("generated/skullcandy")
+}
+
+/** Writes the Skullcandy product table from data/skullcandy/devices.json (the app's manifest joined to its chip table). */
+abstract class GenerateSkullcandyProducts : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val modesJson: RegularFileProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val data = JsonSlurper().parse(devicesJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val products = data.getValue("products") as List<Map<String, Any?>>
+        fun str(v: Any?) = "\"" + (v as String).replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\\$") + "\""
+        fun strings(v: Any?) = ((v as List<*>?) ?: emptyList<Any?>()).joinToString(", ", "listOf<String>(", ")") { str(it) }
+        val out = StringBuilder("// Generated from data/skullcandy/devices.json by the generateSkullcandyModels task. Do not edit.\n")
+        out.appendLine("package io.github.omegadestroyer.pairfree.protocol.skullcandy")
+        out.appendLine()
+        out.appendLine("/** One product of Skullcandy's app (5.0.6), by its product id, with the chip family the app puts it on and the features its firmware lists. */")
+        out.appendLine("public class SkullcandyProduct(")
+        out.appendLine("    public val id: Int,")
+        out.appendLine("    public val name: String,")
+        out.appendLine("    public val enumName: String,")
+        out.appendLine("    public val modelIds: List<String>,")
+        out.appendLine("    public val alternateNames: List<String>,")
+        out.appendLine("    public val sdkNames: List<String>,")
+        out.appendLine("    public val android: List<String>,")
+        out.appendLine("    public val chip: String,")
+        out.appendLine("    public val sdk: String?,")
+        out.appendLine("    public val features: Set<String>,")
+        out.appendLine(")")
+        out.appendLine()
+        out.appendLine("public object SkullcandyProducts {")
+        out.appendLine("    public val ALL: List<SkullcandyProduct> = listOf(")
+        for (p in products) {
+            val id = Integer.decode(p["id"] as String)
+            val sdk = (p["sdk"] as String?)?.let { str(it) } ?: "null"
+            out.appendLine("        SkullcandyProduct($id, ${str(p["name"])}, ${str(p["enum"])}, ${strings(p["models"])}, ${strings(p["alternate_names"])}, ${strings(p["sdk_names"])}, ${strings(p["android"])}, ${str(p["chip"])}, $sdk, ${strings(p["features"])}.toSet()),")
+        }
+        out.appendLine("    )")
+        out.appendLine("}")
+        @Suppress("UNCHECKED_CAST")
+        val modes = (JsonSlurper().parse(modesJson.get().asFile) as Map<String, Any?>).getValue("modes") as Map<String, Map<String, Any?>>
+        out.appendLine()
+        out.appendLine("/** The equalizer modes each product offers, by the app's enum name, with the number each is sent as (data/skullcandy/eq_modes.json): 1 to 7 pick a preset the earbuds hold, 101 and up are custom curves. */")
+        out.appendLine("public object SkullcandyEqModes {")
+        out.appendLine("    public val BY_ENUM: Map<String, List<Pair<String, Int>>> = mapOf(")
+        for ((product, row) in modes) {
+            out.appendLine("        ${str(product)} to listOf(" + row.entries.joinToString(", ") { "${str(it.key)} to ${(it.value as Number).toInt()}" } + "),")
+        }
+        out.appendLine("    )")
+        out.appendLine("}")
+        val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/skullcandy/SkullcandyProducts.kt")
+        target.parentFile.mkdirs()
+        target.writeText(out.toString())
+    }
+}
+
+val generateSkullcandyModels = tasks.register<GenerateSkullcandyProducts>("generateSkullcandyModels") {
+    devicesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/devices.json")
+    modesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/eq_modes.json")
+    outputDir = layout.buildDirectory.dir("generated/skullcandyProducts")
 }

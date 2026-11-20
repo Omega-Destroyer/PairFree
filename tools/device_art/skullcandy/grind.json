@@ -1,0 +1,21 @@
+{
+ "name": "Grind / Grind Fuel",
+ "names": [
+  "Grind",
+  "Grind Fuel"
+ ],
+ "codes": [
+  "Grind",
+  "Grind Fuel"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_grind_black, the left bud of the pair; the Grind Fuel shares it), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "136,79 160,81 191,89 214,102 234,123 247,147 273,213 274,234 268,264 259,287 247,309 230,329 212,343 195,351 179,354 129,356 126,359 128,372 125,380 115,391 97,403 84,408 66,411 41,408 20,394 6,374 2,360 4,331 14,313 30,297 48,286 63,287 66,285 69,240 75,215 67,164 70,139 78,117 86,104 98,92 116,84",
+  "axis": [
+   138.1,
+   245.5
+  ]
+ },
+ "case": "generic"
+}

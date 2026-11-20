@@ -42,6 +42,13 @@ class EqOpener(
     /** The source whose screen is open, and the earbuds it was opened for; null while none is. */
     private var open: Pair<String, EqSource>? = null
 
+    /**
+     * True from opening a source until its first report reached the screen. The EQ can open before the earbuds have said what they hold
+     * (the connection opens it on its first answer, the EQ's own replies come later), so a later opening of the same source reports
+     * again until one report has gone through (found with a virtual PistonBuds PRO Q30).
+     */
+    private var unreported = false
+
     /** Galaxy Buds whose custom curve went out again on this connection, so it goes once. */
     private var samsungCurveResent: String? = null
 
@@ -60,11 +67,13 @@ class EqOpener(
         }
         if (current != null && current.first == device.address && current.second.key == source.key && equalizer.state.value != null) {
             equalizer.open(device.address, model, source.layout, source.target)
+            if (unreported) report()
             return
         }
         // Another band set, or a curve that arrived later: the screen starts again over the new layout.
         if (current != null && current.first == device.address) equalizer.open(device.address, null)
         open = device.address to source
+        unreported = true
         equalizer.open(device.address, model, source.layout, source.target)
         report()
     }
@@ -74,6 +83,7 @@ class EqOpener(
         val (address, source) = open ?: return
         val state = equalizer.state.value ?: return
         val reported = source.reported(state.setting.gains) ?: return
+        unreported = false
         equalizer.reported(reported.profileId, reported.gains)
         if (reported.resendCustom && samsungCurveResent != address) {
             // The earbuds hold a custom curve but forget its values when they power off: it goes out again, once per connection.

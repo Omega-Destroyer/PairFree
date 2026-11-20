@@ -108,4 +108,7 @@ class AndroidTransport(private val context: Context?, private val adapter: Bluet
 
     override suspend fun findSennheiser(names: List<String>, address: String, log: (String) -> Unit): LeTarget? =
         adapter?.let { SennheiserFinder(it, log).find(names, address) }?.let(::Target)
+
+    override suspend fun findSkullcandy(names: List<String>, address: String, log: (String) -> Unit): LeTarget? =
+        adapter?.let { SkullcandyFinder(it, log).find(names, address) }?.let(::Target)
 }

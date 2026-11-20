@@ -36,6 +36,8 @@ class GapAuditTest {
         Brand("sennheiser", "sennheiser", listOf("SennheiserCommands"), "sennheiser", listOf("Sennheiser")),
         // Jabra's settings are data (settings.json), every one drawn by the generic rows; the table's constants are its wire values.
         Brand("jabra", "jabra", listOf("JabraWire"), "jabra", listOf("Jabra")),
+        // Skullcandy's table holds wire constants (the Bragi frame and RPC header, the device service, the serial services); its features are the manifest's and each session's rows.
+        Brand("skullcandy", "skullcandy", listOf("SkullcandyWire", "SkullcandyRpc", "SkullcandyCommand", "SkullcandyServices"), "skullcandy", listOf("Skullcandy")),
     )
 
     private val listed: JsonObject = Json.parseToJsonElement(repoFile("data/unused_ids.json").readText()).jsonObject

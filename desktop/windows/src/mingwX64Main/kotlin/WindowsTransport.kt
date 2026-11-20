@@ -57,6 +57,8 @@ class WindowsTransport : Transport {
 
     override suspend fun findSennheiser(names: List<String>, address: String, log: (String) -> Unit): LeTarget? = LeScan.findSennheiser(names, address, log)
 
+    override suspend fun findSkullcandy(names: List<String>, address: String, log: (String) -> Unit): LeTarget? = LeScan.findSkullcandy(names, address, log)
+
     companion object {
         /** What the connection and the reports say about this computer. */
         val platform = PlatformInfo(

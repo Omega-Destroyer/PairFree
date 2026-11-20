@@ -2,7 +2,7 @@
 
 PairFree is a free, open-source app that controls wireless earbuds and headphones of many brands from one place, on **Android and on Windows**. It
 is an alternative to the Soundcore, Bose Music, JBL Headphones, Sony | Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio (SOUNDPEATS), QCY,
-1MORE, EarFun, Melomania (Cambridge Audio), Sennheiser Smart Control, Jabra Sound+ and HeyMelody (OnePlus and OPPO) apps, and a way to change AirPods
+1MORE, EarFun, Melomania (Cambridge Audio), Sennheiser Smart Control, Jabra Sound+, Skullcandy and HeyMelody (OnePlus and OPPO) apps, and a way to change AirPods
 and Pixel Buds settings on Android: noise cancelling, the equalizer, touch controls and more, with no account and no internet.
 
 ## Now on Windows
@@ -88,7 +88,7 @@ colours; on Windows, its accent colour) and **Sketchbook** (hand-drawn). A new l
 </p>
 
 PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing (and its
-CMF brand), Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, OnePlus or OPPO.
+CMF brand), Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, OnePlus or OPPO.
 
 ## Supported brands
 
@@ -108,13 +108,14 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | Nothing Ear |
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
 | [QCY](docs/devices/qcy.md) | 194 | QCY H3 Pro, QCY T13 ANC2 |
-| [1MORE](docs/devices/1more.md) | 39 | — |
+| [1MORE](docs/devices/1more.md) | 48 | — |
 | [EarFun](docs/devices/earfun.md) | 26 | — |
 | [Cambridge Audio](docs/devices/cambridge.md) | 8 | — |
 | [OnePlus and OPPO](docs/devices/oneplus.md) | 53 | OnePlus Buds 4 |
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | — |
-| [Jabra](docs/devices/jabra.md) | 34 | — |
-| **Total: 16 brands** | **781** | **19 tried** |
+| [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
+| [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
+| **Total: 17 brands** | **846** | **20 tried** |
 <!-- devices-summary:end -->
 
 ## Help add your model
@@ -168,6 +169,7 @@ Each brand also has a page on the [web site](https://omega-destroyer.github.io/P
 - [Open-source Cambridge Audio Melomania app alternative](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/)
 - [Open-source Sennheiser Smart Control alternative](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/)
 - [Open-source Jabra Sound+ alternative](https://omega-destroyer.github.io/PairFree/open-source-jabra-app/)
+- [Open-source Skullcandy app alternative](https://omega-destroyer.github.io/PairFree/open-source-skullcandy-app/)
 - [Open-source HeyMelody alternative for OnePlus and OPPO earbuds](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/)
 <!-- site-links:end -->
 

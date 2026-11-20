@@ -1,0 +1,19 @@
+{
+ "name": "1MORE ComfoBuds 2",
+ "names": [
+  "1MORE ComfoBuds 2"
+ ],
+ "codes": [
+  "ES303"
+ ],
+ "source": "Traced from the render 1MORE Life 5.0.3 bundles (es303_color_black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "217,65 241,67 261,77 275,95 281,118 275,143 259,163 256,175 248,236 243,329 238,336 229,340 217,337 210,328 204,215 196,166 190,159 178,156 165,142 161,136 159,125 160,105 166,95 180,81",
+  "axis": [
+   226.5,
+   139.6
+  ]
+ },
+ "case": "generic"
+}

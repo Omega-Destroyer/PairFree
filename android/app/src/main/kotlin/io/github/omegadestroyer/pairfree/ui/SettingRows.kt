@@ -229,7 +229,7 @@ private val CONFIRM_CHOICES = setOf("sh_peer_delete")
 private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
-private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find")
+private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://play.google.com/store/apps/details?id=com.thetileapp.tile")
 
 @Composable
 private fun groupTitle(key: String): String = stringResource(
@@ -246,6 +246,7 @@ private fun groupTitle(key: String): String = stringResource(
         "noise_adaptive" -> R.string.setting_group_noise_adaptive
         "find" -> R.string.find_earbuds
         "find_hub" -> R.string.setting_group_find_hub
+        "sk_tile" -> R.string.setting_group_sk_tile
         "light" -> R.string.setting_group_light
         "touch_left" -> R.string.setting_group_touch_left
         "touch_right" -> R.string.setting_group_touch_right
@@ -260,7 +261,8 @@ private fun groupTitle(key: String): String = stringResource(
         "attention" -> R.string.setting_group_attention
         "ef_quality" -> R.string.setting_group_sound_quality
         "power" -> R.string.setting_group_power
-        "ef_buttons" -> R.string.setting_group_buttons
+        "ef_buttons", "sk_buttons" -> R.string.setting_group_buttons
+        "sk_voice" -> R.string.setting_sk_voice_group
         "ca_eq" -> R.string.setting_ca_eq
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
@@ -281,6 +283,7 @@ private fun groupNote(key: String): String? = when (key) {
     "sh_fit" -> stringResource(R.string.setting_sh_fit_note)
     "sh_auracast" -> stringResource(R.string.setting_sh_auracast_note)
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
+    "sk_tile" -> stringResource(R.string.setting_sk_tile_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
     "ca_eq" -> stringResource(R.string.setting_ca_eq_note)
@@ -317,6 +320,36 @@ private fun efCycleTitle(key: String): String {
 
 @Composable
 private fun settingTitle(key: String): String = if (key.startsWith("jb_")) stringResource(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: R.string.unknown) else when (key) {
+    "sk_transparency_level" -> stringResource(R.string.setting_sk_transparency_level)
+    "sk_anc_level" -> stringResource(R.string.setting_sk_anc_level)
+    "sk_gaming_mode" -> stringResource(R.string.setting_sk_gaming_mode)
+    "sk_wear_detect" -> stringResource(R.string.setting_sk_wear_detect)
+    "sk_sidetone" -> stringResource(R.string.setting_sk_sidetone)
+    "sk_touch_control" -> stringResource(R.string.setting_sk_touch_control)
+    "sk_anc_profile" -> stringResource(R.string.setting_sk_anc_profile)
+    "sk_transparency_profile" -> stringResource(R.string.setting_sk_transparency_profile)
+    "sk_sidetone_level" -> stringResource(R.string.setting_sk_sidetone_level)
+    "sk_wear_transparency" -> stringResource(R.string.setting_sk_wear_transparency)
+    "sk_crusher_active" -> stringResource(R.string.setting_sk_crusher_active)
+    "sk_crusher_intensity" -> stringResource(R.string.setting_sk_crusher_intensity)
+    "sk_crusher_mode" -> stringResource(R.string.setting_sk_crusher_mode)
+    "sk_spatial" -> stringResource(R.string.setting_sk_spatial)
+    "sk_reduced_prompts" -> stringResource(R.string.setting_sk_reduced_prompts)
+    "sk_battery_prompt" -> stringResource(R.string.setting_sk_battery_prompt)
+    "sk_language" -> stringResource(R.string.setting_sk_language)
+    "sk_rbutton_left_single" -> stringResource(R.string.setting_sk_rbutton_left_single)
+    "sk_rbutton_left_double" -> stringResource(R.string.setting_sk_rbutton_left_double)
+    "sk_rbutton_left_triple" -> stringResource(R.string.setting_sk_rbutton_left_triple)
+    "sk_rbutton_left_hold" -> stringResource(R.string.setting_sk_rbutton_left_hold)
+    "sk_rbutton_right_single" -> stringResource(R.string.setting_sk_rbutton_right_single)
+    "sk_rbutton_right_double" -> stringResource(R.string.setting_sk_rbutton_right_double)
+    "sk_rbutton_right_triple" -> stringResource(R.string.setting_sk_rbutton_right_triple)
+    "sk_rbutton_right_hold" -> stringResource(R.string.setting_sk_rbutton_right_hold)
+    "sk_voice_language" -> stringResource(R.string.setting_sk_voice_language)
+    "sk_button_single" -> stringResource(R.string.setting_sk_button_single)
+    "sk_button_double" -> stringResource(R.string.setting_sk_button_double)
+    "sk_button_triple" -> stringResource(R.string.setting_sk_button_triple)
+    "sk_button_hold" -> stringResource(R.string.setting_sk_button_hold)
     "op_eq_preset" -> stringResource(R.string.setting_op_eq_preset)
     "op_noise_level" -> stringResource(R.string.setting_op_noise_level)
     "op_custom_eq" -> stringResource(R.string.setting_op_custom_eq)
@@ -482,6 +515,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "ambient_custom_right" -> stringResource(R.string.setting_ambient_custom_right)
     "ambient_custom_tone" -> stringResource(R.string.setting_ambient_custom_tone)
     "touch_controls" -> stringResource(R.string.touch_controls)
+    "touch_lock" -> stringResource(R.string.setting_touch_lock)
     "touch_single" -> stringResource(R.string.setting_touch_single)
     "touch_double" -> stringResource(R.string.setting_touch_double)
     "touch_triple" -> stringResource(R.string.setting_touch_triple)
@@ -760,6 +794,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "voice_guidance_volume" -> stringResource(R.string.setting_voice_guidance_volume)
     // EarFun (EarfunSession)
     "ef_anc_mode" -> stringResource(R.string.setting_ef_anc_mode)
+    "ef_anc_level" -> stringResource(R.string.setting_anc_scene_level)
     "ef_ambient_mode" -> stringResource(R.string.setting_transparency_mode)
     "ef_prompt_volume", "prompt_volume" -> stringResource(R.string.setting_ef_prompt_volume)
     "ef_hearing_protection" -> stringResource(R.string.setting_hearing_protection)
@@ -1017,6 +1052,22 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     key.startsWith("sh_nautilus_") && key != "sh_nautilus_anc" && key != "sh_nautilus_anc_state" && key != "sh_nautilus_preset" && key != "sh_nautilus_anc_middle" -> getString(when (option) {
         "off" -> R.string.action_off; "on" -> R.string.setting_sh_nautilus_on; "low" -> R.string.setting_level_low; "medium" -> R.string.setting_level_medium; "high" -> R.string.setting_level_high
         "near" -> R.string.setting_sh_nautilus_near; "far" -> R.string.setting_sh_nautilus_far; "rumble" -> R.string.setting_sh_nautilus_rumble; "thump" -> R.string.setting_sh_nautilus_thump; else -> R.string.setting_sh_nautilus_voice
+    })
+    key == "sk_crusher_mode" -> getString(when (option) { "high" -> R.string.setting_level_high; "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_low })
+    key == "sk_spatial" -> getString(when (option) { "off" -> R.string.action_off; "fixed_to_head" -> R.string.setting_sk_spatial_head; else -> R.string.setting_sk_spatial_room })
+    key == "sk_language" -> option
+    key.startsWith("sk_button_") || key.startsWith("sk_rbutton_") -> getString(when (option) {
+        "stay_aware" -> R.string.setting_sk_action_stay_aware
+        "spotify" -> R.string.setting_sk_action_spotify
+        "none" -> R.string.setting_sk_action_none
+        "spatial" -> R.string.setting_sk_action_spatial
+        "play_pause" -> R.string.setting_sk_action_play_pause
+        "track_back" -> R.string.setting_sk_action_track_back
+        "track_forward" -> R.string.setting_sk_action_track_forward
+        "volume_down" -> R.string.setting_sk_action_volume_down
+        "volume_up" -> R.string.setting_sk_action_volume_up
+        "take_photo" -> R.string.setting_sk_action_take_photo
+        else -> R.string.setting_sk_action_voice_assistant
     })
     key == "sh_auto_off" -> if (option == "0") getString(R.string.action_off) else getString(R.string.setting_power_off_timer_minutes, option.toInt())
     key == "sh_tap_sensitivity" || key == "sh_transparency_level" -> getString(when (option) { "low" -> R.string.setting_level_low; "mid", "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_high })
@@ -1305,11 +1356,16 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "switch_device" -> R.string.setting_op_switch_device
             "switch_song" -> R.string.action_previous_next
             "switch_calls" -> R.string.action_switch_calls
+            // 1MORE's touch and hold: the noise mode it switches to
+            "high" -> R.string.setting_level_high
+            "low" -> R.string.setting_level_low
+            "wind" -> R.string.scene_wind
             else -> R.string.action_other
         },
     )
     key == "voice_detect_wait" -> getString(R.string.setting_seconds, option.toIntOrNull() ?: 0)
-    key == "ef_anc_mode" -> when (option) {
+    key == "ef_anc_level" || key == "ef_anc_mode" -> when (option) {
+        "manual" -> getString(R.string.setting_ef_manual)
         "level1", "level2", "level3", "level4" -> getString(R.string.scene_level, option.last().digitToInt())
         "anc1" -> getString(R.string.setting_ef_anc_number, 1)
         "anc2" -> getString(R.string.setting_ef_anc_number, 2)
@@ -1541,6 +1597,7 @@ private fun actionStart(key: String): Int = when (key) {
     "op_eq_new" -> R.string.setting_op_eq_new
     "find" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open
+    "sk_tile" -> R.string.setting_sk_tile_open
     "nc_optimizer" -> R.string.setting_nc_optimizer_start
     "restart" -> R.string.setting_restart
     "power_off" -> R.string.setting_power_off
@@ -1550,6 +1607,8 @@ private fun actionStart(key: String): Int = when (key) {
     "sh_find_right" -> R.string.setting_sh_find_right
     "sh_fit_test" -> R.string.setting_sh_fit_start
     "sh_auracast_scan" -> R.string.setting_sh_auracast_scan
+    "sk_voice_on" -> R.string.setting_sk_voice_on
+    "sk_voice_off" -> R.string.setting_sk_voice_off
     else -> R.string.setting_action_start
 }
 

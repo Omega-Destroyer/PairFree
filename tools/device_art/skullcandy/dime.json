@@ -1,0 +1,21 @@
+{
+ "name": "Dime 2 / Dime XT2",
+ "names": [
+  "Dime 2",
+  "Dime XT2"
+ ],
+ "codes": [
+  "Dime 2",
+  "Dime XT2"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_dime_gray, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "160,18 183,20 204,27 225,38 242,52 256,68 271,92 280,115 284,141 282,176 270,209 253,231 221,257 215,266 228,373 223,401 214,415 198,430 179,439 162,441 148,440 130,434 116,425 106,413 96,388 78,273 73,269 44,261 25,247 7,221 1,193 5,170 15,151 28,134 38,97 58,65 80,46 102,32 133,22",
+  "axis": [
+   142.5,
+   229.4
+  ]
+ },
+ "case": "generic"
+}

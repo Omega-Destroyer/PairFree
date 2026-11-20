@@ -187,4 +187,20 @@ internal object LeScan {
         log("scan found ${if (found == null) "nothing" else "the product"}")
         return found?.let { WinLeTarget(it) }
     }
+
+    /** A Skullcandy product paired at [address]: the device with the classic address itself, else the one device whose advertised name is one of the model's (docs/skullcandy/PROTOCOL.md section 17). */
+    suspend fun findSkullcandy(names: List<String>, address: String, log: (String) -> Unit): LeTarget? {
+        var sure: String? = null
+        val byName = mutableMapOf<String, String>()
+        scan(SCAN_MS, log) { a ->
+            when {
+                a.address.equals(address, ignoreCase = true) -> { sure = a.address; true }
+                names.any { it.equals(a.name, ignoreCase = true) } -> { byName[a.address] = a.address; false }
+                else -> false
+            }
+        }
+        val found = sure ?: byName.values.singleOrNull()
+        log("scan found ${if (found == null) "nothing" else "the product"}")
+        return found?.let { WinLeTarget(it) }
+    }
 }

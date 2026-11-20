@@ -92,6 +92,7 @@
 
     <string name="connected">Connected</string>
     <string name="reconnecting">Reconnecting…</string>
+    <string name="disconnected">Disconnected</string>
     <string name="firmware">Firmware %1$s</string>
     <string name="switch_earbuds">Switch</string>
     <string name="reading">Reading the earbuds…</string>
@@ -186,7 +187,7 @@
     <string name="eq_delete_body">The profile is removed from this phone. The earbuds keep the sound they have now.</string>
     <string name="eq_note_reported">The earbuds report their EQ, so this shows what they hold, whichever app set it.</string>
     <string name="eq_note_samsung">The earbuds report which preset they use, but not a custom curve, and they forget a custom curve when they turn off. PairFree keeps the last one it set and sends it again each time it connects.</string>
-    <string name="eq_preset_applied_by_earbuds">The earbuds apply this preset themselves. Samsung does not publish its curve.</string>
+    <string name="eq_preset_applied_by_earbuds">The earbuds apply this preset themselves. Their maker does not publish its curve.</string>
     <string name="eq_note">0 dB on every band is the earbuds\' own tuning. The earbuds cannot report their EQ, so each time PairFree connects it puts back the one this phone last set, as the official app does.</string>
 
     <string name="taps">Taps</string>
@@ -314,6 +315,7 @@
     <string name="setting_touch_double">Double tap</string>
     <string name="setting_touch_triple">Triple tap</string>
     <string name="setting_touch_hold">Touch and hold</string>
+    <string name="setting_touch_lock">Turn off touch controls</string>
     <string name="setting_touch_double_call">Double tap during calls</string>
     <string name="setting_touch_hold_call">Touch and hold during calls</string>
     <string name="setting_hold_side">Touch and hold, %1$s</string>
@@ -341,6 +343,9 @@
     <string name="setting_find_hub_open">Open Find Hub</string>
     <string name="setting_find_hub_note">Google\'s Find Hub rings and finds Pixel Buds. It uses a key the earbuds share with your Google account, which only Google Play services holds, so PairFree opens Find Hub, as the Pixel Buds app leaves it to Play services.</string>
     <string name="setting_group_find_hub">Find my earbuds</string>
+    <string name="setting_group_sk_tile">Find with Tile</string>
+    <string name="setting_sk_tile_note">These earbuds carry Tile\'s tracker, which only Tile\'s own app and account can use to ring them or show where they were last. PairFree opens Tile\'s app (or its page) and does nothing more.</string>
+    <string name="setting_sk_tile_open">Open Tile</string>
     <string name="setting_find_stop">Stop beeping</string>
     <string name="setting_find_mute">Mute %1$s</string>
     <string name="setting_action_start">Start</string>
@@ -704,10 +709,57 @@
     <string name="setting_sleep_default_listening_mode">Mode when the earbuds start</string>
     <string name="setting_sleep_mode_bluetooth">Bluetooth</string>
     <string name="setting_sleep_mode_local">Local</string>
-    <string name="setting_sleep_noise_canceling_prompt">Voice prompt for noise cancelling</string>
-    <string name="setting_sleep_listening_mode_prompt">Voice prompt for listening mode</string>
-    <string name="setting_sleep_auto_power_off_prompt">Voice prompt before power-off</string>
+    <string name="setting_sleep_noise_canceling_prompt">Tone when noise cancelling is switched on or off</string>
+    <string name="setting_sleep_listening_mode_prompt">Voice prompt when switching between Bluetooth and Local</string>
+    <string name="setting_sleep_auto_power_off_prompt">Tone when the earbuds turn themselves off</string>
     <string name="setting_sleep_calls_during_bluetooth">Calls ring in Bluetooth mode</string>
+    <!-- Skullcandy -->
+    <string name="setting_sk_transparency_level">Transparency level</string>
+    <string name="setting_sk_anc_level">Noise cancelling strength</string>
+    <string name="setting_sk_gaming_mode">Gaming mode (low latency)</string>
+    <string name="setting_sk_wear_detect">Wear detection (pause when taken off)</string>
+    <string name="setting_sk_sidetone">Sidetone (hear your own voice on calls)</string>
+    <string name="setting_sk_touch_control">Touch controls</string>
+    <string name="setting_sk_anc_profile">Noise cancelling profile</string>
+    <string name="setting_sk_transparency_profile">Transparency profile</string>
+    <string name="setting_sk_sidetone_level">Sidetone volume</string>
+    <string name="setting_sk_wear_transparency">Switch to transparency when taken off</string>
+    <string name="setting_sk_crusher_active">Crusher haptic bass</string>
+    <string name="setting_sk_crusher_intensity">Crusher intensity</string>
+    <string name="setting_sk_crusher_mode">Crusher mode</string>
+    <string name="setting_sk_spatial">Spatial audio</string>
+    <string name="setting_sk_spatial_head">Fixed to your head</string>
+    <string name="setting_sk_spatial_room">Fixed to the room (head tracking)</string>
+    <string name="setting_sk_reduced_prompts">Fewer voice prompts</string>
+    <string name="setting_sk_battery_prompt">Battery prompt when turning on</string>
+    <string name="setting_sk_language">Voice prompt language</string>
+    <string name="setting_sk_rbutton_left_single">Left earbud: single press</string>
+    <string name="setting_sk_rbutton_left_double">Left earbud: double press</string>
+    <string name="setting_sk_rbutton_left_triple">Left earbud: triple press</string>
+    <string name="setting_sk_rbutton_left_hold">Left earbud: press and hold</string>
+    <string name="setting_sk_rbutton_right_single">Right earbud: single press</string>
+    <string name="setting_sk_rbutton_right_double">Right earbud: double press</string>
+    <string name="setting_sk_rbutton_right_triple">Right earbud: triple press</string>
+    <string name="setting_sk_rbutton_right_hold">Right earbud: press and hold</string>
+    <string name="setting_sk_action_stay_aware">Switch transparency</string>
+    <string name="setting_sk_action_spotify">Spotify one-touch</string>
+    <string name="setting_sk_action_spatial">Cycle spatial audio</string>
+    <string name="setting_sk_action_none">No action</string>
+    <string name="setting_sk_voice_language">Voice control language</string>
+    <string name="setting_sk_voice_group">Voice control</string>
+    <string name="setting_sk_voice_on">Turn voice control on</string>
+    <string name="setting_sk_voice_off">Turn voice control off</string>
+    <string name="setting_sk_button_single">Single press</string>
+    <string name="setting_sk_button_double">Double press</string>
+    <string name="setting_sk_button_triple">Triple press</string>
+    <string name="setting_sk_button_hold">Press and hold</string>
+    <string name="setting_sk_action_play_pause">Play / pause</string>
+    <string name="setting_sk_action_track_back">Previous track</string>
+    <string name="setting_sk_action_track_forward">Next track</string>
+    <string name="setting_sk_action_volume_down">Volume down</string>
+    <string name="setting_sk_action_volume_up">Volume up</string>
+    <string name="setting_sk_action_take_photo">Take a photo</string>
+    <string name="setting_sk_action_voice_assistant">Voice assistant</string>
     <string name="setting_sleep_timer">Sleep timer</string>
     <string name="setting_sleep_timer_note">The earbuds stop the audio after the time chosen.</string>
     <string name="setting_group_touch_dial_note">Double press and hold the dial to lock or unlock it.</string>
@@ -1030,6 +1082,7 @@
     <string name="setting_nc_optimizer_stop">Stop optimising</string>
     <string name="eq_earfun">This EarFun model has no equalizer in EarFun\'s app.</string>
     <string name="setting_ef_anc_mode">Noise cancelling mode</string>
+    <string name="setting_ef_manual">Manual</string>
     <string name="setting_ef_standard">Standard</string>
     <string name="setting_ef_balanced">Balanced</string>
     <string name="setting_ef_ear_adaptive">Adapts to your ears</string>
@@ -1383,27 +1436,47 @@
     <!-- BEGIN EQ PRESET NAMES: generated by tools/gen_vendor_strings.py. In this English file, do not edit by hand. -->
     <!-- Names PairFree gives the vendors' presets. Translate these. -->
     <string name="preset_name_acoustic">Acoustic</string>
+    <string name="preset_name_acoustic_1">Acoustic 1</string>
+    <string name="preset_name_acoustic_2">Acoustic 2</string>
     <string name="preset_name_balanced">Balanced</string>
     <string name="preset_name_bass_boost">Bass boost</string>
     <string name="preset_name_bass_booster">Bass booster</string>
+    <string name="preset_name_bass_booster_1">Bass booster 1</string>
+    <string name="preset_name_bass_booster_2">Bass booster 2</string>
     <string name="preset_name_bass_reducer">Bass reducer</string>
+    <string name="preset_name_bass_reducer_1">Bass reducer 1</string>
+    <string name="preset_name_bass_reducer_2">Bass reducer 2</string>
     <string name="preset_name_classical">Classical</string>
+    <string name="preset_name_classical_1">Classical 1</string>
+    <string name="preset_name_classical_2">Classical 2</string>
     <string name="preset_name_clear">Clear</string>
     <string name="preset_name_deep">Deep</string>
+    <string name="preset_name_deep_1">Deep 1</string>
+    <string name="preset_name_deep_2">Deep 2</string>
+    <string name="preset_name_default">Default</string>
     <string name="preset_name_dynamic">Dynamic</string>
     <string name="preset_name_electronic">Electronic</string>
+    <string name="preset_name_electronic_1">Electronic 1</string>
+    <string name="preset_name_electronic_2">Electronic 2</string>
+    <string name="preset_name_hip_hop_1">Hip-Hop 1</string>
+    <string name="preset_name_hip_hop_2">Hip-Hop 2</string>
     <string name="preset_name_hip_hop">Hip-hop</string>
     <string name="preset_name_last_saved">Last saved</string>
     <string name="preset_name_lounge">Lounge</string>
+    <string name="preset_name_lounge_1">Lounge 1</string>
+    <string name="preset_name_lounge_2">Lounge 2</string>
     <string name="preset_name_more_bass">More bass</string>
     <string name="preset_name_more_treble">More treble</string>
     <string name="preset_name_normal">Normal</string>
     <string name="preset_name_podcast">Podcast</string>
     <string name="preset_name_pop">Pop</string>
+    <string name="preset_name_pop_1">Pop 1</string>
+    <string name="preset_name_pop_2">Pop 2</string>
     <string name="preset_name_soft">Soft</string>
     <string name="preset_name_sound_by_luca">Sound by Luca</string>
     <string name="preset_name_studio">Studio</string>
     <string name="preset_name_treble_boost">Treble boost</string>
+    <string name="preset_name_vocal_booster">Vocal booster</string>
     <string name="preset_name_voice">Voice</string>
     <string name="preset_name_voice_enhancement">Voice enhancement</string>
 
@@ -1446,7 +1519,7 @@
     <string name="vendor_club">Club</string>
     <string name="vendor_diablo_gaming_mode">Diablo gaming mode</string>
     <string name="vendor_extreme_bass">Extreme bass</string>
-    <string name="vendor_fps">Fps</string>
+    <string name="vendor_fps_4">Fps</string>
     <string name="vendor_funk">Funk</string>
     <string name="vendor_high_end_boost">High end boost</string>
     <string name="vendor_long_session">Long session</string>
@@ -1485,8 +1558,6 @@
     <string name="vendor_thundering_bass">Thundering bass</string>
     <string name="vendor_ultimate_sound">Ultimate sound</string>
     <string name="vendor_vibrant">Vibrant</string>
-    <!-- OnePlus, Pixel Buds -->
-    <string name="vendor_default">Default</string>
     <!-- OnePlus, SOUNDPEATS, Soundcore -->
     <string name="vendor_classic">Classic</string>
     <!-- OnePlus, Soundcore -->
@@ -1514,8 +1585,18 @@
     <string name="vendor_treble_enhancement">Treble enhancement</string>
     <!-- SOUNDPEATS, Sennheiser -->
     <string name="vendor_hip_hop_2">Hip hop</string>
-    <!-- Sennheiser -->
+    <!-- Sennheiser, Skullcandy -->
     <string name="vendor_movie">Movie</string>
+    <!-- Skullcandy -->
+    <string name="vendor_bass_boost">Bass Boost</string>
+    <string name="vendor_fps">FPS</string>
+    <string name="vendor_indoor">Indoor</string>
+    <string name="vendor_mmo">MMO</string>
+    <string name="vendor_music">Music</string>
+    <string name="vendor_outdoor">Outdoor</string>
+    <string name="vendor_rpg">RPG</string>
+    <string name="vendor_signature">Signature</string>
+    <string name="vendor_supreme_sound">Supreme Sound</string>
     <!-- Sony -->
     <string name="vendor_artist_collaboration_1">Artist collaboration 1</string>
     <string name="vendor_artist_collaboration_10">Artist collaboration 10</string>

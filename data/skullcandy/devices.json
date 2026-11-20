@@ -1,0 +1,6934 @@
+{
+  "_about": "Skullcandy 5.0.6's product manifest joined to the app's chip table and the Bragi SDK's configurations, by tools/import_skullcandy_manifest.py. `features` is the union over the firmware entries; `firmware` keeps each version's own list (the app shows the selected firmware's, not the union).",
+  "unsupported_names": [
+    "Dime",
+    "Dime 2",
+    "Dime 2-Light Gray",
+    "Dime 2-Dark Blue",
+    "Dime 2-Black",
+    "Jib True",
+    "Jib True RC",
+    "Jib True XT 2",
+    "Riff Wireless",
+    "Sesh Evo",
+    "MOD 180"
+  ],
+  "products": [
+    {
+      "id": "0x01",
+      "name": "Crusher ANC",
+      "enum": "crusherANC",
+      "models": [
+        "S6CPW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "ble"
+      ],
+      "chip": "qualcomm",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "5.3.2",
+          "features": [
+            "personalSound",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "5.4.2",
+          "features": [
+            "personalSound",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "findWithTile",
+        "personalSound"
+      ]
+    },
+    {
+      "id": "0x02",
+      "name": "Crusher Evo",
+      "enum": "crusherEvo",
+      "models": [
+        "S6EVW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "ble"
+      ],
+      "chip": "qualcomm",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": "0x30",
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "2.1.1",
+          "features": [
+            "personalSound",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "2.1.8",
+          "features": [
+            "personalSound",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "2.2.0",
+          "features": [
+            "personalSound",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "personalSound"
+      ]
+    },
+    {
+      "id": "0x30",
+      "name": "Crusher Evo",
+      "enum": "crusherEvoRC",
+      "models": [
+        "S6EVW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "0.0.2.3",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "personalSoundMimi",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "0.0.3.0",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "personalSoundMimi",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "0.0.3.5",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "personalSoundMimi",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "0.0.4.3",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "personalSoundMimi",
+            "multipointPairingToggle"
+          ]
+        }
+      ],
+      "features": [
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "multipointPairingToggle",
+        "personalSoundMimi"
+      ]
+    },
+    {
+      "id": "0x07",
+      "name": "Indy ANC",
+      "enum": "indyANC",
+      "models": [
+        "S2IYW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "0007",
+          "features": [
+            "personalSound",
+            "activeNoiseCancellation",
+            "ambientMode",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "0008",
+          "features": [
+            "personalSound",
+            "activeNoiseCancellation",
+            "ambientMode",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "0009",
+          "features": [
+            "personalSound",
+            "activeNoiseCancellation",
+            "ambientMode",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "activeNoiseCancellation",
+        "ambientMode",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "personalSound"
+      ]
+    },
+    {
+      "id": "0x04",
+      "name": "Indy Fuel",
+      "enum": "indyFuel",
+      "models": [
+        "S2IFW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "ble"
+      ],
+      "chip": "qualcomm",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": "0xB",
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "V3.14.18",
+          "features": [
+            "ambientMode",
+            "definedEqualizer",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "V3.15.9",
+          "features": [
+            "ambientMode",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "ambientMode",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile"
+      ]
+    },
+    {
+      "id": "0x03",
+      "name": "Indy Evo",
+      "enum": "indyEvo",
+      "models": [
+        "S2IVW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "ble"
+      ],
+      "chip": "qualcomm",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": "0xA",
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "V3.14.18.2",
+          "features": [
+            "ambientMode",
+            "definedEqualizer",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "V3.15.9",
+          "features": [
+            "ambientMode",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "ambientMode",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile"
+      ]
+    },
+    {
+      "id": "0x05",
+      "name": "Push Ultra",
+      "enum": "pushUltra",
+      "models": [
+        "S2BDW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "ble"
+      ],
+      "chip": "qualcomm",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "V3.1.23",
+          "features": [
+            "definedEqualizer",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "V3.2.23",
+          "features": [
+            "definedEqualizer",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "V3.2.25",
+          "features": [
+            "definedEqualizer",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "V3.3.7",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile"
+      ]
+    },
+    {
+      "id": "0x08",
+      "name": "Push Active",
+      "enum": "pushActive",
+      "models": [
+        "S2BPW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": "PUSH_ACTIVE",
+      "sdk_names": [
+        "Push Active",
+        "Oppactive",
+        "Opp active"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "4.5.0",
+          "features": [
+            "voiceControl",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.6.1",
+          "features": [
+            "voiceControl",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.6.2",
+          "features": [
+            "voiceControl",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.8.0",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.8.2",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.9.0",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableStayAwareMode",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "shareAudio",
+        "stayAwareMode",
+        "takePhoto",
+        "voiceAssistant",
+        "voiceControl",
+        "voiceLanguage"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "voiceAssistant"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "voiceAssistant"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackBack",
+        "trackForward",
+        "volumeDown",
+        "volumeUp",
+        "voiceAssistant",
+        "takePhoto",
+        "oneTouchSpotify",
+        "playPause",
+        "none"
+      ]
+    },
+    {
+      "id": "0x09",
+      "name": "Grind",
+      "enum": "grind",
+      "models": [
+        "S2GTW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": "GRIND",
+      "sdk_names": [
+        "Grind",
+        "Sesh Boost"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "4.5.0",
+          "features": [
+            "voiceControl",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.6.1",
+          "features": [
+            "voiceControl",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.6.2",
+          "features": [
+            "voiceControl",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.8.0",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.8.2",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.9.0",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableStayAwareMode",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "shareAudio",
+        "stayAwareMode",
+        "takePhoto",
+        "voiceAssistant",
+        "voiceControl",
+        "voiceLanguage"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "voiceAssistant"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "voiceAssistant"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackBack",
+        "trackForward",
+        "volumeDown",
+        "volumeUp",
+        "voiceAssistant",
+        "takePhoto",
+        "oneTouchSpotify",
+        "playPause",
+        "none"
+      ]
+    },
+    {
+      "id": "0x63",
+      "name": "Grind Fuel",
+      "enum": "grindFuel",
+      "models": [
+        "S2GFW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": "GRIND_FUEL",
+      "sdk_names": [
+        "Grind Fuel",
+        "Sesh Boost Costco"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "4.6.0",
+          "features": [
+            "voiceControl",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "findWithTile",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "4.6.1",
+          "features": [
+            "voiceControl",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.6.2",
+          "features": [
+            "voiceControl",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.8.0",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "findWithTile",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "4.8.2",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "4.9.0",
+          "features": [
+            "voiceControl",
+            "voiceLanguage",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "takePhoto",
+            "shareAudio",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableStayAwareMode",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "shareAudio",
+        "stayAwareMode",
+        "takePhoto",
+        "voiceAssistant",
+        "voiceControl",
+        "voiceLanguage"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "voiceAssistant"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "voiceAssistant"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackBack",
+        "trackForward",
+        "volumeDown",
+        "volumeUp",
+        "voiceAssistant",
+        "takePhoto",
+        "oneTouchSpotify",
+        "playPause",
+        "none"
+      ]
+    },
+    {
+      "id": "0x16",
+      "name": "Crusher ANC 2",
+      "enum": "crusherANC2",
+      "models": [
+        "S6CAW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": "CHP200",
+      "sdk_names": [
+        "CHP200",
+        "S6CAW"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v1.0.0",
+          "features": [
+            "advancedHearingModes",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableCrusherTechnology",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "voiceControl",
+            "voiceLanguage",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "findWithTile",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "5.0.4",
+          "features": [
+            "advancedHearingModes",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableCrusherTechnology",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "voiceControl",
+            "voiceLanguage",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "findWithTile",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "5.1.0",
+          "features": [
+            "advancedHearingModes",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableCrusherTechnology",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "voiceControl",
+            "voiceLanguage",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "findWithTile",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableCrusherTechnology",
+        "adjustableNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "takePhoto",
+        "voiceAssistant",
+        "voiceControl",
+        "voiceLanguage"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "volUp",
+            "action": "volumeUp"
+          },
+          {
+            "button": "volDown",
+            "action": "volumeDown"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "wheel",
+            "action": "none"
+          },
+          {
+            "button": "volUp",
+            "action": "none"
+          },
+          {
+            "button": "middle",
+            "action": "none"
+          },
+          {
+            "button": "volDown",
+            "action": "none"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "volUp",
+            "action": "none"
+          },
+          {
+            "button": "middle",
+            "action": "none"
+          },
+          {
+            "button": "volDown",
+            "action": "none"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "volUp",
+            "action": "none"
+          },
+          {
+            "button": "middle",
+            "action": "none"
+          },
+          {
+            "button": "volDown",
+            "action": "none"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "none",
+        "playPause",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "oneTouchSpotify",
+        "takePhoto",
+        "voiceAssistant"
+      ]
+    },
+    {
+      "id": "0x21",
+      "name": "Rail",
+      "enum": "rail",
+      "models": [
+        "S2RLW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": "T70",
+      "sdk_names": [
+        "T70",
+        "S2RLW-Q740",
+        "rail"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "1.0.0",
+          "features": [
+            "personalSoundMimi",
+            "adjustableStayAwareMode",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "voiceControl",
+            "voiceLanguage",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "findWithTile",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "1.0.2",
+          "features": [
+            "personalSoundMimi",
+            "adjustableStayAwareMode",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "voiceControl",
+            "voiceLanguage",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "findWithTile",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableStayAwareMode",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "takePhoto",
+        "voiceAssistant",
+        "voiceControl",
+        "voiceLanguage"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "oneTouchSpotify"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "oneTouchSpotify"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "playPause",
+        "stayAwareOnOff",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "oneTouchSpotify",
+        "takePhoto",
+        "voiceAssistant",
+        "none"
+      ]
+    },
+    {
+      "id": "0x15",
+      "name": "Rail ANC",
+      "enum": "railANC",
+      "models": [
+        "S2IPW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": "T80_PLUS",
+      "sdk_names": [
+        "T80+",
+        "S2IPW-P740",
+        "railanc"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "1.0.1.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "voiceControl",
+            "voiceLanguage",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "findWithTile",
+            "oneTouchSpotify",
+            "shareAudio",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "shareAudio",
+        "takePhoto",
+        "voiceAssistant",
+        "voiceControl",
+        "voiceLanguage"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "oneTouchSpotify"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "oneTouchSpotify"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "playPause",
+        "stayAwareOnOff",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "oneTouchSpotify",
+        "takePhoto",
+        "voiceAssistant",
+        "none"
+      ]
+    },
+    {
+      "id": "0x1D",
+      "name": "Method 360 ANC",
+      "enum": "method360ANC",
+      "models": [
+        "S2MTW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": "T99_PLUS",
+      "sdk_names": [
+        "Method 360 ANC",
+        "Skullcandy Method 360 ANC"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "1.0.0",
+          "features": [
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "soundByBose",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "1.3.6",
+          "features": [
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "soundByBose",
+            "oneTouchSpotify",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "soundByBose",
+        "takePhoto",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "oneTouchSpotify"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "oneTouchSpotify"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "takePhoto",
+        "playPause",
+        "oneTouchSpotify",
+        "voiceAssistant",
+        "none"
+      ]
+    },
+    {
+      "id": "0x2D",
+      "name": "Method 540 ANC",
+      "enum": "method540ANC",
+      "models": [
+        "S2MFW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": "T120",
+      "sdk_names": [
+        "Method 540 ANC",
+        "Skullcandy Method 540 ANC"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "1.2.0",
+          "features": [
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "skullAI",
+            "soundByBose",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "1.3.6",
+          "features": [
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "skullAI",
+            "soundByBose",
+            "oneTouchSpotify",
+            "voiceAssistant"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "skullAI",
+        "soundByBose",
+        "takePhoto",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "oneTouchSpotify"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "oneTouchSpotify"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "takePhoto",
+        "playPause",
+        "oneTouchSpotify",
+        "voiceAssistant",
+        "none"
+      ]
+    },
+    {
+      "id": "0x0D",
+      "name": "Jib True XT2",
+      "enum": "jibTrueXT2",
+      "models": [
+        "S1JTW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "1.4.0.0",
+          "features": [
+            "findWithTile",
+            "registerDevice"
+          ]
+        }
+      ],
+      "features": [
+        "findWithTile",
+        "registerDevice"
+      ]
+    },
+    {
+      "id": "0x0A",
+      "name": "Indy Evo",
+      "enum": "indyEvoRC",
+      "models": [
+        "S2IVW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "ble",
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "0.2.2.6",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "stayAwareMode",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "0.2.2.7",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "stayAwareMode",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "stayAwareMode"
+      ]
+    },
+    {
+      "id": "0x0B",
+      "name": "Indy Fuel",
+      "enum": "indyFuelRC",
+      "models": [
+        "S2IFW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "ble",
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "0.2.2.6",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "stayAwareMode",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "0.2.2.7",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "stayAwareMode",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "stayAwareMode"
+      ]
+    },
+    {
+      "id": "0x0F",
+      "name": "Dime 2",
+      "enum": "dime2",
+      "models": [
+        "S2DBW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "1.1.3.24",
+          "features": [
+            "findWithTile",
+            "registerDevice"
+          ]
+        }
+      ],
+      "features": [
+        "findWithTile",
+        "registerDevice"
+      ]
+    },
+    {
+      "id": "0x19",
+      "name": "Dime XT2",
+      "enum": "dimeXT2",
+      "models": [
+        "S2DBW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "1.1.3.27",
+          "features": [
+            "personalSoundMimi",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "1.1.3.30",
+          "features": [
+            "personalSoundMimi",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "findWithTile",
+        "personalSoundMimi"
+      ]
+    },
+    {
+      "id": "0x0C",
+      "name": "Sesh ANC",
+      "enum": "seshANC",
+      "models": [
+        "S2TEW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "0.0.1.6",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "advancedHearingModes",
+            "activeNoiseCancellation",
+            "adjustableStayAwareMode",
+            "gamingMode",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "0.0.2.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "advancedHearingModes",
+            "activeNoiseCancellation",
+            "adjustableStayAwareMode",
+            "gamingMode",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "0.0.2.3",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "advancedHearingModes",
+            "activeNoiseCancellation",
+            "adjustableStayAwareMode",
+            "gamingMode",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "activeNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "clearVoiceSmartMic",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "gamingMode"
+      ]
+    },
+    {
+      "id": "0x12",
+      "name": "Mod",
+      "enum": "mod",
+      "models": [
+        "S2FYW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "0.1.8.3",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "multipointPairing",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "0.1.9.3",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "multipointPairing",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "0.1.9.6",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "personalSoundMimi",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "multipointPairing",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "multipointPairing",
+        "personalSoundMimi",
+        "stayAwareMode"
+      ],
+      "default_buttons": {
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "volumeDown"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "volumeUp"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "none"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "none"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackBack"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackBack",
+        "trackForward",
+        "volumeDown",
+        "volumeUp",
+        "voiceAssistant",
+        "none"
+      ]
+    },
+    {
+      "id": "0x14",
+      "name": "Riff Wireless 2",
+      "enum": "riffWireless2",
+      "models": [
+        "S5PRW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "1.3.2.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "gamingMode",
+            "multipointPairing",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "1.4.0.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "gamingMode",
+            "multipointPairing",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "1.4.0.4",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "gamingMode",
+            "multipointPairing",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "gamingMode",
+        "multipointPairing"
+      ]
+    },
+    {
+      "id": "0x11",
+      "name": "PLYR",
+      "enum": "plyr",
+      "models": [
+        "S6PPY",
+        "2210"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "SG100_0.0.0.53",
+          "features": [
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.53_SF",
+          "features": [
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.62",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.63",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.63_SF",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.65",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.65_SF",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.66",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.66_SF",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.68",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.68_SF",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.72",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.72_SF",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.73",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "SG100_0.0.0.73_SF",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "clearVoiceSmartMic",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableSidetoneMode",
+        "clearVoiceSmartMic",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "enhancedSoundPerception",
+        "findWithTile",
+        "gameChatMix",
+        "gamingEqualizer"
+      ]
+    },
+    {
+      "id": "0x23",
+      "name": "SLYR Pro Wireless",
+      "enum": "slyrProXbox",
+      "models": [
+        "SCSPY",
+        "SGXBOX"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "SGXBOX_1.0.0.38",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGXBOX_1.0.0.47",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGXBOX_1.0.0.52",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGXBOX_1.0.0.53",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGXBOX_1.0.0.55",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGXBOX_1.0.0.59",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGXBOX_1.0.0.60",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGXBOX_1.0.0.61",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGXBOX_1.0.0.62",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableMicGain",
+        "adjustableSidetoneMode",
+        "clearVoiceSmartMic",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "enhancedSoundPerception",
+        "gameChatMix",
+        "gamingEqualizer",
+        "voicePrompts"
+      ]
+    },
+    {
+      "id": "0x24",
+      "name": "SLYR Pro Wireless",
+      "enum": "slyrPro",
+      "models": [
+        "SCSCY",
+        "SGPS"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "SGPS_1.0.0.38",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGPS_1.0.0.47",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGPS_1.0.0.52",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGPS_1.0.0.53",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGPS_1.0.0.55",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGPS_1.0.0.59",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGPS_1.0.0.60",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGPS_1.0.0.61",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SGPS_1.0.0.62",
+          "features": [
+            "enhancedSoundPerception",
+            "customEqualizer",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "adjustableSidetoneMode",
+            "gameChatMix",
+            "adjustableMicGain",
+            "voicePrompts",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableMicGain",
+        "adjustableSidetoneMode",
+        "clearVoiceSmartMic",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "enhancedSoundPerception",
+        "gameChatMix",
+        "gamingEqualizer",
+        "voicePrompts"
+      ]
+    },
+    {
+      "id": "0x26",
+      "name": "Push ANC Active",
+      "enum": "hanc",
+      "models": [
+        "S2PPW",
+        "HANC"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.4.7",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v0.4.8",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v0.4.9",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v0.5.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.0.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.0.1",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.0.4",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.1.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.2.3",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "takePhoto"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "voiceAssistant"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "voiceAssistant"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "oneTouchSpotify"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "oneTouchSpotify"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "voiceAssistant",
+        "takePhoto",
+        "playPause",
+        "oneTouchSpotify",
+        "none"
+      ]
+    },
+    {
+      "id": "0x25",
+      "name": "Sesh ANC Active",
+      "enum": "tanc",
+      "models": [
+        "S2SAW",
+        "TANC"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.4.4",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v0.4.6",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v0.4.7",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v0.4.9",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v0.5.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.0.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.0.2",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.0.4",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.1.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        },
+        {
+          "version": "v1.2.3",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "oneTouchSpotify"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "takePhoto"
+      ],
+      "default_buttons": {
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "oneTouchSpotify"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "oneTouchSpotify"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "voiceAssistant",
+        "takePhoto",
+        "playPause",
+        "oneTouchSpotify",
+        "none"
+      ]
+    },
+    {
+      "id": "0x1A",
+      "name": "Icon ANC",
+      "enum": "iconANC",
+      "models": [
+        "S51OW",
+        "HI99"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.1.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.3.0",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.0.3",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.2.9",
+          "features": [
+            "personalSoundMimi",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "takePhoto",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "joystick",
+            "keyId": "82",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "joystick",
+            "keyId": "82",
+            "action": "voiceAssistant"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "keyId": "82",
+            "action": "oneTouchSpotify"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "voiceAssistant",
+        "oneTouchSpotify",
+        "takePhoto",
+        "playPause",
+        "none"
+      ]
+    },
+    {
+      "id": "0x1B",
+      "name": "Dime Evo",
+      "enum": "dimeEvo",
+      "models": [
+        "S2DTW",
+        "dimeEvo"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "1.0.0.0",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.3",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.4",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "stayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.5",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.6",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.7",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.8",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.9",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.10",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.11",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1.13",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableStayAwareMode",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "stayAwareMode",
+        "takePhoto",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "stayAwareOnOff"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "voiceAssistant"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "voiceAssistant"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "voiceAssistant",
+        "takePhoto",
+        "playPause",
+        "none"
+      ]
+    },
+    {
+      "id": "0x06",
+      "name": "AVIATOR 900 ANC",
+      "enum": "aviatorANC",
+      "models": [
+        "S6AVW",
+        "AVANC"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.1.0",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "thxGamingEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.4.2",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "thxGamingEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.4.5",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "thxGamingEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.4.6",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "thxGamingEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.4.8",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "adaptiveANCMode",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.5.2",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "adaptiveANCMode",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "thxGamingEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.0.0",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "adjustableNoiseCancellation",
+            "adaptiveANCMode",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.0.4",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "adjustableNoiseCancellation",
+            "adaptiveANCMode",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.0.8",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "adjustableNoiseCancellation",
+            "adaptiveANCMode",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.1.0",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "adjustableNoiseCancellation",
+            "adaptiveANCMode",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adaptiveANCMode",
+        "adjustableNoiseCancellation",
+        "adjustableSidetoneMode",
+        "adjustableStayAwareMode",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "takePhoto",
+        "thxGamingEqualizer",
+        "thxHeadTracking",
+        "thxSpatialAudio",
+        "voiceAssistant",
+        "wearDetect"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "cycleEQMode"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "headTracking"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "oneTouchSpotify"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "spatialAudio"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "cycleEQMode",
+        "headTracking",
+        "spatialAudio",
+        "takePhoto",
+        "oneTouchSpotify",
+        "none"
+      ]
+    },
+    {
+      "id": "0x1E",
+      "name": "Hesh 360",
+      "enum": "hesh360",
+      "models": [
+        "S6HOW",
+        "HEVO2"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "1.0.0.0",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "1.1.0.0",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableStayAwareMode",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "voiceAssistant"
+      ]
+    },
+    {
+      "id": "0x1F",
+      "name": "Hesh 540 ANC",
+      "enum": "hesh540ANC",
+      "models": [
+        "S6HAW",
+        "HA2"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.1.0",
+          "features": [
+            "thxSpatialAudio",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.1.2.C88",
+          "features": [
+            "thxSpatialAudio",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.1.9",
+          "features": [
+            "thxSpatialAudio",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.1.12",
+          "features": [
+            "thxSpatialAudio",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.1.14",
+          "features": [
+            "thxSpatialAudio",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.1.15",
+          "features": [
+            "thxSpatialAudio",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.0.0",
+          "features": [
+            "thxSpatialAudio",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.0.2",
+          "features": [
+            "thxSpatialAudio",
+            "advancedHearingModes",
+            "adjustableStayAwareMode",
+            "adjustableNoiseCancellation",
+            "adjustableSidetoneMode",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "wearDetect",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableSidetoneMode",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "takePhoto",
+        "thxSpatialAudio",
+        "voiceAssistant",
+        "wearDetect"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "joystick",
+            "keyId": "7E",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "joystick",
+            "keyId": "7E",
+            "action": "voiceAssistant"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "joystick",
+            "keyId": "7E",
+            "action": "oneTouchSpotify"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "joystick",
+            "keyId": "7E",
+            "action": "spatialAudio"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "playPause",
+        "voiceAssistant",
+        "oneTouchSpotify",
+        "spatialAudio",
+        "takePhoto",
+        "none"
+      ]
+    },
+    {
+      "id": "0x29",
+      "name": "Crusher PLYR 720",
+      "enum": "crusherPlyr",
+      "models": [
+        "S6PCW"
+      ],
+      "alternate_names": [
+        "SG200-Slave",
+        "Crusher PLYR"
+      ],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "SG200_v1.0.0.8",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.14",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.22",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.23",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.25",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.26",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.28",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.30",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.32",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.33",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200_v1.0.0.34",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableMicGain",
+        "adjustableSidetoneMode",
+        "clearVoiceSmartMic",
+        "crusherBassBoost",
+        "crusherTechnology",
+        "customEqualizer4x",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "enhancedSoundPerception",
+        "gameChatMix",
+        "gamingEqualizer",
+        "ledCustomizer",
+        "multipointPairingToggle",
+        "thxHeadTracking",
+        "thxSpatialAudio"
+      ]
+    },
+    {
+      "id": "0x2A",
+      "name": "Crusher PLYR 720 XBOX",
+      "enum": "crusherPlyrXbox",
+      "models": [
+        "S6PXW"
+      ],
+      "alternate_names": [
+        "SG200X-Slave"
+      ],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.1.0",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.22",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.23",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.25",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.26",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.28",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.30",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.32",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.33",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "SG200X_v1.0.0.34",
+          "features": [
+            "thxSpatialAudio",
+            "thxHeadTracking",
+            "crusherTechnology",
+            "crusherBassBoost",
+            "adjustableSidetoneMode",
+            "enhancedSoundPerception",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "gamingEqualizer",
+            "customEqualizer4x",
+            "ledCustomizer",
+            "gameChatMix",
+            "adjustableMicGain",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableMicGain",
+        "adjustableSidetoneMode",
+        "clearVoiceSmartMic",
+        "crusherBassBoost",
+        "crusherTechnology",
+        "customEqualizer4x",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "enhancedSoundPerception",
+        "gameChatMix",
+        "gamingEqualizer",
+        "ledCustomizer",
+        "multipointPairingToggle",
+        "thxHeadTracking",
+        "thxSpatialAudio"
+      ]
+    },
+    {
+      "id": "0x2C",
+      "name": "Crusher 540 Active",
+      "enum": "crusher540Active",
+      "models": [
+        "S6EVW",
+        "C540A"
+      ],
+      "alternate_names": [],
+      "android": [
+        "ble"
+      ],
+      "chip": "qualcomm",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": "0x31",
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "0.0.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "personalSound",
+            "findWithTile"
+          ]
+        },
+        {
+          "version": "2.2.0",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "personalSound",
+            "findWithTile"
+          ]
+        }
+      ],
+      "features": [
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "findWithTile",
+        "personalSound"
+      ]
+    },
+    {
+      "id": "0x31",
+      "name": "Crusher 540 Active",
+      "enum": "crusher540ActiveRC",
+      "models": [
+        "S6EVW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "0.0.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "personalSoundMimi",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "0.0.4.3",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "personalSoundMimi",
+            "multipointPairingToggle"
+          ]
+        }
+      ],
+      "features": [
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "multipointPairingToggle",
+        "personalSoundMimi"
+      ]
+    },
+    {
+      "id": "0x2F",
+      "name": "Push 720 Open",
+      "enum": "push720open",
+      "models": [
+        "S4EOW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.1.3",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.2.2",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.2.7",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.2.9",
+          "features": [
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.3.0",
+          "features": [
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "takePhoto",
+            "voiceAssistant",
+            "oneTouchSpotify",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "oneTouchSpotify",
+        "personalSoundMimi",
+        "takePhoto",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "voiceAssistant"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "voiceAssistant"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "oneTouchSpotify"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "oneTouchSpotify"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "playPause",
+        "volumeUp",
+        "volumeDown",
+        "trackForward",
+        "trackBack",
+        "oneTouchSpotify",
+        "takePhoto",
+        "voiceAssistant",
+        "none"
+      ]
+    },
+    {
+      "id": "0x2E",
+      "name": "Icon 180",
+      "enum": "icon180",
+      "models": [
+        "HI50"
+      ],
+      "alternate_names": [
+        "HI50"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "bes",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.2.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.2.5",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "2.0.4",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "2.1.4",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "2.3.4",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "2.4.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.0.2",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.1.0.0",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        }
+      ],
+      "features": [
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "voiceAssistant"
+      ]
+    },
+    {
+      "id": "0x32",
+      "name": "Push 540 Open",
+      "enum": "push540Open",
+      "models": [
+        "S4PFW"
+      ],
+      "alternate_names": [
+        "OPEH80"
+      ],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.3.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.3.2",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "capTouchControl",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v1.0.2",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "capTouchControl",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "bassBoostMode",
+        "capTouchControl",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "keyId": "21",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "keyId": "21",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "keyId": "21",
+            "action": "trackForward"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "keyId": "21",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "keyId": "21",
+            "action": "voiceAssistant"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "keyId": "21",
+            "action": "voiceAssistant"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "playPause",
+        "volumeUp",
+        "volumeDown",
+        "trackForward",
+        "trackBack",
+        "voiceAssistant",
+        "none"
+      ]
+    },
+    {
+      "id": "0x736",
+      "name": "Terrain Mini",
+      "enum": "terrainMini",
+      "models": [
+        "TERRAINMINI"
+      ],
+      "alternate_names": [
+        "SKDY Terrain Mini"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "actions",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "productFaq"
+          ]
+        },
+        {
+          "version": "1.0.2.0",
+          "features": [
+            "productFaq"
+          ]
+        }
+      ],
+      "features": [
+        "productFaq"
+      ]
+    },
+    {
+      "id": "0x737",
+      "name": "Terrain",
+      "enum": "terrain",
+      "models": [
+        "TERRAIN"
+      ],
+      "alternate_names": [
+        "SKDY Terrain"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "actions",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "productFaq"
+          ]
+        },
+        {
+          "version": "1.0.2.1",
+          "features": [
+            "productFaq"
+          ]
+        }
+      ],
+      "features": [
+        "productFaq"
+      ]
+    },
+    {
+      "id": "0x738",
+      "name": "Terrain XL",
+      "enum": "terrainXL",
+      "models": [
+        "TERRAINXL"
+      ],
+      "alternate_names": [
+        "SKDY Terrain XL"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "actions",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "productFaq"
+          ]
+        },
+        {
+          "version": "1.0.2.1",
+          "features": [
+            "productFaq"
+          ]
+        }
+      ],
+      "features": [
+        "productFaq"
+      ]
+    },
+    {
+      "id": "0x33",
+      "name": "Dime 360",
+      "enum": "dime360",
+      "models": [
+        "S2DPW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "0.0.0.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "1.0.0.9",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "1.0.0.13",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "1.0.0.18",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableStayAwareMode",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "playPause"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "playPause"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "trackBack"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "trackForward"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "stayAwareOnOff"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "voiceAssistant"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "side": "left",
+            "action": "volumeDown"
+          },
+          {
+            "button": "powerButton",
+            "side": "right",
+            "action": "volumeUp"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "stayAwareOnOff",
+        "trackForward",
+        "trackBack",
+        "volumeUp",
+        "volumeDown",
+        "voiceAssistant",
+        "playPause",
+        "none"
+      ]
+    },
+    {
+      "id": "0x36",
+      "name": "Crusher 720",
+      "enum": "crusher720",
+      "models": [
+        "S6CEW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.2.6",
+          "features": [
+            "thxSpatialAudio",
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "wearDetect",
+            "multipointPairingToggle",
+            "customButtonActions",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        },
+        {
+          "version": "v0.3.2",
+          "features": [
+            "thxSpatialAudio",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "personalSoundMimi",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "crusherTechnologyWheelInfo",
+            "wearDetect",
+            "multipointPairingToggle",
+            "customButtonActions",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "v0.4.1",
+          "features": [
+            "thxSpatialAudio",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "personalSoundMimi",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "crusherTechnologyWheelInfo",
+            "wearDetect",
+            "multipointPairingToggle",
+            "customButtonActions",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableSidetoneMode",
+        "adjustableStayAwareMode",
+        "bassBoostMode",
+        "clearVoiceSmartMic",
+        "crusherTechnologyWheelInfo",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "personalSoundMimi",
+        "thxSpatialAudio",
+        "voiceAssistant",
+        "wearDetect"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "cycleEQMode"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "none"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "spatialAudio"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "playPause",
+        "voiceAssistant",
+        "cycleEQMode",
+        "spatialAudio",
+        "none"
+      ]
+    },
+    {
+      "id": "0x34",
+      "name": "Crusher 1080 ANC",
+      "enum": "crusher1080ANC",
+      "models": [
+        "S6CNW"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": "CHP300",
+      "sdk_names": [
+        "CHP300",
+        "Skullcandy CRUSHER 1080 ANC"
+      ],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "0.3.0",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "0.3.3",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.0",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.1",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.3",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.4",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.5",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.0.6",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.1.0",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.1.1",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.1.2",
+          "features": [
+            "crusherTechnologyDial",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.1.3",
+          "features": [
+            "crusherTechnologyDial",
+            "crusherTechnologyProfiles",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.1.4",
+          "features": [
+            "crusherTechnologyDial",
+            "crusherTechnologyProfiles",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "1.2.0",
+          "features": [
+            "crusherTechnologyDial",
+            "crusherTechnologyProfiles",
+            "boseQuietControlANC",
+            "boseTrueSpatialStill",
+            "boseTrueSpatialMotion",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "soundByBose",
+            "voiceAssistant"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableSidetoneMode",
+        "adjustableStayAwareMode",
+        "boseEqualizer",
+        "boseQuietControlANC",
+        "boseTrueSpatialMotion",
+        "boseTrueSpatialStill",
+        "crusherTechnologyDial",
+        "crusherTechnologyProfiles",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "personalSoundMimi",
+        "soundByBose",
+        "voiceAssistant",
+        "wearDetect"
+      ],
+      "default_buttons": {
+        "doublePress": [
+          {
+            "button": "joystick",
+            "action": "none"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "joystick",
+            "action": "voiceAssistant"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "joystick",
+            "action": "cycleBoseTrueSpatial"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "playPause",
+        "voiceAssistant",
+        "cycleBoseTrueSpatial",
+        "none"
+      ]
+    },
+    {
+      "id": "0x37",
+      "name": "Session 360",
+      "enum": "session360",
+      "models": [
+        "S8STS"
+      ],
+      "alternate_names": [
+        "SP39"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "1.1.4.9",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "1.1.5.2",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "1.1.5.5",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        }
+      ],
+      "features": [
+        "customEqualizer",
+        "definedEqualizerToggle",
+        "feedbackSounds",
+        "multipointPairingToggle",
+        "partyModeInfo",
+        "sessionDefinedEqualizer",
+        "speakerBassBoost"
+      ],
+      "default_buttons": {
+        "longPressHold": [
+          {
+            "button": "powerButton",
+            "action": "joinLeaveParty"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "action": "startEndPartyStereoMode"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "action": "startEndParty"
+          }
+        ]
+      }
+    },
+    {
+      "id": "0x38",
+      "name": "Session 540",
+      "enum": "session540",
+      "models": [
+        "S8SFS"
+      ],
+      "alternate_names": [
+        "SP59"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "1.1.4.7",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "1.1.5.2",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "1.1.5.5",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        }
+      ],
+      "features": [
+        "batterySaverMode",
+        "customEqualizer",
+        "definedEqualizerToggle",
+        "feedbackSounds",
+        "multipointPairingToggle",
+        "partyModeInfo",
+        "sessionDefinedEqualizer",
+        "speakerBassBoost"
+      ],
+      "default_buttons": {
+        "longPressHold": [
+          {
+            "button": "powerButton",
+            "action": "joinLeaveParty"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "action": "startEndPartyStereoMode"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "action": "startEndParty"
+          }
+        ]
+      }
+    },
+    {
+      "id": "0x39",
+      "name": "Session 720",
+      "enum": "session720",
+      "models": [
+        "S8SSS"
+      ],
+      "alternate_names": [
+        "SP99"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.4.8",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "0.0.5.4",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "0.0.5.9",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        }
+      ],
+      "features": [
+        "batterySaverMode",
+        "customEqualizer",
+        "definedEqualizerToggle",
+        "feedbackSounds",
+        "multipointPairingToggle",
+        "partyModeInfo",
+        "sessionDefinedEqualizer",
+        "speakerBassBoost"
+      ],
+      "default_buttons": {
+        "longPressHold": [
+          {
+            "button": "powerButton",
+            "action": "joinLeaveParty"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "powerButton",
+            "action": "startEndPartyStereoMode"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "powerButton",
+            "action": "startEndParty"
+          }
+        ]
+      }
+    },
+    {
+      "id": "0x3A",
+      "name": "Session 900",
+      "enum": "session900",
+      "models": [
+        "S8SNS"
+      ],
+      "alternate_names": [
+        "SB149"
+      ],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "chargeOutProtection",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "v0.4.4",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "chargeOutProtection",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "v0.4.8",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "chargeOutProtection",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "v1.0.0",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "chargeOutProtection",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "v1.0.0F",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "chargeOutProtection",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        },
+        {
+          "version": "v1.0.1",
+          "features": [
+            "partyModeInfo",
+            "sessionDefinedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer",
+            "speakerBassBoost",
+            "batterySaverMode",
+            "chargeOutProtection",
+            "feedbackSounds",
+            "multipointPairingToggle"
+          ]
+        }
+      ],
+      "features": [
+        "batterySaverMode",
+        "chargeOutProtection",
+        "customEqualizer",
+        "definedEqualizerToggle",
+        "feedbackSounds",
+        "multipointPairingToggle",
+        "partyModeInfo",
+        "sessionDefinedEqualizer",
+        "speakerBassBoost"
+      ],
+      "default_buttons": {
+        "longPressHold": [
+          {
+            "button": "joystick",
+            "action": "joinLeaveParty"
+          }
+        ],
+        "triplePress": [
+          {
+            "button": "joystick",
+            "action": "startEndPartyStereoMode"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "joystick",
+            "action": "startEndParty"
+          }
+        ]
+      }
+    },
+    {
+      "id": "0x35",
+      "name": "Smokin' Buds 360",
+      "enum": "smokinBuds3",
+      "models": [
+        "SB25"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "jieli",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": false,
+      "firmware": [
+        {
+          "version": "v1.0.0.10",
+          "features": [
+            "productFaq"
+          ]
+        }
+      ],
+      "features": [
+        "productFaq"
+      ]
+    },
+    {
+      "id": "0x45",
+      "name": "DIME 540 ANC",
+      "enum": "dime540ANC",
+      "models": [
+        "Dime 540 ANC"
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "bes",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "personalSoundMimi",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "advancedHearingModes",
+            "adjustableNoiseCancellation",
+            "adjustableStayAwareMode",
+            "customButtonActions",
+            "capTouchControl",
+            "lowLatencyMode",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "clearVoiceSmartMic"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableNoiseCancellation",
+        "adjustableStayAwareMode",
+        "advancedHearingModes",
+        "bassBoostMode",
+        "capTouchControl",
+        "clearVoiceSmartMic",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "personalSoundMimi",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "action": "none"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "none"
+      ]
+    },
+    {
+      "id": "0x42",
+      "name": "Smokin' Buds 360H",
+      "enum": "smokingBuds360Hanger",
+      "models": [
+        "SB25H"
+      ],
+      "alternate_names": [
+        "Smokin' Buds 360 (H)"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "bes",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v1.0.0",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "stayAwareMode",
+            "adjustableSidetoneMode",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "productFaq"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableSidetoneMode",
+        "bassBoostMode",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "multipointPairingToggle",
+        "productFaq",
+        "stayAwareMode",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "action": "none"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "none"
+      ]
+    },
+    {
+      "id": "0x41",
+      "name": "Smokin' Buds 360S",
+      "enum": "smokingBuds360Stick",
+      "models": [
+        "SB25S"
+      ],
+      "alternate_names": [
+        "Smokin' Buds 360 (S)"
+      ],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "bes",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v1.0.0",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "stayAwareMode",
+            "adjustableSidetoneMode",
+            "customButtonActions",
+            "multipointPairingToggle",
+            "voiceAssistant",
+            "productFaq"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableSidetoneMode",
+        "bassBoostMode",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "multipointPairingToggle",
+        "productFaq",
+        "stayAwareMode",
+        "voiceAssistant"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "powerButton",
+            "action": "none"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "none"
+      ]
+    },
+    {
+      "id": "0x44",
+      "name": "Crusher 900 ANC",
+      "enum": "crusher900ANC",
+      "models": [
+        ""
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic",
+        "leAudio"
+      ],
+      "chip": "airoha",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "crusherTechnologyDial",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableStayAwareMode",
+            "thxSpatialAudio",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        },
+        {
+          "version": "v26.37.32",
+          "features": [
+            "crusherTechnologyDial",
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "bassBoostMode",
+            "customEqualizer",
+            "boseEqualizer",
+            "personalSoundMimi",
+            "adjustableStayAwareMode",
+            "thxSpatialAudio",
+            "adjustableSidetoneMode",
+            "lowLatencyMode",
+            "customButtonActions",
+            "wearDetect",
+            "multipointPairingToggle",
+            "clearVoiceSmartMic",
+            "voiceAssistant"
+          ]
+        }
+      ],
+      "features": [
+        "adjustableSidetoneMode",
+        "adjustableStayAwareMode",
+        "bassBoostMode",
+        "boseEqualizer",
+        "clearVoiceSmartMic",
+        "crusherTechnologyDial",
+        "customButtonActions",
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle",
+        "lowLatencyMode",
+        "multipointPairingToggle",
+        "personalSoundMimi",
+        "thxSpatialAudio",
+        "voiceAssistant",
+        "wearDetect"
+      ],
+      "default_buttons": {
+        "singlePress": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "cycleEQMode"
+          }
+        ],
+        "doublePress": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "none"
+          }
+        ],
+        "shortPressHold": [
+          {
+            "button": "custom",
+            "keyId": "7E",
+            "action": "spatialAudio"
+          }
+        ]
+      },
+      "mappable_buttons": [
+        "voiceAssistant",
+        "cycleEQMode",
+        "spatialAudio",
+        "none"
+      ]
+    },
+    {
+      "id": "0x43",
+      "name": "Push 180 Open",
+      "enum": "push180Open",
+      "models": [
+        ""
+      ],
+      "alternate_names": [],
+      "android": [
+        "bluetoothClassic"
+      ],
+      "chip": "bes",
+      "sdk": null,
+      "sdk_names": [],
+      "airoha_product_id": null,
+      "ota_supported": true,
+      "firmware": [
+        {
+          "version": "v0.0.1",
+          "features": [
+            "definedEqualizer",
+            "definedEqualizerToggle",
+            "customEqualizer"
+          ]
+        }
+      ],
+      "features": [
+        "customEqualizer",
+        "definedEqualizer",
+        "definedEqualizerToggle"
+      ]
+    }
+  ]
+}

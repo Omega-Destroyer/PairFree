@@ -33,6 +33,9 @@ public object SleepSound {
             bitRate = 72000
             file = SleepAudioFile.build(SbcEncoder(rate, bitRate).encode(samples), mediaId, name.take(NAME_LIMIT), soundType, rate)
         }
+        // A hard stop, whatever the input: nothing past the app's own limit is ever handed to the transfer (issue 23: a very large source file is only
+        // read for its first minute, and the container at 72 kb/s for 60 s is about 540,000 bytes, so this holds by construction).
+        require(file.size <= SIZE_LIMIT) { "the prepared sound is larger than the Soundcore app's limit of $SIZE_LIMIT bytes" }
         return Prepared(file, (samples.size + rate - 1) / rate, bitRate, clipped)
     }
 

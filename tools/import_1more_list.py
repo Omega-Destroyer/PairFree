@@ -34,6 +34,11 @@ NO_ASSISTANT_TOUCH = {"1MORE S-31", "1MORE S51", "1MORE S70", "1MORE HQ20", "1MO
 EAR_RETURN = {"1MORE HQ20"}
 # The light's mode and colour: HeadsetActivity shows them for this name alone.
 LIGHTS = {"1MORE NANO"}
+# The switch that turns the touch controls off (0074): 1MORE Life 5.0.3 shows it on the ComfoBuds Mini above firmware 1048.
+TOUCH_LOCK = {"1MORE ComfoBuds Mini"}
+# Other Bluetooth names 1MORE Life 5.0.3's DeviceFactoryImpl maps to a model (the app matches names exactly, case included: its
+# "1MORE PistonBuds Pro" is the EC302 and "1MORE PistonBuds PRO" the EC305).
+ALIASES = {"1MORE PistonBuds PRO Q30": ["1MORE PistonBuds PRO"], "1MORE S51": ["1MORE Fit S51"], "1MORE ComfoBuds Mini": ["1MORE ComfoBuds Mi"]}
 # Tuya's AI earbuds (DataKt.aIDeviceList): 1MORE's app reaches them through Tuya's platform, not its serial protocol.
 TUYA = {"1MORE S52", "1MORE S22Ultra"}
 
@@ -64,9 +69,61 @@ BANDS = {
     "1MORE HQ60": {"hz": [76, 260, 680, 1200, 2200, 3200, 4800, 7300, 10000, 13000],
                    "q": [130, 80, 90, 100, 120, 220, 120, 160, 200, 200], "zero": 1500, "whole_db": True},
     "1MORE NANO": {"hz": [85, 105, 225, 315, 1680, 2500, 3900, 6800, 10000, 14000], "q": DEFAULT_Q, "zero": 1500},
+    # 1MORE Life 5.0.3, CustomEQActivity (bands and Qs) and utils/f.a (the offsets each model adds to the raw gain: the Q30's and the SonoFlow SE's list plus 300).
+    "1MORE PistonBuds PRO Q30": {"hz": [20, 65, 160, 360, 800, 2800, 4600, 6000, 8500, 16000], "q": [50, 80, 100, 100, 80, 80, 200, 250, 200, 120],
+                                 "zero": 1200, "offsets": [1100, 700, 100, 300, 650, 1300, 200, -400, 300, 800]},
+    "1MORE SonoFlow": {"hz": [100, 229, 682, 1232, 2570, 3107, 4641, 6749, 9550, 14500], "q": [80, 80, 80, 90, 140, 140, 150, 180, 110, 60],
+                       "zero": 1200, "offsets": [-800, -600, 0, 0, -300, 0, 0, -520, -350, 100]},
+    "1MORE SonoFlow SE": {"hz": [100, 250, 1000, 1475, 2600, 3700, 5500, 6800, 9550, 13000], "q": [40, 120, 100, 180, 140, 60, 100, 300, 100, 60],
+                          "zero": 1200, "offsets": [-800, -300, -100, 700, -300, 1500, -400, 200, -100, 600]},
     "1MORE HQ31": HQ31_BANDS,
     "1MORE SonoFlow S": HQ31_BANDS,
 }
+
+# Models that 1MORE Life 5.0.3 (com.onemore.life, read 2026-11-19) names and the product list above does not hold. The
+# list comes from the app's DeviceFactoryImpl (Bluetooth name to model), its per-model classes (com.bitaxon.n2.d.a: which
+# of the first requests it sends: autoplay 0063, game mode 006C, spatial audio 0083) and its home screen (fragment d: which
+# listen mode buttons each model shows; the values are 0 off, 1 strong, 4 wind, 3 transparency, 2 mild) and its equalizer
+# screens (preset_eq_content, the twelve presets, for ES303, EC302, S31, EF906 and the SonoFlows; eq_content, the 22 older ones sent as their index, for ES901, ES602 and EF606). A setting is offered
+# only once its read answers, so a request the model ignores shows nothing. Not read from the app yet: touch controls, the
+# equalizer of the models that use its older list (ES901, ES602, EF606), pictures.
+CLASSIC = ["default", "bass_reducer_1", "bass_reducer_2", "bass_booster_1", "bass_booster_2", "acoustic_1", "acoustic_2", "classical_1", "classical_2",
+           "podcast", "vocal_booster", "deep_1", "deep_2", "electronic_1", "electronic_2", "hiphop_1", "hiphop_2", "lounge_1", "lounge_2", "pop_1", "pop_2", "loud"]
+LIFE = [
+    # name, model, kind, listen modes, game mode, autoplay, spatial audio, equalizer (presets, custom)
+    ("1MORE ComfoBuds 2", "ES303", "earbuds", [], True, True, True, (TWELVE, True)),
+    ("1MORE ColorBuds 2", "ES602", "earbuds", ["off", "strong", "transparent"], False, True, True, (CLASSIC, False)),
+    ("1MORE PistonBuds Pro", "EC302", "earbuds", ["off", "strong", "wind", "transparent"], True, True, True, (TWELVE, True)),
+    ("1MORE ComfoBuds Pro", "ES901", "earbuds", ["off", "strong", "mild", "wind", "transparent"], False, True, True, (CLASSIC, False)),
+    ("1MORE SonoFlow", "HC905", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, True)),
+    ("1MORE SonoFlow SE", "HC306", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, True)),
+    ("1MORE Fit", "EF906", "earbuds", [], True, True, True, (TWELVE, False)),
+    ("1MORE Fit SE", "EF606", "earbuds", [], False, False, True, ([], True)),
+    ("1MORE S31", "S31", "earbuds", [], False, False, True, (TWELVE, False)),
+]
+
+
+# Touch: Life opens OperationSettingActivity (a tap for each earbud: the four gestures of command 0084, the actions 0 none,
+# 1 next, 2 previous, 3 volume down, 4 volume up, 5 play/pause, 6 voice control) for the models of its list K (ES903, EF606, EF906,
+# EC305, S31, S51, S70), which hides the last action on S31, S51 and S70; ES901OperationCustomActivity and OperationCustomActivity
+# (a tap for both earbuds: commands 0064 and 0066) for the others.
+LIFE_TOUCH = {"ES303": ("both", True), "ES602": ("both", True), "EC302": ("both", True), "ES901": ("both", True),
+              "EF606": ("each", True), "EF906": ("each", True), "S31": ("each", False)}
+
+
+def life_device(name, model, kind, modes, game, autoplay, spatial, eq):
+    touch, assistant = LIFE_TOUCH.get(model, (None, False))
+    return {
+        "name": name, "model": model, "tuya": False, "kind": kind, "case": kind == "earbuds", "listen_modes": modes,
+        "connection": ["game"] if game else [], "autoplay": autoplay, "spatial_audio": spatial, "sleep_detection": False,
+        "dual_device": False, "hot_word": False, "touch": touch, "touch_assistant": assistant,
+        "eq": ((["preset"] if eq[0] else []) + (["custom"] if eq[1] else [])) if eq else [],
+        "eq_presets": eq[0] if eq else [], "eq_classic": bool(eq) and eq[0] is CLASSIC, "eq_bands": BANDS.get(name, DEFAULT_BANDS) if eq and eq[1] else None,
+        "ear_return": False, "volume_limit": False, "sleep_mode": False, "voice_enhancement": False, "lights": False,
+        "aliases": ALIASES.get(name, []), "touch_lock": False, "long_touch": ["strong", "mild", "wind"] if model == "ES901" else [],
+        "pictures": [], "reports": [],
+    }
+
 
 
 def on(row, field):
@@ -126,6 +183,10 @@ def device(r):
         "sleep_mode": on(r, "comfortableMelody"),
         "voice_enhancement": name == "1MORE Q50",
         "lights": name in LIGHTS,
+        "aliases": ALIASES.get(name, []),
+        "eq_classic": False,
+        "touch_lock": name in TOUCH_LOCK,
+        "long_touch": [],
         "pictures": pictures(r),
         "reports": [],
     }
@@ -134,6 +195,9 @@ def device(r):
 def main(dump_path, out_path=OUT):
     rows = json.load(open(dump_path, encoding="utf-8"))["rows"]
     devices = sorted((device(r) for r in rows if (r.get("headphoneName") or "").startswith("1MORE")), key=lambda d: d["name"].lower())
+    have = {d["name"].lower() for d in devices}
+    devices += [life_device(*m) for m in LIFE if m[0].lower() not in have]
+    devices.sort(key=lambda d: d["name"].lower())
     if Path(out_path).exists():
         old = {d["name"]: d for d in json.loads(Path(out_path).read_text(encoding="utf-8"))["devices"]}
         for d in devices:
@@ -144,6 +208,7 @@ def main(dump_path, out_path=OUT):
                   "downloads), fetched once by hand on 2026-10-18 with the owner's OK; PairFree never contacts 1MORE. listen_modes uses "
                   "data/1more/commands.json's names; tuya, kind, case, touch_assistant, ear_return, volume_limit, lights, eq_presets and eq_bands come from 1MORE's app code; tuya marks "
                   "the two models 1MORE's app reaches through Tuya's platform instead, which PairFree does not control. "
+                  "The models of the LIFE list in tools/import_1more_list.py come from 1MORE Life 5.0.3's code instead (no product list entry, no pictures). "
                   "pictures are paths on https://newapp.1more.com/prod-api, per colour, kept for tracing device art.",
         "fetched": "2026-10-18",
         "devices": devices,

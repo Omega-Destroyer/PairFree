@@ -567,6 +567,11 @@ models without a dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+)
 product list's ANC flag and Smart Audio & Video, voice prompts, VoiceAware and auto power-off from their class;
 PairFree shows each only once the earbuds answer its read.
 
+Voice prompt languages and custom prompts (issue #1, 2026-11-19): JBL's app offers no way to load a prompt of the user's own. Its language list is a set of voice packs: the
+Airoha models take them as an update flow (`AirohaOTATask`, `MultiLangVoicePrompt`, `VpLangTypeEnum`) and the protocol 4 models report `VoicePromptLanguage` and
+`VoiceFileVersion` (`DeviceInfoFeature5`). blocked: a language pack is a firmware-class transfer whose file comes from JBL's servers (hard rules: no server contact, no firmware traffic);
+checked: JBL Headphones 5.37.10, `General4Control`, `HandleParse`, the Airoha adapter classes, and no screen that lets the user choose a file of their own.
+
 **Touch controls** (section 10.1) are covered on the models whose page JBL's app has. **Not covered yet:** the noise cancelling and Ambient Aware level
 (`0E06` `00 1E` and the level, which JBL's app sends only with the mode on, and reads back only from
 indications), adaptive noise cancelling and auto compensation (separate flows per product id through Airoha's

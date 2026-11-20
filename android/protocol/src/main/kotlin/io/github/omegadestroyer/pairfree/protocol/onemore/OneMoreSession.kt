@@ -132,7 +132,7 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     /** Applies one frame from the earbuds. Returns true when [state] or [groups] changed. */
     public fun receive(frame: OneMoreFrame): Boolean {
         if (!frame.fromEarbuds) return false
-        val before = state to groups
+        val before = Triple(state, groups, eq)
         val p = frame.payload
         val read = READ_OF[frame.command]
         if (read != null) {
@@ -143,7 +143,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             if (p.isNotEmpty()) reply(frame.command, p)
         }
         refresh()
-        return (state to groups) != before
+        // The EQ counts too: the Sound tab follows it, and it changes without the rows changing (the preset and the curve arrive in their own replies).
+        return Triple(state, groups, eq) != before
     }
 
     private fun reply(command: Int, p: ByteArray) {

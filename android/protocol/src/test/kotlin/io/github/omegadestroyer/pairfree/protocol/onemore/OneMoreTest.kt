@@ -195,6 +195,17 @@ class OneMoreTest {
     }
 
     @Test
+    fun anEqAnswerCountsAsAChange() {
+        // Found with a virtual PistonBuds PRO Q30: the preset and the curve arrive in their own replies and change neither the rows nor
+        // the state, yet the Sound tab follows them, so receive() must say they changed.
+        val q30 = OneMoreSession(OneMoreModels.fromName("1MORE PistonBuds PRO Q30"))
+        assertNull(q30.eq)
+        assertTrue(q30.receive(reply(OneMoreCommand.GET_PRESET_SOUND, "02")))
+        assertEquals("bass_booster", q30.eq!!.preset)
+        assertFalse(q30.receive(reply(OneMoreCommand.GET_PRESET_SOUND, "02")))
+    }
+
+    @Test
     fun theLifeModelsAndTheirTouchControls() {
         // 1MORE Life 5.0.3: the ComfoBuds Pro's touch and hold per earbud (006D/006E: 1 strong, 2 mild, 4 wind) and the Mini's touch switch (0074/0075).
         val pro = OneMoreSession(OneMoreModels.fromName("1MORE ComfoBuds Pro"))

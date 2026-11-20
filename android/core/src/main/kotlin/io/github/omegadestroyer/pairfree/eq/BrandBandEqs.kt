@@ -82,6 +82,12 @@ class OneMoreBandEq(private val session: OneMoreSession) : BandEq {
             "studio" to "Studio", "bass_reducer" to "Bass reducer", "bass_booster" to "Bass booster", "acoustic" to "Acoustic",
             "luca" to "Sound by Luca", "classical" to "Classical", "podcast" to "Podcast", "deep" to "Deep", "electronic" to "Electronic",
             "hiphop" to "Hip-hop", "lounge" to "Lounge", "pop" to "Pop", "loud" to "Voice enhancement",
+            // 1MORE Life's older preset list (eq_content), sent as its index.
+            "default" to "Default", "bass_reducer_1" to "Bass reducer 1", "bass_reducer_2" to "Bass reducer 2", "bass_booster_1" to "Bass booster 1",
+            "bass_booster_2" to "Bass booster 2", "acoustic_1" to "Acoustic 1", "acoustic_2" to "Acoustic 2", "classical_1" to "Classical 1",
+            "classical_2" to "Classical 2", "vocal_booster" to "Vocal booster", "deep_1" to "Deep 1", "deep_2" to "Deep 2", "electronic_1" to "Electronic 1",
+            "electronic_2" to "Electronic 2", "hiphop_1" to "Hip-Hop 1", "hiphop_2" to "Hip-Hop 2", "lounge_1" to "Lounge 1", "lounge_2" to "Lounge 2",
+            "pop_1" to "Pop 1", "pop_2" to "Pop 2",
         )
 
         /** For the profile lists of a model with presets only: 1MORE's usual bands. */

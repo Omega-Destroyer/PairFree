@@ -38,8 +38,22 @@ public object ConnectionReport {
     /** How an exception reads in a report: its class and message, then each cause's, which hold the stack's own reason. */
     public fun describe(e: Throwable): String {
         val parts = generateSequence(e) { it.cause.takeIf { c -> c !== it } }.take(4)
-            .map { t -> listOfNotNull(t::class.simpleName ?: "Exception", t.message?.takeIf { it.isNotBlank() }).joinToString(": ") }
+            .map { t -> listOfNotNull(className(t), t.message?.takeIf { it.isNotBlank() }).joinToString(": ") }
         return parts.joinToString(", caused by ")
+    }
+
+    /**
+     * The exception's class name, or null for one of PairFree's own that a release build renamed to a few lowercase letters (issue #68's report read "tz0: needs Android 17");
+     * a message then speaks for itself. Without a message, "Exception".
+     */
+    private fun className(t: Throwable): String? {
+        val name = t::class.simpleName
+        val renamed = name != null && name.length <= 4 && name.first().isLowerCase()
+        return when {
+            name != null && !renamed -> name
+            t.message.isNullOrBlank() -> "Exception"
+            else -> null
+        }
     }
 
     /** A connection that keeps retrying could make the list long; the last steps say most. */

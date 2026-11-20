@@ -116,7 +116,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     override val groups: List<SettingGroup> get() = buildList {
         if (primary && buttons.isNotEmpty()) {
             val rows = ArrayList<Setting>()
-            for ((side, entries) in buttons.toSortedMap()) {
+            for ((side, entries) in buttons.entries.sortedBy { it.key }.map { it.key to it.value }) {
                 for (g in RailButtons.GESTURES) {
                     val e = entries.firstOrNull { it.type == g.first } ?: continue
                     rows += Setting.Choice("sk_rbutton_${if (side == 1) "left" else "right"}_${g.second}", RailButtons.nameOf(e.event), RailButtons.OPTIONS)

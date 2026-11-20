@@ -52,13 +52,13 @@ address or name. Say which settings worked and which did nothing.
 <tr><th>Model</th><th>Product</th><th>Type</th><th>Noise control</th><th>Also</th><th>Status</th></tr>
 <tr><td>1MORE Aero</td><td><code>ES903</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through)</td><td>two devices, spatial audio, pause when taken out, voice commands, EQ presets, custom EQ, touch controls (each earbud)</td><td>Not tested</td></tr>
 <tr><td>1MORE AERO Q32</td><td><code>AERO Q32</code></td><td>Earbuds</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE ColorBuds 2</td><td><code>ES602</code></td><td>Earbuds</td><td>ANC, transparency</td><td>spatial audio, pause when taken out, touch controls</td><td>Not tested</td></tr>
+<tr><td>1MORE ColorBuds 2</td><td><code>ES602</code></td><td>Earbuds</td><td>ANC, transparency</td><td>spatial audio, pause when taken out, EQ presets, touch controls</td><td>Not tested</td></tr>
 <tr><td>1MORE ComfoBuds 2</td><td><code>ES303</code></td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, pause when taken out, EQ presets, custom EQ, touch controls</td><td>Not tested</td></tr>
 <tr><td>1MORE ComfoBuds Mini</td><td><code>ES603</code></td><td>Earbuds</td><td>ANC (strong, mild, wind), transparency</td><td>pause when taken out, sleep detection, touch controls</td><td>Not tested</td></tr>
-<tr><td>1MORE ComfoBuds Pro</td><td><code>ES901</code></td><td>Earbuds</td><td>ANC (strong, mild, wind), transparency</td><td>spatial audio, pause when taken out, touch controls</td><td>Not tested</td></tr>
+<tr><td>1MORE ComfoBuds Pro</td><td><code>ES901</code></td><td>Earbuds</td><td>ANC (strong, mild, wind), transparency</td><td>spatial audio, pause when taken out, EQ presets, touch controls</td><td>Not tested</td></tr>
 <tr><td>1MORE EVO</td><td><code>EH902</code></td><td>Earbuds</td><td>ANC (adaptive, strong, mild, wind), transparency (pass-through, voice enhancement)</td><td>LDAC, two devices, pause when taken out, voice commands, EQ presets, custom EQ, touch controls</td><td>Not tested</td></tr>
 <tr><td>1MORE Fit</td><td><code>EF906</code></td><td>Earbuds</td><td>—</td><td>game mode, spatial audio, pause when taken out, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
-<tr><td>1MORE Fit SE</td><td><code>EF606</code></td><td>Earbuds</td><td>—</td><td>spatial audio, touch controls (each earbud)</td><td>Not tested</td></tr>
+<tr><td>1MORE Fit SE</td><td><code>EF606</code></td><td>Earbuds</td><td>—</td><td>spatial audio, EQ presets, touch controls (each earbud)</td><td>Not tested</td></tr>
 <tr><td>1MORE G50</td><td><code>G50</code></td><td>Headphones</td><td>—</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>
 <tr><td>1MORE HQ20</td><td><code>HQ20</code></td><td>Headphones</td><td>—</td><td>game mode, two devices, hear your own voice, volume limit, EQ presets, custom EQ</td><td>Not tested</td></tr>
 <tr><td>1MORE HQ31</td><td><code>HQ31</code></td><td>Headphones</td><td>ANC, transparency</td><td>game mode, LDAC, two devices, spatial audio, EQ presets, custom EQ</td><td>Not tested</td></tr>

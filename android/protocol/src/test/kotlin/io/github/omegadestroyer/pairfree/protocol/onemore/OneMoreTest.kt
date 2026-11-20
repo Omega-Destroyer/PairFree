@@ -215,6 +215,10 @@ class OneMoreTest {
         val off = mini.change(SettingChange.Toggle("touch_lock", false))!!.single()
         assertEquals(OneMoreCommand.SET_TOUCH_DISABLE, off.command)
         assertEquals("00", hex(off.payload))
+        // The older equalizer list (Life's eq_content): 22 presets sent as their index.
+        val colour = OneMoreSession(OneMoreModels.fromName("1MORE ColorBuds 2"))
+        assertEquals(22, OneMoreModels.fromName("1MORE ColorBuds 2")!!.eqPresets.size)
+        assertEquals("0A", hex(colour.eqPreset("vocal_booster")!!.single().payload).uppercase())
         // The Fit models tap per earbud, the S31 without the assistant; the SonoFlows are headphones.
         assertEquals("each", OneMoreModels.fromName("1MORE Fit")!!.touch)
         assertFalse(OneMoreModels.fromName("1MORE S31")!!.touchAssistant)

@@ -1412,6 +1412,27 @@
 
     <!-- VENDOR WORDING: EQ preset names as the vendor's own app or table words them, by vendor. Translate them or
          leave them out: an entry a translation leaves out shows this English wording. -->
+    <!-- 1MORE -->
+    <string name="vendor_acoustic_1">acoustic_1</string>
+    <string name="vendor_acoustic_2">acoustic_2</string>
+    <string name="vendor_bass_booster_1">bass_booster_1</string>
+    <string name="vendor_bass_booster_2">bass_booster_2</string>
+    <string name="vendor_bass_reducer_1_2">bass_reducer_1</string>
+    <string name="vendor_bass_reducer_2_2">bass_reducer_2</string>
+    <string name="vendor_classical_1">classical_1</string>
+    <string name="vendor_classical_2">classical_2</string>
+    <string name="vendor_deep_1">deep_1</string>
+    <string name="vendor_deep_2">deep_2</string>
+    <string name="vendor_default_2">default</string>
+    <string name="vendor_electronic_1">electronic_1</string>
+    <string name="vendor_electronic_2">electronic_2</string>
+    <string name="vendor_hiphop_1">hiphop_1</string>
+    <string name="vendor_hiphop_2">hiphop_2</string>
+    <string name="vendor_lounge_1">lounge_1</string>
+    <string name="vendor_lounge_2">lounge_2</string>
+    <string name="vendor_pop_1">pop_1</string>
+    <string name="vendor_pop_2">pop_2</string>
+    <string name="vendor_vocal_booster">vocal_booster</string>
     <!-- EarFun -->
     <string name="vendor_bass_boost_1">Bass Boost 1</string>
     <string name="vendor_bass_boost_2">Bass Boost 2</string>

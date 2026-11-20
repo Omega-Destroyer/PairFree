@@ -1719,6 +1719,11 @@ abstract class GenerateOneMoreTables : DefaultTask() {
         out.appendLine("/** The preset sounds by the byte 1MORE's app sends for each (data/1more/commands.json, values.preset_sound). */")
         out.appendLine("public val ONEMORE_PRESET_SOUNDS: Map<Int, String> = mapOf(${presets.entries.joinToString(", ") { "${it.key} to ${str(it.value)}" }})")
         out.appendLine()
+        @Suppress("UNCHECKED_CAST")
+        val classic = (commands.getValue("values") as Map<String, Any?>).getValue("preset_sound_classic") as Map<String, Any?>
+        out.appendLine("/** The older preset sounds, sent as their index (data/1more/commands.json, values.preset_sound_classic). */")
+        out.appendLine("public val ONEMORE_PRESET_SOUNDS_CLASSIC: Map<Int, String> = mapOf(${classic.entries.joinToString(", ") { "${it.key} to ${str(it.value)}" }})")
+        out.appendLine()
         out.appendLine("/** Every model in data/1more/devices.json. */")
         out.appendLine("internal val ONEMORE_MODELS: List<OneMoreModel> = listOf(")
         for (d in devices) {
@@ -1733,7 +1738,7 @@ abstract class GenerateOneMoreTables : DefaultTask() {
             out.appendLine("        autoplay = ${d["autoplay"]}, spatialAudio = ${d["spatial_audio"]}, sleepDetection = ${d["sleep_detection"]}, dualDevice = ${d["dual_device"]}, hotWord = ${d["hot_word"]},")
             out.appendLine("        touch = ${d["touch"]?.let(::str) ?: "null"}, touchAssistant = ${d["touch_assistant"]}, eq = ${strings(d["eq"])},")
             out.appendLine("        earReturn = ${d["ear_return"]}, volumeLimit = ${d["volume_limit"]}, lights = ${d["lights"] == true}, sleepMode = ${d["sleep_mode"] == true}, voiceEnhancement = ${d["voice_enhancement"] == true},")
-            out.appendLine("        touchLock = ${d["touch_lock"] == true}, longTouch = ${strings(d["long_touch"] ?: emptyList<String>())},")
+            out.appendLine("        eqClassic = ${d["eq_classic"] == true}, touchLock = ${d["touch_lock"] == true}, longTouch = ${strings(d["long_touch"] ?: emptyList<String>())},")
             @Suppress("UNCHECKED_CAST")
             val bands = (d["eq_bands"] as Map<String, Any?>?)?.let { b ->
                 fun ints(v: Any?) = (v as List<*>).joinToString(", ", "listOf(", ")") { (it as Number).toInt().toString() }

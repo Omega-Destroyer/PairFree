@@ -264,13 +264,15 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             val byte = presetSound
             val gains = m.eqBands?.let { b -> eqRaw?.mapIndexed { i, r -> db(b, i, r) } }
             if (byte == null && gains == null) return null
-            val custom = byte != null && ONEMORE_PRESET_SOUNDS[byte] == CUSTOM_PRESET || byte == null && m.eqPresets.isEmpty()
+            val custom = byte != null && presetTable()[byte] == CUSTOM_PRESET || byte == null && m.eqPresets.isEmpty()
             return OneMoreEq(m.eqPresets.firstOrNull { presetByte(it) == byte }, custom, gains)
         }
 
     /** The byte for preset sound [name]; SOUND BY LUCA, on the HQ60, goes as acoustic's (getStyleCmd). */
     private fun presetByte(name: String): Int? =
-        if (name == LUCA) presetByte(ACOUSTIC) else ONEMORE_PRESET_SOUNDS.entries.firstOrNull { it.value == name }?.key
+        if (name == LUCA) presetByte(ACOUSTIC) else presetTable().entries.firstOrNull { it.value == name }?.key
+
+    private fun presetTable(): Map<Int, String> = if (model?.eqClassic == true) ONEMORE_PRESET_SOUNDS_CLASSIC else ONEMORE_PRESET_SOUNDS
 
     /** The frames that put preset sound [name] on the earbuds: its byte, as 1MORE's app sends it (DefaultSoundActivity.getStyleCmd). */
     public fun eqPreset(name: String): List<OneMoreFrame>? {

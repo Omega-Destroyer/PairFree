@@ -76,6 +76,7 @@
   "click_each": {"0": "none", "1": "next", "2": "previous", "3": "volume_down", "4": "volume_up", "5": "play_pause", "6": "voice_assistant"},
   "custom_gesture": {"1": "double_left", "2": "double_right", "3": "triple_left", "4": "triple_right"},
   "level": {"0": "off", "1": "low", "2": "medium", "3": "high"},
-  "preset_sound": {"0": "studio", "1": "bass_reducer", "2": "bass_booster", "3": "acoustic", "4": "classical", "5": "podcast", "6": "deep", "7": "electronic", "8": "hiphop", "9": "lounge", "10": "pop", "11": "loud", "12": "custom", "13": "thx"}
+  "preset_sound": {"0": "studio", "1": "bass_reducer", "2": "bass_booster", "3": "acoustic", "4": "classical", "5": "podcast", "6": "deep", "7": "electronic", "8": "hiphop", "9": "lounge", "10": "pop", "11": "loud", "12": "custom", "13": "thx"},
+  "preset_sound_classic": {"0": "default", "1": "bass_reducer_1", "2": "bass_reducer_2", "3": "bass_booster_1", "4": "bass_booster_2", "5": "acoustic_1", "6": "acoustic_2", "7": "classical_1", "8": "classical_2", "9": "podcast", "10": "vocal_booster", "11": "deep_1", "12": "deep_2", "13": "electronic_1", "14": "electronic_2", "15": "hiphop_1", "16": "hiphop_2", "17": "lounge_1", "18": "lounge_2", "19": "pop_1", "20": "pop_2", "21": "loud"}
  }
 }

@@ -74,19 +74,21 @@ BANDS = {
 # list comes from the app's DeviceFactoryImpl (Bluetooth name to model), its per-model classes (com.bitaxon.n2.d.a: which
 # of the first requests it sends: autoplay 0063, game mode 006C, spatial audio 0083) and its home screen (fragment d: which
 # listen mode buttons each model shows; the values are 0 off, 1 strong, 4 wind, 3 transparency, 2 mild) and its equalizer
-# screens (preset_eq_content, the twelve presets, for ES303, EC302, S31, EF906 and the SonoFlows). A setting is offered
+# screens (preset_eq_content, the twelve presets, for ES303, EC302, S31, EF906 and the SonoFlows; eq_content, the 22 older ones sent as their index, for ES901, ES602 and EF606). A setting is offered
 # only once its read answers, so a request the model ignores shows nothing. Not read from the app yet: touch controls, the
 # equalizer of the models that use its older list (ES901, ES602, EF606), pictures.
+CLASSIC = ["default", "bass_reducer_1", "bass_reducer_2", "bass_booster_1", "bass_booster_2", "acoustic_1", "acoustic_2", "classical_1", "classical_2",
+           "podcast", "vocal_booster", "deep_1", "deep_2", "electronic_1", "electronic_2", "hiphop_1", "hiphop_2", "lounge_1", "lounge_2", "pop_1", "pop_2", "loud"]
 LIFE = [
     # name, model, kind, listen modes, game mode, autoplay, spatial audio, equalizer (presets, custom)
     ("1MORE ComfoBuds 2", "ES303", "earbuds", [], True, True, True, (TWELVE, True)),
-    ("1MORE ColorBuds 2", "ES602", "earbuds", ["off", "strong", "transparent"], False, True, True, None),
+    ("1MORE ColorBuds 2", "ES602", "earbuds", ["off", "strong", "transparent"], False, True, True, (CLASSIC, False)),
     ("1MORE PistonBuds Pro", "EC302", "earbuds", ["off", "strong", "wind", "transparent"], True, True, True, (TWELVE, True)),
-    ("1MORE ComfoBuds Pro", "ES901", "earbuds", ["off", "strong", "mild", "wind", "transparent"], False, True, True, None),
+    ("1MORE ComfoBuds Pro", "ES901", "earbuds", ["off", "strong", "mild", "wind", "transparent"], False, True, True, (CLASSIC, False)),
     ("1MORE SonoFlow", "HC905", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, False)),
     ("1MORE SonoFlow SE", "HC306", "headphones", ["off", "strong", "transparent"], False, False, False, (TWELVE, False)),
     ("1MORE Fit", "EF906", "earbuds", [], True, True, True, (TWELVE, False)),
-    ("1MORE Fit SE", "EF606", "earbuds", [], False, False, True, None),
+    ("1MORE Fit SE", "EF606", "earbuds", [], False, False, True, (CLASSIC, False)),
     ("1MORE S31", "S31", "earbuds", [], False, False, True, (TWELVE, False)),
 ]
 
@@ -106,7 +108,7 @@ def life_device(name, model, kind, modes, game, autoplay, spatial, eq):
         "connection": ["game"] if game else [], "autoplay": autoplay, "spatial_audio": spatial, "sleep_detection": False,
         "dual_device": False, "hot_word": False, "touch": touch, "touch_assistant": assistant,
         "eq": (["preset"] + (["custom"] if eq[1] else [])) if eq else [],
-        "eq_presets": eq[0] if eq else [], "eq_bands": DEFAULT_BANDS if eq and eq[1] else None,
+        "eq_presets": eq[0] if eq else [], "eq_classic": bool(eq) and eq[0] is CLASSIC, "eq_bands": DEFAULT_BANDS if eq and eq[1] else None,
         "ear_return": False, "volume_limit": False, "sleep_mode": False, "voice_enhancement": False, "lights": False,
         "touch_lock": False, "long_touch": ["strong", "mild", "wind"] if model == "ES901" else [],
         "pictures": [], "reports": [],
@@ -171,6 +173,7 @@ def device(r):
         "sleep_mode": on(r, "comfortableMelody"),
         "voice_enhancement": name == "1MORE Q50",
         "lights": name in LIGHTS,
+        "eq_classic": False,
         "touch_lock": name in TOUCH_LOCK,
         "long_touch": [],
         "pictures": pictures(r),

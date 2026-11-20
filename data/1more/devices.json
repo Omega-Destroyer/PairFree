@@ -25,6 +25,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -56,6 +57,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -81,8 +83,9 @@
    "hot_word": false,
    "touch": "both",
    "touch_assistant": true,
-   "eq": [],
-   "eq_presets": [],
+   "eq": ["preset"],
+   "eq_presets": ["default", "bass_reducer_1", "bass_reducer_2", "bass_booster_1", "bass_booster_2", "acoustic_1", "acoustic_2", "classical_1", "classical_2", "podcast", "vocal_booster", "deep_1", "deep_2", "electronic_1", "electronic_2", "hiphop_1", "hiphop_2", "lounge_1", "lounge_2", "pop_1", "pop_2", "loud"],
+   "eq_classic": true,
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
@@ -111,6 +114,7 @@
    "touch_assistant": true,
    "eq": ["preset", "custom"],
    "eq_presets": ["studio", "bass_reducer", "bass_booster", "acoustic", "classical", "podcast", "deep", "electronic", "hiphop", "lounge", "pop", "loud"],
+   "eq_classic": false,
    "eq_bands": {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1200},
    "ear_return": false,
    "volume_limit": false,
@@ -145,6 +149,7 @@
    "sleep_mode": true,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": true,
    "long_touch": [],
    "pictures": [
@@ -169,8 +174,9 @@
    "hot_word": false,
    "touch": "both",
    "touch_assistant": true,
-   "eq": [],
-   "eq_presets": [],
+   "eq": ["preset"],
+   "eq_presets": ["default", "bass_reducer_1", "bass_reducer_2", "bass_booster_1", "bass_booster_2", "acoustic_1", "acoustic_2", "classical_1", "classical_2", "podcast", "vocal_booster", "deep_1", "deep_2", "electronic_1", "electronic_2", "hiphop_1", "hiphop_2", "lounge_1", "lounge_2", "pop_1", "pop_2", "loud"],
+   "eq_classic": true,
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
@@ -205,6 +211,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -230,6 +237,7 @@
    "touch_assistant": true,
    "eq": ["preset"],
    "eq_presets": ["studio", "bass_reducer", "bass_booster", "acoustic", "classical", "podcast", "deep", "electronic", "hiphop", "lounge", "pop", "loud"],
+   "eq_classic": false,
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
@@ -256,8 +264,9 @@
    "hot_word": false,
    "touch": "each",
    "touch_assistant": true,
-   "eq": [],
-   "eq_presets": [],
+   "eq": ["preset"],
+   "eq_presets": ["default", "bass_reducer_1", "bass_reducer_2", "bass_booster_1", "bass_booster_2", "acoustic_1", "acoustic_2", "classical_1", "classical_2", "podcast", "vocal_booster", "deep_1", "deep_2", "electronic_1", "electronic_2", "hiphop_1", "hiphop_2", "lounge_1", "lounge_2", "pop_1", "pop_2", "loud"],
+   "eq_classic": true,
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
@@ -292,6 +301,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -325,6 +335,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -358,6 +369,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -391,6 +403,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -423,6 +436,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -457,6 +471,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -489,6 +504,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": true,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -514,6 +530,7 @@
    "touch_assistant": true,
    "eq": ["preset", "custom"],
    "eq_presets": ["studio", "bass_reducer", "bass_booster", "acoustic", "classical", "podcast", "deep", "electronic", "hiphop", "lounge", "pop", "loud"],
+   "eq_classic": false,
    "eq_bands": {"hz": [69, 282, 682, 1234, 2013, 3107, 4641, 6794, 9815, 14053], "q": [60, 70, 80, 90, 100, 140, 150, 200, 220, 200], "zero": 1200},
    "ear_return": false,
    "volume_limit": false,
@@ -548,6 +565,7 @@
    "sleep_mode": true,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -578,6 +596,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -609,6 +628,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -640,6 +660,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -671,6 +692,7 @@
    "sleep_mode": true,
    "voice_enhancement": true,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -702,6 +724,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -733,6 +756,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -765,6 +789,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -797,6 +822,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -828,6 +854,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -861,6 +888,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -891,6 +919,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -924,6 +953,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -956,6 +986,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -990,6 +1021,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1025,6 +1057,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1056,6 +1089,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1086,6 +1120,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1119,6 +1154,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1152,6 +1188,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1178,6 +1215,7 @@
    "touch_assistant": false,
    "eq": ["preset"],
    "eq_presets": ["studio", "bass_reducer", "bass_booster", "acoustic", "classical", "podcast", "deep", "electronic", "hiphop", "lounge", "pop", "loud"],
+   "eq_classic": false,
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
@@ -1212,6 +1250,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1242,6 +1281,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1273,6 +1313,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1306,6 +1347,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1337,6 +1379,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1361,6 +1404,7 @@
    "touch_assistant": false,
    "eq": ["preset"],
    "eq_presets": ["studio", "bass_reducer", "bass_booster", "acoustic", "classical", "podcast", "deep", "electronic", "hiphop", "lounge", "pop", "loud"],
+   "eq_classic": false,
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
@@ -1395,6 +1439,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1426,6 +1471,7 @@
    "sleep_mode": false,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [
@@ -1451,6 +1497,7 @@
    "touch_assistant": false,
    "eq": ["preset"],
    "eq_presets": ["studio", "bass_reducer", "bass_booster", "acoustic", "classical", "podcast", "deep", "electronic", "hiphop", "lounge", "pop", "loud"],
+   "eq_classic": false,
    "eq_bands": null,
    "ear_return": false,
    "volume_limit": false,
@@ -1485,6 +1532,7 @@
    "sleep_mode": true,
    "voice_enhancement": false,
    "lights": false,
+   "eq_classic": false,
    "touch_lock": false,
    "long_touch": [],
    "pictures": [

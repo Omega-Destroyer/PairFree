@@ -31,7 +31,8 @@ import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRaceTalk
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.model
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.service
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAt
-import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAtSerial
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAirohaSdk
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.serviceFor
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesBes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -39,8 +40,9 @@ import kotlinx.io.IOException
 
 /**
  * Skullcandy's earbuds and headphones, from Skullcandy's own app (5.0.6, docs/skullcandy/PROTOCOL.md). The products are told by their Bluetooth name; the chip family and
- * the protocol follow from the app's own table: the Grind, Grind Fuel, Push Active and Crusher ANC 2 speak AT lines over their own serial service and 32 more Airoha models over
- * the standard serial port ([SkullcandyAtSession]); the Airoha models with custom RACE settings or a custom equaliser also get a second channel ([SkullcandyRaceTalk]).
+ * the protocol follow from the app's own table: the Grind, Grind Fuel, Push Active and Crusher ANC 2 speak AT lines over their own serial service ([SkullcandyAtSession]), with
+ * a second channel for their custom RACE settings and equaliser ([SkullcandyRaceTalk]); the Rail models and the 28 Airoha models without an SDK configuration speak Airoha's RACE alone
+ * over Airoha's serial service ([SkullcandyRailDriver]; issue #66).
  * The others are found but have no session yet.
  */
 object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
@@ -49,7 +51,7 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
     override val offersRecording: Boolean get() = false
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
-        SkullcandyModels.fromName(name)?.let { p -> Paired(address, name, Brand.SKULLCANDY, service = p.service, model = p.name) }
+        SkullcandyModels.fromName(name)?.let { p -> Paired(address, name, Brand.SKULLCANDY, service = p.serviceFor(uuids), model = p.name) }
 
     override fun model(device: Paired, state: EarbudState): Model? = SkullcandyModels.model(device.model ?: device.name)
 
@@ -58,10 +60,10 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
             when {
                 p?.usesBes == true -> SkullcandyBesDriver(host, device)
                 p?.usesRpc == true -> SkullcandyRpcDriver(host, device)
-                p?.usesRail == true -> SkullcandyRailDriver(host, device)
                 p?.usesQualcomm == true -> SkullcandyQualcommDriver(host, device)
                 // a name a classic Airoha product and a Qualcomm LE one share: whichever channel opens
                 p != null && SkullcandyModels.leFromName(device.model ?: device.name) != null -> SkullcandyEitherDriver(host, device)
+                p?.usesRail == true || p?.usesAirohaSdk == true -> SkullcandyRailDriver(host, device)
                 else -> SkullcandyDriver(host, device)
             }
         }
@@ -85,7 +87,7 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
         val d = driver as? RaceSide ?: return main
         val product = SkullcandyModels.fromName(device.model ?: device.name) ?: return main
         // only the models the AT and RPC conversations serve get a RACE one beside it (the Rail and the rest have no session yet)
-        if (!(product.usesAt || product.usesAtSerial || product.usesRpc) || !SkullcandyRaceTalk(product).hasRaceFeatures) return main
+        if (!(product.usesAt || product.usesRpc) || !SkullcandyRaceTalk(product).hasRaceFeatures) return main
         for (uuid in RACE_SERVICES) {
             try {
                 env.note("RACE channel $uuid")
@@ -124,7 +126,7 @@ class SkullcandyDriver(host: DriverHost, private val device: Paired) : TalkDrive
     private fun modeOf(at: SkullcandyAtSession): String? = at.state.number(Command.ANC_MODE)?.let { Command.ANC_MODE.labels[it] }
 
     override fun talk(opened: ControlLink): SkullcandyAtSession? {
-        val product = SkullcandyModels.fromName(device.model ?: device.name)?.takeIf { it.usesAt || it.usesAtSerial } ?: return null
+        val product = SkullcandyModels.fromName(device.model ?: device.name)?.takeIf { it.usesAt } ?: return null
         val at = SkullcandyAtSession(product)
         val link = raceLink
         if (link != null) {

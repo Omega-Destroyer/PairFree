@@ -372,14 +372,24 @@ The TOTA v2 frame (`d.java` `a` writes, `b` reads), as the code builds it: `HEAD
 its CRC is dropped (the reader returns a one-byte `01`). With encryption on, the payload is the AES-CBC ciphertext of the zero-padded content. The 20 command classes (section 12.1) supply the payloads: `09 63 02 00 <cmd> 00` to read and
 `08 63 <length> 00 <cmd> 00 <value>` to write.
 
-### 9.4 How the app reaches the Airoha models without an SDK configuration (corrected 2026-11-18)
+### 9.4 How the app reaches the Airoha models without an SDK configuration (corrected again 2026-11-20, issue #66)
 
-An earlier version of this section said the Bragi AT lines travel inside the RACE command `01 0D`. That was wrong: `0D01` is Airoha's RACE *relay* command (it carries a whole RACE frame to the other earbud, as JBL's
-Airoha work shows), and the SDK's RACE transport (`transport/race/a.java`, `v`) wraps RACE frames for it, never AT lines. What the app's code shows instead (`app/skullcandy/bragi/h.java`, `j.java`, the Dart `SKDYAirohaApi.runATCommand`):
-the app has an AT client of its own, which opens the **standard serial port** (`00001101-0000-1000-8000-00805F9B34FB`) of the earbuds and sends the AT lines (logged as `ATCommandsApi`); a reply is split at CR LF, LF and tab, blank pieces
-dropped, and counts as successful when its last piece is `OK` or, when the caller gave a response key, when a piece contains that key. The Airoha SDK (`com.airoha.sdk`, RACE) is a second, separate channel the app uses for the equaliser and
-Skullcandy's custom commands (section 11). So for the 28 Airoha models that have no SDK configuration PairFree speaks AT on the standard serial port, and the custom RACE commands and the equaliser need a channel of their own (the Airoha serial
-service, `A4602B24-...` or `FFEEDDCC-...`, whichever the device lists), as the Soundcore Sleep A30's second channel does.
+An earlier version of this section said the Bragi AT lines travel inside the RACE command `01 0D`; `0D01` is Airoha's RACE *relay* command, so that was wrong. The version of 2026-11-18 then said the app's own AT client
+(`app/skullcandy/bragi/h.java`, the standard serial port `00001101-...`) reaches the 28 Airoha models without an SDK configuration. **That was wrong too.** A user's Dime Evo (issue #66) lists no standard serial port at all
+(its services: `00000000-0000-0000-0099-aabbccddeeff`, Google Fast Pair's `df21fe2c-...` and the audio profiles), and every socket to `00001101-...` failed. What the app's code shows, read again:
+
+- The AT client is built only when `SKDYProductModelExtensionsKt.getShouldUseATCommands` is true (`s2.java`, `buildATCommandAPi`: "this model does not support AT commands"), and that is true for four models only: the Crusher ANC 2, Push Active, Grind and
+  Grind Fuel, the four whose SDK configurations are AT (section 9).
+- Every other Airoha model is driven through Airoha's SDK (`com.airoha.sdk`): the Flutter channel's methods `getANCSettings`, `getEQSettings`, `getBatteryInfo`, `getLowLatencyMode`, `getGestureSettings` and the rest (`AirohaChannelMethod`).
+  The SDK connects over Airoha's serial service `00000000-0000-0000-0099-AABBCCDDEEFF` (`com.airoha.liblinker.constant.c.b`; `s2.java` passes it as the `ConnectionUUID` for every model but the Method 360 and 540 ANC,
+  which get `A4602B24-...`), and `z4.v` checks a device's services for that UUID.
+
+So PairFree drives these 28 models as it drives the Rail (section 16): `SkullcandyRaceTalk` is their main conversation (`primary`), over the Airoha service the device lists (`AIROHA_SPP` first, as the app connects,
+else `FFEEDDCC-...`), with the batteries, the hearing mode (the module read and `0E06`, the AB1562 forms), Skullcandy's custom RACE commands (multipoint, wear detection, bass boost) and the equaliser. Added for them:
+**gaming mode**, as Airoha's SDK does it: read as module 6 of the module read (`0901`; `libmmi1562.stage.b`, "GetGameMode"), set with the key event `1101` and `A4 00` (on) or `A5 00` (off) (`libmmi1562.c.j`, "SetGameMode").
+The answer's parser did not decompile, so that its first data byte is 1 for on and 0 for off is inferred. The Rail's own buttons, voice control and gain stay the Rail's (they come from its SDK configuration).
+Not built for these models yet: the buttons (`getGestureSettings`, Airoha's key map, which JBL's Airoha code writes as `JblAirohaGesture`) and the voice prompts (`getVoicePromptsState`); blocked: not traced yet for Skullcandy's
+products; checked: the channel methods listed above and the game mode stages, 2026-11-20. Nothing here has met a real product; the next report from issue #66 confirms or corrects it.
 
 ## 13. The equaliser on the Airoha models (read so far, 2026-11-18)
 

@@ -39,8 +39,8 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><th>Model</th><th>Kind</th><th>Product id</th><th>Shown</th><th>Status</th></tr>
 <tr><td>Crusher ANC</td><td>Headphones</td><td>0x01</td><td>battery (both earbuds), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Crusher Evo</td><td>Headphones</td><td>0x02</td><td>battery (both earbuds), equalizer (3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Crusher Evo</td><td>Headphones</td><td>0x30</td><td>battery, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Indy ANC</td><td>Earbuds</td><td>0x07</td><td>battery, noise mode, Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Crusher Evo</td><td>Headphones</td><td>0x30</td><td>battery (both earbuds and the case), multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Indy ANC</td><td>Earbuds</td><td>0x07</td><td>battery (both earbuds and the case), noise mode, Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Indy Fuel</td><td>Earbuds</td><td>0x04</td><td>battery (both earbuds), ambient mode, equalizer (3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Indy Evo</td><td>Earbuds</td><td>0x03</td><td>battery (both earbuds), ambient mode, equalizer (3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Push Ultra</td><td>Earbuds</td><td>0x05</td><td>battery (both earbuds), equalizer (3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
@@ -52,36 +52,36 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td>Rail ANC</td><td>Earbuds</td><td>0x15</td><td>battery (both earbuds and the case), noise mode + strength, multipoint, equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
 <tr><td>Method 360 ANC</td><td>Earbuds</td><td>0x1D</td><td>battery, noise mode + strength + profile, gaming mode, voice prompts, prompt language, multipoint (RACE), button actions, equalizer (RACE: custom + 3 presets)</td><td>Not tested</td></tr>
 <tr><td>Method 540 ANC</td><td>Earbuds</td><td>0x2D</td><td>battery, noise mode + strength + profile, gaming mode, voice prompts, prompt language, multipoint (RACE), button actions, equalizer (RACE: custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Jib True XT2</td><td>Earbuds</td><td>0x0D</td><td>battery, Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Indy Evo</td><td>Earbuds</td><td>0x0A</td><td>battery, noise mode, Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Indy Fuel</td><td>Earbuds</td><td>0x0B</td><td>battery, noise mode, Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Dime 2</td><td>Earbuds</td><td>0x0F</td><td>battery, Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Dime XT2</td><td>Earbuds</td><td>0x19</td><td>battery, Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Sesh ANC</td><td>Earbuds</td><td>0x0C</td><td>battery, noise mode, gaming mode, equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Mod</td><td>Earbuds</td><td>0x12</td><td>battery, noise mode, multipoint (RACE), equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Riff Wireless 2</td><td>Headphones</td><td>0x14</td><td>battery, gaming mode, multipoint (RACE), equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>PLYR</td><td>Headphones</td><td>0x11</td><td>battery, equalizer (custom + 7 presets), Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>SLYR Pro Wireless</td><td>Headphones</td><td>0x23</td><td>battery, equalizer (custom + 7 presets)</td><td>Not tested</td></tr>
-<tr><td>SLYR Pro Wireless</td><td>Headphones</td><td>0x24</td><td>battery, equalizer (custom + 7 presets)</td><td>Not tested</td></tr>
-<tr><td>Push ANC Active</td><td>Earbuds</td><td>0x26</td><td>battery, noise mode, gaming mode, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Sesh ANC Active</td><td>Earbuds</td><td>0x25</td><td>battery, noise mode, gaming mode, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Icon ANC</td><td>Headphones</td><td>0x1A</td><td>battery, noise mode, gaming mode, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Dime Evo</td><td>Earbuds</td><td>0x1B</td><td>battery, noise mode, gaming mode, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>AVIATOR 900 ANC</td><td>Headphones</td><td>0x06</td><td>battery, noise mode, gaming mode, multipoint (RACE), wear detection (RACE), equalizer (custom + 4 presets)</td><td>Not tested</td></tr>
-<tr><td>Hesh 360</td><td>Headphones</td><td>0x1E</td><td>battery, noise mode, gaming mode, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Hesh 540 ANC</td><td>Headphones</td><td>0x1F</td><td>battery, noise mode, gaming mode, multipoint (RACE), wear detection (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Crusher PLYR 720</td><td>Headphones</td><td>0x29</td><td>battery, multipoint (RACE), bass boost (RACE)</td><td>Not tested</td></tr>
-<tr><td>Crusher PLYR 720 XBOX</td><td>Headphones</td><td>0x2A</td><td>battery, multipoint (RACE), bass boost (RACE)</td><td>Not tested</td></tr>
+<tr><td>Jib True XT2</td><td>Earbuds</td><td>0x0D</td><td>battery (both earbuds and the case), Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Indy Evo</td><td>Earbuds</td><td>0x0A</td><td>battery (both earbuds and the case), noise mode, Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Indy Fuel</td><td>Earbuds</td><td>0x0B</td><td>battery (both earbuds and the case), noise mode, Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Dime 2</td><td>Earbuds</td><td>0x0F</td><td>battery (both earbuds and the case), Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Dime XT2</td><td>Earbuds</td><td>0x19</td><td>battery (both earbuds and the case), Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Sesh ANC</td><td>Earbuds</td><td>0x0C</td><td>battery (both earbuds and the case), noise mode, gaming mode, equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Mod</td><td>Earbuds</td><td>0x12</td><td>battery (both earbuds and the case), noise mode, multipoint, equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>Riff Wireless 2</td><td>Headphones</td><td>0x14</td><td>battery (both earbuds and the case), gaming mode, multipoint, equalizer (custom + 3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>PLYR</td><td>Headphones</td><td>0x11</td><td>battery (both earbuds and the case), equalizer (custom + 7 presets), Find with Tile (link)</td><td>Not tested</td></tr>
+<tr><td>SLYR Pro Wireless</td><td>Headphones</td><td>0x23</td><td>battery (both earbuds and the case), equalizer (custom + 7 presets)</td><td>Not tested</td></tr>
+<tr><td>SLYR Pro Wireless</td><td>Headphones</td><td>0x24</td><td>battery (both earbuds and the case), equalizer (custom + 7 presets)</td><td>Not tested</td></tr>
+<tr><td>Push ANC Active</td><td>Earbuds</td><td>0x26</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Sesh ANC Active</td><td>Earbuds</td><td>0x25</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Icon ANC</td><td>Headphones</td><td>0x1A</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Dime Evo</td><td>Earbuds</td><td>0x1B</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>AVIATOR 900 ANC</td><td>Headphones</td><td>0x06</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 4 presets)</td><td>Not tested</td></tr>
+<tr><td>Hesh 360</td><td>Headphones</td><td>0x1E</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Hesh 540 ANC</td><td>Headphones</td><td>0x1F</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Crusher PLYR 720</td><td>Headphones</td><td>0x29</td><td>battery (both earbuds and the case), multipoint, bass boost</td><td>Not tested</td></tr>
+<tr><td>Crusher PLYR 720 XBOX</td><td>Headphones</td><td>0x2A</td><td>battery (both earbuds and the case), multipoint, bass boost</td><td>Not tested</td></tr>
 <tr><td>Crusher 540 Active</td><td>Headphones</td><td>0x2C</td><td>battery (both earbuds), equalizer (3 presets), Find with Tile (link)</td><td>Not tested</td></tr>
-<tr><td>Crusher 540 Active</td><td>Headphones</td><td>0x31</td><td>battery, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Push 720 Open</td><td>Earbuds</td><td>0x2F</td><td>battery, gaming mode, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Crusher 540 Active</td><td>Headphones</td><td>0x31</td><td>battery (both earbuds and the case), multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Push 720 Open</td><td>Earbuds</td><td>0x2F</td><td>battery (both earbuds and the case), gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
 <tr><td>Icon 180</td><td>Headphones</td><td>0x2E</td><td>battery, equalizer (custom + 3 presets), multipoint, gaming mode</td><td>Not tested</td></tr>
-<tr><td>Push 540 Open</td><td>Earbuds</td><td>0x32</td><td>battery, gaming mode, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Push 540 Open</td><td>Earbuds</td><td>0x32</td><td>battery (both earbuds and the case), gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
 <tr><td>Terrain Mini</td><td>Speaker</td><td>0x736</td><td></td><td>Found only (speakers are held back)</td></tr>
 <tr><td>Terrain</td><td>Speaker</td><td>0x737</td><td></td><td>Found only (speakers are held back)</td></tr>
 <tr><td>Terrain XL</td><td>Speaker</td><td>0x738</td><td></td><td>Found only (speakers are held back)</td></tr>
-<tr><td>Dime 360</td><td>Earbuds</td><td>0x33</td><td>battery, noise mode, gaming mode, multipoint (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
-<tr><td>Crusher 720</td><td>Headphones</td><td>0x36</td><td>battery, noise mode, gaming mode, multipoint (RACE), wear detection (RACE), equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Dime 360</td><td>Earbuds</td><td>0x33</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
+<tr><td>Crusher 720</td><td>Headphones</td><td>0x36</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom + 3 presets)</td><td>Not tested</td></tr>
 <tr><td>Crusher 1080 ANC</td><td>Headphones</td><td>0x34</td><td>battery, noise mode + strength + profile, sidetone, gaming mode, wear detection (RPC), Crusher intensity and mode, spatial audio, voice prompts, prompt language, multipoint (RACE), button actions, equalizer (the earbuds&#x27; own: presets and custom), Auracast receiver (RACE)</td><td>Not tested</td></tr>
 <tr><td>Session 360</td><td>Speaker</td><td>0x37</td><td></td><td>Found only (speakers are held back)</td></tr>
 <tr><td>Session 540</td><td>Speaker</td><td>0x38</td><td></td><td>Found only (speakers are held back)</td></tr>
@@ -91,7 +91,7 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td>DIME 540 ANC</td><td>Earbuds</td><td>0x45</td><td>battery, noise mode + level, equalizer (custom + 3 presets), multipoint, gaming mode, touch controls, button actions</td><td>Not tested</td></tr>
 <tr><td>Smokin&#x27; Buds 360H</td><td>Earbuds</td><td>0x42</td><td>battery, noise mode, equalizer (custom + 3 presets), multipoint, sidetone, button actions</td><td>Not tested</td></tr>
 <tr><td>Smokin&#x27; Buds 360S</td><td>Earbuds</td><td>0x41</td><td>battery, noise mode, equalizer (custom + 3 presets), multipoint, sidetone, button actions</td><td>Not tested</td></tr>
-<tr><td>Crusher 900 ANC</td><td>Headphones</td><td>0x44</td><td>battery, noise mode, gaming mode, multipoint (RACE), wear detection (RACE), equalizer (custom)</td><td>Not tested</td></tr>
+<tr><td>Crusher 900 ANC</td><td>Headphones</td><td>0x44</td><td>battery (both earbuds and the case), noise mode, gaming mode, multipoint, wear detection, equalizer (custom)</td><td>Not tested</td></tr>
 <tr><td>Push 180 Open</td><td>Earbuds</td><td>0x43</td><td>battery, equalizer (custom)</td><td>Not tested</td></tr>
 </table>
 </div>

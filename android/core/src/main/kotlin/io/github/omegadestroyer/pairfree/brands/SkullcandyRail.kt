@@ -10,15 +10,17 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.RaceParser
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyBandEq
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyModels
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyRaceTalk
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAirohaSdk
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesRail
 
 /**
  * The Rail and Rail ANC: the SDK's configurations put every feature of these two on Airoha's RACE over Airoha's own serial service, so the RACE conversation ([SkullcandyRaceTalk]) is their main one:
- * the batteries, the hearing mode and its strength, multipoint and the equaliser (docs/skullcandy/PROTOCOL.md section 16).
+ * the batteries, the hearing mode and its strength, multipoint and the equaliser (docs/skullcandy/PROTOCOL.md section 16). The Airoha models without an SDK configuration go the same way,
+ * since the app drives them through Airoha's SDK alone (section 9.4, issue #66), without the Rail's own buttons, voice control and gain.
  */
 class SkullcandyRailDriver(host: DriverHost, private val device: Paired) : TalkDriver<RacePacket, SkullcandyRaceTalk>(host) {
     override fun talk(opened: ControlLink): SkullcandyRaceTalk? =
-        SkullcandyModels.fromName(device.model ?: device.name)?.takeIf { it.usesRail }?.let { SkullcandyRaceTalk(it) }
+        SkullcandyModels.fromName(device.model ?: device.name)?.takeIf { it.usesRail || it.usesAirohaSdk }?.let { SkullcandyRaceTalk(it) }
 
     override fun publish(talk: SkullcandyRaceTalk) {
         show(talk.state, talk.groups)

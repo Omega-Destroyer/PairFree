@@ -26,7 +26,9 @@ class SkullcandyRaceTalkTest {
         val s = talk("Hesh 360")
         assertTrue(s.hasMultipoint)
         assertTrue(s.start().isNotEmpty())
-        assertTrue(s.poll().isEmpty())
+        // a model on Airoha's SDK alone: this is its main conversation, which polls the batteries (issue #66); an AT model's second channel does not
+        assertTrue(s.poll().isNotEmpty())
+        assertTrue(talk("Grind").poll().isEmpty())
     }
 
     @Test

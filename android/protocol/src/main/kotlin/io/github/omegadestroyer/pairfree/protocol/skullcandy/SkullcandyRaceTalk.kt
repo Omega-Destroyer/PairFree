@@ -55,6 +55,9 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     /** The buttons of the Airoha models without an SDK configuration, over Airoha's gesture API or the app's own key map code (section 9.5). */
     private val airohaButtons = SkullcandyAirohaButtons(product)
 
+    /** Sidetone, the game and chat mix, microphone volume, touch controls, adaptive noise cancelling and the Crusher's intensity (section 9.6). */
+    private val extras = SkullcandyAirohaExtras(product)
+
     /**
      * Gaming (low latency) mode on the models driven by Airoha's SDK alone: the SDK reads it as module 6 of the module read (`libmmi1562.stage.b`, "GetGameMode") and sets it with the key event
      * `A4 00` (on) or `A5 00` (off) (`libmmi1562.c.j`, "SetGameMode"). That the read's first byte is 1 for on and 0 for off is inferred: the SDK's parser of the answer did not decompile.
@@ -154,6 +157,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         gamingMode?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(SkullcandyAtSession.GAMING_MODE, it)))) }
         voicePrompts?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(VOICE_PROMPTS, it)))) }
         airohaButtons.group()?.let { add(it) }
+        addAll(extras.groups())
         auracast?.group()?.let { add(it) }
         if (primary) SkullcandyTile.group(product)?.let { add(it) }
         multipoint?.let { add(SettingGroup("connection", SettingTab.DEVICE, listOf(Setting.Toggle(MULTIPOINT, it)))) }
@@ -190,6 +194,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         if (hasCustomEq || airohaButtons.generic) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
         if (airohaButtons.vendor) airohaButtons.start(null)?.let { add(it) }
         if (hasVoicePrompts) add(packet(SkullcandyRace.VOICE_PROMPTS_GET, "voice_prompts"))
+        addAll(extras.start())
         if (hasMultipoint) add(packet(SkullcandyRace.multipointGet(product.enumName), "multipoint"))
         if (hasWearDetect) add(packet(SkullcandyRace.WEAR_DETECT_GET, "wear"))
         if (hasBassBoost) add(packet(SkullcandyRace.BASS_BOOST_GET, "bass"))
@@ -213,7 +218,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     override fun poll(): List<RacePacket> = if (primary) listOf(own(RacePacket.of(JblRace.BATTERY, 0)), own(RacePacket.of(JblRace.CASE_BATTERY))) else emptyList()
 
     override fun allowed(message: RacePacket): Boolean =
-        message == chipRead || message in own || write?.sent?.contains(message) == true || message in airohaButtons.sent || (rail && RailButtons.isAllowed(message)) || SkullcandyRace.isAllowed(message.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
+        message == chipRead || message in own || write?.sent?.contains(message) == true || message in airohaButtons.sent || message in extras.sent || (rail && RailButtons.isAllowed(message)) || SkullcandyRace.isAllowed(message.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
 
     override fun bytes(message: RacePacket): ByteArray {
         pending = message
@@ -262,6 +267,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             JblRace.MMI_GET -> if (p.status == 0 && d.isNotEmpty()) {
                 return when (p.module) {
                     JblRace.MMI_ANC -> hearing(u8(d, 0))
+                    SkullcandyAirohaExtras.MODULE_ADAPTIVE_ANC -> extras.moduleAnswer(p)
                     MMI_GAME_MODE -> hasGamingMode && u8(d, 0) <= 1 && (u8(d, 0) == 1).let { on -> (gamingMode != on).also { gamingMode = on } }
                     JblRace.NOTIFY_AGENT_BATTERY -> { if (d.size >= 2) agentRight = u8(d, 1) == 1; battery(0, u8(d, 0)) }
                     JblRace.NOTIFY_PARTNER_BATTERY -> battery(1, u8(d, 0))
@@ -324,6 +330,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         if (auracast != null && p.id in SkullcandyAuracast.ID_SCAN..SkullcandyAuracast.ID_CODE && (p.type == JblRace.TYPE_RESPONSE || p.type == JblRace.TYPE_INDICATION)) {
             return auracast.receive(p) { outbox += own(it) }
         }
+        if (extras.has && extras.receive(p)) return true
         // the voice prompts: a read's answer (status and value) or the earbuds' notification of a change (the value alone); a write's answer is its status alone
         if (hasVoicePrompts && p.id == SkullcandyRace.VOICE_PROMPTS_ID && (p.type == JblRace.TYPE_RESPONSE && p.payload.size >= 2 || p.type == JblRace.TYPE_INDICATION && p.payload.isNotEmpty())) {
             val on = (p.payload.last().toInt() and 0xFF) != 1
@@ -342,6 +349,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         }
         // an NV key read answers with the data's length and the data, no status
         if (asked == airohaButtons.vendorRead && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return airohaButtons.vendorAnswer(p.data)
+        if (asked == extras.touchRead && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return extras.touchAnswer(p.data)
         val kind = kinds[asked] ?: return false
         if (p.type != 0x5B && p.type != 0x5D || p.payload.isEmpty()) return false
         if (kind.startsWith("buttons")) {
@@ -394,7 +402,12 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         return listOf(own(RailButtons.write(side, next)))
     }
 
-    override fun change(change: SettingChange): List<RacePacket>? = when {
+    override fun change(change: SettingChange): List<RacePacket>? {
+        if (extras.has) extras.change(change) { readBacks = it }?.let { return it }
+        return changeOther(change)
+    }
+
+    private fun changeOther(change: SettingChange): List<RacePacket>? = when {
         change is SettingChange.Choice && rail && change.key.startsWith("sk_rbutton_") -> railButtonChange(change)
         change is SettingChange.Choice && airohaButtons.has && (change.key.startsWith("sk_rbutton_") || change.key.startsWith("sk_button_")) ->
             airohaButtons.change(change.key, change.option)?.also { readBacks = airohaButtons.readBack() }

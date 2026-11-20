@@ -723,6 +723,9 @@
     <string name="setting_sk_anc_profile">Noise cancelling profile</string>
     <string name="setting_sk_transparency_profile">Transparency profile</string>
     <string name="setting_sk_sidetone_level">Sidetone volume</string>
+    <string name="setting_sk_chat_mix">Game and chat mix</string>
+    <string name="setting_sk_mic_gain">Microphone volume</string>
+    <string name="setting_sk_adaptive_anc">Adaptive noise cancelling</string>
     <string name="setting_sk_wear_transparency">Switch to transparency when taken off</string>
     <string name="setting_sk_crusher_active">Crusher haptic bass</string>
     <string name="setting_sk_crusher_intensity">Crusher intensity</string>

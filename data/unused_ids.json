@@ -614,5 +614,9 @@
  "cambridge": {},
  "jabra": {
   "JabraWire.DSP": "explained: the address of Jabra's DSP chip (8); settings.json holds it as each setting's dest number, and JabraSession reads the setting's own dest, so no code names the constant; checked: data/jabra/settings.json dest values, JabraSession.packet"
+ },
+ "skullcandy": {
+  "SkullcandyServices.AT_SECOND": "explained: the app's SPP voice channel (`SPP_VOICE_UUID` in `app/skullcandy/bragi/voicecontrol/f.java`, the SDK's second `ConnectionService.Spp` of the AT models) that streams audio to the app's own voice assistant; voice streaming is never sent (docs/skullcandy/PROTOCOL.md section 15, never-sent list) and it carries no setting; checked: voicecontrol/f.java, `DeviceServices` in `device/config/c.java`",
+  "SkullcandyServices.RPC_SECOND": "explained: the second `ConnectionService.Spp` slot of the Method and Crusher 1080 configurations (`DeviceServices` in `device/config/c.java`), the same voice-streaming slot as the AT models'; voice streaming is never sent and it carries no setting; checked: `device/config/c.java`, the RPC `voice_streaming` service in the never-sent list"
  }
 }

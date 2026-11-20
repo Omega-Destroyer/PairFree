@@ -195,6 +195,18 @@ BRANDS = [
         notes="Jabra support is read from Jabra Sound+ 5.22.0. It has not been tried with PairFree on any product yet.",
     ),
     dict(
+        slug="skullcandy", page="skullcandy", name="Skullcandy", app="the Skullcandy app",
+        title="Open-source Skullcandy app alternative",
+        lead="PairFree is a free, open-source Android and Windows app that controls Skullcandy earbuds and headphones without the Skullcandy app: no account, no internet access.",
+        does=[
+            "Battery for each earbud and the case, and noise control (off, noise cancelling, transparency) with its strength where the model has it.",
+            "The equalizer: the earbuds' own presets and your own curve, on the models that have one, shown as the earbuds hold it.",
+            "Gaming mode, multipoint, wear detection and the touch and button controls, where the model has them.",
+            "The Crusher 1080 ANC's Auracast receiver, and a link to Tile on the models that carry Tile.",
+        ],
+        notes="Skullcandy support is read from the Skullcandy app 5.0.6 and its SDK. It has not been tried with PairFree on any product yet.",
+    ),
+    dict(
         slug="oneplus", page="oneplus", name="OnePlus and OPPO", app="HeyMelody",
         title="Open-source HeyMelody alternative for OnePlus and OPPO earbuds",
         lead="PairFree is a free, open-source Android and Windows app that controls OnePlus and OPPO earbuds without HeyMelody: no account, no internet access.",
@@ -212,7 +224,7 @@ QUESTIONS = [
         "Is there an open-source app for my earbuds?",
         "Yes, for the brands above. PairFree is one open-source app (GPL-3.0) that talks directly to the earbuds over Bluetooth, "
         "so one app can replace the Soundcore, Bose Music, JBL Headphones, Sony Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio, "
-        "QCY, 1MORE, EarFun, Melomania, Sennheiser Smart Control, Jabra Sound+ and HeyMelody apps, on Android and on Windows.",
+        "QCY, 1MORE, EarFun, Melomania, Sennheiser Smart Control, Jabra Sound+, Skullcandy and HeyMelody apps, on Android and on Windows.",
     ),
     (
         "Does it work without an account or internet?",
@@ -247,7 +259,7 @@ QUESTIONS = [
 
 NOT_AFFILIATED = (
     "PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, "
-    "Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, OnePlus or OPPO; the names are used to say which earbuds it works with."
+    "Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, OnePlus or OPPO; the names are used to say which earbuds it works with."
 )
 
 
@@ -369,7 +381,7 @@ def home(rows):
     return f"""---
 layout: page
 title: "PairFree: open-source earbud and headphone app for Android and Windows"
-description: "A free, open-source app for Android and Windows that controls earbuds and headphones of many brands: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, Jabra, Sennheiser and more. No account, no internet."
+description: "A free, open-source app for Android and Windows that controls earbuds and headphones of many brands: Soundcore, Bose, JBL, Sony, Galaxy Buds, AirPods, Nothing, Pixel Buds, SOUNDPEATS, QCY, Jabra, Sennheiser, Skullcandy and more. No account, no internet."
 permalink: /
 ---
 

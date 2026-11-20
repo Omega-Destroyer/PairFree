@@ -110,6 +110,15 @@ def bes_rows(p, modes):
 
 
 def rows(p, modes):
+    out = base_rows(p, modes)
+    if "findWithTile" in p["features"] and out:
+        out.append("Find with Tile (link)")
+    if p["sdk"] == "CHP300":
+        out.append("Auracast receiver (RACE)")
+    return out
+
+
+def base_rows(p, modes):
     if p["chip"] == "qualcomm":
         return qualcomm_rows(p, modes)
     if p["sdk"] in RAIL_SDK:

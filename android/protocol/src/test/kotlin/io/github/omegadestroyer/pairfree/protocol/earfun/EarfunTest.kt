@@ -417,4 +417,23 @@ class EarfunTest {
         assertEquals(listOf("ff040003000a030a515209"), x.change(SettingChange.Choice("ef_button_nc_hold_call", "anc_off"))!!.map(::hex))
         assertEquals(listOf("ff040003000a030a010304"), x.change(SettingChange.Choice("ef_button_plus_hold", "previous"))!!.map(::hex))
     }
+
+    @Test
+    fun theFixedNoiseLevelsSitUnderManualWithTheirOwnRow() {
+        val s = EarfunSession(model("EarFun Air Pro 4+"))
+        // Noise cancelling on, the cancelling sub-mode at level 3 (issue #61: levels 1 to 4 belong under "Manual").
+        s.feed(qccReply(EarfunQcc.GET_NOISE_MODE, "01") + qccReply(EarfunQcc.GET_NOISE_CANCEL_MODE, "03"))
+        val rows = s.groups.flatMap { it.settings }
+        val mode = rows.first { it.key == EarfunSession.ANC_MODE_KEY } as Setting.Choice
+        assertEquals(listOf("ear_adaptive", "adaptive", "manual", "wind"), mode.options)
+        assertEquals("manual", mode.value)
+        val level = rows.first { it.key == EarfunSession.ANC_LEVEL_KEY } as Setting.Choice
+        assertEquals(listOf("level1", "level2", "level3", "level4"), level.options)
+        // A level goes out as the cancelling sub-mode; "manual" returns to the level last chosen; the widget's fixed level still goes through the mode row.
+        val viaLevel = s.change(SettingChange.Choice(EarfunSession.ANC_LEVEL_KEY, "level2"))!!.map(::hex)
+        assertEquals(viaLevel, s.change(SettingChange.Choice(EarfunSession.ANC_MODE_KEY, "level2"))!!.map(::hex))
+        s.change(SettingChange.Choice(EarfunSession.ANC_MODE_KEY, "wind"))
+        assertEquals(viaLevel, s.change(SettingChange.Choice(EarfunSession.ANC_MODE_KEY, "manual"))!!.map(::hex))
+    }
 }
+

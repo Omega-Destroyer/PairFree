@@ -9,12 +9,32 @@
    "device_1more_aero_q32_bud",
    "device_generic_case"
   ],
+  "1more colorbuds 2": [
+   "device_1more_es602_bud",
+   "device_generic_case"
+  ],
+  "1more comfobuds 2": [
+   "device_1more_es303_bud",
+   "device_generic_case"
+  ],
   "1more comfobuds mini": [
    "device_1more_es603_bud",
    "device_generic_case"
   ],
+  "1more comfobuds pro": [
+   "device_1more_es901_bud",
+   "device_generic_case"
+  ],
   "1more evo": [
    "device_1more_eh902_bud",
+   "device_generic_case"
+  ],
+  "1more fit": [
+   "device_1more_ef906_bud",
+   "device_generic_case"
+  ],
+  "1more fit se": [
+   "device_1more_ef606_bud",
    "device_generic_case"
   ],
   "1more g50": [
@@ -44,6 +64,10 @@
   "1more nano": [
    "device_1more_nano_bud",
    null
+  ],
+  "1more pistonbuds pro": [
+   "device_1more_ec302_bud",
+   "device_generic_case"
   ],
   "1more pistonbuds pro q30": [
    "device_1more_aero_q32_bud",
@@ -121,6 +145,10 @@
    "device_1more_s25_bud",
    "device_generic_case"
   ],
+  "1more s31": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
+  ],
   "1more s32": [
    "device_1more_s31_bud",
    "device_generic_case"
@@ -137,12 +165,20 @@
    "device_1more_s15_bud",
    "device_generic_case"
   ],
+  "1more sonoflow": [
+   "device_1more_sonoflow_bud",
+   null
+  ],
   "1more sonoflow qc30": [
    "device_1more_sonoflow_qc30_bud",
    null
   ],
   "1more sonoflow s": [
    "device_1more_sonoflow_s_bud",
+   null
+  ],
+  "1more sonoflow se": [
+   "device_1more_sonoflow_se_bud",
    null
   ],
   "1more z30": [
@@ -5375,6 +5411,10 @@
    "device_skullcandy_dime_bud",
    "device_generic_case"
   ],
+  "EC302": [
+   "device_1more_ec302_bud",
+   "device_generic_case"
+  ],
   "EC305": [
    "device_1more_aero_q32_bud",
    "device_generic_case"
@@ -5383,12 +5423,32 @@
    "device_stem_bud",
    "device_stem_case"
   ],
+  "EF606": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
+  ],
+  "EF906": [
+   "device_1more_ef906_bud",
+   "device_generic_case"
+  ],
   "EH902": [
    "device_1more_eh902_bud",
    "device_generic_case"
   ],
+  "ES303": [
+   "device_1more_es303_bud",
+   "device_generic_case"
+  ],
+  "ES602": [
+   "device_1more_es602_bud",
+   "device_generic_case"
+  ],
   "ES603": [
    "device_1more_es603_bud",
+   "device_generic_case"
+  ],
+  "ES901": [
+   "device_1more_es901_bud",
    "device_generic_case"
   ],
   "ES903": [
@@ -5406,6 +5466,14 @@
   "Grind Fuel": [
    "device_skullcandy_grind_bud",
    "device_generic_case"
+  ],
+  "HC306": [
+   "device_1more_sonoflow_se_bud",
+   null
+  ],
+  "HC905": [
+   "device_1more_sonoflow_bud",
+   null
   ],
   "HC905S": [
    "device_1more_sonoflow_s_bud",
@@ -6394,6 +6462,10 @@
   "S30": [
    "device_pod_bud",
    "device_pod_case"
+  ],
+  "S31": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
   ],
   "S32": [
    "device_generic_bud",

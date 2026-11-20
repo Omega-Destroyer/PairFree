@@ -1466,7 +1466,7 @@
     <string name="vendor_ultimate_sound">صدای نهایی (Ultimate)</string>
     <string name="vendor_vibrant">پرجنب‌وجوش (Vibrant)</string>
     <!-- OnePlus, Pixel Buds -->
-    <string name="vendor_default">پیش‌فرض</string>
+    <string name="preset_name_default">پیش‌فرض</string>
     <!-- OnePlus, SOUNDPEATS, Soundcore -->
     <string name="vendor_classic">کلاسیک (Classic)</string>
     <!-- Pixel Buds -->

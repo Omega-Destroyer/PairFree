@@ -1,7 +1,7 @@
 # Jabra
 
-PairFree is growing into one app for earbuds and headphones of several brands, with the same screens for each. Jabra support is new and **has not been tried with PairFree on any product**:
-nobody on the project owns one, so every model relies on reports from people who do. It is written from Jabra's own app (Sound+ 5.22.0), read for what it sends and what its bundled
+PairFree is growing into one app for earbuds and headphones of several brands, with the same screens for each. Jabra support is new. The Elite Active 75t has been tried with PairFree (a user's device report, issue #20: it showed its settings);
+nobody on the project owns a Jabra product, so every other model relies on reports from people who do. It is written from Jabra's own app (Sound+ 5.22.0), read for what it sends and what its bundled
 product files list for each model and firmware; none of its code is in PairFree. [`docs/jabra/PROTOCOL.md`](../jabra/PROTOCOL.md) describes the protocol and
 [`docs/jabra/SETTINGS.md`](../jabra/SETTINGS.md) lists every setting of every firmware snapshot.
 
@@ -49,7 +49,7 @@ speakerphones and desk headsets that are not earbuds or headphones. [`docs/jabra
 <tr><td>Jabra Elite 85t</td><td>earbuds</td><td>9421</td><td>battery, noise control, noise levels, modes on the button, equalizer, sidetone, button functions, automatic switch-off, voice prompts, voice language, call sound, mute reminder</td><td>Not tested</td></tr>
 <tr><td>Jabra Elite Active 45e</td><td>neckband</td><td>9362</td><td>battery, equalizer, sidetone, voice prompts, voice language, call sound</td><td>Not tested</td></tr>
 <tr><td>Jabra Elite Active 65t</td><td>earbuds</td><td>9353</td><td>battery, HearThrough, equalizer, sidetone, voice prompts, voice language, call sound, announce the caller</td><td>Not tested</td></tr>
-<tr><td>Jabra Elite Active 75t</td><td>earbuds</td><td>9420</td><td>battery, noise control, noise levels, modes on the button, equalizer, sidetone, button functions, automatic switch-off, voice prompts, voice language, call sound, mute reminder</td><td>Not tested</td></tr>
+<tr><td>Jabra Elite Active 75t</td><td>earbuds</td><td>9420</td><td>battery, noise control, noise levels, modes on the button, equalizer, sidetone, button functions, automatic switch-off, voice prompts, voice language, call sound, mute reminder</td><td>Tested</td></tr>
 <tr><td>Jabra Elite Flex</td><td>headset</td><td>9520</td><td>battery, noise control, noise levels, modes on the button, equalizer, sidetone, automatic switch-off, pause music when taken off, voice prompts, voice language, call sound, mute reminder, busy light, button sounds, reject a waiting call</td><td>Not tested</td></tr>
 <tr><td>Jabra Evolve 65e</td><td>neckband</td><td>9358</td><td>battery, HearThrough, equalizer, sidetone, voice prompts, voice language, call sound, mute reminder, busy light, vibration, button sounds, reject a waiting call</td><td>Not tested</td></tr>
 <tr><td>Jabra Evolve 65t</td><td>earbuds</td><td>9367</td><td>battery, HearThrough, equalizer, sidetone, voice prompts, voice language, call sound, announce the caller</td><td>Not tested</td></tr>

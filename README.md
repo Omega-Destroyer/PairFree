@@ -108,13 +108,13 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | Nothing Ear |
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
 | [QCY](docs/devices/qcy.md) | 194 | QCY H3 Pro, QCY T13 ANC2 |
-| [1MORE](docs/devices/1more.md) | 39 | — |
+| [1MORE](docs/devices/1more.md) | 48 | — |
 | [EarFun](docs/devices/earfun.md) | 26 | — |
 | [Cambridge Audio](docs/devices/cambridge.md) | 8 | — |
 | [OnePlus and OPPO](docs/devices/oneplus.md) | 53 | OnePlus Buds 4 |
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | — |
-| [Jabra](docs/devices/jabra.md) | 34 | — |
-| **Total: 16 brands** | **781** | **19 tried** |
+| [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
+| **Total: 16 brands** | **790** | **20 tried** |
 <!-- devices-summary:end -->
 
 ## Help add your model

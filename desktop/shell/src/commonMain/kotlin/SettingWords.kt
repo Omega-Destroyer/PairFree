@@ -292,6 +292,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "ambient_custom_right" -> t("setting_ambient_custom_right")
         "ambient_custom_tone" -> t("setting_ambient_custom_tone")
         "touch_controls" -> t("touch_controls")
+        "touch_lock" -> t("setting_touch_lock")
         "touch_single" -> t("setting_touch_single")
         "touch_double" -> t("setting_touch_double")
         "touch_triple" -> t("setting_touch_triple")
@@ -570,6 +571,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "voice_guidance_volume" -> t("setting_voice_guidance_volume")
         // EarFun (EarfunSession)
         "ef_anc_mode" -> t("setting_ef_anc_mode")
+        "ef_anc_level" -> t("setting_anc_scene_level")
         "ef_ambient_mode" -> t("setting_transparency_mode")
         "ef_prompt_volume", "prompt_volume" -> t("setting_ef_prompt_volume")
         "ef_hearing_protection" -> t("setting_hearing_protection")
@@ -1124,11 +1126,16 @@ class SettingWords(private val strings: DesktopStrings) {
                 "switch_device" -> "setting_op_switch_device"
                 "switch_song" -> "action_previous_next"
                 "switch_calls" -> "action_switch_calls"
+                // 1MORE's touch and hold: the noise mode it switches to
+                "high" -> "setting_level_high"
+                "low" -> "setting_level_low"
+                "wind" -> "scene_wind"
                 else -> "action_other"
             },
         )
         key == "voice_detect_wait" -> t("setting_seconds", option.toIntOrNull() ?: 0)
-        key == "ef_anc_mode" -> when (option) {
+        key == "ef_anc_level" || key == "ef_anc_mode" -> when (option) {
+            "manual" -> t("setting_ef_manual")
             "level1", "level2", "level3", "level4" -> t("scene_level", option.last().digitToInt())
             "anc1" -> t("setting_ef_anc_number", 1)
             "anc2" -> t("setting_ef_anc_number", 2)

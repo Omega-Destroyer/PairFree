@@ -1,0 +1,55 @@
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help check
+this model. It holds no serial number, address or other personal data.
+
+Bluetooth name:  Jabra Elite Active 75t
+Brand:           Jabra (GNP)
+Model:           Jabra Elite Active 75t
+Product id:      9420
+Firmware:        2.0.0
+Snapshot:        9420_01-61_2.0.0
+App:             PairFree 0.16.0
+OS:              Android 13 (API 33)
+Captured:        2026-11-18 22:22 UTC
+
+The last answer to each read PairFree made (command, selector bytes: payload as hex):
+  12/02: a4 64 0f ba 01 15 00 64
+  13/7d: 05 00 00 1e 00 b4 00 b4 06 c2 18 02 ee 00 00 06 76 18 0b b8 ff 8a 06 29 18 2e e0 ff c3 06 3d 28 59 10 00 b4 08 28
+  13/7e: 01
+  02/08: 01 0c 04
+  13/08: 0c 04
+  13/be/07: 07 05 08 01 01 02
+  13/be/01: 01
+  13/be/00: 00
+  13/be/05: 05
+  13/bf: 02 01 02
+  13/90: 06
+  13/88: 00
+  13/3a: 00
+  13/1e: 14
+  13/9a/00/00/00: 00 00 00 05
+  13/9a/00/00/01: 00 00 01 02
+  13/9a/00/00/02: 00 00 02 03
+  13/9a/00/01/00: 00 01 00 01
+  13/9a/00/01/01: 00 01 01 04
+  13/9a/00/01/02: 00 01 02 00
+  13/9a/01/00/00: 01 00 00 0b
+  13/9a/01/00/01: 01 00 01 0c
+  13/9a/01/00/02: 01 00 02 00
+  13/9a/01/01/00: 01 01 00 07
+  13/9a/01/01/01: 01 01 01 06
+  13/9a/01/01/02: 01 01 02 08
+  13/9a/02/00/00: 02 00 00 0b
+  13/9a/02/00/01: 02 00 01 0c
+  13/9a/02/00/02: 02 00 02 00
+  13/9a/02/01/00: 02 01 00 09
+  13/9a/02/01/01: 02 01 01 0a
+  13/9a/02/01/02: 02 01 02 00
+  13/76: 00 00
+  13/81: 04
+  13/7c: 01 04
+  13/15: 00
+  13/83: 00
+  ff/04: 0b 43 87 13
+  ff/08: 0b 5a 88 13

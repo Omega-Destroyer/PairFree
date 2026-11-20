@@ -54,6 +54,7 @@ A language is one file ([docs/TRANSLATING.md](docs/TRANSLATING.md)). Translators
 | Who | Language |
 |-----|----------|
 | [@iJahangard](https://github.com/iJahangard) | Persian (`fa`) ([#44](https://github.com/Omega-Destroyer/PairFree/issues/44)); the 61 entries added after their file (the Sleep A30 sound upload and the newer Soundcore rows) were translated by AI and need a native speaker's check. Also the first right-to-left review with screenshots (the earbuds, sliders, arrows, signs and percentages fixed in 0.13.0) |
+| [@louim-lbs](https://github.com/louim-lbs) | Jabra Elite Active 75t | The first Jabra device report: PairFree read the settings its firmware lists ([#20](https://github.com/Omega-Destroyer/PairFree/issues/20)) |
 
 ## And the projects PairFree learns from
 

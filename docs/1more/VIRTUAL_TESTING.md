@@ -24,3 +24,12 @@ For selected settings the peer acknowledged writes and returned the same value o
 - Left double-tap Next Track sent `0084 01 01`; right triple-tap Vol+ sent `0084 04 04`. Each was followed by a gesture-status read `0087`. Other mappings, hold behavior and real readback remain untested.
 
 The app's UI actions and outgoing packets confirm these paths for this configuration only. The other 38 catalog records, different firmware and configuration variants, other gestures, remaining functions, and a comparison against PairFree's runtime behavior remain outstanding. This is not evidence of hardware acceptance or full vendor support.
+
+## PairFree against a virtual PistonBuds PRO Q30 (2026-11-19)
+
+PairFree 0.16.1 (debug, before the fixes below) on the Android 37 emulator against a synthetic `1MORE PistonBuds PRO Q30` (`EC305`, a Bumble peer serving the standard serial port; replies invented from the Aero fixture, with the Q30's longer battery reply). Not firmware: it shows what PairFree sends and how it reads replies, never that real earbuds accept them. The peer's first two bonds (made before an inquiry) kept the emulator's unclassified device class, so PairFree did not list them (its list keeps audio-class devices); the third, made after the Pair new device scan, was listed and connected.
+
+- Opening: `004D 01`, `004E`, `005F`, `006C`, `0083`, `003C`, `0087`, `006A`, `0054`, `005B 01`; every read answered by the peer. Battery 85 / 100 / 80, right earbud out shown as a dash, firmware, adaptive noise cancelling, connection mode, sound mode and the gesture rows all came from those replies.
+- Writes seen by the peer: `005E 00` and `005E 07` (off, cancelling), `0069 02` (Bass booster, read back with `006A`), `0084 01 01` (left double tap, next track, then `0087`), `006B 01` (game mode, then `006C`).
+- Two faults found and fixed in PairFree: the Sound tab and the Home card stayed "Not known yet" after a connection because `OneMoreSession.receive` reported no change when only the preset or curve changed, and `EqOpener` skipped its report when the EQ had opened before the answers (`OneMoreTest.anEqAnswerCountsAsAChange`); and the Sound tab's note said "Samsung does not publish its curve" for every brand's presets. The older preset list's display names (`default`, `bass_reducer_1`, ...) were also missing from the names shown.
+- This does not explain the real Q30 (issues #58, #63): the virtual earbuds answer. PairFree's frames and reads were as Life 5.0.3 sends them.

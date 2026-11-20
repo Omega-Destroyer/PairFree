@@ -72,14 +72,33 @@ internal class SettingRows(
     private val confirmChoices = setOf("sh_peer_delete")
     private val links = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://www.tile.com/")
 
-    fun panels(): List<Widget> = groups.filter { it.tab == tab }.map { group ->
+    fun panels(): List<Widget> {
+        val mine = groups.filter { it.tab == tab }
+        val out = mutableListOf<Widget>()
+        var i = 0
+        while (i < mine.size) {
+            val group = mine[i]
+            val next = mine.getOrNull(i + 1)
+            // A group for the left earbud followed by the right one's sits beside it on a wide window.
+            if (next != null && group.key.endsWith("_left") && next.key == group.key.removeSuffix("_left") + "_right") {
+                out += Beside(panel(group), panel(next))
+                i += 2
+            } else {
+                out += panel(group)
+                i++
+            }
+        }
+        return out
+    }
+
+    private fun panel(group: SettingGroup): Widget {
         val rows = mutableListOf<Widget>(Label(words.groupTitle(group.key), theme.labelFont, theme.label, caps = true))
         group.settings.forEachIndexed { i, setting ->
             if (i > 0) rows += Divider()
             rows += row(setting)
         }
         words.groupNote(group.key)?.let { rows += Label(it, theme.small, theme.secondaryText) }
-        Panel(Column(rows, 8f)) as Widget
+        return Panel(Column(rows, 8f))
     }
 
     private fun titleWithNote(key: String, color: Int? = null): Widget {
@@ -116,6 +135,18 @@ internal class SettingRows(
     private fun choice(setting: Setting.Choice): Widget {
         val current = setting.value?.let { words.optionLabel(setting.key, it) } ?: s.text("unknown")
         val names = setting.options.map { words.optionLabel(setting.key, it) }
+        // A few short choices are all shown at once as one segmented control; a long list opens under its row.
+        if (setting.options.size in 2..4 && names.all { it.length <= 18 } && setting.key !in confirmChoices) {
+            return Column(
+                listOf(
+                    titleWithNote(setting.key),
+                    segmented("seg_${setting.key}_", names, setting.options.indexOf(setting.value).takeIf { it >= 0 }, primary = false) { i ->
+                        call.change(SettingChange.Choice(setting.key, setting.options[i]))
+                    },
+                ),
+                6f,
+            )
+        }
         return choiceRow(state, setting.key, titleWithNote(setting.key), current, names, setting.options.indexOf(setting.value).takeIf { it >= 0 }, theme, call.changed) { i ->
             val option = setting.options[i]
             val send = { call.change(SettingChange.Choice(setting.key, option)) }

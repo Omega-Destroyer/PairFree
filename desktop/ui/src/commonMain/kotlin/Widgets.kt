@@ -162,6 +162,42 @@ class Row(private val children: List<Widget>, private val gap: Float = 8f, priva
     }
 }
 
+/** Two widgets side by side when [width] allows (each at least [minEach] wide), else one above the other: a left and a right earbud's settings. */
+class Beside(private val first: Widget, private val second: Widget, private val minEach: Float = 380f, private val gap: Float = 12f) : Widget() {
+    private fun sideBySide(width: Float) = width >= 2 * minEach + gap
+
+    override fun height(ctx: Ctx, width: Float): Float =
+        if (sideBySide(width)) {
+            val each = (width - gap) / 2f
+            max(first.height(ctx, each), second.height(ctx, each))
+        } else {
+            first.height(ctx, width) + gap + second.height(ctx, width)
+        }
+
+    override fun place(ctx: Ctx, x: Float, y: Float, width: Float) {
+        super.place(ctx, x, y, width)
+        if (sideBySide(width)) {
+            val each = (width - gap) / 2f
+            first.place(ctx, x, y, each)
+            second.place(ctx, x + each + gap, y, each)
+        } else {
+            first.place(ctx, x, y, width)
+            second.place(ctx, x, y + first.h + gap, width)
+        }
+    }
+
+    override fun draw(ctx: Ctx) {
+        first.draw(ctx)
+        second.draw(ctx)
+    }
+
+    override fun collect(into: MutableList<Widget>) {
+        into += this
+        first.collect(into)
+        second.collect(into)
+    }
+}
+
 /** A raised area with the look's panel colour, its outline when the look has one, and [pad] inside. */
 class Panel(private val child: Widget, private val pad: Float = 16f) : Widget() {
     override fun height(ctx: Ctx, width: Float) = child.height(ctx, width - 2 * pad) + 2 * pad
@@ -221,7 +257,7 @@ class Button(
     }
 }
 
-/** One choice of a [Segmented] row. */
+/** One choice of a segmented control: the trough ([Trough]) is behind it, so it draws only what marks it. */
 private class Choice(private val text: String, key: String, private val selected: Boolean, private val primary: Boolean, enabled: Boolean, onClick: () -> Unit) :
     Clickable(key, enabled, onClick) {
     override fun height(ctx: Ctx, width: Float) = if (primary) 40f else 34f
@@ -230,13 +266,19 @@ private class Choice(private val text: String, key: String, private val selected
         val t = ctx.theme
         val c = ctx.canvas
         val hot = enabled && ctx.hover == key
-        val fill = when {
-            selected && (primary || t.look.selectedFill) -> if (primary) t.accent else t.highlight
-            hot -> t.highlight
-            else -> t.raised
+        val inset = 3f
+        val ix = x + inset
+        val iy = y + inset
+        val iw = w - 2 * inset
+        val ih = h - 2 * inset
+        val r = max(2f, t.smallCorner - 2f)
+        when {
+            selected -> {
+                c.fillRoundRect(ix, iy, iw, ih, r, if (primary) t.accent else if (t.look.selectedFill) t.highlight else t.panel)
+                if (!primary) c.strokeRoundRect(ix + 0.75f, iy + 0.75f, iw - 1.5f, ih - 1.5f, r, t.accent, 1.5f)
+            }
+            hot -> c.fillRoundRect(ix, iy, iw, ih, r, t.highlight)
         }
-        c.fillRoundRect(x, y, w, h, t.smallCorner, fill)
-        c.strokeRoundRect(x + 0.5f, y + 0.5f, w - 1f, h - 1f, t.smallCorner, if (selected) t.accent else if (hot) t.label else t.outline, if (selected) 1.5f else t.look.hairline)
         val color = when {
             !enabled -> t.secondaryText
             selected && primary -> t.onAccent
@@ -249,6 +291,28 @@ private class Choice(private val text: String, key: String, private val selected
     }
 }
 
+/** The track a segmented control's choices sit in: one outlined, rounded bar, so they read as one control and not as separate buttons. */
+private class Trough(private val child: Widget) : Widget() {
+    override fun height(ctx: Ctx, width: Float) = child.height(ctx, width)
+
+    override fun place(ctx: Ctx, x: Float, y: Float, width: Float) {
+        super.place(ctx, x, y, width)
+        child.place(ctx, x, y, width)
+    }
+
+    override fun draw(ctx: Ctx) {
+        val t = ctx.theme
+        ctx.canvas.fillRoundRect(x, y, w, h, t.smallCorner, t.raised)
+        ctx.canvas.strokeRoundRect(x + 0.5f, y + 0.5f, w - 1f, h - 1f, t.smallCorner, t.outline, t.look.hairline)
+        child.draw(ctx)
+    }
+
+    override fun collect(into: MutableList<Widget>) {
+        into += this
+        child.collect(into)
+    }
+}
+
 private fun fitted(c: Canvas, text: String, font: Font, width: Float): String {
     if (c.textWidth(text, font) <= width) return text
     var s = text
@@ -258,11 +322,14 @@ private fun fitted(c: Canvas, text: String, font: Font, width: Float): String {
 
 /** Choices side by side, one of them selected: noise control's modes, a scene. Several rows when they do not fit one. */
 fun segmented(prefix: String, items: List<String>, selected: Int?, primary: Boolean = true, perRow: Int = items.size, onSelect: (Int) -> Unit): Widget {
-    val rows = items.withIndex().chunked(perRow.coerceAtLeast(1)).map { chunk ->
+    // Rows of nearly equal length, so that seven choices at three a row are 3, 2 and 2 and not 3, 3 and 1.
+    val lines = ((items.size + perRow.coerceAtLeast(1) - 1) / perRow.coerceAtLeast(1)).coerceAtLeast(1)
+    val each = (items.size + lines - 1) / lines
+    val rows = items.withIndex().chunked(each.coerceAtLeast(1)).map { chunk ->
         val cells = chunk.map { (i, text) -> Choice(text, "$prefix$i", i == selected, primary, true) { onSelect(i) } as Widget }
-        Row(cells + List(perRow - cells.size) { Spacer(0f) }, gap = 8f)
+        Trough(Row(cells, gap = 0f)) as Widget
     }
-    return Column(rows, gap = 8f)
+    return Column(rows, gap = 6f)
 }
 
 /** A level as a bar: [fraction] 0..1, or null while unknown. */

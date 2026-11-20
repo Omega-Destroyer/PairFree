@@ -34,8 +34,12 @@ def gnp(m):
     return any(v["protocol"] == "gnp" for v in m["variants"])
 
 
+def reports(m):
+    return [r for r in m.get("reports", []) if (device_pages.ROOT / r).exists()]
+
+
 def summary():
-    return {"brand": "Jabra", "models": len(models()), "tested": []}
+    return {"brand": "Jabra", "models": len(models()), "tested": sorted(m["name"] for m in models() if reports(m))}
 
 
 def shown(m):
@@ -83,7 +87,7 @@ def shown_gaia(m):
 def table():
     rows = []
     for m in models():
-        text, status = (shown(m) if gnp(m) else shown_gaia(m)), "Not tested"
+        text, status = (shown(m) if gnp(m) else shown_gaia(m)), "Tested" if reports(m) else "Not tested"
         pids = ", ".join(str(v["pid"]) for v in m["variants"])
         rows.append(f"<tr><td>{escape(m['name'])}</td><td>{m['kind']}</td><td>{pids}</td><td>{escape(text)}</td><td>{status}</td></tr>")
     return "\n".join([START, "<table>", "<tr><th>Model</th><th>Kind</th><th>Product id</th><th>Shown</th><th>Status</th></tr>", *rows, "</table>", END])

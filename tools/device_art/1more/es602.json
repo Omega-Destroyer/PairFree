@@ -1,0 +1,19 @@
+{
+ "name": "1MORE ColorBuds 2",
+ "names": [
+  "1MORE ColorBuds 2"
+ ],
+ "codes": [
+  "ES602"
+ ],
+ "source": "Traced from the render 1MORE Life 5.0.3 bundles (es602_color_black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "185,100 206,102 218,106 231,114 243,126 260,158 274,224 269,253 262,268 250,284 226,301 197,309 175,307 161,303 129,282 103,281 85,274 75,266 65,251 59,228 63,205 75,185 95,172 120,167 133,137 144,121 161,108",
+  "axis": [
+   166.5,
+   204.7
+  ]
+ },
+ "case": "generic"
+}

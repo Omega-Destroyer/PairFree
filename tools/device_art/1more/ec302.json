@@ -1,0 +1,19 @@
+{
+ "name": "1MORE PistonBuds Pro",
+ "names": [
+  "1MORE PistonBuds Pro"
+ ],
+ "codes": [
+  "EC302"
+ ],
+ "source": "Traced from the render 1MORE Life 5.0.3 bundles (ec302_color_black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "174,108 191,108 211,112 229,120 245,132 258,147 268,167 273,190 273,204 269,225 260,244 250,257 233,273 213,285 195,293 171,298 152,298 123,290 105,277 94,263 76,257 58,246 49,235 42,221 38,192 41,176 48,161 57,149 72,137 94,129 124,129 151,114",
+  "axis": [
+   155.5,
+   203.0
+  ]
+ },
+ "case": "generic"
+}

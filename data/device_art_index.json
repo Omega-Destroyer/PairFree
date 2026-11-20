@@ -9,12 +9,32 @@
    "device_1more_aero_q32_bud",
    "device_generic_case"
   ],
+  "1more colorbuds 2": [
+   "device_1more_es602_bud",
+   "device_generic_case"
+  ],
+  "1more comfobuds 2": [
+   "device_1more_es303_bud",
+   "device_generic_case"
+  ],
   "1more comfobuds mini": [
    "device_1more_es603_bud",
    "device_generic_case"
   ],
+  "1more comfobuds pro": [
+   "device_1more_es901_bud",
+   "device_generic_case"
+  ],
   "1more evo": [
    "device_1more_eh902_bud",
+   "device_generic_case"
+  ],
+  "1more fit": [
+   "device_1more_ef906_bud",
+   "device_generic_case"
+  ],
+  "1more fit se": [
+   "device_1more_ef606_bud",
    "device_generic_case"
   ],
   "1more g50": [
@@ -44,6 +64,10 @@
   "1more nano": [
    "device_1more_nano_bud",
    null
+  ],
+  "1more pistonbuds pro": [
+   "device_1more_ec302_bud",
+   "device_generic_case"
   ],
   "1more pistonbuds pro q30": [
    "device_1more_aero_q32_bud",
@@ -121,6 +145,10 @@
    "device_1more_s25_bud",
    "device_generic_case"
   ],
+  "1more s31": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
+  ],
   "1more s32": [
    "device_1more_s31_bud",
    "device_generic_case"
@@ -137,12 +165,20 @@
    "device_1more_s15_bud",
    "device_generic_case"
   ],
+  "1more sonoflow": [
+   "device_1more_sonoflow_bud",
+   null
+  ],
   "1more sonoflow qc30": [
    "device_1more_sonoflow_qc30_bud",
    null
   ],
   "1more sonoflow s": [
    "device_1more_sonoflow_s_bud",
+   null
+  ],
+  "1more sonoflow se": [
+   "device_1more_sonoflow_se_bud",
    null
   ],
   "1more z30": [
@@ -493,6 +529,10 @@
    "device_nothing_cmf_neckband_pro_bud",
    null
   ],
+  "connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
   "ct03": [
    "device_qcy_stem_bud",
    "device_generic_case"
@@ -717,6 +757,134 @@
    "device_earfun_wave_pro_x_bud",
    null
   ],
+  "elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "elite 10 gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "elite 3 active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "elite 4 active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "elite 7 active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "elite 7 pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "elite 7 sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "elite 8 active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "elite 8 active gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "elite active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "elite active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "elite active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "elite flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "evolve2 65 flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "evolve2 buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
   "g1": [
    "device_qcy_stem_bud",
    "device_generic_case"
@@ -863,6 +1031,142 @@
   ],
   "ie 80s bt": [
    "device_sennheiser_ie_80s_bt_bud",
+   null
+  ],
+  "jabra connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 10 gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 3 active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 4 active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "jabra elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "jabra elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "jabra elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 8 active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 8 active gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "jabra elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "jabra elite active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "jabra evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "jabra evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "jabra evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "jabra evolve2 65 flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "jabra evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "jabra evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "jabra evolve2 buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
+  "jabra speak2 75": [
+   "device_jabra_speak2_75_bud",
    null
   ],
   "jbl club one": [
@@ -3321,6 +3625,10 @@
    "device_wings2_bud",
    "device_wings2_case"
   ],
+  "speak2 75": [
+   "device_jabra_speak2_75_bud",
+   null
+  ],
   "sport true wireless": [
    "device_sennheiser_cx_sport_tw_bud",
    "device_generic_case"
@@ -4839,6 +5147,10 @@
    "device_soundcore_dot_bud",
    "device_generic_case"
   ],
+  "EC302": [
+   "device_1more_ec302_bud",
+   "device_generic_case"
+  ],
   "EC305": [
    "device_1more_aero_q32_bud",
    "device_generic_case"
@@ -4847,12 +5159,32 @@
    "device_stem_bud",
    "device_stem_case"
   ],
+  "EF606": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
+  ],
+  "EF906": [
+   "device_1more_ef906_bud",
+   "device_generic_case"
+  ],
   "EH902": [
    "device_1more_eh902_bud",
    "device_generic_case"
   ],
+  "ES303": [
+   "device_1more_es303_bud",
+   "device_generic_case"
+  ],
+  "ES602": [
+   "device_1more_es602_bud",
+   "device_generic_case"
+  ],
   "ES603": [
    "device_1more_es603_bud",
+   "device_generic_case"
+  ],
+  "ES901": [
+   "device_1more_es901_bud",
    "device_generic_case"
   ],
   "ES903": [
@@ -4861,6 +5193,14 @@
   ],
   "G50": [
    "device_1more_g50_bud",
+   null
+  ],
+  "HC306": [
+   "device_1more_sonoflow_se_bud",
+   null
+  ],
+  "HC905": [
+   "device_1more_sonoflow_bud",
    null
   ],
   "HC905S": [
@@ -5391,6 +5731,142 @@
    "device_stem_bud",
    "device_stem_case"
   ],
+  "Jabra Connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 10 Gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 3 Active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 4 Active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "Jabra Elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "Jabra Elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "Jabra Elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 8 Active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 8 Active Gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "Jabra Elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "Jabra Elite Active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "Jabra Evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "Jabra Evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "Jabra Evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "Jabra Evolve2 65 Flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "Jabra Evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "Jabra Evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "Jabra Evolve2 Buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
+  "Jabra Speak2 75": [
+   "device_jabra_speak2_75_bud",
+   null
+  ],
   "LinkBuds": [
    "device_sony_lb_bud",
    "device_generic_case"
@@ -5630,6 +6106,10 @@
   "S30": [
    "device_pod_bud",
    "device_pod_case"
+  ],
+  "S31": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
   ],
   "S32": [
    "device_generic_bud",

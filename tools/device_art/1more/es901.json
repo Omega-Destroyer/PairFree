@@ -1,0 +1,19 @@
+{
+ "name": "1MORE ComfoBuds Pro",
+ "names": [
+  "1MORE ComfoBuds Pro"
+ ],
+ "codes": [
+  "ES901"
+ ],
+ "source": "Traced from the render 1MORE Life 5.0.3 bundles (es901_color_black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "221,66 242,68 259,76 274,94 279,115 277,131 265,160 259,189 245,325 241,336 230,341 218,337 212,326 205,231 197,172 194,169 173,163 161,154 152,138 149,124 153,106 164,92 176,85 190,82 206,71",
+  "axis": [
+   228.9,
+   140.6
+  ]
+ },
+ "case": "generic"
+}

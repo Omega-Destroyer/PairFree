@@ -25,6 +25,7 @@ public class SkullcandyAtSession(public val product: SkullcandyProduct) : Sessio
     override val groups: List<SettingGroup> get() = buildList {
         transparencyPercent?.takeIf { hasTransparencyLevel }?.let { add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(TRANSPARENCY_LEVEL, (it + 5) / 10, 0, 10)))) }
         gamingMode?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(GAMING_MODE, it)))) }
+        SkullcandyTile.group(product)?.let { add(it) }
     }
 
     /** True when the manifest lists noise cancelling for the model. */

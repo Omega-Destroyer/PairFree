@@ -82,7 +82,8 @@ class SkullcandyAtSessionTest {
     @Test
     fun theTransparencyLevelAndGamingModeAreRowsOnceTheyAnswer() {
         val s = session("Grind")
-        assertTrue(s.groups.isEmpty())
+        // nothing but the Tile link before an answer comes
+        assertTrue(s.groups.all { it.key == "sk_tile" })
         answer(s, SkullcandyAt.TRANSPARENCY, "+UIAUDIO:on,40\r\nOK\r\n")
         val level = s.groups.single { it.key == "noise" }.settings.single() as Setting.Level
         assertEquals(4, level.value)

@@ -70,7 +70,7 @@ internal class SettingRows(
 ) {
     private val confirmKeys = setOf("restart", "power_off", "sh_personalized_reset")
     private val confirmChoices = setOf("sh_peer_delete")
-    private val links = mapOf("find_hub" to "https://www.google.com/android/find")
+    private val links = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://www.tile.com/")
 
     fun panels(): List<Widget> = groups.filter { it.tab == tab }.map { group ->
         val rows = mutableListOf<Widget>(Label(words.groupTitle(group.key), theme.labelFont, theme.label, caps = true))

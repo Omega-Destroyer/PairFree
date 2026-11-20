@@ -83,8 +83,12 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     /** True when the model has hearing modes this channel carries (the Rail models). */
     public val hasNoise: Boolean = hasAncMode || hasTransparencyMode
 
+    /** The Auracast receiver of the Crusher 1080 ANC, whose SDK configuration lists `AURACAST_RECEIVER` on Airoha's RACE (section 18). */
+    private val auracast: SkullcandyAuracast? = if (product.sdk == "CHP300") SkullcandyAuracast() else null
+    public val hasAuracast: Boolean = auracast != null
+
     /** True when the model has anything this channel carries. */
-    public val hasRaceFeatures: Boolean get() = hasMultipoint || hasWearDetect || hasBassBoost || hasCustomEq || hasGain || primary
+    public val hasRaceFeatures: Boolean get() = hasMultipoint || hasWearDetect || hasBassBoost || hasCustomEq || hasGain || primary || hasAuracast
 
     init {
         if (primary) mode = { railMode }
@@ -127,6 +131,8 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             rows += Setting.Action(VOICE_OFF)
             add(SettingGroup("sk_voice", SettingTab.DEVICE, rows))
         }
+        auracast?.group()?.let { add(it) }
+        if (primary) SkullcandyTile.group(product)?.let { add(it) }
         multipoint?.let { add(SettingGroup("connection", SettingTab.DEVICE, listOf(Setting.Toggle(MULTIPOINT, it)))) }
         wearDetect?.let { add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Toggle(WEAR_DETECT, it)))) }
         bassBoost?.let { add(SettingGroup("sound", SettingTab.SOUND, listOf(Setting.Toggle(BASS_BOOST, it)))) }
@@ -156,6 +162,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             if (hasButtons) for (side in 1..2) add(own(packet(RailButtons.readHex(side), "buttons$side")))
             if ("voiceControl" in product.features) add(own(packet(RailButtons.VOICE_LANGUAGE_GET, "voice_language")))
         }
+        auracast?.let { add(own(it.readState())) }
         if (hasCustomEq) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
         if (hasMultipoint) add(packet(SkullcandyRace.multipointGet(product.enumName), "multipoint"))
         if (hasWearDetect) add(packet(SkullcandyRace.WEAR_DETECT_GET, "wear"))
@@ -275,6 +282,10 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
 
     /** What an answer means: the chip name, or the value of the read that was asked. */
     private fun apply(p: RacePacket): Boolean {
+        // the Auracast receiver's answers and events (ids 2200 to 2209)
+        if (auracast != null && p.id in SkullcandyAuracast.ID_SCAN..SkullcandyAuracast.ID_CODE && (p.type == JblRace.TYPE_RESPONSE || p.type == JblRace.TYPE_INDICATION)) {
+            return auracast.receive(p) { outbox += own(it) }
+        }
         val asked = pending ?: return false
         if (asked == chipRead && p.id == JblRace.NV_READ) {
             val text = p.data.decodeToString().trimEnd('\u0000')
@@ -356,6 +367,10 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             readBacks = listOf(packet(SkullcandyRace.BASS_BOOST_GET, "bass"))
             listOf(packet(SkullcandyRace.bassBoostSet(change.on), "bass_set"))
         }
+        auracast != null && change is SettingChange.Press && change.key == SkullcandyAuracast.KEY_SCAN -> listOf(own(auracast.scan(!auracast.scanning)))
+        auracast != null && change is SettingChange.Choice && change.key == SkullcandyAuracast.KEY_ADD -> auracast.select(change.option)?.let { listOf(own(it)) }
+        auracast != null && change is SettingChange.Choice && change.key == SkullcandyAuracast.KEY_CODE -> auracast.code(change.option)?.let { listOf(own(it)) }
+        auracast != null && change is SettingChange.Choice && change.key == SkullcandyAuracast.KEY_REMOVE -> listOf(own(auracast.stop()))
         change is SettingChange.Level && (change.key == ANC_LEVEL || change.key == TRANSPARENCY_LEVEL) && hasGain -> {
             val m = mode()
             val range = if (m == "anc") SkullcandyGain.ANC else SkullcandyGain.TRANSPARENCY

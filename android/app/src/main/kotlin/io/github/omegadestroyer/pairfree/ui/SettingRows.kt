@@ -229,7 +229,7 @@ private val CONFIRM_CHOICES = setOf("sh_peer_delete")
 private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
-private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find")
+private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://play.google.com/store/apps/details?id=com.thetileapp.tile")
 
 @Composable
 private fun groupTitle(key: String): String = stringResource(
@@ -246,6 +246,7 @@ private fun groupTitle(key: String): String = stringResource(
         "noise_adaptive" -> R.string.setting_group_noise_adaptive
         "find" -> R.string.find_earbuds
         "find_hub" -> R.string.setting_group_find_hub
+        "sk_tile" -> R.string.setting_group_sk_tile
         "light" -> R.string.setting_group_light
         "touch_left" -> R.string.setting_group_touch_left
         "touch_right" -> R.string.setting_group_touch_right
@@ -282,6 +283,7 @@ private fun groupNote(key: String): String? = when (key) {
     "sh_fit" -> stringResource(R.string.setting_sh_fit_note)
     "sh_auracast" -> stringResource(R.string.setting_sh_auracast_note)
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
+    "sk_tile" -> stringResource(R.string.setting_sk_tile_note)
     "touch_dial" -> stringResource(R.string.setting_group_touch_dial_note)
     "ef_quality" -> stringResource(R.string.setting_ef_quality_note)
     "ca_eq" -> stringResource(R.string.setting_ca_eq_note)
@@ -1588,6 +1590,7 @@ private fun actionStart(key: String): Int = when (key) {
     "op_eq_new" -> R.string.setting_op_eq_new
     "find" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open
+    "sk_tile" -> R.string.setting_sk_tile_open
     "nc_optimizer" -> R.string.setting_nc_optimizer_start
     "restart" -> R.string.setting_restart
     "power_off" -> R.string.setting_power_off

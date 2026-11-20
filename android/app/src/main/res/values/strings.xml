@@ -341,6 +341,9 @@
     <string name="setting_find_hub_open">Open Find Hub</string>
     <string name="setting_find_hub_note">Google\'s Find Hub rings and finds Pixel Buds. It uses a key the earbuds share with your Google account, which only Google Play services holds, so PairFree opens Find Hub, as the Pixel Buds app leaves it to Play services.</string>
     <string name="setting_group_find_hub">Find my earbuds</string>
+    <string name="setting_group_sk_tile">Find with Tile</string>
+    <string name="setting_sk_tile_note">These earbuds carry Tile\'s tracker, which only Tile\'s own app and account can use to ring them or show where they were last. PairFree opens Tile\'s app (or its page) and does nothing more.</string>
+    <string name="setting_sk_tile_open">Open Tile</string>
     <string name="setting_find_stop">Stop beeping</string>
     <string name="setting_find_mute">Mute %1$s</string>
     <string name="setting_action_start">Start</string>

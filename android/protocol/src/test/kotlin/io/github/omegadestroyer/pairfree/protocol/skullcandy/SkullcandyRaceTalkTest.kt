@@ -152,4 +152,70 @@ class SkullcandyRaceTalkTest {
         assertNull(curve.eqPresetName)
         assertEquals(listOf(3.0, 0.0, -2.0, 1.5, 4.0), curve.eqGains)
     }
+
+    private fun response(id: Int, vararg payload: Int) = RacePacket(id, ByteArray(payload.size) { payload[it].toByte() }, JblRace.TYPE_RESPONSE).bytes()
+    private fun indication(id: Int, payload: ByteArray) = RacePacket(id, payload, JblRace.TYPE_INDICATION).bytes()
+
+    /** A broadcast the earbuds report: status 0, the address type and address (as sent), the set, the signal and the advertising data (the public broadcast announcement and the name). */
+    private fun broadcast(name: String, addr: List<Int>, encrypted: Boolean): ByteArray {
+        val data = byteArrayOf(4, 0x16, 0x56, 0x18, if (encrypted) 1 else 0) + byteArrayOf((name.length + 1).toByte(), 0x30) + name.encodeToByteArray()
+        return byteArrayOf(0, 1) + addr.map { it.toByte() }.toByteArray() + byteArrayOf(5, -50, data.size.toByte()) + data
+    }
+
+    @Test
+    fun theCrusher1080sAuracastReceiverScansPicksAndPlaysOverRace() {
+        val s = talk("Crusher 1080 ANC")
+        assertTrue(s.hasAuracast)
+        assertTrue(s.hasRaceFeatures)
+        assertTrue(s.groups.none { it.key == "sh_auracast" })
+        val start = s.start()
+        assertTrue(start.any { it.id == 0x2208 })
+        start.forEach { assertTrue(s.allowed(it), it.toString()) }
+        s.bytes(start.first { it.id == 0x2208 })
+        s.feed(response(0x2208, 0, 1))
+        val rows = { s.groups.first { it.key == "sh_auracast" }.settings }
+        assertEquals(Setting.Action("sh_auracast_scan", false), rows().first())
+        // scanning
+        val scan = s.change(SettingChange.Press("sh_auracast_scan"))!!.single()
+        assertEquals("05 5A 03 00 00 22 03", scan.bytes().joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0').uppercase() })
+        assertTrue(s.allowed(scan))
+        s.feed(indication(0x2200, broadcast("Cafe", listOf(1, 2, 3, 4, 5, 6), false)))
+        s.feed(indication(0x2200, broadcast("Locked", listOf(9, 8, 7, 6, 5, 4), true)))
+        assertEquals(Setting.Choice("sh_auracast_add", null, listOf("Cafe", "Locked")), rows().first { it.key == "sh_auracast_add" })
+        // an open broadcast: the source is picked with its address as it came, then its first subgroup is played
+        val pick = s.change(SettingChange.Choice("sh_auracast_add", "Cafe"))!!.single()
+        assertEquals(0x2201, pick.id)
+        assertEquals("010203040506" + "01" + "05", pick.payload.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') })
+        s.bytes(pick)
+        s.feed(response(0x2201, 0))
+        val play = s.takeOutbox().single()
+        assertEquals(0x2202, play.id)
+        assertTrue(s.allowed(play))
+        s.feed(response(0x2202, 0))
+        s.feed(indication(0x2202, byteArrayOf(0, 1)))
+        assertEquals(Setting.Information("sh_auracast_source", "receiving:Cafe"), rows().first { it.key == "sh_auracast_source" })
+        val stop = s.change(SettingChange.Choice("sh_auracast_remove", "Cafe"))!!.single()
+        assertEquals(0x2203, stop.id)
+        // a coded broadcast waits for its code, which goes as sixteen bytes, and a wrong one is reported by the end of the stream
+        s.feed(response(0x2203, 0))
+        s.change(SettingChange.Choice("sh_auracast_add", "Locked"))
+        s.feed(response(0x2201, 0))
+        assertEquals(Setting.Information("sh_auracast_source", "code_required:Locked"), rows().first { it.key == "sh_auracast_source" })
+        assertTrue(rows().any { it is Setting.Text && it.key == "sh_auracast_code" })
+        val code = s.change(SettingChange.Choice("sh_auracast_code", "secret"))!!.single()
+        assertEquals(0x2209, code.id)
+        assertEquals("736563726574" + "00".repeat(10), code.payload.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') })
+        s.feed(indication(0x2203, byteArrayOf(1)))
+        assertEquals(Setting.Information("sh_auracast_source", "bad_code:Locked"), rows().first { it.key == "sh_auracast_source" })
+        // another model has none of this
+        assertFalse(talk("Rail ANC").hasAuracast)
+    }
+
+    @Test
+    fun theTileRowIsOnTheProductsThatHaveIt() {
+        val rail = talk("Rail ANC")
+        assertEquals(listOf("sk_tile"), rail.groups.filter { it.key == "sk_tile" }.map { it.key })
+        assertTrue(talk("Crusher 1080 ANC").groups.none { it.key == "sk_tile" })
+        assertTrue(SkullcandyProducts.ALL.count { "findWithTile" in it.features } >= 22)
+    }
 }

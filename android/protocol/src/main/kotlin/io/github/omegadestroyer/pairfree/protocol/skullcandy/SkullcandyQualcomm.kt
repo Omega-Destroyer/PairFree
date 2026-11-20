@@ -63,7 +63,7 @@ public class SkullcandyQualcommTalk(public val product: SkullcandyProduct) : Ses
 
     private var current = EarbudState()
     override val state: EarbudState get() = current
-    override val groups: List<SettingGroup> get() = emptyList()
+    override val groups: List<SettingGroup> get() = listOfNotNull(SkullcandyTile.group(product))
 
     private val f = product.features
     public val hasAmbient: Boolean = "ambientMode" in f

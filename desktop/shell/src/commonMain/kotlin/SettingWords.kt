@@ -27,6 +27,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "noise_adaptive" -> "setting_group_noise_adaptive"
             "find" -> "find_earbuds"
             "find_hub" -> "setting_group_find_hub"
+            "sk_tile" -> "setting_group_sk_tile"
             "light" -> "setting_group_light"
             "touch_left" -> "setting_group_touch_left"
             "touch_right" -> "setting_group_touch_right"
@@ -62,6 +63,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_fit" -> t("setting_sh_fit_note")
         "sh_auracast" -> t("setting_sh_auracast_note")
         "find_hub" -> t("setting_find_hub_note")
+        "sk_tile" -> t("setting_sk_tile_note")
         "touch_dial" -> t("setting_group_touch_dial_note")
         "ef_quality" -> t("setting_ef_quality_note")
         "ca_eq" -> t("setting_ca_eq_note")
@@ -1357,6 +1359,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "op_eq_new" -> "setting_op_eq_new"
         "find" -> "setting_find_start"
         "find_hub" -> "setting_find_hub_open"
+        "sk_tile" -> "setting_sk_tile_open"
         "nc_optimizer" -> "setting_nc_optimizer_start"
         "restart" -> "setting_restart"
         "power_off" -> "setting_power_off"

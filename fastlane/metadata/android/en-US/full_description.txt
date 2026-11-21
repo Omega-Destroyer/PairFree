@@ -7,6 +7,7 @@ Why PairFree:
 • One app for every brand: the same screens, instead of one vendor app each
 • Few permissions: Bluetooth for paired earbuds, and notifications for the optional status notification. For some LE-only models (JBL, QCY, Sennheiser, Skullcandy), finding nearby devices, asked for only when you open one, never used for location. No contacts
 • Small and quick: about 6 MB
+• Needs Android 12 or later (the PC version: Windows 10 or 11, 64-bit)
 • Open source (GPL-3.0), every protocol documented and tested
 • Your equalizer as files: save, export and share your own curves
 • Translations: a language picker, and a new language is one file added by pull request (right-to-left is mirrored)

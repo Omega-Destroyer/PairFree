@@ -729,6 +729,9 @@
     <string name="setting_sk_wear_transparency">Switch to transparency when taken off</string>
     <string name="setting_sk_crusher_active">Crusher haptic bass</string>
     <string name="setting_sk_crusher_intensity">Crusher intensity</string>
+    <string name="setting_sk_thx_spatial">THX Spatial Audio</string>
+    <string name="setting_sk_thx_head">Head tracking</string>
+    <string name="setting_sk_thx_intensity">Spatial audio intensity</string>
     <string name="setting_sk_crusher_mode">Crusher mode</string>
     <string name="setting_sk_spatial">Spatial audio</string>
     <string name="setting_sk_spatial_head">Fixed to your head</string>

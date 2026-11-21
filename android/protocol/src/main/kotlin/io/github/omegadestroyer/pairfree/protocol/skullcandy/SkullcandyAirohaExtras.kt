@@ -28,8 +28,10 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
     val touch: Boolean = sdk && "capTouchControl" in product.features
     val adaptiveAnc: Boolean = sdk && "adaptiveANCMode" in product.features
     val crusher: Boolean = sdk && "crusherTechnology" in product.features
+    val thx: Boolean = sdk && "thxSpatialAudio" in product.features
+    val thxHead: Boolean = sdk && "thxHeadTracking" in product.features
 
-    val has: Boolean get() = sidetone || chatMix || micGain || touch || adaptiveAnc || crusher
+    val has: Boolean get() = sidetone || chatMix || micGain || touch || adaptiveAnc || crusher || thx || thxHead
 
     /** Every command built here, which [SkullcandyRaceTalk.allowed] lets through. */
     val sent: MutableSet<RacePacket> = mutableSetOf()
@@ -45,6 +47,9 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
     private var touchScenario1 = false
     private var adaptive: Boolean? = null
     private var intensity: Int? = null
+    private var spatial: Boolean? = null
+    private var head: Boolean? = null
+    private var spatialLevel: Int? = null
 
     /** The NV read of the touch controls' key; its answer has no key, so the session matches it by the request. */
     val touchRead: RacePacket = RacePacket.nvRead(TOUCH_KEY, TOUCH_LENGTH).also { sent += it }
@@ -60,6 +65,26 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         if (touch) add(touchRead)
         if (adaptiveAnc) add(adaptiveRead)
         if (crusher) add(pk(CRUSHER_GET))
+        if (thx) { add(pk(thxHex(THX_READ_SPATIAL))); add(pk(thxHex(THX_READ_INTENSITY))) }
+        if (thxHead) add(pk(thxHex(THX_READ_HEAD)))
+    }
+
+    /** THX's race id `01F4` (written in that order on the wire), a sub-command and its value bytes (section 9.8). */
+    private fun thxHex(sub: Int, vararg value: Int): String = "05 5A ${hex(4 + value.size)} 00 01 F4 00 ${hex(sub)} " + value.joinToString(" ") { hex(it) }
+
+    /** An answer of the THX commands: the status byte, the sub-command and then what it carries. */
+    private fun thxAnswer(d: ByteArray): Boolean {
+        if (d.size < 2 || d[0].toInt() != 0) return false
+        val sub = d[1].toInt() and 0xFF
+        return when (sub) {
+            // a write's answer repeats which of the two it did; a read's carries the state in the next byte (inferred: the app's reader of it was not in the dump)
+            THX_SPATIAL_ON, THX_SPATIAL_OFF -> thx && (sub == THX_SPATIAL_ON).let { on -> (spatial != on).also { spatial = on } }
+            THX_READ_SPATIAL -> thx && d.size >= 3 && ((d[2].toInt() and 0xFF) != 0).let { on -> (spatial != on).also { spatial = on } }
+            THX_HEAD_ON, THX_HEAD_OFF -> thxHead && (sub == THX_HEAD_ON).let { on -> (head != on).also { head = on } }
+            THX_READ_HEAD -> thxHead && d.size >= 3 && ((d[2].toInt() and 0xFF) != 0).let { on -> (head != on).also { head = on } }
+            THX_READ_INTENSITY -> thx && d.size >= 4 && ((((d[2].toInt() and 0xFF) shl 8) or (d[3].toInt() and 0xFF)) * 10.0 / 65535.0).roundToInt().coerceIn(0, 10).let { l -> (spatialLevel != l).also { spatialLevel = l } }
+            else -> false
+        }
     }
 
     private fun readHex(setting: Int): String = "05 5A 04 00 83 2C ${hex(setting)} 00"
@@ -91,6 +116,7 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
             val v = d[1].toInt() and 0xFF
             return (intensity != v).also { intensity = v }
         }
+        if (p.id == THX_ID && (thx || thxHead) && p.type == JblRace.TYPE_RESPONSE) return thxAnswer(d)
         if (p.id != READ_ID) return false
         if (p.type == JblRace.TYPE_INDICATION) {
             // an unasked notice: the setting number, then the value as its last byte (the app's own reading of them)
@@ -127,6 +153,9 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         mic?.let { rows += Setting.Level(MIC_GAIN_KEY, it, 0, 10) }
         intensity?.let { rows += Setting.Level(CRUSHER_INTENSITY, percentLevel(it), 0, 10) }
         adaptive?.let { rows += Setting.Toggle(ADAPTIVE_ANC, it) }
+        spatial?.let { rows += Setting.Toggle(THX_SPATIAL, it) }
+        if (spatial == true) spatialLevel?.let { rows += Setting.Level(THX_INTENSITY, it, 0, 10) }
+        head?.let { rows += Setting.Toggle(THX_HEAD, it) }
         if (rows.isNotEmpty()) add(SettingGroup("sk_extras", SettingTab.SOUND, rows))
         touchOn?.let { add(SettingGroup("sk_touch", SettingTab.CONTROLS, listOf(Setting.Toggle(TOUCH, it)))) }
     }
@@ -166,6 +195,22 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
                 readBacks(listOf(pk(CRUSHER_GET)))
                 return listOf(pk("05 5A 03 00 D0 2C ${hex(v)}"))
             }
+            thx && change is SettingChange.Toggle && change.key == THX_SPATIAL -> {
+                spatial = change.on
+                readBacks(listOf(pk(thxHex(THX_READ_SPATIAL))))
+                return listOf(pk(thxHex(if (change.on) THX_SPATIAL_ON else THX_SPATIAL_OFF)))
+            }
+            thx && change is SettingChange.Level && change.key == THX_INTENSITY -> {
+                spatialLevel = change.value.coerceIn(0, 10)
+                val v = (spatialLevel!! * 65535.0 / 10.0).roundToInt()
+                readBacks(listOf(pk(thxHex(THX_READ_INTENSITY))))
+                return listOf(pk(thxHex(THX_INTENSITY_SET, v shr 8, v and 0xFF)))
+            }
+            thxHead && change is SettingChange.Toggle && change.key == THX_HEAD -> {
+                head = change.on
+                readBacks(listOf(pk(thxHex(THX_READ_HEAD))))
+                return listOf(pk(thxHex(if (change.on) THX_HEAD_ON else THX_HEAD_OFF)))
+            }
             adaptiveAnc && change is SettingChange.Toggle && change.key == ADAPTIVE_ANC -> {
                 adaptive = change.on
                 readBacks(listOf(adaptiveRead))
@@ -197,6 +242,20 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         const val MIC_GAIN_KEY = "sk_mic_gain"
         const val ADAPTIVE_ANC = "sk_adaptive_anc"
         const val CRUSHER_INTENSITY = "sk_crusher_intensity"
+        const val THX_SPATIAL = "sk_thx_spatial"
+        const val THX_HEAD = "sk_thx_head"
+        const val THX_INTENSITY = "sk_thx_intensity"
+
+        /** THX's race id and its sub-commands (`RaceCommand.thxRaceId` and the `Set`/`ReadThx*` classes). */
+        private const val THX_ID = 0xF401
+        private const val THX_SPATIAL_ON = 0x0A
+        private const val THX_SPATIAL_OFF = 0x0B
+        private const val THX_READ_SPATIAL = 0x0C
+        private const val THX_HEAD_ON = 0x0D
+        private const val THX_HEAD_OFF = 0x0E
+        private const val THX_READ_HEAD = 0x0F
+        private const val THX_INTENSITY_SET = 0x10
+        private const val THX_READ_INTENSITY = 0x11
 
         /** The custom pair's ids: `2C82` writes, `2C83` reads. */
         const val READ_ID = 0x2C83

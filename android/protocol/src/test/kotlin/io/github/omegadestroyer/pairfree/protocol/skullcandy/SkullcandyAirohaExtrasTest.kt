@@ -27,6 +27,8 @@ class SkullcandyAirohaExtrasTest {
         assertEquals(setOf("push540Open"), with { it.touch })
         assertEquals(setOf("aviatorANC"), with { it.adaptiveAnc })
         assertEquals(setOf("crusherPlyr", "crusherPlyrXbox"), with { it.crusher })
+        assertEquals(setOf("aviatorANC", "crusher720", "crusher900ANC", "crusherPlyr", "crusherPlyrXbox", "hesh540ANC"), with { it.thx })
+        assertEquals(setOf("aviatorANC", "crusherPlyr", "crusherPlyrXbox"), with { it.thxHead })
     }
 
     @Test
@@ -107,5 +109,25 @@ class SkullcandyAirohaExtrasTest {
         assertEquals(5, (rows(t).first { it.key == "sk_crusher_intensity" } as Setting.Level).value)
         assertEquals("05 5A 03 00 D0 2C 50", hex(t.change(SettingChange.Level("sk_crusher_intensity", 8))!!.single().bytes()))
         assertNull(talk("mod").change(SettingChange.Level("sk_crusher_intensity", 8)))
+    }
+
+    @Test
+    fun thxIsRaceId01F4WithSubCommands() {
+        val t = talk("crusherPlyr")
+        val start = t.start().map { hex(it.bytes()) }
+        assertTrue("05 5A 04 00 01 F4 00 0C" in start)
+        assertTrue("05 5A 04 00 01 F4 00 11" in start)
+        assertTrue("05 5A 04 00 01 F4 00 0F" in start)
+        // a read of spatial audio answers with the flag, the intensity with a big endian short
+        t.feed(unhex("05 5B 05 00 01 F4 00 0C 01"))
+        t.feed(unhex("05 5B 06 00 01 F4 00 11 7F FF"))
+        t.feed(unhex("05 5B 05 00 01 F4 00 0F 00"))
+        assertEquals(true, (rows(t).first { it.key == "sk_thx_spatial" } as Setting.Toggle).on)
+        assertEquals(5, (rows(t).first { it.key == "sk_thx_intensity" } as Setting.Level).value)
+        assertEquals(false, (rows(t).first { it.key == "sk_thx_head" } as Setting.Toggle).on)
+        assertEquals("05 5A 04 00 01 F4 00 0B", hex(t.change(SettingChange.Toggle("sk_thx_spatial", false))!!.single().bytes()))
+        assertEquals("05 5A 04 00 01 F4 00 0D", hex(t.change(SettingChange.Toggle("sk_thx_head", true))!!.single().bytes()))
+        assertEquals("05 5A 06 00 01 F4 00 10 FF FF", hex(t.change(SettingChange.Level("sk_thx_intensity", 10))!!.single().bytes()))
+        assertTrue(t.allowed(t.change(SettingChange.Toggle("sk_thx_spatial", true))!!.single()))
     }
 }

@@ -39,7 +39,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     /** The Rail's own commands from its SDK configuration (Bragi's buttons, voice control, the gain): not known for the models without one. */
     private val rail = product.usesRail
     private val hasAncMode = primary && ("adjustableNoiseCancellation" in product.features || "activeNoiseCancellation" in product.features)
-    private val hasTransparencyMode = primary && ("adjustableStayAwareMode" in product.features || "stayAwareMode" in product.features)
+    private val hasTransparencyMode = primary && ("adjustableStayAwareMode" in product.features || "stayAwareMode" in product.features || (product.usesAirohaSdk && "ambientMode" in product.features))
     private val own = HashSet<RacePacket>()
     private var railMode: String? = null
 
@@ -245,6 +245,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
                 } else if (eq != null && !eq.done && !eq.failed && eq.receive(p) { outbox += it }) {
                     if (eq.done || eq.failed) changed = true
                     if (eq === reader && eq.done) changed = takeHeld(eq) || changed
+                    if (eq !== reader && eq.done) afterEqWrite()
                     if (eq.done || eq.failed) startButtons()
                 } else {
                     changed = (primary && railApply(p)) || changed
@@ -480,6 +481,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         write = w
         eqGains = gains
         eqPresetName = null
+        plyrOrder = PLYR_ORDER[101]
         return w.start().map { it.bytes() }
     }
 
@@ -491,10 +493,21 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         val w = JblAirohaEq.of(c, product.form != Form.HEADPHONES, null, number - 1, emptyList(), 0f, AirohaPeq.Library.SERIALIZE, selectOnly = true) ?: return null
         write = w
         eqPresetName = name
+        plyrOrder = PLYR_ORDER[number]
         return w.start().map { it.bytes() }
     }
 
     private var reader: JblAirohaEq? = null
+
+    /** The PLYR's order index of the preset or curve just written, which the app writes to NV key `F510` afterwards (section 9.9). */
+    private var plyrOrder: Int? = null
+
+    private fun afterEqWrite() {
+        val order = plyrOrder ?: return
+        plyrOrder = null
+        if (product.enumName != "plyr") return
+        outbox += own(RacePacket(JblRace.NV_WRITE, byteArrayOf(0x10, 0xF5.toByte(), order.toByte())))
+    }
 
     /** Reads what the earbuds hold once the chip is known (docs/skullcandy/PROTOCOL.md section 13.4), unless a write of PairFree's is already going. */
     private fun startReadBack() {
@@ -538,6 +551,9 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         public const val ANC_LEVEL: String = "sk_anc_level"
         public const val TRANSPARENCY_LEVEL: String = "sk_transparency_level"
         private const val CHIP_NV_LENGTH = 1000
+
+        /** The PLYR's presets by number and the custom curve (101) to the order index the app writes (`SKDYAirohaService.plyrEqOrderIndex`). */
+        private val PLYR_ORDER = mapOf(1 to 0, 5 to 1, 7 to 2, 2 to 3, 101 to 4)
 
         /** Airoha's game mode: its module in the module read, and the key events that set it (`libmmi1562`, read 2026-11-20). */
         private const val MMI_GAME_MODE = 6

@@ -1,0 +1,183 @@
+{
+  "_about": "The registry the release gate (tools/release_gate.py) reads: every known item that a vendor's app or a user report shows and PairFree lacks, and the items settled as blocked or not applicable. status: open (known, not built), built, blocked (a hard rule or a real impossibility), not-applicable (the app has no such control). A blocked or not-applicable item lists `evidence`: searches over files of the vendor app outside the repo (`root`, `glob` on file names, `pattern`) that must find nothing (`expect: none`, the default) or something (`expect: some`); the gate runs them again at every release, so a claim that the app's own files refute fails there. Add an item as soon as a post or an audit shows a gap; set it to built in the change that builds it. An open item in a brand that a release touches refuses the release unless the owner waived it in data/release_waivers.json (owner, 2026-11-21, after the Sennheiser Momentum 5 equalizer and the 1MORE Q30 two-device switch shipped missing).",
+  "items": [
+    {
+      "id": "sennheiser-momentum5-equalizer",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless"
+      ],
+      "status": "built",
+      "what": "Asked for as the second-generation equalizer (UserEQ_GetConfiguration) and shown when the Momentum 5 and Momentum True Wireless 5 answer, without presets (branch fix/sennheiser-momentum5).",
+      "reported": "issue #47"
+    },
+    {
+      "id": "sennheiser-momentum5-transparency-percent",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless"
+      ],
+      "status": "built",
+      "what": "The 0 to 100 transparency slider (ANC_Transparency, answered in the report) for the Momentum 5 (branch fix/sennheiser-momentum5).",
+      "reported": "issue #47"
+    },
+    {
+      "id": "1more-q30-two-devices",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "built",
+      "what": "The two-device switch for EH902, ES903, EC305, HC905, HC306, EF906, S51 and S70, as Life's Lab page shows it (branch fix/1more-lab-features).",
+      "reported": "issues #58 and #63"
+    },
+    {
+      "id": "1more-lab-features-audit",
+      "brand": "1more",
+      "models": [
+        "all"
+      ],
+      "status": "built",
+      "what": "Life 5.0.3's Lab features page read in full (ExperimentActivity): two devices (done), the wake word for EH902 and ES903 (already on) and sleep monitoring for ES603 (already on); the pairing popup is the app's own setting.",
+      "reported": "audit after issue #63"
+    },
+    {
+      "id": "1more-q30-home-quick-settings",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "built",
+      "what": "Spatial audio and the connection mode on the Home tab (branch fix/1more-lab-features).",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-touch-extras",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "not-applicable",
+      "what": "A four-tap gesture and a hold action per earbud: Life 5.0.3's strings offer only double and triple tap (operation_double_click, operation_triple_click) and no setting for the hold.",
+      "reported": "issue #58",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/1more-life-5.0.3/res/resources/res/values",
+          "glob": "^strings\\.xml$",
+          "pattern": "(four|quadruple|fourth)[ _-]*(tap|click|press)|click[_ -]*(four|quad)",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/decompiled/1more-life-5.0.3/res/resources/res/values",
+          "glob": "^strings\\.xml$",
+          "pattern": "operation_triple_click",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "1more-q30-connection-mode-on-connect",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "open",
+      "what": "A reported defect (issue #58): after a disconnect the earbuds fall back to the standard connection mode while PairFree keeps showing the last choice. Life never sets the mode on connecting (only from its two screens), and PairFree reads it at the start of every channel, so the cause is not in the code read; the device report shows 006C answering 01. Needs a report taken while the earbuds are in standard mode after a reconnect.",
+      "reported": "issue #58"
+    },
+    {
+      "id": "bose-qc-earbuds-service",
+      "brand": "bose",
+      "models": [
+        "Bose QuietComfort Earbuds"
+      ],
+      "status": "built",
+      "what": "BMAP's own service (00000000-deca-fade-deca-deafdecacaff) is opened for a device that lists it and no standard serial port (branch fix/bose-bmap-service); not tried on earbuds.",
+      "reported": "issue #69"
+    },
+    {
+      "id": "skullcandy-crusher-dial",
+      "brand": "skullcandy",
+      "models": [
+        "Crusher 900 ANC"
+      ],
+      "status": "not-applicable",
+      "what": "Crusher technology's dial and profiles are Bragi's, not Airoha RACE commands: no race command class names them.",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/utils/race_commands",
+          "glob": "\\.dart$",
+          "pattern": "crusherTechnologyDial|crusherTechnologyProfiles|CrusherTechnologyDial",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services",
+          "glob": "bragiservice\\.dart$",
+          "pattern": "Obj!SKDYFeature@a012c1",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "skullcandy-clear-voice-smart-mic",
+      "brand": "skullcandy",
+      "models": [
+        "Dime Evo and others"
+      ],
+      "status": "not-applicable",
+      "what": "Clear Voice smart mic is a feature guide screen with no control: the app's API layer never names it.",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api",
+          "glob": "\\.dart$",
+          "pattern": "clearVoiceSmartMic",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/ui/features/guides",
+          "glob": "clearvoicesmartmic",
+          "pattern": "Guide",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "skullcandy-mimi-personal-sound",
+      "brand": "skullcandy",
+      "models": [
+        "Push ANC Active and others"
+      ],
+      "status": "blocked",
+      "what": "Mimi's personal sound needs Mimi's server sign-in (hard rule: no server authentication).",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services",
+          "glob": "skdymimiservice\\.dart$",
+          "pattern": "Mimi",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "1more-life-home-model-gates",
+      "brand": "1more",
+      "models": [
+        "all"
+      ],
+      "status": "built",
+      "what": "Life 5.0.3's home page read: list products show rows by the list's own flags; the model predicates decide only the Lab page, a no-action row, the Major EQ page (Sound ID is cloud data) and the sleep songs (blocked, data/unused_ids.json). Written in docs/1more/PROTOCOL.md (branch fix/1more-lab-features).",
+      "reported": "audit after issue #63"
+    },
+    {
+      "id": "sennheiser-momentum5-eq-confirmation",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless",
+        "Momentum True Wireless 5"
+      ],
+      "status": "open",
+      "what": "Whether these answer UserEQ_GetConfiguration as the second-generation equalizer or have the parametric one (stage filters, PEQEqualizer2): needs a device report from this version or the command numbers traced in the Plus app (docs/sennheiser/PROTOCOL.md 4.1).",
+      "reported": "issue #47"
+    }
+  ]
+}

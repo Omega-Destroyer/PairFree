@@ -157,8 +157,12 @@ class SennheiserEqTest {
     }
 
     @Test
-    fun aModelWithoutAProductFileOrWithoutAnEqualizerAsksForNone() {
-        assertTrue(words(SennheiserSession(model("Momentum 5 Wireless")).start()).none { it.startsWith("10") })
+    fun aModelWithoutAnEqualizerAsksForNone() {
+        // the Plus-only products that Smart Control Plus's feature layer covers are asked for the second-generation equalizer (issue #47); the others none
+        assertTrue(words(SennheiserSession(model("Momentum 5 Wireless")).start()).any { it.startsWith("1000") })
+        assertTrue(words(SennheiserSession(model("Momentum True Wireless 5")).start()).any { it.startsWith("1000") })
+        assertTrue(words(SennheiserSession(model("HDB 630")).start()).none { it.startsWith("10") })
+        assertTrue(words(SennheiserSession(model("HDR 275 / 255")).start()).none { it.startsWith("10") })
         assertTrue(words(SennheiserSession(model("CX Sport True Wireless")).start()).none { it.startsWith("10") })
         assertNotNull(model("CX Sport True Wireless").eq)
     }

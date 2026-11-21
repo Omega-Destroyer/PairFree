@@ -1176,9 +1176,17 @@
    "article": "800078",
    "source": "Smart Control Plus 1.6.3 (cKd), no product file",
    "properties": null,
-   "eq": null,
+   "eq": {
+    "gen2": true,
+    "gen1": null,
+    "three_band": 0,
+    "presets": "none"
+   },
    "sidetone_max": null,
-   "transparency": null,
+   "transparency": "slider",
+   "reports": [
+    "data/sennheiser/reports/Momentum5_6.21.5.txt"
+   ],
    "touch": null,
    "ble": null,
    "features": {},
@@ -1199,9 +1207,15 @@
    "article": "700350",
    "source": "Smart Control Plus 1.6.3 (cKd), no product file",
    "properties": null,
-   "eq": null,
+   "eq": {
+    "gen2": true,
+    "gen1": null,
+    "three_band": 0,
+    "presets": "none"
+   },
    "sidetone_max": null,
    "transparency": null,
+   "reports": [],
    "touch": null,
    "ble": null,
    "features": {},
@@ -1222,6 +1236,7 @@
    "eq": null,
    "sidetone_max": null,
    "transparency": null,
+   "reports": [],
    "touch": null,
    "ble": null,
    "features": {},
@@ -1245,6 +1260,7 @@
    "eq": null,
    "sidetone_max": null,
    "transparency": null,
+   "reports": [],
    "touch": null,
    "ble": null,
    "features": {},

@@ -1,0 +1,41 @@
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help check
+this model. It holds no serial number, address or other personal data.
+
+Bluetooth name:  MOMENTUM 5
+Brand:           Sennheiser
+Model:           Momentum 5 Wireless (model number M5AEBT Denim)
+Firmware:        6.21.5
+App:             PairFree 0.14.0
+OS:              Android 15 (API 35)
+Captured:        2026-11-21 13:11 UTC
+
+The last answer to each property PairFree read (name: payload as hex):
+  physical_state: 03
+  battery_charging: 00 00
+  battery_percent: 64
+  low_latency: 00
+  prompt_mode: 02
+  sidetone: 00
+  codec: ff
+  sample_rate: 00 00 00 00
+  audio_mode: 00 01
+  transparency_status: 00
+  anc_status: 01
+  anc_mode: 01 00 03 00 02 00
+  anc_level: 00
+  firmware_version: 00 06 00 15 00 05
+  model_id: 4d 35 41 45 42 54 20 44 65 6e 69 6d 00
+  transparency_pause: 01
+  on_head: 01
+  smart_pause: 01
+  auto_call: 00
+  comfort_call: 01
+  touch_lock: 00
+  eco_mode: 00
+  battery_protection: 00
+  bt_compat: 01
+  prompt_language: 00
+  lossless: 01
+  touch_area: 00

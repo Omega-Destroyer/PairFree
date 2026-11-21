@@ -32,7 +32,7 @@ Want to be on this list? One report from your model helps: see [Help add your mo
 | [@shining-cat](https://github.com/shining-cat) | AirPods Pro 3 | Connection reports from a Pixel 8 on Android 17, and the first AirPods tried with PairFree (an AirPods Pro 3 that connected on 0.9.1, with its device report), which showed Off needing "Allow Off" ([#3](https://github.com/Omega-Destroyer/PairFree/issues/3)) |
 | [@XjFred](https://github.com/XjFred) | Sony WF-1000XM6 | A recording of Sony's app with the XM6 ([#33](https://github.com/Omega-Destroyer/PairFree/issues/33)), which showed its equalizer type, and the confirmation that the equalizer works in 0.11.2 |
 | [@ahsanmg](https://github.com/ahsanmg) | SOUNDPEATS T3 Pro | A device report from firmware v0.0.31 ([#31](https://github.com/Omega-Destroyer/PairFree/issues/31)) |
-| [@thomas2403](https://github.com/thomas2403) | Sennheiser Momentum 5 | A recording ([#47](https://github.com/Omega-Destroyer/PairFree/issues/47)) of its GAIA feature list (firmware 6.21.5), which showed it is a GAIA v3 product |
+| [@thomas2403](https://github.com/thomas2403) | Sennheiser Momentum 5 | A recording ([#47](https://github.com/Omega-Destroyer/PairFree/issues/47)) of its GAIA feature list (firmware 6.21.5), which showed it is a GAIA v3 product, and a device report from 0.14.0 that showed what it answers and what was missing (the equalizer and the transparency slider) |
 | A user who wrote to the project directly | Bose SoundLink Flex (BC59, a speaker) | A device report, 2026-10-30, the first Bose reading PairFree has |
 | A user who wrote to the project directly | Soundcore AeroClip (A3388) | A device report, 2026-10-29 |
 

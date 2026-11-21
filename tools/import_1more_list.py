@@ -155,6 +155,12 @@ def pictures(r):
     return out
 
 
+# The two-device switch of Life's Lab features page (ExperimentActivity.a in 1MORE Life 5.0.3) is shown by the model, not by the server list's dobleConnection flag:
+# ah.w EH902, ah.E ES903, ah.G EC305 (the Q30), ah.z HC905, ah.A HC306, ah.s EF906 (firmware 10405 or later), ah.I S51, ah.J S70. The Q30, Fit, SonoFlow and SonoFlow SE have the
+# flag off and the switch on the page (issues #58 and #63).
+LAB_DUAL_DEVICE = {"EH902", "ES903", "EC305", "HC905", "HC306", "EF906", "S51", "S70"}
+
+
 def device(r):
     name = r["headphoneName"].strip()
     connection = [m for m, f in (("game", "entertainmentMode"), ("ldac", "ldma")) if on(r, f)]
@@ -198,6 +204,9 @@ def main(dump_path, out_path=OUT):
     have = {d["name"].lower() for d in devices}
     devices += [life_device(*m) for m in LIFE if m[0].lower() not in have]
     devices.sort(key=lambda d: d["name"].lower())
+    for d in devices:
+        if d["model"] in LAB_DUAL_DEVICE:
+            d["dual_device"] = True
     if Path(out_path).exists():
         old = {d["name"]: d for d in json.loads(Path(out_path).read_text(encoding="utf-8"))["devices"]}
         for d in devices:

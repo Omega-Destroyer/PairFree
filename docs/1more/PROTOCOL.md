@@ -77,7 +77,7 @@ read again at once.
 | `004E` | — | Both earbuds | left is master (0); left version (3 bytes); left battery; right version (3 bytes); right battery; case battery |
 | `005F` | `005E` | Listen mode | 0 off; cancelling 7 adaptive, 1 strong, 2 mild, 4 wind; transparency 3, 5 pass-through, 6 voice enhancement |
 | `006C` | `006B` | Connection mode | 0 standard, 1 game ("entertainment"), 2 LDAC |
-| `0077` | `0076` | Two devices | 0 off, 1 on |
+| `0077` | `0076` | Two devices | 0 off, 1 on; Life's Lab features page (`ExperimentActivity`, 5.0.3) shows the switch by model, not by the product list's `dobleConnection`: EH902, ES903, EC305 (the Q30), HC905, HC306, EF906 (firmware 10405 or later), S51 and S70 (`tools/import_1more_list.py`, `LAB_DUAL_DEVICE`); the app says the earbuds restart when it changes |
 | `0083` | `0082` | Spatial audio | 0 off, 1 on |
 | `0063` | `0062` | Taking them out | 0 pause only, 1 pause and play again, 2 nothing |
 | `0070` | `006F` | Sleep detection | 0 off, 1 on |

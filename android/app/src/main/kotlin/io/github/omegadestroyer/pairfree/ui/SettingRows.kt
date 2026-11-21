@@ -338,6 +338,9 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sk_thx_spatial" -> stringResource(R.string.setting_sk_thx_spatial)
     "sk_thx_head" -> stringResource(R.string.setting_sk_thx_head)
     "sk_thx_intensity" -> stringResource(R.string.setting_sk_thx_intensity)
+    "sk_led_mode" -> stringResource(R.string.setting_sk_led_mode)
+    "sk_led_brightness" -> stringResource(R.string.setting_sk_led_brightness)
+    "sk_led_color" -> stringResource(R.string.setting_sk_led_color)
     "sk_crusher_mode" -> stringResource(R.string.setting_sk_crusher_mode)
     "sk_spatial" -> stringResource(R.string.setting_sk_spatial)
     "sk_reduced_prompts" -> stringResource(R.string.setting_sk_reduced_prompts)
@@ -1059,6 +1062,8 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "off" -> R.string.action_off; "on" -> R.string.setting_sh_nautilus_on; "low" -> R.string.setting_level_low; "medium" -> R.string.setting_level_medium; "high" -> R.string.setting_level_high
         "near" -> R.string.setting_sh_nautilus_near; "far" -> R.string.setting_sh_nautilus_far; "rumble" -> R.string.setting_sh_nautilus_rumble; "thump" -> R.string.setting_sh_nautilus_thump; else -> R.string.setting_sh_nautilus_voice
     })
+    key == "sk_led_mode" -> getString(when (option) { "off" -> R.string.action_off; "breathing" -> R.string.setting_sk_led_breathing; "solid" -> R.string.setting_sk_led_solid; else -> R.string.setting_sk_led_random })
+    key == "sk_led_color" -> getString(when (option) { "red" -> R.string.setting_sk_color_red; "orange" -> R.string.setting_sk_color_orange; "yellow" -> R.string.setting_sk_color_yellow; "green" -> R.string.setting_sk_color_green; "cyan" -> R.string.setting_sk_color_cyan; "blue" -> R.string.setting_sk_color_blue; "purple" -> R.string.setting_sk_color_purple; "pink" -> R.string.setting_sk_color_pink; else -> R.string.setting_sk_color_white })
     key == "sk_crusher_mode" -> getString(when (option) { "high" -> R.string.setting_level_high; "medium" -> R.string.setting_level_medium; else -> R.string.setting_level_low })
     key == "sk_spatial" -> getString(when (option) { "off" -> R.string.action_off; "fixed_to_head" -> R.string.setting_sk_spatial_head; else -> R.string.setting_sk_spatial_room })
     key == "sk_language" -> option

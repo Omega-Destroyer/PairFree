@@ -30,8 +30,9 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
     val crusher: Boolean = sdk && "crusherTechnology" in product.features
     val thx: Boolean = sdk && "thxSpatialAudio" in product.features
     val thxHead: Boolean = sdk && "thxHeadTracking" in product.features
+    val led: Boolean = sdk && "ledCustomizer" in product.features
 
-    val has: Boolean get() = sidetone || chatMix || micGain || touch || adaptiveAnc || crusher || thx || thxHead
+    val has: Boolean get() = sidetone || chatMix || micGain || touch || adaptiveAnc || crusher || thx || thxHead || led
 
     /** Every command built here, which [SkullcandyRaceTalk.allowed] lets through. */
     val sent: MutableSet<RacePacket> = mutableSetOf()
@@ -50,6 +51,12 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
     private var spatial: Boolean? = null
     private var head: Boolean? = null
     private var spatialLevel: Int? = null
+    private var ledMode: Int? = null
+    private var ledBrightness: Int? = null
+    private var ledColor: Triple<Int, Int, Int>? = null
+
+    /** The LED reads (attribute 0 colour, 1 brightness, 2 mode): the custom read `83 2C` of setting `23`; an answer does not name the attribute, so it is matched to the read asked. */
+    private val ledReads: Map<RacePacket, Int> by lazy { (0..2).associate { pk("05 5A 05 00 83 2C 23 00 0$it") to it } }
 
     /** The NV read of the touch controls' key; its answer has no key, so the session matches it by the request. */
     val touchRead: RacePacket = RacePacket.nvRead(TOUCH_KEY, TOUCH_LENGTH).also { sent += it }
@@ -67,7 +74,27 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         if (crusher) add(pk(CRUSHER_GET))
         if (thx) { add(pk(thxHex(THX_READ_SPATIAL))); add(pk(thxHex(THX_READ_INTENSITY))) }
         if (thxHead) add(pk(thxHex(THX_READ_HEAD)))
+        if (led) addAll(ledReads.keys)
     }
+
+    /** An answer of one of the LED reads: `05 5B 08 00 83 2C 00 23 00` and three bytes; the colour is those three, the brightness the first and the mode the last (`GetLedStatusRaceCommand.decodeResponse`). */
+    fun ledAnswer(asked: RacePacket?, p: RacePacket): Boolean {
+        val attribute = ledReads[asked ?: return false] ?: return false
+        val d = p.payload
+        if (p.type != JblRace.TYPE_RESPONSE || d.size != 6 || d[0].toInt() != 0 || (d[1].toInt() and 0xFF) != LED_SETTING || d[2].toInt() != 0) return false
+        fun u(i: Int) = d[3 + i].toInt() and 0xFF
+        return when (attribute) {
+            0 -> Triple(u(0), u(1), u(2)).let { c -> (ledColor != c).also { ledColor = c } }
+            1 -> (ledBrightness != u(0)).also { ledBrightness = u(0) }
+            else -> (ledMode != u(2)).also { ledMode = u(2) }
+        }
+    }
+
+    private fun ledModeKey(code: Int?): String? = when (code) { 0 -> "off"; 1 -> "breathing"; 2 -> "solid"; 4 -> "random"; else -> null }
+
+    /** The LED colour's nearest named colour, null when none is close. */
+    private fun ledColorName(c: Triple<Int, Int, Int>): String? =
+        LED_COLORS.entries.firstOrNull { (_, v) -> kotlin.math.abs(v.first - c.first) + kotlin.math.abs(v.second - c.second) + kotlin.math.abs(v.third - c.third) <= 60 }?.key
 
     /** THX's race id `01F4` (written in that order on the wire), a sub-command and its value bytes (section 9.8). */
     private fun thxHex(sub: Int, vararg value: Int): String = "05 5A ${hex(4 + value.size)} 00 01 F4 00 ${hex(sub)} " + value.joinToString(" ") { hex(it) }
@@ -156,6 +183,13 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         spatial?.let { rows += Setting.Toggle(THX_SPATIAL, it) }
         if (spatial == true) spatialLevel?.let { rows += Setting.Level(THX_INTENSITY, it, 0, 10) }
         head?.let { rows += Setting.Toggle(THX_HEAD, it) }
+        if (led) {
+            val ledRows = ArrayList<Setting>()
+            ledMode?.let { m -> ledModeKey(m)?.let { ledRows += Setting.Choice(LED_MODE, it, listOf("off", "breathing", "solid", "random")) } }
+            ledBrightness?.let { ledRows += Setting.Level(LED_BRIGHTNESS, (it * 10.0 / 255.0).roundToInt().coerceIn(0, 10), 0, 10) }
+            ledColor?.let { ledRows += Setting.Choice(LED_COLOR, ledColorName(it), LED_COLORS.keys.toList()) }
+            if (ledRows.isNotEmpty()) add(SettingGroup("sk_led", SettingTab.DEVICE, ledRows))
+        }
         if (rows.isNotEmpty()) add(SettingGroup("sk_extras", SettingTab.SOUND, rows))
         touchOn?.let { add(SettingGroup("sk_touch", SettingTab.CONTROLS, listOf(Setting.Toggle(TOUCH, it)))) }
     }
@@ -194,6 +228,24 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
                 intensity = v
                 readBacks(listOf(pk(CRUSHER_GET)))
                 return listOf(pk("05 5A 03 00 D0 2C ${hex(v)}"))
+            }
+            led && change is SettingChange.Choice && change.key == LED_MODE -> {
+                // `85 2C`, then 03 and the pair the app builds for the mode (off 02 00, random 02 09, breathing 01 01, solid 02 01)
+                val pair = when (change.option) { "off" -> "02 00"; "random" -> "02 09"; "breathing" -> "01 01"; "solid" -> "02 01"; else -> return null }
+                readBacks(listOf(ledReads.entries.first { it.value == 2 }.key))
+                return listOf(pk("05 5A 05 00 85 2C 03 $pair"))
+            }
+            led && change is SettingChange.Level && change.key == LED_BRIGHTNESS -> {
+                // `86 2C` and the value three times (the template FF FF FF with each byte replaced)
+                val v = hex((change.value.coerceIn(0, 10) * 255.0 / 10.0).roundToInt())
+                readBacks(listOf(ledReads.entries.first { it.value == 1 }.key))
+                return listOf(pk("05 5A 05 00 86 2C $v $v $v"))
+            }
+            led && change is SettingChange.Choice && change.key == LED_COLOR -> {
+                // `88 2C`, the struct's first field (1 in breathing mode, else 2) and red, green, blue
+                val c = LED_COLORS[change.option] ?: return null
+                readBacks(listOf(ledReads.entries.first { it.value == 0 }.key))
+                return listOf(pk("05 5A 06 00 88 2C ${if (ledMode == 1) "01" else "02"} ${hex(c.first)} ${hex(c.second)} ${hex(c.third)}"))
             }
             thx && change is SettingChange.Toggle && change.key == THX_SPATIAL -> {
                 spatial = change.on
@@ -242,6 +294,16 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         const val MIC_GAIN_KEY = "sk_mic_gain"
         const val ADAPTIVE_ANC = "sk_adaptive_anc"
         const val CRUSHER_INTENSITY = "sk_crusher_intensity"
+        const val LED_MODE = "sk_led_mode"
+        const val LED_BRIGHTNESS = "sk_led_brightness"
+        const val LED_COLOR = "sk_led_color"
+        private const val LED_SETTING = 0x23
+
+        /** The named colours the colour row offers (PairFree's own palette; the app has a colour picker). */
+        val LED_COLORS: Map<String, Triple<Int, Int, Int>> = linkedMapOf(
+            "red" to Triple(255, 0, 0), "orange" to Triple(255, 128, 0), "yellow" to Triple(255, 255, 0), "green" to Triple(0, 255, 0),
+            "cyan" to Triple(0, 255, 255), "blue" to Triple(0, 0, 255), "purple" to Triple(128, 0, 255), "pink" to Triple(255, 0, 255), "white" to Triple(255, 255, 255),
+        )
         const val THX_SPATIAL = "sk_thx_spatial"
         const val THX_HEAD = "sk_thx_head"
         const val THX_INTENSITY = "sk_thx_intensity"

@@ -98,6 +98,8 @@ def airoha_sdk_rows(p, modes):
         out.append("adaptive noise cancelling")
     if "crusherTechnology" in f:
         out.append("Crusher intensity")
+    if "ledCustomizer" in f:
+        out.append("LED mode, brightness and colour")
     if "thxSpatialAudio" in f:
         out.append("THX spatial audio + intensity" + (" + head tracking" if "thxHeadTracking" in f else ""))
     if "ambientMode" in f and p["enum"] == "indyANC":

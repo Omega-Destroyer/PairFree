@@ -29,6 +29,7 @@ class SkullcandyAirohaExtrasTest {
         assertEquals(setOf("crusherPlyr", "crusherPlyrXbox"), with { it.crusher })
         assertEquals(setOf("aviatorANC", "crusher720", "crusher900ANC", "crusherPlyr", "crusherPlyrXbox", "hesh540ANC"), with { it.thx })
         assertEquals(setOf("aviatorANC", "crusherPlyr", "crusherPlyrXbox"), with { it.thxHead })
+        assertEquals(setOf("crusherPlyr", "crusherPlyrXbox"), with { it.led })
     }
 
     @Test
@@ -129,5 +130,23 @@ class SkullcandyAirohaExtrasTest {
         assertEquals("05 5A 04 00 01 F4 00 0D", hex(t.change(SettingChange.Toggle("sk_thx_head", true))!!.single().bytes()))
         assertEquals("05 5A 06 00 01 F4 00 10 FF FF", hex(t.change(SettingChange.Level("sk_thx_intensity", 10))!!.single().bytes()))
         assertTrue(t.allowed(t.change(SettingChange.Toggle("sk_thx_spatial", true))!!.single()))
+    }
+
+    @Test
+    fun theLedCustomizerReadsAttributesAndWritesModeBrightnessAndColour() {
+        val t = talk("crusherPlyr")
+        val reads = t.start().filter { hex(it.bytes()).startsWith("05 5A 05 00 83 2C 23 00 0") }
+        assertEquals(listOf("05 5A 05 00 83 2C 23 00 00", "05 5A 05 00 83 2C 23 00 01", "05 5A 05 00 83 2C 23 00 02"), reads.map { hex(it.bytes()) })
+        // the answers do not name their attribute, so each follows the read asked
+        t.bytes(reads[0]); t.feed(unhex("05 5B 08 00 83 2C 00 23 00 FF 00 00"))
+        t.bytes(reads[1]); t.feed(unhex("05 5B 08 00 83 2C 00 23 00 80 80 80"))
+        t.bytes(reads[2]); t.feed(unhex("05 5B 08 00 83 2C 00 23 00 03 03 02"))
+        assertEquals("solid", (rows(t).first { it.key == "sk_led_mode" } as Setting.Choice).value)
+        assertEquals(5, (rows(t).first { it.key == "sk_led_brightness" } as Setting.Level).value)
+        assertEquals("red", (rows(t).first { it.key == "sk_led_color" } as Setting.Choice).value)
+        assertEquals("05 5A 05 00 85 2C 03 02 09", hex(t.change(SettingChange.Choice("sk_led_mode", "random"))!!.single().bytes()))
+        assertEquals("05 5A 05 00 85 2C 03 01 01", hex(t.change(SettingChange.Choice("sk_led_mode", "breathing"))!!.single().bytes()))
+        assertEquals("05 5A 05 00 86 2C FF FF FF", hex(t.change(SettingChange.Level("sk_led_brightness", 10))!!.single().bytes()))
+        assertEquals("05 5A 06 00 88 2C 02 00 00 FF", hex(t.change(SettingChange.Choice("sk_led_color", "blue"))!!.single().bytes()))
     }
 }

@@ -78,4 +78,33 @@ class SkullcandyAirohaStrengthTest {
         val t = talk("hanc")
         assertNull(t.change(SettingChange.Level(SkullcandyRaceTalk.ANC_LEVEL, 5)))
     }
+
+    @Test
+    fun theNoiseModeUsesTheAppsFiltersForTheChip() {
+        // hanc: noise cancelling is ANC1 (1), transparency vivid pass-through 1, which only the AB158x has (raw 12)
+        val t158 = ready("hanc", "AB158X", -10, -20, 1)
+        val anc = t158.set(io.github.omegadestroyer.pairfree.protocol.Command.ANC_MODE, io.github.omegadestroyer.pairfree.protocol.Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key)!!.single()
+        assertEquals("05 5A 06 00 06 0E 00 0A 01 00", hex(anc.bytes()))
+        val tr = t158.set(io.github.omegadestroyer.pairfree.protocol.Command.ANC_MODE, io.github.omegadestroyer.pairfree.protocol.Command.ANC_MODE.labels.entries.first { it.value == "transparency" }.key)!!.single()
+        assertEquals("05 5A 06 00 06 0E 00 0A 0C 08", hex(tr.bytes()))
+        // the AB1562 has no vivid filter, so no write; its noise cancelling carries the trailing 01
+        val t1562 = ready("hanc", "AB1562", -10, -20, 1)
+        assertNull(t1562.set(io.github.omegadestroyer.pairfree.protocol.Command.ANC_MODE, io.github.omegadestroyer.pairfree.protocol.Command.ANC_MODE.labels.entries.first { it.value == "transparency" }.key))
+        assertEquals("05 5A 07 00 06 0E 00 0A 01 00 01", hex(t1562.set(io.github.omegadestroyer.pairfree.protocol.Command.ANC_MODE, io.github.omegadestroyer.pairfree.protocol.Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key)!!.single().bytes()))
+    }
+
+    @Test
+    fun aChangeIsSavedToTheStateKeyLikeTheApp() {
+        // a headset has no other earbud to relay to; the AB1568 reclaims and writes the key 0E0E0 after the gain
+        val t = ready("crusher900ANC", "AB1568", -10, -20, 9)
+        val out = t.change(SettingChange.Level(SkullcandyRaceTalk.TRANSPARENCY_LEVEL, 5))!!.map { hex(it.bytes()) }
+        assertEquals(
+            listOf(
+                "05 5A 06 00 06 0E 00 0F 18 FC",
+                "05 5A 04 00 03 0A 0C 00",
+                "05 5A 10 00 01 0A E0 E0 01 09 00 00 18 FC 18 FC 00 00 00 00",
+            ),
+            out,
+        )
+    }
 }

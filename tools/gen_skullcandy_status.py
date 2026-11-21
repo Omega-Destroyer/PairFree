@@ -68,6 +68,8 @@ def airoha_sdk_rows(p, modes):
     out = ["battery (both earbuds and the case)"]
     if f & {"adjustableNoiseCancellation", "activeNoiseCancellation", "adjustableStayAwareMode", "stayAwareMode"}:
         out.append("noise mode")
+    if f & {"adjustableNoiseCancellation", "adjustableStayAwareMode"}:
+        out.append("noise cancelling and transparency strength")
     if f & {"lowLatencyMode", "gamingMode"}:
         out.append("gaming mode")
     if f & {"multipointPairingToggle", "multipointPairing"}:

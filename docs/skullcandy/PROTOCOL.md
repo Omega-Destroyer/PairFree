@@ -430,12 +430,25 @@ More of the Airoha models' settings are Skullcandy's own RACE commands, carried 
 reply to be taken (the app waits for the status byte).
 
 **Open items for these models (to build; checked: the Airoha SDK's classes and the Flutter feature switch, as each item says):**
-- *The strength of noise cancelling and transparency* (`adjustableNoiseCancellation`, `adjustableStayAwareMode`, `advancedHearingModes`): the app calls the Airoha SDK's `setAncSetting(filter, gain, mode, save)` (`FlutterAirohaApi.setANCSettings`), whose frames the SDK builds per chip family
-  (`com.airoha.libanc` state machines, 2,800 lines; the app's filter numbers are the SDK's `UI_ANC_FILTER` ordinals, ANC1 for most models and ANC3 for the Rail ANC, `SKDYAncMode.ancFilterId`). Not ported yet. The noise mode PairFree writes on these models uses the Rail's filter numbers (3 and 4), which is a
-  guess for the others: the app's own would be ANC1 (1) for most.
+- *The noise mode's own writes on these models* (section 9.7): they still use the Rail's filter numbers (3 and 4), a guess for the others; the app's are ANC1 (1) for noise cancelling and, for transparency, `passThruFilterId` through the SDK's table (9 to 11 on every chip), with a mode byte that the app takes from a
+  per-model configuration object (field 0x47 of the product, three flags) that is not traced. Blocked until that object is read: **blocked: the mode byte of `0A` is `SKDYAncMode.ancMode`'s result (0, 2, 8, 12 or 18 by model, feature and those flags); checked: `skdyhearingmodes.dart` (the function's branches by product index and feature index) and the SDK's stages (`libmmi1562.stage.c`, `libmmi.stage.c`), which write whatever byte the app gives.**
 - *THX spatial audio, head tracking and intensity* (`thxSpatialAudio`, `thxHeadTracking`): Skullcandy's command classes `ReadThx*` and `SetThx*` (ids `000A` to `0011` in the race text format, built by `encode`); their payload layout is not traced.
 - *The LED customizer, Crusher technology's dial, wheel and profiles, the Crusher 900 ANC's Bose equalizer, the PLYR's gaming equalizer and its NV key `F510` order, enhanced sound perception, Clear Voice smart mic, bass boost mode, the equalizer on/off switch,
   the THX gaming equalizer, cap touch's Indy ANC ambient mode:* not traced yet from the app's feature switch (`activateFeature` in `skdyairohaservice.dart`, whose per-feature cases are decoded one at a time).
+
+### 9.7 The strength of noise cancelling and transparency (built 2026-11-20)
+
+The app's two sliders (`adjustableNoiseCancellation`, `adjustableStayAwareMode`) turn a percentage into dB by `convertPercentageToAirohaGain` (`percent * 20 / 100 - 20`, clamped to -20 to 0 dB; the same function for both modes) and pass it to the Airoha SDK's
+`setAncSetting(filter, gain, mode, save)` (`FlutterAirohaApi.setANCSettings`, `doSave` defaulting to true). The SDK keeps a noise cancelling gain and a transparency gain and writes the active one:
+
+- **The gain**: the ANC command `0E06` with `00 0F`, the dB times 100 as a short (low byte first) and, on the AB1562 only, a trailing `01` (`libmmi1562.stage.j`); on the AB1568 and later the stage (`libmmi.stage.k`) adds a sync byte only when the sync mode is not -1, which the app never sets.
+  So `05 5A 06 00 06 0E 00 0F <lo> <hi>` (and `05 5A 07 00 06 0E 00 0F <lo> <hi> 01` on the AB1562). PairFree sends the gain alone, which the app's `f0` (filter) then `M` (gain) sequence ends with; it waits for the chip name, since the trailing byte depends on it.
+- **The state**: NV key `E0E0`, 12 bytes (`05 5A 06 00 00 0A E0 E0 0C 00`): a flag for on, the SDK's filter, two bytes unused, the noise cancelling gain and the transparency gain (dB times 100, low byte first) and the mode as an int. The slider shows the gain of the mode in force.
+- **The filters**: the SDK's raw filter numbers are, on every chip, ANC1 to ANC4 = 1 to 4 and pass-through 1 to 3 = 9 to 11; from the AB1568 on hybrid pass-through 1 to 3 = 5 to 7 (`s`, `i0` tables), and on the AB158x vivid pass-through 1 to 3 = 12 to 14.
+  The module read of the hearing mode therefore also counts 5 to 7 and 12 to 14 as transparency on these models (the Rail's own are 3 and 4, section 16).
+
+**Not done:** the app also saves the state to NV key `E0E0` after each change (its stages `f` and `o`, then a relay to the other earbud); PairFree sets the gain live only, so a gain set here is lost when the earbuds power off. **Open: the NV write goes through the SDK's `mmi.a` packet class,
+whose frame was not opened.** The scale of the transparency slider is the same function as noise cancelling's (read in `adjustablestayawaremodesliderstate.dart`); that the earbuds apply a `0F` gain to the active filter, whichever it is, is inferred from the SDK's single gain stage, not recorded.
 
 ## 13. The equaliser on the Airoha models (read so far, 2026-11-18)
 

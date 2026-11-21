@@ -58,6 +58,9 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     /** Sidetone, the game and chat mix, microphone volume, touch controls, adaptive noise cancelling and the Crusher's intensity (section 9.6). */
     private val extras = SkullcandyAirohaExtras(product)
 
+    /** The strength sliders of noise cancelling and transparency on those models (section 9.7). */
+    private val strength = SkullcandyAirohaStrength(product)
+
     /**
      * Gaming (low latency) mode on the models driven by Airoha's SDK alone: the SDK reads it as module 6 of the module read (`libmmi1562.stage.b`, "GetGameMode") and sets it with the key event
      * `A4 00` (on) or `A5 00` (off) (`libmmi1562.c.j`, "SetGameMode"). That the read's first byte is 1 for on and 0 for off is inferred: the SDK's parser of the answer did not decompile.
@@ -168,6 +171,9 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         if (hasGain && s != null && gainFor == m && (m == "anc" || m == "transparency")) {
             add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(if (m == "anc") ANC_LEVEL else TRANSPARENCY_LEVEL, (s * 10).roundToInt(), 0, 10))))
         }
+        if (strength.has && chip != null) strength.tenths(m)?.let { t ->
+            add(SettingGroup("noise", SettingTab.HOME, listOf(Setting.Level(if (m == "anc") ANC_LEVEL else TRANSPARENCY_LEVEL, t, 0, 10))))
+        }
     }
 
     private fun packet(hex: String, kind: String): RacePacket {
@@ -191,7 +197,8 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             if (rail && "voiceControl" in product.features) add(own(packet(RailButtons.VOICE_LANGUAGE_GET, "voice_language")))
         }
         auracast?.let { add(own(it.readState())) }
-        if (hasCustomEq || airohaButtons.generic) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
+        if (hasCustomEq || airohaButtons.generic || strength.has) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
+        if (strength.has) add(own(strength.read))
         if (airohaButtons.vendor) airohaButtons.start(null)?.let { add(it) }
         if (hasVoicePrompts) add(packet(SkullcandyRace.VOICE_PROMPTS_GET, "voice_prompts"))
         addAll(extras.start())
@@ -292,6 +299,8 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         val label = when {
             hasAncMode && byte in 1..4 -> "anc"
             hasTransparencyMode && byte in 9..11 -> "transparency"
+            // the SDK's other filters on the models without a configuration: hybrid pass-through 5 to 7 (AB1568 and later) and vivid pass-through 12 to 14 (AB158x)
+            hasTransparencyMode && !rail && (byte in 5..7 || byte in 12..14) -> "transparency"
             else -> "off"
         }
         val before = railMode
@@ -350,6 +359,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         // an NV key read answers with the data's length and the data, no status
         if (asked == airohaButtons.vendorRead && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return airohaButtons.vendorAnswer(p.data)
         if (asked == extras.touchRead && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return extras.touchAnswer(p.data)
+        if (strength.has && asked == strength.read && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return strength.answer(p.data)
         val kind = kinds[asked] ?: return false
         if (p.type != 0x5B && p.type != 0x5D || p.payload.isEmpty()) return false
         if (kind.startsWith("buttons")) {
@@ -442,6 +452,8 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         auracast != null && change is SettingChange.Choice && change.key == SkullcandyAuracast.KEY_ADD -> auracast.select(change.option)?.let { listOf(own(it)) }
         auracast != null && change is SettingChange.Choice && change.key == SkullcandyAuracast.KEY_CODE -> auracast.code(change.option)?.let { listOf(own(it)) }
         auracast != null && change is SettingChange.Choice && change.key == SkullcandyAuracast.KEY_REMOVE -> listOf(own(auracast.stop()))
+        change is SettingChange.Level && (change.key == ANC_LEVEL || change.key == TRANSPARENCY_LEVEL) && strength.has ->
+            strength.write(mode(), change.value, chip)?.let { listOf(own(it)) }
         change is SettingChange.Level && (change.key == ANC_LEVEL || change.key == TRANSPARENCY_LEVEL) && hasGain -> {
             val m = mode()
             val range = if (m == "anc") SkullcandyGain.ANC else SkullcandyGain.TRANSPARENCY

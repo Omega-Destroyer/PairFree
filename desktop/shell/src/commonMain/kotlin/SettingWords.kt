@@ -106,9 +106,18 @@ class SettingWords(private val strings: DesktopStrings) {
         "sk_anc_profile" -> t("setting_sk_anc_profile")
         "sk_transparency_profile" -> t("setting_sk_transparency_profile")
         "sk_sidetone_level" -> t("setting_sk_sidetone_level")
+        "sk_chat_mix" -> t("setting_sk_chat_mix")
+        "sk_mic_gain" -> t("setting_sk_mic_gain")
+        "sk_adaptive_anc" -> t("setting_sk_adaptive_anc")
         "sk_wear_transparency" -> t("setting_sk_wear_transparency")
         "sk_crusher_active" -> t("setting_sk_crusher_active")
         "sk_crusher_intensity" -> t("setting_sk_crusher_intensity")
+        "sk_thx_spatial" -> t("setting_sk_thx_spatial")
+        "sk_thx_head" -> t("setting_sk_thx_head")
+        "sk_thx_intensity" -> t("setting_sk_thx_intensity")
+        "sk_led_mode" -> t("setting_sk_led_mode")
+        "sk_led_brightness" -> t("setting_sk_led_brightness")
+        "sk_led_color" -> t("setting_sk_led_color")
         "sk_crusher_mode" -> t("setting_sk_crusher_mode")
         "sk_spatial" -> t("setting_sk_spatial")
         "sk_reduced_prompts" -> t("setting_sk_reduced_prompts")
@@ -823,6 +832,8 @@ class SettingWords(private val strings: DesktopStrings) {
             "off" -> "action_off"; "on" -> "setting_sh_nautilus_on"; "low" -> "setting_level_low"; "medium" -> "setting_level_medium"; "high" -> "setting_level_high"
             "near" -> "setting_sh_nautilus_near"; "far" -> "setting_sh_nautilus_far"; "rumble" -> "setting_sh_nautilus_rumble"; "thump" -> "setting_sh_nautilus_thump"; else -> "setting_sh_nautilus_voice"
         })
+        key == "sk_led_mode" -> t(when (option) { "off" -> "action_off"; "breathing" -> "setting_sk_led_breathing"; "solid" -> "setting_sk_led_solid"; else -> "setting_sk_led_random" })
+        key == "sk_led_color" -> t(when (option) { "red" -> "setting_sk_color_red"; "orange" -> "setting_sk_color_orange"; "yellow" -> "setting_sk_color_yellow"; "green" -> "setting_sk_color_green"; "cyan" -> "setting_sk_color_cyan"; "blue" -> "setting_sk_color_blue"; "purple" -> "setting_sk_color_purple"; "pink" -> "setting_sk_color_pink"; else -> "setting_sk_color_white" })
         key == "sk_crusher_mode" -> t(when (option) { "high" -> "setting_level_high"; "medium" -> "setting_level_medium"; else -> "setting_level_low" })
         key == "sk_spatial" -> t(when (option) { "off" -> "action_off"; "fixed_to_head" -> "setting_sk_spatial_head"; else -> "setting_sk_spatial_room" })
         key == "sk_language" -> option
@@ -831,6 +842,8 @@ class SettingWords(private val strings: DesktopStrings) {
             "spotify" -> "setting_sk_action_spotify"
             "none" -> "setting_sk_action_none"
             "spatial" -> "setting_sk_action_spatial"
+            "cycle_eq" -> "setting_sk_action_cycle_eq"
+            "head_tracking" -> "setting_sk_action_head_tracking"
             "play_pause" -> "setting_sk_action_play_pause"
             "track_back" -> "setting_sk_action_track_back"
             "track_forward" -> "setting_sk_action_track_forward"

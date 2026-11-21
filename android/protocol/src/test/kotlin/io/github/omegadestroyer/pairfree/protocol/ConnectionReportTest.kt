@@ -46,4 +46,15 @@ class ConnectionReportTest {
         assertEquals("IOException: could not open, caused by IllegalStateException: L2CAP refused", ConnectionReport.describe(e))
         assertEquals("IOException", ConnectionReport.describe(IOException()))
     }
+
+    /** What a release build renames (issue #68: "tz0: needs Android 17"). */
+    private class tz0 : IOException("needs Android 17")
+
+    private class vt0 : IOException()
+
+    @Test
+    fun aRenamedClassLeavesOnlyItsMessage() {
+        assertEquals("needs Android 17", ConnectionReport.describe(tz0()))
+        assertEquals("Exception", ConnectionReport.describe(vt0()))
+    }
 }

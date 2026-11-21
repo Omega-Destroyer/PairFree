@@ -8,6 +8,7 @@ import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyCChip
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyModels
+import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesAt
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyQualcommBandEq
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyQualcommTalk
 import io.github.omegadestroyer.pairfree.protocol.skullcandy.usesQualcomm
@@ -46,14 +47,17 @@ internal class QualcommLink(private val inner: ControlLink) : ControlLink by inn
  * driver of whichever channel opened serves it.
  */
 class SkullcandyEitherDriver(host: DriverHost, device: Paired) : BrandDriver(host), RaceSide {
-    private val classic = SkullcandyDriver(host, device)
+    /** The Airoha twin: on Airoha's SDK alone (the Rail's conversation) unless the app's table gives it AT lines. */
+    private val classic: BrandDriver = SkullcandyModels.fromName(device.model ?: device.name).let { p ->
+        if (p?.usesAt == true) SkullcandyDriver(host, device) else SkullcandyRailDriver(host, device)
+    }
     private val le = SkullcandyQualcommDriver(host, device)
     private var active: BrandDriver = classic
 
     override var raceLink: ControlLink?
-        get() = classic.raceLink
+        get() = (classic as? RaceSide)?.raceLink
         set(value) {
-            classic.raceLink = value
+            (classic as? RaceSide)?.raceLink = value
         }
 
     override suspend fun serve(opened: ControlLink) {

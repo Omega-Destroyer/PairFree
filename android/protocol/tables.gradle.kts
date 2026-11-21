@@ -943,32 +943,8 @@ abstract class GenerateJblTables : DefaultTask() {
         // Airoha's gesture key map per chip variant (data/jbl/commands.json, airoha.gesture): K, the gesture's own key type, is -1.
         @Suppress("UNCHECKED_CAST")
         val gestureVariants = raceMap("gesture").getValue("variants") as Map<String, Map<String, Any?>>
-        fun keyType(v: Any?) = if (v == "K") "-1" else int(v).toString()
-        out.appendLine("/** Airoha's gesture key map per chip variant (data/jbl/commands.json, airoha.gesture). */")
-        out.appendLine("internal val AIROHA_GESTURE_VARIANTS: Map<String, AirohaGestureVariant> = mapOf(")
-        for ((name, v) in gestureVariants) {
-            @Suppress("UNCHECKED_CAST")
-            fun entries(list: Any?) = (list as List<List<Any?>>).joinToString(", ", "listOf(", ")") { e -> "intArrayOf(${keyType(e[0])}, ${e.drop(1).joinToString(", ") { "${(it as Number).toLong()}L.toInt()" }})" }
-            @Suppress("UNCHECKED_CAST")
-            val write = (v.getValue("write") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { "${it.key} to ${entries(it.value)}" }
-            @Suppress("UNCHECKED_CAST")
-            val overrides = (v.getValue("write_overrides") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { (k, e) ->
-                val (g, act) = k.split("/")
-                "($g to $act) to ${entries(e)}"
-            }
-            @Suppress("UNCHECKED_CAST")
-            val keyTypes = (v.getValue("key_types") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { "${it.key} to ${int(it.value)}" }
-            @Suppress("UNCHECKED_CAST")
-            val read = (v.getValue("read") as List<List<Any?>>).joinToString(", ", "listOf(", ")") { r -> "${int(r[0])} to ${entries(r[1])}" }
-            @Suppress("UNCHECKED_CAST")
-            val order = (v.getValue("read_order") as List<Any?>).joinToString(", ", "listOf(", ")") { int(it).toString() }
-            out.appendLine("    ${str(name)} to AirohaGestureVariant(${int(v["key_id"])}, ${v["key_id_from_read"]}, ${v["fills_unmatched"]}, $keyTypes,")
-            out.appendLine("        $write,")
-            out.appendLine("        $overrides,")
-            out.appendLine("        $order, $read),")
-        }
-        out.appendLine(")")
-        out.appendLine()
+        // JBL's plain variant writes eight zero bytes for an earbud with no gesture (MmiStage_SetGesture).
+        AirohaGestureCode.write("AIROHA_GESTURE_VARIANTS", "data/jbl/commands.json, airoha.gesture", gestureVariants, setOf("plain"), out)
 
         // JBL's presets (data/jbl/eq_presets.json): one list per preset file, and per series the standard ones its group names
         // after an Off of flat bands, as JBL's app adds it (pp.a.f).
@@ -2623,8 +2599,50 @@ val generateSkullcandyTables = tasks.register<GenerateSkullcandyTables>("generat
     outputDir = layout.buildDirectory.dir("generated/skullcandy")
 }
 
+/**
+ * Airoha's gesture key map per chip variant as Kotlin, in the schema of data/jbl/commands.json airoha.gesture (K, the gesture's own key type, is -1);
+ * [emptyZeros] names the variants that write eight zero bytes for an earbud with no gesture. JBL's tables and Skullcandy's share it.
+ */
+object AirohaGestureCode {
+    fun write(name: String, source: String, variants: Map<String, Map<String, Any?>>, emptyZeros: Set<String>, out: StringBuilder) {
+        fun int(v: Any?) = (v as Number).toInt()
+        fun str(v: Any?) = "\"" + (v as String) + "\""
+        fun keyType(v: Any?) = if (v == "K") "-1" else int(v).toString()
+        out.appendLine("/** Airoha's gesture key map per chip variant ($source). */")
+        out.appendLine("internal val $name: Map<String, AirohaGestureVariant> = mapOf(")
+        for ((variant, v) in variants) {
+            @Suppress("UNCHECKED_CAST")
+            fun entries(list: Any?) = (list as List<List<Any?>>).joinToString(", ", "listOf(", ")") { e -> "intArrayOf(${keyType(e[0])}, ${e.drop(1).joinToString(", ") { "${(it as Number).toLong()}L.toInt()" }})" }
+            @Suppress("UNCHECKED_CAST")
+            val write = (v.getValue("write") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { "${it.key} to ${entries(it.value)}" }
+            @Suppress("UNCHECKED_CAST")
+            val overrides = (v.getValue("write_overrides") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { (k, e) ->
+                val (g, act) = k.split("/")
+                "($g to $act) to ${entries(e)}"
+            }
+            @Suppress("UNCHECKED_CAST")
+            val keyTypes = (v.getValue("key_types") as Map<String, Any?>).entries.joinToString(", ", "mapOf(", ")") { "${it.key} to ${int(it.value)}" }
+            @Suppress("UNCHECKED_CAST")
+            val read = (v.getValue("read") as List<List<Any?>>).joinToString(", ", "listOf(", ")") { r -> "${int(r[0])} to ${entries(r[1])}" }
+            @Suppress("UNCHECKED_CAST")
+            val order = (v.getValue("read_order") as List<Any?>).joinToString(", ", "listOf(", ")") { int(it).toString() }
+            val unmatched = (v["unmatched"] as Number?)?.toInt() ?: 0
+            out.appendLine("    ${str(variant)} to AirohaGestureVariant(${int(v["key_id"])}, ${v["key_id_from_read"]}, ${v["fills_unmatched"]}, $keyTypes,")
+            out.appendLine("        $write,")
+            out.appendLine("        $overrides,")
+            out.appendLine("        $order, $read, unmatched = $unmatched, emptyZeros = ${variant in emptyZeros}),")
+        }
+        out.appendLine(")")
+        out.appendLine()
+    }
+}
+
 /** Writes the Skullcandy product table from data/skullcandy/devices.json (the app's manifest joined to its chip table). */
 abstract class GenerateSkullcandyProducts : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val buttonsJson: RegularFileProperty
+
     @get:InputFile
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val devicesJson: RegularFileProperty
@@ -2647,6 +2665,8 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
         val out = StringBuilder("// Generated from data/skullcandy/devices.json by the generateSkullcandyModels task. Do not edit.\n")
         out.appendLine("package io.github.omegadestroyer.pairfree.protocol.skullcandy")
         out.appendLine()
+        out.appendLine("import io.github.omegadestroyer.pairfree.protocol.jbl.AirohaGestureVariant")
+        out.appendLine()
         out.appendLine("/** One product of Skullcandy's app (5.0.6), by its product id, with the chip family the app puts it on and the features its firmware lists. */")
         out.appendLine("public class SkullcandyProduct(")
         out.appendLine("    public val id: Int,")
@@ -2659,14 +2679,26 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
         out.appendLine("    public val chip: String,")
         out.appendLine("    public val sdk: String?,")
         out.appendLine("    public val features: Set<String>,")
+        out.appendLine("    /** The actions the app lets each button take (the manifest's mappable_buttons). */")
+        out.appendLine("    public val mappableButtons: List<String> = emptyList(),")
+        out.appendLine("    /** The firmware's button settings out of the box, by press (the manifest's default_buttons). */")
+        out.appendLine("    public val defaultButtons: Map<String, List<SkullcandyDefaultButton>> = emptyMap(),")
         out.appendLine(")")
+        out.appendLine()
+        out.appendLine("/** One press's default action on one button: the side (left, right) or none on headphones, and the button's key id where the manifest gives one (hex). */")
+        out.appendLine("public class SkullcandyDefaultButton(public val side: String?, public val keyId: String?, public val action: String)")
         out.appendLine()
         out.appendLine("public object SkullcandyProducts {")
         out.appendLine("    public val ALL: List<SkullcandyProduct> = listOf(")
         for (p in products) {
             val id = Integer.decode(p["id"] as String)
             val sdk = (p["sdk"] as String?)?.let { str(it) } ?: "null"
-            out.appendLine("        SkullcandyProduct($id, ${str(p["name"])}, ${str(p["enum"])}, ${strings(p["models"])}, ${strings(p["alternate_names"])}, ${strings(p["sdk_names"])}, ${strings(p["android"])}, ${str(p["chip"])}, $sdk, ${strings(p["features"])}.toSet()),")
+            fun opt(v: Any?) = (v as String?)?.let { str(it) } ?: "null"
+            @Suppress("UNCHECKED_CAST")
+            val defaults = (p["default_buttons"] as Map<String, List<Map<String, Any?>>>?).orEmpty().entries.joinToString(", ", "mapOf(", ")") { (press, list) ->
+                "${str(press)} to listOf(" + list.joinToString(", ") { b -> "SkullcandyDefaultButton(${opt(b["side"])}, ${opt(b["keyId"])}, ${str(b["action"])})" } + ")"
+            }
+            out.appendLine("        SkullcandyProduct($id, ${str(p["name"])}, ${str(p["enum"])}, ${strings(p["models"])}, ${strings(p["alternate_names"])}, ${strings(p["sdk_names"])}, ${strings(p["android"])}, ${str(p["chip"])}, $sdk, ${strings(p["features"])}.toSet(), ${strings(p["mappable_buttons"])}, $defaults),")
         }
         out.appendLine("    )")
         out.appendLine("}")
@@ -2681,6 +2713,39 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
         }
         out.appendLine("    )")
         out.appendLine("}")
+        // The buttons of the Airoha models without an SDK configuration (data/skullcandy/buttons.json).
+        @Suppress("UNCHECKED_CAST")
+        val buttons = JsonSlurper().parse(buttonsJson.get().asFile) as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        AirohaGestureCode.write("SKULLCANDY_AIROHA_GESTURE_VARIANTS", "data/skullcandy/buttons.json, variants", buttons.getValue("variants") as Map<String, Map<String, Any?>>, emptySet(), out)
+        @Suppress("UNCHECKED_CAST")
+        val generic = buttons.getValue("generic") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        val vendor = buttons.getValue("vendor") as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        fun pairs(v: Any?) = (v as Map<String, List<Number>>).entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to (${it.value[0].toInt()} to ${it.value[1].toInt()})" }
+        @Suppress("UNCHECKED_CAST")
+        fun ints(v: Any?) = (v as Map<String, Number>).entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to ${it.value.toInt()}" }
+        @Suppress("UNCHECKED_CAST")
+        fun lists(v: Any?) = (v as Map<String, List<Number>>).entries.joinToString(", ", "mapOf(", ")") { "${str(it.key)} to listOf(${it.value.joinToString(", ") { n -> n.toInt().toString() }})" }
+        fun num(v: Any?) = (v as Number).toInt()
+        out.appendLine("/** The button tables of the Airoha models without an SDK configuration (data/skullcandy/buttons.json). */")
+        out.appendLine("internal object SkullcandyButtonTables {")
+        out.appendLine("    /** Each press's Airoha gesture ids, left then right. */")
+        out.appendLine("    val GESTURES: Map<String, Pair<Int, Int>> = ${pairs(generic["gestures"])}")
+        out.appendLine("    /** The Mod's own. */")
+        out.appendLine("    val GESTURES_MOD: Map<String, Pair<Int, Int>> = ${pairs(generic["gestures_mod"])}")
+        out.appendLine("    /** Each action's Airoha action id. */")
+        out.appendLine("    val ACTIONS: Map<String, Int> = ${ints(generic["actions"])}")
+        out.appendLine("    val STAY_AWARE_SWITCH_MODELS: Set<String> = ${strings(generic["stay_aware_switch_models"])}.toSet()")
+        out.appendLine("    const val STAY_AWARE_SWITCH: Int = ${num(generic["stay_aware_switch"])}")
+        out.appendLine("    const val DEFAULT: Int = ${num(generic["default"])}")
+        out.appendLine("    /** The products whose key map the app reads and writes itself, by a vendor key id. */")
+        out.appendLine("    val VENDOR_MODELS: Set<String> = ${strings(vendor["models"])}.toSet()")
+        out.appendLine("    const val VENDOR_NV_KEY: Int = 0x${vendor["nv_key"]}")
+        out.appendLine("    val VENDOR_KEY_TYPES: Map<String, Int> = ${ints(vendor["key_types"])}")
+        out.appendLine("    val VENDOR_EVENTS: Map<String, List<Int>> = ${lists(vendor["events"])}")
+        out.appendLine("}")
         val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/skullcandy/SkullcandyProducts.kt")
         target.parentFile.mkdirs()
         target.writeText(out.toString())
@@ -2690,5 +2755,6 @@ abstract class GenerateSkullcandyProducts : DefaultTask() {
 val generateSkullcandyModels = tasks.register<GenerateSkullcandyProducts>("generateSkullcandyModels") {
     devicesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/devices.json")
     modesJson = rootProject.layout.projectDirectory.file("../data/skullcandy/eq_modes.json")
+    buttonsJson = rootProject.layout.projectDirectory.file("../data/skullcandy/buttons.json")
     outputDir = layout.buildDirectory.dir("generated/skullcandyProducts")
 }

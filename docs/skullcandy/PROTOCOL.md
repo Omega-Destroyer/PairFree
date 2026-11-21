@@ -372,14 +372,108 @@ The TOTA v2 frame (`d.java` `a` writes, `b` reads), as the code builds it: `HEAD
 its CRC is dropped (the reader returns a one-byte `01`). With encryption on, the payload is the AES-CBC ciphertext of the zero-padded content. The 20 command classes (section 12.1) supply the payloads: `09 63 02 00 <cmd> 00` to read and
 `08 63 <length> 00 <cmd> 00 <value>` to write.
 
-### 9.4 How the app reaches the Airoha models without an SDK configuration (corrected 2026-11-18)
+### 9.4 How the app reaches the Airoha models without an SDK configuration (corrected again 2026-11-20, issue #66)
 
-An earlier version of this section said the Bragi AT lines travel inside the RACE command `01 0D`. That was wrong: `0D01` is Airoha's RACE *relay* command (it carries a whole RACE frame to the other earbud, as JBL's
-Airoha work shows), and the SDK's RACE transport (`transport/race/a.java`, `v`) wraps RACE frames for it, never AT lines. What the app's code shows instead (`app/skullcandy/bragi/h.java`, `j.java`, the Dart `SKDYAirohaApi.runATCommand`):
-the app has an AT client of its own, which opens the **standard serial port** (`00001101-0000-1000-8000-00805F9B34FB`) of the earbuds and sends the AT lines (logged as `ATCommandsApi`); a reply is split at CR LF, LF and tab, blank pieces
-dropped, and counts as successful when its last piece is `OK` or, when the caller gave a response key, when a piece contains that key. The Airoha SDK (`com.airoha.sdk`, RACE) is a second, separate channel the app uses for the equaliser and
-Skullcandy's custom commands (section 11). So for the 28 Airoha models that have no SDK configuration PairFree speaks AT on the standard serial port, and the custom RACE commands and the equaliser need a channel of their own (the Airoha serial
-service, `A4602B24-...` or `FFEEDDCC-...`, whichever the device lists), as the Soundcore Sleep A30's second channel does.
+An earlier version of this section said the Bragi AT lines travel inside the RACE command `01 0D`; `0D01` is Airoha's RACE *relay* command, so that was wrong. The version of 2026-11-18 then said the app's own AT client
+(`app/skullcandy/bragi/h.java`, the standard serial port `00001101-...`) reaches the 28 Airoha models without an SDK configuration. **That was wrong too.** A user's Dime Evo (issue #66) lists no standard serial port at all
+(its services: `00000000-0000-0000-0099-aabbccddeeff`, Google Fast Pair's `df21fe2c-...` and the audio profiles), and every socket to `00001101-...` failed. What the app's code shows, read again:
+
+- The AT client is built only when `SKDYProductModelExtensionsKt.getShouldUseATCommands` is true (`s2.java`, `buildATCommandAPi`: "this model does not support AT commands"), and that is true for four models only: the Crusher ANC 2, Push Active, Grind and
+  Grind Fuel, the four whose SDK configurations are AT (section 9).
+- Every other Airoha model is driven through Airoha's SDK (`com.airoha.sdk`): the Flutter channel's methods `getANCSettings`, `getEQSettings`, `getBatteryInfo`, `getLowLatencyMode`, `getGestureSettings` and the rest (`AirohaChannelMethod`).
+  The SDK connects over Airoha's serial service `00000000-0000-0000-0099-AABBCCDDEEFF` (`com.airoha.liblinker.constant.c.b`; `s2.java` passes it as the `ConnectionUUID` for every model but the Method 360 and 540 ANC,
+  which get `A4602B24-...`), and `z4.v` checks a device's services for that UUID.
+
+So PairFree drives these 28 models as it drives the Rail (section 16): `SkullcandyRaceTalk` is their main conversation (`primary`), over the Airoha service the device lists (`AIROHA_SPP` first, as the app connects,
+else `FFEEDDCC-...`), with the batteries, the hearing mode (the module read and `0E06`, the AB1562 forms), Skullcandy's custom RACE commands (multipoint, wear detection, bass boost) and the equaliser. Added for them:
+**gaming mode**, as Airoha's SDK does it: read as module 6 of the module read (`0901`; `libmmi1562.stage.b`, "GetGameMode"), set with the key event `1101` and `A4 00` (on) or `A5 00` (off) (`libmmi1562.c.j`, "SetGameMode").
+The answer's parser is `libmmi1562.stage.b` case 4 (`MmiStageGetGameMode`, read with jadx's fallback mode, since the normal pass failed on it): it takes the module `06`, the status 0 and the byte after them, and reports that byte plus one (SMART_SWITCH_STATUS 1 off, 2 on), so the first data byte is 0 for off and 1 for on. The Rail's own buttons, voice control and gain stay the Rail's (they come from its SDK configuration).
+The buttons and the voice prompts are section 9.5. Nothing here has met a real product; the next report from issue #66 confirms or corrects it.
+
+### 9.5 Buttons and voice prompts of the Airoha models without an SDK configuration (built 2026-11-20)
+
+Twelve of the 28 list `customButtonActions` with the presses and actions of the manifest (`default_buttons`, `mappable_buttons`). The app's native side has two routes (`FlutterAirohaApi`, methods
+`getGestureSettings`, `setGestureSettings`, `resetGestureSettings`), and `data/skullcandy/buttons.json` holds the tables of both:
+
+- **Airoha's own gesture API**, for the Mod, Push ANC Active, Sesh ANC Active, Dime Evo, Dime 360, Push 720 Open, Push 540 Open and the Crusher 900 ANC: `getGestureStatus(255)` and
+  `setGestureStatus(List<AirohaGestureSettings>)`. The app maps its presses to Airoha's gesture ids (single press 1 and 2, double 3 and 4, triple 7 and 8, press and hold the long press release 11 and 12,
+  on the Mod the long press 5 and 6; odd left, even right) and its actions to Airoha's action ids (Spotify 212, the stay-aware switch 5, or 10 on the Sesh and Push ANC Active, play/pause 8, previous 7, next 6,
+  volume down 2 and up 1, take photo 240, voice assistant 160, none 0; read back, 209 is the firmware's default, shown as the manifest's default for that press). Airoha's SDK then writes the key map as
+  JBL's Airoha models do (`JblAirohaGesture`: NV key `F2D6` on the AB158x, `F2E7` on the older chips, the copy of the other earbud's in `F2EF`, the reload, all relayed to the other earbud; the AB1562's key
+  map commands `0A0B` and `0A0A`), but from Airoha's own encoders, keyed by Airoha's action ids: `libmmi158x.Utility.a` (play/pause 83 and 85, Spotify 330, take photo `F001`, and so on), `libmmi.Utility.a`
+  (the same without Spotify and take photo, for which it has no event, so on those chips the rows list only the actions it writes) and `libmmi1562.Utility.a` (its own events, the tap as key type 0, and a state bit mask
+  per event from `libmmi1562.model.a.b`). The default key id is 24 (18 hex), then the one the read found. The Crusher 900 ANC's manifest also offers cycling the EQ and spatial audio, which have no Airoha
+  action id: the app's own `setGestureSettings` rejects them for this product, so PairFree offers its voice assistant and none.
+- **The app's own key map code**, for the four products `getHasVendorSpecificButtonId` names (Icon ANC, Aviator 900 ANC, Hesh 540 ANC, Crusher 720): the native side reads NV key `F2D6` and hands the
+  bytes to Dart, which takes the entries of the product's button (`keyId` 82 on the Icon ANC, 7E on the others) by key type (single press 1, double 2, triple 3, press and hold 10;
+  `SKDYButtonSettingsUtils.toKeyGestureStruct`) and reads the actions from their events (`SKDYActionInfo.fwActionId`: Spotify 330, the stay-aware switch 146, play/pause 83 and 85, volume 10 and 11,
+  take photo `F001`, voice assistant 33 and 35, none 0, cycle the EQ 220 hex, head tracking `F402`, spatial audio `F401`). The write is the command `F2D6` with the entries (`SetGesturesRaceCommand`,
+  `05 5A <length> D6 F2 <entries>`). PairFree reads the key with the SDK's own NV read (length 100; the app's literal `s2.f0` carries a length field one short of its bytes) and, on a change, replaces only
+  that press's entries of that button and writes every other entry back as it read it. That the app writes these four this way is read from its encoder and the Dart helpers; the call that sends the write
+  was not found in the Dart snapshot (checked: `skdyairohaapi.dart` `setButtonSettings`, which calls the native `setGestureSettings`, and the callers of `SetGesturesRaceCommand`).
+- **Voice prompts** (`voicePrompts`, the two SLYR Pro Wireless): Skullcandy's command `2C 81` from the native side (`s2.W`, `X`, `Y`): `05 5A 04 00 81 2C 02 FF` reads, `... 00 FF` turns them on and
+  `... 01 FF` off; the answer's last byte is 1 when they are off, and the earbuds report a change as `05 5D 03 00 81 2C <value>`.
+
+### 9.6 Sidetone, the mixes, touch controls and the rest (built 2026-11-20)
+
+More of the Airoha models' settings are Skullcandy's own RACE commands, carried by the Airoha SDK inside the app (`com.airoha.libmmi.b` and its `libmmi1568` stages) and by the Flutter code's race command classes:
+
+- **The custom pair `2C82` (write) and `2C83` (read)**: a setting number (two bytes, low first) and the value. A read is `05 5A 04 00 83 2C <n> 00`, answered `05 5B <len> 83 2C 00 <n> 00 <value>` (a status byte, the number, the value; a level is a short, low byte first). A write is `05 5A <len> 82 2C <n> 00 <value>`.
+  Settings: 7 sidetone on or off (1 is on; the earbuds send no notice of it: the SDK's own notices are type `5C` frames on `2C82` and list only the touch state, the batteries and a few more modules), 6 the sidetone level, 0B the game and chat mix (`MmiStageSetGameChatMixRatio`), 0C the microphone volume (`MmiStageSetGameMicVolume`), and 10 multipoint (section 11).
+  The app writes the sidetone state and then the level on every change (`doSetSidetoneStatus`), and PairFree does the same. The level is the app's slider (`SKDYSidetoneSettings`): `truncate(percent / 100 * 57) - 40`, so the wire holds -40 to 17; read back, `(level + 40) * 100 / 57`.
+- **Touch controls** (`capTouchControl`, the Push 540 Open): the NV key `F514` (35 bytes) read as `05 5A 06 00 00 0A 14 F5 23 00`. Its first data byte is `00` when the touch controls are on (`RaceCommandCapTouchS2Get`) and the third is `01` when scenario 1 is on (`S1Get`). The app first makes sure scenario 1
+  is on (`_ensureCapTouchScenario1IsEnabled`: `05 5A 03 00 07 00 01` when it is not), then writes scenario 2 as `05 5A 03 00 08 00 <00 on, 01 off>`. PairFree does the read without a write, and the two writes only when the user changes the row.
+- **Adaptive noise cancelling** (`adaptiveANCMode`, the Aviator 900 ANC): the module read `001F` (`05 5A 04 00 01 09 1F 00`, the first data byte 1 is on) and the ANC command `05 5A 05 00 06 0E 00 22 <00|01>`.
+- **The Crusher PLYR's intensity** (`crusherTechnology`): `05 5A 03 00 D0 2C <value>` writes it and `05 5A 02 00 D1 2C` reads it (`05 5B 04 00 D1 2C 00 <value>`). Skullcandy's own bass boost toggle (`D7 2C`) is section 11.
+
+**Settled from the app's code:** the sliders of the chat mix, the microphone volume and the Crusher intensity are percentages (the app truncates the slider's value and sends it as it is; the chat mix, mic and sidetone sliders carry 100.0 as their end and `SKDYSidetoneSettings` converts a percentage), and a write is answered `05 5B <len> 82 2C <status> <setting> 00 ...` (`libmmi1568.stage.c` and `.h`), and PairFree reads the value back after a write instead of using that answer (checked: the two stage classes).
+reply to be taken (the app waits for the status byte).
+
+**What is not Airoha RACE, or not a control, on these models (checked 2026-11-20, `activateFeature` and the feature tables in the Dart dump):**
+- *Clear Voice smart mic, bass boost mode, the equalizer on/off switch:* nothing to build. `clearVoiceSmartMic` appears only in its feature guide screen (no control) and the asset table; `bassBoostMode` is a capability flag in a `hasFeature` list of the equalizer screens (the bass boost preset is an equalizer category, section 13); `definedEqualizerToggle` is a firmware feature name that is not in the app's `SKDYFeature` enum, and no `activateFeature` case uses it.
+- *Crusher technology's dial, wheel and profiles, the Crusher 900 ANC's Bose equalizer, the THX gaming equalizer:* not Airoha RACE commands. `crusherTechnologyDial` and `crusherTechnologyProfiles` appear in `bragiservice.dart` (Bragi's side), `crusherTechnologyWheelInfo` only in a feature guide and the asset table, and `thxGamingEqualizer` only in `skdyproductutils.dart` (a capability flag); no `activateFeature` case or race command class exists for them.
+- *Enhanced sound perception:* the Mimi personal sound service (`skdymimiservice.dart`) and Bragi's. **blocked: it needs Mimi's server sign-in (hard rule); checked: `skdyairohaservice.dart`, `bragiservice.dart` and `skdymimiservice.dart` reference it, and the Airoha service only routes to Mimi.**
+- *Indy ANC's ambient mode:* the same handler as the stay-aware mode. The app's feature switch is a jump table (`pp+0x1cfd8`); its entries for `ambientMode` (20) and `stayAwareMode` (21) both lead to the stay-aware case at 0x8d24d8, so PairFree offers it as the transparency mode on the Indy ANC, with the SDK's filters and a mode byte of 0 (no product rule applies to feature 20).
+
+The strength, the noise mode switch, THX, the LED customizer and the PLYR's order index are sections 9.7 to 9.9.
+
+### 9.7 The strength of noise cancelling and transparency (built 2026-11-20)
+
+The app's two sliders (`adjustableNoiseCancellation`, `adjustableStayAwareMode`) turn a percentage into dB by `convertPercentageToAirohaGain` (`percent * 20 / 100 - 20`, clamped to -20 to 0 dB; the same function for both modes) and pass it to the Airoha SDK's
+`setAncSetting(filter, gain, mode, save)` (`FlutterAirohaApi.setANCSettings`, `doSave` defaulting to true). The SDK keeps a noise cancelling gain and a transparency gain and writes the active one:
+
+- **The gain**: the ANC command `0E06` with `00 0F`, the dB times 100 as a short (low byte first) and, on the AB1562 only, a trailing `01` (`libmmi1562.stage.j`); on the AB1568 and later the stage (`libmmi.stage.k`) adds a sync byte only when the sync mode is not -1, which the app never sets.
+  So `05 5A 06 00 06 0E 00 0F <lo> <hi>` (and `05 5A 07 00 06 0E 00 0F <lo> <hi> 01` on the AB1562). PairFree sends the app's pair, the filter command and then the gain (below), and waits for the chip name, since the trailing byte depends on it.
+- **The state**: NV key `E0E0`, 12 bytes (`05 5A 06 00 00 0A E0 E0 0C 00`): a flag for on, the SDK's filter, two bytes unused, the noise cancelling gain and the transparency gain (dB times 100, low byte first) and the mode as an int. The slider shows the gain of the mode in force.
+- **The filters**: the SDK's raw filter numbers are, on every chip, ANC1 to ANC4 = 1 to 4 and pass-through 1 to 3 = 9 to 11; from the AB1568 on hybrid pass-through 1 to 3 = 5 to 7 (`s`, `i0` tables), and on the AB158x vivid pass-through 1 to 3 = 12 to 14.
+  The module read of the hearing mode therefore also counts 5 to 7 and 12 to 14 as transparency on these models (the Rail's own are 3 and 4, section 16).
+
+**The noise mode switch** (built later the same day): `SkullcandyAirohaStrength.modeFrame` writes the SDK's own form for the chip the earbuds named. The app's filter for noise cancelling is the ordinal `ancFilterId` (1, ANC1; the Rail ANC 3) and for transparency `passThruFilterId` (4 pass-through 1 for most; 11 vivid 1 on the Push ANC Active and Tune ANC, 8 hybrid 1 on the Hesh 540 ANC, 5 on the Mod, 1 on the Aviator 900 ANC);
+the SDK turns an ordinal into its raw filter per chip (above) and, where its table has none (vivid on anything but the AB158x, hybrid on the AB1562, every filter on the AB155x), turns the filter off instead; PairFree then offers no mode change (checked: the three SDK tables, `i`, `s` and `i0`). On: `05 5A <len> 00 06 0E 00 0A <filter> <mode>`, with a trailing `01` on the AB1562 (its pass-through filters 9 to 11 always carry mode 4); off: `00 0B`, with `01` on the AB1562.
+The mode byte is `SKDYAncMode.ancMode` (read in `skdyhearingmodes.dart`). It depends on what the Airoha SDK reports as the audio feature capabilities (`SKDYProduct.capabilities`: `hwHybridPassthru`, `hwVivid`, `ffMicOnly`, from `AirohaFeatureCapabilities`), which only the AB158x answers (`libmmi158x.stage.c`: the read `0E30` with `00 01 00 00 00 00`, answered with the status, `01`, the ANC level and the pass-through level; vivid is level 4 or more, hybrid 2 or more, feed-forward only is ANC level 3): with them, transparency is 18 (vivid), 12 (hybrid) or 8, noise cancelling 2 (feed-forward only) or 0, and the filter of transparency is vivid pass-through 1 (11) or hybrid pass-through 1 (8). Without them the product decides: the Dime Evo, Dime 360, Push ANC Active and Tune ANC give 18 for transparency; the Sesh ANC and Icon ANC give 8 for the adjustable transparency feature and, for noise cancelling, 2 on the Icon ANC and 0 on the Sesh ANC; the Aviator 900 ANC gives 12; every other product gives none, which the SDK writes as 0.
+
+**The save** (built): after the live write of a gain or of a mode (not after off), the app reclaims the key's space (`RACE_NVKEY_RECLAIM` `0A03` with the length, `0C 00`) and writes it (`0A01`, key `E0 E0`, the 12 bytes above), on the AB1568 and later first to the other earbud through the relay `0D01` (the destination from `0D00`, as JBL's flow does), on the AB1562 the near one first (`com.airoha.sdk.j`, `libmmi.b.H`).
+The scale of the transparency slider is the same function as noise cancelling's (read in `adjustablestayawaremodesliderstate.dart`). A slider move sends what `setAncSetting` does: the filter command of the mode in force (`f0`), then the gain (`M`), then the save; a chip whose SDK table has no filter for the mode gets nothing.
+
+### 9.8 THX spatial audio and the LED customizer (built 2026-11-20)
+
+The Dart race command classes build a frame as `05 <type> <length u16 LE> <id> <payload>`: the length is the first `toHex(reverse)` item, and the id is the app's own hex constant written in that order (`RaceCommand.nvKeyRead` is `000A`, which is the `00 0A` on the wire of every NV read). The constants in `race_command.dart`:
+THX `01F4`, the LED mode `852C`, brightness `862C` and customizer (colour) `882C`, NV read `000A`, NV write `010A`.
+
+**THX** (`thxSpatialAudio` on six models, `thxHeadTracking` on the Aviator 900 ANC and the Crusher PLYR pair): id `01 F4`, the payload a status byte `00` and a sub-command: `0A` spatial audio on, `0B` off, `0C` read; `0D` head tracking on, `0E` off, `0F` read; `10` set the intensity (two bytes, high first, the app's default is 65535),
+`11` read it. Every answer carries the state in the bytes after the sub-command: the app's `hasEnabledPayload` (compiled code at 0x68400c) joins them as a hex number and calls the feature on when that is 1, for a write's answer as for a read's; the intensity read is those bytes over 65535 times 100, and the write is the percentage over 100 times 65535, truncated, in two bytes.
+
+**LED customizer** (`ledCustomizer`, the Crusher PLYR pair; built): ids `85 2C` (mode), `86 2C` (brightness) and `88 2C` (colour), each a write.
+- The mode is `03 <a> <b>`: off `02 00`, random `02 09`, breathing `01 01`, solid `02 01`.
+- The brightness is the value (0 to 255, the slider's range) written three times: the app's template `FF FF FF` has each byte replaced by it (`SetLEDBrightnessRaceCommand.encode`, a `T == String` check that is false for an int).
+- The colour is four bytes: the colour struct's first field (1 in breathing mode, else 2: `LEDColorStruct.fromProviderState`) and red, green and blue (the app has a colour picker; PairFree offers nine named colours and shows the nearest within a small distance).
+- The reads are the custom read `83 2C` with setting `23 00` and an attribute (`0` colour, `1` brightness, `2` mode: `05 5A 05 00 83 2C 23 00 0<n>`), answered `05 5B 08 00 83 2C 00 23 00 <3 bytes>`: the colour is the three bytes, the brightness the first and the mode the last (`GetLedStatusRaceCommand.decodeResponse`), where 0 is off, 1 breathing, 2 solid and 4 random (the provider's mapping). An answer does not name its attribute, so it is matched to the read asked.
+The frame is `05 5A`, the length (2 plus the payload, low byte first), the id and the payload: `RaceCommand` builds the id as a two-byte type and each colour field is a one-byte type (`LEDColorStruct`, `RaceCommand`'s constructor), so the lengths and the one-byte colours follow from the code. A write's own answer is not used by the app, so every write is followed by a read.
+
+### 9.9 The PLYR's equalizer order index (built 2026-11-20)
+
+After an equalizer write on the PLYR (`plyr` only; `activateFeature`'s equalizer case compares the product), the app writes NV key `F510` with one byte, the preset's place in the gaming list (`SKDYAirohaService.plyrEqOrderIndex`): preset 1 (Supreme Sound) is 0, 5 (FPS) 1, 7 (RPG) 2, 2 (Music) 3 and the custom curve (101) 4;
+the other presets (Podcast, Movie, MMO) write nothing. The frame is the app's own string `05 5A 05 00 01 0A 10 F5 0<n>` (an NV write, key low byte first, one data byte).  The app does not wait: in `activateFeature` it starts `setEQMode` (not awaited) and, for the PLYR, writes `F510` right after, so PairFree sends the write as soon as it starts its own equalizer command.
 
 ## 13. The equaliser on the Airoha models (read so far, 2026-11-18)
 

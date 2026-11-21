@@ -62,6 +62,51 @@ def rpc_rows(p, modes):
     return out
 
 
+def airoha_sdk_rows(p, modes):
+    """The Airoha models without an SDK configuration: the Rail's RACE conversation without the Rail's own commands (SkullcandyRaceTalk, primary; issue #66)."""
+    f = set(p["features"])
+    out = ["battery (both earbuds and the case)"]
+    if f & {"adjustableNoiseCancellation", "activeNoiseCancellation", "adjustableStayAwareMode", "stayAwareMode"}:
+        out.append("noise mode")
+    if f & {"adjustableNoiseCancellation", "adjustableStayAwareMode"}:
+        out.append("noise cancelling and transparency strength")
+    if f & {"lowLatencyMode", "gamingMode"}:
+        out.append("gaming mode")
+    if f & {"multipointPairingToggle", "multipointPairing"}:
+        out.append("multipoint")
+    if "wearDetect" in f:
+        out.append("wear detection")
+    if "crusherBassBoost" in f:
+        out.append("bass boost")
+    if "customEqualizer" in f:
+        presets = [m for m, n in modes.get(p["enum"], {}).items() if 1 <= n <= 99]
+        out.append("equalizer (custom" + (f" + {len(presets)} presets" if presets else "") + ")")
+    if "customButtonActions" in f and p.get("default_buttons"):
+        vendor = p["enum"] in {"iconANC", "aviatorANC", "hesh540ANC", "crusher720"}
+        out.append("button actions (" + ("the app's own key map" if vendor else "Airoha's gesture API") + ")")
+    if "voicePrompts" in f:
+        out.append("voice prompts")
+    if "adjustableSidetoneMode" in f:
+        out.append("sidetone (state + level)")
+    if "gameChatMix" in f:
+        out.append("game and chat mix")
+    if "adjustableMicGain" in f:
+        out.append("microphone volume")
+    if "capTouchControl" in f:
+        out.append("touch controls")
+    if "adaptiveANCMode" in f:
+        out.append("adaptive noise cancelling")
+    if "crusherTechnology" in f:
+        out.append("Crusher intensity")
+    if "ledCustomizer" in f:
+        out.append("LED mode, brightness and colour")
+    if "thxSpatialAudio" in f:
+        out.append("THX spatial audio + intensity" + (" + head tracking" if "thxHeadTracking" in f else ""))
+    if "ambientMode" in f and p["enum"] == "indyANC":
+        out.append("ambient mode (as transparency)")
+    return out
+
+
 def qualcomm_rows(p, modes):
     f = set(p["features"])
     out = ["battery (both earbuds)"]
@@ -84,7 +129,7 @@ def session(p):
     if p["chip"] == "airoha" and p["sdk"] in AT_SDK:
         return "AT on Skullcandy's serial service"
     if p["chip"] == "airoha" and p["sdk"] is None and not p["name"].startswith("Session "):
-        return "AT on the standard serial port"
+        return "Airoha RACE on Airoha's service (the SDK's own commands)"
     return None
 
 
@@ -127,6 +172,8 @@ def base_rows(p, modes):
         return rpc_rows(p, modes)
     if p["chip"] == "bes":
         return bes_rows(p, modes)
+    if p["chip"] == "airoha" and p["sdk"] is None and session(p):
+        return airoha_sdk_rows(p, modes)
     f = set(p["features"])
     out = []
     if session(p):

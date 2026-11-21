@@ -99,17 +99,20 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
     /** THX's race id `01F4` (written in that order on the wire), a sub-command and its value bytes (section 9.8). */
     private fun thxHex(sub: Int, vararg value: Int): String = "05 5A ${hex(4 + value.size)} 00 01 F4 00 ${hex(sub)} " + value.joinToString(" ") { hex(it) }
 
-    /** An answer of the THX commands: the status byte, the sub-command and then what it carries. */
+    /**
+     * An answer of the THX commands: the status byte, the sub-command, then what it carries. The app's `hasEnabledPayload` takes the bytes after the sub-command as a hex number and calls it on when that is 1
+     * (read from the compiled code at 0x68400c), for a write's answer as for a read's; the intensity is the bytes after `11` as a big endian number over 65535.
+     */
     private fun thxAnswer(d: ByteArray): Boolean {
-        if (d.size < 2 || d[0].toInt() != 0) return false
+        if (d.size < 3 || d[0].toInt() != 0) return false
         val sub = d[1].toInt() and 0xFF
+        var rest = 0L
+        for (i in 2 until d.size) rest = (rest shl 8) or (d[i].toLong() and 0xFF)
+        val on = rest == 1L
         return when (sub) {
-            // a write's answer repeats which of the two it did; a read's carries the state in the next byte (inferred: the app's reader of it was not in the dump)
-            THX_SPATIAL_ON, THX_SPATIAL_OFF -> thx && (sub == THX_SPATIAL_ON).let { on -> (spatial != on).also { spatial = on } }
-            THX_READ_SPATIAL -> thx && d.size >= 3 && ((d[2].toInt() and 0xFF) != 0).let { on -> (spatial != on).also { spatial = on } }
-            THX_HEAD_ON, THX_HEAD_OFF -> thxHead && (sub == THX_HEAD_ON).let { on -> (head != on).also { head = on } }
-            THX_READ_HEAD -> thxHead && d.size >= 3 && ((d[2].toInt() and 0xFF) != 0).let { on -> (head != on).also { head = on } }
-            THX_READ_INTENSITY -> thx && d.size >= 4 && ((((d[2].toInt() and 0xFF) shl 8) or (d[3].toInt() and 0xFF)) * 10.0 / 65535.0).roundToInt().coerceIn(0, 10).let { l -> (spatialLevel != l).also { spatialLevel = l } }
+            THX_SPATIAL_ON, THX_SPATIAL_OFF, THX_READ_SPATIAL -> thx && (spatial != on).also { spatial = on }
+            THX_HEAD_ON, THX_HEAD_OFF, THX_READ_HEAD -> thxHead && (head != on).also { head = on }
+            THX_READ_INTENSITY -> thx && (rest * 10.0 / 65535.0).roundToInt().coerceIn(0, 10).let { l -> (spatialLevel != l).also { spatialLevel = l } }
             else -> false
         }
     }
@@ -145,14 +148,8 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         }
         if (p.id == THX_ID && (thx || thxHead) && p.type == JblRace.TYPE_RESPONSE) return thxAnswer(d)
         if (p.id != READ_ID) return false
-        if (p.type == JblRace.TYPE_INDICATION) {
-            // an unasked notice: the setting number, then the value as its last byte (the app's own reading of them)
-            if (d.size >= 2 && sidetone && (d[0].toInt() and 0xFF) == SIDETONE_STATE) {
-                val on = (d.last().toInt() and 0xFF) == 1
-                return (sidetoneOn != on).also { sidetoneOn = on }
-            }
-            return false
-        }
+        // the earbuds send no notice of these (the SDK's notices are type 5C on 2C82 and list only the touch state, the batteries and a few more), so a change is read back
+        if (p.type == JblRace.TYPE_INDICATION) return false
         if (d.size < 4 || d[0].toInt() != 0 || d[2].toInt() != 0) return false
         val value = d[3].toInt() and 0xFF
         return when (d[1].toInt() and 0xFF) {
@@ -254,7 +251,7 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
             }
             thx && change is SettingChange.Level && change.key == THX_INTENSITY -> {
                 spatialLevel = change.value.coerceIn(0, 10)
-                val v = (spatialLevel!! * 65535.0 / 10.0).roundToInt()
+                val v = (spatialLevel!! * 10 / 100.0 * 65535.0).toInt()
                 readBacks(listOf(pk(thxHex(THX_READ_INTENSITY))))
                 return listOf(pk(thxHex(THX_INTENSITY_SET, v shr 8, v and 0xFF)))
             }

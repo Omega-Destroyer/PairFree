@@ -54,25 +54,71 @@ internal class SkullcandyAirohaStrength(product: SkullcandyProduct) {
         return ((db + 20.0) / 2.0).roundToInt().coerceIn(0, 10)
     }
 
-    /** The gain write of [tenths] for [mode], null when the model has no slider for the mode or the chip is not known (the trailing byte depends on it). */
-    fun write(mode: String?, tenths: Int, chip: RaceChip?): RacePacket? {
+    /**
+     * What the app sends when a slider moves (`setAncSetting`): the filter command of the mode in force (`f0`) and then the gain (`M`). Null when the model has no slider for the mode, the chip is not known, or the chip's SDK
+     * has no filter for it (the SDK would turn the filter off, which PairFree does not do for a slider).
+     */
+    fun write(mode: String?, tenths: Int, chip: RaceChip?): List<RacePacket>? {
         if (chip == null || (mode == "anc" && !anc) || (mode == "transparency" && !transparency) || (mode != "anc" && mode != "transparency")) return null
+        val filter = modeFrame(mode, chip) ?: return null
         val db = tenths.coerceIn(0, 10) * 10 * 20.0 / 100.0 - 20.0
         if (mode == "anc") ancDb = db else passDb = db
         val v = (db * 100.0).toInt().toShort().toInt()
         val lo = v and 0xFF
         val hi = (v shr 8) and 0xFF
-        return if (chip == RaceChip.AB1562) RacePacket.of(JblRace.ANC, 0, GAIN, lo, hi, 1) else RacePacket.of(JblRace.ANC, 0, GAIN, lo, hi)
+        val gain = if (chip == RaceChip.AB1562) RacePacket.of(JblRace.ANC, 0, GAIN, lo, hi, 1) else RacePacket.of(JblRace.ANC, 0, GAIN, lo, hi)
+        return listOf(filter, gain)
+    }
+
+    /** What the AB158x reports about the audio features (`getAudioFeatureCapability`, `libmmi158x.stage.c`): the app's `didReadCapabilities`. Null on the other chips and before the answer. */
+    private var vivid: Boolean? = null
+    private var hybrid = false
+    private var ffMicOnly = false
+
+    /** The capability read: id `0E30` with `00 01 00 00 00 00`, answered with the status, `01` and the bytes `AirohaFeatureCapabilities` takes (the ANC level, then the pass-through level). */
+    val capabilityRead: RacePacket = RacePacket(CAPABILITY_ID, byteArrayOf(0, 1, 0, 0, 0, 0))
+
+    fun capabilityAnswer(payload: ByteArray): Boolean {
+        if (payload.size < 6 || payload[0].toInt() != 0) return false
+        val ancCap = payload[2].toInt()
+        val thru = payload[3].toInt()
+        val changed = vivid != (thru >= 4) || hybrid != (thru >= 2) || ffMicOnly != (ancCap == 3)
+        vivid = thru >= 4
+        hybrid = thru >= 2
+        ffMicOnly = ancCap == 3
+        return changed
     }
 
     /** The app's filter number of noise cancelling (`SKDYAncMode.ancFilterId`) and of transparency (`passThruFilterId`): the SDK's `UI_ANC_FILTER` ordinals. */
     private val ancOrdinal = if (enumName == "railANC") 3 else 1
-    private val passOrdinal = when (enumName) {
-        "hanc", "tanc" -> 11
-        "hesh540ANC" -> 8
-        "aviatorANC" -> 1
-        "mod" -> 5
-        else -> 4
+    private val passOrdinal: Int get() = when {
+        vivid == true -> 11
+        vivid != null && hybrid -> 8
+        else -> when (enumName) {
+            "hanc", "tanc" -> 11
+            "hesh540ANC" -> 8
+            "aviatorANC" -> 1
+            "mod" -> 5
+            else -> 4
+        }
+    }
+
+    /** True when the transparency feature the app activates for this product is `adjustableStayAwareMode` (27), not `stayAwareMode` (21) or `ambientMode` (20). */
+    private val adjustableStay: Boolean = transparency
+
+    /**
+     * The mode byte of `SKDYAncMode.ancMode` (read in `skdyhearingmodes.dart`). With the capabilities the earbuds reported (the AB158x): transparency is 18 with the vivid filter, 12 with the hybrid one, else 8; noise cancelling is 2
+     * when only the feed-forward microphone does it, else 0. Without them the product decides: the Dime Evo, Dime 360, Push ANC Active and Tune ANC give 18 for transparency; the Sesh ANC and Icon ANC give 8 for the adjustable transparency
+     * feature and, for noise cancelling, 2 on the Icon ANC and 0 on the Sesh ANC; the Aviator 900 ANC gives 12 for either; every other product gives none, which the SDK writes as 0.
+     */
+    private fun modeByte(transparencyMode: Boolean): Int {
+        if (vivid != null) return if (transparencyMode) (if (vivid == true) 18 else if (hybrid) 12 else 8) else (if (ffMicOnly) 2 else 0)
+        return when (enumName) {
+            "dimeEvo", "dime360", "hanc", "tanc" -> if (transparencyMode) 18 else 0
+            "seshANC", "iconANC" -> if (transparencyMode) (if (adjustableStay) 8 else 0) else (if (enumName == "iconANC") 2 else 0)
+            "aviatorANC" -> 12
+            else -> 0
+        }
     }
 
     /** The SDK's raw filter of an ordinal on [chip]: the tables of `libmmi1562`, `libmmi1568` and `libmmi158x` (section 9.7); null where the chip's SDK has none (it then turns the filter off). */
@@ -88,8 +134,7 @@ internal class SkullcandyAirohaStrength(product: SkullcandyProduct) {
 
     /**
      * The command that turns [mode] (`off`, `anc`, `transparency`) on in the SDK's own form: `0E06` with `00 0A`, the raw filter and the mode byte (and on the AB1562 a trailing `01`; its pass-through filters
-     * 9 to 11 always carry mode 4), or `00 0B` for off. The mode byte on the later chips is what the app takes from a per-product object that is not traced: the earbuds' own saved byte when the saved filter
-     * is of the same kind, else 0 for noise cancelling and 8 for transparency (inferred).
+     * 9 to 11 always carry mode 4), or `00 0B` for off.
      */
     fun modeFrame(mode: String, chip: RaceChip?): RacePacket? {
         chip ?: return null
@@ -97,9 +142,7 @@ internal class SkullcandyAirohaStrength(product: SkullcandyProduct) {
         if (mode == "off") return if (chip == RaceChip.AB155X) null else RacePacket.of(JblRace.ANC, 0, 0x0B, *tail)
         val transparencyMode = mode == "transparency"
         val filter = raw(chip, if (transparencyMode) passOrdinal else ancOrdinal) ?: return null
-        val savedIsTransparency = savedFilter in 5..7 || savedFilter in 9..14
-        val saved = if (savedIsTransparency == transparencyMode && savedFilter != 0) savedMode else if (transparencyMode) 8 else 0
-        val byte = if (chip == RaceChip.AB1562 && filter in 9..11) 4 else saved
+        val byte = if (chip == RaceChip.AB1562 && filter in 9..11) 4 else modeByte(transparencyMode)
         savedFilter = filter
         savedMode = byte
         return RacePacket.of(JblRace.ANC, 0, 0x0A, filter, byte, *tail)
@@ -133,11 +176,11 @@ internal class SkullcandyAirohaStrength(product: SkullcandyProduct) {
         return if (chip == RaceChip.AB1562) local + far else far + local
     }
 
-
     companion object {
         const val NV_KEY = 0xE0E0
         const val NV_LENGTH = 12
         const val GAIN = 0x0F
         private const val RECLAIM = 0x0A03
+        private const val CAPABILITY_ID = 0x0E30
     }
 }

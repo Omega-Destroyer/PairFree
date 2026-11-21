@@ -48,9 +48,6 @@ class SkullcandyAirohaExtrasTest {
         assertEquals(listOf("05 5A 05 00 82 2C 07 00 01", "05 5A 06 00 82 2C 06 00 F4 FF"), out.map { hex(it.bytes()) })
         assertTrue(out.all { t.allowed(it) })
         assertEquals("05 5A 05 00 82 2C 07 00 00", hex(t.change(SettingChange.Toggle("sk_sidetone", false))!!.first().bytes()))
-        // a notice of the state
-        t.feed(unhex("05 5D 04 00 83 2C 07 01"))
-        assertEquals(true, (rows(t).first { it.key == "sk_sidetone" } as Setting.Toggle).on)
     }
 
     @Test
@@ -126,6 +123,11 @@ class SkullcandyAirohaExtrasTest {
         assertEquals(true, (rows(t).first { it.key == "sk_thx_spatial" } as Setting.Toggle).on)
         assertEquals(5, (rows(t).first { it.key == "sk_thx_intensity" } as Setting.Level).value)
         assertEquals(false, (rows(t).first { it.key == "sk_thx_head" } as Setting.Toggle).on)
+        // a write's answer carries the state too: the byte after the sub-command is 1 for on
+        t.feed(unhex("05 5B 05 00 01 F4 00 0B 00"))
+        assertEquals(false, (rows(t).first { it.key == "sk_thx_spatial" } as Setting.Toggle).on)
+        t.feed(unhex("05 5B 05 00 01 F4 00 0A 01"))
+        assertEquals(true, (rows(t).first { it.key == "sk_thx_spatial" } as Setting.Toggle).on)
         assertEquals("05 5A 04 00 01 F4 00 0B", hex(t.change(SettingChange.Toggle("sk_thx_spatial", false))!!.single().bytes()))
         assertEquals("05 5A 04 00 01 F4 00 0D", hex(t.change(SettingChange.Toggle("sk_thx_head", true))!!.single().bytes()))
         assertEquals("05 5A 06 00 01 F4 00 10 FF FF", hex(t.change(SettingChange.Level("sk_thx_intensity", 10))!!.single().bytes()))

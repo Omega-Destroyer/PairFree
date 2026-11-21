@@ -252,7 +252,6 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
                 } else if (eq != null && !eq.done && !eq.failed && eq.receive(p) { outbox += it }) {
                     if (eq.done || eq.failed) changed = true
                     if (eq === reader && eq.done) changed = takeHeld(eq) || changed
-                    if (eq !== reader && eq.done) afterEqWrite()
                     if (eq.done || eq.failed) startButtons()
                 } else {
                     changed = (primary && railApply(p)) || changed
@@ -367,6 +366,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
             val text = p.data.decodeToString().trimEnd('\u0000')
             if (text.length >= 4 && text.all { it in ' '..'~' }) {
                 chip = RaceChip.of(text)
+                if (chip == RaceChip.AB158X && product.usesAirohaSdk && hasNoise) outbox += own(strength.capabilityRead)
                 startReadBack()
                 startButtons()
                 return false
@@ -376,6 +376,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         // an NV key read answers with the data's length and the data, no status
         if (asked == airohaButtons.vendorRead && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return airohaButtons.vendorAnswer(p.data)
         if (asked == extras.touchRead && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return extras.touchAnswer(p.data)
+        if (asked == strength.capabilityRead && p.id == 0x0E30 && p.type == JblRace.TYPE_RESPONSE) return strength.capabilityAnswer(p.payload)
         if (asked == partnerRead && p.id == JblRace.RELAY_DST && p.type == JblRace.TYPE_RESPONSE) {
             val d = p.payload
             partner = (0 until d.size - 1 step 2).map { d.copyOfRange(it, it + 2) }.firstOrNull { (it[0].toInt() and 0xFF) == JblRace.PEQ_PARTNER_DST }
@@ -475,7 +476,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         auracast != null && change is SettingChange.Choice && change.key == SkullcandyAuracast.KEY_CODE -> auracast.code(change.option)?.let { listOf(own(it)) }
         auracast != null && change is SettingChange.Choice && change.key == SkullcandyAuracast.KEY_REMOVE -> listOf(own(auracast.stop()))
         change is SettingChange.Level && (change.key == ANC_LEVEL || change.key == TRANSPARENCY_LEVEL) && strength.has ->
-            strength.write(mode(), change.value, chip)?.let { withSave(listOf(own(it))) }
+            strength.write(mode(), change.value, chip)?.let { withSave(it.map { p -> own(p) }) }
         change is SettingChange.Level && (change.key == ANC_LEVEL || change.key == TRANSPARENCY_LEVEL) && hasGain -> {
             val m = mode()
             val range = if (m == "anc") SkullcandyGain.ANC else SkullcandyGain.TRANSPARENCY
@@ -503,6 +504,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         eqGains = gains
         eqPresetName = null
         plyrOrder = PLYR_ORDER[101]
+        orderWrite()
         return w.start().map { it.bytes() }
     }
 
@@ -515,15 +517,16 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         write = w
         eqPresetName = name
         plyrOrder = PLYR_ORDER[number]
+        orderWrite()
         return w.start().map { it.bytes() }
     }
 
     private var reader: JblAirohaEq? = null
 
-    /** The PLYR's order index of the preset or curve just written, which the app writes to NV key `F510` afterwards (section 9.9). */
+    /** The PLYR's order index of the preset or curve being written, which the app writes to NV key `F510` as soon as it starts the equalizer command (section 9.9). */
     private var plyrOrder: Int? = null
 
-    private fun afterEqWrite() {
+    private fun orderWrite() {
         val order = plyrOrder ?: return
         plyrOrder = null
         if (product.enumName != "plyr") return

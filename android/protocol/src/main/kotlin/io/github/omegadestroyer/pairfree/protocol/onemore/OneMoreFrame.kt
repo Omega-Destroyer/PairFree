@@ -13,8 +13,11 @@ public class OneMoreFrame(
     /** The length field when it is not the payload's: 1MORE's app reads the 12-band EQ with a length of 20 (BluetoothOrderConstents). */
     public val declaredLength: Int = payload.size,
 ) {
-    /** True for a frame the earbuds sent. */
-    public val fromEarbuds: Boolean get() = head == OneMoreWire.REPLY
+    /**
+     * True for a frame the earbuds sent: its first byte is `01` ([OneMoreWire.REPLY]'s), the phone's is `11`. The second byte is
+     * not checked, as neither of 1MORE's apps checks it (section 2).
+     */
+    public val fromEarbuds: Boolean get() = head shr 8 == OneMoreWire.REPLY shr 8
 
     public fun bytes(): ByteArray {
         require(payload.size <= MAX_PAYLOAD) { "payload too long: ${payload.size} bytes" }
@@ -54,10 +57,13 @@ public class OneMoreFrame(
 
 /**
  * Splits the earbuds' byte stream into [OneMoreFrame]s by each one's length field. Reads come in any size,
- * so bytes are kept until a whole frame is there; bytes before a reply's `01 00` are dropped. 1MORE's app
- * itself splits by a fixed length per command and never checks the XOR, so a frame whose XOR does not match
- * is still taken when its command is one PairFree knows; anything else means the stream is out of step,
- * and the next `01 00` starts over.
+ * so bytes are kept until a whole frame is there; bytes before a reply's head are dropped. 1MORE's apps
+ * never check a reply's first two bytes (the Music app splits by a fixed length per command, Life reads the
+ * command at offset 3 of whatever arrives), and Life sends the Q30 and its other newer models `11 01` where
+ * it sends older ones `11 00`; so a head is `01` and any second byte (section 2). With `01 00` or `01 01`
+ * a frame whose XOR does not match is still taken when its command is one PairFree knows, as 1MORE's apps
+ * never check the XOR; with any other second byte the XOR must match. Anything else means the stream is out
+ * of step, and the next head starts over.
  */
 public class OneMoreParser {
     private var buf = ByteArray(0)
@@ -65,28 +71,49 @@ public class OneMoreParser {
     /** Bytes kept for a frame not yet complete. */
     public val pending: Int get() = buf.size
 
+    /** Every byte that arrived on the channel, for the device report: it tells silent earbuds from replies PairFree could not read. */
+    public var received: Long = 0L
+        private set
+
+    /** Bytes dropped because they were no frame PairFree reads. */
+    public var skipped: Long = 0L
+        private set
+
+    /** The first four bytes that arrived (at most four, as the reports' privacy rule allows for a message PairFree does not know). */
+    public var firstBytes: ByteArray = ByteArray(0)
+        private set
+
     public fun feed(bytes: ByteArray): List<OneMoreFrame> {
+        received += bytes.size
+        if (firstBytes.size < 4) firstBytes += bytes.copyOfRange(0, minOf(bytes.size, 4 - firstBytes.size))
         buf += bytes
         val out = mutableListOf<OneMoreFrame>()
         while (true) {
-            val start = (0 until buf.size - 1).firstOrNull { u8(it) == HEAD_HIGH && u8(it + 1) == HEAD_LOW }
+            val start = (0 until buf.size - 1).firstOrNull { u8(it) == HEAD_HIGH }
             if (start == null) {
                 // Keep a last 01 for the next read.
-                buf = if (buf.isNotEmpty() && u8(buf.size - 1) == HEAD_HIGH) byteArrayOf(buf.last()) else ByteArray(0)
+                val keep = buf.isNotEmpty() && u8(buf.size - 1) == HEAD_HIGH
+                skipped += buf.size - (if (keep) 1 else 0)
+                buf = if (keep) byteArrayOf(buf.last()) else ByteArray(0)
                 break
             }
-            if (start > 0) buf = buf.copyOfRange(start, buf.size)
+            if (start > 0) {
+                skipped += start
+                buf = buf.copyOfRange(start, buf.size)
+            }
             if (buf.size < OneMoreWire.HEADER) break
             val command = (u8(2) shl 8) or u8(3)
             val length = (u8(4) shl 8) or u8(5)
             val checked = OneMoreFrame.xor(buf, 0, OneMoreWire.HEADER - 1) == u8(OneMoreWire.HEADER - 1)
-            if (length > OneMoreFrame.MAX_PAYLOAD || !checked && command !in OneMoreCommand.NAMES) {
+            val known = u8(1) <= 1 && command in OneMoreCommand.NAMES
+            if (length > OneMoreFrame.MAX_PAYLOAD || !checked && !known) {
+                skipped += 1
                 buf = buf.copyOfRange(1, buf.size)
                 continue
             }
             val total = OneMoreWire.HEADER + length
             if (buf.size < total) break
-            out += OneMoreFrame(command, buf.copyOfRange(OneMoreWire.HEADER, total), (u8(6) shl 8) or u8(7), OneMoreWire.REPLY)
+            out += OneMoreFrame(command, buf.copyOfRange(OneMoreWire.HEADER, total), (u8(6) shl 8) or u8(7), (u8(0) shl 8) or u8(1))
             buf = buf.copyOfRange(total, buf.size)
         }
         return out
@@ -96,6 +123,5 @@ public class OneMoreParser {
 
     private companion object {
         val HEAD_HIGH = OneMoreWire.REPLY shr 8
-        val HEAD_LOW = OneMoreWire.REPLY and 0xFF
     }
 }

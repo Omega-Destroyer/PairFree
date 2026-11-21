@@ -29,7 +29,12 @@ No open-source project for 1MORE's earbuds was found.
 head (2) | command (2) | length (2) | sequence (2) | xor (1) | payload
 ```
 
-- **Head:** `11 01` from the phone, `01 00` from the earbuds.
+- **Head:** `11 01` from the phone, `01 00` from the earbuds. Life 5.0.3 sends `11 00` to its older models and `11 01` to the
+  newer ones, the Q30 among them (`com.bitaxon.n2.c.f`, the header builder). Neither app checks a reply's head: the Music app
+  splits by the command at offset 3 (`BluetoothService`, `getFeedbackLength`), Life reads the command at offset 3 of whatever
+  one read returns (`com.onemore.life.c.a.c`). So what the newer models answer with is not pinned, and since 2026-11-20 (issues
+  #58, #63) PairFree takes any reply that starts `01`: with `01 00` or `01 01` as before, with another second byte only when its
+  XOR matches.
 - **Command, length, sequence:** two bytes each, high byte first. The length counts the payload. The
   sequence number counts up from 0 for every frame the phone sends and starts over after `FFFF`
   (`Cmd.kt`, `makeData`).
@@ -155,6 +160,10 @@ actions without the assistant, and hearing your own voice and the volume limit (
   handshake `004D 01` comes later, on its own event), its command table (`com.onemore.life.c.a.a`, the same numbers as `commands.json`), its name mapping (`1MORE PistonBuds PRO`, `1MORE Pistonbuds PRO Q30` and `... PRO Q30`
   all map to EC305) and the EC305 handlers (the battery reply carries one more byte, `[11]`, which no other model of the app's reads; the custom EQ's reply is offset by a per-model table). Nothing there explains
   silence, so the cause is on the channel (a secure socket after `getUuids()`, which PairFree 0.16.1 now also tries, then insecure and channel 1) or in the earbuds' state; waiting for a connection report from 0.16.1.
+  A device report from 0.17.0 (#58, 2026-11-20, Android 17) is still empty. A second look found one place where PairFree was stricter than both apps: it dropped every
+  reply not headed `01 00`, while the apps never check the head and Life heads the Q30's requests `11 01` (section 2). If the Q30 answers `01 01`, PairFree threw
+  every answer away, which would look exactly like silence. PairFree now takes such replies, and the device report says how many bytes arrived and their first four,
+  so the next report tells silent earbuds from replies PairFree had to skip. Not confirmed on a Q30.
 
 - **Models from 1MORE Life 5.0.3, added 2026-11-19** (`LIFE` in `tools/import_1more_list.py`; the Music app's product list lacks them): ComfoBuds 2 (ES303), ColorBuds 2 (ES602), PistonBuds Pro (EC302), ComfoBuds Pro (ES901),
   SonoFlow (HC905), SonoFlow SE (HC306), Fit (EF906), Fit SE (EF606) and S31. Source: Life's `DeviceFactoryImpl` (name to model), its per-model classes (`com.bitaxon.n2.d.a`: the requests it sends on connecting, which show

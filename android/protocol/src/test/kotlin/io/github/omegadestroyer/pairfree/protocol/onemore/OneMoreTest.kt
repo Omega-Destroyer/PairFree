@@ -90,6 +90,25 @@ class OneMoreTest {
         assertEquals(1, OneMoreParser().feed(bad).size)
         val unknown = reply(0x0042, "01").bytes().also { it[8] = (it[8] + 1).toByte() }
         assertTrue(OneMoreParser().feed(unknown).isEmpty())
+        assertEquals(a.size + b.size + 2L, p.received)
+        assertEquals("55010100", hex(p.firstBytes))
+    }
+
+    @Test
+    fun parserTakesAnySecondHeadByte() {
+        // Neither of 1MORE's apps checks a reply's second byte, and Life heads the Q30's frames 11 01 (issues #58, #63).
+        val q30 = OneMoreFrame(OneMoreCommand.GET_BINAURAL_INFO, "00010203500102035a2800".hexBytes(), 1, 0x0101).bytes()
+        val other = OneMoreFrame(OneMoreCommand.GET_LISTEN_MODE, "02".hexBytes(), 2, 0x0102).bytes()
+        val p = OneMoreParser()
+        val got = p.feed(q30 + other)
+        assertEquals(listOf(OneMoreCommand.GET_BINAURAL_INFO, OneMoreCommand.GET_LISTEN_MODE), got.map { it.command })
+        assertTrue(got.all { it.fromEarbuds })
+        assertEquals(0L, p.skipped)
+        // With a second byte past 01 the XOR must match.
+        assertTrue(OneMoreParser().feed(other.copyOf().also { it[8] = (it[8] + 1).toByte() }).isEmpty())
+        // The session takes it as an answer.
+        val s = OneMoreSession(OneMoreModels.fromName("1MORE PistonBuds PRO Q30"))
+        assertTrue(s.answers(OneMoreFrame(OneMoreCommand.GET_BINAURAL_INFO), got[0]))
     }
 
     @Test

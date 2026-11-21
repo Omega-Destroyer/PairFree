@@ -86,6 +86,11 @@ class OneMoreDriver(host: DriverHost, private val device: Paired) : TalkDriver<O
             appendLine("Firmware:        ${session.firmware ?: "unknown"}")
             reportApp(info)
             appendLine()
+            talk?.parser?.let { p ->
+                // Tells earbuds that send nothing from replies PairFree could not read (issues #58, #63).
+                val first = p.firstBytes.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
+                appendLine("Bytes received:  ${p.received} (${p.skipped} not read as frames)${if (first.isEmpty()) "" else ", starting $first"}")
+            }
             appendLine("The last answer to each read PairFree sent (command: payload as hex):")
             reportReplies(session.replies)
         }

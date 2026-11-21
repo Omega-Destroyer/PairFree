@@ -15,7 +15,8 @@ import io.github.omegadestroyer.pairfree.protocol.SettingGroup
  */
 public class OneMoreTalk(model: OneMoreModel?) : SessionTalk<OneMoreFrame>() {
     public val session: OneMoreSession = OneMoreSession(model)
-    private val parser = OneMoreParser()
+    /** The channel's reader; its byte counts go into the device report. */
+    public val parser: OneMoreParser = OneMoreParser()
     override val state: EarbudState get() = session.state
     override val groups: List<SettingGroup> get() = session.groups
     override val eq: Any? get() = session.eq

@@ -30,6 +30,12 @@
       "brand": "all",
       "what": "Run on Android 11 (minSdk is 31): the Bluetooth permission model, dynamic colour and the notification code have Android 12 paths; a Redmi Note 10T on Android 11 cannot install it (F-Droid: not compatible; the APK: problem parsing the package). The owner decides whether it is worth the compatibility code.",
       "reported": "issue #70"
+    },
+    {
+      "id": "altec-lansing-speakers",
+      "brand": "altec-lansing",
+      "what": "Altec Lansing Bluetooth speakers (HydraMini to SoundRover, 17 models, a BLE service with a write and a notify characteristic, lighting colours and battery): a new vendor and speakers, which are held back. The only source so far is a third party's notes on the app; the Altec Lansing app itself is not among the reference APKs, so nothing can be built from it yet.",
+      "reported": "issue #1 (a posted archive, not used)"
     }
   ]
 }

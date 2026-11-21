@@ -178,6 +178,16 @@
       "status": "open",
       "what": "Whether these answer UserEQ_GetConfiguration as the second-generation equalizer or have the parametric one (stage filters, PEQEqualizer2): needs a device report from this version or the command numbers traced in the Plus app (docs/sennheiser/PROTOCOL.md 4.1).",
       "reported": "issue #47"
+    },
+    {
+      "id": "jbl-harman-command-classes-unbuilt",
+      "brand": "jbl",
+      "models": [
+        "Tour Pro 3, Tour One M3, Tour One 2, Tour Pro 2 and others on the Harman command layer"
+      ],
+      "status": "open",
+      "what": "JBL Headphones 5.37.10's com/harman/bluetooth/imp/cmd holds 20 command classes; PairFree has about eleven (beeping, spatial, speak to chat, safe sound, low volume EQ, gestures, balance, segment EQ, voice aware, advanced ANC, EQ). Not read or built: ChargingCaseDisplayStatusCmd (A3), ChargingCaseFeatureCmd (A4), PSAPCmd (A0), PersoniFiModeHearingTextCmd (A1), SyncTimeToDeviceCmd (A7), EarCanalTestingCmd, EnvironmentNoiseCheckCmd, TipsTypeCmd, LeaAudioCmd (command numbers behind DataBinderMapperImpl constants not resolved). Found by reading a third party's notes on the app (issue #1); read the classes themselves, not the notes.",
+      "reported": "issue #1 (a posted archive of third-party notes, not used)"
     }
   ]
 }

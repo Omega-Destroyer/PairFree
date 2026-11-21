@@ -1,0 +1,168 @@
+{
+  "_about": "The registry the release gate (tools/release_gate.py) reads: every known item that a vendor's app or a user report shows and PairFree lacks, and the items settled as blocked or not applicable. status: open (known, not built), built, blocked (a hard rule or a real impossibility), not-applicable (the app has no such control). A blocked or not-applicable item lists `evidence`: searches over files of the vendor app outside the repo (`root`, `glob` on file names, `pattern`) that must find nothing (`expect: none`, the default) or something (`expect: some`); the gate runs them again at every release, so a claim that the app's own files refute fails there. Add an item as soon as a post or an audit shows a gap; set it to built in the change that builds it. An open item in a brand that a release touches refuses the release unless the owner waived it in data/release_waivers.json (owner, 2026-11-21, after the Sennheiser Momentum 5 equalizer and the 1MORE Q30 two-device switch shipped missing).",
+  "items": [
+    {
+      "id": "sennheiser-momentum5-equalizer",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless"
+      ],
+      "status": "open",
+      "what": "The equalizer. PairFree asks the Plus-only products nothing about it because they have no product file; Smart Control Plus has the feature layer (Equalizer2, PEQEqualizer2, Equalizer1Bands3FeatureVariant, an 8-band graphic equalizer) for any GAIA v3 product that reports it.",
+      "reported": "issue #47"
+    },
+    {
+      "id": "sennheiser-momentum5-transparency-percent",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless"
+      ],
+      "status": "open",
+      "what": "Transparency as a 0 to 100 percent slider, as the vendor app shows it.",
+      "reported": "issue #47"
+    },
+    {
+      "id": "1more-q30-two-devices",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "open",
+      "what": "The two-device (multipoint) switch, commands 0076 and 0077, which Life's Lab features page (ExperimentActivity) offers whatever the product list's dobleConnection flag says.",
+      "reported": "issues #58 and #63"
+    },
+    {
+      "id": "1more-lab-features-audit",
+      "brand": "1more",
+      "models": [
+        "all"
+      ],
+      "status": "open",
+      "what": "Every other setting on Life's Lab features page and any other screen whose availability is not a flag of the server's product list.",
+      "reported": "audit after issue #63"
+    },
+    {
+      "id": "1more-q30-home-quick-settings",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "open",
+      "what": "Game mode (connection mode) and spatial audio on the Home tab, as the official app shows them.",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-notification-action",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "open",
+      "what": "One more notification action (game mode).",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-touch-extras",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "open",
+      "what": "A four-tap gesture, and the action of the single press and hold per earbud (it changes the noise mode on both sides by default).",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-widget-extras",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "open",
+      "what": "Connection mode and spatial audio among the home screen widget's choices.",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-connection-mode-on-connect",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "open",
+      "what": "The earbuds fall back to the standard connection mode after a disconnect while the app keeps showing the last choice; offer to set it again on connecting.",
+      "reported": "issue #58"
+    },
+    {
+      "id": "bose-qc-earbuds-service",
+      "brand": "bose",
+      "models": [
+        "Bose QuietComfort Earbuds"
+      ],
+      "status": "open",
+      "what": "The earbuds list the service 00000000-deca-fade-deca-deafdecacaff and no standard serial port; PairFree only tries the standard serial channel.",
+      "reported": "issue #69"
+    },
+    {
+      "id": "skullcandy-crusher-dial",
+      "brand": "skullcandy",
+      "models": [
+        "Crusher 900 ANC"
+      ],
+      "status": "not-applicable",
+      "what": "Crusher technology's dial and profiles are Bragi's, not Airoha RACE commands: no race command class names them.",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/utils/race_commands",
+          "glob": "\\.dart$",
+          "pattern": "crusherTechnologyDial|crusherTechnologyProfiles|CrusherTechnologyDial",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services",
+          "glob": "bragiservice\\.dart$",
+          "pattern": "Obj!SKDYFeature@a012c1",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "skullcandy-clear-voice-smart-mic",
+      "brand": "skullcandy",
+      "models": [
+        "Dime Evo and others"
+      ],
+      "status": "not-applicable",
+      "what": "Clear Voice smart mic is a feature guide screen with no control: the app's API layer never names it.",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api",
+          "glob": "\\.dart$",
+          "pattern": "clearVoiceSmartMic",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/ui/features/guides",
+          "glob": "clearvoicesmartmic",
+          "pattern": "Guide",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "skullcandy-mimi-personal-sound",
+      "brand": "skullcandy",
+      "models": [
+        "Push ANC Active and others"
+      ],
+      "status": "blocked",
+      "what": "Mimi's personal sound needs Mimi's server sign-in (hard rule: no server authentication).",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services",
+          "glob": "skdymimiservice\\.dart$",
+          "pattern": "Mimi",
+          "expect": "some"
+        }
+      ]
+    }
+  ]
+}

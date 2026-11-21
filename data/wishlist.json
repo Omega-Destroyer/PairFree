@@ -24,6 +24,12 @@
       "brand": "1more",
       "what": "Noise control reverted to off at the first connection, then worked (one report, not reproduced).",
       "reported": "issue #58"
+    },
+    {
+      "id": "android-11-support",
+      "brand": "all",
+      "what": "Run on Android 11 (minSdk is 31): the Bluetooth permission model, dynamic colour and the notification code have Android 12 paths; a Redmi Note 10T on Android 11 cannot install it (F-Droid: not compatible; the APK: problem parsing the package). The owner decides whether it is worth the compatibility code.",
+      "reported": "issue #70"
     }
   ]
 }

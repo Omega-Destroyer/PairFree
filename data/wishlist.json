@@ -1,0 +1,29 @@
+{
+  "_about": "Requests that are PairFree's own ideas, not something the vendor's app has (so not part of the release gate): a user asks, the owner decides. Move an entry to data/completeness.json when it turns out to be a gap against the vendor's app.",
+  "items": [
+    {
+      "id": "1more-q30-widget-extras",
+      "brand": "1more",
+      "what": "Connection mode and spatial audio among the home screen widget's choices (a widget slot that sets a brand's toggle or choice row).",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-notification-action",
+      "brand": "1more",
+      "what": "One more action (game mode) in the status notification.",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-reapply-connection-mode",
+      "brand": "1more",
+      "what": "Remember the connection mode and set it again each time the earbuds connect.",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-first-connect-noise-revert",
+      "brand": "1more",
+      "what": "Noise control reverted to off at the first connection, then worked (one report, not reproduced).",
+      "reported": "issue #58"
+    }
+  ]
+}

@@ -7,8 +7,8 @@
       "models": [
         "Momentum 5 Wireless"
       ],
-      "status": "open",
-      "what": "The equalizer. PairFree asks the Plus-only products nothing about it because they have no product file; Smart Control Plus has the feature layer (Equalizer2, PEQEqualizer2, Equalizer1Bands3FeatureVariant, an 8-band graphic equalizer) for any GAIA v3 product that reports it.",
+      "status": "built",
+      "what": "Asked for as the second-generation equalizer (UserEQ_GetConfiguration) and shown when the Momentum 5 and Momentum True Wireless 5 answer, without presets (branch fix/sennheiser-momentum5).",
       "reported": "issue #47"
     },
     {
@@ -17,8 +17,8 @@
       "models": [
         "Momentum 5 Wireless"
       ],
-      "status": "open",
-      "what": "Transparency as a 0 to 100 percent slider, as the vendor app shows it.",
+      "status": "built",
+      "what": "The 0 to 100 transparency slider (ANC_Transparency, answered in the report) for the Momentum 5 (branch fix/sennheiser-momentum5).",
       "reported": "issue #47"
     },
     {
@@ -27,8 +27,8 @@
       "models": [
         "1MORE PistonBuds PRO Q30"
       ],
-      "status": "open",
-      "what": "The two-device (multipoint) switch, commands 0076 and 0077, which Life's Lab features page (ExperimentActivity) offers whatever the product list's dobleConnection flag says.",
+      "status": "built",
+      "what": "The two-device switch for EH902, ES903, EC305, HC905, HC306, EF906, S51 and S70, as Life's Lab page shows it (branch fix/1more-lab-features).",
       "reported": "issues #58 and #63"
     },
     {
@@ -37,8 +37,8 @@
       "models": [
         "all"
       ],
-      "status": "open",
-      "what": "Every other setting on Life's Lab features page and any other screen whose availability is not a flag of the server's product list.",
+      "status": "built",
+      "what": "Life 5.0.3's Lab features page read in full (ExperimentActivity): two devices (done), the wake word for EH902 and ES903 (already on) and sleep monitoring for ES603 (already on); the pairing popup is the app's own setting.",
       "reported": "audit after issue #63"
     },
     {
@@ -47,18 +47,8 @@
       "models": [
         "1MORE PistonBuds PRO Q30"
       ],
-      "status": "open",
-      "what": "Game mode (connection mode) and spatial audio on the Home tab, as the official app shows them.",
-      "reported": "issue #58"
-    },
-    {
-      "id": "1more-q30-notification-action",
-      "brand": "1more",
-      "models": [
-        "1MORE PistonBuds PRO Q30"
-      ],
-      "status": "open",
-      "what": "One more notification action (game mode).",
+      "status": "built",
+      "what": "Spatial audio and the connection mode on the Home tab (branch fix/1more-lab-features).",
       "reported": "issue #58"
     },
     {
@@ -67,19 +57,23 @@
       "models": [
         "1MORE PistonBuds PRO Q30"
       ],
-      "status": "open",
-      "what": "A four-tap gesture, and the action of the single press and hold per earbud (it changes the noise mode on both sides by default).",
-      "reported": "issue #58"
-    },
-    {
-      "id": "1more-q30-widget-extras",
-      "brand": "1more",
-      "models": [
-        "1MORE PistonBuds PRO Q30"
-      ],
-      "status": "open",
-      "what": "Connection mode and spatial audio among the home screen widget's choices.",
-      "reported": "issue #58"
+      "status": "not-applicable",
+      "what": "A four-tap gesture and a hold action per earbud: Life 5.0.3's strings offer only double and triple tap (operation_double_click, operation_triple_click) and no setting for the hold.",
+      "reported": "issue #58",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/1more-life-5.0.3/res/resources/res/values",
+          "glob": "^strings\\.xml$",
+          "pattern": "(four|quadruple|fourth)[ _-]*(tap|click|press)|click[_ -]*(four|quad)",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/decompiled/1more-life-5.0.3/res/resources/res/values",
+          "glob": "^strings\\.xml$",
+          "pattern": "operation_triple_click",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "1more-q30-connection-mode-on-connect",
@@ -88,7 +82,7 @@
         "1MORE PistonBuds PRO Q30"
       ],
       "status": "open",
-      "what": "The earbuds fall back to the standard connection mode after a disconnect while the app keeps showing the last choice; offer to set it again on connecting.",
+      "what": "A reported defect: after the earbuds reset to the standard connection mode the app keeps showing the last choice (issue #58); find why the shown state is not the read one, and offer to set the mode again on connecting.",
       "reported": "issue #58"
     },
     {
@@ -163,6 +157,27 @@
           "expect": "some"
         }
       ]
+    },
+    {
+      "id": "1more-life-home-model-gates",
+      "brand": "1more",
+      "models": [
+        "all"
+      ],
+      "status": "open",
+      "what": "Life's home page (fragment/d.java, 53 model predicates) and its other screens show or hide controls by model (ah.* predicates); the audit of those gates against PairFree's per-model flags is not done beyond the Lab page.",
+      "reported": "audit after issue #63"
+    },
+    {
+      "id": "sennheiser-momentum5-eq-confirmation",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless",
+        "Momentum True Wireless 5"
+      ],
+      "status": "open",
+      "what": "Whether these answer UserEQ_GetConfiguration as the second-generation equalizer or have the parametric one (stage filters, PEQEqualizer2): needs a device report from this version or the command numbers traced in the Plus app (docs/sennheiser/PROTOCOL.md 4.1).",
+      "reported": "issue #47"
     }
   ]
 }

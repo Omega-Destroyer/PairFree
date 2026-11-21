@@ -82,7 +82,7 @@
         "1MORE PistonBuds PRO Q30"
       ],
       "status": "open",
-      "what": "A reported defect: after the earbuds reset to the standard connection mode the app keeps showing the last choice (issue #58); find why the shown state is not the read one, and offer to set the mode again on connecting.",
+      "what": "A reported defect (issue #58): after a disconnect the earbuds fall back to the standard connection mode while PairFree keeps showing the last choice. Life never sets the mode on connecting (only from its two screens), and PairFree reads it at the start of every channel, so the cause is not in the code read; the device report shows 006C answering 01. Needs a report taken while the earbuds are in standard mode after a reconnect.",
       "reported": "issue #58"
     },
     {
@@ -91,8 +91,8 @@
       "models": [
         "Bose QuietComfort Earbuds"
       ],
-      "status": "open",
-      "what": "The earbuds list the service 00000000-deca-fade-deca-deafdecacaff and no standard serial port; PairFree only tries the standard serial channel.",
+      "status": "built",
+      "what": "BMAP's own service (00000000-deca-fade-deca-deafdecacaff) is opened for a device that lists it and no standard serial port (branch fix/bose-bmap-service); not tried on earbuds.",
       "reported": "issue #69"
     },
     {
@@ -164,8 +164,8 @@
       "models": [
         "all"
       ],
-      "status": "open",
-      "what": "Life's home page (fragment/d.java, 53 model predicates) and its other screens show or hide controls by model (ah.* predicates); the audit of those gates against PairFree's per-model flags is not done beyond the Lab page.",
+      "status": "built",
+      "what": "Life 5.0.3's home page read: list products show rows by the list's own flags; the model predicates decide only the Lab page, a no-action row, the Major EQ page (Sound ID is cloud data) and the sleep songs (blocked, data/unused_ids.json). Written in docs/1more/PROTOCOL.md (branch fix/1more-lab-features).",
       "reported": "audit after issue #63"
     },
     {

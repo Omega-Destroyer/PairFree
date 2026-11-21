@@ -77,7 +77,7 @@ read again at once.
 | `004E` | — | Both earbuds | left is master (0); left version (3 bytes); left battery; right version (3 bytes); right battery; case battery |
 | `005F` | `005E` | Listen mode | 0 off; cancelling 7 adaptive, 1 strong, 2 mild, 4 wind; transparency 3, 5 pass-through, 6 voice enhancement |
 | `006C` | `006B` | Connection mode | 0 standard, 1 game ("entertainment"), 2 LDAC |
-| `0077` | `0076` | Two devices | 0 off, 1 on |
+| `0077` | `0076` | Two devices | 0 off, 1 on; Life's Lab features page (`ExperimentActivity`, 5.0.3) shows the switch by model, not by the product list's `dobleConnection`: EH902, ES903, EC305 (the Q30), HC905, HC306, EF906 (firmware 10405 or later), S51 and S70 (`tools/import_1more_list.py`, `LAB_DUAL_DEVICE`); the app says the earbuds restart when it changes |
 | `0083` | `0082` | Spatial audio | 0 off, 1 on |
 | `0063` | `0062` | Taking them out | 0 pause only, 1 pause and play again, 2 nothing |
 | `0070` | `006F` | Sleep detection | 0 off, 1 on |
@@ -91,6 +91,10 @@ read again at once.
 | `008C` | `008D` | The NANO's light colour | 0 ice blue, 1 white, 2 green, 3 red, 4 yellow |
 | `005B` | — | Finding the earbuds | sent with `01`; earbuds that can ring answer it |
 | — | `005A` | Ring | left, right: 1 ring, 0 stop; the earbuds report the same two bytes, and 0 when a side stops |
+
+**What shows on Life's home page, by model (read 2026-11-21, 1MORE Life 5.0.3: `e/c.java`, `fragment/d.java`, `utils/ah.java`).** A product that comes from the product list (`com.bitaxon.n2.d.a.a.u()`, which is every model PairFree takes from the list, the Q30 among them) shows each row by the list's own flags (`aVarJ.g()` to `t()`), which PairFree carries from the same list; which flag drives which row was not mapped one by one. The `ah.*` model predicates decide only for products without a list entry and for four rows: the Lab page (above); `ah.ad` (EH902, ES903, EC305, HC905, HC306: a row with no action behind it); `ah.j` (EH902 from firmware 10002, ES903: the Major EQ page, a choice of
+Sound ID, the presets and the custom curve; Sound ID is cloud data and is hidden on the ES903, EC305, HC905 and HC306) and `ah.ac` (the sleep songs: the soothing music player, whose transfer commands are never sent, `data/unused_ids.json`). So no row of the Q30's home page is missing for want of a model rule. checked: `e/c.java` (the flag
+setters), `utils/ah.java` (every predicate), `fragment/d.java` (the click handler behind each row: `d.j` to `d.m`), `MajorEQActivity`.
 
 - **Battery:** percent; 0 is an earbud that is not there. 1MORE's app rounds to the nearest ten.
 - **Version:** each byte in hex, joined by dots, as 1MORE's app shows it.

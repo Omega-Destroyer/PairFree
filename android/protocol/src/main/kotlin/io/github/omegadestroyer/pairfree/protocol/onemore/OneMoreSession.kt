@@ -328,9 +328,10 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             val m = model
             return listOfNotNull(
                 group("noise", SettingTab.HOME, noiseRows()),
-                group("sound", SettingTab.SOUND, listOfNotNull(spatial?.takeIf { m?.spatialAudio == true }?.let { Setting.Toggle("spatial_audio", it) })),
+                // spatial audio and the connection mode sit on the Home tab, where Life's home page puts them (issue #58)
+                group("sound", SettingTab.HOME, listOfNotNull(spatial?.takeIf { m?.spatialAudio == true }?.let { Setting.Toggle("spatial_audio", it) })),
                 group(
-                    "connection", SettingTab.DEVICE,
+                    "connection", SettingTab.HOME,
                     listOfNotNull(
                         connection?.takeIf { m != null && m.connection.isNotEmpty() }?.let { v ->
                             Setting.Choice("connection_mode", CONNECTION[v], listOf(STANDARD) + CONNECTION.values.filter { it in m!!.connection })

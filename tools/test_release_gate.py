@@ -37,20 +37,51 @@ class ReleaseGate(unittest.TestCase):
         self.assertEqual([], failures)
         self.assertTrue(notes[0].startswith("waived"))
 
+    def _settled(self, status, d, **extra):
+        read = [{"path": d, "what": "the folder the claim is about, read for the thing in question"}]
+        return {"items": [{"id": "b", "brand": "x", "status": status, "what": "w", "read": read, **extra}]}
+
     def test_a_blocker_that_the_apps_files_refute_fails(self):
         with tempfile.TemporaryDirectory() as d:
             with open(os.path.join(d, "app.txt"), "w", encoding="utf-8") as f:
                 f.write("the app has Equalizer2 here")
-            refuted = {"items": [{"id": "b", "brand": "x", "status": "blocked", "what": "w",
-                                  "evidence": [{"root": d, "pattern": "Equalizer", "expect": "none"}]}]}
+            refuted = self._settled("not-applicable", d, evidence=[{"root": d, "pattern": "Equalizer", "expect": "none"}])
             self.assertEqual(1, len(g.check_registry(refuted, set(), set())[0]))
-            fine = {"items": [{"id": "b", "brand": "x", "status": "blocked", "what": "w",
-                               "evidence": [{"root": d, "pattern": "Nothing like this", "expect": "none"}]}]}
+            fine = self._settled("not-applicable", d, evidence=[{"root": d, "pattern": "Nothing like this", "expect": "none"}])
             self.assertEqual([], g.check_registry(fine, set(), set())[0])
 
-    def test_a_blocker_without_evidence_fails(self):
-        reg = {"items": [{"id": "b", "brand": "x", "status": "blocked", "what": "w"}]}
-        self.assertEqual(1, len(g.check_registry(reg, set(), set())[0]))
+    def test_a_settled_item_without_proof_fails(self):
+        with tempfile.TemporaryDirectory() as d:
+            no_evidence = self._settled("not-applicable", d)
+            self.assertEqual(1, len(g.check_registry(no_evidence, set(), set())[0]))
+            no_read = {"items": [{"id": "b", "brand": "x", "status": "not-applicable", "what": "w", "evidence": [{"root": d, "pattern": "q", "expect": "none"}]}]}
+            self.assertEqual(1, len(g.check_registry(no_read, set(), set())[0]))
+            gone = self._settled("not-applicable", d, evidence=[{"root": d, "pattern": "q", "expect": "none"}])
+            gone["items"][0]["read"][0]["path"] = os.path.join(d, "missing.txt")
+            self.assertEqual(1, len(g.check_registry(gone, set(), set())[0]))
+
+    def test_blocked_needs_one_of_the_hard_rules(self):
+        with tempfile.TemporaryDirectory() as d:
+            ev = [{"root": d, "pattern": "q", "expect": "none"}]
+            self.assertEqual(1, len(g.check_registry(self._settled("blocked", d, evidence=ev, rule="too complicated"), set(), set())[0]))
+            self.assertEqual([], g.check_registry(self._settled("blocked", d, evidence=ev, rule="server authentication"), set(), set())[0])
+
+    def test_needs_report_notes_but_never_gates_and_needs_its_proof(self):
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "app.txt"), "w", encoding="utf-8") as f:
+                f.write("the function that builds it at run time")
+            good = self._settled("needs-report", d, needs="a device report taken after a reconnect, with the last answers",
+                                 evidence=[{"root": d, "pattern": "at run time", "expect": "some"}])
+            failures, notes = g.check_registry(good, set(), {"x"})
+            self.assertEqual([], failures)
+            self.assertTrue(notes[0].startswith("AWAITING A REPORT"))
+            # no search that finds the code: the claim is not tied to anything
+            vague = self._settled("needs-report", d, needs="a device report taken after a reconnect, with the last answers",
+                                  evidence=[{"root": d, "pattern": "absent", "expect": "none"}])
+            self.assertEqual(1, len(g.check_registry(vague, set(), {"x"})[0]))
+            # no statement of what to ask
+            mute = self._settled("needs-report", d, evidence=[{"root": d, "pattern": "at run time", "expect": "some"}])
+            self.assertEqual(1, len(g.check_registry(mute, set(), {"x"})[0]))
 
     def test_the_hook_pattern_catches_releases_only(self):
         rc = g.RELEASE_COMMAND

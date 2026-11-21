@@ -1,5 +1,5 @@
 {
-  "_about": "The registry the release gate (tools/release_gate.py) reads: every known item that a vendor's app or a user report shows and PairFree lacks, and the items settled as blocked or not applicable. status: open (known, not built), built, blocked (a hard rule or a real impossibility), not-applicable (the app has no such control). A blocked or not-applicable item lists `evidence`: searches over files of the vendor app outside the repo (`root`, `glob` on file names, `pattern`) that must find nothing (`expect: none`, the default) or something (`expect: some`); the gate runs them again at every release, so a claim that the app's own files refute fails there. Add an item as soon as a post or an audit shows a gap; set it to built in the change that builds it. An open item in a brand that a release touches refuses the release unless the owner waived it in data/release_waivers.json (owner, 2026-11-21, after the Sennheiser Momentum 5 equalizer and the 1MORE Q30 two-device switch shipped missing).",
+  "_about": "The registry the release gate (tools/release_gate.py) reads. What gates is what CAN be solved: `open` (reading the vendor's app, another source or PairFree's own code, or building, can settle it) refuses a release that touches the brand, unless the owner waived it in data/release_waivers.json. What cannot be solved by reading is noted and does not gate, but must carry its proof (owner, 2026-11-21): `needs-report` (only a user's report or other outside information settles it: `needs` says what to ask for), `blocked` (a hard rule: `rule`), `not-applicable` (the vendor's app has no such control); each lists `read` (paths read, with what they showed) and `evidence` (searches over the app's files that the gate runs again; a needs-report item needs one with `expect: some` that finds the code in question). `built` is done. Add an item as soon as a post, a report or an audit shows a gap, set it to built in the change that builds it, and never settle an item as impossible without having read the code.",
   "items": [
     {
       "id": "sennheiser-momentum5-equalizer",
@@ -73,6 +73,12 @@
           "pattern": "operation_triple_click",
           "expect": "some"
         }
+      ],
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/1more-life-5.0.3/res/resources/res/values/strings.xml",
+          "what": "Life 5.0.3's strings offer double and triple tap (operation_double_click, operation_triple_click) and no fourth tap or hold setting for these earbuds"
+        }
       ]
     },
     {
@@ -81,9 +87,38 @@
       "models": [
         "1MORE PistonBuds PRO Q30"
       ],
-      "status": "open",
-      "what": "A reported defect (issue #58): after a disconnect the earbuds fall back to the standard connection mode while PairFree keeps showing the last choice. Life never sets the mode on connecting (only from its two screens), and PairFree reads it at the start of every channel, so the cause is not in the code read; the device report shows 006C answering 01. Needs a report taken while the earbuds are in standard mode after a reconnect.",
-      "reported": "issue #58"
+      "status": "needs-report",
+      "what": "Issue #58: after a disconnect the earbuds are in the standard connection mode while PairFree shows the last choice. Read: Life sets the mode only from two screens and never on connecting; PairFree opens a new session for every channel and reads the mode (006C) first, and keeps the last state on screen only while the channel is being reopened. So either the earbuds answer 01 while they play in standard mode, or the read did not arrive; the code cannot tell which.",
+      "reported": "issue #58",
+      "needs": "A device report copied while the earbuds are audibly in standard mode after a reconnect: its last-answer list shows what they answered to 006C.",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/1more-life-5.0.3/out/sources/com/bitaxon/n2/activity/BtModeSetting.java",
+          "what": "Life sends the connection mode (command 006B) only when the user picks it on this screen (line 218) or in OneMoreFunctionActivity; nothing sends it on connecting"
+        },
+        {
+          "path": "android/core/src/main/kotlin/io/github/omegadestroyer/pairfree/bluetooth/EarbudsConnection.kt",
+          "what": "the reconnect loop (RECONNECT_DELAYS_MS, a new driver.serve per channel): the state kept on screen is replaced by the next session's reads"
+        },
+        {
+          "path": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/onemore/OneMoreSession.kt",
+          "what": "start() asks GET_CONNECTION_MODE for every model that has connection modes, and the answer sets the row; the session is made anew with each channel"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/onemore",
+          "glob": "OneMoreSession\\.kt$",
+          "pattern": "GET_CONNECTION_MODE",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/decompiled/1more-life-5.0.3/out/sources/com/bitaxon/n2/activity",
+          "glob": "\\.java$",
+          "pattern": "onServiceConnected[\\s\\S]{0,400}f\\.e\\(",
+          "expect": "none"
+        }
+      ]
     },
     {
       "id": "bose-qc-earbuds-service",
@@ -116,6 +151,16 @@
           "pattern": "Obj!SKDYFeature@a012c1",
           "expect": "some"
         }
+      ],
+      "read": [
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/utils/race_commands",
+          "what": "every race command class: none names the crusher dial or its profiles; the feature objects are used by Bragi's service (bragiservice.dart), not by an Airoha command"
+        },
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services/bragiservice.dart",
+          "what": "references the crusherTechnologyDial and crusherTechnologyProfiles feature objects and sends them over Bragi's own protocol"
+        }
       ]
     },
     {
@@ -139,22 +184,15 @@
           "pattern": "Guide",
           "expect": "some"
         }
-      ]
-    },
-    {
-      "id": "skullcandy-mimi-personal-sound",
-      "brand": "skullcandy",
-      "models": [
-        "Push ANC Active and others"
       ],
-      "status": "blocked",
-      "what": "Mimi's personal sound needs Mimi's server sign-in (hard rule: no server authentication).",
-      "evidence": [
+      "read": [
         {
-          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services",
-          "glob": "skdymimiservice\\.dart$",
-          "pattern": "Mimi",
-          "expect": "some"
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/ui/features/guides/skdyclearvoicesmartmicfeatureguide.dart",
+          "what": "the only screen that names clearVoiceSmartMic is an information guide with no switch, slider or command"
+        },
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api",
+          "what": "the whole API layer (services, providers, commands): none refers to clearVoiceSmartMic"
         }
       ]
     },
@@ -175,9 +213,38 @@
         "Momentum 5 Wireless",
         "Momentum True Wireless 5"
       ],
-      "status": "open",
-      "what": "Whether these answer UserEQ_GetConfiguration as the second-generation equalizer or have the parametric one (stage filters, PEQEqualizer2): needs a device report from this version or the command numbers traced in the Plus app (docs/sennheiser/PROTOCOL.md 4.1).",
-      "reported": "issue #47"
+      "status": "needs-report",
+      "what": "Whether the Momentum 5 and Momentum True Wireless 5 answer UserEQ_GetConfiguration as the second-generation equalizer or have the parametric one (issue #47). Smart Control Plus decides at run time: the function that builds a GAIA 3 equalizer variant takes the set of capabilities (parametricEqualizer, graphicalEqualizer, bassBoost) that another function builds from what the headphones report (their audio modes, among others); there is no per-product table to read.",
+      "reported": "issue #47",
+      "needs": "A Momentum 5 device report taken with the version that asks for the equalizer (Device tab, Copy device report), or a recording of the official app's equalizer screen.",
+      "read": [
+        {
+          "path": "E:/Builds/research/sennheiser/scp-lib/libapp.strings.txt",
+          "what": "the strings of the Plus app: the Gaia3 equalizer variants, 'At least one of Graphic or Parametric Equalizer must be supported for Gaia3', Momentum5_SURVEY and M5AEBT"
+        },
+        {
+          "path": "E:/Builds/research/sennheiser/tools/dartx.py",
+          "what": "disassembled 0x105b93c (the factory choosing the graphic or the parametric variant from two flags), 0x105b2a8 (builds the flags from a set of Vca capabilities) and 0x105af94 (builds that set from the device's reported audio modes); none is keyed by product"
+        },
+        {
+          "path": "E:/Builds/research/sennheiser/scp64-blutter/objs.txt",
+          "what": "the product enum (cKd: m5 with its names, colours and article number) holds no capability set; no per-product equalizer table exists"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/sennheiser/scp-lib",
+          "glob": "libapp\\.strings\\.txt$",
+          "pattern": "At least one of Graphic or Parametric Equalizer must be supported for Gaia3",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/sennheiser/scp-lib",
+          "glob": "libapp\\.strings\\.txt$",
+          "pattern": "M5AEBT",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "jbl-harman-command-classes-unbuilt",
@@ -188,6 +255,44 @@
       "status": "open",
       "what": "JBL Headphones 5.37.10's com/harman/bluetooth/imp/cmd holds 20 command classes; PairFree has about eleven (beeping, spatial, speak to chat, safe sound, low volume EQ, gestures, balance, segment EQ, voice aware, advanced ANC, EQ). Not read or built: ChargingCaseDisplayStatusCmd (A3), ChargingCaseFeatureCmd (A4), PSAPCmd (A0), PersoniFiModeHearingTextCmd (A1), SyncTimeToDeviceCmd (A7), EarCanalTestingCmd, EnvironmentNoiseCheckCmd, TipsTypeCmd, LeaAudioCmd (command numbers behind DataBinderMapperImpl constants not resolved). Found by reading a third party's notes on the app (issue #1); read the classes themselves, not the notes.",
       "reported": "issue #1 (a posted archive of third-party notes, not used)"
+    },
+    {
+      "id": "skullcandy-personal-sound-controls",
+      "brand": "skullcandy",
+      "models": [
+        "the Airoha models with personalSoundMimi"
+      ],
+      "status": "open",
+      "what": "Personal sound's on or off, its intensity and the tech level are plain device commands, not cloud calls: app/skullcandy/s2.java onRead handles SEND_CUSTOM_CMD answers for GET and SET_PERSONALIZATION_ENABLED, GET and SET_PERSONALIZATION_INTENSITY, GET_MIMI_TECH_LEVEL, SET_PRESET and RESET, and sends them with 'sendPersonalizationIntensity'. The earlier note that all of Mimi needs a server sign-in was wrong for these; read their byte patterns (the constants J, H, I, L, N, P, T and R of s2.java and app/skullcandy/utils/raceCommands) and build the switch and the intensity.",
+      "reported": "audit 2026-11-21 (the owner's challenge to 'blocked' claims)"
+    },
+    {
+      "id": "skullcandy-mimi-profile",
+      "brand": "skullcandy",
+      "models": [
+        "the Airoha models with personalSoundMimi"
+      ],
+      "status": "blocked",
+      "rule": "server authentication",
+      "what": "Making the personal sound profile (the hearing test and its result) goes through Mimi's cloud (authenticateMimiUser, getLatestMimiTestResult, MimiApplicator): PairFree never signs in to a vendor's servers.",
+      "read": [
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services/skdymimiservice.dart",
+          "what": "authenticateMimiUser, getLatestMimiTestResult, initMimi and the anonymous user id: the profile comes from Mimi's service after a sign-in"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/skullcandy/sources/app/skullcandy/s2.java",
+          "what": "the onRead handlers of the custom commands (enabled, intensity, tech level, preset, reset) are separate from the profile, which io.mimi.sdk's MimiApplicator writes"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services",
+          "glob": "skdymimiservice\\.dart$",
+          "pattern": "authenticateMimiUser",
+          "expect": "some"
+        }
+      ]
     }
   ]
 }

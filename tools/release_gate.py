@@ -7,10 +7,17 @@ Why it exists. "Release complete builds" was an instruction in CLAUDE.md and in 
 
 What it checks (`python tools/release_gate.py`, exit 1 when anything fails):
 
-1. `data/completeness.json`: the registry of known open and settled items per brand and model. An item is `open` (known, not built), `built`, `blocked`
-   (a hard rule or a real impossibility) or `not-applicable`. A blocked or not-applicable item carries `evidence`: searches over the vendor app's files that
-   must find nothing (`expect: "none"`) or something (`expect: "some"`); the gate runs them again, so a blocker that the app's own files refute fails here.
-   An `open` item in a brand that this release touches fails the gate, unless the owner waived it.
+1. `data/completeness.json`: the registry of known items per brand and model. What gates is what CAN be solved: an item is `open` when reading the vendor's app, another source or PairFree's own code,
+   or building, can settle it; an `open` item in a brand that this release touches refuses the release, unless the owner waived it. What cannot be solved by reading is noted and never gates
+   (owner, 2026-11-21: "things that can only be solved with device reports or additional information should be noted, but not act as a gate; things that are impossible should not act as gates"),
+   but only when the registry proves the claim, because "blocked" was written before without reading the code:
+   - `needs-report`: only a user's device report or other outside information settles it. Needs `needs` (exactly what to ask for), `read` (the files, classes or functions that were read, each with `path`
+     and `what` it showed) and `evidence`, which must include a search with `expect: some` that finds the code in question, so the claim is tied to code that was actually reached.
+   - `blocked`: a hard rule makes it impossible. Needs `rule` (one of HARD_RULES), `read` and `evidence`.
+   - `not-applicable`: the vendor's app has no such control. Needs `read` and `evidence`.
+   - `built`: done.
+   `evidence` entries are searches over the vendor app's files (`root`, `glob` on file names, `pattern`) that must find nothing (`expect: none`, the default) or something (`expect: some`); a relative `root` is
+   under the repository. The gate runs them again, so a claim that the app's own files refute fails. Every `read` path must exist. Items that need a report are listed on every run, so they stay visible.
 2. The older audits as ratchets: the number of open `gap-audit` entries and of baseline sentences in `data/doc_gaps_baseline.json` may not grow past the
    ceilings the owner keeps in `data/release_waivers.json`.
 3. The tree: clean, on `main`, level with `origin/main`, and the tag's version matches `versionName`.
@@ -35,6 +42,7 @@ PACKAGE = {"1more": "onemore"}
 BRANDS = ["soundpeats", "soundcore", "samsung", "sony", "bose", "jbl", "apple", "nothing", "pixel", "qcy", "1more", "earfun",
           "cambridge", "oneplus", "sennheiser", "jabra", "skullcandy"]
 
+HARD_RULES = ("keys or credentials", "firmware", "factory reset", "server authentication", "permission the owner has not allowed", "decision the owner has reserved")
 PROTECTED = ("data/release_waivers.json", "tools/release_gate.py", ".claude/settings.json", "data/completeness_rules.json")
 RELEASE_COMMAND = re.compile(r"(git\s+(-c\s+\S+\s+)?tag\s+(-[asfm]\b|v\d)|git\s+(-c\s+\S+\s+)?push\b[^|;&]*\s(v\d+\.\d+\.\d+|--tags|--follow-tags)|gh\s+release\s+(create|upload|edit)|gh_release\w*\.py|gh\s+api\b[^|;&]*releases)")
 
@@ -71,9 +79,13 @@ def brands_touched(changed):
     return out
 
 
+def resolve(path):
+    return path if os.path.isabs(path) else os.path.join(ROOT, path)
+
+
 def search(evidence):
     """Runs one evidence search: files under `root` (matching `glob`) whose text matches `pattern`. Returns (hits, missing_root)."""
-    root = evidence["root"]
+    root = resolve(evidence["root"])
     if not os.path.isdir(root):
         return [], True
     pat = re.compile(evidence["pattern"], re.I)
@@ -97,8 +109,43 @@ def search(evidence):
     return hits, False
 
 
+def check_settled(item, allow_missing_research):
+    """The proof a non-gating item must carry: what was read, and searches that still hold. Returns failure lines."""
+    iid, brand, status = item["id"], item["brand"], item["status"]
+    tag = f"[{brand}] {iid}"
+    out = []
+    reads = item.get("read") or []
+    if not reads:
+        out.append(f"{tag}: a {status} item must list what was read (`read`: path and what it showed)")
+    for r in reads:
+        if not isinstance(r, dict) or not r.get("path") or len(r.get("what", "")) < 30:
+            out.append(f"{tag}: a `read` entry needs a path and a sentence of what it showed (30 characters at least)")
+        elif not os.path.exists(resolve(r["path"])):
+            (out if not allow_missing_research else []).append(f"{tag}: read path not found: {r['path']}")
+    if status == "blocked" and item.get("rule") not in HARD_RULES:
+        out.append(f"{tag}: blocked needs `rule`, one of: {', '.join(HARD_RULES)}")
+    if status == "needs-report":
+        if len(item.get("needs", "")) < 20:
+            out.append(f"{tag}: needs-report must say exactly what to ask for (`needs`)")
+        if not any(e.get("expect") == "some" for e in item.get("evidence", [])):
+            out.append(f"{tag}: needs-report must have an evidence search with expect: some that finds the code in question")
+    if not item.get("evidence"):
+        out.append(f"{tag}: a {status} item with no evidence searches")
+    for ev in item.get("evidence", []):
+        hits, missing = search(ev)
+        if missing:
+            if not allow_missing_research:
+                out.append(f"{tag}: evidence root not found: {ev['root']}")
+            continue
+        if ev.get("expect", "none") == "none" and hits:
+            out.append(f"{tag}: {status} claim refuted: /{ev['pattern']}/ is in {hits[0]}")
+        elif ev.get("expect") == "some" and not hits:
+            out.append(f"{tag}: evidence gone: /{ev['pattern']}/ not found under {ev['root']}")
+    return out
+
+
 def check_registry(registry, waived_ids, touched, allow_missing_research=False):
-    """Returns (failures, notes) from the registry: open items in touched brands, and blocked items whose evidence disagrees."""
+    """Returns (failures, notes): open items in touched brands fail; items that need a report or are blocked are noted, after their proof is checked."""
     failures, notes = [], []
     for item in registry.get("items", []):
         iid, brand, status = item["id"], item["brand"], item["status"]
@@ -109,19 +156,12 @@ def check_registry(registry, waived_ids, touched, allow_missing_research=False):
                 failures.append("OPEN in a brand this release touches: " + line)
             else:
                 notes.append(("waived " if waived else "open, brand not touched: ") + line)
-        elif status in ("blocked", "not-applicable"):
-            if not item.get("evidence"):
-                failures.append(f"[{brand}] {iid}: a {status} item with no evidence searches")
-            for ev in item.get("evidence", []):
-                hits, missing = search(ev)
-                if missing:
-                    msg = f"[{brand}] {iid}: evidence root not found: {ev['root']}"
-                    (notes if allow_missing_research else failures).append(msg)
-                    continue
-                if ev.get("expect", "none") == "none" and hits:
-                    failures.append(f"[{brand}] {iid}: {status} claim refuted: /{ev['pattern']}/ is in {hits[0]}")
-                elif ev.get("expect") == "some" and not hits:
-                    failures.append(f"[{brand}] {iid}: evidence gone: /{ev['pattern']}/ not found under {ev['root']}")
+        elif status in ("needs-report", "blocked", "not-applicable"):
+            failures += check_settled(item, allow_missing_research)
+            if status == "needs-report":
+                notes.append(f"AWAITING A REPORT [{brand}] {iid}: ask for: {item.get('needs', '?')}")
+            elif status == "blocked":
+                notes.append(f"blocked by a hard rule ({item.get('rule', '?')}) [{brand}] {iid}")
         elif status != "built":
             failures.append(f"[{brand}] {iid}: unknown status {status!r}")
     return failures, notes
@@ -183,6 +223,9 @@ def gate(tag=None, allow_missing_research=False, quiet=False):
         print(f"release gate: since {prev}, brands touched: {', '.join(sorted(touched)) or 'none'}")
         for n in notes:
             print("  note:", n)
+        waiting = sum(1 for n in notes if n.startswith("AWAITING A REPORT"))
+        if waiting:
+            print(f"  ({waiting} item(s) wait for a user's report; they do not gate the release)")
         for f in failures:
             print("  FAIL:", f)
         print("release gate:", "REFUSED" if failures else "passed")

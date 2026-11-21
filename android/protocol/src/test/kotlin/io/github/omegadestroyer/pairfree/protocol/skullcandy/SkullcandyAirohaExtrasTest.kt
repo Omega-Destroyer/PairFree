@@ -4,6 +4,7 @@ import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import io.github.omegadestroyer.pairfree.protocol.jbl.RacePacket
+import io.github.omegadestroyer.pairfree.protocol.jbl.RaceParser
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -30,6 +31,7 @@ class SkullcandyAirohaExtrasTest {
         assertEquals(setOf("aviatorANC", "crusher720", "crusher900ANC", "crusherPlyr", "crusherPlyrXbox", "hesh540ANC"), with { it.thx })
         assertEquals(setOf("aviatorANC", "crusherPlyr", "crusherPlyrXbox"), with { it.thxHead })
         assertEquals(setOf("crusherPlyr", "crusherPlyrXbox"), with { it.led })
+        assertEquals(setOf("crusherEvoRC", "dimeXT2", "mod", "hanc", "tanc", "iconANC", "aviatorANC", "hesh540ANC", "crusher540ActiveRC", "push720open", "crusher720", "crusher900ANC"), with { it.personal })
     }
 
     @Test
@@ -150,5 +152,28 @@ class SkullcandyAirohaExtrasTest {
         assertEquals("05 5A 05 00 85 2C 03 01 01", hex(t.change(SettingChange.Choice("sk_led_mode", "breathing"))!!.single().bytes()))
         assertEquals("05 5A 05 00 86 2C FF FF FF", hex(t.change(SettingChange.Level("sk_led_brightness", 10))!!.single().bytes()))
         assertEquals("05 5A 06 00 88 2C 02 00 00 FF", hex(t.change(SettingChange.Choice("sk_led_color", "blue"))!!.single().bytes()))
+    }
+
+    @Test
+    fun personalSoundIsTheDeviceCommands0100And0101() {
+        val e = SkullcandyAirohaExtras(SkullcandyProducts.ALL.first { it.enumName == "hanc" })
+        assertTrue("05 5A 03 00 01 01 01" in e.start().map { hex(it.bytes()) })
+        assertTrue("05 5A 03 00 01 01 02" in e.start().map { hex(it.bytes()) })
+        fun feed(h: String) = e.receive(RaceParser().feed(unhex(h)).single())
+        assertTrue(feed("05 5B 04 00 01 01 01 01"))
+        assertTrue(feed("05 5B 04 00 01 01 02 50"))
+        val rows = e.groups().flatMap { it.settings }
+        assertEquals(true, (rows.first { it.key == "sk_personal_sound" } as Setting.Toggle).on)
+        assertEquals(8, (rows.first { it.key == "sk_personal_intensity" } as Setting.Level).value)
+        var reads = listOf<RacePacket>()
+        // the writes, with the other earbud's copy once its address is known
+        e.relayOf = { p -> RacePacket(JblRace.RELAY, byteArrayOf(5, 0x54) + p.bytes()) }
+        val off = e.change(SettingChange.Toggle("sk_personal_sound", false)) { reads = it }!!
+        assertEquals("05 5A 04 00 00 01 01 00", hex(off[0].bytes()))
+        assertEquals(2, off.size)
+        assertTrue(off.all { it in e.sent })
+        assertEquals("05 5A 03 00 01 01 01", hex(reads.single().bytes()))
+        val level = e.change(SettingChange.Level("sk_personal_intensity", 3)) { reads = it }!!
+        assertEquals("05 5A 04 00 00 01 02 1E", hex(level[0].bytes()))
     }
 }

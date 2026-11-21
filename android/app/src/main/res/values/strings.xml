@@ -735,6 +735,8 @@
     <string name="setting_sk_led_mode">LED mode</string>
     <string name="setting_sk_led_brightness">LED brightness</string>
     <string name="setting_sk_led_color">LED colour</string>
+    <string name="setting_sk_personal_sound">Personal sound</string>
+    <string name="setting_sk_personal_intensity">Personal sound intensity</string>
     <string name="setting_sk_led_breathing">Breathing</string>
     <string name="setting_sk_led_solid">Solid</string>
     <string name="setting_sk_led_random">Random</string>

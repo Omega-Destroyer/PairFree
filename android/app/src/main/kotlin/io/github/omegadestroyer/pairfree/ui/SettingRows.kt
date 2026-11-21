@@ -341,6 +341,8 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sk_led_mode" -> stringResource(R.string.setting_sk_led_mode)
     "sk_led_brightness" -> stringResource(R.string.setting_sk_led_brightness)
     "sk_led_color" -> stringResource(R.string.setting_sk_led_color)
+    "sk_personal_sound" -> stringResource(R.string.setting_sk_personal_sound)
+    "sk_personal_intensity" -> stringResource(R.string.setting_sk_personal_intensity)
     "sk_crusher_mode" -> stringResource(R.string.setting_sk_crusher_mode)
     "sk_spatial" -> stringResource(R.string.setting_sk_spatial)
     "sk_reduced_prompts" -> stringResource(R.string.setting_sk_reduced_prompts)

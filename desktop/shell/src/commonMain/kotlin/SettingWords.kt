@@ -118,6 +118,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "sk_led_mode" -> t("setting_sk_led_mode")
         "sk_led_brightness" -> t("setting_sk_led_brightness")
         "sk_led_color" -> t("setting_sk_led_color")
+        "sk_personal_sound" -> t("setting_sk_personal_sound")
+        "sk_personal_intensity" -> t("setting_sk_personal_intensity")
         "sk_crusher_mode" -> t("setting_sk_crusher_mode")
         "sk_spatial" -> t("setting_sk_spatial")
         "sk_reduced_prompts" -> t("setting_sk_reduced_prompts")

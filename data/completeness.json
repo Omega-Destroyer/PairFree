@@ -262,8 +262,8 @@
       "models": [
         "the Airoha models with personalSoundMimi"
       ],
-      "status": "open",
-      "what": "Personal sound's on or off, its intensity and the tech level are plain device commands, not cloud calls: app/skullcandy/s2.java onRead handles SEND_CUSTOM_CMD answers for GET and SET_PERSONALIZATION_ENABLED, GET and SET_PERSONALIZATION_INTENSITY, GET_MIMI_TECH_LEVEL, SET_PRESET and RESET, and sends them with 'sendPersonalizationIntensity'. The earlier note that all of Mimi needs a server sign-in was wrong for these; read their byte patterns (the constants J, H, I, L, N, P, T and R of s2.java and app/skullcandy/utils/raceCommands) and build the switch and the intensity.",
+      "status": "built",
+      "what": "Personal sound's switch and intensity (device commands 0100 and 0101, relayed to the other earbud) for the 12 Airoha models that have personalSoundMimi; docs/skullcandy/PROTOCOL.md section 9.10. Making a profile stays blocked (Mimi's cloud).",
       "reported": "audit 2026-11-21 (the owner's challenge to 'blocked' claims)"
     },
     {

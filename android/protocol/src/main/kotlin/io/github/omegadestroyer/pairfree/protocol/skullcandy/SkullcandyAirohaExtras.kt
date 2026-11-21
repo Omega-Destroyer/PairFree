@@ -31,8 +31,9 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
     val thx: Boolean = sdk && "thxSpatialAudio" in product.features
     val thxHead: Boolean = sdk && "thxHeadTracking" in product.features
     val led: Boolean = sdk && "ledCustomizer" in product.features
+    val personal: Boolean = sdk && "personalSoundMimi" in product.features
 
-    val has: Boolean get() = sidetone || chatMix || micGain || touch || adaptiveAnc || crusher || thx || thxHead || led
+    val has: Boolean get() = sidetone || chatMix || micGain || touch || adaptiveAnc || crusher || thx || thxHead || led || personal
 
     /** Every command built here, which [SkullcandyRaceTalk.allowed] lets through. */
     val sent: MutableSet<RacePacket> = mutableSetOf()
@@ -51,6 +52,8 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
     private var spatial: Boolean? = null
     private var head: Boolean? = null
     private var spatialLevel: Int? = null
+    private var personalOn: Boolean? = null
+    private var personalIntensity: Int? = null
     private var ledMode: Int? = null
     private var ledBrightness: Int? = null
     private var ledColor: Triple<Int, Int, Int>? = null
@@ -75,7 +78,16 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         if (thx) { add(pk(thxHex(THX_READ_SPATIAL))); add(pk(thxHex(THX_READ_INTENSITY))) }
         if (thxHead) add(pk(thxHex(THX_READ_HEAD)))
         if (led) addAll(ledReads.keys)
+        if (personal) { add(pk(PERSONAL_GET + hex(PERSONAL_ENABLED))); add(pk(PERSONAL_GET + hex(PERSONAL_INTENSITY))) }
     }
+
+    /**
+     * What turns the other earbud's copy on: the app sends personal sound's writes to the other earbud as well (`I(bytes, true, 91)` for the intensity, the relay branch of
+     * `sendPersonalizationEnabled`). Set by the session once it knows the other earbud's address; null when there is none or this is a headset.
+     */
+    var relayOf: (RacePacket) -> RacePacket? = { null }
+
+    private fun withRelay(p: RacePacket): List<RacePacket> = listOfNotNull(p, relayOf(p)?.also { sent += it })
 
     /** An answer of one of the LED reads: `05 5B 08 00 83 2C 00 23 00` and three bytes; the colour is those three, the brightness the first and the mode the last (`GetLedStatusRaceCommand.decodeResponse`). */
     fun ledAnswer(asked: RacePacket?, p: RacePacket): Boolean {
@@ -147,6 +159,15 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
             return (intensity != v).also { intensity = v }
         }
         if (p.id == THX_ID && (thx || thxHead) && p.type == JblRace.TYPE_RESPONSE) return thxAnswer(d)
+        if (p.id == PERSONAL_GET_ID && personal && p.type == JblRace.TYPE_RESPONSE && d.size >= 2) {
+            // `05 5B 04 00 01 01 <sub> <value>`: the app takes the last byte (SEND_CUSTOM_CMD: GET_STATE, GET_PERSONALIZATION_INTENSITY in s2.onRead)
+            val v = d[d.size - 1].toInt() and 0xFF
+            return when (d[0].toInt() and 0xFF) {
+                PERSONAL_ENABLED -> (v == 1).let { on -> (personalOn != on).also { personalOn = on } }
+                PERSONAL_INTENSITY -> (personalIntensity != v).also { personalIntensity = v }
+                else -> false
+            }
+        }
         if (p.id != READ_ID) return false
         // the earbuds send no notice of these (the SDK's notices are type 5C on 2C82 and list only the touch state, the batteries and a few more), so a change is read back
         if (p.type == JblRace.TYPE_INDICATION) return false
@@ -180,6 +201,12 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         spatial?.let { rows += Setting.Toggle(THX_SPATIAL, it) }
         if (spatial == true) spatialLevel?.let { rows += Setting.Level(THX_INTENSITY, it, 0, 10) }
         head?.let { rows += Setting.Toggle(THX_HEAD, it) }
+        if (personal) {
+            val rows2 = ArrayList<Setting>()
+            personalOn?.let { rows2 += Setting.Toggle(PERSONAL_SOUND, it) }
+            if (personalOn == true) personalIntensity?.let { rows2 += Setting.Level(PERSONAL_INTENSITY_KEY, (it / 10.0).roundToInt().coerceIn(0, 10), 0, 10) }
+            if (rows2.isNotEmpty()) add(SettingGroup("sk_personal", SettingTab.SOUND, rows2))
+        }
         if (led) {
             val ledRows = ArrayList<Setting>()
             ledMode?.let { m -> ledModeKey(m)?.let { ledRows += Setting.Choice(LED_MODE, it, listOf("off", "breathing", "solid", "random")) } }
@@ -225,6 +252,19 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
                 intensity = v
                 readBacks(listOf(pk(CRUSHER_GET)))
                 return listOf(pk("05 5A 03 00 D0 2C ${hex(v)}"))
+            }
+            personal && change is SettingChange.Toggle && change.key == PERSONAL_SOUND -> {
+                // `05 5A 04 00 00 01 01 <1|0>` (SET_PERSONALIZATION_ENABLED: s2.F on, s2.G off), then a read of it
+                personalOn = change.on
+                readBacks(listOf(pk(PERSONAL_GET + hex(PERSONAL_ENABLED))))
+                return withRelay(pk("05 5A 04 00 00 01 ${hex(PERSONAL_ENABLED)} ${if (change.on) "01" else "00"}"))
+            }
+            personal && change is SettingChange.Level && change.key == PERSONAL_INTENSITY_KEY -> {
+                // `05 5A 04 00 00 01 02 <value>`: s2.M plus the byte (SET_PERSONALIZATION_INTENSITY), the percentage as the app's slider gives it
+                val v = change.value.coerceIn(0, 10) * 10
+                personalIntensity = v
+                readBacks(listOf(pk(PERSONAL_GET + hex(PERSONAL_INTENSITY))))
+                return withRelay(pk("05 5A 04 00 00 01 ${hex(PERSONAL_INTENSITY)} ${hex(v)}"))
             }
             led && change is SettingChange.Choice && change.key == LED_MODE -> {
                 // `85 2C`, then 03 and the pair the app builds for the mode (off 02 00, random 02 09, breathing 01 01, solid 02 01)
@@ -291,6 +331,14 @@ internal class SkullcandyAirohaExtras(private val product: SkullcandyProduct) {
         const val MIC_GAIN_KEY = "sk_mic_gain"
         const val ADAPTIVE_ANC = "sk_adaptive_anc"
         const val CRUSHER_INTENSITY = "sk_crusher_intensity"
+        const val PERSONAL_SOUND = "sk_personal_sound"
+        const val PERSONAL_INTENSITY_KEY = "sk_personal_intensity"
+
+        /** The personalization commands (`s2.F` to `s2.T`): writes are id `0100`, reads id `0101`, the payload the sub-command (1 enabled, 2 intensity) and its value. */
+        private const val PERSONAL_GET = "05 5A 03 00 01 01 "
+        private const val PERSONAL_GET_ID = 0x0101
+        private const val PERSONAL_ENABLED = 1
+        private const val PERSONAL_INTENSITY = 2
         const val LED_MODE = "sk_led_mode"
         const val LED_BRIGHTNESS = "sk_led_brightness"
         const val LED_COLOR = "sk_led_color"

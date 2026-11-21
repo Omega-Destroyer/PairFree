@@ -98,6 +98,8 @@ def airoha_sdk_rows(p, modes):
         out.append("adaptive noise cancelling")
     if "crusherTechnology" in f:
         out.append("Crusher intensity")
+    if "personalSoundMimi" in f:
+        out.append("personal sound on or off and intensity")
     if "ledCustomizer" in f:
         out.append("LED mode, brightness and colour")
     if "thxSpatialAudio" in f:

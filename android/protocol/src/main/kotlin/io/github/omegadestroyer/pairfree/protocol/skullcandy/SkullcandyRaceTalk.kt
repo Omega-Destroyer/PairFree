@@ -205,7 +205,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         auracast?.let { add(own(it.readState())) }
         if (hasCustomEq || airohaButtons.generic || strength.has || (product.usesAirohaSdk && hasNoise)) add(RacePacket.nvRead(JblRace.NV_CHIP_NAME, CHIP_NV_LENGTH).also { chipRead = it })
         if (strength.has) add(own(strength.read))
-        if ((strength.has || product.usesAirohaSdk && hasNoise) && product.form != Form.HEADPHONES) add(own(partnerRead))
+        if ((strength.has || extras.personal || product.usesAirohaSdk && hasNoise) && product.form != Form.HEADPHONES) add(own(partnerRead))
         if (airohaButtons.vendor) airohaButtons.start(null)?.let { add(it) }
         if (hasVoicePrompts) add(packet(SkullcandyRace.VOICE_PROMPTS_GET, "voice_prompts"))
         addAll(extras.start())
@@ -380,6 +380,7 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
         if (asked == partnerRead && p.id == JblRace.RELAY_DST && p.type == JblRace.TYPE_RESPONSE) {
             val d = p.payload
             partner = (0 until d.size - 1 step 2).map { d.copyOfRange(it, it + 2) }.firstOrNull { (it[0].toInt() and 0xFF) == JblRace.PEQ_PARTNER_DST }
+            partner?.let { far -> extras.relayOf = { p -> RacePacket(JblRace.RELAY, far + p.bytes()) } }
             return false
         }
         if (strength.has && asked == strength.read && p.id == JblRace.NV_READ && p.type == JblRace.TYPE_RESPONSE) return strength.answer(p.data)

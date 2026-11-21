@@ -157,16 +157,30 @@ internal object LeScan {
         return found?.let { WinLeTarget(it) }
     }
 
-    /** The LE side of paired QCY earbuds: the advert under QCY's company id that carries the paired address (docs/qcy/PROTOCOL.md section 2). */
+    /**
+     * The LE side of paired QCY earbuds: the advert under QCY's company id that carries the paired address (docs/qcy/PROTOCOL.md section 2).
+     * As in QCY's app, an advert with the batteries wins; one without ([QcyAdvert.hasBattery]) is taken only when no other came.
+     */
     suspend fun findQcy(company: Int, address: String, log: (String) -> Unit): QcyFound? {
         var found: QcyFound? = null
+        var withoutBattery: QcyFound? = null
+        val senders = mutableSetOf<String>()
         log("scanning for QCY earbuds")
         scan(SCAN_MS, log) { a ->
             val advert = a.manufacturer[company]?.let(QcyAdvert::parse) ?: return@scan false
-            if (advert.matches(address)) { found = QcyFound(WinLeTarget(a.address), advert); true } else false
+            if (!advert.matches(address)) return@scan false
+            if (senders.add(a.address) && !advert.hasBattery) log("advert without batteries (earbuds in their case?), looking for another")
+            when {
+                advert.hasBattery -> { found = QcyFound(WinLeTarget(a.address), advert); true }
+                else -> { if (withoutBattery == null) withoutBattery = QcyFound(WinLeTarget(a.address), advert); false }
+            }
         }
-        log(if (found == null) "scan found nothing" else "scan found vendor id ${found!!.advert.vendorId}")
-        return found
+        val result = found ?: withoutBattery
+        log(
+            if (result == null) "scan found nothing"
+            else "scan found vendor id ${result.advert.vendorId}, ${if (result.advert.hasBattery) "with" else "without"} batteries (${senders.size} sender${if (senders.size == 1) "" else "s"} of its adverts)",
+        )
+        return result
     }
 
     private val SENNHEISER_SERVICES = setOf("0000fdce-0000-1000-8000-00805f9b34fb", "0000fcfe-0000-1000-8000-00805f9b34fb", "63331337-23c1-11e5-b696-feff819cdc9f")

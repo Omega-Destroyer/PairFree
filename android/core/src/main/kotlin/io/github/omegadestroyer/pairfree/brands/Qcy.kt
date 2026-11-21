@@ -67,7 +67,13 @@ object QcySpec : BrandSpec(Brand.QCY) {
         val jieli = QcyModels.of(found.advert.vendorId)?.protocol.let { it == QcyProtocol.JIELI || it == QcyProtocol.JIELI_CUSTOM }
         val service = if (jieli) JieliWire.SERVICE else QcyWire.SERVICE
         env.note("LE (GATT) service $service")
-        return env.hold(transport.envelopeGatt(found.target, service, env.linkLog)).apply { connect() }
+        return try {
+            env.hold(transport.envelopeGatt(found.target, service, env.linkLog)).apply { connect() }
+        } catch (e: Throwable) {
+            // The LE side's address can change, and QCY's app takes it from the latest advert: the next try scans again.
+            driver.found = null
+            throw e
+        }
     }
 
     override fun noiseOffline(device: Paired): List<NoiseChoice>? =

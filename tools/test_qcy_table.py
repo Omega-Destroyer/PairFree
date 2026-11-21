@@ -31,7 +31,7 @@ class QcyTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.data["devices"]), s["models"])
-        self.assertEqual(["QCY H3 Pro", "QCY T13 ANC2"], s["tested"], "users' device reports of 2026-11-11 and 11-12 (issues #34, #35)")
+        self.assertEqual(["QCY H3 Pro", "QCY MeloBuds Pro", "QCY T13 ANC2"], s["tested"], "users' device reports of 2026-11-11, 11-12 and 11-20 (issues #34, #35, #64)")
 
     def test_rows(self):
         n70 = self.row("5D45")

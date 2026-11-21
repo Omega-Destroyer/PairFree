@@ -14949,6 +14949,9 @@
   },
   {
    "vendor_id": 19786,
+   "reports": [
+    "data/qcy/reports/MeloBudsPro_4D4A_2.0.6.txt"
+   ],
    "name": "QCY MeloBuds Pro",
    "names": [
     "QCY MeloBuds Pro"

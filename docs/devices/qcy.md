@@ -162,7 +162,7 @@ number, address or name. Say which settings worked and which did nothing.
 <tr><td>QCY MeloBuds N70i</td><td><code>5D48</code></td><td>WUQI</td><td>Earbuds</td><td>ANC (5 scenes), transparency (7 levels)</td><td>game mode, wind detection, sleep mode, LDAC, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY MeloBuds N70i</td><td><code>5D49</code></td><td>WUQI</td><td>Earbuds</td><td>ANC (5 scenes), transparency (7 levels)</td><td>game mode, wind detection, sleep mode, LDAC, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY MeloBuds Neo</td><td><code>5A73</code></td><td>JieLi</td><td>Earbuds</td><td>—</td><td>sleep mode, game mode, balance, timed power off</td><td>Not tested</td></tr>
-<tr><td>QCY MeloBuds Pro</td><td><code>4D4A</code></td><td>WUQI</td><td>Earbuds</td><td>ANC (5 scenes), transparency (7 levels)</td><td>game mode, sleep mode, LDAC, two devices, balance, timed power off, touch controls</td><td>Not tested</td></tr>
+<tr><td><a href="../../data/qcy/reports/MeloBudsPro_4D4A_2.0.6.txt">QCY MeloBuds Pro</a></td><td><code>4D4A</code></td><td>WUQI</td><td>Earbuds</td><td>ANC (5 scenes), transparency (7 levels)</td><td>game mode, sleep mode, LDAC, two devices, balance, timed power off, touch controls</td><td>Tested</td></tr>
 <tr><td>QCY QT10</td><td><code>4DC1</code></td><td>Realtek</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT10 Pro</td><td><code>4DC5</code></td><td>Realtek</td><td>Earbuds</td><td>—</td><td>game mode, touch controls</td><td>Not tested</td></tr>
 <tr><td>QCY QT10S</td><td><code>4D14</code></td><td>Qualcomm</td><td>Earbuds</td><td>—</td><td>touch controls</td><td>Not tested</td></tr>

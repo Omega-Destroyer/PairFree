@@ -1,0 +1,27 @@
+Bluetooth name:  QCY MeloBuds Pro
+Brand:           QCY
+Model:           QCY MeloBuds Pro (vendor id 4D4A)
+Firmware:        2.0.6
+App:             PairFree 0.9.1
+OS:              Android 17 (API 37)
+Captured:        2026-11-20 04:13 UTC
+
+The last value of each item and characteristic PairFree read (item or name: value as hex):
+  version: 02 00 06 02 00 06
+  battery: 5f 5f 00
+  2C: 00 01 01 01
+  08: 38 38 0f
+  09: 02
+  17: 02 00 00
+  10: 00
+  16: 32
+  04: 02
+  23: 00
+  24: 01
+  1F: 1e 00
+  1D: 06 0f
+  19: 57 51 30 30
+  14: ff ff 00 00
+  keys: 01 06 02 05 03 01 04 01 05 02 06 03 07 00 08 00 00 00 00 00
+  eq: 01 00 00 00 00 00 00 00 00 00 00
+  22: 06 00 00 1e 00 00 00 46 00 04 dc 00 0c fe 64 00 00 f0 0a 64 00 64 00 00 e0 2e 64 00 50 00 00 b4 14 0c fe c8 00 00 3c 00 c8 00 3c 00 00 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff 00 00 00 00 00 00 ff

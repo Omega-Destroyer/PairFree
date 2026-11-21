@@ -125,8 +125,8 @@ android {
         minSdk = 31
         targetSdk = 37
         // x.y.z, and the code is x * 1,000,000 + y * 1,000 + z (CLAUDE.md, Versions; tools/test_version.py checks it).
-        versionCode = 17001
-        versionName = "0.17.1"
+        versionCode = 17002
+        versionName = "0.17.2"
         buildConfigField("String[]", "LANGUAGES", builtInLanguages.joinToString(prefix = "{", postfix = "}") { "\"$it\"" })
     }
 

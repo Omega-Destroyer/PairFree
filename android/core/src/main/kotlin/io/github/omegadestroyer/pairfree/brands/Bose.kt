@@ -9,6 +9,7 @@ import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.bose.BosePacket
+import io.github.omegadestroyer.pairfree.protocol.bose.BoseService
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseSession
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseTalk
 
@@ -18,7 +19,7 @@ object BoseSpec : BrandSpec(Brand.BOSE) {
 
     override fun eqNote(device: Paired): EqNote = EqNote.BOSE
 
-    override fun paired(address: String, name: String, uuids: List<String>): Paired = Paired(address, name, Brand.BOSE)
+    override fun paired(address: String, name: String, uuids: List<String>): Paired = Paired(address, name, Brand.BOSE, service = BoseService.forServices(uuids))
 
     /** By the product the device reports, which names the firmware line; before then, its name. */
     override fun model(device: Paired, state: EarbudState): Model? =

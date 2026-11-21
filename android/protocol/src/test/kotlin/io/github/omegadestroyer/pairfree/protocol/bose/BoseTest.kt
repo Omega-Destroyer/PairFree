@@ -349,4 +349,14 @@ class BoseTest {
         assertNull(setting(s, "eq_bass"))
         assertEquals(Setting.Level("eq_mid", 2, -10, 10), setting(s, "eq_mid"))
     }
+
+    @Test
+    fun theQuietComfortEarbudsListOnlyBmapsOwnService() {
+        // the services of the connection report in issue #69: no standard serial port, Bose's BMAP service instead
+        val earbuds = listOf("00000000-deca-fade-deca-deafdecacaff", "0000110b-0000-1000-8000-00805f9b34fb", "2d064aa9-32b5-4970-865c-643742bd2862")
+        assertEquals("00000000-deca-fade-deca-deafdecacaff", BoseService.forServices(earbuds))
+        // a device with the standard port keeps it, even when it lists BMAP too, and so does one that lists neither
+        assertEquals(null, BoseService.forServices(earbuds + "00001101-0000-1000-8000-00805F9B34FB"))
+        assertEquals(null, BoseService.forServices(emptyList()))
+    }
 }

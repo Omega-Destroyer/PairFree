@@ -20,6 +20,7 @@ and the error codes), `devices.json` (the models by product id) and `test_vector
 Classic Bluetooth serial on the standard SPP UUID `00001101-0000-1000-8000-00805F9B34FB`, which
 is what Bose's app opens (`SppConnectionManager`); the phone's service lookup leads it to the
 right channel (bosectl saw channel 2 on newer models and 8 on older ones).
+The QuietComfort Earbuds (product `402F`, tried with bosectl) list no standard serial port, only Bose's BMAP service `00000000-deca-fade-deca-deafdecacaff`, which bosectl names as the SDP record to look for (and `5550f4bf-...`, `2d064aa9-...`, `e5d1f1ee-...`, which Bose's app 13.3.4 does not mention); PairFree opens the BMAP service for a device that lists it and no standard port (`BoseService`, issue #69, a connection report from 0.14.0). checked: Bose's app `SppConnectionManager` (the standard UUID only), a search of the decompiled app for the BMAP UUID and the three others (no hits), bosectl's `catalog.py` (`BMAP_UUID`) and `architecture.md` (discovery by that UUID); not tried on earbuds.
 
 Bose's app knows a device as Bose's by its services (`BluetoothService.isBoseDevice`): a 16-bit
 UUID `FEBE` or `FDD2`, or a UUID starting `F4C93A79-D04F-4565` ("Bragi"). PairFree uses the

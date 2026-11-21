@@ -25,7 +25,7 @@ Almost none of these brands makes a Windows app, so on a PC their earbuds are pl
 
 ## Sennheiser models
 
-PairFree knows 28 Sennheiser models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 28 Sennheiser models. Models that have been tried on real earbuds: Momentum 5 Wireless.
 
 Sennheiser support is read from Sennheiser Smart Control 4.9.4 and Smart Control Plus 1.6.3. It has not been tried with PairFree on any product yet. The older models on other protocols (Momentum 3, PXC 550, HD 450 and others) are not covered.
 
@@ -47,7 +47,7 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td>Momentum Sport</td><td>MOMENTUM SPORT, MOMENTUM SPORT1, MOMENTUM Sport, MSPORT1…</td><td>battery, codec in use, noise cancelling, anti-wind, adaptive noise cancelling, transparency, pause in full transparency, smart pause, answer calls automatically, low latency mode, lock the touch controls, eco mode, battery protection, voice prompts, Bluetooth compatibility mode, voice prompt language, tap sensitivity, wear state, sample rate, touch area, automatic power off, sidetone, transparency level, equalizer, touch and button functions, find device, podcast mode, restart, paired devices (connect, disconnect), fit test, heart rate and body temperature</td><td>Not tested</td></tr>
 <tr><td>Momentum True Wireless 3</td><td>MOMENTUM TW 3, MTW3, MTW3 Black, MTW3 Graphite…</td><td>battery, codec in use, noise cancelling, anti-wind, adaptive noise cancelling, transparency, pause in full transparency, smart pause, answer calls automatically, low latency mode, lock the touch controls, voice prompts, Bluetooth compatibility mode, voice prompt language, wear state, automatic power off, transparency level, equalizer, touch and button functions, personalised sound, podcast mode, paired devices (connect, disconnect), fit test</td><td>Not tested</td></tr>
 <tr><td>Momentum True Wireless 4</td><td>MOMENTUM TW 4, MTW4, MTW4 Black, MTW4 Black Copper…</td><td>battery, codec in use, noise cancelling, anti-wind, adaptive noise cancelling, transparency, pause in full transparency, smart pause, answer calls automatically, low latency mode, lock the touch controls, eco mode, battery protection, voice prompts, Bluetooth compatibility mode, voice prompt language, aptX Lossless, wear state, sample rate, automatic power off, sidetone, transparency level, equalizer, touch and button functions, find device, personalised sound, podcast mode, Auracast, restart, paired devices (connect, disconnect), fit test</td><td>Not tested</td></tr>
-<tr><td>Momentum 5 Wireless</td><td>M5AEBT, MOMENTUM 5</td><td>everything the product answers (no product file in either app)</td><td>Not tested</td></tr>
+<tr><td>Momentum 5 Wireless</td><td>M5AEBT, MOMENTUM 5</td><td>everything the product answers (no product file in either app)</td><td>Tried: device report</td></tr>
 <tr><td>Momentum True Wireless 5</td><td>MOMENTUM TW 5, MTW5, PHOBOS, Phobos…</td><td>everything the product answers (no product file in either app)</td><td>Not tested</td></tr>
 <tr><td>HDB 630</td><td>HDB 630, HDBT</td><td>everything the product answers (no product file in either app)</td><td>Not tested</td></tr>
 <tr><td>HDR 275 / 255</td><td>HDR 275, HDR275, HDR275 Black, Venus TVL…</td><td>everything the product answers (no product file in either app)</td><td>Not tested</td></tr>

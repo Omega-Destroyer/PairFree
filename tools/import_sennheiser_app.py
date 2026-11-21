@@ -200,6 +200,16 @@ def nautilus_side(cmd, rsp):
 
 
 # Models only Smart Control Plus 1.6.3 lists (its `cKd` enum), all on Qualcomm's GAIA 3 ("herakles"): no product file, so what they answer decides what shows.
+# What the Plus-only products are asked beyond the properties (issue #47, a Momentum 5 on PairFree 0.14.0, 2026-11-21). Neither app has a product file for them, but both apps
+# have the feature layer for any GAIA v3 product (`Equalizer2Gaia3FeatureVariant`), so PairFree asks the Momentum 5 and the Momentum True Wireless 5 for the second-generation
+# equalizer (`UserEQ_GetConfiguration`, 0495:1000) and shows it when they answer, with no presets (their curves are Sennheiser's server data). The Momentum 5's report shows
+# `ANC_Transparency` (0495:1A03) answered, which is the 0 to 100 transparency slider the vendor app shows, so it gets the slider.
+SCP_EXTRA = {
+    "Momentum 5 Wireless": {"eq": {"gen2": True, "gen1": None, "three_band": 0, "presets": "none"}, "transparency": "slider",
+                            "reports": ["data/sennheiser/reports/Momentum5_6.21.5.txt"]},
+    "Momentum True Wireless 5": {"eq": {"gen2": True, "gen1": None, "three_band": 0, "presets": "none"}},
+}
+
 SCP_MODELS = [
     ("Momentum 5 Wireless", "headband", ["M5AEBT", "MOMENTUM 5"], "800078"),
     ("Momentum True Wireless 5", "earbuds", ["MOMENTUM TW 5", "MTW5", "PHOBOS", "Phobos", "phobos"], "700350"),
@@ -588,7 +598,7 @@ def main(assets):
                        "ble": ble,
                        "touch": None if touch is None else [{"action": a[0], "gestures": a[1], **({"min_firmware": a[2]} if len(a) > 2 else {})} for a in touch]})
     for name, klass, names, article in SCP_MODELS:
-        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": None, "sidetone_max": None, "transparency": None, "touch": None, "ble": None, "features": {}, "peers": False, "fit_test": False, "sensors": False})
+        models.append({"name": name, "kind": klass, "names": names, "article": article, "source": "Smart Control Plus 1.6.3 (cKd), no product file", "properties": None, "eq": SCP_EXTRA.get(name, {}).get("eq"), "sidetone_max": None, "transparency": SCP_EXTRA.get(name, {}).get("transparency"), "reports": SCP_EXTRA.get(name, {}).get("reports", []), "touch": None, "ble": None, "features": {}, "peers": False, "fit_test": False, "sensors": False})
     OUT.mkdir(parents=True, exist_ok=True)
     eq = {
         "_about": "Sennheiser's equalizers as Smart Control 4.9.4 computes them (docs/sennheiser/PROTOCOL.md section 6): gen2 (the earbuds hold five band gains in tenths of a dB), gen1 (a five band shelf filter set the app calculates: bass boost, loudness weights, headroom, Q, band frequencies) and the older three-band bass, mid and treble; presets in dB per band. Written by tools/import_sennheiser_app.py.",

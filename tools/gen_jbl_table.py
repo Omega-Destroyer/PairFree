@@ -54,6 +54,10 @@ EXTRAS = {
     "personifi": "PersoniFi (the hearing test and its switch)",
     "personifi_open": "",
     "le_audio": "LE Audio switch",
+    "anc_level": "noise cancelling level",
+    "leakage_comp": "leakage compensation",
+    "ear_canal_comp": "ear canal compensation",
+    "aa_level": "Ambient Aware level",
     "case_find": "find my case",
     "case_unlock": "the smart case's unlock indicator",
 }

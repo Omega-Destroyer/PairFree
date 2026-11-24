@@ -558,6 +558,11 @@
     <string name="setting_group_psap">Personal sound amplification</string>
     <string name="setting_group_personifi">PersoniFi</string>
     <string name="setting_group_le_audio">LE Audio</string>
+    <string name="setting_group_noise_levels">Noise control levels</string>
+    <string name="setting_jbl_anc_level">Noise cancelling level</string>
+    <string name="setting_jbl_leakage_comp">Leakage compensation</string>
+    <string name="setting_jbl_ear_canal_comp">Ear canal compensation</string>
+    <string name="setting_jbl_aa_level">Ambient Aware level</string>
     <string name="setting_jbl_case_find">Find my case</string>
     <string name="setting_jbl_case_find_note">Plays a sound on the case until you turn it off, so you can find it.</string>
     <string name="setting_jbl_case_unlock">Unlock indicator</string>

@@ -35,6 +35,16 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
     private var talkSeconds: Int? = null
     private var hiRes: Boolean? = null
     private var adaptiveAnc: Boolean? = null
+
+    /** The noise cancelling and Ambient Aware levels the earbuds last reported on command 91 (AdvancedAncCmd types 04 and A1), 0 to 7. */
+    /** Leakage and ear canal compensation, the other two switches of JBL's customize page (AdvancedAncCmd types 05 and 06; the Harman models only). */
+    private var leakageComp: Boolean? = null
+    private var earCanalComp: Boolean? = null
+
+    var ancLevel: Int? = null
+        private set
+    var aaLevel: Int? = null
+        private set
     private var lowVolumeEq: Boolean? = null
     private var autoCompensation: Boolean? = null
     private var finding = false
@@ -58,7 +68,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
         if (has(SPEAK_TO_CHAT)) add(JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ))
         if (has(LOW_VOLUME_EQ) && model.family == JblModel.Family.DIRECT) add(JblPacket.of(JblCommand.LOW_VOLUME_EQ, READ))
         if (has(GESTURES)) add(gestureRead())
-        if (has(ADAPTIVE_ANC) || has(AUTO_COMPENSATION)) add(JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ))
+        if (has(ADAPTIVE_ANC) || has(AUTO_COMPENSATION) || has(ANC_LEVEL) || has(AA_LEVEL) || has(LEAKAGE_COMP) || has(EAR_CANAL_COMP)) add(JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ))
         val features = listOfNotNull(
             JblFeature.SOUND_EFFECT.takeIf { has(SOUND_EFFECT) },
             JblFeature.AUDIO_LIMITER.takeIf { has(AUDIO_LIMITER) },
@@ -189,6 +199,10 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
                     when (p.u8(at)) {
                         ADVANCED_ADAPTIVE -> adaptiveAnc = p.u8(at + 1) == 1
                         ADVANCED_AUTO_COMPENSATION -> autoCompensation = p.u8(at + 1) == 1
+                        ADVANCED_MANUAL_LEVEL -> ancLevel = p.u8(at + 1)
+                        ADVANCED_LEAKAGE -> leakageComp = p.u8(at + 1) == 1
+                        ADVANCED_EAR_CANAL -> earCanalComp = p.u8(at + 1) == 1
+                        ADVANCED_AA_LEVEL -> aaLevel = p.u8(at + 1)
                     }
                     at += 2
                 }
@@ -267,6 +281,8 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
     fun adaptiveRows(): List<Setting> = listOfNotNull(
         adaptiveAnc?.takeIf { has(ADAPTIVE_ANC) }?.let { Setting.Toggle(ADAPTIVE_KEY, it) },
         autoCompensation?.takeIf { has(AUTO_COMPENSATION) }?.let { Setting.Toggle(COMPENSATION_KEY, it) },
+        leakageComp?.takeIf { has(LEAKAGE_COMP) }?.let { Setting.Toggle(LEAKAGE_KEY, it) },
+        earCanalComp?.takeIf { has(EAR_CANAL_COMP) }?.let { Setting.Toggle(EAR_CANAL_KEY, it) },
     )
 
     /** The rows for the sound tab, the call settings and the rest. */
@@ -357,6 +373,8 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
             LOW_EQ_KEY -> listOf(lowEq(change.on))
             ADAPTIVE_KEY -> listOf(advanced(ADVANCED_ADAPTIVE, JblP4.FEATURE_ADAPTIVE_ANC, change.on).also { adaptiveAnc = change.on })
             COMPENSATION_KEY -> listOf(advanced(ADVANCED_AUTO_COMPENSATION, JblP4.FEATURE_AUTO_COMPENSATION, change.on).also { autoCompensation = change.on })
+            LEAKAGE_KEY -> listOf(JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_SET, ADVANCED_LEAKAGE, if (change.on) 1 else 0)).also { leakageComp = change.on }
+            EAR_CANAL_KEY -> listOf(JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_SET, ADVANCED_EAR_CANAL, if (change.on) 1 else 0)).also { earCanalComp = change.on }
             MUTE_LEFT, MUTE_RIGHT -> mute(change.key == MUTE_LEFT, change.on)
             else -> null
         }
@@ -421,7 +439,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
             SPATIAL_KEY -> JblPacket.of(JblCommand.SPATIAL, READ)
             TALK_KEY -> JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ)
             TOUCH_LEFT, TOUCH_RIGHT -> gestureRead()
-            ADAPTIVE_KEY, COMPENSATION_KEY -> JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ)
+            ADAPTIVE_KEY, COMPENSATION_KEY, LEAKAGE_KEY, EAR_CANAL_KEY -> JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ)
             LOW_EQ_KEY -> if (model.family == JblModel.Family.DIRECT) {
                 JblPacket.of(JblCommand.LOW_VOLUME_EQ, READ)
             } else {
@@ -432,6 +450,12 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
             HI_RES_KEY -> JblPacket.featureGet(listOf(JblFeature.HI_RES))
             else -> null
         }
+    }
+
+    /** A level on command 91 (`AdvancedAncCmd.toBytesSet`: the type 04 for noise cancelling, A1 for Ambient Aware, then the step). */
+    fun levelWrite(anc: Boolean, step: Int): JblFrame {
+        if (anc) ancLevel = step else aaLevel = step
+        return JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_SET, if (anc) ADVANCED_MANUAL_LEVEL else ADVANCED_AA_LEVEL, step)
     }
 
     /** One advanced noise cancelling switch: a type and its value on command 91, or its protocol 4 feature (General4Control.setAdvanceAnc). */
@@ -689,6 +713,12 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
         const val LOW_VOLUME_EQ = "low_volume_eq"
         const val LOW_EQ_KEY = "jbl_low_volume_eq"
         const val AUTO_COMPENSATION = "auto_compensation"
+        const val ANC_LEVEL = "anc_level"
+        const val LEAKAGE_COMP = "leakage_comp"
+        const val EAR_CANAL_COMP = "ear_canal_comp"
+        const val LEAKAGE_KEY = "jbl_leakage_comp"
+        const val EAR_CANAL_KEY = "jbl_ear_canal_comp"
+        const val AA_LEVEL = "aa_level"
         const val ADAPTIVE_KEY = "jbl_adaptive_anc"
         const val COMPENSATION_KEY = "jbl_auto_compensation"
 
@@ -698,6 +728,10 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
         private const val ADVANCED_RET = 0x22
         private const val ADVANCED_ADAPTIVE = 0x01
         private const val ADVANCED_AUTO_COMPENSATION = 0x08
+        private const val ADVANCED_MANUAL_LEVEL = 0x04
+        private const val ADVANCED_LEAKAGE = 0x05
+        private const val ADVANCED_EAR_CANAL = 0x06
+        private const val ADVANCED_AA_LEVEL = 0xA1
 
         // The rows' keys.
         const val SMART_KEY = "jbl_smart_audio_video"

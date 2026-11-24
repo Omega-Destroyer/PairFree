@@ -429,6 +429,56 @@
           "expect": "some"
         }
       ]
+    },
+    {
+      "id": "jbl-noise-levels",
+      "brand": "jbl",
+      "models": [
+        "the models whose dashboard has a level slider on the noise card or the customize page"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.17): the noise cancelling and Ambient Aware levels, eight steps, each live in its own mode as in JBL's app: command 91's pairs 04 and A1 on the Harman models, the mode feature's level on protocol 4 (with the ambient sound control's status on the asc models), RACE 0E06 1E and the step on the Airoha models (read from module 5 and 7); leakage and ear canal compensation (91 types 05 and 06) on the Harman models of the customize page. Never tried on earbuds.",
+      "reported": "docs/devices/jbl.md Not yet, audit 2026-11-24"
+    },
+    {
+      "id": "jbl-airoha-adaptive-anc",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3 (the AdaptiveAncCard); Live Free 2, Reflect Aero, Quantum TWS and the Tune 670NC family where their control sets advanced ANC"
+      ],
+      "status": "open",
+      "what": "Adaptive noise cancelling, auto compensation, leakage and ear canal compensation on the Airoha models: JBL's app sends them as the SET_ADVANCE_ANC_1 and _2 flows (setAdvanceAnc: KEY_ADAPTIVE_ANC_ONOFF, KEY_AUTO_COMPENSATION_ONOFF, KEY_LEAKAGE_COMPENSATION_ONOFF, KEY_EAR_CANAL_COMPENSATION_ONOFF) through Airoha's environment detection and MmiStage_SetAutoCompensation* stages, per product id (20D4, 20D5, 20D8, 20D9 differ). Not traced to RACE frames.",
+      "reported": "docs/jbl/PROTOCOL.md section 10 (Not covered yet), audit 2026-11-24"
+    },
+    {
+      "id": "jbl-touch-quantum-tour-one",
+      "brand": "jbl",
+      "models": [
+        "Quantum 360, Quantum 910 headsets, Tour One"
+      ],
+      "status": "open",
+      "what": "Their touch controls, which JBL's app sets on pages of their own (docs/devices/jbl.md: Not yet). The pages and what they send have not been read.",
+      "reported": "docs/devices/jbl.md Not yet, audit 2026-11-24"
+    },
+    {
+      "id": "jbl-touch-older-models",
+      "brand": "jbl",
+      "models": [
+        "Live 220BT, 300TWS, 400BT, 500BT, 650BTNC, Club 700BT and 950NC, Live Pro+, Tour Pro+, UA Project Rock"
+      ],
+      "status": "open",
+      "what": "Their touch controls: JBL's app has no description of these models' settings and PairFree takes what they have from the code that drives them and their older screens (docs/devices/jbl.md). Whether those screens or classes hold touch controls has not been read.",
+      "reported": "docs/devices/jbl.md, audit 2026-11-24"
+    },
+    {
+      "id": "jbl-models-without-controls",
+      "brand": "jbl",
+      "models": [
+        "Tour Pro 4, Tour One M4, the newer Smart Tx, the Everest Elite range, Reflect Aware"
+      ],
+      "status": "open",
+      "what": "PairFree does not list these: JBL Headphones 5.37.10 is said to have no controls for them. Not proven by reading: the product list, the control class table and the dashboards have to be checked for each.",
+      "reported": "docs/devices/jbl.md, audit 2026-11-24"
     }
   ]
 }

@@ -29,6 +29,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "psap" -> "setting_group_psap"
             "personifi" -> "setting_group_personifi"
             "le_audio" -> "setting_group_le_audio"
+            "noise_levels" -> "setting_group_noise_levels"
             "auracast" -> "setting_group_auracast"
             "case" -> "setting_group_case"
             "case_pages" -> "setting_group_case_pages"
@@ -390,6 +391,10 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_personifi" -> t("setting_jbl_personifi")
         "jbl_le_audio" -> t("setting_jbl_le_audio")
         "jbl_case_find" -> t("setting_jbl_case_find")
+        "jbl_anc_level" -> t("setting_jbl_anc_level")
+        "jbl_leakage_comp" -> t("setting_jbl_leakage_comp")
+        "jbl_ear_canal_comp" -> t("setting_jbl_ear_canal_comp")
+        "jbl_aa_level" -> t("setting_jbl_aa_level")
         "jbl_case_unlock" -> t("setting_jbl_case_unlock")
         "jbl_case_saver" -> t("setting_jbl_case_saver")
         "jbl_psap_balance" -> t("setting_jbl_psap_balance")

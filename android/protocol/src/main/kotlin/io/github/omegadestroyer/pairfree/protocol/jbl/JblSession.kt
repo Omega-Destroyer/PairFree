@@ -64,6 +64,8 @@ public class JblSession(initial: JblModel) {
     // Protocol 4: each mode's status and level, and whether ambient sound control is on.
     private val modeOn = mutableMapOf<Mode, Boolean>()
     private val modeLevel = mutableMapOf<Mode, Int>()
+    private var raceAncLevel: Int? = null
+    private var raceAaLevel: Int? = null
     private var ascOn: Boolean? = null
 
     // The settings beyond noise control, auto power-off and auto play/pause.
@@ -629,6 +631,7 @@ public class JblSession(initial: JblModel) {
         get() = listOfNotNull(
             group("noise", SettingTab.HOME, noiseRows()),
             group("noise_adaptive", SettingTab.HOME, extras.adaptiveRows()),
+            group("noise_levels", SettingTab.HOME, levelRows()),
             group("sound", SettingTab.SOUND, extras.soundRows()),
             group("calls", SettingTab.DEVICE, extras.callRows()),
             group("other", SettingTab.DEVICE, otherRows()),
@@ -637,6 +640,41 @@ public class JblSession(initial: JblModel) {
             group("touch_right", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("right") else extras.touchRows("right")),
             group("touch_buttons", SettingTab.CONTROLS, p5Rows()),
         ) + extras.kit.groups()
+
+    /**
+     * The noise cancelling and Ambient Aware levels (docs/jbl/PROTOCOL.md section 4.17): eight steps, 0 to 7, each slider live only in its own mode as in JBL's app (`AscHaveAncLevelCard`,
+     * `AscStatusWithAncAndAaLevelCard`). Command 91's pairs 04 and A1 on the Harman models, the mode's own feature's level on protocol 4.
+     */
+    private fun levelRows(): List<Setting> = buildList {
+        if (!noiseKnown) return@buildList
+        val p4 = model.family == JblModel.Family.P4
+        val race = model.family == JblModel.Family.AIROHA
+        if (JblExtras.ANC_LEVEL in model.extras) (if (p4) modeLevel[Mode.ANC] else if (race) raceAncLevel else extras.ancLevel)?.takeIf { it in 0..LEVEL_STEPS }?.let { add(Setting.Level(ANC_LEVEL_KEY, it, 0, LEVEL_STEPS, mode == Mode.ANC)) }
+        if (JblExtras.AA_LEVEL in model.extras) (if (p4) modeLevel[Mode.AMBIENT_AWARE] else if (race) raceAaLevel else extras.aaLevel)?.takeIf { it in 0..LEVEL_STEPS }?.let { add(Setting.Level(AA_LEVEL_KEY, it, 0, LEVEL_STEPS, mode == Mode.AMBIENT_AWARE)) }
+    }
+
+    /** A level's write: only in its own mode, since the app's slider is off otherwise. */
+    private fun levelChange(change: SettingChange.Level): List<JblFrame>? {
+        val anc = change.key == ANC_LEVEL_KEY
+        val m = if (anc) Mode.ANC else Mode.AMBIENT_AWARE
+        if (mode != m || change.value !in 0..LEVEL_STEPS) return null
+        if (model.family == JblModel.Family.AIROHA) {
+            // `MmiStage_SetAncAaLevel`: the ANC command's 1E and the step in two bytes sets whichever of the two modes is on.
+            if (anc) raceAncLevel = change.value else raceAaLevel = change.value
+            readBacks += RacePacket.mmiGet(if (anc) JblRace.MMI_ANC else MMI_AA_LEVEL)
+            return listOf(RacePacket.of(JblRace.ANC, 0, RACE_ANC_LEVEL, change.value and 0xFF, change.value shr 8))
+        }
+        if (model.family != JblModel.Family.P4) {
+            readBacks += JblPacket.of(JblCommand.NOISE_MODES, 0x21)
+            return listOf(extras.levelWrite(anc, change.value))
+        }
+        val feature = P4_FEATURES.getValue(m)
+        modeLevel[m] = change.value
+        readBacks += JblP4Packet.get(listOf(feature))
+        val level = JblP4Packet.statusLevel(true, change.value)
+        // `WaveFlex3Control.setAncSetting`: the ambient sound control's status goes with the mode's feature; `General4Control.setAdvanceAnc` writes the feature alone.
+        return if (model.noise == JblModel.Noise.ASC) listOf(JblP4Packet.set(JblP4.FEATURE_AMBIENT_SOUND_CONTROL to JblP4Packet.statusLevel(true, JblP4.IGNORE_LEVEL), feature to level)) else listOf(JblP4Packet.set(feature to level))
+    }
 
     private fun noiseRows(): List<Setting> {
         if (!noiseKnown) return emptyList()
@@ -672,6 +710,7 @@ public class JblSession(initial: JblModel) {
         if (change is SettingChange.Choice && model.airohaGestures != null) {
             AIROHA_TOUCH_KEYS.entries.firstOrNull { it.value == change.key }?.let { return airohaTouch(it.key, change.option) }
         }
+        if (change is SettingChange.Level && (change.key == ANC_LEVEL_KEY || change.key == AA_LEVEL_KEY)) return levelChange(change)
         extras.change(change)?.let { out ->
             extras.readBack(change.key)?.let { readBacks += it }
             return out
@@ -882,6 +921,7 @@ public class JblSession(initial: JblModel) {
         add(RacePacket.of(JblRace.FIRMWARE, RACE_AGENT))
         addAll(raceBatteries())
         if (model.modes.isNotEmpty()) add(RacePacket.mmiGet(JblRace.MMI_ANC))
+        if (JblExtras.AA_LEVEL in model.extras) add(RacePacket.mmiGet(MMI_AA_LEVEL))
         addAll(extras.raceReads())
     }
 
@@ -935,7 +975,12 @@ public class JblSession(initial: JblModel) {
             JblRace.NV_READ -> raceNv(d)
             JblRace.MMI_GET -> if (p.status == 0 && d.isNotEmpty()) {
                 when (p.module) {
-                    JblRace.MMI_ANC -> raceAnc(d.u8(0))
+                    // The filter, then the noise cancelling level in two bytes (`MmiStage_GetAncLevel`); module 7 holds the Ambient Aware level alone (`MmiStage_GetAaLevel`).
+                    JblRace.MMI_ANC -> {
+                        raceAnc(d.u8(0))
+                        if (d.size >= 3) raceAncLevel = d.u8(1) or (d.u8(2) shl 8)
+                    }
+                    MMI_AA_LEVEL -> if (d.size >= 2) raceAaLevel = d.u8(0) or (d.u8(1) shl 8)
                     JblRace.NOTIFY_AGENT_BATTERY -> {
                         if (d.size >= 2) agentRight = d.u8(1) == 1
                         raceBattery(RACE_AGENT, d.u8(0))
@@ -1310,6 +1355,12 @@ public class JblSession(initial: JblModel) {
         const val P4_STATUS16 = 0x8000
         const val P4_LEVEL16 = 0x7FFF
         const val SECONDS_PER_MINUTE = 60
+        /** The Airoha module that answers with the Ambient Aware level (`MmiStage_GetAaLevel`). */
+        const val MMI_AA_LEVEL = 7
+        private const val RACE_ANC_LEVEL = 0x1E
+        const val ANC_LEVEL_KEY = "jbl_anc_level"
+        const val AA_LEVEL_KEY = "jbl_aa_level"
+        const val LEVEL_STEPS = 7
         val P4_FEATURES = mapOf(Mode.ANC to JblP4.FEATURE_ANC, Mode.AMBIENT_AWARE to JblP4.FEATURE_AMBIENT_AWARE, Mode.TALK_THRU to JblP4.FEATURE_TALK_THRU)
         val P4_MODES = P4_FEATURES.entries.associate { it.value to it.key }
         val REPORTED_P4 = setOf(

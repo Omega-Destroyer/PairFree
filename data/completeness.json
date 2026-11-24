@@ -321,7 +321,7 @@
         "the 39 models whose dashboard has PersoniFiCard"
       ],
       "status": "open",
-      "what": "PersoniFi: PersoniFiModeHearingTextCmd (A1: 1 PersoniFi on, 2 hearing test mode, 3 setup flow, 4 test file, 5 file side, 6 file frequency in four bytes) and the wizard behind PersoniFiCard, which first checks and downloads PersoniFi resources (checkPersoniFiResourceUpdate), runs a hearing test with the earbuds' own test files and writes the resulting curve as EQ category 201. Neither the command nor the wizard is built; the resource download and the curve's computation are unread.",
+      "what": "PersoniFi (39 models): the command (A1: 1 PersoniFi on, 2 hearing test mode, 3 setup flow, 4 test file, 5 side, 6 frequency in four bytes; protocol 4 features PersoniFiMode, HearingTestMode, PersoniFiSetupFlow, HearingTestFileSide, HearingTestFileFrequency) and the wizard behind PersoniFiCard are not built. Read 2026-11-24 with the owner's go-ahead: the resource pack is a plain GET (personifi_resource_config.json and personifi3_resource.zip on appstorage.onecloud.harman.com, no sign-in) holding 24 warble tones, 250 Hz to 12 kHz per side, which PairFree can synthesize itself and which stay in server_dump/jbl/; the level is caldB(n) = 43 - 3n dB for steps 1 to 14; the curve comes from libpersonifiAlgorithm.so's calCompensation (16 KB), whose entry (per-frequency thresholds against a reference table) is read but whose two shaping routines (0x2d20, 0x3194) are not yet ported. Unread: the wizard's test procedure (which tone, which steps, how a threshold is decided), how the compensation bands are written (EQ category 201) on each family.",
       "reported": "issue #1 notes; audit 2026-11-23"
     },
     {

@@ -119,6 +119,7 @@ public class JblSession(initial: JblModel) {
             // JBL's app tells the earbuds the host is a phone (host type 1) before it reads them.
             add(JblP4Packet.set(JblP4.FEATURE_HOST_TYPE to byteArrayOf(1)))
             add(JblP4Packet.get(p4Features()))
+            addAll(extras.kit.p4Start())
             addAll(eqReads())
             return@buildList
         }

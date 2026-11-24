@@ -587,6 +587,15 @@
     <string name="setting_jbl_auracast_source">Listening to</string>
     <string name="setting_jbl_auracast_stop">Stop listening</string>
     <string name="setting_jbl_auracast_subgroup">Sub-group</string>
+    <string name="setting_jbl_psap_noise">Reduce background noise</string>
+    <string name="setting_jbl_psap_voice">Voice focus</string>
+    <string name="setting_jbl_case_24h">24-hour time on the case</string>
+    <string name="setting_jbl_noise_left">Noise at the left earbud</string>
+    <string name="setting_jbl_noise_right">Noise at the right earbud</string>
+    <string name="setting_jbl_quiet">Quiet</string>
+    <string name="setting_jbl_noisy">Noisy</string>
+    <string name="setting_jbl_case_page_language">Page on the case: Language</string>
+    <string name="setting_jbl_case_page_time24">Page on the case: 24-hour time</string>
     <string name="setting_jbl_seal_check">Check the fit</string>
     <string name="setting_jbl_seal_left">Left earbud</string>
     <string name="setting_jbl_seal_right">Right earbud</string>

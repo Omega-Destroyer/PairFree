@@ -300,8 +300,8 @@
       "models": [
         "Tour One M3, Live 680NC, Live 780NC, Live Beam 4, Live Buds 4, Live Flex 4, Tune Beam 3, Tune Buds 3, Smart Tx and the other protocol 4 models whose dashboard has the cards"
       ],
-      "status": "open",
-      "what": "PSAP (PSAPStatus 3200, PSAPBalance 3201, PSAPTotalGainLevel 3202, PSAPReduceBackgroundNoise 3203, PSAPBeamforming 3204), the ear tips (EarTips 4101), the environment noise check (EnvironmentNoiseCheck), the clock (SyncTime 49 and Case24HourTime), the smart case's screen (DeviceInfoFeature5 7937 to 7960: brightness, notification, screen saver, language, tap to wake, find my case, version) and its page configs (8064 to 8081, CasePageConfigFeature) are protocol 4 features in General4Control, not Harman AA frames. PairFree's protocol 4 session (JblP4) carries 31 features; these are not among them.",
+      "status": "built",
+      "what": "PSAP (3200 to 3204), the ear tips (4101), the noise and seal checks (4100, 4099), the clock (49, 7953) and the case's screen and pages (7937 to 7950, 8064 to 8081) on the protocol 4 models whose dashboard has the cards, as General4Control writes them; JblHarmanKit4, docs/jbl/PROTOCOL.md section 4.12. Find my case, the screen saver pictures and the unlock indicator stay in jbl-case-screen-saver-and-find-case.",
       "reported": "audit 2026-11-23 (reading the cards against the control classes while building JblHarmanKit)"
     },
     {
@@ -338,10 +338,10 @@
       "id": "jbl-case-screen-saver-and-find-case",
       "brand": "jbl",
       "models": [
-        "Tour Pro 2, Live Beam 3, Live Flex 3"
+        "Tour Pro 2, Live Beam 3, Live Flex 3 and the protocol 4 models with the smart case"
       ],
       "status": "open",
-      "what": "The smart case's screen saver pictures (A3 ids 3, 6, 7 and the delete command 03 06; ScreenSaverAdapter, LockScreenCard, the custom picture's transfer) and find my case (FindMyCaseCard, A3 id 13) are not built; the transfer of a picture to the case has not been read.",
+      "what": "The smart case's screen saver pictures (A3 ids 3, 6, 7 and the delete command 03 06; on protocol 4 7942, 7945 and 7954 to 7959; ScreenSaverAdapter, LockScreenCard, the custom picture's transfer), find my case (FindMyCaseCard; A3 id 13, protocol 4 7951) and the unlock indicator (A3 id 9, protocol 4 7947, Smart Tx's page) are not built; the transfer of a picture to the case has not been read.",
       "reported": "audit 2026-11-23"
     }
   ]

@@ -305,7 +305,7 @@ Read from JBL Headphones 5.37.10 (2026-11-23): the command classes `PSAPCmd`, `C
 `EnvironmentNoiseCheckCmd`, `EarCanalTestingCmd` and `TipsTypeCmd` of `com.harman.bluetooth.imp.cmd`, and the dashboard cards that call them. Each is a Harman frame
 (`AA`, the command, the payload's length, then the payload) whose first payload byte is the sub-command: 00 write, 01 read, 02 reply (`CmdBase.combine` adds the length).
 A model has a setting when its dashboard card is in its config and its control class implements the write (`BesDeviceStatusControl` carries them for the BES models; the
-protocol 4 models send the same settings as `DeviceInfoFeature5` records and the Airoha models through their own adapter, see the end of this section). So far:
+protocol 4 models send the same settings as `DeviceInfoFeature5` records, section 4.12, and the Airoha models through their own adapter, see the end of this section). So far:
 Tour Pro 2, Live Beam 3 and Live Flex 3 (the smart case), the Tour One M2, Tour Pro 2, Live 670NC, 675NC, 770NC, 775NC and Live Beam 3 (PSAP), the Live Pro 2 TWS, Tour Pro 2 and
 Live Beam 3 (the fit checks), the Tune Flex and Tune Flex 2 (the ear tips) and eight models for the Auracast receiver: `settings` in `devices.json`.
 
@@ -349,9 +349,34 @@ Live Beam 3 (the fit checks), the Tune Flex and Tune Flex 2 (the ear tips) and e
 - **The ear tips** (`9C`, `SoundFitCard`, only the Tune Flex family: `TIPS_OPEN` 0 and `TIPS_SEALING` 1). Read `01`, the reply `02` and the type, a write `00` and the type.
 
 None of these is on the never-sent list. Open, in `data/completeness.json`: the screen saver's pictures and the user's own screen saver (a file transfer to the case,
-`ScreenSaverAdapter`, ids 3, 6 and 7 of `A3`), find my case (`FindMyCaseCard`, id 13), and the same settings on the protocol 4 and Airoha models, which send them as other messages
-(`General4Control.setPSAPStatus` writes the `PSAPStatus`, `PSAPBalance` and gain features, `setTipsType` writes `EarTips`, `setChargingCaseFeatureSettingsStatus` writes a
-`CasePageConfigFeature` per page).
+`ScreenSaverAdapter`, ids 3, 6 and 7 of `A3`), find my case (`FindMyCaseCard`, id 13) and the same settings on the Airoha models. The protocol 4 models send them as features (section 4.12).
+
+### 4.12 The same settings on protocol 4
+
+Read from `General4Control` (JBL Headphones 5.37.10, 2026-11-24) and the `DeviceInfoFeature5` table with its value classes (`com.harman.protocol4.features`). The protocol 4 models send the
+cards of section 4.11 as feature records (section 6): an id (two bytes, low first), a length and a value, in a set (`0002`) or a read (`0001`); the earbuds answer or notify with the same
+records. Value classes: `StatusLevelSize1Feature` is one byte, bit 7 the status and bits 0 to 6 the level (127 where the app has none); `Occupy1ByteEachIntFeature` a byte for each number;
+`StatusLevelSize2Feature` two bytes, low first, bit 15 the status; `BitListFeature` one byte read bit by bit from the top; `CasePageConfigFeature` one byte, bit 7 whether the page shows, bit 6
+whether the user may set it, bits 0 to 5 its place. A model has a setting under the same rule as before (its dashboard card in the config, the base class's write): `settings` in `devices.json`.
+
+- **PSAP**: 3200 status (a one-byte status and 127), 3201 the balance (45 to 55: the page's 95 to 105 less 50, `setPSAPStatus`, `gn/l0`), 3202 the gain step (0 to 5), 3203 reduce
+  background noise (status, level 0) and 3204 voice focus (`setPSAPBeamforming`: status on unless 0, the level 0, 1 or 2 for off, medium and high). `getPSAPStatus` reads the first three; PairFree reads
+  all five.
+- **Ear tips**: 4101, the status bit is the type (0 open, 1 sealing; `setTipsType` writes `setValue(type, 127)`).
+- **Noise check** (4100) and **seal check** (4099, `getSealingStatus`): each is started by writing one byte, 0, and answered by a notification of one byte read bit by bit: for the seal check bit 7 is
+  the left earbud and bit 6 the right, 1 for sealed (`SealingInfo`); for the noise check a set bit is quiet and a clear bit noisy (`gn/l0` turns them into the levels 0 and 100). Protocol 4 has no ear canal test
+  (`General4Control` leaves `earCanalTesting` at the base class's default).
+- **The clock** (49, `setDeviceTime`): nine bytes, seconds, minutes, hours, weekday (0 Sunday), day, month, the year low byte then high, and the display format (0 when the phone has none), sent when the
+  channel opens. 7953 is the case's 24-hour switch.
+- **The case's screen**: 7940 brightness (status 1, the level 0 to 3), 7941 message notification (bit 7 on, bit 6 the permission the case reported, kept when written; a case that reported none gets 127 in the level),
+  7944 preview, 7943 the screen saver time (`StatusLevelSize2Feature`: the seconds in fifteen bits; the status bit is set for one to a hundred seconds, as `setChargingCaseDisplaySettingsStatus` sets it),
+  7946 the language (the same numbers as `A3` id 8), 7948 quick wake-up (status, and the level 1 to 3 for the tap; the switch sends 127), 7937 and 7950 the case's version and the latest as three bytes,
+  7942 the screen saver's index, 7945 and 7954 to 7959 the custom screen saver's CRC, status and look.
+- **The case's pages**: 8064 to 8081, in the order ambient sound control, equalizer, speak to chat, 3D spatial sound, low volume EQ, VoiceAware, auto play and pause, Silent Now, earbuds in the case,
+  timer, lock screen wallpaper, notifications, find my buds, flashlight, music playback, screen brightness, language and 24-hour time. PairFree switches bit 7 and keeps the other bits as the case reported them;
+  a page the case does not let the user set (bit 6 clear) is shown greyed out.
+
+Open, in `data/completeness.json`: the screen saver's index and pictures, find my case (7951) and the unlock indicator (7947, which only the Smart Tx page shows).
 
 ## 5. How each model sends its settings
 

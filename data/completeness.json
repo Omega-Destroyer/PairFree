@@ -429,6 +429,106 @@
           "expect": "some"
         }
       ]
+    },
+    {
+      "id": "jbl-noise-levels",
+      "brand": "jbl",
+      "models": [
+        "the models whose dashboard has a level slider on the noise card or the customize page"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.17): the noise cancelling and Ambient Aware levels, eight steps, each live in its own mode as in JBL's app: command 91's pairs 04 and A1 on the Harman models, the mode feature's level on protocol 4 (with the ambient sound control's status on the asc models), RACE 0E06 1E and the step on the Airoha models (read from module 5 and 7); leakage and ear canal compensation (91 types 05 and 06) on the Harman models of the customize page. Never tried on earbuds.",
+      "reported": "docs/devices/jbl.md Not yet, audit 2026-11-24"
+    },
+    {
+      "id": "jbl-airoha-adaptive-anc",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3 (the AdaptiveAncCard); Live Free 2, Reflect Aero, Quantum TWS and the Tune 670NC family where their control sets advanced ANC"
+      ],
+      "status": "open",
+      "what": "Adaptive noise cancelling, auto compensation, leakage and ear canal compensation on the Airoha models: JBL's app sends them as the SET_ADVANCE_ANC_1 and _2 flows (setAdvanceAnc: KEY_ADAPTIVE_ANC_ONOFF, KEY_AUTO_COMPENSATION_ONOFF, KEY_LEAKAGE_COMPENSATION_ONOFF, KEY_EAR_CANAL_COMPENSATION_ONOFF) through Airoha's environment detection and MmiStage_SetAutoCompensation* stages, per product id (20D4, 20D5, 20D8, 20D9 differ). Not traced to RACE frames.",
+      "reported": "docs/jbl/PROTOCOL.md section 10 (Not covered yet), audit 2026-11-24"
+    },
+    {
+      "id": "jbl-touch-quantum-tour-one",
+      "brand": "jbl",
+      "models": [
+        "Tour One, Quantum 360, 360X, 360P, Quantum 910 (app refuses), the Tune 3 and Vibe/Wave 3 touch sensitivity"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.18): the Tour One's touch panel and function button are commands 79 and 78 (FuncTouchCategory 1 voice assistant, 2 ambient sound control, 3 TalkThru; FuncButtonCategory 1 voice assistant, 2 ambient sound control, 3 active mode control; a write 00, 01 and the category), built for the 24 direct models whose control class sets them; the Quantum 360, 360X and 360P's dials and button are command 77 with the gestures 55, 56 and 64 (wire bytes 10, 11 and 13 hex) set to volume (AA), game and chat balance (A9), microphone mute (AB) or the light (AC); the touch sensitivity (protocol 4 features 4033 and 4034, two or three steps) of the nine models whose dashboard supports it. The Quantum 910 family's dial page cannot write: AirohaDeviceStatusControl.IsGestureIdValid refuses every gesture id except 1 to 8, 49 and 50, so JBL's own app cancels the 910's dial writes (ids 55, 56, 64); checked: AirohaDeviceStatusControl execFlow SET_GESTURE_STATUS, IsGestureIdValid.",
+      "reported": "docs/devices/jbl.md Not yet, audit 2026-11-24",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/harman/bluetooth/reqimp/CmdGen.java",
+          "what": "generateSetFunctionControlCmd and generateSetTouchPanelControlCmd: the headers AA 78 and AA 79, 00, 01 and the category"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/wp/f.java",
+          "what": "the Quantum dial page's sendCommand: gesture ids 55, 56 and 64, actions 169 to 172"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/adapter/harman/AirohaDeviceStatusControl.java",
+          "what": "IsGestureIdValid accepts 1 to 8, 49 and 50 only, and execFlow cancels the Airoha gesture write otherwise: the 910's dials cannot be written by JBL's app"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/jbl/sources/com/airoha/adapter/harman",
+          "glob": "AirohaDeviceStatusControl\\.java$",
+          "pattern": "gestureId != 49 && gestureId != 50",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "jbl-touch-older-models",
+      "brand": "jbl",
+      "models": [
+        "Live 220BT, 300TWS, 400BT, 500BT, 650BTNC, Club 700BT and 950NC, Live Pro+, Tour Pro+, UA Project Rock"
+      ],
+      "status": "built",
+      "what": "The older models (Live 220BT, 300TWS, 400BT, 500BT, 650BTNC, Club 700BT and 950NC, Live Pro+, Tour Pro+, UA Project Rock) set their touch panel (79) and function button (78) through the same BesBasicControl commands, which are now built for every direct model whose control class sets them (docs/jbl/PROTOCOL.md section 4.18); the rows show once the earbuds answer the read, since JBL's app has no description of these models' cards.",
+      "reported": "docs/devices/jbl.md, audit 2026-11-24"
+    },
+    {
+      "id": "jbl-models-without-controls",
+      "brand": "jbl",
+      "models": [
+        "Tour Pro 4, Tour One M4, the newer Smart Tx"
+      ],
+      "status": "not-applicable",
+      "what": "JBL Headphones 5.37.10 lists these three with support false and no control class: product_list.json gives each a dash configuration but marks it unsupported and names no cmdCtrlList, and the control factory (gn.n.y0) builds a control only from a listed class. The app opens no settings for them. The Everest Elite range and Reflect Aware are another matter and are in jbl-avnera-models.",
+      "reported": "docs/devices/jbl.md, audit 2026-11-24",
+      "read": [
+        {
+          "path": "E:/Builds/research/jbl-res/assets/product_list.json",
+          "what": "JBL Tour Pro 4 (21AE), JBL Tour One M4 (2193) and JBL Smart Tx with dash4Config jbl_smart_tx_gen2.json: support false, no cmdCtrlList"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/gn/n.java",
+          "what": "y0 picks EverestControl for old devices, else the control class its product lists"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/jbl-res/assets",
+          "glob": "product_list\\.json$",
+          "pattern": "\"name\": \"JBL Tour Pro 4\",\\s*\"serialName\": \"TOUR\",\\s*\"support\": \"false\"",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "jbl-avnera-models",
+      "brand": "jbl",
+      "models": [
+        "Everest Elite 100, 150NC, 300, 700, 750NC and Reflect Aware"
+      ],
+      "status": "open",
+      "what": "docs/devices/jbl.md says JBL's app has no controls for these; it has: EverestControl (chosen by gn.n.y0 for old devices) implements the battery, ANC on and off, ambient leveling, the EQ presets (Off, Jazz, Vocal, Bass, User) and the user's graphic EQ, and the auto power off, through Avnera's own Bluetooth library (z6 and a7 in the decompiled app, 20,000 lines, over a GATT service 6BCEBEE0-FCF8-4ED7-88C6-B41C1F240B86). Not read beyond that; PairFree has no Avnera transport.",
+      "reported": "audit 2026-11-24"
     }
   ]
 }

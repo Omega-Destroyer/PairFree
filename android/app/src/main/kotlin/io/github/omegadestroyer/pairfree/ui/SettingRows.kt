@@ -248,6 +248,10 @@ private fun groupTitle(key: String): String = stringResource(
         "psap" -> R.string.setting_group_psap
         "personifi" -> R.string.setting_group_personifi
         "le_audio" -> R.string.setting_group_le_audio
+        "noise_levels" -> R.string.setting_group_noise_levels
+        "function_buttons" -> R.string.setting_group_function_buttons
+        "dials" -> R.string.setting_group_dials
+        "touch_sensitivity" -> R.string.setting_group_touch_sensitivity
         "auracast" -> R.string.setting_group_auracast
         "case" -> R.string.setting_group_case
         "case_pages" -> R.string.setting_group_case_pages
@@ -613,6 +617,17 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "jbl_personifi" -> stringResource(R.string.setting_jbl_personifi)
     "jbl_le_audio" -> stringResource(R.string.setting_jbl_le_audio)
     "jbl_case_find" -> stringResource(R.string.setting_jbl_case_find)
+    "jbl_anc_level" -> stringResource(R.string.setting_jbl_anc_level)
+    "jbl_function_button" -> stringResource(R.string.setting_jbl_function_button)
+    "jbl_sens_left" -> stringResource(R.string.setting_jbl_sens_left)
+    "jbl_sens_right" -> stringResource(R.string.setting_jbl_sens_right)
+    "jbl_touch_panel" -> stringResource(R.string.setting_jbl_touch_panel)
+    "jbl_dial_1" -> stringResource(R.string.setting_jbl_dial_1)
+    "jbl_dial_2" -> stringResource(R.string.setting_jbl_dial_2)
+    "jbl_mic_button" -> stringResource(R.string.setting_jbl_mic_button)
+    "jbl_leakage_comp" -> stringResource(R.string.setting_jbl_leakage_comp)
+    "jbl_ear_canal_comp" -> stringResource(R.string.setting_jbl_ear_canal_comp)
+    "jbl_aa_level" -> stringResource(R.string.setting_jbl_aa_level)
     "jbl_case_unlock" -> stringResource(R.string.setting_jbl_case_unlock)
     "jbl_case_saver" -> stringResource(R.string.setting_jbl_case_saver)
     "jbl_psap_balance" -> stringResource(R.string.setting_jbl_psap_balance)
@@ -1513,6 +1528,19 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "voice_assistant" -> R.string.setting_jbl_touch_assistant
             "none" -> R.string.action_none
             else -> R.string.action_other
+        },
+    )
+    key == "jbl_function_button" || key == "jbl_touch_panel" || key == "jbl_dial_1" || key == "jbl_dial_2" || key == "jbl_mic_button" -> getString(
+        when (option) {
+            "voice_assistant" -> R.string.setting_jbl_btn_assistant
+            "ambient_sound" -> R.string.setting_jbl_btn_ambient
+            "active_mode" -> R.string.setting_jbl_btn_active
+            "talk_thru" -> R.string.setting_jbl_fn_talk_thru
+            "volume" -> R.string.setting_jbl_btn_volume
+            "game_chat" -> R.string.setting_jbl_btn_game_chat
+            "mic_mute" -> R.string.setting_jbl_btn_mic_mute
+            "led" -> R.string.setting_jbl_btn_led
+            else -> R.string.action_none
         },
     )
     key == "jbl_call_effect" -> when (option) {

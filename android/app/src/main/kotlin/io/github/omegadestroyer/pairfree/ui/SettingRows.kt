@@ -115,7 +115,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
     confirming?.let { key ->
         ConfirmDialog(
             title = stringResource(actionStart(key)),
-            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; else -> R.string.setting_restart_body }),
+            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; else -> R.string.setting_restart_body }),
             confirm = stringResource(actionStart(key)),
             onConfirm = { onChange(SettingChange.Press(key)) },
             onDismiss = { confirming = null },
@@ -226,7 +226,7 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
 private val CONFIRM_CHOICES = setOf("sh_peer_delete")
 
-private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset")
+private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
 private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://play.google.com/store/apps/details?id=com.thetileapp.tile")
@@ -612,6 +612,9 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "jbl_psap" -> stringResource(R.string.setting_jbl_psap)
     "jbl_personifi" -> stringResource(R.string.setting_jbl_personifi)
     "jbl_le_audio" -> stringResource(R.string.setting_jbl_le_audio)
+    "jbl_case_find" -> stringResource(R.string.setting_jbl_case_find)
+    "jbl_case_unlock" -> stringResource(R.string.setting_jbl_case_unlock)
+    "jbl_case_saver" -> stringResource(R.string.setting_jbl_case_saver)
     "jbl_psap_balance" -> stringResource(R.string.setting_jbl_psap_balance)
     "jbl_psap_gain" -> stringResource(R.string.setting_jbl_psap_gain)
     "jbl_case_brightness" -> stringResource(R.string.setting_jbl_case_brightness)
@@ -1025,6 +1028,8 @@ private fun settingNote(key: String): String? = when (key) {
     "jbl_psap" -> stringResource(R.string.setting_jbl_psap_note)
     "jbl_personifi" -> stringResource(R.string.setting_jbl_personifi_note)
     "jbl_le_audio" -> stringResource(R.string.setting_jbl_le_audio_note)
+    "jbl_case_find" -> stringResource(R.string.setting_jbl_case_find_note)
+    "jbl_case_unlock" -> stringResource(R.string.setting_jbl_case_unlock_note)
     "jbl_case_wake" -> stringResource(R.string.setting_jbl_case_wake_note)
     "jbl_ear_tips" -> stringResource(R.string.setting_jbl_ear_tips_note)
     "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat_note)
@@ -1714,6 +1719,7 @@ private fun actionStart(key: String): Int = when (key) {
     "sh_find_right" -> R.string.setting_sh_find_right
     "sh_fit_test" -> R.string.setting_sh_fit_start
     "jbl_seal_check" -> R.string.setting_jbl_seal_check
+    "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove
     "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scan
     "jbl_auracast_stop" -> R.string.setting_jbl_auracast_stop
     "jbl_noise_check" -> R.string.setting_jbl_noise_check

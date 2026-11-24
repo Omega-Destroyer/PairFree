@@ -558,6 +558,13 @@
     <string name="setting_group_psap">Personal sound amplification</string>
     <string name="setting_group_personifi">PersoniFi</string>
     <string name="setting_group_le_audio">LE Audio</string>
+    <string name="setting_jbl_case_find">Find my case</string>
+    <string name="setting_jbl_case_find_note">Plays a sound on the case until you turn it off, so you can find it.</string>
+    <string name="setting_jbl_case_unlock">Unlock indicator</string>
+    <string name="setting_jbl_case_unlock_note">Shows an unlock mark on the case\'s screen when the earbuds are taken out.</string>
+    <string name="setting_jbl_case_saver">Screen saver picture</string>
+    <string name="setting_jbl_case_saver_remove">Remove the custom screen saver</string>
+    <string name="setting_jbl_case_saver_remove_body">The picture you put on the case is deleted from the case. The built-in screen savers stay.</string>
     <string name="setting_jbl_le_audio">LE Audio</string>
     <string name="setting_jbl_le_audio_note">Lets the earbuds use Bluetooth LE Audio with a phone that has it. The earbuds restart their Bluetooth link when this changes, so the connection drops for a moment and PairFree reconnects.</string>
     <string name="setting_jbl_personifi">PersoniFi sound profile</string>

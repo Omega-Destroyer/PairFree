@@ -43,6 +43,7 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
 
     private val usesDisplay: Boolean get() = listOf(
         JblHarmanKit.CASE_BRIGHTNESS, JblHarmanKit.CASE_NOTIFICATIONS, JblHarmanKit.CASE_SCREEN_SAVER, JblHarmanKit.CASE_LANGUAGE, JblHarmanKit.CASE_WAKE, JblHarmanKit.CASE_INFO,
+        JblHarmanKit.CASE_FIND, JblHarmanKit.CASE_UNLOCK,
     ).any { has(it) }
 
     fun handles(id: Int) = id in setOf(JblRace.PSAP_GET, JblRace.PSAP_SET, JblRace.CASE_DISPLAY_GET, JblRace.CASE_DISPLAY_SET, JblRace.CASE_FEATURE_GET, JblRace.CASE_FEATURE_SET, JblRace.ENV_INFO, JblRace.ENV_INFO_1562, JblRace.LEAKAGE)
@@ -99,6 +100,10 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
             u(display, PREVIEW)?.let { add(Setting.Toggle(JblHarmanKit.PREVIEW_KEY, it == 1, enabled = n != false)) }
         }
         if (has(JblHarmanKit.CASE_SCREEN_SAVER)) u(display, SCREEN_TIME)?.let { add(Setting.Level(JblHarmanKit.SCREEN_TIME_KEY, (it / 5).coerceIn(0, 30), 0, 30)) }
+        if (has(JblHarmanKit.CASE_SCREEN_SAVER)) u(display, SAVER)?.takeIf { it < JblHarmanKit.SAVER_COUNT }?.let { add(Setting.Level(JblHarmanKit.SAVER_KEY, it + 1, 1, JblHarmanKit.SAVER_COUNT)) }
+        if (has(JblHarmanKit.CASE_SCREEN_SAVER) && u(display, CUSTOM) == 1) add(Setting.Action(JblHarmanKit.SAVER_REMOVE_KEY))
+        if (has(JblHarmanKit.CASE_UNLOCK)) u(display, UNLOCK)?.let { add(Setting.Toggle(JblHarmanKit.UNLOCK_KEY, it == 1)) }
+        if (has(JblHarmanKit.CASE_FIND)) u(display, FIND)?.let { add(Setting.Toggle(JblHarmanKit.FIND_KEY, it == 1)) }
         if (has(JblHarmanKit.CASE_LANGUAGE)) u(display, LANGUAGE)?.let { add(Setting.Choice(JblHarmanKit.LANGUAGE_KEY, JblHarmanKit.LANGUAGES.getOrNull(it - 1), JblHarmanKit.LANGUAGES)) }
         if (has(JblHarmanKit.CASE_WAKE)) u(display, WAKE_STATUS)?.let { s ->
             add(Setting.Toggle(JblHarmanKit.WAKE_KEY, s == 1))
@@ -142,6 +147,8 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
             JblHarmanKit.PSAP_KEY -> psapWrite(on = change.on)
             JblHarmanKit.NOTIFICATIONS_KEY -> displayWrite(NOTIFICATION to if (change.on) 1 else 0)
             JblHarmanKit.PREVIEW_KEY -> displayWrite(PREVIEW to if (change.on) 1 else 0)
+            JblHarmanKit.UNLOCK_KEY -> displayWrite(UNLOCK to if (change.on) 1 else 0)
+            JblHarmanKit.FIND_KEY -> displayWrite(FIND to if (change.on) 1 else 2)
             // The switch sends the status alone (`QuickWakeUpInfo(1, -1)`), a tap its number with the status on.
             JblHarmanKit.WAKE_KEY -> displayWrite(WAKE_STATUS to if (change.on) 1 else 0)
             else -> PAGE_AT.entries.firstOrNull { it.value == change.key }?.let { featureWrite(it.key to if (change.on) 1 else 0) }
@@ -150,6 +157,7 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
             JblHarmanKit.PSAP_BALANCE_KEY -> psapWrite(balance = change.value + 95)
             JblHarmanKit.PSAP_GAIN_KEY -> psapWrite(gain = change.value)
             JblHarmanKit.BRIGHTNESS_KEY -> displayWrite(BRIGHTNESS to change.value)
+            JblHarmanKit.SAVER_KEY -> displayWrite(SAVER to change.value - 1)
             JblHarmanKit.SCREEN_TIME_KEY -> displayWrite(SCREEN_TIME to change.value * 5)
             else -> null
         }
@@ -169,6 +177,8 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
                 checkingSeal = true
                 listOf(RacePacket(JblRace.LEAKAGE, byteArrayOf(0, 1)))
             } else null
+            // `MmiStage_DelCustomizeScreenSaver`: the command alone.
+            JblHarmanKit.SAVER_REMOVE_KEY -> if (has(JblHarmanKit.CASE_SCREEN_SAVER)) listOf(RacePacket(JblRace.CASE_SAVER_DELETE)).also { display?.let { d -> if (CUSTOM < d.size) d[CUSTOM] = 0 } } else null
             else -> null
         }
     }
@@ -207,7 +217,7 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
     fun readBack(key: String): JblFrame? = when (key) {
         JblHarmanKit.PSAP_KEY, JblHarmanKit.PSAP_BALANCE_KEY, JblHarmanKit.PSAP_GAIN_KEY -> RacePacket(JblRace.PSAP_GET)
         JblHarmanKit.NOTIFICATIONS_KEY, JblHarmanKit.PREVIEW_KEY, JblHarmanKit.BRIGHTNESS_KEY, JblHarmanKit.SCREEN_TIME_KEY, JblHarmanKit.LANGUAGE_KEY,
-        JblHarmanKit.WAKE_KEY, JblHarmanKit.WAKE_TAP_KEY,
+        JblHarmanKit.WAKE_KEY, JblHarmanKit.WAKE_TAP_KEY, JblHarmanKit.UNLOCK_KEY, JblHarmanKit.FIND_KEY, JblHarmanKit.SAVER_KEY, JblHarmanKit.SAVER_REMOVE_KEY,
         -> RacePacket(JblRace.CASE_DISPLAY_GET)
         else -> if (key in PAGE_AT.values) RacePacket(JblRace.CASE_FEATURE_GET) else null
     }
@@ -228,7 +238,11 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
         private const val BRIGHTNESS = 0
         private const val NOTIFICATION = 1
         private const val PREVIEW = 2
+        private const val SAVER = 3
         private const val SCREEN_TIME = 4
+        private const val CUSTOM = 5
+        private const val UNLOCK = 11
+        private const val FIND = 19
         private const val LANGUAGE = 10
         private const val WAKE_STATUS = 24
         private const val WAKE_ACTION = 25

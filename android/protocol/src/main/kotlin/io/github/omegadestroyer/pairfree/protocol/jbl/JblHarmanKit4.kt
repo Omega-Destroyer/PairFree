@@ -22,7 +22,9 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
     private val displayFeatures: List<Int> get() = buildList {
         if (has(JblHarmanKit.CASE_BRIGHTNESS)) add(CASE_BRIGHTNESS)
         if (has(JblHarmanKit.CASE_NOTIFICATIONS)) { add(CASE_NOTIFICATION); add(CASE_PREVIEW) }
-        if (has(JblHarmanKit.CASE_SCREEN_SAVER)) add(CASE_SCREEN_TIME)
+        if (has(JblHarmanKit.CASE_SCREEN_SAVER)) { add(CASE_SCREEN_TIME); add(CASE_SAVER); add(CASE_CUSTOM) }
+        if (has(JblHarmanKit.CASE_UNLOCK)) add(CASE_UNLOCK_F)
+        if (has(JblHarmanKit.CASE_FIND)) add(CASE_FIND_F)
         if (has(JblHarmanKit.CASE_LANGUAGE)) { add(CASE_LANGUAGE) }
         if (has(JblHarmanKit.CASE_WAKE)) add(CASE_WAKE)
         if (has(JblHarmanKit.CASE_INFO)) { add(CASE_VERSION); add(CASE_LATEST) }
@@ -84,6 +86,10 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
             on(CASE_PREVIEW)?.let { add(Setting.Toggle(JblHarmanKit.PREVIEW_KEY, it, enabled = n != false)) }
         }
         if (has(JblHarmanKit.CASE_SCREEN_SAVER)) screenTime()?.let { add(Setting.Level(JblHarmanKit.SCREEN_TIME_KEY, (it / 5).coerceIn(0, 30), 0, 30)) }
+        if (has(JblHarmanKit.CASE_SCREEN_SAVER)) u8(CASE_SAVER)?.takeIf { it < JblHarmanKit.SAVER_COUNT }?.let { add(Setting.Level(JblHarmanKit.SAVER_KEY, it + 1, 1, JblHarmanKit.SAVER_COUNT)) }
+        if (has(JblHarmanKit.CASE_SCREEN_SAVER) && u8(CASE_CUSTOM) == 1) add(Setting.Action(JblHarmanKit.SAVER_REMOVE_KEY))
+        if (has(JblHarmanKit.CASE_UNLOCK)) on(CASE_UNLOCK_F)?.let { add(Setting.Toggle(JblHarmanKit.UNLOCK_KEY, it)) }
+        if (has(JblHarmanKit.CASE_FIND)) on(CASE_FIND_F)?.let { add(Setting.Toggle(JblHarmanKit.FIND_KEY, it)) }
         if (has(JblHarmanKit.CASE_LANGUAGE)) u8(CASE_LANGUAGE)?.let { add(Setting.Choice(JblHarmanKit.LANGUAGE_KEY, JblHarmanKit.LANGUAGES.getOrNull(it - 1), JblHarmanKit.LANGUAGES)) }
         if (has(JblHarmanKit.CASE_WAKE)) on(CASE_WAKE)?.let { w ->
             add(Setting.Toggle(JblHarmanKit.WAKE_KEY, w))
@@ -140,6 +146,9 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
                     CASE_NOTIFICATION to byteArrayOf((((if (change.on) 1 else 0) shl 7) or (p shl 6)).toByte())
                 } else null
                 JblHarmanKit.PREVIEW_KEY -> status(CASE_PREVIEW, change.on)
+                JblHarmanKit.UNLOCK_KEY -> status(CASE_UNLOCK_F, change.on)
+                // `General4Control`: the status is 1 to play (level 1) and 2 to stop (level 2, the status shifted out of the byte).
+                JblHarmanKit.FIND_KEY -> CASE_FIND_F to byteArrayOf((if (change.on) 0x81 else 0x02).toByte())
                 JblHarmanKit.WAKE_KEY -> status(CASE_WAKE, change.on)
                 CASE_24H_KEY -> status(CASE_24H, change.on)
                 else -> PAGES.entries.firstOrNull { it.value == change.key }?.let { (id, _) ->
@@ -150,6 +159,7 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
                 JblHarmanKit.PSAP_BALANCE_KEY -> one(PSAP_BALANCE, change.value + 45)
                 JblHarmanKit.PSAP_GAIN_KEY -> one(PSAP_GAIN, change.value)
                 JblHarmanKit.BRIGHTNESS_KEY -> status(CASE_BRIGHTNESS, true, change.value)
+                JblHarmanKit.SAVER_KEY -> one(CASE_SAVER, change.value - 1)
                 JblHarmanKit.SCREEN_TIME_KEY -> {
                     // `StatusLevelSize2Feature`: the status is on for one to a hundred seconds (`setChargingCaseDisplaySettingsStatus`).
                     val s = change.value * 5
@@ -168,6 +178,8 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
             is SettingChange.Press -> when (change.key) {
                 JblHarmanKit.NOISE_CHECK_KEY -> if (has(JblHarmanKit.FIT_TEST)) { testingNoise = true; one(ENV_NOISE, 0) } else null
                 JblHarmanKit.SEAL_CHECK_KEY -> if (has(JblHarmanKit.FIT_TEST)) { testingSeal = true; one(SEALING, 0) } else null
+                // `General4Control.delCustomizeScreenSaver`: 193 to the removal feature; the custom picture is gone.
+                JblHarmanKit.SAVER_REMOVE_KEY -> if (has(JblHarmanKit.CASE_SCREEN_SAVER)) { raw[CASE_CUSTOM] = byteArrayOf(0); one(CASE_REMOVE, JblHarmanKit.CUSTOM_SAVER) } else null
                 else -> null
             }
         }
@@ -186,6 +198,9 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
             JblHarmanKit.NOTIFICATIONS_KEY -> CASE_NOTIFICATION
             JblHarmanKit.PREVIEW_KEY -> CASE_PREVIEW
             JblHarmanKit.SCREEN_TIME_KEY -> CASE_SCREEN_TIME
+            JblHarmanKit.SAVER_KEY, JblHarmanKit.SAVER_REMOVE_KEY -> CASE_SAVER
+            JblHarmanKit.UNLOCK_KEY -> CASE_UNLOCK_F
+            JblHarmanKit.FIND_KEY -> CASE_FIND_F
             JblHarmanKit.LANGUAGE_KEY -> CASE_LANGUAGE
             JblHarmanKit.WAKE_KEY, JblHarmanKit.WAKE_TAP_KEY -> CASE_WAKE
             CASE_24H_KEY -> CASE_24H
@@ -222,6 +237,11 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
         const val CASE_LANGUAGE = 7946
         const val CASE_WAKE = 7948
         const val CASE_LATEST = 7950
+        const val CASE_SAVER = 7942
+        const val CASE_UNLOCK_F = 7947
+        const val CASE_FIND_F = 7951
+        const val CASE_CUSTOM = 7954
+        const val CASE_REMOVE = 7955
         const val CASE_24H = 7953
 
         /** The case's page configs (`DeviceInfoFeature5` 8064 to 8081) by their row. */
@@ -235,7 +255,7 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
 
         val IDS: Set<Int> = setOf(
             PSAP_STATUS, PSAP_BALANCE, PSAP_GAIN, PSAP_NOISE, PSAP_BEAMFORMING, SEALING, ENV_NOISE, EAR_TIPS, CASE_VERSION, CASE_BRIGHTNESS, CASE_NOTIFICATION,
-            CASE_SCREEN_TIME, CASE_PREVIEW, CASE_LANGUAGE, CASE_WAKE, CASE_LATEST, CASE_24H,
+            CASE_SCREEN_TIME, CASE_PREVIEW, CASE_LANGUAGE, CASE_WAKE, CASE_LATEST, CASE_24H, CASE_SAVER, CASE_UNLOCK_F, CASE_FIND_F, CASE_CUSTOM,
         ) + PAGES.keys + JblPersonifiMode.P4_IDS + JblLeAudio.FEATURE
     }
 }

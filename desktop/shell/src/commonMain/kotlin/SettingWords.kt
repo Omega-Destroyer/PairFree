@@ -389,6 +389,9 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_psap" -> t("setting_jbl_psap")
         "jbl_personifi" -> t("setting_jbl_personifi")
         "jbl_le_audio" -> t("setting_jbl_le_audio")
+        "jbl_case_find" -> t("setting_jbl_case_find")
+        "jbl_case_unlock" -> t("setting_jbl_case_unlock")
+        "jbl_case_saver" -> t("setting_jbl_case_saver")
         "jbl_psap_balance" -> t("setting_jbl_psap_balance")
         "jbl_psap_gain" -> t("setting_jbl_psap_gain")
         "jbl_case_brightness" -> t("setting_jbl_case_brightness")
@@ -798,6 +801,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_psap" -> t("setting_jbl_psap_note")
         "jbl_personifi" -> t("setting_jbl_personifi_note")
         "jbl_le_audio" -> t("setting_jbl_le_audio_note")
+        "jbl_case_find" -> t("setting_jbl_case_find_note")
+        "jbl_case_unlock" -> t("setting_jbl_case_unlock_note")
         "jbl_case_wake" -> t("setting_jbl_case_wake_note")
         "jbl_ear_tips" -> t("setting_jbl_ear_tips_note")
         "jbl_speak_to_chat" -> t("setting_jbl_speak_to_chat_note")
@@ -1483,6 +1488,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_right" -> "setting_sh_find_right"
         "sh_fit_test" -> "setting_sh_fit_start"
         "jbl_seal_check" -> "setting_jbl_seal_check"
+        "jbl_case_saver_remove" -> "setting_jbl_case_saver_remove"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scan"
         "jbl_auracast_stop" -> "setting_jbl_auracast_stop"
         "jbl_noise_check" -> "setting_jbl_noise_check"

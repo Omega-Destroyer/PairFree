@@ -63,4 +63,24 @@ class JblNoiseLevelTest {
         assertEquals(Setting.Toggle("jbl_adaptive_anc", true), row(s, "jbl_adaptive_anc"))
         assertEquals(RacePacket(JblRace.ENV_STATUS, byteArrayOf(3, 0)), s.change(SettingChange.Toggle("jbl_adaptive_anc", false))!!.single())
     }
+
+    @Test
+    fun airohaAutoCompensationIsTheFullAdaptiveAncMode() {
+        val s = JblSession(model("JBL Live Buds 3"))
+        assertTrue(s.start().contains(RacePacket(JblRace.FULL_ADAPTIVE, byteArrayOf(0, 13, 0, 0))))
+        // The type 13, the mode (0 off), the power saving mode, the passive and the active rate.
+        s.receive(RacePacket(JblRace.FULL_ADAPTIVE, byteArrayOf(0, 13, 1, 1, 8, 2), JblRace.TYPE_RESPONSE))
+        assertEquals(Setting.Toggle("jbl_auto_compensation", true), row(s, "jbl_auto_compensation"))
+        // Off on the Live Buds 3 is a plain noise cancelling write (filter 1, mode 0), then a read.
+        val off = s.change(SettingChange.Toggle("jbl_auto_compensation", false))!!
+        assertEquals(RacePacket.of(JblRace.ANC, 0, JblRace.ANC_ON, JblRace.ANC_FILTER_ANC, JblRace.ANC_MODE_ANC), off.first())
+        // On is the older form of the ANC command: 15 bytes, mode 10, filter 1, power saving 1, passive 8, active 2.
+        val on = s.change(SettingChange.Toggle("jbl_auto_compensation", true))!!.first() as RacePacket
+        assertEquals(JblRace.ANC, on.id)
+        assertEquals("000a010501000a0100080200000000", on.payload.joinToString("") { "%02x".format(it) })
+        // The Tour Pro 3 turns it off with its own id.
+        val t = JblSession(model("JBL Tour Pro 3"))
+        t.receive(RacePacket(JblRace.FULL_ADAPTIVE, byteArrayOf(0, 13, 1, 1, 8, 2), JblRace.TYPE_RESPONSE))
+        assertEquals(RacePacket(JblRace.AUTO_COMP_OFF, byteArrayOf(0)), t.change(SettingChange.Toggle("jbl_auto_compensation", false))!!.first())
+    }
 }

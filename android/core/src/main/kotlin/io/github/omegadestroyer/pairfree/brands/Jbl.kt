@@ -12,6 +12,9 @@ import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Wire
+import io.github.omegadestroyer.pairfree.protocol.jbl.AvneraModels
+import io.github.omegadestroyer.pairfree.protocol.jbl.AvneraPacket
+import io.github.omegadestroyer.pairfree.protocol.jbl.AvneraTalk
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblAdvert
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblEqSpec
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblFrame
@@ -44,11 +47,15 @@ object JblSpec : BrandSpec(Brand.JBL) {
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         JblModels.fromName(name)?.let { Paired(address, name, Brand.JBL, model = it.name) }
+            // The Everest Elite range and the Reflect Aware: Avnera's LightX over the standard serial port (docs/jbl/PROTOCOL.md section 12).
+            ?: AvneraModels.fromName(name)?.let { Paired(address, name, Brand.JBL, model = it.name) }
 
     /** By the model its product id names, which the firmware line carries; before then, its name. */
-    override fun model(device: Paired, state: EarbudState): Model? = JblModels.model(state.firmware?.code ?: device.model ?: device.name)
+    override fun model(device: Paired, state: EarbudState): Model? =
+        JblModels.model(state.firmware?.code ?: device.model ?: device.name) ?: AvneraModels.model(device.model ?: device.name)
 
-    override fun driver(device: Paired, host: DriverHost): BrandDriver = JblDriver(host, device)
+    override fun driver(device: Paired, host: DriverHost): BrandDriver =
+        if (JblModels.fromName(device.name) == null && AvneraModels.fromName(device.name) != null) AvneraDriver(host, device) else JblDriver(host, device)
 
     internal fun modelOf(device: Paired): JblModel? = JblModels.fromName(device.name) ?: JblModels.ALL.firstOrNull { it.name == device.model }
 
@@ -172,6 +179,24 @@ class JblDriver(host: DriverHost, private val device: Paired) : TalkDriver<JblFr
             appendLine("The last answer to each of PairFree's reads (command, with the status type or feature id:")
             appendLine("payload as hex; the device info's name and address are blanked):")
             reportReplies(session.replies)
+        }
+    }
+}
+
+/** The Everest Elite range and the Reflect Aware ([AvneraTalk]): one conversation of Avnera's own packets, every setting a row. */
+class AvneraDriver(host: DriverHost, private val device: Paired) : TalkDriver<AvneraPacket, AvneraTalk>(host) {
+    override fun talk(opened: ControlLink): AvneraTalk? = AvneraModels.fromName(device.name)?.let { AvneraTalk(it) }
+
+    override fun report(info: ReportInfo): String? {
+        val talk = talk ?: return null
+        return buildString {
+            reportHead(info)
+            appendLine("Brand:           JBL (Avnera platform)")
+            appendLine("Model:           ${talk.model.name}")
+            reportApp(info)
+            appendLine()
+            appendLine("The last answer to each of PairFree's reads (the key, then the buffer as hex):")
+            reportReplies(talk.replies.mapKeys { it.key.toString() })
         }
     }
 }

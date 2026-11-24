@@ -35,7 +35,7 @@ class IdentifyTest {
             assertEquals(want, Identify.maker(name, uuids), name)
             (e["model"] as? JsonPrimitive)?.content?.let { model ->
                 when (want) {
-                    Maker.JBL -> assertEquals(model, JblModels.fromName(name)?.name, name)
+                    Maker.JBL -> assertEquals(model, JblModels.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.jbl.AvneraModels.fromName(name)?.name, name)
                     Maker.PIXEL -> assertEquals(model, PixelModels.fromName(name)?.name, name)
                     Maker.EARFUN -> assertEquals(model, EarfunModels.fromName(name)?.name, name)
                     Maker.CAMBRIDGE -> assertEquals(model, CambridgeModels.fromName(name)?.name, name)

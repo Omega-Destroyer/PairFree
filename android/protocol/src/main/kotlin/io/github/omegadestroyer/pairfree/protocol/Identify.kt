@@ -10,6 +10,7 @@ import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
 import io.github.omegadestroyer.pairfree.protocol.jabra.JabraModels
 import io.github.omegadestroyer.pairfree.protocol.jabra.fromName
+import io.github.omegadestroyer.pairfree.protocol.jbl.AvneraModels
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
@@ -96,7 +97,7 @@ public object Identify {
         Maker.SOUNDPEATS -> Models.find(null, name) != null
         Maker.SOUNDCORE -> SoundcoreModels.fromName(name) != null
         Maker.SONY -> SonyModels.fromName(name) != null
-        Maker.JBL -> JblModels.fromName(name) != null
+        Maker.JBL -> JblModels.fromName(name) != null || AvneraModels.fromName(name) != null
         Maker.NOTHING -> NothingModels.fromName(name) != null
         Maker.PIXEL -> PixelModels.fromName(name) != null
         Maker.QCY -> QcyModels.fromName(name).isNotEmpty()

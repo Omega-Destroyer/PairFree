@@ -524,10 +524,20 @@
       "id": "jbl-avnera-models",
       "brand": "jbl",
       "models": [
-        "Everest Elite 100, 150NC, 300, 700, 750NC and Reflect Aware"
+        "Everest Elite 100, 300, 700, 750NC and Reflect Aware"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 12): Avnera's LightX protocol over the standard serial port, read from the a7 package of JBL Headphones 5.37.10 (EverestControl, gn.v, gn.d): the frame, the keys and their values, built as AvneraPacket, AvneraReader and AvneraTalk with the battery, noise cancelling on and off, the ambient level, the equalizer's presets and the user's ten bands, auto power-off, voice prompts and the smart button. The boot, configuration and firmware keys never go out. Never tried on headphones. The Everest Elite 150NC is in jbl-avnera-150nc.",
+      "reported": "audit 2026-11-24"
+    },
+    {
+      "id": "jbl-avnera-150nc",
+      "brand": "jbl",
+      "models": [
+        "Everest Elite 150NC"
       ],
       "status": "open",
-      "what": "docs/devices/jbl.md says JBL's app has no controls for these; it has: EverestControl (chosen by gn.n.y0 for old devices) implements the battery, ANC on and off, ambient leveling, the EQ presets (Off, Jazz, Vocal, Bass, User) and the user's graphic EQ, and the auto power off, through Avnera's own Bluetooth library (z6 and a7 in the decompiled app, 20,000 lines, over a GATT service 6BCEBEE0-FCF8-4ED7-88C6-B41C1F240B86). Not read beyond that; PairFree has no Avnera transport.",
+      "what": "The 150NC does not speak LightX: JBL's app connects it as an Avnera Bluetooth LE accessory (z6.f1, AccessoryReady, AppUtils.is150Device; gn.l sends Get and Set of hm.a constants over the GATT service 6BCEBEE0-FCF8-4ED7-88C6-B41C1F240B86 and its siblings). The same functions as the LightX models, not yet read from z6.",
       "reported": "audit 2026-11-24"
     }
   ]

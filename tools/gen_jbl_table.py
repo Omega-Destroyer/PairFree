@@ -139,6 +139,7 @@ def table():
         *rows(devices),
         "</table>",
         "",
+        *avnera(load().get("avnera", [])),
         *not_covered(load().get("not_covered", [])),
         END,
     ])
@@ -149,6 +150,7 @@ WHY = {
     "le_audio": "JBL's app controls them over LE Audio, which PairFree does not do yet",
     "no_dashboard": "JBL's app has an older control class for them with no description of their settings, so what "
                     "they have is not known",
+    "avnera_le": "JBL's app controls it as an Avnera Bluetooth LE accessory, which PairFree does not read yet",
     "unsupported": "JBL's app itself has no controls for them",
     "microphone": "a microphone, not headphones or earbuds",
 }
@@ -164,6 +166,18 @@ def not_covered(models):
         if names:
             out += ["", f"{text}: {', '.join(names)}."]
     return out
+
+
+def avnera(models):
+    """The Everest Elite and Reflect Aware models, which speak Avnera's own protocol (docs/jbl/PROTOCOL.md section 12)."""
+    if not models:
+        return []
+    names = ", ".join(escape(m["name"]) for m in models)
+    return [
+        f"<b>Avnera platform</b> ({len(models)}, not tested): {names}. They speak Avnera's own protocol over the standard serial port, and PairFree shows what the "
+        "headphones answer: the battery, noise cancelling, the ambient level and each ear's outside sound, the equalizer's presets and your own ten bands, power off when taken off, voice prompts and the smart button.",
+        "",
+    ]
 
 
 def summary():

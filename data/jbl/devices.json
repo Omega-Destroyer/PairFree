@@ -3,34 +3,9 @@
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "not_covered": [
     {
-      "name": "JBL EVEREST ELITE 100",
-      "pids": ["1002"],
-      "why": "unsupported"
-    },
-    {
       "name": "JBL EVEREST ELITE 150NC",
       "pids": ["1003"],
-      "why": "unsupported"
-    },
-    {
-      "name": "JBL EVEREST ELITE 300",
-      "pids": ["1004"],
-      "why": "unsupported"
-    },
-    {
-      "name": "JBL EVEREST ELITE 700",
-      "pids": ["1005"],
-      "why": "unsupported"
-    },
-    {
-      "name": "JBL EVEREST ELITE 750NC",
-      "pids": ["1006"],
-      "why": "unsupported"
-    },
-    {
-      "name": "JBL REFLECT AWARE",
-      "pids": ["1001"],
-      "why": "unsupported"
+      "why": "avnera_le"
     },
     {
       "name": "JBL Smart Tx",
@@ -3188,6 +3163,28 @@
         "design": false,
         "calibrate": true
       }
+    }
+  ],
+  "avnera": [
+    {
+      "name": "Everest Elite 100",
+      "pid": "1002"
+    },
+    {
+      "name": "Everest Elite 300",
+      "pid": "1004"
+    },
+    {
+      "name": "Everest Elite 700",
+      "pid": "1005"
+    },
+    {
+      "name": "Everest Elite 750NC",
+      "pid": "1006"
+    },
+    {
+      "name": "Reflect Aware",
+      "pid": "1001"
     }
   ]
 }

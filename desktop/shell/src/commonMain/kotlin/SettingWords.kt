@@ -30,6 +30,8 @@ class SettingWords(private val strings: DesktopStrings) {
             "personifi" -> "setting_group_personifi"
             "le_audio" -> "setting_group_le_audio"
             "noise_levels" -> "setting_group_noise_levels"
+            "av_sound" -> "setting_group_av_sound"
+            "av_device" -> "setting_group_av_device"
             "function_buttons" -> "setting_group_function_buttons"
             "dials" -> "setting_group_dials"
             "touch_sensitivity" -> "setting_group_touch_sensitivity"
@@ -107,7 +109,7 @@ class SettingWords(private val strings: DesktopStrings) {
         return t("setting_ef_cycle_row", t(side), t(mode))
     }
 
-    fun settingTitle(key: String): String = if (key.startsWith("jb_")) t(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: "unknown") else when (key) {
+    fun settingTitle(key: String): String = if (key.startsWith("jb_")) t(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: "unknown") else if (key.startsWith("jbl_av_band_")) t("setting_jbl_av_band", key.removePrefix("jbl_av_band_").toInt() + 1) else when (key) {
         "sk_transparency_level" -> t("setting_sk_transparency_level")
         "sk_anc_level" -> t("setting_sk_anc_level")
         "sk_gaming_mode" -> t("setting_sk_gaming_mode")
@@ -395,6 +397,14 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_le_audio" -> t("setting_jbl_le_audio")
         "jbl_case_find" -> t("setting_jbl_case_find")
         "jbl_anc_level" -> t("setting_jbl_anc_level")
+        "jbl_av_anc" -> t("setting_jbl_av_anc")
+        "jbl_av_ambient" -> t("setting_jbl_av_ambient")
+        "jbl_av_raw_left" -> t("setting_jbl_av_raw_left")
+        "jbl_av_raw_right" -> t("setting_jbl_av_raw_right")
+        "jbl_av_eq" -> t("setting_jbl_av_eq")
+        "jbl_av_auto_off" -> t("setting_jbl_av_auto_off")
+        "jbl_av_prompts" -> t("setting_jbl_av_prompts")
+        "jbl_av_smart_button" -> t("setting_jbl_av_smart_button")
         "jbl_function_button" -> t("setting_jbl_function_button")
         "jbl_sens_left" -> t("setting_jbl_sens_left")
         "jbl_sens_right" -> t("setting_jbl_sens_right")
@@ -1298,6 +1308,18 @@ class SettingWords(private val strings: DesktopStrings) {
                 "voice_assistant" -> "setting_jbl_touch_assistant"
                 "none" -> "action_none"
                 else -> "action_other"
+            },
+        )
+        key == "jbl_av_ambient" || key == "jbl_av_eq" -> t(
+            when (option) {
+                "low" -> "setting_jbl_av_low"
+                "medium" -> "setting_jbl_av_medium"
+                "high" -> "setting_jbl_av_high"
+                "jazz" -> "setting_jbl_av_jazz"
+                "vocal" -> "setting_jbl_av_vocal"
+                "bass" -> "setting_jbl_av_bass"
+                "user" -> "setting_jbl_av_user"
+                else -> "action_off"
             },
         )
         key == "jbl_function_button" || key == "jbl_touch_panel" || key == "jbl_dial_1" || key == "jbl_dial_2" || key == "jbl_mic_button" -> t(

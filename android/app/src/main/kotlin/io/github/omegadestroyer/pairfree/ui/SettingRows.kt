@@ -249,6 +249,8 @@ private fun groupTitle(key: String): String = stringResource(
         "personifi" -> R.string.setting_group_personifi
         "le_audio" -> R.string.setting_group_le_audio
         "noise_levels" -> R.string.setting_group_noise_levels
+        "av_sound" -> R.string.setting_group_av_sound
+        "av_device" -> R.string.setting_group_av_device
         "function_buttons" -> R.string.setting_group_function_buttons
         "dials" -> R.string.setting_group_dials
         "touch_sensitivity" -> R.string.setting_group_touch_sensitivity
@@ -330,7 +332,7 @@ private fun efCycleTitle(key: String): String {
 }
 
 @Composable
-private fun settingTitle(key: String): String = if (key.startsWith("jb_")) stringResource(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: R.string.unknown) else when (key) {
+private fun settingTitle(key: String): String = if (key.startsWith("jb_")) stringResource(JabraLabels.TITLE[key.removePrefix("jb_")] ?: JabraLabels.FIXED_TITLE[key] ?: R.string.unknown) else if (key.startsWith("jbl_av_band_")) stringResource(R.string.setting_jbl_av_band, key.removePrefix("jbl_av_band_").toInt() + 1) else when (key) {
     "sk_transparency_level" -> stringResource(R.string.setting_sk_transparency_level)
     "sk_anc_level" -> stringResource(R.string.setting_sk_anc_level)
     "sk_gaming_mode" -> stringResource(R.string.setting_sk_gaming_mode)
@@ -618,6 +620,14 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "jbl_le_audio" -> stringResource(R.string.setting_jbl_le_audio)
     "jbl_case_find" -> stringResource(R.string.setting_jbl_case_find)
     "jbl_anc_level" -> stringResource(R.string.setting_jbl_anc_level)
+    "jbl_av_anc" -> stringResource(R.string.setting_jbl_av_anc)
+    "jbl_av_ambient" -> stringResource(R.string.setting_jbl_av_ambient)
+    "jbl_av_raw_left" -> stringResource(R.string.setting_jbl_av_raw_left)
+    "jbl_av_raw_right" -> stringResource(R.string.setting_jbl_av_raw_right)
+    "jbl_av_eq" -> stringResource(R.string.setting_jbl_av_eq)
+    "jbl_av_auto_off" -> stringResource(R.string.setting_jbl_av_auto_off)
+    "jbl_av_prompts" -> stringResource(R.string.setting_jbl_av_prompts)
+    "jbl_av_smart_button" -> stringResource(R.string.setting_jbl_av_smart_button)
     "jbl_function_button" -> stringResource(R.string.setting_jbl_function_button)
     "jbl_sens_left" -> stringResource(R.string.setting_jbl_sens_left)
     "jbl_sens_right" -> stringResource(R.string.setting_jbl_sens_right)
@@ -1528,6 +1538,18 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             "voice_assistant" -> R.string.setting_jbl_touch_assistant
             "none" -> R.string.action_none
             else -> R.string.action_other
+        },
+    )
+    key == "jbl_av_ambient" || key == "jbl_av_eq" -> getString(
+        when (option) {
+            "low" -> R.string.setting_jbl_av_low
+            "medium" -> R.string.setting_jbl_av_medium
+            "high" -> R.string.setting_jbl_av_high
+            "jazz" -> R.string.setting_jbl_av_jazz
+            "vocal" -> R.string.setting_jbl_av_vocal
+            "bass" -> R.string.setting_jbl_av_bass
+            "user" -> R.string.setting_jbl_av_user
+            else -> R.string.action_off
         },
     )
     key == "jbl_function_button" || key == "jbl_touch_panel" || key == "jbl_dial_1" || key == "jbl_dial_2" || key == "jbl_mic_button" -> getString(

@@ -66,7 +66,7 @@
       "modes": ["anc"],
       "auto_off": "v1",
       "config": "jbl_club_one.json",
-      "settings": ["personifi"],
+      "settings": ["personifi", "function_button", "touch_panel"],
       "eq": {
         "path": "club",
         "presets": "jbl_club_one",
@@ -154,7 +154,7 @@
         "audio": [256, 53, 150],
         "video": [197, 53, 80]
       },
-      "settings": ["smart_audio_video", "voice_aware"],
+      "settings": ["smart_audio_video", "voice_aware", "function_button", "touch_panel"],
       "auto_off": "v2",
       "auto_off_minutes": [15, 30, 60, 120],
       "eq": {
@@ -359,7 +359,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "gestures"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "gestures", "touch_panel"],
       "gesture_noise": 13,
       "eq": {
         "path": "a2",
@@ -387,7 +387,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures", "ear_tips"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures", "ear_tips", "function_button", "touch_panel"],
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -506,7 +506,7 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "speak_to_chat", "gestures", "low_volume_eq", "psap", "auracast", "personifi", "le_audio", "aa_level"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "speak_to_chat", "gestures", "low_volume_eq", "psap", "auracast", "personifi", "le_audio", "aa_level", "function_button", "touch_panel"],
       "gesture_noise": 13,
       "eq": {
         "path": "a2",
@@ -565,7 +565,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures", "psap", "case_pages", "case_brightness", "case_notifications", "case_screen_saver", "case_clock", "fit_test", "case_info", "auracast", "personifi", "le_audio", "case_find", "aa_level"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "find_buds", "gestures", "psap", "case_pages", "case_brightness", "case_notifications", "case_screen_saver", "case_clock", "fit_test", "case_info", "auracast", "personifi", "le_audio", "case_find", "aa_level", "function_button", "touch_panel"],
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -594,7 +594,7 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "function_button", "touch_panel"],
       "eq": {
         "path": "segment",
         "presets": "jbl_tune_520bt",
@@ -621,7 +621,7 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "function_button", "touch_panel"],
       "eq": {
         "path": "segment",
         "presets": "jbl_tune_520bt",
@@ -649,7 +649,7 @@
         "audio": [256, 46, 120],
         "video": [197, 46, 90]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "function_button", "touch_panel"],
       "eq": {
         "path": "a2_q10",
         "presets": "jbl_tune_720bt",
@@ -763,7 +763,7 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "function_button", "touch_panel"],
       "eq": {
         "path": "segment",
         "presets": "jbl_tune_525bt",
@@ -794,7 +794,7 @@
         "audio": [256, 53, 125],
         "video": [197, 46, 50]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures", "psap", "personifi", "aa_level"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures", "psap", "personifi", "aa_level", "function_button", "touch_panel"],
       "eq": {
         "path": "a2_q10",
         "series": "live",
@@ -825,7 +825,7 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures", "psap", "personifi", "aa_level"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures", "psap", "personifi", "aa_level", "function_button", "touch_panel"],
       "eq": {
         "path": "a2_q10",
         "series": "live",
@@ -960,7 +960,7 @@
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360x.json",
-      "settings": [],
+      "settings": ["quantum_dials"],
       "eq": {
         "path": "a2_q10",
         "presets": "jbl_quantum_360",
@@ -981,7 +981,7 @@
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360p.json",
-      "settings": [],
+      "settings": ["quantum_dials"],
       "eq": {
         "path": "a2_q10",
         "presets": "jbl_quantum_360",
@@ -1012,7 +1012,7 @@
         "audio": [256, 53, 125],
         "video": [197, 46, 50]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures", "psap", "personifi", "aa_level"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures", "psap", "personifi", "aa_level", "function_button", "touch_panel"],
       "eq": {
         "path": "a2_q10",
         "series": "live",
@@ -1233,7 +1233,7 @@
       "auto_off": "feature",
       "auto_off_minutes": [30, 60, 120],
       "config": "jbl_quantum_360.json",
-      "settings": [],
+      "settings": ["quantum_dials"],
       "eq": {
         "path": "a2_q10",
         "presets": "jbl_quantum_360",
@@ -1354,7 +1354,7 @@
         "audio": [256, 53, 150],
         "video": [197, 46, 100]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures", "psap", "personifi", "aa_level"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "spatial", "low_volume_eq", "gestures", "psap", "personifi", "aa_level", "function_button", "touch_panel"],
       "eq": {
         "path": "a2_q10",
         "series": "live",
@@ -1381,7 +1381,7 @@
         "audio": [256, 46, 150],
         "video": [197, 46, 80]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "safe_sound", "function_button", "touch_panel"],
       "eq": {
         "path": "segment",
         "presets": "jbl_tune_527bt",
@@ -1408,7 +1408,7 @@
         "audio": [256, 46, 280],
         "video": [197, 46, 120]
       },
-      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "gestures"],
+      "settings": ["smart_audio_video", "voice_prompts", "balance", "voice_aware", "gestures", "touch_panel"],
       "gesture_noise": 13,
       "eq": {
         "path": "a2",
@@ -2187,7 +2187,7 @@
         "video": [197, 46, 120, 270]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "anc_level", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "anc_level", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2217,7 +2217,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "anc_level", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "anc_level", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2247,7 +2247,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2277,7 +2277,7 @@
         "video": [197, 46, 120, 270]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "anc_level", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "anc_level", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2307,7 +2307,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "anc_level", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "anc_level", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2337,7 +2337,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "sound_effect", "audio_limiter", "find_buds", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2367,7 +2367,7 @@
         "video": [197, 46, 120, 270]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "fit_test", "personifi", "le_audio", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "fit_test", "personifi", "le_audio", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2399,7 +2399,7 @@
         "video": [197, 46, 120]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "case_pages", "fit_test", "personifi", "le_audio", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "find_buds", "case_pages", "fit_test", "personifi", "le_audio", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2429,7 +2429,7 @@
         "video": [197, 46, 120, 430]
       },
       "effects": ["standard", "treble", "bass"],
-      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "find_buds", "ear_tips", "personifi", "personifi_open", "le_audio", "aa_level"],
+      "settings": ["smart_audio_video", "balance", "voice_aware", "safe_sound", "spatial", "sound_effect", "audio_limiter", "speak_to_chat", "find_buds", "ear_tips", "personifi", "personifi_open", "le_audio", "aa_level", "touch_sensitivity"],
       "auto_off": "p4",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -2975,7 +2975,7 @@
       "family": "direct",
       "noise": "old",
       "modes": ["ambient_aware", "talk_thru"],
-      "settings": [],
+      "settings": ["function_button", "touch_panel"],
       "auto_off": "v1",
       "eq": {
         "path": "club",
@@ -2996,7 +2996,7 @@
       "noise": "old",
       "modes": ["ambient_aware", "talk_thru"],
       "auto_play_pause": true,
-      "settings": ["find_buds"],
+      "settings": ["find_buds", "function_button", "touch_panel"],
       "auto_off": "v1",
       "eq": {
         "path": "club",
@@ -3016,7 +3016,7 @@
       "family": "direct",
       "noise": "old",
       "modes": ["ambient_aware", "talk_thru"],
-      "settings": [],
+      "settings": ["function_button", "touch_panel"],
       "auto_off": "v1",
       "eq": {
         "path": "club",
@@ -3036,7 +3036,7 @@
       "family": "direct",
       "noise": "old",
       "modes": ["ambient_aware", "talk_thru"],
-      "settings": [],
+      "settings": ["function_button", "touch_panel"],
       "auto_off": "v1",
       "eq": {
         "path": "club",
@@ -3056,7 +3056,7 @@
       "family": "direct",
       "noise": "old",
       "modes": ["anc"],
-      "settings": [],
+      "settings": ["function_button", "touch_panel"],
       "eq": {
         "path": "club",
         "presets": "jbl_live650btnc",
@@ -3075,7 +3075,7 @@
       "family": "direct",
       "noise": "old",
       "modes": ["ambient_aware", "talk_thru"],
-      "settings": [],
+      "settings": ["function_button", "touch_panel"],
       "auto_off": "v1",
       "eq": {
         "path": "club",
@@ -3095,7 +3095,7 @@
       "family": "direct",
       "noise": "old",
       "modes": ["ambient_aware", "talk_thru"],
-      "settings": [],
+      "settings": ["function_button", "touch_panel"],
       "auto_off": "v1",
       "eq": {
         "path": "club",
@@ -3122,7 +3122,7 @@
         "audio": [256, 53, 200],
         "video": [197, 41, 150]
       },
-      "settings": ["smart_audio_video"],
+      "settings": ["smart_audio_video", "function_button", "touch_panel"],
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -3150,7 +3150,7 @@
         "audio": [256, 53, 280],
         "video": [197, 41, 120]
       },
-      "settings": ["smart_audio_video", "find_buds"],
+      "settings": ["smart_audio_video", "find_buds", "function_button", "touch_panel"],
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "eq": {
@@ -3178,7 +3178,7 @@
         "audio": [256, 53, 150],
         "video": [197, 53, 80]
       },
-      "settings": ["smart_audio_video"],
+      "settings": ["smart_audio_video", "function_button", "touch_panel"],
       "auto_off": "v2",
       "auto_off_minutes": [30, 60, 120],
       "eq": {

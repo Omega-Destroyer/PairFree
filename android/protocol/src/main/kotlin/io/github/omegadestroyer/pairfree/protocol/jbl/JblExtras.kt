@@ -50,6 +50,13 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
     private var finding = false
     // Each gesture's action, by JBL's gesture id (1 left tap, 2 right tap and so on).
     private val gestures = mutableMapOf<Int, Int>()
+
+    // The touch sensitivity of each earbud (protocol 4 features 4033 and 4034), a step from 0.
+    private val sensitivity = arrayOfNulls<Int>(2)
+
+    // The function button's and the touch panel's category (commands 78 and 79).
+    private var functionButton: Int? = null
+    private var touchPanel: Int? = null
     private var mutedLeft = false
     private var mutedRight = false
 
@@ -67,7 +74,9 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
         if (has(SPATIAL)) add(JblPacket.of(JblCommand.SPATIAL, READ))
         if (has(SPEAK_TO_CHAT)) add(JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ))
         if (has(LOW_VOLUME_EQ) && model.family == JblModel.Family.DIRECT) add(JblPacket.of(JblCommand.LOW_VOLUME_EQ, READ))
-        if (has(GESTURES)) add(gestureRead())
+        if (has(GESTURES) || has(QUANTUM_DIALS)) add(gestureRead())
+        if (has(FUNCTION_BUTTON)) add(JblPacket.of(JblCommand.FUNCTION_BUTTON, READ))
+        if (has(TOUCH_PANEL)) add(JblPacket.of(JblCommand.TOUCH_PANEL, READ))
         if (has(ADAPTIVE_ANC) || has(AUTO_COMPENSATION) || has(ANC_LEVEL) || has(AA_LEVEL) || has(LEAKAGE_COMP) || has(EAR_CANAL_COMP)) add(JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ))
         val features = listOfNotNull(
             JblFeature.SOUND_EFFECT.takeIf { has(SOUND_EFFECT) },
@@ -93,6 +102,8 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
         JblP4.FEATURE_ADAPTIVE_ANC.takeIf { has(ADAPTIVE_ANC) },
         JblP4.FEATURE_LOW_VOLUME_EQ.takeIf { has(LOW_VOLUME_EQ) },
         JblP4.FEATURE_AUTO_COMPENSATION.takeIf { has(AUTO_COMPENSATION) },
+        JblP4.FEATURE_LEFT_TOUCH_SENSITIVITY.takeIf { has(TOUCH_SENSITIVITY) },
+        JblP4.FEATURE_RIGHT_TOUCH_SENSITIVITY.takeIf { has(TOUCH_SENSITIVITY) },
     )
 
     /** The reads of an Airoha model, after its own: each setting's read as JBL's app sends it over RACE (docs/jbl/PROTOCOL.md section 10). */
@@ -207,11 +218,14 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
                     at += 2
                 }
             }
+            // The sub-command, the function id and the category (HandleParse, cases 19 and 20).
+            JblCommand.FUNCTION_BUTTON -> if (p.size >= 3) functionButton = p.u8(2)
+            JblCommand.TOUCH_PANEL -> if (p.size >= 3) touchPanel = p.u8(2)
             // 01 or 02, then pairs of gesture and action (HandleParse.parseGestureData).
             JblCommand.GESTURES -> if (p.u8(0) == 1 || p.u8(0) == 2) {
                 var at = 1
                 while (at + 1 < p.size) {
-                    WIRE_GESTURES[p.u8(at)]?.let { gestures[it] = p.u8(at + 1) }
+                    (WIRE_GESTURES[p.u8(at)] ?: DIAL_WIRE[p.u8(at)])?.let { gestures[it] = p.u8(at + 1) }
                     at += 2
                 }
             }
@@ -239,6 +253,8 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
         val on = v.u8(0) and 0x80 != 0
         val level = v.u8(0) and 0x7F
         when (id) {
+            JblP4.FEATURE_LEFT_TOUCH_SENSITIVITY -> sensitivity[0] = level
+            JblP4.FEATURE_RIGHT_TOUCH_SENSITIVITY -> sensitivity[1] = level
             JblP4.FEATURE_SMART_SWITCH -> if (v.size >= 8) smartSwitch = (0 until 4).map { v.u16(it * 2) }
             JblP4.FEATURE_VOICE_PROMPT -> {
                 voicePrompts = on
@@ -337,6 +353,48 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
         return listOf(Setting.Choice(TOUCH_KEYS.getValue(side), touchSet(ids), TOUCH_SETS))
     }
 
+    /**
+     * The touch sensitivity of each earbud (`customizedbutton` page, `General4Control.setTouchSensitivity`: status 1 and the step), shown where the product's dashboard says it is supported:
+     * two or three steps, as the product's `levelLimit` says (the Wave Beam 3 has two, the rest of the models three).
+     */
+    fun sensitivityRows(): List<Setting> {
+        if (!has(TOUCH_SENSITIVITY)) return emptyList()
+        val steps = if (0x21AC in model.pids) 2 else 3
+        return listOfNotNull(
+            sensitivity[0]?.takeIf { it < steps }?.let { Setting.Level(SENS_LEFT_KEY, it, 0, steps - 1) },
+            sensitivity[1]?.takeIf { it < steps }?.let { Setting.Level(SENS_RIGHT_KEY, it, 0, steps - 1) },
+        )
+    }
+
+    /** The headphones' function button and touch panel (commands 78 and 79), shown once they answer. */
+    fun buttonRows(): List<Setting> = listOfNotNull(
+        functionButton?.takeIf { has(FUNCTION_BUTTON) }?.let { Setting.Choice(FUNCTION_KEY, FUNCTION_NAMES[it], FUNCTION_NAMES.values.toList()) },
+        touchPanel?.takeIf { has(TOUCH_PANEL) }?.let { Setting.Choice(PANEL_KEY, PANEL_NAMES[it], PANEL_NAMES.values.toList()) },
+    )
+
+    /** The Quantum headsets' two dials and button (`HeadQuantumGestureCard`'s page): the gestures 55, 56 and 64 and the function each is set to. */
+    fun dialRows(): List<Setting> {
+        if (!has(QUANTUM_DIALS)) return emptyList()
+        return DIALS.mapNotNull { (key, id) ->
+            val action = gestures[id] ?: return@mapNotNull null
+            val options = if (id == DIAL_BUTTON) BUTTON_ACTIONS.values.toList() else DIAL_ACTIONS.values.toList()
+            Setting.Choice(key, (if (id == DIAL_BUTTON) BUTTON_ACTIONS else DIAL_ACTIONS)[action] ?: NONE, options)
+        }
+    }
+
+    /** A function written to a dial or the button; a dial cannot take what the other dial has (JBL's page greys it out). */
+    private fun dial(key: String, option: String): JblFrame? {
+        val id = DIALS[key] ?: return null
+        val actions = if (id == DIAL_BUTTON) BUTTON_ACTIONS else DIAL_ACTIONS
+        val action = actions.entries.firstOrNull { it.value == option }?.key ?: return null
+        if (id != DIAL_BUTTON && action != 0) {
+            val other = if (id == DIAL_ONE) DIAL_TWO else DIAL_ONE
+            if (gestures[other] == action) return null
+        }
+        gestures[id] = action
+        return JblPacket.of(JblCommand.GESTURES, SET, DIAL_ID_WIRE.getValue(id), action)
+    }
+
     /** The set a side's actions make, named by its tap as JBL's app names it (CustomGesture.generateName), else by its hold. */
     private fun touchSet(ids: List<Int>): String {
         return setName(gestures[ids[0]] ?: 0).takeUnless { it == NONE } ?: setName(gestures[ids[3]] ?: 0)
@@ -386,9 +444,20 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
             VOICE_AWARE_KEY -> voiceAware(change.option)
             EFFECT_KEY -> effectSet(change.option)?.let(::listOf)
             TALK_KEY -> listOf(talk(change.option))
+            FUNCTION_KEY -> FUNCTION_NAMES.entries.firstOrNull { it.value == change.option }?.key?.let { c -> functionButton = c; listOf(JblPacket.of(JblCommand.FUNCTION_BUTTON, SET, 1, c)) }
+            PANEL_KEY -> PANEL_NAMES.entries.firstOrNull { it.value == change.option }?.key?.let { c -> touchPanel = c; listOf(JblPacket.of(JblCommand.TOUCH_PANEL, SET, 1, c)) }
+            DIAL_ONE_KEY, DIAL_TWO_KEY, BUTTON_KEY -> dial(change.key, change.option)?.let(::listOf)
             else -> null
         }
-        is SettingChange.Level -> if (change.key == BALANCE_KEY) listOf(balance(change.value + BALANCE_MIN)) else null
+        is SettingChange.Level -> when (change.key) {
+            BALANCE_KEY -> listOf(balance(change.value + BALANCE_MIN))
+            SENS_LEFT_KEY, SENS_RIGHT_KEY -> {
+                val left = change.key == SENS_LEFT_KEY
+                sensitivity[if (left) 0 else 1] = change.value
+                listOf(JblP4Packet.set((if (left) JblP4.FEATURE_LEFT_TOUCH_SENSITIVITY else JblP4.FEATURE_RIGHT_TOUCH_SENSITIVITY) to JblP4Packet.statusLevel(true, change.value)))
+            }
+            else -> null
+        }
         is SettingChange.Press -> if (change.key == FIND_KEY) find(!finding) else null
     }
 
@@ -438,7 +507,9 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
             SAFE_SOUND_KEY -> JblPacket.of(JblCommand.SAFE_SOUND, READ)
             SPATIAL_KEY -> JblPacket.of(JblCommand.SPATIAL, READ)
             TALK_KEY -> JblPacket.of(JblCommand.SPEAK_TO_CHAT, READ)
-            TOUCH_LEFT, TOUCH_RIGHT -> gestureRead()
+            TOUCH_LEFT, TOUCH_RIGHT, DIAL_ONE_KEY, DIAL_TWO_KEY, BUTTON_KEY -> gestureRead()
+            FUNCTION_KEY -> JblPacket.of(JblCommand.FUNCTION_BUTTON, READ)
+            PANEL_KEY -> JblPacket.of(JblCommand.TOUCH_PANEL, READ)
             ADAPTIVE_KEY, COMPENSATION_KEY, LEAKAGE_KEY, EAR_CANAL_KEY -> JblPacket.of(JblCommand.NOISE_MODES, ADVANCED_READ)
             LOW_EQ_KEY -> if (model.family == JblModel.Family.DIRECT) {
                 JblPacket.of(JblCommand.LOW_VOLUME_EQ, READ)
@@ -709,6 +780,29 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
         const val HI_RES = "hi_res"
         const val FIND_BUDS = "find_buds"
         const val GESTURES = "gestures"
+        const val QUANTUM_DIALS = "quantum_dials"
+        const val TOUCH_SENSITIVITY = "touch_sensitivity"
+        const val SENS_LEFT_KEY = "jbl_sens_left"
+        const val SENS_RIGHT_KEY = "jbl_sens_right"
+        const val FUNCTION_BUTTON = "function_button"
+        const val TOUCH_PANEL = "touch_panel"
+        const val FUNCTION_KEY = "jbl_function_button"
+        const val PANEL_KEY = "jbl_touch_panel"
+        const val DIAL_ONE_KEY = "jbl_dial_1"
+        const val DIAL_TWO_KEY = "jbl_dial_2"
+        const val BUTTON_KEY = "jbl_mic_button"
+        private val FUNCTION_NAMES = linkedMapOf(1 to "voice_assistant", 2 to "ambient_sound", 3 to "active_mode")
+        private val PANEL_NAMES = linkedMapOf(1 to "voice_assistant", 2 to "ambient_sound", 3 to "talk_thru")
+        // The Quantum headsets' gestures: the dials (55 game and chat balance, 56 volume in the enum, but each dial takes either) and the microphone button's long press (64), their bytes on the wire
+        // (GestureType 19 to 22 through CmdBase.values: 10, 11, 12 and 13 hex) and their functions (GestureActionType 23 to 26 through values_Action: A9 to AC).
+        private const val DIAL_ONE = 55
+        private const val DIAL_TWO = 56
+        private const val DIAL_BUTTON = 64
+        private val DIALS = linkedMapOf(DIAL_ONE_KEY to DIAL_ONE, DIAL_TWO_KEY to DIAL_TWO, BUTTON_KEY to DIAL_BUTTON)
+        private val DIAL_ID_WIRE = mapOf(DIAL_ONE to 0x10, DIAL_TWO to 0x11, DIAL_BUTTON to 0x13)
+        private val DIAL_WIRE = DIAL_ID_WIRE.entries.associate { it.value to it.key }
+        private val DIAL_ACTIONS = linkedMapOf(0xAA to "volume", 0xA9 to "game_chat", 0 to NONE)
+        private val BUTTON_ACTIONS = linkedMapOf(0xAB to "mic_mute", 0xAC to "led", 0 to NONE)
         const val ADAPTIVE_ANC = "adaptive_anc"
         const val LOW_VOLUME_EQ = "low_volume_eq"
         const val LOW_EQ_KEY = "jbl_low_volume_eq"
@@ -788,9 +882,11 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
             JblP4.FEATURE_MAX_VOLUME_LIMIT, JblP4.FEATURE_SPATIAL_SCENE, JblP4.FEATURE_SOUND_EFFECT, JblP4.FEATURE_AUDIO_LIMITER,
             JblP4.FEATURE_SMART_TALK, JblP4.FEATURE_HI_RES, JblP4.FEATURE_ADAPTIVE_ANC, JblP4.FEATURE_AUTO_COMPENSATION,
             JblP4.FEATURE_LOW_VOLUME_EQ,
+            JblP4.FEATURE_LEFT_TOUCH_SENSITIVITY, JblP4.FEATURE_RIGHT_TOUCH_SENSITIVITY,
         )
 
         private val AA_COMMANDS = setOf(
+            JblCommand.FUNCTION_BUTTON, JblCommand.TOUCH_PANEL,
             JblCommand.SMART_SWITCH, JblCommand.SMART_SWITCH_BES_REPLY, JblCommand.VOICE_PROMPTS, JblCommand.BALANCE, JblCommand.VOICE_AWARE,
             JblCommand.SAFE_SOUND, JblCommand.SPATIAL, JblCommand.SPEAK_TO_CHAT, JblCommand.GESTURES, JblCommand.LOW_VOLUME_EQ,
         )

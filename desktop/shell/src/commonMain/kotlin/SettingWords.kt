@@ -30,6 +30,9 @@ class SettingWords(private val strings: DesktopStrings) {
             "personifi" -> "setting_group_personifi"
             "le_audio" -> "setting_group_le_audio"
             "noise_levels" -> "setting_group_noise_levels"
+            "function_buttons" -> "setting_group_function_buttons"
+            "dials" -> "setting_group_dials"
+            "touch_sensitivity" -> "setting_group_touch_sensitivity"
             "auracast" -> "setting_group_auracast"
             "case" -> "setting_group_case"
             "case_pages" -> "setting_group_case_pages"
@@ -392,6 +395,13 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_le_audio" -> t("setting_jbl_le_audio")
         "jbl_case_find" -> t("setting_jbl_case_find")
         "jbl_anc_level" -> t("setting_jbl_anc_level")
+        "jbl_function_button" -> t("setting_jbl_function_button")
+        "jbl_sens_left" -> t("setting_jbl_sens_left")
+        "jbl_sens_right" -> t("setting_jbl_sens_right")
+        "jbl_touch_panel" -> t("setting_jbl_touch_panel")
+        "jbl_dial_1" -> t("setting_jbl_dial_1")
+        "jbl_dial_2" -> t("setting_jbl_dial_2")
+        "jbl_mic_button" -> t("setting_jbl_mic_button")
         "jbl_leakage_comp" -> t("setting_jbl_leakage_comp")
         "jbl_ear_canal_comp" -> t("setting_jbl_ear_canal_comp")
         "jbl_aa_level" -> t("setting_jbl_aa_level")
@@ -1288,6 +1298,19 @@ class SettingWords(private val strings: DesktopStrings) {
                 "voice_assistant" -> "setting_jbl_touch_assistant"
                 "none" -> "action_none"
                 else -> "action_other"
+            },
+        )
+        key == "jbl_function_button" || key == "jbl_touch_panel" || key == "jbl_dial_1" || key == "jbl_dial_2" || key == "jbl_mic_button" -> t(
+            when (option) {
+                "voice_assistant" -> "setting_jbl_btn_assistant"
+                "ambient_sound" -> "setting_jbl_btn_ambient"
+                "active_mode" -> "setting_jbl_btn_active"
+                "talk_thru" -> "setting_jbl_fn_talk_thru"
+                "volume" -> "setting_jbl_btn_volume"
+                "game_chat" -> "setting_jbl_btn_game_chat"
+                "mic_mute" -> "setting_jbl_btn_mic_mute"
+                "led" -> "setting_jbl_btn_led"
+                else -> "action_none"
             },
         )
         key == "jbl_call_effect" -> when (option) {

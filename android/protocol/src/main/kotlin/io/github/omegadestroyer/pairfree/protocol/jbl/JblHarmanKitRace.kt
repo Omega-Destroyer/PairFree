@@ -24,6 +24,9 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
 
     // Adaptive noise cancelling: the environment detection's status (RACE 0E17, type 3), as `setEnvironmentDetectionStatus` writes it (docs/jbl/PROTOCOL.md section 4.19).
     private var adaptive: Boolean? = null
+
+    // Auto compensation (docs/jbl/PROTOCOL.md section 4.19): the full adaptive ANC mode (RACE 0E26, type 13), on when its mode byte is not 0.
+    private var compensation: Boolean? = null
     private var checkingSeal = false
 
     fun reads(): List<JblFrame> = buildList {
@@ -32,7 +35,11 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
         if (usesDisplay) add(RacePacket(JblRace.CASE_DISPLAY_GET))
         if (has(JblHarmanKit.CASE_PAGES)) add(RacePacket(JblRace.CASE_FEATURE_GET))
         if (has(JblExtras.ADAPTIVE_ANC)) add(RacePacket(JblRace.ENV_STATUS, byteArrayOf(ENV_ADAPTIVE, ENV_READ)))
+        if (has(JblExtras.AUTO_COMPENSATION)) add(compensationRead())
     }
+
+    /** `AncStageGetFullAdaptiveAncStatus`: type 13. */
+    private fun compensationRead() = RacePacket(JblRace.FULL_ADAPTIVE, byteArrayOf(0, COMPENSATION_TYPE, 0, 0))
 
     /**
      * The clock is written once, as the app does on connecting: the Harman frame `A7` of section 4.11, passed to the earbuds through RACE `0093`
@@ -50,7 +57,7 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
         JblHarmanKit.CASE_FIND, JblHarmanKit.CASE_UNLOCK,
     ).any { has(it) }
 
-    fun handles(id: Int) = id in setOf(JblRace.PSAP_GET, JblRace.PSAP_SET, JblRace.CASE_DISPLAY_GET, JblRace.CASE_DISPLAY_SET, JblRace.CASE_FEATURE_GET, JblRace.CASE_FEATURE_SET, JblRace.ENV_INFO, JblRace.ENV_INFO_1562, JblRace.LEAKAGE, JblRace.ENV_STATUS)
+    fun handles(id: Int) = id in setOf(JblRace.PSAP_GET, JblRace.PSAP_SET, JblRace.CASE_DISPLAY_GET, JblRace.CASE_DISPLAY_SET, JblRace.CASE_FEATURE_GET, JblRace.CASE_FEATURE_SET, JblRace.ENV_INFO, JblRace.ENV_INFO_1562, JblRace.LEAKAGE, JblRace.ENV_STATUS, JblRace.FULL_ADAPTIVE)
 
     fun receive(p: RacePacket) {
         if (p.status != 0) return
@@ -62,6 +69,8 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
             JblRace.CASE_FEATURE_GET -> if (d.size >= 27) features = d.copyOf()
             // The type, then the status: `AncStageGetEnvironmentDetectionStatus` takes bArr[7] and bArr[8].
             JblRace.ENV_STATUS -> if (d.size >= 2 && d[0] == ENV_ADAPTIVE) adaptive = d[1].toInt() == 1
+            // The type, then the mode (0 off), as the stage takes bArr[7] and bArr[8] of a reply at least 12 bytes long.
+            JblRace.FULL_ADAPTIVE -> if (d.size >= 5 && d[0] == COMPENSATION_TYPE) compensation = d[1].toInt() != 0
             JblRace.ENV_INFO, JblRace.ENV_INFO_1562 -> if (d.size >= 10 && d[0].toInt() == 3) {
                 // The type, the two gains, the level, then the stationary noise of the agent and of the partner, two bytes each, low first (`AncStageGetEnvironmentDetectionInfo`).
                 val agent = noiseLevel(short(d, 6)).also { checkingNoise = false }
@@ -78,10 +87,35 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
         }
     }
 
+    /**
+     * On is `setFullAdaptiveAncStatus(1, (1, 1, 2, 8, 0))`: the older form of the ANC command's 15 bytes with the mode 10 (`AncStageSetFullAdaptiveAncStatus`: the filter 1, the power saving mode 1,
+     * the passive rate 8 and the active rate 2). Off is, on the Live Buds 3, a plain noise cancelling write with the filter 1 and the mode 0 (`setAncSetting`), and on the others the race id 0095
+     * (`MmiStage_SetAutoCompensationOff`, a payload of one zero byte).
+     */
+    private fun compensationWrite(on: Boolean): List<JblFrame> {
+        if (on) {
+            val b = ByteArray(15)
+            b[1] = 10
+            b[2] = 1
+            b[3] = 5
+            b[4] = 1
+            b[6] = 10
+            b[7] = 1
+            b[9] = 8
+            b[10] = 2
+            return listOf(RacePacket(JblRace.ANC, b), compensationRead())
+        }
+        val off = if (LIVE_BUDS_3 in model.pids) RacePacket.of(JblRace.ANC, 0, JblRace.ANC_ON, JblRace.ANC_FILTER_ANC, JblRace.ANC_MODE_ANC) else RacePacket(JblRace.AUTO_COMP_OFF, byteArrayOf(0))
+        return listOf(off, compensationRead())
+    }
+
     private fun u(b: ByteArray?, at: Int): Int? = b?.takeIf { at < it.size }?.let { it[at].toInt() and 0xFF }?.takeIf { it != 0xFF }
 
     fun groups(): List<SettingGroup> = listOfNotNull(
-        adaptive?.takeIf { has(JblExtras.ADAPTIVE_ANC) }?.let { SettingGroup("noise_adaptive", SettingTab.HOME, listOf(Setting.Toggle(JblExtras.ADAPTIVE_KEY, it))) },
+        listOfNotNull(
+            adaptive?.takeIf { has(JblExtras.ADAPTIVE_ANC) }?.let { Setting.Toggle(JblExtras.ADAPTIVE_KEY, it) },
+            compensation?.takeIf { has(JblExtras.AUTO_COMPENSATION) }?.let { Setting.Toggle(JblExtras.COMPENSATION_KEY, it) },
+        ).takeIf { it.isNotEmpty() }?.let { SettingGroup("noise_adaptive", SettingTab.HOME, it) },
         psapRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("psap", SettingTab.SOUND, it) },
         caseRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("case", SettingTab.DEVICE, it) },
         pageRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("case_pages", SettingTab.DEVICE, it) },
@@ -152,6 +186,7 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
     fun change(change: SettingChange): List<JblFrame>? = when (change) {
         is SettingChange.Toggle -> when (change.key) {
             JblExtras.ADAPTIVE_KEY -> if (has(JblExtras.ADAPTIVE_ANC)) listOf(RacePacket(JblRace.ENV_STATUS, byteArrayOf(ENV_ADAPTIVE, if (change.on) 1 else 0))).also { adaptive = change.on } else null
+            JblExtras.COMPENSATION_KEY -> if (has(JblExtras.AUTO_COMPENSATION)) compensationWrite(change.on).also { compensation = change.on } else null
             JblHarmanKit.PSAP_KEY -> psapWrite(on = change.on)
             JblHarmanKit.NOTIFICATIONS_KEY -> displayWrite(NOTIFICATION to if (change.on) 1 else 0)
             JblHarmanKit.PREVIEW_KEY -> displayWrite(PREVIEW to if (change.on) 1 else 0)
@@ -223,6 +258,7 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
     }
 
     fun readBack(key: String): JblFrame? = when (key) {
+        JblExtras.COMPENSATION_KEY -> compensationRead()
         JblExtras.ADAPTIVE_KEY -> RacePacket(JblRace.ENV_STATUS, byteArrayOf(ENV_ADAPTIVE, ENV_READ))
         JblHarmanKit.PSAP_KEY, JblHarmanKit.PSAP_BALANCE_KEY, JblHarmanKit.PSAP_GAIN_KEY -> RacePacket(JblRace.PSAP_GET)
         JblHarmanKit.NOTIFICATIONS_KEY, JblHarmanKit.PREVIEW_KEY, JblHarmanKit.BRIGHTNESS_KEY, JblHarmanKit.SCREEN_TIME_KEY, JblHarmanKit.LANGUAGE_KEY,
@@ -245,6 +281,8 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
 
         // The display struct (`MmiStage_SetChargingCaseDisplaySetting`, `notifyChargingCaseDisplaySetting`).
         private const val ENV_ADAPTIVE: Byte = 3
+        private const val COMPENSATION_TYPE: Byte = 13
+        private const val LIVE_BUDS_3 = 0x20F1
         private const val ENV_READ: Byte = 2
         private const val BRIGHTNESS = 0
         private const val NOTIFICATION = 1

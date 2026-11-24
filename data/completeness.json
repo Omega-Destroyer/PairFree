@@ -446,8 +446,8 @@
       "models": [
         "Live Buds 3, Tour Pro 3 (auto compensation); the AdaptiveAncCard's other Airoha models"
       ],
-      "status": "open",
-      "what": "Built 2026-11-24 (docs/jbl/PROTOCOL.md section 4.19): adaptive noise cancelling on the Live Buds 3 and Tour Pro 3, which JBL's app sets as the environment detection status (RACE 0E17, type 3 and 0 or 1; read with type 3 and 2). Open: auto compensation, which the app sends as AirohaDeviceControl.setFullAdaptiveAncStatus (RACE 0E26 or 0E06 with a mode, 15 bytes in the older form; reads with type 13) and, to turn it off on the 20F1 and 20D4 and 20D5 families, a plain noise cancelling write; the mapping of AirohaFullAdaptiveAncInfo(1, 1, 2, 8, 0) to the stage's modes and its read-back offsets have not been traced in the SDK's device control.",
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.19): adaptive noise cancelling on the Live Buds 3 and Tour Pro 3 (RACE 0E17 type 3) and auto compensation (setFullAdaptiveAncStatus: RACE 0E06 with 15 bytes and mode 10 on, a read of 0E26 type 13; off as a plain noise cancelling write on the Live Buds 3 and RACE 0095 on the Tour Pro 3), built in JblHarmanKitRace from the SDK's stages and AirohaDeviceStatusControl. Never tried on earbuds.",
       "reported": "docs/jbl/PROTOCOL.md section 10 (Not covered yet), audit 2026-11-24"
     },
     {

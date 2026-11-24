@@ -305,7 +305,7 @@ Read from JBL Headphones 5.37.10 (2026-11-23): the command classes `PSAPCmd`, `C
 `EnvironmentNoiseCheckCmd`, `EarCanalTestingCmd` and `TipsTypeCmd` of `com.harman.bluetooth.imp.cmd`, and the dashboard cards that call them. Each is a Harman frame
 (`AA`, the command, the payload's length, then the payload) whose first payload byte is the sub-command: 00 write, 01 read, 02 reply (`CmdBase.combine` adds the length).
 A model has a setting when its dashboard card is in its config and its control class implements the write (`BesDeviceStatusControl` carries them for the BES models; the
-protocol 4 models send the same settings as `DeviceInfoFeature5` records, section 4.12, and the Airoha models through their own adapter, see the end of this section). So far:
+protocol 4 models send the same settings as `DeviceInfoFeature5` records, section 4.12, and the Airoha models through their own adapter, section 4.13). So far:
 Tour Pro 2, Live Beam 3 and Live Flex 3 (the smart case), the Tour One M2, Tour Pro 2, Live 670NC, 675NC, 770NC, 775NC and Live Beam 3 (PSAP), the Live Pro 2 TWS, Tour Pro 2 and
 Live Beam 3 (the fit checks), the Tune Flex and Tune Flex 2 (the ear tips) and eight models for the Auracast receiver: `settings` in `devices.json`.
 
@@ -349,7 +349,7 @@ Live Beam 3 (the fit checks), the Tune Flex and Tune Flex 2 (the ear tips) and e
 - **The ear tips** (`9C`, `SoundFitCard`, only the Tune Flex family: `TIPS_OPEN` 0 and `TIPS_SEALING` 1). Read `01`, the reply `02` and the type, a write `00` and the type.
 
 None of these is on the never-sent list. Open, in `data/completeness.json`: the screen saver's pictures and the user's own screen saver (a file transfer to the case,
-`ScreenSaverAdapter`, ids 3, 6 and 7 of `A3`), find my case (`FindMyCaseCard`, id 13) and the same settings on the Airoha models. The protocol 4 models send them as features (section 4.12).
+`ScreenSaverAdapter`, ids 3, 6 and 7 of `A3`), find my case (`FindMyCaseCard`, id 13). The protocol 4 models send the rest as features (section 4.12) and the Airoha models as RACE commands (section 4.13).
 
 ### 4.12 The same settings on protocol 4
 
@@ -377,6 +377,35 @@ whether the user may set it, bits 0 to 5 its place. A model has a setting under 
   a page the case does not let the user set (bit 6 clear) is shown greyed out.
 
 Open, in `data/completeness.json`: the screen saver's index and pictures, find my case (7951) and the unlock indicator (7947, which only the Smart Tx page shows).
+
+### 4.13 The same settings on the Airoha models
+
+Read from JBL's Airoha adapter (`com.airoha.adapter.harman.AirohaDeviceStatusControl` and its `MmiStage_*` classes, JBL Headphones 5.37.10, 2026-11-24). The Live Buds 3 (`LiveBuds3Control`
+over `gi/c`) and the Tour Pro 3 (`TourPro3LeControl` over `gi/a`, on LE) both end in the same flows, so both send RACE commands (section 10) of fixed layout: a read has no payload, the answer starts
+with a status byte (0 is fine) and then the values, a write carries every field of its struct, and a field the app leaves alone is 0xFF (each info object starts at -1). The ids are the decimal
+numbers of the stages' `mRaceId`:
+
+- **PSAP**: `0077` reads, `0078` writes three bytes: on, the balance (95 to 105) and the gain step (0 to 5); the answer to either holds the same three.
+- **The case's screen**: `0079` reads and `0080` writes a 26-byte struct: 0 brightness (0 to 3), 1 message notification, 2 preview, 3 the screen saver's index, 4 its time in seconds (one byte), 5 whether it is the
+  user's own, 6 to 9 that picture's CRC, 10 the language (`CaseLangType` ordinal, 1 English to 13 Vietnamese), 11 the unlock indicator, 12 tap to wake, 13 to 15 the earbuds' latest version, 16 to 18 the case's, 19 find my case,
+  20 to 23 the screen's width and height, 24 and 25 quick wake-up (the status, then the tap 1 to 3; the switch sends the status alone).
+- **The case's pages**: `0081` reads and `0082` writes a 27-byte struct: bytes 0 to 8 whether the pages ambient sound control, equalizer, speak to chat, 3D spatial sound, low volume EQ, VoiceAware, auto play and pause,
+  Silent Now and earbuds in the case show, 9 to 11 the case's version, 12 to 17 its address, 18 its language, 19 to 26 the timer, lock screen wallpaper, notifications, find my buds, flashlight, music playback, volume and
+  screen brightness pages. PairFree sends the case's version and address back as the case reported them (the app sends zeros when it has none).
+- **The clock**: the Harman frame `A7` of section 4.11 passed to the earbuds through RACE `0093` (`MmiStage_SendHmCmd`, the app's `writeHmCommand`), written once when the channel opens: both `LiveBuds3Control.setDeviceTime`
+  and `TourPro3LeControl.setDeviceTime` write `SyncTimeToDeviceCmd`'s bytes that way. `0093` is on the never-sent list because it can carry any Harman command; PairFree lets through this one frame (`A7`) and nothing else.
+  `0083` (`MmiStage_SetSmartCaseAction`, the case's firmware update) stays never sent. The adapter's own `SET_DEVICE_TIME` flow (`MmiStage_SetDeviceTime`, `0090`, seconds since 1970) is for other models and stays on the list.
+- The Airoha adapter's `getTipsType` and `setTipsType` only log that nothing is there, so the ear tips row stays on the other families.
+
+- **The noise check**: the app reads the environment detection's status (`0E17`, payload 3 and 2) and then its information (`0E15`, payload 3; `0E18` on the AB1562, `AncStageGetEnvironmentDetectionInfo1562`).
+  The answer's data holds the type 3, the two gains, the level, then the stationary noise of the agent and of the partner earbud (two bytes each, low first, signed); the earbud PairFree talks to is the right one when
+  the session's agent read says so, which swaps the two. A level from 0 to 100 comes from each noise by a line of the model's own (`getEnvironmentNoise`: (noise x 45 + a) / b, less or plus a constant; the Live Free 2,
+  Reflect Aero, Quantum TWS, Live Buds 3 and Tour Pro 3 each have one), and a model with none shows 0.
+- **The seal check**: `0E13` with the mode 0 and 1 (`MmiStageLeakageDetecttion`), answered up to 15 seconds later by an indication of 21 bytes whose bytes 19 and 20 are the first and second earbud, 0 for sealed
+  (`OnAncAdaptiveStatus`); the right earbud is first when the agent is the right one.
+
+Open, in `data/completeness.json`: the ear canal test, an ANC user trigger (`AncStageStartAncUserTrigger`, a state machine of 1,500 lines fed with a per-model parameter file from the app's assets), of which only
+the entry and the stage are read.
 
 ## 5. How each model sends its settings
 

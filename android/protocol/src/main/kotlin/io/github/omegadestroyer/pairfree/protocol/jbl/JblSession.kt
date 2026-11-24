@@ -67,7 +67,7 @@ public class JblSession(initial: JblModel) {
     private var ascOn: Boolean? = null
 
     // The settings beyond noise control, auto power-off and auto play/pause.
-    private var extras = JblExtras(initial) { clock() }
+    private var extras = JblExtras(initial, { clock() }, { RaceEnv(chip, agentRight) })
 
     /** The phone's local time, which the case's clock is set to when the channel opens (docs/jbl/PROTOCOL.md section 4.11). */
     public var clock: () -> JblWallClock? = { null }
@@ -549,7 +549,7 @@ public class JblSession(initial: JblModel) {
         val reread = known.family != model.family || known.noise != model.noise
         val more = known.extras != model.extras || known.smartAudioVideo != model.smartAudioVideo || known.effects != model.effects
         model = known
-        if (more) extras = JblExtras(known) { clock() }
+        if (more) extras = JblExtras(known, { clock() }, { RaceEnv(chip, agentRight) })
         if (reread) {
             outbox += start()
         } else if (more) {
@@ -849,6 +849,8 @@ public class JblSession(initial: JblModel) {
      * and relays of an Airoha PEQ write PairFree built itself are let through by [allowed].
      */
     private fun raceAllowed(p: RacePacket): Boolean = when {
+        // The case's clock: JBL's own Harman frame A7 through the passthrough, as the app writes it on connecting (section 4.13).
+        p.id == JblRace.HM_PASSTHROUGH -> p.payload.size >= 4 && (p.payload[0].toInt() and 0xFF) == 0xAA && (p.payload[1].toInt() and 0xFF) == JblCommand.SYNC_TIME
         p.id in JblRace.NEVER_SEND -> false
         p.id == JblRace.KEY_EVENT -> p.payload.size >= 2 && ((p.payload[0].toInt() and 0xFF) or ((p.payload[1].toInt() and 0xFF) shl 8)) in JblRace.KEY_EVENTS
         p.id in RACE_FIRMWARE_UPDATE -> p.id == JblRace.FIRMWARE || p.id == JblRace.AE_INFO

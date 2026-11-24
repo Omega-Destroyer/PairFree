@@ -31,7 +31,7 @@ class JblHarmanKitTest {
         assertTrue("case_language" in model("JBL Live Beam 3").extras)
         assertTrue("ear_tips" in model("JBL Tune Flex 2").extras)
         // Not on a model with the setting's card on another transport, or with no such control class.
-        assertFalse("psap" in model("JBL Live Buds 3").extras)
+        assertTrue("psap" in model("JBL Live Buds 3").extras, "the Airoha models send it as RACE (section 4.13)")
         assertFalse("psap" in model("JBL Tune 520BT").extras)
     }
 

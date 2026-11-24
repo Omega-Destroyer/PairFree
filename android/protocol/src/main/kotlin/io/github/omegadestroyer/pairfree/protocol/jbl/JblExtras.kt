@@ -12,7 +12,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
  * commands for the direct and feature families (with feature records for the effect, the limiter and Hi-Res on the
  * feature family), protocol 4's features for the p4 family, Airoha's RACE commands for the Airoha models.
  */
-internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock? = { null }) {
+internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock? = { null }, env: () -> RaceEnv = { RaceEnv(null, false) }) {
     private val p4 get() = model.family == JblModel.Family.P4
     private val race get() = model.family == JblModel.Family.AIROHA
     private fun has(id: String) = id in model.extras
@@ -44,7 +44,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
     private var mutedRight = false
 
     /** PSAP, the smart case, the clock, the fit test and the ear tips (docs/jbl/PROTOCOL.md section 4.11). */
-    val kit = JblHarmanKit(model, clock)
+    val kit = JblHarmanKit(model, clock, env)
 
     /** The reads of a direct or feature model, after its own. */
     fun reads(): List<JblFrame> = if (p4 || race) emptyList() else buildList {
@@ -87,6 +87,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
 
     /** The reads of an Airoha model, after its own: each setting's read as JBL's app sends it over RACE (docs/jbl/PROTOCOL.md section 10). */
     fun raceReads(): List<JblFrame> = if (!race) emptyList() else buildList {
+        addAll(kit.raceReads())
         if (has(SMART_AV)) add(RacePacket.of(JblRace.KEY_EVENT, JblRace.KEY_SMART_SWITCH_GET and 0xFF, JblRace.KEY_SMART_SWITCH_GET shr 8))
         if (has(VOICE_PROMPTS)) add(RacePacket.configGet(JblRace.CONFIG_PROMPT_LANGUAGE))
         if (has(BALANCE)) add(RacePacket.of(JblRace.BALANCE_GET))
@@ -108,6 +109,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
      * them through). Writes answer with the status alone; their read-backs bring the values.
      */
     fun race(p: RacePacket) {
+        if (kit.raceHandles(p.id)) return kit.race(p)
         if (p.status != 0) return
         val d = p.data
         if (d.isEmpty()) return
